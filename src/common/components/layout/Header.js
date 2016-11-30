@@ -8,6 +8,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import Helmet from 'react-helmet';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import FontIcon from 'material-ui/lib/font-icon';
 import PersonalTheme from '../../themes/personal';
 import { bindActionCreators } from 'redux';
 
@@ -38,17 +39,27 @@ class Header extends Component {
         <AppBar
           zDepth={2}
           title={
-            <Link style={{color: '#fff'}} to="/">WordBots</Link>
-          }
-          iconElementRight={
-            <MenuItem primaryText="Linky" style={{color: '#fff'}}/>
+            <Link style={{color: '#fff', fontFamily: 'Luckiest Guy', fontSize: 32}} to="/">WordBots</Link>
           }
           onLeftIconButtonTouchTap={this.handleToggle}
         />
 
-        <LeftNav style={{paddingTop: '70px'}} open={this.state.open}>
-          <Link to="/home"><MenuItem>Home Page</MenuItem></Link>
-          <Link to="/game"><MenuItem>Game</MenuItem></Link>
+        <LeftNav style={{paddingTop: '80px'}} open={this.state.open}>
+          <Link to="/home">
+            <MenuItem primaryText="Home" leftIcon={
+              <FontIcon className="material-icons">home</FontIcon>
+            }/>
+          </Link>
+          <Link to="/cards">
+            <MenuItem primaryText="Cards" leftIcon={
+              <FontIcon className="material-icons">recent_actors</FontIcon>
+            }/>
+          </Link>
+          <Link to="/game">
+            <MenuItem primaryText="Game" leftIcon={
+              <FontIcon className="material-icons">videogame_asset</FontIcon>
+            }/>
+          </Link>
         </LeftNav>
       </div>
     );

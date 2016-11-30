@@ -58,11 +58,9 @@ class App extends Component {
     return (
       <div>
         <Header/>
-        <div style={{paddingLeft: 256, paddingTop: 0, margin: '48px 72px'}}>
-          <Paper style={{padding:20}}>
+        <div>
           {!this.props.children && <Home />}
           {this.props.children}
-          </Paper>
         </div>
       </div>
     );
@@ -83,9 +81,9 @@ App.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    version : state.version,
-    user : state.user,
-    layout : state.layout.present
+    version: state.version,
+    user: state.user,
+    layout: state.layout.present
   };
 }
 

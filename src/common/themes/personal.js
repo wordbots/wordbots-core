@@ -10,8 +10,8 @@ export default {
   zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
   palette: {
-    primary1Color: Colors.cyan500,
-    primary2Color: Colors.cyan700,
+    primary1Color: Colors.red500,
+    primary2Color: Colors.red700,
     primary3Color: Colors.lightBlack,
     accent1Color: Colors.pinkA200,
     accent2Color: Colors.grey100,
@@ -21,6 +21,6 @@ export default {
     canvasColor: Colors.white,
     borderColor: Colors.grey300,
     disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3),
-    pickerHeaderColor: Colors.cyan500,
+    pickerHeaderColor: Colors.red500,
   }
 };

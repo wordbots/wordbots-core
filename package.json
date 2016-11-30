@@ -1,9 +1,9 @@
 {
-  "name": "isomorphic-redux-app",
-  "version": "0.1.1",
+  "name": "wordbots",
+  "version": "0.0.1",
   "apiHost": "10.0.0.9",
   "apiPort": "3000",
-  "description": "An example of a isomorphic Redux application",
+  "description": "A card-and-board game that showcases card game semantic parsing",
   "scripts": {
     "slate": "rm -rf node_modules && npm install",
     "clean": "rm -rf dist",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caljrimmer/isomorphic-redux-app.git"
+    "url": "git+https://github.com/jacobnisnevich/wordbots-core.git"
   },
   "license": "MIT",
   "dependencies": {

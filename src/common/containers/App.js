@@ -11,11 +11,13 @@ import Home from '../components/Home'
 import Header from '../components/layout/Header'
 import Paper from 'material-ui/lib/paper';
 import cookie from 'react-cookie';
+import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import PersonalTheme from '../themes/personal';
 
 class App extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
+
     this.eventToggleSidebar = this.eventToggleSidebar.bind(this)
     this.eventUndo = this.eventUndo.bind(this)
     this.eventRedo = this.eventRedo.bind(this)
@@ -52,6 +54,12 @@ class App extends Component {
     this.props.redo();
   }
 
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getMuiTheme(PersonalTheme)
+    }
+  }
+
   render() {
     const { user, version } = this.props;
 
@@ -66,6 +74,10 @@ class App extends Component {
     );
   }
 }
+
+App.childContextTypes = {
+  muiTheme: React.PropTypes.object
+};
 
 App.propTypes = {
   getUserInfo: PropTypes.func,

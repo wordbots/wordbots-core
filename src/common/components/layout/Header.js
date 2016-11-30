@@ -7,9 +7,8 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import Helmet from 'react-helmet';
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import FontIcon from 'material-ui/lib/font-icon';
-import PersonalTheme from '../../themes/personal';
+
 import { bindActionCreators } from 'redux';
 
 import * as UserActions from '../../actions/user';
@@ -27,8 +26,9 @@ class Header extends Component {
   }
 
   handleToggle() {
-    console.log('blabla');
-    this.setState({open: !this.state.open}); 
+    this.setState({
+      open: !this.state.open
+    }); 
   }
 
   render() {
@@ -37,7 +37,7 @@ class Header extends Component {
     return (
       <div>
         <AppBar
-          zDepth={2}
+          zDepth={1}
           title={
             <Link style={{color: '#fff', fontFamily: 'Luckiest Guy', fontSize: 32}} to="/">WordBots</Link>
           }
@@ -66,10 +66,6 @@ class Header extends Component {
   }
 }
 
-Header.getChildContext = {
-  muiTheme: ThemeManager.getMuiTheme(PersonalTheme)
-};
-
 Header.propTypes = {
   logout: React.PropTypes.func,
   user: React.PropTypes.object
@@ -82,7 +78,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(UserActions,dispatch);
+  return bindActionCreators(UserActions, dispatch);
 }
 
 

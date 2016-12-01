@@ -7,10 +7,10 @@ class Board extends Component {
 
     let boardConfig = {
       width: 800, height: 800,
-      layout: { width: 10, height: 10, flat: true, spacing: 0 },
+      layout: { width: 6, height: 6, flat: true, spacing: 0 },
       origin: { x: 0, y: 0 },
       map: 'hexagon',
-      mapProps: [ 2 ]
+      mapProps: [ 4 ]
     }
     let grid = HexGrid.generate(boardConfig);
 

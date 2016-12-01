@@ -39,8 +39,18 @@ class Header extends Component {
         <AppBar
           zDepth={1}
           title={
-            <Link style={{color: '#fff', fontFamily: 'Luckiest Guy', fontSize: 32}} to="/">WordBots</Link>
+            <Link style={{
+              color: '#fff', fontFamily: 'Luckiest Guy', fontSize: 32
+            }} to="/">WordBots</Link>
           }
+          style={{
+            position: 'fixed',
+            top: 0
+          }}
+          iconElementLeft={
+            <IconButton>
+              <FontIcon className="material-icons">menu</FontIcon>
+            </IconButton>}
           onLeftIconButtonTouchTap={this.handleToggle}
         />
 

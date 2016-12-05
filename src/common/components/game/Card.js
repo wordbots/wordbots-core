@@ -18,7 +18,7 @@ class Card extends Component {
           height: 150,
           marginRight: 5,
           borderRadius: 5,
-          border: '1px solid #DDD',
+          border: '2px solid #333',
           backgroundColor: '#f44336',
           boxSizing: 'border-box',
           padding: 5
@@ -48,7 +48,7 @@ class Card extends Component {
           height: 150,
           marginRight: 5,
           borderRadius: 5,
-          border: '1px solid #DDD'
+          border: '2px solid #333'
         }}>
           <div style={{
             textAlign: 'center',

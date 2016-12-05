@@ -19,6 +19,7 @@ class Board extends Component {
       config: boardConfig 
     };
   }
+
   render() {
     let { grid, config } = this.state;
 

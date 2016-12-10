@@ -19,12 +19,16 @@ class Hand extends Component {
         display: 'flex',
         justifyContent: 'center'
       }}>
-        {this.props.cards.map(function(card) {
-          return <Card cardStats={card} opponent={self.props.opponent}/>
+        {this.props.cards.map(function (card, index) {
+          return <Card key={index} cardStats={card} opponent={self.props.opponent}/>
         })}
       </div>
     )
   }
+}
+
+Hand.propTypes = {
+  cards: React.PropTypes.array
 }
 
 export default Hand;

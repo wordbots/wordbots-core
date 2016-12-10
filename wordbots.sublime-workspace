@@ -4,6 +4,34 @@
 		"selected_items":
 		[
 			[
+				"card",
+				"cardSubtitle"
+			],
+			[
+				"Car",
+				"CardHeader"
+			],
+			[
+				"s",
+				"selectedCard"
+			],
+			[
+				"T",
+				"TEST_CARDS"
+			],
+			[
+				"chat",
+				"chatFieldValue"
+			],
+			[
+				"cha",
+				"chatFieldValue"
+			],
+			[
+				"hande",
+				"handleToggle"
+			],
+			[
 				"inlin",
 				"inline-block"
 			],
@@ -127,10 +155,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 263.0,
-		"last_filter": "instal",
+		"height": 400.0,
+		"last_filter": "ins",
 		"selected_items":
 		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
 			[
 				"instal",
 				"Package Control: Install Package"
@@ -172,46 +204,59 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
-	"expanded_folders":
-	[
-		"/D/Repositories/wordbots-core",
-		"/D/Repositories/wordbots-core/src",
-		"/D/Repositories/wordbots-core/src/client",
-		"/D/Repositories/wordbots-core/src/common",
-		"/D/Repositories/wordbots-core/src/common/components",
-		"/D/Repositories/wordbots-core/src/common/components/assets",
-		"/D/Repositories/wordbots-core/src/common/components/layout"
-	],
 	"file_history":
 	[
+		"/D/Repositories/wordbots-core/src/common/containers/App.js",
+		"/D/Repositories/wordbots-core/src/common/reducers/user.js",
+		"/D/Repositories/wordbots-core/styles/index.css",
+		"/D/Repositories/wordbots-core/src/common/routes.js",
+		"/D/Repositories/wordbots-core/src/common/themes/personal.js",
+		"/D/Repositories/wordbots-core/src/server/server.js",
+		"/D/Repositories/wordbots-core/src/common/components/game/Chat.js",
+		"/D/Repositories/wordbots-core/package.json",
+		"/D/Repositories/wordbots-core/npm-debug.log",
+		"/D/Repositories/wordbots-core/src/client/index.js",
+		"/D/Repositories/wordbots-core/src/common/containers/Cards.js",
+		"/D/Repositories/wordbots-core/src/server/index.js",
+		"/D/Repositories/wordbots-core/src/common/components/game/HexGrid.js",
+		"/D/Repositories/wordbots-core/README.md",
+		"/D/Repositories/wordbots-core/src/common/reducers/index.js",
+		"/D/Repositories/wordbots-core/src/common/store/configureStore.js",
+		"/D/Repositories/wordbots-core/src/common/containers/Game.js",
+		"/D/Repositories/wordbots-core/src/common/components/Home.js",
+		"/D/Repositories/wordbots-core/src/common/components/Todo.js",
+		"/D/Repositories/wordbots-core/src/common/components/Login.js",
+		"/D/Repositories/wordbots-core/src/common/components/Reddit.js",
+		"/D/Repositories/wordbots-core/src/common/components/Counter.js",
+		"/D/Repositories/wordbots-core/src/common/components/About.js",
+		"/D/Repositories/wordbots-core/src/common/components/404.js",
+		"/D/Repositories/wordbots-core/src/common/components/todo/Footer.js",
+		"/D/Repositories/wordbots-core/src/common/components/todo/Header.js",
+		"/D/Repositories/wordbots-core/src/common/components/todo/Item.js",
+		"/D/Repositories/wordbots-core/src/common/components/todo/Section.js",
+		"/D/Repositories/wordbots-core/src/common/components/todo/TextInput.js",
+		"/D/Repositories/wordbots-core/src/common/components/todo/Todo.js",
+		"/D/Repositories/wordbots-core/src/common/components/reddit/Posts.js",
+		"/D/Repositories/wordbots-core/src/common/components/reddit/Picker.js",
+		"/D/Repositories/wordbots-core/src/common/components/personal/Dashboard.js",
+		"/D/Repositories/wordbots-core/src/common/components/layout/Sidebar.js",
+		"/D/Repositories/wordbots-core/src/common/components/layout/Header.js",
 		"/D/Repositories/wordbots-core/src/common/components/assets/TextInput.js",
 		"/D/Repositories/wordbots-core/src/common/api/promiseMiddleware.js",
 		"/D/Repositories/wordbots-core/src/common/api/fetchComponentDataBeforeRender.js",
 		"/D/Repositories/wordbots-core/src/common/actions/layout.js",
-		"/D/Repositories/wordbots-core/src/client/index.js",
-		"/D/Repositories/wordbots-core/package.json",
-		"/D/Repositories/wordbots-core/src/common/components/layout/Header.js",
-		"/D/Repositories/wordbots-core/src/common/components/layout/Sidebar.js",
-		"/D/Repositories/wordbots-core/src/common/containers/App.js",
-		"/D/Repositories/wordbots-core/src/server/server.js",
-		"/D/Repositories/wordbots-core/src/common/store/configureStore.js",
 		"/D/Repositories/wordbots-core/.eslintrc",
-		"/D/Repositories/wordbots-core/src/common/routes.js",
 		"/C/Users/Jacob/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
 		"/C/Users/Jacob/AppData/Roaming/Sublime Text 3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
 		"/D/Repositories/wordbots-core/src/common/reducers/version.js",
-		"/D/Repositories/wordbots-core/src/common/themes/personal.js",
 		"/D/Repositories/wordbots-core/src/common/api/user.js",
-		"/D/Repositories/wordbots-core/styles/index.css",
 		"/D/Repositories/wordbots-core/webpack.config.js",
-		"/D/Repositories/wordbots-core/src/common/components/personal/Dashboard.js",
 		"/D/Repositories/wordbots-core/.babelrc",
 		"/D/Repositories/wordbots-core/src/client.js",
 		"/D/Repositories/wordbots-core/www/index.html",
 		"/D/Repositories/wordbots-core/src/server.js",
 		"/D/Repositories/wordbots-core/src/webpack.config.js",
 		"/D/Repositories/wordbots-core/.gitignore",
-		"/D/Repositories/wordbots-core/README.md",
 		"/D/Repositories/wordbots-core/LICENSE",
 		"/D/Repositories/wordbots-core/app.json",
 		"/D/Repositories/wordbots-core/bin/server.js",
@@ -288,27 +333,7 @@
 		"/C/Users/Jacob/Pictures/EDP Icons/PNG/create_strip_old.rb",
 		"/C/Users/Jacob/Documents/ExamDiff Pro/Blogs/Fast Byte by Byte/fast_byte_by_byte.txt",
 		"/C/DevKit/config.yml",
-		"/C/Users/Jacob/Documents/test.m3u",
-		"/D/Repositories/iowa-impact/cities-to-counties.rb",
-		"/D/Repositories/iowa-impact/precinct-data-to-csv.rb",
-		"/D/Repositories/iowa-impact/iowa-cities.csv",
-		"/D/Repositories/iowa-impact/get-iowa-cities.rb",
-		"/C/Program Files (x86)/sbt/bin/sbt.bat",
-		"/C/Users/Jacob/Documents/Game Parser Test/faeria_cards.json",
-		"/C/Users/Jacob/Documents/Game Parser Test/faeria_lexicon.txt",
-		"/C/Users/Jacob/Downloads/faeria_cards.csv",
-		"/C/Program Files (x86)/sbt/bin/sbt",
-		"/D/Repositories/acaspot/requirements.txt",
-		"/C/Users/Jacob/Documents/ExamDiff Pro/updated_ui_blog.txt",
-		"/C/Users/Jacob/Documents/ExamDiff Pro/Blogs/output_logging.txt",
-		"/D/Repositories/election-game/colors.txt",
-		"/D/Repositories/election-game/scripts/actions_v1.csv",
-		"/D/Repositories/find-empty-directories/find_empty_dirs.cpp",
-		"/D/Repositories/election-game/scripts/actions_v2.csv",
-		"/D/Repositories/find-empty-directories/blah.txt",
-		"/D/Repositories/canopener/styles/styles.android.js",
-		"/C/Users/Jacob/AppData/Roaming/Sublime Text 3/Packages/User/JavaScript (Babel).sublime-settings",
-		"/C/Users/Jacob/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings"
+		"/C/Users/Jacob/Documents/test.m3u"
 	],
 	"find":
 	{
@@ -319,6 +344,9 @@
 		"height": 98.0,
 		"where_history":
 		[
+			"-node_modules/*",
+			"",
+			"-node_modules/*",
 			""
 		]
 	},
@@ -327,6 +355,16 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Car",
+			"themes/personal",
+			"cyan",
+			".present",
+			".open",
+			"open",
+			"../containers/DevTools",
+			"devtools",
+			"dev",
+			"inser info",
 			"\"",
 			"margin",
 			"count",

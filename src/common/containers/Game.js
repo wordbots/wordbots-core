@@ -6,7 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import Helmet from 'react-helmet';
 
-const TEST_CARDS = [{
+let TEST_CARDS = [{
   name: 'Tank Bot',
   cost: 3,
   type: 0,

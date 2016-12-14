@@ -8,7 +8,7 @@ import GridGenerator from './GridGenerator'
 
 class HexGrid extends React.Component {
   render() {
-    const { selectedHexes } = this.props;
+    const { blueHexes, redHexes } = this.props;
 
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -16,8 +16,10 @@ class HexGrid extends React.Component {
           this.props.hexagons.map((hex, index) => {
             let fill = null;
 
-            if (selectedHexes.includes(hex)) {
+            if (blueHexes.includes(hex)) {
               fill = 'blue';
+            } else if (redHexes.includes(hex)) {
+              fill = 'red';
             }
 
             return (
@@ -51,7 +53,8 @@ HexGrid.propTypes = {
   layout: object.isRequired,
   hexagons: array.isRequired,
   path: object,
-  selectedHexes: array
+  blueHexes: array,
+  redHexes: array
 };
 
 HexGrid.defaultProps = {

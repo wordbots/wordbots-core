@@ -41,10 +41,6 @@ class HexShape extends React.Component {
       <g className="shape-group" transform={this.translate()} draggable="true"
         onMouseEnter={e => actions.onMouseEnter(this.props.hex, e)}
         onMouseLeave={e => actions.onMouseLeave(this.props.hex, e)}
-        onDragStart={e => actions.onDragStart(this.props.hex, e)}
-        onDragEnd={e => actions.onDragEnd(this.props.hex, e)}
-        onDragOver={e => actions.onDragOver(this.props.hex, e)}
-        onDrop={e => actions.onDrop(this.props.hex, e)}
         onClick={e => actions.onClick(this.props.hex, e)}
         >
         <HexPattern hex={hex} fill={this.props.fill} />

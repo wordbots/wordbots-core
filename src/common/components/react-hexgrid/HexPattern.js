@@ -10,6 +10,8 @@ class HexPattern extends React.Component {
 
     if (this.props.fill === 'blue') {
       image = require('./blue_tile.png');
+    } else if (this.props.fill === 'red') {
+      image = require('./red_tile.png');
     } else if (hex.props == {} || typeof (hex.props.image) === 'undefined') {
       return null;
     } 

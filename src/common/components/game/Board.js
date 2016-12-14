@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HexGrid } from 'react-hexgrid';
+import HexGrid from '../react-hexgrid/HexGrid';
 
 class Board extends Component {
   constructor(props) {
@@ -16,16 +16,37 @@ class Board extends Component {
 
     this.state = {
       grid, 
-      config: boardConfig 
+      config: boardConfig,
+      selectedHexes: []
     };
+  }
+
+  onHexClick(hex, event) {
+    this.setState({
+      grid: this.state.grid,
+      config: this.state.config,
+      selectedHexes: [...this.state.selectedHexes, hex]
+    });
   }
 
   render() {
     let { grid, config } = this.state;
 
+    const actions = {
+      onClick: (h, e) => this.onHexClick(h, e),
+      onMouseEnter: (h, e) => {},
+      onMouseLeave: (h, e) => {}
+    };
+
     return (
       <div>
-        <HexGrid width={config.width} height={config.height} hexagons={grid.hexagons} layout={grid.layout} />
+        <HexGrid
+          selectedHexes={this.state.selectedHexes}
+          actions={actions}
+          width={config.width} 
+          height={config.height} 
+          hexagons={grid.hexagons} 
+          layout={grid.layout} />
       </div>
     );
   }

@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import Helmet from 'react-helmet';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import Hand from '../components/game/Hand';
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
-import Helmet from 'react-helmet';
 
 let TEST_CARDS = [{
   name: 'Tank Bot',

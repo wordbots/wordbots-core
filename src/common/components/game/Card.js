@@ -44,7 +44,7 @@ class Card extends Component {
       return (
         <div>
           <Paper 
-            zDepth="2" 
+            zDepth={2} 
             style={{
               width: 140,
               height: 200,

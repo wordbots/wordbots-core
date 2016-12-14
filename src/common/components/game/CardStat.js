@@ -33,7 +33,8 @@ class CardStat extends Component {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: backgroundColor
+            backgroundColor: backgroundColor,
+            color: '#fff'
         }}>
           <div>{this.props.value}</div>
         </Paper>

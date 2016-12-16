@@ -52,7 +52,9 @@ class Card extends Component {
               borderRadius: 5,
               backgroundColor: '#f44336',
               boxSizing: 'border-box',
-              padding: 5
+              padding: 5,
+              userSelect: 'none',
+              cursor: 'pointer'
           }}>
             <div style={{
               writingMode: 'vertical-lr',
@@ -66,7 +68,7 @@ class Card extends Component {
             }}>
               <div style={{
                 color: '#fff',
-                fontSize: 20,
+                fontSize: 28,
                 fontFamily: 'Luckiest Guy'
               }}>WordBots</div>
             </div>
@@ -86,7 +88,9 @@ class Card extends Component {
               marginRight: 10,
               borderRadius: 5,
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              userSelect: 'none',
+              cursor: 'pointer'
           }}>
             <CardHeader 
               style={{padding: 10, height: 'auto'}}

@@ -53,7 +53,7 @@ class Board extends Component {
       existingHexes = this.state.blueHexes;
     }
 
-    for (let i = 0; i <= tilesOut; i++) {      
+    for (let i = 1; i <= tilesOut; i++) {      
       newHexes.push(new Hex(hex.q, hex.r - i, hex.s + i));
       newHexes.push(new Hex(hex.q, hex.r + i, hex.s - i));
       newHexes.push(new Hex(hex.q - i, hex.r + i, hex.s));

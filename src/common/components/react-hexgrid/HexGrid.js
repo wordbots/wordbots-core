@@ -16,9 +16,9 @@ class HexGrid extends React.Component {
           this.props.hexagons.map((hex, index) => {
             let fill = null;
 
-            if (blueHexes.includes(hex)) {
+            if (hex.isInArray(blueHexes)) {
               fill = 'blue';
-            } else if (redHexes.includes(hex)) {
+            } else if (hex.isInArray(redHexes)) {
               fill = 'red';
             }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
+import HexUtils from '../react-hexgrid/HexUtils';
 
 class Board extends Component {
   constructor(props) {
@@ -18,59 +19,51 @@ class Board extends Component {
     this.state = {
       grid, 
       config: boardConfig,
-      blueHexes: [],
-      redHexes: []
+      hexColors: {},
+      hexPieces: {
+        '0,-4,4': 'char',
+        '-1,-3,4': 'char_weapon',
+        '0,-3,3': 'char_weapon',
+        '1,-4,3': 'char_weapon',
+        '0,4,-4': 'char_weapon'
+      }
     };
   }
 
   setHexColor(hex, color) {
-    let newHexes = [];
-    let existingHexes = [];
+    let existingHexes = this.state.hexColors;
+    let newHexes = Object.assign({}, existingHexes);
 
-    if (color === 'red') {
-      existingHexes = this.state.redHexes;
-    } else if (color === 'blue') {
-      existingHexes = this.state.blueHexes;
-    }
-
-    newHexes = [...existingHexes, hex];
+    newHexes[HexUtils.getID(hex)] = color;
 
     this.setState({
       grid: this.state.grid,
       config: this.state.config,
-      blueHexes: color === 'blue' ? newHexes : this.state.blueHexes,
-      redHexes: color === 'red' ? newHexes : this.state.redHexes
+      hexColors: newHexes,
+      hexPieces: this.state.hexPieces
     });
   }
 
   colorSurroundingHexes(hex, color, tilesOut) {
-    let newHexes = [];
-    let existingHexes = [];
-
-    if (color === 'red') {
-      existingHexes = this.state.redHexes;
-    } else if (color === 'blue') {
-      existingHexes = this.state.blueHexes;
-    }
+    let existingHexes = this.state.hexColors;
+    let newHexes = Object.assign({}, existingHexes);
 
     for (let i = 1; i <= tilesOut; i++) {      
-      newHexes.push(new Hex(hex.q, hex.r - i, hex.s + i));
-      newHexes.push(new Hex(hex.q, hex.r + i, hex.s - i));
-      newHexes.push(new Hex(hex.q - i, hex.r + i, hex.s));
-      newHexes.push(new Hex(hex.q + i, hex.r - i, hex.s));
-      newHexes.push(new Hex(hex.q - i, hex.r, hex.s + i));
-      newHexes.push(new Hex(hex.q + i, hex.r, hex.s - i));
+      newHexes[HexUtils.getID(new Hex(hex.q, hex.r - i, hex.s + i))] = color;
+      newHexes[HexUtils.getID(new Hex(hex.q, hex.r + i, hex.s - i))] = color;
+      newHexes[HexUtils.getID(new Hex(hex.q - i, hex.r + i, hex.s))] = color;
+      newHexes[HexUtils.getID(new Hex(hex.q + i, hex.r - i, hex.s))] = color;
+      newHexes[HexUtils.getID(new Hex(hex.q - i, hex.r, hex.s + i))] = color;
+      newHexes[HexUtils.getID(new Hex(hex.q + i, hex.r, hex.s - i))] = color;
     }
-
-    newHexes = newHexes.concat(existingHexes);
 
     console.log(newHexes);
 
     this.setState({
       grid: this.state.grid,
       config: this.state.config,
-      blueHexes: color === 'blue' ? newHexes : this.state.blueHexes,
-      redHexes: color === 'red' ? newHexes : this.state.redHexes
+      hexColors: newHexes,
+      hexPieces: this.state.hexPieces
     })
   }
 
@@ -96,8 +89,8 @@ class Board extends Component {
     return (
       <div>
         <HexGrid
-          blueHexes={this.state.blueHexes}
-          redHexes={this.state.redHexes}
+          hexColors={this.state.hexColors}
+          hexPieces={this.state.hexPieces}
           actions={actions}
           width={config.width} 
           height={config.height} 

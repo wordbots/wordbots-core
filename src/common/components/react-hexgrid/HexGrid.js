@@ -1,5 +1,6 @@
 import React from 'react'
 import Hex from './Hex'
+import HexUtils from './HexUtils'
 const { number, object, bool, string, array } = React.PropTypes
 import HexShape from './HexShape'
 import Path from './Path'
@@ -8,19 +9,14 @@ import GridGenerator from './GridGenerator'
 
 class HexGrid extends React.Component {
   render() {
-    const { blueHexes, redHexes } = this.props;
+    const { hexColors, hexPieces } = this.props;
 
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
         {
           this.props.hexagons.map((hex, index) => {
-            let fill = null;
-
-            if (hex.isInArray(blueHexes)) {
-              fill = 'blue';
-            } else if (hex.isInArray(redHexes)) {
-              fill = 'red';
-            }
+            let fill = hexColors[HexUtils.getID(hex)];
+            let piece = hexPieces[HexUtils.getID(hex)];
 
             return (
               <HexShape 
@@ -28,7 +24,8 @@ class HexGrid extends React.Component {
                 hex={hex} 
                 layout={this.props.layout} 
                 actions={this.props.actions} 
-                fill={fill} />
+                fill={fill}
+                piece={piece} />
             );
           })
         }
@@ -53,8 +50,8 @@ HexGrid.propTypes = {
   layout: object.isRequired,
   hexagons: array.isRequired,
   path: object,
-  blueHexes: array,
-  redHexes: array
+  hexColors: object,
+  hexPieces: object
 };
 
 HexGrid.defaultProps = {

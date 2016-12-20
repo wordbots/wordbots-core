@@ -1,11 +1,31 @@
 import * as gameActions from '../actions/game';
 
-export default function game(state = {
-  selectedCard: null
-}, action) {
+var defaultState = {
+  players: {
+    red: {
+      health: 20,
+      hand: [],
+      selectedCard: null
+      deck: [],
+      robotsOnBoard: {}
+    },
+    blue: {
+      health: 20,
+      hand: [],
+      selectedCard: null
+      deck: [],
+      robotsOnBoard: {}
+    }
+  },
+  currentTurn: 'red'
+}
+
+export default function game(state = defaultState, actiorn) {
   switch (action.type) {
     case gameActions.SET_SELECTED_CARD:
-      return {...state, selectedCard: action.selectedCard};
+      var newState = Object.assign({}, state);
+      newState.players.red.selectedCard = action.selectedCard;
+      return newState;
     default:
       return state;
   }

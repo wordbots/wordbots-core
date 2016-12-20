@@ -9,7 +9,7 @@ import rootReducer from '../reducers';
 
 const middlewareBuilder = () => {
   let middleware = {};
-  let universalMiddleware = [thunk,promiseMiddleware];
+  let universalMiddleware = [thunk, promiseMiddleware];
   let allComposeElements = [];
   
   if (process.browser) {
@@ -22,7 +22,7 @@ const middlewareBuilder = () => {
         })
       ]
     } else {
-      middleware = applyMiddleware(...universalMiddleware,createLogger());
+      middleware = applyMiddleware(...universalMiddleware, createLogger());
       allComposeElements = [
         middleware,
         reduxReactRouter({

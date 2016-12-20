@@ -7,10 +7,10 @@ import layout from './layout';
 import version from './version';
 
 const rootReducer = combineReducers({
-  user : user,
-  version : version,
-  layout : undoable(layout),
-  router : routerStateReducer
+  user: user,
+  version: version,
+  layout: undoable(layout),
+  router: routerStateReducer
 });
 
 export default rootReducer;

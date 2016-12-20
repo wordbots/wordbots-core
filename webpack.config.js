@@ -16,8 +16,7 @@ var webpackConfig = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-
-  webpackConfig = merge(webpackConfig,{
+  webpackConfig = merge(webpackConfig, {
     devtool: 'source-map',
     entry : [
       './src/client/index.js'
@@ -43,10 +42,8 @@ if (process.env.NODE_ENV === 'production') {
       new webpack.optimize.UglifyJsPlugin({minimize: true})
     ]  
   });
-
-}else{
-
-  webpackConfig = merge(webpackConfig,{
+} else {
+  webpackConfig = merge(webpackConfig, {
     devtool: 'inline-source-map',
     module: {
       loaders: [{
@@ -57,7 +54,9 @@ if (process.env.NODE_ENV === 'production') {
           env: {
             development: {
               plugins: [
-                'react-transform'
+                'react-transform',
+                'transform-class-properties', 
+                'transform-decorators-legacy'
               ],
               extra: {
                 'react-transform': {
@@ -73,7 +72,7 @@ if (process.env.NODE_ENV === 'production') {
                 ]}
               }
             }
-          },//
+          },
         query: {
 //          optional: ['runtime'],
           presets: ['es2015', 'stage-2', 'react'],
@@ -82,7 +81,6 @@ if (process.env.NODE_ENV === 'production') {
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
       { test: /\.json$/, loader: 'json'},
-//      { test: /\.css$/, loader: 'style-loader!css-loader'}
       { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap') }
 
     ]},

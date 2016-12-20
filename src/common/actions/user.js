@@ -33,7 +33,6 @@ export function getUserInfo(user) {
     };
 }
 
-
 export function auth(username, password) {
     console.log('From function auth');
     return {

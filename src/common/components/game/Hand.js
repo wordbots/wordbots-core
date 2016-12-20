@@ -6,8 +6,7 @@ class Hand extends Component {
     super(props);
 
     this.state = {
-      selectedCard: null,
-      cards: []
+      selectedCard: null
     }
   }
 

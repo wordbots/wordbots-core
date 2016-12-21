@@ -69,7 +69,7 @@ class HexShape extends React.Component {
         onMouseLeave={e => actions.onMouseLeave(this.props.hex, e)}
         onClick={e => actions.onClick(this.props.hex, e)}
         >
-        <HexPattern hex={hex} fill={this.props.fill} piece={this.props.piece} />
+        <HexPattern hex={hex} fill={this.props.fill} piece={this.props.piece} images={this.props.images}/>
         <polygon points={points} style={{...styles}} />
         <polygon points={piecePoints} style={{...pieceStyles}} />
         <HexPointers hex={hex} points={points} />
@@ -83,7 +83,8 @@ HexShape.propTypes = {
   layout: object.isRequired,
   actions: object.isRequired,
   fill: string,
-  piece: string
+  piece: string,
+  images: object
 };
 
 export default HexShape;

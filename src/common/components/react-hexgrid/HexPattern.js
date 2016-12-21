@@ -3,21 +3,19 @@ const { object, string, bool } = React.PropTypes
 import HexUtils from './HexUtils';
 
 class HexPattern extends React.Component {
-
   render() {
     let hex = this.props.hex;
+    let images = this.props.images;
     let fillImage = '';
     let pieceImage = '';
     let id = HexUtils.getID(hex);
 
-    if (this.props.fill === 'blue') {
-      fillImage = require('./blue_tile.png');
-    } else if (this.props.fill === 'red') {
-      fillImage = require('./red_tile.png');
+    if (this.props.fill) {
+      fillImage = images[this.props.fill + '_tile']
     }
 
     if (this.props.piece) {
-      pieceImage = require('./' + this.props.piece + '.png');
+      pieceImage = images[this.props.piece]
     }
 
     return (
@@ -38,7 +36,8 @@ class HexPattern extends React.Component {
 HexPattern.propTypes = {
   hex: object.isRequired,
   fill: string,
-  piece: string
+  piece: string,
+  images: object
 };
 
 export default HexPattern;

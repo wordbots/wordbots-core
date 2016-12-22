@@ -8,8 +8,8 @@ class Board extends Component {
     super(props);
 
     let boardConfig = {
-      width: 800, height: 800,
-      layout: { width: 6, height: 6, flat: true, spacing: 0 },
+      width: 600, height: 600,
+      layout: { width: 6, height: 6, flat: false, spacing: 0 },
       origin: { x: 0, y: 0 },
       map: 'hexagon',
       mapProps: [ 4 ]

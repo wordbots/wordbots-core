@@ -55,8 +55,8 @@ if (process.env.NODE_ENV === 'production') {
             development: {
               plugins: [
                 'react-transform',
-                'transform-class-properties', 
-                'transform-decorators-legacy'
+                'transform-decorators-legacy',
+                'transform-class-properties'
               ],
               extra: {
                 'react-transform': {
@@ -76,7 +76,7 @@ if (process.env.NODE_ENV === 'production') {
         query: {
 //          optional: ['runtime'],
           presets: ['es2015', 'stage-2', 'react'],
-
+          plugins: ['transform-decorators-legacy', 'transform-class-properties' ]
         }
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},

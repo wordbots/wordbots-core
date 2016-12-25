@@ -3,7 +3,7 @@ import Divider from 'material-ui/lib/divider';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
-import CardStat from './CardStat'
+import CardStat from './CardStat';
 
 class Card extends Component {
   constructor(props) {
@@ -77,7 +77,7 @@ class Card extends Component {
       )
     } else {
       return (
-        <div>
+        <div onClick={this.props.onCardClick}>
           <Paper 
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
@@ -123,7 +123,8 @@ class Card extends Component {
 
 Card.propTypes = {
   cardStats: React.PropTypes.object,
-  opponent: React.PropTypes.bool
+  opponent: React.PropTypes.bool,
+  onCardClick: React.PropTypes.func
 }
 
 export default Card;

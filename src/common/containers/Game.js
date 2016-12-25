@@ -6,6 +6,9 @@ import Hand from '../components/game/Hand';
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 
+import { connect } from 'react-redux';
+import * as gameActions from '../actions/game';
+
 let TEST_CARDS = [{
   name: 'Tank Bot',
   cost: 3,
@@ -23,6 +26,20 @@ let TEST_CARDS = [{
   attack: 1,
   abilities: []
 }];
+
+function mapStateToProps(state) {
+  return {
+    selectedCard: state.game.players.red.selectedCard
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onSelect: (index) => {
+      dispatch(gameActions.setSelectedCard(index))
+    }
+  }
+}
 
 class Game extends Component {
   constructor(props) {
@@ -43,7 +60,12 @@ class Game extends Component {
           <Divider style={{marginTop: 10}}/>
           <Board />
           <Divider style={{marginBottom: 10}}/>
-          <Hand cards={this.state.yourCards}/>
+          <Hand 
+            onSelect={(index) => {
+              this.props.onSelect(index);
+            }}
+            selectedCard={this.props.selectedCard} 
+            cards={this.state.yourCards} />
         </Paper>
         <Chat />
       </div>
@@ -51,4 +73,9 @@ class Game extends Component {
   }
 }
 
-export default Game;
+Game.propTypes = {
+  selectedCard: React.PropTypes.number,
+  onSelect: React.PropTypes.func
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

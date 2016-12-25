@@ -20,11 +20,11 @@ let defaultState = {
   currentTurn: 'red'
 }
 
-export default function game(state = defaultState, actiorn) {
+export default function game(state = defaultState, action) {
   switch (action.type) {
     case gameActions.SET_SELECTED_CARD:
       let newState = Object.assign({}, state);
-      newState.players.red.selectedCard = action.selectedCard;
+      newState.players.red.selectedCard = action.payload.selectedCard;
       return newState;
     default:
       return state;

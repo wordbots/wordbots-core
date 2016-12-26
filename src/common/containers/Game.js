@@ -9,27 +9,14 @@ import Divider from 'material-ui/lib/divider';
 import { connect } from 'react-redux';
 import * as gameActions from '../actions/game';
 
-let TEST_CARDS = [{
-  name: 'Tank Bot',
-  cost: 3,
-  type: 0,
-  health: 4,
-  speed: 1,
-  attack: 2,
-  abilities: []
-}, {
-  name: 'Attack Bot',
-  cost: 1,
-  type: 0,
-  health: 1,
-  speed: 2,
-  attack: 1,
-  abilities: []
-}];
-
 function mapStateToProps(state) {
   return {
-    selectedCard: state.game.players.red.selectedCard
+    selectedCard: state.game.players.green.selectedCard,
+    yourHand: state.game.players.green.hand,
+    opponentsHand: state.game.players.red.hand,
+    yourPieces: state.game.players.green.robotsOnBoard,
+    opponentsPieces: state.game.players.red.robotsOnBoard,
+    yourTurn: state.game.currentTurn === 'green'
   };
 }
 
@@ -44,11 +31,6 @@ function mapDispatchToProps(dispatch) {
 class Game extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      yourCards: TEST_CARDS,
-      opponentsCards: TEST_CARDS
-    }
   }
 
   render() {
@@ -56,16 +38,19 @@ class Game extends Component {
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20}}>
-          <Hand cards={this.state.opponentsCards} opponent/>
+          <Hand cards={this.props.opponentsHand} opponent/>
           <Divider style={{marginTop: 10}}/>
-          <Board />
+          <Board 
+            yourPieces={this.props.yourPieces} 
+            opponentsPieces={this.props.opponentsPieces}
+            yourTurn={this.props.yourTurn} />
           <Divider style={{marginBottom: 10}}/>
           <Hand 
             onSelect={(index) => {
               this.props.onSelect(index);
             }}
             selectedCard={this.props.selectedCard} 
-            cards={this.state.yourCards} />
+            cards={this.props.yourHand} />
         </Paper>
         <Chat />
       </div>
@@ -75,7 +60,12 @@ class Game extends Component {
 
 Game.propTypes = {
   selectedCard: React.PropTypes.number,
-  onSelect: React.PropTypes.func
+  onSelect: React.PropTypes.func,
+  opponentsHand: React.PropTypes.array,
+  yourHand: React.PropTypes.array,
+  yourPieces: React.PropTypes.object,
+  opponentsPieces: React.PropTypes.object,
+  yourTurn: React.PropTypes.bool
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

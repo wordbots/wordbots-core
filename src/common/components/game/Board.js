@@ -16,17 +16,26 @@ class Board extends Component {
     }
     let grid = HexGrid.generate(boardConfig);
 
+    let hexColors = {};
+
+    Object.keys(this.props.yourPieces).forEach((yourPieceHex) => {
+      let yourPiece = this.props.yourPieces[yourPieceHex]
+
+      if (this.props.yourTurn && yourPiece.hasMoved) {
+        hexColors[yourPieceHex] = 'yellow';
+      } else {
+        hexColors[yourPieceHex] = 'green';
+      }
+    });
+
+    Object.keys(this.props.opponentsPieces).forEach((opponentsPieceHex) => {
+      hexColors[opponentsPieceHex] = 'red';
+    });
+
     this.state = {
       grid, 
       config: boardConfig,
-      hexColors: {},
-      hexPieces: {
-        '0,-4,4': 'char',
-        '-1,-3,4': 'char_weapon',
-        '0,-3,3': 'char_weapon',
-        '1,-4,3': 'char_weapon',
-        '0,4,-4': 'char_weapon'
-      }
+      hexColors: hexColors,
     };
   }
 
@@ -39,8 +48,7 @@ class Board extends Component {
     this.setState({
       grid: this.state.grid,
       config: this.state.config,
-      hexColors: newHexes,
-      hexPieces: this.state.hexPieces
+      hexColors: newHexes
     });
   }
 
@@ -62,18 +70,11 @@ class Board extends Component {
     this.setState({
       grid: this.state.grid,
       config: this.state.config,
-      hexColors: newHexes,
-      hexPieces: this.state.hexPieces
+      hexColors: newHexes
     })
   }
 
   onHexClick(hex, event) {
-    // if (Math.floor(Math.random() * 2)) {
-    //   this.setHexColor(hex, 'red');
-    // } else {
-    //   this.setHexColor(hex, 'blue');
-    // }
-
     this.colorSurroundingHexes(hex, 'blue', 1);
   }
 
@@ -90,7 +91,8 @@ class Board extends Component {
       <div>
         <HexGrid
           hexColors={this.state.hexColors}
-          hexPieces={this.state.hexPieces}
+          yourPieces={this.props.yourPieces}
+          opponentsPieces={this.props.opponentsPieces}
           actions={actions}
           width={config.width} 
           height={config.height} 
@@ -99,6 +101,12 @@ class Board extends Component {
       </div>
     );
   }
+}
+
+Board.propTypes = {
+  yourPieces: React.PropTypes.object,
+  opponentsPieces: React.PropTypes.object,
+  yourTurn: React.PropTypes.bool
 }
 
 export default Board;

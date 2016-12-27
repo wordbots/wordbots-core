@@ -84,6 +84,14 @@ class HexUtils {
   static getID(hex) {
     return `${hex.q},${hex.r},${hex.s}`;
   }
+
+  static IDtoHex(hexId) {
+    let coords = hexId.split(',').map((coord) => {
+      return parseInt(coord, 10);
+    });
+
+    return new Hex(...coords);
+  }
 }
 
 export default HexUtils;

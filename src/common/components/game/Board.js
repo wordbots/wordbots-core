@@ -32,6 +32,14 @@ class Board extends Component {
       hexColors[opponentsPieceHex] = 'red';
     });
 
+    if (this.props.selectedTile) {
+      let yourPiece = this.props.yourPieces[this.props.selectedTile];
+
+      if (yourPiece) {
+        hexColors = this.colorSurroundingHexes(HexUtils.IDtoHex(this.props.selectedTile), hexColors, 'blue', 1);
+      }
+    }
+
     this.state = {
       grid, 
       config: boardConfig,
@@ -52,8 +60,8 @@ class Board extends Component {
     });
   }
 
-  colorSurroundingHexes(hex, color, tilesOut) {
-    let existingHexes = this.state.hexColors;
+  colorSurroundingHexes(hex, hexColors, color, tilesOut) {
+    let existingHexes = hexColors;
     let newHexes = Object.assign({}, existingHexes);
 
     for (let i = 1; i <= tilesOut; i++) {      
@@ -65,17 +73,11 @@ class Board extends Component {
       newHexes[HexUtils.getID(new Hex(hex.q + i, hex.r, hex.s - i))] = color;
     }
 
-    console.log(newHexes);
-
-    this.setState({
-      grid: this.state.grid,
-      config: this.state.config,
-      hexColors: newHexes
-    })
+    return newHexes;
   }
 
   onHexClick(hex, event) {
-    this.colorSurroundingHexes(hex, 'blue', 1);
+    this.props.onSelectTile(HexUtils.getID(hex));
   }
 
   render() {
@@ -106,7 +108,9 @@ class Board extends Component {
 Board.propTypes = {
   yourPieces: React.PropTypes.object,
   opponentsPieces: React.PropTypes.object,
-  yourTurn: React.PropTypes.bool
+  yourTurn: React.PropTypes.bool,
+  onSelectTile: React.PropTypes.func,
+  selectedTile: React.PropTypes.string
 }
 
 export default Board;

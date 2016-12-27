@@ -12,6 +12,7 @@ import * as gameActions from '../actions/game';
 function mapStateToProps(state) {
   return {
     selectedCard: state.game.players.green.selectedCard,
+    selectedTile: state.game.selectedTile,
     yourHand: state.game.players.green.hand,
     opponentsHand: state.game.players.red.hand,
     yourPieces: state.game.players.green.robotsOnBoard,
@@ -22,8 +23,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSelect: (index) => {
-      dispatch(gameActions.setSelectedCard(index))
+    onSelectCard: (index) => {
+      dispatch(gameActions.setSelectedCard(index));
+    },
+    onSelectTile: (hexId) => {
+      dispatch(gameActions.setSelectedTile(hexId));
     }
   }
 }
@@ -41,13 +45,17 @@ class Game extends Component {
           <Hand cards={this.props.opponentsHand} opponent/>
           <Divider style={{marginTop: 10}}/>
           <Board 
+            onSelectTile={(hexId) => {
+              this.props.onSelectTile(hexId);
+            }}
+            selectedTile={this.props.selectedTile}
             yourPieces={this.props.yourPieces} 
             opponentsPieces={this.props.opponentsPieces}
             yourTurn={this.props.yourTurn} />
           <Divider style={{marginBottom: 10}}/>
           <Hand 
-            onSelect={(index) => {
-              this.props.onSelect(index);
+            onSelectCard={(index) => {
+              this.props.onSelectCard(index);
             }}
             selectedCard={this.props.selectedCard} 
             cards={this.props.yourHand} />
@@ -60,12 +68,14 @@ class Game extends Component {
 
 Game.propTypes = {
   selectedCard: React.PropTypes.number,
-  onSelect: React.PropTypes.func,
+  onSelectCard: React.PropTypes.func,
+  onSelectTile: React.PropTypes.func,
   opponentsHand: React.PropTypes.array,
   yourHand: React.PropTypes.array,
   yourPieces: React.PropTypes.object,
   opponentsPieces: React.PropTypes.object,
-  yourTurn: React.PropTypes.bool
+  yourTurn: React.PropTypes.bool,
+  selectedTile: React.PropTypes.string
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

@@ -7,7 +7,7 @@ class Hand extends Component {
   }
 
   onCardClick(index, e) {
-    this.props.onSelect(index);
+    this.props.onSelectCard(index);
   }
 
   render() {
@@ -35,7 +35,7 @@ class Hand extends Component {
 Hand.propTypes = {
   cards: React.PropTypes.array,
   opponent: React.PropTypes.bool,
-  onSelect: React.PropTypes.func
+  onSelectCard: React.PropTypes.func
 }
 
 export default Hand;

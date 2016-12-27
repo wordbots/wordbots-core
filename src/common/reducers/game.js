@@ -100,14 +100,19 @@ let defaultState = {
       }
     }
   },
-  currentTurn: 'green'
+  currentTurn: 'green',
+  selectedTile: '0,-1,1'
 }
 
 export default function game(state = defaultState, action) {
+  let newState = Object.assign({}, state);
+
   switch (action.type) {
     case gameActions.SET_SELECTED_CARD:
-      let newState = Object.assign({}, state);
       newState.players.green.selectedCard = action.payload.selectedCard;
+      return newState;
+    case gameActions.SET_SELECTED_TILE:
+      newState.selectedTile = action.payload.selectedTile;
       return newState;
     default:
       return state;

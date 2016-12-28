@@ -36,7 +36,8 @@ class Board extends Component {
       let yourPiece = this.props.yourPieces[this.props.selectedTile];
 
       if (yourPiece) {
-        hexColors = this.colorSurroundingHexes(HexUtils.IDtoHex(this.props.selectedTile), hexColors, 'blue', 1);
+        hexColors = this.colorMovementHexes(HexUtils.IDToHex(this.props.selectedTile), 
+          hexColors, 1);
       }
     }
 
@@ -53,27 +54,39 @@ class Board extends Component {
 
     newHexes[HexUtils.getID(hex)] = color;
 
-    this.setState({
-      grid: this.state.grid,
-      config: this.state.config,
-      hexColors: newHexes
-    });
+    return newHexes;
   }
 
-  colorSurroundingHexes(hex, hexColors, color, tilesOut) {
+  colorMovementHexes(hex, hexColors, tilesOut) {
     let existingHexes = hexColors;
     let newHexes = Object.assign({}, existingHexes);
 
-    for (let i = 1; i <= tilesOut; i++) {      
-      newHexes[HexUtils.getID(new Hex(hex.q, hex.r - i, hex.s + i))] = color;
-      newHexes[HexUtils.getID(new Hex(hex.q, hex.r + i, hex.s - i))] = color;
-      newHexes[HexUtils.getID(new Hex(hex.q - i, hex.r + i, hex.s))] = color;
-      newHexes[HexUtils.getID(new Hex(hex.q + i, hex.r - i, hex.s))] = color;
-      newHexes[HexUtils.getID(new Hex(hex.q - i, hex.r, hex.s + i))] = color;
-      newHexes[HexUtils.getID(new Hex(hex.q + i, hex.r, hex.s - i))] = color;
+    for (let i = 1; i <= tilesOut; i++) {
+      newHexes[HexUtils.coordsToID(hex.q, hex.r - i, hex.s + i)] = 
+        this.getMovementHexColor(HexUtils.coordsToID(hex.q, hex.r - i, hex.s + i));
+      newHexes[HexUtils.coordsToID(hex.q, hex.r + i, hex.s - i)] = 
+        this.getMovementHexColor(HexUtils.coordsToID(hex.q, hex.r + i, hex.s - i));
+      newHexes[HexUtils.coordsToID(hex.q - i, hex.r + i, hex.s)] = 
+        this.getMovementHexColor(HexUtils.coordsToID(hex.q - i, hex.r + i, hex.s));
+      newHexes[HexUtils.coordsToID(hex.q + i, hex.r - i, hex.s)] = 
+        this.getMovementHexColor(HexUtils.coordsToID(hex.q + i, hex.r - i, hex.s));
+      newHexes[HexUtils.coordsToID(hex.q - i, hex.r, hex.s + i)] = 
+        this.getMovementHexColor(HexUtils.coordsToID(hex.q - i, hex.r, hex.s + i));
+      newHexes[HexUtils.coordsToID(hex.q + i, hex.r, hex.s - i)] = 
+        this.getMovementHexColor(HexUtils.coordsToID(hex.q + i, hex.r, hex.s - i));
     }
 
     return newHexes;
+  }
+
+  getMovementHexColor(hexId) {
+    if (this.props.yourPieces[hexId]) {
+      return 'green';
+    } else if (this.props.opponentsPieces[hexId]) {
+      return 'dark_red';
+    } else {
+      return 'blue';
+    }
   }
 
   onHexClick(hex, event) {

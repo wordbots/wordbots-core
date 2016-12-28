@@ -24,19 +24,6 @@ let defaultState = {
       selectedCard: null,
       deck: [],
       robotsOnBoard: {
-        '0,-4,4': {
-          img: 'char_weapon',
-          hasMoved: false,
-          card: {
-            name: 'Tank Bot',
-            cost: 3,
-            type: 0,
-            health: 4,
-            speed: 1,
-            attack: 2,
-            abilities: []
-          }
-        },
         '-1,-3,4': {
           img: 'char',
           hasMoved: false,
@@ -84,6 +71,19 @@ let defaultState = {
       selectedCard: null,
       deck: [],
       robotsOnBoard: {
+        '0,-4,4': {
+          img: 'char_weapon',
+          hasMoved: false,
+          card: {
+            name: 'Tank Bot',
+            cost: 3,
+            type: 0,
+            health: 4,
+            speed: 1,
+            attack: 2,
+            abilities: []
+          }
+        },
         '0,4,-4': {
           img: 'char',
           hasMoved: false,
@@ -101,7 +101,7 @@ let defaultState = {
     }
   },
   currentTurn: 'green',
-  selectedTile: '0,-1,1'
+  selectedTile: '0,-3,3'
 }
 
 export default function game(state = defaultState, action) {

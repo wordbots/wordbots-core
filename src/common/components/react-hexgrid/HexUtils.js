@@ -40,13 +40,13 @@ class HexUtils {
   }
 
   static round(hex) {
-    var rq = Math.round(hex.q)
-    var rr = Math.round(hex.r)
-    var rs = Math.round(hex.s)
+    let rq = Math.round(hex.q)
+    let rr = Math.round(hex.r)
+    let rs = Math.round(hex.s)
 
-    var qDiff = Math.abs(rq - hex.q)
-    var rDiff = Math.abs(rr - hex.r)
-    var sDiff = Math.abs(rs - hex.s)
+    let qDiff = Math.abs(rq - hex.q)
+    let rDiff = Math.abs(rr - hex.r)
+    let sDiff = Math.abs(rs - hex.s)
 
     if (qDiff > rDiff && qDiff > rDiff)
         rq = -rr-rs
@@ -85,12 +85,16 @@ class HexUtils {
     return `${hex.q},${hex.r},${hex.s}`;
   }
 
-  static IDtoHex(hexId) {
+  static IDToHex(hexId) {
     let coords = hexId.split(',').map((coord) => {
       return parseInt(coord, 10);
     });
 
     return new Hex(...coords);
+  }
+
+  static coordsToID(q, r, s) {
+    return `${q},${r},${s}`;
   }
 }
 

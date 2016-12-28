@@ -16,6 +16,13 @@ class Board extends Component {
     }
     let grid = HexGrid.generate(boardConfig);
 
+    this.state = {
+      grid, 
+      config: boardConfig
+    };
+  }
+
+  updateHexColors() {
     let hexColors = {};
 
     Object.keys(this.props.yourPieces).forEach((yourPieceHex) => {
@@ -41,11 +48,7 @@ class Board extends Component {
       }
     }
 
-    this.state = {
-      grid, 
-      config: boardConfig,
-      hexColors: hexColors,
-    };
+    return hexColors
   }
 
   setHexColor(hex, color) {
@@ -95,6 +98,7 @@ class Board extends Component {
 
   render() {
     let { grid, config } = this.state;
+    let hexColors = this.updateHexColors();
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
@@ -105,7 +109,7 @@ class Board extends Component {
     return (
       <div>
         <HexGrid
-          hexColors={this.state.hexColors}
+          hexColors={hexColors}
           yourPieces={this.props.yourPieces}
           opponentsPieces={this.props.opponentsPieces}
           actions={actions}

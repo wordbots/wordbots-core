@@ -6,6 +6,7 @@ let defaultState = {
       health: 20,
       hand: [{
         name: 'Tank Bot',
+        img: 'char_weapon',
         cost: 3,
         type: 0,
         health: 4,
@@ -14,6 +15,7 @@ let defaultState = {
         abilities: []
       }, {
         name: 'Attack Bot',
+        img: 'char',
         cost: 1,
         type: 0,
         health: 1,
@@ -25,10 +27,10 @@ let defaultState = {
       deck: [],
       robotsOnBoard: {
         '-1,-3,4': {
-          img: 'char',
           hasMoved: false,
           card: {
             name: 'Attack Bot',
+            img: 'char',
             cost: 1,
             type: 0,
             health: 1,
@@ -38,10 +40,10 @@ let defaultState = {
           }
         },
         '0,-3,3': {
-          img: 'char',
           hasMoved: false,
           card: {
             name: 'Attack Bot',
+            img: 'char',
             cost: 1,
             type: 0,
             health: 1,
@@ -51,10 +53,10 @@ let defaultState = {
           }
         },
         '0,-1,1': {
-          img: 'char',
           hasMoved: true,
           card: {
             name: 'Attack Bot',
+            img: 'char',
             cost: 1,
             type: 0,
             health: 1,
@@ -72,10 +74,10 @@ let defaultState = {
       deck: [],
       robotsOnBoard: {
         '0,-4,4': {
-          img: 'char_weapon',
           hasMoved: false,
           card: {
             name: 'Tank Bot',
+            img: 'char_weapon',
             cost: 3,
             type: 0,
             health: 4,
@@ -85,10 +87,10 @@ let defaultState = {
           }
         },
         '0,4,-4': {
-          img: 'char',
           hasMoved: false,
           card: {
             name: 'Attack Bot',
+            img: 'char',
             cost: 1,
             type: 0,
             health: 1,

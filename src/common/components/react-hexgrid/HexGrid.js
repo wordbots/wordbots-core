@@ -29,9 +29,9 @@ class HexGrid extends React.Component {
             let piece = '';
 
             if (yourPieces[HexUtils.getID(hex)]) {
-              piece = yourPieces[HexUtils.getID(hex)].img;
+              piece = yourPieces[HexUtils.getID(hex)].card.img;
             } else if (opponentsPieces[HexUtils.getID(hex)]) {
-              piece = opponentsPieces[HexUtils.getID(hex)].img;
+              piece = opponentsPieces[HexUtils.getID(hex)].card.img;
             }
 
             return (

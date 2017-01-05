@@ -1,9 +1,9 @@
-var path = require('path');
-var webpack = require('webpack');
-var merge = require('merge');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const merge = require('merge');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var webpackConfig = {
+let webpackConfig = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
       }),
       new ExtractTextPlugin('app.css'),
       new webpack.optimize.UglifyJsPlugin({minimize: true})
-    ]  
+    ]
   });
 } else {
   webpackConfig = merge(webpackConfig, {
@@ -91,9 +91,9 @@ if (process.env.NODE_ENV === 'production') {
     plugins : [
       new webpack.HotModuleReplacementPlugin(),
       new ExtractTextPlugin('app.css')
-    ]  
+    ]
   });
-  
+
 }
 
 module.exports = webpackConfig;

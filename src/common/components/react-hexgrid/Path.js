@@ -29,7 +29,7 @@ class Path extends React.Component {
 
   render() {
     return (
-      <path d={this.getPoints()}></path>
+      <path d={this.getPoints()} />
     );
   }
 }

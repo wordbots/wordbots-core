@@ -35,7 +35,7 @@ class HexPointers extends React.Component {
 
   render() {
     let hex = this.props.hex;
-    if (hex.props == {} || typeof(hex.props.arrows) === "undefined")
+    if (hex.props == {} || typeof(hex.props.arrows) === 'undefined')
       return null;
 
     let arrows = hex.props.arrows;

@@ -25,6 +25,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    onMoveRobot: (fromHexId, toHexId) => {
+      dispatch(gameActions.moveRobot(fromHexId, toHexId));
+    },
     onPassTurn: () => {
       dispatch(gameActions.passTurn());
     },
@@ -52,15 +55,22 @@ class Game extends Component {
             isCurrentPlayer={!this.props.yourTurn} />
           <Divider style={{marginTop: 10}}/>
           <Board
-            onSelectTile={(hexId) => {
-              this.props.onSelectTile(hexId);
+            onSelectTile={(hexId, isMovementAction) => {
+              if (isMovementAction) {
+                if ((this.props.yourTurn && this.props.yourPieces[this.props.selectedTile]) ||
+                  (!this.props.yourTurn && this.props.opponentsPieces[this.props.selectedTile])) {
+                  this.props.onMoveRobot(this.props.selectedTile, hexId);
+                }
+              } else {
+                this.props.onSelectTile(hexId, isMovementAction);
+              }
             }}
             selectedTile={this.props.selectedTile}
-            yourPieces={this.props.yourPieces}
-            opponentsPieces={this.props.opponentsPieces}
+            yourPieces={this.props.yourTurn ? this.props.yourPieces : this.props.opponentsPieces}
+            opponentsPieces={this.props.yourTurn ? this.props.opponentsPieces : this.props.yourPieces}
             yourTurn={this.props.yourTurn} />
           <RaisedButton
-            label="Pass Turn"
+            label="End Turn"
             onTouchTap={(index) => {
               this.props.onPassTurn();
             }} />

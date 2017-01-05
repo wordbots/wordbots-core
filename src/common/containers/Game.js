@@ -19,7 +19,9 @@ function mapStateToProps(state) {
     opponentsHand: state.game.players.red.hand,
     yourPieces: state.game.players.green.robotsOnBoard,
     opponentsPieces: state.game.players.red.robotsOnBoard,
-    yourTurn: state.game.currentTurn === 'green'
+    yourTurn: state.game.currentTurn === 'green',
+    redMana: state.game.players.red.mana,
+    greenMana: state.game.players.green.mana
   };
 }
 
@@ -50,6 +52,7 @@ class Game extends Component {
           <Hand
             cards={this.props.opponentsHand}
             isCurrentPlayer={!this.props.yourTurn} />
+            <div>{this.props.redMana.total - this.props.redMana.used} / {this.props.redMana.total}</div>
           <Divider style={{marginTop: 10}}/>
           <Board
             onSelectTile={(hexId) => {
@@ -72,6 +75,7 @@ class Game extends Component {
             selectedCard={this.props.selectedCard}
             isCurrentPlayer={this.props.yourTurn}
             cards={this.props.yourHand} />
+            <div>{this.props.greenMana.total - this.props.greenMana.used} / {this.props.greenMana.total}</div>
         </Paper>
         <Chat />
       </div>
@@ -89,7 +93,9 @@ Game.propTypes = {
   yourPieces: React.PropTypes.object,
   opponentsPieces: React.PropTypes.object,
   yourTurn: React.PropTypes.bool,
-  selectedTile: React.PropTypes.string
+  selectedTile: React.PropTypes.string,
+  redMana: React.PropTypes.object,
+  greenMana: React.PropTypes.object
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

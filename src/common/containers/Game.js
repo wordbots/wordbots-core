@@ -21,7 +21,9 @@ function mapStateToProps(state) {
     opponentsPieces: state.game.players.red.robotsOnBoard,
     yourTurn: state.game.currentTurn === 'green',
     redMana: state.game.players.red.mana,
-    greenMana: state.game.players.green.mana
+    greenMana: state.game.players.green.mana,
+    yourDeck: state.game.players.green.deck,
+    opponentsDeck: state.game.players.red.deck
   };
 }
 
@@ -52,7 +54,7 @@ class Game extends Component {
           <Hand
             cards={this.props.opponentsHand}
             isCurrentPlayer={!this.props.yourTurn} />
-            <div>{this.props.redMana.total - this.props.redMana.used} / {this.props.redMana.total}</div>
+          <div>{this.props.redMana.total - this.props.redMana.used} / {this.props.redMana.total}</div>
           <Divider style={{marginTop: 10}}/>
           <Board
             onSelectTile={(hexId) => {
@@ -75,7 +77,7 @@ class Game extends Component {
             selectedCard={this.props.selectedCard}
             isCurrentPlayer={this.props.yourTurn}
             cards={this.props.yourHand} />
-            <div>{this.props.greenMana.total - this.props.greenMana.used} / {this.props.greenMana.total}</div>
+          <div>{this.props.greenMana.total - this.props.greenMana.used} / {this.props.greenMana.total}</div>
         </Paper>
         <Chat />
       </div>

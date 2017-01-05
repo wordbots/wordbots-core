@@ -28,15 +28,15 @@ class Board extends Component {
     Object.keys(this.props.yourPieces).forEach((yourPieceHex) => {
       let yourPiece = this.props.yourPieces[yourPieceHex]
 
-      //if (this.props.yourTurn && yourPiece.hasMoved) {
-      //  hexColors[yourPieceHex] = 'yellow';
-      //} else {
-        hexColors[yourPieceHex] = 'green';
-      //}
+      if (this.props.yourTurn && yourPiece.hasMoved) {
+        hexColors[yourPieceHex] = 'blue';
+      } else {
+        hexColors[yourPieceHex] = 'bright_blue';
+      }
     });
 
     Object.keys(this.props.opponentsPieces).forEach((opponentsPieceHex) => {
-      hexColors[opponentsPieceHex] = 'red';
+      hexColors[opponentsPieceHex] = 'bright_orange';
     });
 
     if (this.props.selectedTile) {
@@ -91,11 +91,11 @@ class Board extends Component {
 
   getMovementHexColor(hexId) {
     if (this.props.yourPieces[hexId]) {
-      return 'green';
+      return 'bright_blue';
     } else if (this.props.opponentsPieces[hexId]) {
-      return 'dark_red';
+      return 'red';
     } else {
-      return 'blue';
+      return 'green';
     }
   }
 

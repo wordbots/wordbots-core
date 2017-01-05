@@ -20,11 +20,11 @@ class Hand extends Component {
           let cardClick = this.onCardClick.bind(this, index);
 
           return (
-            <Card 
+            <Card
               onCardClick={cardClick}
               key={index}
               cardStats={card}
-              opponent={this.props.opponent} />
+              visible={this.props.isCurrentPlayer} />
           )
         })}
       </div>
@@ -34,7 +34,7 @@ class Hand extends Component {
 
 Hand.propTypes = {
   cards: React.PropTypes.array,
-  opponent: React.PropTypes.bool,
+  isCurrentPlayer: React.PropTypes.bool,
   onSelectCard: React.PropTypes.func
 }
 

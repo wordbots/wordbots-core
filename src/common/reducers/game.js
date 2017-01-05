@@ -5,6 +5,9 @@ export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);
 
   switch (action.type) {
+    case gameActions.PASS_TURN:
+      newState.currentTurn = (state.turn == 'red' ? 'green' : 'red');
+      return newState;
     case gameActions.SET_SELECTED_CARD:
       newState.players.green.selectedCard = action.payload.selectedCard;
       return newState;

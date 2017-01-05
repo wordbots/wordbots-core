@@ -1,4 +1,5 @@
 # WordBots
+[![CircleCI](https://circleci.com/gh/wordbots/wordbots-core.svg?style=svg)](https://circleci.com/gh/wordbots/wordbots-core)
 
 ## Development Installation
 

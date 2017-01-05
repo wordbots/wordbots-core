@@ -40,11 +40,11 @@ class Card extends Component {
       cardSubtitle = 'Spell';
     }
 
-    if (this.props.opponent) {
+    if (!this.props.visible) {
       return (
         <div>
-          <Paper 
-            zDepth={2} 
+          <Paper
+            zDepth={2}
             style={{
               width: 140,
               height: 200,
@@ -78,10 +78,10 @@ class Card extends Component {
     } else {
       return (
         <div onClick={this.props.onCardClick}>
-          <Paper 
+          <Paper
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            zDepth={this.state.shadow} 
+            zDepth={this.state.shadow}
             style={{
               width: 140,
               height: 200,
@@ -92,13 +92,13 @@ class Card extends Component {
               userSelect: 'none',
               cursor: 'pointer'
           }}>
-            <CardHeader 
+            <CardHeader
               style={{padding: 10, height: 'auto'}}
               title={this.state.cardStats.name}
               subtitle={cardSubtitle}/>
             <Divider/>
             <div style={{
-              display: 'flex', 
+              display: 'flex',
               justifyContent: 'space-between',
               flexDirection: 'column',
               flexGrow: 1
@@ -123,7 +123,7 @@ class Card extends Component {
 
 Card.propTypes = {
   cardStats: React.PropTypes.object,
-  opponent: React.PropTypes.bool,
+  visible: React.PropTypes.bool,
   onCardClick: React.PropTypes.func
 }
 

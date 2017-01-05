@@ -3,6 +3,7 @@ import Helmet from 'react-helmet';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import Hand from '../components/game/Hand';
+import ManaCount from '../components/game/ManaCount';
 
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
@@ -54,7 +55,7 @@ class Game extends Component {
           <Hand
             cards={this.props.opponentsHand}
             isCurrentPlayer={!this.props.yourTurn} />
-          <div>{this.props.redMana.total - this.props.redMana.used} / {this.props.redMana.total}</div>
+          <ManaCount mana={this.props.redMana}/>
           <Divider style={{marginTop: 10}}/>
           <Board
             onSelectTile={(hexId) => {
@@ -77,7 +78,7 @@ class Game extends Component {
             selectedCard={this.props.selectedCard}
             isCurrentPlayer={this.props.yourTurn}
             cards={this.props.yourHand} />
-          <div>{this.props.greenMana.total - this.props.greenMana.used} / {this.props.greenMana.total}</div>
+          <ManaCount mana={this.props.greenMana}/>
         </Paper>
         <Chat />
       </div>

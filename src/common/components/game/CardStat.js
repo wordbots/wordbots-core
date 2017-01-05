@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/lib/paper';
-import ReactHint from 'react-hint'
 
 class CardStat extends Component {
   constructor(props) {
@@ -38,7 +37,6 @@ class CardStat extends Component {
         }}>
           <div>{this.props.value}</div>
         </Paper>
-        <ReactHint />
       </div>
     )
   }

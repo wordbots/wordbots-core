@@ -59,6 +59,6 @@ export const defaultState = {
       }
     }
   },
-  currentTurn: 'green',
-  selectedTile: '0,-3,3'
+  currentTurn: 'red',
+  selectedTile: null
 }

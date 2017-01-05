@@ -6,7 +6,7 @@ export default function game(state = defaultState, action) {
 
   switch (action.type) {
     case gameActions.PASS_TURN:
-      newState.currentTurn = (state.turn == 'red' ? 'green' : 'red');
+      newState.currentTurn = (state.currentTurn == 'red' ? 'green' : 'red');
       return newState;
     case gameActions.SET_SELECTED_CARD:
       newState.players.green.selectedCard = action.payload.selectedCard;

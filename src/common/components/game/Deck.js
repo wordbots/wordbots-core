@@ -11,24 +11,36 @@ class Deck extends Component {
   render() {
     if (this.props.deck.length > 0) {     
       return (
-        <div>
-          <div data-tip data-for="your-deck-tooltip">
+        <div style={{fontFamily: 'Luckiest Guy'}}>
+          <div data-tip={this.props.deck.length + ' Cards'} data-for="deck-tooltip">
             <CardBack />
           </div>
           <ReactTooltip 
-            id="your-deck-tooltip" 
+            id="deck-tooltip" 
             place="top" 
             type="dark" 
-            effect="float" 
-            getContent={() => this.props.deck.length + ' Cards'} />
+            effect="float" />
         </div>
       );
     } else {
       return (
         <div style={{
           width: 140,
-          height: 200
-        }}/>
+          height: 200,
+          borderRadius: 5,
+          border: '2px dashed #DDD',
+          display: 'flex',
+          alignItems: 'center',
+          userSelect: 'none'
+        }}>
+          <div style={{
+            margin: 'auto',
+            fontFamily: 'Luckiest Guy',
+            fontSize: 32,
+            textAlign: 'center',
+            color: '#CCC'
+          }}>NO CARDS LEFT</div>
+        </div>
       )
     }
   }

@@ -20,7 +20,7 @@ class Deck extends Component {
             place="top" 
             type="dark" 
             effect="float" 
-            getContent={() => this.props.deck.length} />
+            getContent={() => this.props.deck.length + ' Cards'} />
         </div>
       );
     } else {

@@ -17,12 +17,15 @@ class ManaCount extends Component {
           height: 48,
           textAlign: 'center',
           display: 'flex',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          userSelect: 'none',
+          cursor: 'pointer'
       }}>
         <div
           style={{
             alignSelf: 'center',
-            color: 'white'
+            color: 'white',
+            fontFamily: 'Luckiest Guy'
           }}>
           {this.props.mana.total - this.props.mana.used} / {this.props.mana.total}
         </div>

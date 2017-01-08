@@ -126,3 +126,14 @@ svg path {
     opacity: 1;
   }
 }
+
+/* Slide In Animation */
+
+.example-enter {
+  transform: translate(500%);
+}
+
+.example-enter.example-enter-active {
+  transform: translate(0%);
+  transition: transform 500ms ease-in-out;
+}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group' 
 import Card from './Card';
 
 class Hand extends Component {
@@ -11,23 +12,29 @@ class Hand extends Component {
   }
 
   render() {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center'
-      }}>
-        {this.props.cards.map((card, index) => {
-          let cardClick = this.onCardClick.bind(this, index);
+    const cards = this.props.cards.map((card, index) => {
+      let cardClick = this.onCardClick.bind(this, index);
 
-          return (
-            <Card
-              onCardClick={cardClick}
-              key={index}
-              cardStats={card}
-              visible={this.props.isCurrentPlayer} />
-          )
-        })}
-      </div>
+      return (
+        <Card
+          onCardClick={cardClick}
+          key={index}
+          cardStats={card}
+          visible={this.props.isCurrentPlayer} />
+      )
+    });
+
+    return (
+      <ReactCSSTransitionGroup
+        transitionName="example"
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={500}
+        style={{
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
+        {cards}
+      </ReactCSSTransitionGroup>
     )
   }
 }

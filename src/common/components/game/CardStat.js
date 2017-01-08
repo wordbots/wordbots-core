@@ -33,7 +33,9 @@ class CardStat extends Component {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: backgroundColor,
-            color: '#fff'
+            color: '#fff',
+            fontFamily: 'Luckiest Guy',
+            fontSize: 16
         }}>
           <div>{this.props.value}</div>
         </Paper>

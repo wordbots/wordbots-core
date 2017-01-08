@@ -13,7 +13,7 @@ class Deck extends Component {
       return (
         <div style={{fontFamily: 'Luckiest Guy'}}>
           <div data-tip={this.props.deck.length + ' Cards'} data-for="deck-tooltip">
-            <CardBack />
+            <CardBack deckLength={this.props.deck.length} />
           </div>
           <ReactTooltip 
             id="deck-tooltip" 

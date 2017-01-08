@@ -7,11 +7,20 @@ class CardBack extends Component {
   }
 
   render() {
+    let style = {};
+
+    if (this.props.deckLength) {
+      style = {
+        borderBottom: 'solid #444',
+        borderBottomWidth: this.props.deckLength - 1
+      }
+    }
+
     return (
       <div>
         <Paper
           zDepth={2}
-          style={{
+          style={Object.assign({
             width: 140,
             height: 200,
             marginRight: 10,
@@ -21,7 +30,7 @@ class CardBack extends Component {
             padding: 5,
             userSelect: 'none',
             cursor: 'pointer'
-        }}>
+        }, style)}>
           <div style={{
             writingMode: 'vertical-lr',
             width: 'calc(100% - 4px)',
@@ -42,6 +51,10 @@ class CardBack extends Component {
       </div>
     )
   }
+}
+
+CardBack.propTypes = {
+  deckLength: React.PropTypes.number
 }
 
 export default CardBack;

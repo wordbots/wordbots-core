@@ -12,7 +12,7 @@ class CardBack extends Component {
     if (this.props.deckLength) {
       style = {
         borderBottom: 'solid #444',
-        borderBottomWidth: this.props.deckLength - 1
+        borderBottomWidth: Math.min((this.props.deckLength - 1) * 2, 16)
       }
     }
 

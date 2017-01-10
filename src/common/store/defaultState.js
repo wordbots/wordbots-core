@@ -24,9 +24,13 @@ export const defaultState = {
   players: {
     green: {
       health: 20,
+      mana: {
+        used: 0,
+        total: 1
+      },
       hand: [tankBotCard, attackBotCard],
       selectedCard: null,
-      deck: [],
+      deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
         '-1,-3,4': {
           hasMoved: false,
@@ -44,9 +48,13 @@ export const defaultState = {
     },
     red: {
       health: 20,
+      mana: {
+        used: 0,
+        total: 1
+      },
       hand: [tankBotCard, attackBotCard],
       selectedCard: null,
-      deck: [],
+      deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
         '0,-4,4': {
           hasMoved: false,
@@ -59,6 +67,6 @@ export const defaultState = {
       }
     }
   },
-  currentTurn: 'red',
+  currentTurn: 'green',
   selectedTile: null
 }

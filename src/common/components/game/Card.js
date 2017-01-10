@@ -3,7 +3,9 @@ import Divider from 'material-ui/lib/divider';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
+import Badge from 'material-ui/lib/badge';
 import CardStat from './CardStat';
+import CardBack from './CardBack';
 
 class Card extends Component {
   constructor(props) {
@@ -42,80 +44,63 @@ class Card extends Component {
 
     if (!this.props.visible) {
       return (
-        <div>
-          <Paper
-            zDepth={2}
-            style={{
-              width: 140,
-              height: 200,
-              marginRight: 10,
-              borderRadius: 5,
-              backgroundColor: '#f44336',
-              boxSizing: 'border-box',
-              padding: 5,
-              userSelect: 'none',
-              cursor: 'pointer'
-          }}>
-            <div style={{
-              writingMode: 'vertical-lr',
-              width: 'calc(100% - 4px)',
-              height: 'calc(100% - 4px)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-              border: '2px solid #FFF'
-            }}>
-              <div style={{
-                color: '#fff',
-                fontSize: 28,
-                fontFamily: 'Luckiest Guy'
-              }}>WordBots</div>
-            </div>
-          </Paper>
-        </div>
+        <CardBack />
       )
     } else {
       return (
-        <div onClick={this.props.onCardClick}>
-          <Paper
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-            zDepth={this.state.shadow}
-            style={{
-              width: 140,
-              height: 200,
-              marginRight: 10,
-              borderRadius: 5,
-              display: 'flex',
-              flexDirection: 'column',
-              userSelect: 'none',
-              cursor: 'pointer'
-          }}>
-            <CardHeader
-              style={{padding: 10, height: 'auto'}}
-              title={this.state.cardStats.name}
-              subtitle={cardSubtitle}/>
-            <Divider/>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexDirection: 'column',
-              flexGrow: 1
+        <Badge
+          badgeContent={this.state.cardStats.cost}
+          badgeStyle={{
+            top: 12, 
+            right: 20, 
+            width: 36, 
+            height: 36, 
+            backgroundColor: '#00bcd4',
+            fontFamily: 'Luckiest Guy',
+            color: 'white',
+            fontSize: 16
+          }}
+        >
+          <div onClick={this.props.onCardClick}>
+            <Paper
+              onMouseOver={this.onMouseOver}
+              onMouseOut={this.onMouseOut}
+              zDepth={this.state.shadow}
+              style={{
+                width: 140,
+                height: 200,
+                marginRight: 10,
+                borderRadius: 5,
+                display: 'flex',
+                flexDirection: 'column',
+                userSelect: 'none',
+                cursor: 'pointer'
             }}>
-              <CardText style={{padding: 10}}>Example card text.</CardText>
-              <CardText style={{
+              <CardHeader
+                style={{padding: 10, height: 'auto'}}
+                title={this.state.cardStats.name}
+                subtitle={cardSubtitle}/>
+              <Divider/>
+              <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: 10
+                flexDirection: 'column',
+                flexGrow: 1
               }}>
-                <CardStat type="attack" value={this.state.cardStats.attack}/>
-                <CardStat type="speed" value={this.state.cardStats.speed}/>
-                <CardStat type="health" value={this.state.cardStats.health}/>
-              </CardText>
-            </div>
-          </Paper>
-        </div>
+                <CardText style={{padding: 10}}>Example card text.</CardText>
+                <CardText style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: 10
+                }}>
+                  <CardStat type="attack" value={this.state.cardStats.attack}/>
+                  <CardStat type="speed" value={this.state.cardStats.speed}/>
+                  <CardStat type="health" value={this.state.cardStats.health}/>
+                </CardText>
+              </div>
+            </Paper>
+          </div>
+        </Badge>
       )
     }
   }

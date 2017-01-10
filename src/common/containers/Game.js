@@ -77,8 +77,8 @@ class Game extends Component {
             <Board
               onSelectTile={(hexId, isMovementAction) => {
                 if (isMovementAction) {
-                  if ((this.props.yourTurn && this.props.yourPieces[this.props.selectedTile]) ||
-                    (!this.props.yourTurn && this.props.opponentsPieces[this.props.selectedTile])) {
+                  if ((this.props.yourTurn && this.props.yourPieces[this.props.selectedTile] && !this.props.yourPieces[this.props.selectedTile].hasMoved) ||
+                    (!this.props.yourTurn && this.props.opponentsPieces[this.props.selectedTile] && !this.props.opponentsPieces[this.props.selectedTile].hasMoved)) {
                     this.props.onMoveRobot(this.props.selectedTile, hexId);
                   }
                 } else {

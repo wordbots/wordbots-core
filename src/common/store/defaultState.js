@@ -30,7 +30,7 @@ export const defaultState = {
       },
       hand: [tankBotCard, attackBotCard],
       selectedCard: null,
-      deck: [],
+      deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
         '-1,-3,4': {
           hasMoved: false,
@@ -54,7 +54,7 @@ export const defaultState = {
       },
       hand: [tankBotCard, attackBotCard],
       selectedCard: null,
-      deck: [],
+      deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
         '0,-4,4': {
           hasMoved: false,

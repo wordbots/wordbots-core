@@ -34,6 +34,7 @@ const renderFullPage = (html, initialState, head) => {
         <link rel="stylesheet" type="text/css" href="/static/app.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
       </head>
       <body>
           <div id="root">${html}</div>

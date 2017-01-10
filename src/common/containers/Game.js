@@ -1,8 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
+import ReactTooltip from 'react-tooltip';
+
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import Hand from '../components/game/Hand';
+import ManaCount from '../components/game/ManaCount';
+import Deck from '../components/game/Deck';
 
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
@@ -21,7 +25,9 @@ function mapStateToProps(state) {
     opponentsPieces: state.game.players.red.robotsOnBoard,
     yourTurn: state.game.currentTurn === 'green',
     redMana: state.game.players.red.mana,
-    greenMana: state.game.players.green.mana
+    greenMana: state.game.players.green.mana,
+    yourDeck: state.game.players.green.deck,
+    opponentsDeck: state.game.players.red.deck
   };
 }
 
@@ -49,33 +55,64 @@ class Game extends Component {
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20}}>
-          <Hand
-            cards={this.props.opponentsHand}
-            isCurrentPlayer={!this.props.yourTurn} />
-            <div>{this.props.redMana.total - this.props.redMana.used} / {this.props.redMana.total}</div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <ManaCount mana={this.props.redMana}/>
+            <Hand
+              cards={this.props.opponentsHand}
+              isCurrentPlayer={!this.props.yourTurn} />
+            <Deck deck={this.props.opponentsDeck} />
+          </div>
+
           <Divider style={{marginTop: 10}}/>
-          <Board
-            onSelectTile={(hexId) => {
-              this.props.onSelectTile(hexId);
-            }}
-            selectedTile={this.props.selectedTile}
-            yourPieces={this.props.yourPieces}
-            opponentsPieces={this.props.opponentsPieces}
-            yourTurn={this.props.yourTurn} />
-          <RaisedButton
-            label="Pass Turn"
-            onTouchTap={(index) => {
-              this.props.onPassTurn();
-            }} />
+
+          <div style={{
+            position: 'relative'
+          }}>
+            <Board
+              onSelectTile={(hexId) => {
+                this.props.onSelectTile(hexId);
+              }}
+              selectedTile={this.props.selectedTile}
+              yourPieces={this.props.yourPieces}
+              opponentsPieces={this.props.opponentsPieces}
+              yourTurn={this.props.yourTurn} />
+            <RaisedButton
+              secondary
+              label="Pass Turn"
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                margin: 'auto',
+                color: 'white'
+              }}
+              onTouchTap={(index) => {
+                this.props.onPassTurn();
+              }} />
+          </div>
+
           <Divider style={{marginBottom: 10}}/>
-          <Hand
-            onSelectCard={(index) => {
-              this.props.onSelectCard(index);
-            }}
-            selectedCard={this.props.selectedCard}
-            isCurrentPlayer={this.props.yourTurn}
-            cards={this.props.yourHand} />
-            <div>{this.props.greenMana.total - this.props.greenMana.used} / {this.props.greenMana.total}</div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <ManaCount mana={this.props.greenMana} />
+            <Hand
+              onSelectCard={(index) => {
+                this.props.onSelectCard(index);
+              }}
+              selectedCard={this.props.selectedCard}
+              isCurrentPlayer={this.props.yourTurn}
+              cards={this.props.yourHand} />
+            <Deck deck={this.props.yourDeck} />
+          </div>
         </Paper>
         <Chat />
       </div>
@@ -95,7 +132,9 @@ Game.propTypes = {
   yourTurn: React.PropTypes.bool,
   selectedTile: React.PropTypes.string,
   redMana: React.PropTypes.object,
-  greenMana: React.PropTypes.object
+  greenMana: React.PropTypes.object,
+  yourDeck: React.PropTypes.array,
+  opponentsDeck: React.PropTypes.array
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

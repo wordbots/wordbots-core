@@ -5,6 +5,7 @@ import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import CardStat from './CardStat';
+import CardBack from './CardBack';
 
 class Card extends Component {
   constructor(props) {
@@ -43,38 +44,7 @@ class Card extends Component {
 
     if (!this.props.visible) {
       return (
-        <div>
-          <Paper
-            zDepth={2}
-            style={{
-              width: 140,
-              height: 200,
-              marginRight: 10,
-              borderRadius: 5,
-              backgroundColor: '#f44336',
-              boxSizing: 'border-box',
-              padding: 5,
-              userSelect: 'none',
-              cursor: 'pointer'
-          }}>
-            <div style={{
-              writingMode: 'vertical-lr',
-              width: 'calc(100% - 4px)',
-              height: 'calc(100% - 4px)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-              border: '2px solid #FFF'
-            }}>
-              <div style={{
-                color: '#fff',
-                fontSize: 28,
-                fontFamily: 'Luckiest Guy'
-              }}>WordBots</div>
-            </div>
-          </Paper>
-        </div>
+        <CardBack />
       )
     } else {
       return (
@@ -86,6 +56,7 @@ class Card extends Component {
             width: 36, 
             height: 36, 
             backgroundColor: '#00bcd4',
+            fontFamily: 'Luckiest Guy',
             color: 'white',
             fontSize: 16
           }}

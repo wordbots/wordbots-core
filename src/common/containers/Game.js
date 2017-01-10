@@ -33,6 +33,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    onMoveRobot: (fromHexId, toHexId) => {
+      dispatch(gameActions.moveRobot(fromHexId, toHexId));
+    },
     onPassTurn: () => {
       dispatch(gameActions.passTurn());
     },
@@ -68,21 +71,27 @@ class Game extends Component {
           </div>
 
           <Divider style={{marginTop: 10}}/>
-
           <div style={{
             position: 'relative'
           }}>
             <Board
-              onSelectTile={(hexId) => {
-                this.props.onSelectTile(hexId);
+              onSelectTile={(hexId, isMovementAction) => {
+                if (isMovementAction) {
+                  if ((this.props.yourTurn && this.props.yourPieces[this.props.selectedTile] && !this.props.yourPieces[this.props.selectedTile].hasMoved) ||
+                    (!this.props.yourTurn && this.props.opponentsPieces[this.props.selectedTile] && !this.props.opponentsPieces[this.props.selectedTile].hasMoved)) {
+                    this.props.onMoveRobot(this.props.selectedTile, hexId);
+                  }
+                } else {
+                  this.props.onSelectTile(hexId, isMovementAction);
+                }
               }}
               selectedTile={this.props.selectedTile}
-              yourPieces={this.props.yourPieces}
-              opponentsPieces={this.props.opponentsPieces}
+              yourPieces={this.props.yourTurn ? this.props.yourPieces : this.props.opponentsPieces}
+              opponentsPieces={this.props.yourTurn ? this.props.opponentsPieces : this.props.yourPieces}
               yourTurn={this.props.yourTurn} />
             <RaisedButton
               secondary
-              label="Pass Turn"
+              label="End Turn"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -95,7 +104,6 @@ class Game extends Component {
                 this.props.onPassTurn();
               }} />
           </div>
-
           <Divider style={{marginBottom: 10}}/>
 
           <div style={{
@@ -122,6 +130,7 @@ class Game extends Component {
 
 Game.propTypes = {
   selectedCard: React.PropTypes.number,
+  onMoveRobot: React.PropTypes.func,
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,

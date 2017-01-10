@@ -17,7 +17,7 @@ class Board extends Component {
     let grid = HexGrid.generate(boardConfig);
 
     this.state = {
-      grid, 
+      grid,
       config: boardConfig
     };
   }
@@ -29,21 +29,21 @@ class Board extends Component {
       let yourPiece = this.props.yourPieces[yourPieceHex]
 
       if (this.props.yourTurn && yourPiece.hasMoved) {
-        hexColors[yourPieceHex] = 'yellow';
+        hexColors[yourPieceHex] = 'blue';
       } else {
-        hexColors[yourPieceHex] = 'green';
+        hexColors[yourPieceHex] = 'bright_blue';
       }
     });
 
     Object.keys(this.props.opponentsPieces).forEach((opponentsPieceHex) => {
-      hexColors[opponentsPieceHex] = 'red';
+      hexColors[opponentsPieceHex] = 'bright_orange';
     });
 
     if (this.props.selectedTile) {
       let yourPiece = this.props.yourPieces[this.props.selectedTile];
 
       if (yourPiece) {
-        hexColors = this.colorMovementHexes(HexUtils.IDToHex(this.props.selectedTile), 
+        hexColors = this.colorMovementHexes(HexUtils.IDToHex(this.props.selectedTile),
           hexColors, 1);
       }
     }
@@ -64,36 +64,44 @@ class Board extends Component {
     let existingHexes = hexColors;
     let newHexes = Object.assign({}, existingHexes);
 
-    for (let i = 1; i <= tilesOut; i++) {
-      newHexes[HexUtils.coordsToID(hex.q, hex.r - i, hex.s + i)] = 
-        this.getMovementHexColor(HexUtils.coordsToID(hex.q, hex.r - i, hex.s + i));
-      newHexes[HexUtils.coordsToID(hex.q, hex.r + i, hex.s - i)] = 
-        this.getMovementHexColor(HexUtils.coordsToID(hex.q, hex.r + i, hex.s - i));
-      newHexes[HexUtils.coordsToID(hex.q - i, hex.r + i, hex.s)] = 
-        this.getMovementHexColor(HexUtils.coordsToID(hex.q - i, hex.r + i, hex.s));
-      newHexes[HexUtils.coordsToID(hex.q + i, hex.r - i, hex.s)] = 
-        this.getMovementHexColor(HexUtils.coordsToID(hex.q + i, hex.r - i, hex.s));
-      newHexes[HexUtils.coordsToID(hex.q - i, hex.r, hex.s + i)] = 
-        this.getMovementHexColor(HexUtils.coordsToID(hex.q - i, hex.r, hex.s + i));
-      newHexes[HexUtils.coordsToID(hex.q + i, hex.r, hex.s - i)] = 
-        this.getMovementHexColor(HexUtils.coordsToID(hex.q + i, hex.r, hex.s - i));
-    }
+    // TODO: Incorporate tilesOut.
+    this.getValidMovementSpaces().forEach((hex) =>
+      newHexes[hex] = this.getMovementHexColor(hex)
+    );
 
     return newHexes;
   }
 
+  getValidMovementSpaces() {
+    if (!this.props.selectedTile) {
+      return [];
+    } else {
+      let hex = HexUtils.IDToHex(this.props.selectedTile);
+
+      return [
+        HexUtils.coordsToID(hex.q, hex.r - 1, hex.s + 1),
+        HexUtils.coordsToID(hex.q, hex.r + 1, hex.s - 1),
+        HexUtils.coordsToID(hex.q - 1, hex.r + 1, hex.s),
+        HexUtils.coordsToID(hex.q + 1, hex.r - 1, hex.s),
+        HexUtils.coordsToID(hex.q - 1, hex.r, hex.s + 1),
+        HexUtils.coordsToID(hex.q + 1, hex.r, hex.s - 1)
+      ];
+    }
+  }
+
   getMovementHexColor(hexId) {
     if (this.props.yourPieces[hexId]) {
-      return 'green';
+      return 'bright_blue';
     } else if (this.props.opponentsPieces[hexId]) {
-      return 'dark_red';
+      return 'red';
     } else {
-      return 'blue';
+      return 'green';
     }
   }
 
   onHexClick(hex, event) {
-    this.props.onSelectTile(HexUtils.getID(hex));
+    let isMovementAction = this.getValidMovementSpaces().includes(HexUtils.getID(hex));
+    this.props.onSelectTile(HexUtils.getID(hex), isMovementAction);
   }
 
   render() {
@@ -113,9 +121,9 @@ class Board extends Component {
           yourPieces={this.props.yourPieces}
           opponentsPieces={this.props.opponentsPieces}
           actions={actions}
-          width={config.width} 
-          height={config.height} 
-          hexagons={grid.hexagons} 
+          width={config.width}
+          height={config.height}
+          hexagons={grid.hexagons}
           layout={grid.layout} />
       </div>
     );

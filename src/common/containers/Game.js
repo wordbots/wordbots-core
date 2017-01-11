@@ -70,7 +70,7 @@ class Game extends Component {
             <ManaCount mana={this.props.orangeMana}/>
             <Hand
               cards={this.props.orangeHand}
-              isCurrentPlayer={!this.props.currentTurn == 'orange'} />
+              isCurrentPlayer={this.props.currentTurn == 'orange'} />
             <Deck deck={this.props.orangeDeck} />
           </div>
 

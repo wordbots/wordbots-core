@@ -20,11 +20,11 @@ export default function game(state = defaultState, action) {
         card: action.payload.card
       }
 
-    case gameActions.PASS_TURN:
-      let turn = (state.currentTurn == 'red' ? 'green' : 'red');
+    case gameActions.END_TURN:
+      const turn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
 
-      let hand = newState.players[turn].hand;
-      let robots = newState.players[turn].robotsOnBoard;
+      const hand = newState.players[turn].hand;
+      const robots = newState.players[turn].robotsOnBoard;
 
       newState.currentTurn = turn;
       newState.players[turn].mana.total += 1;

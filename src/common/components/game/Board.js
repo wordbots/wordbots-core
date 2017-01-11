@@ -25,26 +25,28 @@ class Board extends Component {
   updateHexColors() {
     let hexColors = {};
 
-    Object.keys(this.props.yourPieces).forEach((yourPieceHex) => {
-      let yourPiece = this.props.yourPieces[yourPieceHex]
-
-      if (this.props.yourTurn && yourPiece.hasMoved) {
-        hexColors[yourPieceHex] = 'blue';
+    Object.keys(this.props.bluePieces).forEach((hex) => {
+      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].hasMoved) {
+        hexColors[hex] = 'blue';
       } else {
-        hexColors[yourPieceHex] = 'bright_blue';
+        hexColors[hex] = 'bright_blue';
       }
     });
 
-    Object.keys(this.props.opponentsPieces).forEach((opponentsPieceHex) => {
-      hexColors[opponentsPieceHex] = 'bright_orange';
+    Object.keys(this.props.orangePieces).forEach((hex) => {
+      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].hasMoved) {
+        hexColors[hex] = 'orange';
+      } else {
+        hexColors[hex] = 'bright_orange';
+      }
     });
 
     if (this.props.selectedTile) {
-      let yourPiece = this.props.yourPieces[this.props.selectedTile];
+      let pieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
+      let selectedPiece = pieces[this.props.selectedTile];
 
-      if (yourPiece) {
-        hexColors = this.colorMovementHexes(HexUtils.IDToHex(this.props.selectedTile),
-          hexColors, 1);
+      if (selectedPiece) {
+        hexColors = this.colorMovementHexes(HexUtils.IDToHex(this.props.selectedTile), hexColors, 1);
       }
     }
 
@@ -52,7 +54,7 @@ class Board extends Component {
   }
 
   setHexColor(hex, color) {
-    let existingHexes = this.state.hexColors;
+    const existingHexes = this.state.hexColors;
     let newHexes = Object.assign({}, existingHexes);
 
     newHexes[HexUtils.getID(hex)] = color;
@@ -61,7 +63,7 @@ class Board extends Component {
   }
 
   colorMovementHexes(hex, hexColors, tilesOut) {
-    let existingHexes = hexColors;
+    const existingHexes = hexColors;
     let newHexes = Object.assign({}, existingHexes);
 
     // TODO: Incorporate tilesOut.
@@ -90,9 +92,12 @@ class Board extends Component {
   }
 
   getMovementHexColor(hexId) {
-    if (this.props.yourPieces[hexId]) {
-      return 'bright_blue';
-    } else if (this.props.opponentsPieces[hexId]) {
+    const yourPieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
+    const opponentsPieces = this.props.currentTurn == 'blue' ? this.props.orangePieces : this.props.bluePieces;
+
+    if (yourPieces[hexId]) {
+      return 'bright_' + this.props.currentTurn;
+    } else if (opponentsPieces[hexId]) {
       return 'red';
     } else {
       return 'green';
@@ -100,13 +105,16 @@ class Board extends Component {
   }
 
   onHexClick(hex, event) {
-    let isMovementAction = this.getValidMovementSpaces().includes(HexUtils.getID(hex));
+    const isMovementAction = this.getValidMovementSpaces().includes(HexUtils.getID(hex));
     this.props.onSelectTile(HexUtils.getID(hex), isMovementAction);
   }
 
   render() {
     let { grid, config } = this.state;
     let hexColors = this.updateHexColors();
+
+    const yourPieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
+    const opponentsPieces = this.props.currentTurn == 'blue' ? this.props.orangePieces : this.props.bluePieces;
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
@@ -118,8 +126,8 @@ class Board extends Component {
       <div>
         <HexGrid
           hexColors={hexColors}
-          yourPieces={this.props.yourPieces}
-          opponentsPieces={this.props.opponentsPieces}
+          yourPieces={yourPieces}
+          opponentsPieces={opponentsPieces}
           actions={actions}
           width={config.width}
           height={config.height}
@@ -131,9 +139,9 @@ class Board extends Component {
 }
 
 Board.propTypes = {
-  yourPieces: React.PropTypes.object,
-  opponentsPieces: React.PropTypes.object,
-  yourTurn: React.PropTypes.bool,
+  bluePieces: React.PropTypes.object,
+  orangePieces: React.PropTypes.object,
+  currentTurn: React.PropTypes.string,
   onSelectTile: React.PropTypes.func,
   selectedTile: React.PropTypes.string
 }

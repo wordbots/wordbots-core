@@ -17,17 +17,21 @@ import * as gameActions from '../actions/game';
 
 function mapStateToProps(state) {
   return {
-    selectedCard: state.game.players.green.selectedCard,
+    currentTurn: state.game.currentTurn,
+    selectedCard: state.game.players.blue.selectedCard,
     selectedTile: state.game.selectedTile,
-    yourHand: state.game.players.green.hand,
-    opponentsHand: state.game.players.red.hand,
-    yourPieces: state.game.players.green.robotsOnBoard,
-    opponentsPieces: state.game.players.red.robotsOnBoard,
-    yourTurn: state.game.currentTurn === 'green',
-    redMana: state.game.players.red.mana,
-    greenMana: state.game.players.green.mana,
-    yourDeck: state.game.players.green.deck,
-    opponentsDeck: state.game.players.red.deck
+
+    blueHand: state.game.players.blue.hand,
+    orangeHand: state.game.players.orange.hand,
+
+    bluePieces: state.game.players.blue.robotsOnBoard,
+    orangePieces: state.game.players.orange.robotsOnBoard,
+
+    blueMana: state.game.players.blue.mana,
+    orangeMana: state.game.players.orange.mana,
+
+    blueDeck: state.game.players.blue.deck,
+    orangeDeck: state.game.players.orange.deck
   };
 }
 
@@ -63,11 +67,11 @@ class Game extends Component {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <ManaCount mana={this.props.redMana}/>
+            <ManaCount mana={this.props.orangeMana}/>
             <Hand
-              cards={this.props.opponentsHand}
-              isCurrentPlayer={!this.props.yourTurn} />
-            <Deck deck={this.props.opponentsDeck} />
+              cards={this.props.orangeHand}
+              isCurrentPlayer={this.props.currentTurn == 'orange'} />
+            <Deck deck={this.props.orangeDeck} />
           </div>
 
           <Divider style={{marginTop: 10}}/>
@@ -77,18 +81,24 @@ class Game extends Component {
             <Board
               onSelectTile={(hexId, isMovementAction) => {
                 if (isMovementAction) {
-                  if ((this.props.yourTurn && this.props.yourPieces[this.props.selectedTile] && !this.props.yourPieces[this.props.selectedTile].hasMoved) ||
-                    (!this.props.yourTurn && this.props.opponentsPieces[this.props.selectedTile] && !this.props.opponentsPieces[this.props.selectedTile].hasMoved)) {
-                    this.props.onMoveRobot(this.props.selectedTile, hexId);
+                  let tile = this.props.selectedTile;
+                  if (this.props.currentTurn == 'blue') {
+                    if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
+                      this.props.onMoveRobot(tile, hexId);
+                    }
+                  } else {
+                    if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
+                      this.props.onMoveRobot(tile, hexId);
+                    }
                   }
                 } else {
                   this.props.onSelectTile(hexId, isMovementAction);
                 }
               }}
               selectedTile={this.props.selectedTile}
-              yourPieces={this.props.yourTurn ? this.props.yourPieces : this.props.opponentsPieces}
-              opponentsPieces={this.props.yourTurn ? this.props.opponentsPieces : this.props.yourPieces}
-              yourTurn={this.props.yourTurn} />
+              bluePieces={this.props.bluePieces}
+              orangePieces={this.props.orangePieces}
+              currentTurn={this.props.currentTurn} />
             <RaisedButton
               secondary
               label="End Turn"
@@ -111,15 +121,15 @@ class Game extends Component {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <ManaCount mana={this.props.greenMana} />
+            <ManaCount mana={this.props.blueMana} />
             <Hand
               onSelectCard={(index) => {
                 this.props.onSelectCard(index);
               }}
               selectedCard={this.props.selectedCard}
-              isCurrentPlayer={this.props.yourTurn}
-              cards={this.props.yourHand} />
-            <Deck deck={this.props.yourDeck} />
+              isCurrentPlayer={this.props.currentTurn == 'blue'}
+              cards={this.props.blueHand} />
+            <Deck deck={this.props.blueDeck} />
           </div>
         </Paper>
         <Chat />
@@ -129,21 +139,21 @@ class Game extends Component {
 }
 
 Game.propTypes = {
+  currentTurn: React.PropTypes.string,
+  selectedTile: React.PropTypes.string,
   selectedCard: React.PropTypes.number,
   onMoveRobot: React.PropTypes.func,
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
-  opponentsHand: React.PropTypes.array,
-  yourHand: React.PropTypes.array,
-  yourPieces: React.PropTypes.object,
-  opponentsPieces: React.PropTypes.object,
-  yourTurn: React.PropTypes.bool,
-  selectedTile: React.PropTypes.string,
-  redMana: React.PropTypes.object,
-  greenMana: React.PropTypes.object,
-  yourDeck: React.PropTypes.array,
-  opponentsDeck: React.PropTypes.array
+  blueHand: React.PropTypes.array,
+  orangeHand: React.PropTypes.array,
+  bluePieces: React.PropTypes.object,
+  orangePieces: React.PropTypes.object,
+  blueMana: React.PropTypes.object,
+  orangeMana: React.PropTypes.object,
+  blueDeck: React.PropTypes.array,
+  orangeDeck: React.PropTypes.array
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

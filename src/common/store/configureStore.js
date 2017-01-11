@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import DevTools from '../containers/DevTools';
+import multi from 'redux-multi'
 import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
@@ -9,9 +10,9 @@ import rootReducer from '../reducers';
 
 const middlewareBuilder = () => {
   let middleware = {};
-  let universalMiddleware = [thunk, promiseMiddleware];
+  let universalMiddleware = [thunk, promiseMiddleware, multi];
   let allComposeElements = [];
-  
+
   if (process.browser) {
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
       middleware = applyMiddleware(...universalMiddleware);

@@ -1,4 +1,4 @@
-let attackBotCard = {
+const attackBotCard = {
   name: 'Attack Bot',
   img: 'char',
   cost: 1,
@@ -9,7 +9,7 @@ let attackBotCard = {
   abilities: []
 }
 
-let tankBotCard = {
+const tankBotCard = {
   name: 'Tank Bot',
   img: 'char_weapon',
   cost: 3,
@@ -22,7 +22,7 @@ let tankBotCard = {
 
 export const defaultState = {
   players: {
-    green: {
+    blue: {
       health: 20,
       mana: {
         used: 0,
@@ -46,7 +46,7 @@ export const defaultState = {
         }
       }
     },
-    red: {
+    orange: {
       health: 20,
       mana: {
         used: 0,
@@ -67,6 +67,6 @@ export const defaultState = {
       }
     }
   },
-  currentTurn: 'green',
+  currentTurn: 'blue',
   selectedTile: null
 }

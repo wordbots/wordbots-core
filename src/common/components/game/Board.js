@@ -22,6 +22,18 @@ class Board extends Component {
     };
   }
 
+  currentPlayerPieces() {
+    return (this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces);
+  }
+
+  opponentPieces() {
+    return (this.props.currentTurn == 'blue' ? this.props.orangePieces : this.props.bluePieces);
+  }
+
+  allPieces() {
+    return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
+  }
+
   updateHexColors() {
     let hexColors = {};
 
@@ -42,11 +54,11 @@ class Board extends Component {
     });
 
     if (this.props.selectedTile) {
-      let pieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
-      let selectedPiece = pieces[this.props.selectedTile];
+      const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
       if (selectedPiece) {
-        hexColors = this.colorMovementHexes(HexUtils.IDToHex(this.props.selectedTile), hexColors, 1);
+        const hex = HexUtils.IDToHex(this.props.selectedTile);
+        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.card.speed);
       }
     }
 
@@ -54,67 +66,89 @@ class Board extends Component {
   }
 
   setHexColor(hex, color) {
-    const existingHexes = this.state.hexColors;
-    let newHexes = Object.assign({}, existingHexes);
+    const existingHexColors = this.state.hexColors;
+    let newHexColors = Object.assign({}, existingHexColors);
 
-    newHexes[HexUtils.getID(hex)] = color;
+    newHexColors[HexUtils.getID(hex)] = color;
 
-    return newHexes;
+    return newHexColors;
   }
 
-  colorMovementHexes(hex, hexColors, tilesOut) {
-    const existingHexes = hexColors;
-    let newHexes = Object.assign({}, existingHexes);
+  colorMovementHexes(hex, hexColors, speed) {
+    const existingHexColors = hexColors;
+    let newHexColors = Object.assign({}, existingHexColors);
 
-    // TODO: Incorporate tilesOut.
-    this.getValidMovementSpaces().forEach((hex) =>
-      newHexes[hex] = this.getMovementHexColor(hex)
+    this.getValidMovementSpaces(hex, speed).forEach((hex) =>
+      newHexColors[HexUtils.getID(hex)] = 'green'
     );
 
-    return newHexes;
+    this.getValidAttackSpaces(hex, speed).forEach((hex) =>
+      newHexColors[HexUtils.getID(hex)] = 'red'
+    );
+
+    return newHexColors;
   }
 
-  getValidMovementSpaces() {
-    if (!this.props.selectedTile) {
-      return [];
-    } else {
-      let hex = HexUtils.IDToHex(this.props.selectedTile);
+  getValidMovementSpaces(startHex, speed) {
+    let validHexes = [startHex];
 
-      return [
-        HexUtils.coordsToID(hex.q, hex.r - 1, hex.s + 1),
-        HexUtils.coordsToID(hex.q, hex.r + 1, hex.s - 1),
-        HexUtils.coordsToID(hex.q - 1, hex.r + 1, hex.s),
-        HexUtils.coordsToID(hex.q + 1, hex.r - 1, hex.s),
-        HexUtils.coordsToID(hex.q - 1, hex.r, hex.s + 1),
-        HexUtils.coordsToID(hex.q + 1, hex.r, hex.s - 1)
-      ];
+    for (let distance = 0; distance < speed; distance++) {
+      let newHexes = [].concat.apply([], validHexes.map((hex) =>
+        [
+          new Hex(hex.q, hex.r - 1, hex.s + 1),
+          new Hex(hex.q, hex.r + 1, hex.s - 1),
+          new Hex(hex.q - 1, hex.r + 1, hex.s),
+          new Hex(hex.q + 1, hex.r - 1, hex.s),
+          new Hex(hex.q - 1, hex.r, hex.s + 1),
+          new Hex(hex.q + 1, hex.r, hex.s - 1)
+        ].filter((hex) =>
+          !Object.keys(this.allPieces()).includes(HexUtils.getID(hex))
+        )
+      ));
+
+      validHexes = validHexes.concat(newHexes);
     }
+
+    return validHexes.filter((hex) => hex != startHex);
   }
 
-  getMovementHexColor(hexId) {
-    const yourPieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
-    const opponentsPieces = this.props.currentTurn == 'blue' ? this.props.orangePieces : this.props.bluePieces;
+  getValidAttackSpaces(startHex, speed) {
+    let validMoveHexes = this.getValidMovementSpaces(startHex, speed - 1);
 
-    if (yourPieces[hexId]) {
-      return 'bright_' + this.props.currentTurn;
-    } else if (opponentsPieces[hexId]) {
-      return 'red';
-    } else {
-      return 'green';
-    }
+    let potentialAttackHexes = [].concat.apply([], validMoveHexes.map((hex) =>
+      [
+        new Hex(hex.q, hex.r - 1, hex.s + 1),
+        new Hex(hex.q, hex.r + 1, hex.s - 1),
+        new Hex(hex.q - 1, hex.r + 1, hex.s),
+        new Hex(hex.q + 1, hex.r - 1, hex.s),
+        new Hex(hex.q - 1, hex.r, hex.s + 1),
+        new Hex(hex.q + 1, hex.r, hex.s - 1)
+      ]
+    ))
+
+    return potentialAttackHexes.filter((hex) =>
+      Object.keys(this.opponentPieces()).includes(HexUtils.getID(hex))
+    );
   }
 
   onHexClick(hex, event) {
-    const isMovementAction = this.getValidMovementSpaces().includes(HexUtils.getID(hex));
+    let isMovementAction = false;
+
+    const pieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
+    const selectedPiece = pieces[this.props.selectedTile];
+    if (selectedPiece) {
+      const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
+      const speed = selectedPiece.card.speed;
+      const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
+      isMovementAction = validMovementHexes.includes(HexUtils.getID(hex));
+    }
+
     this.props.onSelectTile(HexUtils.getID(hex), isMovementAction);
   }
 
   render() {
     let { grid, config } = this.state;
     let hexColors = this.updateHexColors();
-
-    const yourPieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
-    const opponentsPieces = this.props.currentTurn == 'blue' ? this.props.orangePieces : this.props.bluePieces;
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
@@ -126,8 +160,8 @@ class Board extends Component {
       <div>
         <HexGrid
           hexColors={hexColors}
-          yourPieces={yourPieces}
-          opponentsPieces={opponentsPieces}
+          yourPieces={this.currentPlayerPieces()}
+          opponentsPieces={this.opponentPieces()}
           actions={actions}
           width={config.width}
           height={config.height}

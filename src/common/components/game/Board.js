@@ -34,6 +34,17 @@ class Board extends Component {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
+  getAdjacentHexes(hex) {
+    return [
+      new Hex(hex.q, hex.r - 1, hex.s + 1),
+      new Hex(hex.q, hex.r + 1, hex.s - 1),
+      new Hex(hex.q - 1, hex.r + 1, hex.s),
+      new Hex(hex.q + 1, hex.r - 1, hex.s),
+      new Hex(hex.q - 1, hex.r, hex.s + 1),
+      new Hex(hex.q + 1, hex.r, hex.s - 1)
+    ]
+  }
+
   updateHexColors() {
     let hexColors = {};
 
@@ -65,15 +76,6 @@ class Board extends Component {
     return hexColors
   }
 
-  setHexColor(hex, color) {
-    const existingHexColors = this.state.hexColors;
-    let newHexColors = Object.assign({}, existingHexColors);
-
-    newHexColors[HexUtils.getID(hex)] = color;
-
-    return newHexColors;
-  }
-
   colorMovementHexes(hex, hexColors, speed) {
     const existingHexColors = hexColors;
     let newHexColors = Object.assign({}, existingHexColors);
@@ -94,16 +96,8 @@ class Board extends Component {
 
     for (let distance = 0; distance < speed; distance++) {
       let newHexes = [].concat.apply([], validHexes.map((hex) =>
-        [
-          new Hex(hex.q, hex.r - 1, hex.s + 1),
-          new Hex(hex.q, hex.r + 1, hex.s - 1),
-          new Hex(hex.q - 1, hex.r + 1, hex.s),
-          new Hex(hex.q + 1, hex.r - 1, hex.s),
-          new Hex(hex.q - 1, hex.r, hex.s + 1),
-          new Hex(hex.q + 1, hex.r, hex.s - 1)
-        ].filter((hex) =>
-          !Object.keys(this.allPieces()).includes(HexUtils.getID(hex))
-        )
+        this.getAdjacentHexes(hex)
+          .filter((hex) => !Object.keys(this.allPieces()).includes(HexUtils.getID(hex)))
       ));
 
       validHexes = validHexes.concat(newHexes);
@@ -116,14 +110,7 @@ class Board extends Component {
     let validMoveHexes = this.getValidMovementSpaces(startHex, speed - 1);
 
     let potentialAttackHexes = [].concat.apply([], validMoveHexes.map((hex) =>
-      [
-        new Hex(hex.q, hex.r - 1, hex.s + 1),
-        new Hex(hex.q, hex.r + 1, hex.s - 1),
-        new Hex(hex.q - 1, hex.r + 1, hex.s),
-        new Hex(hex.q + 1, hex.r - 1, hex.s),
-        new Hex(hex.q - 1, hex.r, hex.s + 1),
-        new Hex(hex.q + 1, hex.r, hex.s - 1)
-      ]
+      this.getAdjacentHexes(hex)
     ))
 
     return potentialAttackHexes.filter((hex) =>

@@ -21,17 +21,17 @@ export default function game(state = defaultState, action) {
       }
 
     case gameActions.END_TURN:
-      const turn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
+      newState.currentTurn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
+      return newState;
 
-      const hand = newState.players[turn].hand;
-      const robots = newState.players[turn].robotsOnBoard;
+    case gameActions.START_TURN:
+      const player = newState.players[newState.currentTurn];
 
-      newState.currentTurn = turn;
-      newState.players[turn].mana.total += 1;
-      newState.players[turn].mana.used = 0;
-      newState.players[turn].hand = hand.concat(newState.players[turn].deck.splice(0, 1));
+      player.mana.total += 1;
+      player.mana.used = 0;
+      player.hand = player.hand.concat(player.deck.splice(0, 1));
+      Object.keys(player.robotsOnBoard).forEach((hex) => player.robotsOnBoard[hex].hasMoved = false);
 
-      Object.keys(robots).forEach((hex) => newState.players[turn].robotsOnBoard[hex].hasMoved = false);
       return newState;
 
     case gameActions.SET_SELECTED_CARD:

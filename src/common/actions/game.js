@@ -1,5 +1,6 @@
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const PLACE_CARD = 'PLACE_CARD';
+export const START_TURN = 'START_TURN';
 export const END_TURN = 'END_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
@@ -25,10 +26,16 @@ export function placeCard(tile, card) {
 }
 
 export function passTurn() {
-  return {
-    type: END_TURN,
-    payload: {}
-  }
+  return [
+    {
+      type: END_TURN,
+      payload: {}
+    },
+    {
+      type: START_TURN,
+      payload: {}
+    }
+  ]
 }
 
 export function setSelectedCard(cardId) {

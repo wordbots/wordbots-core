@@ -3,6 +3,7 @@ import { defaultState } from '../store/defaultState';
 
 export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);
+  let player = newState.players[state.currentTurn];
 
   switch (action.type) {
     case gameActions.MOVE_ROBOT:
@@ -17,14 +18,15 @@ export default function game(state = defaultState, action) {
 
     case gameActions.PLACE_CARD:
       let selectedCardIndex = newState.players[state.currentTurn].selectedCard;
-      
-      newState.players[state.currentTurn].robotsOnBoard[action.payload.tile] = {
+
+      player.robotsOnBoard[action.payload.tile] = {
         hasMoved: true,
         card: action.payload.card
       }
 
-      newState.players[state.currentTurn].selectedCard = null;
-      newState.players[state.currentTurn].hand.splice(selectedCardIndex, 1);
+      player.selectedCard = null;
+      player.hand.splice(selectedCardIndex, 1);
+      player.mana.used += player.hand[selectedCardIndex].cost;
 
       return newState;
 
@@ -34,8 +36,6 @@ export default function game(state = defaultState, action) {
       return newState;
 
     case gameActions.START_TURN:
-      const player = newState.players[newState.currentTurn];
-
       player.mana.total += 1;
       player.mana.used = 0;
       player.hand = player.hand.concat(player.deck.splice(0, 1));

@@ -44,7 +44,7 @@ class Card extends Component {
 
     if (this.props.selected) {
       selectedStyle = {
-        border: '5px solid #E57373'
+        boxShadow: 'rgba(255, 35, 35, 0.95) 0px 0px 20px 5px'
       }
     }
 

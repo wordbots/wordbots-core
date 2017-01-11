@@ -20,6 +20,7 @@ class Hand extends Component {
           onCardClick={cardClick}
           key={index}
           cardStats={card}
+          selected={this.props.selectedCard === index}
           visible={this.props.isCurrentPlayer} />
       )
     });
@@ -42,7 +43,8 @@ class Hand extends Component {
 Hand.propTypes = {
   cards: React.PropTypes.array,
   isCurrentPlayer: React.PropTypes.bool,
-  onSelectCard: React.PropTypes.func
+  onSelectCard: React.PropTypes.func,
+  selectedCard: React.PropTypes.number
 }
 
 export default Hand;

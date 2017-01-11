@@ -12,7 +12,6 @@ class Card extends Component {
     super(props);
 
     this.state = {
-      selected: false,
       cardStats: this.props.cardStats,
       shadow: 2
     }
@@ -35,11 +34,18 @@ class Card extends Component {
 
   render() {
     let cardSubtitle = '';
+    let selectedStyle = {};
 
     if (this.state.cardStats.type === 0) {
       cardSubtitle = 'Robot';
     } else {
       cardSubtitle = 'Spell';
+    }
+
+    if (this.props.selected) {
+      selectedStyle = {
+        border: '5px solid #E57373'
+      }
     }
 
     if (!this.props.visible) {
@@ -66,7 +72,7 @@ class Card extends Component {
               onMouseOver={this.onMouseOver}
               onMouseOut={this.onMouseOut}
               zDepth={this.state.shadow}
-              style={{
+              style={Object.assign({
                 width: 140,
                 height: 200,
                 marginRight: 10,
@@ -75,7 +81,7 @@ class Card extends Component {
                 flexDirection: 'column',
                 userSelect: 'none',
                 cursor: 'pointer'
-            }}>
+            }, selectedStyle)}>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
                 title={this.state.cardStats.name}
@@ -109,6 +115,7 @@ class Card extends Component {
 Card.propTypes = {
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
+  selected: React.PropTypes.bool,
   onCardClick: React.PropTypes.func
 }
 

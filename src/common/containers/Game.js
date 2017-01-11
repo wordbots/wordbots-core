@@ -18,8 +18,10 @@ import * as gameActions from '../actions/game';
 function mapStateToProps(state) {
   return {
     currentTurn: state.game.currentTurn,
-    selectedCard: state.game.players.blue.selectedCard,
     selectedTile: state.game.selectedTile,
+
+    blueSelectedCard: state.game.players.blue.selectedCard,
+    orangeSelectedCard: state.game.players.orange.selectedCard,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,
@@ -69,8 +71,12 @@ class Game extends Component {
           }}>
             <ManaCount mana={this.props.orangeMana}/>
             <Hand
-              cards={this.props.orangeHand}
-              isCurrentPlayer={this.props.currentTurn == 'orange'} />
+              onSelectCard={(index) => {
+                this.props.onSelectCard(index);
+              }}
+              selectedCard={this.props.orangeSelectedCard}
+              isCurrentPlayer={this.props.currentTurn == 'orange'} 
+              cards={this.props.orangeHand} />
             <Deck deck={this.props.orangeDeck} />
           </div>
 
@@ -126,7 +132,7 @@ class Game extends Component {
               onSelectCard={(index) => {
                 this.props.onSelectCard(index);
               }}
-              selectedCard={this.props.selectedCard}
+              selectedCard={this.props.blueSelectedCard}
               isCurrentPlayer={this.props.currentTurn == 'blue'}
               cards={this.props.blueHand} />
             <Deck deck={this.props.blueDeck} />
@@ -153,7 +159,9 @@ Game.propTypes = {
   blueMana: React.PropTypes.object,
   orangeMana: React.PropTypes.object,
   blueDeck: React.PropTypes.array,
-  orangeDeck: React.PropTypes.array
+  orangeDeck: React.PropTypes.array,
+  orangeSelectedCard: React.PropTypes.number,
+  blueSelectedCard: React.PropTypes.number
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

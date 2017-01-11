@@ -12,16 +12,25 @@ export default function game(state = defaultState, action) {
       newState.selectedTile = null;
       delete newState.players[state.currentTurn].robotsOnBoard[action.payload.from];
       newState.players[state.currentTurn].robotsOnBoard[action.payload.to] = movingRobot;
+
       return newState;
 
     case gameActions.PLACE_CARD:
+      let selectedCardIndex = newState.players[state.currentTurn].selectedCard;
+      
       newState.players[state.currentTurn].robotsOnBoard[action.payload.tile] = {
         hasMoved: true,
         card: action.payload.card
       }
 
+      newState.players[state.currentTurn].selectedCard = null;
+      newState.players[state.currentTurn].hand.splice(selectedCardIndex, 1);
+
+      return newState;
+
     case gameActions.END_TURN:
       newState.currentTurn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
+
       return newState;
 
     case gameActions.START_TURN:

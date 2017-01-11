@@ -35,11 +35,15 @@ export default function game(state = defaultState, action) {
       return newState;
 
     case gameActions.SET_SELECTED_CARD:
+      newState.selectedTile = null;
       newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
+
       return newState;
 
     case gameActions.SET_SELECTED_TILE:
+      newState.players[state.currentTurn].selectedCard = null;
       newState.selectedTile = action.payload.selectedTile;
+      
       return newState;
 
     default:

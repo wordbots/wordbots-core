@@ -68,5 +68,7 @@ export const defaultState = {
     }
   },
   currentTurn: 'blue',
-  selectedTile: null
+  selectedTile: null,
+  placingRobot: false,
+  status: ''
 }

@@ -45,8 +45,46 @@ class Board extends Component {
     ]
   }
 
+  getPlayerPlacementTiles() {
+    if (this.props.currentTurn === 'blue') {
+      return [
+        new Hex(-3, -1, 4),
+        new Hex(-3, 0, 3),
+        new Hex(-4, 1, 3)
+      ];
+    } else {
+      return [
+        new Hex(4, -1, -3),
+        new Hex(3, 0, -3),
+        new Hex(3, 1, -4)
+      ];
+    }
+  }
+
   updateHexColors() {
     let hexColors = {};
+
+    if (this.props.placingRobot) {
+      this.getPlayerPlacementTiles().forEach((hex) => {
+        if (this.props.currentTurn == 'blue') {
+          if (this.props.bluePieces[hex]) {
+            hexColors[HexUtils.getID(hex)]  = 'blue';
+          } else if (this.props.orangePieces[hex]) {
+            hexColors[HexUtils.getID(hex)]  = 'red';
+          } else {
+            hexColors[HexUtils.getID(hex)]  = 'green';
+          }
+        } else {
+          if (this.props.bluePieces[hex]) {
+            hexColors[HexUtils.getID(hex)]  = 'red';
+          } else if (this.props.orangePieces[hex]) {
+            hexColors[HexUtils.getID(hex)]  = 'orange';
+          } else {
+            hexColors[HexUtils.getID(hex)]  = 'green';
+          }
+        }
+      });
+    }
 
     Object.keys(this.props.bluePieces).forEach((hex) => {
       if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].hasMoved) {
@@ -119,18 +157,28 @@ class Board extends Component {
   }
 
   onHexClick(hex, event) {
-    let isMovementAction = false;
-
+    let action = '';
     const pieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
     const selectedPiece = pieces[this.props.selectedTile];
+
+    if (this.props.placingRobot) {
+      this.getPlayerPlacementTiles().forEach((placementHex) => {
+        if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
+            !this.props.orangePieces[HexUtils.getID(hex)] && 
+            !this.props.bluePieces[HexUtils.getID(hex)]) {
+          action = 'place'
+        }
+      });
+    }
+
     if (selectedPiece) {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
       const speed = selectedPiece.card.speed;
       const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
-      isMovementAction = validMovementHexes.includes(HexUtils.getID(hex));
+      action = validMovementHexes.includes(HexUtils.getID(hex)) ? 'move' : action;
     }
 
-    this.props.onSelectTile(HexUtils.getID(hex), isMovementAction);
+    this.props.onSelectTile(HexUtils.getID(hex), action);
   }
 
   render() {
@@ -164,7 +212,8 @@ Board.propTypes = {
   orangePieces: React.PropTypes.object,
   currentTurn: React.PropTypes.string,
   onSelectTile: React.PropTypes.func,
-  selectedTile: React.PropTypes.string
+  selectedTile: React.PropTypes.string,
+  placingRobot: React.PropTypes.bool
 }
 
 export default Board;

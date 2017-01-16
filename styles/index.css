@@ -137,3 +137,15 @@ svg path {
   transform: translate(0%);
   transition: transform 500ms ease-in-out;
 }
+
+.example-leave {
+  transform: translate(-500%);
+  opacity: 0;
+}
+
+.example-leave.example-leave-active {
+  transform: translate(0%);
+  opacity: 1;
+  transition: transform 500ms ease-in-out;
+  transition: opacity 500ms ease-in-out;
+}

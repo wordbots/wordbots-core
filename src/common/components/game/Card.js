@@ -12,7 +12,6 @@ class Card extends Component {
     super(props);
 
     this.state = {
-      cardStats: this.props.cardStats,
       shadow: 2
     }
 
@@ -36,7 +35,7 @@ class Card extends Component {
     let cardSubtitle = '';
     let selectedStyle = {};
 
-    if (this.state.cardStats.type === 0) {
+    if (this.props.cardStats.type === 0) {
       cardSubtitle = 'Robot';
     } else {
       cardSubtitle = 'Spell';
@@ -55,7 +54,7 @@ class Card extends Component {
     } else {
       return (
         <Badge
-          badgeContent={this.state.cardStats.cost}
+          badgeContent={this.props.cardStats.cost}
           badgeStyle={{
             top: 12, 
             right: 20, 
@@ -84,7 +83,7 @@ class Card extends Component {
             }, selectedStyle)}>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
-                title={this.state.cardStats.name}
+                title={this.props.cardStats.name}
                 subtitle={cardSubtitle}/>
               <Divider/>
               <div style={{
@@ -99,9 +98,9 @@ class Card extends Component {
                   justifyContent: 'space-between',
                   padding: 10
                 }}>
-                  <CardStat type="attack" value={this.state.cardStats.attack}/>
-                  <CardStat type="speed" value={this.state.cardStats.speed}/>
-                  <CardStat type="health" value={this.state.cardStats.health}/>
+                  <CardStat type="attack" value={this.props.cardStats.attack}/>
+                  <CardStat type="speed" value={this.props.cardStats.speed}/>
+                  <CardStat type="health" value={this.props.cardStats.health}/>
                 </CardText>
               </div>
             </Paper>

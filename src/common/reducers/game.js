@@ -25,8 +25,11 @@ export default function game(state = defaultState, action) {
       }
 
       player.selectedCard = null;
-      player.hand.splice(selectedCardIndex, 1);
       player.mana.used += player.hand[selectedCardIndex].cost;
+      player.hand.splice(selectedCardIndex, 1);
+
+      newState.placingRobot = false;
+      newState.status = '';
 
       return newState;
 
@@ -44,14 +47,33 @@ export default function game(state = defaultState, action) {
       return newState;
 
     case gameActions.SET_SELECTED_CARD:
+      let selectedCard = newState.players[state.currentTurn].hand[action.payload.selectedCard];
+      let mana = newState.players[state.currentTurn].mana;
+
       newState.selectedTile = null;
       newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
+
+      if (selectedCard.cost <= mana.total - mana.used) {
+        if (selectedCard.type === 0) {
+          newState.placingRobot = true;
+          newState.status = 'Select an available tile to place this robot.';
+        } else {
+          // Playing spell logic
+          newState.placingRobot = false;
+          newState.status = '';
+        }
+      } else {
+        newState.placingRobot = false;
+        newState.status = 'You do not have enough mana to play this card.';
+      }
 
       return newState;
 
     case gameActions.SET_SELECTED_TILE:
       newState.players[state.currentTurn].selectedCard = null;
       newState.selectedTile = action.payload.selectedTile;
+      newState.placingRobot = false;
+      newState.status = '';
       
       return newState;
 

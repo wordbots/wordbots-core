@@ -1,3 +1,25 @@
+const blueCoreCard = {
+  name: 'Core',
+  img: 'core_blue',
+  cost: 0,
+  type: 0,
+  health: 20,
+  speed: 0,
+  attack: 0,
+  abilities: []
+}
+
+const orangeCoreCard = {
+  name: 'Core',
+  img: 'core_orange',
+  cost: 0,
+  type: 0,
+  health: 20,
+  speed: 0,
+  attack: 0,
+  abilities: []
+}
+
 const attackBotCard = {
   name: 'Attack Bot',
   img: 'char',
@@ -32,6 +54,10 @@ export const defaultState = {
       selectedCard: null,
       deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
+        '-4,0,4': {
+          hasMoved: false,
+          card: blueCoreCard
+        },
         '-1,-3,4': {
           hasMoved: false,
           card: attackBotCard
@@ -56,6 +82,10 @@ export const defaultState = {
       selectedCard: null,
       deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
+        '4,0,-4': {
+          hasMoved: false,
+          card: orangeCoreCard
+        },
         '0,-4,4': {
           hasMoved: false,
           card: tankBotCard

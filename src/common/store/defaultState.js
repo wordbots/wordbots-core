@@ -100,5 +100,8 @@ export const defaultState = {
   currentTurn: 'blue',
   selectedTile: null,
   placingRobot: false,
-  status: ''
+  status: {
+    message: '',
+    type: ''
+  }
 }

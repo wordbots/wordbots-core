@@ -65,6 +65,14 @@ class Game extends Component {
   }
 
   render() {
+    let statusColor = '#444444';
+
+    if (this.props.status.type === 'error') {
+      statusColor = '#F44336';
+    } else if (this.props.status.type === 'warning') {
+      statusColor = '#FFEB3B';
+    }
+
     return (
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
@@ -98,8 +106,8 @@ class Game extends Component {
               height: 20,
               fontFamily: 'Luckiest Guy',
               fontSize: 20,
-              color: '#444444'
-            }}>{this.props.status}</div>
+              color: statusColor
+            }}>{this.props.status.message}</div>
             <Board
               onSelectTile={(hexId, action) => {
                 if (action === 'move') {
@@ -171,7 +179,7 @@ Game.propTypes = {
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
   placingRobot: React.PropTypes.bool,
-  status: React.PropTypes.string,
+  status: React.PropTypes.object,
 
   blueHand: React.PropTypes.array,
   orangeHand: React.PropTypes.array,

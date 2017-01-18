@@ -29,7 +29,7 @@ export default function game(state = defaultState, action) {
       player.hand.splice(selectedCardIndex, 1);
 
       newState.placingRobot = false;
-      newState.status = '';
+      newState.status.message = '';
 
       return newState;
 
@@ -56,15 +56,17 @@ export default function game(state = defaultState, action) {
       if (selectedCard.cost <= mana.total - mana.used) {
         if (selectedCard.type === 0) {
           newState.placingRobot = true;
-          newState.status = 'Select an available tile to place this robot.';
+          newState.status.message = 'Select an available tile to place this robot.';
+          newState.status.type = 'text';
         } else {
           // Playing spell logic
           newState.placingRobot = false;
-          newState.status = '';
+          newState.status.message = '';
         }
       } else {
         newState.placingRobot = false;
-        newState.status = 'You do not have enough mana to play this card.';
+        newState.status.message = 'You do not have enough mana to play this card.';
+        newState.status.type = 'error';
       }
 
       return newState;

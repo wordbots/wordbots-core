@@ -92,11 +92,13 @@ class Game extends Component {
             <div style={{
               display: 'inline-block',
               position: 'absolute',
-              left: '0',
-              top: '0',
-              bottom: '0',
+              left: 0,
+              bottom: 16,
               margin: 'auto',
-              height: '20px'
+              height: 20,
+              fontFamily: 'Luckiest Guy',
+              fontSize: 20,
+              color: '#444444'
             }}>{this.props.status}</div>
             <Board
               onSelectTile={(hexId, action) => {

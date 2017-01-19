@@ -12,8 +12,6 @@ class Card extends Component {
     super(props);
 
     this.state = {
-      selected: false,
-      cardStats: this.props.cardStats,
       shadow: 2
     }
 
@@ -35,11 +33,24 @@ class Card extends Component {
 
   render() {
     let cardSubtitle = '';
+    let selectedStyle = {};
 
-    if (this.state.cardStats.type === 0) {
+    if (this.props.cardStats.type === 0) {
       cardSubtitle = 'Robot';
     } else {
       cardSubtitle = 'Spell';
+    }
+
+    if (this.props.selected) {
+      if (this.props.status.type === 'error') {
+        selectedStyle = {
+          boxShadow: 'rgba(255, 35, 35, 0.95) 0px 0px 20px 5px'
+        }
+      } else {
+        selectedStyle = {
+          boxShadow: 'rgba(27, 134, 27, 0.95) 0px 0px 20px 5px'
+        }
+      }
     }
 
     if (!this.props.visible) {
@@ -49,7 +60,7 @@ class Card extends Component {
     } else {
       return (
         <Badge
-          badgeContent={this.state.cardStats.cost}
+          badgeContent={this.props.cardStats.cost}
           badgeStyle={{
             top: 12, 
             right: 20, 
@@ -66,7 +77,7 @@ class Card extends Component {
               onMouseOver={this.onMouseOver}
               onMouseOut={this.onMouseOut}
               zDepth={this.state.shadow}
-              style={{
+              style={Object.assign({
                 width: 140,
                 height: 200,
                 marginRight: 10,
@@ -75,10 +86,10 @@ class Card extends Component {
                 flexDirection: 'column',
                 userSelect: 'none',
                 cursor: 'pointer'
-            }}>
+            }, selectedStyle)}>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
-                title={this.state.cardStats.name}
+                title={this.props.cardStats.name}
                 subtitle={cardSubtitle}/>
               <Divider/>
               <div style={{
@@ -93,9 +104,9 @@ class Card extends Component {
                   justifyContent: 'space-between',
                   padding: 10
                 }}>
-                  <CardStat type="attack" value={this.state.cardStats.attack}/>
-                  <CardStat type="speed" value={this.state.cardStats.speed}/>
-                  <CardStat type="health" value={this.state.cardStats.health}/>
+                  <CardStat type="attack" value={this.props.cardStats.attack}/>
+                  <CardStat type="speed" value={this.props.cardStats.speed}/>
+                  <CardStat type="health" value={this.props.cardStats.health}/>
                 </CardText>
               </div>
             </Paper>
@@ -109,7 +120,9 @@ class Card extends Component {
 Card.propTypes = {
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
-  onCardClick: React.PropTypes.func
+  selected: React.PropTypes.bool,
+  onCardClick: React.PropTypes.func,
+  status: React.PropTypes.object
 }
 
 export default Card;

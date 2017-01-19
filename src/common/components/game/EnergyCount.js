@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/lib/paper';
 
-class ManaCount extends Component {
+class EnergyCount extends Component {
   constructor(props) {
     super(props);
   }
@@ -27,15 +27,15 @@ class ManaCount extends Component {
             color: 'white',
             fontFamily: 'Luckiest Guy'
           }}>
-          {this.props.mana.total - this.props.mana.used} / {this.props.mana.total}
+          {this.props.energy.total - this.props.energy.used} / {this.props.energy.total}
         </div>
       </Paper>
     );
   }
 }
 
-ManaCount.propTypes = {
-  mana: React.PropTypes.object
+EnergyCount.propTypes = {
+  energy: React.PropTypes.object
 }
 
-export default ManaCount;
+export default EnergyCount;

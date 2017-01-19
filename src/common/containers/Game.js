@@ -5,7 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import Hand from '../components/game/Hand';
-import ManaCount from '../components/game/ManaCount';
+import EnergyCount from '../components/game/EnergyCount';
 import Deck from '../components/game/Deck';
 
 import Paper from 'material-ui/lib/paper';
@@ -18,8 +18,12 @@ import * as gameActions from '../actions/game';
 function mapStateToProps(state) {
   return {
     currentTurn: state.game.currentTurn,
-    selectedCard: state.game.players.blue.selectedCard,
     selectedTile: state.game.selectedTile,
+    placingRobot: state.game.placingRobot,
+    status: state.game.status,
+
+    blueSelectedCard: state.game.players.blue.selectedCard,
+    orangeSelectedCard: state.game.players.orange.selectedCard,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,
@@ -27,8 +31,8 @@ function mapStateToProps(state) {
     bluePieces: state.game.players.blue.robotsOnBoard,
     orangePieces: state.game.players.orange.robotsOnBoard,
 
-    blueMana: state.game.players.blue.mana,
-    orangeMana: state.game.players.orange.mana,
+    blueEnergy: state.game.players.blue.energy,
+    orangeEnergy: state.game.players.orange.energy,
 
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck
@@ -39,6 +43,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
+    },
+    onPlaceRobot: (tileHexId, card) => {
+      dispatch(gameActions.placeCard(tileHexId, card));
     },
     onPassTurn: () => {
       dispatch(gameActions.passTurn());
@@ -58,6 +65,26 @@ class Game extends Component {
   }
 
   render() {
+    let statusStyle = {
+      color: '#444444',
+      top: 0,
+      bottom: 0
+    };
+
+    if (this.props.status.type === 'error') {
+      statusStyle.color = '#F44336';
+    } else if (this.props.status.type === 'warning') {
+      statusStyle.color = '#FFEB3B';
+    }
+
+    if (this.props.currentTurn == 'orange') {
+      statusStyle.top = 16;
+      statusStyle.bottom = null;
+    } else {
+      statusStyle.bottom = 16;
+      statusStyle.top = null;
+    }
+
     return (
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
@@ -67,20 +94,35 @@ class Game extends Component {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <ManaCount mana={this.props.orangeMana}/>
+            <EnergyCount energy={this.props.orangeEnergy}/>
             <Hand
+              onSelectCard={(index) => {
+                this.props.onSelectCard(index);
+              }}
+              selectedCard={this.props.orangeSelectedCard}
+              isCurrentPlayer={this.props.currentTurn == 'orange'} 
               cards={this.props.orangeHand}
-              isCurrentPlayer={this.props.currentTurn == 'orange'} />
+              status={this.props.status} />
             <Deck deck={this.props.orangeDeck} />
           </div>
 
           <Divider style={{marginTop: 10}}/>
+
           <div style={{
             position: 'relative'
           }}>
+            <div style={Object.assign({
+              display: 'inline-block',
+              position: 'absolute',
+              left: 0,
+              margin: 'auto',
+              height: 20,
+              fontFamily: 'Luckiest Guy',
+              fontSize: 20
+            }, statusStyle)}>{this.props.status.message}</div>
             <Board
-              onSelectTile={(hexId, isMovementAction) => {
-                if (isMovementAction) {
+              onSelectTile={(hexId, action) => {
+                if (action === 'move') {
                   let tile = this.props.selectedTile;
                   if (this.props.currentTurn == 'blue') {
                     if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
@@ -91,14 +133,21 @@ class Game extends Component {
                       this.props.onMoveRobot(tile, hexId);
                     }
                   }
+                } else if (action === 'place') {
+                  if (this.props.currentTurn == 'blue') {
+                    this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
+                  } else {
+                    this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.orangeSelectedCard]);
+                  }
                 } else {
-                  this.props.onSelectTile(hexId, isMovementAction);
+                  this.props.onSelectTile(hexId);
                 }
               }}
               selectedTile={this.props.selectedTile}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
-              currentTurn={this.props.currentTurn} />
+              currentTurn={this.props.currentTurn} 
+              placingRobot={this.props.placingRobot} />
             <RaisedButton
               secondary
               label="End Turn"
@@ -114,6 +163,7 @@ class Game extends Component {
                 this.props.onPassTurn();
               }} />
           </div>
+
           <Divider style={{marginBottom: 10}}/>
 
           <div style={{
@@ -121,14 +171,15 @@ class Game extends Component {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <ManaCount mana={this.props.blueMana} />
+            <EnergyCount energy={this.props.blueEnergy} />
             <Hand
               onSelectCard={(index) => {
                 this.props.onSelectCard(index);
               }}
-              selectedCard={this.props.selectedCard}
+              selectedCard={this.props.blueSelectedCard}
               isCurrentPlayer={this.props.currentTurn == 'blue'}
-              cards={this.props.blueHand} />
+              cards={this.props.blueHand}
+              status={this.props.status} />
             <Deck deck={this.props.blueDeck} />
           </div>
         </Paper>
@@ -141,19 +192,29 @@ class Game extends Component {
 Game.propTypes = {
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
-  selectedCard: React.PropTypes.number,
-  onMoveRobot: React.PropTypes.func,
-  onSelectCard: React.PropTypes.func,
-  onSelectTile: React.PropTypes.func,
-  onPassTurn: React.PropTypes.func,
+  placingRobot: React.PropTypes.bool,
+  status: React.PropTypes.object,
+
   blueHand: React.PropTypes.array,
   orangeHand: React.PropTypes.array,
+
   bluePieces: React.PropTypes.object,
   orangePieces: React.PropTypes.object,
-  blueMana: React.PropTypes.object,
-  orangeMana: React.PropTypes.object,
+
+  blueEnergy: React.PropTypes.object,
+  orangeEnergy: React.PropTypes.object,
+
   blueDeck: React.PropTypes.array,
-  orangeDeck: React.PropTypes.array
+  orangeDeck: React.PropTypes.array,
+
+  blueSelectedCard: React.PropTypes.number,
+  orangeSelectedCard: React.PropTypes.number,
+
+  onMoveRobot: React.PropTypes.func,
+  onPlaceRobot: React.PropTypes.func,
+  onSelectCard: React.PropTypes.func,
+  onSelectTile: React.PropTypes.func,
+  onPassTurn: React.PropTypes.func
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

@@ -5,7 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import Hand from '../components/game/Hand';
-import ManaCount from '../components/game/ManaCount';
+import EnergyCount from '../components/game/EnergyCount';
 import Deck from '../components/game/Deck';
 
 import Paper from 'material-ui/lib/paper';
@@ -31,8 +31,8 @@ function mapStateToProps(state) {
     bluePieces: state.game.players.blue.robotsOnBoard,
     orangePieces: state.game.players.orange.robotsOnBoard,
 
-    blueMana: state.game.players.blue.mana,
-    orangeMana: state.game.players.orange.mana,
+    blueEnergy: state.game.players.blue.energy,
+    orangeEnergy: state.game.players.orange.energy,
 
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck
@@ -65,12 +65,24 @@ class Game extends Component {
   }
 
   render() {
-    let statusColor = '#444444';
+    let statusStyle = {
+      color: '#444444',
+      top: 0,
+      bottom: 0
+    };
 
     if (this.props.status.type === 'error') {
-      statusColor = '#F44336';
+      statusStyle.color = '#F44336';
     } else if (this.props.status.type === 'warning') {
-      statusColor = '#FFEB3B';
+      statusStyle.color = '#FFEB3B';
+    }
+
+    if (this.props.currentTurn == 'orange') {
+      statusStyle.top = 16;
+      statusStyle.bottom = null;
+    } else {
+      statusStyle.bottom = 16;
+      statusStyle.top = null;
     }
 
     return (
@@ -82,7 +94,7 @@ class Game extends Component {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <ManaCount mana={this.props.orangeMana}/>
+            <EnergyCount energy={this.props.orangeEnergy}/>
             <Hand
               onSelectCard={(index) => {
                 this.props.onSelectCard(index);
@@ -94,20 +106,19 @@ class Game extends Component {
           </div>
 
           <Divider style={{marginTop: 10}}/>
+
           <div style={{
             position: 'relative'
           }}>
-            <div style={{
+            <div style={Object.assign({
               display: 'inline-block',
               position: 'absolute',
               left: 0,
-              bottom: 16,
               margin: 'auto',
               height: 20,
               fontFamily: 'Luckiest Guy',
-              fontSize: 20,
-              color: statusColor
-            }}>{this.props.status.message}</div>
+              fontSize: 20
+            }, statusStyle)}>{this.props.status.message}</div>
             <Board
               onSelectTile={(hexId, action) => {
                 if (action === 'move') {
@@ -151,6 +162,7 @@ class Game extends Component {
                 this.props.onPassTurn();
               }} />
           </div>
+
           <Divider style={{marginBottom: 10}}/>
 
           <div style={{
@@ -158,7 +170,7 @@ class Game extends Component {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <ManaCount mana={this.props.blueMana} />
+            <EnergyCount energy={this.props.blueEnergy} />
             <Hand
               onSelectCard={(index) => {
                 this.props.onSelectCard(index);
@@ -187,8 +199,8 @@ Game.propTypes = {
   bluePieces: React.PropTypes.object,
   orangePieces: React.PropTypes.object,
 
-  blueMana: React.PropTypes.object,
-  orangeMana: React.PropTypes.object,
+  blueEnergy: React.PropTypes.object,
+  orangeEnergy: React.PropTypes.object,
 
   blueDeck: React.PropTypes.array,
   orangeDeck: React.PropTypes.array,

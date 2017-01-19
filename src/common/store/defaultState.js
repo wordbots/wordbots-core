@@ -46,7 +46,7 @@ export const defaultState = {
   players: {
     blue: {
       health: 20,
-      mana: {
+      energy: {
         used: 0,
         total: 1
       },
@@ -74,7 +74,7 @@ export const defaultState = {
     },
     orange: {
       health: 20,
-      mana: {
+      energy: {
         used: 0,
         total: 1
       },

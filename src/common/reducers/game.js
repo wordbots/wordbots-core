@@ -25,7 +25,7 @@ export default function game(state = defaultState, action) {
       }
 
       player.selectedCard = null;
-      player.mana.used += player.hand[selectedCardIndex].cost;
+      player.energy.used += player.hand[selectedCardIndex].cost;
       player.hand.splice(selectedCardIndex, 1);
 
       newState.placingRobot = false;
@@ -36,11 +36,15 @@ export default function game(state = defaultState, action) {
     case gameActions.END_TURN:
       newState.currentTurn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
 
+      player.selectedCard = null;
+      newState.placingRobot = false;
+      newState.status.message = '';
+
       return newState;
 
     case gameActions.START_TURN:
-      player.mana.total += 1;
-      player.mana.used = 0;
+      player.energy.total += 1;
+      player.energy.used = 0;
       player.hand = player.hand.concat(player.deck.splice(0, 1));
       Object.keys(player.robotsOnBoard).forEach((hex) => player.robotsOnBoard[hex].hasMoved = false);
 
@@ -48,12 +52,12 @@ export default function game(state = defaultState, action) {
 
     case gameActions.SET_SELECTED_CARD:
       let selectedCard = newState.players[state.currentTurn].hand[action.payload.selectedCard];
-      let mana = newState.players[state.currentTurn].mana;
+      let energy = newState.players[state.currentTurn].energy;
 
       newState.selectedTile = null;
       newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
 
-      if (selectedCard.cost <= mana.total - mana.used) {
+      if (selectedCard.cost <= energy.total - energy.used) {
         if (selectedCard.type === 0) {
           newState.placingRobot = true;
           newState.status.message = 'Select an available tile to place this robot.';
@@ -65,7 +69,7 @@ export default function game(state = defaultState, action) {
         }
       } else {
         newState.placingRobot = false;
-        newState.status.message = 'You do not have enough mana to play this card.';
+        newState.status.message = 'You do not have enough energy to play this card.';
         newState.status.type = 'error';
       }
 

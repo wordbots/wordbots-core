@@ -42,8 +42,14 @@ class Card extends Component {
     }
 
     if (this.props.selected) {
-      selectedStyle = {
-        boxShadow: 'rgba(255, 35, 35, 0.95) 0px 0px 20px 5px'
+      if (this.props.status.type === 'error') {
+        selectedStyle = {
+          boxShadow: 'rgba(255, 35, 35, 0.95) 0px 0px 20px 5px'
+        }
+      } else {
+        selectedStyle = {
+          boxShadow: 'rgba(27, 134, 27, 0.95) 0px 0px 20px 5px'
+        }
       }
     }
 
@@ -115,7 +121,8 @@ Card.propTypes = {
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
-  onCardClick: React.PropTypes.func
+  onCardClick: React.PropTypes.func,
+  status: React.PropTypes.object
 }
 
 export default Card;

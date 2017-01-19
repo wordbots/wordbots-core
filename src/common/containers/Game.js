@@ -101,7 +101,8 @@ class Game extends Component {
               }}
               selectedCard={this.props.orangeSelectedCard}
               isCurrentPlayer={this.props.currentTurn == 'orange'} 
-              cards={this.props.orangeHand} />
+              cards={this.props.orangeHand}
+              status={this.props.status} />
             <Deck deck={this.props.orangeDeck} />
           </div>
 
@@ -177,7 +178,8 @@ class Game extends Component {
               }}
               selectedCard={this.props.blueSelectedCard}
               isCurrentPlayer={this.props.currentTurn == 'blue'}
-              cards={this.props.blueHand} />
+              cards={this.props.blueHand}
+              status={this.props.status} />
             <Deck deck={this.props.blueDeck} />
           </div>
         </Paper>

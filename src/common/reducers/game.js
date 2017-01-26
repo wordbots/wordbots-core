@@ -55,32 +55,48 @@ export default function game(state = defaultState, action) {
       let energy = newState.players[state.currentTurn].energy;
 
       newState.selectedTile = null;
-      newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
 
-      if (selectedCard.cost <= energy.total - energy.used) {
-        if (selectedCard.type === 0) {
-          newState.placingRobot = true;
-          newState.status.message = 'Select an available tile to place this robot.';
-          newState.status.type = 'text';
-        } else {
-          // Playing spell logic
-          newState.placingRobot = false;
-          newState.status.message = '';
-        }
-      } else {
+      if (newState.players[state.currentTurn].selectedCard == action.payload.selectedCard) {
+        // Deselect
+        newState.players[state.currentTurn].selectedCard = null;
         newState.placingRobot = false;
-        newState.status.message = 'You do not have enough energy to play this card.';
-        newState.status.type = 'error';
+        newState.status.message = '';
+      } else {
+        // Select
+        newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
+
+        if (selectedCard.cost <= energy.total - energy.used) {
+          if (selectedCard.type === 0) {
+            newState.placingRobot = true;
+            newState.status.message = 'Select an available tile to place this robot.';
+            newState.status.type = 'text';
+          } else {
+            // Playing spell logic
+            newState.placingRobot = false;
+            newState.status.message = '';
+          }
+        } else {
+          newState.placingRobot = false;
+          newState.status.message = 'You do not have enough energy to play this card.';
+          newState.status.type = 'error';
+        }
       }
 
       return newState;
 
     case gameActions.SET_SELECTED_TILE:
       newState.players[state.currentTurn].selectedCard = null;
-      newState.selectedTile = action.payload.selectedTile;
       newState.placingRobot = false;
-      newState.status = '';
-      
+      newState.status.message = '';
+
+      if (newState.selectedTile == action.payload.selectedTile) {
+        // Deselect
+        newState.selectedTile = null;
+      } else {
+        // Select
+        newState.selectedTile = action.payload.selectedTile;
+      }
+
       return newState;
 
     default:

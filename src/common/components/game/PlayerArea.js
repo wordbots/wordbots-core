@@ -4,7 +4,7 @@ import Hand from './Hand';
 import EnergyCount from './EnergyCount';
 import Deck from './Deck';
 
-class PlayerBoard extends Component {
+class PlayerArea extends Component {
   constructor(props) {
     super(props);
   }
@@ -31,7 +31,7 @@ class PlayerBoard extends Component {
   }
 }
 
-PlayerBoard.propTypes = {
+PlayerArea.propTypes = {
   energy: React.PropTypes.object,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
@@ -41,4 +41,4 @@ PlayerBoard.propTypes = {
   deck: React.PropTypes.array
 }
 
-export default PlayerBoard;
+export default PlayerArea;

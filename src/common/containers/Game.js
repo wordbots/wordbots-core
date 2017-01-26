@@ -4,7 +4,7 @@ import ReactTooltip from 'react-tooltip';
 
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
-import PlayerBoard from '../components/game/PlayerBoard';
+import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 
 import Paper from 'material-ui/lib/paper';
@@ -99,7 +99,7 @@ class Game extends Component {
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20}}>
-          <PlayerBoard
+          <PlayerArea
             energy={this.props.orangeEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.orangeSelectedCard}
@@ -132,7 +132,7 @@ class Game extends Component {
 
           <Divider style={{marginBottom: 10}}/>
 
-          <PlayerBoard
+          <PlayerArea
             energy={this.props.blueEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.blueSelectedCard}

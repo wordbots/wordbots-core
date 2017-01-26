@@ -21,7 +21,8 @@ export default function game(state = defaultState, action) {
 
       player.robotsOnBoard[action.payload.tile] = {
         hasMoved: true,
-        card: action.payload.card
+        card: action.payload.card,
+        stats: action.payload.card.stats
       }
 
       player.selectedCard = null;

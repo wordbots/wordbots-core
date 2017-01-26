@@ -4,9 +4,8 @@ import ReactTooltip from 'react-tooltip';
 
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
-import Hand from '../components/game/Hand';
-import EnergyCount from '../components/game/EnergyCount';
-import Deck from '../components/game/Deck';
+import PlayerArea from '../components/game/PlayerArea';
+import Status from '../components/game/Status';
 
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
@@ -64,124 +63,83 @@ class Game extends Component {
     super(props);
   }
 
-  render() {
-    let statusStyle = {
-      color: '#444444',
-      top: 0,
-      bottom: 0
-    };
-
-    if (this.props.status.type === 'error') {
-      statusStyle.color = '#F44336';
-    } else if (this.props.status.type === 'warning') {
-      statusStyle.color = '#FFEB3B';
-    }
-
-    if (this.props.currentTurn == 'orange') {
-      statusStyle.top = 16;
-      statusStyle.bottom = null;
+  placePiece(hexId) {
+    let tile = this.props.selectedTile;
+    if (this.props.currentTurn == 'blue') {
+      if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
+        this.props.onMoveRobot(tile, hexId);
+      }
     } else {
-      statusStyle.bottom = 16;
-      statusStyle.top = null;
+      if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
+        this.props.onMoveRobot(tile, hexId);
+      }
     }
+  }
 
+  movePiece(hexId) {
+    if (this.props.currentTurn == 'blue') {
+      this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
+    } else {
+      this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.orangeSelectedCard]);
+    }
+  }
+
+  onSelectTile(hexId, action) {
+    if (action === 'move') {
+      this.placePiece(hexId);
+    } else if (action === 'place') {
+      this.movePiece(hexId);
+    } else {
+      this.props.onSelectTile(hexId);
+    }
+  }
+
+  render() {
     return (
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20}}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <EnergyCount energy={this.props.orangeEnergy}/>
-            <Hand
-              onSelectCard={(index) => {
-                this.props.onSelectCard(index);
-              }}
-              selectedCard={this.props.orangeSelectedCard}
-              isCurrentPlayer={this.props.currentTurn == 'orange'} 
-              cards={this.props.orangeHand}
-              status={this.props.status} />
-            <Deck deck={this.props.orangeDeck} />
-          </div>
+          <PlayerArea
+            energy={this.props.orangeEnergy}
+            onSelectCard={(index) => this.props.onSelectCard(index)}
+            selectedCard={this.props.orangeSelectedCard}
+            isCurrentPlayer={this.props.currentTurn == 'orange'}
+            cards={this.props.orangeHand}
+            status={this.props.status}
+            deck={this.props.orangeDeck} />
 
           <Divider style={{marginTop: 10}}/>
 
           <div style={{
             position: 'relative'
           }}>
-            <div style={Object.assign({
-              display: 'inline-block',
-              position: 'absolute',
-              left: 0,
-              margin: 'auto',
-              height: 20,
-              fontFamily: 'Luckiest Guy',
-              fontSize: 20
-            }, statusStyle)}>{this.props.status.message}</div>
+            <Status
+              currentTurn={this.props.currentTurn}
+              status={this.props.status} />
             <Board
-              onSelectTile={(hexId, action) => {
-                if (action === 'move') {
-                  let tile = this.props.selectedTile;
-                  if (this.props.currentTurn == 'blue') {
-                    if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
-                      this.props.onMoveRobot(tile, hexId);
-                    }
-                  } else {
-                    if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
-                      this.props.onMoveRobot(tile, hexId);
-                    }
-                  }
-                } else if (action === 'place') {
-                  if (this.props.currentTurn == 'blue') {
-                    this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
-                  } else {
-                    this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.orangeSelectedCard]);
-                  }
-                } else {
-                  this.props.onSelectTile(hexId);
-                }
-              }}
+              onSelectTile={(hexId, action) => this.onSelectTile(hexId, action)}
               selectedTile={this.props.selectedTile}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
-              currentTurn={this.props.currentTurn} 
+              currentTurn={this.props.currentTurn}
               placingRobot={this.props.placingRobot} />
             <RaisedButton
               secondary
               label="End Turn"
-              style={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                right: 0,
-                margin: 'auto',
-                color: 'white'
-              }}
-              onTouchTap={(index) => {
-                this.props.onPassTurn();
-              }} />
+              style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
+              onTouchTap={(index) => this.props.onPassTurn()} />
           </div>
 
           <Divider style={{marginBottom: 10}}/>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <EnergyCount energy={this.props.blueEnergy} />
-            <Hand
-              onSelectCard={(index) => {
-                this.props.onSelectCard(index);
-              }}
-              selectedCard={this.props.blueSelectedCard}
-              isCurrentPlayer={this.props.currentTurn == 'blue'}
-              cards={this.props.blueHand}
-              status={this.props.status} />
-            <Deck deck={this.props.blueDeck} />
-          </div>
+          <PlayerArea
+            energy={this.props.blueEnergy}
+            onSelectCard={(index) => this.props.onSelectCard(index)}
+            selectedCard={this.props.blueSelectedCard}
+            isCurrentPlayer={this.props.currentTurn == 'blue'}
+            cards={this.props.blueHand}
+            status={this.props.status}
+            deck={this.props.blueDeck} />
         </Paper>
         <Chat />
       </div>

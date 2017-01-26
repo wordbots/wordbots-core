@@ -3,9 +3,11 @@ const blueCoreCard = {
   img: 'core_blue',
   cost: 0,
   type: 0,
-  health: 20,
-  speed: 0,
-  attack: 0,
+  stats: {
+    health: 20,
+    speed: 0,
+    attack: 0
+  },
   abilities: []
 }
 
@@ -14,9 +16,11 @@ const orangeCoreCard = {
   img: 'core_orange',
   cost: 0,
   type: 0,
-  health: 20,
-  speed: 0,
-  attack: 0,
+  stats: {
+    health: 20,
+    speed: 0,
+    attack: 0
+  },
   abilities: []
 }
 
@@ -25,9 +29,11 @@ const attackBotCard = {
   img: 'char',
   cost: 1,
   type: 0,
-  health: 1,
-  speed: 2,
-  attack: 1,
+  stats: {
+    health: 1,
+    speed: 2,
+    attack: 1
+  },
   abilities: []
 }
 
@@ -36,9 +42,11 @@ const tankBotCard = {
   img: 'char_weapon',
   cost: 3,
   type: 0,
-  health: 4,
-  speed: 1,
-  attack: 2,
+  stats: {
+    health: 4,
+    speed: 1,
+    attack: 2
+  },
   abilities: []
 }
 
@@ -56,19 +64,23 @@ export const defaultState = {
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
-          card: blueCoreCard
+          card: blueCoreCard,
+          stats: blueCoreCard.stats
         },
         '-1,-3,4': {
           hasMoved: false,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotCard.stats
         },
         '0,-3,3': {
           hasMoved: false,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotCard.stats
         },
         '0,-1,1': {
           hasMoved: true,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotCard.stats
         }
       }
     },
@@ -84,15 +96,18 @@ export const defaultState = {
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,
-          card: orangeCoreCard
+          card: orangeCoreCard,
+          stats: orangeCoreCard.stats
         },
         '0,-4,4': {
           hasMoved: false,
-          card: tankBotCard
+          card: tankBotCard,
+          stats: tankBotCard.stats
         },
         '0,4,-4': {
           hasMoved: false,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotCard.stats
         }
       }
     }

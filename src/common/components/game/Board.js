@@ -105,9 +105,9 @@ class Board extends Component {
     if (this.props.selectedTile) {
       const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-      if (selectedPiece) {
+      if (selectedPiece && !selectedPiece.hasMoved) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.card.speed);
+        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.stats.speed);
       }
     }
 
@@ -158,13 +158,12 @@ class Board extends Component {
 
   onHexClick(hex, event) {
     let action = '';
-    const pieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
-    const selectedPiece = pieces[this.props.selectedTile];
+    const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
     if (this.props.placingRobot) {
       this.getPlayerPlacementTiles().forEach((placementHex) => {
         if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
-            !this.props.orangePieces[HexUtils.getID(hex)] && 
+            !this.props.orangePieces[HexUtils.getID(hex)] &&
             !this.props.bluePieces[HexUtils.getID(hex)]) {
           action = 'place'
         }
@@ -173,7 +172,7 @@ class Board extends Component {
 
     if (selectedPiece) {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
-      const speed = selectedPiece.card.speed;
+      const speed = selectedPiece.stats.speed;
       const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
       action = validMovementHexes.includes(HexUtils.getID(hex)) ? 'move' : action;
     }
@@ -191,12 +190,14 @@ class Board extends Component {
       onMouseLeave: (h, e) => {}
     };
 
+    const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
+    const pieceImgs = Object.assign(...Object.keys(pieces).map(k => ({[k]: pieces[k].card.img})));
+
     return (
       <div>
         <HexGrid
           hexColors={hexColors}
-          yourPieces={this.currentPlayerPieces()}
-          opponentsPieces={this.opponentPieces()}
+          pieceImgs={pieceImgs}
           actions={actions}
           width={config.width}
           height={config.height}

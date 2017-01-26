@@ -99,15 +99,13 @@ class Game extends Component {
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20}}>
-          <PlayerBoard 
+          <PlayerBoard
             energy={this.props.orangeEnergy}
-            onSelectCard={(index) => {
-              this.props.onSelectCard(index);
-            }}
-            selectedCard={this.props.blueSelectedCard}
+            onSelectCard={(index) => this.props.onSelectCard(index)}
+            selectedCard={this.props.orangeSelectedCard}
             isCurrentPlayer={this.props.currentTurn == 'orange'}
             cards={this.props.orangeHand}
-            status={this.props.status} 
+            status={this.props.status}
             deck={this.props.orangeDeck} />
 
           <Divider style={{marginTop: 10}}/>
@@ -143,15 +141,13 @@ class Game extends Component {
 
           <Divider style={{marginBottom: 10}}/>
 
-          <PlayerBoard 
+          <PlayerBoard
             energy={this.props.blueEnergy}
-            onSelectCard={(index) => {
-              this.props.onSelectCard(index);
-            }}
+            onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.blueSelectedCard}
             isCurrentPlayer={this.props.currentTurn == 'blue'}
             cards={this.props.blueHand}
-            status={this.props.status} 
+            status={this.props.status}
             deck={this.props.blueDeck} />
         </Paper>
         <Chat />

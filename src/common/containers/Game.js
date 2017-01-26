@@ -126,17 +126,8 @@ class Game extends Component {
             <RaisedButton
               secondary
               label="End Turn"
-              style={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                right: 0,
-                margin: 'auto',
-                color: 'white'
-              }}
-              onTouchTap={(index) => {
-                this.props.onPassTurn();
-              }} />
+              style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
+              onTouchTap={(index) => this.props.onPassTurn()} />
           </div>
 
           <Divider style={{marginBottom: 10}}/>

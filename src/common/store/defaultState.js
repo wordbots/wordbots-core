@@ -1,11 +1,29 @@
+const coreBaseStats = {
+  health: 20,
+  speed: 0,
+  attack: 0
+}
+
+const attackBotBaseStats = {
+  health: 1,
+  speed: 2,
+  attack: 1
+}
+
+const tankBotBaseStats = {
+  health: 4,
+  speed: 1,
+  attack: 2
+}
+
 const blueCoreCard = {
   name: 'Core',
   img: 'core_blue',
   cost: 0,
   type: 0,
-  health: 20,
-  speed: 0,
-  attack: 0,
+  health: coreBaseStats.health,
+  speed: coreBaseStats.speed,
+  attack: coreBaseStats.attack,
   abilities: []
 }
 
@@ -14,9 +32,9 @@ const orangeCoreCard = {
   img: 'core_orange',
   cost: 0,
   type: 0,
-  health: 20,
-  speed: 0,
-  attack: 0,
+  health: coreBaseStats.health,
+  speed: coreBaseStats.speed,
+  attack: coreBaseStats.attack,
   abilities: []
 }
 
@@ -25,9 +43,9 @@ const attackBotCard = {
   img: 'char',
   cost: 1,
   type: 0,
-  health: 1,
-  speed: 2,
-  attack: 1,
+  health: attackBotBaseStats.health,
+  speed: attackBotBaseStats.speed,
+  attack: attackBotBaseStats.attack,
   abilities: []
 }
 
@@ -36,9 +54,9 @@ const tankBotCard = {
   img: 'char_weapon',
   cost: 3,
   type: 0,
-  health: 4,
-  speed: 1,
-  attack: 2,
+  health: tankBotBaseStats.health,
+  speed: tankBotBaseStats.speed,
+  attack: tankBotBaseStats.attack,
   abilities: []
 }
 
@@ -56,19 +74,23 @@ export const defaultState = {
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
-          card: blueCoreCard
+          card: blueCoreCard,
+          stats: coreBaseStats
         },
         '-1,-3,4': {
           hasMoved: false,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotBaseStats
         },
         '0,-3,3': {
           hasMoved: false,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotBaseStats
         },
         '0,-1,1': {
           hasMoved: true,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotBaseStats
         }
       }
     },
@@ -84,15 +106,18 @@ export const defaultState = {
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,
-          card: orangeCoreCard
+          card: orangeCoreCard,
+          stats: coreBaseStats
         },
         '0,-4,4': {
           hasMoved: false,
-          card: tankBotCard
+          card: tankBotCard,
+          stats: tankBotBaseStats
         },
         '0,4,-4': {
           hasMoved: false,
-          card: attackBotCard
+          card: attackBotCard,
+          stats: attackBotBaseStats
         }
       }
     }

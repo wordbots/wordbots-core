@@ -164,7 +164,7 @@ class Board extends Component {
     if (this.props.placingRobot) {
       this.getPlayerPlacementTiles().forEach((placementHex) => {
         if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
-            !this.props.orangePieces[HexUtils.getID(hex)] && 
+            !this.props.orangePieces[HexUtils.getID(hex)] &&
             !this.props.bluePieces[HexUtils.getID(hex)]) {
           action = 'place'
         }
@@ -191,12 +191,14 @@ class Board extends Component {
       onMouseLeave: (h, e) => {}
     };
 
+    const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
+    const pieceImgs = Object.assign(...Object.keys(pieces).map(k => ({[k]: pieces[k].card.img})));
+
     return (
       <div>
         <HexGrid
           hexColors={hexColors}
-          yourPieces={this.currentPlayerPieces()}
-          opponentsPieces={this.opponentPieces()}
+          pieceImgs={pieceImgs}
           actions={actions}
           width={config.width}
           height={config.height}

@@ -9,7 +9,7 @@ import GridGenerator from './GridGenerator'
 
 class HexGrid extends React.Component {
   render() {
-    const { hexColors, yourPieces, opponentsPieces } = this.props;
+    const { hexColors, pieceImgs } = this.props;
 
     let images = {
       'blue_tile': require('../img/blue_tile.png'),
@@ -28,23 +28,14 @@ class HexGrid extends React.Component {
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
         {
           this.props.hexagons.map((hex, index) => {
-            let fill = hexColors[HexUtils.getID(hex)];
-            let piece = '';
-
-            if (yourPieces[HexUtils.getID(hex)]) {
-              piece = yourPieces[HexUtils.getID(hex)].card.img;
-            } else if (opponentsPieces[HexUtils.getID(hex)]) {
-              piece = opponentsPieces[HexUtils.getID(hex)].card.img;
-            }
-
             return (
-              <HexShape 
-                key={index} 
-                hex={hex} 
-                layout={this.props.layout} 
-                actions={this.props.actions} 
-                fill={fill}
-                piece={piece} 
+              <HexShape
+                key={index}
+                hex={hex}
+                layout={this.props.layout}
+                actions={this.props.actions}
+                fill={hexColors[HexUtils.getID(hex)]}
+                piece={pieceImgs[HexUtils.getID(hex)]}
                 images={images} />
             );
           })
@@ -71,8 +62,7 @@ HexGrid.propTypes = {
   hexagons: array.isRequired,
   path: object,
   hexColors: object,
-  yourPieces: React.PropTypes.object,
-  opponentsPieces: React.PropTypes.object
+  pieceImgs: React.PropTypes.object
 };
 
 HexGrid.defaultProps = {

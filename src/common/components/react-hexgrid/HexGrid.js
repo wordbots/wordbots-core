@@ -50,7 +50,8 @@ HexGrid.propTypes = {
   hexagons: array.isRequired,
   path: object,
   hexColors: object,
-  pieceImgs: React.PropTypes.object
+  pieceImgs: object,
+  pieceStats: object
 };
 
 HexGrid.defaultProps = {

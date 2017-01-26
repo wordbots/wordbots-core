@@ -192,12 +192,14 @@ class Board extends Component {
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
     const pieceImgs = Object.assign(...Object.keys(pieces).map(k => ({[k]: pieces[k].card.img})));
+    const pieceStats = Object.assign(...Object.keys(pieces).map(k => ({[k]: pieces[k].stats})));
 
     return (
       <div>
         <HexGrid
           hexColors={hexColors}
           pieceImgs={pieceImgs}
+          pieceStats={pieceStats}
           actions={actions}
           width={config.width}
           height={config.height}

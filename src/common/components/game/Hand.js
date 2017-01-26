@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group' 
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Card from './Card';
 
 class Hand extends Component {
@@ -20,7 +20,7 @@ class Hand extends Component {
           onCardClick={cardClick}
           key={index}
           status={this.props.status}
-          cardStats={card}
+          cardStats={card.stats}
           selected={this.props.selectedCard === index}
           visible={this.props.isCurrentPlayer} />
       )

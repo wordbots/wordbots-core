@@ -64,6 +64,37 @@ class Game extends Component {
     super(props);
   }
 
+  placePiece(hexId) {
+    let tile = this.props.selectedTile;
+    if (this.props.currentTurn == 'blue') {
+      if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
+        this.props.onMoveRobot(tile, hexId);
+      }
+    } else {
+      if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
+        this.props.onMoveRobot(tile, hexId);
+      }
+    }
+  }
+
+  movePiece(hexId) {
+    if (this.props.currentTurn == 'blue') {
+      this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
+    } else {
+      this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.orangeSelectedCard]);
+    }
+  }
+
+  onSelectTile(hexId, action) {
+    if (action === 'move') {
+      this.placePiece(hexId);
+    } else if (action === 'place') {
+      this.movePiece(hexId);
+    } else {
+      this.props.onSelectTile(hexId);
+    }
+  }
+
   render() {
     let statusStyle = {
       color: '#444444',
@@ -100,7 +131,7 @@ class Game extends Component {
                 this.props.onSelectCard(index);
               }}
               selectedCard={this.props.orangeSelectedCard}
-              isCurrentPlayer={this.props.currentTurn == 'orange'} 
+              isCurrentPlayer={this.props.currentTurn == 'orange'}
               cards={this.props.orangeHand}
               status={this.props.status} />
             <Deck deck={this.props.orangeDeck} />
@@ -121,32 +152,11 @@ class Game extends Component {
               fontSize: 20
             }, statusStyle)}>{this.props.status.message}</div>
             <Board
-              onSelectTile={(hexId, action) => {
-                if (action === 'move') {
-                  let tile = this.props.selectedTile;
-                  if (this.props.currentTurn == 'blue') {
-                    if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
-                      this.props.onMoveRobot(tile, hexId);
-                    }
-                  } else {
-                    if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
-                      this.props.onMoveRobot(tile, hexId);
-                    }
-                  }
-                } else if (action === 'place') {
-                  if (this.props.currentTurn == 'blue') {
-                    this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
-                  } else {
-                    this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.orangeSelectedCard]);
-                  }
-                } else {
-                  this.props.onSelectTile(hexId);
-                }
-              }}
+              onSelectTile={(hexId, action) => this.onSelectTile(hexId, action)}
               selectedTile={this.props.selectedTile}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
-              currentTurn={this.props.currentTurn} 
+              currentTurn={this.props.currentTurn}
               placingRobot={this.props.placingRobot} />
             <RaisedButton
               secondary

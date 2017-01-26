@@ -105,7 +105,7 @@ class Board extends Component {
     if (this.props.selectedTile) {
       const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-      if (selectedPiece) {
+      if (selectedPiece && !selectedPiece.hasMoved) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
         hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.card.speed);
       }
@@ -158,8 +158,7 @@ class Board extends Component {
 
   onHexClick(hex, event) {
     let action = '';
-    const pieces = this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces;
-    const selectedPiece = pieces[this.props.selectedTile];
+    const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
     if (this.props.placingRobot) {
       this.getPlayerPlacementTiles().forEach((placementHex) => {

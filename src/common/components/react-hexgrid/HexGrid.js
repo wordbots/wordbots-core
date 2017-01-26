@@ -6,23 +6,11 @@ import HexShape from './HexShape'
 import Path from './Path'
 import Layout from './Layout'
 import GridGenerator from './GridGenerator'
+import loadImages from './HexGridImages'
 
 class HexGrid extends React.Component {
   render() {
     const { hexColors, pieceImgs } = this.props;
-
-    let images = {
-      'blue_tile': require('../img/blue_tile.png'),
-      'bright_blue_tile': require('../img/bright_blue_tile.png'),
-      'orange_tile': require('../img/orange_tile.png'),
-      'bright_orange_tile': require('../img/bright_orange_tile.png'),
-      'red_tile': require('../img/red_tile.png'),
-      'green_tile': require('../img/green_tile.png'),
-      'char': require('../img/char.png'),
-      'char_weapon': require('../img/char_weapon.png'),
-      'core_blue': require('../img/core_blue.png'),
-      'core_orange': require('../img/core_orange.png')
-    };
 
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +24,7 @@ class HexGrid extends React.Component {
                 actions={this.props.actions}
                 fill={hexColors[HexUtils.getID(hex)]}
                 piece={pieceImgs[HexUtils.getID(hex)]}
-                images={images} />
+                images={loadImages()} />
             );
           })
         }

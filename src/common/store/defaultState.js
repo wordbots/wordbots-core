@@ -1,29 +1,13 @@
-const coreBaseStats = {
-  health: 20,
-  speed: 0,
-  attack: 0
-}
-
-const attackBotBaseStats = {
-  health: 1,
-  speed: 2,
-  attack: 1
-}
-
-const tankBotBaseStats = {
-  health: 4,
-  speed: 1,
-  attack: 2
-}
-
 const blueCoreCard = {
   name: 'Core',
   img: 'core_blue',
   cost: 0,
   type: 0,
-  health: coreBaseStats.health,
-  speed: coreBaseStats.speed,
-  attack: coreBaseStats.attack,
+  stats: {
+    health: 20,
+    speed: 0,
+    attack: 0
+  },
   abilities: []
 }
 
@@ -32,9 +16,11 @@ const orangeCoreCard = {
   img: 'core_orange',
   cost: 0,
   type: 0,
-  health: coreBaseStats.health,
-  speed: coreBaseStats.speed,
-  attack: coreBaseStats.attack,
+  stats: {
+    health: 20,
+    speed: 0,
+    attack: 0
+  },
   abilities: []
 }
 
@@ -43,9 +29,11 @@ const attackBotCard = {
   img: 'char',
   cost: 1,
   type: 0,
-  health: attackBotBaseStats.health,
-  speed: attackBotBaseStats.speed,
-  attack: attackBotBaseStats.attack,
+  stats: {
+    health: 1,
+    speed: 2,
+    attack: 1
+  },
   abilities: []
 }
 
@@ -54,9 +42,11 @@ const tankBotCard = {
   img: 'char_weapon',
   cost: 3,
   type: 0,
-  health: tankBotBaseStats.health,
-  speed: tankBotBaseStats.speed,
-  attack: tankBotBaseStats.attack,
+  stats: {
+    health: 4,
+    speed: 1,
+    attack: 2
+  },
   abilities: []
 }
 
@@ -75,22 +65,22 @@ export const defaultState = {
         '-4,0,4': {
           hasMoved: false,
           card: blueCoreCard,
-          stats: coreBaseStats
+          stats: blueCoreCard.stats
         },
         '-1,-3,4': {
           hasMoved: false,
           card: attackBotCard,
-          stats: attackBotBaseStats
+          stats: attackBotCard.stats
         },
         '0,-3,3': {
           hasMoved: false,
           card: attackBotCard,
-          stats: attackBotBaseStats
+          stats: attackBotCard.stats
         },
         '0,-1,1': {
           hasMoved: true,
           card: attackBotCard,
-          stats: attackBotBaseStats
+          stats: attackBotCard.stats
         }
       }
     },
@@ -107,17 +97,17 @@ export const defaultState = {
         '4,0,-4': {
           hasMoved: false,
           card: orangeCoreCard,
-          stats: coreBaseStats
+          stats: orangeCoreCard.stats
         },
         '0,-4,4': {
           hasMoved: false,
           card: tankBotCard,
-          stats: tankBotBaseStats
+          stats: tankBotCard.stats
         },
         '0,4,-4': {
           hasMoved: false,
           card: attackBotCard,
-          stats: attackBotBaseStats
+          stats: attackBotCard.stats
         }
       }
     }

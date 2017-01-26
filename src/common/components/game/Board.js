@@ -107,7 +107,7 @@ class Board extends Component {
 
       if (selectedPiece && !selectedPiece.hasMoved) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.card.speed);
+        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.stats.speed);
       }
     }
 
@@ -172,7 +172,7 @@ class Board extends Component {
 
     if (selectedPiece) {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
-      const speed = selectedPiece.card.speed;
+      const speed = selectedPiece.stats.speed;
       const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
       action = validMovementHexes.includes(HexUtils.getID(hex)) ? 'move' : action;
     }

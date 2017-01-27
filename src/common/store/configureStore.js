@@ -7,6 +7,7 @@ import createHistory from 'history/lib/createBrowserHistory';
 import createLogger from 'redux-logger';
 import promiseMiddleware from '../api/promiseMiddleware';
 import rootReducer from '../reducers';
+import * as gameActions from '../actions/game';
 
 const middlewareBuilder = () => {
   let middleware = {};
@@ -23,7 +24,11 @@ const middlewareBuilder = () => {
         })
       ]
     } else {
-      middleware = applyMiddleware(...universalMiddleware, createLogger());
+      const logger = createLogger({
+        predicate: (getState, action) => action.type !== gameActions.SET_HOVERED_CARD
+      });
+
+      middleware = applyMiddleware(...universalMiddleware, logger);
       allComposeElements = [
         middleware,
         reduxReactRouter({

@@ -60,7 +60,7 @@ class Card extends Component {
     } else {
       return (
         <Badge
-          badgeContent={this.props.cardStats.cost}
+          badgeContent={this.props.cost}
           badgeStyle={{
             top: 12, 
             right: 20, 
@@ -89,7 +89,7 @@ class Card extends Component {
             }, selectedStyle)}>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
-                title={this.props.cardStats.name}
+                title={this.props.name}
                 subtitle={cardSubtitle}/>
               <Divider/>
               <div style={{
@@ -122,7 +122,9 @@ Card.propTypes = {
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
   onCardClick: React.PropTypes.func,
-  status: React.PropTypes.object
+  status: React.PropTypes.object,
+  cost: React.PropTypes.number,
+  name: React.PropTypes.string
 }
 
 export default Card;

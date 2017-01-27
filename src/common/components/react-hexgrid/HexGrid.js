@@ -10,7 +10,7 @@ import loadImages from './HexGridImages'
 
 class HexGrid extends React.Component {
   render() {
-    const { hexColors, pieceImgs } = this.props;
+    const { hexColors, pieceImgs, pieceStats } = this.props;
 
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -24,6 +24,7 @@ class HexGrid extends React.Component {
                 actions={this.props.actions}
                 fill={hexColors[HexUtils.getID(hex)]}
                 piece={pieceImgs[HexUtils.getID(hex)]}
+                pieceStats={pieceStats[HexUtils.getID(hex)]}
                 images={loadImages()} />
             );
           })

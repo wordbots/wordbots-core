@@ -43,6 +43,9 @@ function mapDispatchToProps(dispatch) {
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
     },
+    onAttackRobot: (sourceHexId, targetHexId) => {
+      dispatch(gameActions.attack(sourceHexId, targetHexId));
+    },
     onPlaceRobot: (tileHexId, card) => {
       dispatch(gameActions.placeCard(tileHexId, card));
     },
@@ -63,7 +66,7 @@ class Game extends Component {
     super(props);
   }
 
-  placePiece(hexId) {
+  movePiece(hexId) {
     let tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
       if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
@@ -76,7 +79,20 @@ class Game extends Component {
     }
   }
 
-  movePiece(hexId) {
+  attackPiece(hexId) {
+    let tile = this.props.selectedTile;
+    if (this.props.currentTurn == 'blue') {
+      if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
+        this.props.onAttackRobot(tile, hexId);
+      }
+    } else {
+      if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
+        this.props.onAttackRobot(tile, hexId);
+      }
+    }
+  }
+
+  placePiece(hexId) {
     if (this.props.currentTurn == 'blue') {
       this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
     } else {
@@ -86,9 +102,11 @@ class Game extends Component {
 
   onSelectTile(hexId, action) {
     if (action === 'move') {
-      this.placePiece(hexId);
-    } else if (action === 'place') {
       this.movePiece(hexId);
+    } else if (action === 'attack') {
+      this.attackPiece(hexId);
+    } else if (action === 'place') {
+      this.placePiece(hexId);
     } else {
       this.props.onSelectTile(hexId);
     }
@@ -169,6 +187,7 @@ Game.propTypes = {
   orangeSelectedCard: React.PropTypes.number,
 
   onMoveRobot: React.PropTypes.func,
+  onAttackRobot: React.PropTypes.func,
   onPlaceRobot: React.PropTypes.func,
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,

@@ -1,4 +1,5 @@
 export const MOVE_ROBOT = 'MOVE_ROBOT';
+export const ATTACK = 'ATTACK';
 export const PLACE_CARD = 'PLACE_CARD';
 export const START_TURN = 'START_TURN';
 export const END_TURN = 'END_TURN';
@@ -11,6 +12,16 @@ export function moveRobot(fromHexId, toHexId) {
     payload: {
       from: fromHexId,
       to: toHexId
+    }
+  }
+}
+
+export function attack(sourceHexId, targetHexId) {
+  return {
+    type: ATTACK,
+    payload: {
+      source: sourceHexId,
+      target: targetHexId
     }
   }
 }

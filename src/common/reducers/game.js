@@ -3,16 +3,35 @@ import { defaultState } from '../store/defaultState';
 
 export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);
-  let player = newState.players[state.currentTurn];
+
+  const opponentName = state.currentTurn == 'blue' ? 'orange' : 'blue';
+
+  const player = newState.players[state.currentTurn];
+  const opponent = newState.players[opponentName];
 
   switch (action.type) {
     case gameActions.MOVE_ROBOT:
-      let movingRobot = state.players[state.currentTurn].robotsOnBoard[action.payload.from];
+      let movingRobot = player.robotsOnBoard[action.payload.from];
       movingRobot.hasMoved = true;
 
       newState.selectedTile = null;
       delete newState.players[state.currentTurn].robotsOnBoard[action.payload.from];
       newState.players[state.currentTurn].robotsOnBoard[action.payload.to] = movingRobot;
+
+      return newState;
+
+    case gameActions.ATTACK:
+      const attacker = player.robotsOnBoard[action.payload.source];
+      let target = opponent.robotsOnBoard[action.payload.target];
+
+      target.stats.health -= attacker.stats.attack;
+      if (target.stats.health <= 0) {
+        delete newState.players[opponentName].robotsOnBoard[action.payload.target];
+      } else {
+        newState.players[opponentName].robotsOnBoard[action.payload.target] = target;
+      }
+
+      newState.selectedTile = null;
 
       return newState;
 

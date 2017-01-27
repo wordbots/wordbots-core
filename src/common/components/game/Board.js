@@ -173,8 +173,15 @@ class Board extends Component {
     if (selectedPiece) {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
       const speed = selectedPiece.stats.speed;
+
       const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
-      action = validMovementHexes.includes(HexUtils.getID(hex)) ? 'move' : action;
+      const validAttackHexes = this.getValidAttackSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
+
+      if (validMovementHexes.includes(HexUtils.getID(hex))) {
+        action = 'move';
+      } else if (validAttackHexes.includes(HexUtils.getID(hex))) {
+        action = 'attack';
+      }
     }
 
     this.props.onSelectTile(HexUtils.getID(hex), action);

@@ -54,6 +54,35 @@ class HexShape extends React.Component {
     }
   }
 
+  getPieceStats() {
+    if (this.props.piece) {
+      return (
+        <g>
+          <circle style={{
+            fill: '#E57373'
+          }} cx="-3" cy="2" r="2" />
+          <text x="-3" y="3" textAnchor="middle" style={{
+            fontFamily: 'Luckiest Guy',
+            fontSize: '0.19em',
+            fill: '#FFFFFF',
+            fillOpacity: 1
+          }}>{this.props.pieceStats.attack}</text>
+          <circle style={{
+            fill: '#81C784'
+          }} cx="3" cy="2" r="2" />
+          <text x="3" y="3" textAnchor="middle" style={{
+            fontFamily: 'Luckiest Guy',
+            fontSize: '0.19em',
+            fill: '#FFFFFF',
+            fillOpacity: 1
+          }}>{this.props.pieceStats.health}</text>
+        </g>
+      )
+    } else {
+      return null;
+    }
+  }
+
   render() {
     let hex = this.props.hex;
     let text = (hex.props.text) ? hex.props.text : HexUtils.getID(hex);
@@ -62,6 +91,7 @@ class HexShape extends React.Component {
     let pieceStyles = this.getPieceStyles(hex);
     let points = this.getPoints(hex);
     let piecePoints = this.getPiecePoints(hex);
+    let pieceStats = this.getPieceStats();
 
     return (
       <g className="shape-group" transform={this.translate()} draggable="true"
@@ -74,6 +104,7 @@ class HexShape extends React.Component {
         <polygon points={piecePoints} style={{...pieceStyles}} />
         <HexPointers hex={hex} points={points} />
         <text x="0" y="0.3em" textAnchor="middle">{text}</text>
+        {pieceStats}
       </g>
     );
   }
@@ -84,7 +115,8 @@ HexShape.propTypes = {
   actions: object.isRequired,
   fill: string,
   piece: string,
-  images: object
+  images: object,
+  pieceStats: object
 };
 
 export default HexShape;

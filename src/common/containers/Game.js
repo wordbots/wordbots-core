@@ -165,7 +165,7 @@ class Game extends Component {
               currentTurn={this.props.currentTurn}
               status={this.props.status} />
             <Board
-              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, itmedMoveHexId)}
+              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               selectedTile={this.props.selectedTile}
               bluePieces={this.props.bluePieces}

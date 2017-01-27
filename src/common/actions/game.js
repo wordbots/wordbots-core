@@ -5,6 +5,7 @@ export const START_TURN = 'START_TURN';
 export const END_TURN = 'END_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
+export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 
 export function moveRobot(fromHexId, toHexId, asPartOfAttack = false) {
   return {
@@ -71,6 +72,15 @@ export function setSelectedTile(hexId) {
     type: SET_SELECTED_TILE,
     payload: {
       selectedTile: hexId
+    }
+  }
+}
+
+export function setHoveredCard(card) {
+  return {
+    type: SET_HOVERED_CARD,
+    payload: {
+      hoveredCard: card
     }
   }
 }

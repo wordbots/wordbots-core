@@ -149,3 +149,21 @@ svg path {
   transition: transform 500ms ease-in-out;
   transition: opacity 500ms ease-in-out;
 }
+
+.card-viewer-fade-enter {
+  opacity: 0;
+}
+
+.card-viewer-fade-enter.card-viewer-fade-enter-active {
+  opacity: 1;
+  transition: opacity 100ms ease-in-out;
+}
+
+.card-viewer-fade-leave {
+  opacity: 1;
+}
+
+.card-viewer-fade-leave.card-viewer-fade-leave-active {
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+}

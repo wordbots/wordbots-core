@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import Card from './Card';
 
@@ -31,7 +32,12 @@ class CardViewer extends Component {
         margin: 'auto',
         height: 236
       }}>
-        {card}
+        <ReactCSSTransitionGroup
+          transitionName="card-viewer-fade"
+          transitionEnterTimeout={100}
+          transitionLeaveTimeout={100}>
+          {card}
+        </ReactCSSTransitionGroup>
       </div>
     );
   }

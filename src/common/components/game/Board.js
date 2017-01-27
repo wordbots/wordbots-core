@@ -145,7 +145,7 @@ class Board extends Component {
   }
 
   getValidAttackSpaces(startHex, speed) {
-    let validMoveHexes = this.getValidMovementSpaces(startHex, speed - 1);
+    let validMoveHexes = [startHex].concat(this.getValidMovementSpaces(startHex, speed - 1));
 
     let potentialAttackHexes = [].concat.apply([], validMoveHexes.map((hex) =>
       this.getAdjacentHexes(hex)

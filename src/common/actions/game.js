@@ -1,4 +1,5 @@
 export const MOVE_ROBOT = 'MOVE_ROBOT';
+export const ATTACK = 'ATTACK';
 export const PLACE_CARD = 'PLACE_CARD';
 export const START_TURN = 'START_TURN';
 export const END_TURN = 'END_TURN';
@@ -6,14 +7,32 @@ export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 
-export function moveRobot(fromHexId, toHexId) {
+export function moveRobot(fromHexId, toHexId, asPartOfAttack = false) {
   return {
     type: MOVE_ROBOT,
     payload: {
       from: fromHexId,
-      to: toHexId
+      to: toHexId,
+      asPartOfAttack: asPartOfAttack
     }
   }
+}
+
+export function attack(sourceHexId, targetHexId) {
+  return {
+    type: ATTACK,
+    payload: {
+      source: sourceHexId,
+      target: targetHexId
+    }
+  }
+}
+
+export function moveRobotAndAttack(fromHexId, toHexId, targetHexId) {
+  return [
+    moveRobot(fromHexId, toHexId, true),
+    attack(toHexId, targetHexId)
+  ];
 }
 
 export function placeCard(tile, card) {

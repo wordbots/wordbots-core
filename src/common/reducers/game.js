@@ -3,16 +3,56 @@ import { defaultState } from '../store/defaultState';
 
 export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);
-  let player = newState.players[state.currentTurn];
+
+  const opponentName = state.currentTurn == 'blue' ? 'orange' : 'blue';
+
+  const player = newState.players[state.currentTurn];
+  const opponent = newState.players[opponentName];
 
   switch (action.type) {
     case gameActions.MOVE_ROBOT:
-      let movingRobot = state.players[state.currentTurn].robotsOnBoard[action.payload.from];
-      movingRobot.hasMoved = true;
+      let movingRobot = player.robotsOnBoard[action.payload.from];
 
-      newState.selectedTile = null;
+      if (!action.payload.asPartOfAttack) {
+        movingRobot.hasMoved = true;
+        newState.selectedTile = null;
+      }
+
       delete newState.players[state.currentTurn].robotsOnBoard[action.payload.from];
       newState.players[state.currentTurn].robotsOnBoard[action.payload.to] = movingRobot;
+
+      return newState;
+
+    case gameActions.ATTACK:
+      // TODO: All attacks are "melee" for now.
+      // In the future, there will be ranged attacks that work differently.
+
+      let attacker = player.robotsOnBoard[action.payload.source];
+      let defender = opponent.robotsOnBoard[action.payload.target];
+
+      attacker.hasMoved = true;
+      attacker.stats.health -= defender.stats.attack;
+      defender.stats.health -= attacker.stats.attack;
+
+      if (attacker.stats.health <= 0) {
+        delete newState.players[state.currentTurn].robotsOnBoard[action.payload.source];
+      } else {
+        newState.players[state.currentTurn].robotsOnBoard[action.payload.source] = attacker;
+      }
+
+      if (defender.stats.health <= 0) {
+        delete newState.players[opponentName].robotsOnBoard[action.payload.target];
+
+        if (attacker.stats.health > 0) {
+          // Move attacker to defender's space.
+          newState.players[state.currentTurn].robotsOnBoard[action.payload.target] = attacker;
+          delete newState.players[state.currentTurn].robotsOnBoard[action.payload.source];
+        }
+      } else {
+        newState.players[opponentName].robotsOnBoard[action.payload.target] = defender;
+      }
+
+      newState.selectedTile = null;
 
       return newState;
 
@@ -38,6 +78,7 @@ export default function game(state = defaultState, action) {
       newState.currentTurn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
 
       player.selectedCard = null;
+      newState.selectedTile = null;
       newState.placingRobot = false;
       newState.status.message = '';
 

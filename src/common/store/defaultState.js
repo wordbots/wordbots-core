@@ -72,7 +72,7 @@ export const defaultState = {
           card: attackBotCard,
           stats: attackBotCard.stats
         },
-        '0,-3,3': {
+        '1,-3,2': {
           hasMoved: false,
           card: attackBotCard,
           stats: attackBotCard.stats

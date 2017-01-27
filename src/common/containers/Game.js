@@ -46,6 +46,9 @@ function mapDispatchToProps(dispatch) {
     onAttackRobot: (sourceHexId, targetHexId) => {
       dispatch(gameActions.attack(sourceHexId, targetHexId));
     },
+    onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
+      dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
+    },
     onPlaceRobot: (tileHexId, card) => {
       dispatch(gameActions.placeCard(tileHexId, card));
     },
@@ -66,28 +69,36 @@ class Game extends Component {
     super(props);
   }
 
-  movePiece(hexId) {
+  movePiece(hexId, asPartOfAttack = false) {
     let tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
       if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
-        this.props.onMoveRobot(tile, hexId);
+        this.props.onMoveRobot(tile, hexId, asPartOfAttack);
       }
     } else {
       if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
-        this.props.onMoveRobot(tile, hexId);
+        this.props.onMoveRobot(tile, hexId, asPartOfAttack);
       }
     }
   }
 
-  attackPiece(hexId) {
+  attackPiece(hexId, intermediateMoveHexId) {
     let tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
       if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
-        this.props.onAttackRobot(tile, hexId);
+        if (intermediateMoveHexId) {
+          this.props.onMoveRobotAndAttack(tile, intermediateMoveHexId, hexId);
+        } else {
+          this.props.onAttackRobot(tile, hexId);
+        }
       }
     } else {
       if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
-        this.props.onAttackRobot(tile, hexId);
+        if (intermediateMoveHexId) {
+          this.props.onMoveRobotAndAttack(tile, intermediateMoveHexId, hexId);
+        } else {
+          this.props.onAttackRobot(tile, hexId);
+        }
       }
     }
   }
@@ -100,11 +111,11 @@ class Game extends Component {
     }
   }
 
-  onSelectTile(hexId, action) {
+  onSelectTile(hexId, action, intermediateMoveHexId) {
     if (action === 'move') {
       this.movePiece(hexId);
     } else if (action === 'attack') {
-      this.attackPiece(hexId);
+      this.attackPiece(hexId, intermediateMoveHexId);
     } else if (action === 'place') {
       this.placePiece(hexId);
     } else {
@@ -135,7 +146,9 @@ class Game extends Component {
               currentTurn={this.props.currentTurn}
               status={this.props.status} />
             <Board
-              onSelectTile={(hexId, action) => this.onSelectTile(hexId, action)}
+              onSelectTile={(hexId, action, intermediateMoveHex) =>
+                this.onSelectTile(hexId, action, intermediateMoveHex)
+              }
               selectedTile={this.props.selectedTile}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
@@ -188,6 +201,7 @@ Game.propTypes = {
 
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,
+  onMoveRobotAndAttack: React.PropTypes.func,
   onPlaceRobot: React.PropTypes.func,
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,

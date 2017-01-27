@@ -158,6 +158,8 @@ class Board extends Component {
 
   onHexClick(hex, event) {
     let action = '';
+    let intermediateMoveHex = null;
+
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
     if (this.props.placingRobot) {
@@ -174,17 +176,28 @@ class Board extends Component {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
       const speed = selectedPiece.stats.speed;
 
-      const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
-      const validAttackHexes = this.getValidAttackSpaces(selectedHex, speed).map((hex) => HexUtils.getID(hex));
+      const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map(HexUtils.getID);
+      const validAttackHexes = this.getValidAttackSpaces(selectedHex, speed).map(HexUtils.getID);
 
       if (validMovementHexes.includes(HexUtils.getID(hex))) {
         action = 'move';
       } else if (validAttackHexes.includes(HexUtils.getID(hex))) {
         action = 'attack';
+
+        if (!this.getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
+          // Attack destination is not adjacent to current position, so we need an intermediate move action.
+          const possibleMoveHexes = this.getAdjacentHexes(hex).map(HexUtils.getID).filter((h) => validMovementHexes.includes(h));
+
+          if (possibleMoveHexes.length > 0) {
+            intermediateMoveHex = possibleMoveHexes[0];
+          } else {
+            action = ''; // Attack is not possible!
+          }
+        }
       }
     }
 
-    this.props.onSelectTile(HexUtils.getID(hex), action);
+    this.props.onSelectTile(HexUtils.getID(hex), action, intermediateMoveHex);
   }
 
   render() {

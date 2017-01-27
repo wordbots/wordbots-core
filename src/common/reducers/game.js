@@ -12,17 +12,23 @@ export default function game(state = defaultState, action) {
   switch (action.type) {
     case gameActions.MOVE_ROBOT:
       let movingRobot = player.robotsOnBoard[action.payload.from];
-      movingRobot.hasMoved = true;
 
-      newState.selectedTile = null;
+      if (!action.payload.asPartOfAttack) {
+        movingRobot.hasMoved = true;
+        newState.selectedTile = null;
+      }
+
       delete newState.players[state.currentTurn].robotsOnBoard[action.payload.from];
       newState.players[state.currentTurn].robotsOnBoard[action.payload.to] = movingRobot;
 
       return newState;
 
     case gameActions.ATTACK:
-      const attacker = player.robotsOnBoard[action.payload.source];
+      let attacker = player.robotsOnBoard[action.payload.source];
       let target = opponent.robotsOnBoard[action.payload.target];
+
+      attacker.hasMoved = true;
+      newState.players[state.currentTurn].robotsOnBoard[action.payload.source] = attacker;
 
       target.stats.health -= attacker.stats.attack;
       if (target.stats.health <= 0) {

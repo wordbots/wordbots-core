@@ -6,12 +6,13 @@ export const END_TURN = 'END_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 
-export function moveRobot(fromHexId, toHexId) {
+export function moveRobot(fromHexId, toHexId, asPartOfAttack = false) {
   return {
     type: MOVE_ROBOT,
     payload: {
       from: fromHexId,
-      to: toHexId
+      to: toHexId,
+      asPartOfAttack: asPartOfAttack
     }
   }
 }
@@ -24,6 +25,13 @@ export function attack(sourceHexId, targetHexId) {
       target: targetHexId
     }
   }
+}
+
+export function moveRobotAndAttack(fromHexId, toHexId, targetHexId) {
+  return [
+    moveRobot(fromHexId, toHexId, true),
+    attack(toHexId, targetHexId)
+  ];
 }
 
 export function placeCard(tile, card) {

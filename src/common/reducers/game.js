@@ -24,17 +24,32 @@ export default function game(state = defaultState, action) {
       return newState;
 
     case gameActions.ATTACK:
+      // TODO: All attacks are "melee" for now.
+      // In the future, there will be ranged attacks that work differently.
+
       let attacker = player.robotsOnBoard[action.payload.source];
-      let target = opponent.robotsOnBoard[action.payload.target];
+      let defender = opponent.robotsOnBoard[action.payload.target];
 
       attacker.hasMoved = true;
-      newState.players[state.currentTurn].robotsOnBoard[action.payload.source] = attacker;
+      attacker.stats.health -= defender.stats.attack;
+      defender.stats.health -= attacker.stats.attack;
 
-      target.stats.health -= attacker.stats.attack;
-      if (target.stats.health <= 0) {
-        delete newState.players[opponentName].robotsOnBoard[action.payload.target];
+      if (attacker.stats.health <= 0) {
+        delete newState.players[state.currentTurn].robotsOnBoard[action.payload.source];
       } else {
-        newState.players[opponentName].robotsOnBoard[action.payload.target] = target;
+        newState.players[state.currentTurn].robotsOnBoard[action.payload.source] = attacker;
+      }
+
+      if (defender.stats.health <= 0) {
+        delete newState.players[opponentName].robotsOnBoard[action.payload.target];
+
+        if (attacker.stats.health > 0) {
+          // Move attacker to defender's space.
+          newState.players[state.currentTurn].robotsOnBoard[action.payload.target] = attacker;
+          delete newState.players[state.currentTurn].robotsOnBoard[action.payload.source];
+        }
+      } else {
+        newState.players[opponentName].robotsOnBoard[action.payload.target] = defender;
       }
 
       newState.selectedTile = null;
@@ -63,6 +78,7 @@ export default function game(state = defaultState, action) {
       newState.currentTurn = (state.currentTurn == 'blue' ? 'orange' : 'blue');
 
       player.selectedCard = null;
+      newState.selectedTile = null;
       newState.placingRobot = false;
       newState.status.message = '';
 

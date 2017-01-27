@@ -1,5 +1,5 @@
 const blueCoreCard = {
-  name: 'Core',
+  name: 'Blue Core',
   img: 'core_blue',
   cost: 0,
   type: 0,
@@ -12,7 +12,7 @@ const blueCoreCard = {
 }
 
 const orangeCoreCard = {
-  name: 'Core',
+  name: 'Orange Core',
   img: 'core_orange',
   cost: 0,
   type: 0,
@@ -115,6 +115,7 @@ export const defaultState = {
   currentTurn: 'blue',
   selectedTile: null,
   placingRobot: false,
+  hoveredCard: null,
   status: {
     message: '',
     type: ''

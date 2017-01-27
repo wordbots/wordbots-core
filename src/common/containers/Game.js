@@ -6,6 +6,7 @@ import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
+import CardViewer from '../components/game/CardViewer';
 
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
@@ -20,6 +21,7 @@ function mapStateToProps(state) {
     selectedTile: state.game.selectedTile,
     placingRobot: state.game.placingRobot,
     status: state.game.status,
+    hoveredCard: state.game.hoveredCard,
 
     blueSelectedCard: state.game.players.blue.selectedCard,
     orangeSelectedCard: state.game.players.orange.selectedCard,
@@ -54,6 +56,9 @@ function mapDispatchToProps(dispatch) {
     },
     onSelectTile: (hexId) => {
       dispatch(gameActions.setSelectedTile(hexId));
+    },
+    onHoverTile: (card) => {
+      dispatch(gameActions.setHoveredCard(card))
     }
   }
 }
@@ -94,6 +99,19 @@ class Game extends Component {
     }
   }
 
+  onHoverTile(hexId, action) {
+    if (action == 'mouseleave') {
+      this.props.onHoverTile(null);
+      return;
+    }
+
+    if (this.props.bluePieces[hexId]) {
+      this.props.onHoverTile(this.props.bluePieces[hexId].card);
+    } else if (this.props.orangePieces[hexId]) {
+      this.props.onHoverTile(this.props.orangePieces[hexId].card);
+    }
+  }
+
   render() {
     return (
       <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
@@ -113,11 +131,13 @@ class Game extends Component {
           <div style={{
             position: 'relative'
           }}>
+            <CardViewer card={this.props.hoveredCard} />
             <Status
               currentTurn={this.props.currentTurn}
               status={this.props.status} />
             <Board
               onSelectTile={(hexId, action) => this.onSelectTile(hexId, action)}
+              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               selectedTile={this.props.selectedTile}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
@@ -152,6 +172,7 @@ Game.propTypes = {
   selectedTile: React.PropTypes.string,
   placingRobot: React.PropTypes.bool,
   status: React.PropTypes.object,
+  hoveredCard: React.PropTypes.object,
 
   blueHand: React.PropTypes.array,
   orangeHand: React.PropTypes.array,
@@ -172,7 +193,8 @@ Game.propTypes = {
   onPlaceRobot: React.PropTypes.func,
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
-  onPassTurn: React.PropTypes.func
+  onPassTurn: React.PropTypes.func,
+  onHoverTile: React.PropTypes.func,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

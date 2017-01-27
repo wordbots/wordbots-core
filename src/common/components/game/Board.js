@@ -180,14 +180,18 @@ class Board extends Component {
     this.props.onSelectTile(HexUtils.getID(hex), action);
   }
 
+  onHexHover(hex, event) {
+    this.props.onHoverTile(HexUtils.getID(hex), event.type);
+  }
+
   render() {
     let { grid, config } = this.state;
     let hexColors = this.updateHexColors();
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
-      onMouseEnter: (h, e) => {},
-      onMouseLeave: (h, e) => {}
+      onMouseEnter: (h, e) => this.onHexHover(h, e),
+      onMouseLeave: (h, e) => this.onHexHover(h, e)
     };
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
@@ -213,10 +217,13 @@ class Board extends Component {
 Board.propTypes = {
   bluePieces: React.PropTypes.object,
   orangePieces: React.PropTypes.object,
+
   currentTurn: React.PropTypes.string,
-  onSelectTile: React.PropTypes.func,
   selectedTile: React.PropTypes.string,
-  placingRobot: React.PropTypes.bool
+  placingRobot: React.PropTypes.bool,
+
+  onSelectTile: React.PropTypes.func,
+  onHoverTile: React.PropTypes.func
 }
 
 export default Board;

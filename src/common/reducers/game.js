@@ -100,6 +100,10 @@ export default function game(state = defaultState, action) {
 
       return newState;
 
+    case gameActions.SET_HOVERED_CARD:
+      newState.hoveredCard = action.payload.hoveredCard;
+      return newState;
+
     default:
       return state;
   }

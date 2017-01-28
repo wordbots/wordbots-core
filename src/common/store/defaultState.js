@@ -4,7 +4,7 @@ const blueCoreCard = {
   cost: 0,
   type: 0,
   stats: {
-    health: 2,
+    health: 20,
     speed: 0,
     attack: 0
   },
@@ -17,7 +17,7 @@ const orangeCoreCard = {
   cost: 0,
   type: 0,
   stats: {
-    health: 2,
+    health: 20,
     speed: 0,
     attack: 0
   },

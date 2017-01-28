@@ -119,5 +119,6 @@ export const defaultState = {
   status: {
     message: '',
     type: ''
-  }
+  },
+  winner: null
 }

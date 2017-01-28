@@ -25,7 +25,8 @@ class VictoryScreen extends Component {
         fontFamily: 'Luckiest Guy',
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
         fontSize: 96,
-        color: this.props.winner === null ? 'black' : colors[this.props.winner]
+        color: this.props.winner === null ? 'black' : colors[this.props.winner],
+        borderRadius: 2
       }}>
         <ReactCSSTransitionGroup
           transitionName="card-viewer-fade"

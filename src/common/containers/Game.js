@@ -7,6 +7,7 @@ import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import CardViewer from '../components/game/CardViewer';
+import VictoryScreen from '../components/game/VictoryScreen';
 
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
@@ -22,6 +23,7 @@ function mapStateToProps(state) {
     placingRobot: state.game.placingRobot,
     status: state.game.status,
     hoveredCard: state.game.hoveredCard,
+    winner: state.game.winner,
 
     blueSelectedCard: state.game.players.blue.selectedCard,
     orangeSelectedCard: state.game.players.orange.selectedCard,
@@ -189,6 +191,8 @@ class Game extends Component {
             cards={this.props.blueHand}
             status={this.props.status}
             deck={this.props.blueDeck} />
+
+          <VictoryScreen winner={this.props.winner} />
         </Paper>
         <Chat />
       </div>
@@ -202,6 +206,7 @@ Game.propTypes = {
   placingRobot: React.PropTypes.bool,
   status: React.PropTypes.object,
   hoveredCard: React.PropTypes.object,
+  winner: React.PropTypes.string,
 
   blueHand: React.PropTypes.array,
   orangeHand: React.PropTypes.array,

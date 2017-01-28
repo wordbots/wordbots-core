@@ -41,6 +41,12 @@ export default function game(state = defaultState, action) {
       }
 
       if (defender.stats.health <= 0) {
+        if (defender.card.name === 'Blue Core') {
+          newState.winner = 'orange';
+        } else if (defender.card.name === 'Orange Core') {
+          newState.winner = 'blue';
+        }
+
         delete newState.players[opponentName].robotsOnBoard[action.payload.target];
 
         if (attacker.stats.health > 0) {

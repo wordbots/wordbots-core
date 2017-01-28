@@ -4,7 +4,7 @@ const blueCoreCard = {
   cost: 0,
   type: 0,
   stats: {
-    health: 20,
+    health: 2,
     speed: 0,
     attack: 0
   },
@@ -17,7 +17,7 @@ const orangeCoreCard = {
   cost: 0,
   type: 0,
   stats: {
-    health: 20,
+    health: 2,
     speed: 0,
     attack: 0
   },
@@ -119,5 +119,6 @@ export const defaultState = {
   status: {
     message: '',
     type: ''
-  }
+  },
+  winner: null
 }

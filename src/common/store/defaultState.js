@@ -66,21 +66,6 @@ export const defaultState = {
           hasMoved: false,
           card: blueCoreCard,
           stats: blueCoreCard.stats
-        },
-        '-1,-3,4': {
-          hasMoved: false,
-          card: attackBotCard,
-          stats: attackBotCard.stats
-        },
-        '1,-3,2': {
-          hasMoved: false,
-          card: attackBotCard,
-          stats: attackBotCard.stats
-        },
-        '0,-1,1': {
-          hasMoved: true,
-          card: attackBotCard,
-          stats: attackBotCard.stats
         }
       }
     },
@@ -98,16 +83,6 @@ export const defaultState = {
           hasMoved: false,
           card: orangeCoreCard,
           stats: orangeCoreCard.stats
-        },
-        '0,-4,4': {
-          hasMoved: false,
-          card: tankBotCard,
-          stats: tankBotCard.stats
-        },
-        '0,4,-4': {
-          hasMoved: false,
-          card: attackBotCard,
-          stats: attackBotCard.stats
         }
       }
     }

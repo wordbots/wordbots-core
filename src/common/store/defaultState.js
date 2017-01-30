@@ -50,6 +50,13 @@ const tankBotCard = {
   abilities: []
 }
 
+const concentrationCard = {
+  name: 'Concentration',
+  text: 'Draw two cards.',
+  cost: 1,
+  type: 1
+}
+
 export const defaultState = {
   players: {
     blue: {
@@ -58,7 +65,7 @@ export const defaultState = {
         used: 0,
         total: 1
       },
-      hand: [tankBotCard, attackBotCard],
+      hand: [tankBotCard, concentrationCard],
       selectedCard: null,
       deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {
@@ -75,7 +82,7 @@ export const defaultState = {
         used: 0,
         total: 1
       },
-      hand: [tankBotCard, attackBotCard],
+      hand: [tankBotCard, concentrationCard],
       selectedCard: null,
       deck: [tankBotCard, tankBotCard, tankBotCard],
       robotsOnBoard: {

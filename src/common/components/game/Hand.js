@@ -21,6 +21,7 @@ class Hand extends Component {
           key={index}
           status={this.props.status}
           name={card.name}
+          text={card.text || ''}
           cost={card.cost}
           cardStats={card.stats}
           selected={this.props.selectedCard === index}

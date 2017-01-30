@@ -33,12 +33,13 @@ class Card extends Component {
 
   render() {
     let cardSubtitle = '';
+    let stats = '';
     let selectedStyle = {};
 
-    if (this.props.cardStats.type === 0) {
+    if (this.props.cardStats) {
       cardSubtitle = 'Robot';
     } else {
-      cardSubtitle = 'Spell';
+      cardSubtitle = 'Event';
     }
 
     if (this.props.selected) {
@@ -53,6 +54,18 @@ class Card extends Component {
       }
     }
 
+    if (this.props.cardStats) {
+      stats = (<CardText style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: 10
+      }}>
+        <CardStat type="attack" value={this.props.cardStats.attack}/>
+        <CardStat type="speed" value={this.props.cardStats.speed}/>
+        <CardStat type="health" value={this.props.cardStats.health}/>
+      </CardText>);
+    }
+
     if (!this.props.visible) {
       return (
         <CardBack />
@@ -62,10 +75,10 @@ class Card extends Component {
         <Badge
           badgeContent={this.props.cost}
           badgeStyle={{
-            top: 12, 
-            right: 20, 
-            width: 36, 
-            height: 36, 
+            top: 12,
+            right: 20,
+            width: 36,
+            height: 36,
             backgroundColor: '#00bcd4',
             fontFamily: 'Luckiest Guy',
             color: 'white',
@@ -98,16 +111,8 @@ class Card extends Component {
                 flexDirection: 'column',
                 flexGrow: 1
               }}>
-                <CardText style={{padding: 10}}>Example card text.</CardText>
-                <CardText style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: 10
-                }}>
-                  <CardStat type="attack" value={this.props.cardStats.attack}/>
-                  <CardStat type="speed" value={this.props.cardStats.speed}/>
-                  <CardStat type="health" value={this.props.cardStats.health}/>
-                </CardText>
+                <CardText style={{padding: 10}}>{this.props.text}</CardText>
+                {stats}
               </div>
             </Paper>
           </div>
@@ -118,13 +123,14 @@ class Card extends Component {
 }
 
 Card.propTypes = {
+  name: React.PropTypes.string,
+  text: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
-  onCardClick: React.PropTypes.func,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
-  name: React.PropTypes.string
+  onCardClick: React.PropTypes.func
 }
 
 export default Card;

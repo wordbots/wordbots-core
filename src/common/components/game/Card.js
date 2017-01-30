@@ -32,22 +32,30 @@ class Card extends Component {
     });
   }
 
+  renderStatsArea() {
+    if (this.props.type == TYPE_ROBOT) {
+      return (
+        <CardText style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: 10
+        }}>
+          <CardStat type="attack" value={this.props.cardStats.attack}/>
+          <CardStat type="speed" value={this.props.cardStats.speed}/>
+          <CardStat type="health" value={this.props.cardStats.health}/>
+        </CardText>
+      );
+    } else {
+      return '';
+    }
+  }
+
   render() {
     let cardSubtitle = '';
-    let statsArea = '';
     let selectedStyle = {};
 
     if (this.props.type == TYPE_ROBOT) {
       cardSubtitle = 'Robot';
-      statsArea = (<CardText style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: 10
-      }}>
-        <CardStat type="attack" value={this.props.cardStats.attack}/>
-        <CardStat type="speed" value={this.props.cardStats.speed}/>
-        <CardStat type="health" value={this.props.cardStats.health}/>
-      </CardText>);
     } else {
       cardSubtitle = 'Event';
     }
@@ -110,7 +118,7 @@ class Card extends Component {
                 flexGrow: 1
               }}>
                 <CardText style={{padding: 10}}>{this.props.text}</CardText>
-                {statsArea}
+                {this.renderStatsArea()}
               </div>
             </Paper>
           </div>

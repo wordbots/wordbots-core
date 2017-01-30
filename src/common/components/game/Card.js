@@ -6,6 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
+import { TYPE_ROBOT } from '../../constants';
 
 class Card extends Component {
   constructor(props) {
@@ -33,11 +34,20 @@ class Card extends Component {
 
   render() {
     let cardSubtitle = '';
-    let stats = '';
+    let statsArea = '';
     let selectedStyle = {};
 
-    if (this.props.cardStats) {
+    if (this.props.type == TYPE_ROBOT) {
       cardSubtitle = 'Robot';
+      statsArea = (<CardText style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: 10
+      }}>
+        <CardStat type="attack" value={this.props.cardStats.attack}/>
+        <CardStat type="speed" value={this.props.cardStats.speed}/>
+        <CardStat type="health" value={this.props.cardStats.health}/>
+      </CardText>);
     } else {
       cardSubtitle = 'Event';
     }
@@ -52,18 +62,6 @@ class Card extends Component {
           boxShadow: 'rgba(27, 134, 27, 0.95) 0px 0px 20px 5px'
         }
       }
-    }
-
-    if (this.props.cardStats) {
-      stats = (<CardText style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: 10
-      }}>
-        <CardStat type="attack" value={this.props.cardStats.attack}/>
-        <CardStat type="speed" value={this.props.cardStats.speed}/>
-        <CardStat type="health" value={this.props.cardStats.health}/>
-      </CardText>);
     }
 
     if (!this.props.visible) {
@@ -112,7 +110,7 @@ class Card extends Component {
                 flexGrow: 1
               }}>
                 <CardText style={{padding: 10}}>{this.props.text}</CardText>
-                {stats}
+                {statsArea}
               </div>
             </Paper>
           </div>
@@ -124,6 +122,7 @@ class Card extends Component {
 
 Card.propTypes = {
   name: React.PropTypes.string,
+  type: React.PropTypes.number,
   text: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,

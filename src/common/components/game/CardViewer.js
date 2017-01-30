@@ -16,6 +16,8 @@ class CardViewer extends Component {
         <Card
           onCardClick={() => {}}
           name={this.props.card.name}
+          type={this.props.card.type}
+          text={this.props.card.text || ''}
           cost={this.props.card.cost}
           cardStats={this.props.card.stats}
           selected={false}

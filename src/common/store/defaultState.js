@@ -8,7 +8,7 @@ export const defaultState = {
         used: 0,
         total: 1
       },
-      hand: [cards.tankBotCard, cards.concentrationCard],
+      hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
       deck: [cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
       robotsOnBoard: {
@@ -25,7 +25,7 @@ export const defaultState = {
         used: 0,
         total: 1
       },
-      hand: [cards.tankBotCard, cards.concentrationCard],
+      hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
       deck: [cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
       robotsOnBoard: {

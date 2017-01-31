@@ -1,14 +1,12 @@
-import { TYPE_ROBOT, TYPE_EVENT } from '../constants'
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE } from '../constants'
 
 export const blueCoreCard = {
   name: 'Blue Core',
   img: 'core_blue',
   cost: 0,
-  type: TYPE_ROBOT,
+  type: TYPE_CORE,
   stats: {
-    health: 20,
-    speed: 0,
-    attack: 0
+    health: 20
   },
   abilities: []
 }
@@ -17,11 +15,9 @@ export const orangeCoreCard = {
   name: 'Orange Core',
   img: 'core_orange',
   cost: 0,
-  type: TYPE_ROBOT,
+  type: TYPE_CORE,
   stats: {
-    health: 20,
-    speed: 0,
-    attack: 0
+    health: 20
   },
   abilities: []
 }

@@ -6,7 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
-import { TYPE_ROBOT } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
 
 class Card extends Component {
   constructor(props) {
@@ -35,13 +35,15 @@ class Card extends Component {
   renderStatsArea() {
     if (this.props.type == TYPE_ROBOT) {
       return (
-        <CardText style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: 10
-        }}>
+        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
           <CardStat type="attack" value={this.props.cardStats.attack}/>
           <CardStat type="speed" value={this.props.cardStats.speed}/>
+          <CardStat type="health" value={this.props.cardStats.health}/>
+        </CardText>
+      );
+    } else if (this.props.type == TYPE_CORE) {
+      return (
+        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
           <CardStat type="health" value={this.props.cardStats.health}/>
         </CardText>
       );
@@ -94,7 +96,7 @@ class Card extends Component {
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
                 title={this.props.name}
-                subtitle={this.props.type == TYPE_ROBOT ? 'Robot' : 'Event'}/>
+                subtitle={typeToString(this.props.type)}/>
               <Divider/>
               <div style={{
                 display: 'flex',

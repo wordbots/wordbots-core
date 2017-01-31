@@ -1,7 +1,7 @@
 import * as gameActions from '../actions/game';
 import { defaultState } from '../store/defaultState';
 import { TYPE_ROBOT } from '../constants';
-import ExecutionContext from './game/executionContext'
+import ExecutionContext from './game/executionContext';
 
 export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);
@@ -116,7 +116,7 @@ export default function game(state = defaultState, action) {
         newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
 
         if (selectedCard.cost <= energy.total - energy.used) {
-          if (selectedCard.type === 0) {
+          if (selectedCard.type === TYPE_ROBOT) {
             newState.placingRobot = true;
             newState.status.message = 'Select an available tile to place this robot.';
             newState.status.type = 'text';

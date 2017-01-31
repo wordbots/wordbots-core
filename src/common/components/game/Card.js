@@ -51,26 +51,11 @@ class Card extends Component {
   }
 
   render() {
-    let cardSubtitle = '';
-    let selectedStyle = {};
-
-    if (this.props.type == TYPE_ROBOT) {
-      cardSubtitle = 'Robot';
-    } else {
-      cardSubtitle = 'Event';
-    }
-
-    if (this.props.selected) {
-      if (this.props.status.type === 'error') {
-        selectedStyle = {
-          boxShadow: 'rgba(255, 35, 35, 0.95) 0px 0px 20px 5px'
-        }
-      } else {
-        selectedStyle = {
-          boxShadow: 'rgba(27, 134, 27, 0.95) 0px 0px 20px 5px'
-        }
-      }
-    }
+    const redShadow = 'rgba(255, 35, 35, 0.95)';
+    const greenShadow = 'rgba(27, 134, 27, 0.95)';
+    const selectedStyle = {
+      boxShadow: ((this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow) + ' 0px 0px 20px 5px'
+    };
 
     if (!this.props.visible) {
       return (
@@ -105,11 +90,11 @@ class Card extends Component {
                 flexDirection: 'column',
                 userSelect: 'none',
                 cursor: 'pointer'
-            }, selectedStyle)}>
+              }, (this.props.selected ? selectedStyle : {}))}>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
                 title={this.props.name}
-                subtitle={cardSubtitle}/>
+                subtitle={this.props.type == TYPE_ROBOT ? 'Robot' : 'Event'}/>
               <Divider/>
               <div style={{
                 display: 'flex',

@@ -1,10 +1,7 @@
 import * as gameActions from '../actions/game';
 import { defaultState } from '../store/defaultState';
-<<<<<<< Updated upstream
-=======
 import { TYPE_ROBOT } from '../constants';
 import ExecutionContext from './game/executionContext'
->>>>>>> Stashed changes
 
 export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);

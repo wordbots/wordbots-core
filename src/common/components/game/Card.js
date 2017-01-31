@@ -6,6 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
+import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
 
 class Card extends Component {
   constructor(props) {
@@ -31,27 +32,32 @@ class Card extends Component {
     });
   }
 
-  render() {
-    let cardSubtitle = '';
-    let selectedStyle = {};
-
-    if (this.props.cardStats.type === 0) {
-      cardSubtitle = 'Robot';
+  renderStatsArea() {
+    if (this.props.type == TYPE_ROBOT) {
+      return (
+        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
+          <CardStat type="attack" value={this.props.cardStats.attack}/>
+          <CardStat type="speed" value={this.props.cardStats.speed}/>
+          <CardStat type="health" value={this.props.cardStats.health}/>
+        </CardText>
+      );
+    } else if (this.props.type == TYPE_CORE) {
+      return (
+        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
+          <CardStat type="health" value={this.props.cardStats.health}/>
+        </CardText>
+      );
     } else {
-      cardSubtitle = 'Spell';
+      return '';
     }
+  }
 
-    if (this.props.selected) {
-      if (this.props.status.type === 'error') {
-        selectedStyle = {
-          boxShadow: 'rgba(255, 35, 35, 0.95) 0px 0px 20px 5px'
-        }
-      } else {
-        selectedStyle = {
-          boxShadow: 'rgba(27, 134, 27, 0.95) 0px 0px 20px 5px'
-        }
-      }
-    }
+  render() {
+    const redShadow = 'rgba(255, 35, 35, 0.95)';
+    const greenShadow = 'rgba(27, 134, 27, 0.95)';
+    const selectedStyle = {
+      boxShadow: ((this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow) + ' 0px 0px 20px 5px'
+    };
 
     if (!this.props.visible) {
       return (
@@ -62,10 +68,10 @@ class Card extends Component {
         <Badge
           badgeContent={this.props.cost}
           badgeStyle={{
-            top: 12, 
-            right: 20, 
-            width: 36, 
-            height: 36, 
+            top: 12,
+            right: 20,
+            width: 36,
+            height: 36,
             backgroundColor: '#00bcd4',
             fontFamily: 'Luckiest Guy',
             color: 'white',
@@ -86,11 +92,11 @@ class Card extends Component {
                 flexDirection: 'column',
                 userSelect: 'none',
                 cursor: 'pointer'
-            }, selectedStyle)}>
+              }, (this.props.selected ? selectedStyle : {}))}>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
                 title={this.props.name}
-                subtitle={cardSubtitle}/>
+                subtitle={typeToString(this.props.type)}/>
               <Divider/>
               <div style={{
                 display: 'flex',
@@ -98,16 +104,8 @@ class Card extends Component {
                 flexDirection: 'column',
                 flexGrow: 1
               }}>
-                <CardText style={{padding: 10}}>Example card text.</CardText>
-                <CardText style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: 10
-                }}>
-                  <CardStat type="attack" value={this.props.cardStats.attack}/>
-                  <CardStat type="speed" value={this.props.cardStats.speed}/>
-                  <CardStat type="health" value={this.props.cardStats.health}/>
-                </CardText>
+                <CardText style={{padding: 10}}>{this.props.text}</CardText>
+                {this.renderStatsArea()}
               </div>
             </Paper>
           </div>
@@ -118,13 +116,15 @@ class Card extends Component {
 }
 
 Card.propTypes = {
+  name: React.PropTypes.string,
+  type: React.PropTypes.number,
+  text: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
-  onCardClick: React.PropTypes.func,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
-  name: React.PropTypes.string
+  onCardClick: React.PropTypes.func
 }
 
 export default Card;

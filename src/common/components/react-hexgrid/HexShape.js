@@ -57,31 +57,43 @@ class HexShape extends React.Component {
   getPieceStats() {
     if (this.props.piece) {
       if (this.props.pieceStats.attack) {
-        <g>
-          <circle style={{
-            fill: '#81C784'
-          }} cx="3" cy="2" r="2" />
-          <text x="3" y="3" textAnchor="middle" style={{
-            fontFamily: 'Luckiest Guy',
-            fontSize: '0.19em',
-            fill: '#FFFFFF',
-            fillOpacity: 1
-          }}>{this.props.pieceStats.health}</text>
-        </g>
+        return (
+          <g>
+            <circle style={{
+              fill: '#E57373'
+            }} cx="-3" cy="2" r="2" />
+            <text x="-3" y="3" textAnchor="middle" style={{
+              fontFamily: 'Luckiest Guy',
+              fontSize: '0.19em',
+              fill: '#FFFFFF',
+              fillOpacity: 1
+            }}>{this.props.pieceStats.attack}</text>
+            <circle style={{
+              fill: '#81C784'
+            }} cx="3" cy="2" r="2" />
+            <text x="3" y="3" textAnchor="middle" style={{
+              fontFamily: 'Luckiest Guy',
+              fontSize: '0.19em',
+              fill: '#FFFFFF',
+              fillOpacity: 1
+            }}>{this.props.pieceStats.health}</text>
+          </g>
+        )
+      } else {
+        return (
+          <g>
+            <circle style={{
+              fill: '#81C784'
+            }} cx="3" cy="2" r="2" />
+            <text x="3" y="3" textAnchor="middle" style={{
+              fontFamily: 'Luckiest Guy',
+              fontSize: '0.19em',
+              fill: '#FFFFFF',
+              fillOpacity: 1
+            }}>{this.props.pieceStats.health}</text>
+          </g>
+        )
       }
-      return (
-        <g>
-          <circle style={{
-            fill: '#81C784'
-          }} cx="3" cy="2" r="2" />
-          <text x="3" y="3" textAnchor="middle" style={{
-            fontFamily: 'Luckiest Guy',
-            fontSize: '0.19em',
-            fill: '#FFFFFF',
-            fillOpacity: 1
-          }}>{this.props.pieceStats.health}</text>
-        </g>
-      )
     } else {
       return null;
     }

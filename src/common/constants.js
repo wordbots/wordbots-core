@@ -8,6 +8,16 @@ export function typeToString(type) {
   } else if (type == TYPE_EVENT) {
     return 'Event';
   } else if (type == TYPE_CORE) {
-    return 'Core';
+    return 'Kernel';
+  }
+}
+
+export function stringToType(str) {
+  if (str.toLowerCase() == 'robot') {
+    return TYPE_ROBOT;
+  } else if (str.toLowerCase() == 'event') {
+    return TYPE_EVENT;
+  } else if (str.toLowerCase() == 'kernel') {
+    return TYPE_CORE;
   }
 }

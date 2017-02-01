@@ -55,3 +55,19 @@ export const concentrationCard = {
   cost: 1,
   type: TYPE_EVENT
 }
+
+export const superchargeCard = {
+  name: 'Supercharge',
+  text: 'Gain 2 energy.',
+  command: '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + 2; }); })',
+  cost: 0,
+  type: TYPE_EVENT
+}
+
+export const rampageCard = {
+  name: 'Rampage',
+  text: 'Give all robots you control +2 attack.',
+  command: '(function () { actions["modifyAttribute"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]()))), "attack", function (x) { return x + 2; }); })',
+  cost: 3,
+  type: TYPE_EVENT
+}

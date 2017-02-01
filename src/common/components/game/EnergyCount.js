@@ -8,7 +8,7 @@ class EnergyCount extends Component {
 
   render() {
     return (
-      <Paper 
+      <Paper
         zDepth={2}
         circle
         style={{
@@ -27,7 +27,7 @@ class EnergyCount extends Component {
             color: 'white',
             fontFamily: 'Luckiest Guy'
           }}>
-          {this.props.energy.total - this.props.energy.used} / {this.props.energy.total}
+          {this.props.energy.available} / {this.props.energy.total}
         </div>
       </Paper>
     );

@@ -40,6 +40,7 @@ export const defaultState = {
   currentTurn: 'blue',
   selectedTile: null,
   placingRobot: false,
+  playingCard: false,
   hoveredCard: null,
   status: {
     message: '',

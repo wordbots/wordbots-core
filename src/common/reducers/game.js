@@ -1,14 +1,17 @@
 import * as gameActions from '../actions/game';
 import { defaultState } from '../store/defaultState';
 import { TYPE_ROBOT } from '../constants';
+import ExecutionContext from './game/executionContext';
 
 export default function game(state = defaultState, action) {
   let newState = Object.assign({}, state);
 
   const opponentName = state.currentTurn == 'blue' ? 'orange' : 'blue';
 
-  const player = newState.players[state.currentTurn];
+  let player = newState.players[state.currentTurn];
   const opponent = newState.players[opponentName];
+
+  const context = new ExecutionContext(newState);
 
   switch (action.type) {
     case gameActions.MOVE_ROBOT:
@@ -106,10 +109,23 @@ export default function game(state = defaultState, action) {
       newState.selectedTile = null;
 
       if (newState.players[state.currentTurn].selectedCard == action.payload.selectedCard) {
-        // Deselect
-        newState.players[state.currentTurn].selectedCard = null;
-        newState.placingRobot = false;
-        newState.status.message = '';
+        // Deselect or play event
+        if (selectedCard.type === TYPE_ROBOT) {
+          newState.players[state.currentTurn].selectedCard = null;
+          newState.placingRobot = false;
+          newState.status.message = '';
+        } else {
+          newState = context.execute(selectedCard.command);
+
+          player = newState.players[state.currentTurn];
+
+          player.selectedCard = null;
+          player.energy.used += selectedCard.cost;
+          player.hand.splice(action.payload.selectedCard, 1);
+
+          newState.playingCard = false;
+          newState.status.message = '';
+        }
       } else {
         // Select
         newState.players[state.currentTurn].selectedCard = action.payload.selectedCard;
@@ -117,12 +133,14 @@ export default function game(state = defaultState, action) {
         if (selectedCard.cost <= energy.total - energy.used) {
           if (selectedCard.type === TYPE_ROBOT) {
             newState.placingRobot = true;
+            newState.playingCard = false;
             newState.status.message = 'Select an available tile to place this robot.';
             newState.status.type = 'text';
           } else {
-            // Playing spell logic
             newState.placingRobot = false;
-            newState.status.message = '';
+            newState.playingCard = true;
+            newState.status.message = 'Select this card again to play it as an event.';
+            newState.status.type = 'text';
           }
         } else {
           newState.placingRobot = false;
@@ -151,6 +169,9 @@ export default function game(state = defaultState, action) {
     case gameActions.SET_HOVERED_CARD:
       newState.hoveredCard = action.payload.hoveredCard;
       return newState;
+
+    case gameActions.EXECUTE_COMMAND:
+      return context.execute(action.payload.cmd);
 
     default:
       return state;

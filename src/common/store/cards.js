@@ -51,6 +51,7 @@ export const tankBotCard = {
 export const concentrationCard = {
   name: 'Concentration',
   text: 'Draw two cards.',
+  command: '(function () { actions["draw"](targets["self"](), 2); })',
   cost: 1,
   type: TYPE_EVENT
 }

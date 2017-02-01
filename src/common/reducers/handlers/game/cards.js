@@ -1,4 +1,4 @@
-import { TYPE_ROBOT } from '../../../constants'
+import { TYPE_EVENT, TYPE_ROBOT } from '../../../constants'
 import { currentPlayer, executeCmd } from './util'
 
 export function setSelectedCard(state, cardIdx) {
@@ -9,12 +9,12 @@ export function setSelectedCard(state, cardIdx) {
 
   if (state.players[state.currentTurn].selectedCard == cardIdx) {
     // Deselect or play event
-    if (selectedCard.type === TYPE_ROBOT) {
+    if (selectedCard.type === TYPE_EVENT && selectedCard.cost <= energy.available) {
+      return playEvent(state, cardIdx);
+    } else {
       state.players[state.currentTurn].selectedCard = null;
       state.placingRobot = false;
       state.status.message = '';
-    } else {
-      return playEvent(state, cardIdx);
     }
   } else {
     // Select

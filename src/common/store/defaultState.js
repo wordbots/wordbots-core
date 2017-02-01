@@ -10,7 +10,7 @@ export const defaultState = {
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.superchargeCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: [cards.superchargeCard, cards.rampageCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
@@ -27,7 +27,7 @@ export const defaultState = {
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.superchargeCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: [cards.superchargeCard, cards.rampageCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,

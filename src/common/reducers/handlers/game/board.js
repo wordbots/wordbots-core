@@ -46,7 +46,7 @@ export function attack(state, source, target) {
   attacker.hasMoved = true;
 
   // Apply damage.
-  attacker.stats.health -= defender.stats.attack;
+  attacker.stats.health -= (defender.stats.attack || 0);
   defender.stats.health -= attacker.stats.attack;
 
   // Update or remove attacker.

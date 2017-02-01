@@ -121,7 +121,7 @@ export default function game(state = defaultState, action) {
 
           player.selectedCard = null;
           player.energy.used += selectedCard.cost;
-          player.hand.splice(selectedCardIndex, 1);
+          player.hand.splice(action.payload.selectedCard, 1);
 
           newState.playingCard = false;
           newState.status.message = '';

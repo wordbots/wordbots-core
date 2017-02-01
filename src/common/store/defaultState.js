@@ -5,12 +5,12 @@ export const defaultState = {
     blue: {
       health: 20,
       energy: {
-        used: 0,
+        available: 1,
         total: 1
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: [cards.superchargeCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
@@ -22,12 +22,12 @@ export const defaultState = {
     orange: {
       health: 20,
       energy: {
-        used: 0,
+        available: 1,
         total: 1
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: [cards.superchargeCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,

@@ -3,7 +3,7 @@ import { currentPlayer, opponentName } from './util'
 export function startTurn(state) {
   const player = currentPlayer(state);
   player.energy.total += 1;
-  player.energy.used = 0;
+  player.energy.used = player.energy.total;
   player.hand = player.hand.concat(player.deck.splice(0, 1));
   player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot) => _.assign(robot, {hasMoved: false}));
   Object.keys(player.robotsOnBoard).forEach((hex) =>

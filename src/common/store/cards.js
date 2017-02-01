@@ -55,3 +55,11 @@ export const concentrationCard = {
   cost: 1,
   type: TYPE_EVENT
 }
+
+export const superchargeCard = {
+  name: 'Supercharge',
+  text: 'Gain 2 energy.',
+  command: '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + 2; }); })',
+  cost: 0,
+  type: TYPE_EVENT
+}

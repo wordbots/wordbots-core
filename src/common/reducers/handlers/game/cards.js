@@ -20,7 +20,7 @@ export function setSelectedCard(state, cardIdx) {
     // Select
     state.players[state.currentTurn].selectedCard = cardIdx;
 
-    if (selectedCard.cost <= energy.total - energy.used) {
+    if (selectedCard.cost <= energy.available) {
       if (selectedCard.type === TYPE_ROBOT) {
         state.placingRobot = true;
         state.playingCard = false;
@@ -53,7 +53,7 @@ export function placeCard(state, card, tile) {
   }
 
   player.selectedCard = null;
-  player.energy.used += player.hand[selectedCardIndex].cost;
+  player.energy.available -= player.hand[selectedCardIndex].cost;
   player.hand.splice(selectedCardIndex, 1);
 
   state.placingRobot = false;
@@ -69,7 +69,7 @@ function playEvent(state, cardIdx, command) {
 
   const player = state.players[state.currentTurn];
   player.selectedCard = null;
-  player.energy.used += selectedCard.cost;
+  player.energy.available -= selectedCard.cost;
   player.hand.splice(cardIdx, 1);
 
   state.playingCard = false;

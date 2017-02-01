@@ -1,8 +1,9 @@
 import React from 'react';
-const { object, string } = React.PropTypes
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
+
+const { object, string } = React.PropTypes
 
 class HexShape extends React.Component {
   getPoints(hex) {

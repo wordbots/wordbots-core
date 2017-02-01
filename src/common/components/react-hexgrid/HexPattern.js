@@ -1,6 +1,7 @@
 import React from 'react';
-const { object, string, bool } = React.PropTypes
 import HexUtils from './HexUtils';
+
+const { object, string, bool } = React.PropTypes
 
 class HexPattern extends React.Component {
   render() {
@@ -23,8 +24,8 @@ class HexPattern extends React.Component {
         <pattern id={id} patternUnits="userSpaceOnUse" x="-15" y="-10" width="30" height="20">
           <image xlinkHref={fillImage} x="0" y="0" width="30" height="20" />
         </pattern>
-        <pattern id={id + '_piece'} height="100%" width="100%" 
-          patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1" 
+        <pattern id={id + '_piece'} height="100%" width="100%"
+          patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1"
           preserveAspectRatio="xMidYMid">
           <image xlinkHref={pieceImage} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
         </pattern>

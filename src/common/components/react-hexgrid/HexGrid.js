@@ -1,12 +1,13 @@
 import React from 'react'
 import Hex from './Hex'
 import HexUtils from './HexUtils'
-const { number, object, bool, string, array } = React.PropTypes
 import HexShape from './HexShape'
 import Path from './Path'
 import Layout from './Layout'
 import GridGenerator from './GridGenerator'
 import loadImages from './HexGridImages'
+
+const { number, object, bool, string, array } = React.PropTypes
 
 class HexGrid extends React.Component {
   render() {

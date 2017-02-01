@@ -2,25 +2,24 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 
 import webpack from 'webpack';
-import webpackConfig from '../../webpack.config';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { RoutingContext, match } from 'react-router';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import createLocation from 'history/lib/createLocation';
-import { fetchComponentDataBeforeRender } from '../common/api/fetchComponentDataBeforeRender';
+import Helmet from 'react-helmet';
 
+import { fetchComponentDataBeforeRender } from '../common/api/fetchComponentDataBeforeRender';
 import configureStore from '../common/store/configureStore';
 import { getUser } from '../common/api/user';
 import routes from '../common/routes';
 import packagejson from '../../package.json';
-import Helmet from 'react-helmet';
 
-import {connect} from 'react-redux';
-import {getUserInfo} from '../common/actions/user';
+import webpackConfig from '../../webpack.config';
+import { getUserInfo } from '../common/actions/user';
 
 const app = express();
 

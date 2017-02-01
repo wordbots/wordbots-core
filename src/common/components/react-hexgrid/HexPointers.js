@@ -1,6 +1,7 @@
 import React from 'react';
-const { object, string } = React.PropTypes
 import HexUtils from './HexUtils';
+
+const { object, string } = React.PropTypes
 
 class HexPointers extends React.Component {
 

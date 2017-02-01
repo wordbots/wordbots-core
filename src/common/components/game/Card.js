@@ -4,9 +4,9 @@ import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
+import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
-import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
 
 class Card extends Component {
   constructor(props) {

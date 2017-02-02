@@ -1,6 +1,8 @@
 import { stringToType } from '../../constants';
 import { allObjectsOnBoard } from '../handlers/game/util';
 
+// TODO cardsInPlay(players)
+
 export function objectsInPlay(state) {
   return function (objType) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>

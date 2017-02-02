@@ -4,12 +4,20 @@
 
 export default function targets(state) {
   return {
-    self: function () {
-      return [state.players[state.currentTurn]];
-    },
-
     all: function (collection) {
       return _.toPairs(collection);
+    },
+
+    // TODO choose(collection) -- requires choice
+
+    // TODO thisRobot() -- requires triggers
+
+    self: function () {
+      return [state.players[state.currentTurn]];
     }
+
+    // TODO opponent()
+
+    // TODO allPlayers()
   };
 }

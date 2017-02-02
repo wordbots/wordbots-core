@@ -1,11 +1,17 @@
 export default function actions(state) {
   return {
+    // TODO canMoveAgain(objects)
+
+    // TODO dealDamage(objects, amount)
+
     destroy: function (objects) {
       objects.forEach(function ([hex, object]) {
         delete state.players.blue.robotsOnBoard[hex];
         delete state.players.orange.robotsOnBoard[hex];
       });
     },
+
+    // TODO discard(objects) -- requires choice?
 
     draw: function (players, count) {
       players.forEach(function (player) {

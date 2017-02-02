@@ -8,11 +8,16 @@
     "es6": true,
     "node": true
   },
+  "extends": "eslint:recommended",
+  "globals": {
+    "_": true
+  },
   "parser": "babel-eslint",
   "rules": {
     "eol-last": 2,
-    "no-underscore-dangle": [0],
+    "no-console": 1,
     "no-var": 2,
+    "no-unused-vars": [2, { "args": "none" }],
     "jsx-quotes": 2,
     "react/display-name": 0,
     "react/jsx-boolean-value": 2,

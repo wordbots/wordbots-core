@@ -19,9 +19,6 @@ import routes from '../common/routes';
 import packagejson from '../../package.json';
 import Helmet from 'react-helmet';
 
-import {connect} from 'react-redux';
-import {getUserInfo} from '../common/actions/user';
-
 const app = express();
 
 const renderFullPage = (html, initialState, head) => {

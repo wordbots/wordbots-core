@@ -1,7 +1,6 @@
 import React from 'react';
-import Hex from './Hex';
 import HexUtils from './HexUtils';
-const { number, object, bool, string, array } = React.PropTypes;
+const { number, object, array } = React.PropTypes;
 import HexShape from './HexShape';
 import Path from './Path';
 import Layout from './Layout';

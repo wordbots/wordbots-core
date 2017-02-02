@@ -8,7 +8,7 @@ class Layout {
   constructor(layout, origin) {
     this.orientation = (layout.flat) ? Layout.LAYOUT_FLAT : Layout.LAYOUT_POINTY;
     this.size = new Point(layout.width, layout.height);
-    this.origin = origin || new Point(0, 0);
+    this.origin = origin || new Point(0, 0);
     this.spacing = layout.spacing || 1;
   }
 

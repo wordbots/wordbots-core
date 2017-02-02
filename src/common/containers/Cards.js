@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 
 class Cards extends Component {

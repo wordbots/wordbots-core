@@ -17,10 +17,12 @@ export function allObjectsOnBoard(state) {
 }
 
 export function executeCmd(state, cmd) {
+  /* eslint-disable no-unused-vars */
   const actions = vocabulary.actions(state);
   const targets = vocabulary.targets(state);
   const conditions = vocabulary.conditions(state);
   const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
+  /* eslint-enable no-unused-vars */
 
   eval(cmd)();
   return state;

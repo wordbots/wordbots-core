@@ -13,11 +13,9 @@ export default function actions(state) {
     },
 
     modifyAttribute: function (objects, attr, func) {
-      console.log(objects);
       objects.forEach(object =>
         object.stats = _.assign(object.stats, {[attr]: func(object.stats[attr])})
       );
-      console.log(objects);
     }
   };
 }

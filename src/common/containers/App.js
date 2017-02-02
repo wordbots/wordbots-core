@@ -1,15 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
-import request from 'axios';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
-import classNames from 'classnames';
 import * as LayoutActions from '../actions/layout';
 import * as UserActions from '../actions/user';
-import Helmet from 'react-helmet';
 import Home from '../components/Home';
 import Header from '../components/layout/Header';
-import Paper from 'material-ui/lib/paper';
 import cookie from 'react-cookie';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import PersonalTheme from '../themes/personal';
@@ -61,7 +56,7 @@ class App extends Component {
   }
 
   render() {
-    const { user, version } = this.props;
+    //const { user, version } = this.props;
 
     return (
       <div>

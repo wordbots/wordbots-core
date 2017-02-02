@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 
 import Hand from './Hand';
 import EnergyCount from './EnergyCount';

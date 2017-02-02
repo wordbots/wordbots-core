@@ -1,6 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import ReactTooltip from 'react-tooltip';
 
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';

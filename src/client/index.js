@@ -14,6 +14,7 @@ const history = createBrowserHistory();
 const initialState = window.__INITIAL_STATE__;
 const store = configureStore(initialState);
 const rootElement = document.getElementById('root');
+
 injectTapEventPlugin();
 
 ReactDOM.render(
@@ -22,5 +23,5 @@ ReactDOM.render(
       <Router children={routes} history={history} />
     </ReduxRouter>
   </Provider>,
-  document.getElementById('root')
+  rootElement
 );

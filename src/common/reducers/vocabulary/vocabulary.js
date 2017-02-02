@@ -3,9 +3,11 @@ import targets from './targets';
 import conditions from './conditions';
 import { objectsMatchingCondition } from './collections';
 
-export default vocabulary = {
+const vocabulary = {
   actions: actions,
   targets: targets,
   conditions: conditions,
   objectsMatchingCondition: objectsMatchingCondition
-}
+};
+
+export default vocabulary;

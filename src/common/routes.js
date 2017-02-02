@@ -1,11 +1,10 @@
 import { Route } from 'react-router';
 import React from 'react';
-import App from './containers/App';
 
+import App from './containers/App';
 // Redux Smart
 import Game from './containers/Game';
 import Cards from './containers/Cards';
-
 // Redux Dumb
 import HomePage from './components/Home';
 

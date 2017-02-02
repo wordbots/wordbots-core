@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import cookie from 'react-cookie';
+import ThemeManager from 'material-ui/lib/styles/theme-manager';
+
 import * as LayoutActions from '../actions/layout';
 import * as UserActions from '../actions/user';
 import Home from '../components/Home';
 import Header from '../components/layout/Header';
-import cookie from 'react-cookie';
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import PersonalTheme from '../themes/personal';
 
 class App extends Component {
@@ -20,7 +21,7 @@ class App extends Component {
 
   componentWillReceiveProps(nextState) {
     if (nextState.user.token && !cookie.load('token')) {
-      console.log('Setting up token in cookie');
+      //console.log('Setting up token in cookie');
       cookie.save('token', nextState.user.token);
     }
 

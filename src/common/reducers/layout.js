@@ -4,7 +4,7 @@ export default function layout(state = {sidebarOpen: false}, action) {
   switch (action.type) {
     case TOGGLE_SIDEBAR:
       return {
-        sidebarOpen: action.value	
+        sidebarOpen: action.value
       };
     default:
       return state;

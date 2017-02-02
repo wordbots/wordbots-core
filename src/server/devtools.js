@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+
 import DevTools from '../common/containers/DevTools';
 
 export default function createDevToolsWindow(store) {

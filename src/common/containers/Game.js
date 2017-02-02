@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
+import Paper from 'material-ui/lib/paper';
+import Divider from 'material-ui/lib/divider';
+import RaisedButton from 'material-ui/lib/raised-button';
+import { connect } from 'react-redux';
 
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
@@ -7,12 +11,6 @@ import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import CardViewer from '../components/game/CardViewer';
 import VictoryScreen from '../components/game/VictoryScreen';
-
-import Paper from 'material-ui/lib/paper';
-import Divider from 'material-ui/lib/divider';
-import RaisedButton from 'material-ui/lib/raised-button';
-
-import { connect } from 'react-redux';
 import * as gameActions from '../actions/game';
 
 function mapStateToProps(state) {

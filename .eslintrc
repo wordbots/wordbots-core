@@ -15,10 +15,20 @@
   "parser": "babel-eslint",
   "rules": {
     "eol-last": 2,
+    "import/no-unresolved": 2,
+    "import/named": 2,
+    "import/default": 2,
+    "import/namespace": 2,
+    "import/first": 2,
+    "import/no-duplicates": 2,
+    "import/order": [2, {"newlines-between": "always"}],
+    "import/newline-after-import": 2,
+    "import/no-unassigned-import": 2,
+    "import/prefer-default-export": 1,
+    "jsx-quotes": 2,
     "no-console": 1,
     "no-var": 2,
     "no-unused-vars": [2, { "args": "none" }],
-    "jsx-quotes": 2,
     "react/display-name": 0,
     "react/jsx-boolean-value": 2,
     "react/jsx-no-undef": 2,
@@ -42,6 +52,7 @@
     "strict": [2, "global"]
   },
   "plugins": [
-    "react"
+    "react",
+    "import"
   ]
 }

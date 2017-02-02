@@ -1,6 +1,8 @@
 import React from 'react';
-const { object } = React.PropTypes;
+
 import HexUtils from './HexUtils';
+
+const { object } = React.PropTypes;
 
 class Path extends React.Component {
 

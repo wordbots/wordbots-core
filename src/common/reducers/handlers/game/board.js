@@ -47,7 +47,7 @@ export function attack(state, source, target) {
 
   // Apply damage.
   attacker.stats.health -= (defender.stats.attack || 0);
-  defender.stats.health -= attacker.stats.attack;
+  defender.stats.health -= (attacker.stats.attack || 0);
 
   // Update or remove attacker and defender (this also calculates victory).
   updateOrDeleteObjectAtHex(state, attacker, source);

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 
 import Hand from './Hand';
 import EnergyCount from './EnergyCount';
@@ -39,6 +39,6 @@ PlayerArea.propTypes = {
   cards: React.PropTypes.array,
   status: React.PropTypes.object,
   deck: React.PropTypes.array
-}
+};
 
 export default PlayerArea;

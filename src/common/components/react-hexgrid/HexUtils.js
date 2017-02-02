@@ -40,20 +40,20 @@ class HexUtils {
   }
 
   static round(hex) {
-    let rq = Math.round(hex.q)
-    let rr = Math.round(hex.r)
-    let rs = Math.round(hex.s)
+    let rq = Math.round(hex.q);
+    let rr = Math.round(hex.r);
+    let rs = Math.round(hex.s);
 
-    let qDiff = Math.abs(rq - hex.q)
-    let rDiff = Math.abs(rr - hex.r)
-    let sDiff = Math.abs(rs - hex.s)
+    let qDiff = Math.abs(rq - hex.q);
+    let rDiff = Math.abs(rr - hex.r);
+    let sDiff = Math.abs(rs - hex.s);
 
     if (qDiff > rDiff && qDiff > rDiff)
-        rq = -rr-rs
+        rq = -rr-rs;
     else if (rDiff > sDiff)
-        rr = -rq-rs
+        rr = -rq-rs;
     else
-        rs = -rq-rr
+        rs = -rq-rr;
 
     return new Hex(rq, rr, rs);
   }

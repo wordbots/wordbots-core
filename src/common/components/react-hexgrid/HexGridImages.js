@@ -11,4 +11,4 @@ export default function loadImages() {
     'core_blue': require('../img/core_blue.png'),
     'core_orange': require('../img/core_orange.png')
   };
-};
+}

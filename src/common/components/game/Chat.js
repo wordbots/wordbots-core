@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Drawer from 'material-ui/lib/left-nav'
+import Drawer from 'material-ui/lib/left-nav';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
@@ -12,7 +12,7 @@ class Chat extends Component {
     this.state = {
       chatFieldValue: '',
       chatMessages: []
-    }
+    };
 
     this.onChatEnter = this.onChatEnter.bind(this);
     this.onChatChange = this.onChatChange.bind(this);
@@ -31,7 +31,7 @@ class Chat extends Component {
           <div style={{zIndex: 1, padding: 10}}>
             {
               this.state.chatMessages.map(function (message) {
-                return <div style={{marginBottom: 5}}><b>{message.user}</b>: {message.text}</div>
+                return <div style={{marginBottom: 5}}><b>{message.user}</b>: {message.text}</div>;
               })
             }
           </div>
@@ -44,13 +44,13 @@ class Chat extends Component {
           </div>
         </Drawer>
       </div>
-    )
+    );
   }
 
   onChatChange(e) {
     this.setState({
       chatFieldValue: e.target.value
-    })
+    });
   }
 
   onChatEnter() {
@@ -58,12 +58,12 @@ class Chat extends Component {
     newChatMessages.push({
       user: 'You',
       text: this.state.chatFieldValue
-    })
+    });
 
     this.setState({
       chatFieldValue: '',
       chatMessages: newChatMessages
-    })
+    });
   }
 }
 

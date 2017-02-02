@@ -13,7 +13,7 @@ class CardBack extends Component {
       style = {
         borderBottom: 'solid #444',
         borderBottomWidth: Math.min((this.props.deckLength - 1) * 2, 16)
-      }
+      };
     }
 
     return (
@@ -49,12 +49,12 @@ class CardBack extends Component {
           </div>
         </Paper>
       </div>
-    )
+    );
   }
 }
 
 CardBack.propTypes = {
   deckLength: React.PropTypes.number
-}
+};
 
 export default CardBack;

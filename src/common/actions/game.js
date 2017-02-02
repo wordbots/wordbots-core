@@ -15,7 +15,7 @@ export function moveRobot(fromHexId, toHexId, asPartOfAttack = false) {
       to: toHexId,
       asPartOfAttack: asPartOfAttack
     }
-  }
+  };
 }
 
 export function attack(sourceHexId, targetHexId) {
@@ -25,7 +25,7 @@ export function attack(sourceHexId, targetHexId) {
       source: sourceHexId,
       target: targetHexId
     }
-  }
+  };
 }
 
 export function moveRobotAndAttack(fromHexId, toHexId, targetHexId) {
@@ -42,7 +42,7 @@ export function placeCard(tile, card) {
       tile: tile,
       card: card
     }
-  }
+  };
 }
 
 export function passTurn() {
@@ -55,7 +55,7 @@ export function passTurn() {
       type: START_TURN,
       payload: {}
     }
-  ]
+  ];
 }
 
 export function setSelectedCard(cardId) {
@@ -64,7 +64,7 @@ export function setSelectedCard(cardId) {
     payload: {
       selectedCard: cardId
     }
-  }
+  };
 }
 
 export function setSelectedTile(hexId) {
@@ -73,7 +73,7 @@ export function setSelectedTile(hexId) {
     payload: {
       selectedTile: hexId
     }
-  }
+  };
 }
 
 export function setHoveredCard(card) {
@@ -82,5 +82,5 @@ export function setHoveredCard(card) {
     payload: {
       hoveredCard: card
     }
-  }
+  };
 }

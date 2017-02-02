@@ -11,7 +11,7 @@ class Hex {
       this.q === otherHex.q &&
       this.r === otherHex.r &&
       this.s === otherHex.s
-    )
+    );
   }
 
   isInArray(hexArray) {

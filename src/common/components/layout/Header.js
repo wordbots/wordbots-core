@@ -3,10 +3,8 @@ import LeftNav from 'material-ui/lib/left-nav';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import AppBar from 'material-ui/lib/app-bar';
-import RaisedButton from 'material-ui/lib/raised-button';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
-import Helmet from 'react-helmet';
 import FontIcon from 'material-ui/lib/font-icon';
 
 import { bindActionCreators } from 'redux';
@@ -28,12 +26,10 @@ class Header extends Component {
   handleToggle() {
     this.setState({
       open: !this.state.open
-    }); 
+    });
   }
 
   render() {
-    const {user} = this.props;
-
     return (
       <div>
         <AppBar
@@ -79,7 +75,7 @@ class Header extends Component {
 Header.propTypes = {
   logout: React.PropTypes.func,
   user: React.PropTypes.object
-}
+};
 
 function mapStateToProps(state) {
   return {

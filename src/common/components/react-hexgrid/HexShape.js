@@ -1,5 +1,5 @@
 import React from 'react';
-const { object, string } = React.PropTypes
+const { object, string } = React.PropTypes;
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
@@ -78,7 +78,7 @@ class HexShape extends React.Component {
               fillOpacity: 1
             }}>{this.props.pieceStats.health}</text>
           </g>
-        )
+        );
       } else {
         return (
           <g>
@@ -92,7 +92,7 @@ class HexShape extends React.Component {
               fillOpacity: 1
             }}>{this.props.pieceStats.health}</text>
           </g>
-        )
+        );
       }
     } else {
       return null;

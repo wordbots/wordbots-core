@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { mapValues } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
@@ -15,7 +14,7 @@ class Board extends Component {
       origin: { x: 0, y: 0 },
       map: 'hexagon',
       mapProps: [ 4 ]
-    }
+    };
     let grid = HexGrid.generate(boardConfig);
 
     this.state = {
@@ -44,7 +43,7 @@ class Board extends Component {
       new Hex(hex.q + 1, hex.r - 1, hex.s),
       new Hex(hex.q - 1, hex.r, hex.s + 1),
       new Hex(hex.q + 1, hex.r, hex.s - 1)
-    ]
+    ];
   }
 
   getPlayerPlacementTiles() {
@@ -113,7 +112,7 @@ class Board extends Component {
       }
     }
 
-    return hexColors
+    return hexColors;
   }
 
   colorMovementHexes(hex, hexColors, speed) {
@@ -151,7 +150,7 @@ class Board extends Component {
 
     let potentialAttackHexes = [].concat.apply([], validMoveHexes.map((hex) =>
       this.getAdjacentHexes(hex)
-    ))
+    ));
 
     return potentialAttackHexes.filter((hex) =>
       Object.keys(this.opponentPieces()).includes(HexUtils.getID(hex))
@@ -169,7 +168,7 @@ class Board extends Component {
         if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
             !this.props.orangePieces[HexUtils.getID(hex)] &&
             !this.props.bluePieces[HexUtils.getID(hex)]) {
-          action = 'place'
+          action = 'place';
         }
       });
     }
@@ -217,8 +216,8 @@ class Board extends Component {
     };
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
-    const pieceImgs = mapValues(pieces, piece => piece.card.img);
-    const pieceStats = mapValues(pieces, piece => piece.stats);
+    const pieceImgs = _.mapValues(pieces, piece => piece.card.img);
+    const pieceStats = _.mapValues(pieces, piece => piece.stats);
 
     return (
       <div>
@@ -246,6 +245,6 @@ Board.propTypes = {
 
   onSelectTile: React.PropTypes.func,
   onHoverTile: React.PropTypes.func
-}
+};
 
 export default Board;

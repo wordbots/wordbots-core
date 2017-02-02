@@ -2,7 +2,7 @@ import React from 'react';
 
 import HexUtils from './HexUtils';
 
-const { object, string, bool } = React.PropTypes
+const { object, string } = React.PropTypes;
 
 class HexPattern extends React.Component {
   render() {
@@ -13,11 +13,11 @@ class HexPattern extends React.Component {
     let id = HexUtils.getID(hex);
 
     if (this.props.fill) {
-      fillImage = images[this.props.fill + '_tile']
+      fillImage = images[this.props.fill + '_tile'];
     }
 
     if (this.props.piece) {
-      pieceImage = images[this.props.piece]
+      pieceImage = images[this.props.piece];
     }
 
     return (

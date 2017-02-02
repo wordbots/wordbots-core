@@ -17,7 +17,7 @@ export function getUser(token, callback) {
           })
           .catch(function (err) {
             callback(false);
-          })
+          });
       } else {
         callback(false);
       }

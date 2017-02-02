@@ -16,7 +16,7 @@ class Card extends Component {
 
     this.state = {
       shadow: 2
-    }
+    };
 
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
@@ -64,7 +64,7 @@ class Card extends Component {
     if (!this.props.visible) {
       return (
         <CardBack />
-      )
+      );
     } else {
       return (
         <Badge
@@ -112,7 +112,7 @@ class Card extends Component {
             </Paper>
           </div>
         </Badge>
-      )
+      );
     }
   }
 }
@@ -127,6 +127,6 @@ Card.propTypes = {
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
   onCardClick: React.PropTypes.func
-}
+};
 
 export default Card;

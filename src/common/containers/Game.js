@@ -1,6 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import ReactTooltip from 'react-tooltip';
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
@@ -64,9 +63,9 @@ function mapDispatchToProps(dispatch) {
       dispatch(gameActions.setSelectedTile(hexId));
     },
     onHoverTile: (card) => {
-      dispatch(gameActions.setHoveredCard(card))
+      dispatch(gameActions.setHoveredCard(card));
     }
-  }
+  };
 }
 
 class Game extends Component {
@@ -229,6 +228,6 @@ Game.propTypes = {
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
   onHoverTile: React.PropTypes.func,
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

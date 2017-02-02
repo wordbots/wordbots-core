@@ -1,6 +1,6 @@
-import { TYPE_EVENT, TYPE_ROBOT } from '../../../constants'
+import { TYPE_EVENT, TYPE_ROBOT } from '../../../constants';
 
-import { currentPlayer, executeCmd } from './util'
+import { currentPlayer, executeCmd } from './util';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -51,7 +51,7 @@ export function placeCard(state, card, tile) {
     card: card,
     stats: card.stats,
     hasMoved: true
-  }
+  };
 
   player.selectedCard = null;
   player.energy.available -= player.hand[selectedCardIndex].cost;

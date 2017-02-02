@@ -47,14 +47,14 @@ class CardStat extends Component {
           <div>{this.props.value}</div>
         </Paper>
       </div>
-    )
+    );
   }
 }
 
 CardStat.propTypes = {
   type: React.PropTypes.string,
   value: React.PropTypes.number
-}
+};
 
 String.prototype.toProperCase = function () {
   return this.replace(/\w\S*/g, function (txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});

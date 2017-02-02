@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import multi from 'redux-multi'
+import multi from 'redux-multi';
 import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
@@ -23,7 +23,7 @@ const middlewareBuilder = () => {
         reduxReactRouter({
           createHistory
         })
-      ]
+      ];
     } else {
       const logger = createLogger({
         predicate: (getState, action) => action.type !== gameActions.SET_HOVERED_CARD
@@ -36,18 +36,18 @@ const middlewareBuilder = () => {
           createHistory
         }),
         DevTools.instrument()
-      ]
+      ];
     }
   } else {
     middleware = applyMiddleware(...universalMiddleware);
     allComposeElements = [
       middleware
-    ]
+    ];
   }
 
   return allComposeElements;
 
-}
+};
 
 const finalCreateStore = compose(...middlewareBuilder())(createStore);
 

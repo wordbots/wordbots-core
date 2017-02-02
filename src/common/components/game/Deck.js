@@ -41,13 +41,13 @@ class Deck extends Component {
             color: '#CCC'
           }}>NO CARDS LEFT</div>
         </div>
-      )
+      );
     }
   }
 }
 
 Deck.propTypes = {
   deck: React.PropTypes.array
-}
+};
 
 export default Deck;

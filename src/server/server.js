@@ -6,7 +6,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { RoutingContext, match } from 'react-router';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import createLocation from 'history/lib/createLocation';
 import Helmet from 'react-helmet';
 
@@ -16,7 +16,6 @@ import { getUser } from '../common/api/user';
 import routes from '../common/routes';
 import packagejson from '../../package.json';
 import webpackConfig from '../../webpack.config';
-import { getUserInfo } from '../common/actions/user';
 
 const app = express();
 
@@ -56,7 +55,7 @@ app.use(cookieParser());
 app.use(function (req, res, next) {
   GLOBAL.navigator = {
     userAgent: req.headers['user-agent']
-  }
+  };
   next();
 });
 

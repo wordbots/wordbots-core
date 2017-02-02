@@ -28,7 +28,7 @@ export function getUser(value) {
 }
 
 export function getUserInfo(user) {
-    console.log('From function getUserInfo');
+    //console.log('From function getUserInfo');
     return {
         type: GET_USER_INFO,
         promise: request.get(`http://${config.apiHost}:${config.apiPort}/api/users/${user.userId}?access_token=${user.token}`)
@@ -36,7 +36,7 @@ export function getUserInfo(user) {
 }
 
 export function auth(username, password) {
-    console.log('From function auth');
+    //console.log('From function auth');
     return {
       type: LOGIN,
       promise: request.post(`http://${config.apiHost}:${config.apiPort}/api/users/login`, {username:username,password:password})
@@ -47,7 +47,7 @@ export function logout(user) {
     return {
         type: LOGOUT,
         promise: request.post(`http://${config.apiHost}:${config.apiPort}/api/users/logout?access_token=${user.token}`)
-    }
+    };
 }
 
 export function toogleClearCookie() {

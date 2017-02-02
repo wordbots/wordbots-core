@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 
 class Status extends Component {
   constructor(props) {
@@ -43,6 +43,6 @@ class Status extends Component {
 Status.propTypes = {
   status: React.PropTypes.object,
   currentTurn: React.PropTypes.string
-}
+};
 
 export default Status;

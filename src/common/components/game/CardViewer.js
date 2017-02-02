@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import Card from './Card';
@@ -47,6 +47,6 @@ class CardViewer extends Component {
 
 CardViewer.propTypes = {
   card: React.PropTypes.object
-}
+};
 
 export default CardViewer;

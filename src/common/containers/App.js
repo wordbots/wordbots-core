@@ -1,32 +1,27 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
-import request from 'axios';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
-import classNames from 'classnames';
-import Helmet from 'react-helmet';
-import Paper from 'material-ui/lib/paper';
 import cookie from 'react-cookie';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 
 import * as LayoutActions from '../actions/layout';
 import * as UserActions from '../actions/user';
-import Home from '../components/Home'
-import Header from '../components/layout/Header'
+import Home from '../components/Home';
+import Header from '../components/layout/Header';
 import PersonalTheme from '../themes/personal';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.eventToggleSidebar = this.eventToggleSidebar.bind(this)
-    this.eventUndo = this.eventUndo.bind(this)
-    this.eventRedo = this.eventRedo.bind(this)
+    this.eventToggleSidebar = this.eventToggleSidebar.bind(this);
+    this.eventUndo = this.eventUndo.bind(this);
+    this.eventRedo = this.eventRedo.bind(this);
   }
 
   componentWillReceiveProps(nextState) {
     if (nextState.user.token && !cookie.load('token')) {
-      console.log('Setting up token in cookie');
+      //console.log('Setting up token in cookie');
       cookie.save('token', nextState.user.token);
     }
 
@@ -58,11 +53,11 @@ class App extends Component {
   getChildContext() {
     return {
       muiTheme: ThemeManager.getMuiTheme(PersonalTheme)
-    }
+    };
   }
 
   render() {
-    const { user, version } = this.props;
+    //const { user, version } = this.props;
 
     return (
       <div>
@@ -90,7 +85,7 @@ App.propTypes = {
   user: PropTypes.object,
   version: PropTypes.string,
   layout: PropTypes.object
-}
+};
 
 function mapStateToProps(state) {
   return {

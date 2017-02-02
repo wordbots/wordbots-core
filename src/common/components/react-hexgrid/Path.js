@@ -2,7 +2,7 @@ import React from 'react';
 
 import HexUtils from './HexUtils';
 
-const { object } = React.PropTypes
+const { object } = React.PropTypes;
 
 class Path extends React.Component {
 

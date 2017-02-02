@@ -4,7 +4,7 @@ import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
 
-const { object, string } = React.PropTypes
+const { object, string } = React.PropTypes;
 
 class HexShape extends React.Component {
   getPoints(hex) {
@@ -80,7 +80,7 @@ class HexShape extends React.Component {
               fillOpacity: 1
             }}>{this.props.pieceStats.health}</text>
           </g>
-        )
+        );
       } else {
         return (
           <g>
@@ -94,7 +94,7 @@ class HexShape extends React.Component {
               fillOpacity: 1
             }}>{this.props.pieceStats.health}</text>
           </g>
-        )
+        );
       }
     } else {
       return null;

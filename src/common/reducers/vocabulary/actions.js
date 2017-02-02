@@ -20,7 +20,7 @@ export default function actions(state) {
         }
 
         object.stats.health -= amount;
-        updateOrDeleteObjectAtHex(state, hex, object);
+        updateOrDeleteObjectAtHex(state, object, hex);
       });
     },
 

@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, opponentName } from './util';
+import { currentPlayer, opponentPlayer, updateOrDeleteObjectAtHex } from './util';
 
 export function setHoveredCard(state, card) {
   return _.assign(state, {hoveredCard: card});
@@ -33,7 +33,6 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   return state;
 }
 
-// TODO refactor to use util.updateOrDeleteObjectAtHex()!
 export function attack(state, source, target) {
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.
@@ -50,32 +49,14 @@ export function attack(state, source, target) {
   attacker.stats.health -= (defender.stats.attack || 0);
   defender.stats.health -= attacker.stats.attack;
 
-  // Update or remove attacker.
-  if (attacker.stats.health <= 0) {
+  // Update or remove attacker and defender (this also calculates victory).
+  updateOrDeleteObjectAtHex(state, attacker, source);
+  updateOrDeleteObjectAtHex(state, defender, target);
+
+  // Move attacker to defender's space (if possible).
+  if (defender.stats.health <= 0 && attacker.stats.health > 0) {
+    state.players[state.currentTurn].robotsOnBoard[target] = attacker;
     delete state.players[state.currentTurn].robotsOnBoard[source];
-  } else {
-    state.players[state.currentTurn].robotsOnBoard[source] = attacker;
-  }
-
-  // Update or remove defender.
-  if (defender.stats.health <= 0) {
-    // Check victory conditions.
-    if (defender.card.name === 'Blue Core') {
-      state.winner = 'orange';
-    } else if (defender.card.name === 'Orange Core') {
-      state.winner = 'blue';
-    }
-
-    // Remove defender.
-    delete state.players[opponentName(state)].robotsOnBoard[target];
-
-    // Move attacker to defender's space (if possible).
-    if (attacker.stats.health > 0) {
-      state.players[state.currentTurn].robotsOnBoard[target] = attacker;
-      delete state.players[state.currentTurn].robotsOnBoard[source];
-    }
-  } else {
-    state.players[opponentName(state)].robotsOnBoard[target] = defender;
   }
 
   state.selectedTile = null;

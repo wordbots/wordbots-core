@@ -8,6 +8,7 @@ import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import cookie from 'react-cookie';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
+
 import * as LayoutActions from '../actions/layout';
 import * as UserActions from '../actions/user';
 import Home from '../components/Home'

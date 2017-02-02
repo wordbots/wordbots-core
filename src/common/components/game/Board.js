@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { mapValues } from 'lodash';
+
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';

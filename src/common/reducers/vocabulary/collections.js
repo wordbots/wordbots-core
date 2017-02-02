@@ -1,4 +1,5 @@
 import { pickBy } from 'lodash'
+
 import { stringToType } from '../../constants'
 import { allObjectsOnBoard } from '../handlers/game/util'
 

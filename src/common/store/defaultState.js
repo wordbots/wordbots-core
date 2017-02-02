@@ -1,6 +1,6 @@
 import * as cards from './cards';
 
-export const defaultState = {
+export default defaultState = {
   players: {
     blue: {
       health: 20,

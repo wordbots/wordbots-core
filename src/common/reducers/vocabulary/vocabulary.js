@@ -3,7 +3,7 @@ import targets from './targets';
 import conditions from './conditions';
 import { objectsMatchingCondition } from './collections';
 
-export const vocabulary = {
+export default vocabulary = {
   actions: actions,
   targets: targets,
   conditions: conditions,

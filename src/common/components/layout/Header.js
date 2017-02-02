@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import LeftNav from 'material-ui/lib/left-nav';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -8,7 +8,6 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import Helmet from 'react-helmet';
 import FontIcon from 'material-ui/lib/font-icon';
-
 import { bindActionCreators } from 'redux';
 
 import * as UserActions from '../../actions/user';
@@ -28,7 +27,7 @@ class Header extends Component {
   handleToggle() {
     this.setState({
       open: !this.state.open
-    }); 
+    });
   }
 
   render() {

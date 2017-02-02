@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { ReduxRouter } from 'redux-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory'
 import injectTapEventPlugin from 'react-tap-event-plugin';
+
 import configureStore from '../common/store/configureStore';
 import routes from '../common/routes';
 import '../../styles/index.css';

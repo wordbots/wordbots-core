@@ -1,4 +1,5 @@
 import { ActionCreators } from 'redux-undo';
+
 import { GET_USER, getUser} from './user';
 
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';

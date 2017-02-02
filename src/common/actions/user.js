@@ -1,4 +1,5 @@
 import request from 'axios';
+
 import config from '../../../package.json';
 
 export const GET_USER = 'GET_USER';

@@ -37,8 +37,7 @@ const defaultState = {
   },
   currentTurn: 'orange',
   selectedTile: null,
-  placingRobot: false,
-  playingCard: false,
+  playingCardType: null,
   hoveredCard: null,
   status: {
     message: '',

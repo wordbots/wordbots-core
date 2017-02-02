@@ -66,7 +66,7 @@ class Board extends Component {
   updateHexColors() {
     let hexColors = {};
 
-    if (this.props.placingRobot) {
+    if (this.props.playingRobot) {
       this.getPlayerPlacementTiles().forEach((hex) => {
         if (this.props.currentTurn == 'blue') {
           if (this.props.bluePieces[hex]) {
@@ -164,7 +164,7 @@ class Board extends Component {
 
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-    if (this.props.placingRobot) {
+    if (this.props.playingRobot) {
       this.getPlayerPlacementTiles().forEach((placementHex) => {
         if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
             !this.props.orangePieces[HexUtils.getID(hex)] &&
@@ -242,7 +242,7 @@ Board.propTypes = {
 
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
-  placingRobot: React.PropTypes.bool,
+  playingRobot: React.PropTypes.bool,
 
   onSelectTile: React.PropTypes.func,
   onHoverTile: React.PropTypes.func

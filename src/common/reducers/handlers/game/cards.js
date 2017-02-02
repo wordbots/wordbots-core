@@ -1,4 +1,4 @@
-import { TYPE_EVENT, TYPE_ROBOT } from '../../../constants';
+import { TYPE_EVENT } from '../../../constants';
 
 import { currentPlayer, executeCmd } from './util';
 
@@ -9,32 +9,24 @@ export function setSelectedCard(state, cardIdx) {
   state.selectedTile = null;
 
   if (state.players[state.currentTurn].selectedCard == cardIdx) {
-    // Deselect or play event
+    // Clicked on already selected card => Deselect or play event
     if (selectedCard.type === TYPE_EVENT && selectedCard.cost <= energy.available) {
       return playEvent(state, cardIdx);
     } else {
       state.players[state.currentTurn].selectedCard = null;
-      state.placingRobot = false;
+      state.playingCardType = null;
       state.status.message = '';
     }
   } else {
-    // Select
+    // Clicked on unselected card => Select
     state.players[state.currentTurn].selectedCard = cardIdx;
 
     if (selectedCard.cost <= energy.available) {
-      if (selectedCard.type === TYPE_ROBOT) {
-        state.placingRobot = true;
-        state.playingCard = false;
-        state.status.message = 'Select an available tile to place this robot.';
-        state.status.type = 'text';
-      } else {
-        state.placingRobot = false;
-        state.playingCard = true;
-        state.status.message = 'Click this event again to play it.';
-        state.status.type = 'text';
-      }
+      state.playingCardType = selectedCard.type;
+      state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
+      state.status.type = 'text';
     } else {
-      state.placingRobot = false;
+      state.playingCardType = null;
       state.status.message = 'You do not have enough energy to play this card.';
       state.status.type = 'error';
     }
@@ -57,7 +49,7 @@ export function placeCard(state, card, tile) {
   player.energy.available -= player.hand[selectedCardIndex].cost;
   player.hand.splice(selectedCardIndex, 1);
 
-  state.placingRobot = false;
+  state.playingCardType = null;
   state.status.message = '';
 
   return state;
@@ -73,7 +65,7 @@ function playEvent(state, cardIdx, command) {
   player.energy.available -= selectedCard.cost;
   player.hand.splice(cardIdx, 1);
 
-  state.playingCard = false;
+  state.playingCardType = null;
   state.status.message = '';
 
   return state;

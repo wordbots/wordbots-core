@@ -5,16 +5,10 @@ export function setHoveredCard(state, card) {
 }
 
 export function setSelectedTile(state, tile) {
+  state.selectedTile = (state.selectedTile == tile) ? null : tile; // Toggle tile selection
   state.players[state.currentTurn].selectedCard = null;
-  state.placingRobot = false;
+  state.playingCardType = null;
   state.status.message = '';
-
-  if (state.selectedTile == tile) {
-    state.selectedTile = null; // Deselect
-  } else {
-    state.selectedTile = tile; // Select
-  }
-
   return state;
 }
 

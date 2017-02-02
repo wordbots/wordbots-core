@@ -18,7 +18,7 @@ function mapStateToProps(state) {
   return {
     currentTurn: state.game.currentTurn,
     selectedTile: state.game.selectedTile,
-    playingRobot: state.game.playingCardType && state.game.playingCardType !== TYPE_EVENT,
+    playingRobot: !_.isNull(state.game.playingCardType) && state.game.playingCardType !== TYPE_EVENT,
     status: state.game.status,
     hoveredCard: state.game.hoveredCard,
     winner: state.game.winner,

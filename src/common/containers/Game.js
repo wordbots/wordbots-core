@@ -5,7 +5,7 @@ import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 import { connect } from 'react-redux';
 
-import { TYPE_ROBOT } from '../constants';
+import { TYPE_EVENT } from '../constants';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
@@ -18,7 +18,7 @@ function mapStateToProps(state) {
   return {
     currentTurn: state.game.currentTurn,
     selectedTile: state.game.selectedTile,
-    playingRobot: state.game.playingCardType == TYPE_ROBOT,
+    playingRobot: state.game.playingCardType !== TYPE_EVENT,
     status: state.game.status,
     hoveredCard: state.game.hoveredCard,
     winner: state.game.winner,

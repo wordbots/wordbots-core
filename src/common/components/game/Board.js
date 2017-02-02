@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { mapValues } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
@@ -216,8 +217,8 @@ class Board extends Component {
     };
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
-    const pieceImgs = _.mapValues(pieces, piece => piece.card.img);
-    const pieceStats = _.mapValues(pieces, piece => piece.stats);
+    const pieceImgs = mapValues(pieces, piece => piece.card.img);
+    const pieceStats = mapValues(pieces, piece => piece.stats);
 
     return (
       <div>

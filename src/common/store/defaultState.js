@@ -10,7 +10,7 @@ const defaultState = {
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.superchargeCard, cards.rampageCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: cards.deck,
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
@@ -27,7 +27,7 @@ const defaultState = {
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.superchargeCard, cards.rampageCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: cards.deck,
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,

@@ -1,5 +1,6 @@
 // Targets are all functions that return an array,
-// either of player objects or of robotOnBoard objects.
+// either of player objects
+// or of [hex, object] pairs representing objects on board.
 
 export default function targets(state) {
   return {
@@ -8,7 +9,7 @@ export default function targets(state) {
     },
 
     all: function (collection) {
-      return Object.values(collection);
+      return _.toPairs(collection);
     }
   };
 }

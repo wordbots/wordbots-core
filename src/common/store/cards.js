@@ -71,3 +71,20 @@ export const rampageCard = {
   cost: 3,
   type: TYPE_EVENT
 };
+
+export const wrathOfRobotGodCard = {
+  name: 'Wrath of Robot God',
+  text: 'Destroy all robots.',
+  command: '(function () { actions["destroy"](targets["all"](objectsInPlay("robot"))); })',
+  cost: 5,
+  type: TYPE_EVENT
+};
+
+export const deck = [
+  superchargeCard,
+  rampageCard,
+  wrathOfRobotGodCard,
+  tankBotCard,
+  tankBotCard,
+  tankBotCard
+];

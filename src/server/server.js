@@ -10,9 +10,9 @@ import { Provider } from 'react-redux';
 import createLocation from 'history/lib/createLocation';
 import Helmet from 'react-helmet';
 
-import { fetchComponentDataBeforeRender } from '../common/api/fetchComponentDataBeforeRender';
+import fetchComponentDataBeforeRender from '../common/api/fetchComponentDataBeforeRender';
 import configureStore from '../common/store/configureStore';
-import { getUser } from '../common/api/user';
+import getUser from '../common/api/user';
 import routes from '../common/routes';
 import packagejson from '../../package.json';
 import webpackConfig from '../../webpack.config';

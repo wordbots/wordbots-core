@@ -1,7 +1,12 @@
 import { stringToType } from '../../constants';
 import { allObjectsOnBoard } from '../handlers/game/util';
 
-// TODO cardsInPlay(players)
+export function cardsInHand(state) {
+  return function (players) {
+    const player = players[0]; // Player target is always in the form of list, so just unpack it.
+    return player.hand;
+  };
+}
 
 export function objectsInPlay(state) {
   return function (objType) {

@@ -3,7 +3,6 @@ import * as cards from './cards';
 const defaultState = {
   players: {
     blue: {
-      health: 20,
       energy: {
         available: 1,
         total: 1
@@ -20,7 +19,6 @@ const defaultState = {
       }
     },
     orange: {
-      health: 20,
       energy: {
         available: 1,
         total: 1
@@ -37,7 +35,7 @@ const defaultState = {
       }
     }
   },
-  currentTurn: 'blue',
+  currentTurn: 'orange',
   selectedTile: null,
   placingRobot: false,
   playingCard: false,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash'; // (For some reason, _.mapValues doesn't work here.)
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';

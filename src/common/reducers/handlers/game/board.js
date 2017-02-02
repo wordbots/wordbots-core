@@ -33,6 +33,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   return state;
 }
 
+// TODO refactor to use util.updateOrDeleteObjectAtHex()!
 export function attack(state, source, target) {
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.

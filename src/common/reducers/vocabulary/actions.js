@@ -1,8 +1,28 @@
+import { TYPE_CORE } from '../../constants';
+import { updateOrDeleteObjectAtHex } from '../handlers/game/util';
+
 export default function actions(state) {
   return {
-    // TODO canMoveAgain(objects)
+    canMoveAgain: function (objects) {
+      objects.forEach(function ([hex, object]) {
+        object.hasMoved = false;
+      });
+    },
 
-    // TODO dealDamage(objects, amount)
+    dealDamage: function (objects, amount) {
+      objects.forEach(function (target) {
+        let hex, object;
+        if (target.robotsOnBoard) {
+          // target is a player, so reassign damage to their core.
+          [[hex, object]] = _.filter(_.toPairs(target.robotsOnBoard), hexObj => hexObj[1].card.type == TYPE_CORE);
+        } else {
+          [hex, object] = target;
+        }
+
+        object.stats.health -= amount;
+        updateOrDeleteObjectAtHex(state, hex, object);
+      });
+    },
 
     destroy: function (objects) {
       objects.forEach(function ([hex, object]) {
@@ -20,11 +40,15 @@ export default function actions(state) {
     },
 
     modifyAttribute: function (objects, attr, func) {
+      const clampedFunc = stat => _.clamp(func(stat), 0, 99);
+
       objects.forEach(function ([hex, object]) {
         if (attr === 'allattributes') {
-          object.stats = _.mapValues(object.stats, func);
+          object.stats = _.mapValues(object.stats, clampedFunc);
+        } else if (attr === 'cost') {
+          object.cost = clampedFunc(object.cost); // (This should only ever happen to cards in hand.)
         } else {
-          object.stats = _.assign(object.stats, {[attr]: func(object.stats[attr])});
+          object.stats = _.assign(object.stats, {[attr]: clampedFunc(object.stats[attr])});
         }
       });
     },
@@ -39,6 +63,8 @@ export default function actions(state) {
       objects.forEach(function ([hex, object]) {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, () => num);
+        } else if (attr === 'cost') {
+          object.cost = num; // (This should only ever happen to cards in hand.)
         } else {
           object.stats = _.assign(object.stats, {[attr]: num});
         }

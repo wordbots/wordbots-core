@@ -1,5 +1,7 @@
+import { currentPlayer, opponentPlayer } from '../handlers/game/util';
+
 // Targets are all functions that return an array,
-// either of player objects
+// either of player objects, or of card objects,
 // or of [hex, object] pairs representing objects on board.
 
 export default function targets(state) {
@@ -13,11 +15,15 @@ export default function targets(state) {
     // TODO thisRobot() -- requires triggers
 
     self: function () {
-      return [state.players[state.currentTurn]];
+      return [currentPlayer(state)];
+    },
+
+    opponent: function () {
+      return [opponentPlayer(state)];
+    },
+
+    allPlayers: function () {
+      return [currentPlayer(state), opponentPlayer(state)];
     }
-
-    // TODO opponent()
-
-    // TODO allPlayers()
   };
 }

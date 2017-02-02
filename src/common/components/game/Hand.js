@@ -33,9 +33,9 @@ class Hand extends Component {
 
     return (
       <ReactCSSTransitionGroup
-        transitionName="example"
+        transitionName="hand"
         transitionEnterTimeout={500}
-        transitionLeaveTimeout={500}
+        transitionLeave={false}
         style={{
           display: 'flex',
           justifyContent: 'center'

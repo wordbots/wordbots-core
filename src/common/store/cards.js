@@ -80,9 +80,18 @@ export const wrathOfRobotGodCard = {
   type: TYPE_EVENT
 };
 
+export const threedomCard = {
+  name: 'Threedom',
+  text: 'Set all stats of all creatures in play to 3.',
+  command: '(function () { actions["setAttribute"](targets["all"](objectsInPlay("robot")), "allattributes", 3); })',
+  cost: 3,
+  type: TYPE_EVENT
+};
+
 export const deck = [
   superchargeCard,
   rampageCard,
+  threedomCard,
   wrathOfRobotGodCard,
   tankBotCard,
   tankBotCard,

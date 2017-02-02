@@ -1,3 +1,4 @@
+import { TYPE_CORE } from '../../../constants';
 import vocabulary from '../../vocabulary/vocabulary';
 
 export function currentPlayer(state) {
@@ -16,30 +17,27 @@ export function allObjectsOnBoard(state) {
   return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
 }
 
-export function updateOrDeleteObjectAtHex(state, object, hex) {
-  if (state.players.blue.robotsOnBoard[hex]) {
-    if (object.stats.health > 0) {
-      state.players.blue.robotsOnBoard[hex] = object;
-    } else {
-      delete state.players.blue.robotsOnBoard[hex];
+export function dealDamageToObjectAtHex(state, amount, hex) {
+  const object = allObjectsOnBoard(state)[hex];
+  object.stats.health -= amount;
+  return updateOrDeleteObjectAtHex(state, object, hex);
+}
 
-      // Check victory conditions.
-      if (object.card.name === 'Blue Core') {
-        state.winner = 'orange';
-      }
-    }
-  } else if (state.players.orange.robotsOnBoard[hex]) {
-    if (object.stats.health > 0) {
-      state.players.orange.robotsOnBoard[hex] = object;
-    } else {
-      delete state.players.orange.robotsOnBoard[hex];
+function updateOrDeleteObjectAtHex(state, object, hex) {
+  const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
 
-      // Check victory conditions.
-      if (object.card.name === 'Orange Core') {
-        state.winner = 'blue';
-      }
+  if (object.stats.health > 0) {
+    state.players[ownerName].robotsOnBoard[hex] = object;
+  } else {
+    delete state.players[ownerName].robotsOnBoard[hex];
+
+    // Check victory conditions.
+    if (object.card.type === TYPE_CORE) {
+      state.winner = (ownerName == 'blue') ? 'orange' : 'blue';
     }
   }
+
+  return state;
 }
 
 /* eslint-disable no-unused-vars */

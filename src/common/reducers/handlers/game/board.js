@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, updateOrDeleteObjectAtHex } from './util';
+import { currentPlayer, opponentPlayer, dealDamageToObjectAtHex } from './util';
 
 export function setHoveredCard(state, card) {
   return _.assign(state, {hoveredCard: card});
@@ -39,13 +39,8 @@ export function attack(state, source, target) {
 
   attacker.hasMoved = true;
 
-  // Apply damage.
-  attacker.stats.health -= (defender.stats.attack || 0);
-  defender.stats.health -= (attacker.stats.attack || 0);
-
-  // Update or remove attacker and defender (this also calculates victory).
-  updateOrDeleteObjectAtHex(state, attacker, source);
-  updateOrDeleteObjectAtHex(state, defender, target);
+  dealDamageToObjectAtHex(state, defender.stats.attack || 0, source);
+  dealDamageToObjectAtHex(state, attacker.stats.attack || 0, target);
 
   // Move attacker to defender's space (if possible).
   if (defender.stats.health <= 0 && attacker.stats.health > 0) {

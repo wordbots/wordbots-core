@@ -1,5 +1,5 @@
 import { TYPE_CORE } from '../../constants';
-import { updateOrDeleteObjectAtHex } from '../handlers/game/util';
+import { dealDamageToObjectAtHex } from '../handlers/game/util';
 
 export default function actions(state) {
   return {
@@ -11,16 +11,16 @@ export default function actions(state) {
 
     dealDamage: function (objects, amount) {
       objects.forEach(function (target) {
-        let hex, object;
+        let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
-          [[hex, object]] = _.filter(_.toPairs(target.robotsOnBoard), hexObj => hexObj[1].card.type == TYPE_CORE);
+          hex = _.find(_.toPairs(target.robotsOnBoard), hexObj => hexObj[1].card.type == TYPE_CORE)[0];
         } else {
-          [hex, object] = target;
+          // target is a [hex, object] pair.
+          hex = target[0];
         }
 
-        object.stats.health -= amount;
-        updateOrDeleteObjectAtHex(state, object, hex);
+        dealDamageToObjectAtHex(state, amount, hex);
       });
     },
 

@@ -1,5 +1,5 @@
 import React from 'react';
-const { object, string, bool } = React.PropTypes
+const { object, string, bool } = React.PropTypes;
 import HexUtils from './HexUtils';
 
 class HexPattern extends React.Component {
@@ -11,11 +11,11 @@ class HexPattern extends React.Component {
     let id = HexUtils.getID(hex);
 
     if (this.props.fill) {
-      fillImage = images[this.props.fill + '_tile']
+      fillImage = images[this.props.fill + '_tile'];
     }
 
     if (this.props.piece) {
-      pieceImage = images[this.props.piece]
+      pieceImage = images[this.props.piece];
     }
 
     return (

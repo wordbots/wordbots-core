@@ -79,7 +79,7 @@ class Header extends Component {
 Header.propTypes = {
   logout: React.PropTypes.func,
   user: React.PropTypes.object
-}
+};
 
 function mapStateToProps(state) {
   return {

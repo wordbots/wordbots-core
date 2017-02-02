@@ -45,7 +45,7 @@ export function logout(user) {
     return {
         type: LOGOUT,
         promise: request.post(`http://${config.apiHost}:${config.apiPort}/api/users/logout?access_token=${user.token}`)
-    }
+    };
 }
 
 export function toogleClearCookie() {

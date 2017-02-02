@@ -8,4 +8,4 @@ export const vocabulary = {
   targets: targets,
   conditions: conditions,
   objectsMatchingCondition: objectsMatchingCondition
-}
+};

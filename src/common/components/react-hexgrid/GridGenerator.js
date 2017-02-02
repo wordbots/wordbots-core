@@ -1,4 +1,4 @@
-import Hex from './Hex'
+import Hex from './Hex';
 
 class GridGenerator {
   static getGenerator(name) {

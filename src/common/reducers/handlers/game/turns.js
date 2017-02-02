@@ -1,4 +1,4 @@
-import { currentPlayer, opponentName } from './util'
+import { currentPlayer, opponentName } from './util';
 
 export function startTurn(state) {
   const player = currentPlayer(state);

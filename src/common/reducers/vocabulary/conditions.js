@@ -7,7 +7,7 @@ export default function conditions(state) {
     controlledBy: function (players) {
       return function (hex, obj) {
         return has(players[0].robotsOnBoard, hex);
-      }
+      };
     }
   };
 }

@@ -1,12 +1,12 @@
-import React from 'react'
-import Hex from './Hex'
-import HexUtils from './HexUtils'
-const { number, object, bool, string, array } = React.PropTypes
-import HexShape from './HexShape'
-import Path from './Path'
-import Layout from './Layout'
-import GridGenerator from './GridGenerator'
-import loadImages from './HexGridImages'
+import React from 'react';
+import Hex from './Hex';
+import HexUtils from './HexUtils';
+const { number, object, bool, string, array } = React.PropTypes;
+import HexShape from './HexShape';
+import Path from './Path';
+import Layout from './Layout';
+import GridGenerator from './GridGenerator';
+import loadImages from './HexGridImages';
 
 class HexGrid extends React.Component {
   render() {
@@ -41,7 +41,7 @@ HexGrid.generate = (config, content) => {
   let hexagons = generator.apply(this, config.mapProps);
 
   return { hexagons, layout };
-}
+};
 
 HexGrid.propTypes = {
   width: number.isRequired,
@@ -59,6 +59,6 @@ HexGrid.defaultProps = {
   width: 800,
   height: 600,
   path: { start: null, end: null }
-}
+};
 
 export default HexGrid;

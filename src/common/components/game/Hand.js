@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Card from './Card';
 
 class Hand extends Component {
@@ -27,7 +27,7 @@ class Hand extends Component {
           cardStats={card.stats}
           selected={this.props.selectedCard === index}
           visible={this.props.isCurrentPlayer} />
-      )
+      );
     });
 
     return (
@@ -41,7 +41,7 @@ class Hand extends Component {
         }}>
         {cards}
       </ReactCSSTransitionGroup>
-    )
+    );
   }
 }
 
@@ -51,6 +51,6 @@ Hand.propTypes = {
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
   status: React.PropTypes.object
-}
+};
 
 export default Hand;

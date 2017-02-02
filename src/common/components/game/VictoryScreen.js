@@ -10,7 +10,7 @@ class VictoryScreen extends Component {
     const colors = {
       'orange': '#ffb85d',
       'blue': '#badbff'
-    }
+    };
 
     return (
       <div style={{
@@ -41,6 +41,6 @@ class VictoryScreen extends Component {
 
 VictoryScreen.propTypes = {
   winner: React.PropTypes.string
-}
+};
 
 export default VictoryScreen;

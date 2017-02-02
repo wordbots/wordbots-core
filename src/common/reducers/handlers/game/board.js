@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, opponentName } from './util'
+import { currentPlayer, opponentPlayer, opponentName } from './util';
 
 export function setHoveredCard(state, card) {
   return _.assign(state, {hoveredCard: card});

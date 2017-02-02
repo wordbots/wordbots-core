@@ -39,6 +39,6 @@ PlayerArea.propTypes = {
   cards: React.PropTypes.array,
   status: React.PropTypes.object,
   deck: React.PropTypes.array
-}
+};
 
 export default PlayerArea;

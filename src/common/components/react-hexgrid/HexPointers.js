@@ -1,5 +1,5 @@
 import React from 'react';
-const { object, string } = React.PropTypes
+const { object, string } = React.PropTypes;
 import HexUtils from './HexUtils';
 
 class HexPointers extends React.Component {
@@ -54,7 +54,7 @@ class HexPointers extends React.Component {
         {
           polygons.map((points, index) => {
             // return <polygon key={index} points={points} />
-            return <path d={points} />
+            return <path d={points} />;
           })
         }
       </g>

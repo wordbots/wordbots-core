@@ -7,8 +7,8 @@ import classNames from 'classnames';
 import * as LayoutActions from '../actions/layout';
 import * as UserActions from '../actions/user';
 import Helmet from 'react-helmet';
-import Home from '../components/Home'
-import Header from '../components/layout/Header'
+import Home from '../components/Home';
+import Header from '../components/layout/Header';
 import Paper from 'material-ui/lib/paper';
 import cookie from 'react-cookie';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
@@ -18,9 +18,9 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.eventToggleSidebar = this.eventToggleSidebar.bind(this)
-    this.eventUndo = this.eventUndo.bind(this)
-    this.eventRedo = this.eventRedo.bind(this)
+    this.eventToggleSidebar = this.eventToggleSidebar.bind(this);
+    this.eventUndo = this.eventUndo.bind(this);
+    this.eventRedo = this.eventRedo.bind(this);
   }
 
   componentWillReceiveProps(nextState) {
@@ -57,7 +57,7 @@ class App extends Component {
   getChildContext() {
     return {
       muiTheme: ThemeManager.getMuiTheme(PersonalTheme)
-    }
+    };
   }
 
   render() {
@@ -89,7 +89,7 @@ App.propTypes = {
   user: PropTypes.object,
   version: PropTypes.string,
   layout: PropTypes.object
-}
+};
 
 function mapStateToProps(state) {
   return {

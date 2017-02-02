@@ -82,7 +82,7 @@ export const wrathOfRobotGodCard = {
 
 export const threedomCard = {
   name: 'Threedom',
-  text: 'Set all stats of all creatures in play to 3.',
+  text: 'Set all stats of all robots in play to 3.',
   command: '(function () { actions["setAttribute"](targets["all"](objectsInPlay("robot")), "allattributes", 3); })',
   cost: 3,
   type: TYPE_EVENT
@@ -90,7 +90,7 @@ export const threedomCard = {
 
 export const earthquakeCard = {
   name: 'Earthquake',
-  text: 'Destroy all creatures that have less than 2 speed.',
+  text: 'Destroy all robots that have less than 2 speed.',
   command: '(function () { actions["destroy"](targets["all"](objectsMatchingCondition("robot", conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))))); })',
   cost: 4,
   type: TYPE_EVENT
@@ -106,7 +106,7 @@ export const discountCard = {
 
 export const untapCard = {
   name: 'Untap',
-  text: 'All creatures you control can move again.',
+  text: 'All robots you control can move again.',
   command: '(function () { actions["canMoveAgain"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })',
   cost: 3,
   type: TYPE_EVENT
@@ -120,8 +120,21 @@ export const missileStrikeCard = {
   type: TYPE_EVENT
 };
 
+export const incinerateCard = {
+  name: 'Incinerate',
+  text: 'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
+  command: [
+    '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + attributeSum(objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())), "attack"); }); })',
+    '(function () { actions["destroy"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })'
+  ],
+  cost: 1,
+  type: TYPE_EVENT
+};
+
 export const deck = [
   superchargeCard,
+  tankBotCard,
+  incinerateCard,
   discountCard,
   missileStrikeCard,
   rampageCard,
@@ -129,7 +142,6 @@ export const deck = [
   threedomCard,
   earthquakeCard,
   wrathOfRobotGodCard,
-  tankBotCard,
   tankBotCard,
   tankBotCard
 ];

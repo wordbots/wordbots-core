@@ -58,7 +58,11 @@ export function placeCard(state, card, tile) {
 function playEvent(state, cardIdx, command) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
 
-  executeCmd(state, selectedCard.command);
+  if (_.isArray(selectedCard.command)) {
+    selectedCard.command.forEach((cmd) => executeCmd(state, cmd));
+  } else {
+    executeCmd(state, selectedCard.command);
+  }
 
   const player = state.players[state.currentTurn];
   player.selectedCard = null;

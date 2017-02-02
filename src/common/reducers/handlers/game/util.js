@@ -50,6 +50,7 @@ export function executeCmd(state, cmd) {
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
   const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
+  const attributeSum = vocabulary.attributeSum(state);
 
   eval(cmd)();
   return state;

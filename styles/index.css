@@ -133,7 +133,7 @@ svg path {
   transform: translate(500%);
 }
 
-.hand-enter.example-enter-active {
+.hand-enter.hand-enter-active {
   transform: translate(0%);
   transition: transform 500ms ease-in-out;
 }

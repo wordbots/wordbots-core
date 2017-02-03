@@ -3,7 +3,7 @@
 * It is used to make sure server side rendered pages wait for APIs to resolve before returning res.end()
 */
 
-export function fetchComponentDataBeforeRender(dispatch, components, params) {
+export default function fetchComponentDataBeforeRender(dispatch, components, params) {
   const needs = components.reduce( (prev, current) => {
     return (current.need || [])
       .concat((current.WrappedComponent ? current.WrappedComponent.need : []) || [])

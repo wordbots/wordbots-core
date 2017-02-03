@@ -19,7 +19,7 @@ export function endTurn(state) {
 
   state.currentTurn = opponentName(state);
   state.selectedTile = null;
-  state.placingRobot = false;
+  state.playingRobot = false;
   state.status.message = '';
 
   return state;

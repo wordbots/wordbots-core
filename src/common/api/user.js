@@ -2,7 +2,7 @@ import request from 'axios';
 
 import config from '../../../package.json';
 
-export function getUser(token, callback) {
+export default function getUser(token, callback) {
   if (!token) {
     return callback(false);
   }

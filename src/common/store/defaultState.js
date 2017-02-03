@@ -3,14 +3,13 @@ import * as cards from './cards';
 const defaultState = {
   players: {
     blue: {
-      health: 20,
       energy: {
         available: 1,
         total: 1
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.superchargeCard, cards.rampageCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: cards.deck,
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
@@ -20,14 +19,13 @@ const defaultState = {
       }
     },
     orange: {
-      health: 20,
       energy: {
         available: 1,
         total: 1
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
       selectedCard: null,
-      deck: [cards.superchargeCard, cards.rampageCard, cards.tankBotCard, cards.tankBotCard, cards.tankBotCard],
+      deck: cards.deck,
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,
@@ -37,10 +35,9 @@ const defaultState = {
       }
     }
   },
-  currentTurn: 'blue',
+  currentTurn: 'orange',
   selectedTile: null,
-  placingRobot: false,
-  playingCard: false,
+  playingCardType: null,
   hoveredCard: null,
   status: {
     message: '',

@@ -1,13 +1,20 @@
 import actions from './actions';
 import targets from './targets';
 import conditions from './conditions';
-import { objectsMatchingCondition } from './collections';
+import { cardsInHand, objectsInPlay, objectsMatchingCondition } from './collections';
+import { attributeSum, count } from './numbers';
 
 const vocabulary = {
   actions: actions,
   targets: targets,
   conditions: conditions,
-  objectsMatchingCondition: objectsMatchingCondition
+
+  // Global methods
+  cardsInHand: cardsInHand,
+  objectsInPlay: objectsInPlay,
+  objectsMatchingCondition: objectsMatchingCondition,
+  attributeSum: attributeSum,
+  count: count
 };
 
 export default vocabulary;

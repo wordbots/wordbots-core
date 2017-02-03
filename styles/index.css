@@ -129,15 +129,16 @@ svg path {
 
 /* Slide In Animation */
 
-.example-enter {
+.hand-enter {
   transform: translate(500%);
 }
 
-.example-enter.example-enter-active {
+.hand-enter.hand-enter-active {
   transform: translate(0%);
   transition: transform 500ms ease-in-out;
 }
 
+/*
 .example-leave {
   transform: translate(-500%);
   opacity: 0;
@@ -149,6 +150,7 @@ svg path {
   transition: transform 500ms ease-in-out;
   transition: opacity 500ms ease-in-out;
 }
+*/
 
 .card-viewer-fade-enter {
   opacity: 0;

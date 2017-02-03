@@ -131,9 +131,18 @@ export const incinerateCard = {
   type: TYPE_EVENT
 };
 
+export const wisdomCard = {
+  name: 'Wisdom',
+  text: 'Draw cards equal to the number of robots you control.',
+  command: '(function () { actions["draw"](targets["self"](), count(objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })',
+  cost: 3,
+  type: TYPE_EVENT
+};
+
 export const deck = [
   superchargeCard,
   tankBotCard,
+  wisdomCard,
   incinerateCard,
   discountCard,
   missileStrikeCard,

@@ -9,5 +9,5 @@ export function attributeSum(state) {
 export function count(state) {
   return function (collection) {
     return _.size(collection);
-  }
+  };
 }

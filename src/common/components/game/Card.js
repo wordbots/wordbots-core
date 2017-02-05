@@ -4,8 +4,10 @@ import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
+import Identicons from 'identicons-react';
 
-import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, typeToString } from '../../constants';
+import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';
 import CardBack from './CardBack';
@@ -51,6 +53,14 @@ class Card extends Component {
       );
     } else {
       return '';
+    }
+  }
+
+  renderImage() {
+    if (this.props.type == TYPE_EVENT) {
+      return <Identicons id={this.props.name} width={40} size={5} />;
+    } else {
+      return <img src={loadImages()[this.props.img]} width="50px" height="50px" />;
     }
   }
 
@@ -106,6 +116,13 @@ class Card extends Component {
                 flexDirection: 'column',
                 flexGrow: 1
               }}>
+                <div style={{
+                  width: '50px',
+                  height: '50px',
+                  margin: '5px auto 0'
+                }}>
+                  {this.renderImage()}
+                </div>
                 <CardText style={{padding: 10}}>{this.props.text}</CardText>
                 {this.renderStatsArea()}
               </div>
@@ -121,6 +138,7 @@ Card.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
   text: React.PropTypes.string,
+  img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,

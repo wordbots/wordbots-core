@@ -4,13 +4,13 @@ import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
-import Identicons from 'identicons-react';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';
 import CardBack from './CardBack';
+import Identicon from './Identicon';
 
 class Card extends Component {
   constructor(props) {
@@ -58,7 +58,7 @@ class Card extends Component {
 
   renderImage() {
     if (this.props.type == TYPE_EVENT) {
-      return <Identicons id={this.props.name} width={40} size={5} />;
+      return <Identicon id={this.props.name} width={40} size={5} />;
     } else {
       return <img src={loadImages()[this.props.img]} width="50px" height="50px" />;
     }

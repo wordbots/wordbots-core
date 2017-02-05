@@ -1,7 +1,7 @@
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE } from '../constants';
 
 export const blueCoreCard = {
-  name: 'Blue Core',
+  name: 'Blue Kernel',
   img: 'core_blue',
   cost: 0,
   type: TYPE_CORE,
@@ -12,7 +12,7 @@ export const blueCoreCard = {
 };
 
 export const orangeCoreCard = {
-  name: 'Orange Core',
+  name: 'Orange Kernel',
   img: 'core_orange',
   cost: 0,
   type: TYPE_CORE,

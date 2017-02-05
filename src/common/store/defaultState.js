@@ -43,6 +43,11 @@ const defaultState = {
     message: '',
     type: ''
   },
+  target: {
+    choosing: false,
+    chosen: null,
+    possibleHexes: []
+  },
   winner: null
 };
 

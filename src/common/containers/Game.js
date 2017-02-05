@@ -21,6 +21,7 @@ function mapStateToProps(state) {
     selectedTile: state.game.selectedTile,
     playingRobot: !isNull(state.game.playingCardType) && state.game.playingCardType !== TYPE_EVENT,
     status: state.game.status,
+    target: state.game.target,
     hoveredCard: state.game.hoveredCard,
     winner: state.game.winner,
 
@@ -169,6 +170,7 @@ class Game extends Component {
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               selectedTile={this.props.selectedTile}
+              target={this.props.target}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               currentTurn={this.props.currentTurn}
@@ -204,6 +206,7 @@ Game.propTypes = {
   selectedTile: React.PropTypes.string,
   playingRobot: React.PropTypes.bool,
   status: React.PropTypes.object,
+  target: React.PropTypes.object,
   hoveredCard: React.PropTypes.object,
   winner: React.PropTypes.string,
 

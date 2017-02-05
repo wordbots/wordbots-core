@@ -55,7 +55,7 @@ export function placeCard(state, card, tile) {
   return state;
 }
 
-function playEvent(state, cardIdx, command) {
+export function playEvent(state, cardIdx, command) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
 
   if (_.isArray(selectedCard.command)) {
@@ -64,13 +64,17 @@ function playEvent(state, cardIdx, command) {
     executeCmd(state, selectedCard.command);
   }
 
-  const player = state.players[state.currentTurn];
-  player.selectedCard = null;
-  player.energy.available -= selectedCard.cost;
-  player.hand.splice(cardIdx, 1);
+  if (state.target.choosing) {
+    state.status = { message: 'Choose a target for this event.', type: 'text' };
+  } else {
+    const player = state.players[state.currentTurn];
+    player.selectedCard = null;
+    player.energy.available -= selectedCard.cost;
+    player.hand.splice(cardIdx, 1);
 
-  state.playingCardType = null;
-  state.status.message = '';
+    state.playingCardType = null;
+    state.status.message = '';
+  }
 
   return state;
 }

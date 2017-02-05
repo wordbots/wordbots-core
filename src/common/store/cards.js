@@ -139,7 +139,17 @@ export const wisdomCard = {
   type: TYPE_EVENT
 };
 
+export const shockCard = {
+  name: 'Shock',
+  text: 'Deal 3 damage to a robot.',
+  command: '(function () { actions["dealDamage"](targets["choose"](objectsInPlay("robot")), 3); })',
+  cost: 1,
+  type: TYPE_EVENT
+};
+
+
 export const deck = [
+  shockCard,
   superchargeCard,
   tankBotCard,
   wisdomCard,

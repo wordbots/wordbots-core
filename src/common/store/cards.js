@@ -73,7 +73,7 @@ export const rampageCard = {
 };
 
 export const wrathOfRobotGodCard = {
-  name: 'Wrath of Robot God',
+  name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
   command: '(function () { actions["destroy"](targets["all"](objectsInPlay("robot"))); })',
   cost: 5,
@@ -140,7 +140,6 @@ export const wisdomCard = {
 };
 
 export const deck = [
-  attackBotCard,
   attackBotCard,
   concentrationCard,
   superchargeCard,

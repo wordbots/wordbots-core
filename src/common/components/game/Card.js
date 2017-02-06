@@ -57,10 +57,18 @@ class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.type == TYPE_EVENT) {
-      return <Identicon id={this.props.name} width={40} size={5} />;
+    if (this.props.img) {
+      return (
+        <div style={{ width: '50px', height: '52px', margin: '3px auto 0'}}>
+          <img src={loadImages()[this.props.img]} width="50px" height="50px" />
+        </div>
+      );
     } else {
-      return <img src={loadImages()[this.props.img]} width="50px" height="50px" />;
+      return (
+        <div style={{ width: '50px', height: '52px', margin: '5px auto 0'}}>
+          <Identicon id={this.props.name} width={40} size={5} />
+        </div>
+      );
     }
   }
 
@@ -105,18 +113,15 @@ class Card extends Component {
                 userSelect: 'none',
                 cursor: 'pointer'
               }, (this.props.selected ? selectedStyle : {}))}>
-              <div style={{
-                  width: '50px',
-                  height: '50px',
-                  margin: '5px auto 0'
-                }}>
-                {this.renderImage()}
-              </div>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
                 title={this.props.name}
                 subtitle={typeToString(this.props.type)}/>
+
               <Divider/>
+              {this.renderImage()}
+              <Divider/>
+
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',

@@ -105,6 +105,13 @@ class Card extends Component {
                 userSelect: 'none',
                 cursor: 'pointer'
               }, (this.props.selected ? selectedStyle : {}))}>
+              <div style={{
+                  width: '50px',
+                  height: '50px',
+                  margin: '5px auto 0'
+                }}>
+                {this.renderImage()}
+              </div>
               <CardHeader
                 style={{padding: 10, height: 'auto'}}
                 title={this.props.name}
@@ -116,13 +123,6 @@ class Card extends Component {
                 flexDirection: 'column',
                 flexGrow: 1
               }}>
-                <div style={{
-                  width: '50px',
-                  height: '50px',
-                  margin: '5px auto 0'
-                }}>
-                  {this.renderImage()}
-                </div>
                 <CardText style={{padding: 10}}>{this.props.text}</CardText>
                 {this.renderStatsArea()}
               </div>

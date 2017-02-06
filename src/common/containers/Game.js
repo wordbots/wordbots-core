@@ -222,8 +222,7 @@ Game.propTypes = {
   blueDeck: React.PropTypes.array,
   orangeDeck: React.PropTypes.array,
 
-  blueSelectedCard: React.PropTypes.number,
-  orangeSelectedCard: React.PropTypes.number,
+  selectedCard: React.PropTypes.number,
 
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,

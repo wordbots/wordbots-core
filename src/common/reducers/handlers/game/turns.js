@@ -14,10 +14,8 @@ export function startTurn(state) {
 }
 
 export function endTurn(state) {
-  const player = currentPlayer(state);
-  player.selectedCard = null;
-
   state.currentTurn = opponentName(state);
+  state.selectedCard = null;
   state.selectedTile = null;
   state.playingRobot = false;
   state.status.message = '';

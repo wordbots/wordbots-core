@@ -6,7 +6,7 @@ export function setHoveredCard(state, card) {
 }
 
 export function setSelectedTile(state, tile) {
-  if (state.target.choosing && state.target.possibleHexes.includes(tile) && state.players[state.currentTurn].selectedCard) {
+  if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
     // Select target tile for event.
     // TODO handle: (1) multiple targets per effect,
     //              (2) targets that are cards in hand (rather than objects in board),
@@ -17,11 +17,11 @@ export function setSelectedTile(state, tile) {
       possibleHexes: []
     };
 
-    return playEvent(state, state.players[state.currentTurn].selectedCard);
+    return playEvent(state, state.selectedCard);
   } else {
     // Toggle tile selection.
     state.selectedTile = (state.selectedTile == tile) ? null : tile;
-    state.players[state.currentTurn].selectedCard = null;
+    state.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
     return state;

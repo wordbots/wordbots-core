@@ -8,18 +8,21 @@ export function setSelectedCard(state, cardIdx) {
 
   state.selectedTile = null;
 
-  if (state.players[state.currentTurn].selectedCard == cardIdx) {
+  if (state.selectedCard == cardIdx) {
     // Clicked on already selected card => Deselect or play event
+
     if (selectedCard.type === TYPE_EVENT && selectedCard.cost <= energy.available) {
       return playEvent(state, cardIdx);
     } else {
-      state.players[state.currentTurn].selectedCard = null;
+      state.selectedCard = null;
       state.playingCardType = null;
       state.status.message = '';
     }
   } else {
     // Clicked on unselected card => Select
-    state.players[state.currentTurn].selectedCard = cardIdx;
+
+    state.selectedCard = cardIdx;
+    state.target.choosing = false; // Reset targeting state.
 
     if (selectedCard.cost <= energy.available) {
       state.playingCardType = selectedCard.type;
@@ -37,7 +40,7 @@ export function setSelectedCard(state, cardIdx) {
 
 export function placeCard(state, card, tile) {
   const player = currentPlayer(state);
-  const selectedCardIndex = state.players[state.currentTurn].selectedCard;
+  const selectedCardIndex = state.selectedCard;
 
   player.robotsOnBoard[tile] = {
     card: card,
@@ -45,10 +48,10 @@ export function placeCard(state, card, tile) {
     hasMoved: true
   };
 
-  player.selectedCard = null;
   player.energy.available -= player.hand[selectedCardIndex].cost;
   player.hand.splice(selectedCardIndex, 1);
 
+  state.selectedCard = null;
   state.playingCardType = null;
   state.status.message = '';
 
@@ -67,13 +70,14 @@ export function playEvent(state, cardIdx, command) {
   if (state.target.choosing) {
     state.status = { message: 'Choose a target for this event.', type: 'text' };
   } else {
-    const player = state.players[state.currentTurn];
-    player.selectedCard = null;
-    player.energy.available -= selectedCard.cost;
-    player.hand.splice(cardIdx, 1);
-
+    state.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
+    state.target = {choosing: false, chosen: null, possibleHexes: []};
+
+    const player = state.players[state.currentTurn];
+    player.energy.available -= selectedCard.cost;
+    player.hand.splice(cardIdx, 1);
   }
 
   return state;

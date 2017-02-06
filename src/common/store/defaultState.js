@@ -8,7 +8,6 @@ const defaultState = {
         total: 1
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
-      selectedCard: null,
       deck: cards.deck,
       robotsOnBoard: {
         '-4,0,4': {
@@ -24,7 +23,6 @@ const defaultState = {
         total: 1
       },
       hand: [cards.attackBotCard, cards.concentrationCard],
-      selectedCard: null,
       deck: cards.deck,
       robotsOnBoard: {
         '4,0,-4': {
@@ -37,6 +35,7 @@ const defaultState = {
   },
   currentTurn: 'orange',
   selectedTile: null,
+  selectedCard: null,
   playingCardType: null,
   hoveredCard: null,
   status: {

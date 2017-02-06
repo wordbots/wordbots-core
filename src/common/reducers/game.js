@@ -14,6 +14,7 @@ export default function game(oldState = defaultState, action) {
       return g.attack(state, action.payload.source, action.payload.target);
 
     case gameActions.PLACE_CARD:
+      console.log(action.payload);
       return g.placeCard(state, action.payload.card, action.payload.tile);
 
     case gameActions.END_TURN:

@@ -140,6 +140,9 @@ export const wisdomCard = {
 };
 
 export const deck = [
+  attackBotCard,
+  attackBotCard,
+  concentrationCard,
   superchargeCard,
   tankBotCard,
   wisdomCard,
@@ -153,4 +156,4 @@ export const deck = [
   wrathOfRobotGodCard,
   tankBotCard,
   tankBotCard
-];
+].map(card => Object.assign({}, card, {id: Math.random().toString(36)}));

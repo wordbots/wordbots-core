@@ -43,9 +43,9 @@ class CardBack extends Component {
           }}>
             <div style={{
               color: '#fff',
-              fontSize: 28,
-              fontFamily: 'Luckiest Guy'
-            }}>WordBots</div>
+              fontSize: 26,
+              fontFamily: 'Carter One'
+            }}>WORDBOTS</div>
           </div>
         </Paper>
       </div>

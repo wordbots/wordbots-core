@@ -33,11 +33,10 @@ class CardStat extends Component {
             height: 32,
             display: 'flex',
             justifyContent: 'center',
-            // alignItems: 'center',
-            paddingTop: '10px',
+            alignItems: 'center',
             backgroundColor: backgroundColor,
             color: '#fff',
-            fontFamily: 'Luckiest Guy',
+            fontFamily: 'Carter One',
             fontSize: 16
         }}>
           <ReactTooltip

@@ -93,7 +93,7 @@ class Card extends Component {
             width: 36,
             height: 36,
             backgroundColor: '#00bcd4',
-            fontFamily: 'Luckiest Guy',
+            fontFamily: 'Carter One',
             color: 'white',
             fontSize: 16
           }}

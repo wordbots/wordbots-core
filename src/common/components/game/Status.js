@@ -33,7 +33,7 @@ class Status extends Component {
         left: 0,
         margin: 'auto',
         height: 20,
-        fontFamily: 'Luckiest Guy',
+        fontFamily: 'Carter One',
         fontSize: 20
       }, statusStyle)}>{this.props.status.message}</div>
     );

@@ -22,7 +22,7 @@ class VictoryScreen extends Component {
         top: 0,
         bottom: 0,
         right: 0,
-        fontFamily: 'Luckiest Guy',
+        fontFamily: 'Carter One',
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
         fontSize: 96,
         color: this.props.winner === null ? 'black' : colors[this.props.winner],

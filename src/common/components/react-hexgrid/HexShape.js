@@ -65,7 +65,7 @@ class HexShape extends React.Component {
               fill: '#E57373'
             }} cx="-3" cy="2" r="2" />
             <text x="-3" y="3" textAnchor="middle" style={{
-              fontFamily: 'Luckiest Guy',
+              fontFamily: 'Carter One',
               fontSize: '0.19em',
               fill: '#FFFFFF',
               fillOpacity: 1
@@ -74,7 +74,7 @@ class HexShape extends React.Component {
               fill: '#81C784'
             }} cx="3" cy="2" r="2" />
             <text x="3" y="3" textAnchor="middle" style={{
-              fontFamily: 'Luckiest Guy',
+              fontFamily: 'Carter One',
               fontSize: '0.19em',
               fill: '#FFFFFF',
               fillOpacity: 1
@@ -88,7 +88,7 @@ class HexShape extends React.Component {
               fill: '#81C784'
             }} cx="3" cy="2" r="2" />
             <text x="3" y="3" textAnchor="middle" style={{
-              fontFamily: 'Luckiest Guy',
+              fontFamily: 'Carter One',
               fontSize: '0.19em',
               fill: '#FFFFFF',
               fillOpacity: 1

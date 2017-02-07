@@ -25,7 +25,7 @@ class EnergyCount extends Component {
           style={{
             alignSelf: 'center',
             color: 'white',
-            fontFamily: 'Luckiest Guy'
+            fontFamily: 'Carter One'
           }}>
           {this.props.energy.available} / {this.props.energy.total}
         </div>

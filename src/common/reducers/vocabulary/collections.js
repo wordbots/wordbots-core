@@ -34,7 +34,7 @@ export function objectsInPlay(state) {
 export function objectsMatchingCondition(state) {
   return function (objType, condition) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      obj.card.type == stringToType(objType) && condition(hex, obj)
+      (objType == 'allobjects' || obj.card.type == stringToType(objType)) && condition(hex, obj)
     );
   };
 }

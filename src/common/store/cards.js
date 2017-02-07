@@ -149,8 +149,8 @@ export const shockCard = {
 
 export const firestormCard = {
   name: 'Firestorm',
-  text: 'Deal 1 damage to all robots adjacent to a tile.',
-  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingCondition("robot", conditions["adjacentTo"](targets["choose"](allTiles())))), 1); })',
+  text: 'Deal 1 damage to everything adjacent to a tile.',
+  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingCondition("allobjects", conditions["adjacentTo"](targets["choose"](allTiles())))), 1); })',
   cost: 3,
   type: TYPE_EVENT
 };

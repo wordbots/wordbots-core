@@ -19,6 +19,7 @@ export function endTurn(state) {
   state.selectedTile = null;
   state.playingRobot = false;
   state.status.message = '';
+  state.target = {choosing: false, chosen: null, possibleHexes: []};
 
   return state;
 }

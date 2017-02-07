@@ -24,7 +24,7 @@ class CardStat extends Component {
 
     return (
       <div>
-        <Paper circle 
+        <Paper circle
           zDepth={1}
           data-for="stat-tooltip"
           data-tip={this.props.type.toProperCase()}
@@ -36,15 +36,15 @@ class CardStat extends Component {
             alignItems: 'center',
             backgroundColor: backgroundColor,
             color: '#fff',
-            fontFamily: 'Luckiest Guy',
+            fontFamily: 'Carter One',
             fontSize: 16
         }}>
-          <ReactTooltip 
-            id="stat-tooltip" 
-            place="top" 
-            type="dark" 
+          <ReactTooltip
+            id="stat-tooltip"
+            place="top"
+            type="dark"
             effect="float" />
-          <div>{this.props.value}</div>
+          <div style={{lineHeight: '14px'}}>{this.props.value}</div>
         </Paper>
       </div>
     );

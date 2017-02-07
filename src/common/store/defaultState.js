@@ -7,8 +7,8 @@ const defaultState = {
         available: 1,
         total: 1
       },
-      hand: [cards.attackBotCard, cards.concentrationCard],
-      deck: cards.deck,
+      hand: cards.deck.slice(0, 2),
+      deck: cards.deck.slice(2),
       robotsOnBoard: {
         '-4,0,4': {
           hasMoved: false,
@@ -22,8 +22,8 @@ const defaultState = {
         available: 1,
         total: 1
       },
-      hand: [cards.attackBotCard, cards.concentrationCard],
-      deck: cards.deck,
+      hand: cards.deck.slice(0, 2),
+      deck: cards.deck.slice(2),
       robotsOnBoard: {
         '4,0,-4': {
           hasMoved: false,

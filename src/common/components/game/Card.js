@@ -6,9 +6,11 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 
 import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
+import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';
 import CardBack from './CardBack';
+import Identicon from './Identicon';
 
 class Card extends Component {
   constructor(props) {
@@ -54,6 +56,22 @@ class Card extends Component {
     }
   }
 
+  renderImage() {
+    if (this.props.img) {
+      return (
+        <div style={{ width: '50px', height: '52px', margin: '3px auto 0'}}>
+          <img src={loadImages()[this.props.img]} width="50px" height="50px" />
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ width: '50px', height: '52px', margin: '5px auto 0'}}>
+          <Identicon id={this.props.name} width={40} size={5} />
+        </div>
+      );
+    }
+  }
+
   render() {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
@@ -75,7 +93,7 @@ class Card extends Component {
             width: 36,
             height: 36,
             backgroundColor: '#00bcd4',
-            fontFamily: 'Luckiest Guy',
+            fontFamily: 'Carter One',
             color: 'white',
             fontSize: 16
           }}
@@ -99,7 +117,11 @@ class Card extends Component {
                 style={{padding: 10, height: 'auto'}}
                 title={this.props.name}
                 subtitle={typeToString(this.props.type)}/>
+
               <Divider/>
+              {this.renderImage()}
+              <Divider/>
+
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -121,6 +143,7 @@ Card.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
   text: React.PropTypes.string,
+  img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,

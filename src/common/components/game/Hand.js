@@ -19,11 +19,12 @@ class Hand extends Component {
       return (
         <Card
           onCardClick={cardClick}
-          key={index}
+          key={card.id}
           status={this.props.status}
           name={card.name}
           type={card.type}
           text={card.text || ''}
+          img={card.img}
           cost={card.cost}
           cardStats={card.stats}
           selected={this.props.selectedCard === index}

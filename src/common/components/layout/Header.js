@@ -35,8 +35,8 @@ class Header extends Component {
           zDepth={1}
           title={
             <Link style={{
-              color: '#fff', fontFamily: 'Luckiest Guy', fontSize: 32
-            }} to="/">WordBots</Link>
+              color: '#fff', fontFamily: 'Carter One', fontSize: 32
+            }} to="/">WORDBOTS</Link>
           }
           style={{
             position: 'fixed',

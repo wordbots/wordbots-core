@@ -1,8 +1,20 @@
 import { stringToType } from '../../constants';
+import GridGenerator from '../../components/react-hexgrid/GridGenerator';
+import HexUtils from '../../components/react-hexgrid/HexUtils';
 import { allObjectsOnBoard } from '../handlers/game/util';
 
 // A collection is a function that returns either an array of cards in a players' hand
 // or an array of [hex, object] pairs representing object on the board.
+
+export function allTiles(state) {
+  return function () {
+    let tiles = {};
+    GridGenerator.hexagon(4).forEach(function (hex) {
+      tiles[HexUtils.getID(hex)] = allObjectsOnBoard(state)[HexUtils.getID(hex)];
+    });
+    return tiles;
+  };
+}
 
 export function cardsInHand(state) {
   return function (players) {

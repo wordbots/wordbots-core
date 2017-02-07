@@ -36,7 +36,7 @@ class Header extends Component {
           title={
             <Link style={{
               color: '#fff', fontFamily: 'Carter One', fontSize: 32
-            }} to="/">WordBots</Link>
+            }} to="/">WORDBOTS</Link>
           }
           style={{
             position: 'fixed',

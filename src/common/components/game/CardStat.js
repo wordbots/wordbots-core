@@ -44,7 +44,7 @@ class CardStat extends Component {
             place="top"
             type="dark"
             effect="float" />
-          <div>{this.props.value}</div>
+          <div style={{lineHeight: '14px'}}>{this.props.value}</div>
         </Paper>
       </div>
     );

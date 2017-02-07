@@ -33,11 +33,12 @@ class CardBack extends Component {
         }, style)}>
           <div style={{
             writingMode: 'vertical-lr',
-            width: 'calc(100% - 4px)',
+            width: 'calc(100% - 50px)',
             height: 'calc(100% - 4px)',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
+            //alignItems: 'center',
+            paddingLeft: 46,
             borderRadius: 5,
             border: '2px solid #FFF'
           }}>

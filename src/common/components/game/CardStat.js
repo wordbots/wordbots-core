@@ -33,11 +33,10 @@ class CardStat extends Component {
             height: 32,
             display: 'flex',
             justifyContent: 'center',
-            // alignItems: 'center',
-            paddingTop: '10px',
+            alignItems: 'center',
             backgroundColor: backgroundColor,
             color: '#fff',
-            fontFamily: 'Luckiest Guy',
+            fontFamily: 'Roboto',
             fontSize: 16
         }}>
           <ReactTooltip
@@ -45,7 +44,7 @@ class CardStat extends Component {
             place="top"
             type="dark"
             effect="float" />
-          <div>{this.props.value}</div>
+          <div style={{lineHeight: '14px'}}>{this.props.value}</div>
         </Paper>
       </div>
     );

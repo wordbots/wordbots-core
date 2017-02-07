@@ -1,7 +1,7 @@
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE } from '../constants';
 
 export const blueCoreCard = {
-  name: 'Blue Core',
+  name: 'Blue Kernel',
   img: 'core_blue',
   cost: 0,
   type: TYPE_CORE,
@@ -12,7 +12,7 @@ export const blueCoreCard = {
 };
 
 export const orangeCoreCard = {
-  name: 'Orange Core',
+  name: 'Orange Kernel',
   img: 'core_orange',
   cost: 0,
   type: TYPE_CORE,
@@ -73,7 +73,7 @@ export const rampageCard = {
 };
 
 export const wrathOfRobotGodCard = {
-  name: 'Wrath of Robot God',
+  name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
   command: '(function () { actions["destroy"](targets["all"](objectsInPlay("robot"))); })',
   cost: 5,
@@ -140,6 +140,8 @@ export const wisdomCard = {
 };
 
 export const deck = [
+  attackBotCard,
+  concentrationCard,
   superchargeCard,
   tankBotCard,
   wisdomCard,
@@ -153,4 +155,4 @@ export const deck = [
   wrathOfRobotGodCard,
   tankBotCard,
   tankBotCard
-];
+].map(card => Object.assign({}, card, {id: Math.random().toString(36)}));

@@ -18,6 +18,7 @@ class CardViewer extends Component {
           name={this.props.card.name}
           type={this.props.card.type}
           text={this.props.card.text || ''}
+          img={this.props.card.img}
           cost={this.props.card.cost}
           cardStats={this.props.card.stats}
           selected={false}

@@ -28,7 +28,7 @@ const renderFullPage = (html, initialState, head) => {
         <title>${head.title}</title>
         <link rel="stylesheet" type="text/css" href="/static/app.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
       </head>
       <body>

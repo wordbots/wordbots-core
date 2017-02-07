@@ -11,7 +11,7 @@ class Deck extends Component {
   render() {
     if (this.props.deck.length > 0) {     
       return (
-        <div style={{fontFamily: 'Luckiest Guy'}}>
+        <div style={{fontFamily: 'Carter One'}}>
           <div data-tip={this.props.deck.length + ' Cards'} data-for="deck-tooltip">
             <CardBack deckLength={this.props.deck.length} />
           </div>
@@ -35,7 +35,7 @@ class Deck extends Component {
         }}>
           <div style={{
             margin: 'auto',
-            fontFamily: 'Luckiest Guy',
+            fontFamily: 'Carter One',
             fontSize: 32,
             textAlign: 'center',
             color: '#CCC'

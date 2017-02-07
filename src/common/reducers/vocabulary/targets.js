@@ -7,7 +7,6 @@ import { currentPlayer, opponentPlayer } from '../handlers/game/util';
 export default function targets(state) {
   return {
     all: function (collection) {
-      console.log(_.toPairs(collection));
       return _.toPairs(collection);
     },
 

@@ -47,6 +47,7 @@ export function executeCmd(state, cmd) {
   const conditions = vocabulary.conditions(state);
 
   // Global methods
+  const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
   const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);

@@ -1,15 +1,31 @@
-import { currentPlayer, opponentPlayer, dealDamageToObjectAtHex } from './util';
+import { currentPlayer, opponentPlayer, allObjectsOnBoard, dealDamageToObjectAtHex } from './util';
+import { playEvent } from './cards';
 
 export function setHoveredCard(state, card) {
   return _.assign(state, {hoveredCard: card});
 }
 
 export function setSelectedTile(state, tile) {
-  state.selectedTile = (state.selectedTile == tile) ? null : tile; // Toggle tile selection
-  state.players[state.currentTurn].selectedCard = null;
-  state.playingCardType = null;
-  state.status.message = '';
-  return state;
+  if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
+    // Select target tile for event.
+    // TODO handle: (1) multiple targets per effect,
+    //              (2) targets that are cards in hand (rather than objects in board),
+    //              (3) targets that aren't for events.
+    state.target = {
+      chosen: [[tile, allObjectsOnBoard(state)[tile]]],
+      choosing: false,
+      possibleHexes: []
+    };
+
+    return playEvent(state, state.selectedCard);
+  } else {
+    // Toggle tile selection.
+    state.selectedTile = (state.selectedTile == tile) ? null : tile;
+    state.selectedCard = null;
+    state.playingCardType = null;
+    state.status.message = '';
+    return state;
+  }
 }
 
 export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {

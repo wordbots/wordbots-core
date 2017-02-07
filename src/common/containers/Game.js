@@ -18,14 +18,15 @@ import * as gameActions from '../actions/game';
 function mapStateToProps(state) {
   return {
     currentTurn: state.game.currentTurn,
-    selectedTile: state.game.selectedTile,
-    playingRobot: !isNull(state.game.playingCardType) && state.game.playingCardType !== TYPE_EVENT,
-    status: state.game.status,
-    hoveredCard: state.game.hoveredCard,
     winner: state.game.winner,
 
-    blueSelectedCard: state.game.players.blue.selectedCard,
-    orangeSelectedCard: state.game.players.orange.selectedCard,
+    selectedTile: state.game.selectedTile,
+    selectedCard: state.game.selectedCard,
+    hoveredCard: state.game.hoveredCard,
+    playingRobot: !isNull(state.game.playingCardType) && state.game.playingCardType !== TYPE_EVENT,
+
+    status: state.game.status,
+    target: state.game.target,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,
@@ -111,9 +112,9 @@ class Game extends Component {
 
   placePiece(hexId) {
     if (this.props.currentTurn == 'blue') {
-      this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.blueSelectedCard]);
+      this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.selectedCard]);
     } else {
-      this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.orangeSelectedCard]);
+      this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.selectedCard]);
     }
   }
 
@@ -150,7 +151,7 @@ class Game extends Component {
           <PlayerArea
             energy={this.props.orangeEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
-            selectedCard={this.props.orangeSelectedCard}
+            selectedCard={this.props.selectedCard}
             isCurrentPlayer={this.props.currentTurn == 'orange'}
             cards={this.props.orangeHand}
             status={this.props.status}
@@ -169,6 +170,7 @@ class Game extends Component {
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               selectedTile={this.props.selectedTile}
+              target={this.props.target}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               currentTurn={this.props.currentTurn}
@@ -185,7 +187,7 @@ class Game extends Component {
           <PlayerArea
             energy={this.props.blueEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
-            selectedCard={this.props.blueSelectedCard}
+            selectedCard={this.props.selectedCard}
             isCurrentPlayer={this.props.currentTurn == 'blue'}
             cards={this.props.blueHand}
             status={this.props.status}
@@ -204,6 +206,7 @@ Game.propTypes = {
   selectedTile: React.PropTypes.string,
   playingRobot: React.PropTypes.bool,
   status: React.PropTypes.object,
+  target: React.PropTypes.object,
   hoveredCard: React.PropTypes.object,
   winner: React.PropTypes.string,
 
@@ -219,8 +222,7 @@ Game.propTypes = {
   blueDeck: React.PropTypes.array,
   orangeDeck: React.PropTypes.array,
 
-  blueSelectedCard: React.PropTypes.number,
-  orangeSelectedCard: React.PropTypes.number,
+  selectedCard: React.PropTypes.number,
 
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,

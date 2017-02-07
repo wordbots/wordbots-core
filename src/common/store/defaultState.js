@@ -8,7 +8,6 @@ const defaultState = {
         total: 1
       },
       hand: cards.deck.slice(0, 2),
-      selectedCard: null,
       deck: cards.deck.slice(2),
       robotsOnBoard: {
         '-4,0,4': {
@@ -24,7 +23,6 @@ const defaultState = {
         total: 1
       },
       hand: cards.deck.slice(0, 2),
-      selectedCard: null,
       deck: cards.deck.slice(2),
       robotsOnBoard: {
         '4,0,-4': {
@@ -37,11 +35,17 @@ const defaultState = {
   },
   currentTurn: 'orange',
   selectedTile: null,
+  selectedCard: null,
   playingCardType: null,
   hoveredCard: null,
   status: {
     message: '',
     type: ''
+  },
+  target: {
+    choosing: false,
+    chosen: null,
+    possibleHexes: []
   },
   winner: null
 };

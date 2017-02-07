@@ -10,7 +10,16 @@ export default function targets(state) {
       return _.toPairs(collection);
     },
 
-    // TODO choose(collection) -- requires choice
+    // TODO Also handle the case when collection is an array of cards (rather than objects).
+    choose: function (collection) {
+      if (state.target.chosen) {
+        return state.target.chosen;
+      } else {
+        state.target.choosing = true;
+        state.target.possibleHexes = Object.keys(collection);
+        return [];
+      }
+    },
 
     // TODO thisRobot() -- requires triggers
 

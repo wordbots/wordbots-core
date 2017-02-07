@@ -139,11 +139,29 @@ export const wisdomCard = {
   type: TYPE_EVENT
 };
 
+export const shockCard = {
+  name: 'Shock',
+  text: 'Deal 3 damage to a robot.',
+  command: '(function () { actions["dealDamage"](targets["choose"](objectsInPlay("robot")), 3); })',
+  cost: 1,
+  type: TYPE_EVENT
+};
+
+export const firestormCard = {
+  name: 'Firestorm',
+  text: 'Deal 1 damage to everything adjacent to a tile.',
+  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingCondition("allobjects", conditions["adjacentTo"](targets["choose"](allTiles())))), 1); })',
+  cost: 3,
+  type: TYPE_EVENT
+};
+
 export const deck = [
   attackBotCard,
   concentrationCard,
+  shockCard,
   superchargeCard,
   tankBotCard,
+  firestormCard,
   wisdomCard,
   incinerateCard,
   discountCard,

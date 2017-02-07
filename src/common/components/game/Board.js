@@ -111,6 +111,10 @@ class Board extends Component {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
         hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.stats.speed);
       }
+    } else if (this.props.target.choosing) {
+      this.props.target.possibleHexes.forEach((hex) => {
+        hexColors[hex]  = 'green';
+      });
     }
 
     return hexColors;
@@ -243,6 +247,7 @@ Board.propTypes = {
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
   playingRobot: React.PropTypes.bool,
+  target: React.PropTypes.object,
 
   onSelectTile: React.PropTypes.func,
   onHoverTile: React.PropTypes.func

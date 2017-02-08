@@ -37,6 +37,23 @@ export function abilities(state) {
           }
         }
       };
+    },
+
+    applyEffect: function (targetFunc, effect) {
+      const aid = Math.random().toString(36);
+      return {
+        aid: aid,
+        targets: targetFunc,
+        apply: function (target) {
+          target.effects = (target.effects || []).concat({
+            aid: aid,
+            effect: effect
+          });
+        },
+        unapply: function (target) {
+          target.effects = (target.effects || []).filter(eff => eff.aid != aid);
+        }
+      }
     }
   };
 }

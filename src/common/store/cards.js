@@ -250,10 +250,27 @@ const fortificationCard = {
   ]
 };
 
+const defenderBotCard = {
+  name: 'Defender Bot',
+  img: 'char_shield',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 3
+  },
+  text: 'This robot can\'t attack.',
+  abilities: [
+    '(function () { setAbility(abilities["applyEffect"](function () { return targets["thisRobot"](); }, "cannotattack")); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
+  defenderBotCard,
   fortificationCard,
   fortificationCard,
   superchargeCard,

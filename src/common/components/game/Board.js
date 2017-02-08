@@ -6,7 +6,7 @@ import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
-import { getAttribute } from '../../reducers/handlers/game/util';
+import { getAttribute, hasEffect } from '../../reducers/handlers/game/util';
 
 class Board extends Component {
   constructor(props) {
@@ -130,16 +130,20 @@ class Board extends Component {
   }
 
   colorMovementHexes(hex, hexColors, speed) {
+    const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
     const existingHexColors = hexColors;
+
     let newHexColors = Object.assign({}, existingHexColors);
 
     this.getValidMovementSpaces(hex, speed).forEach((hex) =>
       newHexColors[HexUtils.getID(hex)] = 'green'
     );
 
-    this.getValidAttackSpaces(hex, speed).forEach((hex) =>
-      newHexColors[HexUtils.getID(hex)] = 'red'
-    );
+    if (!hasEffect(selectedPiece, 'cannotattack')) {
+      this.getValidAttackSpaces(hex, speed).forEach((hex) =>
+        newHexColors[HexUtils.getID(hex)] = 'red'
+      );
+    }
 
     return newHexColors;
   }
@@ -197,7 +201,7 @@ class Board extends Component {
 
       if (validMovementHexes.includes(HexUtils.getID(hex))) {
         action = 'move';
-      } else if (validAttackHexes.includes(HexUtils.getID(hex))) {
+      } else if (validAttackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
         action = 'attack';
 
         if (!this.getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {

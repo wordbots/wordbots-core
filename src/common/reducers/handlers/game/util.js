@@ -34,6 +34,10 @@ export function getAttribute(object, attr) {
   }
 }
 
+export function hasEffect(object, effect) {
+  return (object.effects || []).map(eff => eff.effect).includes(effect);
+}
+
 export function dealDamageToObjectAtHex(state, amount, hex) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;

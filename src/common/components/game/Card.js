@@ -6,7 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import { Textfit } from 'react-textfit';
 
-import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';
@@ -129,7 +129,7 @@ class Card extends Component {
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type == TYPE_ROBOT ? 44 : 90,
+                  height: this.props.type != TYPE_EVENT ? 44 : 90,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}

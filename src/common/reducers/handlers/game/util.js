@@ -65,6 +65,7 @@ export function executeCmd(state, cmd, currentObject = null) {
   const objectsInPlay = vocabulary.objectsInPlay(state);
   const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
   const attributeSum = vocabulary.attributeSum(state);
+  const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
 
   eval(cmd)();

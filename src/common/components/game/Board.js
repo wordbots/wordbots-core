@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { flatMap, mapValues, pickBy, uniq } from 'lodash';
+import { flatMap, mapValues } from 'lodash';
 
 import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';

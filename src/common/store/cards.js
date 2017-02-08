@@ -24,6 +24,7 @@ export const orangeCoreCard = {
 
 export const attackBotCard = {
   name: 'Attack Bot',
+  text: 'ATTACK!',
   img: 'char',
   cost: 1,
   type: TYPE_ROBOT,
@@ -38,6 +39,7 @@ export const attackBotCard = {
 export const tankBotCard = {
   name: 'Tank Bot',
   img: 'char_weapon',
+  text: 'At the beginning of each turn this creature gets +1 attack',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {
@@ -55,6 +57,15 @@ export const concentrationCard = {
   cost: 1,
   type: TYPE_EVENT
 };
+
+export const concentrationVerboseCard = {
+  name: 'Concentration',
+  text: 'Draw two cards. Draw two cards. Draw two cards. Draw two cards. Draw two cards. Draw two cards. Draw two cards.',
+  command: '(function () { actions["draw"](targets["self"](), 2); })',
+  cost: 1,
+  type: TYPE_EVENT
+};
+
 
 export const superchargeCard = {
   name: 'Supercharge',
@@ -158,12 +169,13 @@ export const firestormCard = {
 export const deck = [
   attackBotCard,
   concentrationCard,
+  concentrationVerboseCard,
+  incinerateCard,
   shockCard,
   superchargeCard,
   tankBotCard,
   firestormCard,
   wisdomCard,
-  incinerateCard,
   discountCard,
   missileStrikeCard,
   rampageCard,

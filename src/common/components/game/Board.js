@@ -98,27 +98,27 @@ class Board extends Component {
     }
 
     Object.keys(this.props.bluePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].hasMoved) {
-        hexColors[hex] = 'blue';
-      } else {
+      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].movesLeft > 0) {
         hexColors[hex] = 'bright_blue';
+      } else {
+        hexColors[hex] = 'blue';
       }
     });
 
     Object.keys(this.props.orangePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].hasMoved) {
-        hexColors[hex] = 'orange';
-      } else {
+      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].movesLeft > 0) {
         hexColors[hex] = 'bright_orange';
+      } else {
+        hexColors[hex] = 'orange';
       }
     });
 
     if (this.props.selectedTile) {
       const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-      if (selectedPiece && !selectedPiece.hasMoved) {
+      if (selectedPiece && selectedPiece.movesLeft > 0) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.stats.speed);
+        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
       }
     } else if (this.props.target.choosing) {
       this.props.target.possibleHexes.forEach((hex) => {

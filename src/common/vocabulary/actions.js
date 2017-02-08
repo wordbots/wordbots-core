@@ -5,7 +5,7 @@ export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
       objects.forEach(function ([hex, object]) {
-        object.hasMoved = false;
+        object.movesLeft = object.stats.speed;
       });
     },
 

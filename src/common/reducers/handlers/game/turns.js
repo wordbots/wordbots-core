@@ -5,9 +5,8 @@ export function startTurn(state) {
   player.energy.total += 1;
   player.energy.available = player.energy.total;
   player.hand = player.hand.concat(player.deck.splice(0, 1));
-  player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot) => _.assign(robot, {hasMoved: false}));
-  Object.keys(player.robotsOnBoard).forEach((hex) =>
-    player.robotsOnBoard[hex].hasMoved = false
+  player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot) =>
+    _.assign(robot, {movesLeft: robot.stats.speed})
   );
 
   state = checkTriggers(state, 'beginningOfTurn', (trigger =>

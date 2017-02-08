@@ -77,11 +77,11 @@ class Game extends Component {
   movePiece(hexId, asPartOfAttack = false) {
     let tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
-      if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
+      if (this.props.bluePieces[tile] && this.props.bluePieces[tile].movesLeft > 0) {
         this.props.onMoveRobot(tile, hexId, asPartOfAttack);
       }
     } else {
-      if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
+      if (this.props.orangePieces[tile] && this.props.orangePieces[tile].movesLeft > 0) {
         this.props.onMoveRobot(tile, hexId, asPartOfAttack);
       }
     }
@@ -90,7 +90,7 @@ class Game extends Component {
   attackPiece(hexId, intermediateMoveHexId) {
     let tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
-      if (this.props.bluePieces[tile] && !this.props.bluePieces[tile].hasMoved) {
+      if (this.props.bluePieces[tile] && this.props.bluePieces[tile].movesLeft > 0) {
         if (intermediateMoveHexId) {
           this.props.onMoveRobotAndAttack(tile, intermediateMoveHexId, hexId);
         } else {
@@ -98,7 +98,7 @@ class Game extends Component {
         }
       }
     } else {
-      if (this.props.orangePieces[tile] && !this.props.orangePieces[tile].hasMoved) {
+      if (this.props.orangePieces[tile] && this.props.orangePieces[tile].movesLeft > 0) {
         if (intermediateMoveHexId) {
           this.props.onMoveRobotAndAttack(tile, intermediateMoveHexId, hexId);
         } else {

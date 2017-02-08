@@ -46,7 +46,7 @@ export function placeCard(state, card, tile) {
     card: card,
     stats: card.stats,
     triggers: [],
-    hasMoved: true
+    movesLeft: 0
   };
 
   player.robotsOnBoard[tile] = playedObject;

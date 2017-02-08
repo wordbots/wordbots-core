@@ -155,9 +155,26 @@ export const firestormCard = {
   type: TYPE_EVENT
 };
 
+export const botOfPainCard = {
+  name: 'Bot of Pain',
+  img: 'char_orc',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 2
+  },
+  text: 'At the end of each turn, each robot takes 1 damage.',
+  abilities: [
+    '(function () { setTrigger(triggers["endOfTurn"](targets["allPlayers"]()), (function () { actions["dealDamage"](targets["all"](objectsInPlay("robot")), 1); })); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
   concentrationCard,
+  botOfPainCard,
   shockCard,
   superchargeCard,
   tankBotCard,

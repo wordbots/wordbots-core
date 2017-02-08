@@ -45,11 +45,16 @@ export function placeCard(state, card, tile) {
   player.robotsOnBoard[tile] = {
     card: card,
     stats: card.stats,
+    triggers: [],
     hasMoved: true
   };
 
   player.energy.available -= player.hand[selectedCardIndex].cost;
   player.hand.splice(selectedCardIndex, 1);
+
+  if (card.abilities.length > 0) {
+    card.abilities.forEach((cmd) => executeCmd(state, cmd, player.robotsOnBoard[tile]));
+  }
 
   state.selectedCard = null;
   state.playingCardType = null;

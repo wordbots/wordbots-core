@@ -1,4 +1,4 @@
-import { currentPlayer, opponentName } from './util';
+import { allObjectsOnBoard, currentPlayer, opponentName, executeCmd } from './util';
 
 export function startTurn(state) {
   const player = currentPlayer(state);
@@ -14,6 +14,16 @@ export function startTurn(state) {
 }
 
 export function endTurn(state) {
+  // Activate endOfTurn triggers.
+  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
+    (obj.triggers || []).forEach(function (t) {
+      if (t.trigger.type == 'endOfTurn' && t.trigger.players.map(p => p.name).includes(state.currentTurn)) {
+        console.log(t.action);
+        executeCmd(state, t.action, obj);
+      }
+    });
+  });
+
   state.currentTurn = opponentName(state);
   state.selectedCard = null;
   state.selectedTile = null;

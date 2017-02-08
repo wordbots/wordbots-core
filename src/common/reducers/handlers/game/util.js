@@ -41,12 +41,14 @@ function updateOrDeleteObjectAtHex(state, object, hex) {
 }
 
 /* eslint-disable no-unused-vars */
-export function executeCmd(state, cmd) {
+export function executeCmd(state, cmd, currentObject = null) {
   const actions = vocabulary.actions(state);
   const targets = vocabulary.targets(state);
   const conditions = vocabulary.conditions(state);
+  const triggers = vocabulary.triggers(state);
 
   // Global methods
+  const setTrigger = vocabulary.setTrigger(state, currentObject);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);

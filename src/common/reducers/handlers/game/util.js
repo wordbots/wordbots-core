@@ -25,7 +25,8 @@ export function ownerOf(state, object) {
 
 export function getAttribute(object, attr) {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
-    return object.temporaryStatAdjustments[attr](object.stats[attr]);
+    // Apply all temporary adjustments, one at a time, in order.
+    return object.temporaryStatAdjustments[attr].reduce((val, adj) => adj.func(val), object.stats[attr]);
   } else if (object.stats[attr] !== undefined) {
     return object.stats[attr];
   } else {
@@ -110,7 +111,6 @@ export function applyAbilities(state) {
       });
 
       // Apply this ability to all targeted objects.
-      console.log(ability.targets(state));
       ability.targets(state).forEach(function ([hex, targetObj]) { // TODO handle other kinds of targets.
         ability.apply(targetObj);
       });

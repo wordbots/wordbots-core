@@ -255,6 +255,7 @@ export const deck = [
   dojoDiscipleCard,
   concentrationCard,
   fortificationCard,
+  fortificationCard,
   superchargeCard,
   monkeyBotCard,
   generalBotCard,

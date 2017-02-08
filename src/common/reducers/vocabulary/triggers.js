@@ -4,8 +4,6 @@ export function setTrigger(state, currentObject) {
       trigger: trigger,
       action: '(' + action.toString() + ')'
     }]);
-
-    console.log(currentObject.triggers);
   };
 }
 

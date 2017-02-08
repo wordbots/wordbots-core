@@ -19,7 +19,7 @@ export function allObjectsOnBoard(state) {
 
 export function ownerOf(state, object) {
   // TODO handle the case where neither player owns the object.
-  const blueObjectIds = Object.values(state.players.blue.robotsOnBoard).map(obj => obj.id)
+  const blueObjectIds = Object.values(state.players.blue.robotsOnBoard).map(obj => obj.id);
   return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
 }
 

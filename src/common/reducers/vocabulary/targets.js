@@ -23,7 +23,6 @@ export default function targets(state, currentObject) {
 
     thisRobot: function () {
       const currentObjectHex = _.findKey(allObjectsOnBoard(state), ['id', currentObject.id]);
-      console.log([[currentObjectHex, currentObject]]);
       return [[currentObjectHex, currentObject]];
     },
 

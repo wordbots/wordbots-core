@@ -1,6 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 
-import { currentPlayer, executeCmd, checkTriggers } from './util';
+import { currentPlayer, executeCmd, checkTriggers, applyAbilities } from './util';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -62,6 +62,8 @@ export function placeCard(state, card, tile) {
   state = checkTriggers(state, 'afterPlayed', (trigger =>
     trigger.objects.map(o => o.id).includes(playedObject.id)
   ));
+
+  state = applyAbilities(state);
 
   state.selectedCard = null;
   state.playingCardType = null;

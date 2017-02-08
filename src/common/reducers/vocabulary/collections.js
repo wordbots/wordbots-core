@@ -38,3 +38,12 @@ export function objectsMatchingCondition(state) {
     );
   };
 }
+
+
+export function objectsMatchingConditions(state) {
+  return function (objType, conditions) {
+    return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
+      (objType == 'allobjects' || obj.card.type == stringToType(objType)) && _.every(conditions.map(cond => cond(hex, obj)))
+    );
+  };
+}

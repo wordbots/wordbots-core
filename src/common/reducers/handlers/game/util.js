@@ -23,6 +23,16 @@ export function ownerOf(state, object) {
   return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
 }
 
+export function getAttribute(object, attr) {
+  if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
+    return object.temporaryStatAdjustments[attr](object.stats[attr]);
+  } else if (object.stats[attr] !== undefined) {
+    return object.stats[attr];
+  } else {
+    return undefined;
+  }
+}
+
 export function dealDamageToObjectAtHex(state, amount, hex) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;
@@ -37,7 +47,7 @@ export function dealDamageToObjectAtHex(state, amount, hex) {
 function updateOrDeleteObjectAtHex(state, object, hex) {
   const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
 
-  if (object.stats.health > 0) {
+  if (getAttribute(object, 'health') > 0) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
     delete state.players[ownerName].robotsOnBoard[hex];
@@ -48,6 +58,8 @@ function updateOrDeleteObjectAtHex(state, object, hex) {
     }
   }
 
+  state = applyAbilities(state);
+
   return state;
 }
 
@@ -57,13 +69,16 @@ export function executeCmd(state, cmd, currentObject = null) {
   const targets = vocabulary.targets(state, currentObject);
   const conditions = vocabulary.conditions(state);
   const triggers = vocabulary.triggers(state);
+  const abilities = vocabulary.abilities(state);
 
   // Global methods
   const setTrigger = vocabulary.setTrigger(state, currentObject);
+  const setAbility = vocabulary.setAbility(state, currentObject);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
   const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
+  const objectsMatchingConditions = vocabulary.objectsMatchingConditions(state);
   const attributeSum = vocabulary.attributeSum(state);
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
@@ -80,6 +95,25 @@ export function checkTriggers(state, triggerType, condition) {
         console.log('Executing ' + triggerType + ' trigger: ' + t.action);
         executeCmd(state, t.action, obj);
       }
+    });
+  });
+
+  return state;
+}
+
+export function applyAbilities(state) {
+  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
+    (obj.abilities || []).forEach(function (ability) {
+      // Unapply this ability for *all* objects.
+      Object.values(allObjectsOnBoard(state)).forEach(function (otherObj) {
+        ability.unapply(otherObj);
+      });
+
+      // Apply this ability to all targeted objects.
+      console.log(ability.targets(state));
+      ability.targets(state).forEach(function ([hex, targetObj]) { // TODO handle other kinds of targets.
+        ability.apply(targetObj);
+      });
     });
   });
 

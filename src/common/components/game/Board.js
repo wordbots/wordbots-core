@@ -5,6 +5,7 @@ import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
+import { getAttribute } from '../../reducers/handlers/game/util';
 
 class Board extends Component {
   constructor(props) {
@@ -223,7 +224,9 @@ class Board extends Component {
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
     const pieceImgs = mapValues(pieces, piece => piece.card.img);
-    const pieceStats = mapValues(pieces, piece => piece.stats);
+    const pieceStats = mapValues(pieces, function (piece) {
+      return { health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') };
+    });
 
     return (
       <div>

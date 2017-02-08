@@ -2,7 +2,8 @@ import actions from './actions';
 import targets from './targets';
 import conditions from './conditions';
 import { setTrigger, triggers } from './triggers';
-import { allTiles, cardsInHand, objectsInPlay, objectsMatchingCondition } from './collections';
+import { setAbility, abilities } from './abilities';
+import { allTiles, cardsInHand, objectsInPlay, objectsMatchingCondition, objectsMatchingConditions } from './collections';
 import { attributeSum, attributeValue, count } from './numbers';
 
 const vocabulary = {
@@ -10,13 +11,19 @@ const vocabulary = {
   targets: targets,
   conditions: conditions,
   triggers: triggers,
+  abilities: abilities,
 
   // Global methods
+
   setTrigger: setTrigger,
+  setAbility: setAbility,
+
   allTiles: allTiles,
   cardsInHand: cardsInHand,
   objectsInPlay: objectsInPlay,
   objectsMatchingCondition: objectsMatchingCondition,
+  objectsMatchingConditions: objectsMatchingConditions,
+
   attributeSum: attributeSum,
   attributeValue: attributeValue,
   count: count

@@ -213,8 +213,9 @@ const generalBotCard = {
     speed: 1,
     attack: 5
   },
-  text: 'When this robot is played, all of your robots can move again.',
+  text: 'Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again.',
   abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()), conditions["controlledBy"](targets["self"]())])); }, "attack", function (x) { return x + 1; })); })',
     '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["canMoveAgain"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })); })'
   ]
 };

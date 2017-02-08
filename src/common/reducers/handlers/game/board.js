@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, dealDamageToObjectAtHex, checkTriggers } from './util';
+import { currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, dealDamageToObjectAtHex, checkTriggers, applyAbilities } from './util';
 import { playEvent } from './cards';
 
 export function setHoveredCard(state, card) {
@@ -40,6 +40,8 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   delete state.players[state.currentTurn].robotsOnBoard[fromHex];
   state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
 
+  state = applyAbilities(state);
+
   return state;
 }
 
@@ -55,15 +57,15 @@ export function attack(state, source, target) {
 
   attacker.hasMoved = true;
 
-  dealDamageToObjectAtHex(state, defender.stats.attack || 0, source);
-  dealDamageToObjectAtHex(state, attacker.stats.attack || 0, target);
+  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source);
+  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target);
 
   state = checkTriggers(state, 'afterAttack', (trigger =>
     trigger.objects.map(o => o.id).includes(attacker.id)
   ));
 
   // Move attacker to defender's space (if possible).
-  if (defender.stats.health <= 0 && attacker.stats.health > 0) {
+  if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
     state.players[state.currentTurn].robotsOnBoard[target] = attacker;
     delete state.players[state.currentTurn].robotsOnBoard[source];
   }

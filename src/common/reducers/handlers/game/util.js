@@ -44,7 +44,7 @@ export function dealDamageToObjectAtHex(state, amount, hex) {
   return updateOrDeleteObjectAtHex(state, object, hex);
 }
 
-function updateOrDeleteObjectAtHex(state, object, hex) {
+export function updateOrDeleteObjectAtHex(state, object, hex) {
   const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
 
   if (getAttribute(object, 'health') > 0) {

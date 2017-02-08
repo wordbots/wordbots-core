@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { mapValues } from 'lodash';
+import { flatMap, mapValues, pickBy, uniq } from 'lodash';
 
 import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
+import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import { getAttribute } from '../../reducers/handlers/game/util';
 
 class Board extends Component {
@@ -49,7 +50,7 @@ class Board extends Component {
     ].filter(hex => GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex)));
   }
 
-  getPlayerPlacementTiles() {
+  getRobotPlacementTiles() {
     if (this.props.currentTurn === 'blue') {
       return [
         new Hex(-3, -1, 4),
@@ -65,11 +66,17 @@ class Board extends Component {
     }
   }
 
+  getStructurePlacementTiles() {
+    const currentHexes = Object.keys(this.currentPlayerPieces()).map(HexUtils.IDToHex);
+    return flatMap(currentHexes, this.getAdjacentHexes);
+  }
+
   updateHexColors() {
     let hexColors = {};
 
-    if (this.props.playingRobot) {
-      this.getPlayerPlacementTiles().forEach((hex) => {
+    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+      const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
+      placementTiles.forEach((hex) => {
         if (this.props.currentTurn == 'blue') {
           if (this.props.bluePieces[hex]) {
             hexColors[HexUtils.getID(hex)]  = 'blue';
@@ -170,8 +177,9 @@ class Board extends Component {
 
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-    if (this.props.playingRobot) {
-      this.getPlayerPlacementTiles().forEach((placementHex) => {
+    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+      const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
+      placementTiles.forEach((placementHex) => {
         if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
             !this.props.orangePieces[HexUtils.getID(hex)] &&
             !this.props.bluePieces[HexUtils.getID(hex)]) {
@@ -250,7 +258,7 @@ Board.propTypes = {
 
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
-  playingRobot: React.PropTypes.bool,
+  playingCardType: React.PropTypes.number,
   target: React.PropTypes.object,
 
   onSelectTile: React.PropTypes.func,

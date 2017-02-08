@@ -4,9 +4,7 @@ import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 import { connect } from 'react-redux';
-import { isNull } from 'lodash';
 
-import { TYPE_EVENT } from '../constants';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
@@ -23,7 +21,7 @@ function mapStateToProps(state) {
     selectedTile: state.game.selectedTile,
     selectedCard: state.game.selectedCard,
     hoveredCard: state.game.hoveredCard,
-    playingRobot: !isNull(state.game.playingCardType) && state.game.playingCardType !== TYPE_EVENT,
+    playingCardType: state.game.playingCardType,
 
     status: state.game.status,
     target: state.game.target,
@@ -174,7 +172,7 @@ class Game extends Component {
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               currentTurn={this.props.currentTurn}
-              playingRobot={this.props.playingRobot} />
+              playingCardType={this.props.playingCardType} />
             <RaisedButton
               secondary
               label="End Turn"
@@ -204,7 +202,7 @@ class Game extends Component {
 Game.propTypes = {
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
-  playingRobot: React.PropTypes.bool,
+  playingCardType: React.PropTypes.number,
   status: React.PropTypes.object,
   target: React.PropTypes.object,
   hoveredCard: React.PropTypes.object,

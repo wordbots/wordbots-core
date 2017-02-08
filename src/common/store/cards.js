@@ -1,4 +1,4 @@
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE } from '../constants';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
 
 export const blueCoreCard = {
   name: 'Blue Kernel',
@@ -236,14 +236,29 @@ const monkeyBotCard = {
   ]
 };
 
+const fortificationCard = {
+  name: 'Fortification',
+  img: 'castle',
+  cost: 1,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 5
+  },
+  text: 'Your adjacent robots have +1 health.',
+  abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()),conditions["controlledBy"](targets["self"]())])); }, "health", function (x) { return x + 1; })); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
-  wisdomBotCard,
   concentrationCard,
+  fortificationCard,
   superchargeCard,
   monkeyBotCard,
   generalBotCard,
+  wisdomBotCard,
   shockCard,
   botOfPainCard,
   tankBotCard,

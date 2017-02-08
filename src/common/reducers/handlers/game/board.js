@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, dealDamageToObjectAtHex, checkTriggers, applyAbilities } from './util';
+import { currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities } from './util';
 import { playEvent } from './cards';
 
 export function setHoveredCard(state, card) {
@@ -41,6 +41,8 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
 
   state = applyAbilities(state);
+
+  updateOrDeleteObjectAtHex(state, movingRobot, toHex);
 
   return state;
 }

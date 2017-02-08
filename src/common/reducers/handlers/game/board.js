@@ -38,7 +38,6 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const movingRobot = player.robotsOnBoard[fromHex];
 
   if (!asPartOfAttack) {
-    console.log(HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex)));
     movingRobot.movesLeft -= HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
     state.selectedTile = null;
   }

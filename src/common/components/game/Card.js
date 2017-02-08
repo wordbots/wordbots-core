@@ -6,7 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import { Textfit } from 'react-textfit';
 
-import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';

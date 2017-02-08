@@ -129,7 +129,7 @@ class Card extends Component {
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type == TYPE_ROBOT ? 44 : 90,
+                  height: this.props.type != TYPE_EVENT ? 44 : 90,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}

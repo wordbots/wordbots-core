@@ -4,6 +4,7 @@ import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
+import { Textfit } from 'react-textfit';
 
 import { TYPE_ROBOT, TYPE_CORE, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
@@ -108,8 +109,6 @@ class Card extends Component {
                 height: 200,
                 marginRight: 10,
                 borderRadius: 5,
-                display: 'flex',
-                flexDirection: 'column',
                 userSelect: 'none',
                 cursor: 'pointer'
               }, (this.props.selected ? selectedStyle : {}))}>
@@ -119,16 +118,21 @@ class Card extends Component {
                 subtitle={typeToString(this.props.type)}/>
 
               <Divider/>
+
               {this.renderImage()}
+
               <Divider/>
 
               <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                flexDirection: 'column',
-                flexGrow: 1
+                height: 90
               }}>
-                <CardText style={{padding: 10}}>{this.props.text}</CardText>
+                <Textfit mode="multi" max={16} style={{
+                  padding: 6,
+                  height: this.props.type == TYPE_ROBOT ? 38 : 90,
+                  boxSizing: 'border-box'
+                }}>
+                  {this.props.text}
+                </Textfit>
                 {this.renderStatsArea()}
               </div>
             </Paper>

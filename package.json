@@ -49,6 +49,7 @@
     "react-redux": "^4.0.0",
     "react-router": "1.0.0-rc1",
     "react-tap-event-plugin": "^0.2.1",
+    "react-textfit": "^0.1.8",
     "react-tooltip": "^3.2.2",
     "redux": "^3.0.5",
     "redux-form": "^4.1.5",

@@ -6,7 +6,7 @@ import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
-import { getAttribute, hasEffect } from '../../reducers/handlers/game/util';
+import { getAttribute, hasEffect } from '../../util';
 
 class Board extends Component {
   constructor(props) {

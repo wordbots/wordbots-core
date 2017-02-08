@@ -1,7 +1,7 @@
-import { stringToType } from '../../constants';
-import GridGenerator from '../../components/react-hexgrid/GridGenerator';
-import HexUtils from '../../components/react-hexgrid/HexUtils';
-import { allObjectsOnBoard } from '../handlers/game/util';
+import { stringToType } from '../constants';
+import { allObjectsOnBoard } from '../util';
+import GridGenerator from '../components/react-hexgrid/GridGenerator';
+import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // A collection is a function that returns either an array of cards in a players' hand
 // or an array of [hex, object] pairs representing object on the board.

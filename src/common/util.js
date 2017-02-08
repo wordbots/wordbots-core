@@ -1,5 +1,5 @@
-import { TYPE_CORE } from '../../../constants';
-import vocabulary from '../../vocabulary/vocabulary';
+import { TYPE_CORE } from './constants';
+import vocabulary from './vocabulary/vocabulary';
 
 export function currentPlayer(state) {
   return state.players[state.currentTurn];

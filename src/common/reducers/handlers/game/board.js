@@ -1,4 +1,8 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities } from './util';
+import {
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute,
+  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities
+} from '../../../util';
+
 import { playEvent } from './cards';
 
 export function setHoveredCard(state, card) {

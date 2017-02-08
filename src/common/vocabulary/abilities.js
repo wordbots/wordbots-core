@@ -53,7 +53,7 @@ export function abilities(state) {
         unapply: function (target) {
           target.effects = (target.effects || []).filter(eff => eff.aid != aid);
         }
-      }
+      };
     }
   };
 }

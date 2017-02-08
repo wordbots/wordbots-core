@@ -1,5 +1,5 @@
-import Hex from '../../components/react-hexgrid/Hex';
-import HexUtils from '../../components/react-hexgrid/HexUtils';
+import Hex from '../components/react-hexgrid/Hex';
+import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.
 

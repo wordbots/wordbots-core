@@ -1,5 +1,5 @@
-import { TYPE_CORE } from '../../constants';
-import { dealDamageToObjectAtHex } from '../handlers/game/util';
+import { TYPE_CORE } from '../constants';
+import { dealDamageToObjectAtHex } from '../util';
 
 export default function actions(state) {
   return {

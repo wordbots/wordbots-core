@@ -1,6 +1,5 @@
 import { TYPE_EVENT } from '../../../constants';
-
-import { currentPlayer, executeCmd, checkTriggers, applyAbilities } from './util';
+import { currentPlayer, executeCmd, checkTriggers, applyAbilities } from '../../../util';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];

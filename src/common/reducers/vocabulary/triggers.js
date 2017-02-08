@@ -9,21 +9,35 @@ export function setTrigger(state, currentObject) {
 
 export function triggers(state) {
   return {
-    'afterDamageReceived': function (objects) {
+    afterAttack: function (objects) {
+      return {
+        'type': 'afterAttack',
+        'objects': objects.map(hexObj => hexObj[1])
+      };
+    },
+
+    afterDamageReceived: function (objects) {
       return {
         'type': 'afterDamageReceived',
         'objects': objects.map(hexObj => hexObj[1])
       };
     },
 
-    'beginningOfTurn': function (players) {
+    afterPlayed: function (objects) {
+      return {
+        'type': 'afterPlayed',
+        'objects': objects.map(hexObj => hexObj[1])
+      };
+    },
+
+    beginningOfTurn: function (players) {
       return {
         'type': 'beginningOfTurn',
         'players': players
       };
     },
 
-    'endOfTurn': function (players) {
+    endOfTurn: function (players) {
       return {
         'type': 'endOfTurn',
         'players': players

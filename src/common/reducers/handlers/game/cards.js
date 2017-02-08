@@ -1,6 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 
-import { currentPlayer, executeCmd } from './util';
+import { currentPlayer, executeCmd, checkTriggers } from './util';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -42,7 +42,7 @@ export function placeCard(state, card, tile) {
   const player = currentPlayer(state);
   const selectedCardIndex = state.selectedCard;
 
-  player.robotsOnBoard[tile] = {
+  const playedObject = {
     id: Math.random().toString(36),
     card: card,
     stats: card.stats,
@@ -50,12 +50,18 @@ export function placeCard(state, card, tile) {
     hasMoved: true
   };
 
+  player.robotsOnBoard[tile] = playedObject;
+
   player.energy.available -= player.hand[selectedCardIndex].cost;
   player.hand.splice(selectedCardIndex, 1);
 
   if (card.abilities.length > 0) {
-    card.abilities.forEach((cmd) => executeCmd(state, cmd, player.robotsOnBoard[tile]));
+    card.abilities.forEach((cmd) => executeCmd(state, cmd, playedObject));
   }
+
+  state = checkTriggers(state, 'afterPlayed', (trigger =>
+    trigger.objects.map(o => o.id).includes(playedObject.id)
+  ));
 
   state.selectedCard = null;
   state.playingCardType = null;

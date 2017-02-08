@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, dealDamageToObjectAtHex } from './util';
+import { currentPlayer, opponentPlayer, allObjectsOnBoard, dealDamageToObjectAtHex, checkTriggers } from './util';
 import { playEvent } from './cards';
 
 export function setHoveredCard(state, card) {
@@ -57,6 +57,10 @@ export function attack(state, source, target) {
 
   dealDamageToObjectAtHex(state, defender.stats.attack || 0, source);
   dealDamageToObjectAtHex(state, attacker.stats.attack || 0, target);
+
+  state = checkTriggers(state, 'afterAttack', (trigger =>
+    trigger.objects.map(o => o.id).includes(attacker.id)
+  ));
 
   // Move attacker to defender's space (if possible).
   if (defender.stats.health <= 0 && attacker.stats.health > 0) {

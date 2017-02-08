@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { mapValues } from 'lodash';
 
+import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
@@ -44,7 +45,7 @@ class Board extends Component {
       new Hex(hex.q + 1, hex.r - 1, hex.s),
       new Hex(hex.q - 1, hex.r, hex.s + 1),
       new Hex(hex.q + 1, hex.r, hex.s - 1)
-    ];
+    ].filter(hex => GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex)));
   }
 
   getPlayerPlacementTiles() {

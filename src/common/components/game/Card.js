@@ -126,9 +126,10 @@ class Card extends Component {
               <div style={{
                 height: 90
               }}>
-                <Textfit mode="multi" max={16} style={{
+                <Textfit mode="multi" max={14} style={{
                   padding: 6,
-                  height: this.props.type == TYPE_ROBOT ? 38 : 90,
+                  paddingBottom: 0,
+                  height: this.props.type == TYPE_ROBOT ? 44 : 90,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}

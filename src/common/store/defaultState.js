@@ -3,6 +3,7 @@ import * as cards from './cards';
 const defaultState = {
   players: {
     blue: {
+      name: 'blue',
       energy: {
         available: 1,
         total: 1
@@ -18,6 +19,7 @@ const defaultState = {
       }
     },
     orange: {
+      name: 'orange',
       energy: {
         available: 1,
         total: 1

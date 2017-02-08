@@ -1,4 +1,4 @@
-import { currentPlayer, opponentName } from './util';
+import { currentPlayer, opponentName, checkTriggers } from './util';
 
 export function startTurn(state) {
   const player = currentPlayer(state);
@@ -10,10 +10,18 @@ export function startTurn(state) {
     player.robotsOnBoard[hex].hasMoved = false
   );
 
+  state = checkTriggers(state, 'beginningOfTurn', (trigger =>
+    trigger.players.map(p => p.name).includes(state.currentTurn)
+  ));
+
   return state;
 }
 
 export function endTurn(state) {
+  state = checkTriggers(state, 'endOfTurn', (trigger =>
+    trigger.players.map(p => p.name).includes(state.currentTurn)
+  ));
+
   state.currentTurn = opponentName(state);
   state.selectedCard = null;
   state.selectedTile = null;

@@ -155,9 +155,60 @@ export const firestormCard = {
   type: TYPE_EVENT
 };
 
+export const botOfPainCard = {
+  name: 'Bot of Pain',
+  img: 'char_orc',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 2
+  },
+  text: 'At the end of each turn, each robot takes 1 damage.',
+  abilities: [
+    '(function () { setTrigger(triggers["endOfTurn"](targets["allPlayers"]()), (function () { actions["dealDamage"](targets["all"](objectsInPlay("robot")), 1); })); })'
+  ]
+};
+
+export const dojoDiscipleCard = {
+  name: 'Dojo Disciple',
+  img: 'char_belt',
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 0
+  },
+  text: 'At the beginning of each of your turns, this creature gains 1 attack.',
+  abilities: [
+    '(function () { setTrigger(triggers["beginningOfTurn"](targets["self"]()), (function () { actions["modifyAttribute"](targets["thisRobot"](), "attack", function (x) { return x + 1; }); })); })'
+  ]
+};
+
+export const wisdomBotCard = {
+  name: 'Wisdom Bot',
+  img: 'char_dressed',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 1
+  },
+  text: 'Whenever this creature takes damage, draw a card.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterDamageReceived"](targets["thisRobot"]()), (function () { actions["draw"](targets["self"](), 1); })); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
+  dojoDiscipleCard,
+  wisdomBotCard,
   concentrationCard,
+  botOfPainCard,
   shockCard,
   superchargeCard,
   tankBotCard,

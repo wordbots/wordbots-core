@@ -6,7 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import { Textfit } from 'react-textfit';
 
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';
@@ -46,7 +46,7 @@ class Card extends Component {
           <CardStat type="health" value={this.props.cardStats.health}/>
         </CardText>
       );
-    } else if (this.props.type == TYPE_CORE) {
+    } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
           <CardStat type="health" value={this.props.cardStats.health}/>

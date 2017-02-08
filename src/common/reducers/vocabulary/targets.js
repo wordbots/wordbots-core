@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer } from '../handlers/game/util';
+import { currentPlayer, opponentPlayer, ownerOf } from '../handlers/game/util';
 
 // Targets are all functions that return an array,
 // either of player objects, or of card objects,
@@ -26,11 +26,19 @@ export default function targets(state, currentObject) {
     },
 
     self: function () {
-      return [currentPlayer(state)];
+      if (currentObject) {
+        return [ownerOf(state, currentObject)];
+      } else {
+        return [currentPlayer(state)];
+      }
     },
 
     opponent: function () {
-      return [opponentPlayer(state)];
+      if (currentObject) {
+        return [ownerOf(state, currentObject).name == 'blue' ? state.players.orange : state.players.blue];
+      } else {
+        return [opponentPlayer(state)];
+      }
     },
 
     allPlayers: function () {

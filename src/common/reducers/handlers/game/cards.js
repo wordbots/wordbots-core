@@ -43,6 +43,7 @@ export function placeCard(state, card, tile) {
   const selectedCardIndex = state.selectedCard;
 
   player.robotsOnBoard[tile] = {
+    id: Math.random().toString(36),
     card: card,
     stats: card.stats,
     triggers: [],

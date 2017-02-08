@@ -17,9 +17,20 @@ export function allObjectsOnBoard(state) {
   return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
 }
 
+export function ownerOf(state, object) {
+  // TODO handle the case where neither player owns the object.
+  const blueObjectIds = Object.values(state.players.blue.robotsOnBoard).map(obj => obj.id)
+  return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
+}
+
 export function dealDamageToObjectAtHex(state, amount, hex) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;
+
+  state = checkTriggers(state, 'afterDamageReceived', (trigger =>
+    trigger.objects.map(o => o.id).includes(object.id)
+  ));
+
   return updateOrDeleteObjectAtHex(state, object, hex);
 }
 
@@ -60,3 +71,16 @@ export function executeCmd(state, cmd, currentObject = null) {
   return state;
 }
 /* eslint-enable no-unused-vars */
+
+export function checkTriggers(state, triggerType, condition) {
+  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
+    (obj.triggers || []).forEach(function (t) {
+      if (t.trigger.type == triggerType && condition(t.trigger)) {
+        console.log('Executing ' + triggerType + ' trigger: ' + t.action);
+        executeCmd(state, t.action, obj);
+      }
+    });
+  });
+
+  return state;
+}

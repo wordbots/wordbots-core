@@ -5,12 +5,19 @@ export function setTrigger(state, currentObject) {
       action: '(' + action.toString() + ')'
     }]);
 
-    console.log(currentObject);
+    console.log(currentObject.triggers);
   };
 }
 
 export function triggers(state) {
   return {
+    'afterDamageReceived': function (objects) {
+      return {
+        'type': 'afterDamageReceived',
+        'objects': objects.map(hexObj => hexObj[1])
+      };
+    },
+
     'beginningOfTurn': function (players) {
       return {
         'type': 'beginningOfTurn',

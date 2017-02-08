@@ -1,4 +1,4 @@
-import { allObjectsOnBoard, currentPlayer, opponentName, executeCmd } from './util';
+import { currentPlayer, opponentName, checkTriggers } from './util';
 
 export function startTurn(state) {
   const player = currentPlayer(state);
@@ -10,27 +10,17 @@ export function startTurn(state) {
     player.robotsOnBoard[hex].hasMoved = false
   );
 
-  // Activate beginningOfTurn triggers.
-  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
-    (obj.triggers || []).forEach(function (t) {
-      if (t.trigger.type == 'beginningOfTurn' && t.trigger.players.map(p => p.name).includes(state.currentTurn)) {
-        executeCmd(state, t.action, obj);
-      }
-    });
-  });
+  state = checkTriggers(state, 'beginningOfTurn', (trigger =>
+    trigger.players.map(p => p.name).includes(state.currentTurn)
+  ));
 
   return state;
 }
 
 export function endTurn(state) {
-  // Activate endOfTurn triggers.
-  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
-    (obj.triggers || []).forEach(function (t) {
-      if (t.trigger.type == 'endOfTurn' && t.trigger.players.map(p => p.name).includes(state.currentTurn)) {
-        executeCmd(state, t.action, obj);
-      }
-    });
-  });
+  state = checkTriggers(state, 'endOfTurn', (trigger =>
+    trigger.players.map(p => p.name).includes(state.currentTurn)
+  ));
 
   state.currentTurn = opponentName(state);
   state.selectedCard = null;

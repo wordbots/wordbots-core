@@ -187,9 +187,26 @@ export const dojoDiscipleCard = {
   ]
 };
 
+export const wisdomBotCard = {
+  name: 'Wisdom Bot',
+  img: 'char_dressed',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 1
+  },
+  text: 'Whenever this creature takes damage, draw a card.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterDamageReceived"](targets["thisRobot"]()), (function () { actions["draw"](targets["self"](), 1); })); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
+  wisdomBotCard,
   concentrationCard,
   botOfPainCard,
   shockCard,

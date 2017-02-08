@@ -18,7 +18,6 @@ export function endTurn(state) {
   Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
     (obj.triggers || []).forEach(function (t) {
       if (t.trigger.type == 'endOfTurn' && t.trigger.players.map(p => p.name).includes(state.currentTurn)) {
-        console.log(t.action);
         executeCmd(state, t.action, obj);
       }
     });

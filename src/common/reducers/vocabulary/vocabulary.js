@@ -3,7 +3,7 @@ import targets from './targets';
 import conditions from './conditions';
 import { setTrigger, triggers } from './triggers';
 import { allTiles, cardsInHand, objectsInPlay, objectsMatchingCondition } from './collections';
-import { attributeSum, count } from './numbers';
+import { attributeSum, attributeValue, count } from './numbers';
 
 const vocabulary = {
   actions: actions,
@@ -18,6 +18,7 @@ const vocabulary = {
   objectsInPlay: objectsInPlay,
   objectsMatchingCondition: objectsMatchingCondition,
   attributeSum: attributeSum,
+  attributeValue: attributeValue,
   count: count
 };
 

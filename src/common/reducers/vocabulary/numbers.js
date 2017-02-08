@@ -4,7 +4,12 @@ export function attributeSum(state) {
   };
 }
 
-// TODO attributeValue - -may be difficult to test without triggers?
+export function attributeValue(state) {
+  return function (targetObjects, attribute) {
+    const object = targetObjects[0][1]; // targetObject is an array of [hex, obj] pairs, so unpack.
+    return object.stats[attribute];
+  };
+}
 
 export function count(state) {
   return function (collection) {

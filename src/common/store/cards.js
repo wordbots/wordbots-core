@@ -219,15 +219,32 @@ const generalBotCard = {
   ]
 };
 
+const monkeyBotCard = {
+  name: 'Monkey Bot',
+  img: 'monkey',
+  cost: 4,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 2,
+    attack: 2
+  },
+  text: 'When this robot attacks, it deals damage to all adjacent robots.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterAttack"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["all"](objectsMatchingCondition("robot", conditions["adjacentTo"](targets["thisRobot"]()))), attributeValue(targets["thisRobot"](), "attack")); })); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   wisdomBotCard,
   concentrationCard,
-  botOfPainCard,
+  superchargeCard,
+  monkeyBotCard,
   generalBotCard,
   shockCard,
-  superchargeCard,
+  botOfPainCard,
   tankBotCard,
   firestormCard,
   wisdomCard,

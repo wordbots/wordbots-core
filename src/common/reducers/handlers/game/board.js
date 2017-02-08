@@ -66,6 +66,10 @@ export function attack(state, source, target) {
     trigger.objects.map(o => o.id).includes(attacker.id)
   ));
 
+  state = checkTriggers(state, 'afterAttack', (trigger =>
+    trigger.objects.map(o => o.id).includes(attacker.id)
+  ));
+
   // Move attacker to defender's space (if possible).
   if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
     state.players[state.currentTurn].robotsOnBoard[target] = attacker;

@@ -10,6 +10,15 @@ export function startTurn(state) {
     player.robotsOnBoard[hex].hasMoved = false
   );
 
+  // Activate beginningOfTurn triggers.
+  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
+    (obj.triggers || []).forEach(function (t) {
+      if (t.trigger.type == 'beginningOfTurn' && t.trigger.players.map(p => p.name).includes(state.currentTurn)) {
+        executeCmd(state, t.action, obj);
+      }
+    });
+  });
+
   return state;
 }
 

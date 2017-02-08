@@ -11,6 +11,13 @@ export function setTrigger(state, currentObject) {
 
 export function triggers(state) {
   return {
+    'beginningOfTurn': function (players) {
+      return {
+        'type': 'beginningOfTurn',
+        'players': players
+      };
+    },
+
     'endOfTurn': function (players) {
       return {
         'type': 'endOfTurn',

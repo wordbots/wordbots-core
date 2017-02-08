@@ -4,7 +4,7 @@ import { currentPlayer, opponentPlayer } from '../handlers/game/util';
 // either of player objects, or of card objects,
 // or of [hex, object] pairs representing objects on board.
 
-export default function targets(state) {
+export default function targets(state, currentObject) {
   return {
     all: function (collection) {
       return _.toPairs(collection);
@@ -21,7 +21,9 @@ export default function targets(state) {
       }
     },
 
-    // TODO thisRobot() -- requires triggers
+    thisRobot: function () {
+      return [[null, currentObject]];  // TODO pass the current hex as well.
+    },
 
     self: function () {
       return [currentPlayer(state)];

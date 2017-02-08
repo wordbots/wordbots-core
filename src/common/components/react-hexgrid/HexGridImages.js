@@ -10,6 +10,8 @@ export default function loadImages() {
     'char': require('../img/char.png'),
     'char_weapon': require('../img/char_weapon.png'),
     'char_orc': require('../img/char_orc.png'),
+    'char_belt': require('../img/char_belt.png'),
+
     'core_blue': require('../img/core_blue.png'),
     'core_orange': require('../img/core_orange.png')
   };

@@ -171,8 +171,25 @@ export const botOfPainCard = {
   ]
 };
 
+export const dojoDiscipleCard = {
+  name: 'Dojo Disciple',
+  img: 'char_belt',
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 0
+  },
+  text: 'At the beginning of each of your turns, this creature gains 1 attack.',
+  abilities: [
+    '(function () { setTrigger(triggers["beginningOfTurn"](targets["self"]()), (function () { actions["modifyAttribute"](targets["thisRobot"](), "attack", function (x) { return x + 1; }); })); })'
+  ]
+};
+
 export const deck = [
   attackBotCard,
+  dojoDiscipleCard,
   concentrationCard,
   botOfPainCard,
   shockCard,

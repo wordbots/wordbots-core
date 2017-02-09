@@ -16,8 +16,6 @@ class CardBack extends Component {
       };
     }
 
-    console.log(this.props.color)
-
     return (
       <div style={{padding: '24px 24px 12px 0'}}>
         <Paper

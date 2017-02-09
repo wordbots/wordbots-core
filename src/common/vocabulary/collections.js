@@ -23,6 +23,13 @@ export function cardsInHand(state) {
   };
 }
 
+export function cardsInHandOfType(state, cardType) {
+  return function (players) {
+    const player = players[0]; // Player target is always in the form of list, so just unpack it.
+    return player.hand.map(c => cardType == 'anycard' || c.type == stringToType(cardType));
+  };
+}
+
 export function objectsInPlay(state) {
   return function (objType) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>

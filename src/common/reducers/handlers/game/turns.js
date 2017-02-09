@@ -1,14 +1,16 @@
 import { currentPlayer, opponentName, checkTriggers } from '../../../util';
 
+import { drawCards } from './cards';
+
 export function startTurn(state) {
   const player = currentPlayer(state);
   player.energy.total += 1;
   player.energy.available = player.energy.total;
-  player.hand = player.hand.concat(player.deck.splice(0, 1));
   player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot) =>
     _.assign(robot, {movesLeft: robot.stats.speed})
   );
 
+  state = drawCards(state, player, 1);
   state = checkTriggers(state, 'beginningOfTurn', (trigger =>
     trigger.players.map(p => p.name).includes(state.currentTurn)
   ));

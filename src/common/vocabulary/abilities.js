@@ -19,7 +19,7 @@ export function abilities(state) {
         targets: targetFunc,
         apply: function (target) {
           if (!target.temporaryStatAdjustments) {
-            target.temporaryStatAdjustments = { attack: [], health: [], speed: [] };
+            target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
           }
 
           target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].concat({
@@ -29,7 +29,7 @@ export function abilities(state) {
         },
         unapply: function (target) {
           if (!target.temporaryStatAdjustments) {
-            target.temporaryStatAdjustments = { attack: [], health: [], speed: [] };
+            target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
           } else {
             target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].filter(adj =>
               adj.aid != aid

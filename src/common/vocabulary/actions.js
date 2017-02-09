@@ -1,5 +1,6 @@
 import { TYPE_CORE } from '../constants';
-import { dealDamageToObjectAtHex } from '../util';
+import { dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
+import { drawCards } from '../reducers/handlers/game/cards';
 
 export default function actions(state) {
   return {
@@ -26,8 +27,8 @@ export default function actions(state) {
 
     destroy: function (objects) {
       objects.forEach(function ([hex, object]) {
-        delete state.players.blue.robotsOnBoard[hex];
-        delete state.players.orange.robotsOnBoard[hex];
+        object.isDestroyed = true;
+        updateOrDeleteObjectAtHex(state, object, hex);
       });
     },
 
@@ -35,7 +36,7 @@ export default function actions(state) {
 
     draw: function (players, count) {
       players.forEach(function (player) {
-        player.hand = player.hand.concat(player.deck.splice(0, count));
+        drawCards(state, player, count);
       });
     },
 

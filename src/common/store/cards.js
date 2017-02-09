@@ -266,16 +266,34 @@ const defenderBotCard = {
   ]
 };
 
+const recruiterBotCard = {
+  name: 'Recruiter Bot',
+  img: 'char_tie',
+  cost: 4,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 1
+  },
+  text: 'Robots you play cost 1 less energy.',
+  abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](cardsInHandOfType(targets["self"](), "robot")); }, "cost", function (x) { return x - 1; })); })'
+  ]
+};
+
+
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
-  threedomCard,
+  superchargeCard,
+  recruiterBotCard,
   earthquakeCard,
   defenderBotCard,
   fortificationCard,
   fortificationCard,
-  superchargeCard,
+  threedomCard,
   monkeyBotCard,
   generalBotCard,
   wisdomBotCard,

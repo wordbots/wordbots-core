@@ -27,10 +27,17 @@ export function getAttribute(object, attr) {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
     return object.temporaryStatAdjustments[attr].reduce((val, adj) => adj.func(val), object.stats[attr]);
-  } else if (object.stats[attr] !== undefined) {
-    return object.stats[attr];
   } else {
-    return undefined;
+    return (object.stats[attr] === undefined) ? undefined : object.stats[attr];
+  }
+}
+
+export function getCost(card) {
+  if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
+    // Apply all temporary adjustments, one at a time, in order.
+    return card.temporaryStatAdjustments.cost.reduce((val, adj) => adj.func(val), card.cost);
+  } else {
+    return card.cost;
   }
 }
 
@@ -52,10 +59,16 @@ export function dealDamageToObjectAtHex(state, amount, hex) {
 export function updateOrDeleteObjectAtHex(state, object, hex) {
   const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
 
-  if (getAttribute(object, 'health') > 0) {
+  if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
     delete state.players[ownerName].robotsOnBoard[hex];
+
+    // Unapply any abilities that this object had.
+    (object.abilities || []).forEach(function (ability) {
+      console.log(ability.currentTargets);
+      (ability.currentTargets || []).forEach(ability.unapply);
+    });
 
     // Check victory conditions.
     if (object.card.type === TYPE_CORE) {
@@ -109,15 +122,13 @@ export function checkTriggers(state, triggerType, condition) {
 export function applyAbilities(state) {
   Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
     (obj.abilities || []).forEach(function (ability) {
-      // Unapply this ability for *all* objects.
-      Object.values(allObjectsOnBoard(state)).forEach(function (otherObj) {
-        ability.unapply(otherObj);
-      });
+      // Unapply this ability for all previously targeted objects.
+      (ability.currentTargets || []).forEach(ability.unapply);
 
       // Apply this ability to all targeted objects.
-      ability.targets(state).forEach(function ([hex, targetObj]) { // TODO handle other kinds of targets.
-        ability.apply(targetObj);
-      });
+      // TODO we kind of assume that ability.targets() returns an array of [hex, obj] pairs here - make it more general!
+      ability.currentTargets = ability.targets(state).map(hexObj => hexObj[1]);
+      ability.currentTargets.forEach(ability.apply);
     });
   });
 

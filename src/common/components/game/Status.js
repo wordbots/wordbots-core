@@ -19,7 +19,7 @@ class Status extends Component {
     }
 
     if (this.props.currentTurn == 'orange') {
-      statusStyle.top = 16;
+      statusStyle.top = 6;
       statusStyle.bottom = null;
     } else {
       statusStyle.bottom = 16;

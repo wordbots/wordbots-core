@@ -82,7 +82,7 @@ class Card extends Component {
 
     if (!this.props.visible) {
       return (
-        <CardBack />
+        <CardBack color={this.props.color} />
       );
     } else {
       return (
@@ -98,6 +98,7 @@ class Card extends Component {
             color: 'white',
             fontSize: 16
           }}
+          style={{paddingLeft: 0}}
         >
           <div onClick={this.props.onCardClick}>
             <Paper
@@ -154,7 +155,8 @@ Card.propTypes = {
   selected: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
-  onCardClick: React.PropTypes.func
+  onCardClick: React.PropTypes.func,
+  color: React.PropTypes.string
 };
 
 export default Card;

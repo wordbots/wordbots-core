@@ -149,6 +149,7 @@ class Game extends Component {
         <Helmet title="Game"/>
         <Paper style={{padding: 20, position: 'relative'}}>
           <PlayerArea
+            name={'orange'}
             energy={this.props.orangeEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.selectedCard}
@@ -185,6 +186,7 @@ class Game extends Component {
           <Divider style={{marginBottom: 10}}/>
 
           <PlayerArea
+            name={'blue'}
             energy={this.props.blueEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.selectedCard}

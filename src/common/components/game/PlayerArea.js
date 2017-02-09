@@ -23,15 +23,17 @@ class PlayerArea extends Component {
           }}
           selectedCard={this.props.selectedCard}
           isCurrentPlayer={this.props.isCurrentPlayer}
+          color={this.props.name}
           cards={this.props.cards}
           status={this.props.status} />
-        <Deck deck={this.props.deck} />
+        <Deck deck={this.props.deck} color={this.props.name} />
       </div>
     );
   }
 }
 
 PlayerArea.propTypes = {
+  name: React.PropTypes.string,
   energy: React.PropTypes.object,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,

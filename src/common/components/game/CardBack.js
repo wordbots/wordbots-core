@@ -16,8 +16,10 @@ class CardBack extends Component {
       };
     }
 
+    console.log(this.props.color)
+
     return (
-      <div>
+      <div style={{padding: '24px 24px 12px 0'}}>
         <Paper
           zDepth={2}
           style={Object.assign({
@@ -25,7 +27,7 @@ class CardBack extends Component {
             height: 200,
             marginRight: 10,
             borderRadius: 5,
-            backgroundColor: '#f44336',
+            backgroundColor: {blue: '#5EB3F7', orange: '#FFA726'}[this.props.color],
             boxSizing: 'border-box',
             padding: 5,
             userSelect: 'none',
@@ -55,7 +57,8 @@ class CardBack extends Component {
 }
 
 CardBack.propTypes = {
-  deckLength: React.PropTypes.number
+  deckLength: React.PropTypes.number,
+  color: React.PropTypes.string
 };
 
 export default CardBack;

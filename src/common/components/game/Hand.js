@@ -28,7 +28,8 @@ class Hand extends Component {
           cost={card.cost}
           cardStats={card.stats}
           selected={this.props.selectedCard === index}
-          visible={this.props.isCurrentPlayer} />
+          visible={this.props.isCurrentPlayer}
+          color={this.props.color} />
       );
     });
 
@@ -52,7 +53,8 @@ Hand.propTypes = {
   isCurrentPlayer: React.PropTypes.bool,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
-  status: React.PropTypes.object
+  status: React.PropTypes.object,
+  color: React.PropTypes.string
 };
 
 export default Hand;

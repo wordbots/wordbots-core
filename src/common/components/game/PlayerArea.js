@@ -23,10 +23,9 @@ class PlayerArea extends Component {
           }}
           selectedCard={this.props.selectedCard}
           isCurrentPlayer={this.props.isCurrentPlayer}
-          color={this.props.name}
           cards={this.props.cards}
           status={this.props.status} />
-        <Deck deck={this.props.deck} color={this.props.name} />
+        <Deck deck={this.props.deck} />
       </div>
     );
   }

@@ -22,10 +22,10 @@ class CardBack extends Component {
           zDepth={2}
           style={Object.assign({
             width: 140,
-            height: 200,
+            height: 206,
             marginRight: 10,
             borderRadius: 5,
-            backgroundColor: {blue: '#5EB3F7', orange: '#FFA726'}[this.props.color],
+            backgroundColor: '#f44336',
             boxSizing: 'border-box',
             padding: 5,
             userSelect: 'none',
@@ -55,8 +55,7 @@ class CardBack extends Component {
 }
 
 CardBack.propTypes = {
-  deckLength: React.PropTypes.number,
-  color: React.PropTypes.string
+  deckLength: React.PropTypes.number
 };
 
 export default CardBack;

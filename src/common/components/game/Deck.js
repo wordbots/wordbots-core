@@ -13,7 +13,7 @@ class Deck extends Component {
       return (
         <div style={{fontFamily: 'Carter One'}}>
           <div data-tip={this.props.deck.length + ' Cards'} data-for="deck-tooltip">
-            <CardBack deckLength={this.props.deck.length} color={this.props.color} />
+            <CardBack deckLength={this.props.deck.length} />
           </div>
           <ReactTooltip
             id="deck-tooltip"
@@ -47,7 +47,6 @@ class Deck extends Component {
 }
 
 Deck.propTypes = {
-  color: React.PropTypes.string,
   deck: React.PropTypes.array
 };
 

@@ -82,7 +82,7 @@ class Card extends Component {
 
     if (!this.props.visible) {
       return (
-        <CardBack color={this.props.color} />
+        <CardBack />
       );
     } else {
       return (
@@ -107,7 +107,7 @@ class Card extends Component {
               zDepth={this.state.shadow}
               style={Object.assign({
                 width: 140,
-                height: 200,
+                height: 206,
                 marginRight: 10,
                 borderRadius: 5,
                 userSelect: 'none',
@@ -130,7 +130,7 @@ class Card extends Component {
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type != TYPE_EVENT ? 44 : 90,
+                  height: this.props.type != TYPE_EVENT ? 44 : 96,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}
@@ -155,8 +155,7 @@ Card.propTypes = {
   selected: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
-  onCardClick: React.PropTypes.func,
-  color: React.PropTypes.string
+  onCardClick: React.PropTypes.func
 };
 
 export default Card;

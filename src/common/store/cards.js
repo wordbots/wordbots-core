@@ -270,6 +270,8 @@ export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
+  threedomCard,
+  earthquakeCard,
   defenderBotCard,
   fortificationCard,
   fortificationCard,
@@ -287,7 +289,5 @@ export const deck = [
   missileStrikeCard,
   rampageCard,
   untapCard,
-  threedomCard,
-  earthquakeCard,
   wrathOfRobotGodCard
 ].map(card => Object.assign({}, card, {id: Math.random().toString(36)}));

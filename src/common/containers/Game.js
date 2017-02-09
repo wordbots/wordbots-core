@@ -8,7 +8,6 @@ import { isNull } from 'lodash';
 
 import { TYPE_EVENT } from '../constants';
 import Board from '../components/game/Board';
-import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import CardViewer from '../components/game/CardViewer';

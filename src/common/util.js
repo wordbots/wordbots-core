@@ -1,6 +1,12 @@
 import { TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
 
+// TODO: Split into multiple files.
+
+//
+// I. Queries for game state.
+//
+
 export function currentPlayer(state) {
   return state.players[state.currentTurn];
 }
@@ -45,6 +51,16 @@ export function hasEffect(object, effect) {
   return (object.effects || []).map(eff => eff.effect).includes(effect);
 }
 
+//
+// II. Effects on game state that are performed in many different places.
+//
+
+export function drawCards(state, player, count) {
+  player.hand = player.hand.concat(player.deck.splice(0, count));
+  state = applyAbilities(state);
+  return state;
+}
+
 export function dealDamageToObjectAtHex(state, amount, hex) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;
@@ -66,7 +82,6 @@ export function updateOrDeleteObjectAtHex(state, object, hex) {
 
     // Unapply any abilities that this object had.
     (object.abilities || []).forEach(function (ability) {
-      console.log(ability.currentTargets);
       (ability.currentTargets || []).forEach(ability.unapply);
     });
 
@@ -80,6 +95,10 @@ export function updateOrDeleteObjectAtHex(state, object, hex) {
 
   return state;
 }
+
+//
+// III. Card behavior: actions, triggers, passive abilities.
+//
 
 /* eslint-disable no-unused-vars */
 export function executeCmd(state, cmd, currentObject = null) {

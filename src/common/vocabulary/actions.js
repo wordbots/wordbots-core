@@ -1,6 +1,5 @@
 import { TYPE_CORE } from '../constants';
-import { dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
-import { drawCards } from '../reducers/handlers/game/cards';
+import { drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
 
 export default function actions(state) {
   return {

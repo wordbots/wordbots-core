@@ -1,12 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 import { currentPlayer, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
 
-export function drawCards(state, player, count) {
-  player.hand = player.hand.concat(player.deck.splice(0, count));
-  state = applyAbilities(state);
-  return state;
-}
-
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
   const energy = state.players[state.currentTurn].energy;

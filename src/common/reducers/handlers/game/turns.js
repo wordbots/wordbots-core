@@ -1,6 +1,4 @@
-import { currentPlayer, opponentName, checkTriggers } from '../../../util';
-
-import { drawCards } from './cards';
+import { currentPlayer, opponentName, drawCards, checkTriggers } from '../../../util';
 
 export function startTurn(state) {
   const player = currentPlayer(state);

@@ -137,9 +137,15 @@ class Game extends Component {
     }
 
     if (this.props.bluePieces[hexId]) {
-      this.props.onHoverTile(this.props.bluePieces[hexId].card);
+      this.props.onHoverTile({
+        card: this.props.bluePieces[hexId].card,
+        stats: this.props.bluePieces[hexId].stats
+      });
     } else if (this.props.orangePieces[hexId]) {
-      this.props.onHoverTile(this.props.orangePieces[hexId].card);
+      this.props.onHoverTile({
+        card: this.props.orangePieces[hexId].card,
+        stats: this.props.orangePieces[hexId].stats
+      });
     }
   }
 
@@ -162,7 +168,7 @@ class Game extends Component {
           <div style={{
             position: 'relative'
           }}>
-            <CardViewer card={this.props.hoveredCard} />
+            <CardViewer hoveredCard={this.props.hoveredCard} />
             <Status
               currentTurn={this.props.currentTurn}
               status={this.props.status} />

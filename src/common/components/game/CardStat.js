@@ -51,7 +51,7 @@ class CardStat extends Component {
             backgroundColor: backgroundColor,
             color: '#fff',
             fontFamily: 'Carter One',
-            fontSize: 18
+            fontSize: 22
         }}>
           <ReactTooltip
             id="stat-tooltip"

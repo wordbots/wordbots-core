@@ -10,6 +10,7 @@ class CardStat extends Component {
   render() {
     let backgroundColor = '';
     let textColor = 'white';
+    let webkitTextStroke = 'none';
 
     switch (this.props.type) {
       case 'attack':
@@ -25,9 +26,11 @@ class CardStat extends Component {
 
     if (this.props.current) {   
       if (this.props.current > this.props.value) {
-        textColor = 'green';
+        textColor = '#81C784';
+        webkitTextStroke = '0.5px white';
       } else if (this.props.current < this.props.value) {
-        textColor = 'red';
+        textColor = '#E57373';
+        webkitTextStroke = '0.5px white';
       } else {
         textColor = 'white';
       }
@@ -48,7 +51,7 @@ class CardStat extends Component {
             backgroundColor: backgroundColor,
             color: '#fff',
             fontFamily: 'Carter One',
-            fontSize: 16
+            fontSize: 18
         }}>
           <ReactTooltip
             id="stat-tooltip"
@@ -57,8 +60,9 @@ class CardStat extends Component {
             effect="float" />
           <div style={{
             lineHeight: '14px',
+            WebkitTextStroke: webkitTextStroke,
             color: textColor 
-          }}>{this.props.value}</div>
+          }}>{this.props.current || this.props.value}</div>
         </Paper>
       </div>
     );

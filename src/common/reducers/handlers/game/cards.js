@@ -45,7 +45,7 @@ export function placeCard(state, card, tile) {
   const playedObject = {
     id: Math.random().toString(36),
     card: card,
-    stats: card.stats,
+    stats: Object.assign({}, card.stats),
     triggers: [],
     hasMoved: true
   };

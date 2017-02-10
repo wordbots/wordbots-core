@@ -9,6 +9,7 @@ class CardStat extends Component {
 
   render() {
     let backgroundColor = '';
+    let textColor = 'white';
 
     switch (this.props.type) {
       case 'attack':
@@ -20,6 +21,16 @@ class CardStat extends Component {
       case 'health':
         backgroundColor = '#81C784';
         break;
+    }
+
+    if (this.props.current) {   
+      if (this.props.current > this.props.value) {
+        textColor = 'green';
+      } else if (this.props.current < this.props.value) {
+        textColor = 'red';
+      } else {
+        textColor = 'white';
+      }
     }
 
     return (
@@ -44,7 +55,10 @@ class CardStat extends Component {
             place="top"
             type="dark"
             effect="float" />
-          <div style={{lineHeight: '14px'}}>{this.props.value}</div>
+          <div style={{
+            lineHeight: '14px',
+            color: textColor 
+          }}>{this.props.value}</div>
         </Paper>
       </div>
     );
@@ -53,7 +67,8 @@ class CardStat extends Component {
 
 CardStat.propTypes = {
   type: React.PropTypes.string,
-  value: React.PropTypes.number
+  value: React.PropTypes.number,
+  current: React.PropTypes.number
 };
 
 String.prototype.toProperCase = function () {

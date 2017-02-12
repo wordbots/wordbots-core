@@ -11,16 +11,17 @@ class CardViewer extends Component {
   render() {
     let card = null;
 
-    if (this.props.card) {
+    if (this.props.hoveredCard) {
       card = (
         <Card
           onCardClick={() => {}}
-          name={this.props.card.name}
-          type={this.props.card.type}
-          text={this.props.card.text || ''}
-          img={this.props.card.img}
-          cost={this.props.card.cost}
-          cardStats={this.props.card.stats}
+          stats={this.props.hoveredCard.stats}
+          name={this.props.hoveredCard.card.name}
+          type={this.props.hoveredCard.card.type}
+          text={this.props.hoveredCard.card.text || ''}
+          img={this.props.hoveredCard.card.img}
+          cost={this.props.hoveredCard.card.cost}
+          cardStats={this.props.hoveredCard.card.stats}
           selected={false}
           visible />
       );
@@ -47,7 +48,7 @@ class CardViewer extends Component {
 }
 
 CardViewer.propTypes = {
-  card: React.PropTypes.object
+  hoveredCard: React.PropTypes.object
 };
 
 export default CardViewer;

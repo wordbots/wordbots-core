@@ -12,9 +12,9 @@ const defaultState = {
       deck: cards.deck.slice(2),
       robotsOnBoard: {
         '-4,0,4': {
-          hasMoved: false,
           card: cards.blueCoreCard,
-          stats: cards.blueCoreCard.stats
+          stats: cards.blueCoreCard.stats,
+          movesLeft: 0
         }
       }
     },
@@ -28,9 +28,9 @@ const defaultState = {
       deck: cards.deck.slice(2),
       robotsOnBoard: {
         '4,0,-4': {
-          hasMoved: false,
           card: cards.orangeCoreCard,
-          stats: cards.orangeCoreCard.stats
+          stats: cards.orangeCoreCard.stats,
+          movesLeft: 0
         }
       }
     }

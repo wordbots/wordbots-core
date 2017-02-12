@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+import { getCost } from '../../util';
+
 import Card from './Card';
+
 
 class Hand extends Component {
   constructor(props) {
@@ -25,8 +28,10 @@ class Hand extends Component {
           type={card.type}
           text={card.text || ''}
           img={card.img}
-          cost={card.cost}
+          cost={getCost(card)}
+          baseCost={card.cost}
           cardStats={card.stats}
+          stats={{}}
           selected={this.props.selectedCard === index}
           visible={this.props.isCurrentPlayer} />
       );

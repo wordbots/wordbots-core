@@ -1,5 +1,4 @@
 import React from 'react';
-import { has } from 'lodash';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
@@ -59,7 +58,7 @@ class HexShape extends React.Component {
 
   getPieceStats() {
     if (this.props.piece) {
-      if (has(this.props.pieceStats, 'attack')) {
+      if (this.props.pieceStats.attack !== undefined) {
         return (
           <g>
             <circle style={{

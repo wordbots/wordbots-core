@@ -9,6 +9,8 @@ class CardStat extends Component {
 
   render() {
     let backgroundColor = '';
+    let textColor = 'white';
+    let webkitTextStroke = 'none';
 
     switch (this.props.type) {
       case 'attack':
@@ -20,6 +22,18 @@ class CardStat extends Component {
       case 'health':
         backgroundColor = '#81C784';
         break;
+    }
+
+    if (this.props.current) {
+      if (this.props.current > this.props.base) {
+        textColor = '#81C784';
+        webkitTextStroke = '1px white';
+      } else if (this.props.current < this.props.base) {
+        textColor = '#E57373';
+        webkitTextStroke = '1px white';
+      } else {
+        textColor = 'white';
+      }
     }
 
     return (
@@ -37,14 +51,18 @@ class CardStat extends Component {
             backgroundColor: backgroundColor,
             color: '#fff',
             fontFamily: 'Carter One',
-            fontSize: 16
+            fontSize: 22
         }}>
           <ReactTooltip
             id="stat-tooltip"
             place="top"
             type="dark"
             effect="float" />
-          <div style={{lineHeight: '14px'}}>{this.props.value}</div>
+          <div style={{
+            lineHeight: '14px',
+            WebkitTextStroke: webkitTextStroke,
+            color: textColor
+          }}>{this.props.current || this.props.base}</div>
         </Paper>
       </div>
     );
@@ -53,7 +71,8 @@ class CardStat extends Component {
 
 CardStat.propTypes = {
   type: React.PropTypes.string,
-  value: React.PropTypes.number
+  base: React.PropTypes.number,
+  current: React.PropTypes.number
 };
 
 String.prototype.toProperCase = function () {

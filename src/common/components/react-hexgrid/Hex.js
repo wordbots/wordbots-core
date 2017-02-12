@@ -14,6 +14,14 @@ class Hex {
     );
   }
 
+  distance(otherHex) {
+    return Math.max(
+        Math.abs(this.q - otherHex.q),
+        Math.abs(this.r - otherHex.r),
+        Math.abs(this.s - otherHex.s)
+    );
+  }
+
   isInArray(hexArray) {
     for (let i = 0; i < hexArray.length; i++) {
       if (this.equals(hexArray[i])) {

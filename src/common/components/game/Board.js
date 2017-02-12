@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { mapValues } from 'lodash';
+import { flatMap, mapValues } from 'lodash';
 
 import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';
 import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
+import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
+import { getAttribute, hasEffect } from '../../util';
 
 class Board extends Component {
   constructor(props) {
@@ -48,7 +50,7 @@ class Board extends Component {
     ].filter(hex => GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex)));
   }
 
-  getPlayerPlacementTiles() {
+  getRobotPlacementTiles() {
     if (this.props.currentTurn === 'blue') {
       return [
         new Hex(-3, -1, 4),
@@ -64,11 +66,17 @@ class Board extends Component {
     }
   }
 
+  getStructurePlacementTiles() {
+    const currentHexes = Object.keys(this.currentPlayerPieces()).map(HexUtils.IDToHex);
+    return flatMap(currentHexes, this.getAdjacentHexes);
+  }
+
   updateHexColors() {
     let hexColors = {};
 
-    if (this.props.playingRobot) {
-      this.getPlayerPlacementTiles().forEach((hex) => {
+    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+      const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
+      placementTiles.forEach((hex) => {
         if (this.props.currentTurn == 'blue') {
           if (this.props.bluePieces[hex]) {
             hexColors[HexUtils.getID(hex)]  = 'blue';
@@ -90,27 +98,27 @@ class Board extends Component {
     }
 
     Object.keys(this.props.bluePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].hasMoved) {
-        hexColors[hex] = 'blue';
-      } else {
+      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].movesLeft > 0) {
         hexColors[hex] = 'bright_blue';
+      } else {
+        hexColors[hex] = 'blue';
       }
     });
 
     Object.keys(this.props.orangePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].hasMoved) {
-        hexColors[hex] = 'orange';
-      } else {
+      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].movesLeft > 0) {
         hexColors[hex] = 'bright_orange';
+      } else {
+        hexColors[hex] = 'orange';
       }
     });
 
     if (this.props.selectedTile) {
       const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-      if (selectedPiece && !selectedPiece.hasMoved) {
+      if (selectedPiece && selectedPiece.movesLeft > 0) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.stats.speed);
+        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
       }
     } else if (this.props.target.choosing) {
       this.props.target.possibleHexes.forEach((hex) => {
@@ -122,16 +130,20 @@ class Board extends Component {
   }
 
   colorMovementHexes(hex, hexColors, speed) {
+    const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
     const existingHexColors = hexColors;
+
     let newHexColors = Object.assign({}, existingHexColors);
 
     this.getValidMovementSpaces(hex, speed).forEach((hex) =>
       newHexColors[HexUtils.getID(hex)] = 'green'
     );
 
-    this.getValidAttackSpaces(hex, speed).forEach((hex) =>
-      newHexColors[HexUtils.getID(hex)] = 'red'
-    );
+    if (!hasEffect(selectedPiece, 'cannotattack')) {
+      this.getValidAttackSpaces(hex, speed).forEach((hex) =>
+        newHexColors[HexUtils.getID(hex)] = 'red'
+      );
+    }
 
     return newHexColors;
   }
@@ -169,8 +181,9 @@ class Board extends Component {
 
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-    if (this.props.playingRobot) {
-      this.getPlayerPlacementTiles().forEach((placementHex) => {
+    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+      const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
+      placementTiles.forEach((placementHex) => {
         if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
             !this.props.orangePieces[HexUtils.getID(hex)] &&
             !this.props.bluePieces[HexUtils.getID(hex)]) {
@@ -188,7 +201,7 @@ class Board extends Component {
 
       if (validMovementHexes.includes(HexUtils.getID(hex))) {
         action = 'move';
-      } else if (validAttackHexes.includes(HexUtils.getID(hex))) {
+      } else if (validAttackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
         action = 'attack';
 
         if (!this.getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
@@ -223,7 +236,9 @@ class Board extends Component {
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
     const pieceImgs = mapValues(pieces, piece => piece.card.img);
-    const pieceStats = mapValues(pieces, piece => piece.stats);
+    const pieceStats = mapValues(pieces, function (piece) {
+      return { health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') };
+    });
 
     return (
       <div>
@@ -247,7 +262,7 @@ Board.propTypes = {
 
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
-  playingRobot: React.PropTypes.bool,
+  playingCardType: React.PropTypes.number,
   target: React.PropTypes.object,
 
   onSelectTile: React.PropTypes.func,

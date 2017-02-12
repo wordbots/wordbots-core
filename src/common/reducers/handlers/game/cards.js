@@ -1,6 +1,5 @@
 import { TYPE_EVENT } from '../../../constants';
-
-import { currentPlayer, executeCmd, checkTriggers } from './util';
+import { currentPlayer, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -11,7 +10,7 @@ export function setSelectedCard(state, cardIdx) {
   if (state.selectedCard == cardIdx) {
     // Clicked on already selected card => Deselect or play event
 
-    if (selectedCard.type === TYPE_EVENT && selectedCard.cost <= energy.available) {
+    if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
       return playEvent(state, cardIdx);
     } else {
       state.selectedCard = null;
@@ -24,7 +23,7 @@ export function setSelectedCard(state, cardIdx) {
     state.selectedCard = cardIdx;
     state.target.choosing = false; // Reset targeting state.
 
-    if (selectedCard.cost <= energy.available) {
+    if (getCost(selectedCard) <= energy.available) {
       state.playingCardType = selectedCard.type;
       state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
       state.status.type = 'text';
@@ -45,14 +44,14 @@ export function placeCard(state, card, tile) {
   const playedObject = {
     id: Math.random().toString(36),
     card: card,
-    stats: card.stats,
+    stats: Object.assign({}, card.stats),
     triggers: [],
-    hasMoved: true
+    movesLeft: 0
   };
 
   player.robotsOnBoard[tile] = playedObject;
 
-  player.energy.available -= player.hand[selectedCardIndex].cost;
+  player.energy.available -= getCost(player.hand[selectedCardIndex]);
   player.hand.splice(selectedCardIndex, 1);
 
   if (card.abilities.length > 0) {
@@ -62,6 +61,8 @@ export function placeCard(state, card, tile) {
   state = checkTriggers(state, 'afterPlayed', (trigger =>
     trigger.objects.map(o => o.id).includes(playedObject.id)
   ));
+
+  state = applyAbilities(state);
 
   state.selectedCard = null;
   state.playingCardType = null;
@@ -88,7 +89,7 @@ export function playEvent(state, cardIdx, command) {
     state.target = {choosing: false, chosen: null, possibleHexes: []};
 
     const player = state.players[state.currentTurn];
-    player.energy.available -= selectedCard.cost;
+    player.energy.available -= getCost(selectedCard);
     player.hand.splice(cardIdx, 1);
   }
 

@@ -1,5 +1,6 @@
-import Hex from '../../components/react-hexgrid/Hex';
-import HexUtils from '../../components/react-hexgrid/HexUtils';
+import { getAttribute } from '../util';
+import Hex from '../components/react-hexgrid/Hex';
+import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.
 
@@ -30,7 +31,7 @@ export default function conditions(state) {
 
     attributeComparison: function (attr, comp) {
       return function (hex, obj) {
-        return comp(obj.stats[attr]);
+        return comp(getAttribute(obj, attr));
       };
     },
 

@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../handlers/game/util';
+import { currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util';
 
 // Targets are all functions that return an array,
 // either of player objects, or of card objects,
@@ -23,7 +23,6 @@ export default function targets(state, currentObject) {
 
     thisRobot: function () {
       const currentObjectHex = _.findKey(allObjectsOnBoard(state), ['id', currentObject.id]);
-      console.log([[currentObjectHex, currentObject]]);
       return [[currentObjectHex, currentObject]];
     },
 

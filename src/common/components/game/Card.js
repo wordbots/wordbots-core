@@ -41,9 +41,9 @@ class Card extends Component {
     if (this.props.type == TYPE_ROBOT) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="attack" value={this.props.cardStats.attack}/>
-          <CardStat type="speed" value={this.props.cardStats.speed}/>
-          <CardStat type="health" value={this.props.cardStats.health}/>
+          <CardStat type="attack" value={this.props.cardStats.attack} current={this.props.stats ? this.props.stats.attack : null}/>
+          <CardStat type="speed" value={this.props.cardStats.speed} current={this.props.stats ? this.props.stats.speed : null}/>
+          <CardStat type="health" value={this.props.cardStats.health} current={this.props.stats ? this.props.stats.health : null}/>
         </CardText>
       );
     } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
@@ -154,7 +154,8 @@ Card.propTypes = {
   selected: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
-  onCardClick: React.PropTypes.func
+  onCardClick: React.PropTypes.func,
+  stats: React.PropTypes.object
 };
 
 export default Card;

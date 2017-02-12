@@ -27,10 +27,10 @@ class CardStat extends Component {
     if (this.props.current) {
       if (this.props.current > this.props.base) {
         textColor = '#81C784';
-        webkitTextStroke = '0.5px white';
+        webkitTextStroke = '1px white';
       } else if (this.props.current < this.props.base) {
         textColor = '#E57373';
-        webkitTextStroke = '0.5px white';
+        webkitTextStroke = '1px white';
       } else {
         textColor = 'white';
       }

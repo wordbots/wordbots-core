@@ -67,7 +67,7 @@ const superchargeCard = {
 const rampageCard = {
   name: 'Rampage',
   text: 'Give all robots you control +2 attack.',
-  command: '(function () { actions["modifyAttribute"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]()))), "attack", function (x) { return x + 2; }); })',
+  command: '(function () { actions["modifyAttribute"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])), "attack", function (x) { return x + 2; }); })',
   cost: 3,
   type: TYPE_EVENT
 };
@@ -91,7 +91,7 @@ const threedomCard = {
 const earthquakeCard = {
   name: 'Earthquake',
   text: 'Destroy all robots that have less than 2 speed.',
-  command: '(function () { actions["destroy"](targets["all"](objectsMatchingCondition("robot", conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))))); })',
+  command: '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))]))); })',
   cost: 4,
   type: TYPE_EVENT
 };
@@ -107,7 +107,7 @@ const discountCard = {
 const untapCard = {
   name: 'Untap',
   text: 'All robots you control can move again.',
-  command: '(function () { actions["canMoveAgain"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })',
+  command: '(function () { actions["canMoveAgain"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',
   cost: 3,
   type: TYPE_EVENT
 };
@@ -124,8 +124,8 @@ const incinerateCard = {
   name: 'Incinerate',
   text: 'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
   command: [
-    '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + attributeSum(objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())), "attack"); }); })',
-    '(function () { actions["destroy"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })'
+    '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + attributeSum(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]), "attack"); }); })',
+    '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })'
   ],
   cost: 1,
   type: TYPE_EVENT
@@ -134,7 +134,7 @@ const incinerateCard = {
 const wisdomCard = {
   name: 'Wisdom',
   text: 'Draw cards equal to the number of robots you control.',
-  command: '(function () { actions["draw"](targets["self"](), count(objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })',
+  command: '(function () { actions["draw"](targets["self"](), count(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',
   cost: 3,
   type: TYPE_EVENT
 };
@@ -150,7 +150,7 @@ const shockCard = {
 const firestormCard = {
   name: 'Firestorm',
   text: 'Deal 1 damage to everything adjacent to a tile.',
-  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingCondition("allobjects", conditions["adjacentTo"](targets["choose"](allTiles())))), 1); })',
+  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("allobjects", [conditions["adjacentTo"](targets["choose"](allTiles()))])), 1); })',
   cost: 3,
   type: TYPE_EVENT
 };
@@ -216,7 +216,7 @@ const generalBotCard = {
   text: 'Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again.',
   abilities: [
     '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()), conditions["controlledBy"](targets["self"]())])); }, "attack", function (x) { return x + 1; })); })',
-    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["canMoveAgain"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })); })'
+    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["canMoveAgain"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })); })'
   ]
 };
 
@@ -232,7 +232,7 @@ const monkeyBotCard = {
   },
   text: 'When this robot attacks, it deals damage to all adjacent robots.',
   abilities: [
-    '(function () { setTrigger(triggers["afterAttack"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["all"](objectsMatchingCondition("robot", conditions["adjacentTo"](targets["thisRobot"]()))), attributeValue(targets["thisRobot"](), "attack")); })); })'
+    '(function () { setTrigger(triggers["afterAttack"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]())])), attributeValue(targets["thisRobot"](), "attack")); })); })'
   ]
 };
 
@@ -278,7 +278,7 @@ const recruiterBotCard = {
   },
   text: 'Robots you play cost 1 less energy.',
   abilities: [
-    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](cardsInHandOfType(targets["self"](), "robot")); }, "cost", function (x) { return x - 1; })); })'
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](cardsInHand(targets["self"](), "robot")); }, "cost", function (x) { return x - 1; })); })'
   ]
 };
 
@@ -289,6 +289,7 @@ export const deck = [
   concentrationCard,
   superchargeCard,
   recruiterBotCard,
+  shockCard,
   earthquakeCard,
   defenderBotCard,
   fortificationCard,
@@ -297,7 +298,6 @@ export const deck = [
   monkeyBotCard,
   generalBotCard,
   wisdomBotCard,
-  shockCard,
   botOfPainCard,
   tankBotCard,
   firestormCard,

@@ -17,7 +17,7 @@ export function setSelectedTile(state, tile) {
     //              (2) targets that are cards in hand (rather than objects in board),
     //              (3) targets that aren't for events.
     state.target = {
-      chosen: [[tile, allObjectsOnBoard(state)[tile]]],
+      chosen: [allObjectsOnBoard(state)[tile]],
       choosing: false,
       possibleHexes: []
     };

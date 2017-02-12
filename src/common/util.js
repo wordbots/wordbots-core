@@ -29,6 +29,10 @@ export function ownerOf(state, object) {
   return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
 }
 
+export function getHex(state, object) {
+  return _.findKey(allObjectsOnBoard(state), ['id', object.id]);
+}
+
 export function getAttribute(object, attr) {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
@@ -113,9 +117,7 @@ export function executeCmd(state, cmd, currentObject = null) {
   const setAbility = vocabulary.setAbility(state, currentObject);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
-  const cardsInHandOfType = vocabulary.cardsInHandOfType(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
-  const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
   const objectsMatchingConditions = vocabulary.objectsMatchingConditions(state);
   const attributeSum = vocabulary.attributeSum(state);
   const attributeValue = vocabulary.attributeValue(state);
@@ -146,8 +148,7 @@ export function applyAbilities(state) {
       (ability.currentTargets || []).forEach(ability.unapply);
 
       // Apply this ability to all targeted objects.
-      // TODO we kind of assume that ability.targets() returns an array of [hex, obj] pairs here - make it more general!
-      ability.currentTargets = ability.targets(state).map(hexObj => hexObj[1]);
+      ability.currentTargets = ability.targets(state);
       ability.currentTargets.forEach(ability.apply);
     });
   });

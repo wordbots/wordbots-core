@@ -113,6 +113,7 @@ export function executeCmd(state, cmd, currentObject = null) {
   const setAbility = vocabulary.setAbility(state, currentObject);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
+  const cardsInHandOfType = vocabulary.cardsInHandOfType(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
   const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
   const objectsMatchingConditions = vocabulary.objectsMatchingConditions(state);

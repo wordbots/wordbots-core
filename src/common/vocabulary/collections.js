@@ -23,10 +23,10 @@ export function cardsInHand(state) {
   };
 }
 
-export function cardsInHandOfType(state, cardType) {
-  return function (players) {
+export function cardsInHandOfType(state) {
+  return function (players, cardType) {
     const player = players[0]; // Player target is always in the form of list, so just unpack it.
-    return player.hand.map(c => cardType == 'anycard' || c.type == stringToType(cardType));
+    return player.hand.filter(c => cardType == 'anycard' || c.type == stringToType(cardType));
   };
 }
 

@@ -57,6 +57,22 @@ class Card extends Component {
     }
   }
 
+  costBadgeStyle() {
+    if (this.props.cost < this.props.baseCost) {
+      return {
+        color: '#81C784',
+        WebkitTextStroke: '0.5px white'
+      };
+    } else if (this.props.cost > this.props.baseCost) {
+      return {
+        color: '#E57373',
+        WebkitTextStroke: '0.5px white'
+      };
+    } else {
+      return {};
+    }
+  }
+
   renderImage() {
     if (this.props.img) {
       return (
@@ -88,7 +104,7 @@ class Card extends Component {
       return (
         <Badge
           badgeContent={this.props.cost}
-          badgeStyle={{
+          badgeStyle={Object.assign({
             top: 12,
             right: 20,
             width: 36,
@@ -97,7 +113,7 @@ class Card extends Component {
             fontFamily: 'Carter One',
             color: 'white',
             fontSize: 16
-          }}
+          }, this.costBadgeStyle())}
         >
           <div onClick={this.props.onCardClick}>
             <Paper
@@ -154,6 +170,7 @@ Card.propTypes = {
   selected: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
+  baseCost: React.PropTypes.number,
   onCardClick: React.PropTypes.func,
   stats: React.PropTypes.object
 };

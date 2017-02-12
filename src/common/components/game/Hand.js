@@ -29,6 +29,7 @@ class Hand extends Component {
           text={card.text || ''}
           img={card.img}
           cost={getCost(card)}
+          baseCost={card.cost}
           cardStats={card.stats}
           stats={{}}
           selected={this.props.selectedCard === index}

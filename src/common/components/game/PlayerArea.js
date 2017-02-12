@@ -32,6 +32,7 @@ class PlayerArea extends Component {
 }
 
 PlayerArea.propTypes = {
+  name: React.PropTypes.string,
   energy: React.PropTypes.object,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,

@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 
 import { getAttribute } from '../util';
 import Board from '../components/game/Board';
-import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import CardViewer from '../components/game/CardViewer';
@@ -150,10 +149,11 @@ class Game extends Component {
 
   render() {
     return (
-      <div style={{paddingLeft: 256, paddingRight: 256, paddingTop: 64, margin: '48px 72px'}}>
+      <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20, position: 'relative'}}>
           <PlayerArea
+            name={'orange'}
             energy={this.props.orangeEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.selectedCard}
@@ -190,6 +190,7 @@ class Game extends Component {
           <Divider style={{marginBottom: 10}}/>
 
           <PlayerArea
+            name={'blue'}
             energy={this.props.blueEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.selectedCard}
@@ -200,7 +201,6 @@ class Game extends Component {
 
           <VictoryScreen winner={this.props.winner} />
         </Paper>
-        <Chat />
       </div>
     );
   }

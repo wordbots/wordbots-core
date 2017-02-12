@@ -9,16 +9,16 @@ class Deck extends Component {
   }
 
   render() {
-    if (this.props.deck.length > 0) {     
+    if (this.props.deck.length > 0) {
       return (
         <div style={{fontFamily: 'Carter One'}}>
           <div data-tip={this.props.deck.length + ' Cards'} data-for="deck-tooltip">
             <CardBack deckLength={this.props.deck.length} />
           </div>
-          <ReactTooltip 
-            id="deck-tooltip" 
-            place="top" 
-            type="dark" 
+          <ReactTooltip
+            id="deck-tooltip"
+            place="top"
+            type="dark"
             effect="float" />
         </div>
       );

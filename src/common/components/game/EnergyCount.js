@@ -19,7 +19,9 @@ class EnergyCount extends Component {
           display: 'flex',
           justifyContent: 'center',
           userSelect: 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          minWidth: 48,
+          marginRight: 8
       }}>
         <div
           style={{

@@ -17,12 +17,12 @@ class CardBack extends Component {
     }
 
     return (
-      <div>
+      <div style={{padding: '24px 24px 12px 0'}}>
         <Paper
           zDepth={2}
           style={Object.assign({
             width: 140,
-            height: 200,
+            height: 206,
             marginRight: 10,
             borderRadius: 5,
             backgroundColor: '#f44336',

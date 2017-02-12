@@ -114,6 +114,7 @@ class Card extends Component {
             color: 'white',
             fontSize: 16
           }, this.costBadgeStyle())}
+          style={{paddingLeft: 0}}
         >
           <div onClick={this.props.onCardClick}>
             <Paper
@@ -122,7 +123,7 @@ class Card extends Component {
               zDepth={this.state.shadow}
               style={Object.assign({
                 width: 140,
-                height: 200,
+                height: 206,
                 marginRight: 10,
                 borderRadius: 5,
                 userSelect: 'none',
@@ -145,7 +146,7 @@ class Card extends Component {
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type != TYPE_EVENT ? 48 : 90,
+                  height: this.props.type != TYPE_EVENT ? 44 : 96,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}

@@ -1,4 +1,4 @@
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE } from '../constants';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
 
 export const blueCoreCard = {
   name: 'Blue Kernel',
@@ -213,8 +213,9 @@ const generalBotCard = {
     speed: 1,
     attack: 5
   },
-  text: 'When this robot is played, all of your robots can move again.',
+  text: 'Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again.',
   abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()), conditions["controlledBy"](targets["self"]())])); }, "attack", function (x) { return x + 1; })); })',
     '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["canMoveAgain"](targets["all"](objectsMatchingCondition("robot", conditions["controlledBy"](targets["self"]())))); })); })'
   ]
 };
@@ -235,14 +236,67 @@ const monkeyBotCard = {
   ]
 };
 
+const fortificationCard = {
+  name: 'Fortification',
+  img: 'castle',
+  cost: 1,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 5
+  },
+  text: 'Your adjacent robots have +1 health.',
+  abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()),conditions["controlledBy"](targets["self"]())])); }, "health", function (x) { return x + 1; })); })'
+  ]
+};
+
+const defenderBotCard = {
+  name: 'Defender Bot',
+  img: 'char_shield',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 3
+  },
+  text: 'This robot can\'t attack.',
+  abilities: [
+    '(function () { setAbility(abilities["applyEffect"](function () { return targets["thisRobot"](); }, "cannotattack")); })'
+  ]
+};
+
+const recruiterBotCard = {
+  name: 'Recruiter Bot',
+  img: 'char_tie',
+  cost: 4,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 1
+  },
+  text: 'Robots you play cost 1 less energy.',
+  abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](cardsInHandOfType(targets["self"](), "robot")); }, "cost", function (x) { return x - 1; })); })'
+  ]
+};
+
+
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
-  wisdomBotCard,
   concentrationCard,
   superchargeCard,
+  recruiterBotCard,
+  earthquakeCard,
+  defenderBotCard,
+  fortificationCard,
+  fortificationCard,
+  threedomCard,
   monkeyBotCard,
   generalBotCard,
+  wisdomBotCard,
   shockCard,
   botOfPainCard,
   tankBotCard,
@@ -253,7 +307,5 @@ export const deck = [
   missileStrikeCard,
   rampageCard,
   untapCard,
-  threedomCard,
-  earthquakeCard,
   wrathOfRobotGodCard
 ].map(card => Object.assign({}, card, {id: Math.random().toString(36)}));

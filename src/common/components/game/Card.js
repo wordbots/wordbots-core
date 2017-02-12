@@ -6,7 +6,7 @@ import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import { Textfit } from 'react-textfit';
 
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
 
 import CardStat from './CardStat';
@@ -41,19 +41,35 @@ class Card extends Component {
     if (this.props.type == TYPE_ROBOT) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="attack" value={this.props.cardStats.attack} current={this.props.stats ? this.props.stats.attack : null}/>
-          <CardStat type="speed" value={this.props.cardStats.speed} current={this.props.stats ? this.props.stats.speed : null}/>
-          <CardStat type="health" value={this.props.cardStats.health} current={this.props.stats ? this.props.stats.health : null}/>
+          <CardStat type="attack" base={this.props.cardStats.attack} current={this.props.stats.attack}/>
+          <CardStat type="speed" base={this.props.cardStats.speed} current={this.props.stats.speed}/>
+          <CardStat type="health" base={this.props.cardStats.health} current={this.props.stats.health}/>
         </CardText>
       );
-    } else if (this.props.type == TYPE_CORE) {
+    } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="health" value={this.props.cardStats.health}/>
+          <CardStat type="health" base={this.props.cardStats.health} current={this.props.stats.health}/>
         </CardText>
       );
     } else {
       return '';
+    }
+  }
+
+  costBadgeStyle() {
+    if (this.props.cost < this.props.baseCost) {
+      return {
+        color: '#81C784',
+        WebkitTextStroke: '0.5px white'
+      };
+    } else if (this.props.cost > this.props.baseCost) {
+      return {
+        color: '#E57373',
+        WebkitTextStroke: '0.5px white'
+      };
+    } else {
+      return {};
     }
   }
 
@@ -88,7 +104,7 @@ class Card extends Component {
       return (
         <Badge
           badgeContent={this.props.cost}
-          badgeStyle={{
+          badgeStyle={Object.assign({
             top: 12,
             right: 20,
             width: 36,
@@ -97,7 +113,7 @@ class Card extends Component {
             fontFamily: 'Carter One',
             color: 'white',
             fontSize: 16
-          }}
+          }, this.costBadgeStyle())}
         >
           <div onClick={this.props.onCardClick}>
             <Paper
@@ -113,7 +129,7 @@ class Card extends Component {
                 cursor: 'pointer'
               }, (this.props.selected ? selectedStyle : {}))}>
               <CardHeader
-                style={{padding: 10, height: 'auto'}}
+                style={{padding: 8, height: 'auto'}}
                 title={this.props.name}
                 subtitle={typeToString(this.props.type)}/>
 
@@ -129,7 +145,7 @@ class Card extends Component {
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type != TYPE_EVENT ? 44 : 90,
+                  height: this.props.type != TYPE_EVENT ? 48 : 90,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}
@@ -154,6 +170,7 @@ Card.propTypes = {
   selected: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
+  baseCost: React.PropTypes.number,
   onCardClick: React.PropTypes.func,
   stats: React.PropTypes.object
 };

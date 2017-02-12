@@ -1,11 +1,11 @@
-import { TYPE_CORE } from '../../constants';
-import { dealDamageToObjectAtHex } from '../handlers/game/util';
+import { TYPE_CORE } from '../constants';
+import { drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
 
 export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
       objects.forEach(function ([hex, object]) {
-        object.hasMoved = false;
+        object.movesLeft = object.stats.speed;
       });
     },
 
@@ -26,8 +26,8 @@ export default function actions(state) {
 
     destroy: function (objects) {
       objects.forEach(function ([hex, object]) {
-        delete state.players.blue.robotsOnBoard[hex];
-        delete state.players.orange.robotsOnBoard[hex];
+        object.isDestroyed = true;
+        updateOrDeleteObjectAtHex(state, object, hex);
       });
     },
 
@@ -35,7 +35,7 @@ export default function actions(state) {
 
     draw: function (players, count) {
       players.forEach(function (player) {
-        player.hand = player.hand.concat(player.deck.splice(0, count));
+        drawCards(state, player, count);
       });
     },
 

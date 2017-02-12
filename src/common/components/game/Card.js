@@ -41,15 +41,15 @@ class Card extends Component {
     if (this.props.type == TYPE_ROBOT) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="attack" value={this.props.cardStats.attack} current={this.props.stats ? this.props.stats.attack : null}/>
-          <CardStat type="speed" value={this.props.cardStats.speed} current={this.props.stats ? this.props.stats.speed : null}/>
-          <CardStat type="health" value={this.props.cardStats.health} current={this.props.stats ? this.props.stats.health : null}/>
+          <CardStat type="attack" base={this.props.cardStats.attack} current={this.props.stats.attack}/>
+          <CardStat type="speed" base={this.props.cardStats.speed} current={this.props.stats.speed}/>
+          <CardStat type="health" base={this.props.cardStats.health} current={this.props.stats.health}/>
         </CardText>
       );
     } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="health" value={this.props.cardStats.health}/>
+          <CardStat type="health" base={this.props.cardStats.health} current={this.props.stats.health}/>
         </CardText>
       );
     } else {

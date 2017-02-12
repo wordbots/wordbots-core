@@ -30,6 +30,7 @@ class Hand extends Component {
           img={card.img}
           cost={getCost(card)}
           cardStats={card.stats}
+          stats={{}}
           selected={this.props.selectedCard === index}
           visible={this.props.isCurrentPlayer} />
       );

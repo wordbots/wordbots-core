@@ -5,6 +5,7 @@ import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 import { connect } from 'react-redux';
 
+import { getAttribute } from '../util';
 import Board from '../components/game/Board';
 import Chat from '../components/game/Chat';
 import PlayerArea from '../components/game/PlayerArea';
@@ -131,19 +132,19 @@ class Game extends Component {
   onHoverTile(hexId, action) {
     if (action == 'mouseleave') {
       this.props.onHoverTile(null);
-      return;
-    }
+    } else {
+      const piece = this.props.bluePieces[hexId] || this.props.orangePieces[hexId];
 
-    if (this.props.bluePieces[hexId]) {
-      this.props.onHoverTile({
-        card: this.props.bluePieces[hexId].card,
-        stats: this.props.bluePieces[hexId].stats
-      });
-    } else if (this.props.orangePieces[hexId]) {
-      this.props.onHoverTile({
-        card: this.props.orangePieces[hexId].card,
-        stats: this.props.orangePieces[hexId].stats
-      });
+      if (piece) {
+        this.props.onHoverTile({
+          card: piece.card,
+          stats: {
+            attack: getAttribute(piece, 'attack'),
+            speed: getAttribute(piece, 'speed'),
+            health: getAttribute(piece, 'health')
+          }
+        });
+      }
     }
   }
 

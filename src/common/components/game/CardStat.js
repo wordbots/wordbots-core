@@ -24,11 +24,11 @@ class CardStat extends Component {
         break;
     }
 
-    if (this.props.current) {   
-      if (this.props.current > this.props.value) {
+    if (this.props.current) {
+      if (this.props.current > this.props.base) {
         textColor = '#81C784';
         webkitTextStroke = '0.5px white';
-      } else if (this.props.current < this.props.value) {
+      } else if (this.props.current < this.props.base) {
         textColor = '#E57373';
         webkitTextStroke = '0.5px white';
       } else {
@@ -61,8 +61,8 @@ class CardStat extends Component {
           <div style={{
             lineHeight: '14px',
             WebkitTextStroke: webkitTextStroke,
-            color: textColor 
-          }}>{this.props.current || this.props.value}</div>
+            color: textColor
+          }}>{this.props.current || this.props.base}</div>
         </Paper>
       </div>
     );
@@ -71,7 +71,7 @@ class CardStat extends Component {
 
 CardStat.propTypes = {
   type: React.PropTypes.string,
-  value: React.PropTypes.number,
+  base: React.PropTypes.number,
   current: React.PropTypes.number
 };
 

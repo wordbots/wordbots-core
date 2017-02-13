@@ -12,21 +12,21 @@ export function triggers(state) {
     afterAttack: function (objects) {
       return {
         'type': 'afterAttack',
-        'objects': objects.map(hexObj => hexObj[1])
+        'objects': objects
       };
     },
 
     afterDamageReceived: function (objects) {
       return {
         'type': 'afterDamageReceived',
-        'objects': objects.map(hexObj => hexObj[1])
+        'objects': objects
       };
     },
 
     afterPlayed: function (objects) {
       return {
         'type': 'afterPlayed',
-        'objects': objects.map(hexObj => hexObj[1])
+        'objects': objects
       };
     },
 

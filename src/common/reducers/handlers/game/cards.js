@@ -7,34 +7,53 @@ export function setSelectedCard(state, cardIdx) {
 
   state.selectedTile = null;
 
-  if (state.selectedCard == cardIdx) {
-    // Clicked on already selected card => Deselect or play event
+  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && !_.isNull(state.selectedCard)) {
+    // Select target card for event or afterPlayed trigger.
+    state.target = Object.assign({}, state.target, {
+      chosen: [selectedCard],
+      choosing: false,
+      possibleCards: []
+    });
 
-    if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
-      return playEvent(state, cardIdx);
+    const playedCard = state.players[state.currentTurn].hand[state.selectedCard];
+
+    if (playedCard.type == TYPE_EVENT) {
+      return playEvent(state, state.selectedCard);
     } else {
-      state.selectedCard = null;
-      state.playingCardType = null;
-      state.status.message = '';
+      return placeCard(state, playedCard, state.placementTile);
     }
   } else {
-    // Clicked on unselected card => Select
+    // Toggle card selection.
 
-    state.selectedCard = cardIdx;
-    state.target.choosing = false; // Reset targeting state.
+    if (state.selectedCard == cardIdx) {
+      // Clicked on already selected card => Deselect or play event
 
-    if (getCost(selectedCard) <= energy.available) {
-      state.playingCardType = selectedCard.type;
-      state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
-      state.status.type = 'text';
+      if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
+        return playEvent(state, cardIdx);
+      } else {
+        state.selectedCard = null;
+        state.playingCardType = null;
+        state.status.message = '';
+      }
     } else {
-      state.playingCardType = null;
-      state.status.message = 'You do not have enough energy to play this card.';
-      state.status.type = 'error';
-    }
-  }
+      // Clicked on unselected card => Select
 
-  return state;
+      state.selectedCard = cardIdx;
+      state.target.choosing = false; // Reset targeting state.
+
+      if (getCost(selectedCard) <= energy.available) {
+        state.playingCardType = selectedCard.type;
+        state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
+        state.status.type = 'text';
+      } else {
+        state.playingCardType = null;
+        state.status.message = 'You do not have enough energy to play this card.';
+        state.status.type = 'error';
+      }
+    }
+
+    return state;
+  }
 }
 
 export function placeCard(state, card, tile) {
@@ -103,7 +122,7 @@ export function playEvent(state, cardIdx, command) {
     state.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
-    state.target = {choosing: false, chosen: null, possibleHexes: []};
+    state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
 
     const player = state.players[state.currentTurn];
     player.energy.available -= getCost(selectedCard);

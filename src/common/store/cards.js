@@ -298,12 +298,29 @@ const flametongueBotCard = {
   ]
 };
 
+const investorBotCard = {
+  name: 'Investor Bot',
+  img: 'char',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 2,
+    attack: 1
+  },
+  text: 'When this robot is played, reduce the cost of a card in your hand by 2.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["modifyAttribute"](targets["choose"](cardsInHand(targets["self"](), "anycard")), "cost", function (x) { return x - 2; }); })); })'
+  ]
+};
+
 
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
   flametongueBotCard,
+  investorBotCard,
   superchargeCard,
   recruiterBotCard,
   shockCard,

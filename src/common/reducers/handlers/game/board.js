@@ -14,12 +14,10 @@ export function setHoveredCard(state, card) {
 export function setSelectedTile(state, tile) {
   if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
     // Select target tile for event or afterPlayed trigger.
-    // TODO handle targets that are cards in hand (rather than objects in board),
-    state.target = {
+    state.target = Object.assign({}, state.target, {
       chosen: [allObjectsOnBoard(state)[tile]],
-      choosing: false,
-      possibleHexes: []
-    };
+      choosing: false
+    });
 
     const card = state.players[state.currentTurn].hand[state.selectedCard];
 

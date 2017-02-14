@@ -157,6 +157,7 @@ class Game extends Component {
             energy={this.props.orangeEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.selectedCard}
+            targetableCards={this.props.currentTurn == 'orange' ? this.props.target.possibleCards : []}
             isCurrentPlayer={this.props.currentTurn == 'orange'}
             cards={this.props.orangeHand}
             status={this.props.status}
@@ -194,6 +195,7 @@ class Game extends Component {
             energy={this.props.blueEnergy}
             onSelectCard={(index) => this.props.onSelectCard(index)}
             selectedCard={this.props.selectedCard}
+            targetableCards={this.props.currentTurn == 'blue' ? this.props.target.possibleCards : []}
             isCurrentPlayer={this.props.currentTurn == 'blue'}
             cards={this.props.blueHand}
             status={this.props.status}

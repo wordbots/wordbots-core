@@ -32,7 +32,8 @@ class Hand extends Component {
           baseCost={card.cost}
           cardStats={card.stats}
           stats={{}}
-          selected={this.props.selectedCard === index}
+          selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
+          targetable={this.props.targetableCards.includes(card.id)}
           visible={this.props.isCurrentPlayer} />
       );
     });
@@ -57,7 +58,8 @@ Hand.propTypes = {
   isCurrentPlayer: React.PropTypes.bool,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
-  status: React.PropTypes.object
+  status: React.PropTypes.object,
+  targetableCards: React.PropTypes.array
 };
 
 export default Hand;

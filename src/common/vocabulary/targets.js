@@ -18,7 +18,16 @@ export default function targets(state, currentObject) {
       } else {
         if (!_.isEmpty(collection)) {
           state.target.choosing = true;
-          state.target.possibleHexes = Object.keys(collection);
+
+          if (_.isArray(collection)) {
+            // Collection of cards.
+            state.target.possibleCards = collection.map(card => card.id);
+            state.target.possibleHexes = [];
+          } else {
+            // Collection of objects.
+            state.target.possibleHexes = Object.keys(collection);
+            state.target.possibleCards = [];
+          }
         }
         return [];
       }

@@ -49,6 +49,7 @@ const defaultState = {
   target: {
     choosing: false,
     chosen: null,
+    possibleCards: [],
     possibleHexes: []
   },
   winner: null

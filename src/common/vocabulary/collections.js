@@ -26,16 +26,18 @@ export function cardsInHand(state, cardType = 'anycard') {
 export function objectsInPlay(state) {
   return function (objType) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      obj.card.type == stringToType(objType)
+      (objType == 'allobjects' || obj.card.type == stringToType(objType))
+        && !obj.justPlayed
     );
   };
 }
 
-
 export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      (objType == 'allobjects' || obj.card.type == stringToType(objType)) && _.every(conditions.map(cond => cond(hex, obj)))
+      (objType == 'allobjects' || obj.card.type == stringToType(objType))
+        && !obj.justPlayed
+        && _.every(conditions.map(cond => cond(hex, obj)))
     );
   };
 }

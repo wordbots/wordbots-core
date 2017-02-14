@@ -74,7 +74,34 @@ class Board extends Component {
   updateHexColors() {
     let hexColors = {};
 
-    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+    Object.keys(this.props.bluePieces).forEach((hex) => {
+      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].movesLeft > 0) {
+        hexColors[hex] = 'bright_blue';
+      } else {
+        hexColors[hex] = 'blue';
+      }
+    });
+
+    Object.keys(this.props.orangePieces).forEach((hex) => {
+      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].movesLeft > 0) {
+        hexColors[hex] = 'bright_orange';
+      } else {
+        hexColors[hex] = 'orange';
+      }
+    });
+
+    if (this.props.target.choosing) {
+      this.props.target.possibleHexes.forEach((hex) => {
+        hexColors[hex]  = 'green';
+      });
+    } else if (this.props.selectedTile) {
+      const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
+
+      if (selectedPiece && selectedPiece.movesLeft > 0) {
+        const hex = HexUtils.IDToHex(this.props.selectedTile);
+        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
+      }
+    } else if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
       const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
       placementTiles.forEach((hex) => {
         if (this.props.currentTurn == 'blue') {
@@ -94,35 +121,6 @@ class Board extends Component {
             hexColors[HexUtils.getID(hex)]  = 'green';
           }
         }
-      });
-    }
-
-    Object.keys(this.props.bluePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].movesLeft > 0) {
-        hexColors[hex] = 'bright_blue';
-      } else {
-        hexColors[hex] = 'blue';
-      }
-    });
-
-    Object.keys(this.props.orangePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].movesLeft > 0) {
-        hexColors[hex] = 'bright_orange';
-      } else {
-        hexColors[hex] = 'orange';
-      }
-    });
-
-    if (this.props.selectedTile) {
-      const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
-
-      if (selectedPiece && selectedPiece.movesLeft > 0) {
-        const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
-      }
-    } else if (this.props.target.choosing) {
-      this.props.target.possibleHexes.forEach((hex) => {
-        hexColors[hex]  = 'green';
       });
     }
 

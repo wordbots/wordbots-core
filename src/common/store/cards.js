@@ -282,11 +282,28 @@ const recruiterBotCard = {
   ]
 };
 
+const flametongueBotCard = {
+  name: 'Flametongue Bot',
+  img: 'char_bow',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 1,
+    attack: 4
+  },
+  text: 'When this robot is played, deal 4 damage.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["choose"](objectsInPlay("allobjects")), 4); })); })'
+  ]
+};
+
 
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
+  flametongueBotCard,
   superchargeCard,
   recruiterBotCard,
   shockCard,

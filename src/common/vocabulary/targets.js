@@ -16,8 +16,10 @@ export default function targets(state, currentObject) {
       if (state.target.chosen) {
         return state.target.chosen;
       } else {
-        state.target.choosing = true;
-        state.target.possibleHexes = Object.keys(collection);
+        if (!_.isEmpty(collection)) {
+          state.target.choosing = true;
+          state.target.possibleHexes = Object.keys(collection);
+        }
         return [];
       }
     },

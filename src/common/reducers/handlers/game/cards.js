@@ -76,7 +76,7 @@ export function placeCard(state, card, tile) {
   tempState.playingCardType = null;
   tempState.status.message = '';
 
-  if (tempState.target.choosing && tempState.target.possibleHexes.length > 0) {
+  if (tempState.target.choosing) {
     // Target still needs to be selected, so roll back playing the card (and return old state).
     return Object.assign({}, state, {
       status: { message: `Choose a target for ${card.name}'s ability.`, type: 'text' },
@@ -97,7 +97,7 @@ export function playEvent(state, cardIdx, command) {
     executeCmd(state, selectedCard.command);
   }
 
-  if (state.target.choosing && state.target.possibleHexes.length > 0) {
+  if (state.target.choosing) {
     state.status = { message: `Choose a target for ${selectedCard.name}.`, type: 'text' };
   } else {
     state.selectedCard = null;

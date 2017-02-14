@@ -122,7 +122,6 @@ export function playEvent(state, cardIdx, command) {
     state.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
-    state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
 
     const player = state.players[state.currentTurn];
     player.energy.available -= getCost(selectedCard);

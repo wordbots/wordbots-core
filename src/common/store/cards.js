@@ -300,7 +300,7 @@ const flametongueBotCard = {
 
 const investorBotCard = {
   name: 'Investor Bot',
-  img: 'char',
+  img: 'char_goldsuit',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {
@@ -342,4 +342,9 @@ export const deck = [
   rampageCard,
   untapCard,
   wrathOfRobotGodCard
-].map(card => Object.assign({}, card, {id: Math.random().toString(36)}));
+].map(card =>
+  Object.assign({}, card, {
+    id: Math.random().toString(36),
+    baseCost: card.cost
+  })
+);

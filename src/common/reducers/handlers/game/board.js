@@ -16,7 +16,8 @@ export function setSelectedTile(state, tile) {
     // Select target tile for event or afterPlayed trigger.
     state.target = Object.assign({}, state.target, {
       chosen: [allObjectsOnBoard(state)[tile]],
-      choosing: false
+      choosing: false,
+      possibleHexes: []
     });
 
     const card = state.players[state.currentTurn].hand[state.selectedCard];

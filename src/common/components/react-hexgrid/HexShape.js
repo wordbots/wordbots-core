@@ -18,12 +18,25 @@ class HexShape extends React.Component {
   getPiecePoints(hex) {
     let points = this.props.layout.getPolygonPoints(hex);
 
-    points[4].y = points[4].y * 1.5;
-    points[5].y = points[5].y * 1.5;
+    if (this.props.pieceImg) {
+      // Old hex coords - for kernels & other things with static art.
 
-    return points.map(point => {
-      return point.x + ',' + point.y;
-    }).join(' ');
+      points[4].y = points[4].y * 1.5;
+      points[5].y = points[5].y * 1.5;
+
+      return points.map(point => {
+        return point.x + ',' + point.y;
+      }).join(' ');
+    } else {
+      // New hex coords - for sprites.
+
+      points[4].y = points[4].y + 2;
+      points[5].y = points[5].y + 2;
+
+      return points.map(point => {
+        return point.x + ',' + (point.y - 2);
+      }).join(' ');
+    }
   }
 
   translate() {
@@ -43,7 +56,7 @@ class HexShape extends React.Component {
   }
 
   getPieceStyles(hex) {
-    if (this.props.pieceImg) {
+    if (this.props.pieceName) {
       return {
         fill: 'url(#'+ HexUtils.getID(hex) +'_piece)',
         stroke: 'none'

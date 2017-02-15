@@ -28,9 +28,9 @@ class HexPattern extends React.Component {
 
       pieceImagePattern = (
         <pattern id={id + '_piece'} height="100%" width="100%"
-          patternContentUnits="objectBoundingBox" viewBox={`${idx1} ${idx2} 1 1`}
+          patternContentUnits="objectBoundingBox" viewBox={`${idx1 * 42} ${idx2 * 42} 52 52`}
           preserveAspectRatio="xMidYMid">
-          <image xlinkHref={images['spritesheet']} width="32" height="32" preserveAspectRatio="xMidYMid"/>
+          <image xlinkHref={images['spritesheet']} width="1354" height="1354" preserveAspectRatio="xMidYMid"/>
         </pattern>
       );
     }

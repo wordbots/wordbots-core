@@ -74,17 +74,30 @@ class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.img) {
+    if (this.props.type == TYPE_CORE) {
       return (
         <div style={{ width: '50px', height: '52px', margin: '3px auto 0'}}>
           <img src={loadImages()[this.props.img]} width="50px" height="50px" />
         </div>
       );
-    } else {
+    } else if (this.props.type == TYPE_EVENT) {
       return (
         <div style={{ width: '50px', height: '52px', margin: '5px auto 0'}}>
           <Identicon id={this.props.name} width={40} size={5} />
         </div>
+      );
+    } else {
+      const hash = Math.abs(this.props.name.split('').reduce(function (a,b) {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
+      const idx1 = hash % 32;
+      const idx2 = Math.floor(hash / 32) % 32;
+      return (
+        <div style={{
+          width: 32,
+          height: 32,
+          margin: '10px auto',
+          backgroundImage: `url(${loadImages()['spritesheet']})`,
+          backgroundPosition: `-${idx1 * 32}px -${idx2 * 32}px`
+        }} />
       );
     }
   }

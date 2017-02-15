@@ -43,7 +43,7 @@ class HexShape extends React.Component {
   }
 
   getPieceStyles(hex) {
-    if (this.props.piece) {
+    if (this.props.pieceImg) {
       return {
         fill: 'url(#'+ HexUtils.getID(hex) +'_piece)',
         stroke: 'none'
@@ -57,7 +57,7 @@ class HexShape extends React.Component {
   }
 
   getPieceStats() {
-    if (this.props.piece) {
+    if (this.props.pieceStats) {
       if (this.props.pieceStats.attack !== undefined) {
         return (
           <g>
@@ -117,7 +117,12 @@ class HexShape extends React.Component {
         onMouseLeave={e => actions.onMouseLeave(this.props.hex, e)}
         onClick={e => actions.onClick(this.props.hex, e)}
         >
-        <HexPattern hex={hex} fill={this.props.fill} piece={this.props.piece} images={this.props.images}/>
+        <HexPattern
+          hex={hex}
+          fill={this.props.fill}
+          pieceName={this.props.pieceName}
+          pieceImg={this.props.pieceImg}
+          images={this.props.images} />
         <polygon points={points} style={{...styles}} />
         <polygon points={piecePoints} style={{...pieceStyles}} />
         <HexPointers hex={hex} points={points} />
@@ -132,8 +137,9 @@ HexShape.propTypes = {
   layout: object.isRequired,
   actions: object.isRequired,
   fill: string,
-  piece: string,
   images: object,
+  pieceName: string,
+  pieceImg: string,
   pieceStats: object
 };
 

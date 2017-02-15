@@ -6,18 +6,33 @@ const { object, string } = React.PropTypes;
 
 class HexPattern extends React.Component {
   render() {
-    let hex = this.props.hex;
-    let images = this.props.images;
-    let fillImage = '';
-    let pieceImage = '';
-    let id = HexUtils.getID(hex);
+    const hex = this.props.hex;
+    const images = this.props.images;
+    const fillImage = this.props.fill ? images[this.props.fill + '_tile'] : '';
+    const id = HexUtils.getID(hex);
 
-    if (this.props.fill) {
-      fillImage = images[this.props.fill + '_tile'];
-    }
+    let pieceImagePattern = null;
 
-    if (this.props.piece) {
-      pieceImage = images[this.props.piece];
+    if (this.props.pieceImg && images[this.props.pieceImg]) {
+      pieceImagePattern = (
+        <pattern id={id + '_piece'} height="100%" width="100%"
+          patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1"
+          preserveAspectRatio="xMidYMid">
+          <image xlinkHref={images[this.props.pieceImg]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
+        </pattern>
+      );
+    } else if (this.props.pieceName) {
+      const hash = Math.abs(this.props.pieceName.split('').reduce(function (a,b) {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
+      const idx1 = hash % 32;
+      const idx2 = Math.floor(hash / 32) % 32;
+
+      pieceImagePattern = (
+        <pattern id={id + '_piece'} height="100%" width="100%"
+          patternContentUnits="objectBoundingBox" viewBox={`${idx1 * 42} ${idx2 * 42} 52 52`}
+          preserveAspectRatio="xMidYMid">
+          <image xlinkHref={images['spritesheet']} width="1354" height="1354" preserveAspectRatio="xMidYMid"/>
+        </pattern>
+      );
     }
 
     return (
@@ -25,11 +40,7 @@ class HexPattern extends React.Component {
         <pattern id={id} patternUnits="userSpaceOnUse" x="-15" y="-10" width="30" height="20">
           <image xlinkHref={fillImage} x="0" y="0" width="30" height="20" />
         </pattern>
-        <pattern id={id + '_piece'} height="100%" width="100%"
-          patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1"
-          preserveAspectRatio="xMidYMid">
-          <image xlinkHref={pieceImage} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
-        </pattern>
+        { pieceImagePattern }
       </defs>
     );
   }
@@ -38,7 +49,8 @@ class HexPattern extends React.Component {
 HexPattern.propTypes = {
   hex: object.isRequired,
   fill: string,
-  piece: string,
+  pieceName: string,
+  pieceImg: string,
   images: object
 };
 

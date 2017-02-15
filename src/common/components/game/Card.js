@@ -74,17 +74,31 @@ class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.img) {
+    if (this.props.type == TYPE_CORE) {
       return (
         <div style={{ width: '50px', height: '52px', margin: '3px auto 0'}}>
           <img src={loadImages()[this.props.img]} width="50px" height="50px" />
         </div>
       );
-    } else {
+    } else if (this.props.type == TYPE_EVENT) {
       return (
-        <div style={{ width: '50px', height: '52px', margin: '5px auto 0'}}>
-          <Identicon id={this.props.name} width={40} size={5} />
+        <div style={{ width: '37px', height: '37px', margin: '10px auto 0'}}>
+          <Identicon id={this.props.name} width={25} size={4} />
         </div>
+      );
+    } else {
+      // Sprites are 32x32 w/ 10px padding in between.
+      const hash = Math.abs(this.props.name.split('').reduce(function (a,b) {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
+      const idx1 = hash % 32;
+      const idx2 = Math.floor(hash / 32) % 32;
+      return (
+        <div style={{
+          width: 52,
+          height: 52,
+          margin: '0 auto',
+          backgroundImage: `url(${loadImages()['spritesheet']})`,
+          backgroundPosition: `-${idx1 * 42}px -${idx2 * 42}px`
+        }} />
       );
     }
   }
@@ -140,13 +154,16 @@ class Card extends Component {
 
               <Divider/>
 
-              <div style={{
+              <div style={Object.assign({
                 height: 90
-              }}>
+              }, (this.props.type == TYPE_EVENT && this.props.text.length < 30) ? {
+                textAlign: 'center',
+                marginTop: 30
+              } : {})}>
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type != TYPE_EVENT ? 44 : 96,
+                  height: this.props.type != TYPE_EVENT ? 54 : 106,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}

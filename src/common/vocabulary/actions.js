@@ -1,12 +1,10 @@
 import { TYPE_CORE } from '../constants';
-import { drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
+import { getHex, drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
 
 export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
-      objects.forEach(function ([hex, object]) {
-        object.movesLeft = object.stats.speed;
-      });
+      objects.forEach(object => object.movesLeft = object.stats.speed);
     },
 
     dealDamage: function (objects, amount) {
@@ -16,8 +14,8 @@ export default function actions(state) {
           // target is a player, so reassign damage to their core.
           hex = _.find(_.toPairs(target.robotsOnBoard), hexObj => hexObj[1].card.type == TYPE_CORE)[0];
         } else {
-          // target is a [hex, object] pair.
-          hex = target[0];
+          // target is an object, so find its hex.
+          hex = getHex(state, target);
         }
 
         dealDamageToObjectAtHex(state, amount, hex);
@@ -25,24 +23,22 @@ export default function actions(state) {
     },
 
     destroy: function (objects) {
-      objects.forEach(function ([hex, object]) {
+      objects.forEach(function (object) {
         object.isDestroyed = true;
-        updateOrDeleteObjectAtHex(state, object, hex);
+        updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
     },
 
     // TODO discard(objects) -- requires choice?
 
     draw: function (players, count) {
-      players.forEach(function (player) {
-        drawCards(state, player, count);
-      });
+      players.forEach(player => drawCards(state, player, count));
     },
 
     modifyAttribute: function (objects, attr, func) {
       const clampedFunc = stat => _.clamp(func(stat), 0, 99);
 
-      objects.forEach(function ([hex, object]) {
+      objects.forEach(function (object) {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, clampedFunc);
         } else if (attr === 'cost') {
@@ -60,7 +56,7 @@ export default function actions(state) {
     },
 
     setAttribute: function (objects, attr, num) {
-      objects.forEach(function ([hex, object]) {
+      objects.forEach(function (object) {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, () => num);
         } else if (attr === 'cost') {

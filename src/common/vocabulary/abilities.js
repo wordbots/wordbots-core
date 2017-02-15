@@ -5,7 +5,7 @@ export function setAbility(state, currentObject) {
 }
 
 // Abilities are functions that return an object the following properties:
-//   aid =≥ ('ability ID') unique identifier
+//   aid => ('ability ID') unique identifier
 //   targets => function that returns targets given board state
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid

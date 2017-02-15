@@ -1,13 +1,14 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util';
+import { currentPlayer, opponentPlayer, ownerOf } from '../util';
 
 // Targets are all functions that return an array,
-// either of player objects, or of card objects,
-// or of [hex, object] pairs representing objects on board.
+// of either of players, cards, or pieces (objects on board).
+// An empty array means either that there are no valid targets
+// or that a player still needs to choose a target.
 
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
-      return _.toPairs(collection);
+      return Object.values(collection);
     },
 
     // TODO Also handle the case when collection is an array of cards (rather than objects).
@@ -22,8 +23,7 @@ export default function targets(state, currentObject) {
     },
 
     thisRobot: function () {
-      const currentObjectHex = _.findKey(allObjectsOnBoard(state), ['id', currentObject.id]);
-      return [[currentObjectHex, currentObject]];
+      return [currentObject];
     },
 
     self: function () {

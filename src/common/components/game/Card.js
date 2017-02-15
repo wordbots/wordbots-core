@@ -142,7 +142,7 @@ class Card extends Component {
                 borderRadius: 5,
                 userSelect: 'none',
                 cursor: 'pointer'
-              }, (this.props.selected ? selectedStyle : {}))}>
+              }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
               <CardHeader
                 style={{padding: 8, height: 'auto'}}
                 title={this.props.name}
@@ -186,6 +186,7 @@ Card.propTypes = {
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
+  targetable: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
   baseCost: React.PropTypes.number,

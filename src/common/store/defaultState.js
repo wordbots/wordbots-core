@@ -12,6 +12,7 @@ const defaultState = {
       deck: cards.deck.slice(2),
       robotsOnBoard: {
         '-4,0,4': {
+          id: 'blueCore',
           card: cards.blueCoreCard,
           stats: cards.blueCoreCard.stats,
           movesLeft: 0
@@ -28,6 +29,7 @@ const defaultState = {
       deck: cards.deck.slice(2),
       robotsOnBoard: {
         '4,0,-4': {
+          id: 'orangeCore',
           card: cards.orangeCoreCard,
           stats: cards.orangeCoreCard.stats,
           movesLeft: 0
@@ -47,6 +49,7 @@ const defaultState = {
   target: {
     choosing: false,
     chosen: null,
+    possibleCards: [],
     possibleHexes: []
   },
   winner: null

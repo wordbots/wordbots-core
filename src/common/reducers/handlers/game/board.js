@@ -1,10 +1,11 @@
+import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
-import { playEvent } from './cards';
+import { placeCard, playEvent } from './cards';
 
 export function setHoveredCard(state, card) {
   return _.assign(state, {hoveredCard: card});
@@ -12,16 +13,20 @@ export function setHoveredCard(state, card) {
 
 export function setSelectedTile(state, tile) {
   if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
-    // Select target tile for event.
-    // TODO handle: (1) targets that are cards in hand (rather than objects in board),
-    //              (2) targets that are for afterPlayed triggers on objects, rather than events.
-    state.target = {
+    // Select target tile for event or afterPlayed trigger.
+    state.target = Object.assign({}, state.target, {
       chosen: [allObjectsOnBoard(state)[tile]],
       choosing: false,
       possibleHexes: []
-    };
+    });
 
-    return playEvent(state, state.selectedCard);
+    const card = state.players[state.currentTurn].hand[state.selectedCard];
+
+    if (card.type == TYPE_EVENT) {
+      return playEvent(state, state.selectedCard);
+    } else {
+      return placeCard(state, card, state.placementTile);
+    }
   } else {
     // Toggle tile selection.
     state.selectedTile = (state.selectedTile == tile) ? null : tile;

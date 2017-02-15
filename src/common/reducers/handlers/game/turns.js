@@ -26,7 +26,7 @@ export function endTurn(state) {
   state.selectedTile = null;
   state.playingCardType = null;
   state.status.message = '';
-  state.target = {choosing: false, chosen: null, possibleHexes: []};
+  state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
 
   return state;
 }

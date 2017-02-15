@@ -22,6 +22,7 @@ class PlayerArea extends Component {
             this.props.onSelectCard(index);
           }}
           selectedCard={this.props.selectedCard}
+          targetableCards={this.props.targetableCards}
           isCurrentPlayer={this.props.isCurrentPlayer}
           cards={this.props.cards}
           status={this.props.status} />
@@ -36,6 +37,7 @@ PlayerArea.propTypes = {
   energy: React.PropTypes.object,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
+  targetableCards: React.PropTypes.array,
   isCurrentPlayer: React.PropTypes.bool,
   cards: React.PropTypes.array,
   status: React.PropTypes.object,

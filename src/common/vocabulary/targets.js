@@ -11,13 +11,27 @@ export default function targets(state, currentObject) {
       return Object.values(collection);
     },
 
-    // TODO Also handle the case when collection is an array of cards (rather than objects).
     choose: function (collection) {
       if (state.target.chosen) {
-        return state.target.chosen;
+        // Return and clear chosen target.
+        const chosenTarget = state.target.chosen;
+        state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+        return chosenTarget;
       } else {
-        state.target.choosing = true;
-        state.target.possibleHexes = Object.keys(collection);
+        if (!_.isEmpty(collection)) {
+          // Prepare target selection.
+          state.target.choosing = true;
+
+          if (_.isArray(collection)) {
+            // Collection of cards.
+            state.target.possibleCards = collection.map(card => card.id);
+            state.target.possibleHexes = [];
+          } else {
+            // Collection of objects.
+            state.target.possibleHexes = Object.keys(collection);
+            state.target.possibleCards = [];
+          }
+        }
         return [];
       }
     },

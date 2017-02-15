@@ -272,11 +272,45 @@ const recruiterBotCard = {
   ]
 };
 
+const flametongueBotCard = {
+  name: 'Flametongue Bot',
+  img: 'char_bow',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 1,
+    attack: 4
+  },
+  text: 'When this robot is played, deal 4 damage.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["choose"](objectsInPlay("allobjects")), 4); })); })'
+  ]
+};
+
+const investorBotCard = {
+  name: 'Investor Bot',
+  img: 'char_goldsuit',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 2,
+    attack: 1
+  },
+  text: 'When this robot is played, reduce the cost of a card in your hand by 2.',
+  abilities: [
+    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["modifyAttribute"](targets["choose"](cardsInHand(targets["self"](), "anycard")), "cost", function (x) { return x - 2; }); })); })'
+  ]
+};
+
 
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
+  flametongueBotCard,
+  investorBotCard,
   superchargeCard,
   recruiterBotCard,
   shockCard,
@@ -298,4 +332,9 @@ export const deck = [
   rampageCard,
   untapCard,
   wrathOfRobotGodCard
-].map(card => Object.assign({}, card, {id: Math.random().toString(36)}));
+].map(card =>
+  Object.assign({}, card, {
+    id: Math.random().toString(36),
+    baseCost: card.cost
+  })
+);

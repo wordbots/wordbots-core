@@ -233,6 +233,7 @@ class Board extends Component {
     };
 
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
+    const pieceNames = mapValues(pieces, piece => piece.card.name);
     const pieceImgs = mapValues(pieces, piece => piece.card.img);
     const pieceStats = mapValues(pieces, function (piece) {
       return { health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') };
@@ -242,6 +243,7 @@ class Board extends Component {
       <div>
         <HexGrid
           hexColors={hexColors}
+          pieceNames={pieceNames}
           pieceImgs={pieceImgs}
           pieceStats={pieceStats}
           actions={actions}

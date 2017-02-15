@@ -24,7 +24,6 @@ export const orangeCoreCard = {
 
 const attackBotCard = {
   name: 'Attack Bot',
-  img: 'char',
   cost: 1,
   type: TYPE_ROBOT,
   stats: {
@@ -37,7 +36,6 @@ const attackBotCard = {
 
 const tankBotCard = {
   name: 'Tank Bot',
-  img: 'char_weapon',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {
@@ -157,7 +155,6 @@ const firestormCard = {
 
 const botOfPainCard = {
   name: 'Bot of Pain',
-  img: 'char_orc',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {
@@ -173,7 +170,6 @@ const botOfPainCard = {
 
 const dojoDiscipleCard = {
   name: 'Dojo Disciple',
-  img: 'char_belt',
   cost: 1,
   type: TYPE_ROBOT,
   stats: {
@@ -189,7 +185,6 @@ const dojoDiscipleCard = {
 
 const wisdomBotCard = {
   name: 'Wisdom Bot',
-  img: 'char_dressed',
   cost: 2,
   type: TYPE_ROBOT,
   stats: {
@@ -205,7 +200,6 @@ const wisdomBotCard = {
 
 const generalBotCard = {
   name: 'General Bot',
-  img: 'char_goldhat',
   cost: 5,
   type: TYPE_ROBOT,
   stats: {
@@ -222,7 +216,6 @@ const generalBotCard = {
 
 const monkeyBotCard = {
   name: 'Monkey Bot',
-  img: 'monkey',
   cost: 4,
   type: TYPE_ROBOT,
   stats: {
@@ -238,7 +231,6 @@ const monkeyBotCard = {
 
 const fortificationCard = {
   name: 'Fortification',
-  img: 'castle',
   cost: 1,
   type: TYPE_STRUCTURE,
   stats: {
@@ -252,7 +244,6 @@ const fortificationCard = {
 
 const defenderBotCard = {
   name: 'Defender Bot',
-  img: 'char_shield',
   cost: 2,
   type: TYPE_ROBOT,
   stats: {
@@ -268,7 +259,6 @@ const defenderBotCard = {
 
 const recruiterBotCard = {
   name: 'Recruiter Bot',
-  img: 'char_tie',
   cost: 4,
   type: TYPE_ROBOT,
   stats: {

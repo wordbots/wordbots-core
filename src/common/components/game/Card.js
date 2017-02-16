@@ -82,7 +82,7 @@ class Card extends Component {
       );
     } else if (this.props.type == TYPE_EVENT) {
       return (
-        <div style={{ width: '37px', height: '37px', margin: '10px auto 0'}}>
+        <div style={{ width: '25px', height: '42px', margin: '10px auto 0'}}>
           <Identicon id={this.props.name} width={25} size={4} />
         </div>
       );

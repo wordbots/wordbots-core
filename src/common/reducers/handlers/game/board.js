@@ -68,15 +68,15 @@ export function attack(state, source, target) {
 
   attacker.movesLeft = 0;
 
-  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source);
-  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target);
+  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
+  state = checkTriggers(state, 'afterAttack', attacker, (trigger =>
+    trigger.targets.map(o => o.id).includes(attacker.id)
   ));
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
+  state = checkTriggers(state, 'afterAttack', defender, (trigger =>
+    trigger.targets.map(o => o.id).includes(defender.id)
   ));
 
   // Move attacker to defender's space (if possible).

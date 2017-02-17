@@ -65,23 +65,28 @@ export function drawCards(state, player, count) {
   return state;
 }
 
-export function dealDamageToObjectAtHex(state, amount, hex) {
+export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
+  console.log([object.stats.health, object.stats.health - amount]);
   object.stats.health -= amount;
 
-  state = checkTriggers(state, 'afterDamageReceived', (trigger =>
-    trigger.objects.map(o => o.id).includes(object.id)
+  state = checkTriggers(state, 'afterDamageReceived', object, (trigger =>
+    trigger.targets.map(o => o.id).includes(object.id)
   ));
 
-  return updateOrDeleteObjectAtHex(state, object, hex);
+  return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-export function updateOrDeleteObjectAtHex(state, object, hex) {
+export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
 
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
+    state = checkTriggers(state, 'afterDestroyed', object, (trigger =>
+      trigger.targets.map(o => o.id).includes(object.id) && (trigger.cause == cause || trigger.cause == 'anyevent')
+    ));
+
     delete state.players[ownerName].robotsOnBoard[hex];
 
     // Unapply any abilities that this object had.
@@ -123,22 +128,22 @@ export function executeCmd(state, cmd, currentObject = null) {
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
 
-  eval(cmd)();
-  return state;
+  return eval(cmd)();
 }
 /* eslint-enable no-unused-vars */
 
-export function checkTriggers(state, triggerType, condition) {
+export function checkTriggers(state, triggerType, it, condition) {
   Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
     (obj.triggers || []).forEach(function (t) {
+      t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
       if (t.trigger.type == triggerType && condition(t.trigger)) {
-        console.log('Executing ' + triggerType + ' trigger: ' + t.action);
-        executeCmd(state, t.action, obj);
+        console.log(`Executing ${triggerType} trigger: ${t.action}`);
+        executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
       }
     });
   });
 
-  return state;
+  return Object.assign({}, state, {it: null});
 }
 
 export function applyAbilities(state) {
@@ -148,7 +153,8 @@ export function applyAbilities(state) {
       (ability.currentTargets || []).forEach(ability.unapply);
 
       // Apply this ability to all targeted objects.
-      ability.currentTargets = ability.targets(state);
+      console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
+      ability.currentTargets = executeCmd(state, ability.targets, obj);
       ability.currentTargets.forEach(ability.apply);
     });
   });

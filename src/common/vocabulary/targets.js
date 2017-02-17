@@ -40,6 +40,11 @@ export default function targets(state, currentObject) {
       return [currentObject];
     },
 
+    it: function () {
+      console.log(state.it);
+      return state.it ? [state.it] : [];
+    },
+
     self: function () {
       if (currentObject) {
         return [ownerOf(state, currentObject)];
@@ -58,6 +63,11 @@ export default function targets(state, currentObject) {
 
     allPlayers: function () {
       return [currentPlayer(state), opponentPlayer(state)];
+    },
+
+    controllerOf: function (objects) {
+      // Assume the only one object is ever passed in here.
+      return (objects.length == 1) ? [ownerOf(state, objects[0])] : [];
     }
   };
 }

@@ -274,7 +274,6 @@ const recruiterBotCard = {
 
 const flametongueBotCard = {
   name: 'Flametongue Bot',
-  img: 'char_bow',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {
@@ -290,7 +289,6 @@ const flametongueBotCard = {
 
 const investorBotCard = {
   name: 'Investor Bot',
-  img: 'char_goldsuit',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {

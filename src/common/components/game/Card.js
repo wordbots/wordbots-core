@@ -105,8 +105,8 @@ class Card extends Component {
         <Badge
           badgeContent={this.props.cost}
           badgeStyle={Object.assign({
-            top: 12 * (this.props.scale || 1),
-            right: 20 * (this.props.scale || 1),
+            top: 12,
+            right: 20,
             width: 36 * (this.props.scale || 1),
             height: 36 * (this.props.scale || 1),
             backgroundColor: '#00bcd4',
@@ -132,7 +132,9 @@ class Card extends Component {
               <CardHeader
                 style={{padding: 8 * (this.props.scale || 1), height: 'auto'}}
                 title={this.props.name}
-                subtitle={typeToString(this.props.type)}/>
+                titleStyle={{fontSize: 15 * (this.props.scale || 1)}}
+                subtitle={typeToString(this.props.type)}
+                subtitleStyle={{fontSize: 14 * (this.props.scale || 1)}} />
 
               <Divider/>
 

@@ -104,22 +104,8 @@ class Board extends Component {
     } else if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
       const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
       placementTiles.forEach((hex) => {
-        if (this.props.currentTurn == 'blue') {
-          if (this.props.bluePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'blue';
-          } else if (this.props.orangePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'red';
-          } else {
-            hexColors[HexUtils.getID(hex)]  = 'green';
-          }
-        } else {
-          if (this.props.bluePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'red';
-          } else if (this.props.orangePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'orange';
-          } else {
-            hexColors[HexUtils.getID(hex)]  = 'green';
-          }
+        if (!this.allPieces()[HexUtils.getID(hex)]) {
+          hexColors[HexUtils.getID(hex)] = 'green';
         }
       });
     }

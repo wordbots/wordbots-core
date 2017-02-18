@@ -64,7 +64,9 @@ export function placeCard(state, card, tile) {
   const player = currentPlayer(tempState);
   const selectedCardIndex = tempState.selectedCard;
 
-  if (validPlacementHexes(state, player, card.type).includes(tile)) {
+  if (card &&
+      player.energy.available >= getCost(card) &&
+      validPlacementHexes(state, player, card.type).includes(tile)) {
     const playedObject = {
       id: Math.random().toString(36),
       card: card,
@@ -77,7 +79,7 @@ export function placeCard(state, card, tile) {
 
     player.robotsOnBoard[tile] = playedObject;
 
-    player.energy.available -= getCost(player.hand[selectedCardIndex]);
+    player.energy.available -= getCost(card);
     player.hand.splice(selectedCardIndex, 1);
 
     if (card.abilities.length > 0) {

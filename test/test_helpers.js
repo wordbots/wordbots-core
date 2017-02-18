@@ -8,6 +8,16 @@ export function objectsOnBoardOfType(state, objectType) {
   return _.mapValues(objects, obj => obj.card.name);
 }
 
+export function newTurn(state, playerName) {
+  if (state.currentTurn == playerName) {
+    // Pass twice.
+    return game(state, [actions.passTurn(), actions.passTurn()]);
+  } else {
+    // Pass once.
+    return game(state, actions.passTurn());
+  }
+}
+
 export function playObject(state, playerName, cardName, hex) {
   const card = _.find(deck, card => card.name == cardName);
   const player = state.players[playerName];
@@ -35,14 +45,4 @@ export function moveRobot(state, fromHex, toHex) {
     actions.setSelectedTile(fromHex),
     actions.moveRobot(fromHex, toHex)
   ]);
-}
-
-export function newTurn(state, playerName) {
-  let actionsQueue = actions.passTurn();
-
-  if (state.currentTurn == playerName) {
-    actionsQueue.push(...actions.passTurn());
-  }
-
-  return game(state, actionsQueue);
 }

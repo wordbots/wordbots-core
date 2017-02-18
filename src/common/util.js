@@ -74,7 +74,7 @@ export function validPlacementHexes(state, player, type) {
       new Hex(hex.q + 1, hex.r - 1, hex.s),
       new Hex(hex.q - 1, hex.r, hex.s + 1),
       new Hex(hex.q + 1, hex.r, hex.s - 1)
-    ]).map(HexUtils.getId);
+    ]).map(HexUtils.getID);
   }
 
   return hexes.filter(hex => !allObjectsOnBoard(state)[hex]);

@@ -77,6 +77,7 @@ export function validPlacementHexes(state, player, type) {
     ]).map(HexUtils.getID);
   }
 
+  console.log(hexes.filter(hex => !allObjectsOnBoard(state)[hex]));
   return hexes.filter(hex => !allObjectsOnBoard(state)[hex]);
 }
 

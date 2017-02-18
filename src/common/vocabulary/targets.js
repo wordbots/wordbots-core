@@ -41,7 +41,6 @@ export default function targets(state, currentObject) {
     },
 
     it: function () {
-      console.log(state.it);
       return state.it ? [state.it] : [];
     },
 

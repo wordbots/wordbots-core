@@ -24,9 +24,11 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  // TODO handle the case where neither player owns the object.
-  const blueObjectIds = Object.values(state.players.blue.robotsOnBoard).map(obj => obj.id);
-  return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
+  if (_.mapValues(state.players.blue.robotsOnBoard, obj => obj.id).includes(object.id)) {
+    return state.players.blue;
+  } else if (_.mapValues(state.players.orange.robotsOnBoard, obj => obj.id).includes(object.id)) {
+    return state.players.orange;
+  }
 }
 
 export function getHex(state, object) {
@@ -67,7 +69,6 @@ export function drawCards(state, player, count) {
 
 export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
-  console.log([object.stats.health, object.stats.health - amount]);
   object.stats.health -= amount;
 
   state = checkTriggers(state, 'afterDamageReceived', object, (trigger =>

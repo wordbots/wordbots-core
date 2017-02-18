@@ -8,7 +8,6 @@ export default function actions(state) {
     },
 
     dealDamage: function (objects, amount) {
-      console.log([objects, amount]);
       objects.forEach(function (target) {
         let hex;
         if (target.robotsOnBoard) {

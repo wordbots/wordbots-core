@@ -1,3 +1,4 @@
 test:
   override:
     - node_modules/eslint/bin/eslint.js src
+    - npm test

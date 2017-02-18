@@ -1,32 +1,7 @@
-import * as actions from '../../src/common/actions/game';
 import game from '../../src/common/reducers/game';
 import defaultState from '../../src/common/store/defaultState';
-import { deck } from '../../src/common/store/cards';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
-import { allObjectsOnBoard } from '../../src/common/util';
-
-function playObject(state, playerName, cardName, hex) {
-  const card = _.find(deck, card => card.name == cardName);
-  const player = state.players[playerName];
-
-  // We don't care about testing card draw and energy here, so ensure that:
-  //    1. It's the player's turn.
-  //    2. The player has the card as the first card in their hand.
-  //    3. The player has enough energy to play the card.
-  state.currentTurn = playerName;
-  player.hand = [card].concat(player.hand);
-  player.energy.available += card.cost;
-
-  return game(state, [
-    actions.setSelectedCard(0),
-    actions.placeCard(hex, card)
-  ]);
-}
-
-function objectsOnBoardOfType(state, objectType) {
-  const objects = _.pickBy(allObjectsOnBoard(state), obj => obj.card.type == objectType);
-  return _.mapValues(objects, obj => obj.card.name);
-}
+import { objectsOnBoardOfType, playObject } from '../test_helpers';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {

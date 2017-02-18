@@ -4,5 +4,5 @@ machine:
 
 test:
   override:
-    - node_modules/eslint/bin/eslint.js src
+    - node_modules/eslint/bin/eslint.js src test
     - npm test

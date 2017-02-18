@@ -24,9 +24,9 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  if (_.mapValues(state.players.blue.robotsOnBoard, obj => obj.id).includes(object.id)) {
+  if (_.some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
     return state.players.blue;
-  } else if (_.mapValues(state.players.orange.robotsOnBoard, obj => obj.id).includes(object.id)) {
+  } else if (_.some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
     return state.players.orange;
   }
 }

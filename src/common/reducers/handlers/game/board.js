@@ -40,18 +40,22 @@ export function setSelectedTile(state, tile) {
 export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
+  const distanceToMove = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
 
-  if (!asPartOfAttack) {
-    movingRobot.movesLeft -= HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
-    state.selectedTile = null;
+  // Is the move valid?
+  if (movingRobot.movesLeft >= distanceToMove && !allObjectsOnBoard(state)[toHex]) {
+    if (!asPartOfAttack) {
+      movingRobot.movesLeft -= distanceToMove;
+      state.selectedTile = null;
+    }
+
+    delete state.players[state.currentTurn].robotsOnBoard[fromHex];
+    state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
+
+    state = applyAbilities(state);
+
+    updateOrDeleteObjectAtHex(state, movingRobot, toHex);
   }
-
-  delete state.players[state.currentTurn].robotsOnBoard[fromHex];
-  state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
-
-  state = applyAbilities(state);
-
-  updateOrDeleteObjectAtHex(state, movingRobot, toHex);
 
   return state;
 }

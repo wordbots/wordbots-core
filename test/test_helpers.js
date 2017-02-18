@@ -25,3 +25,24 @@ export function playObject(state, playerName, cardName, hex) {
     actions.placeCard(hex, card)
   ]);
 }
+
+export function moveRobot(state, fromHex, toHex) {
+  if (!state.players[state.currentTurn].robotsOnBoard[fromHex]) {
+    throw `No ${state.currentTurn} robot on ${fromHex}!`;
+  }
+
+  return game(state, [
+    actions.setSelectedTile(fromHex),
+    actions.moveRobot(fromHex, toHex)
+  ]);
+}
+
+export function newTurn(state, playerName) {
+  let actionsQueue = actions.passTurn();
+
+  if (state.currentTurn == playerName) {
+    actionsQueue.push(...actions.passTurn());
+  }
+
+  return game(state, actionsQueue);
+}

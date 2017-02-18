@@ -9,18 +9,18 @@ function playObject(state, playerName, cardName, hex) {
   const card = _.find(deck, card => card.name == cardName);
   const player = state.players[playerName];
 
-  // Make the chosen card be the first card in the player's hand,
-  // and ensure that the player has enough energy to play it.
+  // We don't care about testing card draw and energy here, so ensure that:
+  //    1. It's the player's turn.
+  //    2. The player has the card as the first card in their hand.
+  //    3. The player has enough energy to play the card.
+  state.currentTurn = playerName;
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
-  if (state.currentTurn != playerName) {
-    state = game(state, actions.passTurn());
-  }
-
-  state = game(state, actions.setSelectedCard(0));
-  state = game(state, actions.placeCard(hex, card));
-  return state;
+  return game(state, [
+    actions.setSelectedCard(0),
+    actions.placeCard(hex, card)
+  ]);
 }
 
 function objectsOnBoardOfType(state, objectType) {

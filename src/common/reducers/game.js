@@ -6,32 +6,37 @@ import g from './handlers/game';
 export default function game(oldState = defaultState, action) {
   let state = Object.assign({}, oldState);
 
-  switch (action.type) {
-    case gameActions.MOVE_ROBOT:
-      return g.moveRobot(state, action.payload.from, action.payload.to, action.payload.asPartOfAttack);
+  if (_.isArray(action)) {
+    // Allow multiple dispatch - this is primarily useful for simplifying testing.
+    return _.reduce(action, game, state);
+  } else {
+    switch (action.type) {
+      case gameActions.MOVE_ROBOT:
+        return g.moveRobot(state, action.payload.from, action.payload.to, action.payload.asPartOfAttack);
 
-    case gameActions.ATTACK:
-      return g.attack(state, action.payload.source, action.payload.target);
+      case gameActions.ATTACK:
+        return g.attack(state, action.payload.source, action.payload.target);
 
-    case gameActions.PLACE_CARD:
-      return g.placeCard(state, action.payload.card, action.payload.tile);
+      case gameActions.PLACE_CARD:
+        return g.placeCard(state, action.payload.card, action.payload.tile);
 
-    case gameActions.END_TURN:
-      return g.endTurn(state);
+      case gameActions.END_TURN:
+        return g.endTurn(state);
 
-    case gameActions.START_TURN:
-      return g.startTurn(state);
+      case gameActions.START_TURN:
+        return g.startTurn(state);
 
-    case gameActions.SET_SELECTED_CARD:
-      return g.setSelectedCard(state, action.payload.selectedCard);
+      case gameActions.SET_SELECTED_CARD:
+        return g.setSelectedCard(state, action.payload.selectedCard);
 
-    case gameActions.SET_SELECTED_TILE:
-      return g.setSelectedTile(state, action.payload.selectedTile);
+      case gameActions.SET_SELECTED_TILE:
+        return g.setSelectedTile(state, action.payload.selectedTile);
 
-    case gameActions.SET_HOVERED_CARD:
-      return g.setHoveredCard(state, action.payload.hoveredCard);
+      case gameActions.SET_HOVERED_CARD:
+        return g.setHoveredCard(state, action.payload.hoveredCard);
 
-    default:
-      return state;
+      default:
+        return state;
+    }
   }
 }

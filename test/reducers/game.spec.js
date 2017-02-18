@@ -50,8 +50,6 @@ describe('Game reducer', () => {
     let state = defaultState;
     state = playObject(state, 'orange', 'Attack Bot', '3,0,-3');
 
-    expect(state.currentTurn).toEqual('orange');
-
     // Robots cannot move on the turn they are placed.
     state = moveRobot(state, '3,0,-3', '2,0,-2');
     expect(

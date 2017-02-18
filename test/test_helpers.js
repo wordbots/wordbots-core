@@ -46,3 +46,14 @@ export function moveRobot(state, fromHex, toHex) {
     actions.moveRobot(fromHex, toHex)
   ]);
 }
+
+export function attack(state, source, target) {
+  if (!state.players[state.currentTurn].robotsOnBoard[source]) {
+    throw `No ${state.currentTurn} robot on ${source}!`;
+  }
+
+  return game(state, [
+    actions.setSelectedTile(source),
+    actions.attack(source, target)
+  ]);
+}

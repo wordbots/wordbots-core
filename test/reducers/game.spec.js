@@ -1,7 +1,7 @@
 import game from '../../src/common/reducers/game';
 import defaultState from '../../src/common/store/defaultState';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
-import { objectsOnBoardOfType, newTurn, playObject, moveRobot } from '../test_helpers';
+import { objectsOnBoardOfType, newTurn, playObject, moveRobot, attack } from '../test_helpers';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {
@@ -88,5 +88,48 @@ describe('Game reducer', () => {
     expect(
       objectsOnBoardOfType(state, TYPE_ROBOT)
     ).toEqual({'-1,0,1': 'Attack Bot'});
+  });
+
+  it('(TODO) should be able to handle combat between robots', () => {
+    //   Combat when no robot dies
+    //   Combat when defender dies (+ attacker takes its place)
+    //   Combat when attacker dies
+    //   Combat when both robots die
+    //   Combat between robot and structure/core
+    //   Movement into combat
+  });
+
+  it('should be able to enforce victory conditions', () => {
+    // Orange victory: move an Attack Bot to the blue core and hit it 20 times.
+    let state = defaultState;
+    state = playObject(state, 'orange', 'Attack Bot', '3,0,-3');
+    state = newTurn(state, 'orange');
+    state = moveRobot(state, '3,0,-3', '1,0,-1');
+    state = newTurn(state, 'orange');
+    state = moveRobot(state, '1,0,-1', '-1,0,1');
+    state = newTurn(state, 'orange');
+    state = moveRobot(state, '-1,0,1', '-3,0,3');
+    _.times(20, () => {
+      expect(state.winner).toEqual(null);
+      state = newTurn(state, 'orange');
+      state = attack(state, '-3,0,3', '-4,0,4');
+    });
+    expect(state.winner).toEqual('orange');
+
+    // Blue victory: move an Attack Bot to the orange core and hit it 20 times.
+    state = defaultState;
+    state = playObject(state, 'blue', 'Attack Bot', '-3,0,3');
+    state = newTurn(state, 'blue');
+    state = moveRobot(state, '-3,0,3', '-1,0,1');
+    state = newTurn(state, 'blue');
+    state = moveRobot(state, '-1,0,1', '1,0,-1');
+    state = newTurn(state, 'blue');
+    state = moveRobot(state, '1,0,-1', '3,0,-3');
+    _.times(20, () => {
+      expect(state.winner).toEqual(null);
+      state = newTurn(state, 'blue');
+      state = attack(state, '3,0,-3', '4,0,-4');
+    });
+    expect(state.winner).toEqual('blue');
   });
 });

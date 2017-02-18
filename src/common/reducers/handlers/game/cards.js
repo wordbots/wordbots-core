@@ -1,5 +1,5 @@
 import { TYPE_EVENT } from '../../../constants';
-import { currentPlayer, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
+import { currentPlayer, validPlacementHexes, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -64,36 +64,38 @@ export function placeCard(state, card, tile) {
   const player = currentPlayer(tempState);
   const selectedCardIndex = tempState.selectedCard;
 
-  const playedObject = {
-    id: Math.random().toString(36),
-    card: card,
-    stats: Object.assign({}, card.stats),
-    triggers: [],
-    movesLeft: 0,
-    justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
-                      // target themselves for afterPlayed triggers.
-  };
+  if (validPlacementHexes(state, player, card.type).includes(tile)) {
+    const playedObject = {
+      id: Math.random().toString(36),
+      card: card,
+      stats: Object.assign({}, card.stats),
+      triggers: [],
+      movesLeft: 0,
+      justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
+                        // target themselves for afterPlayed triggers.
+    };
 
-  player.robotsOnBoard[tile] = playedObject;
+    player.robotsOnBoard[tile] = playedObject;
 
-  player.energy.available -= getCost(player.hand[selectedCardIndex]);
-  player.hand.splice(selectedCardIndex, 1);
+    player.energy.available -= getCost(player.hand[selectedCardIndex]);
+    player.hand.splice(selectedCardIndex, 1);
 
-  if (card.abilities.length > 0) {
-    card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
+    if (card.abilities.length > 0) {
+      card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
+    }
+
+    tempState = checkTriggers(tempState, 'afterPlayed', (trigger =>
+      trigger.objects.map(o => o.id).includes(playedObject.id)
+    ));
+
+    tempState = applyAbilities(tempState);
+
+    playedObject.justPlayed = false;
+
+    tempState.selectedCard = null;
+    tempState.playingCardType = null;
+    tempState.status.message = '';
   }
-
-  tempState = checkTriggers(tempState, 'afterPlayed', (trigger =>
-    trigger.objects.map(o => o.id).includes(playedObject.id)
-  ));
-
-  tempState = applyAbilities(tempState);
-
-  playedObject.justPlayed = false;
-
-  tempState.selectedCard = null;
-  tempState.playingCardType = null;
-  tempState.status.message = '';
 
   if (tempState.target.choosing) {
     // Target still needs to be selected, so roll back playing the card (and return old state).

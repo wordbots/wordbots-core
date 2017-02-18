@@ -10,7 +10,8 @@
     "start": "set NODE_ENV=development && node src/server/index.js --colors --profile",
     "start-prod": "set NODE_ENV=production && node src/server/index.js --progress --colors --profile",
     "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
-    "test": "set NODE_ENV=test && mocha --compilers js:babel-core/register --recursive"
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -61,6 +62,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.4.0",
+    "babel-jest": "^18.0.0",
     "babel-loader": "^6.2.1",
     "babel-plugin-react-transform": "^2.0.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
@@ -75,6 +77,7 @@
     "file-loader": "0.8.5",
     "ignore-styles": "^5.0.1",
     "image-webpack-loader": "^3.1.0",
+    "jest": "^18.1.0",
     "jsdom-no-contextify": "3.1.0",
     "merge": "1.2.0",
     "mocha": "2.1.0",
@@ -90,5 +93,11 @@
     "webpack": "1.11.0",
     "webpack-dev-middleware": "1.2.0",
     "webpack-hot-middleware": "2.2.0"
+  },
+  "jest": {
+    "globals": {
+      "_": {}
+    },
+    "setupFiles": ["./test/before_test.js"]
   }
 }

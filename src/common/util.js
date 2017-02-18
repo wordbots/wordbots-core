@@ -1,5 +1,7 @@
-import { TYPE_CORE } from './constants';
+import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
+import Hex from './components/react-hexgrid/Hex';
+import HexUtils from './components/react-hexgrid/HexUtils';
 
 // TODO: Split into multiple files.
 
@@ -53,6 +55,29 @@ export function getCost(card) {
 
 export function hasEffect(object, effect) {
   return (object.effects || []).map(eff => eff.effect).includes(effect);
+}
+
+export function validPlacementHexes(state, player, type) {
+  let hexes;
+  if (type == TYPE_ROBOT) {
+    if (player.name === 'blue') {
+      hexes = ['-3,-1,4', '-3,0,3', '-4,1,3'];
+    } else {
+      hexes = ['4,-1,-3', '3,0,-3', '3,1,-4'];
+    }
+  } else if (type == TYPE_STRUCTURE) {
+    const occupiedHexes = Object.keys(player.robotsOnBoard).map(HexUtils.IDToHex);
+    hexes = _.flatMap(occupiedHexes, hex => [
+      new Hex(hex.q, hex.r - 1, hex.s + 1),
+      new Hex(hex.q, hex.r + 1, hex.s - 1),
+      new Hex(hex.q - 1, hex.r + 1, hex.s),
+      new Hex(hex.q + 1, hex.r - 1, hex.s),
+      new Hex(hex.q - 1, hex.r, hex.s + 1),
+      new Hex(hex.q + 1, hex.r, hex.s - 1)
+    ]).map(HexUtils.getId);
+  }
+
+  return hexes.filter(hex => !allObjectsOnBoard(state)[hex]);
 }
 
 //

@@ -1,5 +1,7 @@
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
 
+// Exported cards are used in either defaultState (cores) or in tests.
+
 export const blueCoreCard = {
   name: 'Blue Kernel',
   img: 'core_blue',
@@ -22,7 +24,7 @@ export const orangeCoreCard = {
   abilities: []
 };
 
-const attackBotCard = {
+export const attackBotCard = {
   name: 'Attack Bot',
   cost: 1,
   type: TYPE_ROBOT,
@@ -229,7 +231,7 @@ const monkeyBotCard = {
   ]
 };
 
-const fortificationCard = {
+export const fortificationCard = {
   name: 'Fortification',
   cost: 1,
   type: TYPE_STRUCTURE,

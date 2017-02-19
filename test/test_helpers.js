@@ -1,6 +1,6 @@
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
-import { deck } from '../src/common/store/cards';
+import { TYPE_EVENT } from '../src/common/constants';
 import { allObjectsOnBoard } from '../src/common/util';
 
 export function objectsOnBoardOfType(state, objectType) {
@@ -18,8 +18,7 @@ export function newTurn(state, playerName) {
   }
 }
 
-export function playObject(state, playerName, cardName, hex) {
-  const card = _.find(deck, card => card.name == cardName);
+export function playObject(state, playerName, card, hex) {
   const player = state.players[playerName];
 
   // We don't care about testing card draw and energy here, so ensure that:
@@ -33,6 +32,30 @@ export function playObject(state, playerName, cardName, hex) {
   return game(state, [
     actions.setSelectedCard(0),
     actions.placeCard(hex, card)
+  ]);
+}
+
+// For easier customizability of tests, playEvent() takes a cardCmd rather than an actual card.
+export function playEvent(state, playerName, cardCmd) {
+  const card = {
+    name: cardCmd,
+    text: '',
+    command: cardCmd,
+    cost: 0,
+    type: TYPE_EVENT
+  };
+
+  const player = state.players[playerName];
+
+  // We don't care about testing card draw here, so ensure that:
+  //    1. It's the player's turn.
+  //    2. The player has the card as the first card in their hand.
+  state.currentTurn = playerName;
+  player.hand = [card].concat(player.hand);
+
+  return game(state, [
+    actions.setSelectedCard(0),
+    actions.setSelectedCard(0)
   ]);
 }
 

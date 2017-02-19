@@ -1,7 +1,8 @@
 import game from '../../src/common/reducers/game';
 import defaultState from '../../src/common/store/defaultState';
+import * as cards from '../../src/common/store/cards';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
-import { objectsOnBoardOfType, newTurn, playObject, moveRobot, attack } from '../test_helpers';
+import { objectsOnBoardOfType, newTurn, playObject, playEvent, moveRobot, attack } from '../test_helpers';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {
@@ -12,43 +13,62 @@ describe('Game reducer', () => {
     let state = defaultState;
 
     // Play an Attack Bot to 3,0,-3, by the orange core.
-    state = playObject(state, 'orange', 'Attack Bot', '3,0,-3');
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
     expect(
       objectsOnBoardOfType(state, TYPE_ROBOT)
     ).toEqual({'3,0,-3': 'Attack Bot'});
 
     // Can't play a robot far from core.
-    state = playObject(state, 'orange', 'Attack Bot', '2,0,-2');
+    state = playObject(state, 'orange', cards.attackBotCard, '2,0,-2');
     expect(
       objectsOnBoardOfType(state, TYPE_ROBOT)
     ).toEqual({'3,0,-3': 'Attack Bot'});
 
     // Can't play a robot on an existing location.
-    state = playObject(state, 'orange', 'Attack Bot', '3,0,-3');
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
     expect(
       objectsOnBoardOfType(state, TYPE_ROBOT)
     ).toEqual({'3,0,-3': 'Attack Bot'});
 
     // Can play a structure adjacent to a robot.
-    state = playObject(state, 'orange', 'Fortification', '2,0,-2');
+    state = playObject(state, 'orange', cards.fortificationCard, '2,0,-2');
     expect(
       objectsOnBoardOfType(state, TYPE_STRUCTURE)
     ).toEqual({'2,0,-2': 'Fortification'});
-    state = playObject(state, 'orange', 'Fortification', '0,0,0');
+    state = playObject(state, 'orange', cards.fortificationCard, '0,0,0');
     expect(
       objectsOnBoardOfType(state, TYPE_STRUCTURE)
     ).toEqual({'2,0,-2': 'Fortification'});
 
     // Can't play a structure on an existing location.
-    state = playObject(state, 'orange', 'Fortification', '2,0,-2');
+    state = playObject(state, 'orange', cards.fortificationCard, '2,0,-2');
     expect(
       objectsOnBoardOfType(state, TYPE_STRUCTURE)
     ).toEqual({'2,0,-2': 'Fortification'});
   });
 
+  it('should be able to play events and execute the commands within', () => {
+    let state = defaultState;
+
+    const startingCardsInHand = state.players.orange.hand.length;
+    const startingEnergy = state.players.orange.energy.available;
+
+    // Simple card example: "Draw two cards."
+    state = playEvent(state, 'orange', '(function () { actions["draw"](targets["self"](), 2); })');
+    expect(
+      state.players.orange.hand.length
+    ).toEqual(startingCardsInHand + 2);
+
+    // More complex card example: "Gain energy equal to the number of kernels in play."
+    state = playEvent(state, 'orange', '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + count(objectsInPlay("kernel")); }); })');
+    expect(
+      state.players.orange.energy.available
+    ).toEqual(startingEnergy + 2);
+  });
+
   it('should be able to move robots', () => {
     let state = defaultState;
-    state = playObject(state, 'orange', 'Attack Bot', '3,0,-3');
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
 
     // Robots cannot move on the turn they are placed.
     state = moveRobot(state, '3,0,-3', '2,0,-2');
@@ -102,7 +122,7 @@ describe('Game reducer', () => {
   it('should be able to enforce victory conditions', () => {
     // Orange victory: move an Attack Bot to the blue core and hit it 20 times.
     let state = defaultState;
-    state = playObject(state, 'orange', 'Attack Bot', '3,0,-3');
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
     state = newTurn(state, 'orange');
     state = moveRobot(state, '3,0,-3', '1,0,-1');
     state = newTurn(state, 'orange');
@@ -118,7 +138,7 @@ describe('Game reducer', () => {
 
     // Blue victory: move an Attack Bot to the orange core and hit it 20 times.
     state = defaultState;
-    state = playObject(state, 'blue', 'Attack Bot', '-3,0,3');
+    state = playObject(state, 'blue', cards.attackBotCard, '-3,0,3');
     state = newTurn(state, 'blue');
     state = moveRobot(state, '-3,0,3', '-1,0,1');
     state = newTurn(state, 'blue');

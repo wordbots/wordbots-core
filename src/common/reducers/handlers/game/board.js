@@ -46,12 +46,9 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     state.selectedTile = null;
   }
 
-  delete state.players[state.currentTurn].robotsOnBoard[fromHex];
-  state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
-
+  state = transportObject(state, fromHex, toHex);
   state = applyAbilities(state);
-
-  updateOrDeleteObjectAtHex(state, movingRobot, toHex);
+  state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
 
   return state;
 }

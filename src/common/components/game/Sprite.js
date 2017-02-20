@@ -8,31 +8,37 @@ class Sprite extends Component {
     const size = (this.props.size + (this.props.spacing || 0)) * 2;
 
     // Draw to a mock canvas, then create an image using the dataURL.
-    const mockCanvasElt = document.createElement('canvas');
-    mockCanvasElt.width = size;
-    mockCanvasElt.height = size;
-    const dataURL = this.drawSprite(mockCanvasElt, {
-      seed: this.hashCode(this.props.id),
+    if (typeof document !== 'undefined') {
+      const mockCanvasElt = document.createElement('canvas');
+      mockCanvasElt.width = size;
+      mockCanvasElt.height = size;
+      const dataURL = this.drawSprite(mockCanvasElt, {
+        seed: this.hashCode(this.props.id),
 
-      // Available properties: seed, pal, colours, size, spacing, zoom,
-      // scaler0, scaler1, falloff, probmin, probmax, bias, gain, mirrorh, mirrorv, despeckle, despur
-      pal: 'nes',
-      colours: 5,
-      falloff: 'cosine',
-      mirrorh: 1,
-      mirrorv: 0,
-      size: this.props.size,
-      spacing: this.props.spacing || 0
-    });
+        // Available properties: seed, pal, colours, size, spacing, zoom,
+        // scaler0, scaler1, falloff, probmin, probmax, bias, gain, mirrorh, mirrorv, despeckle, despur
+        pal: 'nes',
+        colours: 5,
+        falloff: 'cosine',
+        mirrorh: 1,
+        mirrorv: 0,
+        size: this.props.size,
+        spacing: this.props.spacing || 0
+      });
 
-    if (this.props.output == 'html') {
-      return (
-        <img src={dataURL} width={size} height={size} />
-      );
-    } else if (this.props.output == 'svg') {
-      return (
-        <image xlinkHref={dataURL} width={1} height={1} />
-      );
+      if (this.props.output == 'html') {
+        return (
+          <img src={dataURL} width={size} height={size} />
+        );
+      } else if (this.props.output == 'svg') {
+        return (
+          <image xlinkHref={dataURL} width={1} height={1} />
+        );
+      }
+    } else {
+      // This should only be returned during server rendering, since node doesn't have access to a DOM.
+      // TODO maybe consider something like https://github.com/Automattic/node-canvas ?
+      return null;
     }
   }
 

@@ -1,5 +1,4 @@
-import { getHex, getAttribute } from '../util';
-import Hex from '../components/react-hexgrid/Hex';
+import { getHex, getAdjacentHexes, getAttribute } from '../util';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.
@@ -14,14 +13,7 @@ export default function conditions(state) {
         const targetObj = objects[0];
         const targetHex = HexUtils.IDToHex(getHex(state, targetObj));
 
-        const neighbors = [
-          new Hex(targetHex.q, targetHex.r - 1, targetHex.s + 1),
-          new Hex(targetHex.q, targetHex.r + 1, targetHex.s - 1),
-          new Hex(targetHex.q - 1, targetHex.r + 1, targetHex.s),
-          new Hex(targetHex.q + 1, targetHex.r - 1, targetHex.s),
-          new Hex(targetHex.q - 1, targetHex.r, targetHex.s + 1),
-          new Hex(targetHex.q + 1, targetHex.r, targetHex.s - 1)
-        ].map(HexUtils.getID);
+        const neighbors = getAdjacentHexes(targetHex).map(HexUtils.getID);
 
         return ((hex, obj) => neighbors.includes(hex));
       } else {

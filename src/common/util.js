@@ -1,5 +1,8 @@
+import { flatMap, without } from 'lodash';
+
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
+import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
 import HexUtils from './components/react-hexgrid/HexUtils';
 
@@ -9,16 +12,20 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // I. Queries for game state.
 //
 
+function opponent(playerName) {
+  return (playerName == 'blue') ? 'orange' : 'blue';
+}
+
+export function opponentName(state) {
+  return opponent(state.currentTurn);
+}
+
 export function currentPlayer(state) {
   return state.players[state.currentTurn];
 }
 
 export function opponentPlayer(state) {
   return state.players[opponentName(state)];
-}
-
-export function opponentName(state) {
-  return (state.currentTurn == 'blue') ? 'orange' : 'blue';
 }
 
 export function allObjectsOnBoard(state) {
@@ -29,10 +36,6 @@ export function ownerOf(state, object) {
   // TODO handle the case where neither player owns the object.
   const blueObjectIds = Object.values(state.players.blue.robotsOnBoard).map(obj => obj.id);
   return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
-}
-
-export function getHex(state, object) {
-  return _.findKey(allObjectsOnBoard(state), ['id', object.id]);
 }
 
 export function getAttribute(object, attr) {
@@ -57,31 +60,69 @@ export function hasEffect(object, effect) {
   return (object.effects || []).map(eff => eff.effect).includes(effect);
 }
 
-export function validPlacementHexes(state, player, type) {
+//
+// II. Grid-related helper functions.
+//
+
+export function getHex(state, object) {
+  return _.findKey(allObjectsOnBoard(state), ['id', object.id]);
+}
+
+export function getAdjacentHexes(hex) {
+  return [
+    new Hex(hex.q, hex.r - 1, hex.s + 1),
+    new Hex(hex.q, hex.r + 1, hex.s - 1),
+    new Hex(hex.q - 1, hex.r + 1, hex.s),
+    new Hex(hex.q + 1, hex.r - 1, hex.s),
+    new Hex(hex.q - 1, hex.r, hex.s + 1),
+    new Hex(hex.q + 1, hex.r, hex.s - 1)
+  ].filter(hex =>
+    // Filter out hexes that are not on the 4-radius hex grid.
+    GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex))
+  );
+}
+
+export function validPlacementHexes(state, playerName, type) {
   let hexes;
   if (type == TYPE_ROBOT) {
-    if (player.name === 'blue') {
-      hexes = ['-3,-1,4', '-3,0,3', '-4,1,3'];
+    if (playerName === 'blue') {
+      hexes = ['-3,-1,4', '-3,0,3', '-4,1,3'].map(HexUtils.IDToHex);
     } else {
-      hexes = ['4,-1,-3', '3,0,-3', '3,1,-4'];
+      hexes = ['4,-1,-3', '3,0,-3', '3,1,-4'].map(HexUtils.IDToHex);
     }
   } else if (type == TYPE_STRUCTURE) {
-    const occupiedHexes = Object.keys(player.robotsOnBoard).map(HexUtils.IDToHex);
-    hexes = _.flatMap(occupiedHexes, hex => [
-      new Hex(hex.q, hex.r - 1, hex.s + 1),
-      new Hex(hex.q, hex.r + 1, hex.s - 1),
-      new Hex(hex.q - 1, hex.r + 1, hex.s),
-      new Hex(hex.q + 1, hex.r - 1, hex.s),
-      new Hex(hex.q - 1, hex.r, hex.s + 1),
-      new Hex(hex.q + 1, hex.r, hex.s - 1)
-    ]).map(HexUtils.getID);
+    const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
+    hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }
 
-  return hexes.filter(hex => !allObjectsOnBoard(state)[hex]);
+  return hexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
+}
+
+export function validMovementHexes(state, startHex, speed) {
+  let validHexes = [startHex];
+
+  for (let distance = 0; distance < speed; distance++) {
+    let newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
+      !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
+    );
+
+    validHexes = validHexes.concat(newHexes);
+  }
+
+  return without(validHexes, startHex);
+}
+
+export function validAttackHexes(state, playerName, startHex, speed) {
+  let validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1));
+  let potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
+
+  return potentialAttackHexes.filter((hex) =>
+    Object.keys(state.players[opponent(playerName)].robotsOnBoard).includes(HexUtils.getID(hex))
+  );
 }
 
 //
-// II. Effects on game state that are performed in many different places.
+// III. Effects on game state that are performed in many different places.
 //
 
 export function drawCards(state, player, count) {
@@ -126,7 +167,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex) {
 }
 
 //
-// III. Card behavior: actions, triggers, passive abilities.
+// IV. Card behavior: actions, triggers, passive abilities.
 //
 
 /* eslint-disable no-unused-vars */

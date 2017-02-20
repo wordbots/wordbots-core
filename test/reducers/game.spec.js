@@ -111,12 +111,50 @@ describe('Game reducer', () => {
   });
 
   it('(TODO) should be able to handle combat between robots', () => {
-    //   Combat when no robot dies
-    //   Combat when defender dies (+ attacker takes its place)
-    //   Combat when attacker dies
-    //   Combat when both robots die
-    //   Combat between robot and structure/core
-    //   Movement into combat
+    let state = getDefaultState();
+    // First, let's move all these bots into a position where they can attack one another.
+    state = playObject(state, 'orange', cards.tankBotCard, '3,0,-3');
+    state = playObject(state, 'orange', cards.attackBotCard, '4,-1,-3');
+    state = playObject(state, 'blue', cards.tankBotCard, '-3,0,3');
+    state = playObject(state, 'blue', cards.attackBotCard, '-4,1,3');
+    state = newTurn(state, 'orange');
+    state = moveRobot(state, '3,0,-3', '2,0,-2');
+    state = moveRobot(state, '4,-1,-3', '2,-1,-1');
+    state = newTurn(state, 'blue');
+    state = moveRobot(state, '-3,0,3', '-2,0,2');
+    state = moveRobot(state, '-4,1,3', '-2,1,1');
+    state = newTurn(state, 'orange');
+    state = moveRobot(state, '2,0,-2', '1,0,-1');
+    state = moveRobot(state, '2,-1,-1', '0,-1,1');
+    state = newTurn(state, 'blue');
+    state = moveRobot(state, '-2,0,2', '-1,0,1');
+    state = moveRobot(state, '-2,1,1', '-1,1,0');
+    state = newTurn(state, 'orange');
+    state = moveRobot(state, '1,0,-1', '0,0,0');
+    state = newTurn(state, 'blue');
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual(['-1,0,1', '0,0,0', '0,-1,1', '-1,1,0'].sort());
+
+    // Robots can't attack inaccessible robots.
+    state = attack(state, '-1,1,0', '0,-1,1');
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual(['-1,0,1', '0,0,0', '0,-1,1', '-1,1,0'].sort());
+
+    // Robots can't attack friendly robots.
+
+    // Combat when no robot dies. [Both Tank Bots should now be down to 4-2=2 health.]
+
+    // Combat when attacker dies.
+
+    // Combat when defender dies (+ attacker takes its place).
+
+    // Combat when both robots die.
+
+    // Robots with range >1 can move into combat.
+
+    // Defender Bot can't attack.
   });
 
   it('should be able to enforce victory conditions', () => {

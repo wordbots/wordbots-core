@@ -36,7 +36,7 @@ export const attackBotCard = {
   abilities: []
 };
 
-const tankBotCard = {
+export const tankBotCard = {
   name: 'Tank Bot',
   cost: 3,
   type: TYPE_ROBOT,

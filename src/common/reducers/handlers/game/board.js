@@ -1,7 +1,9 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute,
-  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities
+  validMovementHexes, validAttackHexes,
+  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  checkTriggers, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
@@ -40,14 +42,16 @@ export function setSelectedTile(state, tile) {
 export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
-  const distanceToMove = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
 
   // Is the move valid?
-  if (movingRobot.movesLeft >= distanceToMove && !allObjectsOnBoard(state)[toHex]) {
+  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft);
+  if (validHexes.map(HexUtils.getID).includes(toHex)) {
     if (!asPartOfAttack) {
-      movingRobot.movesLeft -= distanceToMove;
       state.selectedTile = null;
     }
+
+    const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
+    movingRobot.movesLeft -= distance;
 
     delete state.players[state.currentTurn].robotsOnBoard[fromHex];
     state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
@@ -70,26 +74,30 @@ export function attack(state, source, target) {
   const attacker = player.robotsOnBoard[source];
   const defender = opponent.robotsOnBoard[target];
 
-  attacker.movesLeft = 0;
+  // Is the attack valid?
+  const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft);
+  if (validHexes.map(HexUtils.getID).includes(target)) {
+    attacker.movesLeft = 0;
 
-  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source);
-  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target);
+    dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source);
+    dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target);
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
-  ));
+    state = checkTriggers(state, 'afterAttack', (trigger =>
+      trigger.objects.map(o => o.id).includes(attacker.id)
+    ));
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
-  ));
+    state = checkTriggers(state, 'afterAttack', (trigger =>
+      trigger.objects.map(o => o.id).includes(attacker.id)
+    ));
 
-  // Move attacker to defender's space (if possible).
-  if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
-    state.players[state.currentTurn].robotsOnBoard[target] = attacker;
-    delete state.players[state.currentTurn].robotsOnBoard[source];
+    // Move attacker to defender's space (if possible).
+    if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
+      state.players[state.currentTurn].robotsOnBoard[target] = attacker;
+      delete state.players[state.currentTurn].robotsOnBoard[source];
+    }
+
+    state.selectedTile = null;
   }
-
-  state.selectedTile = null;
 
   return state;
 }

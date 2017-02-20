@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { some, mapValues } from 'lodash';
 
-import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';
-import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
-import { getAttribute, hasEffect, validPlacementHexes } from '../../util';
+import {
+  getAttribute, hasEffect,
+  getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
+} from '../../util';
 
 class Board extends Component {
   constructor(props) {
@@ -39,25 +40,24 @@ class Board extends Component {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  getAdjacentHexes(hex) {
-    return [
-      new Hex(hex.q, hex.r - 1, hex.s + 1),
-      new Hex(hex.q, hex.r + 1, hex.s - 1),
-      new Hex(hex.q - 1, hex.r + 1, hex.s),
-      new Hex(hex.q + 1, hex.r - 1, hex.s),
-      new Hex(hex.q - 1, hex.r, hex.s + 1),
-      new Hex(hex.q + 1, hex.r, hex.s - 1)
-    ].filter(hex => GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex)));
+  dummyState() {
+    // util.valid[Placement/Movement/Attack]Hexes() functions require a state object, so we create a dummy one.
+    // TODO find a less gross approach?
+    return {
+      players: {blue: {robotsOnBoard: this.props.bluePieces}, orange: {robotsOnBoard: this.props.orangePieces}}
+    };
   }
 
-  getValidPlacementTiles() {
-    // util.validPlacementHexes(state, player, type) requires state and player, so we create some dummy objects.
-    // TODO find a less gross approach?
-    return validPlacementHexes(
-      {players: {blue: {robotsOnBoard: this.props.bluePieces}, orange: {robotsOnBoard: this.props.orangePieces}}},
-      {name: this.props.currentTurn, robotsOnBoard: this.currentPlayerPieces()},
-      this.props.playingCardType
-    ).map(HexUtils.IDToHex);
+  getValidPlacementHexes() {
+    return validPlacementHexes(this.dummyState(), this.props.currentTurn, this.props.playingCardType);
+  }
+
+  getValidMovementHexes(startHex, speed) {
+    return validMovementHexes(this.dummyState(), startHex, speed);
+  }
+
+  getValidAttackHexes(startHex, speed) {
+    return validAttackHexes(this.dummyState(), startHex, speed);
   }
 
   updateHexColors() {
@@ -91,7 +91,7 @@ class Board extends Component {
         hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
       }
     } else if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
-      this.getValidPlacementTiles().forEach((hex) => {
+      this.getValidPlacementHexes().forEach((hex) => {
         hexColors[HexUtils.getID(hex)] = 'green';
       });
     }
@@ -105,44 +105,17 @@ class Board extends Component {
 
     let newHexColors = Object.assign({}, existingHexColors);
 
-    this.getValidMovementSpaces(hex, speed).forEach((hex) =>
+    this.getValidMovementHexes(hex, speed).forEach((hex) =>
       newHexColors[HexUtils.getID(hex)] = 'green'
     );
 
     if (!hasEffect(selectedPiece, 'cannotattack')) {
-      this.getValidAttackSpaces(hex, speed).forEach((hex) =>
+      this.getValidAttackHexes(hex, speed).forEach((hex) =>
         newHexColors[HexUtils.getID(hex)] = 'red'
       );
     }
 
     return newHexColors;
-  }
-
-  getValidMovementSpaces(startHex, speed) {
-    let validHexes = [startHex];
-
-    for (let distance = 0; distance < speed; distance++) {
-      let newHexes = [].concat.apply([], validHexes.map((hex) =>
-        this.getAdjacentHexes(hex)
-          .filter((hex) => !Object.keys(this.allPieces()).includes(HexUtils.getID(hex)))
-      ));
-
-      validHexes = validHexes.concat(newHexes);
-    }
-
-    return validHexes.filter((hex) => hex != startHex);
-  }
-
-  getValidAttackSpaces(startHex, speed) {
-    let validMoveHexes = [startHex].concat(this.getValidMovementSpaces(startHex, speed - 1));
-
-    let potentialAttackHexes = [].concat.apply([], validMoveHexes.map((hex) =>
-      this.getAdjacentHexes(hex)
-    ));
-
-    return potentialAttackHexes.filter((hex) =>
-      Object.keys(this.opponentPieces()).includes(HexUtils.getID(hex))
-    );
   }
 
   onHexClick(hex, event) {
@@ -152,7 +125,7 @@ class Board extends Component {
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
     if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
-      if (some(this.getValidPlacementTiles(), (h) => HexUtils.getID(h) === HexUtils.getID(hex))) {
+      if (some(this.getValidPlacementHexes(), (h) => HexUtils.getID(h) === HexUtils.getID(hex))) {
         action = 'place';
       }
     }
@@ -161,17 +134,17 @@ class Board extends Component {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
       const speed = selectedPiece.stats.speed;
 
-      const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map(HexUtils.getID);
-      const validAttackHexes = this.getValidAttackSpaces(selectedHex, speed).map(HexUtils.getID);
+      const validMovementHexes = this.getValidMovementHexes(selectedHex, speed).map(HexUtils.getID);
+      const validAttackHexes = this.getValidAttackHexes(selectedHex, speed).map(HexUtils.getID);
 
       if (validMovementHexes.includes(HexUtils.getID(hex))) {
         action = 'move';
       } else if (validAttackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
         action = 'attack';
 
-        if (!this.getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
+        if (!getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
           // Attack destination is not adjacent to current position, so we need an intermediate move action.
-          const possibleMoveHexes = this.getAdjacentHexes(hex).map(HexUtils.getID).filter((h) => validMovementHexes.includes(h));
+          const possibleMoveHexes = getAdjacentHexes(hex).map(HexUtils.getID).filter((h) => validMovementHexes.includes(h));
 
           if (possibleMoveHexes.length > 0) {
             intermediateMoveHex = possibleMoveHexes[0];

@@ -1,5 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 import { currentPlayer, validPlacementHexes, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
+import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -64,9 +65,8 @@ export function placeCard(state, card, tile) {
   const player = currentPlayer(tempState);
   const selectedCardIndex = tempState.selectedCard;
 
-  if (card &&
-      player.energy.available >= getCost(card) &&
-      validPlacementHexes(state, player, card.type).includes(tile)) {
+  if (player.energy.available >= getCost(card) &&
+      validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
     const playedObject = {
       id: Math.random().toString(36),
       card: card,

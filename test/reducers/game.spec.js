@@ -131,30 +131,61 @@ describe('Game reducer', () => {
     state = moveRobot(state, '-2,1,1', '-1,1,0');
     state = newTurn(state, 'orange');
     state = moveRobot(state, '1,0,-1', '0,0,0');
-    state = newTurn(state, 'blue');
+
+    const orangeTankBotPos = '0,0,0';
+    let blueTankBotPos = '-1,0,1';
+    const orangeAttackBotPos = '0,-1,1';
+    const blueAttackBotPos = '-1,1,0';
+
     expect(
       Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-    ).toEqual(['-1,0,1', '0,0,0', '0,-1,1', '-1,1,0'].sort());
+    ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
     // Robots can't attack inaccessible robots.
-    state = attack(state, '-1,1,0', '0,-1,1');
+    state = newTurn(state, 'blue');
+    state = attack(state, blueAttackBotPos, orangeAttackBotPos);
     expect(
       Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-    ).toEqual(['-1,0,1', '0,0,0', '0,-1,1', '-1,1,0'].sort());
+    ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
     // Robots can't attack friendly robots.
+    state = attack(state, blueAttackBotPos, blueTankBotPos);
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
     // Combat when no robot dies. [Both Tank Bots should now be down to 4-2=2 health.]
+    state = attack(state, blueTankBotPos, orangeTankBotPos);
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
     // Combat when attacker dies.
+    state = attack(state, blueAttackBotPos, orangeTankBotPos);
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos].sort());
 
-    // Combat when defender dies (+ attacker takes its place).
+    // Combat when defender dies and attacker takes its place.
+    state = newTurn(state, 'blue');
+    state = attack(state, blueTankBotPos, orangeAttackBotPos);
+    blueTankBotPos = orangeAttackBotPos;
+    expect(
+      state.players.blue.robotsOnBoard[blueTankBotPos].card.name
+    ).toEqual('Tank Bot');
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual([orangeTankBotPos, blueTankBotPos].sort());
 
     // Combat when both robots die.
+    state = newTurn(state, 'orange');
+    state = attack(state, orangeTankBotPos, blueTankBotPos);
+    expect(
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({});
 
     // Robots with range >1 can move into combat.
-
-    // Defender Bot can't attack.
+    // TODO Figure out how to test this? Right now move+attack is handled in the Board component, not the reducer.
   });
 
   it('should be able to enforce victory conditions', () => {

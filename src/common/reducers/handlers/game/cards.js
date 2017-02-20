@@ -86,7 +86,7 @@ export function placeCard(state, card, tile) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
     }
 
-    tempState = checkTriggers(tempState, 'afterPlayed', (trigger =>
+    tempState = checkTriggers(tempState, 'afterPlayed', playedObject, (trigger =>
       trigger.objects.map(o => o.id).includes(playedObject.id)
     ));
 
@@ -107,6 +107,10 @@ export function placeCard(state, card, tile) {
       placementTile: tile  // Store the tile the object was played on, for the actual placement later.
     });
   } else {
+    // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
+    // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
+    tempState = applyAbilities(tempState);
+
     return tempState;
   }
 }

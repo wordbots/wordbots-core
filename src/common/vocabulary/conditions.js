@@ -1,4 +1,4 @@
-import { getHex, getAdjacentHexes, getAttribute } from '../util';
+import { getHex, getAttribute, getAdjacentHexes } from '../util';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.
@@ -7,19 +7,11 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 export default function conditions(state) {
   return {
     adjacentTo: function (objects) {
-      if (objects.length > 0) {
-        // Hex target is always in the form of list of objects, so just unpack it.
-        // TODO do we want to handle the case where objects has more than one entry?
-        const targetObj = objects[0];
-        const targetHex = HexUtils.IDToHex(getHex(state, targetObj));
+      const neighborHexIds = _.flatMap(objects, obj =>
+        getAdjacentHexes(HexUtils.IDToHex(getHex(state, obj)))
+      ).map(HexUtils.getID);
 
-        const neighbors = getAdjacentHexes(targetHex).map(HexUtils.getID);
-
-        return ((hex, obj) => neighbors.includes(hex));
-      } else {
-        // objects is empty, so nothing is adjacent - return false for all candidates.
-        return ((hex, obj) => false);
-      }
+      return ((hex, obj) => neighborHexIds.includes(hex));
     },
 
     attributeComparison: function (attr, comp) {

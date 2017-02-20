@@ -1,16 +1,18 @@
 import game from '../../src/common/reducers/game';
-import defaultState from '../../src/common/store/defaultState';
 import * as cards from '../../src/common/store/cards';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
-import { objectsOnBoardOfType, newTurn, playObject, playEvent, moveRobot, attack } from '../test_helpers';
+import {
+  getDefaultState, objectsOnBoardOfType,
+  newTurn, playObject, playEvent, moveRobot, attack
+} from '../test_helpers';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {
-    expect(game(undefined, {})).toEqual(defaultState);
+    expect(game(undefined, {})).toEqual(getDefaultState());
   });
 
   it('should be able to play robots and structures', () => {
-    let state = defaultState;
+    let state = getDefaultState();
 
     // Play an Attack Bot to 3,0,-3, by the orange core.
     state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
@@ -48,26 +50,24 @@ describe('Game reducer', () => {
   });
 
   it('should be able to play events and execute the commands within', () => {
-    let state = defaultState;
+    let state = getDefaultState();
 
-    const startingCardsInHand = state.players.orange.hand.length;
-    const startingEnergy = state.players.orange.energy.available;
-
-    // Simple card example: "Draw two cards."
-    state = playEvent(state, 'orange', '(function () { actions["draw"](targets["self"](), 2); })');
+    // "Draw two cards."
+    state = playEvent(state, 'orange', cards.concentrationCard);
     expect(
       state.players.orange.hand.length
-    ).toEqual(startingCardsInHand + 2);
+    ).toEqual(getDefaultState().players.orange.hand.length + 2);
 
-    // More complex card example: "Gain energy equal to the number of kernels in play."
-    state = playEvent(state, 'orange', '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + count(objectsInPlay("kernel")); }); })');
+    // "Destroy all robots."
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
+    state = playEvent(state, 'orange', cards.wrathOfRobotGodCard);
     expect(
-      state.players.orange.energy.available
-    ).toEqual(startingEnergy + 2);
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({});
   });
 
   it('should be able to move robots', () => {
-    let state = defaultState;
+    let state = getDefaultState();
     state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
 
     // Robots cannot move on the turn they are placed.
@@ -121,7 +121,7 @@ describe('Game reducer', () => {
 
   it('should be able to enforce victory conditions', () => {
     // Orange victory: move an Attack Bot to the blue core and hit it 20 times.
-    let state = defaultState;
+    let state = getDefaultState();
     state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
     state = newTurn(state, 'orange');
     state = moveRobot(state, '3,0,-3', '1,0,-1');
@@ -137,7 +137,7 @@ describe('Game reducer', () => {
     expect(state.winner).toEqual('orange');
 
     // Blue victory: move an Attack Bot to the orange core and hit it 20 times.
-    state = defaultState;
+    state = getDefaultState();
     state = playObject(state, 'blue', cards.attackBotCard, '-3,0,3');
     state = newTurn(state, 'blue');
     state = moveRobot(state, '-3,0,3', '-1,0,1');

@@ -48,7 +48,7 @@ const tankBotCard = {
   abilities: []
 };
 
-const concentrationCard = {
+export const concentrationCard = {
   name: 'Concentration',
   text: 'Draw two cards.',
   command: '(function () { actions["draw"](targets["self"](), 2); })',
@@ -72,7 +72,7 @@ const rampageCard = {
   type: TYPE_EVENT
 };
 
-const wrathOfRobotGodCard = {
+export const wrathOfRobotGodCard = {
   name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
   command: '(function () { actions["destroy"](targets["all"](objectsInPlay("robot"))); })',

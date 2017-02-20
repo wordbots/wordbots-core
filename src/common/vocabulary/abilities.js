@@ -6,7 +6,7 @@ export function setAbility(state, currentObject) {
 
 // Abilities are functions that return an object the following properties:
 //   aid => ('ability ID') unique identifier
-//   targets => function that returns targets given board state
+//   targets => function that returns targets when called with executeCmd
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
 
@@ -16,7 +16,7 @@ export function abilities(state) {
       const aid = Math.random().toString(36);
       return {
         aid: aid,
-        targets: targetFunc,
+        targets: `(${targetFunc.toString()})`,
         apply: function (target) {
           if (!target.temporaryStatAdjustments) {
             target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
@@ -43,7 +43,7 @@ export function abilities(state) {
       const aid = Math.random().toString(36);
       return {
         aid: aid,
-        targets: targetFunc,
+        targets: `(${targetFunc.toString()})`,
         apply: function (target) {
           target.effects = (target.effects || []).concat({
             aid: aid,

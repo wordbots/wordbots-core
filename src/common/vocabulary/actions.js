@@ -1,5 +1,5 @@
 import { TYPE_CORE } from '../constants';
-import { getHex, drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
+import { ownerOf, getHex, drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
 
 export default function actions(state) {
   return {
@@ -66,5 +66,19 @@ export default function actions(state) {
         }
       });
     },
+
+    takeControl: function (players, objects) {
+      const newOwner = players[0]; // Unpack player.
+
+      objects.forEach(function (object) {
+        const currentOwner = ownerOf(state, object);
+        if (newOwner.name != currentOwner.name) {
+          const hex = getHex(state, object);
+
+          newOwner.robotsOnBoard[hex] = object;
+          delete currentOwner.robotsOnBoard[hex];
+        }
+      });
+    }
   };
 }

@@ -1,5 +1,7 @@
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
 
+/* eslint-disable quotes */
+
 export const blueCoreCard = {
   name: 'Blue Kernel',
   img: 'core_blue',
@@ -164,7 +166,7 @@ const botOfPainCard = {
   },
   text: 'At the end of each turn, each robot takes 1 damage.',
   abilities: [
-    '(function () { setTrigger(triggers["endOfTurn"](targets["allPlayers"]()), (function () { actions["dealDamage"](targets["all"](objectsInPlay("robot")), 1); })); })'
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { actions['dealDamage'](targets['all'](objectsInPlay('robot')), 1); })); })"
   ]
 };
 
@@ -179,7 +181,7 @@ const dojoDiscipleCard = {
   },
   text: 'At the beginning of each of your turns, this robot gains 1 attack.',
   abilities: [
-    '(function () { setTrigger(triggers["beginningOfTurn"](targets["self"]()), (function () { actions["modifyAttribute"](targets["thisRobot"](), "attack", function (x) { return x + 1; }); })); })'
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['self'](); }), (function () { actions['modifyAttribute'](targets['thisRobot'](), 'attack', function (x) { return x + 1; }); })); })"
   ]
 };
 
@@ -194,7 +196,7 @@ const wisdomBotCard = {
   },
   text: 'Whenever this robot takes damage, draw a card.',
   abilities: [
-    '(function () { setTrigger(triggers["afterDamageReceived"](targets["thisRobot"]()), (function () { actions["draw"](targets["self"](), 1); })); })'
+    "(function () { setTrigger(triggers['afterDamageReceived'](function () { return targets['thisRobot'](); }), (function () { actions['draw'](targets['self'](), 1); })); })"
   ]
 };
 
@@ -210,7 +212,7 @@ const generalBotCard = {
   text: 'Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again.',
   abilities: [
     '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()), conditions["controlledBy"](targets["self"]())])); }, "attack", function (x) { return x + 1; })); })',
-    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["canMoveAgain"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })); })'
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['canMoveAgain'](targets['all'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]))); })); })"
   ]
 };
 
@@ -225,7 +227,7 @@ const monkeyBotCard = {
   },
   text: 'When this robot attacks, it deals damage to all adjacent robots.',
   abilities: [
-    '(function () { setTrigger(triggers["afterAttack"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]())])), attributeValue(targets["thisRobot"](), "attack")); })); })'
+    "(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])), attributeValue(targets['thisRobot'](), 'attack')); })); })"
   ]
 };
 
@@ -283,7 +285,7 @@ const flametongueBotCard = {
   },
   text: 'When this robot is played, deal 4 damage.',
   abilities: [
-    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["dealDamage"](targets["choose"](objectsInPlay("allobjects")), 4); })); })'
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['choose'](objectsInPlay('allobjects')), 4); })); })"
   ]
 };
 
@@ -298,23 +300,54 @@ const investorBotCard = {
   },
   text: 'When this robot is played, reduce the cost of a card in your hand by 2.',
   abilities: [
-    '(function () { setTrigger(triggers["afterPlayed"](targets["thisRobot"]()), (function () { actions["modifyAttribute"](targets["choose"](cardsInHand(targets["self"](), "anycard")), "cost", function (x) { return x - 2; }); })); })'
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](targets['choose'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 2; }); })); })"
   ]
 };
 
+const arenaCard = {
+  name: 'Arena',
+  cost: 3,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 3
+  },
+  text: 'Whenever a robot is destroyed in combat, deal 1 damage to its controller.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['all'](objectsInPlay('robot')); }, 'combat'), (function () { actions['dealDamage'](targets['controllerOf'](targets['it']()), 1); })); })"
+  ]
+};
+
+const martyrBotCard = {
+  name: 'Martyr Bot',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 0
+  },
+  text: 'When this robot is destroyed, take control of all adjacent robots.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['takeControl'](targets['self'](), targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]))); })); })"
+  ]
+};
+
+/* eslint-enable quotes */
 
 export const deck = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,
   flametongueBotCard,
-  investorBotCard,
+  arenaCard,
+  fortificationCard,
+  shockCard,
+  martyrBotCard,
   superchargeCard,
   recruiterBotCard,
-  shockCard,
+  investorBotCard,
   earthquakeCard,
   defenderBotCard,
-  fortificationCard,
   fortificationCard,
   threedomCard,
   monkeyBotCard,

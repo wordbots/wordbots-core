@@ -110,7 +110,7 @@ describe('Game reducer', () => {
     ).toEqual({'-1,0,1': 'Attack Bot'});
   });
 
-  it('(TODO) should be able to handle combat between robots', () => {
+  it('should be able to handle combat between robots', () => {
     let state = getDefaultState();
     // First, let's move all these bots into a position where they can attack one another.
     state = playObject(state, 'orange', cards.tankBotCard, '3,0,-3');

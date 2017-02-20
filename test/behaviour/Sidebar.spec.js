@@ -8,9 +8,9 @@ import configureStore from '../../src/common/store/configureStore';
 
 const TestUtils = React.addons.TestUtils;
 
-describe('Sidebar behaviour', function(){
+describe('Sidebar behaviour', function (){
 
-  before('render and locate element', function() {
+  before('render and locate element', function () {
     const store = configureStore({});
 
     const renderedComponent = TestUtils.renderIntoDocument(
@@ -42,19 +42,19 @@ describe('Sidebar behaviour', function(){
 
   });
 
-  it('sidebar should exist', function() {
+  it('sidebar should exist', function () {
     expect(this.sidebar).toExist();
   });
 
-  it('sidebar should be closed', function() {
+  it('sidebar should be closed', function () {
     expect(this.sidebar.getAttribute('class')).toBe('sidebar');
   });
 
-  it('sidebar toggle should exist', function() {
+  it('sidebar toggle should exist', function () {
     expect(this.sidebarToggle).toExist();
   });
 
-  it('clicking sidebar toggle should open sidebar', function() {
+  it('clicking sidebar toggle should open sidebar', function () {
     expect(this.wrapper.getAttribute('class')).toBe('wrapper');
     TestUtils.Simulate.click(this.sidebarToggle);
     expect(this.wrapper.getAttribute('class')).toBe('wrapper open');

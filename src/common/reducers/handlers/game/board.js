@@ -1,6 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -46,12 +46,20 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     state.selectedTile = null;
   }
 
-  delete state.players[state.currentTurn].robotsOnBoard[fromHex];
-  state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
-
+  state = transportObject(state, fromHex, toHex);
   state = applyAbilities(state);
+  state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
 
-  updateOrDeleteObjectAtHex(state, movingRobot, toHex);
+  return state;
+}
+
+// Low-level "move" of an object.
+function transportObject(state, fromHex, toHex) {
+  const robot = allObjectsOnBoard(state)[fromHex];
+  const owner = ownerOf(state, robot);
+
+  owner.robotsOnBoard[toHex] = robot;
+  delete owner.robotsOnBoard[fromHex];
 
   return state;
 }
@@ -68,22 +76,23 @@ export function attack(state, source, target) {
 
   attacker.movesLeft = 0;
 
-  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source);
-  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target);
+  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
+  state = checkTriggers(state, 'afterAttack', attacker, (trigger =>
+    trigger.targets.map(o => o.id).includes(attacker.id)
   ));
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
+  state = checkTriggers(state, 'afterAttack', defender, (trigger =>
+    trigger.targets.map(o => o.id).includes(defender.id)
   ));
 
   // Move attacker to defender's space (if possible).
   if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
-    state.players[state.currentTurn].robotsOnBoard[target] = attacker;
-    delete state.players[state.currentTurn].robotsOnBoard[source];
+    state = transportObject(state, source, target);
   }
+
+  state = applyAbilities(state);
 
   state.selectedTile = null;
 

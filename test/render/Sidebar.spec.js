@@ -6,7 +6,7 @@ import Sidebar from '../../src/common/components/layout/Sidebar';
 
 const TestUtils = React.addons.TestUtils;
 
-describe('Sidebar Rending', function(){
+describe('Sidebar Rending', function (){
 
 	const user =  {
 		name : 'John Smith',
@@ -18,7 +18,7 @@ describe('Sidebar Rending', function(){
 	const version = '0.0.1';
 
 
-  before('render and locate element', function() {
+  before('render and locate element', function () {
     const renderedComponent = TestUtils.renderIntoDocument(
     	<Sidebar user={user} version={version} />
     );
@@ -44,19 +44,19 @@ describe('Sidebar Rending', function(){
 
   });
 
-  it('user name should be "' + user.name+ '"', function() {
+  it('user name should be "' + user.name+ '"', function () {
     expect(this.username.textContent).toBe(user.name);
   });
 
-  it('version should not be ' + version , function() {
+  it('version should not be ' + version , function () {
     expect(this.versionNumber.textContent).toBe('Currently version ' + version);
   });
 
-  it('There should be 5 Navigation Links', function() {
+  it('There should be 5 Navigation Links', function () {
     expect(this.linkArray.length - 1).toBe(5);
   });
 
-  it('First link should be "Home [static]"', function() {
+  it('First link should be "Home [static]"', function () {
     expect(this.firstLink.textContent).toBe('Home [static]');
   });
 

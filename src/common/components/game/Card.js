@@ -12,6 +12,7 @@ import loadImages from '../react-hexgrid/HexGridImages';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
 import Identicon from './Identicon';
+import Sprite from './Sprite';
 
 class Card extends Component {
   constructor(props) {
@@ -87,18 +88,10 @@ class Card extends Component {
         </div>
       );
     } else {
-      // Sprites are 32x32 w/ 10px padding in between.
-      const hash = Math.abs(this.props.name.split('').reduce((a,b) => {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
-      const idx1 = hash % 32;
-      const idx2 = Math.floor(hash / 32) % 32;
       return (
-        <div style={{
-          width: 52,
-          height: 52,
-          margin: '0 auto',
-          backgroundImage: `url(${loadImages()['spritesheet']})`,
-          backgroundPosition: `-${idx1 * 42}px -${idx2 * 42}px`
-        }} />
+        <div style={{ width: '48px', height: '48px', margin: '2px auto 3px'}}>
+          <Sprite id={this.props.name} size={24} output="html" />
+        </div>
       );
     }
   }

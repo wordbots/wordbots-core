@@ -381,7 +381,7 @@ export const deck = [
   wrathOfRobotGodCard
 ].map(card =>
   Object.assign({}, card, {
-    id: uniqueId(),
+    id: 'card_' + uniqueId(),
     baseCost: card.cost
   })
 );

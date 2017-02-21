@@ -100,9 +100,9 @@ app.get('/*', (req, res) => {
           const head = Helmet.rewind();
           res.status(200).end(renderFullPage(componentHTML,initialState, head));
         })
-        .catch(err => {
+        .catch(e => {
           /* eslint-disable no-console */
-          console.log(err);
+          console.log(e);
           /* eslint-enable no-console */
           res.end(renderFullPage('',{}));
         });

@@ -78,9 +78,9 @@ export function getAdjacentHexes(hex) {
     new Hex(hex.q + 1, hex.r - 1, hex.s),
     new Hex(hex.q - 1, hex.r, hex.s + 1),
     new Hex(hex.q + 1, hex.r, hex.s - 1)
-  ].filter(hex =>
+  ].filter(adjacentHex =>
     // Filter out hexes that are not on the 4-radius hex grid.
-    GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex))
+    GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(adjacentHex))
   );
 }
 

@@ -105,14 +105,14 @@ class Board extends Component {
 
     const newHexColors = Object.assign({}, existingHexColors);
 
-    this.getValidMovementHexes(hex, speed).forEach((hex) =>
-      newHexColors[HexUtils.getID(hex)] = 'green'
-    );
+    this.getValidMovementHexes(hex, speed).forEach(h => {
+      newHexColors[HexUtils.getID(h)] = 'green';
+    });
 
     if (!hasEffect(selectedPiece, 'cannotattack')) {
-      this.getValidAttackHexes(hex, speed).forEach((hex) =>
-        newHexColors[HexUtils.getID(hex)] = 'red'
-      );
+      this.getValidAttackHexes(hex, speed).forEach((h) => {
+        newHexColors[HexUtils.getID(h)] = 'red';
+      });
     }
 
     return newHexColors;
@@ -134,12 +134,12 @@ class Board extends Component {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
       const speed = selectedPiece.stats.speed;
 
-      const validMovementHexes = this.getValidMovementHexes(selectedHex, speed).map(HexUtils.getID);
-      const validAttackHexes = this.getValidAttackHexes(selectedHex, speed).map(HexUtils.getID);
+      const movementHexes = this.getValidMovementHexes(selectedHex, speed).map(HexUtils.getID);
+      const attackHexes = this.getValidAttackHexes(selectedHex, speed).map(HexUtils.getID);
 
-      if (validMovementHexes.includes(HexUtils.getID(hex))) {
+      if (movementHexes.includes(HexUtils.getID(hex))) {
         action = 'move';
-      } else if (validAttackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
+      } else if (attackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
         action = 'attack';
 
         if (!getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {

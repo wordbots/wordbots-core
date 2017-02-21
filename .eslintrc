@@ -29,6 +29,7 @@
     "import/prefer-default-export": 1,
     "jsx-quotes": 2,
     "no-console": 1,
+    "no-shadow": 2,
     "no-unused-vars": [2, { "args": "none" }],
     "no-var": 2,
     "prefer-arrow-callback": 2,

@@ -12,8 +12,8 @@ export default function getUser(token, callback) {
       if (response.status === 200) {
         request
           .get(`http://${config.apiHost}:${config.apiPort}/api/users/${response.data.valid.userId}?access_token=${token}`)
-          .then((response) => {
-            callback(response.data);
+          .then((getUserResponse) => {
+            callback(getUserResponse.data);
           })
           .catch((err) => {
             callback(false);

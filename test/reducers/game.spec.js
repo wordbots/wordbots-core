@@ -222,7 +222,7 @@ describe('Game reducer', () => {
     ).toEqual({});
   });
 
-  it('should be able to play events that target tiles or cards', () => {
+  it('should be able to play events that target selected tiles or cards', () => {
     // Test ability to select a tile with an object:
     // "Deal 3 damage to a robot."
     let state = getDefaultState();

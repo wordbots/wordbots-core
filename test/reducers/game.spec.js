@@ -1,4 +1,5 @@
 import game from '../../src/common/reducers/game';
+import * as actions from '../../src/common/actions/game';
 import * as cards from '../../src/common/store/cards';
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
 import {
@@ -144,7 +145,14 @@ describe('Game reducer', () => {
     ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
     // Combat when attacker dies.
-    state = attack(state, blueAttackBotPos, orangeTankBotPos);
+    // Also, let's test moveAndAttack while we're at it, by moving the blue attack bot out of range and
+    // and then (next turn) moving+attacking the orange tank bot as a single action.
+    state = moveRobot(state, blueAttackBotPos, '-2,1,1');
+    state = newTurn(state, 'blue');
+    state = game(state, [
+      actions.setSelectedTile('-2,1,1'),
+      actions.moveRobotAndAttack('-2,1,1', blueAttackBotPos, orangeTankBotPos)
+    ]);
     expect(
       Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
     ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos].sort());
@@ -166,9 +174,6 @@ describe('Game reducer', () => {
     expect(
       objectsOnBoardOfType(state, TYPE_ROBOT)
     ).toEqual({});
-
-    // Robots with range >1 can move into combat.
-    // TODO Figure out how to test this? Right now move+attack is handled in the Board component, not the reducer.
   });
 
   it('should be able to enforce victory conditions', () => {

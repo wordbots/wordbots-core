@@ -53,7 +53,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-  GLOBAL.navigator = {
+  global.navigator = {
     userAgent: req.headers['user-agent']
   };
   next();

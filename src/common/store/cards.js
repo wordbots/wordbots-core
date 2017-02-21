@@ -114,7 +114,7 @@ const untapCard = {
   type: TYPE_EVENT
 };
 
-const missileStrikeCard = {
+export const missileStrikeCard = {
   name: 'Missile Strike',
   text: 'Deal 5 damage to your opponent.',
   command: '(function () { actions["dealDamage"](targets["opponent"](), 5); })',

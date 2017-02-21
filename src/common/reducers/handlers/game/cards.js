@@ -8,7 +8,7 @@ export function setSelectedCard(state, cardIdx) {
 
   state.selectedTile = null;
 
-  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && !_.isNull(state.selectedCard)) {
+  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && state.selectedCard !== null) {
     // Select target card for event or afterPlayed trigger.
     state.target = Object.assign({}, state.target, {
       chosen: [selectedCard],
@@ -16,13 +16,16 @@ export function setSelectedCard(state, cardIdx) {
       possibleCards: []
     });
 
+    // Perform the trigger.
     const playedCard = state.players[state.currentTurn].hand[state.selectedCard];
-
     if (playedCard.type == TYPE_EVENT) {
-      return playEvent(state, state.selectedCard);
+      state = playEvent(state, state.selectedCard);
     } else {
-      return placeCard(state, playedCard, state.placementTile);
+      state = placeCard(state, playedCard, state.placementTile);
     }
+
+    // Reset target.
+    return Object.assign({}, state, {target: {choosing: false, chosen: null, possibleHexes: [], possibleCards: []}});
   } else {
     // Toggle card selection.
 
@@ -91,8 +94,6 @@ export function placeCard(state, card, tile) {
     ));
 
     tempState = applyAbilities(tempState);
-
-    console.log(tempState);
 
     playedObject.justPlayed = false;
 

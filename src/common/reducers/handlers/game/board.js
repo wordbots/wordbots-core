@@ -14,22 +14,25 @@ export function setHoveredCard(state, card) {
 }
 
 export function setSelectedTile(state, tile) {
-  if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
+  if (state.target.choosing && state.target.possibleHexes.includes(tile) && state.selectedCard !== null) {
     // Select target tile for event or afterPlayed trigger.
-    console.log(tile);
     state.target = Object.assign({}, state.target, {
       chosen: [tile],
       choosing: false,
       possibleHexes: []
     });
 
+    // Perform the trigger.
     const card = state.players[state.currentTurn].hand[state.selectedCard];
 
     if (card.type == TYPE_EVENT) {
-      return playEvent(state, state.selectedCard);
+      state = playEvent(state, state.selectedCard);
     } else {
-      return placeCard(state, card, state.placementTile);
+      state = placeCard(state, card, state.placementTile);
     }
+
+    // Reset target.
+    return Object.assign({}, state, {target: {choosing: false, chosen: null, possibleHexes: [], possibleCards: []}});
   } else {
     // Toggle tile selection.
     state.selectedTile = (state.selectedTile == tile) ? null : tile;

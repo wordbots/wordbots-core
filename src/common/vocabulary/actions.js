@@ -10,13 +10,12 @@ export default function actions(state) {
       objects.forEach(object => { object.movesLeft = object.stats.speed; });
     },
 
-    dealDamage: function (objects, amount) {
-      console.log(objects);
-      objects.forEach((target) => {
+    dealDamage: function (targets, amount) {
+      targets.forEach(target => {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
-          hex = _.find(_.toPairs(target.robotsOnBoard), hexObj => hexObj[1].card.type == TYPE_CORE)[0];
+          hex = _.findKey(target.robotsOnBoard, obj => obj.card.type == TYPE_CORE);
         } else {
           // target is an object, so find its hex.
           hex = getHex(state, target);
@@ -27,7 +26,7 @@ export default function actions(state) {
     },
 
     destroy: function (objects) {
-      objects.forEach((object) => {
+      objects.forEach(object => {
         object.isDestroyed = true;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
@@ -47,7 +46,7 @@ export default function actions(state) {
     modifyAttribute: function (objects, attr, func) {
       const clampedFunc = stat => _.clamp(func(stat), 0, 99);
 
-      objects.forEach((object) => {
+      objects.forEach(object => {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, clampedFunc);
         } else if (attr === 'cost') {
@@ -59,13 +58,13 @@ export default function actions(state) {
     },
 
     modifyEnergy: function (players, func) {
-      players.forEach((player) => {
+      players.forEach(player => {
         player.energy = _.assign(player.energy, {available: func(player.energy.available)});
       });
     },
 
     setAttribute: function (objects, attr, num) {
-      objects.forEach((object) => {
+      objects.forEach(object => {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, () => num);
         } else if (attr === 'cost') {
@@ -79,7 +78,7 @@ export default function actions(state) {
     takeControl: function (players, objects) {
       const newOwner = players[0]; // Unpack player.
 
-      objects.forEach((object) => {
+      objects.forEach(object => {
         const currentOwner = ownerOf(state, object);
         if (newOwner.name != currentOwner.name) {
           const hex = getHex(state, object);

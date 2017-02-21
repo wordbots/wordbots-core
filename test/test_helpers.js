@@ -3,6 +3,13 @@ import * as actions from '../src/common/actions/game';
 import defaultState from '../src/common/store/defaultState';
 import { allObjectsOnBoard } from '../src/common/util';
 
+function instantiateCard(card) {
+  return Object.assign({}, card, {
+    id: Math.random().toString(36),
+    baseCost: card.cost
+  });
+}
+
 export function getDefaultState() {
   return _.cloneDeep(defaultState);
 }
@@ -14,7 +21,7 @@ export function objectsOnBoardOfType(state, objectType) {
 
 export function drawCardToHand(state, playerName, card) {
   const player = state.players[playerName];
-  player.hand = [card].concat(player.hand);
+  player.hand = [instantiateCard(card)].concat(player.hand);
   return state;
 }
 
@@ -36,10 +43,9 @@ export function playObject(state, playerName, card, hex, target = null) {
   //    2. The player has the card as the first card in their hand.
   //    3. The player has enough energy to play the card.
   state.currentTurn = playerName;
-  player.hand = [card].concat(player.hand);
+  player.hand = [instantiateCard(card)].concat(player.hand);
   player.energy.available += card.cost;
 
-  console.log(target);
   if (target && target.hex) {
     return game(state, [
       actions.setSelectedCard(0),
@@ -68,7 +74,7 @@ export function playEvent(state, playerName, card, target = null) {
   //    2. The player has the card as the first card in their hand.
   //    3. The player has enough energy to play the card.
   state.currentTurn = playerName;
-  player.hand = [card].concat(player.hand);
+  player.hand = [instantiateCard(card)].concat(player.hand);
   player.energy.available += card.cost;
 
   if (target && target.hex) {

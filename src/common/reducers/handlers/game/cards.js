@@ -87,7 +87,7 @@ export function placeCard(state, card, tile) {
     }
 
     tempState = checkTriggers(tempState, 'afterPlayed', playedObject, (trigger =>
-      trigger.objects.map(o => o.id).includes(playedObject.id)
+      trigger.targets.map(o => o.id).includes(playedObject.id)
     ));
 
     tempState = applyAbilities(tempState);

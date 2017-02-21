@@ -88,7 +88,7 @@ class Card extends Component {
       );
     } else {
       // Sprites are 32x32 w/ 10px padding in between.
-      const hash = Math.abs(this.props.name.split('').reduce(function (a,b) {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
+      const hash = Math.abs(this.props.name.split('').reduce((a,b) => {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
       const idx1 = hash % 32;
       const idx2 = Math.floor(hash / 32) % 32;
       return (

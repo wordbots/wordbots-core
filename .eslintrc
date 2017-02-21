@@ -30,6 +30,7 @@
     "no-console": 1,
     "no-var": 2,
     "no-unused-vars": [2, { "args": "none" }],
+    "prefer-arrow-callback": 2,
     "react/display-name": 0,
     "react/jsx-boolean-value": 2,
     "react/jsx-no-undef": 2,

@@ -52,14 +52,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(cookieParser());
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   GLOBAL.navigator = {
     userAgent: req.headers['user-agent']
   };
   next();
 });
 
-app.get('/*', function (req, res) {
+app.get('/*', (req, res) => {
   const location = createLocation(req.url);
 
   getUser(req.cookies.token || false, user => {
@@ -109,7 +109,7 @@ app.get('/*', function (req, res) {
   );
 });
 
-const server = app.listen(3000, function () {
+const server = app.listen(3000, () => {
   const port = server.address().port;
   console.log('Example app listening at http://localhost:%s', port);
 });

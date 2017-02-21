@@ -22,7 +22,7 @@ class HexPattern extends React.Component {
         </pattern>
       );
     } else if (this.props.pieceName) {
-      const hash = Math.abs(this.props.pieceName.split('').reduce(function (a,b) {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
+      const hash = Math.abs(this.props.pieceName.split('').reduce((a,b) => {a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0) * (32*32 + 1));
       const idx1 = hash % 32;
       const idx2 = Math.floor(hash / 32) % 32;
 

@@ -8,21 +8,21 @@ export default function getUser(token, callback) {
   }
   request
     .get(`http://${config.apiHost}:${config.apiPort}/api/users/check?access_token=${token}`)
-    .then(function (response) {
+    .then((response) => {
       if (response.status === 200) {
         request
           .get(`http://${config.apiHost}:${config.apiPort}/api/users/${response.data.valid.userId}?access_token=${token}`)
-          .then(function (response) {
+          .then((response) => {
             callback(response.data);
           })
-          .catch(function (err) {
+          .catch((err) => {
             callback(false);
           });
       } else {
         callback(false);
       }
     })
-    .catch(function (err) {
+    .catch((err) => {
       callback(false);
     });
 }

@@ -11,7 +11,7 @@ export default function actions(state) {
     },
 
     dealDamage: function (objects, amount) {
-      objects.forEach(function (target) {
+      objects.forEach((target) => {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
@@ -26,7 +26,7 @@ export default function actions(state) {
     },
 
     destroy: function (objects) {
-      objects.forEach(function (object) {
+      objects.forEach((object) => {
         object.isDestroyed = true;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
@@ -40,13 +40,13 @@ export default function actions(state) {
     },
 
     draw: function (players, count) {
-      players.forEach(player => drawCards(state, player, count));
+      players.forEach(player => { drawCards(state, player, count); });
     },
 
     modifyAttribute: function (objects, attr, func) {
       const clampedFunc = stat => _.clamp(func(stat), 0, 99);
 
-      objects.forEach(function (object) {
+      objects.forEach((object) => {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, clampedFunc);
         } else if (attr === 'cost') {
@@ -58,13 +58,13 @@ export default function actions(state) {
     },
 
     modifyEnergy: function (players, func) {
-      players.forEach(function (player) {
+      players.forEach((player) => {
         player.energy = _.assign(player.energy, {available: func(player.energy.available)});
       });
     },
 
     setAttribute: function (objects, attr, num) {
-      objects.forEach(function (object) {
+      objects.forEach((object) => {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, () => num);
         } else if (attr === 'cost') {
@@ -78,7 +78,7 @@ export default function actions(state) {
     takeControl: function (players, objects) {
       const newOwner = players[0]; // Unpack player.
 
-      objects.forEach(function (object) {
+      objects.forEach((object) => {
         const currentOwner = ownerOf(state, object);
         if (newOwner.name != currentOwner.name) {
           const hex = getHex(state, object);

@@ -157,7 +157,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     delete state.players[ownerName].robotsOnBoard[hex];
 
     // Unapply any abilities that this object had.
-    (object.abilities || []).forEach(function (ability) {
+    (object.abilities || []).forEach((ability) => {
       (ability.currentTargets || []).forEach(ability.unapply);
     });
 
@@ -201,8 +201,8 @@ export function executeCmd(state, cmd, currentObject = null) {
 /* eslint-enable no-unused-vars */
 
 export function checkTriggers(state, triggerType, it, condition) {
-  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
-    (obj.triggers || []).forEach(function (t) {
+  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
+    (obj.triggers || []).forEach((t) => {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
       if (t.trigger.type == triggerType && condition(t.trigger)) {
         // console.log(`Executing ${triggerType} trigger: ${t.action}`);
@@ -215,8 +215,8 @@ export function checkTriggers(state, triggerType, it, condition) {
 }
 
 export function applyAbilities(state) {
-  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
-    (obj.abilities || []).forEach(function (ability) {
+  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
+    (obj.abilities || []).forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
       (ability.currentTargets || []).forEach(ability.unapply);
 

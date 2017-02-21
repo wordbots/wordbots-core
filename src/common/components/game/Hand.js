@@ -17,7 +17,7 @@ class Hand extends Component {
 
   render() {
     const cards = this.props.cards.map((card, index) => {
-      let cardClick = this.onCardClick.bind(this, index);
+      const cardClick = this.onCardClick.bind(this, index);
 
       return (
         <Card

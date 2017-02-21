@@ -1,5 +1,4 @@
-import { getHex, getAttribute } from '../util';
-import Hex from '../components/react-hexgrid/Hex';
+import { getHex, getAttribute, getAdjacentHexes } from '../util';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.
@@ -7,21 +6,12 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 
 export default function conditions(state) {
   return {
-    adjacentTo: function (objects) {
-      const neighbors = _.flatMap(objects, targetObj => {
-        const targetHex = HexUtils.IDToHex(getHex(state, targetObj));
+    adjacentTo: function (hexesOrObjects) {
+      const neighborHexIds = _.flatMap(hexesOrObjects, hexOrObj =>
+        getAdjacentHexes(HexUtils.IDToHex(_.isString(hexOrObj) ? hexOrObj : getHex(state, hexOrObj)))
+      ).map(HexUtils.getID);
 
-        return [
-          new Hex(targetHex.q, targetHex.r - 1, targetHex.s + 1),
-          new Hex(targetHex.q, targetHex.r + 1, targetHex.s - 1),
-          new Hex(targetHex.q - 1, targetHex.r + 1, targetHex.s),
-          new Hex(targetHex.q + 1, targetHex.r - 1, targetHex.s),
-          new Hex(targetHex.q - 1, targetHex.r, targetHex.s + 1),
-          new Hex(targetHex.q + 1, targetHex.r, targetHex.s - 1)
-        ];
-      }).map(HexUtils.getID);
-
-      return ((hex, obj) => neighbors.includes(hex));
+      return ((hex, obj) => neighborHexIds.includes(hex));
     },
 
     attributeComparison: function (attr, comp) {

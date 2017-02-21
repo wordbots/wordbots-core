@@ -12,7 +12,7 @@ import * as gameActions from '../actions/game';
 
 const middlewareBuilder = () => {
   let middleware = {};
-  let universalMiddleware = [thunk, promiseMiddleware, multi];
+  const universalMiddleware = [thunk, promiseMiddleware, multi];
   let allComposeElements = [];
 
   if (process.browser) {

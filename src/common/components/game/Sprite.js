@@ -48,7 +48,7 @@ class Sprite extends Component {
     if (!s) return 0;
     let value = 0;
     for (let i = 0; i < s.length; i++) {
-      let char = s.charCodeAt(i);
+      const char = s.charCodeAt(i);
       value = ((value<<5)-value)+char;
       value = value & value;
     }
@@ -58,8 +58,7 @@ class Sprite extends Component {
   // The code in drawSprite() is largely taken from
   // https://github.com/not-surt/spritegen
   drawSprite(elt, props) {
-    let spriteGen;
-    let PIXEL_SIZE = 4;
+    const PIXEL_SIZE = 4;
 
     function indexFromCoord(width, x, y) {
       return y * width + x;
@@ -89,8 +88,8 @@ class Sprite extends Component {
       reseed: function (seed) { this.seed = (seed ? seed : Date.now()) % this.m; },
     };
 
-    let lcg0 = new LinearCongruentialGenerator(2147483629, 2147483587, Math.pow(2, 31) - 1);
-    let lcg1 = new LinearCongruentialGenerator(25214903917, 11, Math.pow(2, 48));
+    const lcg0 = new LinearCongruentialGenerator(2147483629, 2147483587, Math.pow(2, 31) - 1);
+    const lcg1 = new LinearCongruentialGenerator(25214903917, 11, Math.pow(2, 48));
 
     function random() { return (lcg0.random() + lcg1.random()) % 1; }
     function randomReseed(seed) { lcg0.reseed(seed); lcg1.reseed(lcg0.random()); }
@@ -103,7 +102,7 @@ class Sprite extends Component {
 
     function getPixel(data, x, y) {
       if (x >= 0 && x < data.width && y >= 0 && y < data.height) {
-        let colour = new Array();
+        const colour = new Array();
         arraycopy(colour, 0, data.data, indexFromCoord(data.width * PIXEL_SIZE, x * PIXEL_SIZE, y), PIXEL_SIZE);
         return colour;
       }
@@ -129,13 +128,13 @@ class Sprite extends Component {
 
     function scale2x(data, x, y)
     {
-      let out = getPixel(data, x, y);
+      const out = getPixel(data, x, y);
       return [out, out, out, out];
     }
 
     function scale3x(data, x, y)
     {
-      let out = getPixel(data, x, y);
+      const out = getPixel(data, x, y);
       return [out, out, out, out, out, out, out, out, out];
     }
 
@@ -144,15 +143,15 @@ class Sprite extends Component {
     // G H I      E2 E3
     function scaleEagle2x(data, x, y)
     {
-      let A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
-      let B = getPixel(data, x, y > 0 ? y - 1 : 0);
-      let C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
-      let D = getPixel(data, x > 0 ? x - 1 : 0, y);
-      let E = getPixel(data, x, y);
-      let F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
-      let G = getPixel(data, x > 0 ? x - 1 : 0, y < data.height - 1 ? y + 1 : data.height - 1);
-      let H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
-      let I = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y < data.height - 1 ? y + 1 : data.height - 1);
+      const A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
+      const B = getPixel(data, x, y > 0 ? y - 1 : 0);
+      const C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
+      const D = getPixel(data, x > 0 ? x - 1 : 0, y);
+      const E = getPixel(data, x, y);
+      const F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
+      const G = getPixel(data, x > 0 ? x - 1 : 0, y < data.height - 1 ? y + 1 : data.height - 1);
+      const H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
+      const I = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y < data.height - 1 ? y + 1 : data.height - 1);
       return [
         coloursEqual(A, B) && coloursEqual(A, D) ? A : E,
         coloursEqual(C, B) && coloursEqual(C, F) ? C : E,
@@ -166,15 +165,15 @@ class Sprite extends Component {
     // G H I      E6 E7 E8
     function scaleEagle3x(data, x, y)
     {
-      let A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
-      let B = getPixel(data, x, y > 0 ? y - 1 : 0);
-      let C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
-      let D = getPixel(data, x > 0 ? x - 1 : 0, y);
-      let E = getPixel(data, x, y);
-      let F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
-      let G = getPixel(data, x > 0 ? x - 1 : 0, y < data.height - 1 ? y + 1 : data.height - 1);
-      let H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
-      let I = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y < data.height - 1 ? y + 1 : data.height - 1);
+      const A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
+      const B = getPixel(data, x, y > 0 ? y - 1 : 0);
+      const C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
+      const D = getPixel(data, x > 0 ? x - 1 : 0, y);
+      const E = getPixel(data, x, y);
+      const F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
+      const G = getPixel(data, x > 0 ? x - 1 : 0, y < data.height - 1 ? y + 1 : data.height - 1);
+      const H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
+      const I = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y < data.height - 1 ? y + 1 : data.height - 1);
       return [
         coloursEqual(A, D) && coloursEqual(A, B) ? A : E,
         /*coloursEqual(B, A) && coloursEqual(B, C) ? B :*/ E,
@@ -193,12 +192,12 @@ class Sprite extends Component {
     // G H I      E2 E3
     function scaleScale2x(data, x, y)
     {
-      let B = getPixel(data, x, y > 0 ? y - 1 : 0);
-      let D = getPixel(data, x > 0 ? x - 1 : 0, y);
-      let E = getPixel(data, x, y);
-      let F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
-      let H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
-      let out = [];
+      const B = getPixel(data, x, y > 0 ? y - 1 : 0);
+      const D = getPixel(data, x > 0 ? x - 1 : 0, y);
+      const E = getPixel(data, x, y);
+      const F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
+      const H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
+      const out = [];
       if (!coloursEqual(B, H) && !coloursEqual(D, F)) {
         out[0] = coloursEqual(B, D) ? D : E;
         out[1] = coloursEqual(B, F) ? F : E;
@@ -218,16 +217,16 @@ class Sprite extends Component {
     // G H I      E6 E7 E8
     function scaleScale3x(data, x, y)
     {
-      let A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
-      let B = getPixel(data, x, y > 0 ? y - 1 : 0);
-      let C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
-      let D = getPixel(data, x > 0 ? x - 1 : 0, y);
-      let E = getPixel(data, x, y);
-      let F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
-      let G = getPixel(data, x > 0 ? x - 1 : 0, y < data.height - 1 ? y + 1 : data.height - 1);
-      let H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
-      let I = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y < data.height - 1 ? y + 1 : data.height - 1);
-      let out = [];
+      const A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
+      const B = getPixel(data, x, y > 0 ? y - 1 : 0);
+      const C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
+      const D = getPixel(data, x > 0 ? x - 1 : 0, y);
+      const E = getPixel(data, x, y);
+      const F = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y);
+      const G = getPixel(data, x > 0 ? x - 1 : 0, y < data.height - 1 ? y + 1 : data.height - 1);
+      const H = getPixel(data, x, y < data.height - 1 ? y + 1 : data.height - 1);
+      const I = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y < data.height - 1 ? y + 1 : data.height - 1);
+      const out = [];
       if (!coloursEqual(B, H) && !coloursEqual(D, F)) {
         out[0] = coloursEqual(D, B) ? D : E;
         out[1] = (coloursEqual(D, B) && !coloursEqual(E, C)) || (coloursEqual(B, F) && !coloursEqual(E, A)) ? B : E;
@@ -253,7 +252,7 @@ class Sprite extends Component {
     }
 
     // wide, tall?
-    let scalers = {
+    const scalers = {
       none: { label: 'None', factor: 1 },
       '2x': { label: '2x', factor: 2, func: scale2x },
       '3x': { label: '3x', factor: 3, func: scale3x },
@@ -266,7 +265,7 @@ class Sprite extends Component {
     function scale(src, dest, scaler) {
       for (let y = 0; y < src.height; y++) {
         for (let x = 0; x < src.width; x++) {
-          let scaled = scaler.func(src, x, y);
+          const scaled = scaler.func(src, x, y);
           let i = 0;
           for (let yy = 0; yy < scaler.factor; yy++) {
             for (let xx = 0; xx < scaler.factor; xx++) {
@@ -278,7 +277,7 @@ class Sprite extends Component {
       }
     }
 
-    let falloffs = {
+    const falloffs = {
       constant: { label: 'Constant', func: function (x) {
         return 1.0;
       }},
@@ -297,15 +296,15 @@ class Sprite extends Component {
       return start + (end - start) * pos;
     }
 
-    function bias(bias, value) {
+    function bias(b, value) {
       // y(x) = x^(log(B)/log(0.5))
-      return Math.pow(value, Math.log(bias) / Math.log(0.5));
+      return Math.pow(value, Math.log(b) / Math.log(0.5));
     }
 
-    function gain(gain, value) {
+    function gain(g, value) {
       // y(x) =    Bias(2*x, 1-G)/2        if x<0.5
       //           1-Bias(2-2*x, 1-G)/2    if x>0.5
-      return value <= 0.5 ? bias(2 * value, 1 - gain) / 2 : 1 - bias(2 - 2 * value, 1 - gain) / 2;
+      return value <= 0.5 ? bias(2 * value, 1 - g) / 2 : 1 - bias(2 - 2 * value, 1 - g) / 2;
     }
 
     function intRandom(max) {
@@ -316,17 +315,17 @@ class Sprite extends Component {
       return array[intRandom(array.length - 1)];
     }
 
-    let neighbourOffsets = [[-1, -1], [0, -1], [+1, -1], [+1, 0], [+1, +1], [0, +1], [-1, +1], [-1, 0]];
+    const neighbourOffsets = [[-1, -1], [0, -1], [+1, -1], [+1, 0], [+1, +1], [0, +1], [-1, +1], [-1, 0]];
 
     function getNeighbours(data, x, y) {
-      let neighbours = new Array();
+      const neighbours = new Array();
       for(let i = 0; i < 8; i++) {
         neighbours[i] = getPixel(data, x + neighbourOffsets[i][0], y + neighbourOffsets[i][1]);
       }
       return neighbours;
     }
 
-    let palettes = {
+    const palettes = {
       arne: { label: 'Arne\'s', background: 0, colours: [
         [  0,   0,   0], [157, 157, 157], [255, 255, 255], [190,  38,  51],
         [224, 111, 139], [ 73,  60,  43], [164, 100,  34], [235, 137,  49],
@@ -395,7 +394,7 @@ class Sprite extends Component {
 
     function SpriteGenerator(options = {}) {
       this.options = {};
-      for(let key in properties) {
+      for(const key in properties) {
         this.options[key] = properties[key].default;
       }
       this.options = Object.assign(this.options, options);
@@ -409,24 +408,24 @@ class Sprite extends Component {
     }
 
     SpriteGenerator.prototype.generateTile = function () {
-      let tile = this.context.createImageData(this.options['size'], this.options['size']);
-      let doMirrorH = (random() <= this.options['mirrorh']);
-      let doMirrorV = (random() <= this.options['mirrorv']);
-      let xRange = tile.width / 2;
-      let yRange = tile.height / 2;
+      const tile = this.context.createImageData(this.options['size'], this.options['size']);
+      const doMirrorH = (random() <= this.options['mirrorh']);
+      const doMirrorV = (random() <= this.options['mirrorv']);
+      const xRange = tile.width / 2;
+      const yRange = tile.height / 2;
       let xLimit = ( doMirrorH ? Math.ceil(xRange) : tile.width);
       let yLimit = ( doMirrorV ? Math.ceil(yRange) : tile.height);
-      let spritePal = [];
+      const spritePal = [];
       for (let i = 0; i < this.options['colours']; i++) {
         spritePal[i] = pickRandom(palettes[this.options['pal']].colours);
       }
       // draw unique
       for(let y = 0; y < yLimit; y++) {
         for(let x = 0; x < xLimit; x++) {
-          let falloffX = falloffs[this.options['falloff']].func(1.0 - Math.abs((xRange - (x + 0.5)) / xRange));
-          let falloffY = falloffs[this.options['falloff']].func(1.0 - Math.abs((yRange - (y + 0.5)) / yRange));
-          let prob = lerp(this.options['probmin'], this.options['probmax'], bias(this.options['bias'], gain(this.options['gain'], falloffX * falloffY)));
-          let rand = random();
+          const falloffX = falloffs[this.options['falloff']].func(1.0 - Math.abs((xRange - (x + 0.5)) / xRange));
+          const falloffY = falloffs[this.options['falloff']].func(1.0 - Math.abs((yRange - (y + 0.5)) / yRange));
+          const prob = lerp(this.options['probmin'], this.options['probmax'], bias(this.options['bias'], gain(this.options['gain'], falloffX * falloffY)));
+          const rand = random();
           if(rand <= prob)
             putPixel(tile, x, y, rgbToRgba(pickRandom(spritePal)));
           else
@@ -436,7 +435,7 @@ class Sprite extends Component {
       // do post
       for(let y = 0; y < yLimit; y++) {
         for(let x = 0; x < xLimit; x++) {
-          let neighbours = getNeighbours(tile, x, y);
+          const neighbours = getNeighbours(tile, x, y);
           let count = 0;
           for(let i = 0; i < neighbours.length; i++) {
             if(neighbours[i] != null && !coloursEqual([255, 255, 255, 0], neighbours[i]))
@@ -460,7 +459,7 @@ class Sprite extends Component {
       yLimit = ( doMirrorV ? Math.floor(yRange + 0.5) : tile.height);
       for(let y = 0; y < yLimit; y++) {
         for(let x = 0; x < xLimit; x++) {
-          let colour = getPixel(tile, x, y);
+          const colour = getPixel(tile, x, y);
           if(doMirrorH)
             putPixel(tile, tile.width - 1 - x, y, colour);
           if(doMirrorV)
@@ -472,14 +471,14 @@ class Sprite extends Component {
       // scaling
       let out = tile;
       if (this.options['scaler0'] != 'none') {
-        let scaler = scalers[this.options['scaler0']];
-        let scaled = this.context.createImageData(out.width * scaler.factor, out.height * scaler.factor);
+        const scaler = scalers[this.options['scaler0']];
+        const scaled = this.context.createImageData(out.width * scaler.factor, out.height * scaler.factor);
         scale(out, scaled, scaler);
         out = scaled;
       }
       if (this.options['scaler1'] != 'none') {
-        let scaler = scalers[this.options['scaler1']];
-        let scaled = this.context.createImageData(out.width * scaler.factor, out.height * scaler.factor);
+        const scaler = scalers[this.options['scaler1']];
+        const scaled = this.context.createImageData(out.width * scaler.factor, out.height * scaler.factor);
         scale(out, scaled, scaler);
         out = scaled;
       }
@@ -487,7 +486,7 @@ class Sprite extends Component {
     };
 
     SpriteGenerator.prototype.draw = function () {
-      let tile = this.generateTile();
+      const tile = this.generateTile();
       this.context.putImageData(tile, this.options['spacing'], this.options['spacing']);
     };
 
@@ -495,7 +494,7 @@ class Sprite extends Component {
       return scalers[this.options['scaler0']].factor * scalers[this.options['scaler1']].factor /** this.options["iterations"]*/;
     };
 
-    let properties = {
+    const properties = {
       seed: { type: 'integer', label: 'Seed', default: 0, description: 'Seed value for PRNG.' },
       pal: { type: 'list', label: 'Palette', default: 'arne', options: palettes, description: 'Palette to draw colours from.' },
       colours: { type: 'integer', label: 'Colours', default: 3, min: 1, max: 16, description: 'Number of colours per sprite.' },
@@ -515,7 +514,7 @@ class Sprite extends Component {
       despur: { type: 'real', label: 'Despur', default: 0.5, min: 0, max: 1, description: 'Probability of a single jutting pixel being removed.' }
     };
 
-    spriteGen = new SpriteGenerator(props);
+    const spriteGen = new SpriteGenerator(props);
     spriteGen.draw();
     return elt.toDataURL();
   }

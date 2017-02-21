@@ -32,7 +32,7 @@ class VictoryScreen extends Component {
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
-          <div>{this.props.winner === null ? '' : this.props.winner + ' Wins!'}</div>
+          <div>{this.props.winner === null ? '' : `${this.props.winner  } Wins!`}</div>
         </ReactCSSTransitionGroup>
       </div>
     );

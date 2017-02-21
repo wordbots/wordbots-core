@@ -12,7 +12,7 @@ class HexPattern extends React.Component {
 
     if (this.props.pieceImg && this.props.images[this.props.pieceImg]) {
       return (
-        <pattern id={id + '_piece'} height="100%" width="100%"
+        <pattern id={`${id  }_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1"
           preserveAspectRatio="xMidYMid">
           <image xlinkHref={this.props.images[this.props.pieceImg]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
@@ -20,7 +20,7 @@ class HexPattern extends React.Component {
       );
     } else if (this.props.pieceName) {
       return (
-        <pattern id={id + '_piece'} height="100%" width="100%"
+        <pattern id={`${id  }_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox="0 0 1 1"
           preserveAspectRatio="xMidYMid">
           <Sprite id={this.props.pieceName} size={24} spacing={6} output="svg" />
@@ -31,7 +31,7 @@ class HexPattern extends React.Component {
 
   fillPattern() {
     const id = HexUtils.getID(this.props.hex);
-    const fillImage = this.props.fill ? this.props.images[this.props.fill + '_tile'] : '';
+    const fillImage = this.props.fill ? this.props.images[`${this.props.fill  }_tile`] : '';
 
     return (
       <pattern id={id} patternUnits="userSpaceOnUse" x="-15" y="-10" width="30" height="20">

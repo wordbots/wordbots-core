@@ -1,4 +1,8 @@
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
+import { uniqueId } from 'lodash';
+
+import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
+
+// Note: Exported cards are used in either defaultState (cores) or in tests.
 
 /* eslint-disable quotes */
 
@@ -8,7 +12,7 @@ export const blueCoreCard = {
   cost: 0,
   type: TYPE_CORE,
   stats: {
-    health: 20
+    health: STARTING_PLAYER_HEALTH
   },
   abilities: []
 };
@@ -19,12 +23,12 @@ export const orangeCoreCard = {
   cost: 0,
   type: TYPE_CORE,
   stats: {
-    health: 20
+    health: STARTING_PLAYER_HEALTH
   },
   abilities: []
 };
 
-const attackBotCard = {
+export const attackBotCard = {
   name: 'Attack Bot',
   cost: 1,
   type: TYPE_ROBOT,
@@ -36,7 +40,7 @@ const attackBotCard = {
   abilities: []
 };
 
-const tankBotCard = {
+export const tankBotCard = {
   name: 'Tank Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -48,7 +52,7 @@ const tankBotCard = {
   abilities: []
 };
 
-const concentrationCard = {
+export const concentrationCard = {
   name: 'Concentration',
   text: 'Draw two cards.',
   command: '(function () { actions["draw"](targets["self"](), 2); })',
@@ -72,7 +76,7 @@ const rampageCard = {
   type: TYPE_EVENT
 };
 
-const wrathOfRobotGodCard = {
+export const wrathOfRobotGodCard = {
   name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
   command: '(function () { actions["destroy"](targets["all"](objectsInPlay("robot"))); })',
@@ -112,7 +116,7 @@ const untapCard = {
   type: TYPE_EVENT
 };
 
-const missileStrikeCard = {
+export const missileStrikeCard = {
   name: 'Missile Strike',
   text: 'Deal 5 damage to your opponent.',
   command: '(function () { actions["dealDamage"](targets["opponent"](), 5); })',
@@ -139,7 +143,7 @@ const wisdomCard = {
   type: TYPE_EVENT
 };
 
-const shockCard = {
+export const shockCard = {
   name: 'Shock',
   text: 'Deal 3 damage to a robot.',
   command: '(function () { actions["dealDamage"](targets["choose"](objectsInPlay("robot")), 3); })',
@@ -147,7 +151,7 @@ const shockCard = {
   type: TYPE_EVENT
 };
 
-const firestormCard = {
+export const firestormCard = {
   name: 'Firestorm',
   text: 'Deal 1 damage to everything adjacent to a tile.',
   command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("allobjects", [conditions["adjacentTo"](targets["choose"](allTiles()))])), 1); })',
@@ -231,7 +235,7 @@ const monkeyBotCard = {
   ]
 };
 
-const fortificationCard = {
+export const fortificationCard = {
   name: 'Fortification',
   cost: 1,
   type: TYPE_STRUCTURE,
@@ -274,7 +278,7 @@ const recruiterBotCard = {
   ]
 };
 
-const flametongueBotCard = {
+export const flametongueBotCard = {
   name: 'Flametongue Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -289,7 +293,7 @@ const flametongueBotCard = {
   ]
 };
 
-const investorBotCard = {
+export const investorBotCard = {
   name: 'Investor Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -332,6 +336,17 @@ const martyrBotCard = {
   ]
 };
 
+export const consumeCard = {
+  name: 'Consume',
+  text: 'Discard a robot card. Gain life equal to its health.',
+  command: [
+    "(function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'robot'))); })",
+    "(function () { actions['modifyAttribute'](targets['all'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())])), 'health', function (x) { return x + attributeValue(targets['it'](), 'health'); }); })"
+  ],
+  cost: 2,
+  type: TYPE_EVENT
+};
+
 /* eslint-enable quotes */
 
 export const deck = [
@@ -339,6 +354,7 @@ export const deck = [
   dojoDiscipleCard,
   concentrationCard,
   flametongueBotCard,
+  consumeCard,
   arenaCard,
   fortificationCard,
   shockCard,
@@ -365,7 +381,7 @@ export const deck = [
   wrathOfRobotGodCard
 ].map(card =>
   Object.assign({}, card, {
-    id: Math.random().toString(36),
+    id: `card_${  uniqueId()}`,
     baseCost: card.cost
   })
 );

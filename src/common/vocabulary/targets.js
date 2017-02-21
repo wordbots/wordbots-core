@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, ownerOf } from '../util';
+import { currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util';
 
 // Targets are all functions that return an array,
 // of either of players, cards, or pieces (objects on board).
@@ -11,12 +11,16 @@ export default function targets(state, currentObject) {
       return Object.values(collection);
     },
 
+    // Note: Unlike other target functions, choose() can return an [hex]
+    //       (if the chosen hex does not contain an object.)
     choose: function (collection) {
       if (state.target.chosen) {
         // Return and clear chosen target.
-        const chosenTarget = state.target.chosen;
-        state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-        return chosenTarget;
+        const chosenTargets = state.target.chosen;
+        state.it = chosenTargets[0];  // "it" stores most recently chosen salient object for lookup.
+
+        // Return objects if possible or hexes if not. (Cards can also be returned.)
+        return chosenTargets.map(t => allObjectsOnBoard(state)[t] || t);
       } else {
         if (!_.isEmpty(collection)) {
           // Prepare target selection.

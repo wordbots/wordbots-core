@@ -75,7 +75,7 @@ class Game extends Component {
   }
 
   movePiece(hexId, asPartOfAttack = false) {
-    let tile = this.props.selectedTile;
+    const tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
       if (this.props.bluePieces[tile] && this.props.bluePieces[tile].movesLeft > 0) {
         this.props.onMoveRobot(tile, hexId, asPartOfAttack);
@@ -88,7 +88,7 @@ class Game extends Component {
   }
 
   attackPiece(hexId, intermediateMoveHexId) {
-    let tile = this.props.selectedTile;
+    const tile = this.props.selectedTile;
     if (this.props.currentTurn == 'blue') {
       if (this.props.bluePieces[tile] && this.props.bluePieces[tile].movesLeft > 0) {
         if (intermediateMoveHexId) {

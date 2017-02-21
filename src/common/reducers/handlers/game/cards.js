@@ -1,5 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
-import { currentPlayer, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
+import { currentPlayer, validPlacementHexes, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
+import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, cardIdx) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
@@ -7,7 +8,7 @@ export function setSelectedCard(state, cardIdx) {
 
   state.selectedTile = null;
 
-  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && !_.isNull(state.selectedCard)) {
+  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && state.selectedCard !== null) {
     // Select target card for event or afterPlayed trigger.
     state.target = Object.assign({}, state.target, {
       chosen: [selectedCard],
@@ -15,13 +16,16 @@ export function setSelectedCard(state, cardIdx) {
       possibleCards: []
     });
 
+    // Perform the trigger.
     const playedCard = state.players[state.currentTurn].hand[state.selectedCard];
-
     if (playedCard.type == TYPE_EVENT) {
-      return playEvent(state, state.selectedCard);
+      state = playEvent(state, state.selectedCard);
     } else {
-      return placeCard(state, playedCard, state.placementTile);
+      state = placeCard(state, playedCard, state.placementTile);
     }
+
+    // Reset target.
+    return Object.assign({}, state, {target: {choosing: false, chosen: null, possibleHexes: [], possibleCards: []}});
   } else {
     // Toggle card selection.
 
@@ -62,38 +66,40 @@ export function placeCard(state, card, tile) {
   let tempState = _.cloneDeep(state);
 
   const player = currentPlayer(tempState);
-  const selectedCardIndex = tempState.selectedCard;
 
-  const playedObject = {
-    id: Math.random().toString(36),
-    card: card,
-    stats: Object.assign({}, card.stats),
-    triggers: [],
-    movesLeft: 0,
-    justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
-                      // target themselves for afterPlayed triggers.
-  };
+  if (player.energy.available >= getCost(card) &&
+      validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
+    const playedObject = {
+      id: Math.random().toString(36),
+      card: card,
+      stats: Object.assign({}, card.stats),
+      triggers: [],
+      movesLeft: 0,
+      justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
+                        // target themselves for afterPlayed triggers.
+    };
 
-  player.robotsOnBoard[tile] = playedObject;
+    player.robotsOnBoard[tile] = playedObject;
 
-  player.energy.available -= getCost(player.hand[selectedCardIndex]);
-  player.hand.splice(selectedCardIndex, 1);
+    player.energy.available -= getCost(card);
+    player.hand = _.filter(player.hand, c => c.id != card.id);
 
-  if (card.abilities.length > 0) {
-    card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
+    if (card.abilities.length > 0) {
+      card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
+    }
+
+    tempState = checkTriggers(tempState, 'afterPlayed', playedObject, (trigger =>
+      trigger.targets.map(o => o.id).includes(playedObject.id)
+    ));
+
+    tempState = applyAbilities(tempState);
+
+    playedObject.justPlayed = false;
+
+    tempState.selectedCard = null;
+    tempState.playingCardType = null;
+    tempState.status.message = '';
   }
-
-  tempState = checkTriggers(tempState, 'afterPlayed', playedObject, (trigger =>
-    trigger.targets.map(o => o.id).includes(playedObject.id)
-  ));
-
-  tempState = applyAbilities(tempState);
-
-  playedObject.justPlayed = false;
-
-  tempState.selectedCard = null;
-  tempState.playingCardType = null;
-  tempState.status.message = '';
 
   if (tempState.target.choosing) {
     // Target still needs to be selected, so roll back playing the card (and return old state).
@@ -112,24 +118,30 @@ export function placeCard(state, card, tile) {
 }
 
 export function playEvent(state, cardIdx, command) {
-  const selectedCard = state.players[state.currentTurn].hand[cardIdx];
+  const player = state.players[state.currentTurn];
+  const card = player.hand[cardIdx];
 
-  if (_.isArray(selectedCard.command)) {
-    selectedCard.command.forEach((cmd) => executeCmd(state, cmd));
-  } else {
-    executeCmd(state, selectedCard.command);
-  }
+  if (player.energy.available >= getCost(card)) {
+    if (_.isArray(card.command)) {
+      card.command.forEach((cmd) => {
+        if (!state.target.choosing) {
+          executeCmd(state, cmd);
+        }
+      });
+    } else {
+      executeCmd(state, card.command);
+    }
 
-  if (state.target.choosing) {
-    state.status = { message: `Choose a target for ${selectedCard.name}.`, type: 'text' };
-  } else {
-    state.selectedCard = null;
-    state.playingCardType = null;
-    state.status.message = '';
+    if (state.target.choosing) {
+      state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
+    } else {
+      state.selectedCard = null;
+      state.playingCardType = null;
+      state.status.message = '';
 
-    const player = state.players[state.currentTurn];
-    player.energy.available -= getCost(selectedCard);
-    player.hand.splice(cardIdx, 1);
+      player.energy.available -= getCost(card);
+      player.hand = _.filter(player.hand, c => c.id != card.id);
+    }
   }
 
   return state;

@@ -8,16 +8,16 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 
 export function allTiles(state) {
   return function () {
-    let tiles = {};
-    GridGenerator.hexagon(4).forEach(function (hex) {
+    const tiles = {};
+    GridGenerator.hexagon(4).forEach((hex) => {
       tiles[HexUtils.getID(hex)] = allObjectsOnBoard(state)[HexUtils.getID(hex)];
     });
     return tiles;
   };
 }
 
-export function cardsInHand(state, cardType = 'anycard') {
-  return function (players, cardType) {
+export function cardsInHand(state) {
+  return function (players, cardType = 'anycard') {
     const player = players[0]; // Player target is always in the form of list, so just unpack it.
     return player.hand.filter(c => cardType == 'anycard' || c.type == stringToType(cardType));
   };

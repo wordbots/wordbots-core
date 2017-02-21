@@ -13,17 +13,17 @@ class Layout {
   }
 
   getPointOffset(corner) {
-    let angle = 2.0 * Math.PI * (corner + this.orientation.startAngle) / 6;
+    const angle = 2.0 * Math.PI * (corner + this.orientation.startAngle) / 6;
     return new Point(this.size.x * Math.cos(angle), this.size.y * Math.sin(angle));
   }
 
   getPolygonPoints(hex) {
-    let corners = [];
-    let center = new Point(0, 0);
+    const corners = [];
+    const center = new Point(0, 0);
 
     Array.from(new Array(6), (x, i) => {
-      let offset = this.getPointOffset(i);
-      let point = new Point(center.x + offset.x, center.y + offset.y);
+      const offset = this.getPointOffset(i);
+      const point = new Point(center.x + offset.x, center.y + offset.y);
       corners.push(point);
     });
 

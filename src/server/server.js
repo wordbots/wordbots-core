@@ -19,8 +19,7 @@ import webpackConfig from '../../webpack.config';
 
 const app = express();
 
-const renderFullPage = (html, initialState, head) => {
-  return `
+const renderFullPage = (html, initialState, head) => `
     <!doctype html>
     <html>
       <head>
@@ -40,32 +39,33 @@ const renderFullPage = (html, initialState, head) => {
       </body>
     </html>
   `;
-};
 
 if (process.env.NODE_ENV !== 'production') {
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
   app.use(webpackHotMiddleware(compiler));
 } else {
-  app.use('/static', express.static(__dirname + '/../../dist'));
+  app.use('/static', express.static(`${__dirname  }/../../dist`));
 }
 
 app.use(cookieParser());
 
-app.use(function (req, res, next) {
-  GLOBAL.navigator = {
+app.use((req, res, next) => {
+  global.navigator = {
     userAgent: req.headers['user-agent']
   };
   next();
 });
 
-app.get('/*', function (req, res) {
+app.get('/*', (req, res) => {
   const location = createLocation(req.url);
 
   getUser(req.cookies.token || false, user => {
     match({ routes, location }, (err, redirectLocation, renderProps) => {
       if (err) {
+        /* eslint-disable no-console */
         console.error(err);
+        /* eslint-enable no-console */
         return res.status(500).end('Internal server error');
       }
       if (!renderProps) {
@@ -97,11 +97,13 @@ app.get('/*', function (req, res) {
         .then(html => {
           const componentHTML = ReactDOMServer.renderToString(InitialView);
           const initialState = store.getState();
-          let head = Helmet.rewind();
+          const head = Helmet.rewind();
           res.status(200).end(renderFullPage(componentHTML,initialState, head));
         })
-        .catch(err => {
-          console.log(err);
+        .catch(e => {
+          /* eslint-disable no-console */
+          console.log(e);
+          /* eslint-enable no-console */
           res.end(renderFullPage('',{}));
         });
       });
@@ -109,7 +111,9 @@ app.get('/*', function (req, res) {
   );
 });
 
-const server = app.listen(3000, function () {
+const server = app.listen(3000, () => {
   const port = server.address().port;
-  console.log('Example app listening at http://localhost:%s', port);
+  /* eslint-disable no-console */
+  console.log('App listening at http://localhost:%s', port);
+  /* eslint-enable no-console */
 });

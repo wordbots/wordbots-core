@@ -16,6 +16,7 @@ export function setHoveredCard(state, card) {
 export function setSelectedTile(state, tile) {
   if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
     // Select target tile for event or afterPlayed trigger.
+    console.log(tile);
     state.target = Object.assign({}, state.target, {
       chosen: [tile],
       choosing: false,

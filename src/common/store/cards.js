@@ -276,7 +276,7 @@ const recruiterBotCard = {
   ]
 };
 
-const flametongueBotCard = {
+export const flametongueBotCard = {
   name: 'Flametongue Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -291,7 +291,7 @@ const flametongueBotCard = {
   ]
 };
 
-const investorBotCard = {
+export const investorBotCard = {
   name: 'Investor Bot',
   cost: 3,
   type: TYPE_ROBOT,

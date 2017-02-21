@@ -92,6 +92,8 @@ export function placeCard(state, card, tile) {
 
     tempState = applyAbilities(tempState);
 
+    console.log(tempState);
+
     playedObject.justPlayed = false;
 
     tempState.selectedCard = null;

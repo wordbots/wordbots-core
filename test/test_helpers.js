@@ -28,7 +28,7 @@ export function newTurn(state, playerName) {
   }
 }
 
-export function playObject(state, playerName, card, hex) {
+export function playObject(state, playerName, card, hex, target = null) {
   const player = state.players[playerName];
 
   // We don't care about testing card draw and energy here, so ensure that:
@@ -39,10 +39,25 @@ export function playObject(state, playerName, card, hex) {
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
-  return game(state, [
-    actions.setSelectedCard(0),
-    actions.placeCard(hex, card)
-  ]);
+  console.log(target);
+  if (target && target.hex) {
+    return game(state, [
+      actions.setSelectedCard(0),
+      actions.placeCard(hex, card),
+      actions.setSelectedTile(target.hex)
+    ]);
+  } else if (target && target.card) {
+    return game(state, [
+      actions.setSelectedCard(0),
+      actions.placeCard(hex, card),
+      actions.setSelectedCard(_.findIndex(player.hand, c => c.name == target.card.name))
+    ]);
+  } else {
+    return game(state, [
+      actions.setSelectedCard(0),
+      actions.placeCard(hex, card)
+    ]);
+  }
 }
 
 export function playEvent(state, playerName, card, target = null) {

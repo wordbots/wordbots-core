@@ -11,6 +11,7 @@ export default function actions(state) {
     },
 
     dealDamage: function (objects, amount) {
+      console.log(objects);
       objects.forEach((target) => {
         let hex;
         if (target.robotsOnBoard) {

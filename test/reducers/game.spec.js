@@ -7,7 +7,7 @@ import {
 } from '../test_helpers';
 
 describe('Game reducer', () => {
-  it('should return the initial state', () => {
+  /*it('should return the initial state', () => {
     expect(game(undefined, {})).toEqual(getDefaultState());
   });
 
@@ -255,5 +255,24 @@ describe('Game reducer', () => {
     expect(
       state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
     ).toEqual(24); // (Tank bot has 4 health.)
+  });*/
+
+  it('should be able to choose targets for afterPlayed triggered abilities', () => {
+    // Test ability to select a card in hand.
+    // "When this robot is played, reduce the cost of a card in your hand by 2."
+    let state = getDefaultState();
+    state = drawCardToHand(state, 'orange', cards.flametongueBotCard);
+    state = playObject(state, 'orange', cards.investorBotCard, '3,0,-3', {card: cards.flametongueBotCard});
+    expect(
+      _.find(state.players.orange.hand, c => c.name == 'Flametongue Bot').cost
+    ).toEqual(cards.flametongueBotCard.cost - 2);
+
+    console.log(state.target);
+
+    // Test ability to select an object on the board.
+    state = playObject(state, 'orange', cards.flametongueBotCard, '4,-1,-3', {hex: '-4,0,4'});  // Target the blue core.
+    expect(
+      state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
+    ).toEqual(16);
   });
 });

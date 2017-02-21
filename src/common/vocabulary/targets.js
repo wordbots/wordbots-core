@@ -14,11 +14,13 @@ export default function targets(state, currentObject) {
     // Note: Unlike other target functions, choose() can return an [hex]
     //       (if the chosen hex does not contain an object.)
     choose: function (collection) {
+      console.log(state.target);
       if (state.target.chosen) {
         // Return and clear chosen target.
         const chosenTargets = state.target.chosen;
         state.it = chosenTargets[0];  // "it" stores most recently chosen salient object for lookup.
         state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+        console.log(state.target);
 
         // Return objects if possible or hexes if not. (Cards can also be returned.)
         return chosenTargets.map(t => allObjectsOnBoard(state)[t] || t);

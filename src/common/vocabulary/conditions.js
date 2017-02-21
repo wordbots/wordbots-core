@@ -6,9 +6,9 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 
 export default function conditions(state) {
   return {
-    adjacentTo: function (objects) {
-      const neighborHexIds = _.flatMap(objects, obj =>
-        getAdjacentHexes(HexUtils.IDToHex(getHex(state, obj)))
+    adjacentTo: function (hexesOrObjects) {
+      const neighborHexIds = _.flatMap(hexesOrObjects, hexOrObj =>
+        getAdjacentHexes(HexUtils.IDToHex(_.isString(hexOrObj) ? hexOrObj : getHex(state, hexOrObj)))
       ).map(HexUtils.getID);
 
       return ((hex, obj) => neighborHexIds.includes(hex));

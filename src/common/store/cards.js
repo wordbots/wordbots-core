@@ -141,7 +141,7 @@ const wisdomCard = {
   type: TYPE_EVENT
 };
 
-const shockCard = {
+export const shockCard = {
   name: 'Shock',
   text: 'Deal 3 damage to a robot.',
   command: '(function () { actions["dealDamage"](targets["choose"](objectsInPlay("robot")), 3); })',
@@ -149,7 +149,7 @@ const shockCard = {
   type: TYPE_EVENT
 };
 
-const firestormCard = {
+export const firestormCard = {
   name: 'Firestorm',
   text: 'Deal 1 damage to everything adjacent to a tile.',
   command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("allobjects", [conditions["adjacentTo"](targets["choose"](allTiles()))])), 1); })',

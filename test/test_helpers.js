@@ -39,7 +39,7 @@ export function playObject(state, playerName, card, hex) {
   ]);
 }
 
-export function playEvent(state, playerName, card) {
+export function playEvent(state, playerName, card, target = null) {
   const player = state.players[playerName];
 
   // We don't care about testing card draw and energy here, so ensure that:
@@ -50,10 +50,18 @@ export function playEvent(state, playerName, card) {
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
-  return game(state, [
-    actions.setSelectedCard(0),
-    actions.setSelectedCard(0)
-  ]);
+  if (target && target.hex) {
+    return game(state, [
+      actions.setSelectedCard(0),
+      actions.setSelectedCard(0),
+      actions.setSelectedTile(target.hex)
+    ]);
+  } else {
+    return game(state, [
+      actions.setSelectedCard(0),
+      actions.setSelectedCard(0)
+    ]);
+  }
 }
 
 export function moveRobot(state, fromHex, toHex) {

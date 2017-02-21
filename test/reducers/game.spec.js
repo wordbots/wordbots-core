@@ -49,23 +49,6 @@ describe('Game reducer', () => {
     ).toEqual({'2,0,-2': 'Fortification'});
   });
 
-  it('should be able to play events and execute the commands within', () => {
-    let state = getDefaultState();
-
-    // "Draw two cards."
-    state = playEvent(state, 'orange', cards.concentrationCard);
-    expect(
-      state.players.orange.hand.length
-    ).toEqual(getDefaultState().players.orange.hand.length + 2);
-
-    // "Destroy all robots."
-    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
-    state = playEvent(state, 'orange', cards.wrathOfRobotGodCard);
-    expect(
-      objectsOnBoardOfType(state, TYPE_ROBOT)
-    ).toEqual({});
-  });
-
   it('should be able to move robots', () => {
     let state = getDefaultState();
     state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
@@ -220,5 +203,48 @@ describe('Game reducer', () => {
       state = attack(state, '3,0,-3', '4,0,-4');
     });
     expect(state.winner).toEqual('blue');
+  });
+
+  it('should be able to play events and execute the commands within', () => {
+    let state = getDefaultState();
+
+    // "Draw two cards."
+    state = playEvent(state, 'orange', cards.concentrationCard);
+    expect(
+      state.players.orange.hand.length
+    ).toEqual(getDefaultState().players.orange.hand.length + 2);
+
+    // "Destroy all robots."
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
+    state = playEvent(state, 'orange', cards.wrathOfRobotGodCard);
+    expect(
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({});
+  });
+
+  it('should be able to play events that target tiles or cards', () => {
+    // Test ability to select a tile with an object:
+    // "Deal 3 damage to a robot."
+    let state = getDefaultState();
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
+    state = playEvent(state, 'blue', cards.shockCard, {hex: '3,0,-3'});
+    expect(
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({});
+
+    // Test ability to select an empty tile:
+    // "Deal 1 damage to everything adjacent to a tile."
+    state = playObject(state, 'orange', cards.attackBotCard, '4,-1,-3');
+    state = playObject(state, 'orange', cards.attackBotCard, '3,1,4');
+    state = playEvent(state, 'blue', cards.firestormCard, {hex: '3,0,-3'});
+    expect(
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({});
+    expect(
+      state.players.orange.robotsOnBoard['4,0,-4'].stats.health  // Orange core
+    ).toEqual(19);
+
+    // TODO Test ability to select a card in hand.
+    // (There aren't yet any cards that do this - come up with one?)
   });
 });

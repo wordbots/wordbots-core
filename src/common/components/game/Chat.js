@@ -30,9 +30,7 @@ class Chat extends Component {
 
           <div style={{zIndex: 1, padding: 10}}>
             {
-              this.state.chatMessages.map((message) => {
-                return <div style={{marginBottom: 5}}><b>{message.user}</b>: {message.text}</div>;
-              })
+              this.state.chatMessages.map((message) => <div style={{marginBottom: 5}}><b>{message.user}</b>: {message.text}</div>)
             }
           </div>
 

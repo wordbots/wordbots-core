@@ -19,8 +19,7 @@ import webpackConfig from '../../webpack.config';
 
 const app = express();
 
-const renderFullPage = (html, initialState, head) => {
-  return `
+const renderFullPage = (html, initialState, head) => `
     <!doctype html>
     <html>
       <head>
@@ -40,14 +39,13 @@ const renderFullPage = (html, initialState, head) => {
       </body>
     </html>
   `;
-};
 
 if (process.env.NODE_ENV !== 'production') {
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
   app.use(webpackHotMiddleware(compiler));
 } else {
-  app.use('/static', express.static(__dirname + '/../../dist'));
+  app.use('/static', express.static(`${__dirname  }/../../dist`));
 }
 
 app.use(cookieParser());

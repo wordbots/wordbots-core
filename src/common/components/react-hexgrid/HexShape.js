@@ -10,9 +10,7 @@ class HexShape extends React.Component {
   getPoints(hex) {
     const points = this.props.layout.getPolygonPoints(hex);
 
-    return points.map(point => {
-      return point.x + ',' + point.y;
-    }).join(' ');
+    return points.map(point => `${point.x  },${  point.y}`).join(' ');
   }
 
   getPiecePoints(hex) {
@@ -24,18 +22,14 @@ class HexShape extends React.Component {
       points[4].y = points[4].y * 1.5;
       points[5].y = points[5].y * 1.5;
 
-      return points.map(point => {
-        return point.x + ',' + point.y;
-      }).join(' ');
+      return points.map(point => `${point.x  },${  point.y}`).join(' ');
     } else {
       // New hex coords - for sprites.
 
       points[4].y = points[4].y + 2;
       points[5].y = points[5].y + 2;
 
-      return points.map(point => {
-        return point.x + ',' + (point.y - 2);
-      }).join(' ');
+      return points.map(point => `${point.x  },${  point.y - 2}`).join(' ');
     }
   }
 
@@ -48,7 +42,7 @@ class HexShape extends React.Component {
   getStyles(hex) {
     if (this.props.fill || (hex.props != {} && typeof(hex.props.image) !== 'undefined')) {
       return {
-        fill: 'url(#'+ HexUtils.getID(hex) +')'
+        fill: `url(#${ HexUtils.getID(hex) })`
       };
     } else {
       return {};
@@ -58,7 +52,7 @@ class HexShape extends React.Component {
   getPieceStyles(hex) {
     if (this.props.pieceName) {
       return {
-        fill: 'url(#'+ HexUtils.getID(hex) +'_piece)',
+        fill: `url(#${ HexUtils.getID(hex) }_piece)`,
         stroke: 'none'
       };
     } else {

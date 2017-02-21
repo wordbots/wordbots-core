@@ -16,8 +16,7 @@ class HexGrid extends React.Component {
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
         {
-          this.props.hexagons.map((hex, index) => {
-            return (
+          this.props.hexagons.map((hex, index) => (
               <HexShape
                 key={index}
                 hex={hex}
@@ -28,8 +27,7 @@ class HexGrid extends React.Component {
                 pieceImg={pieceImgs[HexUtils.getID(hex)]}
                 pieceStats={pieceStats[HexUtils.getID(hex)]}
                 images={loadImages()} />
-            );
-          })
+            ))
         }
         <Path {...this.props.path} layout={this.props.layout} />
       </svg>

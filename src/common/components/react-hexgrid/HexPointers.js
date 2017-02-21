@@ -14,7 +14,7 @@ class HexPointers extends React.Component {
     const x = { x: (b.x+c.x)*0.7, y: (b.y+c.y)*0.7 };
 
     // Construct the points to polygon string
-    return [b, c, x].map(p => p.x +','+ p.y).join(' ');
+    return [b, c, x].map(p => `${p.x },${ p.y}`).join(' ');
   }
 
   createPointerArc(corner1, corner2) {
@@ -52,10 +52,9 @@ class HexPointers extends React.Component {
     return (
       <g>
         {
-          polygons.map((points, index) => {
+          polygons.map((points, index) => 
             // return <polygon key={index} points={points} />
-            return <path d={points} />;
-          })
+             <path d={points} />)
         }
       </g>
     );

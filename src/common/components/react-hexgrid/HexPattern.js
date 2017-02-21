@@ -8,14 +8,14 @@ class HexPattern extends React.Component {
   render() {
     const hex = this.props.hex;
     const images = this.props.images;
-    const fillImage = this.props.fill ? images[this.props.fill + '_tile'] : '';
+    const fillImage = this.props.fill ? images[`${this.props.fill  }_tile`] : '';
     const id = HexUtils.getID(hex);
 
     let pieceImagePattern = null;
 
     if (this.props.pieceImg && images[this.props.pieceImg]) {
       pieceImagePattern = (
-        <pattern id={id + '_piece'} height="100%" width="100%"
+        <pattern id={`${id  }_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1"
           preserveAspectRatio="xMidYMid">
           <image xlinkHref={images[this.props.pieceImg]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
@@ -27,7 +27,7 @@ class HexPattern extends React.Component {
       const idx2 = Math.floor(hash / 32) % 32;
 
       pieceImagePattern = (
-        <pattern id={id + '_piece'} height="100%" width="100%"
+        <pattern id={`${id  }_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox={`${idx1 * 42} ${idx2 * 42} 52 52`}
           preserveAspectRatio="xMidYMid">
           <image xlinkHref={images['spritesheet']} width="1354" height="1354" preserveAspectRatio="xMidYMid"/>

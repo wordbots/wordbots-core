@@ -179,9 +179,7 @@ class Board extends Component {
     const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
     const pieceNames = mapValues(pieces, piece => piece.card.name);
     const pieceImgs = mapValues(pieces, piece => piece.card.img);
-    const pieceStats = mapValues(pieces, (piece) => {
-      return { health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') };
-    });
+    const pieceStats = mapValues(pieces, (piece) => ({ health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') }));
 
     return (
       <div>

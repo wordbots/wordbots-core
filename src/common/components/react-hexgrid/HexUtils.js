@@ -86,9 +86,7 @@ class HexUtils {
   }
 
   static IDToHex(hexId) {
-    const coords = hexId.split(',').map((coord) => {
-      return parseInt(coord, 10);
-    });
+    const coords = hexId.split(',').map((coord) => parseInt(coord, 10));
 
     return new Hex(...coords);
   }

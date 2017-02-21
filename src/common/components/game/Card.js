@@ -107,7 +107,7 @@ class Card extends Component {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
-      boxShadow: ((this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow) + ' 0px 0px 20px 5px'
+      boxShadow: `${(this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
 
     if (!this.props.visible) {

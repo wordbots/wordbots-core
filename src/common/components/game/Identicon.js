@@ -17,7 +17,7 @@ class Identicon extends Component {
 
     generate(this.props.id, this.props, {
       start: function (value) {
-        color = '#'+Math.abs(value).toString(16).substring(0, 6);
+        color = `#${Math.abs(value).toString(16).substring(0, 6)}`;
       },
       rect: function (x, y) {
         const rect = React.createElement('rect', {

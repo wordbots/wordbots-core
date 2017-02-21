@@ -17,7 +17,7 @@ export function setSelectedTile(state, tile) {
   if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
     // Select target tile for event or afterPlayed trigger.
     state.target = Object.assign({}, state.target, {
-      chosen: tile,
+      chosen: [tile],
       choosing: false,
       possibleHexes: []
     });

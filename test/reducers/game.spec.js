@@ -3,7 +3,7 @@ import * as cards from '../../src/common/store/cards';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
 import {
   getDefaultState, objectsOnBoardOfType,
-  newTurn, playObject, playEvent, moveRobot, attack
+  newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack
 } from '../test_helpers';
 
 describe('Game reducer', () => {
@@ -244,7 +244,15 @@ describe('Game reducer', () => {
       state.players.orange.robotsOnBoard['4,0,-4'].stats.health  // Orange core
     ).toEqual(19);
 
-    // TODO Test ability to select a card in hand.
-    // (There aren't yet any cards that do this - come up with one?)
+    // Test ability to select a card in hand.
+    // "Discard a robot card. Gain life equal to its health."
+    state = drawCardToHand(state, 'blue', cards.tankBotCard);
+    state = playEvent(state, 'blue', cards.consumeCard, {card: cards.tankBotCard});
+    expect(
+      state.players.blue.hand.length
+    ).toEqual(getDefaultState().players.blue.hand.length);
+    expect(
+      state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
+    ).toEqual(24); // (Tank bot has 4 health.)
   });
 });

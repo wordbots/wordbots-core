@@ -119,7 +119,11 @@ export function playEvent(state, cardIdx, command) {
   const selectedCard = state.players[state.currentTurn].hand[cardIdx];
 
   if (_.isArray(selectedCard.command)) {
-    selectedCard.command.forEach((cmd) => executeCmd(state, cmd));
+    selectedCard.command.forEach((cmd) => {
+      if (!state.target.choosing) {
+        executeCmd(state, cmd);
+      }
+    });
   } else {
     executeCmd(state, selectedCard.command);
   }

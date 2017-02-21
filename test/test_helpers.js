@@ -12,6 +12,12 @@ export function objectsOnBoardOfType(state, objectType) {
   return _.mapValues(objects, obj => obj.card.name);
 }
 
+export function drawCardToHand(state, playerName, card) {
+  const player = state.players[playerName];
+  player.hand = [card].concat(player.hand);
+  return state;
+}
+
 export function newTurn(state, playerName) {
   if (state.currentTurn == playerName) {
     // Pass twice.
@@ -55,6 +61,12 @@ export function playEvent(state, playerName, card, target = null) {
       actions.setSelectedCard(0),
       actions.setSelectedCard(0),
       actions.setSelectedTile(target.hex)
+    ]);
+  } else if (target && target.card) {
+    return game(state, [
+      actions.setSelectedCard(0),
+      actions.setSelectedCard(0),
+      actions.setSelectedCard(_.findIndex(player.hand, c => c.name == target.card.name))
     ]);
   } else {
     return game(state, [

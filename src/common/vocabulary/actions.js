@@ -1,10 +1,13 @@
 import { TYPE_CORE } from '../constants';
-import { ownerOf, getHex, drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex } from '../util';
+import {
+  currentPlayer, ownerOf, getHex,
+  drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
+} from '../util';
 
 export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
-      objects.forEach(object => object.movesLeft = object.stats.speed);
+      objects.forEach(object => { object.movesLeft = object.stats.speed; });
     },
 
     dealDamage: function (objects, amount) {
@@ -29,7 +32,12 @@ export default function actions(state) {
       });
     },
 
-    // TODO discard(objects) -- requires choice?
+    discard: function (cards) {
+      cards.forEach(card => {
+        const player = currentPlayer(state);
+        player.hand.splice(_.findIndex(player.hand, card), 1);
+      });
+    },
 
     draw: function (players, count) {
       players.forEach(player => drawCards(state, player, count));

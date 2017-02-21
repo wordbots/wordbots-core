@@ -1,12 +1,14 @@
 export function attributeSum(state) {
   return function (collection, attribute) {
-    return _.sum(Object.values(collection).map(object => object.stats[attribute]));
+    return _.sum(Object.values(collection).map(object =>
+      object.stats[attribute]
+    ));
   };
 }
 
 export function attributeValue(state) {
   return function (targetObjects, attribute) {
-    const object = targetObjects[0][1]; // targetObject is an array of [hex, obj] pairs, so unpack.
+    const object = targetObjects[0]; // targetObject is an array of objects, so unpack.
     return object.stats[attribute];
   };
 }

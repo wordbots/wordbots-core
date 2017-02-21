@@ -334,6 +334,17 @@ const martyrBotCard = {
   ]
 };
 
+export const consumeCard = {
+  name: 'Consume',
+  text: 'Discard a robot card. Gain life equal to its health.',
+  command: [
+    "(function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'robot'))); })",
+    "(function () { actions['modifyAttribute'](targets['all'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())])), 'health', function (x) { return x + attributeValue(targets['it'](), 'health'); }); })"
+  ],
+  cost: 2,
+  type: TYPE_EVENT
+};
+
 /* eslint-enable quotes */
 
 export const deck = [
@@ -343,6 +354,7 @@ export const deck = [
   flametongueBotCard,
   arenaCard,
   fortificationCard,
+  consumeCard,
   shockCard,
   martyrBotCard,
   superchargeCard,

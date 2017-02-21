@@ -195,6 +195,7 @@ export function executeCmd(state, cmd, currentObject = null) {
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
 
+  // console.log(cmd);
   return eval(cmd)();
 }
 /* eslint-enable no-unused-vars */
@@ -204,7 +205,7 @@ export function checkTriggers(state, triggerType, it, condition) {
     (obj.triggers || []).forEach(function (t) {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
       if (t.trigger.type == triggerType && condition(t.trigger)) {
-        console.log(`Executing ${triggerType} trigger: ${t.action}`);
+        // console.log(`Executing ${triggerType} trigger: ${t.action}`);
         executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
       }
     });
@@ -220,7 +221,7 @@ export function applyAbilities(state) {
       (ability.currentTargets || []).forEach(ability.unapply);
 
       // Apply this ability to all targeted objects.
-      console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
+      // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
       ability.currentTargets = executeCmd(state, ability.targets, obj);
       ability.currentTargets.forEach(ability.apply);
     });

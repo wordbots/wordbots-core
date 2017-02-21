@@ -16,9 +16,12 @@ export default function targets(state, currentObject) {
     choose: function (collection) {
       if (state.target.chosen) {
         // Return and clear chosen target.
-        const chosenTarget = state.target.chosen;
+        const chosenTargets = state.target.chosen;
+        state.it = chosenTargets[0];  // "it" stores most recently chosen salient object for lookup.
         state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-        return [allObjectsOnBoard(state)[chosenTarget] || chosenTarget];  // Return object if possible or hex if not
+
+        // Return objects if possible or hexes if not. (Cards can also be returned.)
+        return chosenTargets.map(t => allObjectsOnBoard(state)[t] || t);
       } else {
         if (!_.isEmpty(collection)) {
           // Prepare target selection.

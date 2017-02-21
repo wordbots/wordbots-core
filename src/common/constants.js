@@ -1,3 +1,5 @@
+export const STARTING_PLAYER_HEALTH = 20;
+
 export const TYPE_ROBOT = 0;
 export const TYPE_EVENT = 1;
 export const TYPE_CORE = 2;

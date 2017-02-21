@@ -1,6 +1,6 @@
 import game from '../../src/common/reducers/game';
 import * as cards from '../../src/common/store/cards';
-import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
+import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
 import {
   getDefaultState, objectsOnBoardOfType,
   newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack
@@ -181,7 +181,7 @@ describe('Game reducer', () => {
     state = moveRobot(state, '1,0,-1', '-1,0,1');
     state = newTurn(state, 'orange');
     state = moveRobot(state, '-1,0,1', '-3,0,3');
-    _.times(20, () => {
+    _.times(STARTING_PLAYER_HEALTH, () => {
       expect(state.winner).toEqual(null);
       state = newTurn(state, 'orange');
       state = attack(state, '-3,0,3', '-4,0,4');
@@ -197,7 +197,7 @@ describe('Game reducer', () => {
     state = moveRobot(state, '-1,0,1', '1,0,-1');
     state = newTurn(state, 'blue');
     state = moveRobot(state, '1,0,-1', '3,0,-3');
-    _.times(20, () => {
+    _.times(STARTING_PLAYER_HEALTH, () => {
       expect(state.winner).toEqual(null);
       state = newTurn(state, 'blue');
       state = attack(state, '3,0,-3', '4,0,-4');
@@ -225,7 +225,7 @@ describe('Game reducer', () => {
     state = playEvent(state, 'orange', cards.missileStrikeCard);
     expect(
       state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
-    ).toEqual(15);
+    ).toEqual(STARTING_PLAYER_HEALTH - 5);
   });
 
   it('should be able to play events that target selected tiles or cards', () => {
@@ -248,7 +248,7 @@ describe('Game reducer', () => {
     ).toEqual({});
     expect(
       state.players.orange.robotsOnBoard['4,0,-4'].stats.health  // Orange core
-    ).toEqual(19);
+    ).toEqual(STARTING_PLAYER_HEALTH - 1);
 
     // Test ability to select a card in hand.
     // "Discard a robot card. Gain life equal to its health."
@@ -260,7 +260,7 @@ describe('Game reducer', () => {
     ).toEqual(getDefaultState().players.blue.hand.length);
     expect(
       state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
-    ).toEqual(24); // (Tank bot has 4 health.)
+    ).toEqual(STARTING_PLAYER_HEALTH + 4);
   });
 
   it('should be able to choose targets for afterPlayed triggered abilities', () => {
@@ -278,6 +278,6 @@ describe('Game reducer', () => {
     state = playObject(state, 'orange', cards.flametongueBotCard, '4,-1,-3', {hex: '-4,0,4'});  // Target the blue core.
     expect(
       state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
-    ).toEqual(16);
+    ).toEqual(STARTING_PLAYER_HEALTH - 4);
   });
 });

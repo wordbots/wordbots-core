@@ -5,7 +5,7 @@ import { allObjectsOnBoard } from '../src/common/util';
 
 function instantiateCard(card) {
   return Object.assign({}, card, {
-    id: Math.random().toString(36),
+    id: _.uniqueId(),
     baseCost: card.cost
   });
 }

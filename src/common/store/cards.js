@@ -1,4 +1,6 @@
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
+import { uniqueId } from 'lodash';
+
+import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
 
 // Note: Exported cards are used in either defaultState (cores) or in tests.
 
@@ -10,7 +12,7 @@ export const blueCoreCard = {
   cost: 0,
   type: TYPE_CORE,
   stats: {
-    health: 20
+    health: STARTING_PLAYER_HEALTH
   },
   abilities: []
 };
@@ -21,7 +23,7 @@ export const orangeCoreCard = {
   cost: 0,
   type: TYPE_CORE,
   stats: {
-    health: 20
+    health: STARTING_PLAYER_HEALTH
   },
   abilities: []
 };
@@ -379,7 +381,7 @@ export const deck = [
   wrathOfRobotGodCard
 ].map(card =>
   Object.assign({}, card, {
-    id: Math.random().toString(36),
+    id: uniqueId(),
     baseCost: card.cost
   })
 );

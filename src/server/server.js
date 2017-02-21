@@ -65,7 +65,9 @@ app.get('/*', (req, res) => {
   getUser(req.cookies.token || false, user => {
     match({ routes, location }, (err, redirectLocation, renderProps) => {
       if (err) {
+        /* eslint-disable no-console */
         console.error(err);
+        /* eslint-enable no-console */
         return res.status(500).end('Internal server error');
       }
       if (!renderProps) {
@@ -101,7 +103,9 @@ app.get('/*', (req, res) => {
           res.status(200).end(renderFullPage(componentHTML,initialState, head));
         })
         .catch(err => {
+          /* eslint-disable no-console */
           console.log(err);
+          /* eslint-enable no-console */
           res.end(renderFullPage('',{}));
         });
       });
@@ -111,5 +115,7 @@ app.get('/*', (req, res) => {
 
 const server = app.listen(3000, () => {
   const port = server.address().port;
-  console.log('Example app listening at http://localhost:%s', port);
+  /* eslint-disable no-console */
+  console.log('App listening at http://localhost:%s', port);
+  /* eslint-enable no-console */
 });

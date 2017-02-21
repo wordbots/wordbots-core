@@ -246,6 +246,7 @@ describe('Game reducer', () => {
 
     // Test ability to select a card in hand.
     // "Discard a robot card. Gain life equal to its health."
+    // (This also tests the ability to store 'it' in game state for later retrieval.)
     state = drawCardToHand(state, 'blue', cards.tankBotCard);
     state = playEvent(state, 'blue', cards.consumeCard, {card: cards.tankBotCard});
     expect(

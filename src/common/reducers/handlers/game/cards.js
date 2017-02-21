@@ -66,7 +66,6 @@ export function placeCard(state, card, tile) {
   let tempState = _.cloneDeep(state);
 
   const player = currentPlayer(tempState);
-  const selectedCardIndex = tempState.selectedCard;
 
   if (player.energy.available >= getCost(card) &&
       validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
@@ -83,7 +82,7 @@ export function placeCard(state, card, tile) {
     player.robotsOnBoard[tile] = playedObject;
 
     player.energy.available -= getCost(card);
-    player.hand.splice(selectedCardIndex, 1);
+    player.hand = _.filter(player.hand, c => c.id != card.id);
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
@@ -119,28 +118,30 @@ export function placeCard(state, card, tile) {
 }
 
 export function playEvent(state, cardIdx, command) {
-  const selectedCard = state.players[state.currentTurn].hand[cardIdx];
+  const player = state.players[state.currentTurn];
+  const card = player.hand[cardIdx];
 
-  if (_.isArray(selectedCard.command)) {
-    selectedCard.command.forEach((cmd) => {
-      if (!state.target.choosing) {
-        executeCmd(state, cmd);
-      }
-    });
-  } else {
-    executeCmd(state, selectedCard.command);
-  }
+  if (player.energy.available >= getCost(card)) {
+    if (_.isArray(card.command)) {
+      card.command.forEach((cmd) => {
+        if (!state.target.choosing) {
+          executeCmd(state, cmd);
+        }
+      });
+    } else {
+      executeCmd(state, card.command);
+    }
 
-  if (state.target.choosing) {
-    state.status = { message: `Choose a target for ${selectedCard.name}.`, type: 'text' };
-  } else {
-    state.selectedCard = null;
-    state.playingCardType = null;
-    state.status.message = '';
+    if (state.target.choosing) {
+      state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
+    } else {
+      state.card = null;
+      state.playingCardType = null;
+      state.status.message = '';
 
-    const player = state.players[state.currentTurn];
-    player.energy.available -= getCost(selectedCard);
-    player.hand.splice(cardIdx, 1);
+      player.energy.available -= getCost(card);
+      player.hand = _.filter(player.hand, c => c.id != card.id);
+    }
   }
 
   return state;

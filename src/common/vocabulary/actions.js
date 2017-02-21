@@ -33,10 +33,9 @@ export default function actions(state) {
     },
 
     discard: function (cards) {
-      cards.forEach(card => {
-        const player = currentPlayer(state);
-        player.hand.splice(_.findIndex(player.hand, card), 1);
-      });
+      const cardIds = cards.map(c => c.id);
+      const player = currentPlayer(state);
+      player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
     },
 
     draw: function (players, count) {

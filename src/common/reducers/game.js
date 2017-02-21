@@ -1,3 +1,5 @@
+import { isArray, reduce } from 'lodash';
+
 import defaultState from '../store/defaultState';
 import * as gameActions from '../actions/game';
 
@@ -6,9 +8,9 @@ import g from './handlers/game';
 export default function game(oldState = defaultState, action) {
   let state = Object.assign({}, oldState);
 
-  if (_.isArray(action)) {
+  if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
-    return _.reduce(action, game, state);
+    return reduce(action, game, state);
   } else {
     // console.log(action);
     switch (action.type) {

@@ -25,7 +25,7 @@ engines:
         enabled: false
       import/no-duplicates:
         enabled: false
-      import/order": 2:
+      import/order:
         enabled: false
       import/newline-after-import:
         enabled: false

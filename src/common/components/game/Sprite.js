@@ -72,7 +72,7 @@ class Sprite extends Component {
 
     ByteMap.prototype = Object.create(Uint8Array.prototype, {
       set: function (x, y, value) { this[indexFromCoord(this.width, x, y)] = value; },
-      get: function (x, y) { return this[indexFromCoord(this.width, x, y)]; },
+      get: function (x, y) { return this[indexFromCoord(this.width, x, y)]; }
     });
 
     function LinearCongruentialGenerator(a, c, m) {
@@ -85,7 +85,7 @@ class Sprite extends Component {
     LinearCongruentialGenerator.prototype = {
       _random: function () { return this.seed = (this.a * this.seed + this.c) % this.m; },
       random: function () { return this._random() / (this.m - 1); },
-      reseed: function (seed) { this.seed = (seed ? seed : Date.now()) % this.m; },
+      reseed: function (seed) { this.seed = (seed ? seed : Date.now()) % this.m; }
     };
 
     const lcg0 = new LinearCongruentialGenerator(2147483629, 2147483587, Math.pow(2, 31) - 1);
@@ -156,7 +156,7 @@ class Sprite extends Component {
         coloursEqual(A, B) && coloursEqual(A, D) ? A : E,
         coloursEqual(C, B) && coloursEqual(C, F) ? C : E,
         coloursEqual(G, H) && coloursEqual(G, D) ? G : E,
-        coloursEqual(I, F) && coloursEqual(I, H) ? I : E,
+        coloursEqual(I, F) && coloursEqual(I, H) ? I : E
       ];
     }
 
@@ -183,7 +183,7 @@ class Sprite extends Component {
         /*coloursEqual(F, C) && coloursEqual(F, I) ? F :*/ E,
         coloursEqual(G, H) && coloursEqual(G, D) ? G : E,
         /*coloursEqual(H, I) && coloursEqual(H, G) ? H :*/ E,
-        coloursEqual(I, F) && coloursEqual(I, H) ? I : E,
+        coloursEqual(I, F) && coloursEqual(I, H) ? I : E
       ];
     }
 
@@ -259,7 +259,7 @@ class Sprite extends Component {
       eagle2x: { label: 'Eagle2x', factor: 2, func: scaleEagle2x },
       eagle3x: { label: 'Eagle3x', factor: 3, func: scaleEagle3x },
       scale2x: { label: 'Scale2x', factor: 2, func: scaleScale2x },
-      scale3x: { label: 'Scale3x', factor: 3, func: scaleScale3x },
+      scale3x: { label: 'Scale3x', factor: 3, func: scaleScale3x }
     };
 
     function scale(src, dest, scaler) {
@@ -289,7 +289,7 @@ class Sprite extends Component {
       }},
       spherical: { label: 'Spherical', func: function (x) {
         return Math.sqrt(1.0 - ((1.0 - x) * (1.0 - x)));
-      }},
+      }}
     };
 
     function lerp(start, end, pos) {
@@ -330,25 +330,25 @@ class Sprite extends Component {
         [  0,   0,   0], [157, 157, 157], [255, 255, 255], [190,  38,  51],
         [224, 111, 139], [ 73,  60,  43], [164, 100,  34], [235, 137,  49],
         [247, 226, 107], [ 47,  72,  78], [ 68, 137,  26], [163, 206,  39],
-        [ 27,  38,  50], [  0,  87, 132], [ 49, 162, 242], [178, 220, 239],
+        [ 27,  38,  50], [  0,  87, 132], [ 49, 162, 242], [178, 220, 239]
       ]},
       dawnbringer: { label: 'DawnBringer\'s', background: 0, colours: [
         [ 20,  12,  28], [ 68,  36,  52], [ 48,  52, 109], [ 78,  74,  78],
         [133,  76,  48], [ 52, 101,  36], [208,  70,  72], [117, 113,  97],
         [ 89, 125, 206], [210, 125,  44], [133, 149, 161], [109, 170,  44],
-        [210, 170, 153], [109, 194, 202], [218, 212,  94], [222, 238, 214],
+        [210, 170, 153], [109, 194, 202], [218, 212,  94], [222, 238, 214]
       ]},
       c64: { label: 'Commodore 64', background: 0, colours: [
         [  0,   0,   0], [ 62,  49, 162], [ 87,  66,   0], [140,  62,  52],
         [ 84,  84,  84], [141,  71, 179], [144,  95,  37], [124, 112, 218],
         [128, 128, 128], [104, 169,  65], [187, 119, 109], [122, 191, 199],
-        [171, 171, 171], [208, 220, 113], [172, 234, 136], [255, 255, 255],
+        [171, 171, 171], [208, 220, 113], [172, 234, 136], [255, 255, 255]
       ]},
       ega: { label: 'EGA', background: 0, colours: [
         [  0,   0,   0], [  0,   0, 168], [  0, 168,   0], [  0, 168, 168],
         [168,   0,   0], [168,   0, 168], [168,  84,   0], [168, 168, 168],
         [ 84,  84,  84], [ 84,  84, 252], [ 84, 252,  84], [ 84, 252, 252],
-        [252,  84,  84], [252,  84, 252], [252, 252,  84], [252, 252, 252],
+        [252,  84,  84], [252,  84, 252], [252, 252,  84], [252, 252, 252]
       ]},
       nes: { label: 'NES', background: 63, colours: [
         [255, 255, 255], [255, 255, 255], [199, 199, 199], [128, 128, 128],
@@ -364,32 +364,32 @@ class Sprite extends Component {
         [166, 237, 175], [ 43, 240,  53], [  5, 143,   0], [  5,  74,   0],
         [162, 242, 218], [ 12, 240, 164], [  0, 138,  85], [  0,  71,  46],
         [153, 255, 252], [  5, 251, 255], [  0, 153, 204], [  0,  65, 102],
-        [221, 221, 221], [ 94,  94,  94], [ 33,  33,  33], [  0,   0,   0],
+        [221, 221, 221], [ 94,  94,  94], [ 33,  33,  33], [  0,   0,   0]
       ]},
       gameboy: { label: 'Gameboy', background: 0, colours: [
-        [ 57,  57,  41], [123, 115,  99], [181, 165, 107], [231, 214, 156],
+        [ 57,  57,  41], [123, 115,  99], [181, 165, 107], [231, 214, 156]
       ]},
       greys: { label: 'Greys', background: 0, colours: [
         //[ 31,  31,  31], [ 63,  63,  63], [ 95,  95,  95], [127, 127, 127],
         //[159, 159, 159], [191, 191, 191], [223, 223, 223], [255, 255, 255],
         //[  0,   0,   0], [ 85,  85,  85], [170, 170, 170], [255, 255, 255],
         [  0,   0,   0], [ 34,  34,  34], [ 73,  73,  73], [109, 109, 109],
-        [146, 146, 146], [182, 182, 182], [219, 219, 219], [255, 255, 255],
+        [146, 146, 146], [182, 182, 182], [219, 219, 219], [255, 255, 255]
       ]},
       primaries: { label: 'Primaries', background: 0, colours: [
         [  0,   0,   0], [255,   0,   0], [  0, 255,   0], [  0,   0, 255],
-        [255, 255, 255],
+        [255, 255, 255]
       ]},
       secondaries: { label: 'Secondaries', background: 0, colours: [
         [  0,   0,   0], [255,   0,   0], [255, 255,   0], [  0, 255,   0],
-        [  0, 255, 255], [  0,   0, 255], [255,   0, 255], [255, 255, 255],
+        [  0, 255, 255], [  0,   0, 255], [255,   0, 255], [255, 255, 255]
       ]},
       tertiaries: { label: 'Tertiaries', background: 0, colours: [
         [  0,   0,   0], [255,   0,   0], [255, 127,   0], [255, 255,   0],
         [127, 255,   0], [  0, 255,   0], [  0, 255, 127], [  0, 255, 255],
         [  0, 127, 255], [  0,   0, 255], [127,   0, 255], [255,   0, 255],
-        [255, 127, 127], [255, 255, 255],
-      ]},
+        [255, 127, 127], [255, 255, 255]
+      ]}
     };
 
     function SpriteGenerator(options = {}) {

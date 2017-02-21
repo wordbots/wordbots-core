@@ -14,7 +14,7 @@ class CardViewer extends Component {
     if (this.props.hoveredCard) {
       card = (
         <Card
-          onCardClick={() => {}}
+          onCardClick={function () {}}
           stats={this.props.hoveredCard.stats}
           name={this.props.hoveredCard.card.name}
           type={this.props.hoveredCard.card.type}

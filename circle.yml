@@ -6,3 +6,5 @@ test:
   override:
     - node_modules/eslint/bin/eslint.js src test
     - npm test -- --coverage
+  post:
+    - cp -R coverage $CIRCLE_ARTIFACTS

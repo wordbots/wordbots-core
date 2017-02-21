@@ -8,7 +8,7 @@ export function attributeSum(state) {
 
 export function attributeValue(state) {
   return function (targetObjects, attribute) {
-    const object = targetObjects[0]; // targetObject is an array of objects, so unpack.
+    const object = targetObjects[0]; // targetObjects is an array of objects, so unpack.
     return object.stats[attribute];
   };
 }

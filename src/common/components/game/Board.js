@@ -13,14 +13,14 @@ class Board extends Component {
   constructor(props) {
     super(props);
 
-    let boardConfig = {
+    const boardConfig = {
       width: 600, height: 600,
       layout: { width: 6, height: 6, flat: false, spacing: 0 },
       origin: { x: 0, y: 0 },
       map: 'hexagon',
       mapProps: [ 4 ]
     };
-    let grid = HexGrid.generate(boardConfig);
+    const grid = HexGrid.generate(boardConfig);
 
     this.state = {
       grid,
@@ -103,7 +103,7 @@ class Board extends Component {
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
     const existingHexColors = hexColors;
 
-    let newHexColors = Object.assign({}, existingHexColors);
+    const newHexColors = Object.assign({}, existingHexColors);
 
     this.getValidMovementHexes(hex, speed).forEach((hex) =>
       newHexColors[HexUtils.getID(hex)] = 'green'
@@ -167,8 +167,8 @@ class Board extends Component {
   }
 
   render() {
-    let { grid, config } = this.state;
-    let hexColors = this.updateHexColors();
+    const { grid, config } = this.state;
+    const hexColors = this.updateHexColors();
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),

@@ -8,7 +8,7 @@ const { object, string } = React.PropTypes;
 
 class HexShape extends React.Component {
   getPoints(hex) {
-    let points = this.props.layout.getPolygonPoints(hex);
+    const points = this.props.layout.getPolygonPoints(hex);
 
     return points.map(point => {
       return point.x + ',' + point.y;
@@ -16,7 +16,7 @@ class HexShape extends React.Component {
   }
 
   getPiecePoints(hex) {
-    let points = this.props.layout.getPolygonPoints(hex);
+    const points = this.props.layout.getPolygonPoints(hex);
 
     if (this.props.pieceImg) {
       // Old hex coords - for kernels & other things with static art.
@@ -40,8 +40,8 @@ class HexShape extends React.Component {
   }
 
   translate() {
-    let hex = this.props.hex;
-    let pixel = HexUtils.hexToPixel(hex, this.props.layout);
+    const hex = this.props.hex;
+    const pixel = HexUtils.hexToPixel(hex, this.props.layout);
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
@@ -115,14 +115,14 @@ class HexShape extends React.Component {
   }
 
   render() {
-    let hex = this.props.hex;
-    let text = (hex.props.text) ? hex.props.text : HexUtils.getID(hex);
-    let actions = this.props.actions;
-    let styles = this.getStyles(hex);
-    let pieceStyles = this.getPieceStyles(hex);
-    let points = this.getPoints(hex);
-    let piecePoints = this.getPiecePoints(hex);
-    let pieceStats = this.getPieceStats();
+    const hex = this.props.hex;
+    const text = (hex.props.text) ? hex.props.text : HexUtils.getID(hex);
+    const actions = this.props.actions;
+    const styles = this.getStyles(hex);
+    const pieceStyles = this.getPieceStyles(hex);
+    const points = this.getPoints(hex);
+    const piecePoints = this.getPiecePoints(hex);
+    const pieceStats = this.getPieceStats();
 
     return (
       <g className="shape-group" transform={this.translate()} draggable="true"

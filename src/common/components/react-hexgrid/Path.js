@@ -12,9 +12,9 @@ class Path extends React.Component {
     }
 
     // Get all the intersecting hexes between start and end points
-    let distance = HexUtils.distance(this.props.start, this.props.end);
-    let intersects = [];
-    let step = 1.0 / Math.max(distance, 1);
+    const distance = HexUtils.distance(this.props.start, this.props.end);
+    const intersects = [];
+    const step = 1.0 / Math.max(distance, 1);
     for (let i=0; i<=distance; i++) {
       intersects.push(HexUtils.round(HexUtils.lerp(this.props.start, this.props.end, step * i)));
     }
@@ -22,7 +22,7 @@ class Path extends React.Component {
     // Construct Path points out of all the intersecting hexes (e.g. M 0,0 L 10,20, L 30,20)
     let points = 'M';
     points += intersects.map(hex => {
-      let p = HexUtils.hexToPixel(hex, this.props.layout);
+      const p = HexUtils.hexToPixel(hex, this.props.layout);
       return ` ${p.x},${p.y} `;
     }).join('L');
 

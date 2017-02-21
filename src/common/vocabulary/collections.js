@@ -8,7 +8,7 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 
 export function allTiles(state) {
   return function () {
-    let tiles = {};
+    const tiles = {};
     GridGenerator.hexagon(4).forEach((hex) => {
       tiles[HexUtils.getID(hex)] = allObjectsOnBoard(state)[HexUtils.getID(hex)];
     });

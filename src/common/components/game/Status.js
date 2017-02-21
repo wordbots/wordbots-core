@@ -6,7 +6,7 @@ class Status extends Component {
   }
 
   render() {
-    let statusStyle = {
+    const statusStyle = {
       color: '#444444',
       top: 0,
       bottom: 0

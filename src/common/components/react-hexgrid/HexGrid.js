@@ -38,9 +38,9 @@ class HexGrid extends React.Component {
 }
 
 HexGrid.generate = (config, content) => {
-  let layout = new Layout(config.layout, config.origin);
-  let generator = GridGenerator.getGenerator(config.map);
-  let hexagons = generator.apply(this, config.mapProps);
+  const layout = new Layout(config.layout, config.origin);
+  const generator = GridGenerator.getGenerator(config.map);
+  const hexagons = generator.apply(this, config.mapProps);
 
   return { hexagons, layout };
 };

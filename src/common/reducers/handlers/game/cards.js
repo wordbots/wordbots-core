@@ -135,7 +135,7 @@ export function playEvent(state, cardIdx, command) {
     if (state.target.choosing) {
       state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
-      state.card = null;
+      state.selectedCard = null;
       state.playingCardType = null;
       state.status.message = '';
 

@@ -104,7 +104,7 @@ export function validMovementHexes(state, startHex, speed) {
   let validHexes = [startHex];
 
   for (let distance = 0; distance < speed; distance++) {
-    let newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
+    const newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
       !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
     );
 
@@ -115,8 +115,8 @@ export function validMovementHexes(state, startHex, speed) {
 }
 
 export function validAttackHexes(state, playerName, startHex, speed) {
-  let validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1));
-  let potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
+  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1));
+  const potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
 
   return potentialAttackHexes.filter((hex) =>
     Object.keys(state.players[opponent(playerName)].robotsOnBoard).includes(HexUtils.getID(hex))

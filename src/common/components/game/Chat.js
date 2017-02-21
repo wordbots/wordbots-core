@@ -54,7 +54,7 @@ class Chat extends Component {
   }
 
   onChatEnter() {
-    let newChatMessages = this.state.chatMessages;
+    const newChatMessages = this.state.chatMessages;
     newChatMessages.push({
       user: 'You',
       text: this.state.chatFieldValue

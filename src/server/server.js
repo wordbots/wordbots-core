@@ -99,7 +99,7 @@ app.get('/*', (req, res) => {
         .then(html => {
           const componentHTML = ReactDOMServer.renderToString(InitialView);
           const initialState = store.getState();
-          let head = Helmet.rewind();
+          const head = Helmet.rewind();
           res.status(200).end(renderFullPage(componentHTML,initialState, head));
         })
         .catch(err => {

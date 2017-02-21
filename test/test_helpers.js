@@ -53,10 +53,11 @@ export function playObject(state, playerName, card, hex, target = null) {
       actions.setSelectedTile(target.hex)
     ]);
   } else if (target && target.card) {
+    const cardIdx = _.findIndex(player.hand, c => c.name == target.card.name);
     return game(state, [
       actions.setSelectedCard(0),
       actions.placeCard(hex, card),
-      actions.setSelectedCard(_.findIndex(player.hand, c => c.name == target.card.name))
+      actions.setSelectedCard(cardIdx)
     ]);
   } else {
     return game(state, [
@@ -84,10 +85,11 @@ export function playEvent(state, playerName, card, target = null) {
       actions.setSelectedTile(target.hex)
     ]);
   } else if (target && target.card) {
+    const cardIdx = _.findIndex(player.hand, c => c.name == target.card.name);
     return game(state, [
       actions.setSelectedCard(0),
       actions.setSelectedCard(0),
-      actions.setSelectedCard(_.findIndex(player.hand, c => c.name == target.card.name))
+      actions.setSelectedCard(cardIdx)
     ]);
   } else {
     return game(state, [

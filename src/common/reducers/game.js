@@ -6,7 +6,7 @@ import * as gameActions from '../actions/game';
 import g from './handlers/game';
 
 export default function game(oldState = defaultState, action) {
-  let state = Object.assign({}, oldState);
+  const state = Object.assign({}, oldState);
 
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.

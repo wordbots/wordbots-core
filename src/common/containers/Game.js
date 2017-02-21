@@ -238,7 +238,7 @@ Game.propTypes = {
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
-  onHoverTile: React.PropTypes.func,
+  onHoverTile: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

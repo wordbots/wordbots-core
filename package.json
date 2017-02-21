@@ -11,6 +11,7 @@
     "start-prod": "set NODE_ENV=production && node src/server/index.js --progress --colors --profile",
     "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "test": "jest",
+    "test:coverage": "npm test -- --coverage",
     "test:watch": "npm test -- --watch"
   },
   "repository": {

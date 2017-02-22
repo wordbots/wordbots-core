@@ -29,7 +29,7 @@ class Board extends Component {
   }
 
   currentPlayerPieces() {
-    return this.props[`${this.props.currentTurn}Pieces`];
+    return (this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces);
   }
 
   allPieces() {

@@ -5,7 +5,7 @@ import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import {
-  opponent, getAttribute, hasEffect,
+  getAttribute, hasEffect,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
 } from '../../util';
 
@@ -30,10 +30,6 @@ class Board extends Component {
 
   currentPlayerPieces() {
     return this.props[`${this.props.currentTurn}Pieces`];
-  }
-
-  opponentPieces() {
-    return this.props[`${opponent(this.props.currentTurn)}Pieces`];
   }
 
   allPieces() {
@@ -173,10 +169,13 @@ class Board extends Component {
       onMouseLeave: (h, e) => this.onHexHover(h, e)
     };
 
-    const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
+    const pieces = this.allPieces();
     const pieceNames = mapValues(pieces, piece => piece.card.name);
     const pieceImgs = mapValues(pieces, piece => piece.card.img);
-    const pieceStats = mapValues(pieces, (piece) => ({ health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') }));
+    const pieceStats = mapValues(pieces, (piece) => ({
+      health: getAttribute(piece, 'health'),
+      attack: getAttribute(piece, 'attack')
+    }));
 
     return (
       <div>

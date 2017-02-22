@@ -12,7 +12,7 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // I. Queries for game state.
 //
 
-export function opponent(playerName) {
+function opponent(playerName) {
   return (playerName == 'blue') ? 'orange' : 'blue';
 }
 

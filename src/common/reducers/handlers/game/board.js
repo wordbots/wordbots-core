@@ -2,7 +2,7 @@ import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
-  checkTriggers, applyAbilities
+  checkTriggersForObject, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
@@ -64,7 +64,7 @@ export function attack(state, source, target) {
     attacker.movesLeft = 0;
 
     state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
-    state = checkTriggers(state, 'afterAttack', attacker, (t => t.targets.map(o => o.id).includes(attacker.id)));
+    state = checkTriggersForObject(state, 'afterAttack', attacker);
 
     state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
 

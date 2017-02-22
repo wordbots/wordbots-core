@@ -1,7 +1,7 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, validPlacementHexes, getCost,
-  executeCmd, checkTriggers, applyAbilities
+  executeCmd, checkTriggersForObject, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
@@ -76,10 +76,7 @@ export function placeCard(state, card, tile) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
     }
 
-    tempState = checkTriggers(tempState, 'afterPlayed', playedObject, (trigger =>
-      trigger.targets.map(o => o.id).includes(playedObject.id)
-    ));
-
+    tempState = checkTriggersForObject(tempState, 'afterPlayed', playedObject);
     tempState = applyAbilities(tempState);
 
     playedObject.justPlayed = false;

@@ -69,7 +69,6 @@ export function placeCard(state, card, tile) {
     };
 
     player.robotsOnBoard[tile] = playedObject;
-
     player.energy.available -= getCost(card);
 
     if (card.abilities.length > 0) {

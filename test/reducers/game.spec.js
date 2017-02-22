@@ -342,15 +342,23 @@ describe('Game reducer', () => {
     ]).toEqual([STARTING_PLAYER_HEALTH - 2, STARTING_PLAYER_HEALTH - 2]);
   });
 
-  it('(TODO) should be able to activate afterPlayed triggered abilities', () => {
-    // generalBotCard: "Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again."
+  it('should be able to activate afterPlayed triggered abilities', () => {
+    // General Bot: "Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again."
+    let state = getDefaultState();
+    state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
+    state = playObject(state, 'orange', cards.generalBotCard, '4,-1,-3');
+    state = moveRobot(state, '3,0,-3', '1,0,-1');  // General Bot affects other robots ...
+    state = moveRobot(state, '4,-1,-3', '3,-1,-2');  // ... and itself.
+    expect(
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({'1,0,-1': 'Attack Bot', '3,-1,-2': 'General Bot'});
   });
 
-  it('should be able to activate beginningOfTurn triggered abilities', () => {
+  it('(TODO) should be able to activate beginningOfTurn triggered abilities', () => {
     // dojoDiscipleCard: At the beginning of each of your turns, this robot gains 1 attack."
   });
 
-  it('should be able to activate endOfTurn triggered abilities', () => {
+  it('(TODO) should be able to activate endOfTurn triggered abilities', () => {
     // botOfPainCard: "At the end of each turn, each robot takes 1 damage."
   });
 

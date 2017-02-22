@@ -354,8 +354,18 @@ describe('Game reducer', () => {
     ).toEqual({'1,0,-1': 'Attack Bot', '3,-1,-2': 'General Bot'});
   });
 
-  it('(TODO) should be able to activate beginningOfTurn triggered abilities', () => {
-    // dojoDiscipleCard: At the beginning of each of your turns, this robot gains 1 attack."
+  it('should be able to activate beginningOfTurn triggered abilities', () => {
+    // Dojo Disciple: At the beginning of each of your turns, this robot gains 1 attack."
+    let state = getDefaultState();
+    state = playObject(state, 'orange', cards.dojoDiscipleCard, '3,0,-3');
+    state = newTurn(state, 'blue');
+    expect(
+      state.players.orange.robotsOnBoard['3,0,-3'].stats.attack
+    ).toEqual(0);
+    state = newTurn(state, 'orange');
+    expect(
+      state.players.orange.robotsOnBoard['3,0,-3'].stats.attack
+    ).toEqual(1);
   });
 
   it('(TODO) should be able to activate endOfTurn triggered abilities', () => {

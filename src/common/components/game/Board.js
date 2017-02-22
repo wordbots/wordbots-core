@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { intersectionBy, mapValues, some } from 'lodash';
+import { forOwn, intersectionBy, mapValues, some } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import {
-  getAttribute, hasEffect,
+  getAttribute, hasEffect, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
 } from '../../util';
 
@@ -36,47 +36,30 @@ class Board extends Component {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  dummyState() {
-    // util.valid[Placement/Movement/Attack]Hexes() functions require a state object, so we create a dummy one.
-    // TODO find a less gross approach?
-    return {
-      players: {blue: {robotsOnBoard: this.props.bluePieces}, orange: {robotsOnBoard: this.props.orangePieces}}
-    };
-  }
-
   getValidPlacementHexes() {
-    return validPlacementHexes(this.dummyState(), this.props.currentTurn, this.props.playingCardType);
+    return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
   }
 
   getValidMovementHexes(startHex, speed) {
-    return validMovementHexes(this.dummyState(), startHex, speed);
+    return validMovementHexes(this.dummyGameState, startHex, speed);
   }
 
   getValidAttackHexes(startHex, speed) {
-    return validAttackHexes(this.dummyState(), this.props.currentTurn, startHex, speed);
+    return validAttackHexes(this.dummyGameState, this.props.currentTurn, startHex, speed);
   }
 
   updateHexColors() {
     let hexColors = {};
 
-    Object.keys(this.props.bluePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].movesLeft > 0) {
-        hexColors[hex] = 'bright_blue';
-      } else {
-        hexColors[hex] = 'blue';
-      }
-    });
+    forOwn(this.allPieces(), (piece, hex) => {
+      const owner = ownerOf(this.dummyGameState, piece).name;
+      const canMove = this.props.currentTurn == owner && piece.movesLeft > 0;
 
-    Object.keys(this.props.orangePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].movesLeft > 0) {
-        hexColors[hex] = 'bright_orange';
-      } else {
-        hexColors[hex] = 'orange';
-      }
+      hexColors[hex] = `${canMove ? 'bright_' : ''}${owner}`;
     });
 
     if (this.props.target.choosing) {
-      this.props.target.possibleHexes.forEach((hex) => {
+      this.props.target.possibleHexes.forEach(hex => {
         hexColors[hex]  = 'green';
       });
     } else if (this.props.selectedTile) {
@@ -160,6 +143,15 @@ class Board extends Component {
   }
 
   render() {
+    // Many util functions require a game state object, so we create a dummy one with minimal data.
+    // TODO find a less gross approach?
+    this.dummyGameState = {
+      players: {
+        blue: {name: 'blue', robotsOnBoard: this.props.bluePieces},
+        orange: {name: 'orange', robotsOnBoard: this.props.orangePieces}
+      }
+    };
+
     const { grid, config } = this.state;
     const hexColors = this.updateHexColors();
 

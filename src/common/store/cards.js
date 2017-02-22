@@ -1,6 +1,5 @@
-import { uniqueId } from 'lodash';
-
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
+import { instantiateCard } from '../util';
 
 // Note: Exported cards are used in either defaultState (cores) or in tests.
 
@@ -159,7 +158,7 @@ export const firestormCard = {
   type: TYPE_EVENT
 };
 
-const botOfPainCard = {
+export const botOfPainCard = {
   name: 'Bot of Pain',
   cost: 3,
   type: TYPE_ROBOT,
@@ -174,7 +173,7 @@ const botOfPainCard = {
   ]
 };
 
-const dojoDiscipleCard = {
+export const dojoDiscipleCard = {
   name: 'Dojo Disciple',
   cost: 1,
   type: TYPE_ROBOT,
@@ -189,7 +188,7 @@ const dojoDiscipleCard = {
   ]
 };
 
-const wisdomBotCard = {
+export const wisdomBotCard = {
   name: 'Wisdom Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -204,7 +203,7 @@ const wisdomBotCard = {
   ]
 };
 
-const generalBotCard = {
+export const generalBotCard = {
   name: 'General Bot',
   cost: 5,
   type: TYPE_ROBOT,
@@ -220,7 +219,7 @@ const generalBotCard = {
   ]
 };
 
-const monkeyBotCard = {
+export const monkeyBotCard = {
   name: 'Monkey Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -308,7 +307,7 @@ export const investorBotCard = {
   ]
 };
 
-const arenaCard = {
+export const arenaCard = {
   name: 'Arena',
   cost: 3,
   type: TYPE_STRUCTURE,
@@ -379,9 +378,4 @@ export const deck = [
   rampageCard,
   untapCard,
   wrathOfRobotGodCard
-].map(card =>
-  Object.assign({}, card, {
-    id: `card_${  uniqueId()}`,
-    baseCost: card.cost
-  })
-);
+].map(instantiateCard);

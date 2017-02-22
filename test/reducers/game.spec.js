@@ -4,7 +4,8 @@ import * as cards from '../../src/common/store/cards';
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
 import {
   getDefaultState, objectsOnBoardOfType,
-  newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack
+  newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack,
+  setUpBoardState
 } from '../test_helpers';
 
 describe('Game reducer', () => {
@@ -266,6 +267,91 @@ describe('Game reducer', () => {
     expect(
       state.players.blue.robotsOnBoard['-4,0,4'].stats.health  // Blue core
     ).toEqual(STARTING_PLAYER_HEALTH + 4);
+  });
+
+  it('should be able to activate afterAttack triggered abilities', () => {
+    // Monkey Bot: "When this robot attacks, it deals damage to all adjacent robots.""
+    let state = setUpBoardState({
+      'orange': {
+        '0,0,0': cards.monkeyBotCard, // 2/2
+        '1,0,-1': cards.attackBotCard // 1/1
+      },
+      'blue': {
+        '-1,0,1': cards.tankBotCard, // 2/4
+        '0,-1,1': cards.tankBotCard, // 2/4
+        '-1,1,0': cards.attackBotCard // 1/1
+      }
+    });
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+    ).toEqual(['0,0,0', '1,0,-1', '-1,0,1', '0,-1,1', '-1,1,0'].sort());
+    state = newTurn(state, 'orange');
+    state = attack(state, '0,0,0', '-1,0,1');  // Only the outer Tank Bot (receiving 2 damage) should survive the carnage.
+    expect(
+      Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT))
+    ).toEqual(['0,-1,1']);
+    expect(
+      state.players.blue.robotsOnBoard['0,-1,1'].stats.health
+    ).toEqual(2);
+  });
+
+  it('should be able to activate afterDamageReceived triggered abilities', () => {
+    // Wisdom Bot: "Whenever this robot takes damage, draw a card."
+    let state = setUpBoardState({
+      'orange': {
+        '0,0,0': cards.wisdomBotCard // 1/3
+      },
+      'blue': {
+        '-1,0,1': cards.attackBotCard, // 1/1
+        '0,-1,1': cards.attackBotCard, // 1/1
+        '-1,1,0': cards.attackBotCard // 1/1
+      }
+    });
+    state = newTurn(state, 'blue');
+    state = attack(state, '-1,0,1', '0,0,0');
+    state = attack(state, '0,-1,1', '0,0,0');
+    state = attack(state, '-1,1,0', '0,0,0');
+    expect(
+      objectsOnBoardOfType(state, TYPE_ROBOT)
+    ).toEqual({});
+    expect(
+      state.players.orange.hand.length
+    ).toEqual(getDefaultState().players.orange.hand.length + 3);
+
+  });
+
+  it('should be able to activate afterDestroyed triggered abilities', () => {
+    // Arena: "Whenever a robot is destroyed in combat, deal 1 damage to its controller."
+    let state = setUpBoardState({
+      'orange': {
+        '1,0,-1': cards.arenaCard,
+        '0,0,0': cards.attackBotCard
+      },
+      'blue': {
+        '-1,0,1': cards.attackBotCard,
+        '0,-1,1': cards.attackBotCard,
+        '-2,0,2': cards.arenaCard
+      }
+    });
+    state = newTurn(state, 'orange');
+    state = attack(state, '0,0,0', '-1,0,1');  // Each player should take one damage from each Arena.
+    state = playEvent(state, 'orange', cards.shockCard, {hex: '0,-1,1'});  // No damage from Arena since this isn't combat.
+    expect([
+      state.players.blue.robotsOnBoard['-4,0,4'].stats.health,  // Blue core
+      state.players.orange.robotsOnBoard['4,0,-4'].stats.health  // Orange core
+    ]).toEqual([STARTING_PLAYER_HEALTH - 2, STARTING_PLAYER_HEALTH - 2]);
+  });
+
+  it('(TODO) should be able to activate afterPlayed triggered abilities', () => {
+    // generalBotCard: "Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again."
+  });
+
+  it('should be able to activate beginningOfTurn triggered abilities', () => {
+    // dojoDiscipleCard: At the beginning of each of your turns, this robot gains 1 attack."
+  });
+
+  it('should be able to activate endOfTurn triggered abilities', () => {
+    // botOfPainCard: "At the end of each turn, each robot takes 1 damage."
   });
 
   it('should be able to choose targets for afterPlayed triggered abilities', () => {

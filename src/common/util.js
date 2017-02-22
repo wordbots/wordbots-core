@@ -9,6 +9,17 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // TODO: Split into multiple files.
 
 //
+// 0. Miscellaneous utility functions.
+//
+
+export function instantiateCard(card) {
+  return Object.assign({}, card, {
+    id: Math.random().toString(36).slice(2, 16),
+    baseCost: card.cost
+  });
+}
+
+//
 // I. Queries for game state.
 //
 
@@ -205,7 +216,7 @@ export function checkTriggers(state, triggerType, it, condition) {
     (obj.triggers || []).forEach((t) => {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
       if (t.trigger.type == triggerType && condition(t.trigger)) {
-        // console.log(`Executing ${triggerType} trigger: ${t.action}`);
+        console.log(`Executing ${triggerType} trigger: ${t.action}`);
         executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
       }
     });

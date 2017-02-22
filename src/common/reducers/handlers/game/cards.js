@@ -1,6 +1,7 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, validPlacementHexes, getCost,
+  discardCards,
   executeCmd, checkTriggersForObject, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -70,12 +71,12 @@ export function placeCard(state, card, tile) {
     player.robotsOnBoard[tile] = playedObject;
 
     player.energy.available -= getCost(card);
-    player.hand = _.filter(player.hand, c => c.id != card.id);
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
     }
 
+    tempState = discardCards(tempState, [card]);
     tempState = checkTriggersForObject(tempState, 'afterPlayed', playedObject);
     tempState = applyAbilities(tempState);
 
@@ -120,12 +121,13 @@ export function playEvent(state, cardIdx, command) {
     if (state.target.choosing) {
       state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
+      state = discardCards(state, [card]);
+
       state.selectedCard = null;
       state.playingCardType = null;
       state.status.message = '';
 
       player.energy.available -= getCost(card);
-      player.hand = _.filter(player.hand, c => c.id != card.id);
     }
   }
 

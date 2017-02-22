@@ -144,6 +144,15 @@ export function drawCards(state, player, count) {
   return state;
 }
 
+// Note: This is used to either play or discard a set of cards.
+export function discardCards(state, cards) {
+  // At the moment, only the currently active player can ever play or discard a card.
+  const player = currentPlayer(state);
+  const cardIds = cards.map(c => c.id);
+  player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
+  return state;
+}
+
 export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;

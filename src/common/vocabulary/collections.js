@@ -27,7 +27,6 @@ export function objectsInPlay(state) {
   return function (objType) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
       (objType == 'allobjects' || obj.card.type == stringToType(objType))
-        && !obj.justPlayed
     );
   };
 }
@@ -36,7 +35,6 @@ export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
       (objType == 'allobjects' || obj.card.type == stringToType(objType))
-        && !obj.justPlayed
         && _.every(conditions.map(cond => cond(hex, obj)))
     );
   };

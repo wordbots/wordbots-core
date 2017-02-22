@@ -1,7 +1,7 @@
 import { TYPE_CORE } from '../constants';
 import {
-  currentPlayer, ownerOf, getHex,
-  drawCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
+  ownerOf, getHex,
+  drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
 } from '../util';
 
 export default function actions(state) {
@@ -33,9 +33,7 @@ export default function actions(state) {
     },
 
     discard: function (cards) {
-      const cardIds = cards.map(c => c.id);
-      const player = currentPlayer(state);
-      player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
+      discardCards(state, cards);
     },
 
     draw: function (players, count) {

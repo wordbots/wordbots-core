@@ -1,14 +1,8 @@
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import defaultState from '../src/common/store/defaultState';
-import { allObjectsOnBoard } from '../src/common/util';
-
-function instantiateCard(card) {
-  return Object.assign({}, card, {
-    id: `card_${  _.uniqueId()}`,
-    baseCost: card.cost
-  });
-}
+import { instantiateCard, allObjectsOnBoard } from '../src/common/util';
+import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
   return _.cloneDeep(defaultState);
@@ -42,8 +36,9 @@ export function playObject(state, playerName, card, hex, target = null) {
   //    1. It's the player's turn.
   //    2. The player has the card as the first card in their hand.
   //    3. The player has enough energy to play the card.
+  card = instantiateCard(card);
   state.currentTurn = playerName;
-  player.hand = [instantiateCard(card)].concat(player.hand);
+  player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
   if (target && target.hex) {
@@ -74,8 +69,9 @@ export function playEvent(state, playerName, card, target = null) {
   //    1. It's the player's turn.
   //    2. The player has the card as the first card in their hand.
   //    3. The player has enough energy to play the card.
+  card = instantiateCard(card);
   state.currentTurn = playerName;
-  player.hand = [instantiateCard(card)].concat(player.hand);
+  player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
   if (target && target.hex) {
@@ -120,3 +116,21 @@ export function attack(state, source, target) {
     actions.attack(source, target)
   ]);
 }
+
+export function setUpBoardState(players) {
+  let state = getDefaultState();
+
+  _.forOwn(players.blue, (card, hex) => {
+    state = playObject(state, 'blue', card, '-3,0,3');
+    state = transportObject(state, '-3,0,3', hex);
+  });
+
+  _.forOwn(players.orange, (card, hex) => {
+    state = playObject(state, 'orange', card, '3,0,-3');
+    state = transportObject(state, '3,0,-3', hex);
+  });
+
+  return state;
+}
+
+

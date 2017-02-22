@@ -2,7 +2,7 @@ import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
-  checkTriggers, applyAbilities
+  checkTriggersForObject, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
@@ -48,17 +48,6 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   return state;
 }
 
-// Low-level "move" of an object.
-function transportObject(state, fromHex, toHex) {
-  const robot = allObjectsOnBoard(state)[fromHex];
-  const owner = ownerOf(state, robot);
-
-  owner.robotsOnBoard[toHex] = robot;
-  delete owner.robotsOnBoard[fromHex];
-
-  return state;
-}
-
 export function attack(state, source, target) {
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.
@@ -74,10 +63,10 @@ export function attack(state, source, target) {
   if (validHexes.map(HexUtils.getID).includes(target)) {
     attacker.movesLeft = 0;
 
-    state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
     state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+    state = checkTriggersForObject(state, 'afterAttack', attacker);
 
-    state = checkTriggers(state, 'afterAttack', (t => t.objects.map(o => o.id).includes(attacker.id)));
+    state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
 
     // Move attacker to defender's space (if possible).
     if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
@@ -88,6 +77,18 @@ export function attack(state, source, target) {
 
     state.selectedTile = null;
   }
+
+  return state;
+}
+
+// Low-level "move" of an object.
+// Used by moveRobot(), attack(), and in tests.
+export function transportObject(state, fromHex, toHex) {
+  const robot = allObjectsOnBoard(state)[fromHex];
+  const owner = ownerOf(state, robot);
+
+  owner.robotsOnBoard[toHex] = robot;
+  delete owner.robotsOnBoard[fromHex];
 
   return state;
 }

@@ -9,6 +9,17 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // TODO: Split into multiple files.
 
 //
+// 0. Miscellaneous utility functions.
+//
+
+export function instantiateCard(card) {
+  return Object.assign({}, card, {
+    id: Math.random().toString(36).slice(2, 16),
+    baseCost: card.cost
+  });
+}
+
+//
 // I. Queries for game state.
 //
 
@@ -133,13 +144,20 @@ export function drawCards(state, player, count) {
   return state;
 }
 
+// Note: This is used to either play or discard a set of cards.
+export function discardCards(state, cards) {
+  // At the moment, only the currently active player can ever play or discard a card.
+  const player = currentPlayer(state);
+  const cardIds = cards.map(c => c.id);
+  player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
+  return state;
+}
+
 export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;
 
-  state = checkTriggers(state, 'afterDamageReceived', object, (trigger =>
-    trigger.targets.map(o => o.id).includes(object.id)
-  ));
+  state = checkTriggersForObject(state, 'afterDamageReceived', object);
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
@@ -150,8 +168,8 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
-    state = checkTriggers(state, 'afterDestroyed', object, (trigger =>
-      trigger.targets.map(o => o.id).includes(object.id) && (trigger.cause == cause || trigger.cause == 'anyevent')
+    state = checkTriggersForObject(state, 'afterDestroyed', object, (trigger =>
+      (trigger.cause == cause || trigger.cause == 'anyevent')
     ));
 
     delete state.players[ownerName].robotsOnBoard[hex];
@@ -212,6 +230,14 @@ export function checkTriggers(state, triggerType, it, condition) {
   });
 
   return Object.assign({}, state, {it: null});
+}
+
+// Special case of checkTriggers() that is most frequently used:
+// checking a trigger for a specific targeted object.
+export function checkTriggersForObject(state, triggerType, object, extraCondition = () => true) {
+  return checkTriggers(state, triggerType, object, (trigger =>
+    trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
+  ));
 }
 
 export function applyAbilities(state) {

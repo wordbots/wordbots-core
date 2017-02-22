@@ -32,7 +32,8 @@ export default function targets(state, currentObject) {
             state.target.possibleHexes = [];
           } else {
             // Collection of objects.
-            state.target.possibleHexes = Object.keys(collection);
+            // Don't allow player to pick the object that is being played (if any).
+            state.target.possibleHexes = Object.keys(_.omitBy(collection, obj => obj && obj.justPlayed));
             state.target.possibleCards = [];
           }
         }

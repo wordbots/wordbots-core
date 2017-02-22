@@ -340,6 +340,8 @@ describe('Game reducer', () => {
       state.players.blue.robotsOnBoard['-4,0,4'].stats.health,  // Blue core
       state.players.orange.robotsOnBoard['4,0,-4'].stats.health  // Orange core
     ]).toEqual([STARTING_PLAYER_HEALTH - 2, STARTING_PLAYER_HEALTH - 2]);
+
+    // TODO test Martyr Bot?
   });
 
   it('should be able to activate afterPlayed triggered abilities', () => {
@@ -368,8 +370,28 @@ describe('Game reducer', () => {
     ).toEqual(1);
   });
 
-  it('(TODO) should be able to activate endOfTurn triggered abilities', () => {
-    // botOfPainCard: "At the end of each turn, each robot takes 1 damage."
+  it('should be able to activate endOfTurn triggered abilities', () => {
+    // Bot of Pain: "At the end of each turn, each robot takes 1 damage."
+    let state = setUpBoardState({
+      'orange': {
+        '0,0,0': cards.botOfPainCard, // 2/3
+        '1,-2,1': cards.attackBotCard // 1/1
+      },
+      'blue': {
+        '2,0,-2': cards.tankBotCard, // 2/4
+        '-2,0,2': cards.wisdomBotCard, // 1/3
+        '0,-1,1': cards.monkeyBotCard // 2/2
+      }
+    });
+    expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(5);
+    state = newTurn(state, 'blue');
+    expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(4);
+    state = newTurn(state, 'orange');
+    expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(3);
+    state = newTurn(state, 'blue');
+    expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(1);
+    state = newTurn(state, 'orange'); // No more damage because Bot of Pain is destroyed.
+    expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(1);
   });
 
   it('should be able to choose targets for afterPlayed triggered abilities', () => {

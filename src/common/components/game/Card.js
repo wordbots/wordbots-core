@@ -38,23 +38,27 @@ class Card extends Component {
     });
   }
 
+  renderStat(type) {
+    return (
+      <CardStat type={type} base={this.props.cardStats[type]} current={this.props.stats[type]}/>
+    );
+  }
+
   renderStatsArea() {
     if (this.props.type == TYPE_ROBOT) {
       return (
-        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="attack" base={this.props.cardStats.attack} current={this.props.stats.attack}/>
-          <CardStat type="speed" base={this.props.cardStats.speed} current={this.props.stats.speed}/>
-          <CardStat type="health" base={this.props.cardStats.health} current={this.props.stats.health}/>
+        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10 }}>
+          {this.renderStat('attack')}
+          {this.renderStat('speed')}
+          {this.renderStat('health')}
         </CardText>
       );
     } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
       return (
-        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10}}>
-          <CardStat type="health" base={this.props.cardStats.health} current={this.props.stats.health}/>
+        <CardText style={{ float: 'right', padding: 10 }}>
+          {this.renderStat('health')}
         </CardText>
       );
-    } else {
-      return '';
     }
   }
 

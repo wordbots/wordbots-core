@@ -1,5 +1,8 @@
 import { TYPE_EVENT } from '../../../constants';
-import { currentPlayer, validPlacementHexes, getCost, executeCmd, checkTriggers, applyAbilities } from '../../../util';
+import {
+  currentPlayer, validPlacementHexes, getCost,
+  executeCmd, checkTriggers, applyAbilities
+} from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, cardIdx) {
@@ -9,23 +12,8 @@ export function setSelectedCard(state, cardIdx) {
   state.selectedTile = null;
 
   if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && state.selectedCard !== null) {
-    // Select target card for event or afterPlayed trigger.
-    state.target = Object.assign({}, state.target, {
-      chosen: [selectedCard],
-      choosing: false,
-      possibleCards: []
-    });
-
-    // Perform the trigger.
-    const playedCard = state.players[state.currentTurn].hand[state.selectedCard];
-    if (playedCard.type == TYPE_EVENT) {
-      state = playEvent(state, state.selectedCard);
-    } else {
-      state = placeCard(state, playedCard, state.placementTile);
-    }
-
-    // Reset target.
-    return Object.assign({}, state, {target: {choosing: false, chosen: null, possibleHexes: [], possibleCards: []}});
+    // Target chosen for a queued action.
+    return setTargetAndExecuteQueuedAction(state, selectedCard);
   } else {
     // Toggle card selection.
 
@@ -144,5 +132,28 @@ export function playEvent(state, cardIdx, command) {
     }
   }
 
+  return state;
+}
+
+export function setTargetAndExecuteQueuedAction(state, target) {
+  // Select target tile for event or afterPlayed trigger.
+  state.target = {
+    chosen: [target],
+    choosing: false,
+    possibleHexes: [],
+    possibleCards: []
+  };
+
+  // Perform the trigger.
+  const card = state.players[state.currentTurn].hand[state.selectedCard];
+
+  if (card.type == TYPE_EVENT) {
+    state = playEvent(state, state.selectedCard);
+  } else {
+    state = placeCard(state, card, state.placementTile);
+  }
+
+  // Reset target.
+  state.target = Object.assign(state.target, {choosing: false, chosen: null});
   return state;
 }

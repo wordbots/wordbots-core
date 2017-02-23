@@ -5,26 +5,17 @@ export const TYPE_EVENT = 1;
 export const TYPE_CORE = 2;
 export const TYPE_STRUCTURE = 3;
 
+const typeToStringMapping = {
+  [TYPE_ROBOT]: 'robot',
+  [TYPE_EVENT]: 'event',
+  [TYPE_CORE]: 'kernel',
+  [TYPE_STRUCTURE]: 'structure'
+};
+
 export function typeToString(type) {
-  if (type == TYPE_ROBOT) {
-    return 'Robot';
-  } else if (type == TYPE_EVENT) {
-    return 'Event';
-  } else if (type == TYPE_CORE) {
-    return 'Kernel';
-  } else if (type == TYPE_STRUCTURE) {
-    return 'Structure';
-  }
+  return _.capitalize(typeToStringMapping[type]);
 }
 
 export function stringToType(str) {
-  if (str.toLowerCase() == 'robot') {
-    return TYPE_ROBOT;
-  } else if (str.toLowerCase() == 'event') {
-    return TYPE_EVENT;
-  } else if (str.toLowerCase() == 'kernel') {
-    return TYPE_CORE;
-  } else if (str.toLowerCase() == 'structure') {
-    return TYPE_STRUCTURE;
-  }
+  return parseInt(_.invert(typeToStringMapping)[str.toLowerCase()]);
 }

@@ -1,3 +1,5 @@
+import { capitalize, invert } from 'lodash';
+
 export const STARTING_PLAYER_HEALTH = 20;
 
 export const TYPE_ROBOT = 0;
@@ -13,9 +15,9 @@ const typeToStringMapping = {
 };
 
 export function typeToString(type) {
-  return _.capitalize(typeToStringMapping[type]);
+  return capitalize(typeToStringMapping[type]);
 }
 
 export function stringToType(str) {
-  return parseInt(_.invert(typeToStringMapping)[str.toLowerCase()]);
+  return parseInt(invert(typeToStringMapping)[str.toLowerCase()]);
 }

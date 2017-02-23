@@ -28,9 +28,7 @@ export function abilities(state) {
           });
         },
         unapply: function (target) {
-          if (!target.temporaryStatAdjustments) {
-            target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
-          } else {
+          if (target.temporaryStatAdjustments) {
             target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].filter(adj =>
               adj.aid != aid
             );

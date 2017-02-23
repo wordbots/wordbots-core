@@ -17,7 +17,7 @@ export function allTiles(state) {
 }
 
 export function cardsInHand(state) {
-  return function (players, cardType = 'anycard') {
+  return function (players, cardType) {
     const player = players[0]; // Player target is always in the form of list, so just unpack it.
     return player.hand.filter(c => cardType == 'anycard' || c.type == stringToType(cardType));
   };

@@ -23,7 +23,7 @@ export function instantiateCard(card) {
 // I. Queries for game state.
 //
 
-function opponent(playerName) {
+export function opponent(playerName) {
   return (playerName == 'blue') ? 'orange' : 'blue';
 }
 

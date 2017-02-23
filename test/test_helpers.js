@@ -1,7 +1,10 @@
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import defaultState from '../src/common/store/defaultState';
-import { instantiateCard, allObjectsOnBoard, ownerOf, getAttribute } from '../src/common/util';
+import {
+  instantiateCard, allObjectsOnBoard, ownerOf, getAttribute,
+  drawCards
+} from '../src/common/util';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
@@ -31,8 +34,8 @@ export function queryPlayerHealth(state, playerName) {
 
 export function drawCardToHand(state, playerName, card) {
   const player = state.players[playerName];
-  player.hand = [instantiateCard(card)].concat(player.hand);
-  return state;
+  player.deck = [instantiateCard(card)].concat(player.deck);
+  return drawCards(state, player, 1);
 }
 
 export function newTurn(state, playerName) {

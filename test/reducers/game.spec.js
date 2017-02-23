@@ -2,6 +2,7 @@ import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
 import * as cards from '../../src/common/store/cards';
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
+import { getCost } from '../../src/common/util';
 import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
   newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack,
@@ -417,7 +418,7 @@ describe('Game reducer', () => {
       expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(1);
     });
 
-    it('should let objects apply effects to other objects', () => {
+    it('should let objects apply passive abilities to other objects', () => {
       // General Bot: "Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again."
       // Fortification: "Your adjacent robots have +1 health."
       let state = setUpBoardState({
@@ -457,13 +458,38 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '4,-1,-3')).toEqual('1/2/1');
     });
 
-    it('should let objects apply effects to cards in hand', () => {
-      // Investor Bot:
+    it('should let objects apply passive abilities to cards in hand', () => {
+      // Recruiter Bot: "Robots you play cost 1 less energy."
+      let state = getDefaultState();
+      state = drawCardToHand(state, 'orange', cards.monkeyBotCard);
+      state = playObject(state, 'orange', cards.recruiterBotCard, '3,0,-3');
+      state = drawCardToHand(state, 'orange', cards.generalBotCard);
+      state = drawCardToHand(state, 'orange', cards.fortificationCard);
+
+      // Robots drawn both before and after Recruiter Bot is played should have their cost reduced.
+      expect(
+        getCost(state.players.orange.hand.find(c => c.name == 'Monkey Bot'))
+      ).toEqual(cards.monkeyBotCard.cost - 1);
+      expect(
+        getCost(state.players.orange.hand.find(c => c.name == 'General Bot'))
+      ).toEqual(cards.generalBotCard.cost - 1);
+      expect(
+        getCost(state.players.orange.hand.find(c => c.name == 'Fortification'))
+      ).toEqual(cards.fortificationCard.cost);  // Not a robot!
+
+      // Now destroy Recruiter Bot.
+      state = playEvent(state, 'orange', cards.shockCard, {hex: '3,0,-3'});
+      expect(
+        getCost(state.players.orange.hand.find(c => c.name == 'Monkey Bot'))
+      ).toEqual(cards.monkeyBotCard.cost);
+      expect(
+        getCost(state.players.orange.hand.find(c => c.name == 'General Bot'))
+      ).toEqual(cards.generalBotCard.cost);
     });
 
     // TODO test interaction of temporary stat adjustments, permanent stat adjustments, stat queries.
-    it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditionals', () => {
+    /*it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditionals', () => {
 
-    });
+    });*/
   });
 });

@@ -1,5 +1,5 @@
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, hasEffect, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   checkTriggersForObject, applyAbilities
@@ -60,7 +60,7 @@ export function attack(state, source, target) {
 
   // Is the attack valid?
   const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft);
-  if (validHexes.map(HexUtils.getID).includes(target)) {
+  if (validHexes.map(HexUtils.getID).includes(target) && !hasEffect(attacker, 'cannotattack')) {
     attacker.movesLeft = 0;
 
     state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');

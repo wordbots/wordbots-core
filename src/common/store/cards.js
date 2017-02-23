@@ -247,7 +247,7 @@ export const fortificationCard = {
   ]
 };
 
-const defenderBotCard = {
+export const defenderBotCard = {
   name: 'Defender Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -262,7 +262,7 @@ const defenderBotCard = {
   ]
 };
 
-const recruiterBotCard = {
+export const recruiterBotCard = {
   name: 'Recruiter Bot',
   cost: 4,
   type: TYPE_ROBOT,

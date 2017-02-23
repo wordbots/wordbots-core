@@ -1,7 +1,7 @@
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import defaultState from '../src/common/store/defaultState';
-import { instantiateCard, allObjectsOnBoard } from '../src/common/util';
+import { instantiateCard, allObjectsOnBoard, ownerOf, getAttribute } from '../src/common/util';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
@@ -11,6 +11,22 @@ export function getDefaultState() {
 export function objectsOnBoardOfType(state, objectType) {
   const objects = _.pickBy(allObjectsOnBoard(state), obj => obj.card.type == objectType);
   return _.mapValues(objects, obj => obj.card.name);
+}
+
+export function queryObjectAttribute(state, hex, attr) {
+  return getAttribute(allObjectsOnBoard(state)[hex], attr);
+}
+
+export function queryRobotAttributes(state, hex) {
+  return [
+    getAttribute(allObjectsOnBoard(state)[hex], 'attack'),
+    getAttribute(allObjectsOnBoard(state)[hex], 'speed'),
+    getAttribute(allObjectsOnBoard(state)[hex], 'health')
+  ].join('/');
+}
+
+export function queryPlayerHealth(state, playerName) {
+  return queryObjectAttribute(state, {'blue': '-4,0,4', 'orange': '4,0,-4'}[playerName], 'health');
 }
 
 export function drawCardToHand(state, playerName, card) {
@@ -95,7 +111,12 @@ export function playEvent(state, playerName, card, target = null) {
   }
 }
 
-export function moveRobot(state, fromHex, toHex) {
+export function moveRobot(state, fromHex, toHex, asNewTurn = false) {
+  if (asNewTurn) {
+    const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex]).name;
+    state = newTurn(state, owner);
+  }
+
   if (!state.players[state.currentTurn].robotsOnBoard[fromHex]) {
     throw `No ${state.currentTurn} robot on ${fromHex}!`;
   }
@@ -106,7 +127,12 @@ export function moveRobot(state, fromHex, toHex) {
   ]);
 }
 
-export function attack(state, source, target) {
+export function attack(state, source, target, asNewTurn = false) {
+  if (asNewTurn) {
+    const owner = ownerOf(state, allObjectsOnBoard(state)[source]).name;
+    state = newTurn(state, owner);
+  }
+
   if (!state.players[state.currentTurn].robotsOnBoard[source]) {
     throw `No ${state.currentTurn} robot on ${source}!`;
   }
@@ -120,15 +146,21 @@ export function attack(state, source, target) {
 export function setUpBoardState(players) {
   let state = getDefaultState();
 
-  _.forOwn(players.blue, (card, hex) => {
-    state = playObject(state, 'blue', card, '-3,0,3');
-    state = transportObject(state, '-3,0,3', hex);
-  });
+  function placeObjects(playerName, placementHex) {
+    if (players[playerName]) {
+      _.forOwn(players[playerName], (card, hex) => {
+        if (hex == '-3,0,3' || hex == '3,0,-3') {
+          throw `${hex} must remain unoccupied in setUpBoardState()`;
+        }
 
-  _.forOwn(players.orange, (card, hex) => {
-    state = playObject(state, 'orange', card, '3,0,-3');
-    state = transportObject(state, '3,0,-3', hex);
-  });
+        state = playObject(state, playerName, card, placementHex);
+        state = transportObject(state, placementHex, hex);
+      });
+    }
+  }
+
+  placeObjects('blue', '-3,0,3');
+  placeObjects('orange', '3,0,-3');
 
   return state;
 }

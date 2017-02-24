@@ -54,7 +54,7 @@ export default function actions(state) {
 
     modifyEnergy: function (players, func) {
       players.forEach(player => {
-        player.energy = _.assign(player.energy, {available: func(player.energy.available)});
+        player.energy = _.assign(player.energy, {available: clamp(func)(player.energy.available)});
       });
     },
 

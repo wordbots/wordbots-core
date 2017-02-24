@@ -103,5 +103,5 @@ describe('Board component', () => {
     });
   });
 
-  // TODO test: placement colors, targeting colors
+  // TODO test: placement, targeting
 });

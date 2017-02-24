@@ -11,7 +11,7 @@ const { number, object, array } = React.PropTypes;
 
 class HexGrid extends React.Component {
   render() {
-    const { hexColors, pieceNames, pieceImgs, pieceStats } = this.props;
+    const { hexColors, pieceImgs, pieceStats } = this.props;
 
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -23,8 +23,7 @@ class HexGrid extends React.Component {
                 layout={this.props.layout}
                 actions={this.props.actions}
                 fill={hexColors[HexUtils.getID(hex)]}
-                pieceName={pieceNames[HexUtils.getID(hex)]}
-                pieceImg={pieceImgs[HexUtils.getID(hex)]}
+                pieceImg={pieceImgs[HexUtils.getID(hex)] || {}}
                 pieceStats={pieceStats[HexUtils.getID(hex)]}
                 images={loadImages()} />
             ))
@@ -51,7 +50,6 @@ HexGrid.propTypes = {
   hexagons: array.isRequired,
   path: object,
   hexColors: object,
-  pieceNames: object,
   pieceImgs: object,
   pieceStats: object
 };

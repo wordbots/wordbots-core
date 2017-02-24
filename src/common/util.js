@@ -1,4 +1,4 @@
-import { flatMap, without } from 'lodash';
+import { flatMap, some, without } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
@@ -44,9 +44,9 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  if (_.some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
+  if (some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
     return state.players.blue;
-  } else if (_.some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
+  } else if (some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
     return state.players.orange;
   }
 }

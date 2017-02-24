@@ -4,9 +4,9 @@ import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { renderElement } from '../react_helpers';
-import { Game, mapStateToProps, mapDispatchToProps } from '../../src/common/containers/Game';
+import { createGame, renderElement } from '../react_helpers';
 import defaultState from '../../src/common/store/defaultState';
+import { Game } from '../../src/common/containers/Game';
 import Board from '../../src/common/components/game/Board';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
@@ -14,10 +14,10 @@ import CardViewer from '../../src/common/components/game/CardViewer';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
 
 describe('Game container', () => {
-  it('render the default game state', () => {
+  it('renders the default game state', () => {
     const state = {game: defaultState};
 
-    const game = React.createElement(Game, Object.assign(mapStateToProps(state), mapDispatchToProps()));
+    const game = createGame(state);
     const dom = renderElement(game);
 
     const defaultStatus = {message: '', type: ''};

@@ -5,7 +5,7 @@ import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { createGame, refreshGameInstance, renderElement, lastDispatch } from '../react_helpers';
+import { renderElement, createGame, refreshGameInstance, lastDispatch } from '../react_helpers';
 import * as actions from '../../src/common/actions/game';
 import defaultState from '../../src/common/store/defaultState';
 import Board from '../../src/common/components/game/Board';
@@ -90,23 +90,48 @@ describe('Game container', () => {
 
     function clickCard(pred) { renderCards().find(pred).props.onCardClick(); }
     function clickHex(id) { renderHexGrid().props.actions.onClick(HexUtils.IDToHex(id)); }
+    function hoverHex(id) { renderHexGrid().props.actions.onMouseEnter(HexUtils.IDToHex(id), {}); }
+    function clickEndTurn() { Utils.findRenderedComponentWithType(renderGame(), RaisedButton).props.onTouchTap(); }
 
-    clickHex('0,0,0');
+    // Hover
+    hoverHex('4,0,-4');
     expect(lastDispatch()).toEqual(
-      actions.setSelectedTile('0,0,0')
+      actions.setHoveredCard({
+        card: gameProps().orangePieces['4,0,-4'].card,
+        stats: {health: 20}
+      })
     );
 
+    // Set selected card
     const attackBotCard = gameProps().orangeHand.find(c => c.name == 'Attack Bot');
     clickCard(c => c.props.visible && c.props.name == 'Attack Bot');
     expect(lastDispatch()).toEqual(
       actions.setSelectedCard(0)
     );
 
+    // Place object
     clickHex('3,0,-3');
     expect(lastDispatch()).toEqual(
       actions.placeCard('3,0,-3', attackBotCard)
     );
 
-    // TODO more events
+    // End turn
+    clickEndTurn();
+    clickEndTurn();
+    expect(lastDispatch()).toEqual(
+      actions.passTurn()
+    );
+
+    // Set selected tile
+    clickHex('3,0,-3');
+    expect(lastDispatch()).toEqual(
+      actions.setSelectedTile('3,0,-3')
+    );
+
+    // Move
+    clickHex('2,0,-2');
+    expect(lastDispatch()).toEqual(
+      actions.moveRobot('3,0,-3', '2,0,-2')
+    );
   });
 });

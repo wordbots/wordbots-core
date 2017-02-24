@@ -7,18 +7,16 @@ import reducer from '../src/common/reducers/game';
 import defaultState from '../src/common/store/defaultState';
 
 const dispatchedActions = [];
-let gameInstance = createGame({game: defaultState});
+let currentState = {game: defaultState};
 
 export function refreshGameInstance() {
-  return gameInstance;
+  return createGame(currentState);
 }
 
 function dispatch(action) {
   console.log(action);
   dispatchedActions.push(action);
-
-  const state = reducer(state, action);
-  gameInstance = React.createElement(Game, Object.assign(mapStateToProps({game: state}), mapDispatchToProps(dispatch)));
+  currentState = Object.assign({}, currentState, {game: reducer(currentState.game, action)});
 }
 
 export function lastDispatch() {

@@ -13,6 +13,14 @@ describe('Board component', () => {
     const state = {game: defaultState};
     const gridProps = getHexGridProps(state);
 
-    console.log(getHexGridProps(state));
+    expect(gridProps.hexColors).toEqual(
+      { '-4,0,4': 'blue', '4,0,-4': 'orange' }
+    );
+
+    expect(gridProps.hexColors).toEqual(
+      { '-4,0,4': 'blue', '4,0,-4': 'orange' }
+    );
+
+    console.log(gridProps);
   });
 });

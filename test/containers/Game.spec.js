@@ -6,7 +6,6 @@ import RaisedButton from 'material-ui/lib/raised-button';
 
 import { createGame, renderElement } from '../react_helpers';
 import defaultState from '../../src/common/store/defaultState';
-import { Game } from '../../src/common/containers/Game';
 import Board from '../../src/common/components/game/Board';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
@@ -19,6 +18,7 @@ describe('Game container', () => {
 
     const game = createGame(state);
     const dom = renderElement(game);
+    const board = dom.props.children[1].props.children[2].props.children[2];  // Gross but necessary for comparing bound methods.
 
     const defaultStatus = {message: '', type: ''};
 
@@ -49,8 +49,8 @@ describe('Game container', () => {
             orangePieces={state.game.players.orange.robotsOnBoard}
             currentTurn={'orange'}
             playingCardType={null}
-            onSelectTile={new Game().onSelectTile}
-            onHoverTile={new Game().onHoverTile}
+            onSelectTile={board.props.onSelectTile}
+            onHoverTile={board.props.onHoverTile}
             />
           <RaisedButton
             secondary

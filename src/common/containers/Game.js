@@ -108,7 +108,7 @@ export class Game extends Component {
   }
 
   onHoverTile(hexId, action) {
-    if (action == 'mouseleave') {
+    if (action === 'mouseleave') {
       this.props.onHoverTile(null);
     } else {
       const piece = this.props.bluePieces[hexId] || this.props.orangePieces[hexId];
@@ -130,13 +130,13 @@ export class Game extends Component {
     return (
       <PlayerArea
         name={color}
-        isCurrentPlayer={this.props.currentTurn == color}
+        isCurrentPlayer={this.props.currentTurn === color}
         status={this.props.status}
         energy={this.props[`${color}Energy`]}
         cards={this.props[`${color}Hand`]}
         deck={this.props[`${color}Deck`]}
         selectedCard={this.props.selectedCard}
-        targetableCards={this.props.currentTurn == color ? this.props.target.possibleCards : []}
+        targetableCards={this.props.currentTurn === color ? this.props.target.possibleCards : []}
         onSelectCard={this.props.onSelectCard} />
     );
   }
@@ -163,7 +163,7 @@ export class Game extends Component {
               currentTurn={this.props.currentTurn}
               playingCardType={this.props.playingCardType}
               onSelectTile={this.onSelectTile}
-              onHoverTile={this.onHoverTile} />
+              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
             <RaisedButton
               secondary
               label="End Turn"

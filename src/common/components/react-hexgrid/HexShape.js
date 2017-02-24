@@ -50,7 +50,7 @@ class HexShape extends React.Component {
   }
 
   getPieceStyles(hex) {
-    if (this.props.pieceImg.sprite) {
+    if (this.props.pieceImg !== {}) {
       return {
         fill: `url(#${ HexUtils.getID(hex) }_piece)`,
         stroke: 'none'

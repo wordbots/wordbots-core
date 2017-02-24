@@ -101,7 +101,9 @@
   "jest": {
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "src/common/components/react-hexgrid/"
+      "/test",
+      "src/common/components/react-hexgrid/",
+      "src/common/components/game/Sprite.js"
     ],
     "globals": {
       "_": {}

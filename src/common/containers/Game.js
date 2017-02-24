@@ -13,7 +13,7 @@ import CardViewer from '../components/game/CardViewer';
 import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
   return {
     currentTurn: state.game.currentTurn,
     winner: state.game.winner,
@@ -40,7 +40,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -69,7 +69,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class Game extends Component {
+export class Game extends Component {
   constructor(props) {
     super(props);
   }
@@ -150,27 +150,25 @@ class Game extends Component {
 
           <Divider style={{marginTop: 10}}/>
 
-          <div style={{
-            position: 'relative'
-          }}>
+          <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.props.hoveredCard} />
             <Status
               currentTurn={this.props.currentTurn}
               status={this.props.status} />
             <Board
-              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
-              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               selectedTile={this.props.selectedTile}
               target={this.props.target}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               currentTurn={this.props.currentTurn}
-              playingCardType={this.props.playingCardType} />
+              playingCardType={this.props.playingCardType}
+              onSelectTile={this.onSelectTile}
+              onHoverTile={this.onHoverTile} />
             <RaisedButton
               secondary
               label="End Turn"
               style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
-              onTouchTap={(index) => this.props.onPassTurn()} />
+              onTouchTap={this.props.onPassTurn} />
           </div>
 
           <Divider style={{marginBottom: 10}}/>

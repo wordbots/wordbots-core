@@ -162,7 +162,7 @@ export class Game extends Component {
               orangePieces={this.props.orangePieces}
               currentTurn={this.props.currentTurn}
               playingCardType={this.props.playingCardType}
-              onSelectTile={this.onSelectTile}
+              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
             <RaisedButton
               secondary

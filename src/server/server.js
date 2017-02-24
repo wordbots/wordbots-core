@@ -42,6 +42,11 @@ const renderFullPage = (html, initialState, head) => `
 
 if (process.env.NODE_ENV !== 'production') {
   const compiler = webpack(webpackConfig);
+  compiler.plugin('done', () => {
+    if( process.env.NODE_ENV === 'test' ) {
+      process.exit();
+    }
+  });
   app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
   app.use(webpackHotMiddleware(compiler));
 } else {

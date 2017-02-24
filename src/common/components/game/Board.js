@@ -151,8 +151,7 @@ class Board extends Component {
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
-      onMouseEnter: (h, e) => this.onHexHover(h, e),
-      onMouseLeave: (h, e) => this.onHexHover(h, e)
+      onHexHover: (h, e) => this.onHexHover(h, e)
     };
 
     const pieces = this.allPieces();

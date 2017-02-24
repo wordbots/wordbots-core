@@ -1,7 +1,9 @@
 import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
 import * as cards from '../../src/common/store/cards';
-import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
+import {
+  BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE
+} from '../../src/common/constants';
 import { getCost } from '../../src/common/util';
 import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
@@ -17,6 +19,18 @@ describe('Game reducer', () => {
   describe('[Basic gameplay]', () => {
     it('should be able to play robots and structures', () => {
       let state = getDefaultState();
+
+      // Can't play a robot if the player doesn't have enough energy.
+      // (We don't use the playObject() helper here because it automatically sets player.energy.)
+      state = drawCardToHand(state, 'orange', cards.generalBotCard);
+      const cardIdx = _.findIndex(state.players.orange.hand, c => c.name === cards.generalBotCard.name);
+      state = newTurn(state, 'orange');
+      state = game(state, [
+        actions.setSelectedCard(cardIdx),
+        actions.placeCard('3,0,-3', cards.generalBotCard)
+      ]);
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+      expect(state.status.message).toEqual('You do not have enough energy to play this card.');
 
       // Play an Attack Bot to 3,0,-3, by the orange core.
       state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
@@ -66,7 +80,7 @@ describe('Game reducer', () => {
       state = newTurn(state, 'orange');
 
       // Robots cannot move into existing objects.
-      state = moveRobot(state, '3,0,-3', '4,0,-4'); // There's a kernel there!
+      state = moveRobot(state, '3,0,-3', ORANGE_CORE_HEX); // There's a kernel there!
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({'3,0,-3': 'Attack Bot'});
@@ -192,7 +206,7 @@ describe('Game reducer', () => {
       _.times(STARTING_PLAYER_HEALTH, () => {
         expect(state.winner).toEqual(null);
         state = newTurn(state, 'orange');
-        state = attack(state, '-3,0,3', '-4,0,4');
+        state = attack(state, '-3,0,3', BLUE_CORE_HEX);
       });
       expect(state.winner).toEqual('orange');
 
@@ -208,7 +222,7 @@ describe('Game reducer', () => {
       _.times(STARTING_PLAYER_HEALTH, () => {
         expect(state.winner).toEqual(null);
         state = newTurn(state, 'blue');
-        state = attack(state, '3,0,-3', '4,0,-4');
+        state = attack(state, '3,0,-3', ORANGE_CORE_HEX);
       });
       expect(state.winner).toEqual('blue');
     });
@@ -329,7 +343,26 @@ describe('Game reducer', () => {
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 2);
       expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 2);
 
-      // TODO test Martyr Bot?
+      // Martyr Bot: "When this robot is destroyed, take control of all adjacent robots."
+      state = setUpBoardState({
+        'orange': {
+          '0,0,0': cards.martyrBotCard,
+          '1,0,-1': cards.defenderBotCard  // adjacent to Martyr Bot (but already controlled by orange)
+        },
+        'blue': {
+          '-1,0,1': cards.tankBotCard,  // will attack
+          '-1,1,0': cards.attackBotCard,  // adjacent to Martyr Bot
+          '-2,0,2': cards.monkeyBotCard  // not adjacent to Martyr Bot
+        }
+      });
+      _.times(2, () => {
+        state = newTurn(state, 'blue');
+        state = attack(state, '-1,0,1', '0,0,0');
+      });
+      // Orange has taken control of Tank Bot (now in Martyr Bot's position) and Attack Bot.
+      expect(
+        Object.keys(state.players.orange.robotsOnBoard).sort()
+      ).toEqual([ORANGE_CORE_HEX, '1,0,-1', '0,0,0', '-1,1,0'].sort());
     });
 
     it('should be able to activate afterPlayed triggered abilities', () => {
@@ -394,7 +427,7 @@ describe('Game reducer', () => {
 
       // Test ability to select an object on the board.
       // "When this robot is played, deal 4 damage."
-      state = playObject(state, 'orange', cards.flametongueBotCard, '4,-1,-3', {hex: '-4,0,4'});  // Target the blue core.
+      state = playObject(state, 'orange', cards.flametongueBotCard, '4,-1,-3', {hex: BLUE_CORE_HEX});
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
     });
   });

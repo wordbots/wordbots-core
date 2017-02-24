@@ -320,7 +320,7 @@ export const arenaCard = {
   ]
 };
 
-const martyrBotCard = {
+export const martyrBotCard = {
   name: 'Martyr Bot',
   cost: 3,
   type: TYPE_ROBOT,

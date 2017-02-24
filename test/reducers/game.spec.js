@@ -389,7 +389,7 @@ describe('Game reducer', () => {
       state = drawCardToHand(state, 'orange', cards.flametongueBotCard);
       state = playObject(state, 'orange', cards.investorBotCard, '3,0,-3', {card: cards.flametongueBotCard});
       expect(
-        _.find(state.players.orange.hand, c => c.name == 'Flametongue Bot').cost
+        _.find(state.players.orange.hand, c => c.name === 'Flametongue Bot').cost
       ).toEqual(cards.flametongueBotCard.cost - 2);
 
       // Test ability to select an object on the board.
@@ -460,7 +460,7 @@ describe('Game reducer', () => {
 
     it('should let objects apply passive abilities to cards in hand', () => {
       function costOf(player, card) {
-        return getCost(player.hand.find(c => c.name == card.name));
+        return getCost(player.hand.find(c => c.name === card.name));
       }
 
       // Recruiter Bot: "Robots you play cost 1 less energy."

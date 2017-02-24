@@ -26,11 +26,11 @@ class Sprite extends Component {
         spacing: this.props.spacing || 0
       });
 
-      if (this.props.output == 'html') {
+      if (this.props.output === 'html') {
         return (
           <img src={dataURL} width={size} height={size} />
         );
-      } else if (this.props.output == 'svg') {
+      } else if (this.props.output === 'svg') {
         return (
           <image xlinkHref={dataURL} width={1} height={1} />
         );
@@ -116,7 +116,7 @@ class Sprite extends Component {
 
     function coloursEqual(colour0, colour1) {
       for (let i = 0; i < PIXEL_SIZE; ++i) {
-        if (colour0[i] != colour1[i])
+        if (colour0[i] !== colour1[i])
           return false;
       }
       return true;
@@ -438,15 +438,15 @@ class Sprite extends Component {
           const neighbours = getNeighbours(tile, x, y);
           let count = 0;
           for(let i = 0; i < neighbours.length; i++) {
-            if(neighbours[i] != null && !coloursEqual([255, 255, 255, 0], neighbours[i]))
+            if(typeof neighbours[i] !== 'undefined' && !coloursEqual([255, 255, 255, 0], neighbours[i]))
               count++;
           }
-          if(count == 1) {
+          if(count === 1) {
             // despur
             if(random() <= this.options['despur']) {
               putPixel(tile, x, y, [255, 255, 255, 0]);
             }
-          } else if(count == 0) {
+          } else if(count === 0) {
             // despeckle
             if(random() <= this.options['despeckle']) {
               putPixel(tile, x, y, [255, 255, 255, 0]);
@@ -470,13 +470,13 @@ class Sprite extends Component {
       }
       // scaling
       let out = tile;
-      if (this.options['scaler0'] != 'none') {
+      if (this.options['scaler0'] !== 'none') {
         const scaler = scalers[this.options['scaler0']];
         const scaled = this.context.createImageData(out.width * scaler.factor, out.height * scaler.factor);
         scale(out, scaled, scaler);
         out = scaled;
       }
-      if (this.options['scaler1'] != 'none') {
+      if (this.options['scaler1'] !== 'none') {
         const scaler = scalers[this.options['scaler1']];
         const scaled = this.context.createImageData(out.width * scaler.factor, out.height * scaler.factor);
         scale(out, scaled, scaler);

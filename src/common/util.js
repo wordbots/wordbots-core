@@ -28,7 +28,7 @@ export function instantiateCard(card) {
 //
 
 export function opponent(playerName) {
-  return (playerName == 'blue') ? 'orange' : 'blue';
+  return (playerName === 'blue') ? 'orange' : 'blue';
 }
 
 export function opponentName(state) {
@@ -48,9 +48,9 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  if (some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
+  if (some(state.players.blue.robotsOnBoard, o => o.id === object.id)) {
     return state.players.blue;
-  } else if (some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
+  } else if (some(state.players.orange.robotsOnBoard, o => o.id === object.id)) {
     return state.players.orange;
   }
 }
@@ -101,13 +101,13 @@ export function getAdjacentHexes(hex) {
 
 export function validPlacementHexes(state, playerName, type) {
   let hexes;
-  if (type == TYPE_ROBOT) {
+  if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
       hexes = ['-3,-1,4', '-3,0,3', '-4,1,3'].map(HexUtils.IDToHex);
     } else {
       hexes = ['4,-1,-3', '3,0,-3', '3,1,-4'].map(HexUtils.IDToHex);
     }
-  } else if (type == TYPE_STRUCTURE) {
+  } else if (type === TYPE_STRUCTURE) {
     const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
     hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }
@@ -173,7 +173,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
     state = checkTriggersForObject(state, 'afterDestroyed', object, (trigger =>
-      (trigger.cause == cause || trigger.cause == 'anyevent')
+      (trigger.cause === cause || trigger.cause === 'anyevent')
     ));
 
     delete state.players[ownerName].robotsOnBoard[hex];
@@ -185,7 +185,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
     // Check victory conditions.
     if (object.card.type === TYPE_CORE) {
-      state.winner = (ownerName == 'blue') ? 'orange' : 'blue';
+      state.winner = (ownerName === 'blue') ? 'orange' : 'blue';
     }
   }
 
@@ -226,7 +226,7 @@ export function checkTriggers(state, triggerType, it, condition) {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
     (obj.triggers || []).forEach((t) => {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
-      if (t.trigger.type == triggerType && condition(t.trigger)) {
+      if (t.trigger.type === triggerType && condition(t.trigger)) {
         // console.log(`Executing ${triggerType} trigger: ${t.action}`);
         executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
       }

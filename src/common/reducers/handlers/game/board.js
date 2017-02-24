@@ -18,7 +18,7 @@ export function setSelectedTile(state, tile) {
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    state.selectedTile = (state.selectedTile == tile) ? null : tile;
+    state.selectedTile = (state.selectedTile === tile) ? null : tile;
     state.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';

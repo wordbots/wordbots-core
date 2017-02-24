@@ -15,7 +15,7 @@ export default function actions(state) {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
-          hex = _.findKey(target.robotsOnBoard, obj => obj.card.type == TYPE_CORE);
+          hex = _.findKey(target.robotsOnBoard, obj => obj.card.type === TYPE_CORE);
         } else {
           // target is an object, so find its hex.
           hex = getHex(state, target);
@@ -45,7 +45,6 @@ export default function actions(state) {
         if (attr === 'allattributes') {
           object.stats = _.mapValues(object.stats, clamp(func));
         } else if (attr === 'cost') {
-          console.log([object.name, object.cost, clamp(func)(object.cost)]);
           object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
         } else {
           object.stats = _.assign(object.stats, {[attr]: clamp(func)(object.stats[attr])});
@@ -76,7 +75,7 @@ export default function actions(state) {
 
       objects.forEach(object => {
         const currentOwner = ownerOf(state, object);
-        if (newOwner.name != currentOwner.name) {
+        if (newOwner.name !== currentOwner.name) {
           const hex = getHex(state, object);
 
           newOwner.robotsOnBoard[hex] = object;

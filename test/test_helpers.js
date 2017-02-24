@@ -12,7 +12,7 @@ export function getDefaultState() {
 }
 
 export function objectsOnBoardOfType(state, objectType) {
-  const objects = _.pickBy(allObjectsOnBoard(state), obj => obj.card.type == objectType);
+  const objects = _.pickBy(allObjectsOnBoard(state), obj => obj.card.type === objectType);
   return _.mapValues(objects, obj => obj.card.name);
 }
 
@@ -39,7 +39,7 @@ export function drawCardToHand(state, playerName, card) {
 }
 
 export function newTurn(state, playerName) {
-  if (state.currentTurn == playerName) {
+  if (state.currentTurn === playerName) {
     // Pass twice.
     return game(state, [actions.passTurn(), actions.passTurn()]);
   } else {
@@ -67,7 +67,7 @@ export function playObject(state, playerName, card, hex, target = null) {
       actions.setSelectedTile(target.hex)
     ]);
   } else if (target && target.card) {
-    const cardIdx = _.findIndex(player.hand, c => c.name == target.card.name);
+    const cardIdx = _.findIndex(player.hand, c => c.name === target.card.name);
     return game(state, [
       actions.setSelectedCard(0),
       actions.placeCard(hex, card),
@@ -100,7 +100,7 @@ export function playEvent(state, playerName, card, target = null) {
       actions.setSelectedTile(target.hex)
     ]);
   } else if (target && target.card) {
-    const cardIdx = _.findIndex(player.hand, c => c.name == target.card.name);
+    const cardIdx = _.findIndex(player.hand, c => c.name === target.card.name);
     return game(state, [
       actions.setSelectedCard(0),
       actions.setSelectedCard(0),
@@ -152,7 +152,7 @@ export function setUpBoardState(players) {
   function placeObjects(playerName, placementHex) {
     if (players[playerName]) {
       _.forOwn(players[playerName], (card, hex) => {
-        if (hex == '-3,0,3' || hex == '3,0,-3') {
+        if (hex === '-3,0,3' || hex === '3,0,-3') {
           throw `${hex} must remain unoccupied in setUpBoardState()`;
         }
 

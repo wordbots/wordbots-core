@@ -71,7 +71,7 @@ export default function targets(state, currentObject) {
 
     controllerOf: function (objects) {
       // Assume the only one object is ever passed in here.
-      return (objects.length == 1) ? [ownerOf(state, objects[0])] : [];
+      return (objects.length === 1) ? [ownerOf(state, objects[0])] : [];
     }
   };
 }

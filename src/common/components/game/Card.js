@@ -45,7 +45,7 @@ class Card extends Component {
   }
 
   renderStatsArea() {
-    if (this.props.type == TYPE_ROBOT) {
+    if (this.props.type === TYPE_ROBOT) {
       return (
         <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10 }}>
           {this.renderStat('attack')}
@@ -53,7 +53,7 @@ class Card extends Component {
           {this.renderStat('health')}
         </CardText>
       );
-    } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
+    } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
       return (
         <CardText style={{ float: 'right', padding: 10 }}>
           {this.renderStat('health')}
@@ -79,13 +79,13 @@ class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.type == TYPE_CORE) {
+    if (this.props.type === TYPE_CORE) {
       return (
         <div style={{ width: '50px', height: '52px', margin: '3px auto 0'}}>
           <img src={loadImages()[this.props.img]} width="50px" height="50px" />
         </div>
       );
-    } else if (this.props.type == TYPE_EVENT) {
+    } else if (this.props.type === TYPE_EVENT) {
       return (
         <div style={{ width: '25px', height: '42px', margin: '10px auto 0'}}>
           <Identicon id={this.props.name} width={25} size={4} />
@@ -153,14 +153,14 @@ class Card extends Component {
 
               <div style={Object.assign({
                 height: 90
-              }, (this.props.type == TYPE_EVENT && this.props.text.length < 30) ? {
+              }, (this.props.type === TYPE_EVENT && this.props.text.length < 30) ? {
                 textAlign: 'center',
                 marginTop: 30
               } : {})}>
                 <Textfit mode="multi" max={14} style={{
                   padding: 6,
                   paddingBottom: 0,
-                  height: this.props.type != TYPE_EVENT ? 54 : 106,
+                  height: this.props.type !== TYPE_EVENT ? 54 : 106,
                   boxSizing: 'border-box'
                 }}>
                   {this.props.text}

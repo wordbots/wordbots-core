@@ -30,7 +30,7 @@ export function abilities(state) {
         unapply: function (target) {
           if (target.temporaryStatAdjustments) {
             target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].filter(adj =>
-              adj.aid != aid
+              adj.aid !== aid
             );
           }
         }
@@ -49,7 +49,7 @@ export function abilities(state) {
           });
         },
         unapply: function (target) {
-          target.effects = (target.effects || []).filter(eff => eff.aid != aid);
+          target.effects = (target.effects || []).filter(eff => eff.aid !== aid);
         }
       };
     }

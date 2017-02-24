@@ -75,4 +75,6 @@ describe('Board component', () => {
       '3,-1,-2': 'green'
     });
   });
+
+  // TODO test: placement colors, targeting colors, green/red tiles always being selectable?
 });

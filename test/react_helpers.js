@@ -1,37 +1,28 @@
 import React from 'react';
-import Utils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-addons-test-utils';
 
 import { Game, mapStateToProps, mapDispatchToProps } from '../src/common/containers/Game';
 import Board from '../src/common/components/game/Board';
-import reducer from '../src/common/reducers/game';
-import defaultState from '../src/common/store/defaultState';
 
-const dispatchedActions = [];
-let currentState = {game: defaultState};
-
-export function refreshGameInstance() {
-  return createGame(currentState);
+export function renderElement(elt, deep = false) {
+  if (deep) {
+    return ReactTestUtils.renderIntoDocument(elt);
+  } else {
+    const renderer = ReactTestUtils.createRenderer();
+    renderer.render(elt);
+    return renderer.getRenderOutput();
+  }
 }
 
-function dispatch(action) {
-  console.log(action);
-  dispatchedActions.push(action);
-  currentState = Object.assign({}, currentState, {game: reducer(currentState.game, action)});
-}
-
-export function lastDispatch() {
-  return dispatchedActions.pop();
-}
-
-export function renderElement(elt) {
-  const renderer = Utils.createRenderer();
-  renderer.render(elt);
-  return renderer.getRenderOutput();
+export function getComponent(componentClass, state, dispatch = () => {}, predicate = () => {}) {
+  const game = renderElement(createGame(state, dispatch), true);
+  const components = ReactTestUtils.scryRenderedComponentsWithType(game, componentClass);
+  return (components.length == 1) ? components[0] : components.find(predicate);
 }
 
 /* eslint-disable react/no-multi-comp */
 
-export function createGame(state) {
+export function createGame(state, dispatch = () => {}) {
   return React.createElement(Game, Object.assign(mapStateToProps(state), mapDispatchToProps(dispatch)));
 }
 

@@ -1,12 +1,12 @@
 import React from 'react';
-import Utils from 'react-addons-test-utils';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { renderElement, createGame, refreshGameInstance, lastDispatch } from '../react_helpers';
+import { renderElement, getComponent, createGame } from '../react_helpers';
 import * as actions from '../../src/common/actions/game';
+import gameReducer from '../../src/common/reducers/game';
 import defaultState from '../../src/common/store/defaultState';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
@@ -81,61 +81,87 @@ describe('Game container', () => {
   });
 
   it('should propagate events', () => {
-    function renderGame() { return Utils.renderIntoDocument(refreshGameInstance()); }
+    const dispatchedActions = [];
+    let state = {game: defaultState};
 
-    function gameProps() { return refreshGameInstance().props; }
+    function dispatch(action) {
+      // console.log(action);
+      dispatchedActions.push(action);
+      state = {game: gameReducer(state.game, action)};
+    }
 
-    function renderCards() { return Utils.scryRenderedComponentsWithType(renderGame(), Card); }
-    function renderHexGrid() { return Utils.findRenderedComponentWithType(renderGame(), HexGrid); }
+    function clickCard(predicate) {
+      getComponent(Card, state, dispatch, predicate).props
+        .onCardClick();
+      return dispatchedActions.pop();
+    }
+    function clickHex(id) {
+      getComponent(HexGrid, state, dispatch).props
+        .actions.onClick(HexUtils.IDToHex(id));
+      return dispatchedActions.pop();
+    }
+    function hoverHex(id, type) {
+      getComponent(HexGrid, state, dispatch).props
+        .actions.onHexHover(HexUtils.IDToHex(id), {type: type});
+      return dispatchedActions.pop();
+    }
+    function clickEndTurn() {
+      getComponent(RaisedButton, state, dispatch).props
+        .onTouchTap();
+      return dispatchedActions.pop();
+    }
 
-    function clickCard(pred) { renderCards().find(pred).props.onCardClick(); }
-    function clickHex(id) { renderHexGrid().props.actions.onClick(HexUtils.IDToHex(id)); }
-    function hoverHex(id, type) { renderHexGrid().props.actions.onHexHover(HexUtils.IDToHex(id), {type: type}); }
-    function clickEndTurn() { Utils.findRenderedComponentWithType(renderGame(), RaisedButton).props.onTouchTap(); }
-
-    // Hover
-    hoverHex('4,0,-4', 'mouseenter');
-    expect(lastDispatch()).toEqual(
+    // Hover.
+    expect(
+      hoverHex('4,0,-4', 'mouseenter')
+    ).toEqual(
       actions.setHoveredCard({
-        card: gameProps().orangePieces['4,0,-4'].card,
+        card: createGame(state).props.orangePieces['4,0,-4'].card,
         stats: {health: 20}
       })
     );
-    hoverHex('4,0,-4', 'mouseleave');
-    expect(lastDispatch()).toEqual(
+    expect(
+      hoverHex('4,0,-4', 'mouseleave')
+    ).toEqual(
       actions.setHoveredCard(null)
     );
 
-    // Set selected card
-    const attackBotCard = gameProps().orangeHand.find(c => c.name == 'Attack Bot');
-    clickCard(c => c.props.visible && c.props.name == 'Attack Bot');
-    expect(lastDispatch()).toEqual(
+    // Set selected card.
+    const attackBotCard = createGame(state).props.orangeHand.find(c => c.name == 'Attack Bot');
+    expect(
+      clickCard(c => c.props.visible && c.props.name == 'Attack Bot')
+    ).toEqual(
       actions.setSelectedCard(0)
     );
 
-    // Place object
-    clickHex('3,0,-3');
-    expect(lastDispatch()).toEqual(
+    // Place object.
+    expect(
+      clickHex('3,0,-3')
+    ).toEqual(
       actions.placeCard('3,0,-3', attackBotCard)
     );
 
-    // End turn
-    clickEndTurn();
-    clickEndTurn();
-    expect(lastDispatch()).toEqual(
+    // End turn.
+    expect(
+      clickEndTurn() && clickEndTurn()
+    ).toEqual(
       actions.passTurn()
     );
 
-    // Set selected tile
-    clickHex('3,0,-3');
-    expect(lastDispatch()).toEqual(
+    // Set selected tile.
+    expect(
+      clickHex('3,0,-3')
+    ).toEqual(
       actions.setSelectedTile('3,0,-3')
     );
 
-    // Move
-    clickHex('2,0,-2');
-    expect(lastDispatch()).toEqual(
+    // Move.
+    expect(
+      clickHex('2,0,-2')
+    ).toEqual(
       actions.moveRobot('3,0,-3', '2,0,-2')
     );
+
+    // TODO attack.
   });
 });

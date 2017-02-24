@@ -1,6 +1,6 @@
 import { TYPE_CORE } from '../constants';
 import {
-  ownerOf, getHex,
+  clamp, ownerOf, getHex,
   drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
 } from '../util';
 
@@ -41,15 +41,14 @@ export default function actions(state) {
     },
 
     modifyAttribute: function (objects, attr, func) {
-      const clampedFunc = stat => _.clamp(func(stat), 0, 99);
-
       objects.forEach(object => {
         if (attr === 'allattributes') {
-          object.stats = _.mapValues(object.stats, clampedFunc);
+          object.stats = _.mapValues(object.stats, clamp(func));
         } else if (attr === 'cost') {
-          object.cost = clampedFunc(object.cost); // (This should only ever happen to cards in hand.)
+          console.log([object.name, object.cost, clamp(func)(object.cost)]);
+          object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
         } else {
-          object.stats = _.assign(object.stats, {[attr]: clampedFunc(object.stats[attr])});
+          object.stats = _.assign(object.stats, {[attr]: clamp(func)(object.stats[attr])});
         }
       });
     },

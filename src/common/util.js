@@ -12,6 +12,10 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // 0. Miscellaneous utility functions.
 //
 
+export function clamp(func) {
+  return (stat => _.clamp(func(stat), 0, 99));
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
     id: Math.random().toString(36).slice(2, 16),
@@ -54,7 +58,7 @@ export function ownerOf(state, object) {
 export function getAttribute(object, attr) {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
-    return object.temporaryStatAdjustments[attr].reduce((val, adj) => adj.func(val), object.stats[attr]);
+    return object.temporaryStatAdjustments[attr].reduce((val, adj) => clamp(adj.func)(val), object.stats[attr]);
   } else {
     return (object.stats[attr] === undefined) ? undefined : object.stats[attr];
   }
@@ -63,7 +67,7 @@ export function getAttribute(object, attr) {
 export function getCost(card) {
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.
-    return card.temporaryStatAdjustments.cost.reduce((val, adj) => adj.func(val), card.cost);
+    return card.temporaryStatAdjustments.cost.reduce((val, adj) => clamp(adj.func)(val), card.cost);
   } else {
     return card.cost;
   }

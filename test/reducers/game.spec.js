@@ -459,37 +459,63 @@ describe('Game reducer', () => {
     });
 
     it('should let objects apply passive abilities to cards in hand', () => {
+      function costOf(player, card) {
+        return getCost(player.hand.find(c => c.name == card.name));
+      }
+
       // Recruiter Bot: "Robots you play cost 1 less energy."
       let state = getDefaultState();
+      state = drawCardToHand(state, 'orange', cards.attackBotCard);
       state = drawCardToHand(state, 'orange', cards.monkeyBotCard);
       state = playObject(state, 'orange', cards.recruiterBotCard, '3,0,-3');
       state = drawCardToHand(state, 'orange', cards.generalBotCard);
       state = drawCardToHand(state, 'orange', cards.fortificationCard);
 
       // Robots drawn both before and after Recruiter Bot is played should have their cost reduced.
-      expect(
-        getCost(state.players.orange.hand.find(c => c.name == 'Monkey Bot'))
-      ).toEqual(cards.monkeyBotCard.cost - 1);
-      expect(
-        getCost(state.players.orange.hand.find(c => c.name == 'General Bot'))
-      ).toEqual(cards.generalBotCard.cost - 1);
-      expect(
-        getCost(state.players.orange.hand.find(c => c.name == 'Fortification'))
-      ).toEqual(cards.fortificationCard.cost);  // Not a robot!
+      expect(costOf(state.players.orange, cards.attackBotCard)).toEqual(0);
+      expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1);
+      expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1);
+      expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost); // Not a robot!
+
+      // Test interaction with Discount ("Reduce the cost of all cards in your hand by 1").
+      state = playEvent(state, 'orange', cards.discountCard);
+      expect(costOf(state.players.orange, cards.attackBotCard)).toEqual(0);  // Can't go below 0!
+      expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1 - 1);
+      expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1 - 1);
+      expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
+
+      // Test interaction with Investor Bot ("When this robot is played, reduce the cost of a card in your hand by 2").
+      state = playObject(state, 'orange', cards.investorBotCard, '3,1,-4', {card: cards.generalBotCard});
+      expect(costOf(state.players.orange, cards.attackBotCard)).toEqual(0);
+      expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1 - 1);
+      expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1 - 1 - 2);
+      expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
 
       // Now destroy Recruiter Bot.
       state = playEvent(state, 'orange', cards.shockCard, {hex: '3,0,-3'});
-      expect(
-        getCost(state.players.orange.hand.find(c => c.name == 'Monkey Bot'))
-      ).toEqual(cards.monkeyBotCard.cost);
-      expect(
-        getCost(state.players.orange.hand.find(c => c.name == 'General Bot'))
-      ).toEqual(cards.generalBotCard.cost);
+      expect(costOf(state.players.orange, cards.attackBotCard)).toEqual(0);
+      expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1);
+      expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1 - 2);
+      expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
     });
 
     // TODO test interaction of temporary stat adjustments, permanent stat adjustments, stat queries.
-    /*it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditionals', () => {
-
-    });*/
+    it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditionals', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');  // 1/1
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('1/2/1');
+      state = playEvent(state, 'orange', cards.threedomCard);  // "Set all stats of all robots in play to 3."
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('3/3/3');
+      state = playObject(state, 'orange', cards.generalBotCard, '3,1,-4');  // 5/5; +1/0
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('4/3/3');
+      state = playEvent(state, 'orange', cards.rampageCard);  // "Give all robots you control +2 attack."
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('6/3/3');
+      state = playObject(state, 'orange', cards.fortificationCard, '2,1,-3');  // +0/1
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('6/3/4');
+      expect(queryRobotAttributes(state, '3,1,-4')).toEqual('7/1/6');
+      const energy = state.players.orange.energy.available;
+      state = playEvent(state, 'orange', cards.incinerateCard);  // "Gain energy equal to the total power of robots you control. Destroy all robots you control."
+      expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (5+2));
+    });
   });
 });

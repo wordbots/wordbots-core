@@ -1,7 +1,9 @@
+import { getAttribute } from '../util';
+
 export function attributeSum(state) {
   return function (collection, attribute) {
     return _.sum(Object.values(collection).map(object =>
-      object.stats[attribute]
+      getAttribute(object, attribute)
     ));
   };
 }
@@ -9,7 +11,7 @@ export function attributeSum(state) {
 export function attributeValue(state) {
   return function (targetObjects, attribute) {
     const object = targetObjects[0]; // targetObjects is an array of objects, so unpack.
-    return object.stats[attribute];
+    return getAttribute(object, attribute);
   };
 }
 

@@ -1,6 +1,7 @@
 import { TYPE_CORE } from '../constants';
 import {
-  clamp, ownerOf, getHex,
+  clamp, applyFuncToField,
+  ownerOf, getHex,
   drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
 } from '../util';
 
@@ -47,27 +48,19 @@ export default function actions(state) {
         } else if (attr === 'cost') {
           object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
         } else {
-          object.stats = Object.assign({}, object.stats, {[attr]: clamp(func)(object.stats[attr])});
+          object.stats = applyFuncToField(object.stats, func, attr);
         }
       });
     },
 
     modifyEnergy: function (players, func) {
       players.forEach(player => {
-        player.energy = Object.assign({}, player.energy, {available: clamp(func)(player.energy.available)});
+        player.energy = applyFuncToField(player.energy, func, 'available');
       });
     },
 
     setAttribute: function (objects, attr, num) {
-      objects.forEach(object => {
-        if (attr === 'allattributes') {
-          object.stats = _.mapValues(object.stats, () => num);
-        } else if (attr === 'cost') {
-          object.cost = num; // (This should only ever happen to cards in hand.)
-        } else {
-          object.stats = Object.assign({}, object.stats, {[attr]: num});
-        }
-      });
+      this.modifyAttribute(objects, attr, () => num);
     },
 
     takeControl: function (players, objects) {

@@ -47,14 +47,14 @@ export default function actions(state) {
         } else if (attr === 'cost') {
           object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
         } else {
-          object.stats = _.assign(object.stats, {[attr]: clamp(func)(object.stats[attr])});
+          object.stats = Object.assign({}, object.stats, {[attr]: clamp(func)(object.stats[attr])});
         }
       });
     },
 
     modifyEnergy: function (players, func) {
       players.forEach(player => {
-        player.energy = _.assign(player.energy, {available: clamp(func)(player.energy.available)});
+        player.energy = Object.assign({}, player.energy, {available: clamp(func)(player.energy.available)});
       });
     },
 
@@ -65,7 +65,7 @@ export default function actions(state) {
         } else if (attr === 'cost') {
           object.cost = num; // (This should only ever happen to cards in hand.)
         } else {
-          object.stats = _.assign(object.stats, {[attr]: num});
+          object.stats = Object.assign({}, object.stats, {[attr]: num});
         }
       });
     },

@@ -1,16 +1,21 @@
 import React from 'react';
+import Utils from 'react-addons-test-utils';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { createGame, renderElement } from '../react_helpers';
+import { createGame, refreshGameInstance, renderElement, lastDispatch } from '../react_helpers';
+import * as actions from '../../src/common/actions/game';
 import defaultState from '../../src/common/store/defaultState';
 import Board from '../../src/common/components/game/Board';
+import Card from '../../src/common/components/game/Card';
+import CardViewer from '../../src/common/components/game/CardViewer';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
-import CardViewer from '../../src/common/components/game/CardViewer';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
+import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
+import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 
 describe('Game container', () => {
   it('renders the default game state', () => {
@@ -73,5 +78,35 @@ describe('Game container', () => {
         <VictoryScreen winner={null} />
       </Paper>
     ]);
+  });
+
+  it('should propagate events', () => {
+    function renderGame() { return Utils.renderIntoDocument(refreshGameInstance()); }
+
+    function gameProps() { return refreshGameInstance().props; }
+
+    function renderCards() { return Utils.scryRenderedComponentsWithType(renderGame(), Card); }
+    function renderHexGrid() { return Utils.findRenderedComponentWithType(renderGame(), HexGrid); }
+
+    function clickCard(pred) { renderCards().find(pred).props.onCardClick(); }
+    function clickHex(id) { renderHexGrid().props.actions.onClick(HexUtils.IDToHex(id)); }
+
+    clickHex('0,0,0');
+    expect(lastDispatch()).toEqual(
+      actions.setSelectedTile('0,0,0')
+    );
+
+    const attackBotCard = gameProps().orangeHand.find(c => c.name == 'Attack Bot');
+    clickCard(c => c.props.visible && c.props.name == 'Attack Bot');
+    expect(lastDispatch()).toEqual(
+      actions.setSelectedCard(0)
+    );
+
+    clickHex('3,0,-3');
+    expect(lastDispatch()).toEqual(
+      actions.placeCard('3,0,-3', attackBotCard)
+    );
+
+    // TODO more events
   });
 });

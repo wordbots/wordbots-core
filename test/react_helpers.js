@@ -1,19 +1,40 @@
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import Utils from 'react-addons-test-utils';
 
 import { Game, mapStateToProps, mapDispatchToProps } from '../src/common/containers/Game';
 import Board from '../src/common/components/game/Board';
+import reducer from '../src/common/reducers/game';
+import defaultState from '../src/common/store/defaultState';
 
-/* eslint-disable react/no-multi-comp */
+const dispatchedActions = [];
+let gameInstance = createGame({game: defaultState});
+
+export function refreshGameInstance() {
+  return gameInstance;
+}
+
+function dispatch(action) {
+  console.log(action);
+  dispatchedActions.push(action);
+
+  const state = reducer(state, action);
+  gameInstance = React.createElement(Game, Object.assign(mapStateToProps({game: state}), mapDispatchToProps(dispatch)));
+}
+
+export function lastDispatch() {
+  return dispatchedActions.pop();
+}
 
 export function renderElement(elt) {
-  const renderer = ReactTestUtils.createRenderer();
+  const renderer = Utils.createRenderer();
   renderer.render(elt);
   return renderer.getRenderOutput();
 }
 
+/* eslint-disable react/no-multi-comp */
+
 export function createGame(state) {
-  return React.createElement(Game, Object.assign(mapStateToProps(state), mapDispatchToProps()));
+  return React.createElement(Game, Object.assign(mapStateToProps(state), mapDispatchToProps(dispatch)));
 }
 
 export function createBoard(state) {

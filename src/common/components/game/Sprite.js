@@ -8,7 +8,10 @@ class Sprite extends Component {
     const size = (this.props.size + (this.props.spacing || 0)) * 2;
 
     // Draw to a mock canvas, then create an image using the dataURL.
-    if (typeof document !== 'undefined') {
+    // (Don't try to render anything on the server because it's too complicated.)
+    if (typeof document === 'undefined' || (window.process && window.process.title.includes('node'))) {
+      return null;
+    } else {
       const mockCanvasElt = document.createElement('canvas');
       mockCanvasElt.width = size;
       mockCanvasElt.height = size;
@@ -35,10 +38,6 @@ class Sprite extends Component {
           <image xlinkHref={dataURL} width={1} height={1} />
         );
       }
-    } else {
-      // This should only be returned during server rendering, since node doesn't have access to a DOM.
-      // TODO maybe consider something like https://github.com/Automattic/node-canvas ?
-      return null;
     }
   }
 

@@ -90,16 +90,20 @@ describe('Game container', () => {
 
     function clickCard(pred) { renderCards().find(pred).props.onCardClick(); }
     function clickHex(id) { renderHexGrid().props.actions.onClick(HexUtils.IDToHex(id)); }
-    function hoverHex(id) { renderHexGrid().props.actions.onMouseEnter(HexUtils.IDToHex(id), {}); }
+    function hoverHex(id, type) { renderHexGrid().props.actions.onMouseEnter(HexUtils.IDToHex(id), {type: type}); }
     function clickEndTurn() { Utils.findRenderedComponentWithType(renderGame(), RaisedButton).props.onTouchTap(); }
 
     // Hover
-    hoverHex('4,0,-4');
+    hoverHex('4,0,-4', 'mouseenter');
     expect(lastDispatch()).toEqual(
       actions.setHoveredCard({
         card: gameProps().orangePieces['4,0,-4'].card,
         stats: {health: 20}
       })
+    );
+    hoverHex('4,0,-4', 'mouseleave');
+    expect(lastDispatch()).toEqual(
+      actions.setHoveredCard(null)
     );
 
     // Set selected card

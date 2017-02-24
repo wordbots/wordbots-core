@@ -1,23 +1,16 @@
-import { setUpBoardState, newTurn } from '../test_helpers';
-import { createBoard, renderElement, getComponent } from '../react_helpers';
+import { setUpBoardState, newTurn, playObject, playEvent } from '../test_helpers';
+import { getComponent } from '../react_helpers';
 import * as actions from '../../src/common/actions/game';
 import { STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';
 import defaultState from '../../src/common/store/defaultState';
-import { attackBotCard } from '../../src/common/store/cards';
+import { attackBotCard, shockCard } from '../../src/common/store/cards';
 import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 
 describe('Board component', () => {
-  function getHexGridProps(state) {
-    const board = createBoard(state);
-    const rendered = renderElement(board);
-    const hexGrid = rendered.props.children;
-    return hexGrid.props;
-  }
-
   it('renders the default board state', () => {
-    const gridProps = getHexGridProps({game: defaultState});
+    const gridProps = getComponent(HexGrid, {game: defaultState}).props;
 
     expect(gridProps.width).toEqual(GRID_CONFIG.width);
     expect(gridProps.height).toEqual(GRID_CONFIG.height);
@@ -34,6 +27,30 @@ describe('Board component', () => {
     expect(gridProps.pieceStats).toEqual(
       { '-4,0,4': {health: STARTING_PLAYER_HEALTH}, '4,0,-4': {health: STARTING_PLAYER_HEALTH} }
     );
+  });
+
+  describe('[Valid placement hexes]', () => {
+    const state = gameReducer(defaultState, actions.setSelectedCard(0));
+
+    let dispatchedAction = null;
+    const hexGrid = getComponent(HexGrid, {game: state}, (action => { dispatchedAction = action; }));
+
+    it('are colored green', () => {
+      expect(hexGrid.props.hexColors).toEqual({
+        '-4,0,4': 'blue',  // Blue core
+        '4,0,-4': 'orange',  // Orange core
+        '4,-1,-3': 'green',  // Valid orange placement hex
+        '3,0,-3': 'green',  // Valid orange placement hex
+        '3,1,-4': 'green'  // Valid orange placement hex
+      });
+    });
+
+    it('propagate PLACE_CARD actions', () => {
+      ['4,-1, -3', '3,0,-3', '3,1,-4'].forEach(hex => {
+        hexGrid.props.actions.onClick(HexUtils.IDToHex(hex));
+        expect(dispatchedAction.type).toEqual(actions.PLACE_CARD);
+      });
+    });
   });
 
   describe('[Valid movement/attack hexes]', () => {
@@ -103,5 +120,17 @@ describe('Board component', () => {
     });
   });
 
-  // TODO test: placement, targeting
+  it('Valid targetable hexes are colored green', () => {
+    let state = defaultState;
+    state = playObject(state, 'orange', attackBotCard, '3,0,-3');
+    state = playEvent(state, 'blue', shockCard);
+
+    const hexGrid = getComponent(HexGrid, {game: state});
+
+    expect(hexGrid.props.hexColors).toEqual({
+      '-4,0,4': 'blue',  // Blue core
+      '4,0,-4': 'orange',  // Orange core
+      '3,0,-3': 'green'  // Valid target
+    });
+  });
 });

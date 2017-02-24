@@ -120,11 +120,8 @@ class Board extends Component {
             HexUtils.getID
           );
 
-          if (possibleMoveHexes.length > 0) {
-            intermediateMoveHex = HexUtils.getID(possibleMoveHexes[0]);
-          } else {
-            action = ''; // Attack is not possible!
-          }
+          // Since getValidAttackHexes().includes(hex), we're guaranteed that there's at least one valid intermediate hex.
+          intermediateMoveHex = HexUtils.getID(possibleMoveHexes[0]);
         }
       }
     }

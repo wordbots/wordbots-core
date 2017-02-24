@@ -90,7 +90,7 @@ describe('Game container', () => {
 
     function clickCard(pred) { renderCards().find(pred).props.onCardClick(); }
     function clickHex(id) { renderHexGrid().props.actions.onClick(HexUtils.IDToHex(id)); }
-    function hoverHex(id, type) { renderHexGrid().props.actions.onMouseEnter(HexUtils.IDToHex(id), {type: type}); }
+    function hoverHex(id, type) { renderHexGrid().props.actions.onHexHover(HexUtils.IDToHex(id), {type: type}); }
     function clickEndTurn() { Utils.findRenderedComponentWithType(renderGame(), RaisedButton).props.onTouchTap(); }
 
     // Hover

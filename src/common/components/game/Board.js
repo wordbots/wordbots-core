@@ -3,7 +3,7 @@ import { forOwn, intersectionBy, mapValues, some } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
-import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
+import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, hasEffect, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
@@ -13,13 +13,7 @@ class Board extends Component {
   constructor(props) {
     super(props);
 
-    const boardConfig = {
-      width: 600, height: 600,
-      layout: { width: 6, height: 6, flat: false, spacing: 0 },
-      origin: { x: 0, y: 0 },
-      map: 'hexagon',
-      mapProps: [ 4 ]
-    };
+    const boardConfig = GRID_CONFIG;
     const grid = HexGrid.generate(boardConfig);
 
     this.state = {

@@ -3,6 +3,7 @@ import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
+import * as fetch from 'whatwg-fetch';
 
 class CardCreationForm extends Component {
   constructor(props) {
@@ -17,7 +18,29 @@ class CardCreationForm extends Component {
     });
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  parseText(text) {
+    let sentences = text.split(/[\\.!\?]/);
+    let parsedSentences = [];
+
+    sentences.forEach((sentence, index) => {
+      fetch('https://wordbots.herokuapp.com/parse?input=[text]&format=js').then((response) => {
+        let parsedResponse = JSON.parse(response);
+
+        if (parsedResponse.error) {
+          parsedSentences[index] = {
+            valid: false,
+            error: parsedResponse.erro,
+            unrecognizedTokens: parsedResponse.unrecognizedTokens
+          };
+        } else {
+          parsedSentences[index] = {
+            valid: true,
+            function: parsedResponse.function
+          };
+        }
+      });
+    });
+  }
 
   render() {
     const cardTypes = ['Robot', 'Event', 'Kernel', 'Structure'];

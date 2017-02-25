@@ -57,7 +57,8 @@
     "redux-router": "^1.0.0-beta7",
     "redux-thunk": "0.1.0",
     "redux-undo": "0.5.0",
-    "warning": "^2.1.0"
+    "warning": "^2.1.0",
+    "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",

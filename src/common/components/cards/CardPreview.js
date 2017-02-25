@@ -7,7 +7,7 @@ class CardPreview extends Component {
     return (
       <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <Card 
-          name={'Test'}
+          name={this.props.name}
           type={0}
           img={'char'}
           cost={1}
@@ -28,5 +28,9 @@ class CardPreview extends Component {
     );
   }
 }
+
+CardPreview.propTypes = {
+  name: React.PropTypes.string,
+};
 
 export default CardPreview;

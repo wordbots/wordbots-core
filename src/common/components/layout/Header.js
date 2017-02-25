@@ -56,7 +56,7 @@ class Header extends Component {
             }/>
           </Link>
           <Link to="/cards">
-            <MenuItem primaryText="Cards" leftIcon={
+            <MenuItem primaryText="Card Creator" leftIcon={
               <FontIcon className="material-icons">recent_actors</FontIcon>
             }/>
           </Link>

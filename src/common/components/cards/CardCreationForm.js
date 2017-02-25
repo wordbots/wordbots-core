@@ -31,8 +31,12 @@ class CardCreationForm extends Component {
       <div style={{width: '50%', padding: 64}}>
         <Paper style={{padding: 48}}>
           <TextField
-            floatingLabelText="Card Name" 
-            style={{width: '100%'}} />
+            defaultValue="Name"
+            floatingLabelText="Card Name"
+            style={{width: '100%'}}
+            onChange={(e) => {
+              this.props.onSetName(e.target.value);
+            }}/>
           <SelectField
             value={this.state.cardType}
             handleChange={this.handleChange}
@@ -46,5 +50,9 @@ class CardCreationForm extends Component {
     );
   }
 }
+
+CardCreationForm.propTypes = {
+  onSetName: React.PropTypes.func,
+};
 
 export default CardCreationForm;

@@ -1,4 +1,4 @@
-import defaultState from '../store/defaultState';
+import defaultState from '../store/defaultGameState';
 import * as gameActions from '../actions/game';
 
 import g from './handlers/game';

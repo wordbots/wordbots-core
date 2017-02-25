@@ -9,6 +9,7 @@ import * as cardCreatorActions from '../actions/cardCreator';
 function mapStateToProps(state) {
   return {
     name: state.cardCreator.name,
+    type: state.cardCreator.type
   };
 }
 
@@ -16,6 +17,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onSetName: (name) => {
       dispatch(cardCreatorActions.setName(name));
+    },
+    onSetType: (type) => {
+      dispatch(cardCreatorActions.setType(type));
     }
   };
 }
@@ -31,12 +35,19 @@ class CardCreator extends Component {
         <Helmet title="Cards"/>
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <CardCreationForm 
+          <CardCreationForm
+            name={this.props.name}
+            type={this.props.type}
+
+            onSetType={(type) => {
+              this.props.onSetType(type);
+            }}
             onSetName={(name) => {
               this.props.onSetName(name);
-            }}/>
+            }} />
           <CardPreview 
-            name={this.props.name} />
+            name={this.props.name}
+            type={this.props.type} />
         </div>
       </div>
     );
@@ -45,7 +56,10 @@ class CardCreator extends Component {
 
 CardCreator.propTypes = {
   name: React.PropTypes.string,
-  onSetName: React.PropTypes.func
+  type: React.PropTypes.number,
+
+  onSetName: React.PropTypes.func,
+  onSetType: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardCreator);

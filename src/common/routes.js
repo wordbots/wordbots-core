@@ -12,6 +12,7 @@ export default (
   <Route name="app" path="/" component={App}>
     <Route path="home" component={HomePage} />
     <Route path="game" component={Game} />
-    <Route path="cards" component={CardCreator} />
+    <Route path="cardCreator" component={CardCreator} />
+    <Route path="cardCollection" component={CardCreator} />
   </Route>
 );

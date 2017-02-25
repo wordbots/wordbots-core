@@ -1,5 +1,6 @@
 const defaultState = {
-  name: 'Name'
+  name: 'Name',
+  type: 0
 };
 
 export default defaultState;

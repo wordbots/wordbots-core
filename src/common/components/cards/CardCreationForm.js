@@ -7,11 +7,6 @@ import Paper from 'material-ui/lib/paper';
 class CardCreationForm extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      cardName: '',
-      cardType: ''
-    } 
   }
 
   createMenuItems(list) {
@@ -25,23 +20,25 @@ class CardCreationForm extends Component {
   handleChange = (event, index, value) => this.setState({value});
 
   render() {
-    const cardTypes = ['Robot', 'Event', 'Structure'];
+    const cardTypes = ['Robot', 'Event', 'Kernel', 'Structure'];
 
     return (
       <div style={{width: '50%', padding: 64}}>
         <Paper style={{padding: 48}}>
           <TextField
-            defaultValue="Name"
+            defaultValue={this.props.name}
             floatingLabelText="Card Name"
             style={{width: '100%'}}
             onChange={(e) => {
               this.props.onSetName(e.target.value);
             }}/>
           <SelectField
-            value={this.state.cardType}
-            handleChange={this.handleChange}
+            value={this.props.type}
             floatingLabelText="Card Type"
             style={{width: '100%'}} 
+            onChange={(e, index) => {
+              this.props.onSetType(index);
+            }}
           >
             {this.createMenuItems(cardTypes)}
           </SelectField>
@@ -52,7 +49,11 @@ class CardCreationForm extends Component {
 }
 
 CardCreationForm.propTypes = {
+  name: React.PropTypes.string,
+  type: React.PropTypes.number,
+
   onSetName: React.PropTypes.func,
+  onSetType: React.PropTypes.func
 };
 
 export default CardCreationForm;

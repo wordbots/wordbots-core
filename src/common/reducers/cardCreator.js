@@ -9,6 +9,10 @@ export default function cardCreator(oldState = defaultState, action) {
       state.name = action.payload.name;
       return state;
 
+    case cardCreatorActions.SET_TYPE:
+      state.type = action.payload.type;
+      return state;
+
     default:
       return state;
   }

@@ -5,10 +5,10 @@ import Card from '../game/Card';
 class CardPreview extends Component {
   render() {
     return (
-      <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 64}}>
         <Card 
           name={this.props.name}
-          type={0}
+          type={this.props.type}
           img={'char'}
           cost={1}
           stats={{
@@ -31,6 +31,7 @@ class CardPreview extends Component {
 
 CardPreview.propTypes = {
   name: React.PropTypes.string,
+  type: React.PropTypes.number
 };
 
 export default CardPreview;

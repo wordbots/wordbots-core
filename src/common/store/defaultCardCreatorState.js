@@ -1,5 +1,5 @@
 const defaultState = {
-  name: 'Name',
+  name: '',
   spriteID: Math.random().toString(36).slice(2, 16),
   type: 0,
   sentences: [],

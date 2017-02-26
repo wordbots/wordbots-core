@@ -38,7 +38,7 @@ class CardPreview extends Component {
     return (
       <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 64}}>
         <Card
-          name={this.props.name}
+          name={this.props.name || '[Unnamed]'}
           spriteID={this.props.spriteID}
           onSpriteClick={this.props.onSpriteClick}
           type={this.props.type}

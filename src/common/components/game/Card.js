@@ -78,13 +78,15 @@ class Card extends Component {
   }
 
   renderStatsArea() {
+    const style = {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: 10 * this.props.scale
+    };
+
     if (this.props.type == TYPE_ROBOT) {
       return (
-        <CardText style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: 10 * this.props.scale
-        }}>
+        <CardText style={style}>
           {this.renderStat('attack')}
           {this.renderStat('speed')}
           {this.renderStat('health')}
@@ -92,11 +94,7 @@ class Card extends Component {
       );
     } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
       return (
-        <CardText style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: 10 * this.props.scale
-        }}>
+        <CardText style={style}>
           {this.renderStat('health')}
         </CardText>
       );

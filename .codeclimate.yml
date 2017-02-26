@@ -12,6 +12,9 @@ engines:
   eslint:
     enabled: true
     checks:
+      # arrow-body-style rule returns some false positives in some versions of eslint.
+      arrow-body-style:
+        enabled: false
       # eslint-import rules don't work correctly, so let's just disable them all.
       import/no-unresolved:
         enabled: false

@@ -8,7 +8,23 @@ class CardPreview extends Component {
       const color = s.result.js ? 'green' : (s.result.error ? 'red' : 'black');
       return (
         <span style={{color: color}}>
-          {s.sentence}.
+          {s.sentence.split(' ').map(word => {
+            if ((s.result.unrecognizedTokens || []).includes(word)) {
+              return (
+                <span>
+                  {' '}
+                  <u>{word}</u>
+                </span>
+              );
+            } else {
+              return (
+                <span>
+                  {' '}
+                  {word}
+                </span>
+              );
+            }
+          })}.
         </span>
       );
     } else {

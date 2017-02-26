@@ -110,8 +110,15 @@ class Card extends Component {
       );
     } else if (this.props.type == TYPE_EVENT) {
       return (
-        <div style={{ width: 25 * this.props.scale, height: 42 * this.props.scale, margin: '10px auto 0'}}>
-          <Identicon id={this.props.name} width={25 * this.props.scale} size={4} />
+        <div
+          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
+          style={{
+            width: 25 * this.props.scale,
+            height: 42 * this.props.scale,
+            margin: '0 auto',
+            marginTop: 10 * this.props.scale
+        }}>
+          <Identicon id={this.props.spriteID || this.props.name} width={25 * this.props.scale} size={4} />
         </div>
       );
     } else {
@@ -119,9 +126,9 @@ class Card extends Component {
         <div
           onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
           style={{
-          width: 48 * this.props.scale,
-          height: 48 * this.props.scale,
-          margin: '2px auto 3px'
+            width: 48 * this.props.scale,
+            height: 48 * this.props.scale,
+            margin: '2px auto 3px'
         }}>
           <Sprite id={this.props.spriteID || this.props.name} size={24} scale={this.props.scale} output="html" />
         </div>

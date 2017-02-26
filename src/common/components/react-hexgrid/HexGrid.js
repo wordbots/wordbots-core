@@ -11,24 +11,23 @@ const { number, object, array } = React.PropTypes;
 
 class HexGrid extends React.Component {
   render() {
-    const { hexColors, pieceImgs, pieceStats } = this.props;
+    const { hexColors, pieceNames, pieceImgs, pieceStats } = this.props;
 
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
         {
-          this.props.hexagons.map((hex, index) => {
-            return (
+          this.props.hexagons.map((hex, index) => (
               <HexShape
                 key={index}
                 hex={hex}
                 layout={this.props.layout}
                 actions={this.props.actions}
                 fill={hexColors[HexUtils.getID(hex)]}
-                piece={pieceImgs[HexUtils.getID(hex)]}
+                pieceName={pieceNames[HexUtils.getID(hex)]}
+                pieceImg={pieceImgs[HexUtils.getID(hex)]}
                 pieceStats={pieceStats[HexUtils.getID(hex)]}
                 images={loadImages()} />
-            );
-          })
+            ))
         }
         <Path {...this.props.path} layout={this.props.layout} />
       </svg>
@@ -37,9 +36,9 @@ class HexGrid extends React.Component {
 }
 
 HexGrid.generate = (config, content) => {
-  let layout = new Layout(config.layout, config.origin);
-  let generator = GridGenerator.getGenerator(config.map);
-  let hexagons = generator.apply(this, config.mapProps);
+  const layout = new Layout(config.layout, config.origin);
+  const generator = GridGenerator.getGenerator(config.map);
+  const hexagons = generator.apply(this, config.mapProps);
 
   return { hexagons, layout };
 };
@@ -52,6 +51,7 @@ HexGrid.propTypes = {
   hexagons: array.isRequired,
   path: object,
   hexColors: object,
+  pieceNames: object,
   pieceImgs: object,
   pieceStats: object
 };

@@ -12,7 +12,7 @@ class Deck extends Component {
     if (this.props.deck.length > 0) {
       return (
         <div style={{fontFamily: 'Carter One'}}>
-          <div data-tip={this.props.deck.length + ' Cards'} data-for="deck-tooltip">
+          <div data-tip={`${this.props.deck.length  } Cards`} data-for="deck-tooltip">
             <CardBack deckLength={this.props.deck.length} />
           </div>
           <ReactTooltip

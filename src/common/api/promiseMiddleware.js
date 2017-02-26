@@ -1,12 +1,12 @@
 export default function promiseMiddleware() {
   return next => action => {
     const { promise, type, ...rest } = action;
-   
+
     if (!promise) return next(action);
-   
-    const SUCCESS = type + '_SUCCESS';
-    const REQUEST = type + '_REQUEST';
-    const FAILURE = type + '_FAILURE';
+
+    const SUCCESS = `${type  }_SUCCESS`;
+    const REQUEST = `${type  }_REQUEST`;
+    const FAILURE = `${type  }_FAILURE`;
     next({ ...rest, type: REQUEST });
     return promise
       .then(req => {
@@ -15,7 +15,9 @@ export default function promiseMiddleware() {
       })
       .catch(error => {
         next({ ...rest, error, type: FAILURE });
+        /* eslint-disable no-console */
         console.log(error);
+        /* eslint-enable no-console */
         return false;
       });
    };

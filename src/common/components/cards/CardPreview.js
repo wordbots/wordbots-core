@@ -35,6 +35,7 @@ class CardPreview extends Component {
       <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 64}}>
         <Card
           name={this.props.name}
+          spriteID={Math.random().toString(36).slice(2, 16)}
           type={this.props.type}
           img={'char'}
           cost={1}

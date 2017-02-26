@@ -2,45 +2,53 @@ export function setTrigger(state, currentObject) {
   return function (trigger, action) {
     currentObject.triggers = currentObject.triggers.concat([{
       trigger: trigger,
-      action: '(' + action.toString() + ')'
+      action: `(${action.toString()})`
     }]);
   };
 }
 
 export function triggers(state) {
   return {
-    afterAttack: function (objects) {
+    afterAttack: function (targetFunc) {
       return {
         'type': 'afterAttack',
-        'objects': objects.map(hexObj => hexObj[1])
+        'targetFunc': `(${targetFunc.toString()})`
       };
     },
 
-    afterDamageReceived: function (objects) {
+    afterDamageReceived: function (targetFunc) {
       return {
         'type': 'afterDamageReceived',
-        'objects': objects.map(hexObj => hexObj[1])
+        'targetFunc': `(${targetFunc.toString()})`
       };
     },
 
-    afterPlayed: function (objects) {
+    afterDestroyed: function (targetFunc, cause = 'anyevent') {
+      return {
+        'type': 'afterDestroyed',
+        'cause': cause,
+        'targetFunc': `(${targetFunc.toString()})`
+      };
+    },
+
+    afterPlayed: function (targetFunc) {
       return {
         'type': 'afterPlayed',
-        'objects': objects.map(hexObj => hexObj[1])
+        'targetFunc': `(${targetFunc.toString()})`
       };
     },
 
-    beginningOfTurn: function (players) {
+    beginningOfTurn: function (targetFunc) {
       return {
         'type': 'beginningOfTurn',
-        'players': players
+        'targetFunc': `(${targetFunc.toString()})`
       };
     },
 
-    endOfTurn: function (players) {
+    endOfTurn: function (targetFunc) {
       return {
         'type': 'endOfTurn',
-        'players': players
+        'targetFunc': `(${targetFunc.toString()})`
       };
     }
   };

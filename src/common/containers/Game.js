@@ -74,46 +74,25 @@ class Game extends Component {
     super(props);
   }
 
+  allPieces() {
+    return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
+  }
+
   movePiece(hexId, asPartOfAttack = false) {
-    let tile = this.props.selectedTile;
-    if (this.props.currentTurn == 'blue') {
-      if (this.props.bluePieces[tile] && this.props.bluePieces[tile].movesLeft > 0) {
-        this.props.onMoveRobot(tile, hexId, asPartOfAttack);
-      }
-    } else {
-      if (this.props.orangePieces[tile] && this.props.orangePieces[tile].movesLeft > 0) {
-        this.props.onMoveRobot(tile, hexId, asPartOfAttack);
-      }
-    }
+    this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
   }
 
   attackPiece(hexId, intermediateMoveHexId) {
-    let tile = this.props.selectedTile;
-    if (this.props.currentTurn == 'blue') {
-      if (this.props.bluePieces[tile] && this.props.bluePieces[tile].movesLeft > 0) {
-        if (intermediateMoveHexId) {
-          this.props.onMoveRobotAndAttack(tile, intermediateMoveHexId, hexId);
-        } else {
-          this.props.onAttackRobot(tile, hexId);
-        }
-      }
+    if (intermediateMoveHexId) {
+      this.props.onMoveRobotAndAttack(this.props.selectedTile, intermediateMoveHexId, hexId);
     } else {
-      if (this.props.orangePieces[tile] && this.props.orangePieces[tile].movesLeft > 0) {
-        if (intermediateMoveHexId) {
-          this.props.onMoveRobotAndAttack(tile, intermediateMoveHexId, hexId);
-        } else {
-          this.props.onAttackRobot(tile, hexId);
-        }
-      }
+      this.props.onAttackRobot(this.props.selectedTile, hexId);
     }
   }
 
   placePiece(hexId) {
-    if (this.props.currentTurn == 'blue') {
-      this.props.onPlaceRobot(hexId, this.props.blueHand[this.props.selectedCard]);
-    } else {
-      this.props.onPlaceRobot(hexId, this.props.orangeHand[this.props.selectedCard]);
-    }
+    const card = this.props[`${this.props.currentTurn}Hand`][this.props.selectedCard];
+    this.props.onPlaceRobot(hexId, card);
   }
 
   onSelectTile(hexId, action, intermediateMoveHexId) {
@@ -147,20 +126,27 @@ class Game extends Component {
     }
   }
 
+  renderPlayerArea(color) {
+    return (
+      <PlayerArea
+        name={color}
+        isCurrentPlayer={this.props.currentTurn == color}
+        status={this.props.status}
+        energy={this.props[`${color}Energy`]}
+        cards={this.props[`${color}Hand`]}
+        deck={this.props[`${color}Deck`]}
+        selectedCard={this.props.selectedCard}
+        targetableCards={this.props.currentTurn == color ? this.props.target.possibleCards : []}
+        onSelectCard={this.props.onSelectCard} />
+    );
+  }
+
   render() {
     return (
       <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20, position: 'relative'}}>
-          <PlayerArea
-            name={'orange'}
-            energy={this.props.orangeEnergy}
-            onSelectCard={(index) => this.props.onSelectCard(index)}
-            selectedCard={this.props.selectedCard}
-            isCurrentPlayer={this.props.currentTurn == 'orange'}
-            cards={this.props.orangeHand}
-            status={this.props.status}
-            deck={this.props.orangeDeck} />
+          {this.renderPlayerArea('orange')}
 
           <Divider style={{marginTop: 10}}/>
 
@@ -189,15 +175,7 @@ class Game extends Component {
 
           <Divider style={{marginBottom: 10}}/>
 
-          <PlayerArea
-            name={'blue'}
-            energy={this.props.blueEnergy}
-            onSelectCard={(index) => this.props.onSelectCard(index)}
-            selectedCard={this.props.selectedCard}
-            isCurrentPlayer={this.props.currentTurn == 'blue'}
-            cards={this.props.blueHand}
-            status={this.props.status}
-            deck={this.props.blueDeck} />
+          {this.renderPlayerArea('blue')}
 
           <VictoryScreen winner={this.props.winner} />
         </Paper>
@@ -236,7 +214,7 @@ Game.propTypes = {
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
-  onHoverTile: React.PropTypes.func,
+  onHoverTile: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

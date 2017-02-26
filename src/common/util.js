@@ -1,11 +1,35 @@
-import { TYPE_CORE } from './constants';
+import { flatMap, some, without } from 'lodash';
+
+import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
+import GridGenerator from './components/react-hexgrid/GridGenerator';
+import Hex from './components/react-hexgrid/Hex';
+import HexUtils from './components/react-hexgrid/HexUtils';
 
 // TODO: Split into multiple files.
 
 //
+// 0. Miscellaneous utility functions.
+//
+
+export function instantiateCard(card) {
+  return Object.assign({}, card, {
+    id: Math.random().toString(36).slice(2, 16),
+    baseCost: card.cost
+  });
+}
+
+//
 // I. Queries for game state.
 //
+
+function opponent(playerName) {
+  return (playerName == 'blue') ? 'orange' : 'blue';
+}
+
+export function opponentName(state) {
+  return opponent(state.currentTurn);
+}
 
 export function currentPlayer(state) {
   return state.players[state.currentTurn];
@@ -15,18 +39,16 @@ export function opponentPlayer(state) {
   return state.players[opponentName(state)];
 }
 
-export function opponentName(state) {
-  return (state.currentTurn == 'blue') ? 'orange' : 'blue';
-}
-
 export function allObjectsOnBoard(state) {
   return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
 }
 
 export function ownerOf(state, object) {
-  // TODO handle the case where neither player owns the object.
-  const blueObjectIds = Object.values(state.players.blue.robotsOnBoard).map(obj => obj.id);
-  return blueObjectIds.includes(object.id) ? state.players.blue : state.players.orange;
+  if (some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
+    return state.players.blue;
+  } else if (some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
+    return state.players.orange;
+  }
 }
 
 export function getAttribute(object, attr) {
@@ -52,7 +74,68 @@ export function hasEffect(object, effect) {
 }
 
 //
-// II. Effects on game state that are performed in many different places.
+// II. Grid-related helper functions.
+//
+
+export function getHex(state, object) {
+  return _.findKey(allObjectsOnBoard(state), ['id', object.id]);
+}
+
+export function getAdjacentHexes(hex) {
+  return [
+    new Hex(hex.q, hex.r - 1, hex.s + 1),
+    new Hex(hex.q, hex.r + 1, hex.s - 1),
+    new Hex(hex.q - 1, hex.r + 1, hex.s),
+    new Hex(hex.q + 1, hex.r - 1, hex.s),
+    new Hex(hex.q - 1, hex.r, hex.s + 1),
+    new Hex(hex.q + 1, hex.r, hex.s - 1)
+  ].filter(adjacentHex =>
+    // Filter out hexes that are not on the 4-radius hex grid.
+    GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(adjacentHex))
+  );
+}
+
+export function validPlacementHexes(state, playerName, type) {
+  let hexes;
+  if (type == TYPE_ROBOT) {
+    if (playerName === 'blue') {
+      hexes = ['-3,-1,4', '-3,0,3', '-4,1,3'].map(HexUtils.IDToHex);
+    } else {
+      hexes = ['4,-1,-3', '3,0,-3', '3,1,-4'].map(HexUtils.IDToHex);
+    }
+  } else if (type == TYPE_STRUCTURE) {
+    const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
+    hexes = flatMap(occupiedHexes, getAdjacentHexes);
+  }
+
+  return hexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
+}
+
+export function validMovementHexes(state, startHex, speed) {
+  let validHexes = [startHex];
+
+  for (let distance = 0; distance < speed; distance++) {
+    const newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
+      !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
+    );
+
+    validHexes = validHexes.concat(newHexes);
+  }
+
+  return without(validHexes, startHex);
+}
+
+export function validAttackHexes(state, playerName, startHex, speed) {
+  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1));
+  const potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
+
+  return potentialAttackHexes.filter((hex) =>
+    Object.keys(state.players[opponent(playerName)].robotsOnBoard).includes(HexUtils.getID(hex))
+  );
+}
+
+//
+// III. Effects on game state that are performed in many different places.
 //
 
 export function drawCards(state, player, count) {
@@ -61,27 +144,38 @@ export function drawCards(state, player, count) {
   return state;
 }
 
-export function dealDamageToObjectAtHex(state, amount, hex) {
+// Note: This is used to either play or discard a set of cards.
+export function discardCards(state, cards) {
+  // At the moment, only the currently active player can ever play or discard a card.
+  const player = currentPlayer(state);
+  const cardIds = cards.map(c => c.id);
+  player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
+  return state;
+}
+
+export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;
 
-  state = checkTriggers(state, 'afterDamageReceived', (trigger =>
-    trigger.objects.map(o => o.id).includes(object.id)
-  ));
+  state = checkTriggersForObject(state, 'afterDamageReceived', object);
 
-  return updateOrDeleteObjectAtHex(state, object, hex);
+  return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-export function updateOrDeleteObjectAtHex(state, object, hex) {
+export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
 
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
+    state = checkTriggersForObject(state, 'afterDestroyed', object, (trigger =>
+      (trigger.cause == cause || trigger.cause == 'anyevent')
+    ));
+
     delete state.players[ownerName].robotsOnBoard[hex];
 
     // Unapply any abilities that this object had.
-    (object.abilities || []).forEach(function (ability) {
+    (object.abilities || []).forEach((ability) => {
       (ability.currentTargets || []).forEach(ability.unapply);
     });
 
@@ -97,7 +191,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex) {
 }
 
 //
-// III. Card behavior: actions, triggers, passive abilities.
+// IV. Card behavior: actions, triggers, passive abilities.
 //
 
 /* eslint-disable no-unused-vars */
@@ -113,41 +207,48 @@ export function executeCmd(state, cmd, currentObject = null) {
   const setAbility = vocabulary.setAbility(state, currentObject);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
-  const cardsInHandOfType = vocabulary.cardsInHandOfType(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
-  const objectsMatchingCondition = vocabulary.objectsMatchingCondition(state);
   const objectsMatchingConditions = vocabulary.objectsMatchingConditions(state);
   const attributeSum = vocabulary.attributeSum(state);
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
 
-  eval(cmd)();
-  return state;
+  // console.log(cmd);
+  return eval(cmd)();
 }
 /* eslint-enable no-unused-vars */
 
-export function checkTriggers(state, triggerType, condition) {
-  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
-    (obj.triggers || []).forEach(function (t) {
+export function checkTriggers(state, triggerType, it, condition) {
+  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
+    (obj.triggers || []).forEach((t) => {
+      t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
       if (t.trigger.type == triggerType && condition(t.trigger)) {
-        console.log('Executing ' + triggerType + ' trigger: ' + t.action);
-        executeCmd(state, t.action, obj);
+        // console.log(`Executing ${triggerType} trigger: ${t.action}`);
+        executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
       }
     });
   });
 
-  return state;
+  return Object.assign({}, state, {it: null});
+}
+
+// Special case of checkTriggers() that is most frequently used:
+// checking a trigger for a specific targeted object.
+export function checkTriggersForObject(state, triggerType, object, extraCondition = () => true) {
+  return checkTriggers(state, triggerType, object, (trigger =>
+    trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
+  ));
 }
 
 export function applyAbilities(state) {
-  Object.values(allObjectsOnBoard(state)).forEach(function (obj) {
-    (obj.abilities || []).forEach(function (ability) {
+  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
+    (obj.abilities || []).forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
       (ability.currentTargets || []).forEach(ability.unapply);
 
       // Apply this ability to all targeted objects.
-      // TODO we kind of assume that ability.targets() returns an array of [hex, obj] pairs here - make it more general!
-      ability.currentTargets = ability.targets(state).map(hexObj => hexObj[1]);
+      // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
+      ability.currentTargets = executeCmd(state, ability.targets, obj);
       ability.currentTargets.forEach(ability.apply);
     });
   });

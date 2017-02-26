@@ -1,28 +1,21 @@
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute,
-  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, checkTriggers, applyAbilities
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf,
+  validMovementHexes, validAttackHexes,
+  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  checkTriggersForObject, applyAbilities
 } from '../../../util';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
-import { playEvent } from './cards';
+import { setTargetAndExecuteQueuedAction } from './cards';
 
 export function setHoveredCard(state, card) {
   return _.assign(state, {hoveredCard: card});
 }
 
 export function setSelectedTile(state, tile) {
-  if (state.target.choosing && state.target.possibleHexes.includes(tile) && !_.isNull(state.selectedCard)) {
-    // Select target tile for event.
-    // TODO handle: (1) multiple targets per effect,
-    //              (2) targets that are cards in hand (rather than objects in board),
-    //              (3) targets that aren't for events.
-    state.target = {
-      chosen: [[tile, allObjectsOnBoard(state)[tile]]],
-      choosing: false,
-      possibleHexes: []
-    };
-
-    return playEvent(state, state.selectedCard);
+  if (state.target.choosing && state.target.possibleHexes.includes(tile) && state.selectedCard !== null) {
+    // Target chosen for a queued action.
+    return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
     state.selectedTile = (state.selectedTile == tile) ? null : tile;
@@ -37,17 +30,20 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
 
-  if (!asPartOfAttack) {
-    movingRobot.movesLeft -= HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
-    state.selectedTile = null;
+  // Is the move valid?
+  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft);
+  if (validHexes.map(HexUtils.getID).includes(toHex)) {
+    if (!asPartOfAttack) {
+      state.selectedTile = null;
+    }
+
+    const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
+    movingRobot.movesLeft -= distance;
+
+    state = transportObject(state, fromHex, toHex);
+    state = applyAbilities(state);
+    state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
   }
-
-  delete state.players[state.currentTurn].robotsOnBoard[fromHex];
-  state.players[state.currentTurn].robotsOnBoard[toHex] = movingRobot;
-
-  state = applyAbilities(state);
-
-  updateOrDeleteObjectAtHex(state, movingRobot, toHex);
 
   return state;
 }
@@ -62,26 +58,37 @@ export function attack(state, source, target) {
   const attacker = player.robotsOnBoard[source];
   const defender = opponent.robotsOnBoard[target];
 
-  attacker.movesLeft = 0;
+  // Is the attack valid?
+  const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft);
+  if (validHexes.map(HexUtils.getID).includes(target)) {
+    attacker.movesLeft = 0;
 
-  dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source);
-  dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target);
+    state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+    state = checkTriggersForObject(state, 'afterAttack', attacker);
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
-  ));
+    state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
 
-  state = checkTriggers(state, 'afterAttack', (trigger =>
-    trigger.objects.map(o => o.id).includes(attacker.id)
-  ));
+    // Move attacker to defender's space (if possible).
+    if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
+      state = transportObject(state, source, target);
+    }
 
-  // Move attacker to defender's space (if possible).
-  if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
-    state.players[state.currentTurn].robotsOnBoard[target] = attacker;
-    delete state.players[state.currentTurn].robotsOnBoard[source];
+    state = applyAbilities(state);
+
+    state.selectedTile = null;
   }
 
-  state.selectedTile = null;
+  return state;
+}
+
+// Low-level "move" of an object.
+// Used by moveRobot(), attack(), and in tests.
+export function transportObject(state, fromHex, toHex) {
+  const robot = allObjectsOnBoard(state)[fromHex];
+  const owner = ownerOf(state, robot);
+
+  owner.robotsOnBoard[toHex] = robot;
+  delete owner.robotsOnBoard[fromHex];
 
   return state;
 }

@@ -17,7 +17,7 @@ class Hand extends Component {
 
   render() {
     const cards = this.props.cards.map((card, index) => {
-      let cardClick = this.onCardClick.bind(this, index);
+      const cardClick = this.onCardClick.bind(this, index);
 
       return (
         <Card
@@ -29,10 +29,12 @@ class Hand extends Component {
           text={card.text || ''}
           img={card.img}
           cost={getCost(card)}
-          baseCost={card.cost}
+          baseCost={card.baseCost}
           cardStats={card.stats}
           stats={{}}
-          selected={this.props.selectedCard === index}
+          scale={1}
+          selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
+          targetable={this.props.targetableCards.includes(card.id)}
           visible={this.props.isCurrentPlayer} />
       );
     });
@@ -57,7 +59,8 @@ Hand.propTypes = {
   isCurrentPlayer: React.PropTypes.bool,
   onSelectCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
-  status: React.PropTypes.object
+  status: React.PropTypes.object,
+  targetableCards: React.PropTypes.array
 };
 
 export default Hand;

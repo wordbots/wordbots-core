@@ -9,16 +9,16 @@ export function startTurn(state) {
   );
 
   state = drawCards(state, player, 1);
-  state = checkTriggers(state, 'beginningOfTurn', (trigger =>
-    trigger.players.map(p => p.name).includes(state.currentTurn)
+  state = checkTriggers(state, 'beginningOfTurn', null, (trigger =>
+    trigger.targets.map(p => p.name).includes(state.currentTurn)
   ));
 
   return state;
 }
 
 export function endTurn(state) {
-  state = checkTriggers(state, 'endOfTurn', (trigger =>
-    trigger.players.map(p => p.name).includes(state.currentTurn)
+  state = checkTriggers(state, 'endOfTurn', null, (trigger =>
+    trigger.targets.map(p => p.name).includes(state.currentTurn)
   ));
 
   state.currentTurn = opponentName(state);
@@ -26,7 +26,7 @@ export function endTurn(state) {
   state.selectedTile = null;
   state.playingCardType = null;
   state.status.message = '';
-  state.target = {choosing: false, chosen: null, possibleHexes: []};
+  state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
 
   return state;
 }

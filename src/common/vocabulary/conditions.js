@@ -1,45 +1,26 @@
-import { getAttribute } from '../util';
-import Hex from '../components/react-hexgrid/Hex';
+import { getHex, getAttribute, getAdjacentHexes } from '../util';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.
+// They are used by the objectsMatchingConditions() collection.
 
 export default function conditions(state) {
   return {
-    adjacentTo: function (objects) {
-      if (objects.length > 0) {
-        // Hex target is always in the form of list of (hex, obj) pairs, so just unpack it.
-        const hex = HexUtils.IDToHex(objects[0][0]);
+    adjacentTo: function (hexesOrObjects) {
+      const neighborHexIds = _.flatMap(hexesOrObjects, hexOrObj =>
+        getAdjacentHexes(HexUtils.IDToHex(_.isString(hexOrObj) ? hexOrObj : getHex(state, hexOrObj)))
+      ).map(HexUtils.getID);
 
-        const neighbors = [
-          new Hex(hex.q, hex.r - 1, hex.s + 1),
-          new Hex(hex.q, hex.r + 1, hex.s - 1),
-          new Hex(hex.q - 1, hex.r + 1, hex.s),
-          new Hex(hex.q + 1, hex.r - 1, hex.s),
-          new Hex(hex.q - 1, hex.r, hex.s + 1),
-          new Hex(hex.q + 1, hex.r, hex.s - 1)
-        ].map(HexUtils.getID);
-
-        return function (candidateHexID, obj) {
-          return neighbors.includes(candidateHexID);
-        };
-      } else {
-        // objects is empty, so nothing is adjacent - return false for all candidates.
-        return function () { return false; };
-      }
+      return ((hex, obj) => neighborHexIds.includes(hex));
     },
 
     attributeComparison: function (attr, comp) {
-      return function (hex, obj) {
-        return comp(getAttribute(obj, attr));
-      };
+      return ((hex, obj) => comp(getAttribute(obj, attr)));
     },
 
     controlledBy: function (players) {
       const player = players[0]; // Player target is always in the form of list, so just unpack it.
-      return function (hex, obj) {
-        return _.has(player.robotsOnBoard, hex);
-      };
+      return ((hex, obj) => _.has(player.robotsOnBoard, hex));
     }
   };
 }

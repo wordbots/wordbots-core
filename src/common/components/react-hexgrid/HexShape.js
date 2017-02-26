@@ -8,34 +8,41 @@ const { object, string } = React.PropTypes;
 
 class HexShape extends React.Component {
   getPoints(hex) {
-    let points = this.props.layout.getPolygonPoints(hex);
+    const points = this.props.layout.getPolygonPoints(hex);
 
-    return points.map(point => {
-      return point.x + ',' + point.y;
-    }).join(' ');
+    return points.map(point => `${point.x  },${  point.y}`).join(' ');
   }
 
   getPiecePoints(hex) {
-    let points = this.props.layout.getPolygonPoints(hex);
+    const points = this.props.layout.getPolygonPoints(hex);
 
-    points[4].y = points[4].y * 1.5;
-    points[5].y = points[5].y * 1.5;
+    if (this.props.pieceImg) {
+      // Old hex coords - for kernels & other things with static art.
 
-    return points.map(point => {
-      return point.x + ',' + point.y;
-    }).join(' ');
+      points[4].y = points[4].y * 1.5;
+      points[5].y = points[5].y * 1.5;
+
+      return points.map(point => `${point.x  },${  point.y}`).join(' ');
+    } else {
+      // New hex coords - for sprites.
+
+      points[4].y = points[4].y + 2;
+      points[5].y = points[5].y + 2;
+
+      return points.map(point => `${point.x  },${  point.y - 2}`).join(' ');
+    }
   }
 
   translate() {
-    let hex = this.props.hex;
-    let pixel = HexUtils.hexToPixel(hex, this.props.layout);
+    const hex = this.props.hex;
+    const pixel = HexUtils.hexToPixel(hex, this.props.layout);
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
   getStyles(hex) {
     if (this.props.fill || (hex.props != {} && typeof(hex.props.image) !== 'undefined')) {
       return {
-        fill: 'url(#'+ HexUtils.getID(hex) +')'
+        fill: `url(#${ HexUtils.getID(hex) })`
       };
     } else {
       return {};
@@ -43,9 +50,9 @@ class HexShape extends React.Component {
   }
 
   getPieceStyles(hex) {
-    if (this.props.piece) {
+    if (this.props.pieceName) {
       return {
-        fill: 'url(#'+ HexUtils.getID(hex) +'_piece)',
+        fill: `url(#${ HexUtils.getID(hex) }_piece)`,
         stroke: 'none'
       };
     } else {
@@ -57,7 +64,7 @@ class HexShape extends React.Component {
   }
 
   getPieceStats() {
-    if (this.props.piece) {
+    if (this.props.pieceStats) {
       if (this.props.pieceStats.attack !== undefined) {
         return (
           <g>
@@ -102,14 +109,14 @@ class HexShape extends React.Component {
   }
 
   render() {
-    let hex = this.props.hex;
-    let text = (hex.props.text) ? hex.props.text : ''; //HexUtils.getID(hex);
-    let actions = this.props.actions;
-    let styles = this.getStyles(hex);
-    let pieceStyles = this.getPieceStyles(hex);
-    let points = this.getPoints(hex);
-    let piecePoints = this.getPiecePoints(hex);
-    let pieceStats = this.getPieceStats();
+    const hex = this.props.hex;
+    const text = (hex.props.text) ? hex.props.text : ''; //HexUtils.getID(hex);
+    const actions = this.props.actions;
+    const styles = this.getStyles(hex);
+    const pieceStyles = this.getPieceStyles(hex);
+    const points = this.getPoints(hex);
+    const piecePoints = this.getPiecePoints(hex);
+    const pieceStats = this.getPieceStats();
 
     return (
       <g className="shape-group" transform={this.translate()} draggable="true"
@@ -117,7 +124,12 @@ class HexShape extends React.Component {
         onMouseLeave={e => actions.onMouseLeave(this.props.hex, e)}
         onClick={e => actions.onClick(this.props.hex, e)}
         >
-        <HexPattern hex={hex} fill={this.props.fill} piece={this.props.piece} images={this.props.images}/>
+        <HexPattern
+          hex={hex}
+          fill={this.props.fill}
+          pieceName={this.props.pieceName}
+          pieceImg={this.props.pieceImg}
+          images={this.props.images} />
         <polygon points={points} style={{...styles}} />
         <polygon points={piecePoints} style={{...pieceStyles}} />
         <HexPointers hex={hex} points={points} />
@@ -132,8 +144,9 @@ HexShape.propTypes = {
   layout: object.isRequired,
   actions: object.isRequired,
   fill: string,
-  piece: string,
   images: object,
+  pieceName: string,
+  pieceImg: string,
   pieceStats: object
 };
 

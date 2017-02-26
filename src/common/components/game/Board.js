@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
-import { flatMap, mapValues } from 'lodash';
+import { forOwn, intersectionBy, mapValues, some } from 'lodash';
 
-import GridGenerator from '../react-hexgrid/GridGenerator';
 import HexGrid from '../react-hexgrid/HexGrid';
-import Hex from '../react-hexgrid/Hex';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
-import { getAttribute, hasEffect } from '../../util';
+import {
+  getAttribute, hasEffect, ownerOf,
+  getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
+} from '../../util';
 
 class Board extends Component {
   constructor(props) {
     super(props);
 
-    let boardConfig = {
+    const boardConfig = {
       width: 600, height: 600,
       layout: { width: 6, height: 6, flat: false, spacing: 0 },
       origin: { x: 0, y: 0 },
       map: 'hexagon',
       mapProps: [ 4 ]
     };
-    let grid = HexGrid.generate(boardConfig);
+    const grid = HexGrid.generate(boardConfig);
 
     this.state = {
       grid,
@@ -31,98 +32,46 @@ class Board extends Component {
     return (this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces);
   }
 
-  opponentPieces() {
-    return (this.props.currentTurn == 'blue' ? this.props.orangePieces : this.props.bluePieces);
-  }
-
   allPieces() {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  getAdjacentHexes(hex) {
-    return [
-      new Hex(hex.q, hex.r - 1, hex.s + 1),
-      new Hex(hex.q, hex.r + 1, hex.s - 1),
-      new Hex(hex.q - 1, hex.r + 1, hex.s),
-      new Hex(hex.q + 1, hex.r - 1, hex.s),
-      new Hex(hex.q - 1, hex.r, hex.s + 1),
-      new Hex(hex.q + 1, hex.r, hex.s - 1)
-    ].filter(hex => GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(hex)));
+  getValidPlacementHexes() {
+    return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
   }
 
-  getRobotPlacementTiles() {
-    if (this.props.currentTurn === 'blue') {
-      return [
-        new Hex(-3, -1, 4),
-        new Hex(-3, 0, 3),
-        new Hex(-4, 1, 3)
-      ];
-    } else {
-      return [
-        new Hex(4, -1, -3),
-        new Hex(3, 0, -3),
-        new Hex(3, 1, -4)
-      ];
-    }
+  getValidMovementHexes(startHex, speed) {
+    return validMovementHexes(this.dummyGameState, startHex, speed);
   }
 
-  getStructurePlacementTiles() {
-    const currentHexes = Object.keys(this.currentPlayerPieces()).map(HexUtils.IDToHex);
-    return flatMap(currentHexes, this.getAdjacentHexes);
+  getValidAttackHexes(startHex, speed) {
+    return validAttackHexes(this.dummyGameState, this.props.currentTurn, startHex, speed);
   }
 
   updateHexColors() {
     let hexColors = {};
 
-    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
-      const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
-      placementTiles.forEach((hex) => {
-        if (this.props.currentTurn == 'blue') {
-          if (this.props.bluePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'blue';
-          } else if (this.props.orangePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'red';
-          } else {
-            hexColors[HexUtils.getID(hex)]  = 'green';
-          }
-        } else {
-          if (this.props.bluePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'red';
-          } else if (this.props.orangePieces[hex]) {
-            hexColors[HexUtils.getID(hex)]  = 'orange';
-          } else {
-            hexColors[HexUtils.getID(hex)]  = 'green';
-          }
-        }
+    forOwn(this.allPieces(), (piece, hex) => {
+      const owner = ownerOf(this.dummyGameState, piece).name;
+      const canMove = this.props.currentTurn == owner && piece.movesLeft > 0;
+
+      hexColors[hex] = `${canMove ? 'bright_' : ''}${owner}`;
+    });
+
+    if (this.props.target.choosing) {
+      this.props.target.possibleHexes.forEach(hex => {
+        hexColors[hex]  = 'green';
       });
-    }
-
-    Object.keys(this.props.bluePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'blue' && this.props.bluePieces[hex].movesLeft > 0) {
-        hexColors[hex] = 'bright_blue';
-      } else {
-        hexColors[hex] = 'blue';
-      }
-    });
-
-    Object.keys(this.props.orangePieces).forEach((hex) => {
-      if (this.props.currentTurn == 'orange' && this.props.orangePieces[hex].movesLeft > 0) {
-        hexColors[hex] = 'bright_orange';
-      } else {
-        hexColors[hex] = 'orange';
-      }
-    });
-
-    if (this.props.selectedTile) {
+    } else if (this.props.selectedTile) {
       const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
       if (selectedPiece && selectedPiece.movesLeft > 0) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
         hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
       }
-    } else if (this.props.target.choosing) {
-      this.props.target.possibleHexes.forEach((hex) => {
-        hexColors[hex]  = 'green';
+    } else if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+      this.getValidPlacementHexes().forEach((hex) => {
+        hexColors[HexUtils.getID(hex)] = 'green';
       });
     }
 
@@ -131,48 +80,18 @@ class Board extends Component {
 
   colorMovementHexes(hex, hexColors, speed) {
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
-    const existingHexColors = hexColors;
+    const newHexColors = Object.assign({}, hexColors);
 
-    let newHexColors = Object.assign({}, existingHexColors);
+    const movementHexIds = this.getValidMovementHexes(hex, speed).map(HexUtils.getID);
+    const attackHexIds = this.getValidAttackHexes(hex, speed).map(HexUtils.getID);
 
-    this.getValidMovementSpaces(hex, speed).forEach((hex) =>
-      newHexColors[HexUtils.getID(hex)] = 'green'
-    );
+    movementHexIds.forEach(h => { newHexColors[h] = 'green'; });
 
     if (!hasEffect(selectedPiece, 'cannotattack')) {
-      this.getValidAttackSpaces(hex, speed).forEach((hex) =>
-        newHexColors[HexUtils.getID(hex)] = 'red'
-      );
+      attackHexIds.forEach(h => { newHexColors[h] = 'red'; });
     }
 
     return newHexColors;
-  }
-
-  getValidMovementSpaces(startHex, speed) {
-    let validHexes = [startHex];
-
-    for (let distance = 0; distance < speed; distance++) {
-      let newHexes = [].concat.apply([], validHexes.map((hex) =>
-        this.getAdjacentHexes(hex)
-          .filter((hex) => !Object.keys(this.allPieces()).includes(HexUtils.getID(hex)))
-      ));
-
-      validHexes = validHexes.concat(newHexes);
-    }
-
-    return validHexes.filter((hex) => hex != startHex);
-  }
-
-  getValidAttackSpaces(startHex, speed) {
-    let validMoveHexes = [startHex].concat(this.getValidMovementSpaces(startHex, speed - 1));
-
-    let potentialAttackHexes = [].concat.apply([], validMoveHexes.map((hex) =>
-      this.getAdjacentHexes(hex)
-    ));
-
-    return potentialAttackHexes.filter((hex) =>
-      Object.keys(this.opponentPieces()).includes(HexUtils.getID(hex))
-    );
   }
 
   onHexClick(hex, event) {
@@ -182,34 +101,33 @@ class Board extends Component {
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
     if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
-      const placementTiles = (this.props.playingCardType == TYPE_ROBOT) ? this.getRobotPlacementTiles() : this.getStructurePlacementTiles();
-      placementTiles.forEach((placementHex) => {
-        if (HexUtils.getID(hex) === HexUtils.getID(placementHex) &&
-            !this.props.orangePieces[HexUtils.getID(hex)] &&
-            !this.props.bluePieces[HexUtils.getID(hex)]) {
-          action = 'place';
-        }
-      });
+      if (some(this.getValidPlacementHexes(), (h) => HexUtils.getID(h) === HexUtils.getID(hex))) {
+        action = 'place';
+      }
     }
 
     if (selectedPiece) {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
-      const speed = selectedPiece.stats.speed;
+      const speed = selectedPiece.movesLeft;
 
-      const validMovementHexes = this.getValidMovementSpaces(selectedHex, speed).map(HexUtils.getID);
-      const validAttackHexes = this.getValidAttackSpaces(selectedHex, speed).map(HexUtils.getID);
+      const movementHexes = this.getValidMovementHexes(selectedHex, speed).map(HexUtils.getID);
+      const attackHexes = this.getValidAttackHexes(selectedHex, speed).map(HexUtils.getID);
 
-      if (validMovementHexes.includes(HexUtils.getID(hex))) {
+      if (movementHexes.includes(HexUtils.getID(hex))) {
         action = 'move';
-      } else if (validAttackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
+      } else if (attackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
         action = 'attack';
 
-        if (!this.getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
+        if (!getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
           // Attack destination is not adjacent to current position, so we need an intermediate move action.
-          const possibleMoveHexes = this.getAdjacentHexes(hex).map(HexUtils.getID).filter((h) => validMovementHexes.includes(h));
+          const possibleMoveHexes = intersectionBy(
+            getAdjacentHexes(hex),
+            this.getValidMovementHexes(selectedHex, speed - 1),
+            HexUtils.getID
+          );
 
           if (possibleMoveHexes.length > 0) {
-            intermediateMoveHex = possibleMoveHexes[0];
+            intermediateMoveHex = HexUtils.getID(possibleMoveHexes[0]);
           } else {
             action = ''; // Attack is not possible!
           }
@@ -225,8 +143,17 @@ class Board extends Component {
   }
 
   render() {
-    let { grid, config } = this.state;
-    let hexColors = this.updateHexColors();
+    // Many util functions require a game state object, so we create a dummy one with minimal data.
+    // TODO find a less gross approach?
+    this.dummyGameState = {
+      players: {
+        blue: {name: 'blue', robotsOnBoard: this.props.bluePieces},
+        orange: {name: 'orange', robotsOnBoard: this.props.orangePieces}
+      }
+    };
+
+    const { grid, config } = this.state;
+    const hexColors = this.updateHexColors();
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
@@ -234,16 +161,19 @@ class Board extends Component {
       onMouseLeave: (h, e) => this.onHexHover(h, e)
     };
 
-    const pieces = Object.assign({}, this.currentPlayerPieces(), this.opponentPieces());
+    const pieces = this.allPieces();
+    const pieceNames = mapValues(pieces, piece => piece.card.name);
     const pieceImgs = mapValues(pieces, piece => piece.card.img);
-    const pieceStats = mapValues(pieces, function (piece) {
-      return { health: getAttribute(piece, 'health'), attack: getAttribute(piece, 'attack') };
-    });
+    const pieceStats = mapValues(pieces, (piece) => ({
+      health: getAttribute(piece, 'health'),
+      attack: getAttribute(piece, 'attack')
+    }));
 
     return (
       <div>
         <HexGrid
           hexColors={hexColors}
+          pieceNames={pieceNames}
           pieceImgs={pieceImgs}
           pieceStats={pieceStats}
           actions={actions}

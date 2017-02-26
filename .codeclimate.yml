@@ -1,0 +1,47 @@
+---
+engines:
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+    exclude_paths:
+      - "src/common/store/cards.js"  # We don't care about duplicates in store/cards.js.
+  eslint:
+    enabled: true
+    checks:
+      # eslint-import rules don't work correctly, so let's just disable them all.
+      import/no-unresolved:
+        enabled: false
+      import/named:
+        enabled: false
+      import/default:
+        enabled: false
+      import/namespace:
+        enabled: false
+      import/first:
+        enabled: false
+      import/no-duplicates:
+        enabled: false
+      import/order:
+        enabled: false
+      import/newline-after-import:
+        enabled: false
+      import/no-unassigned-import:
+        enabled: false
+      import/prefer-default-export:
+        enabled: false
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.css"
+  - "**.js"
+  - "**.jsx"
+exclude_paths:
+  - test/
+  # The following are by-and-large not our own code, so it's not worth analyzing them:
+  - src/common/components/game/Sprite.js
+  - src/common/components/react-hexgrid/

@@ -4,3 +4,4 @@ lib
 .DS_Store
 dist
 *.sublime-workspace
+coverage

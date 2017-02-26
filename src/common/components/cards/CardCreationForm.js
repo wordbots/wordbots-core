@@ -24,7 +24,7 @@ class CardCreationForm extends Component {
     const sentences = text.split(/[\\.!\?]/);
     this.props.onSetText(sentences);
     sentences.forEach((sentence, index) => {
-      if (sentence != '') {
+      if (/\S/.test(sentence)) {
         const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
         fetch(parseUrl)
           .then(response => response.json())

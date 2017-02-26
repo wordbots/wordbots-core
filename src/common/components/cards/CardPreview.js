@@ -4,20 +4,24 @@ import Card from '../game/Card';
 
 class CardPreview extends Component {
   renderSentence(s) {
+    function id() {
+      return Math.random().toString(36).slice(2, 16);
+    }
+
     if (/\S/.test(s.sentence)) {
       const color = s.result.js ? 'green' : (s.result.error ? 'red' : 'black');
       return (
-        <span style={{color: color}}>
+        <span key={id()} style={{color: color}}>
           {s.sentence.split(' ').map(word => {
             if ((s.result.unrecognizedTokens || []).includes(word.toLowerCase())) {
               return (
-                <span>
+                <span key={id()}>
                   {' '}<u>{word}</u>
                 </span>
               );
             } else {
               return (
-                <span>
+                <span key={id()}>
                   {' '}{word}
                 </span>
               );

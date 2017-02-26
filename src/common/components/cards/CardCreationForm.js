@@ -57,6 +57,35 @@ class CardCreationForm extends Component {
             floatingLabelText="Card Text"
             style={{width: '100%'}}
             onChange={e => { this.onUpdateText(e.target.value); }} />
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <TextField
+              defaultValue={this.props.attack}
+              floatingLabelText="Attack"
+              style={{width: '100%', marginRight: 25}}
+              type="number"
+              onChange={e => { this.props.onSetAttack(parseInt(e.target.value)); }} />
+            <TextField
+              defaultValue={this.props.speed}
+              floatingLabelText="Speed"
+              style={{width: '100%', marginRight: 25}}
+              type="number"
+              onChange={e => { this.props.onSetSpeed(parseInt(e.target.value)); }} />
+            <TextField
+              defaultValue={this.props.health}
+              floatingLabelText="Health"
+              style={{width: '100%', marginRight: 25}}
+              type="number"
+              onChange={e => { this.props.onSetHealth(parseInt(e.target.value)); }} />
+            <TextField
+              defaultValue={this.props.energy}
+              floatingLabelText="Energy Cost"
+              style={{width: '100%'}}
+              type="number"
+              onChange={e => { this.props.onSetEnergy(parseInt(e.target.value)); }} />
+          </div>
         </Paper>
       </div>
     );
@@ -67,10 +96,19 @@ CardCreationForm.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
   text: React.PropTypes.string,
+  attack: React.PropTypes.number,
+  speed: React.PropTypes.number,
+  health: React.PropTypes.number,
+  energy: React.PropTypes.number,
 
   onSetName: React.PropTypes.func,
   onSetType: React.PropTypes.func,
   onSetText: React.PropTypes.func,
+  onSetAttack: React.PropTypes.func,
+  onSetSpeed: React.PropTypes.func,
+  onSetHealth: React.PropTypes.func,
+  onSetEnergy: React.PropTypes.func,
+
   onParseComplete: React.PropTypes.func
 };
 

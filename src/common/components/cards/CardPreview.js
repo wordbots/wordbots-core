@@ -39,16 +39,16 @@ class CardPreview extends Component {
           onSpriteClick={this.props.onSpriteClick}
           type={this.props.type}
           img={'char'}
-          cost={1}
+          cost={this.props.energy}
           stats={{
-            attack: 1,
-            speed: 1,
-            health: 1
+            attack: this.props.attack,
+            speed: this.props.speed,
+            health: this.props.health
           }}
           cardStats={{
-            attack: 1,
-            speed: 1,
-            health: 1
+            attack: this.props.attack,
+            speed: this.props.speed,
+            health: this.props.health
           }}
           text={this.props.sentences.map(this.renderSentence)}
           visible
@@ -63,6 +63,10 @@ CardPreview.propTypes = {
   spriteID: React.PropTypes.string,
   type: React.PropTypes.number,
   sentences: React.PropTypes.array,
+  attack: React.PropTypes.number,
+  speed: React.PropTypes.number,
+  health: React.PropTypes.number,
+  energy: React.PropTypes.number,
 
   onSpriteClick: React.PropTypes.func
 };

@@ -13,6 +13,22 @@ export default function cardCreator(oldState = defaultState, action) {
       state.type = action.payload.type;
       return state;
 
+    case cardCreatorActions.SET_ATTACK:
+      state.attack = action.payload.attack;
+      return state;
+
+    case cardCreatorActions.SET_SPEED:
+      state.speed = action.payload.speed;
+      return state;
+
+    case cardCreatorActions.SET_HEALTH:
+      state.health = action.payload.health;
+      return state;
+
+    case cardCreatorActions.SET_ENERGY:
+      state.energy = action.payload.energy;
+      return state;
+
     case cardCreatorActions.SET_TEXT: {
       const validCurrentParses = _.fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
       state.sentences = action.payload.sentences.map(sentence => ({

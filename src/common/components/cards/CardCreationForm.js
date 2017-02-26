@@ -24,10 +24,12 @@ class CardCreationForm extends Component {
     const sentences = text.split(/[\\.!\?]/);
     this.props.onSetText(sentences);
     sentences.forEach((sentence, index) => {
-      const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
-      fetch(parseUrl)
-        .then(response => response.json())
-        .then(json => { this.props.onParseComplete(index, sentence, json); });
+      if (sentence != '') {
+        const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
+        fetch(parseUrl)
+          .then(response => response.json())
+          .then(json => { this.props.onParseComplete(index, sentence, json); });
+        }
     });
   }
 
@@ -50,6 +52,7 @@ class CardCreationForm extends Component {
             {this.createMenuItems(cardTypes)}
           </SelectField>
           <TextField
+            multiLine
             defaultValue=""
             floatingLabelText="Card Text"
             style={{width: '100%'}}

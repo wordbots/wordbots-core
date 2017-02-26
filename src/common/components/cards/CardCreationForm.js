@@ -74,18 +74,21 @@ class CardCreationForm extends Component {
           }}>
             <TextField
               defaultValue={this.props.attack}
+              disabled={this.props.type !== 0}
               floatingLabelText="Attack"
               style={{width: '100%', marginRight: 25}}
               type="number"
               onChange={e => { this.props.onSetAttack(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
             <TextField
               defaultValue={this.props.speed}
+              disabled={this.props.type !== 0}
               floatingLabelText="Speed"
               style={{width: '100%', marginRight: 25}}
               type="number"
               onChange={e => { this.props.onSetSpeed(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
             <TextField
               defaultValue={this.props.health}
+              disabled={this.props.type == 1}
               floatingLabelText="Health"
               style={{width: '100%'}}
               type="number"

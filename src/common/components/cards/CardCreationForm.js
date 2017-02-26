@@ -39,11 +39,22 @@ class CardCreationForm extends Component {
     return (
       <div style={{width: '50%', padding: 64}}>
         <Paper style={{padding: 48}}>
-          <TextField
-            defaultValue={this.props.name}
-            floatingLabelText="Card Name"
-            style={{width: '100%'}}
-            onChange={e => { this.props.onSetName(e.target.value); }} />
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <TextField
+              defaultValue={this.props.name}
+              floatingLabelText="Card Name"
+              style={{marginRight: 25, flexGrow: 3}}
+              onChange={e => { this.props.onSetName(e.target.value); }} />
+            <TextField
+              defaultValue={this.props.energy}
+              floatingLabelText="Energy Cost"
+              style={{width: 'none', flexGrow: 1}}
+              type="number"
+              onChange={e => { this.props.onSetEnergy(parseInt(e.target.value)); }} />
+          </div>
           <SelectField
             value={cardTypes.indexOf(typeToString(this.props.type))}
             floatingLabelText="Card Type"
@@ -76,15 +87,9 @@ class CardCreationForm extends Component {
             <TextField
               defaultValue={this.props.health}
               floatingLabelText="Health"
-              style={{width: '100%', marginRight: 25}}
-              type="number"
-              onChange={e => { this.props.onSetHealth(parseInt(e.target.value)); }} />
-            <TextField
-              defaultValue={this.props.energy}
-              floatingLabelText="Energy Cost"
               style={{width: '100%'}}
               type="number"
-              onChange={e => { this.props.onSetEnergy(parseInt(e.target.value)); }} />
+              onChange={e => { this.props.onSetHealth(parseInt(e.target.value)); }} />
           </div>
         </Paper>
       </div>

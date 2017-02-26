@@ -9,7 +9,8 @@ import * as cardCreatorActions from '../actions/cardCreator';
 function mapStateToProps(state) {
   return {
     name: state.cardCreator.name,
-    type: state.cardCreator.type
+    type: state.cardCreator.type,
+    sentences: state.cardCreator.sentences
   };
 }
 
@@ -20,6 +21,12 @@ function mapDispatchToProps(dispatch) {
     },
     onSetType: (type) => {
       dispatch(cardCreatorActions.setType(type));
+    },
+    onSetText: (text) => {
+      dispatch(cardCreatorActions.setText(text));
+    },
+    onParseComplete: (idx, sentence, result) => {
+      dispatch(cardCreatorActions.parseComplete(idx, sentence, result));
     }
   };
 }
@@ -38,16 +45,15 @@ class CardCreator extends Component {
           <CardCreationForm
             name={this.props.name}
             type={this.props.type}
-
-            onSetType={(type) => {
-              this.props.onSetType(type);
-            }}
-            onSetName={(name) => {
-              this.props.onSetName(name);
-            }} />
-          <CardPreview 
+            onSetName={(name) => { this.props.onSetType(name); }}
+            onSetType={(type) => { this.props.onSetType(type); }}
+            onSetText={(text) => { this.props.onSetText(text); }}
+            onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
+            />
+          <CardPreview
             name={this.props.name}
-            type={this.props.type} />
+            type={this.props.type}
+            sentences={this.props.sentences} />
         </div>
       </div>
     );
@@ -57,9 +63,12 @@ class CardCreator extends Component {
 CardCreator.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
+  sentences: React.PropTypes.array,
 
   onSetName: React.PropTypes.func,
-  onSetType: React.PropTypes.func
+  onSetType: React.PropTypes.func,
+  onSetText: React.PropTypes.func,
+  onParseComplete: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardCreator);

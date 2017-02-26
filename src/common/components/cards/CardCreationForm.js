@@ -3,7 +3,9 @@ import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
-import * as fetch from 'whatwg-fetch';
+/* eslint-disable import/no-unassigned-import */
+import 'whatwg-fetch';
+/* eslint-enable import/no-unassigned-import */
 
 class CardCreationForm extends Component {
   constructor(props) {
@@ -18,27 +20,21 @@ class CardCreationForm extends Component {
     });
   }
 
-  parseText(text) {
-    let sentences = text.split(/[\\.!\?]/);
-    let parsedSentences = [];
+  onUpdateText(text) {
+    this.props.onSetText(text);
+    this.sendParseRequest(text);
+  }
 
+  sendParseRequest(text) {
+    const sentences = text.split(/[\\.!\?]/);
     sentences.forEach((sentence, index) => {
-      fetch('https://wordbots.herokuapp.com/parse?input=[text]&format=js').then((response) => {
-        let parsedResponse = JSON.parse(response);
-
-        if (parsedResponse.error) {
-          parsedSentences[index] = {
-            valid: false,
-            error: parsedResponse.erro,
-            unrecognizedTokens: parsedResponse.unrecognizedTokens
-          };
-        } else {
-          parsedSentences[index] = {
-            valid: true,
-            function: parsedResponse.function
-          };
-        }
-      });
+      fetch(`https://wordbots.herokuapp.com/parse?input=${sentence}&format=js`)
+        .then(response => response.json())
+        .then(json => {
+          console.log(sentence);
+          console.log(json);
+          this.props.onParseComplete(index, sentence, json);
+        });
     });
   }
 
@@ -52,19 +48,19 @@ class CardCreationForm extends Component {
             defaultValue={this.props.name}
             floatingLabelText="Card Name"
             style={{width: '100%'}}
-            onChange={(e) => {
-              this.props.onSetName(e.target.value);
-            }}/>
+            onChange={e => { this.props.onSetName(e.target.value); }} />
           <SelectField
             value={this.props.type}
             floatingLabelText="Card Type"
-            style={{width: '100%'}} 
-            onChange={(e, index) => {
-              this.props.onSetType(index);
-            }}
-          >
+            style={{width: '100%'}}
+            onChange={(e, index) => { this.props.onSetType(index); }}>
             {this.createMenuItems(cardTypes)}
           </SelectField>
+          <TextField
+            defaultValue=""
+            floatingLabelText="Card Text"
+            style={{width: '100%'}}
+            onChange={e => { this.onUpdateText(e.target.value); }} />
         </Paper>
       </div>
     );
@@ -74,9 +70,12 @@ class CardCreationForm extends Component {
 CardCreationForm.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
+  text: React.PropTypes.string,
 
   onSetName: React.PropTypes.func,
-  onSetType: React.PropTypes.func
+  onSetType: React.PropTypes.func,
+  onSetText: React.PropTypes.func,
+  onParseComplete: React.PropTypes.func
 };
 
 export default CardCreationForm;

@@ -7,17 +7,17 @@ import Paper from 'material-ui/lib/paper';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
+import { stringToType, typeToString } from '../../constants';
+
 class CardCreationForm extends Component {
   constructor(props) {
     super(props);
   }
 
   createMenuItems(list) {
-    return list.map((text, index) => {
-      return (
-        <MenuItem key={index} value={index} primaryText={text}/>
-      );
-    });
+    return list.map((text, idx) =>
+      <MenuItem key={idx} value={idx} primaryText={text}/>
+    );
   }
 
   onUpdateText(text) {
@@ -34,7 +34,7 @@ class CardCreationForm extends Component {
   }
 
   render() {
-    const cardTypes = ['Robot', 'Event', 'Kernel', 'Structure'];
+    const cardTypes = ['Robot', 'Event', 'Structure'];
 
     return (
       <div style={{width: '50%', padding: 64}}>
@@ -45,10 +45,10 @@ class CardCreationForm extends Component {
             style={{width: '100%'}}
             onChange={e => { this.props.onSetName(e.target.value); }} />
           <SelectField
-            value={this.props.type}
+            value={cardTypes.indexOf(typeToString(this.props.type))}
             floatingLabelText="Card Type"
             style={{width: '100%'}}
-            onChange={(e, index) => { this.props.onSetType(index); }}>
+            onChange={(e, idx) => { this.props.onSetType(stringToType(cardTypes[idx])); }}>
             {this.createMenuItems(cardTypes)}
           </SelectField>
           <TextField

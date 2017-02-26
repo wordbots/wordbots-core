@@ -2,7 +2,7 @@ import defaultState from '../store/defaultCardCreatorState';
 import * as cardCreatorActions from '../actions/cardCreator';
 
 export default function cardCreator(oldState = defaultState, action) {
-  let state = Object.assign({}, oldState);
+  const state = Object.assign({}, oldState);
 
   switch (action.type) {
     case cardCreatorActions.SET_NAME:
@@ -30,6 +30,10 @@ export default function cardCreator(oldState = defaultState, action) {
           return s;
         }
       });
+      return state;
+
+    case cardCreatorActions.REGENERATE_SPRITE:
+      state.spriteID = Math.random().toString(36).slice(2, 16);
       return state;
 
     default:

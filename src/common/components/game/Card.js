@@ -112,13 +112,15 @@ class Card extends Component {
       );
     } else if (this.props.type == TYPE_EVENT) {
       return (
-        <div style={{ width: '25px', height: '42px', margin: '10px auto 0'}}>
-          <Identicon id={this.props.name} width={25} size={4} />
+        <div style={{ width: 25 * this.props.scale, height: 42 * this.props.scale, margin: '10px auto 0'}}>
+          <Identicon id={this.props.name} width={25 * this.props.scale} size={4} />
         </div>
       );
     } else {
       return (
-        <div style={{
+        <div
+          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
+          style={{
           width: 48 * this.props.scale,
           height: 48 * this.props.scale,
           margin: '2px auto 3px'
@@ -218,6 +220,7 @@ Card.propTypes = {
   cost: React.PropTypes.number,
   baseCost: React.PropTypes.number,
   onCardClick: React.PropTypes.func,
+  onSpriteClick: React.PropTypes.func,
   stats: React.PropTypes.object,
   scale: React.PropTypes.number
 };

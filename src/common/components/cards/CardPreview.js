@@ -35,7 +35,8 @@ class CardPreview extends Component {
       <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 64}}>
         <Card
           name={this.props.name}
-          spriteID={Math.random().toString(36).slice(2, 16)}
+          spriteID={this.props.spriteID}
+          onSpriteClick={this.props.onSpriteClick}
           type={this.props.type}
           img={'char'}
           cost={1}
@@ -59,8 +60,11 @@ class CardPreview extends Component {
 
 CardPreview.propTypes = {
   name: React.PropTypes.string,
+  spriteID: React.PropTypes.string,
   type: React.PropTypes.number,
-  sentences: React.PropTypes.array
+  sentences: React.PropTypes.array,
+
+  onSpriteClick: React.PropTypes.func
 };
 
 export default CardPreview;

@@ -2,6 +2,7 @@ export const SET_NAME = 'SET_NAME';
 export const SET_TYPE = 'SET_TYPE';
 export const SET_TEXT = 'SET_TEXT';
 export const PARSE_COMPLETE = 'PARSE_COMPLETE';
+export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
 
 export function setName(name) {
   return {
@@ -38,6 +39,12 @@ export function parseComplete(idx, sentence, result) {
       sentence: sentence,
       result: result
     }
+  };
+}
+
+export function regenerateSprite() {
+  return {
+    type: REGENERATE_SPRITE
   };
 }
 

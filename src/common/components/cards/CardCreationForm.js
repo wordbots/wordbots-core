@@ -30,11 +30,7 @@ class CardCreationForm extends Component {
     sentences.forEach((sentence, index) => {
       fetch(`https://wordbots.herokuapp.com/parse?input=${sentence}&format=js`)
         .then(response => response.json())
-        .then(json => {
-          console.log(sentence);
-          console.log(json);
-          this.props.onParseComplete(index, sentence, json);
-        });
+        .then(json => { this.props.onParseComplete(index, sentence, json); });
     });
   }
 

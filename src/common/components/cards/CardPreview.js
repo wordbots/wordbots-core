@@ -12,15 +12,13 @@ class CardPreview extends Component {
             if ((s.result.unrecognizedTokens || []).includes(word)) {
               return (
                 <span>
-                  {' '}
-                  <u>{word}</u>
+                  {' '}<u>{word}</u>
                 </span>
               );
             } else {
               return (
                 <span>
-                  {' '}
-                  {word}
+                  {' '}{word}
                 </span>
               );
             }

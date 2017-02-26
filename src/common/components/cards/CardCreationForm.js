@@ -40,8 +40,8 @@ class CardCreationForm extends Component {
     return (
       this.props.name && this.props.name != '[Unnamed]' &&
         this.props.energy &&
-        (!_.isNull(this.props.attack) || this.props.type != TYPE_ROBOT) &&
-        (!_.isNull(this.props.speed) >= 0 || this.props.type != TYPE_ROBOT) &&
+        (!isNull(this.props.attack) || this.props.type != TYPE_ROBOT) &&
+        (!isNull(this.props.speed) >= 0 || this.props.type != TYPE_ROBOT) &&
         (this.props.health >= 1 || this.props.type == TYPE_EVENT) &&
         every(this.props.sentences, s => s.result.js || !/\S/.test(s.sentence))
     );

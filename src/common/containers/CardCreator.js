@@ -47,6 +47,9 @@ function mapDispatchToProps(dispatch) {
     },
     onSpriteClick: () => {
       dispatch(cardCreatorActions.regenerateSprite());
+    },
+    onAddToCollection: () => {
+      dispatch(cardCreatorActions.addToCollection());
     }
   };
 }
@@ -114,7 +117,8 @@ CardCreator.propTypes = {
   onSetEnergy: React.PropTypes.func,
 
   onParseComplete: React.PropTypes.func,
-  onSpriteClick: React.PropTypes.func
+  onSpriteClick: React.PropTypes.func,
+  onAddToCollection: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardCreator);

@@ -21,11 +21,11 @@ export function setType(type) {
   };
 }
 
-export function setText(text) {
+export function setText(sentences) {
   return {
     type: SET_TEXT,
     payload: {
-      text: text
+      sentences: sentences
     }
   };
 }

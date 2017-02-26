@@ -15,7 +15,7 @@ export default function cardCreator(oldState = defaultState, action) {
 
     case cardCreatorActions.SET_TEXT: {
       const validCurrentParses = _.fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
-      state.sentences = action.payload.text.split(/[\\.!\?]/).map(sentence => ({
+      state.sentences = action.payload.sentences.map(sentence => ({
         sentence: sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}
       }));

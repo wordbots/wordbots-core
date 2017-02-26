@@ -9,7 +9,7 @@ class CardPreview extends Component {
       return (
         <span style={{color: color}}>
           {s.sentence.split(' ').map(word => {
-            if ((s.result.unrecognizedTokens || []).includes(word)) {
+            if ((s.result.unrecognizedTokens || []).includes(word.toLowerCase())) {
               return (
                 <span>
                   {' '}<u>{word}</u>

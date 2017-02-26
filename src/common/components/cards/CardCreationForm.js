@@ -21,14 +21,11 @@ class CardCreationForm extends Component {
   }
 
   onUpdateText(text) {
-    this.props.onSetText(text);
-    this.sendParseRequest(text);
-  }
-
-  sendParseRequest(text) {
     const sentences = text.split(/[\\.!\?]/);
+    this.props.onSetText(sentences);
     sentences.forEach((sentence, index) => {
-      fetch(`https://wordbots.herokuapp.com/parse?input=${sentence}&format=js`)
+      const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
+      fetch(parseUrl)
         .then(response => response.json())
         .then(json => { this.props.onParseComplete(index, sentence, json); });
     });

@@ -70,16 +70,16 @@ class CardCreationForm extends Component {
               {this.createMenuItems(cardTypes)}
             </SelectField>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <div style={{width: 100, marginRight: 25, color: 'grey'}}>Card Image</div>
-              <RaisedButton 
-                secondary 
-                label="Randomize Sprite" 
-                labelPosition="after" 
+              <RaisedButton
+                secondary
+                label="New Image"
+                style={{width: 200}}
+                labelPosition="after"
                 onTouchTap={(e) => { this.props.onSpriteClick(); }}>
                 <FontIcon className="material-icons" style={{
                   verticalAlign: 'middle',
                   color: 'white'
-                }}>shuffle</FontIcon>
+                }}>refresh</FontIcon>
               </RaisedButton>
             </div>
           </div>

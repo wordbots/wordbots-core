@@ -48,7 +48,9 @@ class Card extends Component {
       marginTop: 30 * this.props.scale
     };
 
-    if (this.props.type == TYPE_EVENT && this.props.text.length < 30) {
+    const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
+
+    if (this.props.type == TYPE_EVENT && numChars < 30) {
       return Object.assign(baseStyle, compactStyle);
     } else {
       return baseStyle;
@@ -216,6 +218,7 @@ Card.propTypes = {
   spriteID: React.PropTypes.string,
   type: React.PropTypes.number,
   text: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]),
+  rawText: React.PropTypes.string,
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,

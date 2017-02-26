@@ -55,6 +55,7 @@ class CardPreview extends Component {
             health: this.props.health
           }}
           text={this.props.sentences.map(this.renderSentence)}
+          rawText={this.props.sentences.map(s => s.sentence).join('. ')}
           visible
           scale={3} />
       </div>

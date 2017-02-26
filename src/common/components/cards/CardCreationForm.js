@@ -5,12 +5,12 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 import FontIcon from 'material-ui/lib/font-icon';
-
+import { every, isNull } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { stringToType, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_EVENT, stringToType, typeToString } from '../../constants';
 
 class CardCreationForm extends Component {
   constructor(props) {
@@ -34,6 +34,17 @@ class CardCreationForm extends Component {
           .then(json => { this.props.onParseComplete(index, sentence, json); });
         }
     });
+  }
+
+  isValid() {
+    return (
+      this.props.name && this.props.name != '[Unnamed]' &&
+        this.props.energy &&
+        (!isNull(this.props.attack) || this.props.type != TYPE_ROBOT) &&
+        (!isNull(this.props.speed) >= 0 || this.props.type != TYPE_ROBOT) &&
+        (this.props.health >= 1 || this.props.type == TYPE_EVENT) &&
+        every(this.props.sentences, s => s.result.js || !/\S/.test(s.sentence))
+    );
   }
 
   render() {
@@ -119,6 +130,7 @@ class CardCreationForm extends Component {
             primary
             fullWidth
             label="Add to Collection"
+            disabled={!this.isValid()}
             style={{marginTop: 20}}
             onTouchTap={(e) => { this.props.onAddToCollection(); }} />
         </Paper>
@@ -135,6 +147,7 @@ CardCreationForm.propTypes = {
   speed: React.PropTypes.number,
   health: React.PropTypes.number,
   energy: React.PropTypes.number,
+  sentences: React.PropTypes.array,
 
   onSetName: React.PropTypes.func,
   onSetType: React.PropTypes.func,

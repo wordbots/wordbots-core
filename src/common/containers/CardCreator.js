@@ -72,6 +72,7 @@ class CardCreator extends Component {
             speed={this.props.speed}
             health={this.props.health}
             energy={this.props.cost}
+            sentences={this.props.sentences}
             onSetName={(name) => { this.props.onSetName(name); }}
             onSetType={(type) => { this.props.onSetType(type); }}
             onSetText={(text) => { this.props.onSetText(text); }}

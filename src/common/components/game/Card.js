@@ -208,7 +208,7 @@ Card.propTypes = {
   name: React.PropTypes.string,
   spriteID: React.PropTypes.string,
   type: React.PropTypes.number,
-  text: React.PropTypes.string,
+  text: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]),
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,

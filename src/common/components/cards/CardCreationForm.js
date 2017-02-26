@@ -53,7 +53,7 @@ class CardCreationForm extends Component {
               floatingLabelText="Energy Cost"
               style={{width: 'none', flexGrow: 1}}
               type="number"
-              onChange={e => { this.props.onSetEnergy(parseInt(e.target.value)); }} />
+              onChange={e => { this.props.onSetEnergy(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
           </div>
           <SelectField
             value={cardTypes.indexOf(typeToString(this.props.type))}
@@ -77,19 +77,19 @@ class CardCreationForm extends Component {
               floatingLabelText="Attack"
               style={{width: '100%', marginRight: 25}}
               type="number"
-              onChange={e => { this.props.onSetAttack(parseInt(e.target.value)); }} />
+              onChange={e => { this.props.onSetAttack(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
             <TextField
               defaultValue={this.props.speed}
               floatingLabelText="Speed"
               style={{width: '100%', marginRight: 25}}
               type="number"
-              onChange={e => { this.props.onSetSpeed(parseInt(e.target.value)); }} />
+              onChange={e => { this.props.onSetSpeed(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
             <TextField
               defaultValue={this.props.health}
               floatingLabelText="Health"
               style={{width: '100%'}}
               type="number"
-              onChange={e => { this.props.onSetHealth(parseInt(e.target.value)); }} />
+              onChange={e => { this.props.onSetHealth(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
           </div>
         </Paper>
       </div>

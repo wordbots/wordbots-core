@@ -3,6 +3,9 @@ import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
+import RaisedButton from 'material-ui/lib/raised-button';
+import FontIcon from 'material-ui/lib/font-icon';
+
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
@@ -55,13 +58,31 @@ class CardCreationForm extends Component {
               type="number"
               onChange={e => { this.props.onSetEnergy(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
           </div>
-          <SelectField
-            value={cardTypes.indexOf(typeToString(this.props.type))}
-            floatingLabelText="Card Type"
-            style={{width: '100%'}}
-            onChange={(e, idx) => { this.props.onSetType(stringToType(cardTypes[idx])); }}>
-            {this.createMenuItems(cardTypes)}
-          </SelectField>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <SelectField
+              value={cardTypes.indexOf(typeToString(this.props.type))}
+              floatingLabelText="Card Type"
+              style={{width: '80%', marginRight: 25}}
+              onChange={(e, idx) => { this.props.onSetType(stringToType(cardTypes[idx])); }}>
+              {this.createMenuItems(cardTypes)}
+            </SelectField>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <div style={{width: 100, marginRight: 25, color: 'grey'}}>Card Image</div>
+              <RaisedButton 
+                secondary 
+                label="Randomize Sprite" 
+                labelPosition="after" 
+                onTouchTap={(e) => { this.props.onSpriteClick(); }}>
+                <FontIcon className="material-icons" style={{
+                  verticalAlign: 'middle',
+                  color: 'white'
+                }}>shuffle</FontIcon>
+              </RaisedButton>
+            </div>
+          </div>
           <TextField
             multiLine
             defaultValue=""
@@ -117,7 +138,8 @@ CardCreationForm.propTypes = {
   onSetHealth: React.PropTypes.func,
   onSetEnergy: React.PropTypes.func,
 
-  onParseComplete: React.PropTypes.func
+  onParseComplete: React.PropTypes.func,
+  onSpriteClick: React.PropTypes.func
 };
 
 export default CardCreationForm;

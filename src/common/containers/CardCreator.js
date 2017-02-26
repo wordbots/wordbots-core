@@ -77,6 +77,7 @@ class CardCreator extends Component {
             onSetHealth={(health) => { this.props.onSetHealth(health); }}
             onSetEnergy={(energy) => { this.props.onSetEnergy(energy); }}
             onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
+            onSpriteClick={() => { this.props.onSpriteClick(); }}
             />
           <CardPreview
             name={this.props.name}

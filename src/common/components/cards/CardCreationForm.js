@@ -73,7 +73,7 @@ class CardCreationForm extends Component {
               <RaisedButton
                 secondary
                 label="New Image"
-                style={{width: 200}}
+                style={{width: 160}}
                 labelPosition="after"
                 onTouchTap={(e) => { this.props.onSpriteClick(); }}>
                 <FontIcon className="material-icons" style={{
@@ -115,6 +115,12 @@ class CardCreationForm extends Component {
               type="number"
               onChange={e => { this.props.onSetHealth(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
           </div>
+          <RaisedButton
+            primary
+            fullWidth
+            label="Add to Collection"
+            style={{marginTop: 20}}
+            onTouchTap={(e) => { this.props.onAddToCollection(); }} />
         </Paper>
       </div>
     );
@@ -139,7 +145,8 @@ CardCreationForm.propTypes = {
   onSetEnergy: React.PropTypes.func,
 
   onParseComplete: React.PropTypes.func,
-  onSpriteClick: React.PropTypes.func
+  onSpriteClick: React.PropTypes.func,
+  onAddToCollection: React.PropTypes.func
 };
 
 export default CardCreationForm;

@@ -7,6 +7,7 @@ export const SET_ENERGY = 'SET_ENERGY';
 export const SET_TEXT = 'SET_TEXT';
 export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
+export const ADD_TO_COLLECTION = 'ADD_TO_COLLECTION';
 
 export function setName(name) {
   return {
@@ -88,5 +89,9 @@ export function regenerateSprite() {
   };
 }
 
-
-
+export function addToCollection(props) {
+  return {
+    type: ADD_TO_COLLECTION,
+    payload: props
+  };
+}

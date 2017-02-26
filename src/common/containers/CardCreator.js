@@ -13,7 +13,7 @@ function mapStateToProps(state) {
     attack: state.cardCreator.attack,
     speed: state.cardCreator.speed,
     health: state.cardCreator.health,
-    energy: state.cardCreator.energy,
+    cost: state.cardCreator.energy,
     spriteID: state.cardCreator.spriteID,
     sentences: state.cardCreator.sentences
   };
@@ -48,8 +48,8 @@ function mapDispatchToProps(dispatch) {
     onSpriteClick: () => {
       dispatch(cardCreatorActions.regenerateSprite());
     },
-    onAddToCollection: () => {
-      dispatch(cardCreatorActions.addToCollection());
+    onAddToCollection: (props) => {
+      dispatch(cardCreatorActions.addToCollection(props));
     }
   };
 }
@@ -71,7 +71,7 @@ class CardCreator extends Component {
             attack={this.props.attack}
             speed={this.props.speed}
             health={this.props.health}
-            energy={this.props.energy}
+            energy={this.props.cost}
             onSetName={(name) => { this.props.onSetName(name); }}
             onSetType={(type) => { this.props.onSetType(type); }}
             onSetText={(text) => { this.props.onSetText(text); }}
@@ -81,6 +81,7 @@ class CardCreator extends Component {
             onSetEnergy={(energy) => { this.props.onSetEnergy(energy); }}
             onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
             onSpriteClick={() => { this.props.onSpriteClick(); }}
+            onAddToCollection={() => { this.props.onAddToCollection(this.props); }}
             />
           <CardPreview
             name={this.props.name}
@@ -90,7 +91,7 @@ class CardCreator extends Component {
             attack={this.props.attack}
             speed={this.props.speed}
             health={this.props.health}
-            energy={this.props.energy}
+            energy={this.props.cost}
             onSpriteClick={() => { this.props.onSpriteClick(); }} />
         </div>
       </div>
@@ -106,7 +107,7 @@ CardCreator.propTypes = {
   attack: React.PropTypes.number,
   speed: React.PropTypes.number,
   health: React.PropTypes.number,
-  energy: React.PropTypes.number,
+  cost: React.PropTypes.number,
 
   onSetName: React.PropTypes.func,
   onSetType: React.PropTypes.func,

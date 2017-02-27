@@ -52,6 +52,17 @@ export default function cardCreator(oldState = defaultState, action) {
       state.spriteID = Math.random().toString(36).slice(2, 16);
       return state;
 
+    case cardCreatorActions.ADD_TO_COLLECTION:
+      state.name = '';
+      state.spriteID = Math.random().toString(36).slice(2, 16);
+      state.type = 0;
+      state.attack = 1;
+      state.speed = 1;
+      state.health = 1;
+      state.energy = 1;
+      state.sentences = [];
+      return state;
+
     default:
       return state;
   }

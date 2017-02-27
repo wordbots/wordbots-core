@@ -1,6 +1,6 @@
 import { flatMap, some, without } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
+import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -17,6 +17,33 @@ export function instantiateCard(card) {
     id: Math.random().toString(36).slice(2, 16),
     baseCost: card.cost
   });
+}
+
+export function createCardFromProps(props) {
+  if (props.type == TYPE_EVENT) {
+    return {
+      name: props.name,
+      spriteID: props.spriteID,
+      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.sentence).join('. '),
+      command: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
+      cost: props.cost,
+      type: TYPE_EVENT
+    };
+  } else {
+    return {
+      name: props.name,
+      spriteID: props.spriteID,
+      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.sentence).join('. '),
+      abilities: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
+      cost: props.cost,
+      stats: {
+        health: props.health,
+        speed: props.type == TYPE_ROBOT ? props.attack : undefined,
+        attack: props.type == TYPE_ROBOT ? props.attack : undefined
+      },
+      type: props.type
+    };
+  }
 }
 
 //

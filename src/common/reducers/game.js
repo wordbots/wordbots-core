@@ -1,7 +1,9 @@
 import { isArray, reduce } from 'lodash';
 
 import defaultState from '../store/defaultGameState';
+import * as cardCreatorActions from '../actions/cardCreator';
 import * as gameActions from '../actions/game';
+import { createCardFromProps } from '../util';
 
 import g from './handlers/game';
 
@@ -37,6 +39,16 @@ export default function game(oldState = defaultState, action) {
 
       case gameActions.SET_HOVERED_CARD:
         return g.setHoveredCard(state, action.payload.hoveredCard);
+
+      case cardCreatorActions.ADD_TO_COLLECTION: {
+        const card = createCardFromProps(action.payload);
+        const newDeck = [card].concat(state.players.blue.deck);
+
+        const newState = defaultState; // Reset game state.
+        state.players.blue.deck = newDeck;
+        state.players.orange.deck = newDeck;
+        return newState;
+      }
 
       default:
         return state;

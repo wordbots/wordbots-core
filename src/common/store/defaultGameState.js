@@ -7,8 +7,8 @@ function player(color, coreCard, coreHexId) {
       available: 1,
       total: 1
     },
-    hand: cards.collection.slice(0, 2),
-    deck: cards.collection.slice(2),
+    hand: cards.collection.slice(0, 1),
+    deck: cards.collection.slice(1),
     robotsOnBoard: {
       [coreHexId]: {
         id: `${color}Core`,

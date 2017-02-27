@@ -96,7 +96,7 @@ class Card extends Component {
       );
     } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
       return (
-        <CardText style={style}>
+        <CardText style={Object.assign(style, {float: 'right'})}>
           {this.renderStat('health')}
         </CardText>
       );

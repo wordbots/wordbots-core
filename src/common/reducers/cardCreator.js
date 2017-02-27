@@ -14,19 +14,19 @@ export default function cardCreator(oldState = defaultState, action) {
       return state;
 
     case cardCreatorActions.SET_ATTACK:
-      state.attack = action.payload.attack;
+      state.attack = isNaN(action.payload.attack) ? null : action.payload.attack;
       return state;
 
     case cardCreatorActions.SET_SPEED:
-      state.speed = action.payload.speed;
+      state.speed = isNaN(action.payload.speed) ? null : action.payload.speed;
       return state;
 
     case cardCreatorActions.SET_HEALTH:
-      state.health = action.payload.health;
+      state.health = isNaN(action.payload.health) ? null : action.payload.health;
       return state;
 
     case cardCreatorActions.SET_ENERGY:
-      state.energy = action.payload.energy;
+      state.energy = isNaN(action.payload.energy) ? null : action.payload.energy;
       return state;
 
     case cardCreatorActions.SET_TEXT: {

@@ -10,17 +10,13 @@ import { every, isNull } from 'lodash';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { TYPE_ROBOT, TYPE_EVENT, stringToType, typeToString } from '../../constants';
+import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
+
+import NumberField from './NumberField';
 
 class CardCreationForm extends Component {
   constructor(props) {
     super(props);
-  }
-
-  createMenuItems(list) {
-    return list.map((text, idx) =>
-      <MenuItem key={idx} value={idx} primaryText={text}/>
-    );
   }
 
   onUpdateText(text) {
@@ -47,60 +43,32 @@ class CardCreationForm extends Component {
     );
   }
 
-  renderTextField() {
-    if (this.props.textCleared) {
-      return (
-        <TextField
-          multiLine
-          value=""
-          floatingLabelText="Card Text"
-          style={{width: '100%'}}
-          onChange={e => { this.onUpdateText(e.target.value); }} />
-      );
-    } else {
-      return (
-        <TextField
-          multiLine
-          defaultValue=""
-          floatingLabelText="Card Text"
-          style={{width: '100%'}}
-          onChange={e => { this.onUpdateText(e.target.value); }} />
-      );
-    }
-  }
-
   render() {
-    const cardTypes = ['Robot', 'Event', 'Structure'];
-
     return (
       <div style={{width: '50%', padding: 64}}>
         <Paper style={{padding: 48}}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <TextField
               value={this.props.name}
               floatingLabelText="Card Name"
               style={{marginRight: 25, flexGrow: 3}}
               onChange={e => { this.props.onSetName(e.target.value); }} />
-            <TextField
+            <NumberField
+              label="Energy Cost"
               value={this.props.energy}
-              floatingLabelText="Energy Cost"
               style={{width: 'none', flexGrow: 1}}
-              type="number"
-              onChange={e => { this.props.onSetEnergy(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
+              onChange={this.props.onSetEnergy} />
           </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}>
+
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <SelectField
-              value={cardTypes.indexOf(typeToString(this.props.type))}
+              value={this.props.type}
               floatingLabelText="Card Type"
               style={{width: '80%', marginRight: 25}}
-              onChange={(e, idx) => { this.props.onSetType(stringToType(cardTypes[idx])); }}>
-              {this.createMenuItems(cardTypes)}
+              onChange={(e, i, value) => { this.props.onSetType(value); }}>
+              {
+                CREATABLE_TYPES.map(type => <MenuItem key={type} value={type} primaryText={typeToString(type)}/>)
+              }
             </SelectField>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <RaisedButton
@@ -116,40 +84,43 @@ class CardCreationForm extends Component {
               </RaisedButton>
             </div>
           </div>
-          { this.renderTextField() }
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}>
-            <TextField
+
+          <TextField
+            multiLine
+            defaultValue=""
+            value={this.props.textCleared ? '' : null}
+            floatingLabelText="Card Text"
+            style={{width: '100%'}}
+            onChange={e => { this.onUpdateText(e.target.value); }} />
+
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <NumberField
+              label="Attack"
               value={this.props.attack}
-              disabled={this.props.type !== 0}
-              floatingLabelText="Attack"
               style={{width: '100%', marginRight: 25}}
-              type="number"
-              onChange={e => { this.props.onSetAttack(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
-            <TextField
+              disabled={this.props.type !== TYPE_ROBOT}
+              onChange={this.props.onSetAttack} />
+            <NumberField
+              label="Speed"
               value={this.props.speed}
-              disabled={this.props.type !== 0}
-              floatingLabelText="Speed"
               style={{width: '100%', marginRight: 25}}
-              type="number"
-              onChange={e => { this.props.onSetSpeed(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
-            <TextField
+              disabled={this.props.type !== TYPE_ROBOT}
+              onChange={this.props.onSetSpeed} />
+            <NumberField
+              label="Health"
               value={this.props.health}
-              disabled={this.props.type == 1}
-              floatingLabelText="Health"
-              style={{width: '100%'}}
-              type="number"
-              onChange={e => { this.props.onSetHealth(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
+              style={{width: '100%', marginRight: 25}}
+              disabled={this.props.type === TYPE_EVENT}
+              onChange={this.props.onSetHealth} />
           </div>
+
           <RaisedButton
             primary
             fullWidth
             label="Add to Collection"
             disabled={!this.isValid()}
             style={{marginTop: 20}}
-            onTouchTap={(e) => { this.props.onAddToCollection(); }} />
+            onTouchTap={e => { this.props.onAddToCollection(); }} />
         </Paper>
       </div>
     );

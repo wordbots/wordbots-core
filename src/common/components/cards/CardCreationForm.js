@@ -22,24 +22,34 @@ class CardCreationForm extends Component {
   onUpdateText(text) {
     const sentences = text.split(/[\\.!\?]/);
     this.props.onSetText(sentences);
-    sentences.forEach((sentence, index) => {
-      if (/\S/.test(sentence)) {
+    sentences
+      .filter(sentence => /\S/.test(sentence))
+      .forEach((sentence, idx) => {
         const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
         fetch(parseUrl)
           .then(response => response.json())
-          .then(json => { this.props.onParseComplete(index, sentence, json); });
-        }
+          .then(json => { this.props.onParseComplete(idx, sentence, json); });
     });
   }
 
+  nonEmptySentences() {
+    return this.props.sentences.filter(s => /\S/.test(s.sentence));
+  }
+
+  hasCardText() {
+    return this.nonEmptySentences().length > 0;
+  }
+
   isValid() {
+    // Name exists + type is valid + stats are present + all sentences parseable.
     return (
       this.props.name && this.props.name != '[Unnamed]' &&
-        this.props.energy &&
+        CREATABLE_TYPES.includes(this.props.type) &&
+        !isNull(this.props.energy) &&
         (!isNull(this.props.attack) || this.props.type != TYPE_ROBOT) &&
         (!isNull(this.props.speed) >= 0 || this.props.type != TYPE_ROBOT) &&
         (this.props.health >= 1 || this.props.type == TYPE_EVENT) &&
-        every(this.props.sentences, s => s.result.js || !/\S/.test(s.sentence))
+        every(this.nonEmptySentences(), s => s.result.js)
     );
   }
 
@@ -88,8 +98,8 @@ class CardCreationForm extends Component {
           <TextField
             multiLine
             defaultValue=""
-            value={this.props.textCleared ? '' : null}
-            floatingLabelText="Card Text"
+            value={this.props.textCleared ? '' : undefined}
+            hintText={this.hasCardText() ? '' : 'Card Text'}
             style={{width: '100%'}}
             onChange={e => { this.onUpdateText(e.target.value); }} />
 

@@ -11,8 +11,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-  };
+  return {};
 }
 
 class CardCreator extends Component {
@@ -35,6 +34,7 @@ class CardCreator extends Component {
           {
             this.props.cards.map(card =>
               <Card
+                key={card.name}
                 visible
                 name={card.name}
                 spriteID={card.spriteID}

@@ -58,12 +58,12 @@ class CardCreationForm extends Component {
             justifyContent: 'space-between'
           }}>
             <TextField
-              defaultValue={this.props.name}
+              value={this.props.name}
               floatingLabelText="Card Name"
               style={{marginRight: 25, flexGrow: 3}}
               onChange={e => { this.props.onSetName(e.target.value); }} />
             <TextField
-              defaultValue={this.props.energy}
+              value={this.props.energy}
               floatingLabelText="Energy Cost"
               style={{width: 'none', flexGrow: 1}}
               type="number"
@@ -96,7 +96,7 @@ class CardCreationForm extends Component {
           </div>
           <TextField
             multiLine
-            defaultValue=""
+            value=""
             floatingLabelText="Card Text"
             style={{width: '100%'}}
             onChange={e => { this.onUpdateText(e.target.value); }} />
@@ -105,21 +105,21 @@ class CardCreationForm extends Component {
             justifyContent: 'space-between'
           }}>
             <TextField
-              defaultValue={this.props.attack}
+              value={this.props.attack}
               disabled={this.props.type !== 0}
               floatingLabelText="Attack"
               style={{width: '100%', marginRight: 25}}
               type="number"
               onChange={e => { this.props.onSetAttack(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
             <TextField
-              defaultValue={this.props.speed}
+              value={this.props.speed}
               disabled={this.props.type !== 0}
               floatingLabelText="Speed"
               style={{width: '100%', marginRight: 25}}
               type="number"
               onChange={e => { this.props.onSetSpeed(isNaN(parseInt(e.target.value)) ? null : parseInt(e.target.value)); }} />
             <TextField
-              defaultValue={this.props.health}
+              value={this.props.health}
               disabled={this.props.type == 1}
               floatingLabelText="Health"
               style={{width: '100%'}}

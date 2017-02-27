@@ -34,7 +34,7 @@ class CardCreator extends Component {
           {
             this.props.cards.map(card =>
               <Card
-                key={card.name}
+                key={card.id}
                 visible
                 name={card.name}
                 spriteID={card.spriteID}

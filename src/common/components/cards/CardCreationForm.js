@@ -96,7 +96,7 @@ class CardCreationForm extends Component {
           </div>
           <TextField
             multiLine
-            value=""
+            defaultValue=""
             floatingLabelText="Card Text"
             style={{width: '100%'}}
             onChange={e => { this.onUpdateText(e.target.value); }} />

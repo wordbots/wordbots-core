@@ -15,7 +15,8 @@ function mapStateToProps(state) {
     health: state.cardCreator.health,
     cost: state.cardCreator.energy,
     spriteID: state.cardCreator.spriteID,
-    sentences: state.cardCreator.sentences
+    sentences: state.cardCreator.sentences,
+    textCleared: state.cardCreator.textCleared
   };
 }
 
@@ -73,6 +74,7 @@ class CardCreator extends Component {
             health={this.props.health}
             energy={this.props.cost}
             sentences={this.props.sentences}
+            textCleared={this.props.textCleared}
             onSetName={(name) => { this.props.onSetName(name); }}
             onSetType={(type) => { this.props.onSetType(type); }}
             onSetText={(text) => { this.props.onSetText(text); }}
@@ -103,6 +105,7 @@ class CardCreator extends Component {
 CardCreator.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
+  textCleared: React.PropTypes.bool,
   sentences: React.PropTypes.array,
   spriteID: React.PropTypes.string,
   attack: React.PropTypes.number,

@@ -35,6 +35,7 @@ export default function cardCreator(oldState = defaultState, action) {
         sentence: sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}
       }));
+      state.textCleared = false;
       return state;
     }
 
@@ -61,6 +62,7 @@ export default function cardCreator(oldState = defaultState, action) {
       state.health = 1;
       state.energy = 1;
       state.sentences = [];
+      state.textCleared = true;
       return state;
 
     default:

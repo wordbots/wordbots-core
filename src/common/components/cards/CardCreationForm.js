@@ -47,6 +47,28 @@ class CardCreationForm extends Component {
     );
   }
 
+  renderTextField() {
+    if (this.props.textCleared) {
+      return (
+        <TextField
+          multiLine
+          value=""
+          floatingLabelText="Card Text"
+          style={{width: '100%'}}
+          onChange={e => { this.onUpdateText(e.target.value); }} />
+      );
+    } else {
+      return (
+        <TextField
+          multiLine
+          defaultValue=""
+          floatingLabelText="Card Text"
+          style={{width: '100%'}}
+          onChange={e => { this.onUpdateText(e.target.value); }} />
+      );
+    }
+  }
+
   render() {
     const cardTypes = ['Robot', 'Event', 'Structure'];
 
@@ -94,12 +116,7 @@ class CardCreationForm extends Component {
               </RaisedButton>
             </div>
           </div>
-          <TextField
-            multiLine
-            defaultValue=""
-            floatingLabelText="Card Text"
-            style={{width: '100%'}}
-            onChange={e => { this.onUpdateText(e.target.value); }} />
+          { this.renderTextField() }
           <div style={{
             display: 'flex',
             justifyContent: 'space-between'
@@ -148,6 +165,7 @@ CardCreationForm.propTypes = {
   health: React.PropTypes.number,
   energy: React.PropTypes.number,
   sentences: React.PropTypes.array,
+  textCleared: React.PropTypes.bool,
 
   onSetName: React.PropTypes.func,
   onSetType: React.PropTypes.func,

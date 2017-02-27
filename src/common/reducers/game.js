@@ -43,7 +43,7 @@ export default function game(oldState = defaultState, action) {
 
       case cardCreatorActions.ADD_TO_COLLECTION: {
         const card = createCardFromProps(action.payload);
-        const collection = [card].concat(state.players.orange.collection);
+        const collection = [card].concat(state.players.orange.collection);  // Treat both players' collection as the same for now.
 
         state.players.blue = player('blue', collection, blueCoreCard, '-4,0,4');
         state.players.orange = player('orange', collection, orangeCoreCard, '4,0,-4');

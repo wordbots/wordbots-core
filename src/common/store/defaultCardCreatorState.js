@@ -1,6 +1,8 @@
+import { id } from '../util';
+
 const defaultState = {
   name: '',
-  spriteID: Math.random().toString(36).slice(2, 16),
+  spriteID: id(),
   type: 0,
   sentences: [],
   attack: 1,

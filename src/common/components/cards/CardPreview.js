@@ -1,32 +1,44 @@
 import React, { Component } from 'react';
+import FontIcon from 'material-ui/lib/font-icon';
 
+import { id } from '../../util';
 import Card from '../game/Card';
 
 class CardPreview extends Component {
   renderSentence(s) {
-    function id() {
-      return Math.random().toString(36).slice(2, 16);
+    function renderWord(word) {
+      if ((s.result.unrecognizedTokens || []).includes(word.toLowerCase())) {
+        return (
+          <span key={id()}>
+            {' '}<u>{word}</u>
+          </span>
+        );
+      } else {
+        return (
+          <span key={id()}>
+            {' '}{word}
+          </span>
+        );
+      }
+    }
+
+    function renderLinks() {
+      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(s.sentence)}&format=svg`;
+      if (s.result.js) {
+        return (
+          <a href={treeUrl} target="_blank">
+            <FontIcon className="material-icons" style={{verticalAlign: 'top'}}>code</FontIcon>
+          </a>
+        );
+      }
     }
 
     if (/\S/.test(s.sentence)) {
       const color = s.result.js ? 'green' : (s.result.error ? 'red' : 'black');
       return (
         <span key={id()} style={{color: color}}>
-          {s.sentence.split(' ').map(word => {
-            if ((s.result.unrecognizedTokens || []).includes(word.toLowerCase())) {
-              return (
-                <span key={id()}>
-                  {' '}<u>{word}</u>
-                </span>
-              );
-            } else {
-              return (
-                <span key={id()}>
-                  {' '}{word}
-                </span>
-              );
-            }
-          })}.
+          {s.sentence.split(' ').map(renderWord)}.
+          { renderLinks() }
         </span>
       );
     } else {

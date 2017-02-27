@@ -1,5 +1,6 @@
 import defaultState from '../store/defaultCardCreatorState';
 import * as cardCreatorActions from '../actions/cardCreator';
+import { id } from '../util';
 
 export default function cardCreator(oldState = defaultState, action) {
   const state = Object.assign({}, oldState);
@@ -50,12 +51,12 @@ export default function cardCreator(oldState = defaultState, action) {
       return state;
 
     case cardCreatorActions.REGENERATE_SPRITE:
-      state.spriteID = Math.random().toString(36).slice(2, 16);
+      state.spriteID = id();
       return state;
 
     case cardCreatorActions.ADD_TO_COLLECTION:
       state.name = '';
-      state.spriteID = Math.random().toString(36).slice(2, 16);
+      state.spriteID = id();
       state.type = 0;
       state.attack = 1;
       state.speed = 1;

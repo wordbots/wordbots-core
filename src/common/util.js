@@ -12,9 +12,13 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // 0. Miscellaneous utility functions.
 //
 
+export function id() {
+  return Math.random().toString(36).slice(2, 16);
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
-    id: Math.random().toString(36).slice(2, 16),
+    id: id(),
     baseCost: card.cost
   });
 }

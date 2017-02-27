@@ -63,7 +63,7 @@ class CardCreator extends Component {
   render() {
     return (
       <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
-        <Helmet title="Cards"/>
+        <Helmet title="Card Creator"/>
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm

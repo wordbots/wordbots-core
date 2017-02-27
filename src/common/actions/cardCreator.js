@@ -89,6 +89,7 @@ export function regenerateSprite() {
   };
 }
 
+// Note: This actions is consumed by the cardCreator, collection, AND game reducers!
 export function addToCollection(props) {
   return {
     type: ADD_TO_COLLECTION,

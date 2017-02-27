@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FontIcon from 'material-ui/lib/font-icon';
+import ReactTooltip from 'react-tooltip';
 
 import { id } from '../../util';
 import Card from '../game/Card';
@@ -22,13 +23,30 @@ class CardPreview extends Component {
       }
     }
 
-    function renderLinks() {
+    function renderStatusIcon() {
       const treeUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(s.sentence)}&format=svg`;
       if (s.result.js) {
         return (
           <a href={treeUrl} target="_blank">
             <FontIcon className="material-icons" style={{verticalAlign: 'top'}}>code</FontIcon>
           </a>
+        );
+      } else {
+        return (
+          <span>
+            <FontIcon
+              className="material-icons"
+              style={{verticalAlign: 'top', color: 'red'}}
+              data-for="error-tooltip"
+              data-tip={s.result.error}>
+                error_outline
+            </FontIcon>
+            <ReactTooltip
+              id="error-tooltip"
+              place="top"
+              type="dark"
+              effect="float" />
+          </span>
         );
       }
     }
@@ -38,7 +56,7 @@ class CardPreview extends Component {
       return (
         <span key={id()} style={{color: color}}>
           {s.sentence.split(' ').map(renderWord)}.
-          { renderLinks() }
+          { renderStatusIcon() }
         </span>
       );
     } else {

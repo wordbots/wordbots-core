@@ -23,29 +23,32 @@ export function instantiateCard(card) {
   });
 }
 
+// Converts card from cardCreator store format -> format for collection and game stores.
 export function createCardFromProps(props) {
+  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
+
   if (props.type == TYPE_EVENT) {
     return instantiateCard({
       name: props.name,
+      type: TYPE_EVENT,
       spriteID: props.spriteID,
-      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => `${s.sentence}. `).join(''),
-      command: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
-      cost: props.cost,
-      type: TYPE_EVENT
+      text: sentences.map(s => `${s.sentence}. `).join(''),
+      command: sentences.map(s => s.result.js),
+      cost: props.cost
     });
   } else {
     return instantiateCard({
       name: props.name,
+      type: props.type,
       spriteID: props.spriteID,
-      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => `${s.sentence}. `).join(''),
-      abilities: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
+      text: sentences.map(s => `${s.sentence}. `).join(''),
+      abilities: sentences.map(s => s.result.js),
       cost: props.cost,
       stats: {
         health: props.health,
         speed: props.type == TYPE_ROBOT ? props.attack : undefined,
         attack: props.type == TYPE_ROBOT ? props.attack : undefined
-      },
-      type: props.type
+      }
     });
   }
 }

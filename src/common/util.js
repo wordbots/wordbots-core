@@ -21,16 +21,16 @@ export function instantiateCard(card) {
 
 export function createCardFromProps(props) {
   if (props.type == TYPE_EVENT) {
-    return {
+    return instantiateCard({
       name: props.name,
       spriteID: props.spriteID,
       text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.sentence).join('. '),
       command: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
       cost: props.cost,
       type: TYPE_EVENT
-    };
+    });
   } else {
-    return {
+    return instantiateCard({
       name: props.name,
       spriteID: props.spriteID,
       text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.sentence).join('. '),
@@ -42,7 +42,7 @@ export function createCardFromProps(props) {
         attack: props.type == TYPE_ROBOT ? props.attack : undefined
       },
       type: props.type
-    };
+    });
   }
 }
 

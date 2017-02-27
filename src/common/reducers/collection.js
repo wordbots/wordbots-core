@@ -8,7 +8,7 @@ export default function collection(oldState = defaultState, action) {
   switch (action.type) {
     case cardCreatorActions.ADD_TO_COLLECTION: {
       const card = createCardFromProps(action.payload);
-      state.cards.push(card);
+      state.cards.unshift(card);
       return state;
     }
 

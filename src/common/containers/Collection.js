@@ -28,7 +28,7 @@ class CardCreator extends Component {
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           maxWidth: '90%',
           margin: '50px auto'
         }}>

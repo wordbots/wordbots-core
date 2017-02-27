@@ -24,7 +24,7 @@ export function createCardFromProps(props) {
     return instantiateCard({
       name: props.name,
       spriteID: props.spriteID,
-      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.sentence).join('. '),
+      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => `${s.sentence}. `).join(''),
       command: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
       cost: props.cost,
       type: TYPE_EVENT
@@ -33,7 +33,7 @@ export function createCardFromProps(props) {
     return instantiateCard({
       name: props.name,
       spriteID: props.spriteID,
-      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.sentence).join('. '),
+      text: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => `${s.sentence}. `).join(''),
       abilities: props.sentences.filter(s => /\S/.test(s.sentence)).map(s => s.result.js),
       cost: props.cost,
       stats: {

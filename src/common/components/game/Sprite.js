@@ -28,11 +28,11 @@ class Sprite extends Component {
 
       if (this.props.output == 'html') {
         return (
-          <img src={dataURL} width={size * (this.props.scale || 1)} height={size * (this.props.scale || 1)} style={{imageRendering: 'pixelated'}}/>
+          <img src={dataURL} width={size * (this.props.scale || 1)} height={size * (this.props.scale || 1)} style={{imageRendering: 'pixelated'}} />
         );
       } else if (this.props.output == 'svg') {
         return (
-          <image xlinkHref={dataURL} width={1} height={1} />
+          <image xlinkHref={dataURL} width={1} height={1} style={{imageRendering: 'pixelated'}} />
         );
       }
     } else {

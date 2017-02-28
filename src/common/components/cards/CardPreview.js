@@ -28,7 +28,18 @@ class CardPreview extends Component {
       if (s.result.js) {
         return (
           <a href={treeUrl} target="_blank">
-            <FontIcon className="material-icons" style={{verticalAlign: 'top'}}>code</FontIcon>
+            <FontIcon
+              className="material-icons"
+              style={{verticalAlign: 'top', color: 'green'}}
+              data-for="error-tooltip"
+              data-tip="Click to view parse tree">
+                code
+            </FontIcon>
+            <ReactTooltip
+              id="error-tooltip"
+              place="top"
+              type="dark"
+              effect="float" />
           </a>
         );
       } else {

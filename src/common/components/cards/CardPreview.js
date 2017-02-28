@@ -42,7 +42,7 @@ class CardPreview extends Component {
               effect="float" />
           </a>
         );
-      } else {
+      } else if (s.result.error) {
         return (
           <span>
             <FontIcon

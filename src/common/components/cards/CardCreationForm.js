@@ -21,15 +21,23 @@ class CardCreationForm extends Component {
 
   onUpdateText(text) {
     const sentences = text.split(/[\\.!\?]/);
+    const debounceTimeoutMs = 500;
+
     this.props.onSetText(sentences);
-    sentences
-      .filter(sentence => /\S/.test(sentence))
-      .forEach((sentence, idx) => {
-        const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
-        fetch(parseUrl)
-          .then(response => response.json())
-          .then(json => { this.props.onParseComplete(idx, sentence, json); });
-    });
+
+    if (this.updateTextTimer) {
+      clearTimeout(this.updateTextTimer);
+    }
+    this.updateTextTimer = setTimeout(() => {
+      sentences
+        .filter(sentence => /\S/.test(sentence))
+        .forEach((sentence, idx) => {
+          const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
+          fetch(parseUrl)
+            .then(response => response.json())
+            .then(json => { this.props.onParseComplete(idx, sentence, json); });
+      });
+    }, debounceTimeoutMs);
   }
 
   nonEmptySentences() {

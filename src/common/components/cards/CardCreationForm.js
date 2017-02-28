@@ -25,10 +25,10 @@ class CardCreationForm extends Component {
 
     this.props.onSetText(sentences);
 
-    if (this.updateTextTimer) {
-      clearTimeout(this.updateTextTimer);
+    if (this.parseRefreshTimer) {
+      clearTimeout(this.parseRefreshTimer);
     }
-    this.updateTextTimer = setTimeout(() => {
+    this.parseRefreshTimer = setTimeout(() => {
       sentences
         .filter(sentence => /\S/.test(sentence))
         .forEach((sentence, idx) => {

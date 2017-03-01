@@ -1,6 +1,6 @@
 import { flatMap, some, without } from 'lodash';
 
-import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
+import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from './constants';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -114,6 +114,17 @@ export function getCost(card) {
 
 export function hasEffect(object, effect) {
   return (object.effects || []).map(eff => eff.effect).includes(effect);
+}
+
+export function matchesType(objectOrCard, cardTypeQuery) {
+  const cardType = objectOrCard.card ? objectOrCard.card.type : objectOrCard.type;
+  if (['anycard', 'allobjects'].includes(cardTypeQuery)) {
+    return true;
+  } else if (_.isArray(cardTypeQuery)) {
+    return cardTypeQuery.map(stringToType).includes(cardType);
+  } else {
+    return stringToType(cardTypeQuery) === cardType;
+  }
 }
 
 //

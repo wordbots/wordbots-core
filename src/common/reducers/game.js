@@ -1,10 +1,9 @@
 import { isArray, reduce } from 'lodash';
 
-import defaultState, { player } from '../store/defaultGameState';
-import { blueCoreCard, orangeCoreCard } from '../store/cards';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
-import { createCardFromProps } from '../util';
+import defaultState from '../store/defaultGameState';
+import { createCardFromProps, newGame } from '../util';
 
 import g from './handlers/game';
 
@@ -42,30 +41,9 @@ export default function game(oldState = defaultState, action) {
 
       case creatorActions.ADD_TO_COLLECTION: {
         const card = createCardFromProps(action.payload);
-        const collection = [card].concat(state.players.orange.collection);  // Treat both players' collection as the same for now.
-
-        state.players.blue = player('blue', collection, blueCoreCard, '-4,0,4');
-        state.players.orange = player('orange', collection, orangeCoreCard, '4,0,-4');
-
-        // Completely reset game state.
-        state.currentTurn = 'orange';
-        state.selectedTile = null,
-        state.selectedCard = null,
-        state.playingCardType = null,
-        state.hoveredCard = null,
-        state.status = {
-          message: '',
-          type: ''
-        };
-        state.target = {
-          choosing: false,
-          chosen: null,
-          possibleCards: [],
-          possibleHexes: []
-        };
-        state.winner = null;
-
-        return state;
+        // Treat both players' collection as the same for now.
+        const collection = [card].concat(state.players.orange.collection);
+        return newGame(state, {blue: collection, orange: collection});
       }
 
       default:

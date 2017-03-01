@@ -1,6 +1,11 @@
 import { flatMap, some, without } from 'lodash';
 
-import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from './constants';
+import {
+  TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType,
+  BLUE_CORE_HEX, ORANGE_CORE_HEX
+} from './constants';
+import { playerState } from './store/defaultGameState';
+import { blueCoreCard, orangeCoreCard } from './store/cards';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -191,6 +196,31 @@ export function validAttackHexes(state, playerName, startHex, speed) {
 //
 // III. Effects on game state that are performed in many different places.
 //
+
+export function newGame(state, collections) {
+  state.players.blue = playerState('blue', collections.blue, blueCoreCard, BLUE_CORE_HEX);
+  state.players.orange = playerState('orange', collections.orange, orangeCoreCard, ORANGE_CORE_HEX);
+
+  // Completely reset game state.
+  state.currentTurn = 'orange';
+  state.selectedTile = null,
+  state.selectedCard = null,
+  state.playingCardType = null,
+  state.hoveredCard = null,
+  state.status = {
+    message: '',
+    type: ''
+  };
+  state.target = {
+    choosing: false,
+    chosen: null,
+    possibleCards: [],
+    possibleHexes: []
+  };
+  state.winner = null;
+
+  return state;
+}
 
 export function drawCards(state, player, count) {
   player.hand = player.hand.concat(player.deck.splice(0, count));

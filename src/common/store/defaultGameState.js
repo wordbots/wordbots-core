@@ -2,7 +2,7 @@ import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
 
 import * as cards from './cards';
 
-export function player(color, collection, coreCard, coreHexId) {
+export function playerState(color, collection, coreCard, coreHexId) {
   return {
     name: color,
     energy: {
@@ -25,8 +25,8 @@ export function player(color, collection, coreCard, coreHexId) {
 
 const defaultState = {
   players: {
-    blue: player('blue', cards.collection, cards.blueCoreCard, BLUE_CORE_HEX),
-    orange: player('orange', cards.collection, cards.orangeCoreCard, ORANGE_CORE_HEX)
+    blue: playerState('blue', cards.collection, cards.blueCoreCard, BLUE_CORE_HEX),
+    orange: playerState('orange', cards.collection, cards.orangeCoreCard, ORANGE_CORE_HEX)
   },
   currentTurn: 'orange',
   selectedTile: null,

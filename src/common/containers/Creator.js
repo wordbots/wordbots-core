@@ -105,7 +105,6 @@ Creator.propTypes = {
   onSetType: React.PropTypes.func,
   onSetText: React.PropTypes.func,
   onSetAttribute: React.PropTypes.func,
-
   onParseComplete: React.PropTypes.func,
   onSpriteClick: React.PropTypes.func,
   onAddToCollection: React.PropTypes.func

@@ -24,6 +24,7 @@ export function playerState(color, collection, coreCard, coreHexId) {
 }
 
 const defaultState = {
+  storeKey: 'game',
   players: {
     blue: playerState('blue', cards.collection, cards.blueCoreCard, BLUE_CORE_HEX),
     orange: playerState('orange', cards.collection, cards.orangeCoreCard, ORANGE_CORE_HEX)

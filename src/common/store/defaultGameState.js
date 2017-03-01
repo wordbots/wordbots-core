@@ -1,3 +1,5 @@
+import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
+
 import * as cards from './cards';
 
 export function player(color, collection, coreCard, coreHexId) {
@@ -23,8 +25,8 @@ export function player(color, collection, coreCard, coreHexId) {
 
 const defaultState = {
   players: {
-    blue: player('blue', cards.collection, cards.blueCoreCard, '-4,0,4'),
-    orange: player('orange', cards.collection, cards.orangeCoreCard, '4,0,-4')
+    blue: player('blue', cards.collection, cards.blueCoreCard, BLUE_CORE_HEX),
+    orange: player('orange', cards.collection, cards.orangeCoreCard, ORANGE_CORE_HEX)
   },
   currentTurn: 'orange',
   selectedTile: null,

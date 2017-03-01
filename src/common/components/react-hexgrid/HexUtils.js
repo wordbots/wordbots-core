@@ -9,7 +9,7 @@ class HexUtils {
   ];
 
   static equals(a, b) {
-    return a.q == b.q && a.r == b.r && a.s == b.s;
+    return a.q === b.q && a.r === b.r && a.s === b.s;
   }
 
   static add(a, b) {

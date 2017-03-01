@@ -18,7 +18,7 @@ class Status extends Component {
       statusStyle.color = '#FFEB3B';
     }
 
-    if (this.props.currentTurn == 'orange') {
+    if (this.props.currentTurn === 'orange') {
       statusStyle.top = 6;
       statusStyle.bottom = null;
     } else {

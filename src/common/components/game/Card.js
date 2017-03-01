@@ -50,7 +50,7 @@ class Card extends Component {
 
     const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
 
-    if (this.props.type == TYPE_EVENT && numChars < 30) {
+    if (this.props.type === TYPE_EVENT && numChars < 30) {
       return Object.assign(baseStyle, compactStyle);
     } else {
       return baseStyle;
@@ -86,7 +86,7 @@ class Card extends Component {
       padding: 10 * this.props.scale
     };
 
-    if (this.props.type == TYPE_ROBOT) {
+    if (this.props.type === TYPE_ROBOT) {
       return (
         <CardText style={style}>
           {this.renderStat('attack')}
@@ -94,7 +94,7 @@ class Card extends Component {
           {this.renderStat('health')}
         </CardText>
       );
-    } else if (this.props.type == TYPE_CORE || this.props.type == TYPE_STRUCTURE) {
+    } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
       return (
         <CardText style={Object.assign(style, {float: 'right'})}>
           {this.renderStat('health')}
@@ -104,13 +104,13 @@ class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.type == TYPE_CORE) {
+    if (this.props.type === TYPE_CORE) {
       return (
         <div style={{ width: 50 * this.props.scale, height: 52 * this.props.scale, margin: '3px auto 0'}}>
           <img src={loadImages()[this.props.img]} width={50 * this.props.scale} height={50 * this.props.scale} />
         </div>
       );
-    } else if (this.props.type == TYPE_EVENT) {
+    } else if (this.props.type === TYPE_EVENT) {
       return (
         <div
           onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
@@ -198,7 +198,7 @@ class Card extends Component {
                   style={{
                     padding: 6 * this.props.scale,
                     paddingBottom: 0,
-                    height: (this.props.type != TYPE_EVENT ? 54 : 106) * this.props.scale,
+                    height: (this.props.type !== TYPE_EVENT ? 54 : 106) * this.props.scale,
                     boxSizing: 'border-box'
                 }}>
                   {this.props.text}

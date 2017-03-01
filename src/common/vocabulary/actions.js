@@ -1,5 +1,6 @@
 import { TYPE_CORE } from '../constants';
 import {
+  clamp, applyFuncToField,
   ownerOf, getHex,
   drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
 } from '../util';
@@ -15,7 +16,7 @@ export default function actions(state) {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
-          hex = _.findKey(target.robotsOnBoard, obj => obj.card.type == TYPE_CORE);
+          hex = _.findKey(target.robotsOnBoard, obj => obj.card.type === TYPE_CORE);
         } else {
           // target is an object, so find its hex.
           hex = getHex(state, target);
@@ -41,35 +42,25 @@ export default function actions(state) {
     },
 
     modifyAttribute: function (objects, attr, func) {
-      const clampedFunc = stat => _.clamp(func(stat), 0, 99);
-
       objects.forEach(object => {
         if (attr === 'allattributes') {
-          object.stats = _.mapValues(object.stats, clampedFunc);
+          object.stats = _.mapValues(object.stats, clamp(func));
         } else if (attr === 'cost') {
-          object.cost = clampedFunc(object.cost); // (This should only ever happen to cards in hand.)
+          object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
         } else {
-          object.stats = _.assign(object.stats, {[attr]: clampedFunc(object.stats[attr])});
+          object.stats = applyFuncToField(object.stats, func, attr);
         }
       });
     },
 
     modifyEnergy: function (players, func) {
       players.forEach(player => {
-        player.energy = _.assign(player.energy, {available: func(player.energy.available)});
+        player.energy = applyFuncToField(player.energy, func, 'available');
       });
     },
 
     setAttribute: function (objects, attr, num) {
-      objects.forEach(object => {
-        if (attr === 'allattributes') {
-          object.stats = _.mapValues(object.stats, () => num);
-        } else if (attr === 'cost') {
-          object.cost = num; // (This should only ever happen to cards in hand.)
-        } else {
-          object.stats = _.assign(object.stats, {[attr]: num});
-        }
-      });
+      this.modifyAttribute(objects, attr, () => num);
     },
 
     takeControl: function (players, objects) {
@@ -77,7 +68,7 @@ export default function actions(state) {
 
       objects.forEach(object => {
         const currentOwner = ownerOf(state, object);
-        if (newOwner.name != currentOwner.name) {
+        if (newOwner.name !== currentOwner.name) {
           const hex = getHex(state, object);
 
           newOwner.robotsOnBoard[hex] = object;

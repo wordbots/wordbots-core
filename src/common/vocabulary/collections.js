@@ -17,16 +17,16 @@ export function allTiles(state) {
 }
 
 export function cardsInHand(state) {
-  return function (players, cardType = 'anycard') {
+  return function (players, cardType) {
     const player = players[0]; // Player target is always in the form of list, so just unpack it.
-    return player.hand.filter(c => cardType == 'anycard' || c.type == stringToType(cardType));
+    return player.hand.filter(c => cardType === 'anycard' || c.type === stringToType(cardType));
   };
 }
 
 export function objectsInPlay(state) {
   return function (objType) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      (objType == 'allobjects' || obj.card.type == stringToType(objType))
+      (objType === 'allobjects' || obj.card.type === stringToType(objType))
     );
   };
 }
@@ -34,7 +34,7 @@ export function objectsInPlay(state) {
 export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
     return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      (objType == 'allobjects' || obj.card.type == stringToType(objType))
+      (objType === 'allobjects' || obj.card.type === stringToType(objType))
         && _.every(conditions.map(cond => cond(hex, obj)))
     );
   };

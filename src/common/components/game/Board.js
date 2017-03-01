@@ -23,7 +23,7 @@ class Board extends Component {
   }
 
   currentPlayerPieces() {
-    return (this.props.currentTurn == 'blue' ? this.props.bluePieces : this.props.orangePieces);
+    return (this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces);
   }
 
   allPieces() {
@@ -47,7 +47,7 @@ class Board extends Component {
 
     forOwn(this.allPieces(), (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
-      const canMove = this.props.currentTurn == owner && piece.movesLeft > 0;
+      const canMove = this.props.currentTurn === owner && piece.movesLeft > 0;
 
       hexColors[hex] = `${canMove ? 'bright_' : ''}${owner}`;
     });
@@ -63,7 +63,7 @@ class Board extends Component {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
         hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
       }
-    } else if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+    } else if (this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE) {
       this.getValidPlacementHexes().forEach((hex) => {
         hexColors[HexUtils.getID(hex)] = 'green';
       });
@@ -94,7 +94,7 @@ class Board extends Component {
 
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-    if (this.props.playingCardType == TYPE_ROBOT || this.props.playingCardType == TYPE_STRUCTURE) {
+    if (this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE) {
       if (some(this.getValidPlacementHexes(), (h) => HexUtils.getID(h) === HexUtils.getID(hex))) {
         action = 'place';
       }

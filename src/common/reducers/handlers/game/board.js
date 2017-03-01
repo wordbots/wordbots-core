@@ -1,5 +1,5 @@
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, hasEffect, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   checkTriggersForObject, applyAbilities
@@ -9,7 +9,7 @@ import HexUtils from '../../../components/react-hexgrid/HexUtils';
 import { setTargetAndExecuteQueuedAction } from './cards';
 
 export function setHoveredCard(state, card) {
-  return _.assign(state, {hoveredCard: card});
+  return Object.assign({}, state, {hoveredCard: card});
 }
 
 export function setSelectedTile(state, tile) {
@@ -18,7 +18,7 @@ export function setSelectedTile(state, tile) {
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    state.selectedTile = (state.selectedTile == tile) ? null : tile;
+    state.selectedTile = (state.selectedTile === tile) ? null : tile;
     state.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
@@ -60,7 +60,7 @@ export function attack(state, source, target) {
 
   // Is the attack valid?
   const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft);
-  if (validHexes.map(HexUtils.getID).includes(target)) {
+  if (validHexes.map(HexUtils.getID).includes(target) && !hasEffect(attacker, 'cannotattack')) {
     attacker.movesLeft = 0;
 
     state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');

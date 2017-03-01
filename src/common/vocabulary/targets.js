@@ -1,4 +1,4 @@
-import { currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util';
+import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util';
 
 // Targets are all functions that return an array,
 // of either of players, cards, or pieces (objects on board).
@@ -59,7 +59,7 @@ export default function targets(state, currentObject) {
 
     opponent: function () {
       if (currentObject) {
-        return [ownerOf(state, currentObject).name == 'blue' ? state.players.orange : state.players.blue];
+        return [state.players[opponent(ownerOf(state, currentObject).name).name]];
       } else {
         return [opponentPlayer(state)];
       }
@@ -71,7 +71,7 @@ export default function targets(state, currentObject) {
 
     controllerOf: function (objects) {
       // Assume the only one object is ever passed in here.
-      return (objects.length == 1) ? [ownerOf(state, objects[0])] : [];
+      return (objects.length === 1) ? [ownerOf(state, objects[0])] : [];
     }
   };
 }

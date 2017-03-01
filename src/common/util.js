@@ -12,6 +12,14 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // 0. Miscellaneous utility functions.
 //
 
+export function clamp(func) {
+  return (stat => _.clamp(func(stat), 0, 99));
+}
+
+export function applyFuncToField(obj, func, field) {
+  return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
+}
+
 export function id() {
   return Math.random().toString(36).slice(2, 16);
 }
@@ -24,10 +32,11 @@ export function instantiateCard(card) {
 }
 
 // Converts card from cardCreator store format -> format for collection and game stores.
+// TODO Put this somewhere other than util.js?
 export function createCardFromProps(props) {
   const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
 
-  if (props.type == TYPE_EVENT) {
+  if (props.type === TYPE_EVENT) {
     return instantiateCard({
       name: props.name,
       type: TYPE_EVENT,
@@ -46,8 +55,8 @@ export function createCardFromProps(props) {
       cost: props.cost,
       stats: {
         health: props.health,
-        speed: props.type == TYPE_ROBOT ? props.attack : undefined,
-        attack: props.type == TYPE_ROBOT ? props.attack : undefined
+        speed: props.type === TYPE_ROBOT ? props.attack : undefined,
+        attack: props.type === TYPE_ROBOT ? props.attack : undefined
       }
     });
   }
@@ -57,8 +66,8 @@ export function createCardFromProps(props) {
 // I. Queries for game state.
 //
 
-function opponent(playerName) {
-  return (playerName == 'blue') ? 'orange' : 'blue';
+export function opponent(playerName) {
+  return (playerName === 'blue') ? 'orange' : 'blue';
 }
 
 export function opponentName(state) {
@@ -78,9 +87,9 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  if (some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
+  if (some(state.players.blue.robotsOnBoard, o => o.id === object.id)) {
     return state.players.blue;
-  } else if (some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
+  } else if (some(state.players.orange.robotsOnBoard, o => o.id === object.id)) {
     return state.players.orange;
   }
 }
@@ -88,7 +97,7 @@ export function ownerOf(state, object) {
 export function getAttribute(object, attr) {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
-    return object.temporaryStatAdjustments[attr].reduce((val, adj) => adj.func(val), object.stats[attr]);
+    return object.temporaryStatAdjustments[attr].reduce((val, adj) => clamp(adj.func)(val), object.stats[attr]);
   } else {
     return (object.stats[attr] === undefined) ? undefined : object.stats[attr];
   }
@@ -97,7 +106,7 @@ export function getAttribute(object, attr) {
 export function getCost(card) {
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.
-    return card.temporaryStatAdjustments.cost.reduce((val, adj) => adj.func(val), card.cost);
+    return card.temporaryStatAdjustments.cost.reduce((val, adj) => clamp(adj.func)(val), card.cost);
   } else {
     return card.cost;
   }
@@ -131,13 +140,13 @@ export function getAdjacentHexes(hex) {
 
 export function validPlacementHexes(state, playerName, type) {
   let hexes;
-  if (type == TYPE_ROBOT) {
+  if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
       hexes = ['-3,-1,4', '-3,0,3', '-4,1,3'].map(HexUtils.IDToHex);
     } else {
       hexes = ['4,-1,-3', '3,0,-3', '3,1,-4'].map(HexUtils.IDToHex);
     }
-  } else if (type == TYPE_STRUCTURE) {
+  } else if (type === TYPE_STRUCTURE) {
     const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
     hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }
@@ -203,7 +212,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
     state = checkTriggersForObject(state, 'afterDestroyed', object, (trigger =>
-      (trigger.cause == cause || trigger.cause == 'anyevent')
+      (trigger.cause === cause || trigger.cause === 'anyevent')
     ));
 
     delete state.players[ownerName].robotsOnBoard[hex];
@@ -215,7 +224,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
     // Check victory conditions.
     if (object.card.type === TYPE_CORE) {
-      state.winner = (ownerName == 'blue') ? 'orange' : 'blue';
+      state.winner = (ownerName === 'blue') ? 'orange' : 'blue';
     }
   }
 
@@ -256,7 +265,7 @@ export function checkTriggers(state, triggerType, it, condition) {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
     (obj.triggers || []).forEach((t) => {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
-      if (t.trigger.type == triggerType && condition(t.trigger)) {
+      if (t.trigger.type === triggerType && condition(t.trigger)) {
         // console.log(`Executing ${triggerType} trigger: ${t.action}`);
         executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
       }

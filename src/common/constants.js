@@ -18,7 +18,8 @@ export const GRID_CONFIG = {
   origin: { x: 0, y: 0 },
   map: 'hexagon',
   mapProps: [ 4 ]
-  
+};
+
 const typeToStringMapping = {
   [TYPE_ROBOT]: 'robot',
   [TYPE_EVENT]: 'event',

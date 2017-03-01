@@ -16,7 +16,7 @@ export function renderElement(elt, deep = false) {
 export function getComponent(componentClass, state, dispatch = () => {}, predicate = () => {}) {
   const game = renderElement(createGame(state, dispatch), true);
   const components = ReactTestUtils.scryRenderedComponentsWithType(game, componentClass);
-  return (components.length == 1) ? components[0] : components.find(predicate);
+  return (components.length === 1) ? components[0] : components.find(predicate);
 }
 
 export function createGame(state, dispatch = () => {}) {

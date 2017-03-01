@@ -103,10 +103,10 @@ describe('Board component', () => {
         const color = hexGrid.props.hexColors[HexUtils.getID(hex)];
         hexGrid.props.actions.onClick(hex);
 
-        if (color == 'green') {
+        if (color === 'green') {
           expect(dispatchedAction.type).toEqual(actions.MOVE_ROBOT);
-        } else if (color == 'red') {
-          if (HexUtils.getID(hex) == '0,-1,1') {
+        } else if (color === 'red') {
+          if (HexUtils.getID(hex) === '0,-1,1') {
             // This piece can be attacked via Move+attack.
             expect(dispatchedAction.map(a => a.type)).toEqual([actions.MOVE_ROBOT, actions.ATTACK]);
           } else {

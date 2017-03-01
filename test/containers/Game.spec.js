@@ -127,9 +127,9 @@ describe('Game container', () => {
     );
 
     // Set selected card.
-    const attackBotCard = createGame(state).props.orangeHand.find(c => c.name == 'Attack Bot');
+    const attackBotCard = createGame(state).props.orangeHand.find(c => c.name === 'Attack Bot');
     expect(
-      clickCard(c => c.props.visible && c.props.name == 'Attack Bot')
+      clickCard(c => c.props.visible && c.props.name === 'Attack Bot')
     ).toEqual(
       actions.setSelectedCard(0)
     );

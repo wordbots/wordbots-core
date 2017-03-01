@@ -40,7 +40,7 @@ class Card extends Component {
 
   textAreaStyle() {
     const baseStyle = {
-      height: 90 * this.props.scale
+      height: 106 * this.props.scale
     };
 
     const compactStyle = {
@@ -172,7 +172,7 @@ class Card extends Component {
               zDepth={this.state.shadow}
               style={Object.assign({
                 width: 140 * this.props.scale,
-                height: 206 * this.props.scale,
+                height: 211 * this.props.scale,
                 marginRight: 10 * this.props.scale,
                 borderRadius: 5 * this.props.scale,
                 userSelect: 'none',

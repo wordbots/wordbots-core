@@ -6,13 +6,12 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "extends": "eslint:recommended",
   "globals": {
-    "_": true,
-    "expect": true,
-    "jest": true
+    "_": true
   },
   "parser": "babel-eslint",
   "rules": {

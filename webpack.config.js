@@ -1,7 +1,9 @@
+/* eslint-disable import/order */
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+/* eslint-enable import/order */
 
 let webpackConfig = {
   output: {

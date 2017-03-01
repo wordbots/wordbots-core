@@ -31,7 +31,7 @@ http://localhost:3000
 
 ## Lint and test
 ```
-node_modules/eslint/bin/eslint.js src test --fix && npm test -- --coverage
+node_modules/eslint/bin/eslint.js . --fix && npm test -- --coverage
 ```
 
 ## Acknowledgements

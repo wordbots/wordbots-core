@@ -4,7 +4,7 @@ machine:
 
 test:
   override:
-    - node_modules/eslint/bin/eslint.js src test
+    - node_modules/eslint/bin/eslint.js .
     - npm test -- --coverage
 
     # Test webpack compilation and ability to start a server without failure.

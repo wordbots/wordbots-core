@@ -1,6 +1,6 @@
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
-import defaultState from '../src/common/store/defaultState';
+import defaultState from '../src/common/store/defaultGameState';
 import {
   instantiateCard, allObjectsOnBoard, ownerOf, getAttribute,
   drawCards

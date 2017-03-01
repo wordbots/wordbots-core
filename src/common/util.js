@@ -1,6 +1,6 @@
 import { flatMap, some, without } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
+import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -20,11 +20,46 @@ export function applyFuncToField(obj, func, field) {
   return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
 }
 
+export function id() {
+  return Math.random().toString(36).slice(2, 16);
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
-    id: Math.random().toString(36).slice(2, 16),
+    id: id(),
     baseCost: card.cost
   });
+}
+
+// Converts card from cardCreator store format -> format for collection and game stores.
+// TODO Put this somewhere other than util.js?
+export function createCardFromProps(props) {
+  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
+
+  if (props.type === TYPE_EVENT) {
+    return instantiateCard({
+      name: props.name,
+      type: TYPE_EVENT,
+      spriteID: props.spriteID,
+      text: sentences.map(s => `${s.sentence}. `).join(''),
+      command: sentences.map(s => s.result.js),
+      cost: props.cost
+    });
+  } else {
+    return instantiateCard({
+      name: props.name,
+      type: props.type,
+      spriteID: props.spriteID,
+      text: sentences.map(s => `${s.sentence}. `).join(''),
+      abilities: sentences.map(s => s.result.js),
+      cost: props.cost,
+      stats: {
+        health: props.health,
+        speed: props.type === TYPE_ROBOT ? props.attack : undefined,
+        attack: props.type === TYPE_ROBOT ? props.attack : undefined
+      }
+    });
+  }
 }
 
 //

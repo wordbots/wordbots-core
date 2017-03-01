@@ -2,15 +2,16 @@ import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
 
 import * as cards from './cards';
 
-function player(color, coreCard, coreHexId) {
+export function player(color, collection, coreCard, coreHexId) {
   return {
     name: color,
     energy: {
       available: 1,
       total: 1
     },
-    hand: cards.deck.slice(0, 2),
-    deck: cards.deck.slice(2),
+    hand: collection.slice(0, 2),
+    deck: collection.slice(2),
+    collection: collection,
     robotsOnBoard: {
       [coreHexId]: {
         id: `${color}Core`,
@@ -24,8 +25,8 @@ function player(color, coreCard, coreHexId) {
 
 const defaultState = {
   players: {
-    blue: player('blue', cards.blueCoreCard, BLUE_CORE_HEX),
-    orange: player('orange', cards.orangeCoreCard, ORANGE_CORE_HEX)
+    blue: player('blue', cards.collection, cards.blueCoreCard, BLUE_CORE_HEX),
+    orange: player('orange', cards.collection, cards.orangeCoreCard, ORANGE_CORE_HEX)
   },
   currentTurn: 'orange',
   selectedTile: null,

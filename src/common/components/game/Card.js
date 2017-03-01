@@ -38,27 +38,22 @@ class Card extends Component {
     });
   }
 
-  renderStat(type) {
-    return (
-      <CardStat type={type} base={this.props.cardStats[type]} current={this.props.stats[type]}/>
-    );
-  }
+  textAreaStyle() {
+    const baseStyle = {
+      height: 90 * this.props.scale
+    };
 
-  renderStatsArea() {
-    if (this.props.type === TYPE_ROBOT) {
-      return (
-        <CardText style={{ display: 'flex', justifyContent: 'space-between', padding: 10 }}>
-          {this.renderStat('attack')}
-          {this.renderStat('speed')}
-          {this.renderStat('health')}
-        </CardText>
-      );
-    } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
-      return (
-        <CardText style={{ float: 'right', padding: 10 }}>
-          {this.renderStat('health')}
-        </CardText>
-      );
+    const compactStyle = {
+      textAlign: 'center',
+      marginTop: 30 * this.props.scale
+    };
+
+    const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
+
+    if (this.props.type === TYPE_EVENT && numChars < 30) {
+      return Object.assign(baseStyle, compactStyle);
+    } else {
+      return baseStyle;
     }
   }
 
@@ -78,23 +73,66 @@ class Card extends Component {
     }
   }
 
+  renderStat(type) {
+    return (
+      <CardStat type={type} base={this.props.cardStats[type]} current={this.props.stats[type]} scale={this.props.scale}/>
+    );
+  }
+
+  renderStatsArea() {
+    const style = {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: 10 * this.props.scale
+    };
+
+    if (this.props.type === TYPE_ROBOT) {
+      return (
+        <CardText style={style}>
+          {this.renderStat('attack')}
+          {this.renderStat('speed')}
+          {this.renderStat('health')}
+        </CardText>
+      );
+    } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
+      return (
+        <CardText style={Object.assign(style, {float: 'right'})}>
+          {this.renderStat('health')}
+        </CardText>
+      );
+    }
+  }
+
   renderImage() {
     if (this.props.type === TYPE_CORE) {
       return (
-        <div style={{ width: '50px', height: '52px', margin: '3px auto 0'}}>
-          <img src={loadImages()[this.props.img]} width="50px" height="50px" />
+        <div style={{ width: 50 * this.props.scale, height: 52 * this.props.scale, margin: '3px auto 0'}}>
+          <img src={loadImages()[this.props.img]} width={50 * this.props.scale} height={50 * this.props.scale} />
         </div>
       );
     } else if (this.props.type === TYPE_EVENT) {
       return (
-        <div style={{ width: '25px', height: '42px', margin: '10px auto 0'}}>
-          <Identicon id={this.props.name} width={25} size={4} />
+        <div
+          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
+          style={{
+            width: 25 * this.props.scale,
+            height: 42 * this.props.scale,
+            margin: '0 auto',
+            marginTop: 10 * this.props.scale
+        }}>
+          <Identicon id={this.props.spriteID || this.props.name} width={25 * this.props.scale} size={4} />
         </div>
       );
     } else {
       return (
-        <div style={{ width: '48px', height: '48px', margin: '2px auto 3px'}}>
-          <Sprite id={this.props.name} size={24} output="html" />
+        <div
+          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
+          style={{
+            width: 48 * this.props.scale,
+            height: 48 * this.props.scale,
+            margin: '2px auto 3px'
+        }}>
+          <Sprite id={this.props.spriteID || this.props.name} size={24} scale={this.props.scale} output="html" />
         </div>
       );
     }
@@ -118,12 +156,12 @@ class Card extends Component {
           badgeStyle={Object.assign({
             top: 12,
             right: 20,
-            width: 36,
-            height: 36,
+            width: 36 * this.props.scale,
+            height: 36 * this.props.scale,
             backgroundColor: '#00bcd4',
             fontFamily: 'Carter One',
             color: 'white',
-            fontSize: 16
+            fontSize: 16 * this.props.scale
           }, this.costBadgeStyle())}
           style={{paddingLeft: 0}}
         >
@@ -133,17 +171,19 @@ class Card extends Component {
               onMouseOut={this.onMouseOut}
               zDepth={this.state.shadow}
               style={Object.assign({
-                width: 140,
-                height: 206,
-                marginRight: 10,
-                borderRadius: 5,
+                width: 140 * this.props.scale,
+                height: 206 * this.props.scale,
+                marginRight: 10 * this.props.scale,
+                borderRadius: 5 * this.props.scale,
                 userSelect: 'none',
                 cursor: 'pointer'
               }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
               <CardHeader
-                style={{padding: 8, height: 'auto'}}
+                style={{padding: 8 * this.props.scale, height: 'auto'}}
                 title={this.props.name}
-                subtitle={typeToString(this.props.type)}/>
+                titleStyle={{fontSize: 15 * this.props.scale}}
+                subtitle={typeToString(this.props.type)}
+                subtitleStyle={{fontSize: 14 * this.props.scale}} />
 
               <Divider/>
 
@@ -151,17 +191,15 @@ class Card extends Component {
 
               <Divider/>
 
-              <div style={Object.assign({
-                height: 90
-              }, (this.props.type === TYPE_EVENT && this.props.text.length < 30) ? {
-                textAlign: 'center',
-                marginTop: 30
-              } : {})}>
-                <Textfit mode="multi" max={14} style={{
-                  padding: 6,
-                  paddingBottom: 0,
-                  height: this.props.type !== TYPE_EVENT ? 54 : 106,
-                  boxSizing: 'border-box'
+              <div style={this.textAreaStyle()}>
+                <Textfit
+                  mode="multi"
+                  max={14 * this.props.scale}
+                  style={{
+                    padding: 6 * this.props.scale,
+                    paddingBottom: 0,
+                    height: (this.props.type !== TYPE_EVENT ? 54 : 106) * this.props.scale,
+                    boxSizing: 'border-box'
                 }}>
                   {this.props.text}
                 </Textfit>
@@ -177,8 +215,10 @@ class Card extends Component {
 
 Card.propTypes = {
   name: React.PropTypes.string,
+  spriteID: React.PropTypes.string,
   type: React.PropTypes.number,
-  text: React.PropTypes.string,
+  text: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]),
+  rawText: React.PropTypes.string,
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
@@ -188,7 +228,9 @@ Card.propTypes = {
   cost: React.PropTypes.number,
   baseCost: React.PropTypes.number,
   onCardClick: React.PropTypes.func,
-  stats: React.PropTypes.object
+  onSpriteClick: React.PropTypes.func,
+  stats: React.PropTypes.object,
+  scale: React.PropTypes.number
 };
 
 export default Card;

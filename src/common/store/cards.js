@@ -348,7 +348,7 @@ export const consumeCard = {
 
 /* eslint-enable quotes */
 
-export const deck = [
+export const collection = [
   attackBotCard,
   dojoDiscipleCard,
   concentrationCard,

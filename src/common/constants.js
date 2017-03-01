@@ -10,6 +10,8 @@ export const TYPE_EVENT = 1;
 export const TYPE_CORE = 2;
 export const TYPE_STRUCTURE = 3;
 
+export const CREATABLE_TYPES = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
+
 const typeToStringMapping = {
   [TYPE_ROBOT]: 'robot',
   [TYPE_EVENT]: 'event',

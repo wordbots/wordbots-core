@@ -110,7 +110,7 @@ class HexShape extends React.Component {
 
   render() {
     const hex = this.props.hex;
-    const text = (hex.props.text) ? hex.props.text : HexUtils.getID(hex);
+    const text = (hex.props.text) ? hex.props.text : ''; //HexUtils.getID(hex);
     const actions = this.props.actions;
     const styles = this.getStyles(hex);
     const pieceStyles = this.getPieceStyles(hex);

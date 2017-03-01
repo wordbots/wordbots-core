@@ -51,12 +51,12 @@ class CardCreationForm extends Component {
   isValid() {
     // Name exists + type is valid + stats are present + all sentences parseable.
     return (
-      this.props.name && this.props.name != '[Unnamed]' &&
+      this.props.name && this.props.name !== '[Unnamed]' &&
         CREATABLE_TYPES.includes(this.props.type) &&
         !isNull(this.props.energy) &&
-        (!isNull(this.props.attack) || this.props.type != TYPE_ROBOT) &&
-        (!isNull(this.props.speed) >= 0 || this.props.type != TYPE_ROBOT) &&
-        (this.props.health >= 1 || this.props.type == TYPE_EVENT) &&
+        (!isNull(this.props.attack) || this.props.type !== TYPE_ROBOT) &&
+        (!isNull(this.props.speed) >= 0 || this.props.type !== TYPE_ROBOT) &&
+        (this.props.health >= 1 || this.props.type === TYPE_EVENT) &&
         every(this.nonEmptySentences(), s => s.result.js)
     );
   }

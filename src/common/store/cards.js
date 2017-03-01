@@ -67,7 +67,7 @@ const superchargeCard = {
   type: TYPE_EVENT
 };
 
-const rampageCard = {
+export const rampageCard = {
   name: 'Rampage',
   text: 'Give all robots you control +2 attack.',
   command: '(function () { actions["modifyAttribute"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])), "attack", function (x) { return x + 2; }); })',
@@ -83,7 +83,7 @@ export const wrathOfRobotGodCard = {
   type: TYPE_EVENT
 };
 
-const threedomCard = {
+export const threedomCard = {
   name: 'Threedom',
   text: 'Set all stats of all robots in play to 3.',
   command: '(function () { actions["setAttribute"](targets["all"](objectsInPlay("robot")), "allattributes", 3); })',
@@ -99,10 +99,10 @@ const earthquakeCard = {
   type: TYPE_EVENT
 };
 
-const discountCard = {
+export const discountCard = {
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
-  command: '(function () { actions["modifyAttribute"](targets["all"](cardsInHand(targets["self"]())), "cost", function (x) { return x - 1; }); })',
+  command: '(function () { actions["modifyAttribute"](targets["all"](cardsInHand(targets["self"](), "anycard")), "cost", function (x) { return x - 1; }); })',
   cost: 2,
   type: TYPE_EVENT
 };
@@ -123,7 +123,7 @@ export const missileStrikeCard = {
   type: TYPE_EVENT
 };
 
-const incinerateCard = {
+export const incinerateCard = {
   name: 'Incinerate',
   text: 'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
   command: [
@@ -247,7 +247,7 @@ export const fortificationCard = {
   ]
 };
 
-const defenderBotCard = {
+export const defenderBotCard = {
   name: 'Defender Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -262,7 +262,7 @@ const defenderBotCard = {
   ]
 };
 
-const recruiterBotCard = {
+export const recruiterBotCard = {
   name: 'Recruiter Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -320,7 +320,7 @@ export const arenaCard = {
   ]
 };
 
-const martyrBotCard = {
+export const martyrBotCard = {
   name: 'Martyr Bot',
   cost: 3,
   type: TYPE_ROBOT,

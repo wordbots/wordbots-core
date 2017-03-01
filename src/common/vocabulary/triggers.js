@@ -23,7 +23,7 @@ export function triggers(state) {
       };
     },
 
-    afterDestroyed: function (targetFunc, cause = 'anyevent') {
+    afterDestroyed: function (targetFunc, cause) {
       return {
         'type': 'afterDestroyed',
         'cause': cause,

@@ -35,7 +35,7 @@ class HexPointers extends React.Component {
 
   render() {
     const hex = this.props.hex;
-    if (hex.props == {} || typeof(hex.props.arrows) === 'undefined')
+    if (hex.props === {} || typeof(hex.props.arrows) === 'undefined')
       return null;
 
     const arrows = hex.props.arrows;
@@ -43,7 +43,7 @@ class HexPointers extends React.Component {
 
     const polygons = points.map((point, index) => {
       if (arrows[index]) {
-        const nextPoint = (index == points.length-1) ? points[0] : points[index+1];
+        const nextPoint = (index === points.length-1) ? points[0] : points[index+1];
         // return this.createPointerPolygon(point, nextPoint);
         return this.createPointerArc(point, nextPoint);
       }

@@ -18,7 +18,7 @@ export function setSelectedCard(state, cardIdx) {
   } else {
     // Toggle card selection.
 
-    if (state.selectedCard == cardIdx) {
+    if (state.selectedCard === cardIdx) {
       // Clicked on already selected card => Deselect or play event
 
       if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
@@ -145,7 +145,7 @@ export function setTargetAndExecuteQueuedAction(state, target) {
   // Perform the trigger.
   const card = state.players[state.currentTurn].hand[state.selectedCard];
 
-  if (card.type == TYPE_EVENT) {
+  if (card.type === TYPE_EVENT) {
     state = playEvent(state, state.selectedCard);
   } else {
     state = placeCard(state, card, state.placementTile);

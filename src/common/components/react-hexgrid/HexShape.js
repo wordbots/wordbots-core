@@ -40,7 +40,7 @@ class HexShape extends React.Component {
   }
 
   getStyles(hex) {
-    if (this.props.fill || (hex.props != {} && typeof(hex.props.image) !== 'undefined')) {
+    if (this.props.fill || (hex.props !== {} && typeof(hex.props.image) !== 'undefined')) {
       return {
         fill: `url(#${ HexUtils.getID(hex) })`
       };

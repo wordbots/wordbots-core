@@ -42,7 +42,7 @@ export default function creator(oldState = defaultState, action) {
 
     case creatorActions.PARSE_COMPLETE:
       state.sentences = state.sentences.map((s, idx) => {
-        if (idx == action.payload.idx) {
+        if (idx === action.payload.idx) {
           return Object.assign({}, s, {result: action.payload.result});
         } else {
           return s;

@@ -12,6 +12,14 @@ export const TYPE_STRUCTURE = 3;
 
 export const CREATABLE_TYPES = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
 
+export const GRID_CONFIG = {
+  width: 600, height: 600,
+  layout: { width: 6, height: 6, flat: false, spacing: 0 },
+  origin: { x: 0, y: 0 },
+  map: 'hexagon',
+  mapProps: [ 4 ]
+};
+
 const typeToStringMapping = {
   [TYPE_ROBOT]: 'robot',
   [TYPE_EVENT]: 'event',

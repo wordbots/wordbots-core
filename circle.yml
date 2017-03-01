@@ -6,6 +6,9 @@ test:
   override:
     - node_modules/eslint/bin/eslint.js src test
     - npm test -- --coverage
+
+    # Test webpack compilation and ability to start a server without failure.
+    - NODE_ENV=test npm start
   post:
     # Export coverage results as a build artifact and to CodeClimate.
     - cp -R coverage $CIRCLE_ARTIFACTS

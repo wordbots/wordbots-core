@@ -15,7 +15,6 @@ export default function game(oldState = defaultState, action) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
     return reduce(action, game, state);
   } else {
-    // console.log(action);
     switch (action.type) {
       case gameActions.MOVE_ROBOT:
         return g.moveRobot(state, action.payload.from, action.payload.to, action.payload.asPartOfAttack);

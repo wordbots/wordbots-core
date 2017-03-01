@@ -50,7 +50,7 @@ class HexShape extends React.Component {
   }
 
   getPieceStyles(hex) {
-    if (this.props.pieceName) {
+    if (this.props.pieceImg !== {}) {
       return {
         fill: `url(#${ HexUtils.getID(hex) }_piece)`,
         stroke: 'none'
@@ -120,14 +120,13 @@ class HexShape extends React.Component {
 
     return (
       <g className="shape-group" transform={this.translate()} draggable="true"
-        onMouseEnter={e => actions.onMouseEnter(this.props.hex, e)}
-        onMouseLeave={e => actions.onMouseLeave(this.props.hex, e)}
+        onMouseEnter={e => actions.onHexHover(this.props.hex, e)}
+        onMouseLeave={e => actions.onHexHover(this.props.hex, e)}
         onClick={e => actions.onClick(this.props.hex, e)}
         >
         <HexPattern
           hex={hex}
           fill={this.props.fill}
-          pieceName={this.props.pieceName}
           pieceImg={this.props.pieceImg}
           images={this.props.images} />
         <polygon points={points} style={{...styles}} />
@@ -145,8 +144,7 @@ HexShape.propTypes = {
   actions: object.isRequired,
   fill: string,
   images: object,
-  pieceName: string,
-  pieceImg: string,
+  pieceImg: object,
   pieceStats: object
 };
 

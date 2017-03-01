@@ -9,21 +9,22 @@ const { object, string } = React.PropTypes;
 class HexPattern extends React.Component {
   piecePattern() {
     const id = HexUtils.getID(this.props.hex);
+    const image = this.props.pieceImg;
 
-    if (this.props.pieceImg && this.props.images[this.props.pieceImg]) {
+    if (image.img && this.props.images[image.img]) {
       return (
-        <pattern id={`${id  }_piece`} height="100%" width="100%"
+        <pattern id={`${id}_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox="-0.1 -0.05 1 1"
           preserveAspectRatio="xMidYMid">
-          <image xlinkHref={this.props.images[this.props.pieceImg]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
+          <image xlinkHref={this.props.images[image.img]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid"/>
         </pattern>
       );
-    } else if (this.props.pieceName) {
+    } else if (image.sprite) {
       return (
-        <pattern id={`${id  }_piece`} height="100%" width="100%"
+        <pattern id={`${id}_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox="0 0 1 1"
           preserveAspectRatio="xMidYMid">
-          <Sprite id={this.props.pieceName} size={24} spacing={6} output="svg" />
+          <Sprite id={image.sprite} size={24} spacing={6} output="svg" />
         </pattern>
       );
     }
@@ -53,8 +54,7 @@ class HexPattern extends React.Component {
 HexPattern.propTypes = {
   hex: object.isRequired,
   fill: string,
-  pieceName: string,
-  pieceImg: string,
+  pieceImg: object,
   images: object
 };
 

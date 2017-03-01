@@ -3,7 +3,7 @@ import { forOwn, intersectionBy, mapValues, some } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
-import { TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
+import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, hasEffect, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
@@ -13,13 +13,7 @@ class Board extends Component {
   constructor(props) {
     super(props);
 
-    const boardConfig = {
-      width: 600, height: 600,
-      layout: { width: 6, height: 6, flat: false, spacing: 0 },
-      origin: { x: 0, y: 0 },
-      map: 'hexagon',
-      mapProps: [ 4 ]
-    };
+    const boardConfig = GRID_CONFIG;
     const grid = HexGrid.generate(boardConfig);
 
     this.state = {
@@ -126,11 +120,8 @@ class Board extends Component {
             HexUtils.getID
           );
 
-          if (possibleMoveHexes.length > 0) {
-            intermediateMoveHex = HexUtils.getID(possibleMoveHexes[0]);
-          } else {
-            action = ''; // Attack is not possible!
-          }
+          // Since getValidAttackHexes().includes(hex), we're guaranteed that there's at least one valid intermediate hex.
+          intermediateMoveHex = HexUtils.getID(possibleMoveHexes[0]);
         }
       }
     }
@@ -157,13 +148,11 @@ class Board extends Component {
 
     const actions = {
       onClick: (h, e) => this.onHexClick(h, e),
-      onMouseEnter: (h, e) => this.onHexHover(h, e),
-      onMouseLeave: (h, e) => this.onHexHover(h, e)
+      onHexHover: (h, e) => this.onHexHover(h, e)
     };
 
     const pieces = this.allPieces();
-    const pieceNames = mapValues(pieces, piece => piece.card.name);
-    const pieceImgs = mapValues(pieces, piece => piece.card.img);
+    const pieceImgs = mapValues(pieces, piece => piece.card.img ? {img: piece.card.img} : {sprite: piece.card.name});
     const pieceStats = mapValues(pieces, (piece) => ({
       health: getAttribute(piece, 'health'),
       attack: getAttribute(piece, 'attack')
@@ -173,7 +162,6 @@ class Board extends Component {
       <div>
         <HexGrid
           hexColors={hexColors}
-          pieceNames={pieceNames}
           pieceImgs={pieceImgs}
           pieceStats={pieceStats}
           actions={actions}

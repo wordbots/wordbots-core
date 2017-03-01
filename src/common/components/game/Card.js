@@ -180,7 +180,14 @@ class Card extends Component {
               }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
               <CardHeader
                 style={{padding: 8 * this.props.scale, height: 'auto'}}
-                title={this.props.name}
+                title={
+                  <Textfit 
+                    mode="single" 
+                    forceSingleModeWidth={false} 
+                    style={{width: 100 * this.props.scale, height: 23 * this.props.scale}}>
+                    {this.props.name}
+                  </Textfit>
+                }
                 titleStyle={{fontSize: 15 * this.props.scale}}
                 subtitle={typeToString(this.props.type)}
                 subtitleStyle={{fontSize: 14 * this.props.scale}} />

@@ -44,16 +44,7 @@ export default function creator(oldState = defaultState, action) {
 
     case creatorActions.ADD_TO_COLLECTION:
       // Reset card creator state.
-      state.name = '';
-      state.spriteID = id();
-      state.type = 0;
-      state.attack = 1;
-      state.speed = 1;
-      state.health = 1;
-      state.energy = 1;
-      state.sentences = [];
-      state.textCleared = true;
-      return state;
+      return Object.assign(state, defaultState, { spriteID: id() });
 
     default:
       return state;

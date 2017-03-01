@@ -55,8 +55,13 @@ class Header extends Component {
               <FontIcon className="material-icons">home</FontIcon>
             }/>
           </Link>
-          <Link to="/cards">
-            <MenuItem primaryText="Cards" leftIcon={
+          <Link to="/creator">
+            <MenuItem primaryText="Creator" leftIcon={
+              <FontIcon className="material-icons">portrait</FontIcon>
+            }/>
+          </Link>
+          <Link to="/collection">
+            <MenuItem primaryText="Collection" leftIcon={
               <FontIcon className="material-icons">recent_actors</FontIcon>
             }/>
           </Link>

@@ -43,15 +43,15 @@ class CardStat extends Component {
           data-for="stat-tooltip"
           data-tip={this.props.type.toProperCase()}
           style={{
-            width: 32,
-            height: 32,
+            width: 32 * (this.props.scale || 1),
+            height: 32 * (this.props.scale || 1),
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: backgroundColor,
             color: '#fff',
             fontFamily: 'Carter One',
-            fontSize: 22
+            fontSize: 22 * (this.props.scale || 1)
         }}>
           <ReactTooltip
             id="stat-tooltip"
@@ -72,7 +72,8 @@ class CardStat extends Component {
 CardStat.propTypes = {
   type: React.PropTypes.string,
   base: React.PropTypes.number,
-  current: React.PropTypes.number
+  current: React.PropTypes.number,
+  scale: React.PropTypes.number
 };
 
 String.prototype.toProperCase = function () {

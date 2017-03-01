@@ -85,6 +85,7 @@ if (process.env.NODE_ENV === 'production') {
 
     ]},
     entry : [
+      'whatwg-fetch',
       'webpack-hot-middleware/client',
       './src/client/index.js'
     ],

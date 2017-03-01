@@ -14,7 +14,8 @@ class CardViewer extends Component {
     if (this.props.hoveredCard) {
       card = (
         <Card
-          onCardClick={function () {}}
+          onCardClick={() => {}}
+          scale={1.5}
           stats={this.props.hoveredCard.stats}
           name={this.props.hoveredCard.card.name}
           type={this.props.hoveredCard.card.type}
@@ -34,7 +35,7 @@ class CardViewer extends Component {
         top: 0,
         bottom: 0,
         margin: 'auto',
-        height: 236
+        height: 236 * 1.5
       }}>
         <ReactCSSTransitionGroup
           transitionName="card-viewer-fade"

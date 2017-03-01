@@ -1,14 +1,15 @@
 import * as cards from './cards';
 
-function player(color, coreCard, coreHexId) {
+export function player(color, collection, coreCard, coreHexId) {
   return {
     name: color,
     energy: {
       available: 1,
       total: 1
     },
-    hand: cards.deck.slice(0, 2),
-    deck: cards.deck.slice(2),
+    hand: collection.slice(0, 2),
+    deck: collection.slice(2),
+    collection: collection,
     robotsOnBoard: {
       [coreHexId]: {
         id: `${color}Core`,
@@ -22,8 +23,8 @@ function player(color, coreCard, coreHexId) {
 
 const defaultState = {
   players: {
-    blue: player('blue', cards.blueCoreCard, '-4,0,4'),
-    orange: player('orange', cards.orangeCoreCard, '4,0,-4')
+    blue: player('blue', cards.collection, cards.blueCoreCard, '-4,0,4'),
+    orange: player('orange', cards.collection, cards.orangeCoreCard, '4,0,-4')
   },
   currentTurn: 'orange',
   selectedTile: null,

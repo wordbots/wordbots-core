@@ -4,58 +4,58 @@ import { connect } from 'react-redux';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
-import * as cardCreatorActions from '../actions/cardCreator';
+import * as creatorActions from '../actions/creator';
 
 function mapStateToProps(state) {
   return {
-    name: state.cardCreator.name,
-    type: state.cardCreator.type,
-    attack: state.cardCreator.attack,
-    speed: state.cardCreator.speed,
-    health: state.cardCreator.health,
-    cost: state.cardCreator.energy,
-    spriteID: state.cardCreator.spriteID,
-    sentences: state.cardCreator.sentences,
-    textCleared: state.cardCreator.textCleared
+    name: state.creator.name,
+    type: state.creator.type,
+    attack: state.creator.attack,
+    speed: state.creator.speed,
+    health: state.creator.health,
+    cost: state.creator.energy,
+    spriteID: state.creator.spriteID,
+    sentences: state.creator.sentences,
+    textCleared: state.creator.textCleared
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     onSetName: (name) => {
-      dispatch(cardCreatorActions.setName(name));
+      dispatch(creatorActions.setName(name));
     },
     onSetType: (type) => {
-      dispatch(cardCreatorActions.setType(type));
+      dispatch(creatorActions.setType(type));
     },
     onSetText: (text) => {
-      dispatch(cardCreatorActions.setText(text));
+      dispatch(creatorActions.setText(text));
     },
     onSetAttack: (attack) => {
-      dispatch(cardCreatorActions.setAttack(attack));
+      dispatch(creatorActions.setAttack(attack));
     },
     onSetSpeed: (speed) => {
-      dispatch(cardCreatorActions.setSpeed(speed));
+      dispatch(creatorActions.setSpeed(speed));
     },
     onSetHealth: (health) => {
-      dispatch(cardCreatorActions.setHealth(health));
+      dispatch(creatorActions.setHealth(health));
     },
     onSetEnergy: (energy) => {
-      dispatch(cardCreatorActions.setEnergy(energy));
+      dispatch(creatorActions.setEnergy(energy));
     },
     onParseComplete: (idx, sentence, result) => {
-      dispatch(cardCreatorActions.parseComplete(idx, sentence, result));
+      dispatch(creatorActions.parseComplete(idx, sentence, result));
     },
     onSpriteClick: () => {
-      dispatch(cardCreatorActions.regenerateSprite());
+      dispatch(creatorActions.regenerateSprite());
     },
     onAddToCollection: (props) => {
-      dispatch(cardCreatorActions.addToCollection(props));
+      dispatch(creatorActions.addToCollection(props));
     }
   };
 }
 
-class CardCreator extends Component {
+class Creator extends Component {
   constructor(props) {
     super(props);
   }
@@ -63,7 +63,7 @@ class CardCreator extends Component {
   render() {
     return (
       <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
-        <Helmet title="Card Creator"/>
+        <Helmet title="Creator"/>
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
@@ -102,7 +102,7 @@ class CardCreator extends Component {
   }
 }
 
-CardCreator.propTypes = {
+Creator.propTypes = {
   name: React.PropTypes.string,
   type: React.PropTypes.number,
   textCleared: React.PropTypes.bool,
@@ -126,4 +126,4 @@ CardCreator.propTypes = {
   onAddToCollection: React.PropTypes.func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardCreator);
+export default connect(mapStateToProps, mapDispatchToProps)(Creator);

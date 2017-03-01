@@ -1,36 +1,36 @@
-import defaultState from '../store/defaultCardCreatorState';
-import * as cardCreatorActions from '../actions/cardCreator';
+import defaultState from '../store/defaultCreatorState';
+import * as creatorActions from '../actions/creator';
 import { id } from '../util';
 
-export default function cardCreator(oldState = defaultState, action) {
+export default function creator(oldState = defaultState, action) {
   const state = Object.assign({}, oldState);
 
   switch (action.type) {
-    case cardCreatorActions.SET_NAME:
+    case creatorActions.SET_NAME:
       state.name = action.payload.name;
       return state;
 
-    case cardCreatorActions.SET_TYPE:
+    case creatorActions.SET_TYPE:
       state.type = action.payload.type;
       return state;
 
-    case cardCreatorActions.SET_ATTACK:
+    case creatorActions.SET_ATTACK:
       state.attack = isNaN(action.payload.attack) ? null : action.payload.attack;
       return state;
 
-    case cardCreatorActions.SET_SPEED:
+    case creatorActions.SET_SPEED:
       state.speed = isNaN(action.payload.speed) ? null : action.payload.speed;
       return state;
 
-    case cardCreatorActions.SET_HEALTH:
+    case creatorActions.SET_HEALTH:
       state.health = isNaN(action.payload.health) ? null : action.payload.health;
       return state;
 
-    case cardCreatorActions.SET_ENERGY:
+    case creatorActions.SET_ENERGY:
       state.energy = isNaN(action.payload.energy) ? null : action.payload.energy;
       return state;
 
-    case cardCreatorActions.SET_TEXT: {
+    case creatorActions.SET_TEXT: {
       const validCurrentParses = _.fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
       state.sentences = action.payload.sentences.map(sentence => ({
         sentence: sentence,
@@ -40,7 +40,7 @@ export default function cardCreator(oldState = defaultState, action) {
       return state;
     }
 
-    case cardCreatorActions.PARSE_COMPLETE:
+    case creatorActions.PARSE_COMPLETE:
       state.sentences = state.sentences.map((s, idx) => {
         if (idx == action.payload.idx) {
           return Object.assign({}, s, {result: action.payload.result});
@@ -50,11 +50,11 @@ export default function cardCreator(oldState = defaultState, action) {
       });
       return state;
 
-    case cardCreatorActions.REGENERATE_SPRITE:
+    case creatorActions.REGENERATE_SPRITE:
       state.spriteID = id();
       return state;
 
-    case cardCreatorActions.ADD_TO_COLLECTION:
+    case creatorActions.ADD_TO_COLLECTION:
       state.name = '';
       state.spriteID = id();
       state.type = 0;

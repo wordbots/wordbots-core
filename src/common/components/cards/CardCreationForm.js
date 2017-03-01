@@ -75,7 +75,7 @@ class CardCreationForm extends Component {
               label="Energy Cost"
               value={this.props.energy}
               style={{width: 'none', flexGrow: 1}}
-              onChange={this.props.onSetEnergy} />
+              onChange={v => { this.props.onSetAttribute('energy', v); }} />
           </div>
 
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -117,19 +117,19 @@ class CardCreationForm extends Component {
               value={this.props.attack}
               style={{width: '100%', marginRight: 25}}
               disabled={this.props.type !== TYPE_ROBOT}
-              onChange={this.props.onSetAttack} />
+              onChange={v => { this.props.onSetAttribute('attack', v); }} />
             <NumberField
               label="Speed"
               value={this.props.speed}
               style={{width: '100%', marginRight: 25}}
               disabled={this.props.type !== TYPE_ROBOT}
-              onChange={this.props.onSetSpeed} />
+              onChange={v => { this.props.onSetAttribute('speed', v); }} />
             <NumberField
               label="Health"
               value={this.props.health}
               style={{width: '100%', marginRight: 25}}
               disabled={this.props.type === TYPE_EVENT}
-              onChange={this.props.onSetHealth} />
+              onChange={v => { this.props.onSetAttribute('health', v); }} />
           </div>
 
           <RaisedButton
@@ -159,10 +159,7 @@ CardCreationForm.propTypes = {
   onSetName: React.PropTypes.func,
   onSetType: React.PropTypes.func,
   onSetText: React.PropTypes.func,
-  onSetAttack: React.PropTypes.func,
-  onSetSpeed: React.PropTypes.func,
-  onSetHealth: React.PropTypes.func,
-  onSetEnergy: React.PropTypes.func,
+  onSetAttribute: React.PropTypes.func,
 
   onParseComplete: React.PropTypes.func,
   onSpriteClick: React.PropTypes.func,

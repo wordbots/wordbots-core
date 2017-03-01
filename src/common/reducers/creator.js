@@ -14,20 +14,8 @@ export default function creator(oldState = defaultState, action) {
       state.type = action.payload.type;
       return state;
 
-    case creatorActions.SET_ATTACK:
-      state.attack = isNaN(action.payload.attack) ? null : action.payload.attack;
-      return state;
-
-    case creatorActions.SET_SPEED:
-      state.speed = isNaN(action.payload.speed) ? null : action.payload.speed;
-      return state;
-
-    case creatorActions.SET_HEALTH:
-      state.health = isNaN(action.payload.health) ? null : action.payload.health;
-      return state;
-
-    case creatorActions.SET_ENERGY:
-      state.energy = isNaN(action.payload.energy) ? null : action.payload.energy;
+    case creatorActions.SET_ATTRIBUTE:
+      state[action.payload.attr] = isNaN(action.payload.value) ? null : action.payload.value;
       return state;
 
     case creatorActions.SET_TEXT: {
@@ -55,6 +43,7 @@ export default function creator(oldState = defaultState, action) {
       return state;
 
     case creatorActions.ADD_TO_COLLECTION:
+      // Reset card creator state.
       state.name = '';
       state.spriteID = id();
       state.type = 0;

@@ -1,9 +1,6 @@
 export const SET_NAME = 'SET_NAME';
 export const SET_TYPE = 'SET_TYPE';
-export const SET_ATTACK = 'SET_ATTACK';
-export const SET_SPEED = 'SET_SPEED';
-export const SET_HEALTH = 'SET_HEALTH';
-export const SET_ENERGY = 'SET_ENERGY';
+export const SET_ATTRIBUTE = 'SET_ATTRIBUTE';
 export const SET_TEXT = 'SET_TEXT';
 export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
@@ -27,38 +24,12 @@ export function setType(type) {
   };
 }
 
-export function setAttack(attack) {
+export function setAttribute(attr, value) {
   return {
-    type: SET_ATTACK,
+    type: SET_ATTRIBUTE,
     payload: {
-      attack: attack
-    }
-  };
-}
-
-export function setSpeed(speed) {
-  return {
-    type: SET_SPEED,
-    payload: {
-      speed: speed
-    }
-  };
-}
-
-export function setHealth(health) {
-  return {
-    type: SET_HEALTH,
-    payload: {
-      health: health
-    }
-  };
-}
-
-export function setEnergy(energy) {
-  return {
-    type: SET_ENERGY,
-    payload: {
-      energy: energy
+      attr: attr,
+      value: value
     }
   };
 }

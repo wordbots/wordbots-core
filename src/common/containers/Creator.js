@@ -31,17 +31,8 @@ function mapDispatchToProps(dispatch) {
     onSetText: (text) => {
       dispatch(creatorActions.setText(text));
     },
-    onSetAttack: (attack) => {
-      dispatch(creatorActions.setAttack(attack));
-    },
-    onSetSpeed: (speed) => {
-      dispatch(creatorActions.setSpeed(speed));
-    },
-    onSetHealth: (health) => {
-      dispatch(creatorActions.setHealth(health));
-    },
-    onSetEnergy: (energy) => {
-      dispatch(creatorActions.setEnergy(energy));
+    onSetAttribute: (attr, value) => {
+      dispatch(creatorActions.setAttribute(attr, value));
     },
     onParseComplete: (idx, sentence, result) => {
       dispatch(creatorActions.parseComplete(idx, sentence, result));
@@ -78,10 +69,7 @@ class Creator extends Component {
             onSetName={(name) => { this.props.onSetName(name); }}
             onSetType={(type) => { this.props.onSetType(type); }}
             onSetText={(text) => { this.props.onSetText(text); }}
-            onSetAttack={(attack) => { this.props.onSetAttack(attack); }}
-            onSetSpeed={(speed) => { this.props.onSetSpeed(speed); }}
-            onSetHealth={(health) => { this.props.onSetHealth(health); }}
-            onSetEnergy={(energy) => { this.props.onSetEnergy(energy); }}
+            onSetAttribute={(attr, value) => { this.props.onSetAttribute(attr, value); }}
             onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
             onSpriteClick={() => { this.props.onSpriteClick(); }}
             onAddToCollection={() => { this.props.onAddToCollection(this.props); }}
@@ -116,10 +104,7 @@ Creator.propTypes = {
   onSetName: React.PropTypes.func,
   onSetType: React.PropTypes.func,
   onSetText: React.PropTypes.func,
-  onSetAttack: React.PropTypes.func,
-  onSetSpeed: React.PropTypes.func,
-  onSetHealth: React.PropTypes.func,
-  onSetEnergy: React.PropTypes.func,
+  onSetAttribute: React.PropTypes.func,
 
   onParseComplete: React.PropTypes.func,
   onSpriteClick: React.PropTypes.func,

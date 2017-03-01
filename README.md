@@ -5,37 +5,40 @@
 
 ## Development Installation
 
-In the project's directory, run the following commands:
-
 ```
 $ npm install
 $ npm start
 ```
 
-Then Visit
-
+Then visit
 ```
 http://localhost:3000
 ```
 
 ## Releasing to Production
 
-Production has Devtools, logging and hot reloading middleware removed and the scripts/css compressed. 
-
-In the project's directory, run the following commands:
+Production has Devtools, logging and hot reloading middleware removed and the scripts/css compressed.
 
 ```
 $ npm run build
 $ npm run start-prod
 ```
 
-Then Visit
-
+Then visit
 ```
 http://localhost:3000
 ```
 
-## Run Test
+## Lint and test
 ```
-npm test
+node_modules/eslint/bin/eslint.js src test --fix && npm test -- --coverage
 ```
+
+## Acknowledgements
+
+Some code taken from the following (all MIT licensed):
+
+* [`redux-react-material-boilerplate`](https://github.com/WapGeaR/redux-react-material-boilerplate)
+* [`react-hexgrid`](https://github.com/hellenic/react-hexgrid)
+* notsurt's [`spritegen`](https://github.com/not-surt/spritegen)
+* gimenete's [`identicons-react`](https://github.com/gimenete/identicons-react)

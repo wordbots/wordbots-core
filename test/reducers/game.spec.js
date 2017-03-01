@@ -9,7 +9,7 @@ import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
   newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack,
   setUpBoardState
-} from '../test_helpers';
+} from '../testHelpers';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {

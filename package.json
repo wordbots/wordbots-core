@@ -110,7 +110,7 @@
       "_": {}
     },
     "setupFiles": [
-      "./test/before_test.js"
+      "./test/beforeTest.js"
     ]
   }
 }

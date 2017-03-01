@@ -1,5 +1,5 @@
-import { setUpBoardState, newTurn, playObject, playEvent } from '../test_helpers';
-import { getComponent } from '../react_helpers';
+import { setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers';
+import { getComponent } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
 import { STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';

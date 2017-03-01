@@ -4,7 +4,7 @@ import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { renderElement, getComponent, createGame } from '../react_helpers';
+import { renderElement, getComponent, createGame } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
 import defaultState from '../../src/common/store/defaultGameState';

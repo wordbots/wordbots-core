@@ -1,6 +1,6 @@
-import { flatMap, without } from 'lodash';
+import { flatMap, some, without } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
+import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE } from './constants';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -12,11 +12,45 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // 0. Miscellaneous utility functions.
 //
 
+export function id() {
+  return Math.random().toString(36).slice(2, 16);
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
-    id: Math.random().toString(36).slice(2, 16),
+    id: id(),
     baseCost: card.cost
   });
+}
+
+// Converts card from cardCreator store format -> format for collection and game stores.
+export function createCardFromProps(props) {
+  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
+
+  if (props.type == TYPE_EVENT) {
+    return instantiateCard({
+      name: props.name,
+      type: TYPE_EVENT,
+      spriteID: props.spriteID,
+      text: sentences.map(s => `${s.sentence}. `).join(''),
+      command: sentences.map(s => s.result.js),
+      cost: props.cost
+    });
+  } else {
+    return instantiateCard({
+      name: props.name,
+      type: props.type,
+      spriteID: props.spriteID,
+      text: sentences.map(s => `${s.sentence}. `).join(''),
+      abilities: sentences.map(s => s.result.js),
+      cost: props.cost,
+      stats: {
+        health: props.health,
+        speed: props.type == TYPE_ROBOT ? props.attack : undefined,
+        attack: props.type == TYPE_ROBOT ? props.attack : undefined
+      }
+    });
+  }
 }
 
 //
@@ -44,9 +78,9 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  if (_.some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
+  if (some(state.players.blue.robotsOnBoard, o => o.id == object.id)) {
     return state.players.blue;
-  } else if (_.some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
+  } else if (some(state.players.orange.robotsOnBoard, o => o.id == object.id)) {
     return state.players.orange;
   }
 }

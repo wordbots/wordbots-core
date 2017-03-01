@@ -1,6 +1,8 @@
 import { flatMap, some, without } from 'lodash';
 
-import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from './constants';
+import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType, BLUE_CORE_HEX, ORANGE_CORE_HEX } from './constants';
+import defaultState, { playerState } from './store/defaultGameState';
+import { blueCoreCard, orangeCoreCard } from './store/cards';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -12,6 +14,10 @@ import HexUtils from './components/react-hexgrid/HexUtils';
 // 0. Miscellaneous utility functions.
 //
 
+export function id() {
+  return Math.random().toString(36).slice(2, 16);
+}
+
 export function clamp(func) {
   return (stat => _.clamp(func(stat), 0, 99));
 }
@@ -20,46 +26,11 @@ export function applyFuncToField(obj, func, field) {
   return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
 }
 
-export function id() {
-  return Math.random().toString(36).slice(2, 16);
-}
-
 export function instantiateCard(card) {
   return Object.assign({}, card, {
     id: id(),
     baseCost: card.cost
   });
-}
-
-// Converts card from cardCreator store format -> format for collection and game stores.
-// TODO Put this somewhere other than util.js?
-export function createCardFromProps(props) {
-  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
-
-  if (props.type === TYPE_EVENT) {
-    return instantiateCard({
-      name: props.name,
-      type: TYPE_EVENT,
-      spriteID: props.spriteID,
-      text: sentences.map(s => `${s.sentence}. `).join(''),
-      command: sentences.map(s => s.result.js),
-      cost: props.cost
-    });
-  } else {
-    return instantiateCard({
-      name: props.name,
-      type: props.type,
-      spriteID: props.spriteID,
-      text: sentences.map(s => `${s.sentence}. `).join(''),
-      abilities: sentences.map(s => s.result.js),
-      cost: props.cost,
-      stats: {
-        health: props.health,
-        speed: props.type === TYPE_ROBOT ? props.attack : undefined,
-        attack: props.type === TYPE_ROBOT ? props.attack : undefined
-      }
-    });
-  }
 }
 
 //
@@ -191,6 +162,13 @@ export function validAttackHexes(state, playerName, startHex, speed) {
 //
 // III. Effects on game state that are performed in many different places.
 //
+
+export function newGame(state, collections) {
+  state = Object.assign(state, defaultState); // Reset game state.
+  state.players.blue = playerState('blue', collections.blue, blueCoreCard, BLUE_CORE_HEX);
+  state.players.orange = playerState('orange', collections.orange, orangeCoreCard, ORANGE_CORE_HEX);
+  return state;
+}
 
 export function drawCards(state, player, count) {
   player.hand = player.hand.concat(player.deck.splice(0, count));

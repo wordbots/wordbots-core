@@ -38,6 +38,8 @@ engines:
         enabled: false
   fixme:
     enabled: true
+  markdownlint:
+    enabled: true
 ratings:
   paths:
   - "**.css"

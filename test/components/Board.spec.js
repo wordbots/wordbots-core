@@ -3,7 +3,7 @@ import { getComponent } from '../react_helpers';
 import * as actions from '../../src/common/actions/game';
 import { STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';
-import defaultState from '../../src/common/store/defaultState';
+import defaultState from '../../src/common/store/defaultGameState';
 import { attackBotCard, shockCard } from '../../src/common/store/cards';
 import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';

@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import { renderElement, getComponent, createGame } from '../react_helpers';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
-import defaultState from '../../src/common/store/defaultState';
+import defaultState from '../../src/common/store/defaultGameState';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
 import CardViewer from '../../src/common/components/game/CardViewer';

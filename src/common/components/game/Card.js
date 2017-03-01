@@ -182,8 +182,7 @@ class Card extends Component {
                 style={{padding: 8 * this.props.scale, height: 'auto'}}
                 title={
                   <Textfit 
-                    mode="single" 
-                    forceSingleModeWidth={false} 
+                    mode="multi"  
                     style={{width: 100 * this.props.scale, height: 23 * this.props.scale}}>
                     {this.props.name}
                   </Textfit>

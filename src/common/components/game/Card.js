@@ -169,7 +169,11 @@ class Card extends Component {
             zIndex: this.props.hovered ? 1000 : 0
           }}
         >
-          <div onClick={this.props.onCardClick} onMouseEnter={this.props.onCardHover}>
+          <div
+            onClick={this.props.onCardClick}
+            onMouseEnter={this.props.onCardHover}
+            onMouseLeave={this.props.onCardHover}
+          >
             <Paper
               onMouseOver={this.onMouseOver}
               onMouseOut={this.onMouseOut}

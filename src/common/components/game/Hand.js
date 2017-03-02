@@ -28,6 +28,7 @@ class Hand extends Component {
         onCardClick={e => { this.props.onSelectCard(index); }}
         onCardHover={e => { this.props.onHoverCard(e.type === 'mouseenter' ? index : null); }}
         key={card.id}
+        numCards={numCards}
         status={this.props.status}
         name={card.name}
         type={card.type}
@@ -39,6 +40,8 @@ class Hand extends Component {
         stats={{}}
         scale={1}
         cardMargin={index < numCards - 1 ? cardMargin : 0}
+        rotation={(index - (numCards - 1)/2) * 5}
+        yTranslation={Math.abs((numCards - 1)/2 - index) * 10}
         selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
         hovered={this.props.hoveredCard === index}
         targetable={this.props.targetableCards.includes(card.id)}

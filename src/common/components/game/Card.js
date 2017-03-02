@@ -166,7 +166,8 @@ class Card extends Component {
           style={{
             paddingLeft: 0,
             marginRight: this.props.cardMargin,
-            zIndex: this.props.hovered ? 1000 : 0
+            zIndex: this.props.hovered ? 1000 : 0,
+            transform: `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation}px)`
           }}
         >
           <div
@@ -247,7 +248,9 @@ Card.propTypes = {
   onSpriteClick: React.PropTypes.func,
   stats: React.PropTypes.object,
   scale: React.PropTypes.number,
-  cardMargin: React.PropTypes.number
+  cardMargin: React.PropTypes.number,
+  rotation: React.PropTypes.number,
+  yTranslation: React.PropTypes.number
 };
 
 export default Card;

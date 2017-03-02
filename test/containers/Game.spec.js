@@ -39,6 +39,7 @@ describe('Game container', () => {
           deck={state.game.players.orange.deck}
           selectedCard={null}
           targetableCards={[]}
+          onHoverCard={game.props.onHoverCard}
           onSelectCard={game.props.onSelectCard}
           />
         <Divider style={{marginTop: 10}}/>
@@ -73,6 +74,7 @@ describe('Game container', () => {
           deck={state.game.players.blue.deck}
           selectedCard={null}
           targetableCards={[]}
+          onHoverCard={game.props.onHoverCard}
           onSelectCard={game.props.onSelectCard}
           />
         <VictoryScreen winner={null} />
@@ -115,7 +117,7 @@ describe('Game container', () => {
     expect(
       hoverHex('4,0,-4', 'mouseenter')
     ).toEqual(
-      actions.setHoveredCard({
+      actions.setHoveredTile({
         card: createGame(state).props.orangePieces['4,0,-4'].card,
         stats: {health: 20}
       })
@@ -123,7 +125,7 @@ describe('Game container', () => {
     expect(
       hoverHex('4,0,-4', 'mouseleave')
     ).toEqual(
-      actions.setHoveredCard(null)
+      actions.setHoveredTile(null)
     );
 
     // Set selected card.

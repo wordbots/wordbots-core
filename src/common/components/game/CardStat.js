@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/lib/paper';
 import ReactTooltip from 'react-tooltip';
 
+import { id } from '../../util';
+
 class CardStat extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
+    const tooltipId = id();
     let backgroundColor = '';
     let textColor = 'white';
     let webkitTextStroke = 'none';
@@ -40,7 +43,7 @@ class CardStat extends Component {
       <div>
         <Paper circle
           zDepth={1}
-          data-for="stat-tooltip"
+          data-for={tooltipId}
           data-tip={this.props.type.toProperCase()}
           style={{
             width: 32 * (this.props.scale || 1),
@@ -54,7 +57,7 @@ class CardStat extends Component {
             fontSize: 22 * (this.props.scale || 1)
         }}>
           <ReactTooltip
-            id="stat-tooltip"
+            id={tooltipId}
             place="top"
             type="dark"
             effect="float" />

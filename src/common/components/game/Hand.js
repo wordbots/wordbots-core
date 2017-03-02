@@ -25,10 +25,12 @@ class Hand extends Component {
   }
 
   render() {
-    const widthPerCard = 150;
+    const widthPerCard = 175;
+    const maxWidth = this.availableWidth;
     const numCards = this.props.cards.length;
     const baseWidth = numCards * widthPerCard;
-    const cardMargin = (this.availableWidth && this.availableWidth < baseWidth) ? (this.availableWidth - baseWidth) / numCards : 0;
+    const cardMargin = (maxWidth && maxWidth < baseWidth) ? (maxWidth - baseWidth) / (numCards - 1) : 0;
+    console.log([this.availableWidth, baseWidth, cardMargin, numCards * (widthPerCard + cardMargin)]);
 
     const cards = this.props.cards.map((card, index) => {
       const cardClick = this.onCardClick.bind(this, index);
@@ -49,7 +51,7 @@ class Hand extends Component {
           cardStats={card.stats}
           stats={{}}
           scale={1}
-          cardMargin={cardMargin}
+          cardMargin={index < numCards - 1 ? cardMargin : 0}
           selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
           hovered={this.props.hoveredCard === index}
           targetable={this.props.targetableCards.includes(card.id)}

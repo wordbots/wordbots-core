@@ -147,7 +147,7 @@ class Card extends Component {
 
     if (!this.props.visible) {
       return (
-        <CardBack cardMargin={this.props.cardMargin} />
+        <CardBack margin={this.props.margin} rotation={this.props.rotation} yTranslation={this.props.yTranslation} />
       );
     } else {
       return (
@@ -165,9 +165,9 @@ class Card extends Component {
           }, this.costBadgeStyle())}
           style={{
             paddingLeft: 0,
-            marginRight: this.props.cardMargin,
+            marginRight: this.props.margin,
             zIndex: this.props.hovered ? 1000 : 0,
-            transform: `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation}px)`
+            transform: `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`
           }}
         >
           <div
@@ -192,7 +192,8 @@ class Card extends Component {
                 title={
                   <Textfit
                     mode="multi"
-                    style={{width: 100 * this.props.scale, height: 23 * this.props.scale}}>
+                    max={16 * this.props.scale}
+                    style={{width: 105 * this.props.scale, height: 23 * this.props.scale}}>
                     {this.props.name}
                   </Textfit>
                 }
@@ -236,21 +237,24 @@ Card.propTypes = {
   rawText: React.PropTypes.string,
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
+  stats: React.PropTypes.object,
+  cost: React.PropTypes.number,
+  baseCost: React.PropTypes.number,
+
+  status: React.PropTypes.object,
   visible: React.PropTypes.bool,
   hovered: React.PropTypes.bool,
   selected: React.PropTypes.bool,
   targetable: React.PropTypes.bool,
-  status: React.PropTypes.object,
-  cost: React.PropTypes.number,
-  baseCost: React.PropTypes.number,
+
+  scale: React.PropTypes.number,
+  margin: React.PropTypes.number,
+  rotation: React.PropTypes.number,
+  yTranslation: React.PropTypes.number,
+
   onCardClick: React.PropTypes.func,
   onCardHover: React.PropTypes.func,
-  onSpriteClick: React.PropTypes.func,
-  stats: React.PropTypes.object,
-  scale: React.PropTypes.number,
-  cardMargin: React.PropTypes.number,
-  rotation: React.PropTypes.number,
-  yTranslation: React.PropTypes.number
+  onSpriteClick: React.PropTypes.func
 };
 
 export default Card;

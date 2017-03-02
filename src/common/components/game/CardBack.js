@@ -17,7 +17,11 @@ class CardBack extends Component {
     }
 
     return (
-      <div style={{padding: '24px 24px 12px 0', marginRight: this.props.cardMargin}}>
+      <div style={{
+        padding: '24px 24px 12px 0',
+        marginRight: this.props.margin,
+        transform: `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`
+      }}>
         <Paper
           zDepth={2}
           style={Object.assign({
@@ -56,7 +60,9 @@ class CardBack extends Component {
 
 CardBack.propTypes = {
   deckLength: React.PropTypes.number,
-  cardMargin: React.PropTypes.number
+  margin: React.PropTypes.number,
+  rotation: React.PropTypes.number,
+  yTranslation: React.PropTypes.number
 };
 
 export default CardBack;

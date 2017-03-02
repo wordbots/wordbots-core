@@ -16,7 +16,7 @@ class Hand extends Component {
     this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
   }
 
-  render() {
+  renderCards() {
     const widthPerCard = 175;
     const maxWidth = this.availableWidth;
     const numCards = this.props.cards.length;
@@ -24,7 +24,7 @@ class Hand extends Component {
     const cardMargin = (maxWidth && maxWidth < baseWidth) ? (maxWidth - baseWidth) / (numCards - 1) : 0;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
-    const cards = this.props.cards.map((card, index) => {
+    return this.props.cards.map((card, index) => {
       const rotationDegs = (index - (numCards - 1)/2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;  // TODO this isn't quite right.
 
@@ -44,16 +44,18 @@ class Hand extends Component {
           cardStats={card.stats}
           stats={{}}
           scale={1}
-          cardMargin={index < numCards - 1 ? cardMargin : 0}
-          rotation={rotationDegs}
-          yTranslation={translationPx}
+          margin={index < numCards - 1 ? cardMargin : 0}
+          rotation={rotationDegs * {'orange': 1, 'blue': -1}[this.props.name]}
+          yTranslation={translationPx * {'orange': 1, 'blue': -1}[this.props.name]}
           selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
           hovered={this.props.hoveredCard === index}
           targetable={this.props.targetableCards.includes(card.id)}
           visible={this.props.isCurrentPlayer} />
       );
     });
+  }
 
+  render() {
     return (
       <ReactCSSTransitionGroup
         transitionName="hand"
@@ -64,13 +66,14 @@ class Hand extends Component {
           justifyContent: 'center',
           width: '100%'
         }}>
-        {cards}
+        {this.renderCards()}
       </ReactCSSTransitionGroup>
     );
   }
 }
 
 Hand.propTypes = {
+  name: React.PropTypes.string,
   cards: React.PropTypes.array,
   isCurrentPlayer: React.PropTypes.bool,
   onSelectCard: React.PropTypes.func,

@@ -12,6 +12,8 @@ export default function creator(oldState = defaultState, action) {
 
     case creatorActions.SET_TYPE:
       state.type = action.payload.type;
+      // Clear parsed state because we're triggering a re-parse.
+      state.sentences = state.sentences.map(s => Object.assign({}, s, {result: {}}));
       return state;
 
     case creatorActions.SET_ATTRIBUTE:

@@ -19,8 +19,9 @@ class CardCreationForm extends Component {
     super(props);
   }
 
-  onUpdateText(text) {
+  onUpdateText(text, cardType) {
     const sentences = text.split(/[\\.!\?]/);
+    const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
     const debounceTimeoutMs = 500;
 
     this.props.onSetText(sentences);
@@ -32,7 +33,7 @@ class CardCreationForm extends Component {
       sentences
         .filter(sentence => /\S/.test(sentence))
         .forEach((sentence, idx) => {
-          const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js`;
+          const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js&mode=${parserMode}`;
           fetch(parseUrl)
             .then(response => response.json())
             .then(json => { this.props.onParseComplete(idx, sentence, json); });
@@ -83,7 +84,12 @@ class CardCreationForm extends Component {
               value={this.props.type}
               floatingLabelText="Card Type"
               style={{width: '80%', marginRight: 25}}
-              onChange={(e, i, value) => { this.props.onSetType(value); }}>
+              onChange={(e, i, value) => {
+                this.props.onSetType(value);
+                // Re-parse card text because different card types now have different validations.
+                const cardText = this.props.sentences.map(s => s.sentence).join('. ');
+                this.onUpdateText(cardText, value);
+              }}>
               {
                 CREATABLE_TYPES.map(type => <MenuItem key={type} value={type} primaryText={typeToString(type)}/>)
               }

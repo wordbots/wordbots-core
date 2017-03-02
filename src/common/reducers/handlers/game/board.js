@@ -8,7 +8,7 @@ import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 import { setTargetAndExecuteQueuedAction } from './cards';
 
-export function setHoveredCard(state, card) {
+export function setHoveredTile(state, card) {
   return Object.assign({}, state, {hoveredCard: card});
 }
 

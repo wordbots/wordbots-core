@@ -26,7 +26,7 @@ const middlewareBuilder = () => {
       ];
     } else {
       const logger = createLogger({
-        predicate: (getState, action) => action.type !== gameActions.SET_HOVERED_CARD
+        predicate: (getState, action) => ![gameActions.SET_HOVERED_CARD, gameActions.SET_HOVERED_TILE].includes(action.type)
       });
 
       middleware = applyMiddleware(...universalMiddleware, logger);

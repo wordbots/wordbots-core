@@ -17,7 +17,7 @@ class CardBack extends Component {
     }
 
     return (
-      <div style={{padding: '24px 24px 12px 0'}}>
+      <div style={{padding: '24px 24px 12px 0', marginRight: this.props.cardMargin}}>
         <Paper
           zDepth={2}
           style={Object.assign({
@@ -55,7 +55,8 @@ class CardBack extends Component {
 }
 
 CardBack.propTypes = {
-  deckLength: React.PropTypes.number
+  deckLength: React.PropTypes.number,
+  cardMargin: React.PropTypes.number
 };
 
 export default CardBack;

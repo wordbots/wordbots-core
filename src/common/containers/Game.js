@@ -20,6 +20,7 @@ export function mapStateToProps(state) {
 
     selectedTile: state.game.selectedTile,
     selectedCard: state.game.selectedCard,
+    hoveredCardIdx: state.game.hoveredCardIdx,
     hoveredCard: state.game.hoveredCard,
     playingCardType: state.game.playingCardType,
 
@@ -63,8 +64,11 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId) => {
       dispatch(gameActions.setSelectedTile(hexId));
     },
+    onHoverCard: (index) => {
+      dispatch(gameActions.setHoveredCard(index));
+    },
     onHoverTile: (card) => {
-      dispatch(gameActions.setHoveredCard(card));
+      dispatch(gameActions.setHoveredTile(card));
     }
   };
 }
@@ -136,8 +140,10 @@ export class Game extends Component {
         cards={this.props[`${color}Hand`]}
         deck={this.props[`${color}Deck`]}
         selectedCard={this.props.selectedCard}
+        hoveredCard={this.props.hoveredCardIdx}
         targetableCards={this.props.currentTurn === color ? this.props.target.possibleCards : []}
-        onSelectCard={this.props.onSelectCard} />
+        onSelectCard={this.props.onSelectCard}
+        onHoverCard={this.props.onHoverCard} />
     );
   }
 
@@ -204,6 +210,7 @@ Game.propTypes = {
   orangeDeck: React.PropTypes.array,
 
   selectedCard: React.PropTypes.number,
+  hoveredCardIdx: React.PropTypes.number,
 
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,
@@ -212,6 +219,7 @@ Game.propTypes = {
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
+  onHoverCard: React.PropTypes.func,
   onHoverTile: React.PropTypes.func
 };
 

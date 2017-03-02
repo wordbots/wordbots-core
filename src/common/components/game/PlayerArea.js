@@ -18,10 +18,10 @@ class PlayerArea extends Component {
       }}>
         <EnergyCount energy={this.props.energy} />
         <Hand
-          onSelectCard={(index) => {
-            this.props.onSelectCard(index);
-          }}
+          onSelectCard={this.props.onSelectCard}
+          onHoverCard={this.props.onHoverCard}
           selectedCard={this.props.selectedCard}
+          hoveredCard={this.props.hoveredCard}
           targetableCards={this.props.targetableCards}
           isCurrentPlayer={this.props.isCurrentPlayer}
           cards={this.props.cards}
@@ -36,7 +36,9 @@ PlayerArea.propTypes = {
   name: React.PropTypes.string,
   energy: React.PropTypes.object,
   onSelectCard: React.PropTypes.func,
+  onHoverCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
+  hoveredCard: React.PropTypes.number,
   targetableCards: React.PropTypes.array,
   isCurrentPlayer: React.PropTypes.bool,
   cards: React.PropTypes.array,

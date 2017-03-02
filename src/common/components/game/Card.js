@@ -147,7 +147,7 @@ class Card extends Component {
 
     if (!this.props.visible) {
       return (
-        <CardBack />
+        <CardBack cardMargin={this.props.cardMargin} />
       );
     } else {
       return (
@@ -163,9 +163,13 @@ class Card extends Component {
             color: 'white',
             fontSize: 16 * this.props.scale
           }, this.costBadgeStyle())}
-          style={{paddingLeft: 0}}
+          style={{
+            paddingLeft: 0,
+            marginRight: this.props.cardMargin,
+            zIndex: this.props.hovered ? 1000 : 0
+          }}
         >
-          <div onClick={this.props.onCardClick}>
+          <div onClick={this.props.onCardClick} onMouseEnter={this.props.onCardHover}>
             <Paper
               onMouseOver={this.onMouseOver}
               onMouseOut={this.onMouseOut}
@@ -181,8 +185,8 @@ class Card extends Component {
               <CardHeader
                 style={{padding: 8 * this.props.scale, height: 'auto'}}
                 title={
-                  <Textfit 
-                    mode="multi"  
+                  <Textfit
+                    mode="multi"
                     style={{width: 100 * this.props.scale, height: 23 * this.props.scale}}>
                     {this.props.name}
                   </Textfit>
@@ -228,15 +232,18 @@ Card.propTypes = {
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
   visible: React.PropTypes.bool,
+  hovered: React.PropTypes.bool,
   selected: React.PropTypes.bool,
   targetable: React.PropTypes.bool,
   status: React.PropTypes.object,
   cost: React.PropTypes.number,
   baseCost: React.PropTypes.number,
   onCardClick: React.PropTypes.func,
+  onCardHover: React.PropTypes.func,
   onSpriteClick: React.PropTypes.func,
   stats: React.PropTypes.object,
-  scale: React.PropTypes.number
+  scale: React.PropTypes.number,
+  cardMargin: React.PropTypes.number
 };
 
 export default Card;

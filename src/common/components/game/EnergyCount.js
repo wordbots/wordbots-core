@@ -13,14 +13,14 @@ class EnergyCount extends Component {
         circle
         style={{
           backgroundColor: '#00bcd4',
-          width: 48,
-          height: 48,
+          width: 50,
+          height: 50,
           textAlign: 'center',
           display: 'flex',
           justifyContent: 'center',
           userSelect: 'none',
           cursor: 'pointer',
-          minWidth: 48,
+          minWidth: 50,
           marginRight: 8
       }}>
         <div

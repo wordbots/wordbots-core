@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import ReactDOM from 'react-dom';
 
 import { getCost } from '../../util';
 
@@ -12,7 +13,7 @@ class Hand extends Component {
   }
 
   componentDidMount() {
-   this.availableWidth = React.findDOMNode(this).offsetWidth;
+   this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
   }
 
   onCardClick(index, e) {

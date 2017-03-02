@@ -17,52 +17,43 @@ class CardBack extends Component {
     }
 
     return (
-      <div style={{
-        padding: '24px 24px 12px 0',
-        marginRight: this.props.margin,
-        transform: `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`
-      }}>
-        <Paper
-          zDepth={2}
-          style={Object.assign({
-            width: 140,
-            height: 206,
-            marginRight: 10,
-            borderRadius: 5,
-            backgroundColor: '#f44336',
-            boxSizing: 'border-box',
-            padding: 5,
-            userSelect: 'none',
-            cursor: 'pointer'
-        }, style)}>
+      <Paper
+        zDepth={2}
+        style={Object.assign({
+          width: 140,
+          height: 206,
+          marginRight: 10,
+          borderRadius: 5,
+          backgroundColor: '#f44336',
+          boxSizing: 'border-box',
+          padding: 5,
+          userSelect: 'none',
+          cursor: 'pointer'
+      }, style)}>
+        <div style={{
+          writingMode: 'vertical-lr',
+          width: 'calc(100% - 50px)',
+          height: 'calc(100% - 4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          //alignItems: 'center',
+          paddingLeft: 46,
+          borderRadius: 5,
+          border: '2px solid #FFF'
+        }}>
           <div style={{
-            writingMode: 'vertical-lr',
-            width: 'calc(100% - 50px)',
-            height: 'calc(100% - 4px)',
-            display: 'flex',
-            justifyContent: 'center',
-            //alignItems: 'center',
-            paddingLeft: 46,
-            borderRadius: 5,
-            border: '2px solid #FFF'
-          }}>
-            <div style={{
-              color: '#fff',
-              fontSize: 26,
-              fontFamily: 'Carter One'
-            }}>WORDBOTS</div>
-          </div>
-        </Paper>
-      </div>
+            color: '#fff',
+            fontSize: 26,
+            fontFamily: 'Carter One'
+          }}>WORDBOTS</div>
+        </div>
+      </Paper>
     );
   }
 }
 
 CardBack.propTypes = {
-  deckLength: React.PropTypes.number,
-  margin: React.PropTypes.number,
-  rotation: React.PropTypes.number,
-  yTranslation: React.PropTypes.number
+  deckLength: React.PropTypes.number
 };
 
 export default CardBack;

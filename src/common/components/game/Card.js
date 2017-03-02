@@ -144,10 +144,17 @@ class Card extends Component {
     const selectedStyle = {
       boxShadow: `${(this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
+    const transform = `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
 
     if (!this.props.visible) {
       return (
-        <CardBack margin={this.props.margin} rotation={this.props.rotation} yTranslation={this.props.yTranslation} />
+        <div style={{
+          padding: '24px 24px 12px 0',
+          marginRight: this.props.margin,
+          transform: transform
+        }}>
+          <CardBack />
+        </div>
       );
     } else {
       return (
@@ -167,7 +174,7 @@ class Card extends Component {
             paddingLeft: 0,
             marginRight: this.props.margin,
             zIndex: this.props.hovered ? 1000 : 0,
-            transform: `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`
+            transform: transform
           }}
         >
           <div

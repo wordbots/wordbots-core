@@ -22,31 +22,37 @@ class Hand extends Component {
     const numCards = this.props.cards.length;
     const baseWidth = numCards * widthPerCard;
     const cardMargin = (maxWidth && maxWidth < baseWidth) ? (maxWidth - baseWidth) / (numCards - 1) : 0;
+    const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
-    const cards = this.props.cards.map((card, index) => (
-      <Card
-        onCardClick={e => { this.props.onSelectCard(index); }}
-        onCardHover={e => { this.props.onHoverCard(e.type === 'mouseenter' ? index : null); }}
-        key={card.id}
-        numCards={numCards}
-        status={this.props.status}
-        name={card.name}
-        type={card.type}
-        text={card.text || ''}
-        img={card.img}
-        cost={getCost(card)}
-        baseCost={card.baseCost}
-        cardStats={card.stats}
-        stats={{}}
-        scale={1}
-        cardMargin={index < numCards - 1 ? cardMargin : 0}
-        rotation={(index - (numCards - 1)/2) * 5}
-        yTranslation={Math.abs((numCards - 1)/2 - index) * 10}
-        selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
-        hovered={this.props.hoveredCard === index}
-        targetable={this.props.targetableCards.includes(card.id)}
-        visible={this.props.isCurrentPlayer} />
-    ));
+    const cards = this.props.cards.map((card, index) => {
+      const rotationDegs = (index - (numCards - 1)/2) * 5;
+      const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;  // TODO this isn't quite right.
+
+      return (
+        <Card
+          onCardClick={e => { this.props.onSelectCard(index); }}
+          onCardHover={e => { this.props.onHoverCard(e.type === 'mouseenter' ? index : null); }}
+          key={card.id}
+          numCards={numCards}
+          status={this.props.status}
+          name={card.name}
+          type={card.type}
+          text={card.text || ''}
+          img={card.img}
+          cost={getCost(card)}
+          baseCost={card.baseCost}
+          cardStats={card.stats}
+          stats={{}}
+          scale={1}
+          cardMargin={index < numCards - 1 ? cardMargin : 0}
+          rotation={rotationDegs}
+          yTranslation={translationPx}
+          selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
+          hovered={this.props.hoveredCard === index}
+          targetable={this.props.targetableCards.includes(card.id)}
+          visible={this.props.isCurrentPlayer} />
+      );
+    });
 
     return (
       <ReactCSSTransitionGroup

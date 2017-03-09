@@ -76,7 +76,7 @@ class Collection extends Component {
             }}>Filters</div>
 
             <div style={{
-              marginBottom: 10
+              marginBottom: 20
             }}>
               <div style={{
                 fontWeight: 700,
@@ -126,7 +126,7 @@ class Collection extends Component {
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
-                marginBottom: 10
+                marginBottom: 20
               }}>Card Cost</div>
 
               <div>

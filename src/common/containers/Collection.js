@@ -62,10 +62,38 @@ class Collection extends Component {
 
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          alignItems: 'flex-start'
         }}>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start',
+            width: '80%',
+            margin: 50
+          }}>
+            {
+              this.props.cards.filter(this.filterCards.bind(this)).map(card =>
+                <Card
+                  key={card.id}
+                  visible
+                  name={card.name}
+                  spriteID={card.spriteID}
+                  type={card.type}
+                  text={card.text || ''}
+                  stats={card.stats}
+                  cardStats={card.stats}
+                  cost={card.cost}
+                  baseCost={card.cost}
+                  scale={1}
+                  />
+              )
+            }
+          </div>
+
           <Paper style={{
             margin: 50,
+            marginLeft: 0,
             padding: 20,
             width: '18%'
           }}>
@@ -122,7 +150,9 @@ class Collection extends Component {
                 })}/>
             </div>
 
-            <div>
+            <div style={{
+              marginBottom: 20
+            }}>
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
@@ -152,31 +182,6 @@ class Collection extends Component {
             </div>
           </Paper>
 
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start',
-            width: '70%',
-            margin: '50px auto'
-          }}>
-            {
-              this.props.cards.filter(this.filterCards.bind(this)).map(card =>
-                <Card
-                  key={card.id}
-                  visible
-                  name={card.name}
-                  spriteID={card.spriteID}
-                  type={card.type}
-                  text={card.text || ''}
-                  stats={card.stats}
-                  cardStats={card.stats}
-                  cost={card.cost}
-                  baseCost={card.cost}
-                  scale={1}
-                  />
-              )
-            }
-          </div>
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/lib/paper';
 import Toggle from 'material-ui/lib/toggle';
+import { Range } from 'rc-slider';
 
 import Card from '../components/game/Card';
 
@@ -25,7 +26,8 @@ class Collection extends Component {
         robots: true,
         events: true,
         structures: true
-      }
+      },
+      manaRange: [0, 20]
     };
   }
 
@@ -39,6 +41,10 @@ class Collection extends Component {
     }
 
     if (!this.state.filters.structures && card.type === 3) {
+      return false;
+    }
+
+    if (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1]) {
       return false;
     }
 
@@ -69,7 +75,9 @@ class Collection extends Component {
               marginBottom: 20
             }}>Filters</div>
 
-            <div>
+            <div style={{
+              marginBottom: 10
+            }}>
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
@@ -85,7 +93,8 @@ class Collection extends Component {
                     robots: toggled,
                     events: this.state.filters.events,
                     structures: this.state.filters.structures
-                  }
+                  },
+                  manaRange: this.state.manaRange
                 })}/>
               <Toggle
                 style={toggleStyle}
@@ -96,7 +105,8 @@ class Collection extends Component {
                     robots: this.state.filters.robots,
                     events: toggled,
                     structures: this.state.filters.structures
-                  }
+                  },
+                  manaRange: this.state.manaRange
                 })}/>
               <Toggle
                 style={toggleStyle}
@@ -107,8 +117,38 @@ class Collection extends Component {
                     robots: this.state.filters.robots,
                     events: this.state.filters.events,
                     structures: toggled
-                  }
+                  },
+                  manaRange: this.state.manaRange
                 })}/>
+            </div>
+
+            <div>
+              <div style={{
+                fontWeight: 700,
+                fontSize: 14,
+                marginBottom: 10
+              }}>Card Cost</div>
+
+              <div>
+                <Range 
+                  step={1} 
+                  allowCross={false} 
+                  min={0}
+                  max={20}
+                  marks={{
+                    0: 0,
+                    5: 5,
+                    10: 10,
+                    15: 15,
+                    20: 20
+                  }}
+                  defaultValue={[0, 20]} 
+                  onChange={(values) => this.setState({
+                    filters: this.state.filters,
+                    manaRange: values
+                  })
+                }/>
+              </div>
             </div>
           </Paper>
 

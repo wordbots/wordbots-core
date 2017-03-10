@@ -243,7 +243,7 @@ class Collection extends Component {
           justifyContent: 'space-between',
           alignItems: 'flex-start'
         }}>
-          <div style={{marginTop: 50}}>
+          <div style={{marginTop: 50, marginLeft: 40}}>
             {this.renderDeleteButton()}
 
             <div style={{
@@ -251,8 +251,7 @@ class Collection extends Component {
               flexWrap: 'wrap',
               justifyContent: 'flex-start',
               width: '80%',
-              margin: 50,
-              marginTop: 10
+              margin: 10
             }}>
               {
                 this.props.cards
@@ -267,7 +266,7 @@ class Collection extends Component {
             margin: 50,
             marginLeft: 0,
             padding: 20,
-            width: '18%'
+            minWidth: '18%'
           }}>
             <div style={{
               fontWeight: 100,

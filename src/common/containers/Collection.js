@@ -50,6 +50,12 @@ class Collection extends Component {
     );
   }
 
+  toggleFilter(filter) {
+    return (e, toggled) => {
+      this.updateState(s => ({filters: Object.assign({}, s.filters, {[filter]: toggled})}));
+    };
+  }
+
   sortCards(a, b) {
     const sortFuncs = [
       x => x.cost,
@@ -184,23 +190,17 @@ class Collection extends Component {
           style={toggleStyle}
           label="Robots"
           defaultToggled
-          onToggle={(e, toggled) => {
-            this.updateState(s => ({filters: Object.assign({}, s.filters, {robots: toggled})}));
-          }} />
+          onToggle={this.toggleFilter('robots')} />
         <Toggle
           style={toggleStyle}
           label="Events"
           defaultToggled
-          onToggle={(e, toggled) => {
-            this.updateState(s => ({filters: Object.assign({}, s.filters, {events: toggled})}));
-          }} />
+          onToggle={this.toggleFilter('events')} />
         <Toggle
           style={toggleStyle}
           label="Structures"
           defaultToggled
-          onToggle={(e, toggled) => {
-            this.updateState(s => ({filters: Object.assign({}, s.filters, {structures: toggled})}));
-          }} />
+          onToggle={this.toggleFilter('robots')} />
       </div>,
 
       <div style={{

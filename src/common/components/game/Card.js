@@ -144,7 +144,7 @@ class Card extends Component {
     const selectedStyle = {
       boxShadow: `${(this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
-    const transform = ''; //`rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
+    const transform = `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
 
     if (!this.props.visible) {
       return (
@@ -158,80 +158,82 @@ class Card extends Component {
       );
     } else {
       return (
-        <Badge
-          badgeContent={this.props.cost}
-          badgeStyle={Object.assign({
-            top: 12,
-            right: 20,
-            width: 36 * this.props.scale,
-            height: 36 * this.props.scale,
-            backgroundColor: '#00bcd4',
-            fontFamily: 'Carter One',
-            color: 'white',
-            fontSize: 16 * this.props.scale
-          }, this.costBadgeStyle())}
-          style={{
-            paddingLeft: 0,
-            paddingRight: 0,
-            marginRight: this.props.margin,
-            zIndex: this.props.zIndex || 0,
-            transform: transform
-          }}
-        >
-          <div
-            onClick={this.props.onCardClick}
-            onMouseEnter={this.props.onCardHover}
-            onMouseLeave={this.props.onCardHover}
+        <div>
+          <Badge
+            badgeContent={this.props.cost}
+            badgeStyle={Object.assign({
+              top: 12,
+              right: -4,
+              width: 36 * this.props.scale,
+              height: 36 * this.props.scale,
+              backgroundColor: '#00bcd4',
+              fontFamily: 'Carter One',
+              color: 'white',
+              fontSize: 16 * this.props.scale
+            }, this.costBadgeStyle())}
+            style={{
+              paddingLeft: 0,
+              paddingRight: 0,
+              marginRight: this.props.margin,
+              zIndex: this.props.zIndex || 0,
+              transform: transform
+            }}
           >
-            <Paper
-              onMouseOver={this.onMouseOver}
-              onMouseOut={this.onMouseOut}
-              zDepth={this.state.shadow}
-              style={Object.assign({
-                width: 140 * this.props.scale,
-                height: 211 * this.props.scale,
-                marginRight: 10 * this.props.scale,
-                borderRadius: 5 * this.props.scale,
-                userSelect: 'none',
-                cursor: 'pointer'
-              }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
-              <CardHeader
-                style={{padding: 8 * this.props.scale, height: 'auto'}}
-                title={
+            <div
+              onClick={this.props.onCardClick}
+              onMouseEnter={this.props.onCardHover}
+              onMouseLeave={this.props.onCardHover}
+            >
+              <Paper
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+                zDepth={this.state.shadow}
+                style={Object.assign({
+                  width: 140 * this.props.scale,
+                  height: 211 * this.props.scale,
+                  marginRight: 10 * this.props.scale,
+                  borderRadius: 5 * this.props.scale,
+                  userSelect: 'none',
+                  cursor: 'pointer'
+                }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
+                <CardHeader
+                  style={{padding: 8 * this.props.scale, height: 'auto'}}
+                  title={
+                    <Textfit
+                      mode="multi"
+                      max={16 * this.props.scale}
+                      style={{width: 105 * this.props.scale, height: 23 * this.props.scale}}>
+                      {this.props.name}
+                    </Textfit>
+                  }
+                  titleStyle={{fontSize: 15 * this.props.scale}}
+                  subtitle={typeToString(this.props.type)}
+                  subtitleStyle={{fontSize: 14 * this.props.scale}} />
+
+                <Divider/>
+
+                {this.renderImage()}
+
+                <Divider/>
+
+                <div style={this.textAreaStyle()}>
                   <Textfit
                     mode="multi"
-                    max={16 * this.props.scale}
-                    style={{width: 105 * this.props.scale, height: 23 * this.props.scale}}>
-                    {this.props.name}
+                    max={14 * this.props.scale}
+                    style={{
+                      padding: 6 * this.props.scale,
+                      paddingBottom: 0,
+                      height: (this.props.type !== TYPE_EVENT ? 54 : 106) * this.props.scale,
+                      boxSizing: 'border-box'
+                  }}>
+                    {this.props.text}
                   </Textfit>
-                }
-                titleStyle={{fontSize: 15 * this.props.scale}}
-                subtitle={typeToString(this.props.type)}
-                subtitleStyle={{fontSize: 14 * this.props.scale}} />
-
-              <Divider/>
-
-              {this.renderImage()}
-
-              <Divider/>
-
-              <div style={this.textAreaStyle()}>
-                <Textfit
-                  mode="multi"
-                  max={14 * this.props.scale}
-                  style={{
-                    padding: 6 * this.props.scale,
-                    paddingBottom: 0,
-                    height: (this.props.type !== TYPE_EVENT ? 54 : 106) * this.props.scale,
-                    boxSizing: 'border-box'
-                }}>
-                  {this.props.text}
-                </Textfit>
-                {this.renderStatsArea()}
-              </div>
-            </Paper>
-          </div>
-        </Badge>
+                  {this.renderStatsArea()}
+                </div>
+              </Paper>
+            </div>
+          </Badge>
+        </div>
       );
     }
   }

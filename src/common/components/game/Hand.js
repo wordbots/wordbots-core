@@ -25,6 +25,7 @@ class Hand extends Component {
           key={card.id}
           status={this.props.status}
           name={card.name}
+          spriteID={card.spriteID}
           type={card.type}
           text={card.text || ''}
           img={card.img}

@@ -29,7 +29,8 @@ function createCardFromProps(props) {
     type: props.type,
     spriteID: props.spriteID,
     text: sentences.map(s => `${s.sentence}. `).join(''),
-    cost: props.cost
+    cost: props.cost,
+    source: 'user'  // In the future, this will specify *which* user created the card.
   };
 
   if (props.type === TYPE_EVENT) {

@@ -44,6 +44,7 @@ class CardCreator extends Component {
                 cardStats={card.stats}
                 cost={card.cost}
                 baseCost={card.cost}
+                source={card.source}
                 scale={1}
                 />
             )

@@ -378,4 +378,6 @@ export const collection = [
   rampageCard,
   untapCard,
   wrathOfRobotGodCard
-].map(instantiateCard);
+].map(c =>
+  Object.assign(instantiateCard(c), {source: 'builtin'})
+);

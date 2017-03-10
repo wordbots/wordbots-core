@@ -176,13 +176,14 @@ class Card extends Component {
                 marginRight: 10 * this.props.scale,
                 borderRadius: 5 * this.props.scale,
                 userSelect: 'none',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                backgroundColor: this.props.source === 'builtin' ? '#f9ffe2' : '#ffffff'
               }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
               <CardHeader
                 style={{padding: 8 * this.props.scale, height: 'auto'}}
                 title={
-                  <Textfit 
-                    mode="multi"  
+                  <Textfit
+                    mode="multi"
                     style={{width: 100 * this.props.scale, height: 23 * this.props.scale}}>
                     {this.props.name}
                   </Textfit>
@@ -227,6 +228,7 @@ Card.propTypes = {
   rawText: React.PropTypes.string,
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
+  source: React.PropTypes.string,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
   targetable: React.PropTypes.bool,

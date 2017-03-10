@@ -143,14 +143,7 @@ class Collection extends Component {
           }}
           value={this.state.sortingCriteria}
           floatingLabelText="Criteria"
-          onChange={(e, i, value) => {
-            this.setState({
-              filters: this.state.filters,
-              manaRange: this.state.manaRange,
-              sortingCriteria: value,
-              sortingOrder: this.state.sortingOrder
-            });
-          }}>
+          onChange={(e, i, value) => { this.setState(s => Object.assign({}, s, {sortingCriteria: value})); }}>
           <MenuItem value={0} primaryText="By Cost"/>
           <MenuItem value={1} primaryText="By Name"/>
           <MenuItem value={2} primaryText="By Type"/>
@@ -162,14 +155,7 @@ class Collection extends Component {
           }}
           value={this.state.sortingOrder}
           floatingLabelText="Order"
-          onChange={(e, i, value) => {
-            this.setState({
-              filters: this.state.filters,
-              manaRange: this.state.manaRange,
-              sortingCriteria: this.state.sortingCriteria,
-              sortingOrder: value
-            });
-          }}>
+          onChange={(e, i, value) => { this.setState(s => Object.assign({}, s, {sortingOrder: value})); }}>
           <MenuItem value={0} primaryText="Ascending"/>
           <MenuItem value={1} primaryText="Descending"/>
         </SelectField>

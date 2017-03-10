@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/lib/paper';
+import SelectField from 'material-ui/lib/SelectField';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 import Toggle from 'material-ui/lib/toggle';
 import { Range } from 'rc-slider';
 
@@ -27,8 +29,65 @@ class Collection extends Component {
         events: true,
         structures: true
       },
-      manaRange: [0, 20]
+      manaRange: [0, 20],
+      sortingCriteria: 0,
+      sortingOrder: 0
     };
+  }
+
+  sortCards(a, b) {
+    switch (this.state.sortingCriteria) {
+      case 0: // By cost
+        if (this.state.sortingOrder) {
+          if (a.cost > b.cost)
+            return -1;
+          else if (a.cost < b.cost)
+            return 1;
+          else
+            return 0;
+        } else {
+          if (a.cost < b.cost)
+            return -1;
+          else if (a.cost > b.cost)
+            return 1;
+          else
+            return 0;
+        }
+      case 1: // By name
+        if (this.state.sortingOrder) {
+          if (a.name > b.name)
+            return -1;
+          else if (a.name < b.name)
+            return 1;
+          else
+            return 0;
+        } else {
+          if (a.name < b.name)
+            return -1;
+          else if (a.name > b.name)
+            return 1;
+          else
+            return 0;
+        }
+      case 2: // By type
+        if (this.state.sortingOrder) {
+          if (a.type > b.type)
+            return -1;
+          else if (a.type < b.type)
+            return 1;
+          else
+            return 0;
+        } else {
+          if (a.type < b.type)
+            return -1;
+          else if (a.type > b.type)
+            return 1;
+          else
+            return 0;
+        }
+      case 3: // By creator
+        return 0;
+    }
   }
 
   filterCards(card) {
@@ -73,20 +132,22 @@ class Collection extends Component {
             margin: 50
           }}>
             {
-              this.props.cards.filter(this.filterCards.bind(this)).map(card =>
-                <Card
-                  key={card.id}
-                  visible
-                  name={card.name}
-                  spriteID={card.spriteID}
-                  type={card.type}
-                  text={card.text || ''}
-                  stats={card.stats}
-                  cardStats={card.stats}
-                  cost={card.cost}
-                  baseCost={card.cost}
-                  scale={1}
-                  />
+              this.props.cards
+                .filter(this.filterCards.bind(this))
+                .sort(this.sortCards.bind(this))
+                .map(card =>
+                  <Card
+                    key={card.id}
+                    visible
+                    name={card.name}
+                    spriteID={card.spriteID}
+                    type={card.type}
+                    text={card.text || ''}
+                    stats={card.stats}
+                    cardStats={card.stats}
+                    cost={card.cost}
+                    baseCost={card.cost}
+                    scale={1} />
               )
             }
           </div>
@@ -108,6 +169,46 @@ class Collection extends Component {
             }}>
               <div style={{
                 fontWeight: 700,
+                fontSize: 14
+              }}>Sorting</div>
+
+              <SelectField 
+                value={this.state.sortingCriteria}
+                floatingLabelText="Criteria"
+                onChange={(e, i, value) => {
+                  this.setState({
+                    filters: this.state.filters,
+                    manaRange: this.state.manaRange,
+                    sortingCriteria: value,
+                    sortingOrder: this.state.sortingOrder
+                  });
+                }}>
+                <MenuItem value={0} primaryText="By Cost"/>
+                <MenuItem value={1} primaryText="By Name"/>
+                <MenuItem value={2} primaryText="By Type"/>
+                <MenuItem value={3} primaryText="By Creator"/>
+              </SelectField>
+              <SelectField 
+                value={this.state.sortingOrder}
+                floatingLabelText="Order"
+                onChange={(e, i, value) => {
+                  this.setState({
+                    filters: this.state.filters,
+                    manaRange: this.state.manaRange,
+                    sortingCriteria: this.state.sortingCriteria,
+                    sortingOrder: value
+                  });
+                }}>
+                <MenuItem value={0} primaryText="Ascending"/>
+                <MenuItem value={1} primaryText="Descending"/>
+              </SelectField>
+            </div>
+
+            <div style={{
+              marginBottom: 20
+            }}>
+              <div style={{
+                fontWeight: 700,
                 fontSize: 14,
                 marginBottom: 10
               }}>Card Types</div>
@@ -122,7 +223,9 @@ class Collection extends Component {
                     events: this.state.filters.events,
                     structures: this.state.filters.structures
                   },
-                  manaRange: this.state.manaRange
+                  manaRange: this.state.manaRange,
+                  sortingCriteria: this.state.sortingCriteria,
+                  sortingOrder: this.state.sortingOrder
                 })}/>
               <Toggle
                 style={toggleStyle}
@@ -134,7 +237,9 @@ class Collection extends Component {
                     events: toggled,
                     structures: this.state.filters.structures
                   },
-                  manaRange: this.state.manaRange
+                  manaRange: this.state.manaRange,
+                  sortingCriteria: this.state.sortingCriteria,
+                  sortingOrder: this.state.sortingOrder
                 })}/>
               <Toggle
                 style={toggleStyle}
@@ -146,7 +251,9 @@ class Collection extends Component {
                     events: this.state.filters.events,
                     structures: toggled
                   },
-                  manaRange: this.state.manaRange
+                  manaRange: this.state.manaRange,
+                  sortingCriteria: this.state.sortingCriteria,
+                  sortingOrder: this.state.sortingOrder
                 })}/>
             </div>
 
@@ -175,7 +282,9 @@ class Collection extends Component {
                   defaultValue={[0, 20]} 
                   onChange={(values) => this.setState({
                     filters: this.state.filters,
-                    manaRange: values
+                    manaRange: values,
+                    sortingCriteria: this.state.sortingCriteria,
+                    sortingOrder: this.state.sortingOrder
                   })
                 }/>
               </div>

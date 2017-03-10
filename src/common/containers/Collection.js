@@ -44,6 +44,12 @@ class Collection extends Component {
     };
   }
 
+  updateState(newProps) {
+    this.setState(s =>
+      Object.assign({}, s, _.isFunction(newProps) ? newProps(s) : newProps)
+    );
+  }
+
   sortCards(a, b) {
     const sortFuncs = [
       x => x.cost,
@@ -100,11 +106,11 @@ class Collection extends Component {
         selected={this.state.selectedCards.includes(card.id)}
         onCardClick={e => {
           if (card.source !== 'builtin') {
-            this.setState(state => {
+            this.updateState(state => {
               if (state.selectedCards.includes(card.id)) {
-                return Object.assign({}, state, {selectedCards: _.without(state.selectedCards, card.id)});
+                return {selectedCards: _.without(state.selectedCards, card.id)};
               } else {
-                return Object.assign({}, state, {selectedCards: [...state.selectedCards, card.id]});
+                return {selectedCards: [...state.selectedCards, card.id]};
               }
             });
           }
@@ -138,24 +144,20 @@ class Collection extends Component {
         }}>Sorting</div>
 
         <SelectField
-          style={{
-            width: '100%'
-          }}
+          style={{width: '100%'}}
           value={this.state.sortingCriteria}
           floatingLabelText="Criteria"
-          onChange={(e, i, value) => { this.setState(s => Object.assign({}, s, {sortingCriteria: value})); }}>
+          onChange={(e, i, value) => { this.updateState({sortingCriteria: value}); }}>
           <MenuItem value={0} primaryText="By Cost"/>
           <MenuItem value={1} primaryText="By Name"/>
           <MenuItem value={2} primaryText="By Type"/>
           <MenuItem value={3} primaryText="By Creator"/>
         </SelectField>
         <SelectField
-          style={{
-            width: '100%'
-          }}
+          style={{width: '100%'}}
           value={this.state.sortingOrder}
           floatingLabelText="Order"
-          onChange={(e, i, value) => { this.setState(s => Object.assign({}, s, {sortingOrder: value})); }}>
+          onChange={(e, i, value) => { this.updateState({sortingOrder: value}); }}>
           <MenuItem value={0} primaryText="Ascending"/>
           <MenuItem value={1} primaryText="Descending"/>
         </SelectField>
@@ -183,33 +185,21 @@ class Collection extends Component {
           label="Robots"
           defaultToggled
           onToggle={(e, toggled) => {
-            this.setState(s =>
-              Object.assign({}, s,
-                {filters: Object.assign({}, s.filters, {robots: toggled})}
-              )
-            );
+            this.updateState(s => ({filters: Object.assign({}, s.filters, {robots: toggled})}));
           }} />
         <Toggle
           style={toggleStyle}
           label="Events"
           defaultToggled
           onToggle={(e, toggled) => {
-            this.setState(s =>
-              Object.assign({}, s,
-                {filters: Object.assign({}, s.filters, {events: toggled})}
-              )
-            );
+            this.updateState(s => ({filters: Object.assign({}, s.filters, {events: toggled})}));
           }} />
         <Toggle
           style={toggleStyle}
           label="Structures"
           defaultToggled
           onToggle={(e, toggled) => {
-            this.setState(s =>
-              Object.assign({}, s,
-                {filters: Object.assign({}, s.filters, {structures: toggled})}
-              )
-            );
+            this.updateState(s => ({filters: Object.assign({}, s.filters, {structures: toggled})}));
           }} />
       </div>,
 
@@ -236,7 +226,7 @@ class Collection extends Component {
               20: 20
             }}
             defaultValue={[0, 20]}
-            onChange={values => { this.setState(s => Object.assign({}, s, {manaRange: values})); }}
+            onChange={values => { this.updateState({manaRange: values}); }}
           />
         </div>
       </div>

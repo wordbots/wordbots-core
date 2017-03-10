@@ -19,20 +19,21 @@ class Hand extends Component {
   renderCards() {
     const widthPerCard = 151;
     const defaultMargin = 24;
-    const maxWidth = this.availableWidth;
+    const maxWidth = this.availableWidth - 10;
     const numCards = this.props.cards.length;
     const baseWidth = numCards * widthPerCard;
     const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
-    return this.props.cards.map((card, index) => {
-      const rotationDegs = (index - (numCards - 1)/2) * 5;
+    return this.props.cards.map((card, idx) => {
+      const playerHandDirection = {'orange': 1, 'blue': -1}[this.props.name];
+
+      const zIndex = _.isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
+      const rotationDegs = (idx - (numCards - 1)/2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;  // TODO this isn't quite right.
 
       return (
         <Card
-          onCardClick={e => { this.props.onSelectCard(index); }}
-          onCardHover={e => { this.props.onHoverCard(index); }}
           key={card.id}
           numCards={numCards}
           status={this.props.status}
@@ -44,14 +45,19 @@ class Hand extends Component {
           baseCost={card.baseCost}
           cardStats={card.stats}
           stats={{}}
-          scale={1}
-          margin={index < numCards - 1 ? cardMargin : 0}
-          rotation={rotationDegs * {'orange': 1, 'blue': -1}[this.props.name]}
-          yTranslation={translationPx * {'orange': 1, 'blue': -1}[this.props.name]}
-          selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
-          zIndex={(this.props.hoveredCard > -1) ? (1000 - Math.abs(this.props.hoveredCard - index) * 10) : 0}
+
+          selected={this.props.selectedCard === idx && _.isEmpty(this.props.targetableCards)}
           targetable={this.props.targetableCards.includes(card.id)}
-          visible={this.props.isCurrentPlayer} />
+          visible={this.props.isCurrentPlayer}
+
+          scale={1}
+          margin={idx < numCards - 1 ? cardMargin : 0}
+          rotation={rotationDegs * playerHandDirection}
+          yTranslation={translationPx * playerHandDirection}
+          zIndex={zIndex}
+
+          onCardClick={e => { this.props.onSelectCard(idx); }}
+          onCardHover={e => { this.props.onHoverCard(idx); }} />
       );
     });
   }

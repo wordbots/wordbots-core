@@ -24,6 +24,7 @@ export function endTurn(state) {
   state.currentTurn = opponentName(state);
   state.selectedCard = null;
   state.selectedTile = null;
+  state.hoveredCardIdx = null;
   state.playingCardType = null;
   state.status.message = '';
   state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};

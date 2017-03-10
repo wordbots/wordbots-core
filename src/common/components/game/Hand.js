@@ -17,11 +17,12 @@ class Hand extends Component {
   }
 
   renderCards() {
-    const widthPerCard = 175;
+    const widthPerCard = 151;
+    const defaultMargin = 24;
     const maxWidth = this.availableWidth;
     const numCards = this.props.cards.length;
     const baseWidth = numCards * widthPerCard;
-    const cardMargin = (maxWidth && maxWidth < baseWidth) ? (maxWidth - baseWidth) / (numCards - 1) : 0;
+    const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
     return this.props.cards.map((card, index) => {
@@ -31,7 +32,7 @@ class Hand extends Component {
       return (
         <Card
           onCardClick={e => { this.props.onSelectCard(index); }}
-          onCardHover={e => { this.props.onHoverCard(e.type === 'mouseenter' ? index : null); }}
+          onCardHover={e => { this.props.onHoverCard(index); }}
           key={card.id}
           numCards={numCards}
           status={this.props.status}
@@ -48,7 +49,7 @@ class Hand extends Component {
           rotation={rotationDegs * {'orange': 1, 'blue': -1}[this.props.name]}
           yTranslation={translationPx * {'orange': 1, 'blue': -1}[this.props.name]}
           selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
-          hovered={this.props.hoveredCard === index}
+          zIndex={(this.props.hoveredCard > -1) ? (1000 - Math.abs(this.props.hoveredCard - index) * 10) : 0}
           targetable={this.props.targetableCards.includes(card.id)}
           visible={this.props.isCurrentPlayer} />
       );

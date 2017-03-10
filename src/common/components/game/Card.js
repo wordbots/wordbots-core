@@ -149,7 +149,7 @@ class Card extends Component {
     if (!this.props.visible) {
       return (
         <div style={{
-          padding: '24px 24px 12px 0',
+          padding: '24px 0 12px 0',
           marginRight: this.props.margin,
           transform: transform
         }}>
@@ -172,8 +172,9 @@ class Card extends Component {
           }, this.costBadgeStyle())}
           style={{
             paddingLeft: 0,
+            paddingRight: 0,
             marginRight: this.props.margin,
-            zIndex: this.props.hovered ? 1000 : 0,
+            zIndex: this.props.zIndex || 0,
             transform: transform
           }}
         >
@@ -250,7 +251,7 @@ Card.propTypes = {
 
   status: React.PropTypes.object,
   visible: React.PropTypes.bool,
-  hovered: React.PropTypes.bool,
+  zIndex: React.PropTypes.number,
   selected: React.PropTypes.bool,
   targetable: React.PropTypes.bool,
 

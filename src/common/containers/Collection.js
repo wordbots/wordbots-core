@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Toggle from 'material-ui/lib/toggle';
 import { Range } from 'rc-slider';
 
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import Card from '../components/game/Card';
 
 function mapStateToProps(state) {
@@ -36,70 +37,33 @@ class Collection extends Component {
   }
 
   sortCards(a, b) {
-    switch (this.state.sortingCriteria) {
-      case 0: // By cost
-        if (this.state.sortingOrder) {
-          if (a.cost > b.cost)
-            return -1;
-          else if (a.cost < b.cost)
-            return 1;
-          else
-            return 0;
-        } else {
-          if (a.cost < b.cost)
-            return -1;
-          else if (a.cost > b.cost)
-            return 1;
-          else
-            return 0;
-        }
-      case 1: // By name
-        if (this.state.sortingOrder) {
-          if (a.name > b.name)
-            return -1;
-          else if (a.name < b.name)
-            return 1;
-          else
-            return 0;
-        } else {
-          if (a.name < b.name)
-            return -1;
-          else if (a.name > b.name)
-            return 1;
-          else
-            return 0;
-        }
-      case 2: // By type
-        if (this.state.sortingOrder) {
-          if (a.type > b.type)
-            return -1;
-          else if (a.type < b.type)
-            return 1;
-          else
-            return 0;
-        } else {
-          if (a.type < b.type)
-            return -1;
-          else if (a.type > b.type)
-            return 1;
-          else
-            return 0;
-        }
-      case 3: // By creator
-        return 0;
+    const sortFuncs = [
+      x => x.cost,
+      x => x.name,
+      x => [typeToString(x.type), x.cost],
+      x => [x.source === 'builtin', x.cost]
+    ];
+    const func = sortFuncs[this.state.sortingCriteria];
+
+    if (func(a) < func(b)) {
+      return this.state.sortingOrder ? 1 : -1;
+    } else if (func(a) > func(b)) {
+      return this.state.sortingOrder ? -1 : 1;
+    } else {
+      return 0;
     }
   }
 
   filterCards(card) {
-    if (!this.state.filters.robots && card.type === 0) {
+    if (!this.state.filters.robots && card.type === TYPE_ROBOT) {
       return false;
     }
 
-    if (!this.state.filters.events && card.type === 1) {
+    if (!this.state.filters.events && card.type === TYPE_EVENT) {
       return false;
     }
 
-    if (!this.state.filters.structures && card.type === 3) {
+    if (!this.state.filters.structures && card.type === TYPE_STRUCTURE) {
       return false;
     }
 

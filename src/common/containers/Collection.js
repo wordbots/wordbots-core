@@ -173,6 +173,9 @@ class Collection extends Component {
               }}>Sorting</div>
 
               <SelectField 
+                style={{
+                  width: '100%'
+                }}
                 value={this.state.sortingCriteria}
                 floatingLabelText="Criteria"
                 onChange={(e, i, value) => {
@@ -189,6 +192,9 @@ class Collection extends Component {
                 <MenuItem value={3} primaryText="By Creator"/>
               </SelectField>
               <SelectField 
+                style={{
+                  width: '100%'
+                }}
                 value={this.state.sortingOrder}
                 floatingLabelText="Order"
                 onChange={(e, i, value) => {

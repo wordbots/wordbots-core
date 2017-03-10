@@ -1,8 +1,7 @@
 import { flatMap, some, without } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType, BLUE_CORE_HEX, ORANGE_CORE_HEX } from './constants';
-import defaultState, { playerState } from './store/defaultGameState';
-import { blueCoreCard, orangeCoreCard } from './store/cards';
+import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from './constants';
+import defaultState, { bluePlayerState, orangePlayerState } from './store/defaultGameState';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
 import Hex from './components/react-hexgrid/Hex';
@@ -165,8 +164,8 @@ export function validAttackHexes(state, playerName, startHex, speed) {
 
 export function newGame(state, collections) {
   state = Object.assign(state, defaultState); // Reset game state.
-  state.players.blue = playerState('blue', collections.blue, blueCoreCard, BLUE_CORE_HEX);
-  state.players.orange = playerState('orange', collections.orange, orangeCoreCard, ORANGE_CORE_HEX);
+  state.players.blue = bluePlayerState(collections.blue);
+  state.players.orange = orangePlayerState(collections.blue);
   return state;
 }
 

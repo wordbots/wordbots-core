@@ -144,7 +144,7 @@ class Card extends Component {
     const selectedStyle = {
       boxShadow: `${(this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
-    const transform = `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
+    const transform = ''; //`rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
 
     if (!this.props.visible) {
       return (

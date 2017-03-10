@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import Paper from 'material-ui/lib/paper';
+import FontIcon from 'material-ui/lib/font-icon';
 import SelectField from 'material-ui/lib/SelectField';
+import RaisedButton from 'material-ui/lib/raised-button';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Toggle from 'material-ui/lib/toggle';
 import { Range } from 'rc-slider';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import Card from '../components/game/Card';
+import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
@@ -17,7 +20,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    onRemoveFromCollection: (props) => {
+      dispatch(collectionActions.removeFromCollection(props));
+    }
+  };
 }
 
 class Collection extends Component {
@@ -32,7 +39,8 @@ class Collection extends Component {
       },
       manaRange: [0, 20],
       sortingCriteria: 0,
-      sortingOrder: 0
+      sortingOrder: 0,
+      selectedCards: []
     };
   }
 
@@ -79,6 +87,21 @@ class Collection extends Component {
       marginBottom: 10
     };
 
+    function deleteButton() {
+      if (this.state.selectedCards.length > 0) {
+        return (
+          <RaisedButton
+            label="Delete Selected"
+            labelPosition="before"
+            secondary
+            icon={<FontIcon className="material-icons">delete</FontIcon>}
+            style={{width: 300, margin: '0 50px'}}
+            onClick={() => { this.props.onRemoveFromCollection(this.state.selectedCards); }}
+          />
+        );
+      }
+    }
+
     return (
       <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
         <Helmet title="Collection"/>
@@ -88,33 +111,50 @@ class Collection extends Component {
           justifyContent: 'space-between',
           alignItems: 'flex-start'
         }}>
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start',
-            width: '80%',
-            margin: 50
-          }}>
-            {
-              this.props.cards
-                .filter(this.filterCards.bind(this))
-                .sort(this.sortCards.bind(this))
-                .map(card =>
-                  <Card
-                    key={card.id}
-                    visible
-                    name={card.name}
-                    spriteID={card.spriteID}
-                    type={card.type}
-                    text={card.text || ''}
-                    stats={card.stats}
-                    cardStats={card.stats}
-                    cost={card.cost}
-                    baseCost={card.cost}
-                    source={card.source}
-                    scale={1} />
-              )
-            }
+          <div style={{marginTop: 50}}>
+            {deleteButton.bind(this)()}
+
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start',
+              width: '80%',
+              margin: 50,
+              marginTop: 10
+            }}>
+              {
+                this.props.cards
+                  .filter(this.filterCards.bind(this))
+                  .sort(this.sortCards.bind(this))
+                  .map(card =>
+                    <Card
+                      key={card.id}
+                      visible
+                      name={card.name}
+                      spriteID={card.spriteID}
+                      type={card.type}
+                      text={card.text || ''}
+                      stats={card.stats}
+                      cardStats={card.stats}
+                      cost={card.cost}
+                      baseCost={card.cost}
+                      source={card.source}
+                      scale={1}
+                      selected={this.state.selectedCards.includes(card.id)}
+                      onCardClick={e => {
+                        if (card.source !== 'builtin') {
+                          this.setState(state => {
+                            if (state.selectedCards.includes(card.id)) {
+                              return Object.assign({}, state, {selectedCards: _.without(state.selectedCards, card.id)});
+                            } else {
+                              return Object.assign({}, state, {selectedCards: [...state.selectedCards, card.id]});
+                            }
+                          });
+                        }
+                      }} />
+                )
+              }
+            </div>
           </div>
 
           <Paper style={{
@@ -268,7 +308,9 @@ class Collection extends Component {
 }
 
 Collection.propTypes = {
-  cards: React.PropTypes.array
+  cards: React.PropTypes.array,
+
+  onRemoveFromCollection: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Collection);

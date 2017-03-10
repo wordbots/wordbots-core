@@ -16,6 +16,19 @@ const cardsHandlers = {
       state.cards.unshift(card);
       return state;
     }
+  },
+
+  removeFromCollection: function (state, ids) {
+    if (state.storeKey === 'game') {
+      // Game state
+      // (Treat both players' collection as the same for now.)
+      const collection = state.players.orange.collection.filter(c => !ids.includes(c.id));
+      return newGame(state, {blue: collection, orange: collection});
+    } else {
+      // Collection state
+      state.cards = state.cards.filter(c => !ids.includes(c.id));
+      return state;
+    }
   }
 };
 

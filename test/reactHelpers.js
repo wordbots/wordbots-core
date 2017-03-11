@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 
-import { Game, mapStateToProps, mapDispatchToProps } from '../src/common/containers/Game';
+import * as creator from '../src/common/containers/Creator';
+import * as game from '../src/common/containers/Game';
 
 export function renderElement(elt, deep = false) {
   if (deep) {
@@ -13,12 +14,27 @@ export function renderElement(elt, deep = false) {
   }
 }
 
-export function getComponent(componentClass, state, dispatch = () => {}, predicate = () => {}) {
-  const game = renderElement(createGame(state, dispatch), true);
-  const components = ReactTestUtils.scryRenderedComponentsWithType(game, componentClass);
+/* eslint-disable react/no-multi-comp */
+
+export function createGame(state, dispatch = () => {}) {
+  return React.createElement(game.Game, Object.assign(game.mapStateToProps(state), game.mapDispatchToProps(dispatch)));
+}
+
+function createCreator(state, dispatch = () => {}) {
+  return React.createElement(creator.Creator, Object.assign(creator.mapStateToProps(state), creator.mapDispatchToProps(dispatch)));
+}
+
+/* eslint-enable react/no-multi-comp */
+
+export function getComponent(type, componentClass, state, dispatch = () => {}, predicate = () => {}) {
+  const gameElt = renderElement(instantiator(type)(state, dispatch), true);
+  const components = ReactTestUtils.scryRenderedComponentsWithType(gameElt, componentClass);
   return (components.length === 1) ? components[0] : components.find(predicate);
 }
 
-export function createGame(state, dispatch = () => {}) {
-  return React.createElement(Game, Object.assign(mapStateToProps(state), mapDispatchToProps(dispatch)));
+function instantiator(type) {
+  return {
+    'Game': createGame,
+    'Creator': createCreator
+  }[type];
 }

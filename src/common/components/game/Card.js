@@ -142,7 +142,7 @@ class Card extends Component {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
-      boxShadow: `${(this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow  } 0px 0px 20px 5px`
+      boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
     const transform = `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
 
@@ -194,7 +194,8 @@ class Card extends Component {
                   marginRight: 10 * this.props.scale,
                   borderRadius: 5 * this.props.scale,
                   userSelect: 'none',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336'
                 }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
                 <CardHeader
                   style={{padding: 8 * this.props.scale, height: 'auto'}}
@@ -233,8 +234,7 @@ class Card extends Component {
               </Paper>
             </div>
           </Badge>
-        </div>
-      );
+        </div>      );
     }
   }
 }
@@ -250,6 +250,8 @@ Card.propTypes = {
   stats: React.PropTypes.object,
   cost: React.PropTypes.number,
   baseCost: React.PropTypes.number,
+  source: React.PropTypes.string,
+  collection: React.PropTypes.bool,
 
   status: React.PropTypes.object,
   visible: React.PropTypes.bool,

@@ -93,22 +93,22 @@ describe('Game container', () => {
     }
 
     function clickCard(predicate) {
-      getComponent(Card, state, dispatch, predicate).props
+      getComponent('Game', Card, state, dispatch, predicate).props
         .onCardClick();
       return dispatchedActions.pop();
     }
     function clickHex(id) {
-      getComponent(HexGrid, state, dispatch).props
+      getComponent('Game', HexGrid, state, dispatch).props
         .actions.onClick(HexUtils.IDToHex(id));
       return dispatchedActions.pop();
     }
     function hoverHex(id, type) {
-      getComponent(HexGrid, state, dispatch).props
+      getComponent('Game', HexGrid, state, dispatch).props
         .actions.onHexHover(HexUtils.IDToHex(id), {type: type});
       return dispatchedActions.pop();
     }
     function clickEndTurn() {
-      getComponent(RaisedButton, state, dispatch).props
+      getComponent('Game', RaisedButton, state, dispatch).props
         .onTouchTap();
       return dispatchedActions.pop();
     }

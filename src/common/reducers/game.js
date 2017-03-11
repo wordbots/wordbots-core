@@ -1,5 +1,6 @@
 import { isArray, reduce } from 'lodash';
 
+import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
 import defaultState from '../store/defaultGameState';
@@ -45,6 +46,9 @@ export default function game(oldState = defaultState, action) {
 
       case creatorActions.ADD_TO_COLLECTION:
         return c.addToCollection(state, action.payload);
+
+      case collectionActions.REMOVE_FROM_COLLECTION:
+        return c.removeFromCollection(state, action.ids);
 
       default:
         return state;

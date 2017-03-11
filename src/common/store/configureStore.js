@@ -10,6 +10,8 @@ import promiseMiddleware from '../api/promiseMiddleware';
 import rootReducer from '../reducers';
 import * as gameActions from '../actions/game';
 
+import { loadState, saveState } from './persistState';
+
 const middlewareBuilder = () => {
   let middleware = {};
   const universalMiddleware = [thunk, promiseMiddleware, multi];
@@ -52,7 +54,7 @@ const middlewareBuilder = () => {
 const finalCreateStore = compose(...middlewareBuilder())(createStore);
 
 export default function configureStore(initialState) {
-  const store = finalCreateStore(rootReducer, initialState);
+  const store = finalCreateStore(rootReducer, loadState(initialState));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
@@ -61,6 +63,8 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextRootReducer);
     });
   }
+
+  store.subscribe(() => { saveState(store); });
 
   return store;
 }

@@ -47,7 +47,7 @@ ratings:
   - "**.jsx"
 exclude_paths:
   - test/
-  - src/common/components/img/"
+  - src/common/components/img/
   # The following are by-and-large not our own code, so it's not worth analyzing them:
   - src/common/components/game/Sprite.js
   - src/common/components/react-hexgrid/

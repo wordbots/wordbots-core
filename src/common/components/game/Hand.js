@@ -25,12 +25,14 @@ class Hand extends Component {
           key={card.id}
           status={this.props.status}
           name={card.name}
+          spriteID={card.spriteID}
           type={card.type}
           text={card.text || ''}
           img={card.img}
           cost={getCost(card)}
           baseCost={card.baseCost}
           cardStats={card.stats}
+          source={card.source}
           stats={{}}
           scale={1}
           selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}

@@ -142,7 +142,7 @@ class Card extends Component {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
-      boxShadow: `${(this.props.status && this.props.status.type === 'error') ? redShadow : greenShadow  } 0px 0px 20px 5px`
+      boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
 
     if (!this.props.visible) {
@@ -176,13 +176,14 @@ class Card extends Component {
                 marginRight: 10 * this.props.scale,
                 borderRadius: 5 * this.props.scale,
                 userSelect: 'none',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336'
               }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
               <CardHeader
                 style={{padding: 8 * this.props.scale, height: 'auto'}}
                 title={
-                  <Textfit 
-                    mode="multi"  
+                  <Textfit
+                    mode="multi"
                     style={{width: 100 * this.props.scale, height: 23 * this.props.scale}}>
                     {this.props.name}
                   </Textfit>
@@ -204,7 +205,7 @@ class Card extends Component {
                   style={{
                     padding: 6 * this.props.scale,
                     paddingBottom: 0,
-                    height: (this.props.type !== TYPE_EVENT ? 54 : 106) * this.props.scale,
+                    height: (this.props.type !== TYPE_EVENT ? 48 : 100) * this.props.scale,
                     boxSizing: 'border-box'
                 }}>
                   {this.props.text}
@@ -227,6 +228,7 @@ Card.propTypes = {
   rawText: React.PropTypes.string,
   img: React.PropTypes.string,
   cardStats: React.PropTypes.object,
+  source: React.PropTypes.string,
   visible: React.PropTypes.bool,
   selected: React.PropTypes.bool,
   targetable: React.PropTypes.bool,
@@ -236,7 +238,8 @@ Card.propTypes = {
   onCardClick: React.PropTypes.func,
   onSpriteClick: React.PropTypes.func,
   stats: React.PropTypes.object,
-  scale: React.PropTypes.number
+  scale: React.PropTypes.number,
+  collection: React.PropTypes.bool
 };
 
 export default Card;

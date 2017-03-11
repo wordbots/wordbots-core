@@ -201,7 +201,7 @@ class Collection extends Component {
           style={toggleStyle}
           label="Structures"
           defaultToggled
-          onToggle={this.toggleFilter('robots')} />
+          onToggle={this.toggleFilter('structures')} />
       </div>,
 
       <div style={{

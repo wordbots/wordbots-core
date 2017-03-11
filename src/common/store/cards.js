@@ -363,7 +363,6 @@ export const collection = [
   investorBotCard,
   earthquakeCard,
   defenderBotCard,
-  fortificationCard,
   threedomCard,
   monkeyBotCard,
   generalBotCard,

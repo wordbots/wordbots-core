@@ -38,7 +38,7 @@ class Collection extends Component {
         structures: true
       },
       manaRange: [0, 20],
-      sortingCriteria: 0,
+      sortingCriteria: 3,
       sortingOrder: 0,
       selectedCards: []
     };
@@ -57,11 +57,11 @@ class Collection extends Component {
   }
 
   sortCards(a, b) {
-    const sortFuncs = [
-      x => x.cost,
-      x => x.name,
-      x => [typeToString(x.type), x.cost],
-      x => [x.source === 'builtin', x.cost]
+    const sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
+      c => [c.cost, c.name],
+      c => c.name,
+      c => [typeToString(c.type), c.cost, c.name],
+      c => [c.source === 'builtin', c.cost, c.name]
     ];
     const func = sortFuncs[this.state.sortingCriteria];
 

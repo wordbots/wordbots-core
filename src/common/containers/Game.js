@@ -154,8 +154,6 @@ export class Game extends Component {
         <Paper style={{padding: 20, position: 'relative'}}>
           {this.renderPlayerArea('orange')}
 
-          <Divider style={{marginTop: 10}}/>
-
           <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.props.hoveredCard} />
             <Status
@@ -176,8 +174,6 @@ export class Game extends Component {
               style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
               onTouchTap={this.props.onPassTurn} />
           </div>
-
-          <Divider style={{marginBottom: 10}}/>
 
           {this.renderPlayerArea('blue')}
 

@@ -1,4 +1,4 @@
-import { renderElement, getComponent, createCreator } from '../reactHelpers';
+import { getComponent } from '../reactHelpers';
 import CardCreationForm from '../../src/common/components/cards/CardCreationForm';
 import collectionReducer from '../../src/common/reducers/collection';
 import creatorReducer from '../../src/common/reducers/creator';
@@ -8,7 +8,7 @@ import defaultCreatorState from '../../src/common/store/defaultCreatorState';
 import defaultGameState from '../../src/common/store/defaultGameState';
 
 describe('Creator container', () => {
-  it('should be able to create cards', () => {
+  it('should be able to create a simple card and add it to the collection', () => {
     const dispatchedActions = [];
     let state = {
       collection: defaultCollectionState,
@@ -19,16 +19,29 @@ describe('Creator container', () => {
     function dispatch(action) {
       // console.log(action);
       dispatchedActions.push(action);
-      console.log(action);
       state = {  // Mimic the behavior of the combined reducers.
         collection: collectionReducer(state.collection, action),
         creator: creatorReducer(state.creator, action),
         game: gameReducer(state.game, action)
-      };g
+      };
     }
 
-    getComponent('Creator', CardCreationForm, state, dispatch).props
-      .onSetName('Test Card');
+    const numCards = state.collection.cards.length;
+    const newCardName = 'Test Card';
 
+    getComponent('Creator', CardCreationForm, state, dispatch).props
+      .onSetName(newCardName);
+
+    expect(state.creator.name).toEqual(newCardName);
+
+    getComponent('Creator', CardCreationForm, state, dispatch).props
+      .onAddToCollection();
+
+    expect(state.creator.name).toEqual('');
+    expect(state.collection.cards.length).toEqual(numCards + 1);
+    expect(state.game.players.orange.hand[0].name).toEqual(newCardName);
+    expect(state.game.players.blue.hand[0].name).toEqual(newCardName);
+
+    // TODO test other functionality of the card creator.
   });
 });

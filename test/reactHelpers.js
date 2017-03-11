@@ -20,7 +20,7 @@ export function createGame(state, dispatch = () => {}) {
   return React.createElement(game.Game, Object.assign(game.mapStateToProps(state), game.mapDispatchToProps(dispatch)));
 }
 
-export function createCreator(state, dispatch = () => {}) {
+function createCreator(state, dispatch = () => {}) {
   return React.createElement(creator.Creator, Object.assign(creator.mapStateToProps(state), creator.mapDispatchToProps(dispatch)));
 }
 

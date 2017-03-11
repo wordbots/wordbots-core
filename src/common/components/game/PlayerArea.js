@@ -18,6 +18,7 @@ class PlayerArea extends Component {
       }}>
         <EnergyCount energy={this.props.energy} />
         <Hand
+          //curved
           name={this.props.name}
           onSelectCard={this.props.onSelectCard}
           onHoverCard={this.props.onHoverCard}

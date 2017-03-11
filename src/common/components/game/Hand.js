@@ -20,18 +20,18 @@ class Hand extends Component {
   renderCards() {
     const widthPerCard = 151;
     const defaultMargin = 24;
-    const maxWidth = this.availableWidth - 10;
+    const maxWidth = this.availableWidth - 20;
     const numCards = this.props.cards.length;
     const baseWidth = numCards * widthPerCard;
     const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
     return this.props.cards.map((card, idx) => {
-      const playerHandDirection = {'orange': 1, 'blue': -1}[this.props.name];
-
       const zIndex = isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
+
+      // TODO this isn't quite right ...
       const rotationDegs = (idx - (numCards - 1)/2) * 5;
-      const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;  // TODO this isn't quite right.
+      const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
       return (
         <Card
@@ -53,8 +53,8 @@ class Hand extends Component {
 
           scale={1}
           margin={idx < numCards - 1 ? cardMargin : 0}
-          rotation={rotationDegs * playerHandDirection}
-          yTranslation={translationPx * playerHandDirection}
+          rotation={this.props.curved ? rotationDegs : 0}
+          yTranslation={this.props.curved ? translationPx : 0}
           zIndex={zIndex}
 
           onCardClick={e => { this.props.onSelectCard(idx); }}
@@ -89,7 +89,8 @@ Hand.propTypes = {
   selectedCard: React.PropTypes.number,
   hoveredCard: React.PropTypes.number,
   targetableCards: React.PropTypes.array,
-  status: React.PropTypes.object
+  status: React.PropTypes.object,
+  curved: React.PropTypes.bool
 };
 
 export default Hand;

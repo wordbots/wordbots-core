@@ -267,7 +267,7 @@ class Collection extends Component {
             minWidth: '18%'
           }}>
             <Paper style={{
-              padding: 20,
+              padding: 20
             }}>
               <div style={{
                 fontWeight: 100,

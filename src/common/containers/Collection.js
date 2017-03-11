@@ -97,8 +97,9 @@ class Collection extends Component {
   renderCard(card) {
     return (
       <Card
-        key={card.id}
         visible
+        collection
+        key={card.id}
         name={card.name}
         spriteID={card.spriteID}
         type={card.type}
@@ -132,7 +133,7 @@ class Collection extends Component {
           labelPosition="before"
           secondary
           icon={<FontIcon className="material-icons">delete</FontIcon>}
-          style={{width: 300, margin: '0 50px'}}
+          style={{width: '100%', marginTop: 20}}
           onClick={() => { this.props.onRemoveFromCollection(this.state.selectedCards); }}
         />
       );
@@ -244,13 +245,11 @@ class Collection extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 50, marginLeft: 40}}>
-            {this.renderDeleteButton()}
-
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
               justifyContent: 'flex-start',
-              width: '80%',
+              width: '100%',
               margin: 10
             }}>
               {
@@ -262,22 +261,27 @@ class Collection extends Component {
             </div>
           </div>
 
-          <Paper style={{
+          <div style={{
             margin: 50,
             marginLeft: 0,
-            padding: 20,
             minWidth: '18%'
           }}>
-            <div style={{
-              fontWeight: 100,
-              fontSize: 28,
-              marginBottom: 20
-            }}>Filters</div>
+            <Paper style={{
+              padding: 20,
+            }}>
+              <div style={{
+                fontWeight: 100,
+                fontSize: 28,
+                marginBottom: 20
+              }}>Filters</div>
 
-            {this.renderSortControls()}
+              {this.renderSortControls()}
 
-            {this.renderFilterControls()}
-          </Paper>
+              {this.renderFilterControls()}
+            </Paper>
+
+            {this.renderDeleteButton()}
+          </div>
         </div>
       </div>
     );

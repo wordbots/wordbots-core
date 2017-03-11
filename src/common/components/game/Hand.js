@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactDOM from 'react-dom';
+import { isEmpty, isNull } from 'lodash';
 
 import { getCost } from '../../util';
 
@@ -28,7 +29,7 @@ class Hand extends Component {
     return this.props.cards.map((card, idx) => {
       const playerHandDirection = {'orange': 1, 'blue': -1}[this.props.name];
 
-      const zIndex = _.isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
+      const zIndex = isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
       const rotationDegs = (idx - (numCards - 1)/2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;  // TODO this isn't quite right.
 
@@ -46,7 +47,7 @@ class Hand extends Component {
           cardStats={card.stats}
           stats={{}}
 
-          selected={this.props.selectedCard === idx && _.isEmpty(this.props.targetableCards)}
+          selected={this.props.selectedCard === idx && isEmpty(this.props.targetableCards)}
           targetable={this.props.targetableCards.includes(card.id)}
           visible={this.props.isCurrentPlayer}
 

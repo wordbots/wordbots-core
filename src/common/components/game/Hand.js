@@ -32,6 +32,7 @@ class Hand extends Component {
           cost={getCost(card)}
           baseCost={card.baseCost}
           cardStats={card.stats}
+          source={card.source}
           stats={{}}
           scale={1}
           selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}

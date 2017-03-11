@@ -6,7 +6,7 @@ import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator';
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
   return {
     name: state.creator.name,
     type: state.creator.type,
@@ -20,7 +20,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onSetName: (name) => {
       dispatch(creatorActions.setName(name));
@@ -46,7 +46,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class Creator extends Component {
+export class Creator extends Component {
   constructor(props) {
     super(props);
   }

@@ -1,7 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
-import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
 import { renderElement, getComponent, createGame } from '../reactHelpers';
@@ -23,7 +22,7 @@ describe('Game container', () => {
 
     const game = createGame(state);
     const dom = renderElement(game);
-    const board = dom.props.children[1].props.children[2].props.children[2];  // Gross but necessary for comparing bound methods.
+    const board = dom.props.children[1].props.children[1].props.children[2];  // Gross but necessary for comparing bound methods.
 
     const defaultStatus = {message: '', type: ''};
 
@@ -42,7 +41,6 @@ describe('Game container', () => {
           onHoverCard={game.props.onHoverCard}
           onSelectCard={game.props.onSelectCard}
           />
-        <Divider style={{marginTop: 10}}/>
         <div style={{position: 'relative'}}>
           <CardViewer hoveredCard={null} />
           <Status
@@ -64,7 +62,6 @@ describe('Game container', () => {
             style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
             onTouchTap={game.props.onPassTurn} />
         </div>
-        <Divider style={{marginBottom: 10}}/>
         <PlayerArea
           name={'blue'}
           isCurrentPlayer={false}

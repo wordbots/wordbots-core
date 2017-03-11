@@ -224,7 +224,7 @@ class Card extends Component {
                     style={{
                       padding: 6 * this.props.scale,
                       paddingBottom: 0,
-                      height: (this.props.type !== TYPE_EVENT ? 54 : 106) * this.props.scale,
+                      height: (this.props.type !== TYPE_EVENT ? 48 : 100) * this.props.scale,
                       boxSizing: 'border-box'
                   }}>
                     {this.props.text}
@@ -234,7 +234,8 @@ class Card extends Component {
               </Paper>
             </div>
           </Badge>
-        </div>      );
+        </div>
+      );
     }
   }
 }

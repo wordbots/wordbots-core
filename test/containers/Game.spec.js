@@ -1,7 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
-import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 
 import { renderElement, getComponent, createGame } from '../reactHelpers';
@@ -23,7 +22,7 @@ describe('Game container', () => {
 
     const game = createGame(state);
     const dom = renderElement(game);
-    const board = dom.props.children[1].props.children[2].props.children[2];  // Gross but necessary for comparing bound methods.
+    const board = dom.props.children[1].props.children[1].props.children[2];  // Gross but necessary for comparing bound methods.
 
     const defaultStatus = {message: '', type: ''};
 
@@ -39,9 +38,9 @@ describe('Game container', () => {
           deck={state.game.players.orange.deck}
           selectedCard={null}
           targetableCards={[]}
+          onHoverCard={game.props.onHoverCard}
           onSelectCard={game.props.onSelectCard}
           />
-        <Divider style={{marginTop: 10}}/>
         <div style={{position: 'relative'}}>
           <CardViewer hoveredCard={null} />
           <Status
@@ -63,7 +62,6 @@ describe('Game container', () => {
             style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
             onTouchTap={game.props.onPassTurn} />
         </div>
-        <Divider style={{marginBottom: 10}}/>
         <PlayerArea
           name={'blue'}
           isCurrentPlayer={false}
@@ -73,6 +71,7 @@ describe('Game container', () => {
           deck={state.game.players.blue.deck}
           selectedCard={null}
           targetableCards={[]}
+          onHoverCard={game.props.onHoverCard}
           onSelectCard={game.props.onSelectCard}
           />
         <VictoryScreen winner={null} />
@@ -115,7 +114,7 @@ describe('Game container', () => {
     expect(
       hoverHex('4,0,-4', 'mouseenter')
     ).toEqual(
-      actions.setHoveredCard({
+      actions.setHoveredTile({
         card: createGame(state).props.orangePieces['4,0,-4'].card,
         stats: {health: 20}
       })
@@ -123,7 +122,7 @@ describe('Game container', () => {
     expect(
       hoverHex('4,0,-4', 'mouseleave')
     ).toEqual(
-      actions.setHoveredCard(null)
+      actions.setHoveredTile(null)
     );
 
     // Set selected card.

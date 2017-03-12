@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
-import Divider from 'material-ui/lib/divider';
 import RaisedButton from 'material-ui/lib/raised-button';
 import { connect } from 'react-redux';
 
@@ -20,6 +19,7 @@ export function mapStateToProps(state) {
 
     selectedTile: state.game.selectedTile,
     selectedCard: state.game.selectedCard,
+    hoveredCardIdx: state.game.hoveredCardIdx,
     hoveredCard: state.game.hoveredCard,
     playingCardType: state.game.playingCardType,
 
@@ -63,8 +63,11 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId) => {
       dispatch(gameActions.setSelectedTile(hexId));
     },
+    onHoverCard: (index) => {
+      dispatch(gameActions.setHoveredCard(index));
+    },
     onHoverTile: (card) => {
-      dispatch(gameActions.setHoveredCard(card));
+      dispatch(gameActions.setHoveredTile(card));
     }
   };
 }
@@ -136,8 +139,10 @@ export class Game extends Component {
         cards={this.props[`${color}Hand`]}
         deck={this.props[`${color}Deck`]}
         selectedCard={this.props.selectedCard}
+        hoveredCard={this.props.hoveredCardIdx}
         targetableCards={this.props.currentTurn === color ? this.props.target.possibleCards : []}
-        onSelectCard={this.props.onSelectCard} />
+        onSelectCard={this.props.onSelectCard}
+        onHoverCard={this.props.onHoverCard} />
     );
   }
 
@@ -147,8 +152,6 @@ export class Game extends Component {
         <Helmet title="Game"/>
         <Paper style={{padding: 20, position: 'relative'}}>
           {this.renderPlayerArea('orange')}
-
-          <Divider style={{marginTop: 10}}/>
 
           <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.props.hoveredCard} />
@@ -170,8 +173,6 @@ export class Game extends Component {
               style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
               onTouchTap={this.props.onPassTurn} />
           </div>
-
-          <Divider style={{marginBottom: 10}}/>
 
           {this.renderPlayerArea('blue')}
 
@@ -204,6 +205,7 @@ Game.propTypes = {
   orangeDeck: React.PropTypes.array,
 
   selectedCard: React.PropTypes.number,
+  hoveredCardIdx: React.PropTypes.number,
 
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,
@@ -212,6 +214,7 @@ Game.propTypes = {
   onSelectCard: React.PropTypes.func,
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
+  onHoverCard: React.PropTypes.func,
   onHoverTile: React.PropTypes.func
 };
 

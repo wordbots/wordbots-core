@@ -33,7 +33,7 @@ class Identicon extends Component {
       end: function () {
       }
     });
-    return React.createElement('svg', null, rects);
+    return React.createElement('svg', {width: width}, rects);
   }
 }
 

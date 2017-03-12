@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import ReactDOM from 'react-dom';
+import { isEmpty, isNull } from 'lodash';
 
 import { getCost } from '../../util';
 
@@ -11,18 +13,30 @@ class Hand extends Component {
     super(props);
   }
 
-  onCardClick(index, e) {
-    this.props.onSelectCard(index);
+  componentDidMount() {
+    this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
   }
 
-  render() {
-    const cards = this.props.cards.map((card, index) => {
-      const cardClick = this.onCardClick.bind(this, index);
+  renderCards() {
+    const widthPerCard = 151;
+    const defaultMargin = 24;
+    const maxWidth = this.availableWidth - 20;
+    const numCards = this.props.cards.length;
+    const baseWidth = numCards * widthPerCard;
+    const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
+    const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
+
+    return this.props.cards.map((card, idx) => {
+      const zIndex = isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
+
+      // TODO this isn't quite right ...
+      const rotationDegs = (idx - (numCards - 1)/2) * 5;
+      const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
       return (
         <Card
-          onCardClick={cardClick}
           key={card.id}
+          numCards={numCards}
           status={this.props.status}
           name={card.name}
           spriteID={card.spriteID}
@@ -34,13 +48,24 @@ class Hand extends Component {
           cardStats={card.stats}
           source={card.source}
           stats={{}}
-          scale={1}
-          selected={this.props.selectedCard === index && _.isEmpty(this.props.targetableCards)}
+
+          selected={this.props.selectedCard === idx && isEmpty(this.props.targetableCards)}
           targetable={this.props.targetableCards.includes(card.id)}
-          visible={this.props.isCurrentPlayer} />
+          visible={this.props.isCurrentPlayer}
+
+          scale={1}
+          margin={idx < numCards - 1 ? cardMargin : 0}
+          rotation={this.props.curved ? rotationDegs : 0}
+          yTranslation={this.props.curved ? translationPx : 0}
+          zIndex={zIndex}
+
+          onCardClick={e => { this.props.onSelectCard(idx); }}
+          onCardHover={e => { this.props.onHoverCard(idx); }} />
       );
     });
+  }
 
+  render() {
     return (
       <ReactCSSTransitionGroup
         transitionName="hand"
@@ -48,21 +73,26 @@ class Hand extends Component {
         transitionLeave={false}
         style={{
           display: 'flex',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          width: '100%'
         }}>
-        {cards}
+        {this.renderCards()}
       </ReactCSSTransitionGroup>
     );
   }
 }
 
 Hand.propTypes = {
+  name: React.PropTypes.string,
   cards: React.PropTypes.array,
   isCurrentPlayer: React.PropTypes.bool,
   onSelectCard: React.PropTypes.func,
+  onHoverCard: React.PropTypes.func,
   selectedCard: React.PropTypes.number,
+  hoveredCard: React.PropTypes.number,
+  targetableCards: React.PropTypes.array,
   status: React.PropTypes.object,
-  targetableCards: React.PropTypes.array
+  curved: React.PropTypes.bool
 };
 
 export default Hand;

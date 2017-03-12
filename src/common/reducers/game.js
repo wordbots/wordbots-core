@@ -38,7 +38,11 @@ export default function game(oldState = defaultState, action) {
         return g.setSelectedTile(state, action.payload.selectedTile);
 
       case gameActions.SET_HOVERED_CARD:
-        return g.setHoveredCard(state, action.payload.hoveredCard);
+        state.hoveredCardIdx = action.payload.hoveredCard;
+        return state;
+
+      case gameActions.SET_HOVERED_TILE:
+        return g.setHoveredTile(state, action.payload.hoveredCard);
 
       case creatorActions.ADD_TO_COLLECTION:
         return c.addToCollection(state, action.payload);

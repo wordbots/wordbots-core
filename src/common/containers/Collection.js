@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import SelectField from 'material-ui/lib/SelectField';
@@ -11,6 +12,7 @@ import { Range } from 'rc-slider';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import Card from '../components/game/Card';
+import CardBack from '../components/game/CardBack';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
@@ -134,7 +136,10 @@ class Collection extends Component {
           secondary
           icon={<FontIcon className="material-icons">delete</FontIcon>}
           style={{width: '100%', marginTop: 20}}
-          onClick={() => { this.props.onRemoveFromCollection(this.state.selectedCards); }}
+          onClick={() => {
+            this.props.onRemoveFromCollection(this.state.selectedCards);
+            this.updateState({selectedCards: []});
+          }}
         />
       );
     }
@@ -252,6 +257,11 @@ class Collection extends Component {
               width: '100%',
               margin: 10
             }}>
+              <Link to="/creator">
+                <div style={{padding: '24px 0 12px 0'}}>
+                  <CardBack hoverable customText="New Card" />
+                </div>
+              </Link>
               {
                 this.props.cards
                   .filter(this.filterCards.bind(this))

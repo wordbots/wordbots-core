@@ -68,6 +68,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
+    },
+    onVictoryScreenClick: () => {
+      dispatch(gameActions.newGame());
     }
   };
 }
@@ -176,7 +179,7 @@ export class Game extends Component {
 
           {this.renderPlayerArea('blue')}
 
-          <VictoryScreen winner={this.props.winner} />
+          <VictoryScreen winner={this.props.winner} onVictoryScreenClick={this.props.onVictoryScreenClick} />
         </Paper>
       </div>
     );
@@ -215,7 +218,8 @@ Game.propTypes = {
   onSelectTile: React.PropTypes.func,
   onPassTurn: React.PropTypes.func,
   onHoverCard: React.PropTypes.func,
-  onHoverTile: React.PropTypes.func
+  onHoverTile: React.PropTypes.func,
+  onVictoryScreenClick: React.PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

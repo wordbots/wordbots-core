@@ -1,4 +1,9 @@
-import { currentPlayer, opponentName, drawCards, checkTriggers } from '../../../util';
+import { currentPlayer, opponentName, drawCards, checkTriggers, newGame } from '../../../util';
+
+export function startNewGame(state) {
+  const collection = state.players.orange.collection;
+  return newGame(state, {blue: collection, orange: collection});
+}
 
 export function startTurn(state) {
   const player = currentPlayer(state);

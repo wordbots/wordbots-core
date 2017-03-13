@@ -13,20 +13,22 @@ class VictoryScreen extends Component {
     };
 
     return (
-      <div style={{
-        display: this.props.winner === null ? 'none' : 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 0,
-        fontFamily: 'Carter One',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        fontSize: 96,
-        color: this.props.winner === null ? 'black' : colors[this.props.winner],
-        borderRadius: 2
+      <div
+        onClick={this.props.onVictoryScreenClick}
+        style={{
+          display: this.props.winner === null ? 'none' : 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          right: 0,
+          fontFamily: 'Carter One',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          fontSize: 96,
+          color: this.props.winner === null ? 'black' : colors[this.props.winner],
+          borderRadius: 2
       }}>
         <ReactCSSTransitionGroup
           transitionName="card-viewer-fade"
@@ -40,7 +42,9 @@ class VictoryScreen extends Component {
 }
 
 VictoryScreen.propTypes = {
-  winner: React.PropTypes.string
+  winner: React.PropTypes.string,
+
+  onVictoryScreenClick: React.PropTypes.func
 };
 
 export default VictoryScreen;

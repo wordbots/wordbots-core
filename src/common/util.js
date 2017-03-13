@@ -1,4 +1,4 @@
-import { flatMap, some, without } from 'lodash';
+import { cloneDeep, flatMap, some, without } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from './constants';
 import defaultState, { bluePlayerState, orangePlayerState } from './store/defaultGameState';
@@ -173,7 +173,7 @@ export function validAttackHexes(state, playerName, startHex, speed) {
 //
 
 export function newGame(state, collections) {
-  state = Object.assign(state, defaultState); // Reset game state.
+  state = Object.assign(state, cloneDeep(defaultState)); // Reset game state.
   state.players.blue = bluePlayerState(collections.blue);
   state.players.orange = orangePlayerState(collections.blue);
   return state;

@@ -1,4 +1,4 @@
-import { isArray, reduce } from 'lodash';
+import { cloneDeep, isArray, reduce } from 'lodash';
 
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
@@ -8,7 +8,7 @@ import defaultState from '../store/defaultGameState';
 import g from './handlers/game';
 import c from './handlers/cards';
 
-export default function game(oldState = defaultState, action) {
+export default function game(oldState = cloneDeep(defaultState), action) {
   const state = Object.assign({}, oldState);
 
   if (isArray(action)) {
@@ -16,6 +16,9 @@ export default function game(oldState = defaultState, action) {
     return reduce(action, game, state);
   } else {
     switch (action.type) {
+      case gameActions.NEW_GAME:
+        return g.newGame(state);
+
       case gameActions.MOVE_ROBOT:
         return g.moveRobot(state, action.payload.from, action.payload.to, action.payload.asPartOfAttack);
 

@@ -33,7 +33,7 @@ class CardBack extends Component {
         onMouseLeave={this.toggleHover.bind(this)}
         style={Object.assign({
           width: 140,
-          height: 206,
+          height: 210,
           marginRight: 10,
           borderRadius: 5,
           backgroundColor: this.state.hover ? '#e91e63' : '#f44336',

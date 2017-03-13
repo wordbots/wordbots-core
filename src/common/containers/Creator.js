@@ -42,10 +42,13 @@ export function mapDispatchToProps(dispatch) {
       dispatch(creatorActions.regenerateSprite());
     },
     onAddToCollection: (props) => {
-      dispatch([
-        creatorActions.addToCollection(props)
-      ]);
-      window.location.replace('/collection');
+      dispatch(creatorActions.addToCollection(props));
+
+      // Redirect to Collection (only do this in the browser).
+      // TODO find a way to hook into the router directly rather than using window.location.replace.
+      if (typeof window !== 'undefined' && !(window.process && window.process.title.includes('node'))) {
+        window.location.replace('/collection');
+      }
     }
   };
 }

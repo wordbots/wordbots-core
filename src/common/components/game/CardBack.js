@@ -4,6 +4,16 @@ import Paper from 'material-ui/lib/paper';
 class CardBack extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      hover: false
+    };
+  }
+
+  toggleHover() {
+    if (this.props.hoverable) {
+      this.setState({hover: !this.state.hover});
+    }
   }
 
   render() {
@@ -19,12 +29,14 @@ class CardBack extends Component {
     return (
       <Paper
         zDepth={2}
+        onMouseEnter={this.toggleHover.bind(this)}
+        onMouseLeave={this.toggleHover.bind(this)}
         style={Object.assign({
           width: 140,
           height: 206,
           marginRight: 10,
           borderRadius: 5,
-          backgroundColor: '#f44336',
+          backgroundColor: this.state.hover ? '#e91e63' : '#f44336',
           boxSizing: 'border-box',
           padding: 5,
           userSelect: 'none',
@@ -45,7 +57,7 @@ class CardBack extends Component {
             color: '#fff',
             fontSize: 26,
             fontFamily: 'Carter One'
-          }}>WORDBOTS</div>
+          }}>{this.props.customText || 'WORDBOTS'}</div>
         </div>
       </Paper>
     );
@@ -53,7 +65,9 @@ class CardBack extends Component {
 }
 
 CardBack.propTypes = {
-  deckLength: React.PropTypes.number
+  deckLength: React.PropTypes.number,
+  customText: React.PropTypes.string,
+  hoverable: React.PropTypes.bool
 };
 
 export default CardBack;

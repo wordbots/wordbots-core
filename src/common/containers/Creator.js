@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import CircularProgress from 'material-ui/lib/circular-progress';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
@@ -41,7 +42,10 @@ export function mapDispatchToProps(dispatch) {
       dispatch(creatorActions.regenerateSprite());
     },
     onAddToCollection: (props) => {
-      dispatch(creatorActions.addToCollection(props));
+      dispatch([
+        creatorActions.addToCollection(props)
+      ]);
+      window.location.replace('/collection');
     }
   };
 }
@@ -49,44 +53,60 @@ export function mapDispatchToProps(dispatch) {
 export class Creator extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      saving: false
+    };
   }
 
   render() {
-    return (
-      <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
-        <Helmet title="Creator"/>
-
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <CardCreationForm
-            name={this.props.name}
-            type={this.props.type}
-            attack={this.props.attack}
-            speed={this.props.speed}
-            health={this.props.health}
-            energy={this.props.cost}
-            sentences={this.props.sentences}
-            textCleared={this.props.textCleared}
-            onSetName={(name) => { this.props.onSetName(name); }}
-            onSetType={(type) => { this.props.onSetType(type); }}
-            onSetText={(text) => { this.props.onSetText(text); }}
-            onSetAttribute={(attr, value) => { this.props.onSetAttribute(attr, value); }}
-            onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
-            onSpriteClick={() => { this.props.onSpriteClick(); }}
-            onAddToCollection={() => { this.props.onAddToCollection(this.props); }}
-            />
-          <CardPreview
-            name={this.props.name}
-            type={this.props.type}
-            spriteID={this.props.spriteID}
-            sentences={this.props.sentences}
-            attack={this.props.attack}
-            speed={this.props.speed}
-            health={this.props.health}
-            energy={this.props.cost}
-            onSpriteClick={() => { this.props.onSpriteClick(); }} />
+    if (this.state.saving) {
+      return (
+        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
+          <div style={{margin: '300px auto', textAlign: 'center'}}>
+            <CircularProgress />
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
+          <Helmet title="Creator"/>
+
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <CardCreationForm
+              name={this.props.name}
+              type={this.props.type}
+              attack={this.props.attack}
+              speed={this.props.speed}
+              health={this.props.health}
+              energy={this.props.cost}
+              sentences={this.props.sentences}
+              textCleared={this.props.textCleared}g
+              onSetName={(name) => { this.props.onSetName(name); }}
+              onSetType={(type) => { this.props.onSetType(type); }}
+              onSetText={(text) => { this.props.onSetText(text); }}
+              onSetAttribute={(attr, value) => { this.props.onSetAttribute(attr, value); }}
+              onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
+              onSpriteClick={() => { this.props.onSpriteClick(); }}
+              onAddToCollection={() => {
+                this.setState({saving: true});
+                this.props.onAddToCollection(this.props);
+              }} />
+            <CardPreview
+              name={this.props.name}
+              type={this.props.type}
+              spriteID={this.props.spriteID}
+              sentences={this.props.sentences}
+              attack={this.props.attack}
+              speed={this.props.speed}
+              health={this.props.health}
+              energy={this.props.cost}
+              onSpriteClick={() => { this.props.onSpriteClick(); }} />
+          </div>
+        </div>
+      );
+    }
   }
 }
 

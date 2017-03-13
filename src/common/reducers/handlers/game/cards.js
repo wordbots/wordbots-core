@@ -1,6 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
-  currentPlayer, validPlacementHexes, getCost,
+  currentPlayer, validPlacementHexes, getCost, checkVictoryConditions,
   discardCards,
   executeCmd, checkTriggersForObject, applyAbilities
 } from '../../../util';
@@ -129,6 +129,8 @@ export function playEvent(state, cardIdx, command) {
       player.energy.available -= getCost(card);
     }
   }
+
+  state = checkVictoryConditions(state);
 
   return state;
 }

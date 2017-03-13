@@ -97,6 +97,16 @@ export function matchesType(objectOrCard, cardTypeQuery) {
   }
 }
 
+export function checkVictoryConditions(state) {
+  if (!some(state.players.blue.robotsOnBoard, o => o.card.type === TYPE_CORE)) {
+    state.winner = 'orange';
+  } else if (!some(state.players.orange.robotsOnBoard, o => o.card.type === TYPE_CORE)) {
+    state.winner = 'blue';
+  }
+
+  return state;
+}
+
 //
 // II. Grid-related helper functions.
 //
@@ -194,7 +204,7 @@ export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
 }
 
 export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
-  const ownerName = (state.players.blue.robotsOnBoard[hex]) ? 'blue' : 'orange';
+  const ownerName = ownerOf(state, object).name;
 
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
@@ -210,10 +220,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
       (ability.currentTargets || []).forEach(ability.unapply);
     });
 
-    // Check victory conditions.
-    if (object.card.type === TYPE_CORE) {
-      state.winner = (ownerName === 'blue') ? 'orange' : 'blue';
-    }
+    state = checkVictoryConditions(state);
   }
 
   state = applyAbilities(state);

@@ -181,7 +181,7 @@ export class Game extends Component {
   render() {
     if (!this.props.started) {
       return (
-        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
+        <div style={{margin: '48px auto', width: '800px'}}>
           <Paper style={{padding: 20, position: 'relative', width: '80%'}}>
           {this.renderDeckSelector('Orange')}
           {this.renderDeckSelector('Blue')}
@@ -197,7 +197,7 @@ export class Game extends Component {
       );
     } else {
       return (
-        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
+        <div style={{margin: '48px 72px'}}>
           <Helmet title="Game"/>
           <Paper style={{padding: 20, position: 'relative'}}>
             {this.renderPlayerArea('orange')}

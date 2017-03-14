@@ -57,9 +57,8 @@ export class Creator extends Component {
 
   render() {
     return (
-      <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
+      <div style={{height: '100%'}}>
         <Helmet title="Creator"/>
-
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
             name={this.props.name}

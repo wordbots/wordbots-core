@@ -31,41 +31,43 @@ class Header extends Component {
   render() {
     return (
       <div>
-        <AppBar
-          zDepth={1}
-          title={
-            <Link style={{
-              color: '#fff', fontFamily: 'Carter One', fontSize: 32
-            }} to="/">WORDBOTS</Link>
-          }
-          style={{
-            position: 'fixed',
-            top: 0
-          }}
-          iconElementLeft={
-            <IconButton>
-              <FontIcon className="material-icons">menu</FontIcon>
-            </IconButton>}
-          onLeftIconButtonTouchTap={this.handleToggle}
-        />
-
-        <LeftNav style={{paddingTop: '80px'}} open={this.state.open}>
-          <Link to="/home">
-            <MenuItem primaryText="Home" leftIcon={
-              <FontIcon className="material-icons">home</FontIcon>
-            }/>
-          </Link>
-          <Link to="/collection">
-            <MenuItem primaryText="Collection" leftIcon={
-              <FontIcon className="material-icons">recent_actors</FontIcon>
-            }/>
-          </Link>
-          <Link to="/game">
-            <MenuItem primaryText="Game" leftIcon={
-              <FontIcon className="material-icons">videogame_asset</FontIcon>
-            }/>
-          </Link>
-        </LeftNav>
+        <div style={{height: 66}}>
+          <AppBar
+            zDepth={1}
+            title={
+              <Link style={{
+                color: '#fff', fontFamily: 'Carter One', fontSize: 32
+              }} to="/">WORDBOTS</Link>
+            }
+            style={{
+              position: 'fixed',
+              top: 0
+            }}
+            iconElementLeft={
+              <IconButton onClick={this.handleToggle}>
+                <FontIcon className="material-icons">menu</FontIcon>
+              </IconButton>}
+          />
+        </div>
+        <div style={{width: 256, height: this.state.open ? 100 : 0, float: 'left'}}>
+          <LeftNav style={{paddingTop: '80px'}} open={this.state.open}>
+            <Link to="/collection">
+              <MenuItem primaryText="Home" leftIcon={
+                <FontIcon className="material-icons">home</FontIcon>
+              }/>
+            </Link>
+            <Link to="/collection">
+              <MenuItem primaryText="Collection" leftIcon={
+                <FontIcon className="material-icons">recent_actors</FontIcon>
+              }/>
+            </Link>
+            <Link to="/game">
+              <MenuItem primaryText="Game" leftIcon={
+                <FontIcon className="material-icons">videogame_asset</FontIcon>
+              }/>
+            </Link>
+          </LeftNav>
+        </div>
       </div>
     );
   }

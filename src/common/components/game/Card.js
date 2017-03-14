@@ -105,22 +105,27 @@ class Card extends Component {
 
   renderImage() {
     if (this.props.type === TYPE_CORE) {
+      const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
-        <div style={{ width: 50 * this.props.scale, height: 52 * this.props.scale, margin: '3px auto 0'}}>
-          <img src={loadImages()[this.props.img]} width={50 * this.props.scale} height={50 * this.props.scale} />
+        <div style={{
+          width: width,
+          height: height,
+          margin: '3px auto 0'
+        }}>
+          <img src={loadImages()[this.props.img]} width={width} height={height} />
         </div>
       );
     } else if (this.props.type === TYPE_EVENT) {
+      const [width, height] = [25 * this.props.scale, 42 * this.props.scale];
       return (
         <div
           onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
           style={{
-            width: 25 * this.props.scale,
-            height: 42 * this.props.scale,
-            margin: '0 auto',
-            marginTop: 10 * this.props.scale
+            width: width,
+            height: height,
+            margin: `${10 * this.props.scale}px auto 0`
         }}>
-          <Identicon id={this.props.spriteID || this.props.name} width={25 * this.props.scale} size={4} />
+          <Identicon id={this.props.spriteID || this.props.name} width={width} size={4} />
         </div>
       );
     } else {

@@ -64,7 +64,7 @@ export default function configureStore(initialState) {
     });
   }
 
-  store.subscribe(() => { saveState(store); });
+  store.subscribe(() => { saveState(store.getState()); });
 
   return store;
 }

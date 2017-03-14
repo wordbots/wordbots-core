@@ -182,21 +182,21 @@ export class Game extends Component {
   render() {
     if (!this.props.started) {
       return (
-        <div style={{margin: '48px auto', width: '800px'}}>
-          <Paper style={{padding: 20, position: 'relative', width: '80%'}}>
-          {this.renderDeckSelector('Orange')}
-          {this.renderDeckSelector('Blue')}
-          <RaisedButton
-            secondary
-            label="Start Game"
-            style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
-            onTouchTap={e => {
-              this.props.onStartGame({
-                // Remove the shuffle() calls here to test individual cards.
-                orange: {cards: shuffle(this.state.selectedOrangeDeck.cards)},
-                blue: {cards: shuffle(this.state.selectedBlueDeck.cards)}
-              });
-            }} />
+        <div style={{margin: '48px auto', width: 800}}>
+          <Paper style={{padding: 20, position: 'relative'}}>
+            {this.renderDeckSelector('Orange')}
+            {this.renderDeckSelector('Blue')}
+            <RaisedButton
+              secondary
+              label="Start Game"
+              style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
+              onTouchTap={e => {
+                this.props.onStartGame({
+                  // Remove the shuffle() calls here to test individual cards.
+                  orange: {cards: shuffle(this.state.selectedOrangeDeck.cards)},
+                  blue: {cards: shuffle(this.state.selectedBlueDeck.cards)}
+                });
+              }} />
           </Paper>
         </div>
       );

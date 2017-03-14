@@ -162,37 +162,29 @@ export class Game extends Component {
     );
   }
 
+  renderDeckSelector(color) {
+    return (
+      <SelectField
+        value={0}
+        floatingLabelText={`${color} player deck`}
+        style={{width: '80%', marginRight: 25}}
+        onChange={(e, idx, value) => {
+          this.setState(state => state[`selected${color}Deck`] = this.props.availableDecks[idx]);
+        }}>
+        {this.props.availableDecks.map((deck, idx) =>
+          <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
+        )}
+      </SelectField>
+    );
+  }
+
   render() {
     if (!this.props.started) {
       return (
         <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
           <Paper style={{padding: 20, position: 'relative', width: '80%'}}>
-          <div>
-            <SelectField
-              value={0}
-              floatingLabelText="Orange player deck"
-              style={{width: '80%', marginRight: 25}}
-              onChange={(e, idx, value) => {
-                this.setState(state => state.selectedOrangeDeck = this.props.availableDecks[idx]);
-              }}>
-              {this.props.availableDecks.map((deck, idx) =>
-                <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
-              )}
-            </SelectField>
-          </div>
-          <div>
-            <SelectField
-              value={0}
-              floatingLabelText="Blue player deck"
-              style={{width: '80%', marginRight: 25}}
-              onChange={(e, idx, value) => {
-                this.setState(state => state.selectedBlueDeck = this.props.availableDecks[idx]);
-              }}>
-              {this.props.availableDecks.map((deck, idx) =>
-                <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
-              )}
-            </SelectField>
-          </div>
+          {this.renderDeckSelector('Orange')}
+          {this.renderDeckSelector('Blue')}
           <RaisedButton
             secondary
             label="Start Game"

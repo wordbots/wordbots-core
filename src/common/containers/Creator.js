@@ -65,7 +65,7 @@ export class Creator extends Component {
   render() {
     if (this.state.saving) {
       return (
-        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
+        <div style={{height: '100%'}}>
           <div style={{margin: '300px auto', textAlign: 'center'}}>
             <CircularProgress />
           </div>
@@ -73,7 +73,7 @@ export class Creator extends Component {
       );
     } else {
       return (
-        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, height: '100%'}}>
+        <div style={{height: '100%'}}>
           <Helmet title="Creator"/>
 
           <div style={{display: 'flex', justifyContent: 'space-between'}}>

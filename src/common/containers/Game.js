@@ -151,7 +151,7 @@ export class Game extends Component {
 
   render() {
     return (
-      <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
+      <div style={{margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20, position: 'relative'}}>
           {this.renderPlayerArea('orange')}

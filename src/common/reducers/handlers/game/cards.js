@@ -105,17 +105,19 @@ export function placeCard(state, card, tile) {
 export function playEvent(state, cardIdx, command) {
   const player = state.players[state.currentTurn];
   const card = player.hand[cardIdx];
+  const cmd = card.command;
 
   if (player.energy.available >= getCost(card)) {
-    if (_.isArray(card.command)) {
-      card.command.forEach((cmd) => {
-        if (!state.target.choosing) {
-          executeCmd(state, cmd);
-        }
-      });
-    } else {
-      executeCmd(state, card.command);
-    }
+    // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
+    card.justPlayed = true;
+
+    (_.isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
+      if (!state.target.choosing) {
+        executeCmd(state, subcmd);
+      }
+    });
+
+    card.justPlayed = false;
 
     if (state.target.choosing) {
       state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };

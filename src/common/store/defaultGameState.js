@@ -1,5 +1,3 @@
-import { shuffle } from 'lodash';
-
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
 
 import * as cards from './cards';
@@ -13,8 +11,6 @@ export function orangePlayerState(collection) {
 }
 
 function playerState(color, collection, coreCard, coreHexId) {
-  collection = shuffle(collection);  // Uncomment this line to test specific cards.
-
   return {
     name: color,
     energy: {

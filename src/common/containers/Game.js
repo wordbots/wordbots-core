@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import { connect } from 'react-redux';
+import { shuffle } from 'lodash';
 
 import { getAttribute } from '../util';
 import Board from '../components/game/Board';
@@ -190,7 +191,11 @@ export class Game extends Component {
             label="Start Game"
             style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
             onTouchTap={e => {
-              this.props.onStartGame({orange: this.state.selectedOrangeDeck, blue: this.state.selectedBlueDeck});
+              this.props.onStartGame({
+                // Remove the shuffle() calls here to test individual cards.
+                orange: {cards: shuffle(this.state.selectedOrangeDeck.cards)},
+                blue: {cards: shuffle(this.state.selectedBlueDeck.cards)}
+              });
             }} />
           </Paper>
         </div>

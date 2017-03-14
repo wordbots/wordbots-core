@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
+import SelectField from 'material-ui/lib/select-field';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 import { connect } from 'react-redux';
 
 import { getAttribute } from '../util';
@@ -14,6 +16,7 @@ import * as gameActions from '../actions/game';
 
 export function mapStateToProps(state) {
   return {
+    started: state.game.started,
     currentTurn: state.game.currentTurn,
     winner: state.game.winner,
 
@@ -36,12 +39,17 @@ export function mapStateToProps(state) {
     orangeEnergy: state.game.players.orange.energy,
 
     blueDeck: state.game.players.blue.deck,
-    orangeDeck: state.game.players.orange.deck
+    orangeDeck: state.game.players.orange.deck,
+
+    availableDecks: state.collection.decks
   };
 }
 
 export function mapDispatchToProps(dispatch) {
   return {
+    onStartGame: (decks) => {
+      dispatch(gameActions.startGame(decks));
+    },
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
     },
@@ -78,6 +86,11 @@ export function mapDispatchToProps(dispatch) {
 export class Game extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      selectedOrangeDeck: props.availableDecks[0],
+      selectedBlueDeck: props.availableDecks[0]
+    };
   }
 
   allPieces() {
@@ -150,43 +163,86 @@ export class Game extends Component {
   }
 
   render() {
-    return (
-      <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
-        <Helmet title="Game"/>
-        <Paper style={{padding: 20, position: 'relative'}}>
-          {this.renderPlayerArea('orange')}
-
-          <div style={{position: 'relative'}}>
-            <CardViewer hoveredCard={this.props.hoveredCard} />
-            <Status
-              currentTurn={this.props.currentTurn}
-              status={this.props.status} />
-            <Board
-              selectedTile={this.props.selectedTile}
-              target={this.props.target}
-              bluePieces={this.props.bluePieces}
-              orangePieces={this.props.orangePieces}
-              currentTurn={this.props.currentTurn}
-              playingCardType={this.props.playingCardType}
-              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
-              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
-            <RaisedButton
-              secondary
-              label="End Turn"
-              style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
-              onTouchTap={this.props.onPassTurn} />
+    if (!this.props.started) {
+      return (
+        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
+          <Paper style={{padding: 20, position: 'relative', width: '80%'}}>
+          <div>
+            <SelectField
+              value={0}
+              floatingLabelText="Orange player deck"
+              style={{width: '80%', marginRight: 25}}
+              onChange={(e, idx, value) => {
+                this.setState(state => state.selectedOrangeDeck = this.props.availableDecks[idx]);
+              }}>
+              {this.props.availableDecks.map((deck, idx) =>
+                <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
+              )}
+            </SelectField>
           </div>
+          <div>
+            <SelectField
+              value={0}
+              floatingLabelText="Blue player deck"
+              style={{width: '80%', marginRight: 25}}
+              onChange={(e, idx, value) => {
+                this.setState(state => state.selectedBlueDeck = this.props.availableDecks[idx]);
+              }}>
+              {this.props.availableDecks.map((deck, idx) =>
+                <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
+              )}
+            </SelectField>
+          </div>
+          <RaisedButton
+            secondary
+            label="Start Game"
+            style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
+            onTouchTap={e => {
+              this.props.onStartGame({orange: this.state.selectedOrangeDeck, blue: this.state.selectedBlueDeck});
+            }} />
+          </Paper>
+        </div>
+      );
+    } else {
+      return (
+        <div style={{paddingLeft: 256, /*paddingRight: 256,*/ paddingTop: 64, margin: '48px 72px'}}>
+          <Helmet title="Game"/>
+          <Paper style={{padding: 20, position: 'relative'}}>
+            {this.renderPlayerArea('orange')}
 
-          {this.renderPlayerArea('blue')}
+            <div style={{position: 'relative'}}>
+              <CardViewer hoveredCard={this.props.hoveredCard} />
+              <Status
+                currentTurn={this.props.currentTurn}
+                status={this.props.status} />
+              <Board
+                selectedTile={this.props.selectedTile}
+                target={this.props.target}
+                bluePieces={this.props.bluePieces}
+                orangePieces={this.props.orangePieces}
+                currentTurn={this.props.currentTurn}
+                playingCardType={this.props.playingCardType}
+                onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
+                onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
+              <RaisedButton
+                secondary
+                label="End Turn"
+                style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
+                onTouchTap={this.props.onPassTurn} />
+            </div>
 
-          <VictoryScreen winner={this.props.winner} onVictoryScreenClick={this.props.onVictoryScreenClick} />
-        </Paper>
-      </div>
-    );
+            {this.renderPlayerArea('blue')}
+
+            <VictoryScreen winner={this.props.winner} onVictoryScreenClick={this.props.onVictoryScreenClick} />
+          </Paper>
+        </div>
+      );
+    }
   }
 }
 
 Game.propTypes = {
+  started: React.PropTypes.boolean,
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
   playingCardType: React.PropTypes.number,
@@ -207,9 +263,12 @@ Game.propTypes = {
   blueDeck: React.PropTypes.array,
   orangeDeck: React.PropTypes.array,
 
+  availableDecks: React.PropTypes.array,
+
   selectedCard: React.PropTypes.number,
   hoveredCardIdx: React.PropTypes.number,
 
+  onStartGame: React.PropTypes.func,
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,
   onMoveRobotAndAttack: React.PropTypes.func,

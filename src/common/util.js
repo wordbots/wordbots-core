@@ -176,6 +176,7 @@ export function newGame(state, collections) {
   state = Object.assign(state, cloneDeep(defaultState)); // Reset game state.
   state.players.blue = bluePlayerState(collections.blue);
   state.players.orange = orangePlayerState(collections.blue);
+  state.started = true;
   return state;
 }
 

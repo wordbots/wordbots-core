@@ -34,8 +34,8 @@ function playerState(color, collection, coreCard, coreHexId) {
 const defaultState = {
   storeKey: 'game',
   players: {
-    blue: bluePlayerState(cards.collection),
-    orange: orangePlayerState(cards.collection)
+    blue: bluePlayerState([]),
+    orange: orangePlayerState([])
   },
   currentTurn: 'orange',
   selectedTile: null,

@@ -175,7 +175,7 @@ export function validAttackHexes(state, playerName, startHex, speed) {
 export function newGame(state, collections) {
   state = Object.assign(state, cloneDeep(defaultState)); // Reset game state.
   state.players.blue = bluePlayerState(collections.blue);
-  state.players.orange = orangePlayerState(collections.blue);
+  state.players.orange = orangePlayerState(collections.orange);
   state.started = true;
   return state;
 }

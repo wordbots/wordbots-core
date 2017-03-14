@@ -1,5 +1,6 @@
 import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
+import defaultState from '../../src/common/store/defaultGameState';
 import * as cards from '../../src/common/store/cards';
 import {
   BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE
@@ -13,7 +14,7 @@ import {
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {
-    expect(game(undefined, {})).toEqual(getDefaultState());
+    expect(game(undefined, {})).toEqual(_.cloneDeep(defaultState));
   });
 
   describe('[Basic gameplay]', () => {

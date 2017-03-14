@@ -242,7 +242,7 @@ export class Game extends Component {
 }
 
 Game.propTypes = {
-  started: React.PropTypes.boolean,
+  started: React.PropTypes.bool,
   currentTurn: React.PropTypes.string,
   selectedTile: React.PropTypes.string,
   playingCardType: React.PropTypes.number,

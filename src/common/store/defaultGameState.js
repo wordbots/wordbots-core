@@ -33,6 +33,7 @@ function playerState(color, collection, coreCard, coreHexId) {
 
 const defaultState = {
   storeKey: 'game',
+  started: false,
   players: {
     blue: bluePlayerState([]),
     orange: orangePlayerState([])

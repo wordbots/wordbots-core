@@ -50,7 +50,7 @@ class Header extends Component {
         />
 
         <LeftNav style={{paddingTop: '80px'}} open={this.state.open}>
-          <Link to="/collection">  // TODO change this to /home after we add some kind of home screen.
+          <Link to="/collection">
             <MenuItem primaryText="Home" leftIcon={
               <FontIcon className="material-icons">home</FontIcon>
             }/>

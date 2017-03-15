@@ -2,7 +2,7 @@ import { getAttribute } from '../util';
 
 export function attributeSum(state) {
   return function (collection, attribute) {
-    return _.sum(Object.values(collection).map(object =>
+    return _.sum(collection.map(([hex, object]) =>
       getAttribute(object, attribute)
     ));
   };

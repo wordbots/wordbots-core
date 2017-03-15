@@ -196,7 +196,10 @@ export class Game extends Component {
               style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
               onTouchTap={e => {
                 this.props.onStartGame({
-                  // Remove the shuffle() calls here to test individual cards.
+                  // Disable shuffle() to test individual cards:
+                  // orange: this.state.selectedOrangeDeck,
+                  // blue: this.state.selectedBlueDeck
+
                   orange: {cards: shuffle(this.state.selectedOrangeDeck.cards)},
                   blue: {cards: shuffle(this.state.selectedBlueDeck.cards)}
                 });

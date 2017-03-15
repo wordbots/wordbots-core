@@ -257,7 +257,7 @@ export function executeCmd(state, cmd, currentObject = null) {
 }
 /* eslint-enable no-unused-vars */
 
-export function checkTriggers(state, triggerType, it, condition) {
+function checkTriggers(state, triggerType, it, condition) {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
     (obj.triggers || []).forEach((t) => {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
@@ -271,12 +271,17 @@ export function checkTriggers(state, triggerType, it, condition) {
   return Object.assign({}, state, {it: null});
 }
 
-// Special case of checkTriggers() that is most frequently used:
-// checking a trigger for a specific targeted object.
+// Special cases of checkTriggers():
+
 export function checkTriggersForObject(state, triggerType, object, extraCondition = () => true) {
   return checkTriggers(state, triggerType, object, (trigger =>
     trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
   ));
+}
+
+export function checkTriggersForPlayer(state, triggerType, condition = () => true) {
+  state = Object.assign({}, state, {itP: currentPlayer(state)});
+  return checkTriggers(state, triggerType, null, condition);
 }
 
 export function applyAbilities(state) {

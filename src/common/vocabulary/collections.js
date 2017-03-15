@@ -11,7 +11,7 @@ export function allTiles(state) {
     GridGenerator.hexagon(4).forEach((hex) => {
       tiles[HexUtils.getID(hex)] = allObjectsOnBoard(state)[HexUtils.getID(hex)];
     });
-    return tiles;
+    return _.toPairs(tiles);
   };
 }
 
@@ -30,8 +30,9 @@ export function objectsInPlay(state) {
 
 export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
-    return _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
+    const objects = _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
       matchesType(obj, objType) && _.every(conditions.map(cond => cond(hex, obj)))
     );
+    return _.toPairs(objects);
   };
 }

@@ -8,7 +8,13 @@ import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } f
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
-      return Object.values(collection);
+      if (_.isArray(collection[0])) {
+        // Collection of objects.
+        return collection.map(([hex, obj]) => obj);
+      } else {
+        // Collection of cards.
+        return collection;
+      }
     },
 
     // Note: Unlike other target functions, choose() can return an [hex]
@@ -26,15 +32,16 @@ export default function targets(state, currentObject) {
           // Prepare target selection.
           state.target.choosing = true;
 
-          if (_.isArray(collection)) {
+          if (_.isArray(collection[0])) {
+            // Collection of objects.
+            // Don't allow player to pick the object that is being played (if any).
+            state.target.possibleHexes = collection.filter(([hex, obj]) => !obj || !obj.justPlayed)
+                                                   .map(([hex, obj]) => hex);
+            state.target.possibleCards = [];
+          } else {
             // Collection of cards.
             state.target.possibleCards = collection.map(card => card.id);
             state.target.possibleHexes = [];
-          } else {
-            // Collection of objects.
-            // Don't allow player to pick the object that is being played (if any).
-            state.target.possibleHexes = Object.keys(_.omitBy(collection, obj => obj && obj.justPlayed));
-            state.target.possibleCards = [];
           }
         }
         return [];
@@ -45,8 +52,14 @@ export default function targets(state, currentObject) {
       return [currentObject];
     },
 
+    // Currently salient object.
     it: function () {
       return state.it ? [state.it] : [];
+    },
+
+    // Currently salient player.
+    itP: function () {
+      return state.itP ? [state.itP] : [];
     },
 
     self: function () {
@@ -59,7 +72,7 @@ export default function targets(state, currentObject) {
 
     opponent: function () {
       if (currentObject) {
-        return [state.players[opponent(ownerOf(state, currentObject).name).name]];
+        return [state.players[opponent(ownerOf(state, currentObject).name)]];
       } else {
         return [opponentPlayer(state)];
       }
@@ -70,7 +83,7 @@ export default function targets(state, currentObject) {
     },
 
     controllerOf: function (objects) {
-      // Assume the only one object is ever passed in here.
+      // Assume that only one object is ever passed in here.
       return (objects.length === 1) ? [ownerOf(state, objects[0])] : [];
     }
   };

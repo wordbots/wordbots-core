@@ -44,7 +44,7 @@ export function mapStateToProps(state) {
 
     availableDecks: state.collection.decks,
 
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.layout && state.layout.present.sidebarOpen
   };
 }
 

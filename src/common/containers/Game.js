@@ -36,7 +36,9 @@ export function mapStateToProps(state) {
     orangeEnergy: state.game.players.orange.energy,
 
     blueDeck: state.game.players.blue.deck,
-    orangeDeck: state.game.players.orange.deck
+    orangeDeck: state.game.players.orange.deck,
+
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
@@ -151,7 +153,7 @@ export class Game extends Component {
 
   render() {
     return (
-      <div style={{margin: '48px 72px'}}>
+      <div style={{paddingLeft: this.props.sidebarOpen ? 256 : 0, margin: '48px 72px'}}>
         <Helmet title="Game"/>
         <Paper style={{padding: 20, position: 'relative'}}>
           {this.renderPlayerArea('orange')}
@@ -209,6 +211,8 @@ Game.propTypes = {
 
   selectedCard: React.PropTypes.number,
   hoveredCardIdx: React.PropTypes.number,
+
+  sidebarOpen: React.PropTypes.bool,
 
   onMoveRobot: React.PropTypes.func,
   onAttackRobot: React.PropTypes.func,

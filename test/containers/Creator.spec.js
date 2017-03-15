@@ -37,10 +37,7 @@ describe('Creator container', () => {
     getComponent('Creator', CardCreationForm, state, dispatch).props
       .onAddToCollection();
 
-    expect(state.creator.name).toEqual('');
     expect(state.collection.cards.length).toEqual(numCards + 1);
-    expect(state.game.players.orange.hand[0].name).toEqual(newCardName);
-    expect(state.game.players.blue.hand[0].name).toEqual(newCardName);
 
     // TODO test other functionality of the card creator.
   });

@@ -1,3 +1,4 @@
+export const START_GAME = 'START_GAME';
 export const NEW_GAME = 'NEW_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
@@ -8,6 +9,15 @@ export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
+
+export function startGame(decks) {
+  return {
+    type: START_GAME,
+    payload: {
+      decks: decks
+    }
+  };
+}
 
 export function newGame() {
   return {

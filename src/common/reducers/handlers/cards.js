@@ -1,34 +1,25 @@
 
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { instantiateCard, newGame } from '../../util';
+import { instantiateCard } from '../../util';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
     const card = createCardFromProps(cardProps);
+    state.cards.unshift(card);
 
-    if (state.storeKey === 'game') {
-      // Game state
-      // (Treat both players' collection as the same for now.)
-      const collection = [card].concat(state.players.orange.collection);
-      return newGame(state, {blue: collection, orange: collection});
-    } else {
-      // Collection state
-      state.cards.unshift(card);
-      return state;
-    }
+    // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
+    state.decks = [createDefaultDeck(state)];
+
+    return state;
   },
 
   removeFromCollection: function (state, ids) {
-    if (state.storeKey === 'game') {
-      // Game state
-      // (Treat both players' collection as the same for now.)
-      const collection = state.players.orange.collection.filter(c => !ids.includes(c.id));
-      return newGame(state, {blue: collection, orange: collection});
-    } else {
-      // Collection state
-      state.cards = state.cards.filter(c => !ids.includes(c.id));
-      return state;
-    }
+    state.cards = state.cards.filter(c => !ids.includes(c.id));
+
+    // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
+    state.decks = [createDefaultDeck(state)];
+
+    return state;
   }
 };
 
@@ -58,6 +49,13 @@ function createCardFromProps(props) {
   }
 
   return instantiateCard(card);
+}
+
+function createDefaultDeck(state) {
+  return {
+    name: 'Default',
+    cards: state.cards.slice(0, 30)
+  };
 }
 
 export default cardsHandlers;

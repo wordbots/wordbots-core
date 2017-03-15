@@ -1,12 +1,9 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
-import * as collectionActions from '../actions/collection';
-import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
 import defaultState from '../store/defaultGameState';
 
 import g from './handlers/game';
-import c from './handlers/cards';
 
 export default function game(oldState = cloneDeep(defaultState), action) {
   const state = Object.assign({}, oldState);
@@ -16,8 +13,12 @@ export default function game(oldState = cloneDeep(defaultState), action) {
     return reduce(action, game, state);
   } else {
     switch (action.type) {
+      case gameActions.START_GAME:
+        return g.newGame(state, action.payload.decks);
+
       case gameActions.NEW_GAME:
-        return g.newGame(state);
+        state.started = false;
+        return state;
 
       case gameActions.MOVE_ROBOT:
         return g.moveRobot(state, action.payload.from, action.payload.to, action.payload.asPartOfAttack);
@@ -46,12 +47,6 @@ export default function game(oldState = cloneDeep(defaultState), action) {
 
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);
-
-      case creatorActions.ADD_TO_COLLECTION:
-        return c.addToCollection(state, action.payload);
-
-      case collectionActions.REMOVE_FROM_COLLECTION:
-        return c.removeFromCollection(state, action.ids);
 
       default:
         return state;

@@ -3,10 +3,11 @@ import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 
+import { getDefaultState } from '../testHelpers';
 import { renderElement, getComponent, createGame } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
-import defaultState from '../../src/common/store/defaultGameState';
+import defaultCollectionState from '../../src/common/store/defaultCollectionState';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
 import CardViewer from '../../src/common/components/game/CardViewer';
@@ -18,7 +19,7 @@ import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 
 describe('Game container', () => {
   it('renders the default game state', () => {
-    const state = {game: defaultState};
+    const state = {game: getDefaultState(), collection: defaultCollectionState};
 
     const game = createGame(state);
     const dom = renderElement(game);
@@ -81,12 +82,12 @@ describe('Game container', () => {
 
   it('should propagate events', () => {
     const dispatchedActions = [];
-    let state = {game: defaultState};
+    const state = {game: getDefaultState(), collection: defaultCollectionState};
 
     function dispatch(action) {
       // console.log(action);
       dispatchedActions.push(action);
-      state = {game: gameReducer(state.game, action)};
+      state.game = gameReducer(state.game, action);
     }
 
     function clickCard(predicate) {

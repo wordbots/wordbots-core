@@ -1,8 +1,7 @@
 import { currentPlayer, opponentName, drawCards, checkTriggers, newGame } from '../../../util';
 
-export function startNewGame(state) {
-  const collection = state.players.orange.collection;
-  return newGame(state, {blue: collection, orange: collection});
+export function startNewGame(state, decks) {
+  return newGame(state, {blue: decks.blue.cards, orange: decks.orange.cards});
 }
 
 export function startTurn(state) {

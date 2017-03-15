@@ -1,11 +1,40 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import FontIcon from 'material-ui/lib/font-icon';
+import ReactTooltip from 'react-tooltip';
 
 import Card from './Card';
 
 class CardViewer extends Component {
   constructor(props) {
     super(props);
+  }
+
+  renderCardText() {
+    if (this.props.hoveredCard.card.text) {
+      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(this.props.hoveredCard.card.text)}&format=svg`;
+      return [
+        <span key={this.props.hoveredCard.card.text}>
+          {this.props.hoveredCard.card.text}
+          <a href={treeUrl} target="_blank">
+            <FontIcon
+              className="material-icons"
+              style={{fontSize: '0.7em', verticalAlign: 'top', color: 'green'}}
+              data-for="error-tooltip"
+              data-tip="Click to view parse tree">
+                code
+            </FontIcon>
+            <ReactTooltip
+              id="error-tooltip"
+              place="top"
+              type="dark"
+              effect="float" />
+          </a>
+        </span>
+      ];
+    } else {
+      return '';
+    }
   }
 
   render() {
@@ -15,11 +44,12 @@ class CardViewer extends Component {
       card = (
         <Card
           onCardClick={() => {}}
+          onCardHover={() => {}}
           scale={1.5}
           stats={this.props.hoveredCard.stats}
           name={this.props.hoveredCard.card.name}
           type={this.props.hoveredCard.card.type}
-          text={this.props.hoveredCard.card.text || ''}
+          text={this.renderCardText()}
           img={this.props.hoveredCard.card.img}
           cost={this.props.hoveredCard.card.cost}
           cardStats={this.props.hoveredCard.card.stats}

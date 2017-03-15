@@ -68,7 +68,7 @@ class Hand extends Component {
           zIndex={zIndex}
 
           onCardClick={e => { this.props.onSelectCard(idx); }}
-          onCardHover={e => { this.props.onHoverCard(idx); }} />
+          onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
       );
     });
   }

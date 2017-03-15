@@ -186,8 +186,8 @@ class Card extends Component {
           >
             <div
               onClick={this.props.onCardClick}
-              onMouseEnter={this.props.onCardHover}
-              onMouseLeave={this.props.onCardHover}
+              onMouseEnter={e => this.props.onCardHover(true)}
+              onMouseLeave={e => this.props.onCardHover(false)}
             >
               <Paper
                 onMouseOver={this.onMouseOver}

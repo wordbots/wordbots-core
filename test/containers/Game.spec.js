@@ -43,7 +43,7 @@ describe('Game container', () => {
           onSelectCard={game.props.onSelectCard}
           />
         <div style={{position: 'relative'}}>
-          <CardViewer hoveredCard={null} />
+          <CardViewer />
           <Status
             currentTurn={'orange'}
             status={defaultStatus} />

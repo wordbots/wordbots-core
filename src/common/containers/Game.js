@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import { connect } from 'react-redux';
-import { shuffle } from 'lodash';
+import { isNil, shuffle } from 'lodash';
 
 import { getAttribute } from '../util';
 import Board from '../components/game/Board';
@@ -100,6 +100,20 @@ export class Game extends Component {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
+  hoveredCard() {
+    if (this.props.hoveredCard) {
+      return this.props.hoveredCard;
+    } else if (!isNil(this.props.hoveredCardIdx)) {
+      const card = this.props[`${this.props.currentTurn}Hand`][this.props.hoveredCardIdx];
+      return {card: card, stats: card.stats};
+    } else if (!isNil(this.props.selectedCard)) {
+      const card = this.props[`${this.props.currentTurn}Hand`][this.props.selectedCard];
+      return {card: card, stats: card.stats};
+    } else {
+      return this.allPieces()[this.props.selectedTile];
+    }
+  }
+
   movePiece(hexId, asPartOfAttack = false) {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
   }
@@ -187,6 +201,7 @@ export class Game extends Component {
     if (!this.props.started) {
       return (
         <div style={{paddingLeft: padding, margin: '48px auto', width: 800}}>
+          <Helmet title="Game"/>
           <Paper style={{padding: 20, position: 'relative'}}>
             {this.renderDeckSelector('Orange')}
             {this.renderDeckSelector('Blue')}
@@ -215,7 +230,7 @@ export class Game extends Component {
             {this.renderPlayerArea('orange')}
 
             <div style={{position: 'relative'}}>
-              <CardViewer hoveredCard={this.props.hoveredCard} />
+              <CardViewer hoveredCard={this.hoveredCard()} />
               <Status
                 currentTurn={this.props.currentTurn}
                 status={this.props.status} />

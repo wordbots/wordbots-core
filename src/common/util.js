@@ -277,7 +277,7 @@ export function checkTriggersForObject(state, triggerType, object, extraConditio
     trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
   ));
 }
-export function checkTriggersForCurrentPlayer(state, triggerType, condition = () => true) {
+export function checkTriggersForCurrentPlayer(state, triggerType) {
   state = Object.assign({}, state, {itP: currentPlayer(state)});
   return checkTriggers(state, triggerType, null, trigger =>
     trigger.targets.map(p => p.name).includes(state.currentTurn)

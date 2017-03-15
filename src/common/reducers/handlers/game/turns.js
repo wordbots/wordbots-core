@@ -6,7 +6,7 @@ export function startNewGame(state, decks) {
 
 export function startTurn(state) {
   const player = currentPlayer(state);
-  player.energy.total += 1;
+  player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot =>
     Object.assign({}, robot, {movesLeft: robot.stats.speed})

@@ -268,20 +268,20 @@ function checkTriggers(state, triggerType, it, condition) {
     });
   });
 
-  return Object.assign({}, state, {it: null});
+  return Object.assign({}, state, {it: null, itP: null});
 }
 
 // Special cases of checkTriggers():
-
 export function checkTriggersForObject(state, triggerType, object, extraCondition = () => true) {
   return checkTriggers(state, triggerType, object, (trigger =>
     trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
   ));
 }
-
-export function checkTriggersForPlayer(state, triggerType, condition = () => true) {
+export function checkTriggersForCurrentPlayer(state, triggerType, condition = () => true) {
   state = Object.assign({}, state, {itP: currentPlayer(state)});
-  return checkTriggers(state, triggerType, null, condition);
+  return checkTriggers(state, triggerType, null, trigger =>
+    trigger.targets.map(p => p.name).includes(state.currentTurn)
+  );
 }
 
 export function applyAbilities(state) {

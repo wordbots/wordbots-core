@@ -1,4 +1,4 @@
-import { currentPlayer, opponentName, drawCards, checkTriggersForPlayer, newGame } from '../../../util';
+import { currentPlayer, opponentName, drawCards, checkTriggersForCurrentPlayer, newGame } from '../../../util';
 
 export function startNewGame(state, decks) {
   return newGame(state, {blue: decks.blue.cards, orange: decks.orange.cards});
@@ -14,17 +14,13 @@ export function startTurn(state) {
 
   state = drawCards(state, player, 1);
 
-  state = checkTriggersForPlayer(state, 'beginningOfTurn', (t =>
-    t.targets.map(p => p.name).includes(state.currentTurn))
-  );
+  state = checkTriggersForCurrentPlayer(state, 'beginningOfTurn');
 
   return state;
 }
 
 export function endTurn(state) {
-  state = checkTriggersForPlayer(state, 'endOfTurn', (t =>
-    t.targets.map(p => p.name).includes(state.currentTurn))
-  );
+  state = checkTriggersForCurrentPlayer(state, 'endOfTurn');
 
   state.currentTurn = opponentName(state);
   state.selectedCard = null;

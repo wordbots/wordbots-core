@@ -13,8 +13,16 @@ class Hand extends Component {
     super(props);
   }
 
-  componentDidMount() {
+  calculateAvailableWidth() {
     this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
+  }
+
+  componentDidMount() {
+    this.calculateAvailableWidth();
+  }
+
+  componentWillUpdate() {
+    this.calculateAvailableWidth();
   }
 
   renderCards() {

@@ -23,9 +23,8 @@ class Header extends Component {
   }
 
   handleToggle() {
-    this.setState({
-      open: !this.state.open
-    });
+    this.props.onToggleSidebar(!this.state.open);
+    this.setState({open: !this.state.open});
   }
 
   render() {
@@ -75,7 +74,9 @@ class Header extends Component {
 
 Header.propTypes = {
   logout: React.PropTypes.func,
-  user: React.PropTypes.object
+  user: React.PropTypes.object,
+
+  onToggleSidebar: React.PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -85,7 +86,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(UserActions, dispatch);
+  return Object.assign(bindActionCreators(UserActions, dispatch), {
+    onToggleSidebar(value) {
+      dispatch({type: 'TOGGLE_SIDEBAR', value: value});
+    }
+  });
 }
 
 

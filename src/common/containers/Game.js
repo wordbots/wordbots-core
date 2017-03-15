@@ -42,7 +42,9 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
-    availableDecks: state.collection.decks
+    availableDecks: state.collection.decks,
+
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
@@ -180,9 +182,11 @@ export class Game extends Component {
   }
 
   render() {
+    const padding = this.props.sidebarOpen ? 256 : 0;
+
     if (!this.props.started) {
       return (
-        <div style={{margin: '48px auto', width: '800px'}}>
+        <div style={{paddingLeft: padding, margin: '48px auto', width: '800px'}}>
           <Paper style={{padding: 20, position: 'relative', width: '80%'}}>
           {this.renderDeckSelector('Orange')}
           {this.renderDeckSelector('Blue')}
@@ -202,7 +206,7 @@ export class Game extends Component {
       );
     } else {
       return (
-        <div style={{margin: '48px 72px'}}>
+        <div style={{paddingLeft: padding, margin: '48px 72px'}}>
           <Helmet title="Game"/>
           <Paper style={{padding: 20, position: 'relative'}}>
             {this.renderPlayerArea('orange')}
@@ -264,6 +268,8 @@ Game.propTypes = {
 
   selectedCard: React.PropTypes.number,
   hoveredCardIdx: React.PropTypes.number,
+
+  sidebarOpen: React.PropTypes.bool,
 
   onStartGame: React.PropTypes.func,
   onMoveRobot: React.PropTypes.func,

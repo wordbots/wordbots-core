@@ -14,6 +14,8 @@ import CardBack from './CardBack';
 import Identicon from './Identicon';
 import Sprite from './Sprite';
 
+Textfit.propTypes.children = React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]);
+
 class Card extends Component {
   constructor(props) {
     super(props);

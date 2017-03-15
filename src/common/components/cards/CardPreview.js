@@ -81,7 +81,7 @@ class CardPreview extends Component {
         <Card
           name={this.props.name || '[Unnamed]'}
           spriteID={this.props.spriteID}
-          onSpriteClick={this.props.onSpriteClick}
+          visible
           type={this.props.type}
           img={'char'}
           cost={this.props.energy}
@@ -97,8 +97,10 @@ class CardPreview extends Component {
           }}
           text={this.props.sentences.map(this.renderSentence)}
           rawText={this.props.sentences.map(s => s.sentence).join('. ')}
-          visible
-          scale={3} />
+          scale={3}
+
+          onCardHover={() => {}}
+          onSpriteClick={this.props.onSpriteClick} />
       </div>
     );
   }

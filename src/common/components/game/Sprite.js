@@ -519,12 +519,14 @@ class Sprite extends Component {
   }
 }
 
+const { number, string } = React.PropTypes;
+
 Sprite.propTypes = {
-  id: React.PropTypes.string,
-  size: React.PropTypes.number,
-  scale: React.PropTypes.number,
-  spacing: React.PropTypes.number,
-  output: React.PropTypes.string
+  id: string,
+  size: number,
+  scale: number,
+  spacing: number,
+  output: string
 };
 
 export default Sprite;

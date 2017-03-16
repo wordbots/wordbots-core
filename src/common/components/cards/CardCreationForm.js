@@ -152,24 +152,26 @@ class CardCreationForm extends Component {
   }
 }
 
-CardCreationForm.propTypes = {
-  name: React.PropTypes.string,
-  type: React.PropTypes.number,
-  text: React.PropTypes.string,
-  attack: React.PropTypes.number,
-  speed: React.PropTypes.number,
-  health: React.PropTypes.number,
-  energy: React.PropTypes.number,
-  sentences: React.PropTypes.array,
-  textCleared: React.PropTypes.bool,
+const { array, bool, func, number, string } = React.PropTypes;
 
-  onSetName: React.PropTypes.func,
-  onSetType: React.PropTypes.func,
-  onSetText: React.PropTypes.func,
-  onSetAttribute: React.PropTypes.func,
-  onParseComplete: React.PropTypes.func,
-  onSpriteClick: React.PropTypes.func,
-  onAddToCollection: React.PropTypes.func
+CardCreationForm.propTypes = {
+  name: string,
+  type: number,
+  text: string,
+  attack: number,
+  speed: number,
+  health: number,
+  energy: number,
+  sentences: array,
+  textCleared: bool,
+
+  onSetName: func,
+  onSetType: func,
+  onSetText: func,
+  onSetAttribute: func,
+  onParseComplete: func,
+  onSpriteClick: func,
+  onAddToCollection: func
 };
 
 export default CardCreationForm;

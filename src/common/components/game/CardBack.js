@@ -64,10 +64,12 @@ class CardBack extends Component {
   }
 }
 
+const { bool, number, string } = React.PropTypes;
+
 CardBack.propTypes = {
-  deckLength: React.PropTypes.number,
-  customText: React.PropTypes.string,
-  hoverable: React.PropTypes.bool
+  deckLength: number,
+  customText: string,
+  hoverable: bool
 };
 
 export default CardBack;

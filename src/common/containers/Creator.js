@@ -92,24 +92,26 @@ export class Creator extends Component {
   }
 }
 
-Creator.propTypes = {
-  name: React.PropTypes.string,
-  type: React.PropTypes.number,
-  textCleared: React.PropTypes.bool,
-  sentences: React.PropTypes.array,
-  spriteID: React.PropTypes.string,
-  attack: React.PropTypes.number,
-  speed: React.PropTypes.number,
-  health: React.PropTypes.number,
-  cost: React.PropTypes.number,
+const { array, bool, func, number, string } = React.PropTypes;
 
-  onSetName: React.PropTypes.func,
-  onSetType: React.PropTypes.func,
-  onSetText: React.PropTypes.func,
-  onSetAttribute: React.PropTypes.func,
-  onParseComplete: React.PropTypes.func,
-  onSpriteClick: React.PropTypes.func,
-  onAddToCollection: React.PropTypes.func
+Creator.propTypes = {
+  name: string,
+  type: number,
+  textCleared: bool,
+  sentences: array,
+  spriteID: string,
+  attack: number,
+  speed: number,
+  health: number,
+  cost: number,
+
+  onSetName: func,
+  onSetType: func,
+  onSetText: func,
+  onSetAttribute: func,
+  onParseComplete: func,
+  onSpriteClick: func,
+  onAddToCollection: func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Creator);

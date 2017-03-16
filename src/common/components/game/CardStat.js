@@ -72,11 +72,13 @@ class CardStat extends Component {
   }
 }
 
+const { number, string } = React.PropTypes;
+
 CardStat.propTypes = {
-  type: React.PropTypes.string,
-  base: React.PropTypes.number,
-  current: React.PropTypes.number,
-  scale: React.PropTypes.number
+  type: string,
+  base: number,
+  current: number,
+  scale: number
 };
 
 String.prototype.toProperCase = function () {

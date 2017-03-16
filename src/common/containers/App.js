@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import cookie from 'react-cookie';
@@ -71,20 +71,22 @@ class App extends Component {
   }
 }
 
+const { func, string, object } = React.PropTypes;
+
 App.childContextTypes = {
-  muiTheme: React.PropTypes.object
+  muiTheme: object
 };
 
 App.propTypes = {
-  getUserInfo: PropTypes.func,
-  toogleClearCookie: PropTypes.func,
-  toggleSidebar: PropTypes.func,
-  undo: PropTypes.func,
-  redo: PropTypes.func,
-  children: PropTypes.object,
-  user: PropTypes.object,
-  version: PropTypes.string,
-  layout: PropTypes.object
+  getUserInfo: func,
+  toogleClearCookie: func,
+  toggleSidebar: func,
+  undo: func,
+  redo: func,
+  children: object,
+  user: object,
+  version: string,
+  layout: object
 };
 
 function mapStateToProps(state) {

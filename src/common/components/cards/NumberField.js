@@ -16,12 +16,14 @@ class NumberField extends Component {
   }
 }
 
+const { bool, func, number, object, string } = React.PropTypes;
+
 NumberField.propTypes = {
-  label: React.PropTypes.string,
-  value: React.PropTypes.number,
-  style: React.PropTypes.object,
-  disabled: React.PropTypes.bool,
-  onChange: React.PropTypes.func
+  label: string,
+  value: number,
+  style: object,
+  disabled: bool,
+  onChange: func
 };
 
 export default NumberField;

@@ -298,10 +298,12 @@ class Collection extends Component {
   }
 }
 
-Collection.propTypes = {
-  cards: React.PropTypes.array,
+const { array, func } = React.PropTypes;
 
-  onRemoveFromCollection: React.PropTypes.func
+Collection.propTypes = {
+  cards: array,
+
+  onRemoveFromCollection: func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Collection);

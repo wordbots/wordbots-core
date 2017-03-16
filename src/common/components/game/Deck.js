@@ -46,8 +46,10 @@ class Deck extends Component {
   }
 }
 
+const { array } = React.PropTypes;
+
 Deck.propTypes = {
-  deck: React.PropTypes.array
+  deck: array
 };
 
 export default Deck;

@@ -14,7 +14,7 @@ class VictoryScreen extends Component {
 
     return (
       <div
-        onClick={this.props.onVictoryScreenClick}
+        onClick={this.props.onClick}
         style={{
           display: this.props.winner === null ? 'none' : 'flex',
           justifyContent: 'center',
@@ -41,10 +41,12 @@ class VictoryScreen extends Component {
   }
 }
 
-VictoryScreen.propTypes = {
-  winner: React.PropTypes.string,
+const { func, string } = React.PropTypes;
 
-  onVictoryScreenClick: React.PropTypes.func
+VictoryScreen.propTypes = {
+  winner: string,
+
+  onClick: func
 };
 
 export default VictoryScreen;

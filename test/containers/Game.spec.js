@@ -75,7 +75,7 @@ describe('Game container', () => {
           onHoverCard={game.props.onHoverCard}
           onSelectCard={game.props.onSelectCard}
           />
-        <VictoryScreen winner={null} onVictoryScreenClick={game.props.onVictoryScreenClick} />
+        <VictoryScreen winner={null} onClick={game.props.onClick} />
       </Paper>
     ]);
   });

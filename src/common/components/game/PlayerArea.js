@@ -34,18 +34,20 @@ class PlayerArea extends Component {
   }
 }
 
+const { array, bool, func, number, object, string } = React.PropTypes;
+
 PlayerArea.propTypes = {
-  name: React.PropTypes.string,
-  energy: React.PropTypes.object,
-  onSelectCard: React.PropTypes.func,
-  onHoverCard: React.PropTypes.func,
-  selectedCard: React.PropTypes.number,
-  hoveredCard: React.PropTypes.number,
-  targetableCards: React.PropTypes.array,
-  isCurrentPlayer: React.PropTypes.bool,
-  cards: React.PropTypes.array,
-  status: React.PropTypes.object,
-  deck: React.PropTypes.array
+  name: string,
+  energy: object,
+  onSelectCard: func,
+  onHoverCard: func,
+  selectedCard: number,
+  hoveredCard: number,
+  targetableCards: array,
+  isCurrentPlayer: bool,
+  cards: array,
+  status: object,
+  deck: array
 };
 
 export default PlayerArea;

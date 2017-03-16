@@ -90,17 +90,19 @@ class Hand extends Component {
   }
 }
 
+const { array, bool, func, number, object, string } = React.PropTypes;
+
 Hand.propTypes = {
-  name: React.PropTypes.string,
-  cards: React.PropTypes.array,
-  isCurrentPlayer: React.PropTypes.bool,
-  onSelectCard: React.PropTypes.func,
-  onHoverCard: React.PropTypes.func,
-  selectedCard: React.PropTypes.number,
-  hoveredCard: React.PropTypes.number,
-  targetableCards: React.PropTypes.array,
-  status: React.PropTypes.object,
-  curved: React.PropTypes.bool
+  name: string,
+  cards: array,
+  isCurrentPlayer: bool,
+  onSelectCard: func,
+  onHoverCard: func,
+  selectedCard: number,
+  hoveredCard: number,
+  targetableCards: array,
+  status: object,
+  curved: bool
 };
 
 export default Hand;

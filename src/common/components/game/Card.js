@@ -14,8 +14,6 @@ import CardBack from './CardBack';
 import Identicon from './Identicon';
 import Sprite from './Sprite';
 
-Textfit.propTypes.children = React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]);
-
 class Card extends Component {
   constructor(props) {
     super(props);
@@ -247,34 +245,38 @@ class Card extends Component {
   }
 }
 
+const { array, bool, func, number, object, oneOfType, string } = React.PropTypes;
+
+Textfit.propTypes.children = oneOfType([string, array]);
+
 Card.propTypes = {
-  name: React.PropTypes.string,
-  spriteID: React.PropTypes.string,
-  type: React.PropTypes.number,
-  text: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]),
-  rawText: React.PropTypes.string,
-  img: React.PropTypes.string,
-  cardStats: React.PropTypes.object,
-  stats: React.PropTypes.object,
-  cost: React.PropTypes.number,
-  baseCost: React.PropTypes.number,
-  source: React.PropTypes.string,
-  collection: React.PropTypes.bool,
+  name: string,
+  spriteID: string,
+  type: number,
+  text: oneOfType([string, array]),
+  rawText: string,
+  img: string,
+  cardStats: object,
+  stats: object,
+  cost: number,
+  baseCost: number,
+  source: string,
+  collection: bool,
 
-  status: React.PropTypes.object,
-  visible: React.PropTypes.bool,
-  zIndex: React.PropTypes.number,
-  selected: React.PropTypes.bool,
-  targetable: React.PropTypes.bool,
+  status: object,
+  visible: bool,
+  zIndex: number,
+  selected: bool,
+  targetable: bool,
 
-  scale: React.PropTypes.number,
-  margin: React.PropTypes.number,
-  rotation: React.PropTypes.number,
-  yTranslation: React.PropTypes.number,
+  scale: number,
+  margin: number,
+  rotation: number,
+  yTranslation: number,
 
-  onCardClick: React.PropTypes.func,
-  onCardHover: React.PropTypes.func,
-  onSpriteClick: React.PropTypes.func
+  onCardClick: func,
+  onCardHover: func,
+  onSpriteClick: func
 };
 
 export default Card;

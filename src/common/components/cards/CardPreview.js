@@ -106,17 +106,19 @@ class CardPreview extends Component {
   }
 }
 
-CardPreview.propTypes = {
-  name: React.PropTypes.string,
-  spriteID: React.PropTypes.string,
-  type: React.PropTypes.number,
-  sentences: React.PropTypes.array,
-  attack: React.PropTypes.number,
-  speed: React.PropTypes.number,
-  health: React.PropTypes.number,
-  energy: React.PropTypes.number,
+const { array, func, number, string } = React.PropTypes;
 
-  onSpriteClick: React.PropTypes.func
+CardPreview.propTypes = {
+  name: string,
+  spriteID: string,
+  type: number,
+  sentences: array,
+  attack: number,
+  speed: number,
+  health: number,
+  energy: number,
+
+  onSpriteClick: func
 };
 
 export default CardPreview;

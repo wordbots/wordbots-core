@@ -174,17 +174,19 @@ class Board extends Component {
   }
 }
 
+const { func, number, object, string } = React.PropTypes;
+
 Board.propTypes = {
-  bluePieces: React.PropTypes.object,
-  orangePieces: React.PropTypes.object,
+  bluePieces: object,
+  orangePieces: object,
 
-  currentTurn: React.PropTypes.string,
-  selectedTile: React.PropTypes.string,
-  playingCardType: React.PropTypes.number,
-  target: React.PropTypes.object,
+  currentTurn: string,
+  selectedTile: string,
+  playingCardType: number,
+  target: object,
 
-  onSelectTile: React.PropTypes.func,
-  onHoverTile: React.PropTypes.func
+  onSelectTile: func,
+  onHoverTile: func
 };
 
 export default Board;

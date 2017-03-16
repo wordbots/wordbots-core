@@ -40,9 +40,11 @@ class Status extends Component {
   }
 }
 
+const { object, string } = React.PropTypes;
+
 Status.propTypes = {
-  status: React.PropTypes.object,
-  currentTurn: React.PropTypes.string
+  status: object,
+  currentTurn: string
 };
 
 export default Status;

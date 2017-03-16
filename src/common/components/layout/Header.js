@@ -72,11 +72,12 @@ class Header extends Component {
   }
 }
 
-Header.propTypes = {
-  logout: React.PropTypes.func,
-  user: React.PropTypes.object,
+const { func, object } = React.PropTypes;
 
-  onToggleSidebar: React.PropTypes.func
+Header.propTypes = {
+  logout: func,
+  user: object,
+  onToggleSidebar: func
 };
 
 function mapStateToProps(state) {

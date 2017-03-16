@@ -36,8 +36,10 @@ class EnergyCount extends Component {
   }
 }
 
+const { object } = React.PropTypes;
+
 EnergyCount.propTypes = {
-  energy: React.PropTypes.object
+  energy: object
 };
 
 export default EnergyCount;

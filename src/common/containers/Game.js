@@ -80,7 +80,7 @@ export function mapDispatchToProps(dispatch) {
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
-    onVictoryScreenClick: () => {
+    onClick: () => {
       dispatch(gameActions.newGame());
     }
   };
@@ -252,7 +252,7 @@ export class Game extends Component {
 
             {this.renderPlayerArea('blue')}
 
-            <VictoryScreen winner={this.props.winner} onVictoryScreenClick={this.props.onVictoryScreenClick} />
+            <VictoryScreen winner={this.props.winner} onClick={this.props.onClick} />
           </Paper>
         </div>
       );
@@ -260,46 +260,48 @@ export class Game extends Component {
   }
 }
 
+const { array, bool, func, number, object, string } = React.PropTypes;
+
 Game.propTypes = {
-  started: React.PropTypes.bool,
-  currentTurn: React.PropTypes.string,
-  selectedTile: React.PropTypes.string,
-  playingCardType: React.PropTypes.number,
-  status: React.PropTypes.object,
-  target: React.PropTypes.object,
-  hoveredCard: React.PropTypes.object,
-  winner: React.PropTypes.string,
+  started: bool,
+  currentTurn: string,
+  selectedTile: string,
+  playingCardType: number,
+  status: object,
+  target: object,
+  hoveredCard: object,
+  winner: string,
 
-  blueHand: React.PropTypes.array,
-  orangeHand: React.PropTypes.array,
+  blueHand: array,
+  orangeHand: array,
 
-  bluePieces: React.PropTypes.object,
-  orangePieces: React.PropTypes.object,
+  bluePieces: object,
+  orangePieces: object,
 
-  blueEnergy: React.PropTypes.object,
-  orangeEnergy: React.PropTypes.object,
+  blueEnergy: object,
+  orangeEnergy: object,
 
-  blueDeck: React.PropTypes.array,
-  orangeDeck: React.PropTypes.array,
+  blueDeck: array,
+  orangeDeck: array,
 
-  availableDecks: React.PropTypes.array,
+  availableDecks: array,
 
-  selectedCard: React.PropTypes.number,
-  hoveredCardIdx: React.PropTypes.number,
+  selectedCard: number,
+  hoveredCardIdx: number,
 
-  sidebarOpen: React.PropTypes.bool,
+  sidebarOpen: bool,
 
-  onStartGame: React.PropTypes.func,
-  onMoveRobot: React.PropTypes.func,
-  onAttackRobot: React.PropTypes.func,
-  onMoveRobotAndAttack: React.PropTypes.func,
-  onPlaceRobot: React.PropTypes.func,
-  onSelectCard: React.PropTypes.func,
-  onSelectTile: React.PropTypes.func,
-  onPassTurn: React.PropTypes.func,
-  onHoverCard: React.PropTypes.func,
-  onHoverTile: React.PropTypes.func,
-  onVictoryScreenClick: React.PropTypes.func
+  onStartGame: func,
+  onMoveRobot: func,
+  onAttackRobot: func,
+  onMoveRobotAndAttack: func,
+  onPlaceRobot: func,
+  onSelectCard: func,
+  onSelectTile: func,
+  onPassTurn: func,
+  onHoverCard: func,
+  onHoverTile: func,
+  onClick: func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

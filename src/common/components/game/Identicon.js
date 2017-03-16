@@ -37,10 +37,12 @@ class Identicon extends Component {
   }
 }
 
+const { number, string } = React.PropTypes;
+
 Identicon.propTypes = {
-  id: React.PropTypes.string,
-  width: React.PropTypes.number,
-  size: React.PropTypes.number
+  id: string,
+  width: number,
+  size: number
 };
 
 // Simple hash function

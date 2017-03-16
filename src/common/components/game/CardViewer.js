@@ -84,8 +84,10 @@ class CardViewer extends Component {
   }
 }
 
+const { object } = React.PropTypes;
+
 CardViewer.propTypes = {
-  hoveredCard: React.PropTypes.object
+  hoveredCard: object
 };
 
 export default CardViewer;

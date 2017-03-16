@@ -101,17 +101,17 @@ export class Game extends Component {
   }
 
   hoveredCard() {
-    if (this.props.hoveredCard) {
-      return this.props.hoveredCard;
-    } else if (!isNil(this.props.hoveredCardIdx)) {
-      const card = this.props[`${this.props.currentTurn}Hand`][this.props.hoveredCardIdx];
-      return {card: card, stats: card.stats};
-    } else if (!isNil(this.props.selectedCard)) {
-      const card = this.props[`${this.props.currentTurn}Hand`][this.props.selectedCard];
-      return {card: card, stats: card.stats};
-    } else {
-      return this.allPieces()[this.props.selectedTile];
-    }
+    const cardFromIndex = (idx => {
+      if (!isNil(idx)) {
+        const card = this.props[`${this.props.currentTurn}Hand`][idx];
+        return {card: card, stats: card.stats};
+      }
+    });
+
+    return this.props.hoveredCard ||
+      cardFromIndex(this.props.hoveredCardIdx) ||
+      cardFromIndex(this.props.selectedCard) ||
+      this.allPieces()[this.props.selectedTile];
   }
 
   movePiece(hexId, asPartOfAttack = false) {

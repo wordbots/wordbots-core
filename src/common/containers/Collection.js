@@ -123,7 +123,8 @@ class Collection extends Component {
               }
             });
           }
-        }} />
+        }}
+        onCardHover={() => {}} />
     );
   }
 

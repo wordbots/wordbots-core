@@ -5,14 +5,19 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 import FontIcon from 'material-ui/lib/font-icon';
-import { every, isNull } from 'lodash';
+import { every, isNull, reduce } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
+import keywords from '../../keywords';
 
 import NumberField from './NumberField';
+
+const SUBSTITUTIONS = {
+  'creature': 'robot'
+};
 
 class CardCreationForm extends Component {
   constructor(props) {
@@ -20,11 +25,12 @@ class CardCreationForm extends Component {
   }
 
   normalizeText(text) {
-    return text.replace(/creature/g, 'robot');
+    return reduce(SUBSTITUTIONS, (str, output, input) => str.replace(new RegExp(input, 'g'), output), text);
   }
 
   onUpdateText(text, cardType) {
-    const sentences = this.normalizeText(text).split(/[\\.!\?]/);
+    const sentences = this.normalizeText(text)
+                          .split(/[\\.!\?]/);
     const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
     const debounceTimeoutMs = 500;
 
@@ -37,7 +43,8 @@ class CardCreationForm extends Component {
       sentences
         .filter(sentence => /\S/.test(sentence))
         .forEach((sentence, idx) => {
-          const parseUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(sentence)}&format=js&mode=${parserMode}`;
+          const parserInput = encodeURIComponent(keywords[sentence] || sentence);
+          const parseUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=js&mode=${parserMode}`;
           fetch(parseUrl)
             .then(response => response.json())
             .then(json => { this.props.onParseComplete(idx, sentence, json); });

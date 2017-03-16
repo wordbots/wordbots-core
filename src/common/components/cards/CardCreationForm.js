@@ -19,8 +19,12 @@ class CardCreationForm extends Component {
     super(props);
   }
 
+  normalizeText(text) {
+    return text.replace(/creature/g, 'robot');
+  }
+
   onUpdateText(text, cardType) {
-    const sentences = text.split(/[\\.!\?]/);
+    const sentences = this.normalizeText(text).split(/[\\.!\?]/);
     const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
     const debounceTimeoutMs = 500;
 

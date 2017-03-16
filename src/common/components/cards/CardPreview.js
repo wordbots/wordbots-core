@@ -76,6 +76,12 @@ class CardPreview extends Component {
   }
 
   render() {
+    const stats = {
+      attack: this.props.attack,
+      speed: this.props.speed,
+      health: this.props.health
+    };
+
     return (
       <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 64}}>
         <Card
@@ -85,16 +91,8 @@ class CardPreview extends Component {
           type={this.props.type}
           img={'char'}
           cost={this.props.energy}
-          stats={{
-            attack: this.props.attack,
-            speed: this.props.speed,
-            health: this.props.health
-          }}
-          cardStats={{
-            attack: this.props.attack,
-            speed: this.props.speed,
-            health: this.props.health
-          }}
+          stats={stats}
+          cardStats={stats}
           text={this.props.sentences.map(this.renderSentence)}
           rawText={this.props.sentences.map(s => s.sentence).join('. ')}
           scale={3}

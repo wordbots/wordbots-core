@@ -27,6 +27,16 @@ class Header extends Component {
     this.setState({open: !this.state.open});
   }
 
+  renderLink(path, text, icon) {
+    return (
+      <Link to={path}>
+        <MenuItem primaryText={text} leftIcon={
+          <FontIcon className="material-icons">{icon}</FontIcon>
+        }/>
+      </Link>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -50,21 +60,9 @@ class Header extends Component {
         </div>
         <div style={{width: 256, height: this.state.open ? 100 : 0, float: 'left'}}>
           <LeftNav style={{paddingTop: '80px'}} open={this.state.open}>
-            <Link to="/collection">
-              <MenuItem primaryText="Home" leftIcon={
-                <FontIcon className="material-icons">home</FontIcon>
-              }/>
-            </Link>
-            <Link to="/collection">
-              <MenuItem primaryText="Collection" leftIcon={
-                <FontIcon className="material-icons">recent_actors</FontIcon>
-              }/>
-            </Link>
-            <Link to="/game">
-              <MenuItem primaryText="Game" leftIcon={
-                <FontIcon className="material-icons">videogame_asset</FontIcon>
-              }/>
-            </Link>
+            {this.renderLink('/collection', 'Home', 'home')}
+            {this.renderLink('/collection', 'Collection', 'recent_actors')}
+            {this.renderLink('/game', 'Play', 'videogame_asset')}
           </LeftNav>
         </div>
       </div>

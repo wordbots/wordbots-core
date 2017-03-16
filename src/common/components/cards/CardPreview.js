@@ -3,6 +3,7 @@ import FontIcon from 'material-ui/lib/font-icon';
 import ReactTooltip from 'react-tooltip';
 
 import { id } from '../../util';
+import keywords from '../../keywords';
 import Card from '../game/Card';
 
 class CardPreview extends Component {
@@ -12,6 +13,13 @@ class CardPreview extends Component {
         return (
           <span key={id()}>
             {' '}<u>{word}</u>
+          </span>
+        );
+      } else if (keywords[word]) {
+        return (
+          <span key={id()}>
+            {' '}<b data-for={word} data-tip={`${keywords[word]}.`}>{word}</b>
+            <ReactTooltip id={word} place="top" type="dark" effect="float" />
           </span>
         );
       } else {
@@ -24,7 +32,8 @@ class CardPreview extends Component {
     }
 
     function renderStatusIcon() {
-      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${encodeURIComponent(s.sentence)}&format=svg`;
+      const parserInput = encodeURIComponent(keywords[s.sentence] || s.sentence);
+      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
       if (s.result.js) {
         return (
           <a href={treeUrl} target="_blank">
@@ -35,11 +44,7 @@ class CardPreview extends Component {
               data-tip="Click to view parse tree">
                 code
             </FontIcon>
-            <ReactTooltip
-              id="error-tooltip"
-              place="top"
-              type="dark"
-              effect="float" />
+            <ReactTooltip id="error-tooltip" place="top" type="dark" effect="float" />
           </a>
         );
       } else if (s.result.error) {
@@ -48,15 +53,11 @@ class CardPreview extends Component {
             <FontIcon
               className="material-icons"
               style={{verticalAlign: 'top', color: 'red'}}
-              data-for="error-tooltip"
+              data-for="tree-tooltip"
               data-tip={s.result.error}>
                 error_outline
             </FontIcon>
-            <ReactTooltip
-              id="error-tooltip"
-              place="top"
-              type="dark"
-              effect="float" />
+            <ReactTooltip id="tree-tooltip" place="top" type="dark" effect="float" />
           </span>
         );
       }

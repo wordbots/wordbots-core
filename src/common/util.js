@@ -273,6 +273,7 @@ function checkTriggers(state, triggerType, it, condition) {
 
 // Special cases of checkTriggers():
 export function checkTriggersForObject(state, triggerType, object, extraCondition = () => true) {
+  state = Object.assign({}, state, {it: object});
   return checkTriggers(state, triggerType, object, (trigger =>
     trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
   ));

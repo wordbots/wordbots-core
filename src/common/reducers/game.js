@@ -17,8 +17,7 @@ export default function game(oldState = cloneDeep(defaultState), action) {
         return g.newGame(state, action.payload.decks);
 
       case gameActions.NEW_GAME:
-        state.started = false;
-        return state;
+        return Object.assign(state, {started: false});
 
       case gameActions.MOVE_ROBOT:
         return g.moveRobot(state, action.payload.from, action.payload.to, action.payload.asPartOfAttack);
@@ -42,8 +41,7 @@ export default function game(oldState = cloneDeep(defaultState), action) {
         return g.setSelectedTile(state, action.payload.selectedTile);
 
       case gameActions.SET_HOVERED_CARD:
-        state.hoveredCardIdx = action.payload.hoveredCard;
-        return state;
+        return Object.assign(state, {hoveredCardIdx: action.payload.hoveredCard});
 
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);

@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import { connect } from 'react-redux';
 import { isNil, shuffle } from 'lodash';
 
+import { SHUFFLE_DECKS } from '../constants';
 import { getAttribute } from '../util';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
@@ -211,12 +212,8 @@ export class Game extends Component {
               style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
               onTouchTap={e => {
                 this.props.onStartGame({
-                  // Disable shuffle() to test individual cards:
-                  // orange: this.state.selectedOrangeDeck,
-                  // blue: this.state.selectedBlueDeck
-
-                  orange: {cards: shuffle(this.state.selectedOrangeDeck.cards)},
-                  blue: {cards: shuffle(this.state.selectedBlueDeck.cards)}
+                  orange: {cards: SHUFFLE_DECKS ? shuffle(this.state.selectedOrangeDeck.cards) : this.state.selectedOrangeDeck.cards},
+                  blue: {cards: SHUFFLE_DECKS ? shuffle(this.state.selectedBlueDeck.cards) : this.state.selectedBlueDeck.cards}
                 });
               }} />
           </Paper>

@@ -24,7 +24,6 @@ class CardPreview extends Component {
           stats={stats}
           cardStats={stats}
           text={this.props.sentences.map(s => Sentence(s.sentence, s.result))}
-          // text={this.props.sentences.map(s => <Sentence text={s.sentence} result={s.result} />)}
           rawText={this.props.sentences.map(s => s.sentence).join('. ')}
           scale={3}
 

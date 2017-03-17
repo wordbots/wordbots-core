@@ -2,24 +2,13 @@ import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import Sentence from '../cards/Sentence';
+import { splitSentences } from '../../util';
 
 import Card from './Card';
-
-// TODO somehow combine this with CardPreview component, or at least de-duplicate some logic.
 
 class CardViewer extends Component {
   constructor(props) {
     super(props);
-  }
-
-  renderCardText() {
-    const text = this.props.hoveredCard.card.text;
-    if (text) {
-      const sentences = text.split(/[\\.!\?]/).filter(s => /\S/.test(s));
-      return sentences.map(s => Sentence(s, {parsed: true}));
-    } else {
-      return '';
-    }
   }
 
   render() {
@@ -35,7 +24,7 @@ class CardViewer extends Component {
           name={this.props.hoveredCard.card.name}
           type={this.props.hoveredCard.card.type}
           spriteID={this.props.hoveredCard.card.spriteID}
-          text={this.renderCardText()}
+          text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
           rawText={this.props.hoveredCard.card.text}
           img={this.props.hoveredCard.card.img}
           cost={this.props.hoveredCard.card.cost}

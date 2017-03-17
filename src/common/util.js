@@ -17,6 +17,10 @@ export function id() {
   return Math.random().toString(36).slice(2, 16);
 }
 
+export function splitSentences(str) {
+  return (str || '').split(/[\\.!\?]/).filter(s => /\S/.test(s));
+}
+
 export function clamp(func) {
   return (stat => _.clamp(func(stat), 0, 99));
 }

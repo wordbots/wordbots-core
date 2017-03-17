@@ -12,6 +12,7 @@ import 'whatwg-fetch';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { isKeywordExpression, expandKeywords } from '../../keywords';
+import { splitSentences } from '../../util';
 
 import NumberField from './NumberField';
 
@@ -35,11 +36,10 @@ class CardCreationForm extends Component {
   }
 
   onUpdateText(text, cardType) {
-    const rawSentences = this.normalizeText(text).split(/[\\.!\?]/);
-    const sentences = flatMap(rawSentences, sentence =>
+    const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
+    const sentences = flatMap(splitSentences(this.normalizeText(text)), sentence =>
       isKeywordExpression(sentence) ? sentence.replace(/,/g, ',|').split('|') : sentence
     );
-    const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
 
     this.props.onSetText(sentences);
 
@@ -48,7 +48,6 @@ class CardCreationForm extends Component {
     }
     this.parseRefreshTimer = setTimeout(() => {
       sentences
-        .filter(sentence => /\S/.test(sentence))
         .forEach((sentence, idx) => {
           const parserInput = encodeURIComponent(expandKeywords(sentence));
           const parseUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=js&mode=${parserMode}`;

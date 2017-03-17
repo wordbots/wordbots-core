@@ -82,8 +82,26 @@ export function getCost(card) {
   }
 }
 
-export function hasEffect(object, effect) {
-  return (object.effects || []).map(eff => eff.effect).includes(effect);
+function hasEffect(object, effect) {
+  return some((object.effects || []), eff => eff.effect === effect);
+}
+
+function getEffect(object, effect) {
+  return (object.effects || []).filter(eff => eff.effect === effect).map(eff => eff.props);
+}
+
+export function allowedToAttack(state, attacker, targetHex) {
+  if (hasEffect(attacker, 'cannotattack')) {
+    return false;
+  } else if (hasEffect(attacker, 'canonlyattack')) {
+    const defender = allObjectsOnBoard(state)[targetHex];
+    if (defender) {
+      const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), e => e.target.map(t => t.id));
+      return validTargetIds.includes(defender.id);
+    }
+  } else {
+    return true;
+  }
 }
 
 export function matchesType(objectOrCard, cardTypeQuery) {
@@ -145,22 +163,24 @@ export function validPlacementHexes(state, playerName, type) {
   return hexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
-export function validMovementHexes(state, startHex, speed) {
+export function validMovementHexes(state, startHex, speed, object) {
   let validHexes = [startHex];
 
   for (let distance = 0; distance < speed; distance++) {
     const newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
-      !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
+      hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
     );
 
     validHexes = validHexes.concat(newHexes);
   }
 
+  validHexes = validHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
+
   return without(validHexes, startHex);
 }
 
-export function validAttackHexes(state, playerName, startHex, speed) {
-  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1));
+export function validAttackHexes(state, playerName, startHex, speed, object) {
+  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1, object));
   const potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
 
   return potentialAttackHexes.filter((hex) =>

@@ -15,11 +15,7 @@ class Deck extends Component {
           <div data-tip={`${this.props.deck.length  } Cards`} data-for="deck-tooltip">
             <CardBack deckLength={this.props.deck.length} />
           </div>
-          <ReactTooltip
-            id="deck-tooltip"
-            place="top"
-            type="dark"
-            effect="float" />
+          <ReactTooltip id="deck-tooltip" />
         </div>
       );
     } else {

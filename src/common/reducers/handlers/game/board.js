@@ -1,5 +1,5 @@
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, hasEffect, ownerOf,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   checkTriggersForObject, applyAbilities
@@ -31,7 +31,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const movingRobot = player.robotsOnBoard[fromHex];
 
   // Is the move valid?
-  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft);
+  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft, movingRobot);
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
     if (!asPartOfAttack) {
       state.selectedTile = null;
@@ -59,8 +59,8 @@ export function attack(state, source, target) {
   const defender = opponent.robotsOnBoard[target];
 
   // Is the attack valid?
-  const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft);
-  if (validHexes.map(HexUtils.getID).includes(target) && !hasEffect(attacker, 'cannotattack')) {
+  const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft, attacker);
+  if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
     attacker.movesLeft = 0;
 
     state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');

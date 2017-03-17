@@ -5,7 +5,7 @@ import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
-  getAttribute, hasEffect, ownerOf,
+  getAttribute, allowedToAttack, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
 } from '../../util';
 
@@ -34,12 +34,12 @@ class Board extends Component {
     return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
   }
 
-  getValidMovementHexes(startHex, speed) {
-    return validMovementHexes(this.dummyGameState, startHex, speed);
+  getValidMovementHexes(startHex, speed, piece) {
+    return validMovementHexes(this.dummyGameState, startHex, speed, piece);
   }
 
-  getValidAttackHexes(startHex, speed) {
-    return validAttackHexes(this.dummyGameState, this.props.currentTurn, startHex, speed);
+  getValidAttackHexes(startHex, speed, piece) {
+    return validAttackHexes(this.dummyGameState, this.props.currentTurn, startHex, speed, piece);
   }
 
   updateHexColors() {
@@ -76,26 +76,27 @@ class Board extends Component {
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
     const newHexColors = Object.assign({}, hexColors);
 
-    const movementHexIds = this.getValidMovementHexes(hex, speed).map(HexUtils.getID);
-    const attackHexIds = this.getValidAttackHexes(hex, speed).map(HexUtils.getID);
+    const movementHexIds = this.getValidMovementHexes(hex, speed, selectedPiece).map(HexUtils.getID);
+    const attackHexIds = this.getValidAttackHexes(hex, speed, selectedPiece).map(HexUtils.getID);
 
     movementHexIds.forEach(h => { newHexColors[h] = 'green'; });
 
-    if (!hasEffect(selectedPiece, 'cannotattack')) {
-      attackHexIds.forEach(h => { newHexColors[h] = 'red'; });
-    }
+    attackHexIds
+      .filter(h => allowedToAttack(this.dummyGameState, selectedPiece, h))
+      .forEach(h => { newHexColors[h] = 'red'; });
 
     return newHexColors;
   }
 
   onHexClick(hex, event) {
+    const hid = HexUtils.getID(hex);
+    const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
+
     let action = '';
     let intermediateMoveHex = null;
 
-    const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
-
     if (this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE) {
-      if (some(this.getValidPlacementHexes(), (h) => HexUtils.getID(h) === HexUtils.getID(hex))) {
+      if (some(this.getValidPlacementHexes(), (h) => HexUtils.getID(h) === hid)) {
         action = 'place';
       }
     }
@@ -104,19 +105,19 @@ class Board extends Component {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
       const speed = selectedPiece.movesLeft;
 
-      const movementHexes = this.getValidMovementHexes(selectedHex, speed).map(HexUtils.getID);
-      const attackHexes = this.getValidAttackHexes(selectedHex, speed).map(HexUtils.getID);
+      const movementHexes = this.getValidMovementHexes(selectedHex, speed, selectedPiece).map(HexUtils.getID);
+      const attackHexes = this.getValidAttackHexes(selectedHex, speed, selectedPiece).map(HexUtils.getID);
 
-      if (movementHexes.includes(HexUtils.getID(hex))) {
+      if (movementHexes.includes(hid)) {
         action = 'move';
-      } else if (attackHexes.includes(HexUtils.getID(hex)) && !hasEffect(selectedPiece, 'cannotattack')) {
+      } else if (attackHexes.includes(hid) && allowedToAttack(this.dummyGameState, selectedPiece, hid)) {
         action = 'attack';
 
         if (!getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
           // Attack destination is not adjacent to current position, so we need an intermediate move action.
           const possibleMoveHexes = intersectionBy(
             getAdjacentHexes(hex),
-            this.getValidMovementHexes(selectedHex, speed - 1),
+            this.getValidMovementHexes(selectedHex, speed - 1, selectedPiece),
             HexUtils.getID
           );
 
@@ -126,7 +127,7 @@ class Board extends Component {
       }
     }
 
-    this.props.onSelectTile(HexUtils.getID(hex), action, intermediateMoveHex);
+    this.props.onSelectTile(hid, action, intermediateMoveHex);
   }
 
   onHexHover(hex, event) {
@@ -152,8 +153,10 @@ class Board extends Component {
     };
 
     const pieces = this.allPieces();
-    const pieceImgs = mapValues(pieces, piece => piece.card.img ? {img: piece.card.img} : {sprite: piece.card.name});
-    const pieceStats = mapValues(pieces, (piece) => ({
+    const pieceImgs = mapValues(pieces, piece =>
+      piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name}
+    );
+    const pieceStats = mapValues(pieces, piece => ({
       health: getAttribute(piece, 'health'),
       attack: getAttribute(piece, 'attack')
     }));

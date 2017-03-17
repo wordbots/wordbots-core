@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
 
 import { getCost } from '../../util';
+import Sentence from '../cards/Sentence';
 
 import Card from './Card';
 
@@ -23,6 +24,15 @@ class Hand extends Component {
 
   componentWillUpdate() {
     this.calculateAvailableWidth();
+  }
+
+  renderCardText(text) {
+    if (text) {
+      const sentences = text.split(/[\\.!\?]/).filter(s => /\S/.test(s));
+      return sentences.map(s => Sentence(s));
+    } else {
+      return '';
+    }
   }
 
   renderCards() {
@@ -49,7 +59,8 @@ class Hand extends Component {
           name={card.name}
           spriteID={card.spriteID}
           type={card.type}
-          text={card.text || ''}
+          text={this.renderCardText(card.text)}
+          rawText={card.text || ''}
           img={card.img}
           cost={getCost(card)}
           baseCost={card.baseCost}

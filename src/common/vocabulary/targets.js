@@ -54,7 +54,13 @@ export default function targets(state, currentObject) {
 
     // Currently salient object.
     it: function () {
-      return state.it ? [state.it] : [];
+      /* console.log({
+        it: state.it ? state.it.name || state.it.card.name : null,
+        currentObject: currentObject ? currentObject.name || currentObject.card.name : null
+      }); */
+      // currentObject has higher salience than state.it .
+      // (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
+      return (currentObject || state.it) ? [currentObject || state.it] : [];
     },
 
     // Currently salient player.

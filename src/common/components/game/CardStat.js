@@ -56,11 +56,7 @@ class CardStat extends Component {
             fontFamily: 'Carter One',
             fontSize: 22 * (this.props.scale || 1)
         }}>
-          <ReactTooltip
-            id={tooltipId}
-            place="top"
-            type="dark"
-            effect="float" />
+          <ReactTooltip id={tooltipId} />
           <div style={{
             lineHeight: '14px',
             WebkitTextStroke: webkitTextStroke,

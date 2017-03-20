@@ -43,7 +43,7 @@ function createCardFromProps(props) {
     card.abilities = command;
     card.stats = {
       health: props.health,
-      speed: props.type === TYPE_ROBOT ? props.attack : undefined,
+      speed: props.type === TYPE_ROBOT ? props.speed : undefined,
       attack: props.type === TYPE_ROBOT ? props.attack : undefined
     };
   }

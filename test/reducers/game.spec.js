@@ -434,22 +434,38 @@ describe('Game reducer', () => {
   });
 
   describe('[Passive abilities]', () => {
-    it('should let objects apply effects to themselves', () => {
-      // Defender Bot: "This robot can't attack."
+    it('should let objects apply keyword effects to themselves', () => {
+      // Defender Bot: "Defender, taunt."
       let state = setUpBoardState({
         'orange': {
-          '0,0,0': cards.defenderBotCard  // 3/3
+          '0,0,0': cards.defenderBotCard,  // 3/3
+          '0,-2,2': cards.attackBotCard  // 3/3
         },
         'blue': {
           '0,-1,1': cards.attackBotCard  // 1/1
         }
       });
+      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(3);
+
+      // Attack Bot cannot attack the other Attack Bot due to Defender Bot's taunt ability.
+      state = attack(state, '0,-1,1', '0,-2,2', true);
+      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(3);
+
       // Defender Bot cannot attack but can defend itself.
-      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(2);
       state = attack(state, '0,0,0', '0,-1,1', true);
-      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(2);
+      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(3);
       state = attack(state, '0,-1,1', '0,0,0', true);
-      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(1);
+      expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(2);
+
+      // Haste Bot: "Haste."
+      // Haste Bot can move as soon as it's played ...
+      state = playObject(state, 'orange', cards.hasteBotCard, '3,0,-3');
+      state = moveRobot(state, '3,0,-3', '2,0,-2');
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toHaveProperty('2,0,-2');
+      // ... but its Haste ability is not triggered when other robots are played.
+      state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
+      state = moveRobot(state, '2,0,-2', '1,0,-1');
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('1,0,-1');
     });
 
     it('should let objects apply passive abilities to other objects', () => {
@@ -533,7 +549,6 @@ describe('Game reducer', () => {
       expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
     });
 
-    // TODO test interaction of temporary stat adjustments, permanent stat adjustments, stat queries.
     it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditionals', () => {
       let state = getDefaultState();
       state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');  // 1/1

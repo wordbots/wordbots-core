@@ -1,5 +1,5 @@
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, hasEffect, ownerOf,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   checkTriggersForObject, applyAbilities
@@ -31,7 +31,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const movingRobot = player.robotsOnBoard[fromHex];
 
   // Is the move valid?
-  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft);
+  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft, movingRobot);
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
     if (!asPartOfAttack) {
       state.selectedTile = null;
@@ -58,24 +58,30 @@ export function attack(state, source, target) {
   const attacker = player.robotsOnBoard[source];
   const defender = opponent.robotsOnBoard[target];
 
-  // Is the attack valid?
-  const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft);
-  if (validHexes.map(HexUtils.getID).includes(target) && !hasEffect(attacker, 'cannotattack')) {
-    attacker.movesLeft = 0;
+  if (attacker) {
+    // Is the attack valid?
+    const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), attacker.movesLeft, attacker);
+    if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
+      attacker.movesLeft = 0;
 
-    state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
-    state = checkTriggersForObject(state, 'afterAttack', attacker);
+      state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+      state = checkTriggersForObject(state, 'afterAttack', attacker);
 
-    state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+      state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
 
-    // Move attacker to defender's space (if possible).
-    if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
-      state = transportObject(state, source, target);
+      // Move attacker to defender's space (if possible).
+      if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
+        state = transportObject(state, source, target);
+
+        // (This is mostly to make sure that the attacker doesn't die as a result of this move.)
+        state = applyAbilities(state);
+        state = updateOrDeleteObjectAtHex(state, attacker, target);
+      }
+
+      state = applyAbilities(state);
+
+      state.selectedTile = null;
     }
-
-    state = applyAbilities(state);
-
-    state.selectedTile = null;
   }
 
   return state;

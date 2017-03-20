@@ -37,16 +37,19 @@ export function abilities(state) {
       };
     },
 
-    applyEffect: function (targetFunc, effect) {
+    applyEffect: function (targetFunc, effect, props = {}) {
       const aid = Math.random().toString(36);
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
         apply: function (target) {
-          target.effects = (target.effects || []).concat({
-            aid: aid,
-            effect: effect
-          });
+          if (!(target.effects || []).find(eff => eff.aid === aid)) {
+            target.effects = (target.effects || []).concat({
+              aid: aid,
+              effect: effect,
+              props: props
+            });
+          }
         },
         unapply: function (target) {
           target.effects = (target.effects || []).filter(eff => eff.aid !== aid);

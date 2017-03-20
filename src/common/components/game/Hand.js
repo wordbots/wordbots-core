@@ -3,7 +3,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
 
-import { getCost } from '../../util';
+import { splitSentences, getCost } from '../../util';
+import Sentence from '../cards/Sentence';
 
 import Card from './Card';
 
@@ -49,7 +50,8 @@ class Hand extends Component {
           name={card.name}
           spriteID={card.spriteID}
           type={card.type}
-          text={card.text || ''}
+          text={splitSentences(card.text).map(Sentence)}
+          rawText={card.text || ''}
           img={card.img}
           cost={getCost(card)}
           baseCost={card.baseCost}

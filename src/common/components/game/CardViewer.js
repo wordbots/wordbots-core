@@ -1,59 +1,14 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import FontIcon from 'material-ui/lib/font-icon';
-import ReactTooltip from 'react-tooltip';
 
-import keywords from '../../keywords';
+import Sentence from '../cards/Sentence';
+import { splitSentences } from '../../util';
 
 import Card from './Card';
-
-// TODO somehow combine this with CardPreview component, or at least de-duplicate some logic.
 
 class CardViewer extends Component {
   constructor(props) {
     super(props);
-  }
-
-  renderCardText() {
-    function renderSentence(sentence) {
-      if (keywords[sentence]) {
-        return (
-          <span key={sentence}>
-            {' '}<b data-for={sentence} data-tip={`${keywords[sentence]}.`}>{sentence}</b>.
-            <ReactTooltip id={sentence} place="top" type="dark" effect="float" />
-          </span>
-        );
-      } else {
-        return `${sentence}.`;
-      }
-    }
-
-    const text = this.props.hoveredCard.card.text;
-    if (text) {
-      const sentences = text.split(/[\\.!\?]/).filter(s => /\S/.test(s));
-      return sentences.map(sentence => {
-        const parserInput = encodeURIComponent(keywords[sentence] || sentence);
-        const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
-        return (
-          <span key={sentence}>
-            {renderSentence(sentence)}
-            <a href={treeUrl} target="_blank">
-              <FontIcon
-                className="material-icons"
-                style={{fontSize: '0.7em', verticalAlign: 'top', color: 'green'}}
-                data-for="tree-tooltip"
-                data-tip="Click to view parse tree">
-                  code
-              </FontIcon>
-              <ReactTooltip id="tree-tooltip" place="top" type="dark" effect="float" />
-            </a>
-            {' '}
-          </span>
-        );
-      });
-    } else {
-      return '';
-    }
   }
 
   render() {
@@ -68,8 +23,8 @@ class CardViewer extends Component {
           stats={this.props.hoveredCard.stats}
           name={this.props.hoveredCard.card.name}
           type={this.props.hoveredCard.card.type}
-          spriteID={this.props.hoveredCard.spriteID}
-          text={this.renderCardText()}
+          spriteID={this.props.hoveredCard.card.spriteID}
+          text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
           rawText={this.props.hoveredCard.card.text}
           img={this.props.hoveredCard.card.img}
           cost={this.props.hoveredCard.card.cost}

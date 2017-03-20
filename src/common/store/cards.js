@@ -249,16 +249,32 @@ export const fortificationCard = {
 
 export const defenderBotCard = {
   name: 'Defender Bot',
-  cost: 2,
+  cost: 4,
   type: TYPE_ROBOT,
   stats: {
     health: 3,
     speed: 1,
     attack: 3
   },
-  text: 'This robot can\'t attack.',
+  text: 'Defender, taunt',
   abilities: [
-    '(function () { setAbility(abilities["applyEffect"](function () { return targets["thisRobot"](); }, "cannotattack")); })'
+    "(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'cannotattack')); })",
+    "(function () { setAbility(abilities['applyEffect'](function () { return targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['opponent']())])); }, 'canonlyattack', {target: targets['thisRobot']()})); })"
+  ]
+};
+
+export const hasteBotCard = {
+  name: 'Haste Bot',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 3
+  },
+  text: 'Haste',
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAgain'](targets['thisRobot']()); })); })"
   ]
 };
 
@@ -376,7 +392,8 @@ export const collection = [
   missileStrikeCard,
   rampageCard,
   untapCard,
-  wrathOfRobotGodCard
+  wrathOfRobotGodCard,
+  hasteBotCard
 ].map(c =>
   Object.assign(instantiateCard(c), {source: 'builtin'})
 );

@@ -5,13 +5,14 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 import FontIcon from 'material-ui/lib/font-icon';
-import { every, isNull, reduce } from 'lodash';
+import { every, flatMap, isNull, reduce } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
-import keywords from '../../keywords';
+import { isKeywordExpression, expandKeywords } from '../../keywords';
+import { splitSentences } from '../../util';
 
 import NumberField from './NumberField';
 
@@ -19,9 +20,15 @@ const SUBSTITUTIONS = {
   'creature': 'robot'
 };
 
+const DEBOUNCE_TIMEOUT_MS = 500;
+
 class CardCreationForm extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.props.onSpriteClick();  // Generate new spriteID on reload.
   }
 
   normalizeText(text) {
@@ -29,10 +36,10 @@ class CardCreationForm extends Component {
   }
 
   onUpdateText(text, cardType) {
-    const sentences = this.normalizeText(text)
-                          .split(/[\\.!\?]/);
     const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
-    const debounceTimeoutMs = 500;
+    const sentences = flatMap(splitSentences(this.normalizeText(text)), sentence =>
+      isKeywordExpression(sentence) ? sentence.replace(/,/g, ',|').split('|') : sentence
+    );
 
     this.props.onSetText(sentences);
 
@@ -41,15 +48,14 @@ class CardCreationForm extends Component {
     }
     this.parseRefreshTimer = setTimeout(() => {
       sentences
-        .filter(sentence => /\S/.test(sentence))
         .forEach((sentence, idx) => {
-          const parserInput = encodeURIComponent(keywords[sentence] || sentence);
+          const parserInput = encodeURIComponent(expandKeywords(sentence));
           const parseUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=js&mode=${parserMode}`;
           fetch(parseUrl)
             .then(response => response.json())
             .then(json => { this.props.onParseComplete(idx, sentence, json); });
       });
-    }, debounceTimeoutMs);
+    }, DEBOUNCE_TIMEOUT_MS);
   }
 
   nonEmptySentences() {

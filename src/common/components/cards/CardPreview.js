@@ -1,81 +1,10 @@
 import React, { Component } from 'react';
-import FontIcon from 'material-ui/lib/font-icon';
-import ReactTooltip from 'react-tooltip';
 
-import { id } from '../../util';
-import keywords from '../../keywords';
 import Card from '../game/Card';
 
+import Sentence from './Sentence';
+
 class CardPreview extends Component {
-  renderSentence(s) {
-    function renderWord(word) {
-      if ((s.result.unrecognizedTokens || []).includes(word.toLowerCase())) {
-        return (
-          <span key={id()}>
-            {' '}<u>{word}</u>
-          </span>
-        );
-      } else if (keywords[word]) {
-        return (
-          <span key={id()}>
-            {' '}<b data-for={word} data-tip={`${keywords[word]}.`}>{word}</b>
-            <ReactTooltip id={word} place="top" type="dark" effect="float" />
-          </span>
-        );
-      } else {
-        return (
-          <span key={id()}>
-            {' '}{word}
-          </span>
-        );
-      }
-    }
-
-    function renderStatusIcon() {
-      const parserInput = encodeURIComponent(keywords[s.sentence] || s.sentence);
-      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
-      if (s.result.js) {
-        return (
-          <a href={treeUrl} target="_blank">
-            <FontIcon
-              className="material-icons"
-              style={{verticalAlign: 'top', color: 'green'}}
-              data-for="error-tooltip"
-              data-tip="Click to view parse tree">
-                code
-            </FontIcon>
-            <ReactTooltip id="error-tooltip" place="top" type="dark" effect="float" />
-          </a>
-        );
-      } else if (s.result.error) {
-        return (
-          <span>
-            <FontIcon
-              className="material-icons"
-              style={{verticalAlign: 'top', color: 'red'}}
-              data-for="tree-tooltip"
-              data-tip={s.result.error}>
-                error_outline
-            </FontIcon>
-            <ReactTooltip id="tree-tooltip" place="top" type="dark" effect="float" />
-          </span>
-        );
-      }
-    }
-
-    if (/\S/.test(s.sentence)) {
-      const color = s.result.js ? 'green' : (s.result.error ? 'red' : 'black');
-      return (
-        <span key={id()} style={{color: color}}>
-          {s.sentence.split(' ').map(renderWord)}.
-          { renderStatusIcon() }
-        </span>
-      );
-    } else {
-      return null;
-    }
-  }
-
   render() {
     const stats = {
       attack: this.props.attack,
@@ -94,7 +23,7 @@ class CardPreview extends Component {
           cost={this.props.energy}
           stats={stats}
           cardStats={stats}
-          text={this.props.sentences.map(this.renderSentence)}
+          text={this.props.sentences.map(s => Sentence(s.sentence, s.result))}
           rawText={this.props.sentences.map(s => s.sentence).join('. ')}
           scale={3}
 

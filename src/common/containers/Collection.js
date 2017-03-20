@@ -11,6 +11,8 @@ import Toggle from 'material-ui/lib/toggle';
 import { Range } from 'rc-slider';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+import { splitSentences } from '../util';
+import Sentence from '../components/cards/Sentence';
 import Card from '../components/game/Card';
 import CardBack from '../components/game/CardBack';
 import * as collectionActions from '../actions/collection';
@@ -105,7 +107,8 @@ class Collection extends Component {
         name={card.name}
         spriteID={card.spriteID}
         type={card.type}
-        text={card.text || ''}
+        text={splitSentences(card.text).map(Sentence)}
+        rawText={card.text || ''}
         stats={card.stats}
         cardStats={card.stats}
         cost={card.cost}

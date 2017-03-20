@@ -7,7 +7,7 @@ import Layout from './Layout';
 import GridGenerator from './GridGenerator';
 import loadImages from './HexGridImages';
 
-const { number, object, array } = React.PropTypes;
+const { number, string, object, array } = React.PropTypes;
 
 class HexGrid extends React.Component {
   render() {
@@ -25,7 +25,8 @@ class HexGrid extends React.Component {
                 fill={hexColors[HexUtils.getID(hex)]}
                 pieceImg={pieceImgs[HexUtils.getID(hex)] || {}}
                 pieceStats={pieceStats[HexUtils.getID(hex)]}
-                images={loadImages()} />
+                images={loadImages()}
+                selected={this.props.selectedHexId === HexUtils.getID(hex)} />
             ))
         }
         <Path {...this.props.path} layout={this.props.layout} />
@@ -51,7 +52,8 @@ HexGrid.propTypes = {
   path: object,
   hexColors: object,
   pieceImgs: object,
-  pieceStats: object
+  pieceStats: object,
+  selectedHexId: string
 };
 
 HexGrid.defaultProps = {

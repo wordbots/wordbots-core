@@ -4,7 +4,7 @@ import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
 
-const { object, string } = React.PropTypes;
+const { bool, object, string } = React.PropTypes;
 
 class HexShape extends React.Component {
   getPoints(hex) {
@@ -40,13 +40,17 @@ class HexShape extends React.Component {
   }
 
   getStyles(hex) {
+    const styles = {};
+
     if (this.props.fill || (hex.props !== {} && typeof(hex.props.image) !== 'undefined')) {
-      return {
-        fill: `url(#${ HexUtils.getID(hex) })`
-      };
-    } else {
-      return {};
+      styles.fill = `url(#${ HexUtils.getID(hex) })`;
     }
+
+    if (this.props.selected) {
+      styles.strokeWidth = 0.5;
+    }
+
+    return styles;
   }
 
   getPieceStyles(hex) {
@@ -145,7 +149,8 @@ HexShape.propTypes = {
   fill: string,
   images: object,
   pieceImg: object,
-  pieceStats: object
+  pieceStats: object,
+  selected: bool
 };
 
 export default HexShape;

@@ -168,7 +168,8 @@ class Board extends Component {
           width={config.width}
           height={config.height}
           hexagons={grid.hexagons}
-          layout={grid.layout} />
+          layout={grid.layout}
+          selectedHexId={this.props.selectedTile} />
       </div>
     );
   }

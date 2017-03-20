@@ -456,6 +456,16 @@ describe('Game reducer', () => {
       expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(3);
       state = attack(state, '0,-1,1', '0,0,0', true);
       expect(_.size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(2);
+
+      // Haste Bot: "Haste."
+      // Haste Bot can move as soon as it's played ...
+      state = playObject(state, 'orange', cards.hasteBotCard, '3,0,-3');
+      state = moveRobot(state, '3,0,-3', '2,0,-2');
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toHaveProperty('2,0,-2');
+      // ... but its Haste ability is not triggered when other robots are played.
+      state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
+      state = moveRobot(state, '2,0,-2', '1,0,-1');
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('1,0,-1');
     });
 
     it('should let objects apply passive abilities to other objects', () => {

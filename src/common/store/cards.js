@@ -263,6 +263,21 @@ export const defenderBotCard = {
   ]
 };
 
+export const hasteBotCard = {
+  name: 'Haste Bot',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 3
+  },
+  text: 'Haste',
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAgain'](targets['thisRobot']()); })); })"
+  ]
+};
+
 export const recruiterBotCard = {
   name: 'Recruiter Bot',
   cost: 4,
@@ -377,7 +392,8 @@ export const collection = [
   missileStrikeCard,
   rampageCard,
   untapCard,
-  wrathOfRobotGodCard
+  wrathOfRobotGodCard,
+  hasteBotCard
 ].map(c =>
   Object.assign(instantiateCard(c), {source: 'builtin'})
 );

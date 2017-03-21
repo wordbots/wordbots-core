@@ -32,9 +32,17 @@ class Decks extends Component {
   }
 
   renderCard(card) {
+    const isHovered = this.state.hoveredCard && this.state.hoveredCard.card.id === card.id;
+
     return (
-      <div key={card.name} onMouseOver={e => this.onHover(card)}>
-        <Badge badgeContent={card.cost}
+      <div
+        key={card.name}
+        onMouseOver={e => this.onHover(card)}
+        style={{
+          backgroundColor: isHovered ? '#eee' : '#fff'
+      }}>
+        <Badge
+          badgeContent={card.cost}
           badgeStyle={{backgroundColor: '#00bcd4', fontFamily: 'Carter One', color: 'white', marginRight: 5}}
           style={{padding: 0, width: 24, height: 20 }} />
         {card.name}
@@ -54,7 +62,7 @@ class Decks extends Component {
 
     return (
       <Paper key={deck.name} style={{padding: 10}}>
-        <h3>{deck.name}</h3>
+        <h3 style={{margin: '5px 0 0'}}>{deck.name}</h3>
 
         <div style={{float: 'left', marginRight: 10}}>
           <h4>Robots ({robots.length})</h4>

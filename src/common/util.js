@@ -279,20 +279,10 @@ export function executeCmd(state, cmd, currentObject = null) {
 }
 /* eslint-enable no-unused-vars */
 
-function lookupTriggers(state, triggerType, condition) {
-  return flatMap(Object.values(allObjectsOnBoard(state)), (object =>
-    (object.triggers || []).filter(t => {
-      t.object = object;
-      t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object);
-      return (t.trigger.type === triggerType && condition(t.trigger));
-    })
-  ));
-}
-
 export function triggerEvent(state, triggerType, target = {}, defaultBehavior = null) {
+  // Formulate the trigger condition.
   const defaultCondition = (t => (target.condition ? target.condition(t) : true));
   let condition = defaultCondition;
-
   if (target.object) {
     state = Object.assign({}, state, {it: target.object});
     condition = (t => t.targets.map(o => o.id).includes(target.object.id) && defaultCondition(t));
@@ -301,7 +291,16 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
     condition = (t => t.targets.map(p => p.name).includes(state.currentTurn) && defaultCondition(t));
   }
 
-  const triggers = lookupTriggers(state, triggerType, condition);
+  // Look up any relevant triggers for this condition.
+  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
+    (object.triggers || [])
+      .map(t => {
+        // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
+        t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object);
+        return Object.assign({}, t, {object: object});
+      })
+      .filter(t => t.trigger.type === triggerType && condition(t.trigger))
+  ));
 
   // Execute the defaultBehavior of the event (if any), unless any of the triggers overrides it.
   // Note: At the moment, only afterAttack events can be overridden.

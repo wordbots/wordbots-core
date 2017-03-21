@@ -29,6 +29,11 @@ class CardCreationForm extends Component {
 
   componentDidMount() {
     this.props.onSpriteClick();  // Generate new spriteID on reload.
+
+    // This should only happen when we're loading an existing card (from Collection view).
+    if (this.props.setText) {
+      this.onUpdateText(this.props.setText, this.props.type);
+    }
   }
 
   normalizeText(text) {
@@ -81,11 +86,6 @@ class CardCreationForm extends Component {
   }
 
   render() {
-    // This should only happen when we're loading an existing card (from Collection view).
-    if (this.props.setText) {
-      this.onUpdateText(this.props.setText, this.props.type);
-    }
-
     return (
       <div style={{width: '50%', padding: 64}}>
         <Paper style={{padding: 48}}>

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
-import { isNull } from 'lodash';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
@@ -71,7 +70,7 @@ export class Creator extends Component {
             energy={this.props.cost}
             sentences={this.props.sentences}
             setText={this.props.setText}
-            isNewCard={!isNull(this.props.id)}
+            isNewCard={this.props.id ? true : false}
             onSetName={(name) => { this.props.onSetName(name); }}
             onSetType={(type) => { this.props.onSetType(type); }}
             onSetText={(text) => { this.props.onSetText(text); }}

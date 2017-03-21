@@ -8,11 +8,9 @@ import FontIcon from 'material-ui/lib/font-icon';
 import RaisedButton from 'material-ui/lib/raised-button';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
-import { splitSentences } from '../util';
+import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
 import SortControls from '../components/cards/SortControls';
-import Sentence from '../components/cards/Sentence';
-import Card from '../components/game/Card';
 import CardBack from '../components/game/CardBack';
 import * as collectionActions from '../actions/collection';
 
@@ -51,6 +49,13 @@ class Collection extends Component {
       sortingOrder: 0,
       selectedCards: []
     };
+
+    this.sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
+      c => [c.cost, c.name],
+      c => c.name,
+      c => [typeToString(c.type), c.cost, c.name],
+      c => [c.source === 'builtin', c.cost, c.name]
+    ];
   }
 
   updateState(newProps, callback = () => {}) {
@@ -85,57 +90,6 @@ class Collection extends Component {
     }
   }
 
-  sortCards(a, b) {
-    const sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
-      c => [c.cost, c.name],
-      c => c.name,
-      c => [typeToString(c.type), c.cost, c.name],
-      c => [c.source === 'builtin', c.cost, c.name]
-    ];
-    const func = sortFuncs[this.state.sortingCriteria];
-
-    if (func(a) < func(b)) {
-      return this.state.sortingOrder ? 1 : -1;
-    } else if (func(a) > func(b)) {
-      return this.state.sortingOrder ? -1 : 1;
-    } else {
-      return 0;
-    }
-  }
-
-  renderCard(card) {
-    return (
-      <Card
-        visible
-        collection
-        key={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source}
-        scale={1}
-        selected={this.state.selectedCards.includes(card.id)}
-        onCardClick={e => {
-          if (card.source !== 'builtin') {
-            this.updateState(state => {
-              if (state.selectedCards.includes(card.id)) {
-                return {selectedCards: _.without(state.selectedCards, card.id)};
-              } else {
-                return {selectedCards: [...state.selectedCards, card.id]};
-              }
-            });
-          }
-        }}
-        onCardHover={() => {}} />
-    );
-  }
-
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -147,25 +101,29 @@ class Collection extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 50, marginLeft: 40}}>
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
-              width: '100%',
-              margin: 10
-            }}>
+            <CardGrid
+              cards={this.props.cards}
+              selectedCardIds={this.state.selectedCards}
+              filterFunc={this.cardIsVisible.bind(this)}
+              sortFunc={this.sortFuncs[this.state.sortingCriteria]}
+              sortOrder={this.state.sortingOrder}
+              onCardClick={card => {
+                if (card.source !== 'builtin') {
+                  this.updateState(state => {
+                    if (state.selectedCards.includes(card.id)) {
+                      return {selectedCards: _.without(state.selectedCards, card.id)};
+                    } else {
+                      return {selectedCards: [...state.selectedCards, card.id]};
+                    }
+                  });
+                }
+              }}>
               <Link to="/creator">
                 <div style={{padding: '24px 0 12px 0'}}>
                   <CardBack hoverable customText="New Card" />
                 </div>
               </Link>
-              {
-                this.props.cards
-                  .filter(this.cardIsVisible.bind(this))
-                  .sort(this.sortCards.bind(this))
-                  .map(this.renderCard.bind(this))
-              }
-            </div>
+            </CardGrid>
           </div>
 
           <div style={{

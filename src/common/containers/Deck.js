@@ -8,11 +8,9 @@ import TextField from 'material-ui/lib/text-field';
 import RaisedButton from 'material-ui/lib/raised-button';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
-import { splitSentences } from '../util';
+import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
 import SortControls from '../components/cards/SortControls';
-import Sentence from '../components/cards/Sentence';
-import Card from '../components/game/Card';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
@@ -48,6 +46,13 @@ class Deck extends Component {
       sortingOrder: 0,
       selectedCards: []
     };
+
+    this.sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
+      c => [c.cost, c.name],
+      c => c.name,
+      c => [typeToString(c.type), c.cost, c.name],
+      c => [c.source === 'builtin', c.cost, c.name]
+    ];
   }
 
   updateState(newProps) {
@@ -71,48 +76,6 @@ class Deck extends Component {
     } else {
       return true;
     }
-  }
-
-  sortCards(a, b) {
-    const sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
-      c => [c.cost, c.name],
-      c => c.name,
-      c => [typeToString(c.type), c.cost, c.name],
-      c => [c.source === 'builtin', c.cost, c.name]
-    ];
-    const func = sortFuncs[this.state.sortingCriteria];
-
-    if (func(a) < func(b)) {
-      return this.state.sortingOrder ? 1 : -1;
-    } else if (func(a) > func(b)) {
-      return this.state.sortingOrder ? -1 : 1;
-    } else {
-      return 0;
-    }
-  }
-
-  renderCard(card) {
-    return (
-      <Card
-        visible
-        collection
-        key={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source}
-        scale={1}
-        onCardClick={e => {
-          this.updateState(state => ({selectedCards: [...state.selectedCards, card.id]}));
-        }}
-        onCardHover={() => {}} />
-    );
   }
 
   renderDeck() {
@@ -173,20 +136,12 @@ class Deck extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 50, marginLeft: 40}}>
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
-              width: '100%',
-              margin: 10
-            }}>
-              {
-                this.props.cards
-                  .filter(this.cardIsVisible.bind(this))
-                  .sort(this.sortCards.bind(this))
-                  .map(this.renderCard.bind(this))
-              }
-            </div>
+            <CardGrid
+              cards={this.props.cards}
+              filterFunc={this.cardIsVisible.bind(this)}
+              sortFunc={this.sortFuncs[this.state.sortingCriteria]}
+              sortOrder={this.state.sortingOrder}
+              onCardClick={card => { this.updateState(state => ({selectedCards: [...state.selectedCards, card.id]})); }} />
           </div>
 
           <div style={{

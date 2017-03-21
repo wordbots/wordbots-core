@@ -281,28 +281,39 @@ export function executeCmd(state, cmd, currentObject = null) {
 }
 /* eslint-enable no-unused-vars */
 
-function checkTriggers(state, triggerType, it, condition) {
+function checkTriggers(state, triggerType, it, condition, props = {}) {
+  let override = false;
+
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
     (obj.triggers || []).forEach((t) => {
       t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
+
       if (t.trigger.type === triggerType && condition(t.trigger)) {
-        // console.log(`Executing ${triggerType} trigger: ${t.action}`);
-        executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
+        if (props.checkForOverride) {
+          // If checkForOverride = true, don't execute any triggers (yet)
+          // but rather check to see if any triggers cause an override of the event itself.
+          override = override || t.override;
+        } else {
+          // console.log(`Executing ${triggerType} trigger: ${t.action}`);
+          executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
+        }
       }
     });
   });
 
-  return Object.assign({}, state, {it: null, itP: null});
+  const newState = Object.assign({}, state, {it: null, itP: null});
+
+  return props.checkForOverride ? override : newState;
 }
 
 // Special cases of checkTriggers():
-export function checkTriggersForObject(state, triggerType, object, extraCondition = () => true) {
+export function checkTriggersForObject(state, triggerType, object, extraCondition = null, props = {}) {
   state = Object.assign({}, state, {it: object});
   return checkTriggers(state, triggerType, object, (trigger =>
-    trigger.targets.map(o => o.id).includes(object.id) && extraCondition(trigger)
-  ));
+    trigger.targets.map(o => o.id).includes(object.id) && (!extraCondition || extraCondition(trigger))
+  ), props);
 }
-export function checkTriggersForCurrentPlayer(state, triggerType) {
+export function checkTriggersForCurrentPlayer(state, triggerType, props = {}) {
   state = Object.assign({}, state, {itP: currentPlayer(state)});
   return checkTriggers(state, triggerType, null, trigger =>
     trigger.targets.map(p => p.name).includes(state.currentTurn)

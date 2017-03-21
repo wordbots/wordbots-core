@@ -279,7 +279,7 @@ describe('Game reducer', () => {
 
   describe('[Triggered abilities]', () => {
     it('should be able to activate afterAttack triggered abilities', () => {
-      // Monkey Bot: "When this robot attacks, it deals damage to all adjacent robots.""
+      // Monkey Bot: "When this robot attacks, it deals damage to all adjacent robots instead.""
       let state = setUpBoardState({
         'orange': {
           '0,0,0': cards.monkeyBotCard, // 2/2
@@ -295,10 +295,12 @@ describe('Game reducer', () => {
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
       ).toEqual(['0,0,0', '1,0,-1', '-1,0,1', '0,-1,1', '-1,1,0'].sort());
       state = newTurn(state, 'orange');
-      state = attack(state, '0,0,0', '-1,0,1');  // Only the outer Tank Bot (receiving 2 damage) should survive the carnage.
+      state = attack(state, '0,0,0', '-1,0,1');
+      // Only the two Tank Bots (each receiving 2 damage) should survive the carnage.
       expect(
-        Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT))
-      ).toEqual(['0,-1,1']);
+        Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
+      ).toEqual(['-1,0,1', '0,-1,1'].sort());
+      expect(queryObjectAttribute(state, '-1,0,1', 'health')).toEqual(2);
       expect(queryObjectAttribute(state, '0,-1,1', 'health')).toEqual(2);
     });
 

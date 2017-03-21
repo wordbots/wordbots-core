@@ -64,7 +64,9 @@ export function attack(state, source, target) {
     if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
       attacker.movesLeft = 0;
 
-      state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+      if (!checkTriggersForObject(state, 'afterAttack', attacker, null, {checkForOverride: true})) {
+        state = dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+      }
       state = checkTriggersForObject(state, 'afterAttack', attacker);
 
       state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');

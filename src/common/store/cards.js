@@ -228,9 +228,9 @@ export const monkeyBotCard = {
     speed: 2,
     attack: 2
   },
-  text: 'When this robot attacks, it deals damage to all adjacent robots.',
+  text: 'When this robot attacks, it deals damage to all adjacent robots instead.',
   abilities: [
-    "(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])), attributeValue(targets['thisRobot'](), 'attack')); })); })"
+    "(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])), attributeValue(targets['thisRobot'](), 'attack')); }), {override: true}); })"
   ]
 };
 

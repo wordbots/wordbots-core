@@ -1,9 +1,12 @@
 export function setTrigger(state, currentObject) {
-  return function (trigger, action) {
-    currentObject.triggers = currentObject.triggers.concat([{
+  return function (trigger, action, props = {}) {
+    const triggerObj = Object.assign({
       trigger: trigger,
-      action: `(${action.toString()})`
-    }]);
+      action: `(${action.toString()})`,
+      override: false
+    }, props);
+
+    currentObject.triggers = currentObject.triggers.concat([triggerObj]);
   };
 }
 

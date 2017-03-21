@@ -1,41 +1,42 @@
 import React from 'react';
 import FontIcon from 'material-ui/lib/font-icon';
 import ReactTooltip from 'react-tooltip';
+import { isObject } from 'lodash';
 
 import { expandKeywords } from '../../keywords';
 import { id } from '../../util';
 
 function StatusIcon(text, result) {
-  const parserInput = encodeURIComponent(expandKeywords(text));
-  const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
-  const tooltipId = id();
+  if (isObject(result)) {
+    const isParsed = result.js || result.parsed;
+    const tooltipId = id();
+    const tooltipText = isParsed ? 'Click to view parse tree' : (result.error || 'Parsing ...');
+    const iconGlyph = isParsed ? 'code' : (result.error ? 'error_outline' : 'more_horiz');
+    const iconColor = result.js ? 'green' : (result.error ? 'red' : 'black');
 
-  if (result.js || result.parsed) {
-    return (
-      <a href={treeUrl} target="_blank">
-        <FontIcon
-          className="material-icons"
-          style={{fontSize: '0.7em', verticalAlign: 'top', color: 'green'}}
-          data-for={tooltipId}
-          data-tip="Click to view parse tree">
-            code
-        </FontIcon>
-        <ReactTooltip id={tooltipId} />
-      </a>
-    );
-  } else if (result.error) {
-    return (
-      <span>
-        <FontIcon
-          className="material-icons"
-          style={{fontSize: '0.7em', verticalAlign: 'top', color: 'red'}}
-          data-for={tooltipId}
-          data-tip={result.error}>
-            error_outline
-        </FontIcon>
-        <ReactTooltip id={tooltipId} />
-      </span>
-    );
+    const icon = [
+      <FontIcon
+        className="material-icons"
+        style={{fontSize: '0.7em', verticalAlign: 'top', color: iconColor}}
+        data-for={tooltipId}
+        data-tip={tooltipText}>
+          {iconGlyph}
+      </FontIcon>,
+      <ReactTooltip id={tooltipId} />
+    ];
+
+    if (isParsed) {
+      const parserInput = encodeURIComponent(expandKeywords(text));
+      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
+
+      return (
+        <a href={treeUrl} target="_blank">
+          {icon}
+        </a>
+      );
+    } else {
+      return (<span>{icon}</span>);
+    }
   }
 }
 

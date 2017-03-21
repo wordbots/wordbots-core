@@ -136,42 +136,6 @@ class Collection extends Component {
     );
   }
 
-  renderEditButton() {
-    if (this.state.selectedCards.length === 1) {
-      return (
-        <RaisedButton
-          label="Edit Selected"
-          labelPosition="before"
-          secondary
-          icon={<FontIcon className="material-icons">edit</FontIcon>}
-          style={{width: '100%', marginTop: 20}}
-          onClick={() => {
-            const id = this.state.selectedCards[0];
-            this.props.onEditCard(this.props.cards.find(c => c.id === id));
-          }}
-        />
-      );
-    }
-  }
-
-  renderDeleteButton() {
-    if (this.state.selectedCards.length > 0) {
-      return (
-        <RaisedButton
-          label="Delete Selected"
-          labelPosition="before"
-          secondary
-          icon={<FontIcon className="material-icons">delete</FontIcon>}
-          style={{width: '100%', marginTop: 20}}
-          onClick={() => {
-            this.props.onRemoveFromCollection(this.state.selectedCards);
-            this.updateState({selectedCards: []});
-          }}
-        />
-      );
-    }
-  }
-
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -231,8 +195,30 @@ class Collection extends Component {
                 }} />
             </Paper>
 
-            {this.renderEditButton()}
-            {this.renderDeleteButton()}
+            <RaisedButton
+              label="Edit Selected"
+              labelPosition="before"
+              secondary
+              disabled={this.state.selectedCards.length !== 1}
+              icon={<FontIcon className="material-icons">edit</FontIcon>}
+              style={{width: '100%', marginTop: 20}}
+              onClick={() => {
+                const id = this.state.selectedCards[0];
+                this.props.onEditCard(this.props.cards.find(c => c.id === id));
+              }}
+            />
+            <RaisedButton
+              label="Delete Selected"
+              labelPosition="before"
+              secondary
+              disabled={this.state.selectedCards.length === 0}
+              icon={<FontIcon className="material-icons">delete</FontIcon>}
+              style={{width: '100%', marginTop: 20}}
+              onClick={() => {
+                this.props.onRemoveFromCollection(this.state.selectedCards);
+                this.updateState({selectedCards: []});
+              }}
+            />
           </div>
         </div>
       </div>

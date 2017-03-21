@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
+import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/SelectField';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Toggle from 'material-ui/lib/toggle';
@@ -24,20 +25,21 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSaveDeck: function (cardIds) {
+    onSaveDeck: function (id, name, cardIds) {
       dispatch([
-        collectionActions.saveDeck(cardIds),
+        collectionActions.saveDeck(id, name, cardIds),
         pushState(null, '/decks')
       ]);
     }
   };
 }
 
-class Collection extends Component {
+class Deck extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      deckName: '',
       filters: {
         robots: true,
         events: true,
@@ -256,14 +258,19 @@ class Collection extends Component {
             }}>
               <div style={{
                 fontWeight: 100,
-                fontSize: 28,
-                marginBottom: 20
+                fontSize: 28
               }}>
                 Deck&nbsp;
                 <span style={{color: (this.state.selectedCards.length === 30) ? 'green' : 'red'}}>
                   [{this.state.selectedCards.length}]
                 </span>
               </div>
+
+              <TextField
+                value={this.state.deckName}
+                floatingLabelText="Deck Name"
+                style={{width: '100%'}}
+                onChange={e => { this.updateState({deckName: e.target.value}); }} />
 
               {this.state.selectedCards.map((cardId, idx) =>
                 <div
@@ -282,10 +289,12 @@ class Collection extends Component {
                 label="Save Deck"
                 labelPosition="before"
                 secondary
-                disabled={/*this.state.selectedCards.length !== 30*/ false}
+                disabled={this.state.deckName === '' /*|| this.state.selectedCards.length !== 30*/}
                 icon={<FontIcon className="material-icons">save</FontIcon>}
                 style={{width: '100%', marginTop: 20}}
-                onClick={ e => { this.props.onSaveDeck(this.state.selectedCards); } }
+                onClick={ e => {
+                  this.props.onSaveDeck(this.props.id, this.state.deckName, this.state.selectedCards);
+                } }
               />
             </Paper>
 
@@ -308,12 +317,13 @@ class Collection extends Component {
   }
 }
 
-const { array, func } = React.PropTypes;
+const { array, func, string } = React.PropTypes;
 
-Collection.propTypes = {
+Deck.propTypes = {
+  id: string,
   cards: array,
 
   onSaveDeck: func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Collection);
+export default connect(mapStateToProps, mapDispatchToProps)(Deck);

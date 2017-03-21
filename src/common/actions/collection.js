@@ -22,11 +22,13 @@ export function removeFromCollection(ids) {
   };
 }
 
-export function saveDeck(ids) {
+export function saveDeck(id, name, cardIds) {
   return {
     type: SAVE_DECK,
     payload: {
-      ids: ids
+      id: id,
+      name: name,
+      cardIds: cardIds
     }
   };
 }

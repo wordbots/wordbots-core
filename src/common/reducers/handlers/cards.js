@@ -44,10 +44,10 @@ const cardsHandlers = {
     return state;
   },
 
-  saveDeck: function (state, ids) {
+  saveDeck: function (state, deckId, name, cardIds) {
     state.decks.push({
-      name: `Deck ${id()}`,
-      cards: ids.map(cardId => state.cards.find(c => c.id === cardId))
+      name: name || `Deck ${id()}`,
+      cards: cardIds.map(cardId => state.cards.find(c => c.id === cardId))
     });
 
     return state;

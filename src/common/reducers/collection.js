@@ -21,7 +21,7 @@ export default function collection(oldState = defaultState, action) {
         return c.removeFromCollection(state, action.payload.ids);
 
       case collectionActions.SAVE_DECK:
-        return c.saveDeck(state, action.payload.ids);
+        return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds);
 
       default:
         return state;

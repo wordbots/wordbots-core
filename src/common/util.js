@@ -315,9 +315,9 @@ export function checkTriggersForObject(state, triggerType, object, extraConditio
 }
 export function checkTriggersForCurrentPlayer(state, triggerType, props = {}) {
   state = Object.assign({}, state, {itP: currentPlayer(state)});
-  return checkTriggers(state, triggerType, null, trigger =>
+  return checkTriggers(state, triggerType, null, (trigger =>
     trigger.targets.map(p => p.name).includes(state.currentTurn)
-  );
+  ), props);
 }
 
 export function applyAbilities(state) {

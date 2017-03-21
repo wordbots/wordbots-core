@@ -79,7 +79,7 @@ function createCardFromProps(props) {
     };
   }
 
-  return instantiateCard(card);
+  return card;
 }
 
 function createDefaultDeck(state) {

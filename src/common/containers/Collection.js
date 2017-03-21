@@ -176,9 +176,7 @@ class Collection extends Component {
 
   renderSortControls() {
     return (
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div style={{marginBottom: 20}}>
         <div style={{
           fontWeight: 700,
           fontSize: 14
@@ -212,9 +210,7 @@ class Collection extends Component {
     };
 
     return [
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div key="type" style={{marginBottom: 20}}>
         <div style={{
           fontWeight: 700,
           fontSize: 14,
@@ -238,9 +234,7 @@ class Collection extends Component {
           onToggle={this.toggleFilter('structures')} />
       </div>,
 
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div key="cost" style={{marginBottom: 20}}>
         <div style={{
           fontWeight: 700,
           fontSize: 14,
@@ -315,7 +309,6 @@ class Collection extends Component {
               }}>Filters</div>
 
               {this.renderSortControls()}
-
               {this.renderFilterControls()}
             </Paper>
 

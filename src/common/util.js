@@ -223,7 +223,7 @@ export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
   object.stats.health -= amount;
 
-  state = checkTriggersForObject(state, 'afterDamageReceived', object);
+  state = triggerEvent(state, 'afterDamageReceived', {object: object});
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
@@ -234,9 +234,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
-    state = checkTriggersForObject(state, 'afterDestroyed', object, (trigger =>
-      (trigger.cause === cause || trigger.cause === 'anyevent')
-    ));
+    state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
     delete state.players[ownerName].robotsOnBoard[hex];
 
@@ -281,43 +279,39 @@ export function executeCmd(state, cmd, currentObject = null) {
 }
 /* eslint-enable no-unused-vars */
 
-function checkTriggers(state, triggerType, it, condition, props = {}) {
-  let override = false;
+export function triggerEvent(state, triggerType, target = {}, defaultBehavior = null) {
+  // Formulate the trigger condition.
+  const defaultCondition = (t => (target.condition ? target.condition(t) : true));
+  let condition = defaultCondition;
+  if (target.object) {
+    state = Object.assign({}, state, {it: target.object});
+    condition = (t => t.targets.map(o => o.id).includes(target.object.id) && defaultCondition(t));
+  } else if (target.player) {
+    state = Object.assign({}, state, {itP: currentPlayer(state)});
+    condition = (t => t.targets.map(p => p.name).includes(state.currentTurn) && defaultCondition(t));
+  }
 
-  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    (obj.triggers || []).forEach((t) => {
-      t.trigger.targets = executeCmd(state, t.trigger.targetFunc, obj);
+  // Look up any relevant triggers for this condition.
+  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
+    (object.triggers || [])
+      .map(t => {
+        // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
+        t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object);
+        return Object.assign({}, t, {object: object});
+      })
+      .filter(t => t.trigger.type === triggerType && condition(t.trigger))
+  ));
 
-      if (t.trigger.type === triggerType && condition(t.trigger)) {
-        if (props.checkForOverride) {
-          // If checkForOverride = true, don't execute any triggers (yet)
-          // but rather check to see if any triggers cause an override of the event itself.
-          override = override || t.override;
-        } else {
-          // console.log(`Executing ${triggerType} trigger: ${t.action}`);
-          executeCmd(Object.assign({}, state, {it: it}), t.action, obj);
-        }
-      }
-    });
-  });
+  // Execute the defaultBehavior of the event (if any), unless any of the triggers overrides it.
+  // Note: At the moment, only afterAttack events can be overridden.
+  if (defaultBehavior && !some(triggers, t => t.override)) {
+    state = defaultBehavior(state);
+  }
 
-  const newState = Object.assign({}, state, {it: null, itP: null});
+  // Now execute each trigger.
+  triggers.forEach(t => { executeCmd(state, t.action, t.object); });
 
-  return props.checkForOverride ? override : newState;
-}
-
-// Special cases of checkTriggers():
-export function checkTriggersForObject(state, triggerType, object, extraCondition = null, props = {}) {
-  state = Object.assign({}, state, {it: object});
-  return checkTriggers(state, triggerType, object, (trigger =>
-    trigger.targets.map(o => o.id).includes(object.id) && (!extraCondition || extraCondition(trigger))
-  ), props);
-}
-export function checkTriggersForCurrentPlayer(state, triggerType, props = {}) {
-  state = Object.assign({}, state, {itP: currentPlayer(state)});
-  return checkTriggers(state, triggerType, null, (trigger =>
-    trigger.targets.map(p => p.name).includes(state.currentTurn)
-  ), props);
+  return Object.assign({}, state, {it: null, itP: null});
 }
 
 export function applyAbilities(state) {

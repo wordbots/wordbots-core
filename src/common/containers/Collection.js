@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import SelectField from 'material-ui/lib/SelectField';
@@ -25,8 +26,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onRemoveFromCollection: (props) => {
-      dispatch(collectionActions.removeFromCollection(props));
+    onEditCard: (card) => {
+      dispatch([
+        collectionActions.openForEditing(card),
+        pushState(null, '/creator')
+      ]);
+    },
+    onRemoveFromCollection: (cards) => {
+      dispatch(collectionActions.removeFromCollection(cards));
     }
   };
 }
@@ -48,16 +55,36 @@ class Collection extends Component {
     };
   }
 
-  updateState(newProps) {
-    this.setState(s =>
+  updateState(newProps, callback = () => {}) {
+    this.setState((s =>
       Object.assign({}, s, _.isFunction(newProps) ? newProps(s) : newProps)
-    );
+    ), callback);
+  }
+
+  updateSelectedCardsWithFilter() {
+    this.updateState(state => (
+      {selectedCards: state.selectedCards.filter(id => this.cardIsVisible(this.props.cards.find(c => c.id === id)))}
+    ));
   }
 
   toggleFilter(filter) {
     return (e, toggled) => {
-      this.updateState(s => ({filters: Object.assign({}, s.filters, {[filter]: toggled})}));
+      this.updateState(
+        state => ({filters: Object.assign({}, state.filters, {[filter]: toggled})}),
+        () => { this.updateSelectedCardsWithFilter(); }
+      );
     };
+  }
+
+  cardIsVisible(card) {
+    if ((!this.state.filters.robots && card.type === TYPE_ROBOT) ||
+        (!this.state.filters.events && card.type === TYPE_EVENT) ||
+        (!this.state.filters.structures && card.type === TYPE_STRUCTURE) ||
+        (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1])) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   sortCards(a, b) {
@@ -76,26 +103,6 @@ class Collection extends Component {
     } else {
       return 0;
     }
-  }
-
-  filterCards(card) {
-    if (!this.state.filters.robots && card.type === TYPE_ROBOT) {
-      return false;
-    }
-
-    if (!this.state.filters.events && card.type === TYPE_EVENT) {
-      return false;
-    }
-
-    if (!this.state.filters.structures && card.type === TYPE_STRUCTURE) {
-      return false;
-    }
-
-    if (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1]) {
-      return false;
-    }
-
-    return true;
   }
 
   renderCard(card) {
@@ -131,6 +138,24 @@ class Collection extends Component {
     );
   }
 
+  renderEditButton() {
+    if (this.state.selectedCards.length === 1) {
+      return (
+        <RaisedButton
+          label="Edit Selected"
+          labelPosition="before"
+          secondary
+          icon={<FontIcon className="material-icons">edit</FontIcon>}
+          style={{width: '100%', marginTop: 20}}
+          onClick={() => {
+            const id = this.state.selectedCards[0];
+            this.props.onEditCard(this.props.cards.find(c => c.id === id));
+          }}
+        />
+      );
+    }
+  }
+
   renderDeleteButton() {
     if (this.state.selectedCards.length > 0) {
       return (
@@ -151,9 +176,7 @@ class Collection extends Component {
 
   renderSortControls() {
     return (
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div style={{marginBottom: 20}}>
         <div style={{
           fontWeight: 700,
           fontSize: 14
@@ -187,9 +210,7 @@ class Collection extends Component {
     };
 
     return [
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div key="type" style={{marginBottom: 20}}>
         <div style={{
           fontWeight: 700,
           fontSize: 14,
@@ -213,9 +234,7 @@ class Collection extends Component {
           onToggle={this.toggleFilter('structures')} />
       </div>,
 
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div key="cost" style={{marginBottom: 20}}>
         <div style={{
           fontWeight: 700,
           fontSize: 14,
@@ -236,7 +255,9 @@ class Collection extends Component {
               20: 20
             }}
             defaultValue={[0, 20]}
-            onChange={values => { this.updateState({manaRange: values}); }}
+            onChange={values => {
+              this.updateState({manaRange: values}, () => { this.updateSelectedCardsWithFilter(); });
+            }}
           />
         </div>
       </div>
@@ -268,7 +289,7 @@ class Collection extends Component {
               </Link>
               {
                 this.props.cards
-                  .filter(this.filterCards.bind(this))
+                  .filter(this.cardIsVisible.bind(this))
                   .sort(this.sortCards.bind(this))
                   .map(this.renderCard.bind(this))
               }
@@ -290,10 +311,10 @@ class Collection extends Component {
               }}>Filters</div>
 
               {this.renderSortControls()}
-
               {this.renderFilterControls()}
             </Paper>
 
+            {this.renderEditButton()}
             {this.renderDeleteButton()}
           </div>
         </div>
@@ -307,6 +328,7 @@ const { array, func } = React.PropTypes;
 Collection.propTypes = {
   cards: array,
 
+  onEditCard: func,
   onRemoveFromCollection: func
 };
 

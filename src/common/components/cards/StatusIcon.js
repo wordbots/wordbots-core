@@ -1,41 +1,45 @@
 import React from 'react';
 import FontIcon from 'material-ui/lib/font-icon';
 import ReactTooltip from 'react-tooltip';
+import { isObject } from 'lodash';
 
 import { expandKeywords } from '../../keywords';
 import { id } from '../../util';
 
 function StatusIcon(text, result) {
-  const parserInput = encodeURIComponent(expandKeywords(text));
-  const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
-  const tooltipId = id();
+  if (isObject(result)) {
+    const isParsed = result.js || result.parsed;
+    const tooltipId = id();
 
-  if (result.js || result.parsed) {
-    return (
-      <a href={treeUrl} target="_blank">
-        <FontIcon
-          className="material-icons"
-          style={{fontSize: '0.7em', verticalAlign: 'top', color: 'green'}}
-          data-for={tooltipId}
-          data-tip="Click to view parse tree">
-            code
-        </FontIcon>
-        <ReactTooltip id={tooltipId} />
-      </a>
-    );
-  } else if (result.error) {
-    return (
+    const icon = (
       <span>
         <FontIcon
           className="material-icons"
-          style={{fontSize: '0.7em', verticalAlign: 'top', color: 'red'}}
+          style={{
+            fontSize: '0.7em',
+            verticalAlign: 'top',
+            color: result.js ? 'green' : (result.error ? 'red' : 'black')}
+          }
           data-for={tooltipId}
-          data-tip={result.error}>
-            error_outline
+          data-tip={isParsed ? 'Click to view parse tree' : (result.error || 'Parsing ...')}>
+            {isParsed ? 'code' : (result.error ? 'error_outline' : 'more_horiz')}
         </FontIcon>
         <ReactTooltip id={tooltipId} />
       </span>
     );
+
+    if (isParsed) {
+      const parserInput = encodeURIComponent(expandKeywords(text));
+      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
+
+      return (
+        <a href={treeUrl} target="_blank">
+          {icon}
+        </a>
+      );
+    } else {
+      return icon;
+    }
   }
 }
 

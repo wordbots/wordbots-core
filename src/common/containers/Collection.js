@@ -55,16 +55,36 @@ class Collection extends Component {
     };
   }
 
-  updateState(newProps) {
-    this.setState(s =>
+  updateState(newProps, callback = () => {}) {
+    this.setState((s =>
       Object.assign({}, s, _.isFunction(newProps) ? newProps(s) : newProps)
-    );
+    ), callback);
+  }
+
+  updateSelectedCardsWithFilter() {
+    this.updateState(state => (
+      {selectedCards: state.selectedCards.filter(id => this.cardIsVisible(this.props.cards.find(c => c.id === id)))}
+    ));
   }
 
   toggleFilter(filter) {
     return (e, toggled) => {
-      this.updateState(s => ({filters: Object.assign({}, s.filters, {[filter]: toggled})}));
+      this.updateState(
+        state => ({filters: Object.assign({}, state.filters, {[filter]: toggled})}),
+        () => { this.updateSelectedCardsWithFilter(); }
+      );
     };
+  }
+
+  cardIsVisible(card) {
+    if ((!this.state.filters.robots && card.type === TYPE_ROBOT) ||
+        (!this.state.filters.events && card.type === TYPE_EVENT) ||
+        (!this.state.filters.structures && card.type === TYPE_STRUCTURE) ||
+        (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1])) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   sortCards(a, b) {
@@ -83,26 +103,6 @@ class Collection extends Component {
     } else {
       return 0;
     }
-  }
-
-  filterCards(card) {
-    if (!this.state.filters.robots && card.type === TYPE_ROBOT) {
-      return false;
-    }
-
-    if (!this.state.filters.events && card.type === TYPE_EVENT) {
-      return false;
-    }
-
-    if (!this.state.filters.structures && card.type === TYPE_STRUCTURE) {
-      return false;
-    }
-
-    if (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1]) {
-      return false;
-    }
-
-    return true;
   }
 
   renderCard(card) {
@@ -255,7 +255,9 @@ class Collection extends Component {
               20: 20
             }}
             defaultValue={[0, 20]}
-            onChange={values => { this.updateState({manaRange: values}); }}
+            onChange={values => {
+              this.updateState({manaRange: values}, () => { this.updateSelectedCardsWithFilter(); });
+            }}
           />
         </div>
       </div>
@@ -287,7 +289,7 @@ class Collection extends Component {
               </Link>
               {
                 this.props.cards
-                  .filter(this.filterCards.bind(this))
+                  .filter(this.cardIsVisible.bind(this))
                   .sort(this.sortCards.bind(this))
                   .map(this.renderCard.bind(this))
               }

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import Badge from 'material-ui/lib/badge';
 import Paper from 'material-ui/lib/paper';
 
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import CardViewer from '../components/game/CardViewer';
 
 function mapStateToProps(state) {
@@ -29,6 +31,47 @@ class Decks extends Component {
     this.setState({hoveredCard: {card: card, stats: card.stats}});
   }
 
+  renderCard(card) {
+    return (
+      <div key={card.name} onMouseOver={e => this.onHover(card)}>
+        <Badge badgeContent={card.cost}
+          badgeStyle={{backgroundColor: '#00bcd4', fontFamily: 'Carter One', color: 'white', marginRight: 5}}
+          style={{padding: 0, width: 24, height: 20 }} />
+        {card.name}
+      </div>
+    );
+  }
+
+  renderCards(cards) {
+    return _.sortBy(cards, c => [c.cost, c.name])
+            .map(this.renderCard.bind(this));
+  }
+
+  renderDeck(deck) {
+    const robots = deck.cards.filter(c => c.type === TYPE_ROBOT);
+    const structures = deck.cards.filter(c => c.type === TYPE_STRUCTURE);
+    const events = deck.cards.filter(c => c.type === TYPE_EVENT);
+
+    return (
+      <Paper key={deck.name} style={{padding: 10}}>
+        <h3>{deck.name}</h3>
+
+        <div style={{float: 'left', marginRight: 10}}>
+          <h4>Robots ({robots.length})</h4>
+          {this.renderCards(robots)}
+        </div>
+
+        <div style={{float: 'left'}}>
+          <h4>Structures ({structures.length})</h4>
+          {this.renderCards(structures)}
+
+          <h4>Events ({events.length})</h4>
+          {this.renderCards(events)}
+        </div>
+      </Paper>
+    );
+  }
+
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -48,25 +91,7 @@ class Decks extends Component {
               margin: 10
             }}>
               {
-                this.props.decks.map(deck =>
-                  <Paper
-                    key={deck.name}
-                    style={{padding: 10}}
-                  >
-                    <h3>{deck.name}</h3>
-                    {Object.values(_.groupBy(deck.cards, c => c.name))
-                      .map(cards => [cards[0].name, cards[0], cards.length])
-                      .sort()
-                      .map(([name, card, num]) =>
-                        <div
-                          key={name}
-                          onMouseOver={e => this.onHover(card)}
-                        >
-                          {name} ({num})
-                        </div>
-                      )}
-                  </Paper>
-                )
+                this.props.decks.map(this.renderDeck.bind(this))
               }
             </div>
           </div>

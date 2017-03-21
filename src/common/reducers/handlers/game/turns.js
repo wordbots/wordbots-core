@@ -1,4 +1,4 @@
-import { currentPlayer, opponentName, drawCards, checkTriggersForCurrentPlayer, newGame } from '../../../util';
+import { currentPlayer, opponentName, drawCards, triggerEvent, newGame } from '../../../util';
 
 export function startNewGame(state, decks) {
   return newGame(state, {blue: decks.blue.cards, orange: decks.orange.cards});
@@ -14,13 +14,13 @@ export function startTurn(state) {
 
   state = drawCards(state, player, 1);
 
-  state = checkTriggersForCurrentPlayer(state, 'beginningOfTurn');
+  state = triggerEvent(state, 'beginningOfTurn', {player: true});
 
   return state;
 }
 
 export function endTurn(state) {
-  state = checkTriggersForCurrentPlayer(state, 'endOfTurn');
+  state = triggerEvent(state, 'endOfTurn', {player: true});
 
   state.currentTurn = opponentName(state);
   state.selectedCard = null;

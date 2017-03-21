@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import Badge from 'material-ui/lib/badge';
 import Paper from 'material-ui/lib/paper';
+import RaisedButton from 'material-ui/lib/raised-button';
+import { sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import CardViewer from '../components/game/CardViewer';
@@ -31,12 +34,12 @@ class Decks extends Component {
     this.setState({hoveredCard: {card: card, stats: card.stats}});
   }
 
-  renderCard(card) {
+  renderCard(card, idx) {
     const isHovered = this.state.hoveredCard && this.state.hoveredCard.card.id === card.id;
 
     return (
       <div
-        key={card.name}
+        key={idx}
         onMouseOver={e => this.onHover(card)}
         style={{
           backgroundColor: isHovered ? '#eee' : '#fff'
@@ -51,8 +54,7 @@ class Decks extends Component {
   }
 
   renderCards(cards) {
-    return _.sortBy(cards, c => [c.cost, c.name])
-            .map(this.renderCard.bind(this));
+    return sortBy(cards, c => [c.cost, c.name]).map(this.renderCard.bind(this));
   }
 
   renderDeck(deck) {
@@ -61,7 +63,7 @@ class Decks extends Component {
     const events = deck.cards.filter(c => c.type === TYPE_EVENT);
 
     return (
-      <Paper key={deck.name} style={{padding: 10}}>
+      <Paper key={deck.name} style={{marginRight: 20, padding: 10}}>
         <h3 style={{margin: '5px 0 0'}}>{deck.name}</h3>
 
         <div style={{float: 'left', marginRight: 10}}>
@@ -98,6 +100,17 @@ class Decks extends Component {
               width: '100%',
               margin: 10
             }}>
+              <Link to="/deck">
+                <Paper style={{marginRight: 20, padding: 10}}>
+                  <div style={{padding: '24px 0 12px 0'}}>
+                    <RaisedButton
+                      label="New Deck"
+                      secondary
+                    />
+                  </div>
+                </Paper>
+              </Link>
+
               {
                 this.props.decks.map(this.renderDeck.bind(this))
               }
@@ -106,6 +119,7 @@ class Decks extends Component {
 
           <div style={{
             margin: 50,
+            marginLeft: 0,
             width: 220,
             height: 300,
             position: 'relative'

@@ -20,6 +20,9 @@ export default function collection(oldState = defaultState, action) {
       case collectionActions.REMOVE_FROM_COLLECTION:
         return c.removeFromCollection(state, action.ids);
 
+      case collectionActions.SAVE_DECK:
+        return c.saveDeck(state, action.payload.ids);
+
       default:
         return state;
     }

@@ -1,6 +1,6 @@
 
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { instantiateCard } from '../../util';
+import { id, instantiateCard } from '../../util';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -18,6 +18,15 @@ const cardsHandlers = {
 
     // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
     state.decks = [createDefaultDeck(state)];
+
+    return state;
+  },
+
+  saveDeck: function (state, ids) {
+    state.decks.push({
+      name: `Deck ${id()}`,
+      cards: ids.map(cardId => state.cards.find(c => c.id === cardId))
+    });
 
     return state;
   }

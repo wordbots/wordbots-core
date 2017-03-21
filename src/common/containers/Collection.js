@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import SelectField from 'material-ui/lib/SelectField';
@@ -25,8 +26,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onRemoveFromCollection: (props) => {
-      dispatch(collectionActions.removeFromCollection(props));
+    onEditCard: (card) => {
+      dispatch([
+        collectionActions.openForEditing(card),
+        pushState(null, '/creator')
+      ]);
+    },
+    onRemoveFromCollection: (cards) => {
+      dispatch(collectionActions.removeFromCollection(cards));
     }
   };
 }
@@ -129,6 +136,24 @@ class Collection extends Component {
         }}
         onCardHover={() => {}} />
     );
+  }
+
+  renderEditButton() {
+    if (this.state.selectedCards.length === 1) {
+      return (
+        <RaisedButton
+          label="Edit Selected"
+          labelPosition="before"
+          secondary
+          icon={<FontIcon className="material-icons">edit</FontIcon>}
+          style={{width: '100%', marginTop: 20}}
+          onClick={() => {
+            const id = this.state.selectedCards[0];
+            this.props.onEditCard(this.props.cards.find(c => c.id === id));
+          }}
+        />
+      );
+    }
   }
 
   renderDeleteButton() {
@@ -294,6 +319,7 @@ class Collection extends Component {
               {this.renderFilterControls()}
             </Paper>
 
+            {this.renderEditButton()}
             {this.renderDeleteButton()}
           </div>
         </div>
@@ -307,6 +333,7 @@ const { array, func } = React.PropTypes;
 Collection.propTypes = {
   cards: array,
 
+  onEditCard: func,
   onRemoveFromCollection: func
 };
 

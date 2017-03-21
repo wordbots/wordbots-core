@@ -81,6 +81,11 @@ class CardCreationForm extends Component {
   }
 
   render() {
+    // This should only happen when we're loading an existing card (from Collection view).
+    if (this.props.setText) {
+      this.onUpdateText(this.props.setText, this.props.type);
+    }
+
     return (
       <div style={{width: '50%', padding: 64}}>
         <Paper style={{padding: 48}}>
@@ -130,7 +135,7 @@ class CardCreationForm extends Component {
           <TextField
             multiLine
             defaultValue=""
-            value={this.props.textCleared ? '' : undefined}
+            value={isNull(this.props.setText) ? undefined : this.props.setText}
             hintText={this.hasCardText() ? '' : 'Card Text'}
             style={{width: '100%'}}
             onChange={e => { this.onUpdateText(e.target.value); }} />
@@ -159,7 +164,7 @@ class CardCreationForm extends Component {
           <RaisedButton
             primary
             fullWidth
-            label="Add to Collection"
+            label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
             disabled={!this.isValid()}
             style={{marginTop: 20}}
             onTouchTap={e => { this.props.onAddToCollection(); }} />
@@ -180,7 +185,8 @@ CardCreationForm.propTypes = {
   health: number,
   energy: number,
   sentences: array,
-  textCleared: bool,
+  setText: string,
+  isNewCard: bool,
 
   onSetName: func,
   onSetType: func,

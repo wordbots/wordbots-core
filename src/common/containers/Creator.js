@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
+import { isNull } from 'lodash';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
@@ -9,6 +10,7 @@ import * as creatorActions from '../actions/creator';
 
 export function mapStateToProps(state) {
   return {
+    id: state.creator.id,
     name: state.creator.name,
     type: state.creator.type,
     attack: state.creator.attack,
@@ -17,7 +19,7 @@ export function mapStateToProps(state) {
     cost: state.creator.energy,
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
-    textCleared: state.creator.textCleared
+    setText: state.creator.setText
   };
 }
 
@@ -68,7 +70,8 @@ export class Creator extends Component {
             health={this.props.health}
             energy={this.props.cost}
             sentences={this.props.sentences}
-            textCleared={this.props.textCleared}g
+            setText={this.props.setText}
+            isNewCard={!isNull(this.props.id)}
             onSetName={(name) => { this.props.onSetName(name); }}
             onSetType={(type) => { this.props.onSetType(type); }}
             onSetText={(text) => { this.props.onSetText(text); }}
@@ -92,12 +95,13 @@ export class Creator extends Component {
   }
 }
 
-const { array, bool, func, number, string } = React.PropTypes;
+const { array, func, number, string } = React.PropTypes;
 
 Creator.propTypes = {
+  id: string,
   name: string,
   type: number,
-  textCleared: bool,
+  setText: string,
   sentences: array,
   spriteID: string,
   attack: number,

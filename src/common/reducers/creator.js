@@ -1,6 +1,9 @@
 import defaultState from '../store/defaultCreatorState';
+import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import { id } from '../util';
+
+import c from './handlers/cards';
 
 export default function creator(oldState = defaultState, action) {
   const state = Object.assign({}, oldState);
@@ -26,7 +29,7 @@ export default function creator(oldState = defaultState, action) {
         sentence: sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}
       }));
-      state.textCleared = false;
+      state.setText = null;
       return state;
     }
 
@@ -47,6 +50,9 @@ export default function creator(oldState = defaultState, action) {
     case creatorActions.ADD_TO_COLLECTION:
       // Reset card creator state.
       return Object.assign(state, defaultState, { spriteID: id() });
+
+    case collectionActions.OPEN_FOR_EDITING:
+      return c.openForEditing(state, action.payload.card);
 
     default:
       return state;

@@ -62,6 +62,7 @@ class Header extends Component {
           <LeftNav style={{paddingTop: '80px'}} open={this.state.open}>
             {this.renderLink('/collection', 'Home', 'home')}
             {this.renderLink('/collection', 'Collection', 'recent_actors')}
+            {this.renderLink('/decks', 'Decks', 'view_list')}
             {this.renderLink('/game', 'Play', 'videogame_asset')}
           </LeftNav>
         </div>

@@ -6,6 +6,7 @@ import App from './containers/App';
 import Game from './containers/Game';
 import Creator from './containers/Creator';
 import Collection from './containers/Collection';
+import Decks from './containers/Decks';
 // Redux Dumb
 //import HomePage from './components/Home';
 
@@ -15,5 +16,6 @@ export default (
     <Route path="game" component={Game} />
     <Route path="creator" component={Creator} />
     <Route path="collection" component={Collection} />
+    <Route path="decks" component={Decks} />
   </Route>
 );

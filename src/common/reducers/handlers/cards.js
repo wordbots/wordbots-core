@@ -1,16 +1,38 @@
-
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { instantiateCard } from '../../util';
+import { instantiateCard, splitSentences } from '../../util';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
     const card = createCardFromProps(cardProps);
-    state.cards.unshift(card);
+
+    if (cardProps.id) {
+      // Editing an existing card.
+      const existingCard = state.cards.find(c => c.id === cardProps.id);
+      Object.assign(existingCard, card);
+    } else {
+      // Creating a new card.
+      state.cards.unshift(card);
+    }
 
     // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
     state.decks = [createDefaultDeck(state)];
 
     return state;
+  },
+
+  openForEditing: function (state, card) {
+    return Object.assign(state, {
+      id: card.id,
+      name: card.name,
+      type: card.type,
+      spriteID: card.spriteID,
+      sentences: splitSentences(card.text).map(s => ({sentence: s, result: {}})),
+      cost: card.cost,
+      health: card.stats.health,
+      speed: card.stats.speed,
+      attack: card.stats.attack,
+      setText: card.text
+    });
   },
 
   removeFromCollection: function (state, ids) {

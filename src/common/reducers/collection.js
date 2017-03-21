@@ -18,7 +18,7 @@ export default function collection(oldState = defaultState, action) {
         return c.addToCollection(state, action.payload);
 
       case collectionActions.REMOVE_FROM_COLLECTION:
-        return c.removeFromCollection(state, action.ids);
+        return c.removeFromCollection(state, action.payload.ids);
 
       default:
         return state;

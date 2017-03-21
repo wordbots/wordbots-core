@@ -5,14 +5,12 @@ import { Link } from 'react-router';
 import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
-import SelectField from 'material-ui/lib/SelectField';
 import RaisedButton from 'material-ui/lib/raised-button';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import Toggle from 'material-ui/lib/toggle';
-import { Range } from 'rc-slider';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import { splitSentences } from '../util';
+import FilterControls from '../components/cards/FilterControls';
+import SortControls from '../components/cards/SortControls';
 import Sentence from '../components/cards/Sentence';
 import Card from '../components/game/Card';
 import CardBack from '../components/game/CardBack';
@@ -174,96 +172,6 @@ class Collection extends Component {
     }
   }
 
-  renderSortControls() {
-    return (
-      <div style={{marginBottom: 20}}>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14
-        }}>Sorting</div>
-
-        <SelectField
-          style={{width: '100%'}}
-          value={this.state.sortingCriteria}
-          floatingLabelText="Criteria"
-          onChange={(e, i, value) => { this.updateState({sortingCriteria: value}); }}>
-          <MenuItem value={0} primaryText="By Cost"/>
-          <MenuItem value={1} primaryText="By Name"/>
-          <MenuItem value={2} primaryText="By Type"/>
-          <MenuItem value={3} primaryText="By Creator"/>
-        </SelectField>
-        <SelectField
-          style={{width: '100%'}}
-          value={this.state.sortingOrder}
-          floatingLabelText="Order"
-          onChange={(e, i, value) => { this.updateState({sortingOrder: value}); }}>
-          <MenuItem value={0} primaryText="Ascending"/>
-          <MenuItem value={1} primaryText="Descending"/>
-        </SelectField>
-      </div>
-    );
-  }
-
-  renderFilterControls() {
-    const toggleStyle = {
-      marginBottom: 10
-    };
-
-    return [
-      <div key="type" style={{marginBottom: 20}}>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14,
-          marginBottom: 10
-        }}>Card Types</div>
-
-        <Toggle
-          style={toggleStyle}
-          label="Robots"
-          defaultToggled
-          onToggle={this.toggleFilter('robots')} />
-        <Toggle
-          style={toggleStyle}
-          label="Events"
-          defaultToggled
-          onToggle={this.toggleFilter('events')} />
-        <Toggle
-          style={toggleStyle}
-          label="Structures"
-          defaultToggled
-          onToggle={this.toggleFilter('structures')} />
-      </div>,
-
-      <div key="cost" style={{marginBottom: 20}}>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14,
-          marginBottom: 20
-        }}>Card Cost</div>
-
-        <div>
-          <Range
-            step={1}
-            allowCross={false}
-            min={0}
-            max={20}
-            marks={{
-              0: 0,
-              5: 5,
-              10: 10,
-              15: 15,
-              20: 20
-            }}
-            defaultValue={[0, 20]}
-            onChange={values => {
-              this.updateState({manaRange: values}, () => { this.updateSelectedCardsWithFilter(); });
-            }}
-          />
-        </div>
-      </div>
-    ];
-  }
-
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -310,8 +218,17 @@ class Collection extends Component {
                 marginBottom: 20
               }}>Filters</div>
 
-              {this.renderSortControls()}
-              {this.renderFilterControls()}
+              <SortControls
+                criteria={this.state.sortingCriteria}
+                order={this.state.sortingOrder}
+                onSetCriteria={value => { this.updateState({sortingCriteria: value}); }}
+                onSetOrder={value => { this.updateState({sortingOrder: value}); }}
+                />
+              <FilterControls
+                onToggleFilter={this.toggleFilter.bind(this)}
+                onSetCostRange={values => {
+                  this.updateState({manaRange: values}, () => { this.updateSelectedCardsWithFilter(); });
+                }} />
             </Paper>
 
             {this.renderEditButton()}

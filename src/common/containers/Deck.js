@@ -5,14 +5,12 @@ import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import TextField from 'material-ui/lib/text-field';
-import SelectField from 'material-ui/lib/SelectField';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import Toggle from 'material-ui/lib/toggle';
 import RaisedButton from 'material-ui/lib/raised-button';
-import { Range } from 'rc-slider';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import { splitSentences } from '../util';
+import FilterControls from '../components/cards/FilterControls';
+import SortControls from '../components/cards/SortControls';
 import Sentence from '../components/cards/Sentence';
 import Card from '../components/game/Card';
 import * as collectionActions from '../actions/collection';
@@ -64,6 +62,17 @@ class Deck extends Component {
     };
   }
 
+  cardIsVisible(card) {
+    if ((!this.state.filters.robots && card.type === TYPE_ROBOT) ||
+        (!this.state.filters.events && card.type === TYPE_EVENT) ||
+        (!this.state.filters.structures && card.type === TYPE_STRUCTURE) ||
+        (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1])) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   sortCards(a, b) {
     const sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
       c => [c.cost, c.name],
@@ -80,26 +89,6 @@ class Deck extends Component {
     } else {
       return 0;
     }
-  }
-
-  filterCards(card) {
-    if (!this.state.filters.robots && card.type === TYPE_ROBOT) {
-      return false;
-    }
-
-    if (!this.state.filters.events && card.type === TYPE_EVENT) {
-      return false;
-    }
-
-    if (!this.state.filters.structures && card.type === TYPE_STRUCTURE) {
-      return false;
-    }
-
-    if (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1]) {
-      return false;
-    }
-
-    return true;
   }
 
   renderCard(card) {
@@ -126,98 +115,51 @@ class Deck extends Component {
     );
   }
 
-  renderSortControls() {
+  renderDeck() {
     return (
-      <div style={{
-        marginBottom: 20
-      }}>
+      <div>
         <div style={{
-          fontWeight: 700,
-          fontSize: 14
-        }}>Sorting</div>
+          fontWeight: 100,
+          fontSize: 28
+        }}>
+          Deck&nbsp;
+          <span style={{color: (this.state.selectedCards.length === 30) ? 'green' : 'red'}}>
+            [{this.state.selectedCards.length}]
+          </span>
+        </div>
 
-        <SelectField
+        <TextField
+          value={this.state.deckName}
+          floatingLabelText="Deck Name"
           style={{width: '100%'}}
-          value={this.state.sortingCriteria}
-          floatingLabelText="Criteria"
-          onChange={(e, i, value) => { this.updateState({sortingCriteria: value}); }}>
-          <MenuItem value={0} primaryText="By Cost"/>
-          <MenuItem value={1} primaryText="By Name"/>
-          <MenuItem value={2} primaryText="By Type"/>
-          <MenuItem value={3} primaryText="By Creator"/>
-        </SelectField>
-        <SelectField
-          style={{width: '100%'}}
-          value={this.state.sortingOrder}
-          floatingLabelText="Order"
-          onChange={(e, i, value) => { this.updateState({sortingOrder: value}); }}>
-          <MenuItem value={0} primaryText="Ascending"/>
-          <MenuItem value={1} primaryText="Descending"/>
-        </SelectField>
+          onChange={e => { this.updateState({deckName: e.target.value}); }} />
+
+        {this.state.selectedCards.map((cardId, idx) =>
+          <div
+            style={{cursor: 'pointer'}}
+            onClick={e => {
+              this.updateState(state => {
+                state.selectedCards.splice(idx, 1);
+                return state;
+              });
+            }}>
+            [x] {this.props.cards.find (c => c.id === cardId).name}
+          </div>
+        )}
+
+        <RaisedButton
+          label="Save Deck"
+          labelPosition="before"
+          secondary
+          disabled={this.state.deckName === '' /*|| this.state.selectedCards.length !== 30*/}
+          icon={<FontIcon className="material-icons">save</FontIcon>}
+          style={{width: '100%', marginTop: 20}}
+          onClick={ e => {
+            this.props.onSaveDeck(this.props.id, this.state.deckName, this.state.selectedCards);
+          } }
+        />
       </div>
     );
-  }
-
-  renderFilterControls() {
-    const toggleStyle = {
-      marginBottom: 10
-    };
-
-    return [
-      <div style={{
-        marginBottom: 20
-      }}>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14,
-          marginBottom: 10
-        }}>Card Types</div>
-
-        <Toggle
-          style={toggleStyle}
-          label="Robots"
-          defaultToggled
-          onToggle={this.toggleFilter('robots')} />
-        <Toggle
-          style={toggleStyle}
-          label="Events"
-          defaultToggled
-          onToggle={this.toggleFilter('events')} />
-        <Toggle
-          style={toggleStyle}
-          label="Structures"
-          defaultToggled
-          onToggle={this.toggleFilter('structures')} />
-      </div>,
-
-      <div style={{
-        marginBottom: 20
-      }}>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14,
-          marginBottom: 20
-        }}>Card Cost</div>
-
-        <div>
-          <Range
-            step={1}
-            allowCross={false}
-            min={0}
-            max={20}
-            marks={{
-              0: 0,
-              5: 5,
-              10: 10,
-              15: 15,
-              20: 20
-            }}
-            defaultValue={[0, 20]}
-            onChange={values => { this.updateState({manaRange: values}); }}
-          />
-        </div>
-      </div>
-    ];
   }
 
   render() {
@@ -240,7 +182,7 @@ class Deck extends Component {
             }}>
               {
                 this.props.cards
-                  .filter(this.filterCards.bind(this))
+                  .filter(this.cardIsVisible.bind(this))
                   .sort(this.sortCards.bind(this))
                   .map(this.renderCard.bind(this))
               }
@@ -256,46 +198,7 @@ class Deck extends Component {
               padding: 20,
               marginBottom: 20
             }}>
-              <div style={{
-                fontWeight: 100,
-                fontSize: 28
-              }}>
-                Deck&nbsp;
-                <span style={{color: (this.state.selectedCards.length === 30) ? 'green' : 'red'}}>
-                  [{this.state.selectedCards.length}]
-                </span>
-              </div>
-
-              <TextField
-                value={this.state.deckName}
-                floatingLabelText="Deck Name"
-                style={{width: '100%'}}
-                onChange={e => { this.updateState({deckName: e.target.value}); }} />
-
-              {this.state.selectedCards.map((cardId, idx) =>
-                <div
-                  style={{cursor: 'pointer'}}
-                  onClick={e => {
-                    this.updateState(state => {
-                      state.selectedCards.splice(idx, 1);
-                      return state;
-                    });
-                  }}>
-                  [x] {this.props.cards.find (c => c.id === cardId).name}
-                </div>
-              )}
-
-              <RaisedButton
-                label="Save Deck"
-                labelPosition="before"
-                secondary
-                disabled={this.state.deckName === '' /*|| this.state.selectedCards.length !== 30*/}
-                icon={<FontIcon className="material-icons">save</FontIcon>}
-                style={{width: '100%', marginTop: 20}}
-                onClick={ e => {
-                  this.props.onSaveDeck(this.props.id, this.state.deckName, this.state.selectedCards);
-                } }
-              />
+              {this.renderDeck()}
             </Paper>
 
             <Paper style={{
@@ -307,8 +210,15 @@ class Deck extends Component {
                 marginBottom: 20
               }}>Filters</div>
 
-              {this.renderSortControls()}
-              {this.renderFilterControls()}
+              <SortControls
+                criteria={this.state.sortingCriteria}
+                order={this.state.sortingOrder}
+                onSetCriteria={value => { this.updateState({sortingCriteria: value}); }}
+                onSetOrder={value => { this.updateState({sortingOrder: value}); }}
+                />
+              <FilterControls
+                onToggleFilter={this.toggleFilter.bind(this)}
+                onSetCostRange={values => { this.updateState({manaRange: values}); }} />
             </Paper>
           </div>
         </div>

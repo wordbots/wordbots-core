@@ -3,12 +3,10 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
-import FontIcon from 'material-ui/lib/font-icon';
-import TextField from 'material-ui/lib/text-field';
-import RaisedButton from 'material-ui/lib/raised-button';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import { sortFunctions } from '../util';
+import ActiveDeck from '../components/cards/ActiveDeck';
 import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
 import SortControls from '../components/cards/SortControls';
@@ -38,7 +36,6 @@ class Deck extends Component {
     super(props);
 
     this.state = {
-      deckName: props.deck ? props.deck.name : '',
       filters: {
         robots: true,
         events: true,
@@ -74,53 +71,6 @@ class Deck extends Component {
     }
   }
 
-  renderDeck() {
-    return (
-      <div>
-        <div style={{
-          fontWeight: 100,
-          fontSize: 28
-        }}>
-          Deck&nbsp;
-          <span style={{color: (this.state.selectedCards.length === 30) ? 'green' : 'red'}}>
-            [{this.state.selectedCards.length}]
-          </span>
-        </div>
-
-        <TextField
-          value={this.state.deckName}
-          floatingLabelText="Deck Name"
-          style={{width: '100%'}}
-          onChange={e => { this.updateState({deckName: e.target.value}); }} />
-
-        {this.state.selectedCards.map((cardId, idx) =>
-          <div
-            style={{cursor: 'pointer'}}
-            onClick={e => {
-              this.updateState(state => {
-                state.selectedCards.splice(idx, 1);
-                return state;
-              });
-            }}>
-            [x] {this.props.cards.find (c => c.id === cardId).name}
-          </div>
-        )}
-
-        <RaisedButton
-          label="Save Deck"
-          labelPosition="before"
-          secondary
-          disabled={this.state.deckName === '' /*|| this.state.selectedCards.length !== 30*/}
-          icon={<FontIcon className="material-icons">save</FontIcon>}
-          style={{width: '100%', marginTop: 20}}
-          onClick={ e => {
-            this.props.onSaveDeck(this.props.id, this.state.deckName, this.state.selectedCards);
-          } }
-        />
-      </div>
-    );
-  }
-
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -149,7 +99,17 @@ class Deck extends Component {
               padding: 20,
               marginBottom: 20
             }}>
-              {this.renderDeck()}
+              <ActiveDeck
+                id={this.props.id}
+                name={this.props.deck ? this.props.deck.name : ''}
+                cards={this.state.selectedCards.map(id => this.props.cards.find(c => c.id === id))}
+                onCardClick={idx => {
+                  this.updateState(state => {
+                    state.selectedCards.splice(idx, 1);
+                    return state;
+                  });
+                }}
+                onSaveDeck={this.props.onSaveDeck} />
             </Paper>
 
             <Paper style={{

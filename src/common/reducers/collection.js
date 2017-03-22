@@ -17,6 +17,9 @@ export default function collection(oldState = defaultState, action) {
       case creatorActions.ADD_TO_COLLECTION:
         return c.addToCollection(state, action.payload);
 
+      case collectionActions.DELETE_DECK:
+        return c.deleteDeck(state, action.payload.deckId);
+
       case collectionActions.REMOVE_FROM_COLLECTION:
         return c.removeFromCollection(state, action.payload.ids);
 

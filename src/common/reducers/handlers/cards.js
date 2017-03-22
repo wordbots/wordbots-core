@@ -20,6 +20,11 @@ const cardsHandlers = {
     return state;
   },
 
+  deleteDeck: function (state, deckId) {
+    state.decks = state.decks.filter(deck => deck.id !== deckId);
+    return state;
+  },
+
   openForEditing: function (state, card) {
     return Object.assign(state, {
       id: card.id,
@@ -46,7 +51,8 @@ const cardsHandlers = {
 
   saveDeck: function (state, deckId, name, cardIds) {
     state.decks.push({
-      name: name || `Deck ${id()}`,
+      id: id(),
+      name: name,
       cards: cardIds.map(cardId => state.cards.find(c => c.id === cardId))
     });
 
@@ -84,6 +90,7 @@ function createCardFromProps(props) {
 
 function createDefaultDeck(state) {
   return {
+    id: '[default]',
     name: 'Default',
     cards: state.cards.slice(0, 30)
   };

@@ -11,6 +11,7 @@ export function loadState(state) {
 
         // In the future we will persist all decks. For now we just have a "Default" deck of most recent cards.
         state.collection.decks = [{
+          id: '[default]',
           name: 'Default',
           cards: savedCollection.slice(0, 30)
         }];

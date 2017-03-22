@@ -9,6 +9,7 @@ import { sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import CardViewer from '../components/game/CardViewer';
+import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
@@ -18,6 +19,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    onDeleteDeck: (deckId) => {
+      dispatch(collectionActions.deleteDeck(deckId));
+    }
   };
 }
 
@@ -64,7 +68,19 @@ class Decks extends Component {
 
     return (
       <Paper key={deck.name} style={{marginRight: 20, padding: 10}}>
-        <h3 style={{margin: '5px 0 0'}}>{deck.name}</h3>
+        <h3 style={{margin: '5px 0'}}>{deck.name}</h3>
+        <div>
+          <RaisedButton
+            label="Edit"
+            primary
+            disabled={/*deck.id === '[default]'*/ true} // [Edit functionality still in progress.]
+            style={{marginRight: 10}} />
+          <RaisedButton
+            label="Delete"
+            disabled={deck.id === '[default]'}
+            onClick={e => { this.props.onDeleteDeck(deck.id); }}
+            primary />
+        </div>
 
         <div style={{float: 'left', marginRight: 10}}>
           <h4>Robots ({robots.length})</h4>
@@ -97,10 +113,7 @@ class Decks extends Component {
               <RaisedButton
                 label="New Deck"
                 secondary
-                style={{
-                  margin: 10
-                }}
-              />
+                style={{margin: 10}} />
             </Link>
 
             <div style={{
@@ -131,10 +144,12 @@ class Decks extends Component {
   }
 }
 
-const { array } = React.PropTypes;
+const { array, func } = React.PropTypes;
 
 Decks.propTypes = {
-  decks: array
+  decks: array,
+
+  onDeleteDeck: func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Decks);

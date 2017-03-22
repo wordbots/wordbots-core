@@ -34,6 +34,7 @@ class ActiveDeck extends Component {
 
         {this.props.cards.map((card, idx) =>
           <div
+            key={idx}
             style={{cursor: 'pointer'}}
             onClick={() => this.props.onCardClick(idx)}>
             [x] {card.name}

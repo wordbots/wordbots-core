@@ -75,6 +75,7 @@ function createCardFromProps(props) {
   const command = sentences.map(s => s.result.js);
 
   const card = {
+    id: id(),
     name: props.name,
     type: props.type,
     spriteID: props.spriteID,

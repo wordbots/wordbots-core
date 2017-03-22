@@ -28,7 +28,10 @@ class CardCreationForm extends Component {
   }
 
   componentDidMount() {
-    this.props.onSpriteClick();  // Generate new spriteID on reload.
+    // Generate new spriteID on reload.
+    if (!this.props.isNewCard) {
+      this.props.onSpriteClick();
+    }
 
     // This should only happen when we're loading an existing card (from Collection view).
     if (this.props.setText) {

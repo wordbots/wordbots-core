@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
-import { sortFunctions } from '../util';
+import { isCardVisible, sortFunctions } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
@@ -41,7 +40,7 @@ class Deck extends Component {
         events: true,
         structures: true
       },
-      manaRange: [0, 20],
+      costRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
       selectedCards: props.deck ? props.deck.cards.map(c => c.id) : []
@@ -60,17 +59,6 @@ class Deck extends Component {
     };
   }
 
-  cardIsVisible(card) {
-    if ((!this.state.filters.robots && card.type === TYPE_ROBOT) ||
-        (!this.state.filters.events && card.type === TYPE_EVENT) ||
-        (!this.state.filters.structures && card.type === TYPE_STRUCTURE) ||
-        (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1])) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -84,7 +72,7 @@ class Deck extends Component {
           <div style={{marginTop: 50, marginLeft: 40}}>
             <CardGrid
               cards={this.props.cards}
-              filterFunc={this.cardIsVisible.bind(this)}
+              filterFunc={c => isCardVisible(c, this.state.filters, this.state.costRange)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
               onCardClick={card => { this.updateState(state => ({selectedCards: [...state.selectedCards, card.id]})); }} />
@@ -129,7 +117,7 @@ class Deck extends Component {
                 />
               <FilterControls
                 onToggleFilter={this.toggleFilter.bind(this)}
-                onSetCostRange={values => { this.updateState({manaRange: values}); }} />
+                onSetCostRange={values => { this.updateState({costRange: values}); }} />
             </Paper>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import Sentence from '../cards/Sentence';
-import { splitSentences } from '../../util';
+import { splitSentences } from '../../util/cards';
 
 import Card from './Card';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 
-import { id } from '../../util';
+import { id } from '../../util/common';
 
 function Word(word, keywords, result) {
   if ((result.unrecognizedTokens || []).includes(word.toLowerCase())) {

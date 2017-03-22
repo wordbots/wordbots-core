@@ -1,4 +1,4 @@
-import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util';
+import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util/game';
 
 // Targets are all functions that return an array,
 // of either of players, cards, or pieces (objects on board).

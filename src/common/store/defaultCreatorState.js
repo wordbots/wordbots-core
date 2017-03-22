@@ -1,4 +1,4 @@
-import { id } from '../util';
+import { id } from '../util/common';
 
 const defaultState = {
   id: null,  // Only exists for existing cards that are being edited (not new cards).

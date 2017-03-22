@@ -3,8 +3,8 @@ import FontIcon from 'material-ui/lib/font-icon';
 import ReactTooltip from 'react-tooltip';
 import { isObject } from 'lodash';
 
-import { expandKeywords } from '../../keywords';
-import { id } from '../../util';
+import { id } from '../../util/common';
+import { expandKeywords } from '../../util/cards';
 
 function StatusIcon(text, result) {
   if (isObject(result)) {

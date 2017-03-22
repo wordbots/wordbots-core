@@ -1,5 +1,6 @@
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { id, splitSentences } from '../../util';
+import { id } from '../../util/common';
+import { splitSentences } from '../../util/cards';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {

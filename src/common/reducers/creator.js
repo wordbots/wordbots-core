@@ -1,7 +1,7 @@
 import defaultState from '../store/defaultCreatorState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
-import { id } from '../util';
+import { id } from '../util/common';
 
 import c from './handlers/cards';
 

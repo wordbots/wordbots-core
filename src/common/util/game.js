@@ -1,49 +1,13 @@
 import { cloneDeep, flatMap, some, without } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType, typeToString } from './constants';
-import defaultState, { bluePlayerState, orangePlayerState } from './store/defaultGameState';
-import vocabulary from './vocabulary/vocabulary';
-import GridGenerator from './components/react-hexgrid/GridGenerator';
-import Hex from './components/react-hexgrid/Hex';
-import HexUtils from './components/react-hexgrid/HexUtils';
+import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
+import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
+import vocabulary from '../vocabulary/vocabulary';
+import GridGenerator from '../components/react-hexgrid/GridGenerator';
+import Hex from '../components/react-hexgrid/Hex';
+import HexUtils from '../components/react-hexgrid/HexUtils';
 
-// TODO: Split into multiple files.
-
-//
-// 0. Miscellaneous utility functions.
-//
-
-export function id() {
-  return Math.random().toString(36).slice(2, 16);
-}
-
-export function splitSentences(str) {
-  return (str || '').split(/[\\.!\?]/).filter(s => /\S/.test(s));
-}
-
-export function clamp(func) {
-  return (stat => _.clamp(func(stat), 0, 99));
-}
-
-export function applyFuncToField(obj, func, field) {
-  return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
-}
-
-export function instantiateCard(card) {
-  return Object.assign({}, card, {
-    id: id(),
-    baseCost: card.cost
-  });
-}
-
-// Sorting functions for card grids:
-// 0 = cost, 1 = name, 2 = type, 3 = source
-export const sortFunctions = [
-  c => [c.cost, c.name],
-  c => c.name,
-  c => [typeToString(c.type), c.cost, c.name],
-  c => [c.source === 'builtin', c.cost, c.name]
-];
+import { clamp, instantiateCard } from './common';
 
 //
 // I. Queries for game state.

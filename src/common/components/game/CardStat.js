@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/lib/paper';
 import ReactTooltip from 'react-tooltip';
 
-import { id } from '../../util';
+import { id } from '../../util/common';
 
 class CardStat extends Component {
   constructor(props) {

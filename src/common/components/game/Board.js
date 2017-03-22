@@ -7,7 +7,7 @@ import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, allowedToAttack, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
-} from '../../util';
+} from '../../util/game';
 
 class Board extends Component {
   constructor(props) {

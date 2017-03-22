@@ -1,5 +1,5 @@
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
-import { instantiateCard } from '../util';
+import { instantiateCard } from '../util/common';
 
 // Note: Exported cards are used in either defaultState (cores) or in tests.
 
@@ -362,6 +362,19 @@ export const consumeCard = {
   type: TYPE_EVENT
 };
 
+export const energyWellCard = {
+  name: 'Energy Well',
+  cost: 2,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 10
+  },
+  text: "At the start of each player's turn, that player gains 1 energy if they control an adjacent robot.",
+  abilities: [
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['allPlayers'](); }), (function () { if ((objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['itP']())]).length > 0)) { ((function () { actions['modifyEnergy'](targets['itP'](), function (x) { return x + 1; }); }))(); } })); })"
+  ]
+};
+
 /* eslint-enable quotes */
 
 export const collection = [
@@ -393,7 +406,8 @@ export const collection = [
   rampageCard,
   untapCard,
   wrathOfRobotGodCard,
-  hasteBotCard
+  hasteBotCard,
+  energyWellCard
 ].map(c =>
   Object.assign(instantiateCard(c), {source: 'builtin'})
 );

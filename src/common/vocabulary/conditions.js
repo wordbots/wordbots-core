@@ -1,4 +1,4 @@
-import { getHex, getAttribute, getAdjacentHexes } from '../util';
+import { getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hex, obj) -> bool functions.

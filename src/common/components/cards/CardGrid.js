@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { splitSentences } from '../../util';
+import { splitSentences } from '../../util/cards';
 import Card from '../game/Card';
 
 import Sentence from './Sentence';

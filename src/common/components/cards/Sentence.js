@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { id } from '../../util';
-import { keywordsInSentence } from '../../keywords';
+import { id } from '../../util/common';
+import { keywordsInSentence } from '../../util/cards';
 
 import StatusIcon from './StatusIcon';
 import Word from './Word';

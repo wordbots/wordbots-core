@@ -7,8 +7,7 @@ import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
-import { sortFunctions } from '../util';
+import { isCardVisible, sortFunctions } from '../util/cards';
 import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
 import SortControls from '../components/cards/SortControls';
@@ -45,7 +44,7 @@ class Collection extends Component {
         events: true,
         structures: true
       },
-      manaRange: [0, 20],
+      costRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
       selectedCards: []
@@ -60,7 +59,7 @@ class Collection extends Component {
 
   updateSelectedCardsWithFilter() {
     this.updateState(state => (
-      {selectedCards: state.selectedCards.filter(id => this.cardIsVisible(this.props.cards.find(c => c.id === id)))}
+      {selectedCards: state.selectedCards.filter(id => this.isCardVisible(this.props.cards.find(c => c.id === id)))}
     ));
   }
 
@@ -73,15 +72,8 @@ class Collection extends Component {
     };
   }
 
-  cardIsVisible(card) {
-    if ((!this.state.filters.robots && card.type === TYPE_ROBOT) ||
-        (!this.state.filters.events && card.type === TYPE_EVENT) ||
-        (!this.state.filters.structures && card.type === TYPE_STRUCTURE) ||
-        (card.cost < this.state.manaRange[0] || card.cost > this.state.manaRange[1])) {
-      return false;
-    } else {
-      return true;
-    }
+  isCardVisible(card) {
+    return isCardVisible(card, this.state.filters, this.state.costRange);
   }
 
   render() {
@@ -98,7 +90,7 @@ class Collection extends Component {
             <CardGrid
               cards={this.props.cards}
               selectedCardIds={this.state.selectedCards}
-              filterFunc={this.cardIsVisible.bind(this)}
+              filterFunc={this.isCardVisible.bind(this)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
               onCardClick={card => {
@@ -143,7 +135,7 @@ class Collection extends Component {
               <FilterControls
                 onToggleFilter={this.toggleFilter.bind(this)}
                 onSetCostRange={values => {
-                  this.updateState({manaRange: values}, () => { this.updateSelectedCardsWithFilter(); });
+                  this.updateState({costRange: values}, () => { this.updateSelectedCardsWithFilter(); });
                 }} />
             </Paper>
 

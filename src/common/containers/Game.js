@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { isNil, shuffle } from 'lodash';
 
 import { SHUFFLE_DECKS } from '../constants';
-import { getAttribute } from '../util';
+import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';

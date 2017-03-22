@@ -1,4 +1,4 @@
-import { currentPlayer, opponentName, drawCards, triggerEvent, newGame } from '../../../util';
+import { currentPlayer, opponentName, drawCards, triggerEvent, newGame } from '../../../util/game';
 
 export function startNewGame(state, decks) {
   return newGame(state, {blue: decks.blue, orange: decks.orange});

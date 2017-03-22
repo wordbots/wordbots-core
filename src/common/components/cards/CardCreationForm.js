@@ -5,22 +5,15 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 import FontIcon from 'material-ui/lib/font-icon';
-import { every, flatMap, isNull, reduce } from 'lodash';
+import { every, isNull } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
-import { isKeywordExpression, expandKeywords } from '../../keywords';
-import { splitSentences } from '../../util';
+import { getSentencesFromInput, requestParse } from '../../util/cards';
 
 import NumberField from './NumberField';
-
-const SUBSTITUTIONS = {
-  'creature': 'robot'
-};
-
-const DEBOUNCE_TIMEOUT_MS = 500;
 
 class CardCreationForm extends Component {
   constructor(props) {
@@ -39,31 +32,12 @@ class CardCreationForm extends Component {
     }
   }
 
-  normalizeText(text) {
-    return reduce(SUBSTITUTIONS, (str, output, input) => str.replace(new RegExp(input, 'g'), output), text);
-  }
-
   onUpdateText(text, cardType) {
     const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
-    const sentences = flatMap(splitSentences(this.normalizeText(text)), sentence =>
-      isKeywordExpression(sentence) ? sentence.replace(/,/g, ',|').split('|') : sentence
-    );
+    const sentences = getSentencesFromInput(text);
 
     this.props.onSetText(sentences);
-
-    if (this.parseRefreshTimer) {
-      clearTimeout(this.parseRefreshTimer);
-    }
-    this.parseRefreshTimer = setTimeout(() => {
-      sentences
-        .forEach((sentence, idx) => {
-          const parserInput = encodeURIComponent(expandKeywords(sentence));
-          const parseUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=js&mode=${parserMode}`;
-          fetch(parseUrl)
-            .then(response => response.json())
-            .then(json => { this.props.onParseComplete(idx, sentence, json); });
-      });
-    }, DEBOUNCE_TIMEOUT_MS);
+    requestParse(sentences, parserMode, this.props.onParseComplete);
   }
 
   nonEmptySentences() {

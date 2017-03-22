@@ -7,7 +7,8 @@ import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
+import { sortFunctions } from '../util';
 import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
 import SortControls from '../components/cards/SortControls';
@@ -49,13 +50,6 @@ class Collection extends Component {
       sortingOrder: 0,
       selectedCards: []
     };
-
-    this.sortFuncs = [ // 0 = cost, 1 = name, 2 = type, 3 = source
-      c => [c.cost, c.name],
-      c => c.name,
-      c => [typeToString(c.type), c.cost, c.name],
-      c => [c.source === 'builtin', c.cost, c.name]
-    ];
   }
 
   updateState(newProps, callback = () => {}) {
@@ -105,7 +99,7 @@ class Collection extends Component {
               cards={this.props.cards}
               selectedCardIds={this.state.selectedCards}
               filterFunc={this.cardIsVisible.bind(this)}
-              sortFunc={this.sortFuncs[this.state.sortingCriteria]}
+              sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
               onCardClick={card => {
                 if (card.source !== 'builtin') {

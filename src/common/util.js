@@ -1,6 +1,6 @@
 import { cloneDeep, flatMap, some, without } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from './constants';
+import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType, typeToString } from './constants';
 import defaultState, { bluePlayerState, orangePlayerState } from './store/defaultGameState';
 import vocabulary from './vocabulary/vocabulary';
 import GridGenerator from './components/react-hexgrid/GridGenerator';
@@ -35,6 +35,15 @@ export function instantiateCard(card) {
     baseCost: card.cost
   });
 }
+
+// Sorting functions for card grids:
+// 0 = cost, 1 = name, 2 = type, 3 = source
+export const sortFunctions = [
+  c => [c.cost, c.name],
+  c => c.name,
+  c => [typeToString(c.type), c.cost, c.name],
+  c => [c.source === 'builtin', c.cost, c.name]
+];
 
 //
 // I. Queries for game state.

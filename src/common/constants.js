@@ -1,7 +1,7 @@
 import { capitalize, invert } from 'lodash';
 
 // For debugging.
-export const SHUFFLE_DECKS = false;
+export const SHUFFLE_DECKS = true;
 
 export const STARTING_PLAYER_HEALTH = 20;
 

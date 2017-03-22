@@ -93,6 +93,16 @@ class Decks extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 50, marginLeft: 40}}>
+            <Link to="/deck">
+              <RaisedButton
+                label="New Deck"
+                secondary
+                style={{
+                  margin: 10
+                }}
+              />
+            </Link>
+
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
@@ -100,17 +110,6 @@ class Decks extends Component {
               width: '100%',
               margin: 10
             }}>
-              <Link to="/deck">
-                <Paper style={{marginRight: 20, padding: 10}}>
-                  <div style={{padding: '24px 0 12px 0'}}>
-                    <RaisedButton
-                      label="New Deck"
-                      secondary
-                    />
-                  </div>
-                </Paper>
-              </Link>
-
               {
                 this.props.decks.map(this.renderDeck.bind(this))
               }

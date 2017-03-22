@@ -14,10 +14,7 @@ const cardsHandlers = {
       state.cards.unshift(card);
     }
 
-    // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
-    state.decks = [createDefaultDeck(state)];
-
-    return state;
+    return updateDefaultDeck(state);
   },
 
   deleteDeck: function (state, deckId) {
@@ -47,11 +44,7 @@ const cardsHandlers = {
 
   removeFromCollection: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
-
-    // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
-    state.decks = [createDefaultDeck(state)];
-
-    return state;
+    return updateDefaultDeck(state);
   },
 
   saveDeck: function (state, deckId, name, cardIds) {
@@ -104,12 +97,9 @@ function createCardFromProps(props) {
   return card;
 }
 
-function createDefaultDeck(state) {
-  return {
-    id: '[default]',
-    name: 'Default',
-    cards: state.cards.slice(0, 30)
-  };
+function updateDefaultDeck(state) {
+  Object.assign(state.decks.find(d => d.id === '[default]'), {cards: state.cards.slice(0, 30)});
+  return state;
 }
 
 export default cardsHandlers;

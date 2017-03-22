@@ -1,4 +1,4 @@
-const CURRENT_VERSION = 4;  // Increase whenever localStorage schema has a breaking change.
+const CURRENT_VERSION = 6;  // Increase whenever localStorage schema has a breaking change.
 
 export function loadState(state) {
   if (typeof localStorage !== 'undefined' && localStorage['wb$version']) {

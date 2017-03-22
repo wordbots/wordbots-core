@@ -18,7 +18,7 @@ function StatusIcon(text, result) {
           style={{
             fontSize: '0.7em',
             verticalAlign: 'top',
-            color: result.js ? 'green' : (result.error ? 'red' : 'black')}
+            color: isParsed ? 'green' : (result.error ? 'red' : 'black')}
           }
           data-for={tooltipId}
           data-tip={isParsed ? 'Click to view parse tree' : (result.error || 'Parsing ...')}>

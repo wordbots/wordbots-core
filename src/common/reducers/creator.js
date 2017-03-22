@@ -51,8 +51,8 @@ export default function creator(oldState = defaultState, action) {
       // Reset card creator state.
       return Object.assign(state, defaultState, { spriteID: id() });
 
-    case collectionActions.OPEN_FOR_EDITING:
-      return c.openForEditing(state, action.payload.card);
+    case collectionActions.OPEN_CARD_FOR_EDITING:
+      return c.openCardForEditing(state, action.payload.card);
 
     default:
       return state;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { pushState } from 'redux-router';
 import Badge from 'material-ui/lib/badge';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
@@ -19,8 +19,20 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    onCreateDeck: () => {
+      dispatch([
+        collectionActions.editDeck(null),
+        pushState(null, '/deck')
+      ]);
+    },
     onDeleteDeck: (deckId) => {
       dispatch(collectionActions.deleteDeck(deckId));
+    },
+    onEditDeck: (deckId) => {
+      dispatch([
+        collectionActions.editDeck(deckId),
+        pushState(null, '/deck')
+      ]);
     }
   };
 }
@@ -67,13 +79,14 @@ class Decks extends Component {
     const events = deck.cards.filter(c => c.type === TYPE_EVENT);
 
     return (
-      <Paper key={deck.name} style={{marginRight: 20, padding: 10}}>
+      <Paper key={deck.name} style={{marginRight: 20, marginBottom: 20, padding: 10}}>
         <h3 style={{margin: '5px 0'}}>{deck.name}</h3>
         <div>
           <RaisedButton
             label="Edit"
             primary
-            disabled={/*deck.id === '[default]'*/ true} // [Edit functionality still in progress.]
+            disabled={deck.id === '[default]'}
+            onClick={e => { this.props.onEditDeck(deck.id); }}
             style={{marginRight: 10}} />
           <RaisedButton
             label="Delete"
@@ -109,12 +122,11 @@ class Decks extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 50, marginLeft: 40}}>
-            <Link to="/deck">
-              <RaisedButton
-                label="New Deck"
-                secondary
-                style={{margin: 10}} />
-            </Link>
+            <RaisedButton
+              label="New Deck"
+              secondary
+              style={{margin: 10}}
+              onClick={this.props.onCreateDeck} />
 
             <div style={{
               display: 'flex',
@@ -149,7 +161,9 @@ const { array, func } = React.PropTypes;
 Decks.propTypes = {
   decks: array,
 
-  onDeleteDeck: func
+  onCreateDeck: func,
+  onDeleteDeck: func,
+  onEditDeck: func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Decks);

@@ -16,7 +16,9 @@ import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
-    cards: state.collection.cards
+    id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
+    cards: state.collection.cards,
+    deck: state.collection.currentDeck
   };
 }
 
@@ -36,7 +38,7 @@ class Deck extends Component {
     super(props);
 
     this.state = {
-      deckName: '',
+      deckName: props.deck ? props.deck.name : '',
       filters: {
         robots: true,
         events: true,
@@ -45,7 +47,7 @@ class Deck extends Component {
       manaRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
-      selectedCards: []
+      selectedCards: props.deck ? props.deck.cards.map(c => c.id) : []
     };
   }
 
@@ -176,11 +178,12 @@ class Deck extends Component {
   }
 }
 
-const { array, func, string } = React.PropTypes;
+const { array, func, object, string } = React.PropTypes;
 
 Deck.propTypes = {
   id: string,
   cards: array,
+  deck: object,
 
   onSaveDeck: func
 };

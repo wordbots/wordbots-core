@@ -25,7 +25,7 @@ const cardsHandlers = {
     return state;
   },
 
-  openForEditing: function (state, card) {
+  openCardForEditing: function (state, card) {
     return Object.assign(state, {
       id: card.id,
       name: card.name,
@@ -40,6 +40,11 @@ const cardsHandlers = {
     });
   },
 
+  openDeckForEditing: function (state, deckId) {
+    state.currentDeck = deckId ? state.decks.find(d => d.id === deckId) : null;
+    return state;
+  },
+
   removeFromCollection: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
 
@@ -50,11 +55,22 @@ const cardsHandlers = {
   },
 
   saveDeck: function (state, deckId, name, cardIds) {
-    state.decks.push({
-      id: id(),
-      name: name,
-      cards: cardIds.map(cardId => state.cards.find(c => c.id === cardId))
-    });
+    const cards = cardIds.map(cardId => state.cards.find(c => c.id === cardId));
+
+    if (deckId) {
+      // Existing deck.
+      Object.assign(state.decks.find(d => d.id === deckId), {
+        name: name,
+        cards: cards
+      });
+    } else {
+      // New deck.
+      state.decks.push({
+        id: id(),
+        name: name,
+        cards: cards
+      });
+    }
 
     return state;
   }

@@ -162,7 +162,7 @@ class Board extends Component {
     }));
 
     return (
-      <div>
+      <div id="hexgrid">
         <HexGrid
           hexColors={hexColors}
           pieceImgs={pieceImgs}

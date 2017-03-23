@@ -6,6 +6,7 @@ import Paper from 'material-ui/lib/paper';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
+import EnergyCurve from '../components/cards/EnergyCurve';
 import CardGrid from '../components/cards/CardGrid';
 import FilterControls from '../components/cards/FilterControls';
 import SortControls from '../components/cards/SortControls';
@@ -98,6 +99,14 @@ class Deck extends Component {
                   });
                 }}
                 onSaveDeck={this.props.onSaveDeck} />
+            </Paper>
+
+            <Paper style={{
+              padding: 20,
+              marginBottom: 20
+            }}>
+              <EnergyCurve
+                cards={this.state.selectedCards.map(id => this.props.cards.find(c => c.id === id))} />
             </Paper>
 
             <Paper style={{

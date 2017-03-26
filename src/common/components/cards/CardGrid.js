@@ -20,24 +20,28 @@ class CardGrid extends Component {
 
   renderCard(card) {
     return (
-      <Card
-        visible
-        collection
-        key={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source}
-        scale={1}
-        selected={(this.props.selectedCardIds || []).includes(card.id)}
-        onCardClick={() => this.props.onCardClick(card)}
-        onCardHover={() => {}} />
+      <div style={{
+        marginRight: 15
+      }}>
+        <Card
+          visible
+          collection
+          key={card.id}
+          name={card.name}
+          spriteID={card.spriteID}
+          type={card.type}
+          text={splitSentences(card.text).map(Sentence)}
+          rawText={card.text || ''}
+          stats={card.stats}
+          cardStats={card.stats}
+          cost={card.cost}
+          baseCost={card.cost}
+          source={card.source}
+          scale={1}
+          selected={(this.props.selectedCardIds || []).includes(card.id)}
+          onCardClick={() => this.props.onCardClick(card)}
+          onCardHover={() => {}} />
+      </div>
     );
   }
 

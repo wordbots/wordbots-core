@@ -92,9 +92,9 @@ class Deck extends Component {
                 id={this.props.id}
                 name={this.props.deck ? this.props.deck.name : ''}
                 cards={this.state.selectedCards.map(id => this.props.cards.find(c => c.id === id))}
-                onCardClick={idx => {
+                onCardClick={id => {
                   this.updateState(state => {
-                    state.selectedCards.splice(idx, 1);
+                    state.selectedCards.splice(state.selectedCards.indexOf(id), 1);
                     return state;
                   });
                 }}

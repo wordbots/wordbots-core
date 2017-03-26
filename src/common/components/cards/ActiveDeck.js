@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FontIcon from 'material-ui/lib/font-icon';
 import TextField from 'material-ui/lib/text-field';
 import RaisedButton from 'material-ui/lib/raised-button';
+import _ from 'lodash';
 
 // Widget representing the deck currently being created or modified.
 class ActiveDeck extends Component {
@@ -11,6 +12,11 @@ class ActiveDeck extends Component {
     this.state = {
       name: props.name
     };
+  }
+
+  groupCards(cards) {
+    const counts = _.countBy(cards, card => card.name);
+    return _.map(_.uniq(cards), card => _.extend({count: counts[card.name]}, card));
   }
 
   render() {
@@ -32,12 +38,44 @@ class ActiveDeck extends Component {
           style={{width: '100%', marginBottom: 10}}
           onChange={e => { this.setState({name: e.target.value}); }} />
 
-        {this.props.cards.map((card, idx) =>
+        {this.groupCards(this.props.cards).sort((a, b) => a.cost - b.cost).map((card, idx) =>
           <div
+            style={{
+              display: 'flex',
+              alignItems: 'stretch',
+              cursor: 'pointer',
+              height: 30,
+              marginBottom: 5,
+              borderRadius: 5,
+              border: card.source === 'builtin' ? '2px solid #444' : '2px solid #f44336'
+            }}
             key={idx}
-            style={{cursor: 'pointer'}}
-            onClick={() => this.props.onCardClick(idx)}>
-            [x] {card.name}
+            onClick={() => this.props.onCardClick(card.id)}>
+            <div style={{
+              width: 30,
+              color: 'white',
+              fontWeight: 'bold',
+              backgroundColor: '#00bcd4',
+              justifyContent: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              borderTopLeftRadius: 4,
+              borderBottomLeftRadius: 4,
+              borderRight: card.source === 'builtin' ? '2px solid #444' : '2px solid #f44336'
+            }}>{card.cost}</div>
+            <div style={{
+              width: 'calc(100% - 30px)',
+              marginLeft: 5,
+              display: 'flex',
+              alignItems: 'center'
+            }}>{card.name}</div>
+            <div style={{
+              width: 30,
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>{card.count > 1 ? card.count : ''}</div>
           </div>
         )}
 

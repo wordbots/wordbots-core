@@ -15,8 +15,7 @@ class ActiveDeck extends Component {
   }
 
   groupCards(cards) {
-    const counts = _.countBy(cards, card => card.name);
-    return _.map(_.uniq(cards), card => _.extend({count: counts[card.name]}, card));
+    return _.map(_.uniq(cards), card => _.extend({count: _.countBy(cards, c => c.name)[card.name]}, card));
   }
 
   render() {
@@ -38,14 +37,14 @@ class ActiveDeck extends Component {
           style={{width: '100%', marginBottom: 10}}
           onChange={e => { this.setState({name: e.target.value}); }} />
 
-        {this.groupCards(this.props.cards).sort((a, b) => a.cost - b.cost).map((card, idx) =>
+        {_.sortBy(this.groupCards(this.props.cards), ['cost', 'name']).map((card, idx) =>
           <div
             style={{
               display: 'flex',
               alignItems: 'stretch',
               cursor: 'pointer',
               height: 30,
-              marginBottom: 5,
+              marginBottom: -2,
               borderRadius: 5,
               border: card.source === 'builtin' ? '2px solid #444' : '2px solid #f44336'
             }}
@@ -54,7 +53,7 @@ class ActiveDeck extends Component {
             <div style={{
               width: 30,
               color: 'white',
-              fontWeight: 'bold',
+              fontFamily: 'Carter One',
               backgroundColor: '#00bcd4',
               justifyContent: 'center',
               display: 'flex',

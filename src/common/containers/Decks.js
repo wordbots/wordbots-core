@@ -46,6 +46,10 @@ class Decks extends Component {
     };
   }
 
+  groupCards(cards) {
+    return _.map(_.uniqBy(cards, 'name'), card => _.extend({count: _.countBy(cards, c => c.name)[card.name]}, card));
+  }
+
   onHover(card) {
     this.setState({hoveredCard: {card: card, stats: card.stats}});
   }
@@ -58,19 +62,34 @@ class Decks extends Component {
         key={idx}
         onMouseOver={e => this.onHover(card)}
         style={{
-          backgroundColor: isHovered ? '#eee' : '#fff'
+          backgroundColor: isHovered ? '#eee' : '#fff',
+          marginBottom: 7,
+          display: 'flex',
+          alignItems: 'stretch',
+          height: 24,
+          minWidth: 200
       }}>
         <Badge
           badgeContent={card.cost}
-          badgeStyle={{backgroundColor: '#00bcd4', fontFamily: 'Carter One', color: 'white', marginRight: 5}}
-          style={{padding: 0, width: 24, height: 20 }} />
-        {card.name}
+          badgeStyle={{backgroundColor: '#00bcd4', fontFamily: 'Carter One', color: 'white', marginRight: 10}}
+          style={{padding: 0, width: 24, height: 24 }} />
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: 'calc(100% - 24px)'
+        }}>{card.name}</div>
+        <div style={{
+          width: 20,
+          display: 'flex',
+          alignItems: 'center',
+          fontWeight: 'bold'
+        }}>{card.count > 1 ? `${card.count}x` : ''}</div>
       </div>
     );
   }
 
   renderCards(cards) {
-    return sortBy(cards, c => [c.cost, c.name]).map(this.renderCard.bind(this));
+    return sortBy(this.groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
   }
 
   renderDeck(deck) {
@@ -80,32 +99,48 @@ class Decks extends Component {
 
     return (
       <Paper key={deck.name} style={{marginRight: 20, marginBottom: 20, padding: 10}}>
-        <h3 style={{margin: '5px 0'}}>{deck.name}</h3>
-        <div>
+        <div style={{
+          marginBottom: 15,
+          fontSize: 32,
+          fontWeight: 100
+        }}>{deck.name}</div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
           <RaisedButton
             label="Edit"
             primary
             disabled={deck.id === '[default]'}
             onClick={e => { this.props.onEditDeck(deck.id); }}
-            style={{marginRight: 10}} />
+            style={{marginRight: 10, width: '100%'}} />
           <RaisedButton
             label="Delete"
             disabled={deck.id === '[default]'}
             onClick={e => { this.props.onDeleteDeck(deck.id); }}
-            primary />
+            primary 
+            style={{width: '100%'}}/>
         </div>
 
-        <div style={{float: 'left', marginRight: 10}}>
-          <h4>Robots ({robots.length})</h4>
-          {this.renderCards(robots)}
-        </div>
+        <div style={{padding: '0 10px 10px 10px'}}>
+          <div style={{float: 'left', marginRight: 30}}>
+            <h4 style={{
+              margin: '20px 0 20px -10px'
+            }}>Robots ({robots.length})</h4>
+            {this.renderCards(robots)}
+          </div>
 
-        <div style={{float: 'left'}}>
-          <h4>Structures ({structures.length})</h4>
-          {this.renderCards(structures)}
+          <div style={{float: 'left'}}>
+            <h4 style={{
+              margin: '20px 0 20px -10px'
+            }}>Structures ({structures.length})</h4>
+            {this.renderCards(structures)}
 
-          <h4>Events ({events.length})</h4>
-          {this.renderCards(events)}
+            <h4 style={{
+              margin: '20px 0 20px -10px'
+            }}>Events ({events.length})</h4>
+            {this.renderCards(events)}
+          </div>
         </div>
       </Paper>
     );

@@ -5,7 +5,7 @@ import { pushState } from 'redux-router';
 import Badge from 'material-ui/lib/badge';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
-import { sortBy } from 'lodash';
+import _ from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import CardViewer from '../components/game/CardViewer';
@@ -89,7 +89,7 @@ class Decks extends Component {
   }
 
   renderCards(cards) {
-    return sortBy(this.groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
+    return _.sortBy(this.groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
   }
 
   renderDeck(deck) {

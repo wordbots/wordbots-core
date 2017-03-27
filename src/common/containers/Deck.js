@@ -44,8 +44,12 @@ class Deck extends Component {
       costRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
-      selectedCards: props.deck ? props.deck.cards.map(c => c.id) : []
+      selectedCardIds: props.deck ? props.deck.cards.map(c => c.id) : []
     };
+  }
+
+  selectedCards() {
+    return this.state.selectedCardIds.map(id => this.props.cards.find(c => c.id === id));
   }
 
   updateState(newProps) {
@@ -76,7 +80,7 @@ class Deck extends Component {
               filterFunc={c => isCardVisible(c, this.state.filters, this.state.costRange)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
-              onCardClick={card => { this.updateState(state => ({selectedCards: [...state.selectedCards, card.id]})); }} />
+              onCardClick={card => { this.updateState(state => ({selectedCardIds: [...state.selectedCardIds, card.id]})); }} />
           </div>
 
           <div style={{
@@ -91,10 +95,10 @@ class Deck extends Component {
               <ActiveDeck
                 id={this.props.id}
                 name={this.props.deck ? this.props.deck.name : ''}
-                cards={this.state.selectedCards.map(id => this.props.cards.find(c => c.id === id))}
+                cards={this.selectedCards()}
                 onCardClick={id => {
                   this.updateState(state => {
-                    state.selectedCards.splice(state.selectedCards.indexOf(id), 1);
+                    state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);
                     return state;
                   });
                 }}
@@ -106,7 +110,7 @@ class Deck extends Component {
               marginBottom: 20
             }}>
               <EnergyCurve
-                cards={this.state.selectedCards.map(id => this.props.cards.find(c => c.id === id))} />
+                cards={this.selectedCards()} />
             </Paper>
 
             <Paper style={{

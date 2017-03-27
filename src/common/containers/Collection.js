@@ -47,8 +47,12 @@ class Collection extends Component {
       costRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
-      selectedCards: []
+      selectedCardIds: []
     };
+  }
+
+  isCardVisible(card) {
+    return isCardVisible(card, this.state.filters, this.state.costRange);
   }
 
   updateState(newProps, callback = () => {}) {
@@ -59,7 +63,7 @@ class Collection extends Component {
 
   updateSelectedCardsWithFilter() {
     this.updateState(state => (
-      {selectedCards: state.selectedCards.filter(id => this.isCardVisible(this.props.cards.find(c => c.id === id)))}
+      {selectedCardIds: state.selectedCardIds.filter(id => this.isCardVisible(this.props.cards.find(c => c.id === id)))}
     ));
   }
 
@@ -70,10 +74,6 @@ class Collection extends Component {
         () => { this.updateSelectedCardsWithFilter(); }
       );
     };
-  }
-
-  isCardVisible(card) {
-    return isCardVisible(card, this.state.filters, this.state.costRange);
   }
 
   render() {
@@ -89,17 +89,17 @@ class Collection extends Component {
           <div style={{marginTop: 50, marginLeft: 40}}>
             <CardGrid
               cards={this.props.cards}
-              selectedCardIds={this.state.selectedCards}
+              selectedCardIds={this.state.selectedCardIds}
               filterFunc={this.isCardVisible.bind(this)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
               onCardClick={card => {
                 if (card.source !== 'builtin') {
                   this.updateState(state => {
-                    if (state.selectedCards.includes(card.id)) {
-                      return {selectedCards: _.without(state.selectedCards, card.id)};
+                    if (state.selectedCardIds.includes(card.id)) {
+                      return {selectedCardIds: _.without(state.selectedCardIds, card.id)};
                     } else {
-                      return {selectedCards: [...state.selectedCards, card.id]};
+                      return {selectedCardIds: [...state.selectedCardIds, card.id]};
                     }
                   });
                 }
@@ -143,11 +143,11 @@ class Collection extends Component {
               label="Edit Selected"
               labelPosition="before"
               secondary
-              disabled={this.state.selectedCards.length !== 1}
+              disabled={this.state.selectedCardIds.length !== 1}
               icon={<FontIcon className="material-icons">edit</FontIcon>}
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
-                const id = this.state.selectedCards[0];
+                const id = this.state.selectedCardIds[0];
                 this.props.onEditCard(this.props.cards.find(c => c.id === id));
               }}
             />
@@ -155,12 +155,12 @@ class Collection extends Component {
               label="Delete Selected"
               labelPosition="before"
               secondary
-              disabled={this.state.selectedCards.length === 0}
+              disabled={this.state.selectedCardIds.length === 0}
               icon={<FontIcon className="material-icons">delete</FontIcon>}
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
-                this.props.onRemoveFromCollection(this.state.selectedCards);
-                this.updateState({selectedCards: []});
+                this.props.onRemoveFromCollection(this.state.selectedCardIds);
+                this.updateState({selectedCardIds: []});
               }}
             />
           </div>

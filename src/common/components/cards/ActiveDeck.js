@@ -82,7 +82,7 @@ class ActiveDeck extends Component {
           label="Save Deck"
           labelPosition="before"
           secondary
-          disabled={this.state.name === '' /*|| this.props.cards.length !== 30*/}
+          disabled={this.state.name === '' || this.props.cards.length !== 30}
           icon={<FontIcon className="material-icons">save</FontIcon>}
           style={{width: '100%', marginTop: 20}}
           onClick={() => { this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id)); }}

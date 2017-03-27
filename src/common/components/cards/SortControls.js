@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
 import SelectField from 'material-ui/lib/SelectField';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import { capitalize } from 'lodash';
 
 class SortControls extends Component {
+  renderSelectField(field, items) {
+    return (
+      <SelectField
+        style={{width: '100%'}}
+        value={this.props[field]}
+        floatingLabelText={capitalize(field)}
+        onChange={(e, i, value) => { this.props[`onSet${capitalize(field)}`](value); }}>
+        {items.map((item, idx) => (
+          <MenuItem value={idx} primaryText={item}/>
+        ))}
+      </SelectField>
+    );
+  }
+
   render() {
     return (
       <div style={{marginBottom: 20}}>
@@ -11,24 +26,8 @@ class SortControls extends Component {
           fontSize: 14
         }}>Sorting</div>
 
-        <SelectField
-          style={{width: '100%'}}
-          value={this.props.criteria}
-          floatingLabelText="Criteria"
-          onChange={(e, i, value) => { this.props.onSetCriteria(value); }}>
-          <MenuItem value={0} primaryText="By Cost"/>
-          <MenuItem value={1} primaryText="By Name"/>
-          <MenuItem value={2} primaryText="By Type"/>
-          <MenuItem value={3} primaryText="By Creator"/>
-        </SelectField>
-        <SelectField
-          style={{width: '100%'}}
-          value={this.props.order}
-          floatingLabelText="Order"
-          onChange={(e, i, value) => { this.props.onSetOrder(value); }}>
-          <MenuItem value={0} primaryText="Ascending"/>
-          <MenuItem value={1} primaryText="Descending"/>
-        </SelectField>
+        {this.renderSelectField('criteria', ['By Cost', 'By Name', 'By Type', 'By Creator'])}
+        {this.renderSelectField('order', ['Ascending', 'Descending'])}
       </div>
     );
   }

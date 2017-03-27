@@ -1,4 +1,4 @@
-import { getAttribute } from '../util';
+import { getAttribute } from '../util/game';
 
 export function attributeSum(state) {
   return function (collection, attribute) {

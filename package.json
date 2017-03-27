@@ -43,6 +43,7 @@
     "react-addons-pure-render-mixin": "^0.14.6",
     "react-addons-transition-group": "^0.14.6",
     "react-addons-update": "^0.14.6",
+    "react-bar-chart": "^0.1.1",
     "react-cookie": "^0.4.3",
     "react-dom": "^0.14.6",
     "react-helmet": "^2.3.1",

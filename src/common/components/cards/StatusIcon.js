@@ -3,8 +3,8 @@ import FontIcon from 'material-ui/lib/font-icon';
 import ReactTooltip from 'react-tooltip';
 import { isObject } from 'lodash';
 
-import { expandKeywords } from '../../keywords';
-import { id } from '../../util';
+import { id } from '../../util/common';
+import { expandKeywords } from '../../util/cards';
 
 function StatusIcon(text, result) {
   if (isObject(result)) {
@@ -18,7 +18,7 @@ function StatusIcon(text, result) {
           style={{
             fontSize: '0.7em',
             verticalAlign: 'top',
-            color: result.js ? 'green' : (result.error ? 'red' : 'black')}
+            color: isParsed ? 'green' : (result.error ? 'red' : 'black')}
           }
           data-for={tooltipId}
           data-tip={isParsed ? 'Click to view parse tree' : (result.error || 'Parsing ...')}>

@@ -1,4 +1,4 @@
-import { allObjectsOnBoard, matchesType } from '../util';
+import { allObjectsOnBoard, matchesType } from '../util/game';
 import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 

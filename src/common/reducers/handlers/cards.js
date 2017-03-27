@@ -1,5 +1,6 @@
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { instantiateCard, splitSentences } from '../../util';
+import { id } from '../../util/common';
+import { splitSentences } from '../../util/cards';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -14,13 +15,15 @@ const cardsHandlers = {
       state.cards.unshift(card);
     }
 
-    // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
-    state.decks = [createDefaultDeck(state)];
+    return updateDefaultDeck(state);
+  },
 
+  deleteDeck: function (state, deckId) {
+    state.decks = state.decks.filter(deck => deck.id !== deckId);
     return state;
   },
 
-  openForEditing: function (state, card) {
+  openCardForEditing: function (state, card) {
     return Object.assign(state, {
       id: card.id,
       name: card.name,
@@ -35,11 +38,33 @@ const cardsHandlers = {
     });
   },
 
+  openDeckForEditing: function (state, deckId) {
+    state.currentDeck = deckId ? state.decks.find(d => d.id === deckId) : null;
+    return state;
+  },
+
   removeFromCollection: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
+    return updateDefaultDeck(state);
+  },
 
-    // In the future there will be multiple decks - for now we just have one with the 30 most recent cards.
-    state.decks = [createDefaultDeck(state)];
+  saveDeck: function (state, deckId, name, cardIds) {
+    const cards = cardIds.map(cardId => state.cards.find(c => c.id === cardId));
+
+    if (deckId) {
+      // Existing deck.
+      Object.assign(state.decks.find(d => d.id === deckId), {
+        name: name,
+        cards: cards
+      });
+    } else {
+      // New deck.
+      state.decks.push({
+        id: id(),
+        name: name,
+        cards: cards
+      });
+    }
 
     return state;
   }
@@ -51,6 +76,7 @@ function createCardFromProps(props) {
   const command = sentences.map(s => s.result.js);
 
   const card = {
+    id: id(),
     name: props.name,
     type: props.type,
     spriteID: props.spriteID,
@@ -70,14 +96,12 @@ function createCardFromProps(props) {
     };
   }
 
-  return instantiateCard(card);
+  return card;
 }
 
-function createDefaultDeck(state) {
-  return {
-    name: 'Default',
-    cards: state.cards.slice(0, 30)
-  };
+function updateDefaultDeck(state) {
+  Object.assign(state.decks.find(d => d.id === '[default]'), {cards: state.cards.slice(0, 30)});
+  return state;
 }
 
 export default cardsHandlers;

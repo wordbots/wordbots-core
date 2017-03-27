@@ -2,15 +2,13 @@ import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import { collection, attackBotCard } from '../src/common/store/cards';
 import defaultState from '../src/common/store/defaultGameState';
-import {
-  instantiateCard, allObjectsOnBoard, ownerOf, getAttribute,
-  drawCards
-} from '../src/common/util';
+import { instantiateCard } from '../src/common/util/common';
+import { allObjectsOnBoard, ownerOf, getAttribute, drawCards } from '../src/common/util/game';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
   const state = _.cloneDeep(defaultState);
-  const deck = {cards: [instantiateCard(attackBotCard)].concat(collection)};
+  const deck = [attackBotCard].concat(collection);
   return game(state, actions.startGame({orange: deck, blue: deck}));
 }
 

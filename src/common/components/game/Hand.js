@@ -3,7 +3,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
 
-import { splitSentences, getCost } from '../../util';
+import { splitSentences } from '../../util/cards';
+import { getCost } from '../../util/game';
 import Sentence from '../cards/Sentence';
 
 import Card from './Card';

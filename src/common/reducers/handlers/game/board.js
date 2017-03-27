@@ -3,7 +3,7 @@ import {
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   triggerEvent, applyAbilities
-} from '../../../util';
+} from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 import { setTargetAndExecuteQueuedAction } from './cards';

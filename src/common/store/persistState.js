@@ -1,20 +1,11 @@
-const CURRENT_VERSION = 2;  // Increase whenever localStorage schema has a breaking change.
+const CURRENT_VERSION = 6;  // Increase whenever localStorage schema has a breaking change.
 
 export function loadState(state) {
   if (typeof localStorage !== 'undefined' && localStorage['wb$version']) {
     const savedVersion = parseInt(localStorage['wb$version']);
     if (savedVersion === CURRENT_VERSION) {
-      const savedCollection = JSON.parse(localStorage['wb$collection']);
-
-      if (savedCollection) {
-        state.collection.cards = savedCollection;
-
-        // In the future we will persist all decks. For now we just have a "Default" deck of most recent cards.
-        state.collection.decks = [{
-          name: 'Default',
-          cards: savedCollection.slice(0, 30)
-        }];
-      }
+      state.collection.cards = JSON.parse(localStorage['wb$collection']);
+      state.collection.decks = JSON.parse(localStorage['wb$decks']);
     }
   }
 
@@ -25,5 +16,6 @@ export function saveState(state) {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('wb$version', CURRENT_VERSION);
     localStorage.setItem('wb$collection', JSON.stringify(state.collection.cards));
+    localStorage.setItem('wb$decks', JSON.stringify(state.collection.decks));
   }
 }

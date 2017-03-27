@@ -1,7 +1,7 @@
 import defaultState from '../store/defaultCreatorState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
-import { id } from '../util';
+import { id } from '../util/common';
 
 import c from './handlers/cards';
 
@@ -51,8 +51,8 @@ export default function creator(oldState = defaultState, action) {
       // Reset card creator state.
       return Object.assign(state, defaultState, { spriteID: id() });
 
-    case collectionActions.OPEN_FOR_EDITING:
-      return c.openForEditing(state, action.payload.card);
+    case collectionActions.OPEN_CARD_FOR_EDITING:
+      return c.openCardForEditing(state, action.payload.card);
 
     default:
       return state;

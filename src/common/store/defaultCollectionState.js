@@ -4,6 +4,7 @@ const defaultState = {
   cards: collection,
   decks: [
     {
+      id: '[default]',
       name: 'Default',
       cards: collection.slice(0, 30)
     }

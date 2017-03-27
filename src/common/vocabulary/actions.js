@@ -1,9 +1,9 @@
 import { TYPE_CORE } from '../constants';
+import { clamp, applyFuncToField } from '../util/common';
 import {
-  clamp, applyFuncToField,
   ownerOf, getHex,
   drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
-} from '../util';
+} from '../util/game';
 
 export default function actions(state) {
   return {

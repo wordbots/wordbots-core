@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { isNil, shuffle } from 'lodash';
 
 import { SHUFFLE_DECKS } from '../constants';
-import { getAttribute } from '../util';
+import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
@@ -92,8 +92,8 @@ export class Game extends Component {
     super(props);
 
     this.state = {
-      selectedOrangeDeck: props.availableDecks[0],
-      selectedBlueDeck: props.availableDecks[0]
+      selectedOrangeDeck: 0,
+      selectedBlueDeck: 0
     };
   }
 
@@ -183,11 +183,11 @@ export class Game extends Component {
   renderDeckSelector(color) {
     return (
       <SelectField
-        value={0}
+        value={this.state[`selected${color}Deck`]}
         floatingLabelText={`${color} player deck`}
         style={{width: '80%', marginRight: 25}}
         onChange={(e, idx, value) => {
-          this.setState(state => state[`selected${color}Deck`] = this.props.availableDecks[idx]);
+          this.setState(state => state[`selected${color}Deck`] = idx);
         }}>
         {this.props.availableDecks.map((deck, idx) =>
           <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
@@ -211,9 +211,12 @@ export class Game extends Component {
               label="Start Game"
               style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
               onTouchTap={e => {
+                const orangeDeck = this.props.availableDecks[this.state.selectedOrangeDeck];
+                const blueDeck = this.props.availableDecks[this.state.selectedBlueDeck];
+
                 this.props.onStartGame({
-                  orange: {cards: SHUFFLE_DECKS ? shuffle(this.state.selectedOrangeDeck.cards) : this.state.selectedOrangeDeck.cards},
-                  blue: {cards: SHUFFLE_DECKS ? shuffle(this.state.selectedBlueDeck.cards) : this.state.selectedBlueDeck.cards}
+                  orange: SHUFFLE_DECKS ? shuffle(orangeDeck.cards) : orangeDeck.cards,
+                  blue: SHUFFLE_DECKS ? shuffle(blueDeck.cards) : blueDeck.cards
                 });
               }} />
           </Paper>

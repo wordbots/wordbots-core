@@ -3,7 +3,7 @@ import {
   currentPlayer, validPlacementHexes, getCost, checkVictoryConditions,
   discardCards,
   executeCmd, triggerEvent, applyAbilities
-} from '../../../util';
+} from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, cardIdx) {

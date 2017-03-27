@@ -44,7 +44,7 @@ class ActiveDeck extends Component {
               alignItems: 'stretch',
               cursor: 'pointer',
               height: 30,
-              marginBottom: 5,
+              marginBottom: -2,
               borderRadius: 5,
               border: card.source === 'builtin' ? '2px solid #444' : '2px solid #f44336'
             }}

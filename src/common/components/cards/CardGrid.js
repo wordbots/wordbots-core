@@ -20,13 +20,14 @@ class CardGrid extends Component {
 
   renderCard(card) {
     return (
-      <div style={{
-        marginRight: 15
+      <div
+        key={card.id}
+        style={{
+          marginRight: 15
       }}>
         <Card
           visible
           collection
-          key={card.id}
           name={card.name}
           spriteID={card.spriteID}
           type={card.type}

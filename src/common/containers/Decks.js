@@ -118,7 +118,7 @@ class Decks extends Component {
             label="Delete"
             disabled={deck.id === '[default]'}
             onClick={e => { this.props.onDeleteDeck(deck.id); }}
-            primary 
+            primary
             style={{width: '100%'}}/>
         </div>
 
@@ -161,6 +161,7 @@ class Decks extends Component {
               label="New Deck"
               secondary
               style={{margin: 10}}
+              labelStyle={{fontFamily: 'Carter One'}}
               onClick={this.props.onCreateDeck} />
 
             <div style={{

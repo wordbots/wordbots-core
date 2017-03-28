@@ -16,10 +16,6 @@ import { getSentencesFromInput, requestParse } from '../../util/cards';
 import NumberField from './NumberField';
 
 class CardCreationForm extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     // Generate new spriteID on reload.
     if (!this.props.isNewCard) {

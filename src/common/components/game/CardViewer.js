@@ -7,34 +7,7 @@ import { splitSentences } from '../../util/cards';
 import Card from './Card';
 
 class CardViewer extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    let card = null;
-
-    if (this.props.hoveredCard) {
-      card = (
-        <Card
-          onCardClick={() => {}}
-          onCardHover={() => {}}
-          scale={1.5}
-          stats={this.props.hoveredCard.stats}
-          name={this.props.hoveredCard.card.name}
-          type={this.props.hoveredCard.card.type}
-          spriteID={this.props.hoveredCard.card.spriteID}
-          text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
-          rawText={this.props.hoveredCard.card.text}
-          img={this.props.hoveredCard.card.img}
-          cost={this.props.hoveredCard.card.cost}
-          cardStats={this.props.hoveredCard.card.stats}
-          source={this.props.hoveredCard.card.source}
-          selected={false}
-          visible />
-      );
-    }
-
     return (
       <div style={{
         position: 'absolute',
@@ -48,7 +21,25 @@ class CardViewer extends Component {
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
-          {card}
+          {
+            this.props.hoveredCard &&
+              <Card
+                onCardClick={() => {}}
+                onCardHover={() => {}}
+                scale={1.5}
+                stats={this.props.hoveredCard.stats}
+                name={this.props.hoveredCard.card.name}
+                type={this.props.hoveredCard.card.type}
+                spriteID={this.props.hoveredCard.card.spriteID}
+                text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
+                rawText={this.props.hoveredCard.card.text}
+                img={this.props.hoveredCard.card.img}
+                cost={this.props.hoveredCard.card.cost}
+                cardStats={this.props.hoveredCard.card.stats}
+                source={this.props.hoveredCard.card.source}
+                selected={false}
+                visible />
+          }
         </ReactCSSTransitionGroup>
       </div>
     );

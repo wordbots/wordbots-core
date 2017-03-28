@@ -5,10 +5,6 @@ import ReactTooltip from 'react-tooltip';
 import { id } from '../../util/common';
 
 class CardStat extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const tooltipId = id();
     let backgroundColor = '';

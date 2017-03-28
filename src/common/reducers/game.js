@@ -1,6 +1,7 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
 import * as gameActions from '../actions/game';
+import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
 
 import g from './handlers/game';
@@ -14,7 +15,8 @@ export default function game(oldState = cloneDeep(defaultState), action) {
   } else {
     switch (action.type) {
       case gameActions.START_GAME:
-        return g.newGame(state, 'orange', action.payload.decks);
+      case socketActions.GAME_START:
+        return g.newGame(state, action.payload.player || 'orange', action.payload.decks);
 
       case gameActions.NEW_GAME:
         return Object.assign(state, {started: false});
@@ -48,16 +50,6 @@ export default function game(oldState = cloneDeep(defaultState), action) {
 
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);
-
-      case 'ws:INFO':
-        return Object.assign(state, {
-          waitingPlayers: action.payload.waitingPlayers,
-          numPlayersOnline: action.payload.playersOnline.length
-        });
-      case 'ws:HOST':
-        return Object.assign(state, {hosting: true});
-      case 'ws:GAME_START':
-        return g.newGame(state, action.payload.player, action.payload.decks);
 
       default:
         return state;

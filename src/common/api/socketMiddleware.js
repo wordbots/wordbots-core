@@ -1,3 +1,5 @@
+import * as actions from '../actions/socket';
+
 const endpoint = 'ws://wordbots-socket.herokuapp.com';
 //const endpoint = 'ws://localhost:3553';
 const roomName = 'game';
@@ -7,14 +9,14 @@ const createSocketMiddleware = (function (opts) {
   const client = new Colyseus.Client(endpoint);
 
   return store => {
-    store.dispatch({type: 'ws:CONNECTING'});
+    store.dispatch(actions.connecting());
     const room = client.join(roomName);
     let clientId = null;
     let keepaliveNeeded = true;
 
     room.onJoin.add(() => {
       clientId = client.id;
-      store.dispatch({type: 'ws:CONNECTED'});
+      store.dispatch(actions.connected());
     });
 
     room.state.listen('messages/', 'add', (msg) => {
@@ -27,7 +29,7 @@ const createSocketMiddleware = (function (opts) {
     // Heroku requires keepalives at least every 55 sec.
     setInterval(() => {
       if (keepaliveNeeded) {
-        room.send(JSON.stringify({type: 'ws:KEEPALIVE'}));
+        room.send(JSON.stringify(actions.keepalive()));
       }
       keepaliveNeeded = true;
     }, 50 * 1000);

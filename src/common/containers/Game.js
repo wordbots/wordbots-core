@@ -17,6 +17,7 @@ import Status from '../components/game/Status';
 import CardViewer from '../components/game/CardViewer';
 import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
+import * as socketActions from '../actions/socket';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player];
@@ -49,9 +50,9 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
-    numPlayersOnline: state.game.numPlayersOnline,
-    waitingPlayers: state.game.waitingPlayers,
-    hosting: state.game.hosting,
+    numPlayersOnline: state.socket.numPlayersOnline,
+    waitingPlayers: state.socket.waitingPlayers,
+    hosting: state.socket.hosting,
     availableDecks: state.collection.decks,
 
     sidebarOpen: state.layout && state.layout.present.sidebarOpen
@@ -61,10 +62,10 @@ export function mapStateToProps(state) {
 export function mapDispatchToProps(dispatch) {
   return {
     onHostGame: (name, deck) => {
-      dispatch({type: 'ws:HOST', payload: {name: name, deck: deck}});
+      dispatch(socketActions.host(name, deck));
     },
     onJoinGame: (id, deck) => {
-      dispatch({type: 'ws:JOIN', payload: {id: id, deck: deck}});
+      dispatch(socketActions.join(id, deck));
     },
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));

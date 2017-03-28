@@ -15,16 +15,9 @@ export default function game(oldState = cloneDeep(defaultState), action) {
     switch (action.type) {
       case gameActions.START_GAME:
         return g.newGame(state, 'orange', action.payload.decks);
-      case 'ws:JOINED':
-        return g.newGame(state, 'blue', action.payload.decks);
 
       case gameActions.NEW_GAME:
         return Object.assign(state, {started: false});
-
-      case 'ws:CONNECTING':
-        return Object.assign(state, {connecting: true});
-      case 'ws:CONNECTED':
-        return Object.assign(state, {connecting: false});
 
       case gameActions.MOVE_ROBOT:
         return g.moveRobot(state, action.payload.from, action.payload.to);
@@ -55,6 +48,20 @@ export default function game(oldState = cloneDeep(defaultState), action) {
 
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);
+
+      case 'ws:CONNECTING':
+        return Object.assign(state, {connecting: true});
+      case 'ws:CONNECTED':
+        return Object.assign(state, {connecting: false});
+      case 'ws:INFO':
+        return Object.assign(state, {
+          waitingPlayers: action.payload.waitingPlayers,
+          numPlayersOnline: action.payload.playersOnline.length
+        });
+      case 'ws:HOST':
+        return Object.assign(state, {hosting: true});
+      case 'ws:GAME_START':
+        return g.newGame(state, action.payload.player, action.payload.decks);
 
       default:
         return state;

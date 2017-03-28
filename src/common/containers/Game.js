@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
+import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import { connect } from 'react-redux';
@@ -19,7 +20,6 @@ import * as gameActions from '../actions/game';
 
 export function mapStateToProps(state) {
   return {
-    connecting: state.game.connecting,
     started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
@@ -46,6 +46,9 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
+    numPlayersOnline: state.game.numPlayersOnline,
+    waitingPlayers: state.game.waitingPlayers,
+    hosting: state.game.hosting,
     availableDecks: state.collection.decks,
 
     sidebarOpen: state.layout && state.layout.present.sidebarOpen
@@ -54,11 +57,11 @@ export function mapStateToProps(state) {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onStartGame: (decks) => {
-      dispatch([
-        {type: 'ws:CONNECT', payload: {decks: decks}},
-        gameActions.startGame(decks)
-      ]);
+    onHostGame: (name, deck) => {
+      dispatch({type: 'ws:HOST', payload: {name: name, deck: deck}});
+    },
+    onJoinGame: (id, deck) => {
+      dispatch({type: 'ws:JOIN', payload: {id: id, deck: deck}});
     },
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -98,8 +101,8 @@ export class Game extends Component {
     super(props);
 
     this.state = {
-      selectedOrangeDeck: 0,
-      selectedBlueDeck: 0
+      gameName: '',
+      selectedDeck: 0
     };
   }
 
@@ -192,50 +195,96 @@ export class Game extends Component {
     );
   }
 
-  renderDeckSelector(color) {
-    return (
-      <SelectField
-        value={this.state[`selected${color}Deck`]}
-        floatingLabelText={`${color} player deck`}
-        style={{width: '80%', marginRight: 25}}
-        onChange={(e, idx, value) => {
-          this.setState(state => state[`selected${color}Deck`] = idx);
-        }}>
-        {this.props.availableDecks.map((deck, idx) =>
-          <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
-        )}
-      </SelectField>
-    );
+  renderLobby() {
+    const padding = this.props.sidebarOpen ? 256 : 0;
+    const paperStyle = {padding: 20, marginBottom: 20, position: 'relative'};
+
+    if (this.props.hosting) {
+      return (
+        <div style={{paddingLeft: padding, margin: '48px auto', width: 800}}>
+          <Helmet title="Game"/>
+          <Paper style={paperStyle}>
+            <div>{this.props.numPlayersOnline} player(s) online</div>
+          </Paper>
+          <Paper style={paperStyle}>
+            <div>Waiting for an opponent ...</div>
+          </Paper>
+        </div>
+      );
+    } else {
+      return (
+        <div style={{paddingLeft: padding, margin: '48px auto', width: 800}}>
+          <Helmet title="Game"/>
+          <Paper style={paperStyle}>
+            <div>{this.props.numPlayersOnline || '?'} player(s) online</div>
+          </Paper>
+          {(this.props.waitingPlayers || []).map(game =>
+            <Paper style={paperStyle}>
+              <div>
+                <b>{game.name}</b>
+              </div>
+              <SelectField
+                value={this.state['selectedDeck']}
+                floatingLabelText="Deck"
+                style={{width: '80%', marginRight: 25}}
+                onChange={(e, idx, value) => {
+                  this.setState(state => state.selectedDeck = idx);
+                }}>
+                {this.props.availableDecks.map((deck, idx) =>
+                  <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
+                )}
+              </SelectField>
+              <RaisedButton
+                secondary
+                label="Join Game"
+                style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
+                onTouchTap={e => {
+                  const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
+                  this.props.onJoinGame(game.id, SHUFFLE_DECKS ? shuffle(deck) : deck);
+                }} />
+            </Paper>
+          )}
+          <Paper style={paperStyle}>
+            <TextField
+              value={this.state['gameName']}
+              floatingLabelText="Game Name"
+              style={{width: '80%', marginRight: 25}}
+              onChange={e => {
+                this.setState({gameName: e.target.value});
+              }} />
+            <SelectField
+              value={this.state['selectedDeck']}
+              floatingLabelText="Deck"
+              style={{width: '80%', marginRight: 25}}
+              onChange={(e, idx, value) => {
+                this.setState(state => state.selectedDeck = idx);
+              }}>
+              {this.props.availableDecks.map((deck, idx) =>
+                <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
+              )}
+            </SelectField>
+            <RaisedButton
+              secondary
+              disabled={this.state.gameName === ''}
+              label="Host New Game"
+              style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
+              onTouchTap={e => {
+                console.log(this.state);
+                const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
+                this.props.onHostGame(this.state.gameName, SHUFFLE_DECKS ? shuffle(deck) : deck);
+              }} />
+          </Paper>
+        </div>
+      );
+    }
   }
 
   render() {
     const padding = this.props.sidebarOpen ? 256 : 0;
 
     if (!this.props.started) {
-      return (
-        <div style={{paddingLeft: padding, margin: '48px auto', width: 800}}>
-          <Helmet title="Game"/>
-          <Paper style={{padding: 20, position: 'relative'}}>
-            {this.renderDeckSelector('Orange')}
-            {this.renderDeckSelector('Blue')}
-            <RaisedButton
-              secondary
-              label="Start Game"
-              style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
-              onTouchTap={e => {
-                const [orangeDeck, blueDeck] = [this.state.selectedOrangeDeck, this.state.selectedBlueDeck].map(deck =>
-                  this.props.availableDecks[deck].cards.map(instantiateCard)
-                );
-
-                this.props.onStartGame({
-                  orange: SHUFFLE_DECKS ? shuffle(orangeDeck) : orangeDeck,
-                  blue: SHUFFLE_DECKS ? shuffle(blueDeck) : blueDeck
-                });
-              }} />
-          </Paper>
-        </div>
-      );
-    } else if (!this.props.connecting) {
+      return this.renderLobby();
+    } else {
       return (
         <div style={{paddingLeft: padding, margin: '48px 72px'}}>
           <Helmet title="Game"/>
@@ -278,7 +327,6 @@ export class Game extends Component {
 const { array, bool, func, number, object, string } = React.PropTypes;
 
 Game.propTypes = {
-  connecting: bool,
   started: bool,
   player: string,
   currentTurn: string,
@@ -301,6 +349,9 @@ Game.propTypes = {
   blueDeck: array,
   orangeDeck: array,
 
+  numPlayersOnline: number,
+  waitingPlayers: array,
+  hosting: bool,
   availableDecks: array,
 
   selectedCard: number,
@@ -308,7 +359,8 @@ Game.propTypes = {
 
   sidebarOpen: bool,
 
-  onStartGame: func,
+  onHostGame: func,
+  onJoinGame: func,
   onMoveRobot: func,
   onAttackRobot: func,
   onMoveRobotAndAttack: func,

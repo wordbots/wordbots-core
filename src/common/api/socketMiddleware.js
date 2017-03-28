@@ -29,11 +29,12 @@ const createSocketMiddleware = (function (opts) {
 
     // Heroku requires keepalives at least every 55 sec.
     setInterval(() => {
+      console.log(keepaliveNeeded);
       if (keepaliveNeeded) {
         room.send(JSON.stringify(actions.keepalive()));
       }
       keepaliveNeeded = true;
-    }, 50 * 1000);
+    }, 30 * 1000);
 
     function handleMessage(action) {
       if (room &&

@@ -32,6 +32,7 @@ describe('Game container', () => {
       <Paper style={{padding: 20, position: 'relative'}}>
         <PlayerArea
           name={'orange'}
+          isActivePlayer
           isCurrentPlayer
           status={defaultStatus}
           energy={state.game.players.orange.energy}
@@ -52,6 +53,7 @@ describe('Game container', () => {
             target={state.game.target}
             bluePieces={state.game.players.blue.robotsOnBoard}
             orangePieces={state.game.players.orange.robotsOnBoard}
+            player={'orange'}
             currentTurn={'orange'}
             playingCardType={null}
             onSelectTile={board.props.onSelectTile}
@@ -65,6 +67,7 @@ describe('Game container', () => {
         </div>
         <PlayerArea
           name={'blue'}
+          isActivePlayer={false}
           isCurrentPlayer={false}
           status={defaultStatus}
           energy={state.game.players.blue.energy}

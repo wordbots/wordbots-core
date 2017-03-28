@@ -7,7 +7,7 @@ import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import Hex from '../components/react-hexgrid/Hex';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
-import { clamp, instantiateCard } from './common';
+import { clamp } from './common';
 
 //
 // I. Queries for game state.
@@ -19,6 +19,10 @@ export function opponent(playerName) {
 
 export function opponentName(state) {
   return opponent(state.currentTurn);
+}
+
+export function activePlayer(state) {
+  return state.players[state.player];
 }
 
 export function currentPlayer(state) {
@@ -169,10 +173,10 @@ export function validAttackHexes(state, playerName, startHex, speed, object) {
 // III. Effects on game state that are performed in many different places.
 //
 
-export function newGame(state, collections) {
-  state = Object.assign(state, cloneDeep(defaultState)); // Reset game state.
-  state.players.blue = bluePlayerState(collections.blue.map(instantiateCard));
-  state.players.orange = orangePlayerState(collections.orange.map(instantiateCard));
+export function newGame(state, player, collections) {
+  state = Object.assign(state, cloneDeep(defaultState), {player: player}); // Reset game state.
+  state.players.blue = bluePlayerState(collections.blue);
+  state.players.orange = orangePlayerState(collections.orange);
   state.started = true;
   return state;
 }

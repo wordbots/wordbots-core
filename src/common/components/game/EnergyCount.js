@@ -12,7 +12,7 @@ class EnergyCount extends Component {
         zDepth={2}
         circle
         style={{
-          backgroundColor: '#00bcd4',
+          backgroundColor: this.props.isCurrentPlayer ? '#00bcd4' : '#ccc',
           width: 50,
           height: 50,
           textAlign: 'center',
@@ -36,10 +36,11 @@ class EnergyCount extends Component {
   }
 }
 
-const { object } = React.PropTypes;
+const { bool, object } = React.PropTypes;
 
 EnergyCount.propTypes = {
-  energy: object
+  energy: object,
+  isCurrentPlayer: bool
 };
 
 export default EnergyCount;

@@ -22,6 +22,10 @@ class Board extends Component {
     };
   }
 
+  isMyTurn() {
+    return this.props.currentTurn === this.props.player;
+  }
+
   currentPlayerPieces() {
     return (this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces);
   }
@@ -89,6 +93,10 @@ class Board extends Component {
   }
 
   onHexClick(hex, event) {
+    if (!this.isMyTurn) {
+      return;
+    }
+
     const hid = HexUtils.getID(hex);
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
@@ -184,6 +192,7 @@ Board.propTypes = {
   bluePieces: object,
   orangePieces: object,
 
+  player: string,
   currentTurn: string,
   selectedTile: string,
   playingCardType: number,

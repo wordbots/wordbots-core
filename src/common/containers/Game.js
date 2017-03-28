@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { isNil, shuffle } from 'lodash';
 
 import { SHUFFLE_DECKS } from '../constants';
+import { instantiateCard } from '../util/common';
 import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
@@ -19,11 +20,12 @@ import * as gameActions from '../actions/game';
 export function mapStateToProps(state) {
   return {
     started: state.game.started,
+    player: state.game.player,
     currentTurn: state.game.currentTurn,
     winner: state.game.winner,
 
-    selectedTile: state.game.selectedTile,
-    selectedCard: state.game.selectedCard,
+    selectedTile: state.game.players[state.game.player].selectedTile,
+    selectedCard: state.game.players[state.game.player].selectedCard,
     hoveredCardIdx: state.game.hoveredCardIdx,
     hoveredCard: state.game.hoveredCard,
     playingCardType: state.game.playingCardType,
@@ -52,7 +54,10 @@ export function mapStateToProps(state) {
 export function mapDispatchToProps(dispatch) {
   return {
     onStartGame: (decks) => {
-      dispatch(gameActions.startGame(decks));
+      dispatch([
+        {type: 'ws:CONNECT', payload: {decks: decks}},
+        gameActions.startGame(decks)
+      ]);
     },
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -97,14 +102,19 @@ export class Game extends Component {
     };
   }
 
+  isMyTurn() {
+    return this.props.currentTurn === this.props.player;
+  }
+
   allPieces() {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
   hoveredCard() {
+    const hand = this.props[`${this.props.player}Hand`];
     const cardFromIndex = (idx => {
-      if (!isNil(idx)) {
-        const card = this.props[`${this.props.currentTurn}Hand`][idx];
+      if (!isNil(idx) && hand[idx]) {
+        const card = hand[idx];
         return {card: card, stats: card.stats};
       }
     });
@@ -167,6 +177,7 @@ export class Game extends Component {
     return (
       <PlayerArea
         name={color}
+        isActivePlayer={this.props.player === color}
         isCurrentPlayer={this.props.currentTurn === color}
         status={this.props.status}
         energy={this.props[`${color}Energy`]}
@@ -174,7 +185,7 @@ export class Game extends Component {
         deck={this.props[`${color}Deck`]}
         selectedCard={this.props.selectedCard}
         hoveredCard={this.props.hoveredCardIdx}
-        targetableCards={this.props.currentTurn === color ? this.props.target.possibleCards : []}
+        targetableCards={this.props.player === color ? this.props.target.possibleCards : []}
         onSelectCard={this.props.onSelectCard}
         onHoverCard={this.props.onHoverCard} />
     );
@@ -211,12 +222,13 @@ export class Game extends Component {
               label="Start Game"
               style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
               onTouchTap={e => {
-                const orangeDeck = this.props.availableDecks[this.state.selectedOrangeDeck];
-                const blueDeck = this.props.availableDecks[this.state.selectedBlueDeck];
+                const [orangeDeck, blueDeck] = [this.state.selectedOrangeDeck, this.state.selectedBlueDeck].map(deck =>
+                  this.props.availableDecks[deck].cards.map(instantiateCard)
+                );
 
                 this.props.onStartGame({
-                  orange: SHUFFLE_DECKS ? shuffle(orangeDeck.cards) : orangeDeck.cards,
-                  blue: SHUFFLE_DECKS ? shuffle(blueDeck.cards) : blueDeck.cards
+                  orange: SHUFFLE_DECKS ? shuffle(orangeDeck) : orangeDeck,
+                  blue: SHUFFLE_DECKS ? shuffle(blueDeck) : blueDeck
                 });
               }} />
           </Paper>
@@ -233,13 +245,14 @@ export class Game extends Component {
               <CardViewer hoveredCard={this.hoveredCard()} />
               <Status
                 currentTurn={this.props.currentTurn}
-                status={this.props.status} />
+                status={this.isMyTurn() ? this.props.status : {}} />
               <Board
+                player={this.props.player}
+                currentTurn={this.props.currentTurn}
                 selectedTile={this.props.selectedTile}
                 target={this.props.target}
                 bluePieces={this.props.bluePieces}
                 orangePieces={this.props.orangePieces}
-                currentTurn={this.props.currentTurn}
                 playingCardType={this.props.playingCardType}
                 onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
                 onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
@@ -264,6 +277,7 @@ const { array, bool, func, number, object, string } = React.PropTypes;
 
 Game.propTypes = {
   started: bool,
+  player: string,
   currentTurn: string,
   selectedTile: string,
   playingCardType: number,

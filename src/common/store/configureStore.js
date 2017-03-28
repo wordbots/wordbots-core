@@ -8,7 +8,7 @@ import createLogger from 'redux-logger';
 import DevTools from '../containers/DevTools';
 import promiseMiddleware from '../api/promiseMiddleware';
 import rootReducer from '../reducers';
-import * as gameActions from '../actions/game';
+import * as actions from '../actions/game';
 
 import { loadState, saveState } from './persistState';
 
@@ -18,8 +18,12 @@ const middlewareBuilder = () => {
   let allComposeElements = [];
 
   if (process.browser) {
+    const socketMiddleware = require('../api/socketMiddleware').default({
+      excludedActions: [actions.SET_SELECTED_CARD, actions.SET_SELECTED_TILE, actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE]
+    });
+
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
-      middleware = applyMiddleware(...universalMiddleware);
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
       allComposeElements = [
         middleware,
         reduxReactRouter({
@@ -28,10 +32,10 @@ const middlewareBuilder = () => {
       ];
     } else {
       const logger = createLogger({
-        predicate: (getState, action) => ![gameActions.SET_HOVERED_CARD, gameActions.SET_HOVERED_TILE].includes(action.type)
+        predicate: (getState, action) => ![actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)
       });
 
-      middleware = applyMiddleware(...universalMiddleware, logger);
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
       allComposeElements = [
         middleware,
         reduxReactRouter({

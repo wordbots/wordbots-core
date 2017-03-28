@@ -1,37 +1,41 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
-  currentPlayer, validPlacementHexes, getCost, checkVictoryConditions,
+  activePlayer, currentPlayer, getCost, checkVictoryConditions,
+  validPlacementHexes,
   discardCards,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, cardIdx) {
-  const selectedCard = state.players[state.currentTurn].hand[cardIdx];
-  const energy = state.players[state.currentTurn].energy;
+  const player = activePlayer(state);
+  const selectedCard = player.hand[cardIdx];
+  const energy = player.energy;
 
-  state.selectedTile = null;
+  player.selectedTile = null;
 
-  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && state.selectedCard !== null) {
+  if (state.target.choosing &&
+      state.target.possibleCards.includes(selectedCard.id) &&
+      player.selectedCard !== null) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, selectedCard);
   } else {
     // Toggle card selection.
 
-    if (state.selectedCard === cardIdx) {
+    if (player.selectedCard === cardIdx) {
       // Clicked on already selected card => Deselect or play event
 
       if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
         return playEvent(state, cardIdx);
       } else {
-        state.selectedCard = null;
+        player.selectedCard = null;
         state.playingCardType = null;
         state.status.message = '';
       }
     } else {
       // Clicked on unselected card => Select
 
-      state.selectedCard = cardIdx;
+      player.selectedCard = cardIdx;
       state.target.choosing = false; // Reset targeting state.
 
       if (getCost(selectedCard) <= energy.available) {
@@ -70,6 +74,7 @@ export function placeCard(state, card, tile) {
 
     player.robotsOnBoard[tile] = playedObject;
     player.energy.available -= getCost(card);
+    player.selectedCard = null;
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
@@ -81,7 +86,6 @@ export function placeCard(state, card, tile) {
 
     playedObject.justPlayed = false;
 
-    tempState.selectedCard = null;
     tempState.playingCardType = null;
     tempState.status.message = '';
   }
@@ -124,7 +128,7 @@ export function playEvent(state, cardIdx, command) {
     } else {
       state = discardCards(state, [card]);
 
-      state.selectedCard = null;
+      activePlayer(state).selectedCard = null;
       state.playingCardType = null;
       state.status.message = '';
 
@@ -147,10 +151,10 @@ export function setTargetAndExecuteQueuedAction(state, target) {
   };
 
   // Perform the trigger.
-  const card = state.players[state.currentTurn].hand[state.selectedCard];
+  const card = state.players[state.currentTurn].hand[activePlayer(state).selectedCard];
 
   if (card.type === TYPE_EVENT) {
-    state = playEvent(state, state.selectedCard);
+    state = playEvent(state, activePlayer(state).selectedCard);
   } else {
     state = placeCard(state, card, state.placementTile);
   }

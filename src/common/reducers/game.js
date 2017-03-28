@@ -14,7 +14,9 @@ export default function game(oldState = cloneDeep(defaultState), action) {
   } else {
     switch (action.type) {
       case gameActions.START_GAME:
-        return g.newGame(state, action.payload.decks);
+        return g.newGame(state, 'orange', action.payload.decks);
+      case 'ws:JOINED':
+        return g.newGame(state, 'blue', action.payload.decks);
 
       case gameActions.NEW_GAME:
         return Object.assign(state, {started: false});
@@ -28,11 +30,8 @@ export default function game(oldState = cloneDeep(defaultState), action) {
       case gameActions.PLACE_CARD:
         return g.placeCard(state, action.payload.card, action.payload.tile);
 
-      case gameActions.END_TURN:
-        return g.endTurn(state);
-
-      case gameActions.START_TURN:
-        return g.startTurn(state);
+      case gameActions.PASS_TURN:
+        return g.startTurn(g.endTurn(state));
 
       case gameActions.SET_SELECTED_CARD:
         return g.setSelectedCard(state, action.payload.selectedCard);

@@ -58,6 +58,7 @@ export function playObject(state, playerName, card, hex, target = null) {
   //    3. The player has enough energy to play the card.
   card = instantiateCard(card);
   state.currentTurn = playerName;
+  state.player = playerName;
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
@@ -91,6 +92,7 @@ export function playEvent(state, playerName, card, target = null) {
   //    3. The player has enough energy to play the card.
   card = instantiateCard(card);
   state.currentTurn = playerName;
+  state.player = playerName;
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 

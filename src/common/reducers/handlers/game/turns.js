@@ -1,7 +1,7 @@
 import { currentPlayer, opponentName, drawCards, triggerEvent, newGame } from '../../../util/game';
 
-export function startNewGame(state, decks) {
-  return newGame(state, {blue: decks.blue, orange: decks.orange});
+export function startNewGame(state, player, decks) {
+  return newGame(state, player, {blue: decks.blue, orange: decks.orange});
 }
 
 export function startTurn(state) {
@@ -13,22 +13,24 @@ export function startTurn(state) {
   ));
 
   state = drawCards(state, player, 1);
-
   state = triggerEvent(state, 'beginningOfTurn', {player: true});
 
   return state;
 }
 
 export function endTurn(state) {
+  const player = currentPlayer(state);
+  player.selectedCard = null;
+  player.selectedTile = null;
+
   state = triggerEvent(state, 'endOfTurn', {player: true});
 
   state.currentTurn = opponentName(state);
-  state.selectedCard = null;
-  state.selectedTile = null;
   state.hoveredCardIdx = null;
   state.playingCardType = null;
   state.status.message = '';
   state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+
 
   return state;
 }

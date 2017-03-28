@@ -1,5 +1,5 @@
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, allowedToAttack, ownerOf,
+  activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   triggerEvent, applyAbilities
@@ -13,13 +13,15 @@ export function setHoveredTile(state, card) {
 }
 
 export function setSelectedTile(state, tile) {
-  if (state.target.choosing && state.target.possibleHexes.includes(tile) && state.selectedCard !== null) {
+  if (state.target.choosing &&
+      state.target.possibleHexes.includes(tile) &&
+      activePlayer(state).selectedCard !== null) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    state.selectedTile = (state.selectedTile === tile) ? null : tile;
-    state.selectedCard = null;
+    activePlayer(state).selectedTile = (activePlayer(state).selectedTile === tile) ? null : tile;
+    activePlayer(state).selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
     return state;
@@ -34,7 +36,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movingRobot.movesLeft, movingRobot);
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
     if (!asPartOfAttack) {
-      state.selectedTile = null;
+      activePlayer(state).selectedTile = null;
     }
 
     const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
@@ -81,7 +83,7 @@ export function attack(state, source, target) {
 
       state = applyAbilities(state);
 
-      state.selectedTile = null;
+      activePlayer(state).selectedTile = null;
     }
   }
 

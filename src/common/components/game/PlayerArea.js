@@ -16,7 +16,7 @@ class PlayerArea extends Component {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <EnergyCount energy={this.props.energy} />
+        <EnergyCount energy={this.props.energy} isCurrentPlayer={this.props.isCurrentPlayer} />
         <Hand
           //curved
           name={this.props.name}
@@ -25,7 +25,7 @@ class PlayerArea extends Component {
           selectedCard={this.props.selectedCard}
           hoveredCard={this.props.hoveredCard}
           targetableCards={this.props.targetableCards}
-          isCurrentPlayer={this.props.isCurrentPlayer}
+          isCurrentPlayer={this.props.isActivePlayer}
           cards={this.props.cards}
           status={this.props.status} />
         <Deck deck={this.props.deck} />
@@ -44,6 +44,7 @@ PlayerArea.propTypes = {
   selectedCard: number,
   hoveredCard: number,
   targetableCards: array,
+  isActivePlayer: bool,
   isCurrentPlayer: bool,
   cards: array,
   status: object,

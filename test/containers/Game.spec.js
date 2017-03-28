@@ -29,19 +29,7 @@ describe('Game container', () => {
     expect(dom.props.children).toEqual([
       <Helmet title="Game"/>,
       <Paper style={{padding: 20, position: 'relative'}}>
-        <PlayerArea
-          name={'orange'}
-          isActivePlayer
-          isCurrentPlayer
-          status={defaultStatus}
-          energy={state.game.players.orange.energy}
-          cards={state.game.players.orange.hand}
-          deck={state.game.players.orange.deck}
-          selectedCard={null}
-          targetableCards={[]}
-          onHoverCard={game.props.onHoverCard}
-          onSelectCard={game.props.onSelectCard}
-          />
+        <PlayerArea color={'orange'} gameProps={game.props} />
         <div style={{position: 'relative'}}>
           <CardViewer />
           <Status
@@ -64,19 +52,7 @@ describe('Game container', () => {
             style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
             onTouchTap={game.props.onPassTurn} />
         </div>
-        <PlayerArea
-          name={'blue'}
-          isActivePlayer={false}
-          isCurrentPlayer={false}
-          status={defaultStatus}
-          energy={state.game.players.blue.energy}
-          cards={state.game.players.blue.hand}
-          deck={state.game.players.blue.deck}
-          selectedCard={null}
-          targetableCards={[]}
-          onHoverCard={game.props.onHoverCard}
-          onSelectCard={game.props.onSelectCard}
-          />
+        <PlayerArea color={'blue'} gameProps={game.props} />
         <VictoryScreen winner={null} onClick={game.props.onClick} />
       </Paper>
     ]);

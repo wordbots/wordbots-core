@@ -1,6 +1,6 @@
 import { TYPE_EVENT } from '../../../constants';
 import {
-  activePlayer, currentPlayer, getCost, checkVictoryConditions,
+  currentPlayer, getCost, checkVictoryConditions,
   validPlacementHexes,
   discardCards,
   executeCmd, triggerEvent, applyAbilities
@@ -83,7 +83,6 @@ export function placeCard(state, card, tile) {
 
     playedObject.justPlayed = false;
 
-    tempState.playingCardType = null;
     tempState.status.message = '';
   }
 
@@ -124,8 +123,6 @@ export function playEvent(state, cardIdx, command) {
       state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
-
-      state.playingCardType = null;
       state.status.message = '';
 
       player.selectedCard = null;

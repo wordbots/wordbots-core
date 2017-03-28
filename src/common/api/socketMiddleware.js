@@ -1,5 +1,5 @@
-//const endpoint = 'ws://wordbots-socket.herokuapp.com';
-const endpoint = 'ws://localhost:3553';
+const endpoint = 'ws://wordbots-socket.herokuapp.com';
+//const endpoint = 'ws://localhost:3553';
 const roomName = 'game';
 
 const createSocketMiddleware = (function (opts) {

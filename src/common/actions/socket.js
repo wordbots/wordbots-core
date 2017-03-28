@@ -24,20 +24,14 @@ export const KEEPALIVE = 'ws:KEEPALIVE';
 export function host(name, deck) {
   return {
     type: HOST,
-    payload: {
-      name: name,
-      deck: deck
-    }
+    payload: { name, deck }
   };
 }
 
 export function join(id, deck) {
   return {
     type: JOIN,
-    payload: {
-      id: id,
-      deck: deck
-    }
+    payload: { id, deck }
   };
 }
 
@@ -51,3 +45,4 @@ export function keepalive() {
 
 export const INFO = 'ws:INFO';
 export const GAME_START = 'ws:GAME_START';
+export const OPPONENT_LEFT = 'ws:OPPONENT_LEFT';

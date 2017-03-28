@@ -51,6 +51,9 @@ export default function game(oldState = cloneDeep(defaultState), action) {
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);
 
+      case socketActions.OPPONENT_LEFT:
+        return Object.assign(state, {winner: state.player});
+
       default:
         return state;
     }

@@ -25,7 +25,7 @@ export class Lobby extends Component {
 
     const [numPlayersElt, waitingElt, chooseDeckElt, joinGamesElt, startNewGameElt] = [
       <Paper style={paperStyle}>
-        <div>{this.props.socket.numPlayersOnline} player(s) online</div>
+        <div>{this.props.socket.numPlayersOnline || 0} player(s) online</div>
       </Paper>,
 
       <Paper style={paperStyle}>

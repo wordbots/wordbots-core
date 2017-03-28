@@ -166,29 +166,11 @@ export class Game extends Component {
     }
   }
 
-  renderPlayerArea(color) {
-    return (
-      <PlayerArea
-        name={color}
-        isActivePlayer={this.props.player === color}
-        isCurrentPlayer={this.props.currentTurn === color}
-        status={this.props.status}
-        energy={this.props[`${color}Energy`]}
-        cards={this.props[`${color}Hand`]}
-        deck={this.props[`${color}Deck`]}
-        selectedCard={this.props.selectedCard}
-        hoveredCard={this.props.hoveredCardIdx}
-        targetableCards={this.props.player === color ? this.props.target.possibleCards : []}
-        onSelectCard={this.props.onSelectCard}
-        onHoverCard={this.props.onHoverCard} />
-    );
-  }
-
   renderGameArea() {
     if (this.props.started) {
       return (
         <Paper style={{padding: 20, position: 'relative'}}>
-          {this.renderPlayerArea('orange')}
+          <PlayerArea color="orange" gameProps={this.props} />
 
           <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.hoveredCard()} />
@@ -213,8 +195,7 @@ export class Game extends Component {
               onTouchTap={this.props.onPassTurn} />
           </div>
 
-          {this.renderPlayerArea('blue')}
-
+          <PlayerArea color="blue" gameProps={this.props} />
           <VictoryScreen winner={this.props.winner} onClick={this.props.onClick} />
         </Paper>
       );

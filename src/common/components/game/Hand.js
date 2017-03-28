@@ -60,9 +60,9 @@ class Hand extends Component {
           source={card.source}
           stats={{}}
 
-          selected={this.props.selectedCard === idx && isEmpty(this.props.targetableCards)}
-          targetable={this.props.targetableCards.includes(card.id)}
-          visible={this.props.isCurrentPlayer}
+          selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
+          targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
+          visible={this.props.isActivePlayer}
 
           scale={1}
           margin={idx < numCards - 1 ? cardMargin : 0}
@@ -98,7 +98,7 @@ const { array, bool, func, number, object, string } = React.PropTypes;
 Hand.propTypes = {
   name: string,
   cards: array,
-  isCurrentPlayer: bool,
+  isActivePlayer: bool,
   onSelectCard: func,
   onHoverCard: func,
   selectedCard: number,

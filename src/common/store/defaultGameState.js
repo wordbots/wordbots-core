@@ -41,7 +41,7 @@ const defaultState = {
     orange: orangePlayerState([])
   },
   currentTurn: 'orange',
-  player: null,
+  player: 'orange',
   hoveredCard: null,
   status: {
     message: '',

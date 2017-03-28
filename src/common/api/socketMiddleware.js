@@ -1,10 +1,11 @@
-import * as Colyseus from 'colyseus.js';
-
-const client = new Colyseus.Client('ws://wordbots-socket.herokuapp.com');
-//const client = new Colyseus.Client('ws://localhost:3553');
+const endpoint = 'ws://wordbots-socket.herokuapp.com';
+//const endpoint = 'ws://localhost:3553';
 const roomName = 'game';
 
-const socketMiddleware = (function (opts) {
+const createSocketMiddleware = (function (opts) {
+  const Colyseus = require('colyseus.js');
+  const client = new Colyseus.Client(endpoint);
+
   let room = null;
   let clientId = null;
 
@@ -51,4 +52,4 @@ const socketMiddleware = (function (opts) {
 
 });
 
-export default socketMiddleware;
+export default createSocketMiddleware;

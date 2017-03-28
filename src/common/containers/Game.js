@@ -19,6 +19,7 @@ import * as gameActions from '../actions/game';
 
 export function mapStateToProps(state) {
   return {
+    connecting: state.game.connecting,
     started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
@@ -234,7 +235,7 @@ export class Game extends Component {
           </Paper>
         </div>
       );
-    } else {
+    } else if (!this.props.connecting) {
       return (
         <div style={{paddingLeft: padding, margin: '48px 72px'}}>
           <Helmet title="Game"/>
@@ -277,6 +278,7 @@ export class Game extends Component {
 const { array, bool, func, number, object, string } = React.PropTypes;
 
 Game.propTypes = {
+  connecting: bool,
   started: bool,
   player: string,
   currentTurn: string,

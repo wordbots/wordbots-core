@@ -21,6 +21,11 @@ export default function game(oldState = cloneDeep(defaultState), action) {
       case gameActions.NEW_GAME:
         return Object.assign(state, {started: false});
 
+      case 'ws:CONNECTING':
+        return Object.assign(state, {connecting: true});
+      case 'ws:CONNECTED':
+        return Object.assign(state, {connecting: false});
+
       case gameActions.MOVE_ROBOT:
         return g.moveRobot(state, action.payload.from, action.payload.to);
 

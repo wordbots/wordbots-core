@@ -7,19 +7,23 @@ import createLogger from 'redux-logger';
 
 import DevTools from '../containers/DevTools';
 import promiseMiddleware from '../api/promiseMiddleware';
+import createSocketMiddleware from '../api/socketMiddleware';
 import rootReducer from '../reducers';
 import * as actions from '../actions/game';
 
 import { loadState, saveState } from './persistState';
 
 const middlewareBuilder = () => {
-  let middleware = {};
   const universalMiddleware = [thunk, promiseMiddleware, multi];
+
+  let middleware = {};
   let allComposeElements = [];
 
   if (process.browser) {
-    const socketMiddleware = require('../api/socketMiddleware').default({
-      excludedActions: [actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE]
+    const ignoredActions = [actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE];
+
+    const socketMiddleware = createSocketMiddleware({
+      excludedActions: ignoredActions
     });
 
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
@@ -32,7 +36,7 @@ const middlewareBuilder = () => {
       ];
     } else {
       const logger = createLogger({
-        predicate: (getState, action) => ![actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)
+        predicate: (getState, action) => !ignoredActions.includes(action.type)
       });
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);

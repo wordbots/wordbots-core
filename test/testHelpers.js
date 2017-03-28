@@ -1,15 +1,28 @@
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import { collection, attackBotCard } from '../src/common/store/cards';
-import defaultState from '../src/common/store/defaultGameState';
+import defaultGameState from '../src/common/store/defaultGameState';
+import defaultCreatorState from '../src/common/store/defaultCreatorState';
+import defaultCollectionState from '../src/common/store/defaultCollectionState';
+import defaultSocketState from '../src/common/store/defaultSocketState';
 import { instantiateCard } from '../src/common/util/common';
 import { allObjectsOnBoard, ownerOf, getAttribute, drawCards } from '../src/common/util/game';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
-  const state = _.cloneDeep(defaultState);
+  const state = _.cloneDeep(defaultGameState);
   const deck = [instantiateCard(attackBotCard)].concat(collection);
   return game(state, actions.startGame({orange: deck, blue: deck}));
+}
+
+export function combineState(gameState = defaultGameState) {
+  return {
+    game: gameState,
+    creator: defaultCreatorState,
+    collection: defaultCollectionState,
+    socket: defaultSocketState,
+    layout: {present: {}}
+  };
 }
 
 export function objectsOnBoardOfType(state, objectType) {
@@ -170,5 +183,3 @@ export function setUpBoardState(players) {
 
   return state;
 }
-
-

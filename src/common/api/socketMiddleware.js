@@ -5,6 +5,7 @@ const endpoint = 'ws://wordbots-socket.herokuapp.com';
 const roomName = 'game';
 
 const createSocketMiddleware = (function (opts) {
+  // Don't import Colyseus at top-level because its websocket dependency crashes in node.
   const Colyseus = require('colyseus.js');
   const client = new Colyseus.Client(endpoint);
 

@@ -1,20 +1,14 @@
+import { combineState } from '../testHelpers';
 import { getComponent } from '../reactHelpers';
 import CardCreationForm from '../../src/common/components/cards/CardCreationForm';
 import collectionReducer from '../../src/common/reducers/collection';
 import creatorReducer from '../../src/common/reducers/creator';
 import gameReducer from '../../src/common/reducers/game';
-import defaultCollectionState from '../../src/common/store/defaultCollectionState';
-import defaultCreatorState from '../../src/common/store/defaultCreatorState';
-import defaultGameState from '../../src/common/store/defaultGameState';
 
 describe('Creator container', () => {
   it('should be able to create a simple card and add it to the collection', () => {
     const dispatchedActions = [];
-    let state = {
-      collection: defaultCollectionState,
-      creator: defaultCreatorState,
-      game: defaultGameState
-    };
+    let state = combineState();
 
     function dispatch(action) {
       // console.log(action);

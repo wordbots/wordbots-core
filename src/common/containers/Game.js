@@ -55,7 +55,7 @@ export function mapStateToProps(state) {
     hosting: state.socket.hosting,
     availableDecks: state.collection.decks,
 
-    sidebarOpen: state.layout && state.layout.present.sidebarOpen
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 

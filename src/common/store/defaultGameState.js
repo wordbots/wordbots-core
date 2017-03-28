@@ -42,7 +42,6 @@ const defaultState = {
   },
   currentTurn: 'orange',
   player: null,
-  playingCardType: null,
   hoveredCard: null,
   status: {
     message: '',

@@ -29,7 +29,6 @@ export function setSelectedCard(state, playerName, cardIdx) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = null;
-        state.playingCardType = null;
         state.status.message = '';
       }
     } else {
@@ -39,11 +38,9 @@ export function setSelectedCard(state, playerName, cardIdx) {
       state.target.choosing = false; // Reset targeting state.
 
       if (getCost(selectedCard) <= energy.available) {
-        state.playingCardType = selectedCard.type;
         state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
         state.status.type = 'text';
       } else {
-        state.playingCardType = null;
         state.status.message = 'You do not have enough energy to play this card.';
         state.status.type = 'error';
       }
@@ -128,10 +125,10 @@ export function playEvent(state, cardIdx, command) {
     } else {
       state = discardCards(state, [card]);
 
-      activePlayer(state).selectedCard = null;
       state.playingCardType = null;
       state.status.message = '';
 
+      player.selectedCard = null;
       player.energy.available -= getCost(card);
     }
   }
@@ -142,6 +139,8 @@ export function playEvent(state, cardIdx, command) {
 }
 
 export function setTargetAndExecuteQueuedAction(state, target) {
+  const player = state.players[state.currentTurn];
+
   // Select target tile for event or afterPlayed trigger.
   state.target = {
     chosen: [target],
@@ -151,10 +150,10 @@ export function setTargetAndExecuteQueuedAction(state, target) {
   };
 
   // Perform the trigger.
-  const card = state.players[state.currentTurn].hand[activePlayer(state).selectedCard];
+  const card = player.hand[player.selectedCard];
 
   if (card.type === TYPE_EVENT) {
-    state = playEvent(state, activePlayer(state).selectedCard);
+    state = playEvent(state, player.selectedCard);
   } else {
     state = placeCard(state, card, state.placementTile);
   }

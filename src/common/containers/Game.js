@@ -19,17 +19,20 @@ import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 
 export function mapStateToProps(state) {
+  const activePlayer = state.game.players[state.game.player];
+  const currentPlayer = state.game.players[state.game.currentTurn];
+
   return {
     started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     winner: state.game.winner,
 
-    selectedTile: state.game.player ? state.game.players[state.game.player].selectedTile : null,
-    selectedCard: state.game.player ? state.game.players[state.game.player].selectedCard : null,
+    selectedTile: activePlayer.selectedTile,
+    selectedCard: activePlayer.selectedCard,
     hoveredCardIdx: state.game.hoveredCardIdx,
     hoveredCard: state.game.hoveredCard,
-    playingCardType: state.game.playingCardType,
+    playingCardType: currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard].type : null,
 
     status: state.game.status,
     target: state.game.target,
@@ -196,131 +199,130 @@ export class Game extends Component {
   }
 
   renderLobby() {
-    const padding = this.props.sidebarOpen ? 256 : 0;
     const paperStyle = {padding: 20, marginBottom: 20, position: 'relative'};
+    const buttonStyle = {position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'};
+
+    const [numPlayersElt, waitingElt, chooseDeckElt, joinGamesElt, startNewGameElt] = [
+      <Paper style={paperStyle}>
+        <div>{this.props.numPlayersOnline} player(s) online</div>
+      </Paper>,
+
+      <Paper style={paperStyle}>
+        <div>Waiting for an opponent ...</div>
+      </Paper>,
+
+      <Paper style={paperStyle}>
+        <SelectField
+          value={this.state['selectedDeck']}
+          floatingLabelText="Choose a deck"
+          style={{width: '80%', marginRight: 25}}
+          onChange={(e, idx, value) => {
+            this.setState(state => state.selectedDeck = idx);
+          }}>
+          {this.props.availableDecks.map((deck, idx) =>
+            <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
+          )}
+        </SelectField>
+      </Paper>,
+
+      (this.props.waitingPlayers || []).map(game =>
+        <Paper style={paperStyle} key={game.id}>
+          <div>
+            <b>{game.name}</b>
+          </div>
+          <RaisedButton
+            secondary
+            label="Join Game"
+            style={buttonStyle}
+            onTouchTap={e => {
+              const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
+              this.props.onJoinGame(game.id, SHUFFLE_DECKS ? shuffle(deck) : deck);
+            }} />
+        </Paper>
+      ),
+
+      <Paper style={paperStyle}>
+        <TextField
+          value={this.state['gameName']}
+          floatingLabelText="Game name"
+          style={{width: '50%'}}
+          onChange={e => { this.setState({gameName: e.target.value}); }} />
+        <RaisedButton
+          secondary
+          disabled={this.state.gameName === ''}
+          label="Host New Game"
+          style={buttonStyle}
+          onTouchTap={e => {
+            const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
+            this.props.onHostGame(this.state.gameName, SHUFFLE_DECKS ? shuffle(deck) : deck);
+          }} />
+      </Paper>
+    ];
 
     if (this.props.hosting) {
       return (
-        <div style={{paddingLeft: padding, margin: '48px auto', width: 800}}>
-          <Helmet title="Game"/>
-          <Paper style={paperStyle}>
-            <div>{this.props.numPlayersOnline} player(s) online</div>
-          </Paper>
-          <Paper style={paperStyle}>
-            <div>Waiting for an opponent ...</div>
-          </Paper>
+        <div>
+          {numPlayersElt}
+          {waitingElt}
         </div>
       );
     } else {
       return (
-        <div style={{paddingLeft: padding, margin: '48px auto', width: 800}}>
-          <Helmet title="Game"/>
-          <Paper style={paperStyle}>
-            <div>{this.props.numPlayersOnline || '?'} player(s) online</div>
-          </Paper>
-          {(this.props.waitingPlayers || []).map(game =>
-            <Paper style={paperStyle}>
-              <div>
-                <b>{game.name}</b>
-              </div>
-              <SelectField
-                value={this.state['selectedDeck']}
-                floatingLabelText="Deck"
-                style={{width: '80%', marginRight: 25}}
-                onChange={(e, idx, value) => {
-                  this.setState(state => state.selectedDeck = idx);
-                }}>
-                {this.props.availableDecks.map((deck, idx) =>
-                  <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
-                )}
-              </SelectField>
-              <RaisedButton
-                secondary
-                label="Join Game"
-                style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
-                onTouchTap={e => {
-                  const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
-                  this.props.onJoinGame(game.id, SHUFFLE_DECKS ? shuffle(deck) : deck);
-                }} />
-            </Paper>
-          )}
-          <Paper style={paperStyle}>
-            <TextField
-              value={this.state['gameName']}
-              floatingLabelText="Game Name"
-              style={{width: '80%', marginRight: 25}}
-              onChange={e => {
-                this.setState({gameName: e.target.value});
-              }} />
-            <SelectField
-              value={this.state['selectedDeck']}
-              floatingLabelText="Deck"
-              style={{width: '80%', marginRight: 25}}
-              onChange={(e, idx, value) => {
-                this.setState(state => state.selectedDeck = idx);
-              }}>
-              {this.props.availableDecks.map((deck, idx) =>
-                <MenuItem key={idx} value={idx} primaryText={`${deck.name} (${deck.cards.length} cards)`}/>
-              )}
-            </SelectField>
-            <RaisedButton
-              secondary
-              disabled={this.state.gameName === ''}
-              label="Host New Game"
-              style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
-              onTouchTap={e => {
-                console.log(this.state);
-                const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
-                this.props.onHostGame(this.state.gameName, SHUFFLE_DECKS ? shuffle(deck) : deck);
-              }} />
-          </Paper>
+        <div>
+          {numPlayersElt}
+          {chooseDeckElt}
+          {joinGamesElt}
+          {startNewGameElt}
         </div>
       );
     }
   }
 
-  render() {
-    const padding = this.props.sidebarOpen ? 256 : 0;
+  renderGameArea() {
+    return (
+      <Paper style={{padding: 20, position: 'relative'}}>
+        {this.renderPlayerArea('orange')}
 
-    if (!this.props.started) {
-      return this.renderLobby();
-    } else {
-      return (
-        <div style={{paddingLeft: padding, margin: '48px 72px'}}>
-          <Helmet title="Game"/>
-          <Paper style={{padding: 20, position: 'relative'}}>
-            {this.renderPlayerArea('orange')}
-
-            <div style={{position: 'relative'}}>
-              <CardViewer hoveredCard={this.hoveredCard()} />
-              <Status
-                currentTurn={this.props.currentTurn}
-                status={this.isMyTurn() ? this.props.status : {}} />
-              <Board
-                player={this.props.player}
-                currentTurn={this.props.currentTurn}
-                selectedTile={this.props.selectedTile}
-                target={this.props.target}
-                bluePieces={this.props.bluePieces}
-                orangePieces={this.props.orangePieces}
-                playingCardType={this.props.playingCardType}
-                onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
-                onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
-              <RaisedButton
-                secondary
-                disabled={!this.isMyTurn()}
-                label="End Turn"
-                style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
-                onTouchTap={this.props.onPassTurn} />
-            </div>
-
-            {this.renderPlayerArea('blue')}
-
-            <VictoryScreen winner={this.props.winner} onClick={this.props.onClick} />
-          </Paper>
+        <div style={{position: 'relative'}}>
+          <CardViewer hoveredCard={this.hoveredCard()} />
+          <Status
+            currentTurn={this.props.currentTurn}
+            status={this.isMyTurn() ? this.props.status : {}} />
+          <Board
+            player={this.props.player}
+            currentTurn={this.props.currentTurn}
+            selectedTile={this.props.selectedTile}
+            target={this.props.target}
+            bluePieces={this.props.bluePieces}
+            orangePieces={this.props.orangePieces}
+            playingCardType={this.props.playingCardType}
+            onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
+            onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
+          <RaisedButton
+            secondary
+            disabled={!this.isMyTurn()}
+            label="End Turn"
+            style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
+            onTouchTap={this.props.onPassTurn} />
         </div>
-      );
-    }
+
+        {this.renderPlayerArea('blue')}
+
+        <VictoryScreen winner={this.props.winner} onClick={this.props.onClick} />
+      </Paper>
+    );
+  }
+
+  render() {
+    return (
+      <div style={{
+        paddingLeft: this.props.sidebarOpen ? 256 : 0,
+        margin: '48px 72px'
+      }}>
+        <Helmet title="Game"/>
+        {this.props.started ? this.renderGameArea() : this.renderLobby()}
+      </div>
+    );
   }
 }
 

@@ -10,6 +10,7 @@ const createSocketMiddleware = (function (opts) {
     store.dispatch({type: 'ws:CONNECTING'});
     const room = client.join(roomName);
     let clientId = null;
+    let keepaliveNeeded = true;
 
     room.onJoin.add(() => {
       clientId = client.id;
@@ -23,11 +24,20 @@ const createSocketMiddleware = (function (opts) {
       }
     });
 
+    // Heroku requires keepalives at least every 55 sec.
+    setInterval(() => {
+      if (keepaliveNeeded) {
+        room.send(JSON.stringify({type: 'ws:KEEPALIVE'}));
+      }
+      keepaliveNeeded = true;
+    }, 50 * 1000);
+
     function handleMessage(action) {
       if (room &&
           !action.receivedFromSocket &&
           !(opts.excludedActions || []).includes(action.type)) {
         room.send(JSON.stringify(action));
+        keepaliveNeeded = false;
       }
     }
 

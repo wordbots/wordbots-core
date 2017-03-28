@@ -49,10 +49,6 @@ export default function game(oldState = cloneDeep(defaultState), action) {
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);
 
-      case 'ws:CONNECTING':
-        return Object.assign(state, {connecting: true});
-      case 'ws:CONNECTED':
-        return Object.assign(state, {connecting: false});
       case 'ws:INFO':
         return Object.assign(state, {
           waitingPlayers: action.payload.waitingPlayers,

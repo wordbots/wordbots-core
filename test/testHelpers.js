@@ -8,7 +8,7 @@ import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
   const state = _.cloneDeep(defaultState);
-  const deck = [attackBotCard].concat(collection);
+  const deck = [instantiateCard(attackBotCard)].concat(collection);
   return game(state, actions.startGame({orange: deck, blue: deck}));
 }
 

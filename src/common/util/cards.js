@@ -1,4 +1,4 @@
-import { debounce, every, flatMap, fromPairs, reduce } from 'lodash';
+import { countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 
@@ -32,6 +32,12 @@ export function isCardVisible(card, filters, costRange) {
   } else {
     return true;
   }
+}
+
+export function groupCards(cards) {
+  return uniqBy(cards, 'name').map(card =>
+    Object.assign(card, {count: countBy(cards, c => c.name)[card.name]})
+  );
 }
 
 // Sorting functions for card grids:

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import FontIcon from 'material-ui/lib/font-icon';
 import TextField from 'material-ui/lib/text-field';
 import RaisedButton from 'material-ui/lib/raised-button';
-import _ from 'lodash';
+import { sortBy } from 'lodash';
+
+import { groupCards } from '../../util/cards';
 
 // Widget representing the deck currently being created or modified.
 class ActiveDeck extends Component {
@@ -12,10 +14,6 @@ class ActiveDeck extends Component {
     this.state = {
       name: props.name
     };
-  }
-
-  groupCards(cards) {
-    return _.map(_.uniq(cards), card => _.extend({count: _.countBy(cards, c => c.name)[card.name]}, card));
   }
 
   render() {
@@ -37,7 +35,7 @@ class ActiveDeck extends Component {
           style={{width: '100%', marginBottom: 10}}
           onChange={e => { this.setState({name: e.target.value}); }} />
 
-        {_.sortBy(this.groupCards(this.props.cards), ['cost', 'name']).map((card, idx) =>
+        {sortBy(groupCards(this.props.cards), ['cost', 'name']).map((card, idx) =>
           <div
             style={{
               display: 'flex',

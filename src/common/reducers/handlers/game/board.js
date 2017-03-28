@@ -12,16 +12,18 @@ export function setHoveredTile(state, card) {
   return Object.assign({}, state, {hoveredCard: card});
 }
 
-export function setSelectedTile(state, tile) {
+export function setSelectedTile(state, playerName, tile) {
+  const player = state.players[playerName];
+
   if (state.target.choosing &&
       state.target.possibleHexes.includes(tile) &&
-      activePlayer(state).selectedCard !== null) {
+      player.selectedCard !== null) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    activePlayer(state).selectedTile = (activePlayer(state).selectedTile === tile) ? null : tile;
-    activePlayer(state).selectedCard = null;
+    player.selectedTile = (player.selectedTile === tile) ? null : tile;
+    player.selectedCard = null;
     state.playingCardType = null;
     state.status.message = '';
     return state;

@@ -27,7 +27,7 @@ describe('Game reducer', () => {
       const cardIdx = _.findIndex(state.players.orange.hand, c => c.name === cards.generalBotCard.name);
       state = newTurn(state, 'orange');
       state = game(state, [
-        actions.setSelectedCard(cardIdx),
+        actions.setSelectedCard(cardIdx, 'orange'),
         actions.placeCard('3,0,-3', cards.generalBotCard)
       ]);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
@@ -168,7 +168,7 @@ describe('Game reducer', () => {
       state = moveRobot(state, blueAttackBotPos, '-2,1,1');
       state = newTurn(state, 'blue');
       state = game(state, [
-        actions.setSelectedTile('-2,1,1'),
+        actions.setSelectedTile('-2,1,1', 'blue'),
         actions.moveRobotAndAttack('-2,1,1', blueAttackBotPos, orangeTankBotPos)
       ]);
       expect(

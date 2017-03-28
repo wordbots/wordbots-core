@@ -134,7 +134,7 @@ describe('Game container', () => {
     expect(
       clickCard(c => c.props.visible && c.props.name === 'Attack Bot')
     ).toEqual(
-      actions.setSelectedCard(0)
+      actions.setSelectedCard(0, 'orange')
     );
 
     // Place object.
@@ -155,7 +155,7 @@ describe('Game container', () => {
     expect(
       clickHex('3,0,-3')
     ).toEqual(
-      actions.setSelectedTile('3,0,-3')
+      actions.setSelectedTile('3,0,-3', 'orange')
     );
 
     // Move.

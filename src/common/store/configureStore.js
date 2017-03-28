@@ -19,7 +19,7 @@ const middlewareBuilder = () => {
 
   if (process.browser) {
     const socketMiddleware = require('../api/socketMiddleware').default({
-      excludedActions: [actions.SET_SELECTED_CARD, actions.SET_SELECTED_TILE, actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE]
+      excludedActions: [actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE]
     });
 
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {

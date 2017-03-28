@@ -20,7 +20,7 @@ class PlayerArea extends Component {
         <Hand
           //curved
           name={this.props.name}
-          onSelectCard={this.props.onSelectCard}
+          onSelectCard={idx => this.props.onSelectCard(idx, this.props.name)}
           onHoverCard={this.props.onHoverCard}
           selectedCard={this.props.selectedCard}
           hoveredCard={this.props.hoveredCard}

@@ -7,8 +7,8 @@ import {
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
-export function setSelectedCard(state, cardIdx) {
-  const player = activePlayer(state);
+export function setSelectedCard(state, playerName, cardIdx) {
+  const player = state.players[playerName];
   const selectedCard = player.hand[cardIdx];
   const energy = player.energy;
 

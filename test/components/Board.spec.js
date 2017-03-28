@@ -30,7 +30,7 @@ describe('Board component', () => {
   });
 
   describe('[Valid placement hexes]', () => {
-    const state = gameReducer(getDefaultState(), actions.setSelectedCard(0));
+    const state = gameReducer(getDefaultState(), actions.setSelectedCard(0, 'orange'));
 
     let dispatchedAction = null;
     const hexGrid = getComponent('Game', HexGrid, {game: state, collection: defaultCollectionState}, (action => { dispatchedAction = action; }));
@@ -66,7 +66,7 @@ describe('Board component', () => {
       }
     });
     state = newTurn(state, 'orange');  // Move to next orange turn so Attack Bot can move.
-    state = gameReducer(state, actions.setSelectedTile('1,0,-1'));
+    state = gameReducer(state, actions.setSelectedTile('1,0,-1', 'orange'));
 
     let dispatchedAction = null;
     const hexGrid = getComponent('Game', HexGrid, {game: state, collection: defaultCollectionState}, (action => { dispatchedAction = action; }));
@@ -108,7 +108,7 @@ describe('Board component', () => {
         } else if (color === 'red') {
           if (HexUtils.getID(hex) === '0,-1,1') {
             // This piece can be attacked via Move+attack.
-            expect(dispatchedAction.map(a => a.type)).toEqual([actions.MOVE_ROBOT, actions.ATTACK]);
+            expect(dispatchedAction.type).toEqual(actions.MOVE_ROBOT_AND_ATTACK);
           } else {
             // This piece can be attacked directly.
             expect(dispatchedAction.type).toEqual(actions.ATTACK);

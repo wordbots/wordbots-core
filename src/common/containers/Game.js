@@ -24,8 +24,8 @@ export function mapStateToProps(state) {
     currentTurn: state.game.currentTurn,
     winner: state.game.winner,
 
-    selectedTile: state.game.players[state.game.player].selectedTile,
-    selectedCard: state.game.players[state.game.player].selectedCard,
+    selectedTile: state.game.player ? state.game.players[state.game.player].selectedTile : null,
+    selectedCard: state.game.player ? state.game.players[state.game.player].selectedCard : null,
     hoveredCardIdx: state.game.hoveredCardIdx,
     hoveredCard: state.game.hoveredCard,
     playingCardType: state.game.playingCardType,
@@ -74,11 +74,11 @@ export function mapDispatchToProps(dispatch) {
     onPassTurn: () => {
       dispatch(gameActions.passTurn());
     },
-    onSelectCard: (index) => {
-      dispatch(gameActions.setSelectedCard(index));
+    onSelectCard: (index, player) => {
+      dispatch(gameActions.setSelectedCard(index, player));
     },
-    onSelectTile: (hexId) => {
-      dispatch(gameActions.setSelectedTile(hexId));
+    onSelectTile: (hexId, player) => {
+      dispatch(gameActions.setSelectedTile(hexId, player));
     },
     onHoverCard: (index) => {
       dispatch(gameActions.setHoveredCard(index));
@@ -150,7 +150,7 @@ export class Game extends Component {
     } else if (action === 'place') {
       this.placePiece(hexId);
     } else {
-      this.props.onSelectTile(hexId);
+      this.props.onSelectTile(hexId, this.props.player);
     }
   }
 
@@ -258,6 +258,7 @@ export class Game extends Component {
                 onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
               <RaisedButton
                 secondary
+                disabled={!this.isMyTurn()}
                 label="End Turn"
                 style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
                 onTouchTap={this.props.onPassTurn} />

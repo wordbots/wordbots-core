@@ -2,6 +2,7 @@ export const START_GAME = 'START_GAME';
 export const NEW_GAME = 'NEW_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
+export const MOVE_ROBOT_AND_ATTACK = 'MOVE_ROBOT_AND_ATTACK';
 export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
@@ -24,13 +25,12 @@ export function newGame() {
   };
 }
 
-export function moveRobot(fromHexId, toHexId, asPartOfAttack = false) {
+export function moveRobot(fromHexId, toHexId) {
   return {
     type: MOVE_ROBOT,
     payload: {
       from: fromHexId,
-      to: toHexId,
-      asPartOfAttack: asPartOfAttack
+      to: toHexId
     }
   };
 }
@@ -46,10 +46,14 @@ export function attack(sourceHexId, targetHexId) {
 }
 
 export function moveRobotAndAttack(fromHexId, toHexId, targetHexId) {
-  return [
-    moveRobot(fromHexId, toHexId, true),
-    attack(toHexId, targetHexId)
-  ];
+  return {
+    type: MOVE_ROBOT_AND_ATTACK,
+    payload: {
+      from: fromHexId,
+      to: toHexId,
+      target: targetHexId
+    }
+  };
 }
 
 export function placeCard(tile, card) {
@@ -69,19 +73,21 @@ export function passTurn() {
   };
 }
 
-export function setSelectedCard(cardId) {
+export function setSelectedCard(cardId, player) {
   return {
     type: SET_SELECTED_CARD,
     payload: {
+      player: player,
       selectedCard: cardId
     }
   };
 }
 
-export function setSelectedTile(hexId) {
+export function setSelectedTile(hexId, player) {
   return {
     type: SET_SELECTED_TILE,
     payload: {
+      player: player,
       selectedTile: hexId
     }
   };

@@ -25,7 +25,7 @@ function playerState(color, collection, coreCard, coreHexId) {
         id: `${color}Core`,
         card: coreCard,
         stats: coreCard.stats,
-        movesLeft: 0
+        movesMade: 0
       }
     }
   };

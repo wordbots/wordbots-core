@@ -5,7 +5,7 @@ import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
-  getAttribute, allowedToAttack, ownerOf,
+  getAttribute, movesLeft, allowedToAttack, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
 } from '../../util/game';
 
@@ -47,7 +47,7 @@ class Board extends Component {
 
     forOwn(this.allPieces(), (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
-      const canMove = this.props.currentTurn === owner && piece.movesLeft > 0;
+      const canMove = this.props.currentTurn === owner && movesLeft(piece) > 0;
 
       hexColors[hex] = `${canMove ? 'bright_' : ''}${owner}`;
     });
@@ -59,9 +59,9 @@ class Board extends Component {
     } else if (this.props.selectedTile) {
       const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-      if (selectedPiece && selectedPiece.movesLeft > 0) {
+      if (selectedPiece && movesLeft(selectedPiece) > 0) {
         const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, selectedPiece.movesLeft);
+        hexColors = this.colorMovementHexes(hex, hexColors, movesLeft(selectedPiece));
       }
     } else if (this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE) {
       this.getValidPlacementHexes().forEach((hex) => {
@@ -103,7 +103,7 @@ class Board extends Component {
 
     if (selectedPiece) {
       const selectedHex = HexUtils.IDToHex(this.props.selectedTile);
-      const speed = selectedPiece.movesLeft;
+      const speed = movesLeft(selectedPiece);
 
       const movementHexes = this.getValidMovementHexes(selectedHex, speed, selectedPiece).map(HexUtils.getID);
       const attackHexes = this.getValidAttackHexes(selectedHex, speed, selectedPiece).map(HexUtils.getID);

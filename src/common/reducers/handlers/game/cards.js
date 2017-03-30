@@ -1,3 +1,5 @@
+import { cloneDeep, isArray } from 'lodash';
+
 import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, getCost, checkVictoryConditions,
@@ -53,7 +55,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
 export function placeCard(state, card, tile) {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = _.cloneDeep(state);
+  let tempState = cloneDeep(state);
 
   const player = currentPlayer(tempState);
 
@@ -112,7 +114,7 @@ export function playEvent(state, cardIdx, command) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
     card.justPlayed = true;
 
-    (_.isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
+    (isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
       if (!state.target.choosing) {
         executeCmd(state, subcmd);
       }

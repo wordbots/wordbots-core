@@ -1,4 +1,4 @@
-import { cloneDeep, flatMap, some, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, some, without } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
@@ -93,7 +93,7 @@ export function matchesType(objectOrCard, cardTypeQuery) {
   const cardType = objectOrCard.card ? objectOrCard.card.type : objectOrCard.type;
   if (['anycard', 'allobjects'].includes(cardTypeQuery)) {
     return true;
-  } else if (_.isArray(cardTypeQuery)) {
+  } else if (isArray(cardTypeQuery)) {
     return cardTypeQuery.map(stringToType).includes(cardType);
   } else {
     return stringToType(cardTypeQuery) === cardType;
@@ -115,7 +115,7 @@ export function checkVictoryConditions(state) {
 //
 
 export function getHex(state, object) {
-  return _.findKey(allObjectsOnBoard(state), ['id', object.id]);
+  return findKey(allObjectsOnBoard(state), ['id', object.id]);
 }
 
 export function getAdjacentHexes(hex) {
@@ -196,7 +196,7 @@ export function discardCards(state, cards) {
   // At the moment, only the currently active player can ever play or discard a card.
   const player = currentPlayer(state);
   const cardIds = cards.map(c => c.id);
-  player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
+  player.hand = filter(player.hand, c => !cardIds.includes(c.id));
   return state;
 }
 

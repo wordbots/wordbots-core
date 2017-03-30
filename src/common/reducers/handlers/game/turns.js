@@ -1,3 +1,5 @@
+import { mapValues } from 'lodash';
+
 import { currentPlayer, opponentName, drawCards, triggerEvent, newGame } from '../../../util/game';
 
 export function startNewGame(state, player, decks) {
@@ -8,7 +10,7 @@ export function startTurn(state) {
   const player = currentPlayer(state);
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
-  player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot =>
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
     Object.assign({}, robot, {cantMove: false, movesMade: 0})
   ));
 

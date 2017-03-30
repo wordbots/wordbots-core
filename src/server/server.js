@@ -39,8 +39,8 @@ const renderFullPage = (html, initialState, head) => `
   `;
 
 if (process.env.NODE_ENV !== 'production') {
-  const webpackDevMiddleware = require('webpack-dev-middleware').default;
-  const webpackHotMiddleware = require('webpack-hot-middleware').default;
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
 
   const compiler = webpack(webpackConfig);
   compiler.plugin('done', () => {

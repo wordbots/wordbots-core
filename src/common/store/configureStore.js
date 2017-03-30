@@ -33,7 +33,7 @@ const middlewareBuilder = () => {
         })
       ];
     } else {
-      const createLogger = require('redux-logger').default;
+      const createLogger = require('redux-logger');
       const DevTools = require('../containers/DevTools').default;
 
       const logger = createLogger({

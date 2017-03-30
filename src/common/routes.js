@@ -1,4 +1,4 @@
-import { Route } from 'react-router';
+import { Route, DefaultRoute } from 'react-router';
 import React from 'react';
 
 import App from './containers/App';
@@ -13,7 +13,6 @@ import Decks from './containers/Decks';
 
 export default (
   <Route name="app" path="/" component={App}>
-    <Route path="/" component={Collection} />
     <Route path="home" component={Collection} />
     <Route path="game" component={Game} />
     <Route path="creator" component={Creator} />

@@ -63,8 +63,7 @@ class App extends Component {
       <div>
         <Header/>
         <div>
-          {!this.props.children && <Home />}
-          {this.props.children}
+          {this.props.children || <Home />}
         </div>
       </div>
     );

@@ -1,8 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { RoutingContext, match } from 'react-router';
@@ -41,12 +39,16 @@ const renderFullPage = (html, initialState, head) => `
   `;
 
 if (process.env.NODE_ENV !== 'production') {
+  const webpackDevMiddleware = require('webpack-dev-middleware').default;
+  const webpackHotMiddleware = require('webpack-hot-middleware').default;
+
   const compiler = webpack(webpackConfig);
   compiler.plugin('done', () => {
     if( process.env.NODE_ENV === 'test' ) {
       process.exit();
     }
   });
+
   app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
   app.use(webpackHotMiddleware(compiler));
 } else {
@@ -116,9 +118,9 @@ app.get('/*', (req, res) => {
   );
 });
 
-const server = app.listen(3000, () => {
-  const port = server.address().port;
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
   /* eslint-disable no-console */
-  console.log('App listening at http://localhost:%s', port);
+  console.log('App listening at http://localhost:%s', server.address().port);
   /* eslint-enable no-console */
 });

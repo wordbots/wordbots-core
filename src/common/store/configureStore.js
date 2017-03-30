@@ -3,9 +3,7 @@ import multi from 'redux-multi';
 import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
-import createLogger from 'redux-logger';
 
-import DevTools from '../containers/DevTools';
 import promiseMiddleware from '../api/promiseMiddleware';
 import rootReducer from '../reducers';
 import * as gameActions from '../actions/game';
@@ -27,6 +25,9 @@ const middlewareBuilder = () => {
         })
       ];
     } else {
+      const createLogger = require('redux-logger').default;
+      const DevTools = require('../containers/DevTools').default;
+
       const logger = createLogger({
         predicate: (getState, action) => ![gameActions.SET_HOVERED_CARD, gameActions.SET_HOVERED_TILE].includes(action.type)
       });

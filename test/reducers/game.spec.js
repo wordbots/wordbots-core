@@ -96,7 +96,7 @@ describe('Game reducer', () => {
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({'1,0,-1': 'Attack Bot'});
 
-      // Robots cannot move after they've exhausted their movesLeft.
+      // Robots cannot move after they've their movesMade reaches their speed.
       state = moveRobot(state, '1,0,-1', '0,0,0'); // Try to move 1 space.
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
@@ -107,9 +107,12 @@ describe('Game reducer', () => {
       // Robots can perform a partial move.
       state = moveRobot(state, '1,0,-1', '0,0,0'); // Move 1 space.
       state = moveRobot(state, '0,0,0', '-1,0,1'); // Move 1 space again.
+      state = playEvent(state, 'orange', cards.threedomCard); // Increase speed from 2 to 3 ...
+      state = moveRobot(state, '-1,0,1', '-2,0,2'); // ... and move 1 space again.
+
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'-1,0,1': 'Attack Bot'});
+      ).toEqual({'-2,0,2': 'Attack Bot'});
     });
 
     it('should be able to handle combat between robots', () => {

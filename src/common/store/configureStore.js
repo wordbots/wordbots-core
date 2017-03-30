@@ -3,9 +3,7 @@ import multi from 'redux-multi';
 import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
-import createLogger from 'redux-logger';
 
-import DevTools from '../containers/DevTools';
 import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
 import rootReducer from '../reducers';
@@ -35,6 +33,9 @@ const middlewareBuilder = () => {
         })
       ];
     } else {
+      const createLogger = require('redux-logger').default;
+      const DevTools = require('../containers/DevTools').default;
+
       const logger = createLogger({
         predicate: (getState, action) => !ignoredActions.includes(action.type)
       });

@@ -9,7 +9,7 @@ export function startTurn(state) {
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.robotsOnBoard = _.mapValues(player.robotsOnBoard, (robot =>
-    Object.assign({}, robot, {movesLeft: robot.stats.speed})
+    Object.assign({}, robot, {cantMove: false, movesMade: 0})
   ));
 
   state = drawCards(state, player, 1);

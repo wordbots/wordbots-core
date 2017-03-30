@@ -8,7 +8,7 @@ import {
 export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
-      objects.forEach(object => { object.movesLeft = object.stats.speed; });
+      objects.forEach(object => { Object.assign(object, {movesMade: 0, cantMove: false}); });
     },
 
     dealDamage: function (targets, amount) {

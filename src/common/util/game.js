@@ -54,6 +54,10 @@ export function getAttribute(object, attr) {
   }
 }
 
+export function movesLeft(robot) {
+  return robot.cantMove ? 0 : getAttribute(robot, 'speed') - robot.movesMade;
+}
+
 export function getCost(card) {
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.

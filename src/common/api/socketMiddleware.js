@@ -1,6 +1,6 @@
 import * as actions from '../actions/socket';
 
-const endpoint = 'ws://wordbots-socket.herokuapp.com';
+const endpoint = 'wss://wordbots-socket.herokuapp.com';
 //const endpoint = 'ws://localhost:3553';
 const roomName = 'game';
 

@@ -10,6 +10,7 @@ import gameReducer from '../../src/common/reducers/game';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
 import CardViewer from '../../src/common/components/game/CardViewer';
+import Chat from '../../src/common/components/game/Chat';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
@@ -54,7 +55,8 @@ describe('Game container', () => {
         </div>
         <PlayerArea color={'blue'} gameProps={game.props} />
         <VictoryScreen winner={null} onClick={game.props.onClick} />
-      </Paper>
+      </Paper>,
+      <Chat messages={[]} onSendMessage={game.props.onSendChatMessage} />
     ]);
   });
 

@@ -4,28 +4,56 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
-import { shuffle } from 'lodash';
+import { debounce, filter, shuffle } from 'lodash';
 
 import { SHUFFLE_DECKS } from '../../constants';
-import { instantiateCard } from '../../util/common';
+import { id, instantiateCard } from '../../util/common';
+
+const defaultUsername = id();
 
 export class Lobby extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      username: props.socket.username || defaultUsername,
       gameName: '',
       selectedDeck: 0
     };
+
+    this.setUsername = debounce(username => {
+      this.props.onSetUsername(username);
+    }, 500);
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.props.onSetUsername(this.props.socket.username || defaultUsername);
+    }, 100);
   }
 
   render() {
     const paperStyle = {padding: 20, marginBottom: 20, position: 'relative'};
     const buttonStyle = {position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'};
 
-    const [numPlayersElt, waitingElt, chooseDeckElt, joinGamesElt, startNewGameElt] = [
+    const [usernameElt, numPlayersElt, waitingElt, chooseDeckElt, joinGamesElt, startNewGameElt] = [
       <Paper style={paperStyle}>
-        <div>{this.props.socket.numPlayersOnline || 0} player(s) online</div>
+        <div>Your username is:
+          <TextField
+            value={this.state.username}
+            style={{marginLeft: 12, width: '50%'}}
+            onChange={e => {
+              this.setState({username: e.target.value});
+              this.setUsername(e.target.value);
+            }} />
+        </div>
+      </Paper>,
+
+      <Paper style={paperStyle}>
+        <div>
+          <b>{this.props.socket.playersOnline.length} player(s) online: </b>
+          {filter(this.props.socket.playersOnline.map(p => this.props.socket.clientIdToUsername[p])).join(', ')}
+        </div>
       </Paper>,
 
       <Paper style={paperStyle}>
@@ -81,6 +109,7 @@ export class Lobby extends Component {
     if (this.props.socket.hosting) {
       return (
         <div>
+          {usernameElt}
           {numPlayersElt}
           {waitingElt}
         </div>
@@ -88,6 +117,7 @@ export class Lobby extends Component {
     } else {
       return (
         <div>
+          {usernameElt}
           {numPlayersElt}
           {chooseDeckElt}
           {joinGamesElt}
@@ -105,7 +135,8 @@ Lobby.propTypes = {
   availableDecks: array,
 
   onJoinGame: func,
-  onHostGame: func
+  onHostGame: func,
+  onSetUsername: func
 };
 
 export default Lobby;

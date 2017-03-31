@@ -19,6 +19,7 @@ export function connected() {
 
 export const HOST = 'ws:HOST';
 export const JOIN = 'ws:JOIN';
+export const SET_USERNAME = 'ws:SET_USERNAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
 export function host(name, deck) {
@@ -35,9 +36,27 @@ export function join(id, deck) {
   };
 }
 
+export function setUsername(username) {
+  return {
+    type: SET_USERNAME,
+    payload: { username }
+  };
+}
+
 export function keepalive() {
   return {
     type: KEEPALIVE
+  };
+}
+
+// Client => server => client
+
+export const CHAT = 'ws:CHAT';
+
+export function chat(msg) {
+  return {
+    type: CHAT,
+    payload: { msg }
   };
 }
 

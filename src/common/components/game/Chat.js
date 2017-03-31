@@ -9,13 +9,10 @@ import Divider from 'material-ui/lib/divider';
 class Chat extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      chatFieldValue: '',
-      chatMessages: []
-    };
 
-    this.onChatEnter = this.onChatEnter.bind(this);
-    this.onChatChange = this.onChatChange.bind(this);
+    this.state = {
+      chatFieldValue: ''
+    };
   }
 
   render() {
@@ -30,15 +27,21 @@ class Chat extends Component {
 
           <div style={{zIndex: 1, padding: 10}}>
             {
-              this.state.chatMessages.map((message) => <div style={{marginBottom: 5}}><b>{message.user}</b>: {message.text}</div>)
+              this.props.messages.map((message, idx) =>
+                <div
+                  key={idx}
+                  style={{marginBottom: 5}}>
+                  <b>{message.user}</b>: {message.text}
+                </div>
+              )
             }
           </div>
 
           <div style={{position: 'absolute', bottom: 0, zIndex: 2, backgroundColor: '#fff'}}>
             <Divider />
-            <TextField hintText="Chat" autoComplete="off" style={{margin: 10, width: 236}} 
-              value={this.state.chatFieldValue} onChange={this.onChatChange} 
-              onEnterKeyDown={this.onChatEnter}/>
+            <TextField hintText="Chat" autoComplete="off" style={{margin: 10, width: 236}}
+              value={this.state.chatFieldValue} onChange={this.onChatChange.bind(this)}
+              onEnterKeyDown={this.onChatEnter.bind(this)}/>
           </div>
         </Drawer>
       </div>
@@ -52,17 +55,19 @@ class Chat extends Component {
   }
 
   onChatEnter() {
-    const newChatMessages = this.state.chatMessages;
-    newChatMessages.push({
-      user: 'You',
-      text: this.state.chatFieldValue
-    });
-
+    this.props.onSendMessage(this.state.chatFieldValue);
     this.setState({
-      chatFieldValue: '',
-      chatMessages: newChatMessages
+      chatFieldValue: ''
     });
   }
 }
+
+const { array, func } = React.PropTypes;
+
+Chat.propTypes = {
+  messages: array,
+
+  onSendMessage: func
+};
 
 export default Chat;

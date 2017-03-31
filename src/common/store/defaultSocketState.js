@@ -1,7 +1,10 @@
 const defaultState = {
+  username: null,
   hosting: false,
-  numPlayersOnline: 0,
-  waitingPlayers: []
+  playersOnline: [],
+  waitingPlayers: [],
+  chatMessages: [],
+  clientIdToUsername: {}
 };
 
 export default defaultState;

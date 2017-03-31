@@ -8,6 +8,7 @@ import { isNil } from 'lodash';
 import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
 import CardViewer from '../components/game/CardViewer';
+import Chat from '../components/game/Chat';
 import Lobby from '../components/game/Lobby';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
@@ -60,6 +61,12 @@ export function mapDispatchToProps(dispatch) {
     },
     onJoinGame: (id, deck) => {
       dispatch(socketActions.join(id, deck));
+    },
+    onSetUsername: (username) => {
+      dispatch(socketActions.setUsername(username));
+    },
+    onSendChatMessage: (msg) => {
+      dispatch(socketActions.chat(msg));
     },
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -205,7 +212,8 @@ export class Game extends Component {
           socket={this.props.socket}
           availableDecks={this.props.availableDecks}
           onHostGame={this.props.onHostGame}
-          onJoinGame={this.props.onJoinGame} />
+          onJoinGame={this.props.onJoinGame}
+          onSetUsername={this.props.onSetUsername} />
       );
     }
   }
@@ -214,10 +222,14 @@ export class Game extends Component {
     return (
       <div style={{
         paddingLeft: this.props.sidebarOpen ? 256 : 0,
+        paddingRight: 256,
         margin: '48px 72px'
       }}>
         <Helmet title="Game"/>
         {this.renderGameArea()}
+        <Chat
+          messages={this.props.socket.chatMessages}
+          onSendMessage={this.props.onSendChatMessage} />
       </div>
     );
   }
@@ -258,6 +270,8 @@ Game.propTypes = {
 
   onHostGame: func,
   onJoinGame: func,
+  onSetUsername: func,
+  onSendChatMessage: func,
   onMoveRobot: func,
   onAttackRobot: func,
   onMoveRobotAndAttack: func,

@@ -2,6 +2,7 @@ import * as actions from '../actions/socket';
 
 const endpoint = 'wss://wordbots-socket.herokuapp.com';
 //const endpoint = 'ws://localhost:3553';
+
 const roomName = 'game';
 
 const createSocketMiddleware = (function ({excludedActions = []}) {
@@ -27,8 +28,11 @@ const createSocketMiddleware = (function ({excludedActions = []}) {
     }
 
     function receive(msg) {
-      const {id, action} = JSON.parse(msg);
-      if (!id || id === clientId) {
+      const {recipients, action} = JSON.parse(msg);
+      // Accept messages directed to this client (or to everybody)
+      // that *don't* have this client listed as a sender
+      // (this is to avoid double-counting chat messages - only chat messages have a sender field currently).
+      if (!recipients || (recipients.includes(clientId)) && action.payload.sender !== clientId) {
         store.dispatch(Object.assign({}, action, {fromServer: true}));
       }
     }

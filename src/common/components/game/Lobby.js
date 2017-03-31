@@ -7,16 +7,14 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import { debounce, filter, shuffle } from 'lodash';
 
 import { SHUFFLE_DECKS } from '../../constants';
-import { id, instantiateCard } from '../../util/common';
-
-const defaultUsername = id();
+import { instantiateCard } from '../../util/common';
 
 export class Lobby extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: props.socket.username || defaultUsername,
+      username: props.socket.username,
       gameName: '',
       selectedDeck: 0
     };
@@ -27,9 +25,11 @@ export class Lobby extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.props.onSetUsername(this.props.socket.username || defaultUsername);
-    }, 100);
+    if (this.props.socket.username) {
+      setTimeout(() => {
+        this.props.onSetUsername(this.props.socket.username);
+      }, 100);
+    }
   }
 
   render() {

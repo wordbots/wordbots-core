@@ -9,6 +9,8 @@ import { debounce, shuffle } from 'lodash';
 import { SHUFFLE_DECKS } from '../../constants';
 import { instantiateCard } from '../../util/common';
 
+import GameBrowser from './GameBrowser';
+
 export class Lobby extends Component {
   constructor(props) {
     super(props);
@@ -79,21 +81,13 @@ export class Lobby extends Component {
         </SelectField>
       </Paper>,
 
-      skt.waitingPlayers.map(game =>
-        <Paper style={paperStyle} key={game.id}>
-          <div>
-            <b>{game.name}</b>
-          </div>
-          <RaisedButton
-            secondary
-            label="Join Game"
-            style={buttonStyle}
-            onTouchTap={e => {
-              const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
-              this.props.onJoinGame(game.id, game.name, SHUFFLE_DECKS ? shuffle(deck) : deck);
-            }} />
-        </Paper>
-      ),
+      <GameBrowser
+        openGames={skt.waitingPlayers}
+        clientIdToUsername={skt.clientIdToUsername}
+        onJoinGame={(gameId, gameName) => {
+          const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
+          this.props.onJoinGame(gameId, gameName, SHUFFLE_DECKS ? shuffle(deck) : deck);
+        }} />,
 
       <Paper style={paperStyle}>
         <TextField

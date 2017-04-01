@@ -508,12 +508,13 @@ a {
 
 ::-webkit-scrollbar
 {
-  width: 10px;
+  width: 12px;
   background-color: #F5F5F5;
 }
 
 ::-webkit-scrollbar-thumb
 {
   background-color: #f44336;
-  border: 1px solid #555555;
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
 }

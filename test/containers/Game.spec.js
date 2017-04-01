@@ -56,7 +56,7 @@ describe('Game container', () => {
         <PlayerArea color={'blue'} gameProps={game.props} />
         <VictoryScreen winner={null} onClick={game.props.onClick} />
       </Paper>,
-      <Chat messages={[]} onSendMessage={game.props.onSendChatMessage} />
+      <Chat roomName={null} messages={[]} onSendMessage={game.props.onSendChatMessage} />
     ]);
   });
 

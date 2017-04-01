@@ -46,7 +46,8 @@ class Chat extends Component {
                   key={idx}
                   style={{
                     color: message.user === '[Game]' ? '#666' : '#000',
-                    marginBottom: 5
+                    marginBottom: 5,
+                    wordBreak: 'break-all'
                   }}>
                   <b>{message.user}</b>: {message.text}
                 </div>

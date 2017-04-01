@@ -9,29 +9,21 @@ const createSocketMiddleware = (function ({excludedActions = []}) {
   // Don't import Colyseus at top-level because its websocket dependency crashes in node.
   const Colyseus = require('colyseus.js');
   const client = new Colyseus.Client(endpoint);
+  const username = localStorage['wb$username'];
 
   return store => {
-    const room = client.join(roomName);
+    const room = client.join(roomName, {username: username});
     let clientId = null;
-    let username = null;
     let keepaliveNeeded = true;
 
     function handleAction(action, next) {
-      if (action.type === actions.SET_USERNAME) {
-        username = action.payload.username;
-      }
-
       send(action);
-
       return next(action); // Pass action to next middleware.
     }
 
     function connected() {
       clientId = client.id;
       store.dispatch(actions.connected(clientId));
-      if (username) {
-        send(actions.setUsername(username));
-      }
     }
 
     function send(action) {

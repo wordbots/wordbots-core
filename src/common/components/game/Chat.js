@@ -30,7 +30,10 @@ class Chat extends Component {
               this.props.messages.map((message, idx) =>
                 <div
                   key={idx}
-                  style={{marginBottom: 5}}>
+                  style={{
+                    color: message.user === '[Game]' ? '#666' : '#000',
+                    marginBottom: 5
+                  }}>
                   <b>{message.user}</b>: {message.text}
                 </div>
               )

@@ -39,6 +39,7 @@ export class Lobby extends Component {
   }
 
   render() {
+    const skt = this.props.socket;
     const paperStyle = {padding: 20, marginBottom: 20, position: 'relative'};
     const buttonStyle = {position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'};
 
@@ -57,8 +58,8 @@ export class Lobby extends Component {
 
       <Paper style={paperStyle}>
         <div>
-          <b>{this.props.socket.playersOnline.length} player(s) online: </b>
-          {filter(this.props.socket.playersOnline.map(p => this.props.socket.clientIdToUsername[p])).join(', ')}
+          <b>{skt.playersOnline.length} player(s) online: </b>
+          {skt.playersOnline.map(p => skt.clientIdToUsername[p] || p).join(', ')}
         </div>
       </Paper>,
 
@@ -78,7 +79,7 @@ export class Lobby extends Component {
         </SelectField>
       </Paper>,
 
-      this.props.socket.waitingPlayers.map(game =>
+      skt.waitingPlayers.map(game =>
         <Paper style={paperStyle} key={game.id}>
           <div>
             <b>{game.name}</b>
@@ -112,7 +113,7 @@ export class Lobby extends Component {
       </Paper>
     ];
 
-    if (this.props.socket.hosting) {
+    if (skt.hosting) {
       return (
         <div>
           {usernameElt}

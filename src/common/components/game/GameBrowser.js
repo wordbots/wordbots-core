@@ -13,6 +13,41 @@ export class GameBrowser extends Component {
     super(props);
   }
 
+  renderTableRows() {
+    if (this.props.openGames > 0) {
+      return (
+        this.props.openGames.map(game =>
+          <TableRow key={game.id}>
+            <TableRowColumn>{game.name}</TableRowColumn>
+            <TableRowColumn>{this.props.clientIdToUsername[game.id]}</TableRowColumn>
+            <TableRowColumn style={{textAlign: 'right'}}>
+              <RaisedButton
+                secondary
+                label="Join Game"
+                onTouchTap={e => {
+                  this.props.onJoinGame(game.id, game.name);
+                }} />
+            </TableRowColumn>
+          </TableRow>
+        )
+      );
+    } else {
+      return (
+        <TableRow>
+          <TableRowColumn 
+            colSpan="3"
+            style={{
+              fontSize: 32,
+              fontStyle: 'italic',
+              fontWeight: 300,
+              textAlign: 'center',
+              padding: 24
+            }}>No open games.</TableRowColumn>
+        </TableRow>
+      );
+    }
+  }
+
   render() {
     return (
       <Paper style={{
@@ -30,20 +65,7 @@ export class GameBrowser extends Component {
             showRowHover={true}
             stripedRows={false}
             displayRowCheckbox={false}>
-            {this.props.openGames.map(game =>
-              <TableRow key={game.id}>
-                <TableRowColumn>{game.name}</TableRowColumn>
-                <TableRowColumn>{this.props.clientIdToUsername[game.id]}</TableRowColumn>
-                <TableRowColumn style={{textAlign: 'right'}}>
-                  <RaisedButton
-                    secondary
-                    label="Join Game"
-                    onTouchTap={e => {
-                      this.props.onJoinGame(game.id, game.name);
-                    }} />
-                </TableRowColumn>
-              </TableRow>
-            )}
+            {this.renderTableRows()}
           </TableBody>
         </Table>        
       </Paper>

@@ -59,8 +59,8 @@ export function mapDispatchToProps(dispatch) {
     onHostGame: (name, deck) => {
       dispatch(socketActions.host(name, deck));
     },
-    onJoinGame: (id, deck) => {
-      dispatch(socketActions.join(id, deck));
+    onJoinGame: (id, name, deck) => {
+      dispatch(socketActions.join(id, name, deck));
     },
     onSetUsername: (username) => {
       dispatch(socketActions.setUsername(username));
@@ -228,6 +228,7 @@ export class Game extends Component {
         <Helmet title="Game"/>
         {this.renderGameArea()}
         <Chat
+          roomName={this.props.socket.gameName}
           messages={this.props.socket.chatMessages}
           onSendMessage={this.props.onSendChatMessage} />
       </div>

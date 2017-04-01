@@ -30,10 +30,10 @@ export function host(name, deck) {
   };
 }
 
-export function join(id, deck) {
+export function join(id, name, deck) {
   return {
     type: JOIN,
-    payload: { id, deck }
+    payload: { id, name, deck }
   };
 }
 

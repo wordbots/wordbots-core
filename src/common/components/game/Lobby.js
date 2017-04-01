@@ -90,7 +90,7 @@ export class Lobby extends Component {
             style={buttonStyle}
             onTouchTap={e => {
               const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
-              this.props.onJoinGame(game.id, SHUFFLE_DECKS ? shuffle(deck) : deck);
+              this.props.onJoinGame(game.id, game.name, SHUFFLE_DECKS ? shuffle(deck) : deck);
             }} />
         </Paper>
       ),

@@ -21,7 +21,7 @@ class Chat extends Component {
         <Drawer openRight docked style={{paddingTop: '66px'}}>
           <Toolbar>
             <ToolbarGroup float="left">
-              <ToolbarTitle text="Chat" />
+              <ToolbarTitle text={this.props.roomName || 'Lobby'} />
             </ToolbarGroup>
           </Toolbar>
 
@@ -65,9 +65,10 @@ class Chat extends Component {
   }
 }
 
-const { array, func } = React.PropTypes;
+const { array, func, string } = React.PropTypes;
 
 Chat.propTypes = {
+  roomName: string,
   messages: array,
 
   onSendMessage: func

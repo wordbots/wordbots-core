@@ -31,6 +31,9 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
     case socketActions.HOST:
       return Object.assign(state, {hosting: true});
 
+    case socketActions.JOIN:
+      return Object.assign(state, {gameName: action.payload.name});
+
     case socketActions.SET_USERNAME:
       return Object.assign(state, {username: action.payload.username});
 

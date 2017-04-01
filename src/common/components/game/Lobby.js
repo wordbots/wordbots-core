@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
-import { debounce, filter, shuffle } from 'lodash';
+import { debounce, shuffle } from 'lodash';
 
 import { SHUFFLE_DECKS } from '../../constants';
 import { instantiateCard } from '../../util/common';

@@ -48,7 +48,7 @@ class Chat extends Component {
                   style={{
                     color: message.user === '[Game]' ? '#666' : '#000',
                     marginBottom: 5,
-                    wordBreak: 'break-all'
+                    wordBreak: 'break-word'
                   }}>
                   <b>{message.user}</b>: {message.text}
                 </div>

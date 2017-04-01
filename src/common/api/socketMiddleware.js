@@ -1,7 +1,7 @@
 import * as actions from '../actions/socket';
 
 const endpoint = 'wss://wordbots-socket.herokuapp.com';
-//const endpoint = 'ws://localhost:3553';
+// const endpoint = 'ws://localhost:3553';
 
 const roomName = 'game';
 
@@ -13,11 +13,25 @@ const createSocketMiddleware = (function ({excludedActions = []}) {
   return store => {
     const room = client.join(roomName);
     let clientId = null;
+    let username = null;
     let keepaliveNeeded = true;
+
+    function handleAction(action, next) {
+      if (action.type === actions.SET_USERNAME) {
+        username = action.payload.username;
+      }
+
+      send(action);
+
+      return next(action); // Pass action to next middleware.
+    }
 
     function connected() {
       clientId = client.id;
-      store.dispatch(actions.connected());
+      store.dispatch(actions.connected(clientId));
+      if (username) {
+        send(actions.setUsername(username));
+      }
     }
 
     function send(action) {
@@ -37,9 +51,9 @@ const createSocketMiddleware = (function ({excludedActions = []}) {
       }
     }
 
-    function keepAlive() {
+    function keepalive() {
       if (keepaliveNeeded) {
-        room.send(JSON.stringify(actions.keepalive()));
+        send(actions.keepalive());
       }
       keepaliveNeeded = true;
     }
@@ -47,12 +61,9 @@ const createSocketMiddleware = (function ({excludedActions = []}) {
     store.dispatch(actions.connecting());
     room.onJoin.add(connected);
     room.state.listen('messages/', 'add', receive);
-    setInterval(keepAlive, 30 * 1000); // (Heroku kills connection after 55 idle sec.)
+    setInterval(keepalive, 10 * 1000); // (Heroku kills connection after 55 idle sec.)
 
-    return next => action => {
-      send(action);
-      return next(action); // Pass action to next middleware.
-    };
+    return next => action => handleAction(action, next);
   };
 
 });

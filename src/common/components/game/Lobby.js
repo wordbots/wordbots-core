@@ -26,9 +26,15 @@ export class Lobby extends Component {
 
   componentDidMount() {
     if (this.props.socket.username) {
-      setTimeout(() => {
-        this.props.onSetUsername(this.props.socket.username);
-      }, 100);
+      this.props.onSetUsername(this.props.socket.username);
+    }
+  }
+
+  componentWillUpdate(nextProps) {
+    // Default username to clientId.
+    if (!this.state.username && nextProps.socket.clientId) {
+      this.state.username = nextProps.socket.clientId;
+      this.props.onSetUsername(nextProps.socket.clientId);
     }
   }
 

@@ -7,6 +7,9 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
   const state = Object.assign({}, oldState);
 
   switch (action.type) {
+    case socketActions.CONNECTED:
+      return Object.assign(state, {clientId: action.payload.clientId});
+
     case socketActions.CHAT: {
       const message = {
         user: action.payload.sender ? (state.clientIdToUsername[action.payload.sender] || action.payload.sender) : 'You',

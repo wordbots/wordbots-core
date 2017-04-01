@@ -9,9 +9,10 @@ export function connecting() {
   };
 }
 
-export function connected() {
+export function connected(clientId) {
   return {
-    type: CONNECTED
+    type: CONNECTED,
+    payload: { clientId }
   };
 }
 

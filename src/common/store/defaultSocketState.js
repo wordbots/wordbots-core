@@ -1,5 +1,6 @@
 const defaultState = {
   username: null,
+  clientId: null,
   hosting: false,
   playersOnline: [],
   waitingPlayers: [],

@@ -15,6 +15,17 @@ class Chat extends Component {
     };
   }
 
+  scrollToBottom() {
+    const scrollHeight = this.chat.scrollHeight;
+    const height = this.chat.clientHeight;
+    const maxScrollTop = scrollHeight - height;
+    this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+  }
+
+  componentDidUpdate() {
+   this.scrollToBottom();
+  }
+
   render() {
     return (
       <div>
@@ -25,7 +36,9 @@ class Chat extends Component {
             </ToolbarGroup>
           </Toolbar>
 
-          <div style={{zIndex: 1, padding: 10}}>
+          <div 
+            ref={(el) => {this.chat = el;}}
+            style={{padding: 10, height: 'calc(100% - 144px)', overflowY: 'scroll'}}>
             {
               this.props.messages.map((message, idx) =>
                 <div
@@ -40,7 +53,7 @@ class Chat extends Component {
             }
           </div>
 
-          <div style={{position: 'absolute', bottom: 0, zIndex: 2, backgroundColor: '#fff'}}>
+          <div style={{backgroundColor: '#fff'}}>
             <Divider />
             <TextField hintText="Chat" autoComplete="off" style={{margin: 10, width: 236}}
               value={this.state.chatFieldValue} onChange={this.onChatChange.bind(this)}
@@ -59,6 +72,7 @@ class Chat extends Component {
 
   onChatEnter() {
     this.props.onSendMessage(this.state.chatFieldValue);
+    this.scrollToBottom();
     this.setState({
       chatFieldValue: ''
     });

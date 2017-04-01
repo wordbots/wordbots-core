@@ -22,8 +22,9 @@ class Chat extends Component {
     this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
 
-  componentDidUpdate() {
-   this.scrollToBottom();
+  componentDidUpdate(prevProps) {
+    if (this.props != prevProps)
+      this.scrollToBottom();
   }
 
   render() {

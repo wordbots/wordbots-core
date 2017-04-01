@@ -14,7 +14,7 @@ export class GameBrowser extends Component {
   }
 
   renderTableRows() {
-    if (this.props.openGames > 0) {
+    if (this.props.openGames.length > 0) {
       return (
         this.props.openGames.map(game =>
           <TableRow key={game.id}>

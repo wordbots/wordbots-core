@@ -23,8 +23,9 @@ class Chat extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props != prevProps)
+    if (this.props !== prevProps) {
       this.scrollToBottom();
+    }
   }
 
   render() {
@@ -37,7 +38,7 @@ class Chat extends Component {
             </ToolbarGroup>
           </Toolbar>
 
-          <div 
+          <div
             ref={(el) => {this.chat = el;}}
             style={{padding: 10, height: 'calc(100% - 144px)', overflowY: 'scroll'}}>
             {

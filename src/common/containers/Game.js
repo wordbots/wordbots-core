@@ -237,7 +237,7 @@ export class Game extends Component {
         <Helmet title="Game"/>
         {this.renderGameArea()}
         <Chat
-          roomName={this.props.socket.gameName}
+          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages}
           onSendMessage={this.props.onSendChatMessage} />
       </div>

@@ -28,11 +28,17 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
         playersOnline: action.payload.playersOnline
       });
 
+    case socketActions.GAME_START:
+      return Object.assign(state, {hosting: false});
+
     case socketActions.HOST:
-      return Object.assign(state, {hosting: true});
+      return Object.assign(state, {gameName: action.payload.name, hosting: true});
 
     case socketActions.JOIN:
       return Object.assign(state, {gameName: action.payload.name});
+
+    case socketActions.LEAVE:
+      return Object.assign(state, {gameName: null});
 
     case socketActions.SET_USERNAME:
       return Object.assign(state, {username: action.payload.username});

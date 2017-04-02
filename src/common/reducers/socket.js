@@ -8,7 +8,10 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
   switch (action.type) {
     case socketActions.CONNECTED:
-      return Object.assign(state, {clientId: action.payload.clientId});
+      return Object.assign(state, {connected: true, clientId: action.payload.clientId});
+
+    case socketActions.DISCONNECTED:
+      return Object.assign(state, {connected: false});
 
     case socketActions.CHAT: {
       const message = {

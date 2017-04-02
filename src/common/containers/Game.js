@@ -56,6 +56,9 @@ export function mapStateToProps(state) {
 
 export function mapDispatchToProps(dispatch) {
   return {
+    onReconnect: () => {
+      dispatch(socketActions.reconnect());
+    },
     onHostGame: (name, deck) => {
       dispatch(socketActions.host(name, deck));
     },
@@ -68,6 +71,7 @@ export function mapDispatchToProps(dispatch) {
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
     },
+
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
     },
@@ -95,6 +99,7 @@ export function mapDispatchToProps(dispatch) {
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
+
     onVictoryScreenClick: () => {
       dispatch([
         socketActions.leave(),
@@ -220,6 +225,7 @@ export class Game extends Component {
         <Lobby
           socket={this.props.socket}
           availableDecks={this.props.availableDecks}
+          onReconnect={this.props.onReconnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
           onSetUsername={this.props.onSetUsername} />
@@ -278,6 +284,7 @@ Game.propTypes = {
 
   sidebarOpen: bool,
 
+  onReconnect: func,
   onHostGame: func,
   onJoinGame: func,
   onSetUsername: func,

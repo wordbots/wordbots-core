@@ -8,22 +8,40 @@ const roomName = 'game';
 const createSocketMiddleware = (function ({excludedActions = []}) {
   // Don't import Colyseus at top-level because its websocket dependency crashes in node.
   const Colyseus = require('colyseus.js');
-  const client = new Colyseus.Client(endpoint);
-  const username = localStorage['wb$username'];
 
   return store => {
-    const room = client.join(roomName, {username: username});
-    let clientId = null;
+    const username = localStorage['wb$username'];
+
+    let client, room, clientId;
     let keepaliveNeeded = true;
 
     function handleAction(action, next) {
+      if (action.type === actions.RECONNECT) {
+        connect();
+      }
+
       send(action);
       return next(action); // Pass action to next middleware.
+    }
+
+    function connect() {
+      store.dispatch(actions.connecting());
+
+      client = new Colyseus.Client(endpoint);
+      client.onClose.add(disconnected);
+
+      room = client.join(roomName, {username: username});
+      room.onJoin.add(connected);
+      room.state.listen('messages/', 'add', receive);
     }
 
     function connected() {
       clientId = client.id;
       store.dispatch(actions.connected(clientId));
+    }
+
+    function disconnected() {
+      store.dispatch(actions.disconnected());
     }
 
     function send(action) {
@@ -50,9 +68,7 @@ const createSocketMiddleware = (function ({excludedActions = []}) {
       keepaliveNeeded = true;
     }
 
-    store.dispatch(actions.connecting());
-    room.onJoin.add(connected);
-    room.state.listen('messages/', 'add', receive);
+    connect();
     setInterval(keepalive, 10 * 1000); // (Heroku kills connection after 55 idle sec.)
 
     return next => action => handleAction(action, next);

@@ -2,6 +2,8 @@
 
 export const CONNECTING = 'ws:CONNECTING';
 export const CONNECTED = 'ws:CONNECTED';
+export const DISCONNECTED = 'ws:DISCONNECTED';
+export const RECONNECT = 'ws:RECONNECT';
 
 export function connecting() {
   return {
@@ -13,6 +15,18 @@ export function connected(clientId) {
   return {
     type: CONNECTED,
     payload: { clientId }
+  };
+}
+
+export function disconnected() {
+  return {
+    type: DISCONNECTED
+  };
+}
+
+export function reconnect() {
+  return {
+    type: RECONNECT
   };
 }
 

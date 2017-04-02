@@ -1,4 +1,5 @@
 const defaultState = {
+  connected: false,
   username: null,
   clientId: null,
 

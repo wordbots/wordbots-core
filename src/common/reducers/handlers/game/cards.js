@@ -31,7 +31,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = null;
-        state.status.message = '';
+        player.status.message = '';
       }
     } else {
       // Clicked on unselected card => Select
@@ -40,11 +40,11 @@ export function setSelectedCard(state, playerName, cardIdx) {
       state.target.choosing = false; // Reset targeting state.
 
       if (getCost(selectedCard) <= energy.available) {
-        state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
-        state.status.type = 'text';
+        player.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
+        player.status.type = 'text';
       } else {
-        state.status.message = 'You do not have enough energy to play this card.';
-        state.status.type = 'error';
+        player.status.message = 'You do not have enough energy to play this card.';
+        player.status.type = 'error';
       }
     }
 
@@ -75,6 +75,7 @@ export function placeCard(state, card, tile) {
     player.robotsOnBoard[tile] = playedObject;
     player.energy.available -= getCost(card);
     player.selectedCard = null;
+    player.status.message = '';
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
@@ -85,14 +86,16 @@ export function placeCard(state, card, tile) {
     tempState = applyAbilities(tempState);
 
     playedObject.justPlayed = false;
-
-    tempState.status.message = '';
   }
 
   if (tempState.target.choosing) {
     // Target still needs to be selected, so roll back playing the card (and return old state).
+
+    currentPlayer(state).status = {
+      message: `Choose a target for ${card.name}'s ability.`,
+      type: 'text'
+    };
     return Object.assign({}, state, {
-      status: { message: `Choose a target for ${card.name}'s ability.`, type: 'text' },
       target: tempState.target,
       placementTile: tile  // Store the tile the object was played on, for the actual placement later.
     });
@@ -100,7 +103,6 @@ export function placeCard(state, card, tile) {
     // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
     // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
     tempState = applyAbilities(tempState);
-
     return tempState;
   }
 }
@@ -123,11 +125,11 @@ export function playEvent(state, cardIdx, command) {
     card.justPlayed = false;
 
     if (state.target.choosing) {
-      state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
+      player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
-      state.status.message = '';
 
+      player.status.message = '';
       player.selectedCard = null;
       player.energy.available -= getCost(card);
     }

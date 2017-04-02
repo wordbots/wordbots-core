@@ -33,7 +33,7 @@ describe('Game reducer', () => {
         actions.placeCard('3,0,-3', cards.generalBotCard)
       ]);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
-      expect(state.status.message).toEqual('You do not have enough energy to play this card.');
+      expect(state.players.orange.status.message).toEqual('You do not have enough energy to play this card.');
 
       // Play an Attack Bot to 3,0,-3, by the orange core.
       state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');

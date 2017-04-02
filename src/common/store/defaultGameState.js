@@ -29,7 +29,11 @@ function playerState(color, collection, coreCard, coreHexId) {
       }
     },
     selectedCard: null,
-    selectedTile: null
+    selectedTile: null,
+    status: {
+      message: '',
+      type: ''
+    }
   };
 }
 
@@ -43,10 +47,6 @@ const defaultState = {
   currentTurn: 'orange',
   player: 'orange',
   hoveredCard: null,
-  status: {
-    message: '',
-    type: ''
-  },
   target: {
     choosing: false,
     chosen: null,

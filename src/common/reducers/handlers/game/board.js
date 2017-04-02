@@ -24,7 +24,7 @@ export function setSelectedTile(state, playerName, tile) {
     // Toggle tile selection.
     player.selectedTile = (player.selectedTile === tile) ? null : tile;
     player.selectedCard = null;
-    state.status.message = '';
+    player.status.message = '';
     return state;
   }
 }

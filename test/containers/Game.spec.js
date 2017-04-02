@@ -30,11 +30,13 @@ describe('Game container', () => {
     expect(dom.props.children).toEqual([
       <Helmet title="Game"/>,
       <Paper style={{padding: 20, position: 'relative'}}>
-        <PlayerArea color={'orange'} gameProps={game.props} />
+        <PlayerArea
+          color={'orange'}
+          gameProps={game.props} />
         <div style={{position: 'relative'}}>
           <CardViewer />
           <Status
-            currentTurn={'orange'}
+            player={'orange'}
             status={defaultStatus} />
           <Board
             selectedTile={null}
@@ -53,10 +55,17 @@ describe('Game container', () => {
             style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
             onTouchTap={game.props.onPassTurn} />
         </div>
-        <PlayerArea color={'blue'} gameProps={game.props} />
-        <VictoryScreen winner={null} onClick={game.props.onClick} />
+        <PlayerArea
+          color={'blue'}
+          gameProps={game.props} />
+        <VictoryScreen
+          winner={null}
+          onClick={game.props.onClick} />
       </Paper>,
-      <Chat roomName={null} messages={[]} onSendMessage={game.props.onSendChatMessage} />
+      <Chat
+        roomName={null}
+        messages={[]}
+        onSendMessage={game.props.onSendChatMessage} />
     ]);
   });
 

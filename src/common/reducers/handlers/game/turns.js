@@ -24,14 +24,12 @@ export function endTurn(state) {
   const player = currentPlayer(state);
   player.selectedCard = null;
   player.selectedTile = null;
+  player.status.message = '';
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
-
   state.currentTurn = opponentName(state);
   state.hoveredCardIdx = null;
-  state.status.message = '';
   state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-
 
   return state;
 }

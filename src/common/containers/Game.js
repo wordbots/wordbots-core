@@ -32,7 +32,7 @@ export function mapStateToProps(state) {
     hoveredCard: state.game.hoveredCard,
     playingCardType: currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard].type : null,
 
-    status: state.game.status,
+    status: activePlayer.status,
     target: state.game.target,
 
     blueHand: state.game.players.blue.hand,
@@ -182,7 +182,7 @@ export class Game extends Component {
           <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
-              currentTurn={this.props.currentTurn}
+              player={this.props.activePlayer}
               status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               player={this.props.player}

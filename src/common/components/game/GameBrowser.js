@@ -53,7 +53,7 @@ export class GameBrowser extends Component {
       <Paper style={{
         marginBottom: 20
       }}>
-        <Table fixedHeader={true}>
+        <Table fixedHeader>
           <TableHeader displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Game Name</TableHeaderColumn>
@@ -62,7 +62,7 @@ export class GameBrowser extends Component {
             </TableRow>
           </TableHeader>
           <TableBody
-            showRowHover={true}
+            showRowHover
             stripedRows={false}
             displayRowCheckbox={false}>
             {this.renderTableRows()}

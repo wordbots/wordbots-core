@@ -1,9 +1,18 @@
-// Client => itself
+// Client => middleware
+
+export const CONNECT = 'ws:CONNECT';
+
+export function connect() {
+  return {
+    type: CONNECT
+  };
+}
+
+// Middleware => client
 
 export const CONNECTING = 'ws:CONNECTING';
 export const CONNECTED = 'ws:CONNECTED';
 export const DISCONNECTED = 'ws:DISCONNECTED';
-export const RECONNECT = 'ws:RECONNECT';
 
 export function connecting() {
   return {
@@ -21,12 +30,6 @@ export function connected(clientId) {
 export function disconnected() {
   return {
     type: DISCONNECTED
-  };
-}
-
-export function reconnect() {
-  return {
-    type: RECONNECT
   };
 }
 

@@ -56,8 +56,8 @@ export function mapStateToProps(state) {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onReconnect: () => {
-      dispatch(socketActions.reconnect());
+    onConnect: () => {
+      dispatch(socketActions.connect());
     },
     onHostGame: (name, deck) => {
       dispatch(socketActions.host(name, deck));
@@ -110,6 +110,10 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Game extends Component {
+  componentDidMount() {
+    this.props.onConnect();
+  }
+
   isMyTurn() {
     return this.props.currentTurn === this.props.player;
   }
@@ -225,7 +229,7 @@ export class Game extends Component {
         <Lobby
           socket={this.props.socket}
           availableDecks={this.props.availableDecks}
-          onReconnect={this.props.onReconnect}
+          onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
           onSetUsername={this.props.onSetUsername} />
@@ -284,7 +288,7 @@ Game.propTypes = {
 
   sidebarOpen: bool,
 
-  onReconnect: func,
+  onConnect: func,
   onHostGame: func,
   onJoinGame: func,
   onSetUsername: func,

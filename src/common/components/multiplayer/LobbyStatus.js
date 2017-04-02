@@ -9,7 +9,7 @@ const LobbyStatus = (props) => {
   );
   const notConnected = (
     <a style={{color: 'red', cursor: 'pointer'}}
-       onClick={props.onReconnect}>
+       onClick={props.onConnect}>
       Not connected
     </a>
   );
@@ -34,7 +34,7 @@ LobbyStatus.propTypes = {
   connected: bool,
   playersOnline: array,
   usernameMap: object,
-  onReconnect: func
+  onConnect: func
 };
 
 export default LobbyStatus;

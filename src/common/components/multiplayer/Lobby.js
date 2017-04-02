@@ -38,7 +38,7 @@ class Lobby extends Component {
           connected={skt.connected}
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
-          onReconnect={this.props.onReconnect} />
+          onConnect={this.props.onConnect} />
         {
           skt.hosting ?
             <Waiting /> :
@@ -66,7 +66,7 @@ Lobby.propTypes = {
   socket: object,
   availableDecks: array,
 
-  onReconnect: func,
+  onConnect: func,
   onJoinGame: func,
   onHostGame: func,
   onSetUsername: func

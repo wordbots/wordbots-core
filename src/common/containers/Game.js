@@ -182,7 +182,7 @@ export class Game extends Component {
           <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
-              player={this.props.activePlayer}
+              player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               player={this.props.player}

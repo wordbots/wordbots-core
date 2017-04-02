@@ -95,8 +95,11 @@ export function mapDispatchToProps(dispatch) {
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
-    onClick: () => {
-      dispatch(gameActions.newGame());
+    onVictoryScreenClick: () => {
+      dispatch([
+        socketActions.leave(),
+        gameActions.newGame()
+      ]);
     }
   };
 }
@@ -177,7 +180,9 @@ export class Game extends Component {
     if (this.props.started) {
       return (
         <Paper style={{padding: 20, position: 'relative'}}>
-          <PlayerArea color="orange" gameProps={this.props} />
+          <PlayerArea
+            color="orange"
+            gameProps={this.props} />
 
           <div style={{position: 'relative'}}>
             <CardViewer hoveredCard={this.hoveredCard()} />
@@ -202,8 +207,12 @@ export class Game extends Component {
               onTouchTap={this.props.onPassTurn} />
           </div>
 
-          <PlayerArea color="blue" gameProps={this.props} />
-          <VictoryScreen winner={this.props.winner} onClick={this.props.onClick} />
+          <PlayerArea
+            color="blue"
+            gameProps={this.props} />
+          <VictoryScreen
+            winner={this.props.winner}
+            onClick={this.props.onVictoryScreenClick} />
         </Paper>
       );
     } else {
@@ -282,7 +291,7 @@ Game.propTypes = {
   onPassTurn: func,
   onHoverCard: func,
   onHoverTile: func,
-  onClick: func
+  onVictoryScreenClick: func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

@@ -20,6 +20,7 @@ export function connected(clientId) {
 
 export const HOST = 'ws:HOST';
 export const JOIN = 'ws:JOIN';
+export const LEAVE = 'ws:LEAVE';
 export const SET_USERNAME = 'ws:SET_USERNAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
@@ -36,6 +37,13 @@ export function join(id, name, deck) {
     payload: { id, name, deck }
   };
 }
+
+export function leave() {
+  return {
+    type: LEAVE
+  };
+}
+
 
 export function setUsername(username) {
   return {

@@ -60,7 +60,7 @@ describe('Game container', () => {
           gameProps={game.props} />
         <VictoryScreen
           winner={null}
-          onClick={game.props.onClick} />
+          onClick={game.props.onVictoryScreenClick} />
       </Paper>,
       <Chat
         roomName={null}

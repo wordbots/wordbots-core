@@ -30,15 +30,15 @@ class Lobby extends Component {
 
     return (
       <div>
-        <UsernamePicker
-          clientId={skt.clientId}
-          username={skt.username}
-          onSetUsername={this.props.onSetUsername} />
         <LobbyStatus
           connected={skt.connected}
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
           onConnect={this.props.onConnect} />
+        <UsernamePicker
+          clientId={skt.clientId}
+          username={skt.username}
+          onSetUsername={this.props.onSetUsername} />
         {
           skt.hosting ?
             <Waiting /> :

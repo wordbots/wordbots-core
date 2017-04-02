@@ -10,10 +10,10 @@ import gameReducer from '../../src/common/reducers/game';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
 import CardViewer from '../../src/common/components/game/CardViewer';
-import Chat from '../../src/common/components/game/Chat';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
+import Chat from '../../src/common/components/multiplayer/Chat';
 import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 

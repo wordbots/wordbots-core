@@ -9,24 +9,18 @@ import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 
 export class GameBrowser extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   renderTableRows() {
     if (this.props.openGames.length > 0) {
       return (
         this.props.openGames.map(game =>
           <TableRow key={game.id}>
             <TableRowColumn>{game.name}</TableRowColumn>
-            <TableRowColumn>{this.props.clientIdToUsername[game.id]}</TableRowColumn>
+            <TableRowColumn>{this.props.usernameMap[game.id]}</TableRowColumn>
             <TableRowColumn style={{textAlign: 'right'}}>
               <RaisedButton
                 secondary
                 label="Join Game"
-                onTouchTap={e => {
-                  this.props.onJoinGame(game.id, game.name);
-                }} />
+                onTouchTap={() => { this.props.onJoinGame(game.id, game.name); }} />
             </TableRowColumn>
           </TableRow>
         )
@@ -34,7 +28,7 @@ export class GameBrowser extends Component {
     } else {
       return (
         <TableRow>
-          <TableRowColumn 
+          <TableRowColumn
             colSpan="3"
             style={{
               fontSize: 32,
@@ -67,7 +61,7 @@ export class GameBrowser extends Component {
             displayRowCheckbox={false}>
             {this.renderTableRows()}
           </TableBody>
-        </Table>        
+        </Table>
       </Paper>
     );
   }
@@ -78,7 +72,7 @@ const { array, func, object } = React.PropTypes;
 GameBrowser.propTypes = {
   buttonStyle: object,
   openGames: array,
-  clientIdToUsername: object,
+  usernameMap: object,
   onJoinGame: func
 };
 

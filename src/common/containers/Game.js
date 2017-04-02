@@ -8,11 +8,11 @@ import { isNil } from 'lodash';
 import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
 import CardViewer from '../components/game/CardViewer';
-import Chat from '../components/game/Chat';
-import Lobby from '../components/game/Lobby';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import VictoryScreen from '../components/game/VictoryScreen';
+import Chat from '../components/multiplayer/Chat';
+import Lobby from '../components/multiplayer/Lobby';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 

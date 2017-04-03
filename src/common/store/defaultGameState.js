@@ -27,6 +27,12 @@ function playerState(color, collection, coreCard, coreHexId) {
         stats: coreCard.stats,
         movesMade: 0
       }
+    },
+    selectedCard: null,
+    selectedTile: null,
+    status: {
+      message: '',
+      type: ''
     }
   };
 }
@@ -39,14 +45,8 @@ const defaultState = {
     orange: orangePlayerState([])
   },
   currentTurn: 'orange',
-  selectedTile: null,
-  selectedCard: null,
-  playingCardType: null,
+  player: 'orange',
   hoveredCard: null,
-  status: {
-    message: '',
-    type: ''
-  },
   target: {
     choosing: false,
     chosen: null,

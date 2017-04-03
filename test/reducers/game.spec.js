@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
 import defaultState from '../../src/common/store/defaultGameState';
@@ -27,11 +29,11 @@ describe('Game reducer', () => {
       const cardIdx = _.findIndex(state.players.orange.hand, c => c.name === cards.generalBotCard.name);
       state = newTurn(state, 'orange');
       state = game(state, [
-        actions.setSelectedCard(cardIdx),
+        actions.setSelectedCard(cardIdx, 'orange'),
         actions.placeCard('3,0,-3', cards.generalBotCard)
       ]);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
-      expect(state.status.message).toEqual('You do not have enough energy to play this card.');
+      expect(state.players.orange.status.message).toEqual('You do not have enough energy to play this card.');
 
       // Play an Attack Bot to 3,0,-3, by the orange core.
       state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
@@ -171,7 +173,7 @@ describe('Game reducer', () => {
       state = moveRobot(state, blueAttackBotPos, '-2,1,1');
       state = newTurn(state, 'blue');
       state = game(state, [
-        actions.setSelectedTile('-2,1,1'),
+        actions.setSelectedTile('-2,1,1', 'blue'),
         actions.moveRobotAndAttack('-2,1,1', blueAttackBotPos, orangeTankBotPos)
       ]);
       expect(

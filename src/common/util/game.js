@@ -1,4 +1,4 @@
-import { cloneDeep, flatMap, some, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, some, without } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
@@ -7,7 +7,7 @@ import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import Hex from '../components/react-hexgrid/Hex';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
-import { clamp, instantiateCard } from './common';
+import { clamp } from './common';
 
 //
 // I. Queries for game state.
@@ -19,6 +19,10 @@ export function opponent(playerName) {
 
 export function opponentName(state) {
   return opponent(state.currentTurn);
+}
+
+export function activePlayer(state) {
+  return state.players[state.player];
 }
 
 export function currentPlayer(state) {
@@ -89,7 +93,7 @@ export function matchesType(objectOrCard, cardTypeQuery) {
   const cardType = objectOrCard.card ? objectOrCard.card.type : objectOrCard.type;
   if (['anycard', 'allobjects'].includes(cardTypeQuery)) {
     return true;
-  } else if (_.isArray(cardTypeQuery)) {
+  } else if (isArray(cardTypeQuery)) {
     return cardTypeQuery.map(stringToType).includes(cardType);
   } else {
     return stringToType(cardTypeQuery) === cardType;
@@ -111,7 +115,7 @@ export function checkVictoryConditions(state) {
 //
 
 export function getHex(state, object) {
-  return _.findKey(allObjectsOnBoard(state), ['id', object.id]);
+  return findKey(allObjectsOnBoard(state), ['id', object.id]);
 }
 
 export function getAdjacentHexes(hex) {
@@ -173,10 +177,10 @@ export function validAttackHexes(state, playerName, startHex, speed, object) {
 // III. Effects on game state that are performed in many different places.
 //
 
-export function newGame(state, collections) {
-  state = Object.assign(state, cloneDeep(defaultState)); // Reset game state.
-  state.players.blue = bluePlayerState(collections.blue.map(instantiateCard));
-  state.players.orange = orangePlayerState(collections.orange.map(instantiateCard));
+export function newGame(state, player, collections) {
+  state = Object.assign(state, cloneDeep(defaultState), {player: player}); // Reset game state.
+  state.players.blue = bluePlayerState(collections.blue);
+  state.players.orange = orangePlayerState(collections.orange);
   state.started = true;
   return state;
 }
@@ -192,7 +196,7 @@ export function discardCards(state, cards) {
   // At the moment, only the currently active player can ever play or discard a card.
   const player = currentPlayer(state);
   const cardIds = cards.map(c => c.id);
-  player.hand = _.filter(player.hand, c => !cardIds.includes(c.id));
+  player.hand = filter(player.hand, c => !cardIds.includes(c.id));
   return state;
 }
 

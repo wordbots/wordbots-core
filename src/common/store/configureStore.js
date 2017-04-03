@@ -5,19 +5,27 @@ import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
 
 import promiseMiddleware from '../api/promiseMiddleware';
+import createSocketMiddleware from '../api/socketMiddleware';
 import rootReducer from '../reducers';
-import * as gameActions from '../actions/game';
+import * as actions from '../actions/game';
 
 import { loadState, saveState } from './persistState';
 
 const middlewareBuilder = () => {
-  let middleware = {};
   const universalMiddleware = [thunk, promiseMiddleware, multi];
+
+  let middleware = {};
   let allComposeElements = [];
 
   if (process.browser) {
+    const ignoredActions = [actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE];
+
+    const socketMiddleware = createSocketMiddleware({
+      excludedActions: ignoredActions
+    });
+
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
-      middleware = applyMiddleware(...universalMiddleware);
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
       allComposeElements = [
         middleware,
         reduxReactRouter({
@@ -29,10 +37,10 @@ const middlewareBuilder = () => {
       const DevTools = require('../containers/DevTools').default;
 
       const logger = createLogger({
-        predicate: (getState, action) => ![gameActions.SET_HOVERED_CARD, gameActions.SET_HOVERED_TILE].includes(action.type)
+        predicate: (getState, action) => !ignoredActions.includes(action.type)
       });
 
-      middleware = applyMiddleware(...universalMiddleware, logger);
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
       allComposeElements = [
         middleware,
         reduxReactRouter({

@@ -1,3 +1,5 @@
+import { every, pickBy, toPairs } from 'lodash';
+
 import { allObjectsOnBoard, matchesType } from '../util/game';
 import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import HexUtils from '../components/react-hexgrid/HexUtils';
@@ -11,7 +13,7 @@ export function allTiles(state) {
     GridGenerator.hexagon(4).forEach((hex) => {
       tiles[HexUtils.getID(hex)] = allObjectsOnBoard(state)[HexUtils.getID(hex)];
     });
-    return _.toPairs(tiles);
+    return toPairs(tiles);
   };
 }
 
@@ -30,9 +32,9 @@ export function objectsInPlay(state) {
 
 export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
-    const objects = _.pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      matchesType(obj, objType) && _.every(conditions.map(cond => cond(hex, obj)))
+    const objects = pickBy(allObjectsOnBoard(state), (obj, hex) =>
+      matchesType(obj, objType) && every(conditions.map(cond => cond(hex, obj)))
     );
-    return _.toPairs(objects);
+    return toPairs(objects);
   };
 }

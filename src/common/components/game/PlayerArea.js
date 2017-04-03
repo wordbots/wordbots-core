@@ -1,53 +1,40 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Hand from './Hand';
 import EnergyCount from './EnergyCount';
 import Deck from './Deck';
 
-class PlayerArea extends Component {
-  constructor(props) {
-    super(props);
-  }
+const PlayerArea = ({color, gameProps}) => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }}>
+    <EnergyCount
+      color={color}
+      playerName={gameProps.player === color ? 'You' : 'Opponent'}
+      energy={gameProps[`${color}Energy`]}
+      isCurrentPlayer={gameProps.currentTurn === color} />
+    <Hand
+      //curved
+      name={color}
+      onSelectCard={idx => gameProps.onSelectCard(idx, color)}
+      onHoverCard={gameProps.onHoverCard}
+      selectedCard={gameProps.selectedCard}
+      hoveredCard={gameProps.hoveredCardIdx}
+      targetableCards={gameProps.target.possibleCards}
+      isActivePlayer={gameProps.player === color}
+      cards={gameProps[`${color}Hand`]}
+      status={gameProps.status} />
+    <Deck deck={gameProps[`${color}Deck`]} />
+  </div>
+);
 
-  render() {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <EnergyCount energy={this.props.energy} />
-        <Hand
-          //curved
-          name={this.props.name}
-          onSelectCard={this.props.onSelectCard}
-          onHoverCard={this.props.onHoverCard}
-          selectedCard={this.props.selectedCard}
-          hoveredCard={this.props.hoveredCard}
-          targetableCards={this.props.targetableCards}
-          isCurrentPlayer={this.props.isCurrentPlayer}
-          cards={this.props.cards}
-          status={this.props.status} />
-        <Deck deck={this.props.deck} />
-      </div>
-    );
-  }
-}
-
-const { array, bool, func, number, object, string } = React.PropTypes;
+const { object, string } = React.PropTypes;
 
 PlayerArea.propTypes = {
-  name: string,
-  energy: object,
-  onSelectCard: func,
-  onHoverCard: func,
-  selectedCard: number,
-  hoveredCard: number,
-  targetableCards: array,
-  isCurrentPlayer: bool,
-  cards: array,
-  status: object,
-  deck: array
+  color: string,
+  gameProps: object
 };
 
 export default PlayerArea;

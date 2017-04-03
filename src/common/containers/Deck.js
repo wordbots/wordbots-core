@@ -3,6 +3,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
+import { isFunction } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
@@ -54,7 +55,7 @@ class Deck extends Component {
 
   updateState(newProps) {
     this.setState(s =>
-      Object.assign({}, s, _.isFunction(newProps) ? newProps(s) : newProps)
+      Object.assign({}, s, isFunction(newProps) ? newProps(s) : newProps)
     );
   }
 

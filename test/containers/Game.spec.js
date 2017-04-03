@@ -3,23 +3,23 @@ import Helmet from 'react-helmet';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import { getDefaultState } from '../testHelpers';
+import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGame } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
-import defaultCollectionState from '../../src/common/store/defaultCollectionState';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
 import CardViewer from '../../src/common/components/game/CardViewer';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
+import Chat from '../../src/common/components/multiplayer/Chat';
 import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 
 describe('Game container', () => {
   it('renders the default game state', () => {
-    const state = {game: getDefaultState(), collection: defaultCollectionState};
+    const state = combineState(getDefaultState());
 
     const game = createGame(state);
     const dom = renderElement(game);
@@ -31,27 +31,19 @@ describe('Game container', () => {
       <Helmet title="Game"/>,
       <Paper style={{padding: 20, position: 'relative'}}>
         <PlayerArea
-          name={'orange'}
-          isCurrentPlayer
-          status={defaultStatus}
-          energy={state.game.players.orange.energy}
-          cards={state.game.players.orange.hand}
-          deck={state.game.players.orange.deck}
-          selectedCard={null}
-          targetableCards={[]}
-          onHoverCard={game.props.onHoverCard}
-          onSelectCard={game.props.onSelectCard}
-          />
+          color={'orange'}
+          gameProps={game.props} />
         <div style={{position: 'relative'}}>
           <CardViewer />
           <Status
-            currentTurn={'orange'}
+            player={'orange'}
             status={defaultStatus} />
           <Board
             selectedTile={null}
             target={state.game.target}
             bluePieces={state.game.players.blue.robotsOnBoard}
             orangePieces={state.game.players.orange.robotsOnBoard}
+            player={'orange'}
             currentTurn={'orange'}
             playingCardType={null}
             onSelectTile={board.props.onSelectTile}
@@ -64,25 +56,22 @@ describe('Game container', () => {
             onTouchTap={game.props.onPassTurn} />
         </div>
         <PlayerArea
-          name={'blue'}
-          isCurrentPlayer={false}
-          status={defaultStatus}
-          energy={state.game.players.blue.energy}
-          cards={state.game.players.blue.hand}
-          deck={state.game.players.blue.deck}
-          selectedCard={null}
-          targetableCards={[]}
-          onHoverCard={game.props.onHoverCard}
-          onSelectCard={game.props.onSelectCard}
-          />
-        <VictoryScreen winner={null} onClick={game.props.onClick} />
-      </Paper>
+          color={'blue'}
+          gameProps={game.props} />
+        <VictoryScreen
+          winner={null}
+          onClick={game.props.onVictoryScreenClick} />
+      </Paper>,
+      <Chat
+        roomName={null}
+        messages={[]}
+        onSendMessage={game.props.onSendChatMessage} />
     ]);
   });
 
   it('should propagate events', () => {
     const dispatchedActions = [];
-    const state = {game: getDefaultState(), collection: defaultCollectionState};
+    const state = combineState(getDefaultState());
 
     function dispatch(action) {
       // console.log(action);
@@ -131,7 +120,7 @@ describe('Game container', () => {
     expect(
       clickCard(c => c.props.visible && c.props.name === 'Attack Bot')
     ).toEqual(
-      actions.setSelectedCard(0)
+      actions.setSelectedCard(0, 'orange')
     );
 
     // Place object.
@@ -152,7 +141,7 @@ describe('Game container', () => {
     expect(
       clickHex('3,0,-3')
     ).toEqual(
-      actions.setSelectedTile('3,0,-3')
+      actions.setSelectedTile('3,0,-3', 'orange')
     );
 
     // Move.

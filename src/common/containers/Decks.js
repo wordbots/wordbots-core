@@ -5,9 +5,10 @@ import { pushState } from 'redux-router';
 import Badge from 'material-ui/lib/badge';
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
-import _ from 'lodash';
+import { sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
+import { groupCards } from '../util/cards';
 import CardViewer from '../components/game/CardViewer';
 import * as collectionActions from '../actions/collection';
 
@@ -44,10 +45,6 @@ class Decks extends Component {
     this.state = {
       hoveredCard: null
     };
-  }
-
-  groupCards(cards) {
-    return _.map(_.uniqBy(cards, 'name'), card => _.extend({count: _.countBy(cards, c => c.name)[card.name]}, card));
   }
 
   onHover(card) {
@@ -89,7 +86,7 @@ class Decks extends Component {
   }
 
   renderCards(cards) {
-    return _.sortBy(this.groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
+    return sortBy(groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
   }
 
   renderDeck(deck) {

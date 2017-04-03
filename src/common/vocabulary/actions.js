@@ -1,3 +1,5 @@
+import { findKey, mapValues } from 'lodash';
+
 import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
@@ -16,7 +18,7 @@ export default function actions(state) {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
-          hex = _.findKey(target.robotsOnBoard, obj => obj.card.type === TYPE_CORE);
+          hex = findKey(target.robotsOnBoard, obj => obj.card.type === TYPE_CORE);
         } else {
           // target is an object, so find its hex.
           hex = getHex(state, target);
@@ -44,7 +46,7 @@ export default function actions(state) {
     modifyAttribute: function (objects, attr, func) {
       objects.forEach(object => {
         if (attr === 'allattributes') {
-          object.stats = _.mapValues(object.stats, clamp(func));
+          object.stats = mapValues(object.stats, clamp(func));
         } else if (attr === 'cost') {
           object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
         } else {

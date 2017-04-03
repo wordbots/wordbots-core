@@ -1,47 +1,50 @@
+import { cloneDeep, isArray } from 'lodash';
+
 import { TYPE_EVENT } from '../../../constants';
 import {
-  currentPlayer, validPlacementHexes, getCost, checkVictoryConditions,
+  currentPlayer, getCost, checkVictoryConditions,
+  validPlacementHexes,
   discardCards,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
-export function setSelectedCard(state, cardIdx) {
-  const selectedCard = state.players[state.currentTurn].hand[cardIdx];
-  const energy = state.players[state.currentTurn].energy;
+export function setSelectedCard(state, playerName, cardIdx) {
+  const player = state.players[playerName];
+  const selectedCard = player.hand[cardIdx];
+  const energy = player.energy;
 
-  state.selectedTile = null;
+  player.selectedTile = null;
 
-  if (state.target.choosing && state.target.possibleCards.includes(selectedCard.id) && state.selectedCard !== null) {
+  if (state.target.choosing &&
+      state.target.possibleCards.includes(selectedCard.id) &&
+      player.selectedCard !== null) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, selectedCard);
   } else {
     // Toggle card selection.
 
-    if (state.selectedCard === cardIdx) {
+    if (player.selectedCard === cardIdx) {
       // Clicked on already selected card => Deselect or play event
 
       if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
         return playEvent(state, cardIdx);
       } else {
-        state.selectedCard = null;
-        state.playingCardType = null;
-        state.status.message = '';
+        player.selectedCard = null;
+        player.status.message = '';
       }
     } else {
       // Clicked on unselected card => Select
 
-      state.selectedCard = cardIdx;
+      player.selectedCard = cardIdx;
       state.target.choosing = false; // Reset targeting state.
 
       if (getCost(selectedCard) <= energy.available) {
-        state.playingCardType = selectedCard.type;
-        state.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
-        state.status.type = 'text';
+        player.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
+        player.status.type = 'text';
       } else {
-        state.playingCardType = null;
-        state.status.message = 'You do not have enough energy to play this card.';
-        state.status.type = 'error';
+        player.status.message = 'You do not have enough energy to play this card.';
+        player.status.type = 'error';
       }
     }
 
@@ -52,7 +55,7 @@ export function setSelectedCard(state, cardIdx) {
 export function placeCard(state, card, tile) {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = _.cloneDeep(state);
+  let tempState = cloneDeep(state);
 
   const player = currentPlayer(tempState);
 
@@ -71,6 +74,8 @@ export function placeCard(state, card, tile) {
 
     player.robotsOnBoard[tile] = playedObject;
     player.energy.available -= getCost(card);
+    player.selectedCard = null;
+    player.status.message = '';
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
@@ -81,16 +86,16 @@ export function placeCard(state, card, tile) {
     tempState = applyAbilities(tempState);
 
     playedObject.justPlayed = false;
-
-    tempState.selectedCard = null;
-    tempState.playingCardType = null;
-    tempState.status.message = '';
   }
 
   if (tempState.target.choosing) {
     // Target still needs to be selected, so roll back playing the card (and return old state).
+
+    currentPlayer(state).status = {
+      message: `Choose a target for ${card.name}'s ability.`,
+      type: 'text'
+    };
     return Object.assign({}, state, {
-      status: { message: `Choose a target for ${card.name}'s ability.`, type: 'text' },
       target: tempState.target,
       placementTile: tile  // Store the tile the object was played on, for the actual placement later.
     });
@@ -98,7 +103,6 @@ export function placeCard(state, card, tile) {
     // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
     // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
     tempState = applyAbilities(tempState);
-
     return tempState;
   }
 }
@@ -112,7 +116,7 @@ export function playEvent(state, cardIdx, command) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
     card.justPlayed = true;
 
-    (_.isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
+    (isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
       if (!state.target.choosing) {
         executeCmd(state, subcmd);
       }
@@ -121,14 +125,12 @@ export function playEvent(state, cardIdx, command) {
     card.justPlayed = false;
 
     if (state.target.choosing) {
-      state.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
+      player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
 
-      state.selectedCard = null;
-      state.playingCardType = null;
-      state.status.message = '';
-
+      player.status.message = '';
+      player.selectedCard = null;
       player.energy.available -= getCost(card);
     }
   }
@@ -139,6 +141,8 @@ export function playEvent(state, cardIdx, command) {
 }
 
 export function setTargetAndExecuteQueuedAction(state, target) {
+  const player = state.players[state.currentTurn];
+
   // Select target tile for event or afterPlayed trigger.
   state.target = {
     chosen: [target],
@@ -148,10 +152,10 @@ export function setTargetAndExecuteQueuedAction(state, target) {
   };
 
   // Perform the trigger.
-  const card = state.players[state.currentTurn].hand[state.selectedCard];
+  const card = player.hand[player.selectedCard];
 
   if (card.type === TYPE_EVENT) {
-    state = playEvent(state, state.selectedCard);
+    state = playEvent(state, player.selectedCard);
   } else {
     state = placeCard(state, card, state.placementTile);
   }

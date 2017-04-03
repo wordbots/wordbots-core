@@ -1,3 +1,5 @@
+import { fromPairs } from 'lodash';
+
 import defaultState from '../store/defaultCreatorState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
@@ -24,7 +26,7 @@ export default function creator(oldState = defaultState, action) {
       return state;
 
     case creatorActions.SET_TEXT: {
-      const validCurrentParses = _.fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
+      const validCurrentParses = fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
       state.sentences = action.payload.sentences.map(sentence => ({
         sentence: sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}

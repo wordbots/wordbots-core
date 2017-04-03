@@ -6,6 +6,7 @@ import { pushState } from 'redux-router';
 import Paper from 'material-ui/lib/paper';
 import FontIcon from 'material-ui/lib/font-icon';
 import RaisedButton from 'material-ui/lib/raised-button';
+import { isFunction, without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import CardGrid from '../components/cards/CardGrid';
@@ -57,7 +58,7 @@ class Collection extends Component {
 
   updateState(newProps, callback = () => {}) {
     this.setState((s =>
-      Object.assign({}, s, _.isFunction(newProps) ? newProps(s) : newProps)
+      Object.assign({}, s, isFunction(newProps) ? newProps(s) : newProps)
     ), callback);
   }
 
@@ -97,7 +98,7 @@ class Collection extends Component {
                 if (card.source !== 'builtin') {
                   this.updateState(state => {
                     if (state.selectedCardIds.includes(card.id)) {
-                      return {selectedCardIds: _.without(state.selectedCardIds, card.id)};
+                      return {selectedCardIds: without(state.selectedCardIds, card.id)};
                     } else {
                       return {selectedCardIds: [...state.selectedCardIds, card.id]};
                     }

@@ -1,3 +1,5 @@
+import { isArray, isEmpty } from 'lodash';
+
 import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util/game';
 
 // Targets are all functions that return an array,
@@ -8,7 +10,7 @@ import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } f
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
-      if (_.isArray(collection[0])) {
+      if (isArray(collection[0])) {
         // Collection of objects.
         return collection.map(([hex, obj]) => obj);
       } else {
@@ -28,11 +30,11 @@ export default function targets(state, currentObject) {
         // Return objects if possible or hexes if not. (Cards can also be returned.)
         return chosenTargets.map(t => allObjectsOnBoard(state)[t] || t);
       } else {
-        if (!_.isEmpty(collection)) {
+        if (!isEmpty(collection)) {
           // Prepare target selection.
           state.target.choosing = true;
 
-          if (_.isArray(collection[0])) {
+          if (isArray(collection[0])) {
             // Collection of objects.
             // Don't allow player to pick the object that is being played (if any).
             state.target.possibleHexes = collection.filter(([hex, obj]) => !obj || !obj.justPlayed)

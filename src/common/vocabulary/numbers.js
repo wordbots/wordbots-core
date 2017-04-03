@@ -1,8 +1,10 @@
+import { size, sum } from 'lodash';
+
 import { getAttribute } from '../util/game';
 
 export function attributeSum(state) {
   return function (collection, attribute) {
-    return _.sum(collection.map(([hex, object]) =>
+    return sum(collection.map(([hex, object]) =>
       getAttribute(object, attribute)
     ));
   };
@@ -17,6 +19,6 @@ export function attributeValue(state) {
 
 export function count(state) {
   return function (collection) {
-    return _.size(collection);
+    return size(collection);
   };
 }

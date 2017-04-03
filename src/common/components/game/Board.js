@@ -22,6 +22,10 @@ class Board extends Component {
     };
   }
 
+  isMyTurn() {
+    return this.props.currentTurn === this.props.player;
+  }
+
   currentPlayerPieces() {
     return (this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces);
   }
@@ -52,21 +56,23 @@ class Board extends Component {
       hexColors[hex] = `${canMove ? 'bright_' : ''}${owner}`;
     });
 
-    if (this.props.target.choosing) {
-      this.props.target.possibleHexes.forEach(hex => {
-        hexColors[hex]  = 'green';
-      });
-    } else if (this.props.selectedTile) {
-      const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
+    if (this.isMyTurn()) {
+      if (this.props.target.choosing) {
+        this.props.target.possibleHexes.forEach(hex => {
+          hexColors[hex]  = 'green';
+        });
+      } else if (this.props.selectedTile) {
+        const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-      if (selectedPiece && movesLeft(selectedPiece) > 0) {
-        const hex = HexUtils.IDToHex(this.props.selectedTile);
-        hexColors = this.colorMovementHexes(hex, hexColors, movesLeft(selectedPiece));
+        if (selectedPiece && movesLeft(selectedPiece) > 0) {
+          const hex = HexUtils.IDToHex(this.props.selectedTile);
+          hexColors = this.colorMovementHexes(hex, hexColors, movesLeft(selectedPiece));
+        }
+      } else if (this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE) {
+        this.getValidPlacementHexes().forEach((hex) => {
+          hexColors[HexUtils.getID(hex)] = 'green';
+        });
       }
-    } else if (this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE) {
-      this.getValidPlacementHexes().forEach((hex) => {
-        hexColors[HexUtils.getID(hex)] = 'green';
-      });
     }
 
     return hexColors;
@@ -89,6 +95,10 @@ class Board extends Component {
   }
 
   onHexClick(hex, event) {
+    if (!this.isMyTurn) {
+      return;
+    }
+
     const hid = HexUtils.getID(hex);
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
@@ -184,6 +194,7 @@ Board.propTypes = {
   bluePieces: object,
   orangePieces: object,
 
+  player: string,
   currentTurn: string,
   selectedTile: string,
   playingCardType: number,

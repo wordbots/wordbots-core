@@ -18,7 +18,7 @@ class Status extends Component {
       statusStyle.color = '#FFEB3B';
     }
 
-    if (this.props.currentTurn === 'orange') {
+    if (this.props.player === 'orange') {
       statusStyle.top = 6;
       statusStyle.bottom = null;
     } else {
@@ -44,7 +44,7 @@ const { object, string } = React.PropTypes;
 
 Status.propTypes = {
   status: object,
-  currentTurn: string
+  player: string
 };
 
 export default Status;

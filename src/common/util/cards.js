@@ -70,7 +70,7 @@ export const requestParse = debounce((sentences, mode, callback) => {
   sentences
     .forEach((sentence, idx) => {
       const parserInput = encodeURIComponent(expandKeywords(sentence));
-      const parseUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=js&mode=${mode}`;
+      const parseUrl = `http://parser.wordbots.io/parse?input=${parserInput}&format=js&mode=${mode}`;
       fetch(parseUrl)
         .then(response => response.json())
         .then(json => { callback(idx, sentence, json); });

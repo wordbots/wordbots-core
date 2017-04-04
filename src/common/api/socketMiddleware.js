@@ -1,7 +1,8 @@
 import * as actions from '../actions/socket';
 
-const ENDPOINT = 'wss://wordbots-socket.herokuapp.com';
-// const ENDPOINT = 'ws://localhost:3553';
+const ENDPOINT = 'ws://socket.wordbots.io';  // Remote
+// const ENDPOINT = 'wss://wordbots-socket.herokuapp.com';  // Remote (SSL)
+// const ENDPOINT = 'ws://localhost:3553';  // Local
 
 const KEEPALIVE_INTERVAL_SECS = 10;  // (Heroku kills connection after 55 idle sec.)
 

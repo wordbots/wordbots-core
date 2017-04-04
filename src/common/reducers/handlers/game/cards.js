@@ -4,7 +4,7 @@ import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, getCost, checkVictoryConditions,
   validPlacementHexes,
-  discardCards,
+  discardCards, logAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -84,6 +84,7 @@ export function placeCard(state, card, tile) {
     tempState = discardCards(tempState, [card]);
     tempState = triggerEvent(tempState, 'afterPlayed', {object: playedObject});
     tempState = applyAbilities(tempState);
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card});
 
     playedObject.justPlayed = false;
   }
@@ -128,13 +129,13 @@ export function playEvent(state, cardIdx, command) {
       player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
+      state = logAction(state, player, `played |${card.name}|`, {[card.name]: card});
 
       player.status.message = '';
       player.selectedCard = null;
       player.energy.available -= getCost(card);
     }
   }
-
   state = checkVictoryConditions(state);
 
   return state;

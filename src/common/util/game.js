@@ -185,6 +185,19 @@ export function newGame(state, player, collections) {
   return state;
 }
 
+export function logAction(state, player, action, cards) {
+  const playerStr = player.name === state.player ? 'You' : 'Your opponent';
+  const message = {
+    user: '[Game]',
+    text: `${playerStr} ${action}.`,
+    timestamp: Date.now(),
+    cards: cards
+  };
+
+  state.actionLog.push(message);
+  return state;
+}
+
 export function drawCards(state, player, count) {
   player.hand = player.hand.concat(player.deck.splice(0, count));
   state = applyAbilities(state);

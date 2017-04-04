@@ -13,7 +13,8 @@ export const blueCoreCard = {
   stats: {
     health: STARTING_PLAYER_HEALTH
   },
-  abilities: []
+  abilities: [],
+  source: 'builtin'
 };
 
 export const orangeCoreCard = {
@@ -24,7 +25,8 @@ export const orangeCoreCard = {
   stats: {
     health: STARTING_PLAYER_HEALTH
   },
-  abilities: []
+  abilities: [],
+  source: 'builtin'
 };
 
 export const attackBotCard = {

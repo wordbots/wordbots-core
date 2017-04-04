@@ -53,7 +53,8 @@ const defaultState = {
     possibleCards: [],
     possibleHexes: []
   },
-  winner: null
+  winner: null,
+  actionLog: []
 };
 
 export default defaultState;

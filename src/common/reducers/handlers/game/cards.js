@@ -4,7 +4,7 @@ import { TYPE_EVENT } from '../../../constants';
 import {
   currentPlayer, getCost, checkVictoryConditions,
   validPlacementHexes,
-  discardCards,
+  discardCards, logAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -58,6 +58,7 @@ export function placeCard(state, card, tile) {
   let tempState = cloneDeep(state);
 
   const player = currentPlayer(tempState);
+  const timestamp = Date.now();
 
   if (player.energy.available >= getCost(card) &&
       validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
@@ -84,6 +85,7 @@ export function placeCard(state, card, tile) {
     tempState = discardCards(tempState, [card]);
     tempState = triggerEvent(tempState, 'afterPlayed', {object: playedObject});
     tempState = applyAbilities(tempState);
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
 
     playedObject.justPlayed = false;
   }
@@ -111,6 +113,7 @@ export function playEvent(state, cardIdx, command) {
   const player = state.players[state.currentTurn];
   const card = player.hand[cardIdx];
   const cmd = card.command;
+  const timestamp = Date.now();
 
   if (player.energy.available >= getCost(card)) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
@@ -128,13 +131,13 @@ export function playEvent(state, cardIdx, command) {
       player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
+      state = logAction(state, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
 
       player.status.message = '';
       player.selectedCard = null;
       player.energy.available -= getCost(card);
     }
   }
-
   state = checkVictoryConditions(state);
 
   return state;

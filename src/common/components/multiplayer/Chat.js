@@ -72,7 +72,7 @@ class Chat extends Component {
     } else {
       return (
         <span key={phrase}>
-          phrase
+          {phrase}
         </span>
       );
     }

@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 /* eslint-enable import/order */
 
 let webpackConfig = {
@@ -96,7 +97,8 @@ if (process.env.NODE_ENV === 'production') {
     ],
     plugins : [
       new webpack.HotModuleReplacementPlugin(),
-      new ExtractTextPlugin('app.css')
+      new ExtractTextPlugin('app.css'),
+      new CopyWebpackPlugin([{from: 'static'}])
     ]
   });
 

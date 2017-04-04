@@ -111,7 +111,9 @@ export function mapDispatchToProps(dispatch) {
 
 export class Game extends Component {
   componentDidMount() {
-    this.props.onConnect();
+    if (!this.props.socket.connected) {
+      this.props.onConnect();
+    }
   }
 
   isMyTurn() {

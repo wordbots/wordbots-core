@@ -4,11 +4,15 @@ import { Link } from 'react-router';
 
 /* eslint-disable react/no-multi-comp */
 
-const RouterLink = (props) => (
-  props.href.match(/^(https?:)?\/\//)
-    ? <a href={props.href}>{props.children}</a>
-    : <Link to={props.href}>{props.children}</Link>
-);
+const RouterLink = (props) => {
+  const style = {color: 'red', fontWeight: 'bold'};
+
+  if (props.href.match(/^(https?:)?\/\//)) {
+    return <a href={props.href} style={style}>{props.children}</a>;
+  } else {
+    return <Link to={props.href} style={style}>{props.children}</Link>;
+  }
+};
 
 const MarkdownBlock = (props) => (
   <ReactMarkdown

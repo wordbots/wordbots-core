@@ -23,6 +23,7 @@ const renderFullPage = (html, initialState, head) => `
       <head>
         <meta charset="utf-8">
         <title>${head.title}</title>
+        <link rel="icon" href="/static/favicon.png">
         <link rel="stylesheet" type="text/css" href="/static/app.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">

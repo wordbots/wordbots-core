@@ -65,7 +65,8 @@ describe('Game container', () => {
       <Chat
         roomName={null}
         messages={[]}
-        onSendMessage={game.props.onSendChatMessage} />
+        onSendMessage={game.props.onSendChatMessage}
+        onHoverCard={game.props.onHoverTile} />
     ]);
   });
 

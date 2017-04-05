@@ -177,6 +177,19 @@ export function validAttackHexes(state, playerName, startHex, speed, object) {
 // III. Effects on game state that are performed in many different places.
 //
 
+export function logAction(state, player, action, cards, timestamp) {
+  const playerStr = player ? (player.name === state.player ? 'You ' : 'Your opponent ') : '';
+  const message = {
+    user: '[Game]',
+    text: `${playerStr}${action}.`,
+    timestamp: timestamp || Date.now(),
+    cards: cards
+  };
+
+  state.actionLog.push(message);
+  return state;
+}
+
 export function newGame(state, player, collections) {
   state = Object.assign(state, cloneDeep(defaultState), {player: player}); // Reset game state.
   state.players.blue = bluePlayerState(collections.blue);
@@ -205,6 +218,7 @@ export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   object.stats.health -= amount;
 
   state = triggerEvent(state, 'afterDamageReceived', {object: object});
+  state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
@@ -216,6 +230,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else {
     state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
+    state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
 
     delete state.players[ownerName].robotsOnBoard[hex];
 

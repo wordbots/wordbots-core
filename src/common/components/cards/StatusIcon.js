@@ -30,7 +30,7 @@ function StatusIcon(text, result) {
 
     if (isParsed) {
       const parserInput = encodeURIComponent(expandKeywords(text));
-      const treeUrl = `https://wordbots.herokuapp.com/parse?input=${parserInput}&format=svg`;
+      const treeUrl = `http://parser.wordbots.io/parse?input=${parserInput}&format=svg`;
 
       return (
         <a href={treeUrl} target="_blank">

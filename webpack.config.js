@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 /* eslint-enable import/order */
 
 let webpackConfig = {
@@ -41,7 +42,8 @@ if (process.env.NODE_ENV === 'production') {
         }
       }),
       new ExtractTextPlugin('app.css'),
-      new webpack.optimize.UglifyJsPlugin({minimize: true})
+      new webpack.optimize.UglifyJsPlugin({minimize: true}),
+      new CopyWebpackPlugin([{from: 'static'}])
     ],
     stats: {
       warnings: false
@@ -96,7 +98,8 @@ if (process.env.NODE_ENV === 'production') {
     ],
     plugins : [
       new webpack.HotModuleReplacementPlugin(),
-      new ExtractTextPlugin('app.css')
+      new ExtractTextPlugin('app.css'),
+      new CopyWebpackPlugin([{from: 'static'}])
     ]
   });
 

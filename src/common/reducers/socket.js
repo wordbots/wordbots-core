@@ -16,7 +16,8 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
     case socketActions.CHAT: {
       const message = {
         user: action.payload.sender ? (state.clientIdToUsername[action.payload.sender] || action.payload.sender) : 'You',
-        text: action.payload.msg
+        text: action.payload.msg,
+        timestamp: Date.now()
       };
 
       return Object.assign(state, {

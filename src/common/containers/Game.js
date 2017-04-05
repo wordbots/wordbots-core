@@ -25,6 +25,7 @@ export function mapStateToProps(state) {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     winner: state.game.winner,
+    actionLog: state.game.actionLog,
 
     selectedTile: activePlayer.selectedTile,
     selectedCard: activePlayer.selectedCard,
@@ -99,11 +100,10 @@ export function mapDispatchToProps(dispatch) {
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
-
     onVictoryScreenClick: () => {
       dispatch([
-        socketActions.leave(),
-        gameActions.newGame()
+        gameActions.newGame(),
+        socketActions.leave()
       ]);
     }
   };
@@ -250,8 +250,9 @@ export class Game extends Component {
         {this.renderGameArea()}
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages}
-          onSendMessage={this.props.onSendChatMessage} />
+          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
+          onSendMessage={this.props.onSendChatMessage}
+          onHoverCard={this.props.onHoverTile} />
       </div>
     );
   }
@@ -269,6 +270,7 @@ Game.propTypes = {
   target: object,
   hoveredCard: object,
   winner: string,
+  actionLog: array,
 
   blueHand: array,
   orangeHand: array,

@@ -1,7 +1,7 @@
 import {
   activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
-  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -46,6 +46,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     state = transportObject(state, fromHex, toHex);
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
+    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
   }
 
   return state;
@@ -83,6 +84,10 @@ export function attack(state, source, target) {
       }
 
       state = applyAbilities(state);
+      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
+        [defender.card.name]: defender.card,
+        [attacker.card.name]: attacker.card
+      });
 
       activePlayer(state).selectedTile = null;
     }

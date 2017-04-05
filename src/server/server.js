@@ -121,7 +121,8 @@ app.get('/*', (req, res) => {
         </Provider>
       );
 
-      const gitSHA = childProcess.execSync('${HEAD_HASH:-$(git rev-parse HEAD)}').toString().trim().slice(0, 7);
+      const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
+      const sha = childProcess.execSync(shaCommand).toString().trim().slice(0, 7);
 
       // This method waits for all render component promises to resolve before returning to browser
       fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)
@@ -129,7 +130,7 @@ app.get('/*', (req, res) => {
           const componentHTML = ReactDOMServer.renderToString(InitialView);
           const head = Helmet.rewind();
           const initialState = Object.assign(store.getState(), {
-            version: `${VERSION}-${gitSHA}`
+            version: `${VERSION}-${sha}`
           });
 
           res.status(200).end(renderFullPage(componentHTML, initialState, head));

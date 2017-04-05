@@ -1,3 +1,5 @@
+import childProcess from 'child_process';
+
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import webpack from 'webpack';
@@ -8,6 +10,7 @@ import { Provider } from 'react-redux';
 import createLocation from 'history/lib/createLocation';
 import Helmet from 'react-helmet';
 
+import { VERSION } from '../common/constants';
 import fetchComponentDataBeforeRender from '../common/api/fetchComponentDataBeforeRender';
 import configureStore from '../common/store/configureStore';
 import getUser from '../common/api/user';
@@ -118,13 +121,18 @@ app.get('/*', (req, res) => {
         </Provider>
       );
 
+      const gitSHA = childProcess.execSync('git rev-parse HEAD').toString().trim().slice(0, 7);
+
       // This method waits for all render component promises to resolve before returning to browser
       fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)
         .then(html => {
           const componentHTML = ReactDOMServer.renderToString(InitialView);
-          const initialState = store.getState();
           const head = Helmet.rewind();
-          res.status(200).end(renderFullPage(componentHTML,initialState, head));
+          const initialState = Object.assign(store.getState(), {
+            version: `${VERSION}-${gitSHA}`
+          });
+
+          res.status(200).end(renderFullPage(componentHTML, initialState, head));
         })
         .catch(e => {
           /* eslint-disable no-console */

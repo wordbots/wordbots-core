@@ -1,5 +1,7 @@
 import { capitalize, invert } from 'lodash';
 
+export const VERSION = 'alpha-0.0.1';
+
 // For debugging.
 export const SHUFFLE_DECKS = true;
 

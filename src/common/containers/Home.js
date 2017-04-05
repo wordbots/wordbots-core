@@ -6,6 +6,7 @@ import Paper from 'material-ui/lib/paper';
 
 export function mapStateToProps(state) {
   return {
+    version: state.version,
     sidebarOpen: state.layout.present.sidebarOpen
   };
 }
@@ -17,7 +18,7 @@ class Home extends Component {
         paddingLeft: this.props.sidebarOpen ? 256 : 0,
         margin: '48px 72px'
       }}>
-        <Helmet title="Game"/>
+        <Helmet title="Home"/>
 
         <div style={{
           display: 'flex',
@@ -27,9 +28,9 @@ class Home extends Component {
             <Paper style={{padding: 20, marginRight: 20}}>
               <div style={{
                 fontSize: 24,
-                fontWeight: 100,
+                fontWeight: 'bold',
                 marginBottom: 12
-              }}>Wordbots 0.1.0 Release Notes</div>
+              }}>Wordbots {this.props.version}</div>
               <div>This patch marks the the first public release of Wordbots.</div>
             </Paper>
 
@@ -52,8 +53,8 @@ class Home extends Component {
               }}>How to Play</div>
               <div>
                 <p><b>Create Your Own Cards</b></p>
-                <p>Get started by making your own custom cards using the Card Creator, 
-                   accessible from the Collection page or with this <Link to="/creator" 
+                <p>Get started by making your own custom cards using the Card Creator,
+                   accessible from the Collection page or with this <Link to="/creator"
                    style={{color: 'red', fontWeight: 'bold'}}>link.</Link></p>
                 <p><b>Make a Deck</b></p>
                 <p><b>Play!</b></p>
@@ -66,9 +67,10 @@ class Home extends Component {
   }
 }
 
-const { bool } = React.PropTypes;
+const { bool, string } = React.PropTypes;
 
 Home.propTypes = {
+  version: string,
   sidebarOpen: bool
 };
 

@@ -121,7 +121,7 @@ app.get('/*', (req, res) => {
         </Provider>
       );
 
-      const gitSHA = childProcess.execSync('git rev-parse HEAD').toString().trim().slice(0, 7);
+      const gitSHA = childProcess.execSync('${HEAD_HASH:-$(git rev-parse HEAD)}').toString().trim().slice(0, 7);
 
       // This method waits for all render component promises to resolve before returning to browser
       fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)

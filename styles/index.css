@@ -13,6 +13,21 @@ a {
   text-decoration: none;
 }
 
+.markdownBlock h1 {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.markdownBlock h2 {
+  font-size: 24px;
+  font-weight: 100;
+}
+
+.markdownBlock h3 {
+  font-size: 1em;
+  font-weight: bold;
+}
+
 /* Hexgrid */
 #hexgrid svg {
   margin: 0 auto;

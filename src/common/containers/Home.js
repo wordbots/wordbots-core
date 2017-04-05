@@ -18,7 +18,7 @@ const whatIsWordbots = (version) => (`
 get to create the cards!
 
 Wordbots is currently in **alpha**.
-We _have_ a basic parser for card text, basic gameplay functionality, and a lobby for multiplayer gameplay.
+We _have_ a working (but not fully complete) parser for card text, basic gameplay functionality, and a lobby for multiplayer gameplay.
 We _don't_ currently have any mechanism to ensure that cards are reasonably balanced –
 that's still something we're brainstorming.
 

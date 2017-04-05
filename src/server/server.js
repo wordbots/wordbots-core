@@ -10,7 +10,6 @@ import { Provider } from 'react-redux';
 import createLocation from 'history/lib/createLocation';
 import Helmet from 'react-helmet';
 
-import { VERSION } from '../common/constants';
 import fetchComponentDataBeforeRender from '../common/api/fetchComponentDataBeforeRender';
 import configureStore from '../common/store/configureStore';
 import getUser from '../common/api/user';
@@ -19,6 +18,9 @@ import packagejson from '../../package.json';
 import webpackConfig from '../../webpack.config';
 
 const app = express();
+
+const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
+const sha = childProcess.execSync(shaCommand).toString().trim().slice(0, 7);
 
 const renderFullPage = (html, initialState, head) => `
     <!doctype html>
@@ -104,7 +106,7 @@ app.get('/*', (req, res) => {
       let store = null;
       if (user) {
         store = configureStore({
-          version: packagejson.version,
+          version: `${packagejson.version}+${sha}`,
           user: {
             userId: user.id,
             info: user,
@@ -112,7 +114,9 @@ app.get('/*', (req, res) => {
           }
         });
       } else {
-        store = configureStore({version: packagejson.version});
+        store = configureStore({
+          version: `${packagejson.version}+${sha}`
+        });
       }
 
       const InitialView = (
@@ -121,17 +125,12 @@ app.get('/*', (req, res) => {
         </Provider>
       );
 
-      const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
-      const sha = childProcess.execSync(shaCommand).toString().trim().slice(0, 7);
-
       // This method waits for all render component promises to resolve before returning to browser
       fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)
         .then(html => {
           const componentHTML = ReactDOMServer.renderToString(InitialView);
           const head = Helmet.rewind();
-          const initialState = Object.assign(store.getState(), {
-            version: `${VERSION}-${sha}`
-          });
+          const initialState = Object.assign(store.getState());
 
           res.status(200).end(renderFullPage(componentHTML, initialState, head));
         })

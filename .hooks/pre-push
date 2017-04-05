@@ -1,0 +1,7 @@
+if [ "$1" = "heroku" ]
+then
+    hash_name=HEAD_HASH
+    hash=$(git rev-parse HEAD)
+    echo Setting $hash_name to $hash
+    heroku config:set $hash_name=$hash --app wordbots-game
+fi

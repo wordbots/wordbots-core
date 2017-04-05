@@ -39,8 +39,8 @@ export function queryObjectAttribute(state, hex, attr) {
 export function queryRobotAttributes(state, hex) {
   return [
     getAttribute(allObjectsOnBoard(state)[hex], 'attack'),
-    getAttribute(allObjectsOnBoard(state)[hex], 'speed'),
-    getAttribute(allObjectsOnBoard(state)[hex], 'health')
+    getAttribute(allObjectsOnBoard(state)[hex], 'health'),
+    getAttribute(allObjectsOnBoard(state)[hex], 'speed')
   ].join('/');
 }
 

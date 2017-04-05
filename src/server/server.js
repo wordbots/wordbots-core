@@ -1,3 +1,5 @@
+import childProcess from 'child_process';
+
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import webpack from 'webpack';
@@ -17,12 +19,16 @@ import webpackConfig from '../../webpack.config';
 
 const app = express();
 
+const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
+const sha = childProcess.execSync(shaCommand).toString().trim().slice(0, 7);
+
 const renderFullPage = (html, initialState, head) => `
     <!doctype html>
     <html>
       <head>
         <meta charset="utf-8">
         <title>${head.title}</title>
+        <link rel="icon" href="/static/favicon.png">
         <link rel="stylesheet" type="text/css" href="/static/app.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">
@@ -100,7 +106,7 @@ app.get('/*', (req, res) => {
       let store = null;
       if (user) {
         store = configureStore({
-          version: packagejson.version,
+          version: `${packagejson.version}+${sha}`,
           user: {
             userId: user.id,
             info: user,
@@ -108,7 +114,9 @@ app.get('/*', (req, res) => {
           }
         });
       } else {
-        store = configureStore({version: packagejson.version});
+        store = configureStore({
+          version: `${packagejson.version}+${sha}`
+        });
       }
 
       const InitialView = (
@@ -121,9 +129,10 @@ app.get('/*', (req, res) => {
       fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)
         .then(html => {
           const componentHTML = ReactDOMServer.renderToString(InitialView);
-          const initialState = store.getState();
           const head = Helmet.rewind();
-          res.status(200).end(renderFullPage(componentHTML,initialState, head));
+          const initialState = Object.assign(store.getState());
+
+          res.status(200).end(renderFullPage(componentHTML, initialState, head));
         })
         .catch(e => {
           /* eslint-disable no-console */

@@ -6,7 +6,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager';
 
 import * as LayoutActions from '../actions/layout';
 import * as UserActions from '../actions/user';
-import Home from '../components/Home';
+import Home from '../containers/Home';
 import Header from '../components/layout/Header';
 import PersonalTheme from '../themes/personal';
 

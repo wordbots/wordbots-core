@@ -491,12 +491,12 @@ describe('Game reducer', () => {
 
       // Move Attack Bot so it's adjacent to General Bot but not Fortification.
       state = moveRobot(state, '2,0,-2', '1,0,-1', true);
-      expect(queryRobotAttributes(state, '1,0,-1')).toEqual('2/2/1');
+      expect(queryRobotAttributes(state, '1,0,-1')).toEqual('2/1/2');
 
       // Destroy General Bot to remove its passive ability.
       state = playEvent(state, 'orange', cards.shockCard, {hex: '2,-1,-1'});
       state = playEvent(state, 'orange', cards.shockCard, {hex: '2,-1,-1'});
-      expect(queryRobotAttributes(state, '1,0,-1')).toEqual('1/2/1');
+      expect(queryRobotAttributes(state, '1,0,-1')).toEqual('1/1/2');
 
       // Place a new Attack Bot that is adjacent to Fortification.
       state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');
@@ -504,15 +504,15 @@ describe('Game reducer', () => {
 
       // Place another Fortification adjacent to the Attack Bot to duplicate its passive ability.
       state = playObject(state, 'orange', cards.fortificationCard, '3,1,-4');
-      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('1/2/3');
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('1/3/2');
 
       // Move the Attack Bot away from both Fortification.
       state = moveRobot(state, '3,0,-3', '4,-1,-3', true);
-      expect(queryRobotAttributes(state, '4,-1,-3')).toEqual('1/2/1');
+      expect(queryRobotAttributes(state, '4,-1,-3')).toEqual('1/1/2');
 
       // Place a blue Fortification - this shouldn't affect the orange Attack Bot.
       state = playObject(state, 'blue', cards.fortificationCard, '4,-2,-2');
-      expect(queryRobotAttributes(state, '4,-1,-3')).toEqual('1/2/1');
+      expect(queryRobotAttributes(state, '4,-1,-3')).toEqual('1/1/2');
     });
 
     it('should let objects apply passive abilities to cards in hand', () => {
@@ -559,7 +559,7 @@ describe('Game reducer', () => {
     it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditionals', () => {
       let state = getDefaultState();
       state = playObject(state, 'orange', cards.attackBotCard, '3,0,-3');  // 1/1
-      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('1/2/1');
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('1/1/2');
       state = playEvent(state, 'orange', cards.threedomCard);  // "Set all stats of all robots in play to 3."
       expect(queryRobotAttributes(state, '3,0,-3')).toEqual('3/3/3');
       state = playObject(state, 'orange', cards.generalBotCard, '3,1,-4');  // 5/5; +1/0
@@ -567,8 +567,8 @@ describe('Game reducer', () => {
       state = playEvent(state, 'orange', cards.rampageCard);  // "Give all robots you control +2 attack."
       expect(queryRobotAttributes(state, '3,0,-3')).toEqual('6/3/3');
       state = playObject(state, 'orange', cards.fortificationCard, '2,1,-3');  // +0/1
-      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('6/3/4');
-      expect(queryRobotAttributes(state, '3,1,-4')).toEqual('7/1/6');
+      expect(queryRobotAttributes(state, '3,0,-3')).toEqual('6/4/3');
+      expect(queryRobotAttributes(state, '3,1,-4')).toEqual('7/6/1');
       const energy = state.players.orange.energy.available;
       state = playEvent(state, 'orange', cards.incinerateCard);  // "Gain energy equal to the total power of robots you control. Destroy all robots you control."
       expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (5+2));

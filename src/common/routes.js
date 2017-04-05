@@ -3,6 +3,7 @@ import React from 'react';
 
 import App from './containers/App';
 // Redux Smart
+import Home from './containers/Home';
 import Game from './containers/Game';
 import Creator from './containers/Creator';
 import Collection from './containers/Collection';
@@ -13,7 +14,7 @@ import Decks from './containers/Decks';
 
 export default (
   <Route name="app" path="/" component={App}>
-    <Route path="home" component={Collection} />
+    <Route path="home" component={Home} />
     <Route path="game" component={Game} />
     <Route path="creator" component={Creator} />
     <Route path="collection" component={Collection} />

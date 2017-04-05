@@ -90,13 +90,13 @@ class Card extends Component {
       return (
         <CardText style={style}>
           {this.renderStat('attack')}
-          {this.renderStat('speed')}
           {this.renderStat('health')}
+          {this.renderStat('speed')}
         </CardText>
       );
     } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
       return (
-        <CardText style={Object.assign(style, {float: 'right'})}>
+        <CardText style={Object.assign(style, {marginLeft: '31%'})}>
           {this.renderStat('health')}
         </CardText>
       );

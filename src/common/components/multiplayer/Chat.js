@@ -6,6 +6,8 @@ import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import TextField from 'material-ui/lib/text-field';
 import Divider from 'material-ui/lib/divider';
+import IconButton from 'material-ui/lib/icon-button';
+import FontIcon from 'material-ui/lib/font-icon';
 import { sortBy } from 'lodash';
 
 class Chat extends Component {
@@ -16,7 +18,8 @@ class Chat extends Component {
       chatFieldValue: '',
       showServerMsgs: true,
       showGameMsgs: true,
-      showChatMsgs: true
+      showChatMsgs: true,
+      togglesVisible: false
     };
   }
 
@@ -86,9 +89,22 @@ class Chat extends Component {
             <ToolbarGroup float="left">
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />
             </ToolbarGroup>
+            <ToolbarGroup float="right">
+              <IconButton onClick={() => this.setState({
+                chatFieldValue: this.state.chatFieldValue,
+                showServerMsgs: this.state.showServerMsgs,
+                showGameMsgs: this.state.showGameMsgs,
+                showChatMsgs: this.state.showChatMsgs,
+                togglesVisible: !this.state.togglesVisible
+              })}>
+                <FontIcon color="#888" className="material-icons">settings_input_component</FontIcon>
+              </IconButton>
+            </ToolbarGroup>
           </Toolbar>
 
-          <div>
+          <div style={{
+            display: this.state.togglesVisible ? 'block' : 'none'
+          }}>
             <div style={{padding: 10}}>
               <Toggle
                 label="Show server messages"
@@ -108,7 +124,11 @@ class Chat extends Component {
 
           <div
             ref={(el) => {this.chat = el;}}
-            style={{padding: 10, height: 'calc(100% - 92px - 144px)', overflowY: 'scroll'}}>
+            style={{
+              padding: 10, 
+              height: this.state.togglesVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)', 
+              overflowY: 'scroll'
+            }}>
             {
               sortBy(this.props.messages, 'timestamp')
                 .filter(this.filterMessage.bind(this))

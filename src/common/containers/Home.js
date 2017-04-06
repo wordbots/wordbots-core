@@ -14,6 +14,7 @@ export function mapStateToProps(state) {
 
 const whatIsWordbots = (version) => (`
 # Wordbots ${version}
+![](http://app.wordbots.io/static/screenshot_mini.png)
 **Wordbots** is a customizable hex-based card game with a twist – _you_, the player,
 get to create the cards!
 

@@ -3,7 +3,6 @@ import multi from 'redux-multi';
 import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
-import { createLogger } from 'redux-logger';
 
 import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
@@ -34,6 +33,7 @@ const middlewareBuilder = () => {
         })
       ];
     } else {
+      const createLogger = require('redux-logger').createLogger;
       const DevTools = require('../containers/DevTools').default;
 
       const logger = createLogger({

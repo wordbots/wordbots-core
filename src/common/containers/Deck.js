@@ -27,7 +27,7 @@ function mapDispatchToProps(dispatch) {
     onSaveDeck: function (id, name, cardIds) {
       dispatch([
         collectionActions.saveDeck(id, name, cardIds),
-        push(null, '/decks')
+        push('/decks')
       ]);
     }
   };

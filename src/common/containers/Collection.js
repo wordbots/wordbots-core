@@ -27,7 +27,7 @@ function mapDispatchToProps(dispatch) {
     onEditCard: (card) => {
       dispatch([
         collectionActions.openForEditing(card),
-        push(null, '/creator')
+        push('/creator')
       ]);
     },
     onRemoveFromCollection: (cards) => {

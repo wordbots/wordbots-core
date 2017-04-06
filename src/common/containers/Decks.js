@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch) {
     onCreateDeck: () => {
       dispatch([
         collectionActions.editDeck(null),
-        push(null, '/deck')
+        push('/deck')
       ]);
     },
     onDeleteDeck: (deckId) => {
@@ -33,7 +33,7 @@ function mapDispatchToProps(dispatch) {
     onEditDeck: (deckId) => {
       dispatch([
         collectionActions.editDeck(deckId),
-        push(null, '/deck')
+        push('/deck')
       ]);
     }
   };

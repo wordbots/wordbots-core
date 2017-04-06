@@ -48,7 +48,7 @@ export function mapDispatchToProps(dispatch) {
     onAddToCollection: (props) => {
       dispatch([
         creatorActions.addToCollection(props),
-        push(null, '/collection')
+        push('/collection')
       ]);
     }
   };

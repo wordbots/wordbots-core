@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { Router } from 'react-router';
 import { Provider } from 'react-redux';
-import ReactGA from 'react-ga';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -19,13 +18,6 @@ const store = configureStore(initialState);
 const rootElement = document.getElementById('root');
 
 injectTapEventPlugin();
-
-// TODO Why doesn't this work??
-ReactGA.initialize('UA-345959-18');
-history.listen(location => {
-  ReactGA.set({ page: location.pathname });
-  ReactGA.pageview(location.pathname);
-});
 
 // See https://github.com/acdlite/redux-router/pull/282
 const createRouterObject = require('react-router/lib/RouterUtils').createRouterObject;

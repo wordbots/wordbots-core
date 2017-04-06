@@ -15,8 +15,8 @@ a {
 
 .markdownBlock img {
   display: block;
-  width: 200px;
-  margin: -1em auto 0;
+  width: 300px;
+  margin: 0 auto 0.5em;
 }
 
 .markdownBlock h1 {

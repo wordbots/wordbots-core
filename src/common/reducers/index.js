@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import { routerStateReducer } from 'redux-router';
 import undoable from 'redux-undo';
-import ReactGA from 'react-ga';
 
 import game from './game';
 import creator from './creator';
@@ -11,16 +10,23 @@ import user from './user';
 import layout from './layout';
 import version from './version';
 
-ReactGA.initialize('UA-345959-18');
-
 function withAnalytics(fallbackReducer) {
-  return (state = null, action) => {
-    if (action.type === '@@reduxReactRouter/routerDidChange') {
-      ReactGA.set({ page: action.payload.location.pathname });
-      ReactGA.pageview(action.payload.location.pathname);
-    }
-    return fallbackReducer(state, action);
-  };
+  if (typeof document === 'undefined' || (window.process && window.process.title.includes('node'))) {
+    // Don't do any analytics stuff on the server side (it would break).
+    return fallbackReducer;
+  } else {
+    // Initialize Google Analytics and connect to the router reducer.
+    const ReactGA = require('react-ga');
+    ReactGA.initialize('UA-345959-18');
+
+    return (state = null, action) => {
+      if (action.type === '@@reduxReactRouter/routerDidChange') {
+        ReactGA.set({ page: action.payload.location.pathname });
+        ReactGA.pageview(action.payload.location.pathname);
+      }
+      return fallbackReducer(state, action);
+    };
+  }
 }
 
 const rootReducer = combineReducers({

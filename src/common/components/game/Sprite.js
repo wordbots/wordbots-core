@@ -1,7 +1,8 @@
-
 // Adapted from https://github.com/not-surt/spritegen .
 
 import React, { Component } from 'react';
+
+import { inBrowser } from '../../util/common';
 
 class Sprite extends Component {
   render() {
@@ -9,7 +10,7 @@ class Sprite extends Component {
 
     // Draw to a mock canvas, then create an image using the dataURL.
     // (Don't try to render anything on the server because it's too complicated.)
-    if (typeof document === 'undefined' || (window.process && window.process.title.includes('node'))) {
+    if (!inBrowser()) {
       return null;
     } else {
       const mockCanvasElt = document.createElement('canvas');

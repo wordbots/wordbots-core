@@ -23,15 +23,15 @@ injectTapEventPlugin();
 
 ReactGA.initialize('UA-345959-18');
 
-function logPageView() {
-  ReactGA.set({ page: window.location.pathname });
-  ReactGA.pageview(window.location.pathname);
-}
+history.listen(location => {
+  ReactGA.set({ page: location.pathname });
+  ReactGA.pageview(location.pathname);
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <ReduxRouter>
-      <Router children={routes} history={history} onUpdate={logPageView} />
+      <Router children={routes} history={history} />
     </ReduxRouter>
   </Provider>,
   rootElement

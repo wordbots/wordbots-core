@@ -222,7 +222,6 @@ export class Game extends Component {
                 secondary
                 disabled={!this.isMyTurn()}
                 label="End Turn"
-                style={{}}
                 onTouchTap={this.props.onPassTurn} />
             </div>
           </div>

@@ -98,7 +98,7 @@ class App extends Component {
           />
         </div>
         <div>
-          <Drawer open={this.state.open} containerStyle={{top: 66}}>
+          <Drawer open={this.state.open} containerStyle={{top: 66, paddingTop: 10}}>
             {this.renderLink('/home', 'Home', 'home')}
             {this.renderLink('/collection', 'Collection', 'recent_actors')}
             {this.renderLink('/decks', 'Decks', 'view_list')}

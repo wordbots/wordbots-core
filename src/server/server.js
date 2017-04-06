@@ -27,12 +27,18 @@ const renderFullPage = (html, initialState, head) => `
     <html>
       <head>
         <meta charset="utf-8">
-        <title>${head.title}</title>
-        <link rel="icon" href="/static/favicon.png">
+        <title>${head.title} | Wordbots</title>
+        <link rel="icon" href="/static/favicon.ico">
         <link rel="stylesheet" type="text/css" href="/static/app.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700" rel="stylesheet">
+        <meta property="og:url" content="http://app.wordbots.io" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="${head.title} | Wordbots" />
+        <meta property="og:description" content="Wordbots is a customizable hex-based card game with a twist – you, the player, get to create the cards!" />
+        <meta property="og:image" content="/static/screenshot.png" />
+
 
         <link rel="apple-touch-icon" sizes="57x57" href="/static/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="/static/apple-icon-60x60.png">

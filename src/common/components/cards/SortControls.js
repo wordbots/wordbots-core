@@ -12,7 +12,7 @@ class SortControls extends Component {
         floatingLabelText={capitalize(field)}
         onChange={(e, i, value) => { this.props[`onSet${capitalize(field)}`](value); }}>
         {items.map((item, idx) => (
-          <MenuItem value={idx} primaryText={item}/>
+          <MenuItem key={idx} value={idx} primaryText={item}/>
         ))}
       </SelectField>
     );

@@ -84,10 +84,10 @@ class Chat extends Component {
       <div>
         <Drawer openSecondary docked containerStyle={{paddingTop: '66px'}}>
           <Toolbar>
-            <ToolbarGroup float="left">
+            <ToolbarGroup>
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />
             </ToolbarGroup>
-            <ToolbarGroup float="right">
+            <ToolbarGroup>
               <IconButton onClick={() => this.setState({
                 chatFieldValue: this.state.chatFieldValue,
                 showServerMsgs: this.state.showServerMsgs,
@@ -137,11 +137,14 @@ class Chat extends Component {
           <div style={{backgroundColor: '#fff'}}>
             <Divider />
             <TextField
+              id="chat"
               hintText="Chat"
               autoComplete="off"
               style={{margin: 10, width: 236}}
-              value={this.state.chatFieldValue} onChange={this.onChatChange.bind(this)}
-              onEnterKeyDown={this.onChatEnter.bind(this)}/>
+              value={this.state.chatFieldValue}
+              onChange={this.onChatChange.bind(this)}
+              onKeyPress={e => { if (e.charCode === 13) { this.onChatEnter(); }}}
+            />
           </div>
         </Drawer>
       </div>

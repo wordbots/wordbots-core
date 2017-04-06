@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { pushState } from 'redux-router';
+import { push } from 'redux-router';
 import Badge from 'material-ui/Badge';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch) {
     onCreateDeck: () => {
       dispatch([
         collectionActions.editDeck(null),
-        pushState(null, '/deck')
+        push(null, '/deck')
       ]);
     },
     onDeleteDeck: (deckId) => {
@@ -33,7 +33,7 @@ function mapDispatchToProps(dispatch) {
     onEditDeck: (deckId) => {
       dispatch([
         collectionActions.editDeck(deckId),
-        pushState(null, '/deck')
+        push(null, '/deck')
       ]);
     }
   };

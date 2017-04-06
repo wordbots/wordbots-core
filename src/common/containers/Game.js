@@ -217,12 +217,14 @@ export class Game extends Component {
               playingCardType={this.props.playingCardType}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
-            <RaisedButton
-              secondary
-              disabled={!this.isMyTurn()}
-              label="End Turn"
-              style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
-              onTouchTap={this.props.onPassTurn} />
+            <div style={{position: 'absolute', top: 0, bottom: 0, right: 0, height: 36, margin: 'auto', color: 'white'}}>
+              <RaisedButton
+                secondary
+                disabled={!this.isMyTurn()}
+                label="End Turn"
+                style={{}}
+                onTouchTap={this.props.onPassTurn} />
+            </div>
           </div>
 
           <PlayerArea

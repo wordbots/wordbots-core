@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { pushState } from 'redux-router';
+import { push } from 'redux-router';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -27,7 +27,7 @@ function mapDispatchToProps(dispatch) {
     onEditCard: (card) => {
       dispatch([
         collectionActions.openForEditing(card),
-        pushState(null, '/creator')
+        push(null, '/creator')
       ]);
     },
     onRemoveFromCollection: (cards) => {

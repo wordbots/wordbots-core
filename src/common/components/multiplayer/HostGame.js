@@ -20,12 +20,13 @@ class HostGame extends Component {
           floatingLabelText="Game name"
           style={{width: '50%'}}
           onChange={e => { this.setState({gameName: e.target.value}); }} />
-        <RaisedButton
-          secondary
-          disabled={this.state.gameName === ''}
-          label="Host New Game"
-          style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
-          onTouchTap={() => { this.props.onHostGame(this.state.gameName); }} />
+        <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
+          <RaisedButton
+            secondary
+            disabled={this.state.gameName === ''}
+            label="Host New Game"
+            onTouchTap={() => { this.props.onHostGame(this.state.gameName); }} />
+        </div>
       </Paper>
     );
   }

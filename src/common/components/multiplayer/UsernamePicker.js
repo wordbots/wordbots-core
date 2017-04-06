@@ -8,7 +8,7 @@ class UsernamePicker extends Component {
     super(props);
 
     this.state = {
-      username: props.username
+      username: props.username || undefined
     };
 
     this.setUsername = debounce(username => {
@@ -35,6 +35,7 @@ class UsernamePicker extends Component {
       <Paper style={{padding: 20, marginBottom: 20}}>
         <div>Your username is:
           <TextField
+            id="username"
             value={this.state.username}
             style={{marginLeft: 12, width: '50%'}}
             onChange={e => {

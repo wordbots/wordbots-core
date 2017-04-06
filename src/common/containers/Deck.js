@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { pushState } from 'redux-router';
+import { push } from 'redux-router';
 import Paper from 'material-ui/Paper';
 import { isFunction } from 'lodash';
 
@@ -27,7 +27,7 @@ function mapDispatchToProps(dispatch) {
     onSaveDeck: function (id, name, cardIds) {
       dispatch([
         collectionActions.saveDeck(id, name, cardIds),
-        pushState(null, '/decks')
+        push(null, '/decks')
       ]);
     }
   };

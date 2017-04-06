@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { pushState } from 'redux-router';
+import { push } from 'redux-router';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -48,7 +48,7 @@ export function mapDispatchToProps(dispatch) {
     onAddToCollection: (props) => {
       dispatch([
         creatorActions.addToCollection(props),
-        pushState(null, '/collection')
+        push(null, '/collection')
       ]);
     }
   };

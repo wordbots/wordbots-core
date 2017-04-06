@@ -5,9 +5,8 @@ import cookieParser from 'cookie-parser';
 import webpack from 'webpack';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { RoutingContext, match } from 'react-router';
+import { RouterContext, match } from 'react-router';
 import { Provider } from 'react-redux';
-import createLocation from 'history/lib/createLocation';
 import Helmet from 'react-helmet';
 
 import fetchComponentDataBeforeRender from '../common/api/fetchComponentDataBeforeRender';
@@ -95,10 +94,8 @@ app.use((req, res, next) => {
 });
 
 app.get('/*', (req, res) => {
-  const location = createLocation(req.url);
-
   getUser(req.cookies.token || false, user => {
-    match({ routes, location }, (err, redirectLocation, renderProps) => {
+    match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
       if (err) {
         /* eslint-disable no-console */
         console.error(err);
@@ -127,7 +124,7 @@ app.get('/*', (req, res) => {
 
       const InitialView = (
         <Provider store={store}>
-          <RoutingContext {...renderProps} />
+          <RouterContext {...renderProps} />
         </Provider>
       );
 

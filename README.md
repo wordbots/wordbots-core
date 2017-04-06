@@ -2,6 +2,7 @@
 [![CircleCI](https://circleci.com/gh/wordbots/wordbots-core.svg?style=svg)](https://circleci.com/gh/wordbots/wordbots-core)
 [![Test Coverage](https://codeclimate.com/github/wordbots/wordbots-core/badges/coverage.svg)](https://codeclimate.com/github/wordbots/wordbots-core/coverage)
 [![Code Climate](https://codeclimate.com/github/wordbots/wordbots-core/badges/gpa.svg)](https://codeclimate.com/github/wordbots/wordbots-core)
+[![david-dm](https://david-dm.org/wordbots/wordbots-core/status.svg)](https://david-dm.org/wordbots/wordbots-core)
 
 ## Development installation
 

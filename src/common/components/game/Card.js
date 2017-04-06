@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import Divider from 'material-ui/lib/divider';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardText from 'material-ui/lib/card/card-text';
-import Paper from 'material-ui/lib/paper';
-import Badge from 'material-ui/lib/badge';
-import { Textfit } from 'react-textfit';
+import Divider from 'material-ui/Divider';
+import {CardHeader, CardText} from 'material-ui/Card';
+import Paper from 'material-ui/Paper';
+import Badge from 'material-ui/Badge';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import loadImages from '../react-hexgrid/HexGridImages';
+import Textfit from '../react-textfit/Textfit';
 
 import CardStat from './CardStat';
 import CardBack from './CardBack';

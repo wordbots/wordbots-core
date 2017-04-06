@@ -14,6 +14,10 @@ export function applyFuncToField(obj, func, field) {
   return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
 }
 
+export function inBrowser() {
+  return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
     id: id(),

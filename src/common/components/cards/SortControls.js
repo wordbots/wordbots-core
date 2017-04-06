@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import SelectField from 'material-ui/lib/SelectField';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import { capitalize } from 'lodash';
 
 class SortControls extends Component {
@@ -12,7 +12,7 @@ class SortControls extends Component {
         floatingLabelText={capitalize(field)}
         onChange={(e, i, value) => { this.props[`onSet${capitalize(field)}`](value); }}>
         {items.map((item, idx) => (
-          <MenuItem value={idx} primaryText={item}/>
+          <MenuItem key={idx} value={idx} primaryText={item}/>
         ))}
       </SelectField>
     );

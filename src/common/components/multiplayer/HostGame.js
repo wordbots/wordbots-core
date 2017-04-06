@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/lib/paper';
-import RaisedButton from 'material-ui/lib/raised-button';
-import TextField from 'material-ui/lib/text-field';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 class HostGame extends Component {
   constructor(props) {
@@ -20,12 +20,13 @@ class HostGame extends Component {
           floatingLabelText="Game name"
           style={{width: '50%'}}
           onChange={e => { this.setState({gameName: e.target.value}); }} />
-        <RaisedButton
-          secondary
-          disabled={this.state.gameName === ''}
-          label="Host New Game"
-          style={{position: 'absolute', top: 0, bottom: 0, right: 20, margin: 'auto', color: 'white'}}
-          onTouchTap={() => { this.props.onHostGame(this.state.gameName); }} />
+        <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
+          <RaisedButton
+            secondary
+            disabled={this.state.gameName === ''}
+            label="Host New Game"
+            onTouchTap={() => { this.props.onHostGame(this.state.gameName); }} />
+        </div>
       </Paper>
     );
   }

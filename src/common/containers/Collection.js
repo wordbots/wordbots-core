@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { pushState } from 'redux-router';
-import Paper from 'material-ui/lib/paper';
-import FontIcon from 'material-ui/lib/font-icon';
-import RaisedButton from 'material-ui/lib/raised-button';
+import { push } from 'redux-router';
+import Paper from 'material-ui/Paper';
+import FontIcon from 'material-ui/FontIcon';
+import RaisedButton from 'material-ui/RaisedButton';
 import { isFunction, without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
@@ -17,7 +17,8 @@ import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
-    cards: state.collection.cards
+    cards: state.collection.cards,
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
@@ -26,7 +27,7 @@ function mapDispatchToProps(dispatch) {
     onEditCard: (card) => {
       dispatch([
         collectionActions.openForEditing(card),
-        pushState(null, '/creator')
+        push('/creator')
       ]);
     },
     onRemoveFromCollection: (cards) => {
@@ -79,7 +80,7 @@ class Collection extends Component {
 
   render() {
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
         <Helmet title="Collection"/>
 
         <div style={{
@@ -171,10 +172,11 @@ class Collection extends Component {
   }
 }
 
-const { array, func } = React.PropTypes;
+const { array, bool, func } = React.PropTypes;
 
 Collection.propTypes = {
   cards: array,
+  sidebarOpen: bool,
 
   onEditCard: func,
   onRemoveFromCollection: func

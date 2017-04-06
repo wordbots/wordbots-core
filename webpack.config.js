@@ -13,7 +13,6 @@ let webpackConfig = {
     publicPath: '/static/'
   },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin()
   ]
 };
@@ -27,13 +26,12 @@ if (process.env.NODE_ENV === 'production') {
     module: {
       loaders: [{
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/,
         include: __dirname
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.json$/, loader: 'json'},
-      { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap') }
+      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) }
     ]},
     plugins : [
       new webpack.DefinePlugin({
@@ -42,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
         }
       }),
       new ExtractTextPlugin('app.css'),
-      new webpack.optimize.UglifyJsPlugin({minimize: true}),
+      new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
       new CopyWebpackPlugin([{from: 'static'}])
     ],
     stats: {
@@ -53,50 +51,41 @@ if (process.env.NODE_ENV === 'production') {
   webpackConfig = merge(webpackConfig, {
     devtool: 'inline-source-map',
     module: {
-      loaders: [{
+      rules: [{
         test: /\.js$/,
-        loader: 'babel',
         exclude: /node_modules/,
-        include: __dirname,
-          env: {
-            development: {
-              plugins: [
-                'react-transform',
-                'transform-decorators-legacy',
-                'transform-class-properties'
-              ],
-              extra: {
-                'react-transform': {
-                  transforms: [{
-                    transform:  'react-transform-hmr',
-                    imports: ['react'],
-                    locals:  ['module']
-                  },
-                  {
-                    transform: 'react-transform-catch-errors',
-                    imports: ['react','redbox-react' ]
-                  }
-                ]}
-              }
-            }
-          },
-        query: {
-//          optional: ['runtime'],
-          presets: ['es2015', 'stage-2', 'react'],
-          plugins: ['transform-decorators-legacy', 'transform-class-properties' ]
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['es2015', 'stage-2', 'react'],
+            plugins: [
+              ['react-transform', {transforms: [
+                {
+                  transform: 'react-transform-hmr',
+                  imports: ['react'],
+                  locals:  ['module']
+                },
+                {
+                  transform: 'react-transform-catch-errors',
+                  imports: ['react','redbox-react']
+                }
+              ]}],
+              'transform-decorators-legacy',
+              'transform-class-properties'
+            ]
+          }
         }
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.json$/, loader: 'json'},
-      { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap') }
+      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) }
 
     ]},
-    entry : [
+    entry: [
       'whatwg-fetch',
       'webpack-hot-middleware/client',
       './src/client/index.js'
     ],
-    plugins : [
+    plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new ExtractTextPlugin('app.css'),
       new CopyWebpackPlugin([{from: 'static'}])

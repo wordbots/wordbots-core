@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import FontIcon from 'material-ui/lib/font-icon';
-import TextField from 'material-ui/lib/text-field';
-import RaisedButton from 'material-ui/lib/raised-button';
+import FontIcon from 'material-ui/FontIcon';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
 import { groupCards } from '../../util/cards';

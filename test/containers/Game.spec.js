@@ -1,7 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import Paper from 'material-ui/lib/paper';
-import RaisedButton from 'material-ui/lib/raised-button';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGame } from '../reactHelpers';
@@ -49,11 +49,12 @@ describe('Game container', () => {
             onSelectTile={board.props.onSelectTile}
             onHoverTile={board.props.onHoverTile}
             />
-          <RaisedButton
-            secondary
-            label="End Turn"
-            style={{position: 'absolute', top: 0, bottom: 0, right: 0, margin: 'auto', color: 'white'}}
-            onTouchTap={game.props.onPassTurn} />
+          <div style={{position: 'absolute', top: 0, bottom: 0, right: 0, height: 36, margin: 'auto', color: 'white'}}>
+            <RaisedButton
+              secondary
+              label="End Turn"
+              onTouchTap={game.props.onPassTurn} />
+          </div>
         </div>
         <PlayerArea
           color={'blue'}

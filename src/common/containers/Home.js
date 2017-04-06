@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 
-import MarkdownBlock from '../components/layout/MarkdownBlock';
+import MarkdownBlock from '../components/MarkdownBlock';
 
 export function mapStateToProps(state) {
   return {

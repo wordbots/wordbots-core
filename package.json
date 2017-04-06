@@ -109,6 +109,7 @@
       "/node_modules/",
       "/test",
       "src/common/components/react-hexgrid/",
+      "src/common/components/react-textfit/",
       "src/common/components/game/Sprite.js"
     ],
     "globals": {

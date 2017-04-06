@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
@@ -18,7 +20,8 @@ export function mapStateToProps(state) {
     cost: state.creator.energy,
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
-    setText: state.creator.setText
+    setText: state.creator.setText,
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
@@ -52,13 +55,14 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Creator extends Component {
-  constructor(props) {
-    super(props);
+  // For testing.
+  getChildContext() {
+    return {muiTheme: getMuiTheme(baseTheme)};
   }
 
   render() {
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
         <Helmet title="Creator"/>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
@@ -94,7 +98,12 @@ export class Creator extends Component {
   }
 }
 
-const { array, func, number, string } = React.PropTypes;
+const { array, bool, func, number, object, string } = React.PropTypes;
+
+// For testing.
+Creator.childContextTypes = {
+  muiTheme: object.isRequired
+};
 
 Creator.propTypes = {
   id: string,
@@ -107,6 +116,7 @@ Creator.propTypes = {
   speed: number,
   health: number,
   cost: number,
+  sidebarOpen: bool,
 
   onSetName: func,
   onSetType: func,

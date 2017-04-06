@@ -1,5 +1,5 @@
 import React from 'react';
-import FontIcon from 'material-ui/lib/font-icon';
+import FontIcon from 'material-ui/FontIcon';
 import ReactTooltip from 'react-tooltip';
 import { isObject } from 'lodash';
 

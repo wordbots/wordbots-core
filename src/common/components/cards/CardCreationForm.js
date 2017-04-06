@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import TextField from 'material-ui/lib/text-field';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import Paper from 'material-ui/lib/paper';
-import RaisedButton from 'material-ui/lib/raised-button';
-import FontIcon from 'material-ui/lib/font-icon';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import FontIcon from 'material-ui/FontIcon';
 import { every, isNull } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';

@@ -1,5 +1,5 @@
 import React from 'react';
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 
 const EnergyCount = ({color, playerName, energy, isCurrentPlayer}) => (
   <div>

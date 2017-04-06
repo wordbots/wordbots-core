@@ -1,5 +1,5 @@
 import React from 'react';
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 
 const Waiting = () => (
   <Paper style={{padding: 20, marginBottom: 20}}>

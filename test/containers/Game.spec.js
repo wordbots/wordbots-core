@@ -1,7 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
-import Paper from 'material-ui/lib/paper';
-import RaisedButton from 'material-ui/lib/raised-button';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGame } from '../reactHelpers';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/lib/paper';
-import TextField from 'material-ui/lib/text-field';
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
 import { debounce } from 'lodash';
 
 class UsernamePicker extends Component {

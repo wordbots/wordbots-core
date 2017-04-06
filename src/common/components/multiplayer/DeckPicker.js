@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/lib/paper';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import Paper from 'material-ui/Paper';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 class DeckPicker extends Component {
   render() {

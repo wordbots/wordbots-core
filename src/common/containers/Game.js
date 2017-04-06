@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import Paper from 'material-ui/lib/paper';
-import RaisedButton from 'material-ui/lib/raised-button';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
 import { isNil } from 'lodash';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
@@ -110,6 +112,11 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Game extends Component {
+  // For testing.
+  getChildContext() {
+    return {muiTheme: getMuiTheme(baseTheme)};
+  }
+
   componentDidMount() {
     if (!this.props.socket.connected) {
       this.props.onConnect();
@@ -259,6 +266,11 @@ export class Game extends Component {
 }
 
 const { array, bool, func, number, object, string } = React.PropTypes;
+
+// For testing.
+Game.childContextTypes = {
+  muiTheme: object.isRequired
+};
 
 Game.propTypes = {
   started: bool,

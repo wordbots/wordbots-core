@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
-import Badge from 'material-ui/lib/badge';
-import Paper from 'material-ui/lib/paper';
-import RaisedButton from 'material-ui/lib/raised-button';
+import Badge from 'material-ui/Badge';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
@@ -14,7 +14,8 @@ import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
-    decks: state.collection.decks
+    decks: state.collection.decks,
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
@@ -145,7 +146,7 @@ class Decks extends Component {
 
   render() {
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
         <Helmet title="Decks" />
 
         <div style={{
@@ -189,10 +190,11 @@ class Decks extends Component {
   }
 }
 
-const { array, func } = React.PropTypes;
+const { array, bool, func } = React.PropTypes;
 
 Decks.propTypes = {
   decks: array,
+  sidebarOpen: bool,
 
   onCreateDeck: func,
   onDeleteDeck: func,

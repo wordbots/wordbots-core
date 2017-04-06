@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import Drawer from 'material-ui/lib/left-nav';
-import Toggle from 'material-ui/lib/toggle';
-import Toolbar from 'material-ui/lib/toolbar/toolbar';
-import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
-import TextField from 'material-ui/lib/text-field';
-import Divider from 'material-ui/lib/divider';
-import IconButton from 'material-ui/lib/icon-button';
-import FontIcon from 'material-ui/lib/font-icon';
+import Drawer from 'material-ui/Drawer';
+import Toggle from 'material-ui/Toggle';
+import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
+import TextField from 'material-ui/TextField';
+import Divider from 'material-ui/Divider';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 import { sortBy } from 'lodash';
 
 class Chat extends Component {
@@ -84,7 +82,7 @@ class Chat extends Component {
   render() {
     return (
       <div>
-        <Drawer openRight docked style={{paddingTop: '66px'}}>
+        <Drawer openSecondary docked containerStyle={{paddingTop: '66px'}}>
           <Toolbar>
             <ToolbarGroup float="left">
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />
@@ -125,8 +123,8 @@ class Chat extends Component {
           <div
             ref={(el) => {this.chat = el;}}
             style={{
-              padding: 10, 
-              height: this.state.togglesVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)', 
+              padding: 10,
+              height: this.state.togglesVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
               overflowY: 'scroll'
             }}>
             {

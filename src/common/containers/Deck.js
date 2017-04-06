@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { pushState } from 'redux-router';
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 import { isFunction } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
@@ -17,7 +17,8 @@ function mapStateToProps(state) {
   return {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
-    deck: state.collection.currentDeck
+    deck: state.collection.currentDeck,
+    sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
@@ -67,7 +68,7 @@ class Deck extends Component {
 
   render() {
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
         <Helmet title="Building Deck"/>
 
         <div style={{
@@ -140,12 +141,13 @@ class Deck extends Component {
   }
 }
 
-const { array, func, object, string } = React.PropTypes;
+const { array, bool, func, object, string } = React.PropTypes;
 
 Deck.propTypes = {
   id: string,
   cards: array,
   deck: object,
+  sidebarOpen: bool,
 
   onSaveDeck: func
 };

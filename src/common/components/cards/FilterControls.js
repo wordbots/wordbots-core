@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Toggle from 'material-ui/lib/toggle';
+import Toggle from 'material-ui/Toggle';
 import { Range } from 'rc-slider';
 
 class FilterControls extends Component {

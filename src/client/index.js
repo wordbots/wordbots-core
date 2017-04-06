@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { Router } from 'react-router';
 import { Provider } from 'react-redux';
+import ReactGA from 'react-ga';
 import { ReduxRouter } from 'redux-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -20,10 +21,17 @@ const rootElement = document.getElementById('root');
 
 injectTapEventPlugin();
 
+ReactGA.initialize('UA-345959-18');
+
+function logPageView() {
+  ReactGA.set({ page: window.location.pathname });
+  ReactGA.pageview(window.location.pathname);
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <ReduxRouter>
-      <Router children={routes} history={history} />
+      <Router children={routes} history={history} onUpdate={logPageView} />
     </ReduxRouter>
   </Provider>,
   rootElement

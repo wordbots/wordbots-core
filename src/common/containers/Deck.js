@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import { isFunction } from 'lodash';
 
@@ -24,11 +24,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSaveDeck: function (id, name, cardIds) {
-      dispatch([
-        collectionActions.saveDeck(id, name, cardIds),
-        push('/decks')
-      ]);
+    onSaveDeck: function (id, name, cardIds, history) {
+      dispatch(collectionActions.saveDeck(id, name, cardIds));
+      history.push('/decks');
     }
   };
 }
@@ -104,7 +102,7 @@ class Deck extends Component {
                     return state;
                   });
                 }}
-                onSaveDeck={this.props.onSaveDeck} />
+                onSaveDeck={(id, name, cardIds) => this.props.onSaveDeck(id, name, cardIds, this.props.history)} />
             </Paper>
 
             <Paper style={{
@@ -149,7 +147,9 @@ Deck.propTypes = {
   deck: object,
   sidebarOpen: bool,
 
+  history: object,
+
   onSaveDeck: func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Deck);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Deck));

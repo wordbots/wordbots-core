@@ -70,7 +70,6 @@
     "react-redux": "^5.0.3",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",
-    "react-router-redux": "^5.0.0-alpha.4",
     "react-tap-event-plugin": "^2.0.1",
     "react-tooltip": "^3.2.7",
     "redux": "^3.0.5",

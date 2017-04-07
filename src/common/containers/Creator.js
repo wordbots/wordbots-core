@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -46,10 +46,8 @@ export function mapDispatchToProps(dispatch) {
       dispatch(creatorActions.regenerateSprite());
     },
     onAddToCollection: (props) => {
-      dispatch([
-        creatorActions.addToCollection(props),
-        push('/collection')
-      ]);
+      dispatch(creatorActions.addToCollection(props));
+      props.history.push('/collection');
     }
   };
 }
@@ -118,6 +116,8 @@ Creator.propTypes = {
   cost: number,
   sidebarOpen: bool,
 
+  history: object,
+
   onSetName: func,
   onSetType: func,
   onSetText: func,
@@ -127,4 +127,4 @@ Creator.propTypes = {
   onAddToCollection: func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Creator);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Creator));

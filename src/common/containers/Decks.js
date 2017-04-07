@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router';
 import Badge from 'material-ui/Badge';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -21,20 +21,16 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onCreateDeck: () => {
-      dispatch([
-        collectionActions.editDeck(null),
-        push('/deck')
-      ]);
+    onCreateDeck: (history) => {
+      dispatch(collectionActions.editDeck(null));
+      history.push('/deck');
     },
     onDeleteDeck: (deckId) => {
       dispatch(collectionActions.deleteDeck(deckId));
     },
-    onEditDeck: (deckId) => {
-      dispatch([
-        collectionActions.editDeck(deckId),
-        push('/deck')
-      ]);
+    onEditDeck: (deckId, history) => {
+      dispatch(collectionActions.editDeck(deckId));
+      history.push('/deck');
     }
   };
 }
@@ -110,7 +106,7 @@ class Decks extends Component {
             label="Edit"
             primary
             disabled={deck.id === '[default]'}
-            onClick={e => { this.props.onEditDeck(deck.id); }}
+            onClick={e => { this.props.onEditDeck(deck.id, this.props.history); }}
             style={{marginRight: 10, width: '100%'}} />
           <RaisedButton
             label="Delete"
@@ -160,7 +156,7 @@ class Decks extends Component {
               secondary
               style={{margin: 10}}
               labelStyle={{fontFamily: 'Carter One'}}
-              onClick={this.props.onCreateDeck} />
+              onClick={() => this.props.onCreateDeck(this.props.history)} />
 
             <div style={{
               display: 'flex',
@@ -190,15 +186,17 @@ class Decks extends Component {
   }
 }
 
-const { array, bool, func } = React.PropTypes;
+const { array, bool, func, object } = React.PropTypes;
 
 Decks.propTypes = {
   decks: array,
   sidebarOpen: bool,
+
+  history: object,
 
   onCreateDeck: func,
   onDeleteDeck: func,
   onEditDeck: func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Decks);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Decks));

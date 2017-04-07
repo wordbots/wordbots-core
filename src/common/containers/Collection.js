@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { push } from 'react-router-redux';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -24,11 +24,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onEditCard: (card) => {
-      dispatch([
-        collectionActions.openForEditing(card),
-        push('/creator')
-      ]);
+    onEditCard: (card, history) => {
+      dispatch(collectionActions.openForEditing(card));
+      history.push('/creator');
     },
     onRemoveFromCollection: (cards) => {
       dispatch(collectionActions.removeFromCollection(cards));
@@ -150,7 +148,7 @@ class Collection extends Component {
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
                 const id = this.state.selectedCardIds[0];
-                this.props.onEditCard(this.props.cards.find(c => c.id === id));
+                this.props.onEditCard(this.props.cards.find(c => c.id === id), this.props.history);
               }}
             />
             <RaisedButton
@@ -172,14 +170,16 @@ class Collection extends Component {
   }
 }
 
-const { array, bool, func } = React.PropTypes;
+const { array, bool, func, object } = React.PropTypes;
 
 Collection.propTypes = {
   cards: array,
   sidebarOpen: bool,
 
+  history: object,
+
   onEditCard: func,
   onRemoveFromCollection: func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Collection);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Collection));

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import { connect } from 'react-redux';
-import { isNil } from 'lodash';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { isNil } from 'lodash';
 
 import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
@@ -322,4 +323,4 @@ Game.propTypes = {
   onVictoryScreenClick: func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Game);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Game));

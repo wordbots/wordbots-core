@@ -1,12 +1,25 @@
-const CURRENT_VERSION = 8;  // Increase whenever localStorage schema has a breaking change.
+import { find } from 'lodash';
+
+import { collection as builtinCards } from './cards';
+
+// Increase CURRENT_VERSION whenever localStorage schema has a breaking change.
+// (DANGER - use this sparingly, as it clears all localStorage.)
+const CURRENT_VERSION = 8;
+
+function getNewCopyIfBuiltinCard(card) {
+  return (card.source === 'builtin') ? find(builtinCards, {'name': card.name}) : card;
+}
 
 export function loadState(state) {
   if (typeof localStorage !== 'undefined' && localStorage['wb$version']) {
     const savedVersion = parseInt(localStorage['wb$version']);
     if (savedVersion === CURRENT_VERSION) {
       state.socket.username = localStorage['wb$username'];
-      state.collection.cards = JSON.parse(localStorage['wb$collection']);
-      state.collection.decks = JSON.parse(localStorage['wb$decks']);
+
+      state.collection.cards = JSON.parse(localStorage['wb$collection']).map(getNewCopyIfBuiltinCard);
+      state.collection.decks = JSON.parse(localStorage['wb$decks']).map(deck =>
+        Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
+      );
     }
   }
 

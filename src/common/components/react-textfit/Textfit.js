@@ -73,6 +73,7 @@ class Textfit extends Component {
     const originalWidth = innerWidth(el);
     const originalHeight = innerHeight(el);
 
+    /* eslint-disable no-console */
     if (originalHeight <= 0 || isNaN(originalHeight)) {
       console.warn('Can not process element without height. Make sure the element is displayed and has a static height.');
       return;
@@ -82,6 +83,7 @@ class Textfit extends Component {
       console.warn('Can not process element without width. Make sure the element is displayed and has a static width.');
       return;
     }
+    /* eslint-enable no-console */
 
     const pid = uniqueId();
     this.pid = pid;

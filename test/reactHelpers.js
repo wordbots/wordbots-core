@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import * as creator from '../src/common/containers/Creator';
 import * as game from '../src/common/containers/Game';
+
+injectTapEventPlugin();
 
 export function renderElement(elt, deep = false) {
   if (deep) {

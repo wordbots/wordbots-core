@@ -47,7 +47,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onAddToCollection: (props) => {
       dispatch(creatorActions.addToCollection(props));
-      props.history.push('/collection');
+      if (props.history) {
+        props.history.push('/collection');
+      }
     }
   };
 }

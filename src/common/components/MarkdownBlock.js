@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 /* eslint-disable react/no-multi-comp */
 

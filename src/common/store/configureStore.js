@@ -1,8 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import multi from 'redux-multi';
-import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
-import createHistory from 'history/lib/createBrowserHistory';
 
 import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
@@ -26,12 +24,7 @@ const middlewareBuilder = () => {
 
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
-      allComposeElements = [
-        middleware,
-        reduxReactRouter({
-          createHistory
-        })
-      ];
+      allComposeElements = [middleware];
     } else {
       const createLogger = require('redux-logger').createLogger;
       const DevTools = require('../containers/DevTools').default;
@@ -43,17 +36,12 @@ const middlewareBuilder = () => {
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
       allComposeElements = [
         middleware,
-        reduxReactRouter({
-          createHistory
-        }),
         DevTools.instrument()
       ];
     }
   } else {
     middleware = applyMiddleware(...universalMiddleware);
-    allComposeElements = [
-      middleware
-    ];
+    allComposeElements = [middleware];
   }
 
   return allComposeElements;

@@ -2,35 +2,27 @@
 import 'babel-core/register';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import { Router } from 'react-router';
 import { Provider } from 'react-redux';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { BrowserRouter } from 'react-router-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
+import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
-import routes from '../common/routes';
 import '../../styles/index.css';
 /* eslint-enable import/no-unassigned-import */
 
-const history = createBrowserHistory();
-const initialState = window.__INITIAL_STATE__;
-const store = configureStore(initialState);
 const rootElement = document.getElementById('root');
+const initialState = window.__INITIAL_STATE__;
+
+const store = configureStore(initialState);
 
 injectTapEventPlugin();
 
-// See https://github.com/acdlite/redux-router/pull/282
-const createRouterObject = require('react-router/lib/RouterUtils').createRouterObject;
-require('react-router/lib/RouterUtils').createRouterObject = function (_history, transitionManager, state = {}) {
-  return createRouterObject(_history, transitionManager, state);
-};
-const ReduxRouter = require('redux-router').ReduxRouter;
-
 ReactDOM.render(
   <Provider store={store}>
-    <ReduxRouter>
-      <Router children={routes} history={history} />
-    </ReduxRouter>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>,
   rootElement
 );

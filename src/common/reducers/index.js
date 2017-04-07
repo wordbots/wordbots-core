@@ -8,7 +8,7 @@ import socket from './socket';
 import user from './user';
 import layout from './layout';
 import version from './version';
-import router from './router';
+// import router from './router';
 
 const rootReducer = combineReducers({
   game: game,
@@ -17,8 +17,7 @@ const rootReducer = combineReducers({
   socket: socket,
   user: user,
   version: version,
-  layout: undoable(layout),
-  router: router
+  layout: undoable(layout)
 });
 
 export default rootReducer;

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import cookie from 'react-cookie';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
@@ -10,9 +11,22 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
+import { inBrowser } from '../util/common';
 import * as UserActions from '../actions/user';
+import Creator from '../containers/Creator';
+import Collection from '../containers/Collection';
+import Deck from '../containers/Deck';
+import Decks from '../containers/Decks';
+import Game from '../containers/Game';
 import Home from '../containers/Home';
 import PersonalTheme from '../themes/personal';
+
+let ReactGA, currentLocation;
+
+if (inBrowser()) {
+  ReactGA = require('react-ga');
+  ReactGA.initialize('UA-345959-18');
+}
 
 function mapStateToProps(state) {
   return {
@@ -34,7 +48,10 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {open: true};
+    this.state = {
+      currentLocation: null,
+      open: true
+    };
   }
 
   componentWillReceiveProps(nextState) {
@@ -50,6 +67,22 @@ class App extends Component {
     if (nextState.user.clearCookie && cookie.load('token')) {
       cookie.remove('token');
       this.props.toggleClearCookie();
+    }
+  }
+
+  componentWillMount() {
+    this.logPageView();
+  }
+
+  componentWillUpdate() {
+    this.logPageView();
+  }
+
+  logPageView() {
+    if (inBrowser() && window.location.pathname !== currentLocation) {
+      currentLocation = window.location.pathname;
+      ReactGA.set({ page: currentLocation });
+      ReactGA.pageview(currentLocation);
     }
   }
 
@@ -105,7 +138,15 @@ class App extends Component {
             {this.renderLink('/game', 'Play', 'videogame_asset')}
           </Drawer>
           <div>
-            {this.props.children || <Home />}
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/home" component={Home} />
+              <Route path="/game" component={Game} />
+              <Route path="/creator" component={Creator} />
+              <Route path="/collection" component={Collection} />
+              <Route path="/deck" component={Deck} />
+              <Route path="/decks" component={Decks} />
+            </Switch>
           </div>
         </div>
       </div>
@@ -131,4 +172,4 @@ App.propTypes = {
   layout: object
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 
 import MarkdownBlock from '../components/MarkdownBlock';
@@ -101,5 +102,5 @@ Home.propTypes = {
   sidebarOpen: bool
 };
 
-export default connect(mapStateToProps)(Home);
+export default withRouter(connect(mapStateToProps)(Home));
 

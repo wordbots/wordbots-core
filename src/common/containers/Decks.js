@@ -21,16 +21,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onCreateDeck: (history) => {
+    onCreateDeck: () => {
       dispatch(collectionActions.editDeck(null));
-      history.push('/deck');
     },
     onDeleteDeck: (deckId) => {
       dispatch(collectionActions.deleteDeck(deckId));
     },
-    onEditDeck: (deckId, history) => {
+    onEditDeck: (deckId) => {
       dispatch(collectionActions.editDeck(deckId));
-      history.push('/deck');
     }
   };
 }
@@ -106,7 +104,10 @@ class Decks extends Component {
             label="Edit"
             primary
             disabled={deck.id === '[default]'}
-            onClick={e => { this.props.onEditDeck(deck.id, this.props.history); }}
+            onClick={() => {
+              this.props.onEditDeck(deck.id);
+              this.props.history.push('/deck');
+            }}
             style={{marginRight: 10, width: '100%'}} />
           <RaisedButton
             label="Delete"
@@ -156,8 +157,10 @@ class Decks extends Component {
               secondary
               style={{margin: 10}}
               labelStyle={{fontFamily: 'Carter One'}}
-              onClick={() => this.props.onCreateDeck(this.props.history)} />
-
+              onClick={() => {
+                this.props.onCreateDeck();
+                this.props.history.push('/deck');
+              }} />
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',

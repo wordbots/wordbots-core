@@ -24,9 +24,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSaveDeck: function (id, name, cardIds, history) {
+    onSaveDeck: function (id, name, cardIds) {
       dispatch(collectionActions.saveDeck(id, name, cardIds));
-      history.push('/decks');
     }
   };
 }
@@ -102,7 +101,10 @@ class Deck extends Component {
                     return state;
                   });
                 }}
-                onSaveDeck={(id, name, cardIds) => this.props.onSaveDeck(id, name, cardIds, this.props.history)} />
+                onSaveDeck={(id, name, cardIds) => {
+                  this.props.onSaveDeck(id, name, cardIds);
+                  this.props.history.push('/decks');
+                }} />
             </Paper>
 
             <Paper style={{

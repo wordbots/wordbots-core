@@ -81,7 +81,6 @@ class App extends Component {
   logPageView() {
     if (inBrowser() && window.location.pathname !== currentLocation) {
       currentLocation = window.location.pathname;
-      console.log(currentLocation);
       ReactGA.set({ page: currentLocation });
       ReactGA.pageview(currentLocation);
     }

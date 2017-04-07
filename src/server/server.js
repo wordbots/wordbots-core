@@ -5,14 +5,13 @@ import cookieParser from 'cookie-parser';
 import webpack from 'webpack';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { RouterContext, match } from 'react-router';
+import { StaticRouter } from 'react-router';
 import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
 
-import fetchComponentDataBeforeRender from '../common/api/fetchComponentDataBeforeRender';
+import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
 import getUser from '../common/api/user';
-import routes from '../common/routes';
 import packagejson from '../../package.json';
 import webpackConfig from '../../webpack.config';
 
@@ -95,57 +94,42 @@ app.use((req, res, next) => {
 
 app.get('/*', (req, res) => {
   getUser(req.cookies.token || false, user => {
-    match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
-      if (err) {
-        /* eslint-disable no-console */
-        console.error(err);
-        /* eslint-enable no-console */
-        return res.status(500).end('Internal server error');
-      }
-      if (!renderProps) {
-        return res.status(404).end('Not found');
-      }
+    const context = {};
 
-      let store = null;
-      if (user) {
-        store = configureStore({
-          version: `${packagejson.version}+${sha}`,
-          user: {
-            userId: user.id,
-            info: user,
-            token: req.cookies.token
-          }
-        });
-      } else {
-        store = configureStore({
-          version: `${packagejson.version}+${sha}`
-        });
-      }
-
-      const InitialView = (
-        <Provider store={store}>
-          <RouterContext {...renderProps} />
-        </Provider>
-      );
-
-      // This method waits for all render component promises to resolve before returning to browser
-      fetchComponentDataBeforeRender(store.dispatch, renderProps.components, renderProps.params)
-        .then(html => {
-          const componentHTML = ReactDOMServer.renderToString(InitialView);
-          const head = Helmet.rewind();
-          const initialState = Object.assign(store.getState());
-
-          res.status(200).end(renderFullPage(componentHTML, initialState, head));
-        })
-        .catch(e => {
-          /* eslint-disable no-console */
-          console.log(e);
-          /* eslint-enable no-console */
-          res.end(renderFullPage('',{}));
-        });
+    let store = null;
+    if (user) {
+      store = configureStore({
+        version: `${packagejson.version}+${sha}`,
+        user: {
+          userId: user.id,
+          info: user,
+          token: req.cookies.token
+        }
+      });
+    } else {
+      store = configureStore({
+        version: `${packagejson.version}+${sha}`
       });
     }
-  );
+
+    const html = ReactDOMServer.renderToString(
+      <Provider store={store}>
+        <StaticRouter location={req.url} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    );
+
+    if (context.url) {
+      res.writeHead(301, { Location: context.url });
+      res.end();
+    } else {
+      const head = Helmet.rewind();
+      const initialState = Object.assign(store.getState());
+
+      res.status(200).end(renderFullPage(html, initialState, head));
+    }
+  });
 });
 
 const port = process.env.PORT || 3000;

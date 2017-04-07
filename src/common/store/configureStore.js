@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import multi from 'redux-multi';
-import { reduxReactRouter } from 'redux-router';
+import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
 import thunk from 'redux-thunk';
-import createHistory from 'history/lib/createBrowserHistory';
+import createHistory from 'history/createBrowserHistory';
 
 import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
@@ -20,18 +20,14 @@ const middlewareBuilder = () => {
   if (process.browser) {
     const ignoredActions = [actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE];
 
+    const routerMiddleware = createRouterMiddleware(createHistory());
     const socketMiddleware = createSocketMiddleware({
       excludedActions: ignoredActions
     });
 
     if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
-      middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
-      allComposeElements = [
-        middleware,
-        reduxReactRouter({
-          createHistory
-        })
-      ];
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, routerMiddleware);
+      allComposeElements = [middleware];
     } else {
       const createLogger = require('redux-logger').createLogger;
       const DevTools = require('../containers/DevTools').default;
@@ -40,20 +36,15 @@ const middlewareBuilder = () => {
         predicate: (getState, action) => !ignoredActions.includes(action.type)
       });
 
-      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, routerMiddleware, logger);
       allComposeElements = [
         middleware,
-        reduxReactRouter({
-          createHistory
-        }),
         DevTools.instrument()
       ];
     }
   } else {
     middleware = applyMiddleware(...universalMiddleware);
-    allComposeElements = [
-      middleware
-    ];
+    allComposeElements = [middleware];
   }
 
   return allComposeElements;

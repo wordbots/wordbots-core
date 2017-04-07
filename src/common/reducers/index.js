@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import undoable from 'redux-undo';
+import { routerReducer } from 'react-router-redux';
 
 import game from './game';
 import creator from './creator';
@@ -8,7 +9,7 @@ import socket from './socket';
 import user from './user';
 import layout from './layout';
 import version from './version';
-import router from './router';
+// import router from './router';
 
 const rootReducer = combineReducers({
   game: game,
@@ -18,7 +19,7 @@ const rootReducer = combineReducers({
   user: user,
   version: version,
   layout: undoable(layout),
-  router: router
+  routing: routerReducer
 });
 
 export default rootReducer;

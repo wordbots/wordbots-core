@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { push } from 'redux-router';
+import { push } from 'react-router-redux';
 import Badge from 'material-ui/Badge';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';

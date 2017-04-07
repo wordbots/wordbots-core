@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import cookie from 'react-cookie';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
@@ -11,6 +12,11 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
 import * as UserActions from '../actions/user';
+import Creator from '../containers/Creator';
+import Collection from '../containers/Collection';
+import Deck from '../containers/Deck';
+import Decks from '../containers/Decks';
+import Game from '../containers/Game';
 import Home from '../containers/Home';
 import PersonalTheme from '../themes/personal';
 
@@ -105,7 +111,15 @@ class App extends Component {
             {this.renderLink('/game', 'Play', 'videogame_asset')}
           </Drawer>
           <div>
-            {this.props.children || <Home />}
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/home" component={Home} />
+              <Route path="/game" component={Game} />
+              <Route path="/creator" component={Creator} />
+              <Route path="/collection" component={Collection} />
+              <Route path="/deck" component={Deck} />
+              <Route path="/decks" component={Decks} />
+            </Switch>
           </div>
         </div>
       </div>
@@ -131,4 +145,4 @@ App.propTypes = {
   layout: object
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

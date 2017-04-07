@@ -3,7 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/wordbots/wordbots-core.svg)](https://circleci.com/gh/wordbots/wordbots-core)
 [![Test Coverage](https://codeclimate.com/github/wordbots/wordbots-core/badges/coverage.svg)](https://codeclimate.com/github/wordbots/wordbots-core/coverage)
 [![Code Climate](https://codeclimate.com/github/wordbots/wordbots-core/badges/gpa.svg)](https://codeclimate.com/github/wordbots/wordbots-core)
-[![Dependency Status](https://gemnasium.com/badges/github.com/wordbots/wordbots-core.svg)](https://gemnasium.com/github.com/wordbots/wordbots-core)
+[![Dependency Status](https://www.versioneye.com/user/projects/58e73f0926a5bb0052203185/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58e73f0926a5bb0052203185)
 [![Greenkeeper badge](https://badges.greenkeeper.io/wordbots/wordbots-core.svg)](https://greenkeeper.io/)
 
 ## Development installation

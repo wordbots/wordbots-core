@@ -1,4 +1,6 @@
 # WordBots
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/wordbots/wordbots-core.svg)](https://greenkeeper.io/)
 [![CircleCI](https://circleci.com/gh/wordbots/wordbots-core.svg?style=svg)](https://circleci.com/gh/wordbots/wordbots-core)
 [![Test Coverage](https://codeclimate.com/github/wordbots/wordbots-core/badges/coverage.svg)](https://codeclimate.com/github/wordbots/wordbots-core/coverage)
 [![Code Climate](https://codeclimate.com/github/wordbots/wordbots-core/badges/gpa.svg)](https://codeclimate.com/github/wordbots/wordbots-core)

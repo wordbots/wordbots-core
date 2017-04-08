@@ -24,9 +24,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onEditCard: (card, history) => {
+    onEditCard: (card) => {
       dispatch(collectionActions.openForEditing(card));
-      history.push('/creator');
     },
     onRemoveFromCollection: (cards) => {
       dispatch(collectionActions.removeFromCollection(cards));
@@ -148,7 +147,8 @@ class Collection extends Component {
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
                 const id = this.state.selectedCardIds[0];
-                this.props.onEditCard(this.props.cards.find(c => c.id === id), this.props.history);
+                this.props.onEditCard(this.props.cards.find(c => c.id === id));
+                this.props.history.push('/creator');
               }}
             />
             <RaisedButton

@@ -47,9 +47,6 @@ export function mapDispatchToProps(dispatch) {
     },
     onAddToCollection: (props) => {
       dispatch(creatorActions.addToCollection(props));
-      if (props.history) {
-        props.history.push('/collection');
-      }
     }
   };
 }
@@ -81,7 +78,12 @@ export class Creator extends Component {
             onSetAttribute={(attr, value) => { this.props.onSetAttribute(attr, value); }}
             onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
             onSpriteClick={() => { this.props.onSpriteClick(); }}
-            onAddToCollection={() => { this.props.onAddToCollection(this.props); }} />
+            onAddToCollection={() => {
+              this.props.onAddToCollection(this.props);
+              if (this.props.history) {
+                this.props.history.push('/collection');
+              }
+            }} />
           <CardPreview
             name={this.props.name}
             type={this.props.type}

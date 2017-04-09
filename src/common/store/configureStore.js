@@ -23,7 +23,7 @@ const middlewareBuilder = () => {
       excludedActions: ignoredActions
     });
 
-    if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test' || ALWAYS_ENABLE_DEV_TOOLS) {
+    if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
       allComposeElements = [middleware];
     } else {

@@ -1,10 +1,24 @@
 import React, { Component } from 'react';
+import { array, func, number, string } from 'prop-types';
 
 import Card from '../game/Card';
 
 import Sentence from './Sentence';
 
-class CardPreview extends Component {
+export default class CardPreview extends Component {
+  static propTypes = {
+    name: string,
+    spriteID: string,
+    type: number,
+    sentences: array,
+    attack: number,
+    speed: number,
+    health: number,
+    energy: number,
+
+    onSpriteClick: func
+  };
+
   render() {
     const stats = {
       attack: this.props.attack,
@@ -33,20 +47,3 @@ class CardPreview extends Component {
     );
   }
 }
-
-const { array, func, number, string } = React.PropTypes;
-
-CardPreview.propTypes = {
-  name: string,
-  spriteID: string,
-  type: number,
-  sentences: array,
-  attack: number,
-  speed: number,
-  health: number,
-  energy: number,
-
-  onSpriteClick: func
-};
-
-export default CardPreview;

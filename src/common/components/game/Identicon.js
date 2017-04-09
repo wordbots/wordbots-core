@@ -6,8 +6,35 @@
 // it is improperly exported (as ES6 rather than ES5).
 
 import React, { Component } from 'react';
+import { number, string } from 'prop-types';
 
-class Identicon extends Component {
+import { hashCode } from '../../util/common';
+
+export default class Identicon extends Component {
+  static propTypes = {
+    id: string,
+    width: number,
+    size: number
+  };
+
+  generate(id, options, generator) {
+    const size = options.size;
+    const hash = options.hash || hashCode;
+    const value = hash(id);
+    const bin = value.toString(2);
+    generator.start(value);
+    let n = 0;
+    for (let x = 0; x < size; x++) {
+      for (let y = 0; y < size*2; y++) {
+        if (+bin.charAt(n++ % bin.length)) {
+          generator.rect(x, y);
+          generator.rect(size*2-x-2, y);
+        }
+      }
+    }
+    generator.end();
+  }
+
   render() {
     const width = this.props.width;
     const size = this.props.size;
@@ -15,7 +42,7 @@ class Identicon extends Component {
     let color;
     const rects = [];
 
-    generate(this.props.id, this.props, {
+    this.generate(this.props.id, this.props, {
       start: function (value) {
         color = `#${Math.abs(value).toString(16).substring(0, 6)}`;
       },
@@ -36,45 +63,3 @@ class Identicon extends Component {
     return React.createElement('svg', {width: width}, rects);
   }
 }
-
-const { number, string } = React.PropTypes;
-
-Identicon.propTypes = {
-  id: string,
-  width: number,
-  size: number
-};
-
-// Simple hash function
-// see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-function hashCode(s) {
-  if (!s) return 0;
-  let value = 0;
-  for (let i = 0; i < s.length; i++) {
-    const char = s.charCodeAt(i);
-    value = ((value<<5)-value)+char;
-    value = value & value;
-  }
-  return value;
-}
-
-function generate(id, options, generator) {
-  const size = options.size;
-  const hash = options.hash || hashCode;
-  const value = hash(id);
-  const bin = value.toString(2);
-  generator.start(value);
-  let n = 0;
-  for (let x = 0; x < size; x++) {
-    for (let y = 0; y < size*2; y++) {
-      if (+bin.charAt(n++ % bin.length)) {
-        generator.rect(x, y);
-        generator.rect(size*2-x-2, y);
-      }
-    }
-  }
-  generator.end();
-}
-
-export default Identicon;
-

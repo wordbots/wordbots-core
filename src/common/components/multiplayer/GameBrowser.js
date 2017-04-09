@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
+import { array, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
-export class GameBrowser extends Component {
+export default class GameBrowser extends Component {
+  static propTypes = {
+    buttonStyle: object,
+    openGames: array,
+    usernameMap: object,
+    onJoinGame: func
+  };
+
   renderTableRows() {
     if (this.props.openGames.length > 0) {
       return (
@@ -61,14 +69,3 @@ export class GameBrowser extends Component {
     );
   }
 }
-
-const { array, func, object } = React.PropTypes;
-
-GameBrowser.propTypes = {
-  buttonStyle: object,
-  openGames: array,
-  usernameMap: object,
-  onJoinGame: func
-};
-
-export default GameBrowser;

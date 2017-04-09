@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { func, number, object, string } from 'prop-types';
 import { forOwn, intersectionBy, mapValues, some } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
@@ -9,7 +10,21 @@ import {
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
 } from '../../util/game';
 
-class Board extends Component {
+export default class Board extends Component {
+  static propTypes = {
+    bluePieces: object,
+    orangePieces: object,
+
+    player: string,
+    currentTurn: string,
+    selectedTile: string,
+    playingCardType: number,
+    target: object,
+
+    onSelectTile: func,
+    onHoverTile: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -187,21 +202,3 @@ class Board extends Component {
     );
   }
 }
-
-const { func, number, object, string } = React.PropTypes;
-
-Board.propTypes = {
-  bluePieces: object,
-  orangePieces: object,
-
-  player: string,
-  currentTurn: string,
-  selectedTile: string,
-  playingCardType: number,
-  target: object,
-
-  onSelectTile: func,
-  onHoverTile: func
-};
-
-export default Board;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -15,7 +16,28 @@ import { getSentencesFromInput, requestParse } from '../../util/cards';
 
 import NumberField from './NumberField';
 
-class CardCreationForm extends Component {
+export default class CardCreationForm extends Component {
+  static propTypes = {
+    name: string,
+    type: number,
+    text: string,
+    attack: number,
+    speed: number,
+    health: number,
+    energy: number,
+    sentences: array,
+    setText: string,
+    isNewCard: bool,
+
+    onSetName: func,
+    onSetType: func,
+    onSetText: func,
+    onSetAttribute: func,
+    onParseComplete: func,
+    onSpriteClick: func,
+    onAddToCollection: func
+  };
+
   componentDidMount() {
     // Generate new spriteID on reload.
     if (!this.props.isNewCard) {
@@ -146,28 +168,3 @@ class CardCreationForm extends Component {
     );
   }
 }
-
-const { array, bool, func, number, string } = React.PropTypes;
-
-CardCreationForm.propTypes = {
-  name: string,
-  type: number,
-  text: string,
-  attack: number,
-  speed: number,
-  health: number,
-  energy: number,
-  sentences: array,
-  setText: string,
-  isNewCard: bool,
-
-  onSetName: func,
-  onSetType: func,
-  onSetText: func,
-  onSetAttribute: func,
-  onParseComplete: func,
-  onSpriteClick: func,
-  onAddToCollection: func
-};
-
-export default CardCreationForm;

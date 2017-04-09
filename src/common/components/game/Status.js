@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { object, string } from 'prop-types';
 
-class Status extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default class Status extends Component {
+  static propTypes = {
+    status: object,
+    player: string
+  };
 
   render() {
     const statusStyle = {
@@ -39,12 +41,3 @@ class Status extends Component {
     );
   }
 }
-
-const { object, string } = React.PropTypes;
-
-Status.propTypes = {
-  status: object,
-  player: string
-};
-
-export default Status;

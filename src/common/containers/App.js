@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { func, string, object } from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router';
@@ -21,8 +22,8 @@ import Game from '../containers/Game';
 import Home from '../containers/Home';
 import PersonalTheme from '../themes/personal';
 
+// Hacky analytics implementation.
 let ReactGA, currentLocation;
-
 if (inBrowser()) {
   ReactGA = require('react-ga');
   ReactGA.initialize('UA-345959-18');
@@ -45,6 +46,22 @@ function mapDispatchToProps(dispatch) {
 }
 
 class App extends Component {
+  static childContextTypes = {
+    muiTheme: object
+  };
+
+  static propTypes = {
+    getUserInfo: func,
+    toggleClearCookie: func,
+    toggleSidebar: func,
+    undo: func,
+    redo: func,
+    children: object,
+    user: object,
+    version: string,
+    layout: object
+  };
+
   constructor(props) {
     super(props);
 
@@ -79,6 +96,7 @@ class App extends Component {
   }
 
   logPageView() {
+    // Hacky analytics implementation.
     if (inBrowser() && window.location.pathname !== currentLocation) {
       currentLocation = window.location.pathname;
       ReactGA.set({ page: currentLocation });
@@ -153,23 +171,5 @@ class App extends Component {
     );
   }
 }
-
-const { func, string, object } = React.PropTypes;
-
-App.childContextTypes = {
-  muiTheme: object
-};
-
-App.propTypes = {
-  getUserInfo: func,
-  toggleClearCookie: func,
-  toggleSidebar: func,
-  undo: func,
-  redo: func,
-  children: object,
-  user: object,
-  version: string,
-  layout: object
-};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

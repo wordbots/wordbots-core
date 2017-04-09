@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, number, object, string } from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
@@ -9,11 +10,19 @@ import Sentence from '../cards/Sentence';
 
 import Card from './Card';
 
-
-class Hand extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default class Hand extends Component {
+  static propTypes = {
+    name: string,
+    cards: array,
+    isActivePlayer: bool,
+    onSelectCard: func,
+    onHoverCard: func,
+    selectedCard: number,
+    hoveredCard: number,
+    targetableCards: array,
+    status: object,
+    curved: bool
+  };
 
   calculateAvailableWidth() {
     this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
@@ -92,20 +101,3 @@ class Hand extends Component {
     );
   }
 }
-
-const { array, bool, func, number, object, string } = React.PropTypes;
-
-Hand.propTypes = {
-  name: string,
-  cards: array,
-  isActivePlayer: bool,
-  onSelectCard: func,
-  onHoverCard: func,
-  selectedCard: number,
-  hoveredCard: number,
-  targetableCards: array,
-  status: object,
-  curved: bool
-};
-
-export default Hand;

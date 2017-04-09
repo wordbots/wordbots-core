@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Divider from 'material-ui/Divider';
 import {CardHeader, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
@@ -13,7 +14,39 @@ import CardBack from './CardBack';
 import Identicon from './Identicon';
 import Sprite from './Sprite';
 
-class Card extends Component {
+export default class Card extends Component {
+  static propTypes = {
+    children: oneOfType([string, array]),
+
+    name: string,
+    spriteID: string,
+    type: number,
+    text: oneOfType([string, array]),
+    rawText: string,
+    img: string,
+    cardStats: object,
+    stats: object,
+    cost: number,
+    baseCost: number,
+    source: string,
+    collection: bool,
+
+    status: object,
+    visible: bool,
+    zIndex: number,
+    selected: bool,
+    targetable: bool,
+
+    scale: number,
+    margin: number,
+    rotation: number,
+    yTranslation: number,
+
+    onCardClick: func,
+    onCardHover: func,
+    onSpriteClick: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -243,39 +276,3 @@ class Card extends Component {
     }
   }
 }
-
-const { array, bool, func, number, object, oneOfType, string } = React.PropTypes;
-
-Textfit.propTypes.children = oneOfType([string, array]);
-
-Card.propTypes = {
-  name: string,
-  spriteID: string,
-  type: number,
-  text: oneOfType([string, array]),
-  rawText: string,
-  img: string,
-  cardStats: object,
-  stats: object,
-  cost: number,
-  baseCost: number,
-  source: string,
-  collection: bool,
-
-  status: object,
-  visible: bool,
-  zIndex: number,
-  selected: bool,
-  targetable: bool,
-
-  scale: number,
-  margin: number,
-  rotation: number,
-  yTranslation: number,
-
-  onCardClick: func,
-  onCardHover: func,
-  onSpriteClick: func
-};
-
-export default Card;

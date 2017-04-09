@@ -1,4 +1,5 @@
 import React from 'react';
+import { number, string, object, array } from 'prop-types';
 
 import HexUtils from './HexUtils';
 import HexShape from './HexShape';
@@ -7,9 +8,34 @@ import Layout from './Layout';
 import GridGenerator from './GridGenerator';
 import loadImages from './HexGridImages';
 
-const { number, string, object, array } = React.PropTypes;
+export default class HexGrid extends React.Component {
+  static propTypes = {
+    width: number.isRequired,
+    height: number.isRequired,
+    actions: object.isRequired,
+    layout: object.isRequired,
+    hexagons: array.isRequired,
+    path: object,
+    hexColors: object,
+    pieceImgs: object,
+    pieceStats: object,
+    selectedHexId: string
+  };
 
-class HexGrid extends React.Component {
+  static defaultProps = {
+    width: 800,
+    height: 600,
+    path: { start: null, end: null }
+  };
+
+  static generate(config, content) {
+    const layout = new Layout(config.layout, config.origin);
+    const generator = GridGenerator.getGenerator(config.map);
+    const hexagons = generator.apply(this, config.mapProps);
+
+    return { hexagons, layout };
+  }
+
   render() {
     const { hexColors, pieceImgs, pieceStats } = this.props;
 
@@ -34,32 +60,3 @@ class HexGrid extends React.Component {
     );
   }
 }
-
-HexGrid.generate = (config, content) => {
-  const layout = new Layout(config.layout, config.origin);
-  const generator = GridGenerator.getGenerator(config.map);
-  const hexagons = generator.apply(this, config.mapProps);
-
-  return { hexagons, layout };
-};
-
-HexGrid.propTypes = {
-  width: number.isRequired,
-  height: number.isRequired,
-  actions: object.isRequired,
-  layout: object.isRequired,
-  hexagons: array.isRequired,
-  path: object,
-  hexColors: object,
-  pieceImgs: object,
-  pieceStats: object,
-  selectedHexId: string
-};
-
-HexGrid.defaultProps = {
-  width: 800,
-  height: 600,
-  path: { start: null, end: null }
-};
-
-export default HexGrid;

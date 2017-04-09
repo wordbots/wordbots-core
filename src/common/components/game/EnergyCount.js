@@ -1,4 +1,5 @@
 import React from 'react';
+import { bool, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
 const EnergyCount = ({color, playerName, energy, isCurrentPlayer}) => (
@@ -38,7 +39,6 @@ const EnergyCount = ({color, playerName, energy, isCurrentPlayer}) => (
   </div>
 );
 
-const { bool, object, string } = React.PropTypes;
 
 EnergyCount.propTypes = {
   color: string,

@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
+import { func, number } from 'prop-types';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import { capitalize } from 'lodash';
 
-class SortControls extends Component {
+export default class SortControls extends Component {
+  static propTypes = {
+    criteria: number,
+    order: number,
+
+    onSetCriteria: func,
+    onSetOrder: func
+  };
+
   renderSelectField(field, items) {
     return (
       <SelectField
@@ -32,16 +41,3 @@ class SortControls extends Component {
     );
   }
 }
-
-const { func, number } = React.PropTypes;
-
-SortControls.propTypes = {
-  criteria: number,
-  order: number,
-
-  onSetCriteria: func,
-  onSetOrder: func
-};
-
-export default SortControls;
-

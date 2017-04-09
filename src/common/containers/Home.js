@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { bool, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -12,6 +13,44 @@ export function mapStateToProps(state) {
     sidebarOpen: state.layout.present.sidebarOpen
   };
 }
+
+class Home extends Component {
+  static propTypes = {
+    version: string,
+    sidebarOpen: bool
+  };
+
+  render() {
+    return (
+      <div style={{
+        paddingLeft: this.props.sidebarOpen ? 256 : 0,
+        margin: '48px 72px'
+      }}>
+        <Helmet title="Home"/>
+
+        <div style={{display: 'flex', justifyContent: 'stretch'}}>
+          <div style={{width: '50%', marginRight: 20}}>
+            <Paper style={{padding: '5px 20px'}}>
+              <MarkdownBlock source={whatIsWordbots(this.props.version)} />
+            </Paper>
+
+            <Paper style={{padding: '5px 20px', marginTop: 20}}>
+              <MarkdownBlock source={leaveYourFeedback} />
+            </Paper>
+          </div>
+
+          <div style={{width: '50%'}}>
+            <Paper style={{padding: '5px 20px'}}>
+              <MarkdownBlock source={howToPlay} />
+            </Paper>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(Home));
 
 const whatIsWordbots = (version) => (`
 # Wordbots ${version}
@@ -62,45 +101,3 @@ During your turn, you can play events, place robots and structures,
 and move and attack with your robots on the board.
 Destroy your opponent's kernel to win!
 `;
-
-class Home extends Component {
-
-  render() {
-    return (
-      <div style={{
-        paddingLeft: this.props.sidebarOpen ? 256 : 0,
-        margin: '48px 72px'
-      }}>
-        <Helmet title="Home"/>
-
-        <div style={{display: 'flex', justifyContent: 'stretch'}}>
-          <div style={{width: '50%', marginRight: 20}}>
-            <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={whatIsWordbots(this.props.version)} />
-            </Paper>
-
-            <Paper style={{padding: '5px 20px', marginTop: 20}}>
-              <MarkdownBlock source={leaveYourFeedback} />
-            </Paper>
-          </div>
-
-          <div style={{width: '50%'}}>
-            <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={howToPlay} />
-            </Paper>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-const { bool, string } = React.PropTypes;
-
-Home.propTypes = {
-  version: string,
-  sidebarOpen: bool
-};
-
-export default withRouter(connect(mapStateToProps)(Home));
-

@@ -1,3 +1,4 @@
+import { LOG_SOCKET_IO } from '../constants';
 import * as actions from '../actions/socket';
 
 const ENDPOINT = 'ws://socket.wordbots.io';  // Remote
@@ -46,6 +47,7 @@ function createSocketMiddleware({excludedActions = []}) {
     function send(action) {
       if (room && !action.fromServer && !excludedActions.includes(action.type)) {
         room.send(JSON.stringify(action));
+        if (LOG_SOCKET_IO) { console.log(`Sent ${JSON.stringify(action)}.`); }
         keepaliveNeeded = false;
       }
     }
@@ -55,6 +57,7 @@ function createSocketMiddleware({excludedActions = []}) {
       // Accept messages directed to this client (or to everybody)
       // that *don't* have this client listed as a sender (to avoid double-counting chat messages).
       if (!recipients || (recipients.includes(clientId)) && action.payload.sender !== clientId) {
+        if (LOG_SOCKET_IO) { console.log(`Received ${msg}.`); }
         store.dispatch(Object.assign({}, action, {fromServer: true}));
       }
     }

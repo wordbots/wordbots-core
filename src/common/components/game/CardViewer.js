@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import Sentence from '../cards/Sentence';
 import { splitSentences } from '../../util/cards';
@@ -22,7 +22,7 @@ export default class CardViewer extends Component {
         margin: 'auto',
         height: 236 * 1.5
       }}>
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
@@ -45,7 +45,7 @@ export default class CardViewer extends Component {
                 selected={false}
                 visible />
           }
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }

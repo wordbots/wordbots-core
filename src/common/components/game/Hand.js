@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
 
@@ -87,7 +87,7 @@ export default class Hand extends Component {
 
   render() {
     return (
-      <ReactCSSTransitionGroup
+      <CSSTransitionGroup
         transitionName="hand"
         transitionEnterTimeout={500}
         transitionLeave={false}
@@ -97,7 +97,7 @@ export default class Hand extends Component {
           width: '100%'
         }}>
         {this.renderCards()}
-      </ReactCSSTransitionGroup>
+      </CSSTransitionGroup>
     );
   }
 }

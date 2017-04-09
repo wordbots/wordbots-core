@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { func, string } from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 export default class VictoryScreen extends Component {
   static propTypes = {
@@ -32,12 +32,12 @@ export default class VictoryScreen extends Component {
           color: this.props.winner === null ? 'black' : colors[this.props.winner],
           borderRadius: 2
       }}>
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
           <div>{this.props.winner === null ? '' : `${this.props.winner  } Wins!`}</div>
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }

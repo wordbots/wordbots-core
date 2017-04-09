@@ -110,7 +110,7 @@ export default class Board extends Component {
   }
 
   onHexClick(hex, event) {
-    if (!this.isMyTurn) {
+    if (!this.isMyTurn()) {
       return;
     }
 

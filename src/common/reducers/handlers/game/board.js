@@ -14,8 +14,10 @@ export function setHoveredTile(state, card) {
 
 export function setSelectedTile(state, playerName, tile) {
   const player = state.players[playerName];
+  const isCurrentPlayer = (playerName === state.currentPlayer);
 
-  if (state.target.choosing &&
+  if (isCurrentPlayer &&
+      state.target.choosing &&
       state.target.possibleHexes.includes(tile) &&
       player.selectedCard !== null) {
     // Target chosen for a queued action.

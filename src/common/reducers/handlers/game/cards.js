@@ -11,12 +11,14 @@ import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {
   const player = state.players[playerName];
+  const isCurrentPlayer = (playerName === state.currentPlayer);
   const selectedCard = player.hand[cardIdx];
   const energy = player.energy;
 
   player.selectedTile = null;
 
-  if (state.target.choosing &&
+  if (isCurrentPlayer &&
+      state.target.choosing &&
       state.target.possibleCards.includes(selectedCard.id) &&
       player.selectedCard !== null) {
     // Target chosen for a queued action.
@@ -27,7 +29,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
     if (player.selectedCard === cardIdx) {
       // Clicked on already selected card => Deselect or play event
 
-      if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
+      if (isCurrentPlayer && selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = null;

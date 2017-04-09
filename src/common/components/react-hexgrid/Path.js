@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { object } from 'prop-types';
 
 import HexUtils from './HexUtils';
 
-export default class Path extends React.Component {
+export default class Path extends Component {
   static propTypes = {
     start: object,
     end: object,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { number, string, object, array } from 'prop-types';
 
 import HexUtils from './HexUtils';
@@ -8,7 +8,7 @@ import Layout from './Layout';
 import GridGenerator from './GridGenerator';
 import loadImages from './HexGridImages';
 
-export default class HexGrid extends React.Component {
+export default class HexGrid extends Component {
   static propTypes = {
     width: number.isRequired,
     height: number.isRequired,

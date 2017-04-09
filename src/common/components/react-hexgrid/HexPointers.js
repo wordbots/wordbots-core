@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { object, string } from 'prop-types';
 
-export default class HexPointers extends React.Component {
+export default class HexPointers extends Component {
   static propTypes = {
     hex: object.isRequired,
     points: string.isRequired

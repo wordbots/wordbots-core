@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { object, string } from 'prop-types';
 
 import Sprite from '../game/Sprite';
 
 import HexUtils from './HexUtils';
 
-export default class HexPattern extends React.Component {
+export default class HexPattern extends Component {
   static propTypes = {
     hex: object.isRequired,
     fill: string,

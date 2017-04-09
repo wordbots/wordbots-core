@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { func } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-class HostGame extends Component {
+export default class HostGame extends Component {
+  static propTypes = {
+    onHostGame: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -31,11 +36,3 @@ class HostGame extends Component {
     );
   }
 }
-
-const { func } = React.PropTypes;
-
-HostGame.propTypes = {
-  onHostGame: func
-};
-
-export default HostGame;

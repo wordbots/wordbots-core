@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import * as creator from '../src/common/containers/Creator';
@@ -9,9 +10,9 @@ injectTapEventPlugin();
 
 export function renderElement(elt, deep = false) {
   if (deep) {
-    return ReactTestUtils.renderIntoDocument(elt);
+    return renderIntoDocument(elt);
   } else {
-    const renderer = ReactTestUtils.createRenderer();
+    const renderer = createRenderer();
     renderer.render(elt);
     return renderer.getRenderOutput();
   }
@@ -31,7 +32,7 @@ function createCreator(state, dispatch = () => {}) {
 
 export function getComponent(type, componentClass, state, dispatch = () => {}, predicate = () => {}) {
   const gameElt = renderElement(instantiator(type)(state, dispatch), true);
-  const components = ReactTestUtils.scryRenderedComponentsWithType(gameElt, componentClass);
+  const components = scryRenderedComponentsWithType(gameElt, componentClass);
   return (components.length === 1) ? components[0] : components.find(predicate);
 }
 

@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
+import { bool, number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
-class CardBack extends Component {
+export default class CardBack extends Component {
+  static propTypes = {
+    deckLength: number,
+    customText: string,
+    hoverable: bool
+  };
+
   constructor(props) {
     super(props);
 
@@ -63,13 +70,3 @@ class CardBack extends Component {
     );
   }
 }
-
-const { bool, number, string } = React.PropTypes;
-
-CardBack.propTypes = {
-  deckLength: number,
-  customText: string,
-  hoverable: bool
-};
-
-export default CardBack;

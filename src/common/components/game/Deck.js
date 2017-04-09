@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import { array } from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
 import CardBack from './CardBack';
 
-class Deck extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default class Deck extends Component {
+  static propTypes = {
+    deck: array
+  };
 
   render() {
     if (this.props.deck.length > 0) {
@@ -41,11 +42,3 @@ class Deck extends Component {
     }
   }
 }
-
-const { array } = React.PropTypes;
-
-Deck.propTypes = {
-  deck: array
-};
-
-export default Deck;

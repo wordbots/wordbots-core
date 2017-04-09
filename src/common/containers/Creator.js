@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, number, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -52,7 +53,34 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Creator extends Component {
+  static propTypes = {
+    id: string,
+    name: string,
+    type: number,
+    setText: string,
+    sentences: array,
+    spriteID: string,
+    attack: number,
+    speed: number,
+    health: number,
+    cost: number,
+    sidebarOpen: bool,
+
+    history: object,
+
+    onSetName: func,
+    onSetType: func,
+    onSetText: func,
+    onSetAttribute: func,
+    onParseComplete: func,
+    onSpriteClick: func,
+    onAddToCollection: func
+  };
+
   // For testing.
+  static childContextTypes = {
+    muiTheme: object.isRequired
+  };
   getChildContext() {
     return {muiTheme: getMuiTheme(baseTheme)};
   }
@@ -99,36 +127,5 @@ export class Creator extends Component {
     );
   }
 }
-
-const { array, bool, func, number, object, string } = React.PropTypes;
-
-// For testing.
-Creator.childContextTypes = {
-  muiTheme: object.isRequired
-};
-
-Creator.propTypes = {
-  id: string,
-  name: string,
-  type: number,
-  setText: string,
-  sentences: array,
-  spriteID: string,
-  attack: number,
-  speed: number,
-  health: number,
-  cost: number,
-  sidebarOpen: bool,
-
-  history: object,
-
-  onSetName: func,
-  onSetType: func,
-  onSetText: func,
-  onSetAttribute: func,
-  onParseComplete: func,
-  onSpriteClick: func,
-  onAddToCollection: func
-};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Creator));

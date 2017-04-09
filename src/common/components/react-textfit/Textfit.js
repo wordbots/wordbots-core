@@ -2,6 +2,7 @@
 // So, we must keep our own copy here.
 
 import React, { Component } from 'react';
+import { bool, func, number, object, oneOf, string } from 'prop-types';
 import { findDOMNode } from 'react-dom';
 
 import shallowEqual from './utils/shallowEqual';
@@ -23,7 +24,34 @@ function assertElementFitsHeight(el, height) {
 
 function noop() {}
 
-class Textfit extends Component {
+export default class Textfit extends Component {
+  static propTypes = {
+    autoResize: bool,
+    text: string,
+    min: number,
+    max: number,
+    mode: oneOf([
+      'single', 'multi'
+    ]),
+    forceWidth: bool,
+    forceSingleModeWidth: bool,
+    perfectFit: bool,
+    throttle: number,
+    style: object,
+    onReady: func
+  };
+
+  static defaultProps = {
+    min: 1,
+    max: 100,
+    mode: 'multi',
+    forceSingleModeWidth: true,
+    perfectFit: true,
+    throttle: 50,
+    autoResize: true,
+    onReady: noop
+  };
+
   constructor(props) {
     super(props);
 
@@ -177,7 +205,9 @@ class Textfit extends Component {
   render() {
     /* eslint-disable no-unused-vars */
     const {
+      /* eslint-disable react/prop-types */
       children,
+      /* eslint-enable react/prop-types */
       text,
       style,
       min,
@@ -219,39 +249,3 @@ class Textfit extends Component {
     );
   }
 }
-
-const { bool, func, number, object, oneOf, oneOfType, string } = React.PropTypes;
-
-Textfit.propTypes = {
-  autoResize: bool,
-  children: oneOfType([
-    string,
-    func
-  ]),
-  text: string,
-  min: number,
-  max: number,
-  mode: oneOf([
-    'single', 'multi'
-  ]),
-  forceWidth: bool,
-  forceSingleModeWidth: bool,
-  perfectFit: bool,
-  throttle: number,
-  style: object,
-  onReady: func
-};
-
-Textfit.defaultProps = {
-  min: 1,
-  max: 100,
-  mode: 'multi',
-  forceSingleModeWidth: true,
-  perfectFit: true,
-  throttle: 50,
-  autoResize: true,
-  onReady: noop
-};
-
-export default Textfit;
-

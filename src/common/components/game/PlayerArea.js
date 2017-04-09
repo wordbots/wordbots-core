@@ -1,4 +1,5 @@
 import React from 'react';
+import { object, string } from 'prop-types';
 
 import Hand from './Hand';
 import EnergyCount from './EnergyCount';
@@ -29,8 +30,6 @@ const PlayerArea = ({color, gameProps}) => (
     <Deck deck={gameProps[`${color}Deck`]} />
   </div>
 );
-
-const { object, string } = React.PropTypes;
 
 PlayerArea.propTypes = {
   color: string,

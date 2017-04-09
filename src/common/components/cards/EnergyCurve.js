@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
+import { array } from 'prop-types';
 import BarChart from 'react-bar-chart';
 
 // Widget to display the current energy curve for a set of cards
-class EnergyCurve extends Component {
+export default class EnergyCurve extends Component {
+  static propTypes = {
+    cards: array
+  };
+
 	constructor(props) {
     super(props);
 
@@ -31,7 +36,7 @@ class EnergyCurve extends Component {
     cards.forEach(card => {
       if (card.cost > 10)
         curve[10] ? curve[10] += 1 : curve[10] = 1;
-      else 
+      else
         curve[card.cost] ? curve[card.cost] += 1 : curve[card.cost] = 1;
     });
 
@@ -76,11 +81,3 @@ class EnergyCurve extends Component {
     );
   }
 }
-
-const { array } = React.PropTypes;
-
-EnergyCurve.propTypes = {
-  cards: array
-};
-
-export default EnergyCurve;

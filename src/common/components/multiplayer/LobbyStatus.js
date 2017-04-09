@@ -1,4 +1,5 @@
 import React from 'react';
+import { array, bool, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
 const LobbyStatus = (props) => {
@@ -27,8 +28,6 @@ const LobbyStatus = (props) => {
     </Paper>
   );
 };
-
-const { array, bool, func, object } = React.PropTypes;
 
 LobbyStatus.propTypes = {
   connected: bool,

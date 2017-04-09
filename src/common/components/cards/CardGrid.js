@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
+import { array, element, func, number } from 'prop-types';
 
 import { splitSentences } from '../../util/cards';
 import Card from '../game/Card';
 
 import Sentence from './Sentence';
 
-class CardGrid extends Component {
-  sortCards(a, b) {
-    const func = this.props.sortFunc;
+export default class CardGrid extends Component {
+  static propTypes = {
+    children: element,
+    cards: array,
+    selectedCardIds: array,
+    filterFunc: func,
+    sortFunc: func,
+    sortOrder: number,
 
-    if (func(a) < func(b)) {
+    onCardClick: func
+  };
+
+  sortCards(a, b) {
+    const f = this.props.sortFunc;
+
+    if (f(a) < f(b)) {
       return this.props.sortOrder ? 1 : -1;
-    } else if (func(a) > func(b)) {
+    } else if (f(a) > f(b)) {
       return this.props.sortOrder ? -1 : 1;
     } else {
       return 0;
@@ -64,19 +76,4 @@ class CardGrid extends Component {
     );
   }
 }
-
-const { array, element, func, number } = React.PropTypes;
-
-CardGrid.propTypes = {
-  children: element,
-  cards: array,
-  selectedCardIds: array,
-  filterFunc: func,
-  sortFunc: func,
-  sortOrder: number,
-
-  onCardClick: func
-};
-
-export default CardGrid;
 

@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
+import { bool, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 
-class NumberField extends Component {
+export default class NumberField extends Component {
+  static propTypes = {
+    label: string,
+    value: number,
+    style: object,
+    disabled: bool,
+    onChange: func
+  };
+
   render() {
     return (
       <TextField
@@ -15,15 +24,3 @@ class NumberField extends Component {
     );
   }
 }
-
-const { bool, func, number, object, string } = React.PropTypes;
-
-NumberField.propTypes = {
-  label: string,
-  value: number,
-  style: object,
-  disabled: bool,
-  onChange: func
-};
-
-export default NumberField;

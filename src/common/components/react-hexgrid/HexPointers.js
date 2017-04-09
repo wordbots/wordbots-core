@@ -1,8 +1,11 @@
 import React from 'react';
+import { object, string } from 'prop-types';
 
-const { object, string } = React.PropTypes;
-
-class HexPointers extends React.Component {
+export default class HexPointers extends React.Component {
+  static propTypes = {
+    hex: object.isRequired,
+    points: string.isRequired
+  };
 
   createPointerPolygon(corner1, corner2) {
     const p1 = corner1.split(',');
@@ -60,10 +63,3 @@ class HexPointers extends React.Component {
     );
   }
 }
-
-HexPointers.propTypes = {
-  hex: object.isRequired,
-  points: string.isRequired
-};
-
-export default HexPointers;

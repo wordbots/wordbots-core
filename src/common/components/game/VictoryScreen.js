@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { func, string } from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-class VictoryScreen extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default class VictoryScreen extends Component {
+  static propTypes = {
+    winner: string,
+    onClick: func
+  };
 
   render() {
     const colors = {
@@ -40,13 +42,3 @@ class VictoryScreen extends Component {
     );
   }
 }
-
-const { func, string } = React.PropTypes;
-
-VictoryScreen.propTypes = {
-  winner: string,
-
-  onClick: func
-};
-
-export default VictoryScreen;

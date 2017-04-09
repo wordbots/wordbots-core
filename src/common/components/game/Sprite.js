@@ -1,10 +1,19 @@
 // Adapted from https://github.com/not-surt/spritegen .
 
 import React, { Component } from 'react';
+import { number, string } from 'prop-types';
 
-import { inBrowser } from '../../util/common';
+import { hashCode, inBrowser } from '../../util/common';
 
-class Sprite extends Component {
+export default class Sprite extends Component {
+  static propTypes = {
+  id: string,
+    size: number,
+    scale: number,
+    spacing: number,
+    output: string
+  };
+
   render() {
     const size = (this.props.size + (this.props.spacing || 0)) * 2;
 
@@ -17,7 +26,7 @@ class Sprite extends Component {
       mockCanvasElt.width = size;
       mockCanvasElt.height = size;
       const dataURL = this.drawSprite(mockCanvasElt, {
-        seed: this.hashCode(this.props.id),
+        seed: hashCode(this.props.id),
 
         // Available properties: seed, pal, colours, size, spacing, zoom,
         // scaler0, scaler1, falloff, probmin, probmax, bias, gain, mirrorh, mirrorv, despeckle, despur
@@ -40,19 +49,6 @@ class Sprite extends Component {
         );
       }
     }
-  }
-
-  // Simple hash function
-  // see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-  hashCode(s) {
-    if (!s) return 0;
-    let value = 0;
-    for (let i = 0; i < s.length; i++) {
-      const char = s.charCodeAt(i);
-      value = ((value<<5)-value)+char;
-      value = value & value;
-    }
-    return Math.abs(value);
   }
 
   // The code in drawSprite() is largely taken from
@@ -519,15 +515,3 @@ class Sprite extends Component {
     return elt.toDataURL();
   }
 }
-
-const { number, string } = React.PropTypes;
-
-Sprite.propTypes = {
-  id: string,
-  size: number,
-  scale: number,
-  spacing: number,
-  output: string
-};
-
-export default Sprite;

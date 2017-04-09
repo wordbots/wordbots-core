@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { object } from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import Sentence from '../cards/Sentence';
@@ -6,7 +7,11 @@ import { splitSentences } from '../../util/cards';
 
 import Card from './Card';
 
-class CardViewer extends Component {
+export default class CardViewer extends Component {
+  static propTypes = {
+    hoveredCard: object
+  };
+
   render() {
     return (
       <div style={{
@@ -45,11 +50,3 @@ class CardViewer extends Component {
     );
   }
 }
-
-const { object } = React.PropTypes;
-
-CardViewer.propTypes = {
-  hoveredCard: object
-};
-
-export default CardViewer;

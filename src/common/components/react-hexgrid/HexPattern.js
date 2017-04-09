@@ -1,12 +1,18 @@
 import React from 'react';
+import { object, string } from 'prop-types';
 
 import Sprite from '../game/Sprite';
 
 import HexUtils from './HexUtils';
 
-const { object, string } = React.PropTypes;
+export default class HexPattern extends React.Component {
+  static propTypes = {
+    hex: object.isRequired,
+    fill: string,
+    pieceImg: object,
+    images: object
+  };
 
-class HexPattern extends React.Component {
   piecePattern() {
     const id = HexUtils.getID(this.props.hex);
     const image = this.props.pieceImg;
@@ -50,12 +56,3 @@ class HexPattern extends React.Component {
     );
   }
 }
-
-HexPattern.propTypes = {
-  hex: object.isRequired,
-  fill: string,
-  pieceImg: object,
-  images: object
-};
-
-export default HexPattern;

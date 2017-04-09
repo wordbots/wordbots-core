@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
+import { func } from 'prop-types';
 import Toggle from 'material-ui/Toggle';
 import { Range } from 'rc-slider';
 
-class FilterControls extends Component {
+export default class FilterControls extends Component {
+  static propTypes = {
+    onToggleFilter: func,
+    onSetCostRange: func
+  };
+
   render() {
     const toggleStyle = { marginBottom: 10 };
 
@@ -60,13 +66,3 @@ class FilterControls extends Component {
     );
   }
 }
-
-const { func } = React.PropTypes;
-
-FilterControls.propTypes = {
-  onToggleFilter: func,
-  onSetCostRange: func
-};
-
-export default FilterControls;
-

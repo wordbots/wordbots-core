@@ -53,12 +53,23 @@ function createSocketMiddleware({excludedActions = []}) {
     }
 
     function receive(msg) {
-      const {recipients, action} = JSON.parse(msg);
-      // Accept messages directed to this client (or to everybody)
-      // that *don't* have this client listed as a sender (to avoid double-counting chat messages).
-      if (!recipients || (recipients.includes(clientId)) && action.payload.sender !== clientId) {
-        if (LOG_SOCKET_IO) { console.log(`Received ${msg}.`); }
-        store.dispatch(Object.assign({}, action, {fromServer: true}));
+      // We MUST wrap our message receive callback in a try/catch, because otherwise
+      // any error in handling a message (which admittedly shouldn't happen) will mess
+      // up our room state and lead to a garbled mess where we keep processing each subsequent
+      // message ad infinitum (see #168).
+      try {
+        const {recipients, action} = JSON.parse(msg);
+        // Accept messages directed to this client (or to everybody)
+        // that *don't* have this client listed as a sender (to avoid double-counting chat messages).
+        // Also, just ignore keepalive messages here, because they've already served their purpose.
+        if ((!recipients || (recipients.includes(clientId))) &&
+            action.payload.sender !== clientId &&
+            action.type !== actions.KEEPALIVE) {
+          if (LOG_SOCKET_IO) { console.log(`Received ${msg}.`); }
+          store.dispatch(Object.assign({}, action, {fromServer: true}));
+        }
+      } catch (e) {
+        if (LOG_SOCKET_IO) { console.log(`Error handling message ${msg}.`); }
       }
     }
 

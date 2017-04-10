@@ -14,7 +14,7 @@ export function setHoveredTile(state, card) {
 
 export function setSelectedTile(state, playerName, tile) {
   const player = state.players[playerName];
-  const isCurrentPlayer = (playerName === state.currentPlayer);
+  const isCurrentPlayer = (playerName === state.currentTurn);
 
   if (isCurrentPlayer &&
       state.target.choosing &&

@@ -11,7 +11,7 @@ import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {
   const player = state.players[playerName];
-  const isCurrentPlayer = (playerName === state.currentPlayer);
+  const isCurrentPlayer = (playerName === state.currentTurn);
   const selectedCard = player.hand[cardIdx];
   const energy = player.energy;
 

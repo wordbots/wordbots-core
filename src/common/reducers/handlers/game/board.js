@@ -17,8 +17,8 @@ export function setSelectedTile(state, playerName, tile) {
   const isCurrentPlayer = (playerName === state.currentTurn);
 
   if (isCurrentPlayer &&
-      state.target.choosing &&
-      state.target.possibleHexes.includes(tile) &&
+      player.target.choosing &&
+      player.target.possibleHexes.includes(tile) &&
       player.selectedCard !== null) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);

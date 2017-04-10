@@ -38,7 +38,7 @@ export function mapStateToProps(state) {
     playingCardType: currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard].type : null,
 
     status: activePlayer.status,
-    target: state.game.target,
+    target: activePlayer.target,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,

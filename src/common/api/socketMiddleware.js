@@ -1,4 +1,5 @@
 import { LOG_SOCKET_IO } from '../constants';
+import { logIfFlagSet } from '../util/common';
 import * as actions from '../actions/socket';
 
 const ENDPOINT = 'ws://socket.wordbots.io';  // Remote
@@ -47,7 +48,7 @@ function createSocketMiddleware({excludedActions = []}) {
     function send(action) {
       if (room && !action.fromServer && !excludedActions.includes(action.type)) {
         room.send(JSON.stringify(action));
-        if (LOG_SOCKET_IO) { console.log(`Sent ${JSON.stringify(action)}.`); }
+        logIfFlagSet(LOG_SOCKET_IO, `Sent ${JSON.stringify(action)}.`);
         keepaliveNeeded = false;
       }
     }
@@ -65,11 +66,11 @@ function createSocketMiddleware({excludedActions = []}) {
         if ((!recipients || (recipients.includes(clientId))) &&
             action.payload.sender !== clientId &&
             action.type !== actions.KEEPALIVE) {
-          if (LOG_SOCKET_IO) { console.log(`Received ${msg}.`); }
+          logIfFlagSet(LOG_SOCKET_IO, `Received ${msg}.`);
           store.dispatch(Object.assign({}, action, {fromServer: true}));
         }
       } catch (e) {
-        if (LOG_SOCKET_IO) { console.log(`Error handling message ${msg}.`); }
+        logIfFlagSet(LOG_SOCKET_IO, `Error handling message ${msg}.`);
       }
     }
 

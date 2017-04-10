@@ -40,7 +40,7 @@ describe('Game container', () => {
             status={defaultStatus} />
           <Board
             selectedTile={null}
-            target={state.game.target}
+            target={state.game.players.orange.target}
             bluePieces={state.game.players.blue.robotsOnBoard}
             orangePieces={state.game.players.orange.robotsOnBoard}
             player={'orange'}

@@ -86,8 +86,8 @@ export function mapDispatchToProps(dispatch) {
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
     },
-    onPlaceRobot: (tileHexId, card) => {
-      dispatch(gameActions.placeCard(tileHexId, card));
+    onPlaceRobot: (tileHexId, cardIdx) => {
+      dispatch(gameActions.placeCard(tileHexId, cardIdx));
     },
     onPassTurn: () => {
       dispatch(gameActions.passTurn());
@@ -213,8 +213,7 @@ export class Game extends Component {
   }
 
   placePiece(hexId) {
-    const card = this.props[`${this.props.currentTurn}Hand`][this.props.selectedCard];
-    this.props.onPlaceRobot(hexId, card);
+    this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
   onSelectTile(hexId, action, intermediateMoveHexId) {

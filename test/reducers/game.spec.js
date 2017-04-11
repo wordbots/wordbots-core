@@ -30,7 +30,7 @@ describe('Game reducer', () => {
       state = newTurn(state, 'orange');
       state = game(state, [
         actions.setSelectedCard(cardIdx, 'orange'),
-        actions.placeCard('3,0,-3', cards.generalBotCard)
+        actions.placeCard('3,0,-3', cardIdx)
       ]);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
       expect(state.players.orange.status.message).toEqual('You do not have enough energy to play this card.');

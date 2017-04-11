@@ -56,12 +56,12 @@ export function moveRobotAndAttack(fromHexId, toHexId, targetHexId) {
   };
 }
 
-export function placeCard(tile, card) {
+export function placeCard(tile, cardIdx) {
   return {
     type: PLACE_CARD,
     payload: {
       tile: tile,
-      card: card
+      cardIdx: cardIdx
     }
   };
 }

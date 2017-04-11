@@ -55,12 +55,13 @@ export function setSelectedCard(state, playerName, cardIdx) {
   }
 }
 
-export function placeCard(state, card, tile) {
+export function placeCard(state, cardIdx, tile) {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
 
   const player = currentPlayer(tempState);
+  const card = player.hand[cardIdx];
   const timestamp = Date.now();
 
   if (player.energy.available >= getCost(card) &&
@@ -159,11 +160,10 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 
   // Perform the trigger.
   const card = player.hand[player.selectedCard];
-
   if (card.type === TYPE_EVENT) {
     state = playEvent(state, player.selectedCard);
   } else {
-    state = placeCard(state, card, state.placementTile);
+    state = placeCard(state, player.selectedCard, state.placementTile);
   }
 
   // Reset target.

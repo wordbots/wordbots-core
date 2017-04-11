@@ -22,9 +22,11 @@ export default function targets(state, currentObject) {
     // Note: Unlike other target functions, choose() can return an [hex]
     //       (if the chosen hex does not contain an object.)
     choose: function (collection) {
-      if (state.target.chosen) {
+      const player = currentPlayer(state);
+
+      if (player.target.chosen) {
         // Return and clear chosen target.
-        const chosenTargets = state.target.chosen;
+        const chosenTargets = player.target.chosen;
         state.it = chosenTargets[0];  // "it" stores most recently chosen salient object for lookup.
 
         // Return objects if possible or hexes if not. (Cards can also be returned.)
@@ -32,19 +34,21 @@ export default function targets(state, currentObject) {
       } else {
         if (!isEmpty(collection)) {
           // Prepare target selection.
-          state.target.choosing = true;
+          player.target.choosing = true;
 
           if (isArray(collection[0])) {
             // Collection of objects.
             // Don't allow player to pick the object that is being played (if any).
-            state.target.possibleHexes = collection.filter(([hex, obj]) => !obj || !obj.justPlayed)
-                                                   .map(([hex, obj]) => hex);
-            state.target.possibleCards = [];
+            player.target.possibleHexes = collection.filter(([hex, obj]) => !obj || !obj.justPlayed)
+                                                    .map(([hex, obj]) => hex);
+            player.target.possibleCards = [];
           } else {
             // Collection of cards.
-            state.target.possibleCards = collection.map(card => card.id);
-            state.target.possibleHexes = [];
+            player.target.possibleCards = collection.map(card => card.id);
+            player.target.possibleHexes = [];
           }
+
+          state.players[player.name] = player;
         }
         return [];
       }

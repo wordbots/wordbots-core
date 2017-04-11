@@ -7,17 +7,20 @@ import {
   discardCards, logAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
+import { arbitraryPlayerState } from '../../../store/defaultGameState';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {
   const player = state.players[playerName];
+  const isCurrentPlayer = (playerName === state.currentTurn);
   const selectedCard = player.hand[cardIdx];
   const energy = player.energy;
 
   player.selectedTile = null;
 
-  if (state.target.choosing &&
-      state.target.possibleCards.includes(selectedCard.id) &&
+  if (isCurrentPlayer &&
+      player.target.choosing &&
+      player.target.possibleCards.includes(selectedCard.id) &&
       player.selectedCard !== null) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, selectedCard);
@@ -27,7 +30,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
     if (player.selectedCard === cardIdx) {
       // Clicked on already selected card => Deselect or play event
 
-      if (selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
+      if (isCurrentPlayer && selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = null;
@@ -37,7 +40,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
       // Clicked on unselected card => Select
 
       player.selectedCard = cardIdx;
-      state.target.choosing = false; // Reset targeting state.
+      player.target.choosing = false; // Reset targeting state.
 
       if (getCost(selectedCard) <= energy.available) {
         player.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
@@ -90,17 +93,17 @@ export function placeCard(state, card, tile) {
     playedObject.justPlayed = false;
   }
 
-  if (tempState.target.choosing) {
+  if (player.target.choosing) {
     // Target still needs to be selected, so roll back playing the card (and return old state).
 
+    currentPlayer(state).target = player.target;
     currentPlayer(state).status = {
       message: `Choose a target for ${card.name}'s ability.`,
       type: 'text'
     };
-    return Object.assign({}, state, {
-      target: tempState.target,
-      placementTile: tile  // Store the tile the object was played on, for the actual placement later.
-    });
+
+    state.placementTile = tile;  // Store the tile the object was played on, for the actual placement later.
+    return state;
   } else {
     // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
     // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
@@ -110,7 +113,7 @@ export function placeCard(state, card, tile) {
 }
 
 export function playEvent(state, cardIdx, command) {
-  const player = state.players[state.currentTurn];
+  const player = currentPlayer(state);
   const card = player.hand[cardIdx];
   const cmd = card.command;
   const timestamp = Date.now();
@@ -120,14 +123,14 @@ export function playEvent(state, cardIdx, command) {
     card.justPlayed = true;
 
     (isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
-      if (!state.target.choosing) {
+      if (!player.target.choosing) {
         executeCmd(state, subcmd);
       }
     });
 
     card.justPlayed = false;
 
-    if (state.target.choosing) {
+    if (player.target.choosing) {
       player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
@@ -144,10 +147,10 @@ export function playEvent(state, cardIdx, command) {
 }
 
 export function setTargetAndExecuteQueuedAction(state, target) {
-  const player = state.players[state.currentTurn];
+  const player = currentPlayer(state);
 
   // Select target tile for event or afterPlayed trigger.
-  state.target = {
+  player.target = {
     chosen: [target],
     choosing: false,
     possibleHexes: [],
@@ -164,6 +167,7 @@ export function setTargetAndExecuteQueuedAction(state, target) {
   }
 
   // Reset target.
-  state.target = Object.assign(state.target, {choosing: false, chosen: null});
+  state.players[player.name].target = arbitraryPlayerState().target;
+
   return state;
 }

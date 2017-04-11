@@ -34,6 +34,14 @@ export function inBrowser() {
   return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
 }
 
+export function logIfFlagSet(flag, msg) {
+  if (flag) {
+    /* eslint-disable no-console */
+    console.log(msg);
+    /* eslint-enable no-console */
+  }
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
     id: id(),

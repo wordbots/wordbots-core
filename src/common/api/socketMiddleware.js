@@ -1,3 +1,5 @@
+import { LOG_SOCKET_IO } from '../constants';
+import { logIfFlagSet } from '../util/common';
 import * as actions from '../actions/socket';
 
 const ENDPOINT = 'ws://socket.wordbots.io';  // Remote
@@ -46,16 +48,29 @@ function createSocketMiddleware({excludedActions = []}) {
     function send(action) {
       if (room && !action.fromServer && !excludedActions.includes(action.type)) {
         room.send(JSON.stringify(action));
+        logIfFlagSet(LOG_SOCKET_IO, `Sent ${JSON.stringify(action)}.`);
         keepaliveNeeded = false;
       }
     }
 
     function receive(msg) {
-      const {recipients, action} = JSON.parse(msg);
-      // Accept messages directed to this client (or to everybody)
-      // that *don't* have this client listed as a sender (to avoid double-counting chat messages).
-      if (!recipients || (recipients.includes(clientId)) && action.payload.sender !== clientId) {
-        store.dispatch(Object.assign({}, action, {fromServer: true}));
+      // We MUST wrap our message receive callback in a try/catch, because otherwise
+      // any error in handling a message (which admittedly shouldn't happen) will mess
+      // up our room state and lead to a garbled mess where we keep processing each subsequent
+      // message ad infinitum (see #168).
+      try {
+        const {recipients, action} = JSON.parse(msg);
+        // Accept messages directed to this client (or to everybody)
+        // that *don't* have this client listed as a sender (to avoid double-counting chat messages).
+        // Also, just ignore keepalive messages here, because they've already served their purpose.
+        if ((!recipients || (recipients.includes(clientId))) &&
+            action.payload.sender !== clientId &&
+            action.type !== actions.KEEPALIVE) {
+          logIfFlagSet(LOG_SOCKET_IO, `Received ${msg}.`);
+          store.dispatch(Object.assign({}, action, {fromServer: true}));
+        }
+      } catch (e) {
+        logIfFlagSet(LOG_SOCKET_IO, `Error handling message ${msg}.`);
       }
     }
 

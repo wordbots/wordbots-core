@@ -80,20 +80,20 @@ export function playObject(state, playerName, card, hex, target = null) {
   if (target && target.hex) {
     return game(state, [
       actions.setSelectedCard(0, playerName),
-      actions.placeCard(hex, card),
+      actions.placeCard(hex, 0),
       actions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && target.card) {
     const cardIdx = _.findIndex(player.hand, c => c.name === target.card.name);
     return game(state, [
       actions.setSelectedCard(0, playerName),
-      actions.placeCard(hex, card),
+      actions.placeCard(hex, 0),
       actions.setSelectedCard(cardIdx, playerName)
     ]);
   } else {
     return game(state, [
       actions.setSelectedCard(0, playerName),
-      actions.placeCard(hex, card)
+      actions.placeCard(hex, 0)
     ]);
   }
 }

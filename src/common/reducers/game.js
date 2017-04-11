@@ -34,7 +34,7 @@ export default function game(oldState = cloneDeep(defaultState), action) {
       }
 
       case gameActions.PLACE_CARD:
-        return g.placeCard(state, action.payload.card, action.payload.tile);
+        return g.placeCard(state, action.payload.cardIdx, action.payload.tile);
 
       case gameActions.PASS_TURN:
         return g.startTurn(g.endTurn(state));

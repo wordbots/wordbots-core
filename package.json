@@ -1,6 +1,6 @@
 {
   "name": "wordbots",
-  "version": "0.1.2-alpha",
+  "version": "0.1.3-alpha",
   "apiHost": "10.0.0.9",
   "apiPort": "3000",
   "description": "A card-and-board game that showcases card game semantic parsing",

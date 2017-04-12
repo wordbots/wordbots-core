@@ -76,8 +76,33 @@ export default class Card extends Component {
     };
 
     const compactStyle = {
-      textAlign: 'center',
-      marginTop: 30 * this.props.scale
+      height: 96 * this.props.scale,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    };
+
+    const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
+
+    if (this.props.type === TYPE_EVENT && numChars < 30) {
+      return Object.assign(baseStyle, compactStyle);
+    } else {
+      return baseStyle;
+    }
+  }
+
+  textFitStyle() {
+    const baseStyle = {
+      padding: 6 * this.props.scale,
+      paddingBottom: 0,
+      height: (this.props.type !== TYPE_EVENT ? 48 : 96) * this.props.scale,
+      boxSizing: 'border-box'
+    };
+
+    const compactStyle = {
+      paddingBottom: 6 * this.props.scale,
+      height: 'auto',
+      textAlign: 'center'
     };
 
     const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
@@ -258,12 +283,7 @@ export default class Card extends Component {
                   <Textfit
                     mode="multi"
                     max={14 * this.props.scale}
-                    style={{
-                      padding: 6 * this.props.scale,
-                      paddingBottom: 0,
-                      height: (this.props.type !== TYPE_EVENT ? 48 : 96) * this.props.scale,
-                      boxSizing: 'border-box'
-                  }}>
+                    style={this.textFitStyle()}>
                     {this.props.text}
                   </Textfit>
                   {this.renderStatsArea()}

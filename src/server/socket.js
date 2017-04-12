@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import { values } from 'lodash';
 
 import { id as generateID } from '../common/util/common';
 
@@ -88,7 +89,7 @@ export default function launchWebsocketServer(server, path) {
   }
 
   function sendMessage(type, payload = {}, recipientIDs = null) {
-    const sockets = recipientIDs ? recipientIDs.map(id => state.connections[id]) : Object.values(state.connections);
+    const sockets = recipientIDs ? recipientIDs.map(id => state.connections[id]) : values(state.connections);
     const message = JSON.stringify({type, payload});
 
     sockets.forEach(socket => {

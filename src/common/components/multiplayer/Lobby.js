@@ -42,6 +42,7 @@ export default class Lobby extends Component {
     return (
       <div>
         <LobbyStatus
+          connecting={skt.connecting}
           connected={skt.connected}
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}

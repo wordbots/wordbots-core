@@ -20,10 +20,9 @@ export function connecting() {
   };
 }
 
-export function connected(clientId) {
+export function connected() {
   return {
-    type: CONNECTED,
-    payload: { clientId }
+    type: CONNECTED
   };
 }
 

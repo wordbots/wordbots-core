@@ -6,7 +6,8 @@ import { ALWAYS_ENABLE_DEV_TOOLS } from '../constants';
 import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
 import rootReducer from '../reducers';
-import * as actions from '../actions/game';
+import * as ga from '../actions/game';
+import * as sa from '../actions/socket';
 
 import { loadState, saveState } from './persistState';
 
@@ -17,10 +18,8 @@ const middlewareBuilder = () => {
   let allComposeElements = [];
 
   if (process.browser) {
-    const ignoredActions = [actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE];
-
     const socketMiddleware = createSocketMiddleware({
-      excludedActions: ignoredActions
+      excludedActions: [ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED]
     });
 
     if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
@@ -31,7 +30,7 @@ const middlewareBuilder = () => {
       const DevTools = require('../containers/DevTools').default;
 
       const logger = createLogger({
-        predicate: (getState, action) => !ignoredActions.includes(action.type)
+        predicate: (getState, action) => ![ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE].includes(action.type)
       });
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -34,6 +35,16 @@ function mapDispatchToProps(dispatch) {
 }
 
 class Collection extends Component {
+  static propTypes = {
+    cards: array,
+    sidebarOpen: bool,
+
+    history: object,
+
+    onEditCard: func,
+    onRemoveFromCollection: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -169,17 +180,5 @@ class Collection extends Component {
     );
   }
 }
-
-const { array, bool, func, object } = React.PropTypes;
-
-Collection.propTypes = {
-  cards: array,
-  sidebarOpen: bool,
-
-  history: object,
-
-  onEditCard: func,
-  onRemoveFromCollection: func
-};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Collection));

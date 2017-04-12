@@ -10,6 +10,10 @@ export function orangePlayerState(collection) {
   return playerState('orange', collection, cards.orangeCoreCard, ORANGE_CORE_HEX);
 }
 
+export function arbitraryPlayerState() {
+  return bluePlayerState([]);
+}
+
 function playerState(color, collection, coreCard, coreHexId) {
   return {
     name: color,
@@ -33,6 +37,12 @@ function playerState(color, collection, coreCard, coreHexId) {
     status: {
       message: '',
       type: ''
+    },
+    target: {
+      choosing: false,
+      chosen: null,
+      possibleCards: [],
+      possibleHexes: []
     }
   };
 }
@@ -47,12 +57,6 @@ const defaultState = {
   currentTurn: 'orange',
   player: 'orange',
   hoveredCard: null,
-  target: {
-    choosing: false,
-    chosen: null,
-    possibleCards: [],
-    possibleHexes: []
-  },
   winner: null,
   actionLog: []
 };

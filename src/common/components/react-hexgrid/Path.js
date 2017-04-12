@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { object } from 'prop-types';
 
 import HexUtils from './HexUtils';
 
-const { object } = React.PropTypes;
-
-class Path extends React.Component {
+export default class Path extends Component {
+  static propTypes = {
+    start: object,
+    end: object,
+    layout: object.isRequired
+  };
 
   getPoints() {
     if (!this.props.start || !this.props.end) {
@@ -35,10 +39,3 @@ class Path extends React.Component {
     );
   }
 }
-Path.propTypes = {
-  start: object,
-  end: object,
-  layout: object.isRequired
-};
-
-export default Path;

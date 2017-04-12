@@ -305,7 +305,18 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
   }
 
   // Now execute each trigger.
-  triggers.forEach(t => { executeCmd(state, t.action, t.object); });
+  triggers.forEach(t => {
+    // Ordinarily, currentObject has higher salience than state.it
+    //     (see it() in vocabulary/targets.js)
+    // but we actually want the opposite behavior when processing a trigger!
+    // For example, when the trigger is:
+    //     Arena: Whenever a robot is destroyed in combat, deal 1 damage to its controller.
+    //         state.it = (destroyed robot)
+    //         t.object = Arena
+    //         "its controller" should = (destroyed robot)
+    const currentObject = state.it || t.object;
+    executeCmd(state, t.action, currentObject);
+  });
 
   return Object.assign({}, state, {it: null, itP: null});
 }

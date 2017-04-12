@@ -25,11 +25,11 @@ export function endTurn(state) {
   player.selectedCard = null;
   player.selectedTile = null;
   player.status.message = '';
+  player.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
   state.currentTurn = opponentName(state);
   state.hoveredCardIdx = null;
-  state.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
 
   return state;
 }

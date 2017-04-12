@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -34,6 +35,17 @@ function mapDispatchToProps(dispatch) {
 }
 
 class Decks extends Component {
+  static propTypes = {
+    decks: array,
+    sidebarOpen: bool,
+
+    history: object,
+
+    onCreateDeck: func,
+    onDeleteDeck: func,
+    onEditDeck: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -188,18 +200,5 @@ class Decks extends Component {
     );
   }
 }
-
-const { array, bool, func, object } = React.PropTypes;
-
-Decks.propTypes = {
-  decks: array,
-  sidebarOpen: bool,
-
-  history: object,
-
-  onCreateDeck: func,
-  onDeleteDeck: func,
-  onEditDeck: func
-};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Decks));

@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
+import { number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import ReactTooltip from 'react-tooltip';
 
-import { id } from '../../util/common';
+import { id, toProperCase } from '../../util/common';
 
-class CardStat extends Component {
+export default class CardStat extends Component {
+  static propTypes = {
+    type: string,
+    base: number,
+    current: number,
+    scale: number
+  };
+
   render() {
     const tooltipId = id();
     let backgroundColor = '';
@@ -40,7 +48,7 @@ class CardStat extends Component {
         <Paper circle
           zDepth={1}
           data-for={tooltipId}
-          data-tip={this.props.type.toProperCase()}
+          data-tip={toProperCase(this.props.type)}
           style={{
             width: 32 * (this.props.scale || 1),
             height: 32 * (this.props.scale || 1),
@@ -63,18 +71,3 @@ class CardStat extends Component {
     );
   }
 }
-
-const { number, string } = React.PropTypes;
-
-CardStat.propTypes = {
-  type: string,
-  base: number,
-  current: number,
-  scale: number
-};
-
-String.prototype.toProperCase = function () {
-  return this.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-};
-
-export default CardStat;

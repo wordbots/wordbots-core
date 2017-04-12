@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
+import { string, func } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import { debounce } from 'lodash';
 
-class UsernamePicker extends Component {
+export default class UsernamePicker extends Component {
+  static propTypes = {
+    clientId: string,
+    username: string,
+    onSetUsername: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -47,13 +54,3 @@ class UsernamePicker extends Component {
     );
   }
 }
-
-const { string, func } = React.PropTypes;
-
-UsernamePicker.propTypes = {
-  clientId: string,
-  username: string,
-  onSetUsername: func
-};
-
-export default UsernamePicker;

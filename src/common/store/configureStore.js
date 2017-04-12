@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import multi from 'redux-multi';
 import thunk from 'redux-thunk';
 
+import { ALWAYS_ENABLE_DEV_TOOLS } from '../constants';
 import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
 import rootReducer from '../reducers';
@@ -22,7 +23,7 @@ const middlewareBuilder = () => {
       excludedActions: ignoredActions
     });
 
-    if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
+    if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
       allComposeElements = [middleware];
     } else {

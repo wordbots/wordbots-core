@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { array, bool, func, number, object, string } from 'prop-types';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
 
@@ -9,11 +10,19 @@ import Sentence from '../cards/Sentence';
 
 import Card from './Card';
 
-
-class Hand extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default class Hand extends Component {
+  static propTypes = {
+    name: string,
+    cards: array,
+    isActivePlayer: bool,
+    onSelectCard: func,
+    onHoverCard: func,
+    selectedCard: number,
+    hoveredCard: number,
+    targetableCards: array,
+    status: object,
+    curved: bool
+  };
 
   calculateAvailableWidth() {
     this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
@@ -78,7 +87,7 @@ class Hand extends Component {
 
   render() {
     return (
-      <ReactCSSTransitionGroup
+      <CSSTransitionGroup
         transitionName="hand"
         transitionEnterTimeout={500}
         transitionLeave={false}
@@ -88,24 +97,7 @@ class Hand extends Component {
           width: '100%'
         }}>
         {this.renderCards()}
-      </ReactCSSTransitionGroup>
+      </CSSTransitionGroup>
     );
   }
 }
-
-const { array, bool, func, number, object, string } = React.PropTypes;
-
-Hand.propTypes = {
-  name: string,
-  cards: array,
-  isActivePlayer: bool,
-  onSelectCard: func,
-  onHoverCard: func,
-  selectedCard: number,
-  hoveredCard: number,
-  targetableCards: array,
-  status: object,
-  curved: bool
-};
-
-export default Hand;

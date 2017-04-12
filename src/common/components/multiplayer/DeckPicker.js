@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
+import { array, number, func } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-class DeckPicker extends Component {
+export default class DeckPicker extends Component {
+  static propTypes = {
+    availableDecks: array,
+    selectedDeckIdx: number,
+    onChooseDeck: func
+};
+
   render() {
     return (
       <Paper style={{padding: 20, marginBottom: 20}}>
@@ -21,12 +28,3 @@ class DeckPicker extends Component {
   }
 }
 
-const { array, number, func } = React.PropTypes;
-
-DeckPicker.propTypes = {
-  availableDecks: array,
-  selectedDeckIdx: number,
-  onChooseDeck: func
-};
-
-export default DeckPicker;

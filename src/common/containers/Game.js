@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, bool, func, number, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -37,7 +38,7 @@ export function mapStateToProps(state) {
     playingCardType: currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard].type : null,
 
     status: activePlayer.status,
-    target: state.game.target,
+    target: activePlayer.target,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,
@@ -85,8 +86,8 @@ export function mapDispatchToProps(dispatch) {
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
     },
-    onPlaceRobot: (tileHexId, card) => {
-      dispatch(gameActions.placeCard(tileHexId, card));
+    onPlaceRobot: (tileHexId, cardIdx) => {
+      dispatch(gameActions.placeCard(tileHexId, cardIdx));
     },
     onPassTurn: () => {
       dispatch(gameActions.passTurn());
@@ -113,7 +114,59 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Game extends Component {
+  static propTypes = {
+    started: bool,
+    player: string,
+    currentTurn: string,
+    selectedTile: string,
+    playingCardType: number,
+    status: object,
+    target: object,
+    hoveredCard: object,
+    winner: string,
+    actionLog: array,
+
+    blueHand: array,
+    orangeHand: array,
+
+    bluePieces: object,
+    orangePieces: object,
+
+    blueEnergy: object,
+    orangeEnergy: object,
+
+    blueDeck: array,
+    orangeDeck: array,
+
+    socket: object,
+    availableDecks: array,
+
+    selectedCard: number,
+    hoveredCardIdx: number,
+
+    sidebarOpen: bool,
+
+    onConnect: func,
+    onHostGame: func,
+    onJoinGame: func,
+    onSetUsername: func,
+    onSendChatMessage: func,
+    onMoveRobot: func,
+    onAttackRobot: func,
+    onMoveRobotAndAttack: func,
+    onPlaceRobot: func,
+    onSelectCard: func,
+    onSelectTile: func,
+    onPassTurn: func,
+    onHoverCard: func,
+    onHoverTile: func,
+    onVictoryScreenClick: func
+  };
+
   // For testing.
+  static childContextTypes = {
+    muiTheme: object.isRequired
+  };
   getChildContext() {
     return {muiTheme: getMuiTheme(baseTheme)};
   }
@@ -160,8 +213,7 @@ export class Game extends Component {
   }
 
   placePiece(hexId) {
-    const card = this.props[`${this.props.currentTurn}Hand`][this.props.selectedCard];
-    this.props.onPlaceRobot(hexId, card);
+    this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
   onSelectTile(hexId, action, intermediateMoveHexId) {
@@ -266,61 +318,5 @@ export class Game extends Component {
     );
   }
 }
-
-const { array, bool, func, number, object, string } = React.PropTypes;
-
-// For testing.
-Game.childContextTypes = {
-  muiTheme: object.isRequired
-};
-
-Game.propTypes = {
-  started: bool,
-  player: string,
-  currentTurn: string,
-  selectedTile: string,
-  playingCardType: number,
-  status: object,
-  target: object,
-  hoveredCard: object,
-  winner: string,
-  actionLog: array,
-
-  blueHand: array,
-  orangeHand: array,
-
-  bluePieces: object,
-  orangePieces: object,
-
-  blueEnergy: object,
-  orangeEnergy: object,
-
-  blueDeck: array,
-  orangeDeck: array,
-
-  socket: object,
-  availableDecks: array,
-
-  selectedCard: number,
-  hoveredCardIdx: number,
-
-  sidebarOpen: bool,
-
-  onConnect: func,
-  onHostGame: func,
-  onJoinGame: func,
-  onSetUsername: func,
-  onSendChatMessage: func,
-  onMoveRobot: func,
-  onAttackRobot: func,
-  onMoveRobotAndAttack: func,
-  onPlaceRobot: func,
-  onSelectCard: func,
-  onSelectTile: func,
-  onPassTurn: func,
-  onHoverCard: func,
-  onHoverTile: func,
-  onVictoryScreenClick: func
-};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Game));

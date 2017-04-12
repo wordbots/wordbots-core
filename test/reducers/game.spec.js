@@ -30,7 +30,7 @@ describe('Game reducer', () => {
       state = newTurn(state, 'orange');
       state = game(state, [
         actions.setSelectedCard(cardIdx, 'orange'),
-        actions.placeCard('3,0,-3', cards.generalBotCard)
+        actions.placeCard('3,0,-3', cardIdx)
       ]);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
       expect(state.players.orange.status.message).toEqual('You do not have enough energy to play this card.');
@@ -340,15 +340,15 @@ describe('Game reducer', () => {
           '0,0,0': cards.attackBotCard
         },
         'blue': {
-          '-1,0,1': cards.attackBotCard,
+          '-1,0,1': cards.tankBotCard,
           '0,-1,1': cards.attackBotCard,
           '-2,0,2': cards.arenaCard
         }
       });
       state = newTurn(state, 'orange');
-      state = attack(state, '0,0,0', '-1,0,1');  // Each player should take one damage from each Arena.
+      state = attack(state, '0,0,0', '-1,0,1');  // The orange player should take one damage from each Arena.
       state = playEvent(state, 'orange', cards.shockCard, {hex: '0,-1,1'});  // No damage from Arena since this isn't combat.
-      expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 2);
+      expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH);
       expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 2);
 
       // Martyr Bot: "When this robot is destroyed, take control of all adjacent robots."

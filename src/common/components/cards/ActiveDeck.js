@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, func, string } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -7,7 +8,16 @@ import { sortBy } from 'lodash';
 import { groupCards } from '../../util/cards';
 
 // Widget representing the deck currently being created or modified.
-class ActiveDeck extends Component {
+export default class ActiveDeck extends Component {
+  static propTypes = {
+    id: string,
+    cards: array,
+    name: string,
+
+    onCardClick: func,
+    onSaveDeck: func
+  }
+
   constructor(props) {
     super(props);
 
@@ -89,16 +99,3 @@ class ActiveDeck extends Component {
     );
   }
 }
-
-const { array, func, string } = React.PropTypes;
-
-ActiveDeck.propTypes = {
-  id: string,
-  cards: array,
-  name: string,
-
-  onCardClick: func,
-  onSaveDeck: func
-};
-
-export default ActiveDeck;

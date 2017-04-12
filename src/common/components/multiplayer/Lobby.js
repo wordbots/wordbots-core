@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { array, func, object } from 'prop-types';
 import { shuffle } from 'lodash';
 
-import { SHUFFLE_DECKS } from '../../constants';
+import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
 import { instantiateCard } from '../../util/common';
 
 import DeckPicker from './DeckPicker';
@@ -11,7 +12,17 @@ import LobbyStatus from './LobbyStatus';
 import UsernamePicker from './UsernamePicker';
 import Waiting from './Waiting';
 
-class Lobby extends Component {
+export default class Lobby extends Component {
+  static propTypes = {
+    socket: object,
+    availableDecks: array,
+
+    onConnect: func,
+    onJoinGame: func,
+    onHostGame: func,
+    onSetUsername: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -22,7 +33,7 @@ class Lobby extends Component {
 
   getDeck() {
     const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
-    return SHUFFLE_DECKS ? shuffle(deck) : deck;
+    return KEEP_DECKS_UNSHUFFLED ? deck : shuffle(deck);
   }
 
   render() {
@@ -59,17 +70,3 @@ class Lobby extends Component {
     );
   }
 }
-
-const { array, func, object } = React.PropTypes;
-
-Lobby.propTypes = {
-  socket: object,
-  availableDecks: array,
-
-  onConnect: func,
-  onJoinGame: func,
-  onHostGame: func,
-  onSetUsername: func
-};
-
-export default Lobby;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { array, func, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
@@ -8,7 +9,15 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { sortBy } from 'lodash';
 
-class Chat extends Component {
+export default class Chat extends Component {
+  static propTypes = {
+    roomName: string,
+    messages: array,
+
+    onSendMessage: func,
+    onHoverCard: func
+  };
+
   constructor(props) {
     super(props);
 
@@ -165,15 +174,3 @@ class Chat extends Component {
     });
   }
 }
-
-const { array, func, string } = React.PropTypes;
-
-Chat.propTypes = {
-  roomName: string,
-  messages: array,
-
-  onSendMessage: func,
-  onHoverCard: func
-};
-
-export default Chat;

@@ -1,7 +1,9 @@
 import { capitalize, invert } from 'lodash';
 
-// For debugging.
-export const SHUFFLE_DECKS = true;
+// Debug flags.
+export const ALWAYS_ENABLE_DEV_TOOLS = true;
+export const LOG_SOCKET_IO = true;
+export const KEEP_DECKS_UNSHUFFLED = false;
 
 export const STARTING_PLAYER_HEALTH = 20;
 

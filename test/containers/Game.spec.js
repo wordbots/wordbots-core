@@ -40,7 +40,7 @@ describe('Game container', () => {
             status={defaultStatus} />
           <Board
             selectedTile={null}
-            target={state.game.target}
+            target={state.game.players.orange.target}
             bluePieces={state.game.players.blue.robotsOnBoard}
             orangePieces={state.game.players.orange.robotsOnBoard}
             player={'orange'}
@@ -118,7 +118,6 @@ describe('Game container', () => {
     );
 
     // Set selected card.
-    const attackBotCard = createGame(state).props.orangeHand.find(c => c.name === 'Attack Bot');
     expect(
       clickCard(c => c.props.visible && c.props.name === 'Attack Bot')
     ).toEqual(
@@ -129,7 +128,7 @@ describe('Game container', () => {
     expect(
       clickHex('3,0,-3')
     ).toEqual(
-      actions.placeCard('3,0,-3', attackBotCard)
+      actions.placeCard('3,0,-3', 0)
     );
 
     // End turn.

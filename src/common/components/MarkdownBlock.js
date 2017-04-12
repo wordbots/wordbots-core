@@ -1,4 +1,5 @@
 import React from 'react';
+import { string } from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 
 import SmartLink from './SmartLink';
@@ -9,8 +10,6 @@ const MarkdownBlock = (props) => (
     containerProps={{className: 'markdownBlock'}}
     renderers={{Link: SmartLink}} />
 );
-
-const { string } = React.PropTypes;
 
 MarkdownBlock.propTypes = {
   source: string

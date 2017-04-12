@@ -1,12 +1,22 @@
 import React from 'react';
+import { bool, object, string } from 'prop-types';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
 
-const { bool, object, string } = React.PropTypes;
+export default class HexShape extends React.Component {
+  static propTypes = {
+    hex: object.isRequired,
+    layout: object.isRequired,
+    actions: object.isRequired,
+    fill: string,
+    images: object,
+    pieceImg: object,
+    pieceStats: object,
+    selected: bool
+  };
 
-class HexShape extends React.Component {
   getPoints(hex) {
     const points = this.props.layout.getPolygonPoints(hex);
 
@@ -142,15 +152,3 @@ class HexShape extends React.Component {
     );
   }
 }
-HexShape.propTypes = {
-  hex: object.isRequired,
-  layout: object.isRequired,
-  actions: object.isRequired,
-  fill: string,
-  images: object,
-  pieceImg: object,
-  pieceStats: object,
-  selected: bool
-};
-
-export default HexShape;

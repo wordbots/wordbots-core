@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { object } from 'prop-types';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import Sentence from '../cards/Sentence';
 import { splitSentences } from '../../util/cards';
 
 import Card from './Card';
 
-class CardViewer extends Component {
+export default class CardViewer extends Component {
+  static propTypes = {
+    hoveredCard: object
+  };
+
   render() {
     return (
       <div style={{
@@ -17,7 +22,7 @@ class CardViewer extends Component {
         margin: 'auto',
         height: 236 * 1.5
       }}>
-        <ReactCSSTransitionGroup
+        <CSSTransitionGroup
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
@@ -40,16 +45,8 @@ class CardViewer extends Component {
                 selected={false}
                 visible />
           }
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }
 }
-
-const { object } = React.PropTypes;
-
-CardViewer.propTypes = {
-  hoveredCard: object
-};
-
-export default CardViewer;

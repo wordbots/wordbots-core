@@ -64,10 +64,8 @@ function createSocketMiddleware({excludedActions = []}) {
       const msg = event.data;
       const action = JSON.parse(msg);
 
-      if (action.type !== actions.KEEPALIVE) {  // We don't care about keepalive messages.
-        logIfFlagSet(LOG_SOCKET_IO, `Received ${msg}.`);
-        store.dispatch(Object.assign({}, action, {fromServer: true}));
-      }
+      logIfFlagSet(LOG_SOCKET_IO, `Received ${msg}.`);
+      store.dispatch(Object.assign({}, action, {fromServer: true}));
     }
 
     function keepalive() {

@@ -68,7 +68,7 @@ export default function launchWebsocketServer(server, path) {
     } else if (type === 'ws:CHAT') {
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
       (inGame ? sendMessageToOpponent : sendMessageToLobby)(clientID, 'ws:CHAT', payloadWithSender);
-    } else {
+    } else if (type !== 'ws:KEEPALIVE') {
       sendMessageToOpponent(clientID, type, payload);
     }
   }

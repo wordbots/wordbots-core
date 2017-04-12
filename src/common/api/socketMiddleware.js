@@ -2,9 +2,9 @@ import { LOG_SOCKET_IO } from '../constants';
 import { logIfFlagSet } from '../util/common';
 import * as actions from '../actions/socket';
 
-// const ENDPOINT = 'ws://socket.wordbots.io';  // Remote
-// const ENDPOINT = 'wss://wordbots-socket.herokuapp.com';  // Remote (SSL)
-const ENDPOINT = 'ws://localhost:3000/socket';  // Local
+const ENDPOINT = 'ws://app.wordbots.io/socket';  // Remote
+// const ENDPOINT = 'wss://wordbots-game.herokuapp.com/socket';  // Remote (SSL)
+// const ENDPOINT = 'ws://localhost:3000/socket';  // Local
 
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 

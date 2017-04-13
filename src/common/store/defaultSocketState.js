@@ -7,6 +7,7 @@ const defaultState = {
   hosting: false,
   gameName: null,
 
+  matches: [],
   playersOnline: [],
   waitingPlayers: [],
   clientIdToUsername: {},

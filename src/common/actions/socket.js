@@ -36,6 +36,7 @@ export function disconnected() {
 
 export const HOST = 'ws:HOST';
 export const JOIN = 'ws:JOIN';
+export const SPECTATE = 'ws:SPECTATE';
 export const LEAVE = 'ws:LEAVE';
 export const SET_USERNAME = 'ws:SET_USERNAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
@@ -51,6 +52,13 @@ export function join(id, name, deck) {
   return {
     type: JOIN,
     payload: { id, name, deck }
+  };
+}
+
+export function spectate(id, name) {
+  return {
+    type: SPECTATE,
+    payload: { id, name }
   };
 }
 

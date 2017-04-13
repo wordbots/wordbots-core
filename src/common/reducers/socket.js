@@ -30,6 +30,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
     case socketActions.INFO:
       return Object.assign(state, {
+        matches: action.payload.matches,
         waitingPlayers: action.payload.waitingPlayers,
         clientIdToUsername: action.payload.usernames,
         playersOnline: action.payload.playersOnline
@@ -42,6 +43,9 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       return Object.assign(state, {gameName: action.payload.name, hosting: true});
 
     case socketActions.JOIN:
+      return Object.assign(state, {gameName: action.payload.name});
+
+    case socketActions.SPECTATE:
       return Object.assign(state, {gameName: action.payload.name});
 
     case socketActions.LEAVE:

@@ -178,7 +178,7 @@ export function validAttackHexes(state, playerName, startHex, speed, object) {
 //
 
 export function logAction(state, player, action, cards, timestamp) {
-  const playerStr = player ? (player.name === state.player ? 'You ' : 'Your opponent ') : '';
+  const playerStr = player ? (player.name === state.player ? 'You ' : `${state.usernames[player.name]} `) : '';
   const message = {
     user: '[Game]',
     text: `${playerStr}${action}.`,
@@ -190,10 +190,11 @@ export function logAction(state, player, action, cards, timestamp) {
   return state;
 }
 
-export function newGame(state, player, collections) {
+export function newGame(state, player, usernames, decks) {
   state = Object.assign(state, cloneDeep(defaultState), {player: player}); // Reset game state.
-  state.players.blue = bluePlayerState(collections.blue);
-  state.players.orange = orangePlayerState(collections.orange);
+  state.usernames = usernames;
+  state.players.blue = bluePlayerState(decks.blue);
+  state.players.orange = orangePlayerState(decks.orange);
   state.started = true;
   return state;
 }

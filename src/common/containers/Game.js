@@ -19,15 +19,17 @@ import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
+import { arbitraryPlayerState } from '../store/defaultGameState';
 
 export function mapStateToProps(state) {
-  const activePlayer = state.game.players[state.game.player];
+  const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
   const currentPlayer = state.game.players[state.game.currentTurn];
 
   return {
     started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
+    usernames: state.game.usernames,
     winner: state.game.winner,
     actionLog: state.game.actionLog,
 
@@ -69,6 +71,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
+    },
+    onSpectateGame: (id) => {
+      dispatch(socketActions.spectate(id));
     },
     onSetUsername: (username) => {
       dispatch(socketActions.setUsername(username));
@@ -149,6 +154,7 @@ export class Game extends Component {
     onConnect: func,
     onHostGame: func,
     onJoinGame: func,
+    onSpectateGame: func,
     onSetUsername: func,
     onSendChatMessage: func,
     onMoveRobot: func,
@@ -295,6 +301,7 @@ export class Game extends Component {
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
+          onSpectateGame={this.props.onSpectateGame}
           onSetUsername={this.props.onSetUsername} />
       );
     }

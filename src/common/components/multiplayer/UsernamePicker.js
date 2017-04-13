@@ -19,7 +19,9 @@ export default class UsernamePicker extends Component {
     };
 
     this.setUsername = debounce(username => {
-      this.props.onSetUsername(username);
+      if (username) {
+        this.props.onSetUsername(username);
+      }
     }, 500);
   }
 

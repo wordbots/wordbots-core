@@ -16,7 +16,7 @@ export default function game(oldState = cloneDeep(defaultState), action) {
     switch (action.type) {
       case gameActions.START_GAME:
       case socketActions.GAME_START:
-        return g.newGame(state, action.payload.player || 'orange', action.payload.decks);
+        return g.newGame(state, action.payload.player || 'orange', action.payload.usernames || [], action.payload.decks);
 
       case gameActions.NEW_GAME:
         return Object.assign(state, {started: false});
@@ -51,8 +51,15 @@ export default function game(oldState = cloneDeep(defaultState), action) {
       case gameActions.SET_HOVERED_TILE:
         return g.setHoveredTile(state, action.payload.hoveredCard);
 
-      case socketActions.OPPONENT_LEFT:
-        return Object.assign(state, {winner: state.player});
+      case socketActions.CONNECTING:
+        return Object.assign(state, {started: false});
+
+      case socketActions.CURRENT_STATE:
+        // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
+        return reduce(action.payload.actions, game, state);
+
+      case socketActions.FORFEIT:
+        return Object.assign(state, {winner: action.payload.winner});
 
       default:
         return state;

@@ -2,8 +2,8 @@ import { mapValues } from 'lodash';
 
 import { currentPlayer, opponentName, drawCards, triggerEvent, newGame } from '../../../util/game';
 
-export function startNewGame(state, player, decks) {
-  return newGame(state, player, {blue: decks.blue, orange: decks.orange});
+export function startNewGame(state, player, usernames, decks) {
+  return newGame(state, player, usernames, decks);
 }
 
 export function startTurn(state) {

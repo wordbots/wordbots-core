@@ -19,6 +19,7 @@ export default class Lobby extends Component {
 
     onConnect: func,
     onJoinGame: func,
+    onSpectateGame: func,
     onHostGame: func,
     onSetUsername: func
   };
@@ -42,6 +43,7 @@ export default class Lobby extends Component {
     return (
       <div>
         <LobbyStatus
+          connecting={skt.connecting}
           connected={skt.connected}
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
@@ -60,8 +62,10 @@ export default class Lobby extends Component {
                 onChooseDeck={idx => { this.setState({selectedDeck: idx}); }} />
               <GameBrowser
                 openGames={skt.waitingPlayers}
+                inProgressGames={skt.games}
                 usernameMap={skt.clientIdToUsername}
-                onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.getDeck()); }} />
+                onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.getDeck()); }}
+                onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />
               <HostGame
                 onHostGame={gameName => { this.props.onHostGame(gameName, this.getDeck()); }} />
             </div>

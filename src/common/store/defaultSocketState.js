@@ -1,4 +1,5 @@
 const defaultState = {
+  connecting: false,
   connected: false,
   username: null,
   clientId: null,
@@ -6,6 +7,7 @@ const defaultState = {
   hosting: false,
   gameName: null,
 
+  games: [],
   playersOnline: [],
   waitingPlayers: [],
   clientIdToUsername: {},

@@ -7,11 +7,14 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
   const state = Object.assign({}, oldState);
 
   switch (action.type) {
+    case socketActions.CONNECTING:
+      return Object.assign(state, {connected: false, connecting: true});
+
     case socketActions.CONNECTED:
-      return Object.assign(state, {connected: true, clientId: action.payload.clientId});
+      return Object.assign(state, {connected: true, connecting: false});
 
     case socketActions.DISCONNECTED:
-      return Object.assign(state, {connected: false});
+      return Object.assign(state, {connected: false, connecting: false});
 
     case socketActions.CHAT: {
       const message = {
@@ -27,6 +30,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
     case socketActions.INFO:
       return Object.assign(state, {
+        games: action.payload.games,
         waitingPlayers: action.payload.waitingPlayers,
         clientIdToUsername: action.payload.usernames,
         playersOnline: action.payload.playersOnline
@@ -39,6 +43,9 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       return Object.assign(state, {gameName: action.payload.name, hosting: true});
 
     case socketActions.JOIN:
+      return Object.assign(state, {gameName: action.payload.name});
+
+    case socketActions.SPECTATE:
       return Object.assign(state, {gameName: action.payload.name});
 
     case socketActions.LEAVE:

@@ -1,4 +1,4 @@
-import { find } from 'lodash';
+import { find, random } from 'lodash';
 
 import { collection as builtinCards } from './cards';
 
@@ -6,18 +6,32 @@ import { collection as builtinCards } from './cards';
 // (DANGER - use this sparingly, as it clears all localStorage.)
 const CURRENT_VERSION = 8;
 
+function isValidUsername(username) {
+  return username && username !== 'null' && !username.startsWith('Guest');
+}
+
 function getNewCopyIfBuiltinCard(card) {
   return (card.source === 'builtin') ? find(builtinCards, {'name': card.name}) : card;
 }
 
 export function loadState(state) {
+  // Set a default username.
+  if (state.socket) {  // This check is necessary to avoid errors in server-side rendering.
+    state.socket.username = `Guest${random(100000,999999)}`;
+  }
+
   if (typeof localStorage !== 'undefined' && localStorage['wb$version']) {
     const savedVersion = parseInt(localStorage['wb$version']);
     if (savedVersion === CURRENT_VERSION) {
-      state.socket.username = localStorage['wb$username'];
+      const username = localStorage['wb$username'];
+      const collection = localStorage['wb$collection'];
+      const decks = localStorage['wb$decks'];
 
-      state.collection.cards = JSON.parse(localStorage['wb$collection']).map(getNewCopyIfBuiltinCard);
-      state.collection.decks = JSON.parse(localStorage['wb$decks']).map(deck =>
+      if (isValidUsername(username)) {
+        state.socket.username = username;
+      }
+      state.collection.cards = JSON.parse(collection).map(getNewCopyIfBuiltinCard);
+      state.collection.decks = JSON.parse(decks).map(deck =>
         Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
       );
     }

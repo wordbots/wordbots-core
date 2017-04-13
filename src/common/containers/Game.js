@@ -4,7 +4,6 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
@@ -12,6 +11,7 @@ import { isNil } from 'lodash';
 import { getAttribute } from '../util/game';
 import Board from '../components/game/Board';
 import CardViewer from '../components/game/CardViewer';
+import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import VictoryScreen from '../components/game/VictoryScreen';
@@ -278,13 +278,9 @@ export class Game extends Component {
               playingCardType={this.props.playingCardType}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
-            <div style={{position: 'absolute', top: 0, bottom: 0, right: 0, height: 36, margin: 'auto', color: 'white'}}>
-              <RaisedButton
-                secondary
-                disabled={!this.isMyTurn()}
-                label="End Turn"
-                onTouchTap={() => this.props.onPassTurn(this.props.player)} />
-            </div>
+            <EndTurnButton
+              enabled={this.isMyTurn()}
+              onClick={() => this.props.onPassTurn(this.props.player)} />
           </div>
 
           <PlayerArea

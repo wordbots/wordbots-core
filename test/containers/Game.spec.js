@@ -10,6 +10,7 @@ import gameReducer from '../../src/common/reducers/game';
 import Board from '../../src/common/components/game/Board';
 import Card from '../../src/common/components/game/Card';
 import CardViewer from '../../src/common/components/game/CardViewer';
+import EndTurnButton from '../../src/common/components/game/EndTurnButton';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
@@ -25,10 +26,7 @@ describe('Game container', () => {
     const dom = renderElement(game);
 
     // Gross but necessary for comparing bound methods.
-    const board = dom.props.children[1].props.children[1].props.children[2];
-    const endTurnButton = dom.props.children[1].props.children[1].props.children[3].props.children;
-
-    const defaultStatus = {message: '', type: ''};
+    const [ , , board, endTurnBtn] = dom.props.children[1].props.children[1].props.children;
 
     expect(dom.props.children).toEqual([
       <Helmet title="Game"/>,
@@ -40,7 +38,7 @@ describe('Game container', () => {
           <CardViewer />
           <Status
             player={'orange'}
-            status={defaultStatus} />
+            status={state.game.players.orange.status} />
           <Board
             selectedTile={null}
             target={state.game.players.orange.target}
@@ -52,12 +50,9 @@ describe('Game container', () => {
             onSelectTile={board.props.onSelectTile}
             onHoverTile={board.props.onHoverTile}
             />
-          <div style={{position: 'absolute', top: 0, bottom: 0, right: 0, height: 36, margin: 'auto', color: 'white'}}>
-            <RaisedButton
-              secondary
-              label="End Turn"
-              onTouchTap={endTurnButton.props.onTouchTap} />
-          </div>
+          <EndTurnButton
+            enabled
+            onClick={endTurnBtn.props.onClick} />
         </div>
         <PlayerArea
           color={'blue'}

@@ -17,4 +17,4 @@ test:
 
 notify:
   webhooks:
-    - url: https://discordapp.com/api/webhooks/301867082423730186/BZQDFaKiqyiwbLb8yDU1yXOH5pU8OsVdvMK098jGOKAeGxDmcMXikvN8M17t_L0I4QHy
+    - url: https://discordapp.com/api/webhooks/301867082423730186/BZQDFaKiqyiwbLb8yDU1yXOH5pU8OsVdvMK098jGOKAeGxDmcMXikvN8M17t_L0I4QHy/slack

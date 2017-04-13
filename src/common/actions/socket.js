@@ -20,10 +20,9 @@ export function connecting() {
   };
 }
 
-export function connected(clientId) {
+export function connected() {
   return {
-    type: CONNECTED,
-    payload: { clientId }
+    type: CONNECTED
   };
 }
 
@@ -37,6 +36,7 @@ export function disconnected() {
 
 export const HOST = 'ws:HOST';
 export const JOIN = 'ws:JOIN';
+export const SPECTATE = 'ws:SPECTATE';
 export const LEAVE = 'ws:LEAVE';
 export const SET_USERNAME = 'ws:SET_USERNAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
@@ -52,6 +52,13 @@ export function join(id, name, deck) {
   return {
     type: JOIN,
     payload: { id, name, deck }
+  };
+}
+
+export function spectate(id, name) {
+  return {
+    type: SPECTATE,
+    payload: { id, name }
   };
 }
 
@@ -90,4 +97,5 @@ export function chat(msg) {
 
 export const INFO = 'ws:INFO';
 export const GAME_START = 'ws:GAME_START';
-export const OPPONENT_LEFT = 'ws:OPPONENT_LEFT';
+export const CURRENT_STATE = 'ws:CURRENT_STATE';
+export const FORFEIT = 'ws:FORFEIT';

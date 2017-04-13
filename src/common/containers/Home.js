@@ -78,9 +78,7 @@ We want your feedback. Please fill out
 [this form](https://docs.google.com/forms/d/e/1FAIpQLSed43Rc8HcdZug7uW8Jdxsa6CpHP8kQLnioIz_tiFos2NvMtQ/viewform?usp=sf_link)
 on your way out.
 
-_P.S. GitHub savvy people – feel free to
-[create issues](https://github.com/wordbots/wordbots-core/issues)
-for us._
+P.S. [Join us on Discord!](http://discord.wordbots.io)
 `;
 
 const howToPlay = `

@@ -4,7 +4,8 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 export default class VictoryScreen extends Component {
   static propTypes = {
-    winner: string,
+    winnerColor: string,
+    winnerName: string,
     onClick: func
   };
 
@@ -18,7 +19,7 @@ export default class VictoryScreen extends Component {
       <div
         onClick={this.props.onClick}
         style={{
-          display: this.props.winner === null ? 'none' : 'flex',
+          display: this.props.winnerColor === null ? 'none' : 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           position: 'absolute',
@@ -28,15 +29,15 @@ export default class VictoryScreen extends Component {
           right: 0,
           fontFamily: 'Carter One',
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          fontSize: 96,
-          color: this.props.winner === null ? 'black' : colors[this.props.winner],
+          color: colors[this.props.winnerColor],
           borderRadius: 2
       }}>
         <CSSTransitionGroup
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
           transitionLeaveTimeout={100}>
-          <div>{this.props.winner === null ? '' : `${this.props.winner  } Wins!`}</div>
+          <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
+          <div>Click anywhere to return to the lobby.</div>
         </CSSTransitionGroup>
       </div>
     );

@@ -8,22 +8,36 @@ export default class GameBrowser extends Component {
   static propTypes = {
     buttonStyle: object,
     openGames: array,
+    inProgressGames: array,
     usernameMap: object,
-    onJoinGame: func
+
+    onJoinGame: func,
+    onSpectateGame: func
   };
 
+  get games() {
+    return this.props.openGames.concat(this.props.inProgressGames);
+  }
+
   renderTableRows() {
-    if (this.props.openGames.length > 0) {
+    if (this.games.length > 0) {
       return (
-        this.props.openGames.map(game =>
+        this.games.map(game =>
           <TableRow key={game.id}>
             <TableRowColumn>{game.name}</TableRowColumn>
-            <TableRowColumn>{this.props.usernameMap[game.id]}</TableRowColumn>
+            <TableRowColumn>{game.players.map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
+            <TableRowColumn>{(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
             <TableRowColumn style={{textAlign: 'right'}}>
-              <RaisedButton
-                secondary
-                label="Join Game"
-                onTouchTap={() => { this.props.onJoinGame(game.id, game.name); }} />
+              { game.players.length === 1 ?
+                <RaisedButton
+                  secondary
+                  label="Join Game"
+                  onTouchTap={() => { this.props.onJoinGame(game.id, game.name); }} /> :
+                <RaisedButton
+                  secondary
+                  label="Spectate Game"
+                  onTouchTap={() => { this.props.onSpectateGame(game.id, game.name); }} />
+              }
             </TableRowColumn>
           </TableRow>
         )
@@ -54,8 +68,9 @@ export default class GameBrowser extends Component {
           <TableHeader displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Game Name</TableHeaderColumn>
-              <TableHeaderColumn>Host Name</TableHeaderColumn>
-              <TableHeaderColumn>Join Game</TableHeaderColumn>
+              <TableHeaderColumn>Players</TableHeaderColumn>
+              <TableHeaderColumn>Spectators</TableHeaderColumn>
+              <TableHeaderColumn />
             </TableRow>
           </TableHeader>
           <TableBody

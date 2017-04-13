@@ -14,15 +14,23 @@ const LobbyStatus = (props) => {
       Not connected
     </a>
   );
+  const connecting = (
+    <span>Connecting ...</span>
+  );
 
   return (
     <Paper style={{padding: 20, marginBottom: 20}}>
       <div style={{position: 'relative'}}>
-        <b>{props.playersOnline.length} player(s) online: </b>
-        {props.playersOnline.map(p => props.usernameMap[p] || p).join(', ')}
+        { props.connected ? <span>
+            <b>{props.playersOnline.length} player(s) online: </b>
+            {props.playersOnline.map(p => props.usernameMap[p] || p).join(', ')}
+          </span> : <span>
+            <b>0 player(s) online: </b>
+          </span>
+        }
 
         <span style={{position: 'absolute', right: 0}}>
-          {props.connected ? connected : notConnected}
+          {props.connected ? connected : (props.connecting ? connecting : notConnected)}
         </span>
       </div>
     </Paper>
@@ -30,6 +38,7 @@ const LobbyStatus = (props) => {
 };
 
 LobbyStatus.propTypes = {
+  connecting: bool,
   connected: bool,
   playersOnline: array,
   usernameMap: object,

@@ -1,5 +1,5 @@
 import {
-  activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   triggerEvent, applyAbilities
@@ -39,7 +39,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movesLeft(movingRobot), movingRobot);
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
     if (!asPartOfAttack) {
-      activePlayer(state).selectedTile = null;
+      currentPlayer(state).selectedTile = null;
     }
 
     const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
@@ -91,7 +91,7 @@ export function attack(state, source, target) {
         [attacker.card.name]: attacker.card
       });
 
-      activePlayer(state).selectedTile = null;
+      currentPlayer(state).selectedTile = null;
     }
   }
 

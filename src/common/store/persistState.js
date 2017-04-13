@@ -7,6 +7,7 @@ import { collection as builtinCards } from './cards';
 const CURRENT_VERSION = 8;
 
 function isValidUsername(username) {
+  console.log(username);
   return username && username !== 'null' && !username.startsWith('Guest');
 }
 
@@ -28,6 +29,8 @@ export function loadState(state) {
         Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
       );
     }
+  } else {
+    state.socket.username = `Guest${random(100000,999999)}`;
   }
 
   return state;

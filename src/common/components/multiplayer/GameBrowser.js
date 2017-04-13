@@ -26,6 +26,7 @@ export default class GameBrowser extends Component {
           <TableRow key={game.id}>
             <TableRowColumn>{game.name}</TableRowColumn>
             <TableRowColumn>{game.players.map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
+            <TableRowColumn>{(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
             <TableRowColumn style={{textAlign: 'right'}}>
               { game.players.length === 1 ?
                 <RaisedButton
@@ -68,6 +69,7 @@ export default class GameBrowser extends Component {
             <TableRow>
               <TableHeaderColumn>Game Name</TableHeaderColumn>
               <TableHeaderColumn>Players</TableHeaderColumn>
+              <TableHeaderColumn>Spectators</TableHeaderColumn>
               <TableHeaderColumn />
             </TableRow>
           </TableHeader>

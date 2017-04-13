@@ -97,4 +97,5 @@ export function chat(msg) {
 
 export const INFO = 'ws:INFO';
 export const GAME_START = 'ws:GAME_START';
-export const OPPONENT_LEFT = 'ws:OPPONENT_LEFT';
+export const CURRENT_STATE = 'ws:CURRENT_STATE';
+export const FORFEIT = 'ws:FORFEIT';

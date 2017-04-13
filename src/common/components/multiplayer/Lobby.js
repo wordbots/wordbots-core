@@ -62,7 +62,7 @@ export default class Lobby extends Component {
                 onChooseDeck={idx => { this.setState({selectedDeck: idx}); }} />
               <GameBrowser
                 openGames={skt.waitingPlayers}
-                inProgressGames={skt.matches}
+                inProgressGames={skt.games}
                 usernameMap={skt.clientIdToUsername}
                 onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.getDeck()); }}
                 onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />

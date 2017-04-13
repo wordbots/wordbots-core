@@ -11,10 +11,10 @@ import configureStore from '../common/store/configureStore';
 import getUser from '../common/api/user';
 import packagejson from '../../package.json';
 
-export default function handleRequest(request, responseponse) {
+export default function handleRequest(request, response) {
   getUser(request.cookies.token || false, (user) => {
     const store = getStore(request, user);
-    produceResponse(responseponse, store, request.url);
+    produceResponse(response, store, request.url);
   });
 }
 

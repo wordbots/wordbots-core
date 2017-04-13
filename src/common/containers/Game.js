@@ -123,13 +123,18 @@ export class Game extends Component {
     started: bool,
     player: string,
     currentTurn: string,
-    selectedTile: string,
-    playingCardType: number,
-    status: object,
-    target: object,
-    hoveredCard: object,
+    usernames: string,
     winner: string,
     actionLog: array,
+
+    selectedTile: string,
+    selectedCard: number,
+    hoveredCard: object,
+    hoveredCardIdx: number,
+    playingCardType: number,
+
+    status: object,
+    target: object,
 
     blueHand: array,
     orangeHand: array,
@@ -145,9 +150,6 @@ export class Game extends Component {
 
     socket: object,
     availableDecks: array,
-
-    selectedCard: number,
-    hoveredCardIdx: number,
 
     sidebarOpen: bool,
 
@@ -289,7 +291,8 @@ export class Game extends Component {
             color="blue"
             gameProps={this.props} />
           <VictoryScreen
-            winner={this.props.winner}
+            winnerColor={this.props.winner}
+            winnerName={this.props.winner ? this.props.usernames[this.props.winner] : ''}
             onClick={this.props.onVictoryScreenClick} />
         </Paper>
       );

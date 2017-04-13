@@ -2,12 +2,13 @@ import WebSocket from 'ws';
 import { values } from 'lodash';
 
 import { id as generateID } from '../common/util/common';
+import { opponent as opponentOf } from '../common/util/game';
 
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {
   const state = {
     connections: {},
-    matches: [],
+    games: [],
     waitingPlayers: [],
     playersOnline: [],
     usernames: {}
@@ -47,7 +48,6 @@ export default function launchWebsocketServer(server, path) {
 
   function onMessage(clientID, data) {
     const {type, payload} = JSON.parse(data);
-    const inGame = findOpponents(clientID) !== null;
 
     if (type === 'ws:HOST') {
       hostGame(clientID, payload.name, payload.deck);
@@ -67,26 +67,36 @@ export default function launchWebsocketServer(server, path) {
       }
       broadcastInfo();
     } else if (type === 'ws:CHAT') {
+      const inGame = findOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
-      (inGame ? sendMessageToOpponents : sendMessageToLobby)(clientID, 'ws:CHAT', payloadWithSender);
+      (inGame ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE') {
-      sendMessageToOpponents(clientID, type, payload);
+      handleGameAction(clientID, {type, payload});
+      sendMessageInGame(clientID, type, payload);
     }
   }
 
   function onDisconnect(clientID) {
+    const game = state.games.find(m => m.players.includes(clientID));
+
     state.playersOnline = state.playersOnline.filter(p => p !== clientID);
     state.waitingPlayers = state.waitingPlayers.filter(p => p.id !== clientID);
 
     console.log(`${clientID} left the room.`);
     sendChat(`${state.usernames[clientID] || clientID} has left.`);
-    sendMessageToOpponents(clientID, 'ws:OPPONENT_LEFT');
+    if (game) {
+      sendMessageInGame(clientID, 'ws:FORFEIT', {'winner': opponentOf(game.playerColors[clientID])});
+    }
     leaveGame(clientID);
   }
 
   function findOpponents(clientID) {
-    const match = state.matches.find(m => m.players.includes(clientID));
-    return match ? match.players.filter(id => id !== clientID) : null;
+    const game = state.games.find(m => m.players.includes(clientID) || m.spectators.includes(clientID));
+    if (game) {
+      return game.players
+               .concat(game.spectators)
+               .filter(id => id !== clientID);
+    }
   }
 
   function sendMessage(type, payload = {}, recipientIDs = null) {
@@ -102,15 +112,15 @@ export default function launchWebsocketServer(server, path) {
     });
   }
 
-  function sendMessageToLobby(clientID, type, payload = {}) {
-    const inGamePlayerIds = state.matches.reduce((acc, match) => acc.concat(match.players), []);
+  function sendMessageInLobby(clientID, type, payload = {}) {
+    const inGamePlayerIds = state.games.reduce((acc, game) => acc.concat(game.players), []);
     const playersInLobby = state.playersOnline.filter(id => id !== clientID && !inGamePlayerIds.includes(id));
 
     console.log(`${clientID} broadcast a message to the lobby: ${type} ${JSON.stringify(payload)}`);
     sendMessage(type, payload, playersInLobby);
   }
 
-  function sendMessageToOpponents(clientID, type, payload = {}) {
+  function sendMessageInGame(clientID, type, payload = {}) {
     const opponentIds = findOpponents(clientID);
     if (opponentIds) {
       console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${JSON.stringify(payload)}`);
@@ -124,11 +134,16 @@ export default function launchWebsocketServer(server, path) {
 
   function broadcastInfo() {
     sendMessage('ws:INFO', {
-      matches: state.matches,
+      games: state.games,
       waitingPlayers: state.waitingPlayers,
       playersOnline: state.playersOnline,
       usernames: state.usernames
     });
+  }
+
+  function handleGameAction(clientID, action) {
+    const game = state.games.find(g => g.players.includes(clientID));
+    game.actions.push(action);
   }
 
   function hostGame(clientID, name, deck) {
@@ -150,11 +165,16 @@ export default function launchWebsocketServer(server, path) {
     const gameName = opponent.name;
 
     state.waitingPlayers = state.waitingPlayers.filter(p => p.id !== opponentID);
-    state.matches.push({
+    state.games.push({
       id: opponentID,
       name: gameName,
-      decks: decks,
+
       players: [clientID, opponentID],
+      playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
+      spectators: [],
+
+      actions: [],
+      decks: decks,
       usernames: usernames
     });
 
@@ -166,23 +186,27 @@ export default function launchWebsocketServer(server, path) {
   }
 
   function spectateGame(clientID, gameID) {
-    const game = state.matches.find(g => g.id === gameID);
+    const game = state.games.find(g => g.id === gameID);
 
-    game.players.push(clientID);
+    game.spectators.push(clientID);
 
     console.log(`${clientID} joined game ${game.name} as a spectator.`);
     sendMessage('ws:GAME_START', {'player': 'neither', 'decks': game.decks, 'usernames': game.usernames}, [clientID]);
+    sendMessage('ws:CURRENT_STATE', {'actions': game.actions}, [clientID]);
     sendChat(`Entering game ${game.name} as a spectator ...`, [clientID]);
     sendChat(`${state.usernames[clientID]} has joined as a spectator.`, findOpponents(clientID));
     broadcastInfo();
   }
 
   function leaveGame(clientID) {
-    state.matches = (
-      state.matches
-        .map(match => Object.assign(match, {players: match.players.filter(p => p !== clientID)}))
-        .filter(match => match.players >= 2)
-    );
+    function withoutClient(game) {
+      return Object.assign(game, {
+        players: game.players.filter(p => p !== clientID),
+        spectator: game.players.filter(p => p !== clientID)
+      });
+    }
+
+    state.games = state.games.map(withoutClient).filter(game => game.players.length >= 2);
 
     sendChat('Entering the lobby ...', [clientID]);
     broadcastInfo();

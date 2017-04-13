@@ -30,7 +30,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
     case socketActions.INFO:
       return Object.assign(state, {
-        matches: action.payload.matches,
+        games: action.payload.games,
         waitingPlayers: action.payload.waitingPlayers,
         clientIdToUsername: action.payload.usernames,
         playersOnline: action.payload.playersOnline

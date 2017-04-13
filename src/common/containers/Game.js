@@ -292,7 +292,7 @@ export class Game extends Component {
             gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
-            winnerName={this.props.winner ? this.props.usernames[this.props.winner] : ''}
+            winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
             onClick={this.props.onVictoryScreenClick} />
         </Paper>
       );

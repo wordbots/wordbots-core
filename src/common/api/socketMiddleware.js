@@ -59,8 +59,6 @@ function createSocketMiddleware({excludedActions = []}) {
     }
 
     function receive(event) {
-      keepaliveNeeded = false;
-
       const msg = event.data;
       const action = JSON.parse(msg);
 

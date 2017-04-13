@@ -143,7 +143,9 @@ export default function launchWebsocketServer(server, path) {
 
   function handleGameAction(clientID, action) {
     const game = state.games.find(g => g.players.includes(clientID));
-    game.actions.push(action);
+    if (game) {
+      game.actions.push(action);
+    }
   }
 
   function hostGame(clientID, name, deck) {

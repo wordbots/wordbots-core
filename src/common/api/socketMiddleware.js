@@ -42,6 +42,7 @@ function createSocketMiddleware({excludedActions = []}) {
     }
 
     function disconnected() {
+      console.log('Disconnected!');
       store.dispatch(actions.disconnected());
     }
 
@@ -70,10 +71,11 @@ function createSocketMiddleware({excludedActions = []}) {
 
     function keepalive() {
       if (socket) {
-        // If the socket IS open, keepalive if necessary. If the socket ISN'T open, try to re-open it.
-        if (socket.readyState !== WebSocket.OPEN) {
+        // If the socket is open, keepalive if necessary. If the socket is closed, try to re-open it.
+        if (socket.readyState === WebSocket.CLOSED) {
+          console.log('Reconnecting ...');
           connect();
-        } else if (keepaliveNeeded) {
+        } else if (socket.readyState === WebSocket.OPEN && keepaliveNeeded) {
           socket.send(JSON.stringify(actions.keepalive()));
         }
       }

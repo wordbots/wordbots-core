@@ -7,7 +7,6 @@ import { collection as builtinCards } from './cards';
 const CURRENT_VERSION = 8;
 
 function isValidUsername(username) {
-  console.log(username);
   return username && username !== 'null' && !username.startsWith('Guest');
 }
 
@@ -16,6 +15,11 @@ function getNewCopyIfBuiltinCard(card) {
 }
 
 export function loadState(state) {
+  // Set a default username.
+  if (state.socket) {  // This check is necessary to avoid errors in server-side rendering.
+    state.socket.username = `Guest${random(100000,999999)}`;
+  }
+
   if (typeof localStorage !== 'undefined' && localStorage['wb$version']) {
     const savedVersion = parseInt(localStorage['wb$version']);
     if (savedVersion === CURRENT_VERSION) {
@@ -23,14 +27,14 @@ export function loadState(state) {
       const collection = localStorage['wb$collection'];
       const decks = localStorage['wb$decks'];
 
-      state.socket.username = isValidUsername(username) ? username : `Guest${random(100000,999999)}`;
+      if (isValidUsername(username)) {
+        state.socket.username = username;
+      }
       state.collection.cards = JSON.parse(collection).map(getNewCopyIfBuiltinCard);
       state.collection.decks = JSON.parse(decks).map(deck =>
         Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
       );
     }
-  } else {
-    state.socket.username = `Guest${random(100000,999999)}`;
   }
 
   return state;

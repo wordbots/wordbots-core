@@ -16,7 +16,7 @@ export default function game(oldState = cloneDeep(defaultState), action) {
     switch (action.type) {
       case gameActions.START_GAME:
       case socketActions.GAME_START:
-        return g.newGame(state, action.payload.player || 'orange', action.payload.usernames, action.payload.decks);
+        return g.newGame(state, action.payload.player || 'orange', action.payload.usernames || [], action.payload.decks);
 
       case gameActions.NEW_GAME:
         return Object.assign(state, {started: false});

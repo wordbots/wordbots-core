@@ -6,7 +6,15 @@ export function startNewGame(state, player, usernames, decks) {
   return newGame(state, player, usernames, decks);
 }
 
-export function startTurn(state) {
+export function passTurn(state, player) {
+  if (state.currentTurn === player) {
+    return startTurn(endTurn(state));
+  } else {
+    return state;
+  }
+}
+
+function startTurn(state) {
   const player = currentPlayer(state);
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
@@ -20,7 +28,7 @@ export function startTurn(state) {
   return state;
 }
 
-export function endTurn(state) {
+function endTurn(state) {
   const player = currentPlayer(state);
   player.selectedCard = null;
   player.selectedTile = null;

@@ -23,7 +23,10 @@ describe('Game container', () => {
 
     const game = createGame(state);
     const dom = renderElement(game);
-    const board = dom.props.children[1].props.children[1].props.children[2];  // Gross but necessary for comparing bound methods.
+
+    // Gross but necessary for comparing bound methods.
+    const board = dom.props.children[1].props.children[1].props.children[2];
+    const endTurnButton = dom.props.children[1].props.children[1].props.children[3].props.children;
 
     const defaultStatus = {message: '', type: ''};
 
@@ -53,7 +56,7 @@ describe('Game container', () => {
             <RaisedButton
               secondary
               label="End Turn"
-              onTouchTap={game.props.onPassTurn} />
+              onTouchTap={endTurnButton.props.onTouchTap} />
           </div>
         </div>
         <PlayerArea
@@ -134,10 +137,12 @@ describe('Game container', () => {
 
     // End turn.
     expect(
-      clickEndTurn() && clickEndTurn()
+      clickEndTurn()
     ).toEqual(
-      actions.passTurn()
+      actions.passTurn('orange')
     );
+
+    dispatch(actions.passTurn('blue'));  // Simulate opponent ending their turn.
 
     // Set selected tile.
     expect(

@@ -13,9 +13,7 @@ export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
 export function startGame(decks) {
   return {
     type: START_GAME,
-    payload: {
-      decks: decks
-    }
+    payload: { decks }
   };
 }
 
@@ -25,88 +23,65 @@ export function newGame() {
   };
 }
 
-export function moveRobot(fromHexId, toHexId) {
+export function moveRobot(from, to) {
   return {
     type: MOVE_ROBOT,
-    payload: {
-      from: fromHexId,
-      to: toHexId
-    }
+    payload: { from, to }
   };
 }
 
-export function attack(sourceHexId, targetHexId) {
+export function attack(source, target) {
   return {
     type: ATTACK,
-    payload: {
-      source: sourceHexId,
-      target: targetHexId
-    }
+    payload: { source, target }
   };
 }
 
-export function moveRobotAndAttack(fromHexId, toHexId, targetHexId) {
+export function moveRobotAndAttack(from, to, target) {
   return {
     type: MOVE_ROBOT_AND_ATTACK,
-    payload: {
-      from: fromHexId,
-      to: toHexId,
-      target: targetHexId
-    }
+    payload: { from, to, target }
   };
 }
 
 export function placeCard(tile, cardIdx) {
   return {
     type: PLACE_CARD,
-    payload: {
-      tile: tile,
-      cardIdx: cardIdx
-    }
+    payload: { tile, cardIdx }
   };
 }
 
-export function passTurn() {
+export function passTurn(player) {
   return {
     type: PASS_TURN,
-    payload: {}
+    payload: { player }
   };
 }
 
-export function setSelectedCard(cardId, player) {
+export function setSelectedCard(selectedCard, player) {
   return {
     type: SET_SELECTED_CARD,
-    payload: {
-      player: player,
-      selectedCard: cardId
-    }
+    payload: { selectedCard, player }
   };
 }
 
-export function setSelectedTile(hexId, player) {
+export function setSelectedTile(selectedTile, player) {
   return {
     type: SET_SELECTED_TILE,
-    payload: {
-      player: player,
-      selectedTile: hexId
-    }
+    payload: { selectedTile, player }
   };
 }
 
-export function setHoveredCard(cardId) {
+export function setHoveredCard(hoveredCard) {
   return {
     type: SET_HOVERED_CARD,
-    payload: {
-      hoveredCard: cardId
-    }
+    payload: { hoveredCard }
   };
 }
 
-export function setHoveredTile(card) {
+export function setHoveredTile(hoveredCard) {
   return {
     type: SET_HOVERED_TILE,
-    payload: {
-      hoveredCard: card
-    }
+    payload: { hoveredCard }
   };
 }

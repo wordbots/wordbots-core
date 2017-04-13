@@ -8,7 +8,7 @@ import defaultCreatorState from '../src/common/store/defaultCreatorState';
 import defaultCollectionState from '../src/common/store/defaultCollectionState';
 import defaultSocketState from '../src/common/store/defaultSocketState';
 import { instantiateCard } from '../src/common/util/common';
-import { allObjectsOnBoard, ownerOf, getAttribute, drawCards } from '../src/common/util/game';
+import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards } from '../src/common/util/game';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
@@ -57,10 +57,10 @@ export function drawCardToHand(state, playerName, card) {
 export function newTurn(state, playerName) {
   if (state.currentTurn === playerName) {
     // Pass twice.
-    return game(state, [actions.passTurn(), actions.passTurn()]);
+    return game(state, [actions.passTurn(playerName), actions.passTurn(opponent(playerName))]);
   } else {
     // Pass once.
-    return game(state, actions.passTurn());
+    return game(state, actions.passTurn(state.currentTurn));
   }
 }
 

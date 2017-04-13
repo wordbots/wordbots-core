@@ -94,8 +94,8 @@ export function mapDispatchToProps(dispatch) {
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
     },
-    onPassTurn: () => {
-      dispatch(gameActions.passTurn());
+    onPassTurn: (player) => {
+      dispatch(gameActions.passTurn(player));
     },
     onSelectCard: (index, player) => {
       dispatch(gameActions.setSelectedCard(index, player));
@@ -123,7 +123,7 @@ export class Game extends Component {
     started: bool,
     player: string,
     currentTurn: string,
-    usernames: string,
+    usernames: array,
     winner: string,
     actionLog: array,
 
@@ -283,7 +283,7 @@ export class Game extends Component {
                 secondary
                 disabled={!this.isMyTurn()}
                 label="End Turn"
-                onTouchTap={this.props.onPassTurn} />
+                onTouchTap={() => this.props.onPassTurn(this.props.player)} />
             </div>
           </div>
 

@@ -7,7 +7,7 @@ import Badge from 'material-ui/Badge';
 import { isEqual } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
-import { compareCertainKeys } from '../../util/common';
+import { compareCertainKeys, inBrowser } from '../../util/common';
 import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
 
@@ -73,11 +73,20 @@ export default class Card extends Component {
     super(props);
 
     this.state = {
+      loading: true,
       shadow: 2
     };
 
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
+  }
+
+  componentWillMount() {
+    if (inBrowser()) {
+      setTimeout(() => {
+        this.setState({loading: false});
+      }, 50);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -193,7 +202,9 @@ export default class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.type === TYPE_CORE) {
+    if (this.state.loading) {
+      return <div style={{height: 52 * this.props.scale}} />;
+    } else if (this.props.type === TYPE_CORE) {
       const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
         <div style={{

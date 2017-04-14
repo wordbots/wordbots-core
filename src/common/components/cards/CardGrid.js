@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { array, element, func, number } from 'prop-types';
 
+import { inBrowser } from '../../util/common';
 import { splitSentences } from '../../util/cards';
 import Card from '../game/Card';
 
@@ -39,6 +40,7 @@ export default class CardGrid extends Component {
       }}>
         <Card
           collection
+          visible={inBrowser()}
           id={card.id}
           name={card.name}
           spriteID={card.spriteID}

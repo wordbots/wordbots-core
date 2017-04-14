@@ -37,7 +37,7 @@ const cardsHandlers = {
       .filter(card => !state.cards.map(c => c.id).includes(card.id))
       .forEach(card => { state.cards.unshift(card); });
 
-    return state;
+    return updateDefaultDeck(state);
   },
 
   openCardForEditing: function (state, card) {

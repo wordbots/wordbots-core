@@ -33,6 +33,7 @@ export default class ExportDialog extends Component {
           id="tf"
           ref="tf"
           multiLine
+          rowsMax={10}
           style={{width: '100%'}}
           value={this.props.text}
           onTouchTap={() => { this.refs['tf'].select(); }}

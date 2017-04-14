@@ -29,8 +29,6 @@ export default class CardViewer extends Component {
           {
             this.props.hoveredCard &&
               <Card
-                onCardClick={() => {}}
-                onCardHover={() => {}}
                 scale={1.5}
                 stats={this.props.hoveredCard.stats}
                 name={this.props.hoveredCard.card.name}
@@ -41,9 +39,7 @@ export default class CardViewer extends Component {
                 img={this.props.hoveredCard.card.img}
                 cost={this.props.hoveredCard.card.cost}
                 cardStats={this.props.hoveredCard.card.stats}
-                source={this.props.hoveredCard.card.source}
-                selected={false}
-                visible />
+                source={this.props.hoveredCard.card.source} />
           }
         </CSSTransitionGroup>
       </div>

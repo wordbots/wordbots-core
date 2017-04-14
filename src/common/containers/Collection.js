@@ -132,13 +132,14 @@ class Collection extends Component {
               filterFunc={this.isCardVisible.bind(this)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
-              onCardClick={card => {
+              onCardClick={id => {
+                const card = this.props.cards.find(c => c.id === id);
                 if (card.source !== 'builtin') {
                   this.updateState(state => {
-                    if (state.selectedCardIds.includes(card.id)) {
-                      return {selectedCardIds: without(state.selectedCardIds, card.id)};
+                    if (state.selectedCardIds.includes(id)) {
+                      return {selectedCardIds: without(state.selectedCardIds, id)};
                     } else {
-                      return {selectedCardIds: [...state.selectedCardIds, card.id]};
+                      return {selectedCardIds: [...state.selectedCardIds, id]};
                     }
                   });
                 }

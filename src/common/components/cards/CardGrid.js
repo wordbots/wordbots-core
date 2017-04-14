@@ -38,8 +38,8 @@ export default class CardGrid extends Component {
           marginRight: 15
       }}>
         <Card
-          visible
           collection
+          id={card.id}
           name={card.name}
           spriteID={card.spriteID}
           type={card.type}
@@ -50,10 +50,8 @@ export default class CardGrid extends Component {
           cost={card.cost}
           baseCost={card.cost}
           source={card.source}
-          scale={1}
           selected={(this.props.selectedCardIds || []).includes(card.id)}
-          onCardClick={() => this.props.onCardClick(card)}
-          onCardHover={() => {}} />
+          onCardClick={this.props.onCardClick} />
       </div>
     );
   }

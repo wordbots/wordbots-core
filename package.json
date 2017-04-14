@@ -85,6 +85,7 @@
     "jest": "^19.0.2",
     "jsdom-no-contextify": "3.1.0",
     "mocha": "3.2.0",
+    "react-addons-perf": "^15.4.2",
     "react-addons-test-utils": "^15.0.0",
     "react-test-renderer": "^15.5.3",
     "react-transform-catch-errors": "^1.0.1",

@@ -220,7 +220,7 @@ class Collection extends Component {
               label="Import Cards"
               labelPosition="before"
               secondary
-              icon={<FontIcon className="material-icons">import_export</FontIcon>}
+              icon={<FontIcon className="material-icons">file_upload</FontIcon>}
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
                 this.updateState({importDialogOpen: true, selectedCardIds: []});

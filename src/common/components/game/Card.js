@@ -7,7 +7,7 @@ import Badge from 'material-ui/Badge';
 import { isEqual } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
-import { compareCertainKeys, inBrowser } from '../../util/common';
+import { compareCertainKeys } from '../../util/common';
 import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
 
@@ -75,20 +75,8 @@ export default class Card extends Component {
     super(props);
 
     this.state = {
-      loading: true,
       shadow: 2
     };
-
-    this.onMouseOver = this.onMouseOver.bind(this);
-    this.onMouseOut = this.onMouseOut.bind(this);
-  }
-
-  componentWillMount() {
-    if (inBrowser()) {
-      setTimeout(() => {
-        this.setState({loading: false});
-      }, 50);
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -101,13 +89,13 @@ export default class Card extends Component {
     return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
   }
 
-  onMouseOver() {
+  onMouseEnter() {
     this.setState({
       shadow: 3
     });
   }
 
-  onMouseOut() {
+  onMouseLeave() {
     this.setState({
       shadow: 2
     });
@@ -204,9 +192,7 @@ export default class Card extends Component {
   }
 
   renderImage() {
-    if (this.state.loading) {
-      return <div style={{height: 52 * this.props.scale}} />;
-    } else if (this.props.type === TYPE_CORE) {
+    if (this.props.type === TYPE_CORE) {
       const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
         <div style={{
@@ -288,12 +274,10 @@ export default class Card extends Component {
           >
             <div
               onClick={() => { this.props.onCardClick(this.props.id); }}
-              onMouseEnter={e => this.props.onCardHover(true)}
-              onMouseLeave={e => this.props.onCardHover(false)}
+              onMouseEnter={e => { this.onMouseEnter(); this.props.onCardHover(true); }}
+              onMouseLeave={e => { this.onMouseLeave(); this.props.onCardHover(false); }}
             >
               <Paper
-                onMouseOver={this.onMouseOver}
-                onMouseOut={this.onMouseOut}
                 zDepth={this.state.shadow}
                 style={Object.assign({
                   width: 140 * this.props.scale,

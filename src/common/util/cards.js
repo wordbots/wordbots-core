@@ -115,7 +115,6 @@ export function keywordsInSentence(sentence) {
 
 export function expandKeywords(sentence) {
   const keywords = keywordsInSentence(sentence);
-  console.log(keywords);
   return reduce(keywords, (str, def, keyword) => str.replace(keyword, def), sentence);
 }
 

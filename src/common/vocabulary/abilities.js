@@ -1,6 +1,14 @@
+import { reversedCmd, executeCmd } from '../util/game';
+
 export function setAbility(state, currentObject) {
   return function (ability) {
     currentObject.abilities = (currentObject.abilities || []).concat([ability]);
+  };
+}
+
+export function unsetAbility(state, currentObject) {
+  return function (ability) {
+    // TODO
   };
 }
 
@@ -53,6 +61,24 @@ export function abilities(state) {
         },
         unapply: function (target) {
           target.effects = (target.effects || []).filter(eff => eff.aid !== aid);
+        }
+      };
+    },
+
+    freezeAttribute: function (targetFunc, attribute) {
+      // TODO
+    },
+
+    giveAbility: function (targetFunc, cmd) {
+      const aid = Math.random().toString(36);
+      return {
+        aid: aid,
+        targets: `(${targetFunc.toString()})`,
+        apply: function (target) {
+          executeCmd(state, cmd, target);
+        },
+        unapply: function (target) {
+          executeCmd(state, reversedCmd(cmd), target);
         }
       };
     }

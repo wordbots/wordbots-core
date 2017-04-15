@@ -30,10 +30,16 @@ export function loadState(state) {
       if (isValidUsername(username)) {
         state.socket.username = username;
       }
+
       state.collection.cards = JSON.parse(collection).map(getNewCopyIfBuiltinCard);
-      state.collection.decks = JSON.parse(decks).map(deck =>
-        Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
-      );
+
+      try {
+        state.collection.decks = JSON.parse(decks).map(deck =>
+          Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
+        );
+      } catch (e) {
+        console.log(decks);
+      }
     }
   }
 

@@ -1,8 +1,8 @@
 import actions from './actions';
 import targets from './targets';
 import conditions from './conditions';
-import { setTrigger, triggers } from './triggers';
-import { setAbility, abilities } from './abilities';
+import { setTrigger, unsetTrigger, triggers } from './triggers';
+import { setAbility, unsetAbility, abilities } from './abilities';
 import { allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions } from './collections';
 import { attributeSum, attributeValue, count } from './numbers';
 
@@ -16,7 +16,9 @@ const vocabulary = {
   // Global methods
 
   setTrigger: setTrigger,
+  unsetTrigger: unsetTrigger,
   setAbility: setAbility,
+  unsetAbility: unsetAbility,
 
   allTiles: allTiles,
   cardsInHand: cardsInHand,

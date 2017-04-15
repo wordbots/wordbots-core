@@ -262,7 +262,9 @@ export function executeCmd(state, cmd, currentObject = null) {
 
   // Global methods
   const setTrigger = vocabulary.setTrigger(state, currentObject);
+  const unsetTrigger = vocabulary.unsetTrigger(state, currentObject);
   const setAbility = vocabulary.setAbility(state, currentObject);
+  const unsetAbility = vocabulary.unsetAbility(state, currentObject);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
@@ -271,7 +273,7 @@ export function executeCmd(state, cmd, currentObject = null) {
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
 
-  // console.log(cmd);
+  console.log(cmd);
   return eval(cmd)();
 }
 /* eslint-enable no-unused-vars */
@@ -336,4 +338,9 @@ export function applyAbilities(state) {
   });
 
   return state;
+}
+
+export function reversedCmd(cmd) {
+  return cmd.replace(/setAbility/g, 'unsetAbility')
+            .replace(/setTrigger/g, 'unsetTrigger');
 }

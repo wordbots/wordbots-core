@@ -38,7 +38,7 @@ export default class CardPreview extends Component {
           cardStats={stats}
           text={this.props.sentences.map(s => Sentence(s.sentence, s.result))}
           rawText={this.props.sentences.map(s => s.sentence).join('. ')}
-          parseResults={this.props.sentences.map(s => JSON.stringify(s.result))}
+          parseResults={JSON.stringify(this.props.sentences.map(s => s.result))}
           scale={3}
           onSpriteClick={this.props.onSpriteClick} />
       </div>

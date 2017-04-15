@@ -83,7 +83,8 @@ export default class Card extends Component {
     const trackedProps = [
       'name', 'spriteID', 'type', 'rawText', 'parseResults',
       'cardStats', 'stats', 'image', 'cost', 'baseCost',
-      'status', 'visible', 'selected', 'targetable'
+      'status', 'visible', 'selected', 'targetable',
+      'margin', 'zIndex'
     ];
 
     return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);

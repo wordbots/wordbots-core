@@ -26,6 +26,7 @@ export default class Card extends Component {
     type: number,
     text: oneOfType([string, array]),
     rawText: string,
+    parseResults: string,
     img: string,
     cardStats: object,
     stats: object,
@@ -54,6 +55,7 @@ export default class Card extends Component {
 
   static defaultProps = {
     stats: {},
+    parseResults: '',
 
     visible: true,
     selected: false,
@@ -91,8 +93,8 @@ export default class Card extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const trackedProps = [
-      'name', 'spriteID', 'type', 'rawText', 'cardStats',
-      'stats', 'image', 'cost', 'baseCost',
+      'name', 'spriteID', 'type', 'rawText', 'parseResults',
+      'cardStats', 'stats', 'image', 'cost', 'baseCost',
       'status', 'visible', 'selected', 'targetable'
     ];
 

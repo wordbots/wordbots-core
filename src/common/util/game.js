@@ -273,7 +273,7 @@ export function executeCmd(state, cmd, currentObject = null, source = null) {
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
 
-  console.log(cmd);
+  // console.log(cmd);
   return eval(cmd)();
 }
 /* eslint-enable no-unused-vars */

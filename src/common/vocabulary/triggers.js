@@ -1,20 +1,19 @@
-export function setTrigger(state, currentObject) {
+export function setTrigger(state, currentObject, source) {
   return function (trigger, action, props = {}) {
     const triggerObj = Object.assign({
-      name: `${JSON.stringify([trigger, action, props])}`,
       trigger: trigger,
       action: `(${action.toString()})`,
-      override: false
+      override: false,
+      source: source
     }, props);
 
     currentObject.triggers = currentObject.triggers.concat([triggerObj]);
   };
 }
 
-export function unsetTrigger(state, currentObject) {
+export function unsetTrigger(state, currentObject, source) {
   return function (trigger, action, props = {}) {
-    const name = `${JSON.stringify([trigger, action, props])}`;
-    currentObject.triggers = currentObject.triggers.filter(t => t.name !== name);
+    currentObject.triggers = currentObject.triggers.filter(t => t.source !== source);
   };
 }
 

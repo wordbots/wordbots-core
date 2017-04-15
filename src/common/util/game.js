@@ -253,7 +253,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 //
 
 /* eslint-disable no-unused-vars */
-export function executeCmd(state, cmd, currentObject = null) {
+export function executeCmd(state, cmd, currentObject = null, source = null) {
   const actions = vocabulary.actions(state);
   const targets = vocabulary.targets(state, currentObject);
   const conditions = vocabulary.conditions(state);
@@ -261,10 +261,10 @@ export function executeCmd(state, cmd, currentObject = null) {
   const abilities = vocabulary.abilities(state);
 
   // Global methods
-  const setTrigger = vocabulary.setTrigger(state, currentObject);
-  const unsetTrigger = vocabulary.unsetTrigger(state, currentObject);
-  const setAbility = vocabulary.setAbility(state, currentObject);
-  const unsetAbility = vocabulary.unsetAbility(state, currentObject);
+  const setTrigger = vocabulary.setTrigger(state, currentObject, source);
+  const unsetTrigger = vocabulary.unsetTrigger(state, currentObject, source);
+  const setAbility = vocabulary.setAbility(state, currentObject, source);
+  const unsetAbility = vocabulary.unsetAbility(state, currentObject, source);
   const allTiles = vocabulary.allTiles(state);
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
@@ -292,7 +292,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
 
   // Look up any relevant triggers for this condition.
   const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
-    (object.triggers || [])
+    object.triggers
       .map(t => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object);
@@ -325,16 +325,20 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
 }
 
 export function applyAbilities(state) {
-  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    (obj.abilities || []).forEach((ability) => {
+  Object.values(allObjectsOnBoard(state)).forEach(obj => {
+    obj.abilities.forEach(ability => {
       // Unapply this ability for all previously targeted objects.
       (ability.currentTargets || []).forEach(ability.unapply);
 
-      // Apply this ability to all targeted objects.
-      // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
-      ability.currentTargets = executeCmd(state, ability.targets, obj);
-      ability.currentTargets.forEach(ability.apply);
+      if (!ability.disabled) {
+        // Apply this ability to all targeted objects.
+        // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
+        ability.currentTargets = executeCmd(state, ability.targets, obj);
+        ability.currentTargets.forEach(ability.apply);
+      }
     });
+
+    obj.abilities = obj.abilities.filter(ability => !ability.disabled);
   });
 
   return state;

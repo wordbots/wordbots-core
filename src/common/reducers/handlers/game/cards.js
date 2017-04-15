@@ -71,6 +71,7 @@ export function placeCard(state, cardIdx, tile) {
       card: card,
       stats: Object.assign({}, card.stats),
       triggers: [],
+      abilities: [],
       movesMade: 0,
       cantMove: true,
       justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to

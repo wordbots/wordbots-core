@@ -123,7 +123,7 @@ export class Game extends Component {
     started: bool,
     player: string,
     currentTurn: string,
-    usernames: array,
+    usernames: object,
     winner: string,
     actionLog: array,
 

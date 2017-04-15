@@ -1,14 +1,17 @@
 import { reversedCmd, executeCmd } from '../util/game';
 
-export function setAbility(state, currentObject) {
+export function setAbility(state, currentObject, source) {
   return function (ability) {
-    currentObject.abilities = (currentObject.abilities || []).concat([ability]);
+    ability = Object.assign(ability, {source: source});
+    currentObject.abilities = currentObject.abilities.concat([ability]);
   };
 }
 
-export function unsetAbility(state, currentObject) {
-  return function (ability) {
-    // TODO
+export function unsetAbility(state, currentObject, source) {
+  return function () {
+    currentObject.abilities = currentObject.abilities.map(ability =>
+      Object.assign({}, ability, {disabled: ability.source === source})
+    );
   };
 }
 
@@ -58,9 +61,11 @@ export function abilities(state) {
               props: props
             });
           }
+          console.log('Applied', aid, target.effects.length);
         },
         unapply: function (target) {
           target.effects = (target.effects || []).filter(eff => eff.aid !== aid);
+          console.log('Unapplied', aid, target.effects.length);
         }
       };
     },
@@ -75,10 +80,10 @@ export function abilities(state) {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
         apply: function (target) {
-          executeCmd(state, cmd, target);
+          executeCmd(state, cmd, target, aid);
         },
         unapply: function (target) {
-          executeCmd(state, reversedCmd(cmd), target);
+          executeCmd(state, reversedCmd(cmd), target, aid);
         }
       };
     }

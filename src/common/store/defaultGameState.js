@@ -29,7 +29,9 @@ function playerState(color, collection, coreCard, coreHexId) {
         id: `${color}Core`,
         card: coreCard,
         stats: coreCard.stats,
-        movesMade: 0
+        movesMade: 0,
+        triggers: [],
+        abilities: []
       }
     },
     selectedCard: null,

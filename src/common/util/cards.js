@@ -6,6 +6,8 @@ import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constan
 // 0. Card-related constants (used below).
 //
 
+const CARD_SCHEMA_VERSION = 1;
+
 const PARSE_DEBOUNCE_MS = 500;
 
 const SUBSTITUTIONS = {
@@ -102,4 +104,19 @@ export function keywordsInSentence(sentence) {
 export function expandKeywords(sentence) {
   const keywords = keywordsInSentence(sentence);
   return reduce(keywords, (str, def, keyword) => str.replace(keyword, def), sentence);
+}
+
+//
+// 3. Miscellaneous helper functions pertaining to cards.
+//
+
+export function cardsToJson(cards) {
+  cards = cards.map(c => Object.assign(c, {schemaVersion: CARD_SCHEMA_VERSION}));
+  return JSON.stringify(cards);
+}
+
+export function cardsFromJson(json) {
+  // In the future, we may update the card schema, and this function would have to deal
+  // with migrating between schema versions.
+  return JSON.parse(json);
 }

@@ -67,13 +67,11 @@ export default class Hand extends Component {
           baseCost={card.baseCost}
           cardStats={card.stats}
           source={card.source}
-          stats={{}}
 
           selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
           targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
           visible={this.props.isActivePlayer}
 
-          scale={1}
           margin={idx < numCards - 1 ? cardMargin : 0}
           rotation={this.props.curved ? rotationDegs : 0}
           yTranslation={this.props.curved ? translationPx : 0}

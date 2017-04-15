@@ -91,7 +91,9 @@ class Deck extends Component {
               filterFunc={c => isCardVisible(c, this.state.filters, this.state.costRange)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
-              onCardClick={card => { this.updateState(state => ({selectedCardIds: [...state.selectedCardIds, card.id]})); }} />
+              onCardClick={id => {
+                this.updateState(state => ({selectedCardIds: [...state.selectedCardIds, id]}));
+              }} />
           </div>
 
           <div style={{

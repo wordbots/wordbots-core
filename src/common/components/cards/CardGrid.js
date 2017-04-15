@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { array, element, func, number } from 'prop-types';
 
+import { inBrowser } from '../../util/common';
 import { splitSentences } from '../../util/cards';
 import Card from '../game/Card';
 
@@ -38,8 +39,9 @@ export default class CardGrid extends Component {
           marginRight: 15
       }}>
         <Card
-          visible
           collection
+          visible={inBrowser()}
+          id={card.id}
           name={card.name}
           spriteID={card.spriteID}
           type={card.type}
@@ -50,10 +52,8 @@ export default class CardGrid extends Component {
           cost={card.cost}
           baseCost={card.cost}
           source={card.source}
-          scale={1}
           selected={(this.props.selectedCardIds || []).includes(card.id)}
-          onCardClick={() => this.props.onCardClick(card)}
-          onCardHover={() => {}} />
+          onCardClick={this.props.onCardClick} />
       </div>
     );
   }

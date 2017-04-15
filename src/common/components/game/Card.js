@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Divider from 'material-ui/Divider';
-import {CardHeader, CardText} from 'material-ui/Card';
+import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 import Badge from 'material-ui/Badge';
+import { isEqual } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
+import { compareCertainKeys, inBrowser } from '../../util/common';
 import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
 
@@ -18,6 +20,7 @@ export default class Card extends Component {
   static propTypes = {
     children: oneOfType([string, array]),
 
+    id: string,
     name: string,
     spriteID: string,
     type: number,
@@ -33,7 +36,6 @@ export default class Card extends Component {
 
     status: object,
     visible: bool,
-    zIndex: number,
     selected: bool,
     targetable: bool,
 
@@ -41,21 +43,60 @@ export default class Card extends Component {
     margin: number,
     rotation: number,
     yTranslation: number,
+    zIndex: number,
 
     onCardClick: func,
     onCardHover: func,
     onSpriteClick: func
   };
 
+  export
+
+  static defaultProps = {
+    stats: {},
+
+    visible: true,
+    selected: false,
+
+    scale: 1,
+    margin: 0,
+    rotation: 0,
+    yTranslation: 0,
+    zIndex: 0,
+
+    onCardClick: () => {},
+    onCardHover: () => {},
+    onSpriteClick: () => {}
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
+      loading: true,
       shadow: 2
     };
 
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
+  }
+
+  componentWillMount() {
+    if (inBrowser()) {
+      setTimeout(() => {
+        this.setState({loading: false});
+      }, 50);
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const trackedProps = [
+      'name', 'spriteID', 'type', 'rawText', 'cardStats',
+      'stats', 'image', 'cost', 'baseCost',
+      'status', 'visible', 'selected', 'targetable'
+    ];
+
+    return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
   }
 
   onMouseOver() {
@@ -161,7 +202,9 @@ export default class Card extends Component {
   }
 
   renderImage() {
-    if (this.props.type === TYPE_CORE) {
+    if (this.state.loading) {
+      return <div style={{height: 52 * this.props.scale}} />;
+    } else if (this.props.type === TYPE_CORE) {
       const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
         <div style={{
@@ -206,7 +249,7 @@ export default class Card extends Component {
     const selectedStyle = {
       boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
-    const transform = `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
+    const transform = `rotate(${this.props.rotation}deg) translate(0px, ${this.props.yTranslation}px)`;
 
     if (!this.props.visible) {
       return (
@@ -237,12 +280,12 @@ export default class Card extends Component {
               paddingLeft: 0,
               paddingRight: 0,
               marginRight: this.props.margin,
-              zIndex: this.props.zIndex || 0,
+              zIndex: this.props.zIndex,
               transform: transform
             }}
           >
             <div
-              onClick={this.props.onCardClick}
+              onClick={() => { this.props.onCardClick(this.props.id); }}
               onMouseEnter={e => this.props.onCardHover(true)}
               onMouseLeave={e => this.props.onCardHover(false)}
             >

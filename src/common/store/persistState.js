@@ -11,7 +11,7 @@ function isValidUsername(username) {
 }
 
 function getNewCopyIfBuiltinCard(card) {
-  return (card.source === 'builtin') ? find(builtinCards, {'name': card.name}) : card;
+  return (card.source === 'builtin') ? (find(builtinCards, {'name': card.name}) || card) : card;
 }
 
 export function loadState(state) {
@@ -31,9 +31,17 @@ export function loadState(state) {
         state.socket.username = username;
       }
       state.collection.cards = JSON.parse(collection).map(getNewCopyIfBuiltinCard);
-      state.collection.decks = JSON.parse(decks).map(deck =>
-        Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
-      );
+
+      try {
+        state.collection.decks = JSON.parse(decks).map(deck =>
+          Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
+        );
+      } catch (e) {
+        /* eslint-disable no-console */
+        console.log('Couldn\'t import decks:');
+        console.log(decks);
+        /* eslint-enable no-console */
+      }
     }
   }
 

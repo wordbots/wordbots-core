@@ -11,7 +11,7 @@ function isValidUsername(username) {
 }
 
 function getNewCopyIfBuiltinCard(card) {
-  return (card.source === 'builtin') ? find(builtinCards, {'name': card.name}) : card;
+  return (card.source === 'builtin') ? (find(builtinCards, {'name': card.name}) || card) : card;
 }
 
 export function loadState(state) {
@@ -38,7 +38,10 @@ export function loadState(state) {
           Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
         );
       } catch (e) {
+        /* eslint-disable no-console */
+        console.log('Couldn\'t import decks:');
         console.log(decks);
+        /* eslint-enable no-console */
       }
     }
   }

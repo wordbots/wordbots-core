@@ -377,6 +377,16 @@ export const energyWellCard = {
   ]
 };
 
+export const smashCard = {
+  "name": "Smash",
+  "type": TYPE_EVENT,
+  "text": "Destroy a structure.",
+  "cost": 1,
+  "command": [
+    "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })"
+  ]
+};
+
 export const antiGravityFieldCard = {
   name: "Anti-Gravity Field",
   type: TYPE_STRUCTURE,
@@ -384,7 +394,7 @@ export const antiGravityFieldCard = {
   text: "All robots have Jump.",
   cost: 3,
   abilities: [
-    "(function () { setAbility(abilities[giveAbility](function () { return targets[all](objectsInPlay(robot)); }, \"(function () { setAbility(abilities[applyEffect](function () { return targets[thisRobot](); }, canmoveoverobjects)); })\")); })"
+    "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'canmoveoverobjects')); })\")); })"
   ],
   stats: {
     health: 5
@@ -398,7 +408,7 @@ export const magpieMachineCard = {
   text: "All robots have \"Whenever this robot attacks a kernel, draw a card\".",
   cost: 3,
   abilities: [
-    "(function () { setAbility(abilities[giveAbility](function () { return targets[all](objectsInPlay(robot)); }, \"(function () { setTrigger(triggers[afterAttack](function () { return targets[thisRobot](), kernel; }), (function () { actions[draw](targets[self](), 1); })); })\")); })"
+    "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](), 'kernel'; }), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
   ],
   stats: {
     health: 4
@@ -437,6 +447,7 @@ export const collection = [
   wrathOfRobotGodCard,
   hasteBotCard,
   energyWellCard,
+  smashCard,
   antiGravityFieldCard,
   magpieMachineCard
 ].map(c =>

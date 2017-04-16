@@ -26,6 +26,7 @@ export default class Card extends Component {
     type: number,
     text: oneOfType([string, array]),
     rawText: string,
+    parseResults: string,
     img: string,
     cardStats: object,
     stats: object,
@@ -54,6 +55,7 @@ export default class Card extends Component {
 
   static defaultProps = {
     stats: {},
+    parseResults: '',
 
     visible: true,
     selected: false,
@@ -79,9 +81,10 @@ export default class Card extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const trackedProps = [
-      'name', 'spriteID', 'type', 'rawText', 'cardStats',
-      'stats', 'image', 'cost', 'baseCost',
-      'status', 'visible', 'selected', 'targetable'
+      'name', 'spriteID', 'type', 'rawText', 'parseResults',
+      'cardStats', 'stats', 'image', 'cost', 'baseCost',
+      'status', 'visible', 'selected', 'targetable',
+      'margin', 'zIndex'
     ];
 
     return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
@@ -266,7 +269,7 @@ export default class Card extends Component {
               paddingLeft: 0,
               paddingRight: 0,
               marginRight: this.props.margin,
-              zIndex: this.props.zIndex,
+              zIndex: this.props.zIndex || 0,
               transform: transform
             }}
           >

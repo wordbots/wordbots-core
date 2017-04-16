@@ -40,7 +40,6 @@ export default class CardGrid extends Component {
       }}>
         <Card
           collection
-          visible={inBrowser()}
           id={card.id}
           name={card.name}
           spriteID={card.spriteID}
@@ -68,10 +67,11 @@ export default class CardGrid extends Component {
         margin: 10
       }}>
         {this.props.children}
-        {this.props.cards
-          .filter(this.props.filterFunc)
-          .sort(this.sortCards.bind(this))
-          .map(this.renderCard.bind(this))}
+        {!inBrowser() ? null :
+          this.props.cards
+            .filter(this.props.filterFunc)
+            .sort(this.sortCards.bind(this))
+            .map(this.renderCard.bind(this))}
       </div>
     );
   }

@@ -99,7 +99,8 @@ class Deck extends Component {
           <div style={{
             margin: 50,
             marginLeft: 0,
-            minWidth: '18%'
+            width: 300,
+            minWidth: 300
           }}>
             <Paper style={{
               padding: 20,

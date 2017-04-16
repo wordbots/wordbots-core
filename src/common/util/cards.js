@@ -1,6 +1,8 @@
-import { countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
+import { compact, countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+
+import { toProperCase } from './common';
 
 //
 // 0. Card-related constants (used below).
@@ -68,7 +70,7 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-export const requestParse = debounce((sentences, mode, callback) => {
+function parse(sentences, mode, callback) {
   sentences
     .forEach((sentence, idx) => {
       const parserInput = encodeURIComponent(expandKeywords(sentence));
@@ -77,11 +79,17 @@ export const requestParse = debounce((sentences, mode, callback) => {
         .then(response => response.json())
         .then(json => { callback(idx, sentence, json); });
   });
-}, PARSE_DEBOUNCE_MS);
+}
+
+export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
 //
 // 2.5. Keyword abilities.
 //
+
+const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
+  [k, new RegExp(`(has|have) (${k}|${toProperCase(k)})`)]
+));
 
 function phrases(sentence) {
   return sentence.split(',')
@@ -97,7 +105,11 @@ export function keywordsInSentence(sentence) {
   if (isKeywordExpression(sentence)) {
     return fromPairs(phrases(sentence).map(p => [p, KEYWORDS[p.toLowerCase()]]));
   } else {
-    return {};
+    const keywords = compact(Object.keys(KEYWORDS).map(keyword => {
+      const match = sentence.match(keywordRegexes[keyword]);
+      return match ? match[2] : null;
+    }));
+    return fromPairs(keywords.map(k => [k, KEYWORDS[k.toLowerCase()]]));
   }
 }
 

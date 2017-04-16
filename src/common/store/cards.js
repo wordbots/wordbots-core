@@ -377,6 +377,33 @@ export const energyWellCard = {
   ]
 };
 
+export const antiGravityFieldCard = {
+  name: "Anti-Gravity Field",
+  type: TYPE_STRUCTURE,
+  spriteID: "jjax9vh3xh",
+  text: "All robots have Jump.",
+  cost: 3,
+  abilities: [
+    "(function () { setAbility(abilities[giveAbility](function () { return targets[all](objectsInPlay(robot)); }, \"(function () { setAbility(abilities[applyEffect](function () { return targets[thisRobot](); }, canmoveoverobjects)); })\")); })"
+  ],
+  stats: {
+    health: 5
+  }
+};
+
+export const magpieMachineCard = {
+  name: "Magpie Machine",
+  type: TYPE_STRUCTURE,
+  spriteID: "vw3x59ovn0q",
+  text: "All robots have \"Whenever this robot attacks a kernel, draw a card\".",
+  cost: 3,
+  abilities: [
+    "(function () { setAbility(abilities[giveAbility](function () { return targets[all](objectsInPlay(robot)); }, \"(function () { setTrigger(triggers[afterAttack](function () { return targets[thisRobot](), kernel; }), (function () { actions[draw](targets[self](), 1); })); })\")); })"
+  ],
+  stats: {
+    health: 4
+  }
+};
 /* eslint-enable quotes */
 
 export const collection = [
@@ -409,7 +436,9 @@ export const collection = [
   untapCard,
   wrathOfRobotGodCard,
   hasteBotCard,
-  energyWellCard
+  energyWellCard,
+  antiGravityFieldCard,
+  magpieMachineCard
 ].map(c =>
   Object.assign(instantiateCard(c), {source: 'builtin'})
 );

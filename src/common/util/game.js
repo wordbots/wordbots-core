@@ -295,6 +295,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
     object.triggers
       .map(t => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
+        if (t.attackedObjectType) { console.log(t.attackedObjectType); }
         t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object);
         return Object.assign({}, t, {object: object});
       })

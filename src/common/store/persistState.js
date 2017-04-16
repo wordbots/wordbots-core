@@ -1,4 +1,4 @@
-import { find, random } from 'lodash';
+import { compact, find, random } from 'lodash';
 
 import { collection as builtinCards } from './cards';
 
@@ -31,18 +31,11 @@ export function loadState(state) {
         state.socket.username = username;
       }
 
-      state.collection.cards = JSON.parse(collection).map(getNewCopyIfBuiltinCard);
+      state.collection.cards = builtinCards.concat(JSON.parse(collection).filter(c => c.source !== 'builtin'));
 
-      try {
-        state.collection.decks = JSON.parse(decks).map(deck =>
-          Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
-        );
-      } catch (e) {
-        /* eslint-disable no-console */
-        console.log('Couldn\'t import decks:');
-        console.log(decks);
-        /* eslint-enable no-console */
-      }
+      state.collection.decks = compact(JSON.parse(decks)).map(deck =>
+        Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
+      );
     }
   }
 

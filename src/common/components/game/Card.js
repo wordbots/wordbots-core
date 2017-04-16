@@ -269,7 +269,7 @@ export default class Card extends Component {
               paddingLeft: 0,
               paddingRight: 0,
               marginRight: this.props.margin,
-              zIndex: this.props.zIndex,
+              zIndex: this.props.zIndex || 0,
               transform: transform
             }}
           >

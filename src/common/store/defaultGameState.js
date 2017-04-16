@@ -58,7 +58,7 @@ const defaultState = {
   },
   currentTurn: 'orange',
   player: 'orange',
-  usernames: [],
+  usernames: {},
   hoveredCard: null,
   winner: null,
   actionLog: []

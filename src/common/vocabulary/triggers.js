@@ -19,9 +19,10 @@ export function unsetTrigger(state, currentObject, source) {
 
 export function triggers(state) {
   return {
-    afterAttack: function (targetFunc) {
+    afterAttack: function (targetFunc, attackedObjectType) {
       return {
         'type': 'afterAttack',
+        'attackedObjectType': attackedObjectType,
         'targetFunc': `(${targetFunc.toString()})`
       };
     },

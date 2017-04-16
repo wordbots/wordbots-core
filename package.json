@@ -70,6 +70,7 @@
     "redux-multi": "0.1.12",
     "redux-thunk": "2.2.0",
     "redux-undo": "0.6.1",
+    "repng": "^1.0.0-b7",
     "style-loader": "0.16.1",
     "url-loader": "0.5.8",
     "warning": "^3.0.0",

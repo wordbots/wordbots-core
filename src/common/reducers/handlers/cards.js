@@ -48,9 +48,9 @@ const cardsHandlers = {
       spriteID: card.spriteID,
       sentences: splitSentences(card.text).map(s => ({sentence: s, result: {}})),
       cost: card.cost,
-      health: card.stats.health,
-      speed: card.stats.speed,
-      attack: card.stats.attack,
+      health: (card.stats || {}).health,
+      speed: (card.stats || {}).speed,
+      attack: (card.stats || {}).attack,
       setText: card.text
     });
   },

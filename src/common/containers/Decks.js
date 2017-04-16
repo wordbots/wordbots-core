@@ -10,7 +10,7 @@ import { sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import { groupCards } from '../util/cards';
-import CardViewer from '../components/game/CardViewer';
+import CardViewer from '../components/card/CardViewer';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {

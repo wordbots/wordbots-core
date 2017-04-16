@@ -5,11 +5,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGame } from '../reactHelpers';
-import * as actions from '../../src/common/actions/game';
-import gameReducer from '../../src/common/reducers/game';
+import Card from '../../src/common/components/card/Card';
+import CardViewer from '../../src/common/components/card/CardViewer';
 import Board from '../../src/common/components/game/Board';
-import Card from '../../src/common/components/game/Card';
-import CardViewer from '../../src/common/components/game/CardViewer';
 import EndTurnButton from '../../src/common/components/game/EndTurnButton';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
@@ -17,6 +15,8 @@ import VictoryScreen from '../../src/common/components/game/VictoryScreen';
 import Chat from '../../src/common/components/multiplayer/Chat';
 import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
+import * as actions from '../../src/common/actions/game';
+import gameReducer from '../../src/common/reducers/game';
 
 describe('Game container', () => {
   it('renders the default game state', () => {

@@ -10,12 +10,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { isFunction, without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
+import CardBack from '../components/card/CardBack';
 import CardGrid from '../components/cards/CardGrid';
 import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
 import SortControls from '../components/cards/SortControls';
-import CardBack from '../components/game/CardBack';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {

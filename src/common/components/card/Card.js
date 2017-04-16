@@ -11,12 +11,12 @@ import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from 
 import { compareCertainKeys, inBrowser } from '../../util/common';
 import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
+import Sprite from '../Sprite';
 
 import CardCostBadge from './CardCostBadge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
 import Identicon from './Identicon';
-import Sprite from './Sprite';
 
 export default class Card extends Component {
   static propTypes = {

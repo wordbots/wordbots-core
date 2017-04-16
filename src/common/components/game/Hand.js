@@ -6,9 +6,8 @@ import { isEmpty, isNull } from 'lodash';
 
 import { splitSentences } from '../../util/cards';
 import { getCost } from '../../util/game';
-import Sentence from '../cards/Sentence';
-
-import Card from './Card';
+import Card from '../card/Card';
+import Sentence from '../card/Sentence';
 
 export default class Hand extends Component {
   static propTypes = {

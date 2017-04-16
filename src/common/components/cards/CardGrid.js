@@ -3,9 +3,8 @@ import { array, element, func, number } from 'prop-types';
 
 import { inBrowser } from '../../util/common';
 import { splitSentences } from '../../util/cards';
-import Card from '../game/Card';
-
-import Sentence from './Sentence';
+import Card from '../card/Card';
+import Sentence from '../card/Sentence';
 
 export default class CardGrid extends Component {
   static propTypes = {

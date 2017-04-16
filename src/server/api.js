@@ -5,8 +5,8 @@ import repng from 'repng';
 
 import { id } from '../common/util/common';
 import { splitSentences } from '../common/util/cards';
-import Card from '../common/components/game/Card';
-import Sentence from '../common/components/cards/Sentence';
+import Card from '../common/components/card/Card';
+import Sentence from '../common/components/card/Sentence';
 
 export default function produceApiResponse(response, location) {
   const { pathname, query } = url.parse(location, true);

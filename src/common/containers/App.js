@@ -3,7 +3,7 @@ import { func, string, object } from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import cookie from 'react-cookie';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
@@ -117,11 +117,11 @@ class App extends Component {
 
   renderLink(path, text, icon) {
     return (
-      <Link to={path}>
+      <NavLink to={path} activeClassName="activeNavLink">
         <MenuItem primaryText={text} leftIcon={
           <FontIcon className="material-icons">{icon}</FontIcon>
         }/>
-      </Link>
+      </NavLink>
     );
   }
 
@@ -152,6 +152,7 @@ class App extends Component {
           <Drawer open={this.state.open} containerStyle={{top: 66, paddingTop: 10}}>
             {this.renderLink('/home', 'Home', 'home')}
             {this.renderLink('/collection', 'Collection', 'recent_actors')}
+            {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
             {this.renderLink('/decks', 'Decks', 'view_list')}
             {this.renderLink('/game', 'Play', 'videogame_asset')}
           </Drawer>

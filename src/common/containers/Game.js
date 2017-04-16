@@ -171,6 +171,14 @@ export class Game extends Component {
     onVictoryScreenClick: func
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      height: 0
+    }
+  }
+
   // For testing.
   static childContextTypes = {
     muiTheme: object.isRequired
@@ -182,6 +190,20 @@ export class Game extends Component {
   componentDidMount() {
     if (!this.props.socket.connected) {
       this.props.onConnect();
+    }
+
+    this.updateHeight();
+
+    window.onresize = () => {
+      this.updateHeight();
+    };
+  }
+
+  updateHeight() {
+    if (this.refs.boardArea) {
+      this.setState({
+        height: this.refs.boardArea.offsetHeight
+      });
     }
   }
 
@@ -263,12 +285,13 @@ export class Game extends Component {
             color="orange"
             gameProps={this.props} />
 
-          <div style={{position: 'relative'}}>
+          <div style={{position: 'relative'}} ref={(board) => { this.boardArea = board; }}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
             <Board
+              height={this.state.height}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
               selectedTile={this.props.selectedTile}

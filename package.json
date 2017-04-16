@@ -101,7 +101,7 @@
       "/test",
       "src/common/components/react-hexgrid/",
       "src/common/components/react-textfit/",
-      "src/common/components/game/Sprite.js"
+      "src/common/components/Sprite.js"
     ],
     "globals": {
       "_": {}

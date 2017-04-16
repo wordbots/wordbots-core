@@ -149,9 +149,9 @@ export class GameArea extends Component {
   }
 
   updateHeight() {
-    if (this.refs.boardArea) {
+    if (this.boardArea) {
       this.setState({
-        height: this.refs.boardArea.offsetHeight
+        height: this.boardArea.offsetHeight
       });
     }
   }
@@ -233,7 +233,7 @@ export class GameArea extends Component {
 
         <Paper style={{padding: 20, position: 'relative'}}>
           <PlayerArea
-            color="orange"
+            opponent
             gameProps={this.props} />
 
           <div style={{position: 'relative'}} ref={(board) => { this.boardArea = board; }}>
@@ -258,7 +258,6 @@ export class GameArea extends Component {
           </div>
 
           <PlayerArea
-            color="blue"
             gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}

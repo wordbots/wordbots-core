@@ -117,7 +117,7 @@ class App extends Component {
 
   renderLink(path, text, icon) {
     return (
-      <NavLink to={path} activeClassName="activeNavLink">
+      <NavLink exact to={path} activeClassName="activeNavLink">
         <MenuItem primaryText={text} leftIcon={
           <FontIcon className="material-icons">{icon}</FontIcon>
         }/>
@@ -150,7 +150,7 @@ class App extends Component {
         </div>
         <div>
           <Drawer open={this.state.open} containerStyle={{top: 66, paddingTop: 10}}>
-            {this.renderLink('/home', 'Home', 'home')}
+            {this.renderLink('/', 'Home', 'home')}
             {this.renderLink('/collection', 'Collection', 'recent_actors')}
             {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
             {this.renderLink('/decks', 'Decks', 'view_list')}

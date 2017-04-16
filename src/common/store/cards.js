@@ -408,7 +408,7 @@ export const magpieMachineCard = {
   text: "All robots have \"Whenever this robot attacks a kernel, draw a card\".",
   cost: 3,
   abilities: [
-    "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](), 'kernel'; }), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
+    "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'kernel'), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
   ],
   stats: {
     health: 4

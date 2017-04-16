@@ -586,7 +586,8 @@ describe('Game reducer', () => {
       state = moveRobot(state, '0,0,0', '2,0,-2');
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('2,0,-2');
 
-      state = playObject(state, 'blue', cards.antiGravityFieldCard, '-3,0,3');  // "All robots have Jump."
+      // Anti-Gravity Field: "All robots have Jump."
+      state = playObject(state, 'blue', cards.antiGravityFieldCard, '-3,0,3');
       state = newTurn(state, 'orange');
 
       // Robots can jump.
@@ -603,7 +604,7 @@ describe('Game reducer', () => {
 
       // Now, destroy the Anti-Gravity Field.
       state = playEvent(state, 'orange', cards.smashCard, {hex: '-3,0,3'});
-      expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('-3,0,-3');
+      expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('-3,0,3');
 
       // Robots can no longer jump.
       state = moveRobot(state, '2,0,-2', '0,0,0');
@@ -613,7 +614,37 @@ describe('Game reducer', () => {
     });
 
     it('should let objects assign triggered abilities to other objects', () => {
-      console.error('TODO');
+      function handSize() {
+        return state.players.orange.hand.length;
+      }
+
+      let state = setUpBoardState({
+        'orange': {
+          '-4,1,3': cards.attackBotCard
+        }
+      });
+      let currentHandSize = handSize();
+
+      // No card draw.
+      state = attack(state, '-4,1,3', '-4,0,4');
+      expect(handSize()).toEqual(currentHandSize);
+
+      // Magpie Machine: 'All robots have "Whenever this robot attacks a kernel, draw a card".'
+      state = playObject(state, 'orange', cards.magpieMachineCard, '3,0,-3');
+
+      // Card draw.
+      currentHandSize = handSize();
+      state = attack(state, '-4,1,3', '-4,0,4');
+      expect(handSize()).toEqual(currentHandSize + 1);
+
+      // Now, destroy the Magpie Machine.
+      state = playEvent(state, 'orange', cards.smashCard, {hex: '3,0,-3'});
+      expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('3,0,-3');
+
+      // No card draw.
+      currentHandSize = handSize();
+      state = attack(state, '-4,1,3', '-4,0,4');
+      expect(handSize()).toEqual(currentHandSize);
     });
   });
 });

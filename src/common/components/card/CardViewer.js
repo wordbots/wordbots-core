@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { object } from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
-import Sentence from '../cards/Sentence';
 import { splitSentences } from '../../util/cards';
 
 import Card from './Card';
+import Sentence from './Sentence';
 
 export default class CardViewer extends Component {
   static propTypes = {

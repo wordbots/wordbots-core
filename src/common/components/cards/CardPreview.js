@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 
-import Card from '../game/Card';
-
-import Sentence from './Sentence';
+import Card from '../card/Card';
+import Sentence from '../card/Sentence';
 
 export default class CardPreview extends Component {
   static propTypes = {

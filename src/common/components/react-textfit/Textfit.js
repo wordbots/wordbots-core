@@ -68,7 +68,7 @@ export default class Textfit extends Component {
   componentDidMount() {
     const { autoResize } = this.props;
     if (autoResize) {
-      window.addEventListener('resize', this.handleWindowResize);
+      window.addEventListener('resize', this.handleWindowResize.bind(this));
     }
     this.process();
   }
@@ -83,7 +83,7 @@ export default class Textfit extends Component {
   componentWillUnmount() {
     const { autoResize } = this.props;
     if (autoResize) {
-      window.removeEventListener('resize', this.handleWindowResize);
+      window.removeEventListener('resize', this.handleWindowResize.bind(this));
     }
     // Setting a new pid will cancel all running processes
     this.pid = uniqueId();

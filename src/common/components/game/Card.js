@@ -120,10 +120,10 @@ export default class Card extends Component {
 
     const compactStyle = {
       height: 96 * this.props.scale,
+      marginTop: (isHeadless() ? 20 : 0) * this.props.scale,
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: isHeadless() ? 20 : 0
+      alignItems: 'center'
     };
 
     if (this.props.type === TYPE_EVENT && this.numChars < 30) {
@@ -138,12 +138,13 @@ export default class Card extends Component {
       padding: 6 * this.props.scale,
       paddingBottom: 0,
       height: (this.props.type !== TYPE_EVENT ? 48 : 96) * this.props.scale,
+      width: '100%',
       boxSizing: 'border-box'
     };
 
     const compactStyle = {
       paddingBottom: 6 * this.props.scale,
-      height: 'auto',
+      height: '50%',
       textAlign: 'center'
     };
 
@@ -183,6 +184,7 @@ export default class Card extends Component {
       return (
         <Textfit
           mode="multi"
+          autoResize={false}
           max={16 * this.props.scale}
           style={{width: 105 * this.props.scale, height: 23 * this.props.scale}}>
           {this.props.name}
@@ -250,6 +252,7 @@ export default class Card extends Component {
     } else {
       return (
         <Textfit
+          autoResize={false}
           mode="multi"
           max={14 * this.props.scale}
           style={this.textFitStyle}

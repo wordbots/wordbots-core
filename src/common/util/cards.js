@@ -23,6 +23,10 @@ const KEYWORDS = {
   'taunt': 'Your opponent\'s adjacent robots can only attack this object'
 };
 
+const HINTS = {
+  'activate:': 'Robots and structures can Activate once per turn (but can\'t activate and attack in the same turn)'
+};
+
 //
 // 1. Helper functions for card-related components.
 //
@@ -90,6 +94,9 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
   [k, new RegExp(`(has|have) (${k}|${toProperCase(k)})`)]
 ));
+const hintRegexes = fromPairs(Object.keys(HINTS).map(h =>
+  [h, new RegExp(`((${h}|${toProperCase(h)}))`)]
+));
 
 function phrases(sentence) {
   return sentence.split(',')
@@ -97,19 +104,22 @@ function phrases(sentence) {
                  .map(s => s.trim());
 }
 
-export function isKeywordExpression(sentence) {
+export function isKeywordExpression(sentence, hintsToo = false) {
   return every(phrases(sentence), p => KEYWORDS[p.toLowerCase()]);
 }
 
-export function keywordsInSentence(sentence) {
+export function keywordsInSentence(sentence, hintsToo = false) {
+  const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
+  const regexes = hintsToo ? Object.assign({}, keywordRegexes, hintRegexes) : keywordRegexes;
+
   if (isKeywordExpression(sentence)) {
-    return fromPairs(phrases(sentence).map(p => [p, KEYWORDS[p.toLowerCase()]]));
+    return fromPairs(phrases(sentence).map(p => [p, keywords[p.toLowerCase()]]));
   } else {
-    const keywords = compact(Object.keys(KEYWORDS).map(keyword => {
-      const match = sentence.match(keywordRegexes[keyword]);
+    const keywordsList = compact(Object.keys(keywords).map(keyword => {
+      const match = sentence.match(regexes[keyword]);
       return match ? match[2] : null;
     }));
-    return fromPairs(keywords.map(k => [k, KEYWORDS[k.toLowerCase()]]));
+    return fromPairs(keywordsList.map(k => [k, keywords[k.toLowerCase()]]));
   }
 }
 

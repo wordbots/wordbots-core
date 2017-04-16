@@ -3,16 +3,16 @@ import { array, bool, func, number, object, oneOfType, string } from 'prop-types
 import Divider from 'material-ui/Divider';
 import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
-import Badge from 'material-ui/Badge';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isEqual } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
-import { compareCertainKeys, isHeadless } from '../../util/common';
+import { compareCertainKeys, inBrowser } from '../../util/common';
 import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
 
+import CardCostBadge from './CardCostBadge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
 import Identicon from './Identicon';
@@ -71,6 +71,7 @@ export default class Card extends Component {
     onSpriteClick: () => {}
   }
 
+  // (For server-side rendering via /api/card.png)
   static childContextTypes = {
     muiTheme: object.isRequired
   };
@@ -120,7 +121,7 @@ export default class Card extends Component {
 
     const compactStyle = {
       height: 96 * this.props.scale,
-      marginTop: (isHeadless() ? 20 : 0) * this.props.scale,
+      marginTop: (inBrowser() ? 0 : 20) * this.props.scale,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
@@ -155,28 +156,16 @@ export default class Card extends Component {
     }
   }
 
-  get costBadgeStyle() {
-    if (this.props.cost < this.props.baseCost) {
-      return {
-        color: '#81C784',
-        WebkitTextStroke: '0.5px white'
-      };
-    } else if (this.props.cost > this.props.baseCost) {
-      return {
-        color: '#E57373',
-        WebkitTextStroke: '0.5px white'
-      };
-    } else {
-      return {};
-    }
-  }
-
   renderTitle() {
-    if (isHeadless()) {
+    if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round(180 / this.props.name.length);
       return (
-        <div style={{width: 105, height: 20, fontSize: Math.min(maxFontSize, 16)}}>
+        <div style={{
+          width: 105 * this.props.scale,
+          height: 20 * this.props.scale,
+          fontSize: Math.min(maxFontSize, 16) * this.props.scale
+        }}>
           {this.props.name}
         </div>
       );
@@ -186,7 +175,10 @@ export default class Card extends Component {
           mode="multi"
           autoResize={false}
           max={16 * this.props.scale}
-          style={{width: 105 * this.props.scale, height: 23 * this.props.scale}}>
+          style={{
+            width: 105 * this.props.scale,
+            height: 23 * this.props.scale
+        }}>
           {this.props.name}
         </Textfit>
       );
@@ -194,7 +186,7 @@ export default class Card extends Component {
   }
 
   renderImage() {
-    if (isHeadless()) {
+    if (!inBrowser()) {
       const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
         <div style={{ width, height }} />
@@ -239,7 +231,7 @@ export default class Card extends Component {
   }
 
   renderText() {
-    if (isHeadless()) {
+    if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round((this.props.type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
       return (
@@ -314,34 +306,13 @@ export default class Card extends Component {
     } else {
       return (
         <div>
-          <Badge
-            badgeContent={
-              <div style={isHeadless() ? {
-                paddingTop: 10,
-                textAlign: 'center',
-                fontFamily: 'Arial',
-                fontWeight: 'bold'
-              } : {}}>
-                {this.props.cost}
-              </div>
-            }
-            badgeStyle={Object.assign({
-              top: 12,
-              right: -4,
-              width: 36 * this.props.scale,
-              height: 36 * this.props.scale,
-              backgroundColor: '#00bcd4',
-              fontFamily: 'Carter One',
-              color: 'white',
-              fontSize: 16 * this.props.scale
-            }, this.costBadgeStyle)}
-            style={{
-              paddingLeft: 0,
-              paddingRight: 0,
-              marginRight: this.props.margin,
-              zIndex: this.props.zIndex || 0,
-              transform: transform
-            }}
+          <CardCostBadge
+            cost={this.props.cost}
+            baseCost={this.props.baseCost}
+            scale={this.props.scale}
+            margin={this.props.margin}
+            zIndex={this.props.zIndex}
+            transform={transform}
           >
             <div
               onClick={() => { this.props.onCardClick(this.props.id); }}
@@ -379,7 +350,7 @@ export default class Card extends Component {
                 </div>
               </Paper>
             </div>
-          </Badge>
+          </CardCostBadge>
         </div>
       );
     }

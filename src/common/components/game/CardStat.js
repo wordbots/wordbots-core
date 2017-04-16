@@ -3,7 +3,7 @@ import { number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import ReactTooltip from 'react-tooltip';
 
-import { id, toProperCase, isHeadless } from '../../util/common';
+import { id, toProperCase, inBrowser } from '../../util/common';
 
 export default class CardStat extends Component {
   static propTypes = {
@@ -11,6 +11,10 @@ export default class CardStat extends Component {
     base: number,
     current: number,
     scale: number
+  };
+
+  static defaultProps = {
+    scale: 1
   };
 
   get backgroundColor() {
@@ -48,23 +52,23 @@ export default class CardStat extends Component {
     const { textColor, webkitTextStroke } = this.textStyle;
 
     const baseStyle = {
-      width: 32 * (this.props.scale || 1),
-      height: 32 * (this.props.scale || 1),
+      width: 32 * this.props.scale,
+      height: 32 * this.props.scale,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: this.backgroundColor,
       color: '#fff',
       fontFamily: 'Carter One',
-      fontSize: 22 * (this.props.scale || 1)
+      fontSize: 22 * this.props.scale
     };
 
     const headlessStyle = {
       paddingTop: 10,
       textAlign: 'center',
-      fontFamily: 'Arial',
+      fontFamily: 'Carter One, Arial',
       fontWeight: 'bold',
-      fontSize: 18
+      fontSize: 18 * this.props.scale
     };
 
     // Workaround for virtual DOM without flexbox support.
@@ -74,12 +78,12 @@ export default class CardStat extends Component {
     };
 
     return (
-      <div style={isHeadless() ? headlessContainerStyle : {}}>
+      <div style={!inBrowser() ? headlessContainerStyle : {}}>
         <Paper circle
           zDepth={1}
           data-for={tooltipId}
           data-tip={toProperCase(this.props.type)}
-          style={isHeadless() ? Object.assign(baseStyle, headlessStyle) : baseStyle}>
+          style={!inBrowser() ? Object.assign(baseStyle, headlessStyle) : baseStyle}>
           <ReactTooltip id={tooltipId} />
           <div style={{
             lineHeight: '14px',

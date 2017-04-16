@@ -38,6 +38,10 @@ export function inBrowser() {
   return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
 }
 
+export function isHeadless() {
+  return (typeof window === 'undefined');
+}
+
 export function logIfFlagSet(flag, msg) {
   if (flag) {
     /* eslint-disable no-console */

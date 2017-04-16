@@ -3,7 +3,7 @@ import { number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import ReactTooltip from 'react-tooltip';
 
-import { id, toProperCase } from '../../util/common';
+import { id, toProperCase, isHeadless } from '../../util/common';
 
 export default class CardStat extends Component {
   static propTypes = {
@@ -13,53 +13,73 @@ export default class CardStat extends Component {
     scale: number
   };
 
-  render() {
-    const tooltipId = id();
-    let backgroundColor = '';
-    let textColor = 'white';
-    let webkitTextStroke = 'none';
-
+  get backgroundColor() {
     switch (this.props.type) {
       case 'attack':
-        backgroundColor = '#E57373';
-        break;
+        return '#E57373';
       case 'speed':
-        backgroundColor = '#03A9F4';
-        break;
+        return '#03A9F4';
       case 'health':
-        backgroundColor = '#81C784';
-        break;
+        return '#81C784';
     }
+  }
 
-    if (this.props.current) {
-      if (this.props.current > this.props.base) {
-        textColor = '#81C784';
-        webkitTextStroke = '1px white';
-      } else if (this.props.current < this.props.base) {
-        textColor = '#E57373';
-        webkitTextStroke = '1px white';
-      } else {
-        textColor = 'white';
-      }
+  get textStyle() {
+    if (this.props.current && this.props.current > this.props.base) {
+      return {
+        textColor: '#81C784',
+        webkitTextStroke: '1px white'
+      };
+    } else if (this.props.current && this.props.current < this.props.base) {
+      return {
+        textColor: '#E57373',
+        webkitTextStroke: '1px white'
+      };
+    } else {
+      return {
+        textColor: 'white',
+        webkitTextStroke: 'none'
+      };
     }
+  }
+
+  render() {
+    const tooltipId = id();
+    const { textColor, webkitTextStroke } = this.textStyle;
+
+    const baseStyle = {
+      width: 32 * (this.props.scale || 1),
+      height: 32 * (this.props.scale || 1),
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: this.backgroundColor,
+      color: '#fff',
+      fontFamily: 'Carter One',
+      fontSize: 22 * (this.props.scale || 1)
+    };
+
+    const headlessStyle = {
+      paddingTop: 10,
+      textAlign: 'center',
+      fontFamily: 'Arial',
+      fontWeight: 'bold',
+      fontSize: 18
+    };
+
+    // Workaround for virtual DOM without flexbox support.
+    const headlessContainerStyle = {
+      float: 'left',
+      marginRight: 6
+    };
 
     return (
-      <div>
+      <div style={isHeadless() ? headlessContainerStyle : {}}>
         <Paper circle
           zDepth={1}
           data-for={tooltipId}
           data-tip={toProperCase(this.props.type)}
-          style={{
-            width: 32 * (this.props.scale || 1),
-            height: 32 * (this.props.scale || 1),
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: backgroundColor,
-            color: '#fff',
-            fontFamily: 'Carter One',
-            fontSize: 22 * (this.props.scale || 1)
-        }}>
+          style={isHeadless() ? Object.assign(baseStyle, headlessStyle) : baseStyle}>
           <ReactTooltip id={tooltipId} />
           <div style={{
             lineHeight: '14px',

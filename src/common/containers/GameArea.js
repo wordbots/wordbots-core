@@ -7,6 +7,7 @@ import Paper from 'material-ui/Paper';
 import { isNil } from 'lodash';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Notification from 'react-web-notification';
 
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
@@ -236,10 +237,32 @@ export class GameArea extends Component {
     }
   }
 
+  renderNotification() {
+    const options = {
+      tag: 'wordbots',
+      body: 'Its your turn!',
+      icon: '/static/android-icon-144x144.png',
+      lang: 'en',
+      dir: 'ltr',
+      timestamp: Math.floor(Date.now())
+    };
+
+    if (this.props.currentTurn === this.props.player) {
+      return (
+        <Notification 
+          timeout={3000}
+          title={'Wordbots.'}
+          options={options} />
+      );
+    }
+  }
+
   render() {
     return (
       <div>
         <Helmet title="Game"/>
+
+        {this.renderNotification()}
 
         <Paper style={{position: 'relative', height: this.state.areaHeight}}>
           <PlayerArea opponent gameProps={this.props} />

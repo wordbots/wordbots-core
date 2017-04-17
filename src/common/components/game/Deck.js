@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { array } from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import CardBack from './CardBack';
+import CardBack from '../card/CardBack';
 
 export default class Deck extends Component {
   static propTypes = {

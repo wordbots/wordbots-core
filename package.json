@@ -1,6 +1,6 @@
 {
   "name": "wordbots",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "apiHost": "10.0.0.9",
   "apiPort": "3000",
   "description": "A card-and-board game that showcases card game semantic parsing",
@@ -49,6 +49,7 @@
     "prop-types": "^15.5.8",
     "rc-slider": "^7.0.0",
     "react": "^15.5.4",
+    "react-addons-perf": "^15.4.2",
     "react-bar-chart": "^0.1.1",
     "react-cookie": "^1.0.5",
     "react-dom": "^15.5.4",
@@ -69,10 +70,11 @@
     "redux-multi": "0.1.12",
     "redux-thunk": "2.2.0",
     "redux-undo": "0.6.1",
+    "repng": "^1.0.0-b7",
     "style-loader": "0.16.1",
     "url-loader": "0.5.8",
     "warning": "^3.0.0",
-    "webpack": "2.3.3",
+    "webpack": "2.4.0",
     "whatwg-fetch": "^2.0.2",
     "ws": "^2.2.3"
   },
@@ -99,7 +101,7 @@
       "/test",
       "src/common/components/react-hexgrid/",
       "src/common/components/react-textfit/",
-      "src/common/components/game/Sprite.js"
+      "src/common/components/Sprite.js"
     ],
     "globals": {
       "_": {}

@@ -9,6 +9,10 @@ export default class FilterControls extends Component {
     onSetCostRange: func
   };
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   render() {
     const toggleStyle = { marginBottom: 10 };
 

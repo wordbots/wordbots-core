@@ -1,32 +1,44 @@
 import React, { Component } from 'react';
-import { array, bool, func, object } from 'prop-types';
+import { array, bool, func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
+import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { isFunction, without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
+import CardBack from '../components/card/CardBack';
 import CardGrid from '../components/cards/CardGrid';
+import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
+import ImportDialog from '../components/cards/ImportDialog';
 import SortControls from '../components/cards/SortControls';
-import CardBack from '../components/game/CardBack';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
+    exportedJson: state.collection.exportedJson,
     sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    onCloseExportDialog: () => {
+      dispatch(collectionActions.closeExportDialog());
+    },
     onEditCard: (card) => {
       dispatch(collectionActions.openForEditing(card));
+    },
+    onExportCards: (cards) => {
+      dispatch(collectionActions.exportCards(cards));
+    },
+    onImportCards: (json) => {
+      dispatch(collectionActions.importCards(json));
     },
     onRemoveFromCollection: (cards) => {
       dispatch(collectionActions.removeFromCollection(cards));
@@ -37,11 +49,15 @@ function mapDispatchToProps(dispatch) {
 class Collection extends Component {
   static propTypes = {
     cards: array,
+    exportedJson: string,
     sidebarOpen: bool,
 
     history: object,
 
+    onCloseExportDialog: func,
     onEditCard: func,
+    onExportCards: func,
+    onImportCards: func,
     onRemoveFromCollection: func
   };
 
@@ -57,7 +73,8 @@ class Collection extends Component {
       costRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
-      selectedCardIds: []
+      selectedCardIds: [],
+      importDialogOpen: false
     };
   }
 
@@ -96,6 +113,18 @@ class Collection extends Component {
           justifyContent: 'space-between',
           alignItems: 'flex-start'
         }}>
+          <ExportDialog
+            open={this.props.exportedJson !== null}
+            text={this.props.exportedJson}
+            onClose={this.props.onCloseExportDialog}
+            />
+
+          <ImportDialog
+            open={this.state.importDialogOpen}
+            onClose={() => { this.updateState({importDialogOpen: false}); }}
+            onImport={this.props.onImportCards}
+            />
+
           <div style={{marginTop: 50, marginLeft: 40}}>
             <CardGrid
               cards={this.props.cards}
@@ -103,13 +132,14 @@ class Collection extends Component {
               filterFunc={this.isCardVisible.bind(this)}
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
-              onCardClick={card => {
+              onCardClick={id => {
+                const card = this.props.cards.find(c => c.id === id);
                 if (card.source !== 'builtin') {
                   this.updateState(state => {
-                    if (state.selectedCardIds.includes(card.id)) {
-                      return {selectedCardIds: without(state.selectedCardIds, card.id)};
+                    if (state.selectedCardIds.includes(id)) {
+                      return {selectedCardIds: without(state.selectedCardIds, id)};
                     } else {
-                      return {selectedCardIds: [...state.selectedCardIds, card.id]};
+                      return {selectedCardIds: [...state.selectedCardIds, id]};
                     }
                   });
                 }
@@ -125,7 +155,8 @@ class Collection extends Component {
           <div style={{
             margin: 50,
             marginLeft: 0,
-            minWidth: '18%'
+            width: 300,
+            minWidth: 300
           }}>
             <Paper style={{
               padding: 20
@@ -172,6 +203,29 @@ class Collection extends Component {
               onClick={() => {
                 this.props.onRemoveFromCollection(this.state.selectedCardIds);
                 this.updateState({selectedCardIds: []});
+              }}
+            />
+            <RaisedButton
+              label="Export Selected"
+              labelPosition="before"
+              secondary
+              disabled={this.state.selectedCardIds.length === 0}
+              icon={<FontIcon className="material-icons">file_download</FontIcon>}
+              style={{width: '100%', marginTop: 20}}
+              onClick={() => {
+                const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
+                this.props.onExportCards(cards);
+                this.updateState({selectedCardIds: []});
+              }}
+            />
+            <RaisedButton
+              label="Import Cards"
+              labelPosition="before"
+              secondary
+              icon={<FontIcon className="material-icons">file_upload</FontIcon>}
+              style={{width: '100%', marginTop: 20}}
+              onClick={() => {
+                this.updateState({importDialogOpen: true, selectedCardIds: []});
               }}
             />
           </div>

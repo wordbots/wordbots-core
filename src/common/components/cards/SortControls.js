@@ -13,6 +13,10 @@ export default class SortControls extends Component {
     onSetOrder: func
   };
 
+  shouldComponentUpdate(newProps) {
+    return (newProps.criteria !== this.props.criteria) || (newProps.order !== this.props.order);
+  }
+
   renderSelectField(field, items) {
     return (
       <SelectField

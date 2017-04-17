@@ -1,20 +1,28 @@
-export function setTrigger(state, currentObject) {
+export function setTrigger(state, currentObject, source) {
   return function (trigger, action, props = {}) {
     const triggerObj = Object.assign({
       trigger: trigger,
       action: `(${action.toString()})`,
-      override: false
+      override: false,
+      source: source
     }, props);
 
     currentObject.triggers = currentObject.triggers.concat([triggerObj]);
   };
 }
 
+export function unsetTrigger(state, currentObject, source) {
+  return function (trigger, action, props = {}) {
+    currentObject.triggers = currentObject.triggers.filter(t => t.source !== source);
+  };
+}
+
 export function triggers(state) {
   return {
-    afterAttack: function (targetFunc) {
+    afterAttack: function (targetFunc, attackedObjectType) {
       return {
         'type': 'afterAttack',
+        'attackedObjectType': attackedObjectType,
         'targetFunc': `(${targetFunc.toString()})`
       };
     },

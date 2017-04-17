@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { object, string } from 'prop-types';
 
-import Sprite from '../game/Sprite';
+import Sprite from '../Sprite';
 
 import HexUtils from './HexUtils';
 

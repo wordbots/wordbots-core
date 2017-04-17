@@ -18,6 +18,10 @@ const store = configureStore(initialState);
 
 injectTapEventPlugin();
 
+if (window.localStorage['profileOnLoad']) {
+  window.Perf.start();
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
@@ -26,3 +30,8 @@ ReactDOM.render(
   </Provider>,
   rootElement
 );
+
+if (window.localStorage['profileOnLoad']) {
+  window.Perf.start();
+  window.Perf.printInclusive();
+}

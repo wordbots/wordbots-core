@@ -3,8 +3,6 @@ import { bool, func, object, array } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
@@ -70,15 +68,6 @@ export class Play extends Component {
     onHoverCard: func,
     onHoverTile: func
   };
-
-  // For testing.
-  static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-
-  getChildContext() {
-    return {muiTheme: getMuiTheme(baseTheme)};
-  }
 
   componentDidMount() {
     if (!this.props.socket.connected) {

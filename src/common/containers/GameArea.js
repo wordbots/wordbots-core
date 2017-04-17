@@ -5,10 +5,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import { isNil } from 'lodash';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { getAttribute } from '../util/game';
+import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
-import CardViewer from '../components/game/CardViewer';
 import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
@@ -132,6 +134,15 @@ export class GameArea extends Component {
     onVictoryScreenClick: func
   };
 
+
+  // For testing.
+  static childContextTypes = {
+    muiTheme: object.isRequired
+  };
+  getChildContext() {
+    return {muiTheme: getMuiTheme(baseTheme)};
+  }
+
   constructor(props) {
     super(props);
 
@@ -235,13 +246,14 @@ export class GameArea extends Component {
           <PlayerArea
             opponent
             gameProps={this.props} />
-
-          <div ref={(board) => {this.boardArea = board;}} style={{
-            position: 'absolute',
-            left: 0,
-            top: 125,
-            bottom: 125,
-            right: 0
+          <div 
+            ref={(board) => {this.boardArea = board;}} 
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 125,
+              bottom: 125,
+              right: 0
           }}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status

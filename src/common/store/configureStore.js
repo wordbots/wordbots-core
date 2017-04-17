@@ -27,7 +27,10 @@ const middlewareBuilder = () => {
       allComposeElements = [middleware];
     } else {
       const createLogger = require('redux-logger').createLogger;
+      const Perf = require('react-addons-perf');
       const DevTools = require('../containers/DevTools').default;
+
+      window.Perf = Perf;
 
       const logger = createLogger({
         predicate: (getState, action) => ![ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE].includes(action.type)

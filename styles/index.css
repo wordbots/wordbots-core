@@ -13,6 +13,10 @@ a {
   text-decoration: none;
 }
 
+.activeNavLink > div > span {
+  background-color: #d8d8d8 !important;
+}
+
 .markdownBlock img {
   display: block;
   width: 300px;

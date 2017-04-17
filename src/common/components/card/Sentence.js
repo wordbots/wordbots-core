@@ -7,7 +7,7 @@ import StatusIcon from './StatusIcon';
 import Word from './Word';
 
 function Sentence(text, result = {}) {
-  const keywords = keywordsInSentence(text);
+  const keywords = keywordsInSentence(text, true);
   const color = result.js ? 'green' : (result.error ? 'red' : 'black');
 
   if (/\S/.test(text)) {

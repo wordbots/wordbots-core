@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import {clamp as _clamp, isEqual, some} from 'lodash';
 
 // Utility functions used everywhere.
 
@@ -22,8 +22,12 @@ export function toProperCase(str) {
   return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
+export function compareCertainKeys(obj1, obj2, keys) {
+  return !some(keys, key => !isEqual(obj1[key], obj2[key]));
+}
+
 export function clamp(func) {
-  return (stat => _.clamp(func(stat), 0, 99));
+  return (stat => _clamp(func(stat), 0, 99));
 }
 
 export function applyFuncToField(obj, func, field) {

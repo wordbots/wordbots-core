@@ -165,8 +165,6 @@ export class GameArea extends Component {
       areaHeight: window.innerHeight - 200,
       boardHeight: window.innerHeight - 450
     });
-
-    console.log(this.state.areaHeight, this.state.boardHeight);
   }
 
   isMyTurn() {

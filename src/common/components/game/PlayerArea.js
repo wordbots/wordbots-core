@@ -8,17 +8,9 @@ import Deck from './Deck';
 class PlayerArea extends Component {
   getColor(opponent, playerColor) {
     if (opponent) {
-      if (playerColor === 'blue') {
-        return 'orange';
-      } else {
-        return 'blue';
-      }
+      return (playerColor === 'blue') ? 'orange' : 'blue';
     } else {
-      if (playerColor === 'neither') {
-        return 'orange';
-      } else {
-        return playerColor;
-      }
+      return (playerColor === 'neither') ? 'orange' : playerColor;
     }
   }
 

@@ -11,7 +11,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
-import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import VictoryScreen from '../components/game/VictoryScreen';
@@ -67,9 +66,6 @@ export function mapDispatchToProps(dispatch) {
     },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
-    },
-    onPassTurn: (player) => {
-      dispatch(gameActions.passTurn(player));
     },
     onSelectCard: (index, player) => {
       dispatch(gameActions.setSelectedCard(index, player));
@@ -128,7 +124,6 @@ export class GameArea extends Component {
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
-    onPassTurn: func,
     onHoverCard: func,
     onHoverTile: func,
     onVictoryScreenClick: func
@@ -173,6 +168,10 @@ export class GameArea extends Component {
 
   allPieces() {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
+  }
+
+  myPieces() {
+    return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
   hoveredCard() {
@@ -243,11 +242,9 @@ export class GameArea extends Component {
         <Helmet title="Game"/>
 
         <Paper style={{position: 'relative', height: this.state.areaHeight}}>
-          <PlayerArea
-            opponent
-            gameProps={this.props} />
-          <div 
-            ref={(board) => {this.boardArea = board;}} 
+          <PlayerArea opponent gameProps={this.props} />
+          <div
+            ref={(board) => {this.boardArea = board;}}
             style={{
               position: 'absolute',
               left: 0,
@@ -270,13 +267,8 @@ export class GameArea extends Component {
               playingCardType={this.props.playingCardType}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
-            <EndTurnButton
-              enabled={this.isMyTurn()}
-              onClick={() => this.props.onPassTurn(this.props.player)} />
           </div>
-
-          <PlayerArea
-            gameProps={this.props} />
+          <PlayerArea gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}

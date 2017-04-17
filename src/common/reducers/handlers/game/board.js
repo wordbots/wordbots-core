@@ -1,13 +1,13 @@
+import { cloneDeep } from 'lodash';
+
 import { stringToType } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
-  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
-  triggerEvent, applyAbilities
+  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
+  executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
-
-import { setTargetAndExecuteQueuedAction } from './cards';
 
 export function setHoveredTile(state, card) {
   return Object.assign({}, state, {hoveredCard: card});
@@ -20,7 +20,7 @@ export function setSelectedTile(state, playerName, tile) {
   if (isCurrentPlayer &&
       player.target.choosing &&
       player.target.possibleHexes.includes(tile) &&
-      player.selectedCard !== null) {
+      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
@@ -70,6 +70,7 @@ export function attack(state, source, target) {
     const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
     if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
       attacker.cantMove = true;
+      attacker.cantActivate = true;
 
       // console.log(defender.card.type);
       state = triggerEvent(state, 'afterAttack', {
@@ -101,6 +102,46 @@ export function attack(state, source, target) {
   }
 
   return state;
+}
+
+export function activateObject(state, abilityIdx, selectedHexId = null) {
+  // Work on a copy of the state in case we have to rollback
+  // (if a target needs to be selected for an afterPlayed trigger).
+  let tempState = cloneDeep(state);
+
+  const hexId = selectedHexId || currentPlayer(tempState).selectedTile;
+  const object = allObjectsOnBoard(tempState)[hexId];
+
+  if (object && !object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
+    const player = currentPlayer(tempState);
+    const ability = object.activatedAbilities[abilityIdx];
+
+    executeCmd(tempState, ability.cmd, object);
+
+    if (player.target.choosing) {
+      // Target still needs to be selected, so roll back playing the card (and return old state).
+      currentPlayer(state).target = player.target;
+      currentPlayer(state).status = {
+        message: `Choose a target for ${object.card.name}'s ability.`,
+        type: 'text'
+      };
+
+      state.callbackAfterTargetSelected = (newState => activateObject(newState, abilityIdx, hexId));
+
+      return state;
+    } else {
+      object.cantActivate = true;
+      object.cantAttack = true;
+
+      tempState = logAction(tempState, player, `activated |${object.card.name}|'s ability`, {
+        [object.card.name]: object.card
+      });
+
+      return tempState;
+    }
+  } else {
+    return state;
+  }
 }
 
 // Low-level "move" of an object.

@@ -1,13 +1,14 @@
 import { cloneDeep, isArray } from 'lodash';
 
 import { TYPE_EVENT } from '../../../constants';
+import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions,
   validPlacementHexes,
-  discardCards, logAction,
+  discardCards, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
-import { arbitraryPlayerState } from '../../../store/defaultGameState';
+import { splitSentences } from '../../../util/cards';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {
@@ -21,7 +22,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
   if (isCurrentPlayer &&
       player.target.choosing &&
       player.target.possibleCards.includes(selectedCard.id) &&
-      player.selectedCard !== null) {
+      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, selectedCard);
   } else {
@@ -67,13 +68,14 @@ export function placeCard(state, cardIdx, tile) {
   if (player.energy.available >= getCost(card) &&
       validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
     const playedObject = {
-      id: Math.random().toString(36),
+      id: id(),
       card: card,
       stats: Object.assign({}, card.stats),
       triggers: [],
       abilities: [],
       movesMade: 0,
       cantMove: true,
+      cantActivate: true,
       justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
                         // target themselves for afterPlayed triggers.
     };
@@ -82,9 +84,13 @@ export function placeCard(state, cardIdx, tile) {
     player.energy.available -= getCost(card);
     player.selectedCard = null;
     player.status.message = '';
+    player.selectedTile = tile;
 
     if (card.abilities.length > 0) {
-      card.abilities.forEach((cmd) => executeCmd(tempState, cmd, playedObject));
+      card.abilities.forEach((cmd, idx) => {
+        tempState.currentCmdText = splitSentences(card.text)[idx];
+        executeCmd(tempState, cmd, playedObject);
+      });
     }
 
     tempState = discardCards(tempState, [card]);
@@ -103,7 +109,7 @@ export function placeCard(state, cardIdx, tile) {
         type: 'text'
       };
 
-      state.placementTile = tile;  // Store the tile the object was played on, for the actual placement later.
+      state.callbackAfterTargetSelected = (newState => placeCard(newState, cardIdx, tile));
       return state;
     } else {
       // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
@@ -116,7 +122,7 @@ export function placeCard(state, cardIdx, tile) {
   }
 }
 
-export function playEvent(state, cardIdx, command) {
+function playEvent(state, cardIdx) {
   const player = currentPlayer(state);
   const card = player.hand[cardIdx];
   const cmd = card.command;
@@ -135,6 +141,7 @@ export function playEvent(state, cardIdx, command) {
     card.justPlayed = false;
 
     if (player.target.choosing) {
+      state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
       player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
@@ -146,31 +153,6 @@ export function playEvent(state, cardIdx, command) {
     }
   }
   state = checkVictoryConditions(state);
-
-  return state;
-}
-
-export function setTargetAndExecuteQueuedAction(state, target) {
-  const player = currentPlayer(state);
-
-  // Select target tile for event or afterPlayed trigger.
-  player.target = {
-    chosen: [target],
-    choosing: false,
-    possibleHexes: [],
-    possibleCards: []
-  };
-
-  // Perform the trigger.
-  const card = player.hand[player.selectedCard];
-  if (card.type === TYPE_EVENT) {
-    state = playEvent(state, player.selectedCard);
-  } else {
-    state = placeCard(state, player.selectedCard, state.placementTile);
-  }
-
-  // Reset target.
-  state.players[player.name].target = arbitraryPlayerState().target;
 
   return state;
 }

@@ -1,7 +1,7 @@
 import { cloneDeep, filter, findKey, flatMap, isArray, some, without } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
-import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
+import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
 import vocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import Hex from '../components/react-hexgrid/Hex';
@@ -76,7 +76,7 @@ function getEffect(object, effect) {
 }
 
 export function allowedToAttack(state, attacker, targetHex) {
-  if (hasEffect(attacker, 'cannotattack')) {
+  if (attacker.cantAttack || hasEffect(attacker, 'cannotattack')) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
     const defender = allObjectsOnBoard(state)[targetHex];
@@ -244,6 +244,27 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   }
 
   state = applyAbilities(state);
+
+  return state;
+}
+
+export function setTargetAndExecuteQueuedAction(state, target) {
+  const player = currentPlayer(state);
+
+  // Select target tile for event or afterPlayed trigger.
+  player.target = {
+    chosen: [target],
+    choosing: false,
+    possibleHexes: [],
+    possibleCards: []
+  };
+
+  // Perform the trigger.
+  state = state.callbackAfterTargetSelected(state);
+  state.callbackAfterTargetSelected = null;
+
+  // Reset target.
+  state.players[player.name].target = arbitraryPlayerState().target;
 
   return state;
 }

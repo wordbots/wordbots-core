@@ -414,6 +414,22 @@ export const magpieMachineCard = {
     health: 4
   }
 };
+
+export const recyclerCard = {
+  name: "Recycler",
+  type: TYPE_ROBOT,
+  spriteID: "rtom5g6o8yf",
+  text: "Activate: Discard a card, then draw a card.",
+  cost: 3,
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard'))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })\")); })"
+  ],
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 1
+  }
+};
 /* eslint-enable quotes */
 
 export const collection = [
@@ -449,7 +465,8 @@ export const collection = [
   energyWellCard,
   smashCard,
   antiGravityFieldCard,
-  magpieMachineCard
+  magpieMachineCard,
+  recyclerCard
 ].map(c =>
   Object.assign(instantiateCard(c), {source: 'builtin'})
 );

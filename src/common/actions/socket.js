@@ -85,6 +85,7 @@ export function keepalive() {
 // Client => server => client
 
 export const CHAT = 'ws:CHAT';
+export const FORFEIT = 'ws:FORFEIT';
 
 export function chat(msg) {
   return {
@@ -93,9 +94,15 @@ export function chat(msg) {
   };
 }
 
+export function forfeit(winner) {
+  return {
+    type: FORFEIT,
+    payload: { winner }
+  };
+}
+
 // Server => client
 
 export const INFO = 'ws:INFO';
 export const GAME_START = 'ws:GAME_START';
 export const CURRENT_STATE = 'ws:CURRENT_STATE';
-export const FORFEIT = 'ws:FORFEIT';

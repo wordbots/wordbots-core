@@ -10,7 +10,7 @@ import {
 import { getCost } from '../../src/common/util/game';
 import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
-  newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack,
+  newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack, activate,
   setUpBoardState
 } from '../testHelpers';
 
@@ -637,6 +637,51 @@ describe('Game reducer', () => {
       currentHandSize = handSize();
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize);
+    });
+  });
+
+  describe('[Activated abilities]', () => {
+    it('should let objects activate activated abilities when able', () => {
+      function hand() {
+        return state.players.orange.hand.map(c => c.name).join(',');
+      }
+
+      let state = setUpBoardState({
+        'blue': {
+          '1,0,-1': cards.fortificationCard
+        }
+      });
+      let currentHand = hand();
+
+      // Recycler: "Activate: Discard a card, then draw a card."
+      state = playObject(state, 'orange', cards.recyclerCard, '2,0,-2');
+
+      // Can't activate the turn it's played.
+      state = activate(state, '2,0,-2', 0, {card: 0});
+      expect(hand()).toEqual(currentHand);
+
+      // Can activate the next turn.
+      state = newTurn(state, 'orange');
+      currentHand = hand();
+      state = activate(state, '2,0,-2', 0, {card: 0});
+      expect(hand()).not.toEqual(currentHand);
+
+      // Can't activate twice in a turn.
+      currentHand = hand();
+      state = activate(state, '2,0,-2', 0, {card: 0});
+      expect(hand()).toEqual(currentHand);
+
+      // Can't activate then attack on the same turn.
+      state = attack(state, '2,0,-2', '1,0,-1');
+      expect(queryObjectAttribute(state, '1,0,-1', 'health')).toEqual(cards.fortificationCard.stats.health);
+
+      // Can't attack then activate on the same turn.
+      state = newTurn(state, 'orange');
+      state = attack(state, '2,0,-2', '1,0,-1');
+      expect(queryObjectAttribute(state, '1,0,-1', 'health')).toEqual(cards.fortificationCard.stats.health - 1);
+      currentHand = hand();
+      state = activate(state, '2,0,-2', 0, {card: 0});
+      expect(hand()).toEqual(currentHand);
     });
   });
 });

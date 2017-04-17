@@ -19,7 +19,7 @@ function startTurn(state) {
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
-    Object.assign({}, robot, {cantMove: false, movesMade: 0})
+    Object.assign({}, robot, {cantActivate: false, cantAttack: false, cantMove: false, movesMade: 0})
   ));
 
   state = drawCards(state, player, 1);

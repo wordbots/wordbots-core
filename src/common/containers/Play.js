@@ -62,6 +62,8 @@ export class Play extends Component {
     socket: object,
     availableDecks: array,
 
+    history: object,
+
     onConnect: func,
     onHostGame: func,
     onJoinGame: func,
@@ -78,23 +80,17 @@ export class Play extends Component {
     }
   }
 
-  renderGameArea() {
-    if (this.props.started) {
-      return (
-        <GameArea />
-      );
-    } else {
-      return (
-        <Lobby
-          socket={this.props.socket}
-          availableDecks={this.props.availableDecks}
-          onConnect={this.props.onConnect}
-          onHostGame={this.props.onHostGame}
-          onJoinGame={this.props.onJoinGame}
-          onSpectateGame={this.props.onSpectateGame}
-          onSetUsername={this.props.onSetUsername} />
-      );
-    }
+  get lobby() {
+    return (
+      <Lobby
+        socket={this.props.socket}
+        availableDecks={this.props.availableDecks}
+        onConnect={this.props.onConnect}
+        onHostGame={this.props.onHostGame}
+        onJoinGame={this.props.onJoinGame}
+        onSpectateGame={this.props.onSpectateGame}
+        onSetUsername={this.props.onSetUsername} />
+    );
   }
 
   render() {
@@ -105,7 +101,7 @@ export class Play extends Component {
         margin: '48px 72px'
       }}>
         <Helmet title="Play"/>
-        {this.renderGameArea()}
+        {this.props.started ? <GameArea /> : this.lobby}
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages.concat(this.props.actionLog)}

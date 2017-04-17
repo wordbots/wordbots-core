@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
-import { isFunction } from 'lodash';
+import { compact, isFunction } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
@@ -60,7 +60,7 @@ class Deck extends Component {
   }
 
   selectedCards() {
-    return this.state.selectedCardIds.map(id => this.props.cards.find(c => c.id === id));
+    return compact(this.state.selectedCardIds.map(id => this.props.cards.find(c => c.id === id)));
   }
 
   updateState(newProps) {

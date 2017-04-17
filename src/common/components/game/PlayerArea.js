@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import { object, string, bool } from 'prop-types';
 
 import Hand from './Hand';
 import EnergyCount from './EnergyCount';
@@ -19,10 +19,9 @@ class PlayerArea extends Component {
   }
 
   render() {
-    let opponent = this.props.opponent;
-    let gameProps = this.props.gameProps;
-
-    let color = this.getColor(opponent, gameProps.player);
+    const opponent = this.props.opponent;
+    const gameProps = this.props.gameProps;
+    const color = this.getColor(opponent, gameProps.player);
 
     return (
       <div style={{
@@ -62,7 +61,8 @@ class PlayerArea extends Component {
 
 PlayerArea.propTypes = {
   color: string,
-  gameProps: object
+  gameProps: object,
+  opponent: bool
 };
 
 export default PlayerArea;

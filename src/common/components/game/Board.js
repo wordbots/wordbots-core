@@ -170,7 +170,7 @@ export default class Board extends Component {
       }
     };
 
-    const { grid, config } = this.state;
+    const { grid } = this.state;
     const hexColors = this.updateHexColors();
 
     const actions = {

@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
+import { bool, func, object, array } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isNil } from 'lodash';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
-import GameArea from './GameArea';
 import * as socketActions from '../actions/socket';
 import * as gameActions from '../actions/game';
-import { arbitraryPlayerState } from '../store/defaultGameState';
+
+import GameArea from './GameArea';
 
 export function mapStateToProps(state) {
-  const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
-  const currentPlayer = state.game.players[state.game.currentTurn];
-
   return {
     started: state.game.started,
     actionLog: state.game.actionLog,
@@ -52,15 +47,19 @@ export function mapDispatchToProps(dispatch) {
     },
     onHoverCard: (index) => {
       dispatch(gameActions.setHoveredCard(index));
-    },
+    }
   };
 }
 
 export class Play extends Component {
   static propTypes = {
     started: bool,
+    actionLog: array,
 
     sidebarOpen: bool,
+
+    socket: object,
+    availableDecks: array,
 
     onConnect: func,
     onHostGame: func,
@@ -69,6 +68,7 @@ export class Play extends Component {
     onSetUsername: func,
     onSendChatMessage: func,
     onHoverCard: func,
+    onHoverTile: func
   };
 
   // For testing.

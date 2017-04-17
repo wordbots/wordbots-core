@@ -71,9 +71,9 @@ export default class CardCreationForm extends Component {
     return (
       this.props.name && this.props.name !== '[Unnamed]' &&
         CREATABLE_TYPES.includes(this.props.type) &&
-        !isNull(this.props.energy) &&
-        (!isNull(this.props.attack) || this.props.type !== TYPE_ROBOT) &&
-        (!isNull(this.props.speed) >= 0 || this.props.type !== TYPE_ROBOT) &&
+        this.props.energy >= 0 &&
+        (this.props.attack >= 0 || this.props.type !== TYPE_ROBOT) &&
+        (this.props.speed >= 0 || this.props.type !== TYPE_ROBOT) &&
         (this.props.health >= 1 || this.props.type === TYPE_EVENT) &&
         (this.hasCardText() || this.props.type !== TYPE_EVENT) &&  // Events must have some card text.
         every(this.nonEmptySentences(), s => s.result.js)

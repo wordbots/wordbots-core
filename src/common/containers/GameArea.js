@@ -240,7 +240,7 @@ export class GameArea extends Component {
   renderNotification() {
     const options = {
       tag: 'wordbots',
-      body: 'Its your turn!',
+      body: 'It\'s your turn!',
       icon: '/static/android-icon-144x144.png',
       lang: 'en',
       dir: 'ltr',
@@ -249,10 +249,10 @@ export class GameArea extends Component {
 
     if (this.props.currentTurn === this.props.player) {
       return (
-        <Notification 
+        <Notification
           timeout={2000}
           title={'Wordbots.'}
-          options={options} 
+          options={options}
           onClick={(e, tag) => {
             window.focus();
           }} />
@@ -267,7 +267,11 @@ export class GameArea extends Component {
 
         {this.renderNotification()}
 
-        <Paper style={{position: 'relative', height: this.state.areaHeight}}>
+        <Paper
+          style={{
+            position: 'relative',
+            height: this.state.areaHeight
+        }}>
           <PlayerArea opponent gameProps={this.props} />
           <div
             ref={(board) => {this.boardArea = board;}}

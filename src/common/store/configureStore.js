@@ -7,6 +7,7 @@ import promiseMiddleware from '../api/promiseMiddleware';
 import createSocketMiddleware from '../api/socketMiddleware';
 import rootReducer from '../reducers';
 import * as ga from '../actions/game';
+import * as la from '../actions/layout';
 import * as sa from '../actions/socket';
 
 import { loadState, saveState } from './persistState';
@@ -19,7 +20,10 @@ const middlewareBuilder = () => {
 
   if (process.browser) {
     const socketMiddleware = createSocketMiddleware({
-      excludedActions: [ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED]
+      excludedActions: [
+        ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, la.TOGGLE_SIDEBAR,
+        sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED
+      ]
     });
 
     if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {

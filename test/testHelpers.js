@@ -167,21 +167,18 @@ export function attack(state, source, target, asNewTurn = false) {
 export function setUpBoardState(players) {
   let state = getDefaultState();
 
-  function placeObjects(playerName, placementHex) {
+  function placeObjects(playerName, placementHexes) {
     if (players[playerName]) {
       _.forOwn(players[playerName], (card, hex) => {
-        if (hex === '-3,0,3' || hex === '3,0,-3') {
-          throw `${hex} must remain unoccupied in setUpBoardState()`;
-        }
-
+        const placementHex = placementHexes.find(h => !allObjectsOnBoard(state)[h]);
         state = playObject(state, playerName, card, placementHex);
         state = transportObject(state, placementHex, hex);
       });
     }
   }
 
-  placeObjects('blue', '-3,0,3');
-  placeObjects('orange', '3,0,-3');
+  placeObjects('blue', ['-3,1,2', '-2,0-2', '-2,-1,3']);
+  placeObjects('orange', ['3,-1,-2', '2,0,-2', '2,1,-3']);
 
   return state;
 }

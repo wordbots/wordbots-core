@@ -7,10 +7,10 @@ export default class Status extends Component {
     player: string
   };
 
-  getStatusColor(type) {
-    if (type === 'error') {
+  get color() {
+    if (this.props.status.type === 'error') {
       return '#F44336';
-    } else if (type === 'warning') {
+    } else if (this.props.status.type === 'warning') {
       return '#FFEB3B';
     } else {
       return '#444444';
@@ -18,10 +18,8 @@ export default class Status extends Component {
   }
 
   render() {
-    const statusStyle = this.getStatusColor(this.props.status.type);
-
     return (
-      <div style={Object.assign({
+      <div style={{
         display: 'inline-block',
         position: 'absolute',
         left: 10,
@@ -29,8 +27,11 @@ export default class Status extends Component {
         height: 20,
         fontFamily: 'Carter One',
         fontSize: 20,
-        bottom: 70
-      }, statusStyle)}>{this.props.status.message}</div>
+        bottom: 70,
+        color: this.color
+      }}>
+        {this.props.status.message}
+      </div>
     );
   }
 }

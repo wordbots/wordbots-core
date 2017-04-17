@@ -35,9 +35,9 @@ describe('GameArea container', () => {
         <PlayerArea opponent gameProps={game.props} />
         <div
           ref={mainDiv.ref}
-          style={{position: 'absolute', left: 0, top: 250, bottom: 250, right: 0}}
+          style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0}}
         >
-          <CardViewer />
+          <CardViewer hoveredCard={undefined} />
           <Status
             player={'orange'}
             status={state.game.players.orange.status} />

@@ -88,13 +88,15 @@ export default class Hand extends Component {
   render() {
     return (
       <CSSTransitionGroup
+        id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
         transitionEnterTimeout={500}
         transitionLeave={false}
         style={{
           display: 'flex',
           justifyContent: 'center',
-          width: '100%'
+          width: '100%',
+          position: 'absolute'
         }}>
         {this.renderCards()}
       </CSSTransitionGroup>

@@ -231,7 +231,7 @@ export class GameArea extends Component {
       <div>
         <Helmet title="Game"/>
 
-        <Paper style={{padding: 20, position: 'relative'}}>
+        <Paper style={{position: 'relative'}}>
           <PlayerArea
             opponent
             gameProps={this.props} />

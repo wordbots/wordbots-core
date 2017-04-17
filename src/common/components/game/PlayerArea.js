@@ -21,14 +21,17 @@ class PlayerArea extends Component {
   render() {
     let opponent = this.props.opponent;
     let gameProps = this.props.gameProps;
-    
+
     let color = this.getColor(opponent, gameProps.player);
 
     return (
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: 20
       }}>
         <EnergyCount
           color={color}
@@ -37,6 +40,7 @@ class PlayerArea extends Component {
           isCurrentPlayer={gameProps.currentTurn === color} />
         <Hand
           // curved
+          opponent={opponent}
           name={color}
           onSelectCard={idx => gameProps.onSelectCard(idx, color)}
           onHoverCard={gameProps.onHoverCard}

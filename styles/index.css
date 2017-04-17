@@ -541,3 +541,25 @@ a {
   border-radius: 3px;
   box-shadow: 0 0 6px rgba(0,0,0,0.3);
 }
+
+/* Hand hover animation */
+
+#handTop:hover {
+  top: 0 !important;
+  transition: all 300ms ease-in-out;
+}
+
+#handBottom:hover {
+  bottom: 0 !important;
+  transition: all 300ms ease-in-out;
+}
+
+#handTop {
+  top: -150px;
+  transition: all 300ms ease-in-out;
+}
+
+#handBottom {
+  bottom: -150px;
+  transition: all 300ms ease-in-out;
+}

@@ -250,9 +250,12 @@ export class GameArea extends Component {
     if (this.props.currentTurn === this.props.player) {
       return (
         <Notification 
-          timeout={3000}
+          timeout={2000}
           title={'Wordbots.'}
-          options={options} />
+          options={options} 
+          onClick={(e, tag) => {
+            window.focus();
+          }} />
       );
     }
   }

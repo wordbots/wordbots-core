@@ -7,36 +7,29 @@ export default class Status extends Component {
     player: string
   };
 
-  render() {
-    const statusStyle = {
-      color: '#444444',
-      top: 0,
-      bottom: 0
-    };
-
-    if (this.props.status.type === 'error') {
-      statusStyle.color = '#F44336';
-    } else if (this.props.status.type === 'warning') {
-      statusStyle.color = '#FFEB3B';
-    }
-
-    if (this.props.player === 'orange') {
-      statusStyle.top = 6;
-      statusStyle.bottom = null;
+  getStatusColor(type) {
+    if (type === 'error') {
+      return '#F44336';
+    } else if (type === 'warning') {
+      return '#FFEB3B';
     } else {
-      statusStyle.bottom = 16;
-      statusStyle.top = null;
+      return '#444444';
     }
+  }
+
+  render() {
+    const statusStyle = this.getStatusColor(this.props.status.type);
 
     return (
       <div style={Object.assign({
         display: 'inline-block',
         position: 'absolute',
-        left: 0,
+        left: 10,
         margin: 'auto',
         height: 20,
         fontFamily: 'Carter One',
-        fontSize: 20
+        fontSize: 20,
+        bottom: 70
       }, statusStyle)}>{this.props.status.message}</div>
     );
   }

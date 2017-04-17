@@ -239,8 +239,8 @@ export class GameArea extends Component {
           <div ref={(board) => {this.boardArea = board;}} style={{
             position: 'absolute',
             left: 0,
-            top: 250,
-            bottom: 250,
+            top: 125,
+            bottom: 125,
             right: 0
           }}>
             <CardViewer hoveredCard={this.hoveredCard()} />

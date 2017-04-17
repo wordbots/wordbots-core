@@ -12,7 +12,6 @@ import EndTurnButton from '../../src/common/components/game/EndTurnButton';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
-import Chat from '../../src/common/components/multiplayer/Chat';
 import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 import * as actions from '../../src/common/actions/game';

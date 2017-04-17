@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { object } from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
-import Sentence from '../cards/Sentence';
 import { splitSentences } from '../../util/cards';
 
 import Card from './Card';
+import Sentence from './Sentence';
 
 export default class CardViewer extends Component {
   static propTypes = {
@@ -29,8 +29,6 @@ export default class CardViewer extends Component {
           {
             this.props.hoveredCard &&
               <Card
-                onCardClick={() => {}}
-                onCardHover={() => {}}
                 scale={1.5}
                 stats={this.props.hoveredCard.stats}
                 name={this.props.hoveredCard.card.name}
@@ -41,9 +39,7 @@ export default class CardViewer extends Component {
                 img={this.props.hoveredCard.card.img}
                 cost={this.props.hoveredCard.card.cost}
                 cardStats={this.props.hoveredCard.card.stats}
-                source={this.props.hoveredCard.card.source}
-                selected={false}
-                visible />
+                source={this.props.hoveredCard.card.source} />
           }
         </CSSTransitionGroup>
       </div>

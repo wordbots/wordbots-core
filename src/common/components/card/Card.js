@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Divider from 'material-ui/Divider';
-import {CardHeader, CardText} from 'material-ui/Card';
+import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
-import Badge from 'material-ui/Badge';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { isEqual } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
+import { compareCertainKeys, inBrowser } from '../../util/common';
 import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
+import Sprite from '../Sprite';
 
+import CardCostBadge from './CardCostBadge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
 import Identicon from './Identicon';
-import Sprite from './Sprite';
 
 export default class Card extends Component {
   static propTypes = {
     children: oneOfType([string, array]),
 
+    id: string,
     name: string,
     spriteID: string,
     type: number,
     text: oneOfType([string, array]),
     rawText: string,
+    parseResults: string,
     img: string,
     cardStats: object,
     stats: object,
@@ -33,7 +39,6 @@ export default class Card extends Component {
 
     status: object,
     visible: bool,
-    zIndex: number,
     selected: bool,
     targetable: bool,
 
@@ -41,11 +46,38 @@ export default class Card extends Component {
     margin: number,
     rotation: number,
     yTranslation: number,
+    zIndex: number,
 
     onCardClick: func,
     onCardHover: func,
     onSpriteClick: func
   };
+
+  static defaultProps = {
+    stats: {},
+    parseResults: '',
+
+    visible: true,
+    selected: false,
+
+    scale: 1,
+    margin: 0,
+    rotation: 0,
+    yTranslation: 0,
+    zIndex: 0,
+
+    onCardClick: () => {},
+    onCardHover: () => {},
+    onSpriteClick: () => {}
+  }
+
+  // (For server-side rendering via /api/card.png)
+  static childContextTypes = {
+    muiTheme: object.isRequired
+  };
+  getChildContext() {
+    return {muiTheme: getMuiTheme(baseTheme)};
+  }
 
   constructor(props) {
     super(props);
@@ -53,115 +85,113 @@ export default class Card extends Component {
     this.state = {
       shadow: 2
     };
-
-    this.onMouseOver = this.onMouseOver.bind(this);
-    this.onMouseOut = this.onMouseOut.bind(this);
   }
 
-  onMouseOver() {
+  shouldComponentUpdate(nextProps, nextState) {
+    const trackedProps = [
+      'name', 'spriteID', 'type', 'rawText', 'parseResults',
+      'cardStats', 'stats', 'image', 'cost', 'baseCost',
+      'status', 'visible', 'selected', 'targetable',
+      'margin', 'zIndex'
+    ];
+
+    return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
+  }
+
+  onMouseEnter() {
     this.setState({
       shadow: 3
     });
   }
 
-  onMouseOut() {
+  onMouseLeave() {
     this.setState({
       shadow: 2
     });
   }
 
-  textAreaStyle() {
+  get numChars() {
+    return this.props.rawText ? this.props.rawText.length : this.props.text.length;
+  }
+
+  get textAreaStyle() {
     const baseStyle = {
       height: 106 * this.props.scale
     };
 
     const compactStyle = {
       height: 96 * this.props.scale,
+      marginTop: (inBrowser() ? 0 : 20) * this.props.scale,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
     };
 
-    const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
-
-    if (this.props.type === TYPE_EVENT && numChars < 30) {
+    if (this.props.type === TYPE_EVENT && this.numChars < 30) {
       return Object.assign(baseStyle, compactStyle);
     } else {
       return baseStyle;
     }
   }
 
-  textFitStyle() {
+  get textFitStyle() {
     const baseStyle = {
       padding: 6 * this.props.scale,
       paddingBottom: 0,
       height: (this.props.type !== TYPE_EVENT ? 48 : 96) * this.props.scale,
+      width: '100%',
       boxSizing: 'border-box'
     };
 
     const compactStyle = {
       paddingBottom: 6 * this.props.scale,
-      height: 'auto',
+      height: '50%',
       textAlign: 'center'
     };
 
-    const numChars = this.props.rawText ? this.props.rawText.length : this.props.text.length;
-
-    if (this.props.type === TYPE_EVENT && numChars < 30) {
+    if (this.props.type === TYPE_EVENT && this.numChars < 30) {
       return Object.assign(baseStyle, compactStyle);
     } else {
       return baseStyle;
     }
   }
 
-  costBadgeStyle() {
-    if (this.props.cost < this.props.baseCost) {
-      return {
-        color: '#81C784',
-        WebkitTextStroke: '0.5px white'
-      };
-    } else if (this.props.cost > this.props.baseCost) {
-      return {
-        color: '#E57373',
-        WebkitTextStroke: '0.5px white'
-      };
-    } else {
-      return {};
-    }
-  }
-
-  renderStat(type) {
-    return (
-      <CardStat type={type} base={this.props.cardStats[type]} current={this.props.stats[type]} scale={this.props.scale}/>
-    );
-  }
-
-  renderStatsArea() {
-    const style = {
-      display: 'flex',
-      justifyContent: 'space-between',
-      padding: 10 * this.props.scale
-    };
-
-    if (this.props.type === TYPE_ROBOT) {
+  renderTitle() {
+    if (!inBrowser()) {
+      // Textfit won't work without a DOM, so just estimate something reasonable.
+      const maxFontSize = Math.round(180 / this.props.name.length);
       return (
-        <CardText style={style}>
-          {this.renderStat('attack')}
-          {this.renderStat('health')}
-          {this.renderStat('speed')}
-        </CardText>
+        <div style={{
+          width: 105 * this.props.scale,
+          height: 20 * this.props.scale,
+          fontSize: Math.min(maxFontSize, 16) * this.props.scale
+        }}>
+          {this.props.name}
+        </div>
       );
-    } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
+    } else {
       return (
-        <CardText style={Object.assign(style, {marginLeft: '31%'})}>
-          {this.renderStat('health')}
-        </CardText>
+        <Textfit
+          mode="multi"
+          autoResize={false}
+          max={16 * this.props.scale}
+          style={{
+            width: 105 * this.props.scale,
+            height: 23 * this.props.scale
+        }}>
+          {this.props.name}
+        </Textfit>
       );
     }
   }
 
   renderImage() {
-    if (this.props.type === TYPE_CORE) {
+    if (!inBrowser()) {
+      const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
+      return (
+        <div style={{ width, height }} />
+      );
+    } if (this.props.type === TYPE_CORE) {
       const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
         <div style={{
@@ -200,13 +230,68 @@ export default class Card extends Component {
     }
   }
 
+  renderText() {
+    if (!inBrowser()) {
+      // Textfit won't work without a DOM, so just estimate something reasonable.
+      const maxFontSize = Math.round((this.props.type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
+      return (
+        <div style={Object.assign(this.textFitStyle, {
+          fontSize: Math.min(maxFontSize, 14)
+        })}>
+          {this.props.text}
+        </div>
+      );
+    } else {
+      return (
+        <Textfit
+          autoResize={false}
+          mode="multi"
+          max={14 * this.props.scale}
+          style={this.textFitStyle}
+        >
+          {this.props.text}
+        </Textfit>
+      );
+    }
+  }
+
+  renderStat(type) {
+    return (
+      <CardStat type={type} base={this.props.cardStats[type]} current={this.props.stats[type]} scale={this.props.scale}/>
+    );
+  }
+
+  renderStatsArea() {
+    const style = {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: 10 * this.props.scale
+    };
+
+    if (this.props.type === TYPE_ROBOT) {
+      return (
+        <CardText style={style}>
+          {this.renderStat('attack')}
+          {this.renderStat('health')}
+          {this.renderStat('speed')}
+        </CardText>
+      );
+    } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
+      return (
+        <CardText style={Object.assign(style, {marginLeft: '31%'})}>
+          {this.renderStat('health')}
+        </CardText>
+      );
+    }
+  }
+
   render() {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
       boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
-    const transform = `rotate(${this.props.rotation || 0}deg) translate(0px, ${this.props.yTranslation || 0}px)`;
+    const transform = `rotate(${this.props.rotation}deg) translate(0px, ${this.props.yTranslation}px)`;
 
     if (!this.props.visible) {
       return (
@@ -221,34 +306,20 @@ export default class Card extends Component {
     } else {
       return (
         <div>
-          <Badge
-            badgeContent={this.props.cost}
-            badgeStyle={Object.assign({
-              top: 12,
-              right: -4,
-              width: 36 * this.props.scale,
-              height: 36 * this.props.scale,
-              backgroundColor: '#00bcd4',
-              fontFamily: 'Carter One',
-              color: 'white',
-              fontSize: 16 * this.props.scale
-            }, this.costBadgeStyle())}
-            style={{
-              paddingLeft: 0,
-              paddingRight: 0,
-              marginRight: this.props.margin,
-              zIndex: this.props.zIndex || 0,
-              transform: transform
-            }}
+          <CardCostBadge
+            cost={this.props.cost}
+            baseCost={this.props.baseCost}
+            scale={this.props.scale}
+            margin={this.props.margin}
+            zIndex={this.props.zIndex}
+            transform={transform}
           >
             <div
-              onClick={this.props.onCardClick}
-              onMouseEnter={e => this.props.onCardHover(true)}
-              onMouseLeave={e => this.props.onCardHover(false)}
+              onClick={() => { this.props.onCardClick(this.props.id); }}
+              onMouseEnter={e => { this.onMouseEnter(); this.props.onCardHover(true); }}
+              onMouseLeave={e => { this.onMouseLeave(); this.props.onCardHover(false); }}
             >
               <Paper
-                onMouseOver={this.onMouseOver}
-                onMouseOut={this.onMouseOut}
                 zDepth={this.state.shadow}
                 style={Object.assign({
                   width: 140 * this.props.scale,
@@ -258,17 +329,11 @@ export default class Card extends Component {
                   userSelect: 'none',
                   cursor: 'pointer',
                   border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336'
-                }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}>
+                }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}
+              >
                 <CardHeader
                   style={{padding: 8 * this.props.scale, height: 'auto'}}
-                  title={
-                    <Textfit
-                      mode="multi"
-                      max={16 * this.props.scale}
-                      style={{width: 105 * this.props.scale, height: 23 * this.props.scale}}>
-                      {this.props.name}
-                    </Textfit>
-                  }
+                  title={this.renderTitle()}
                   titleStyle={{fontSize: 15 * this.props.scale}}
                   subtitle={typeToString(this.props.type)}
                   subtitleStyle={{fontSize: 14 * this.props.scale}} />
@@ -279,18 +344,13 @@ export default class Card extends Component {
 
                 <Divider/>
 
-                <div style={this.textAreaStyle()}>
-                  <Textfit
-                    mode="multi"
-                    max={14 * this.props.scale}
-                    style={this.textFitStyle()}>
-                    {this.props.text}
-                  </Textfit>
+                <div style={this.textAreaStyle}>
+                  {this.renderText()}
                   {this.renderStatsArea()}
                 </div>
               </Paper>
             </div>
-          </Badge>
+          </CardCostBadge>
         </div>
       );
     }

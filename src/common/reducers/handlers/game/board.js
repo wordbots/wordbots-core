@@ -1,3 +1,4 @@
+import { stringToType } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
@@ -70,7 +71,11 @@ export function attack(state, source, target) {
     if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
       attacker.cantMove = true;
 
-      state = triggerEvent(state, 'afterAttack', {object: attacker}, () =>
+      // console.log(defender.card.type);
+      state = triggerEvent(state, 'afterAttack', {
+        object: attacker,
+        condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')
+      }, () =>
         dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
       );
 

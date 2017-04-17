@@ -7,8 +7,8 @@ import Paper from 'material-ui/Paper';
 import { isNil } from 'lodash';
 
 import { getAttribute } from '../util/game';
+import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
-import CardViewer from '../components/game/CardViewer';
 import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';

@@ -88,12 +88,12 @@ export default class CardCreationForm extends Component {
             <TextField
               value={this.props.name}
               floatingLabelText="Card Name"
-              style={{marginRight: 25, flexGrow: 3}}
+              style={{flexBasis: 0, flexGrow: 3, marginRight: 25}}
               onChange={e => { this.props.onSetName(e.target.value); }} />
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
-              style={{width: 'none', flexGrow: 1}}
+              style={{flexBasis: 0, flexGrow: 1}}
               onChange={v => { this.props.onSetAttribute('energy', v); }} />
           </div>
 
@@ -143,17 +143,18 @@ export default class CardCreationForm extends Component {
               disabled={this.props.type !== TYPE_ROBOT}
               onChange={v => { this.props.onSetAttribute('attack', v); }} />
             <NumberField
-              label="Speed"
-              value={this.props.speed}
-              style={{width: '100%', marginRight: 25}}
-              disabled={this.props.type !== TYPE_ROBOT}
-              onChange={v => { this.props.onSetAttribute('speed', v); }} />
-            <NumberField
               label="Health"
               value={this.props.health}
               style={{width: '100%', marginRight: 25}}
               disabled={this.props.type === TYPE_EVENT}
               onChange={v => { this.props.onSetAttribute('health', v); }} />
+            <NumberField
+              label="Speed"
+              value={this.props.speed}
+              maxValue={3}
+              style={{width: '100%', marginRight: 25}}
+              disabled={this.props.type !== TYPE_ROBOT}
+              onChange={v => { this.props.onSetAttribute('speed', v); }} />
           </div>
 
           <RaisedButton

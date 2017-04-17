@@ -1,4 +1,4 @@
-import { find, random } from 'lodash';
+import { compact, find, random } from 'lodash';
 
 import { collection as builtinCards } from './cards';
 
@@ -11,7 +11,7 @@ function isValidUsername(username) {
 }
 
 function getNewCopyIfBuiltinCard(card) {
-  return (card.source === 'builtin') ? find(builtinCards, {'name': card.name}) : card;
+  return (card.source === 'builtin') ? (find(builtinCards, {'name': card.name}) || card) : card;
 }
 
 export function loadState(state) {
@@ -30,8 +30,10 @@ export function loadState(state) {
       if (isValidUsername(username)) {
         state.socket.username = username;
       }
-      state.collection.cards = JSON.parse(collection).map(getNewCopyIfBuiltinCard);
-      state.collection.decks = JSON.parse(decks).map(deck =>
+
+      state.collection.cards = builtinCards.concat(JSON.parse(collection).filter(c => c.source !== 'builtin'));
+
+      state.collection.decks = compact(JSON.parse(decks)).map(deck =>
         Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
       );
     }

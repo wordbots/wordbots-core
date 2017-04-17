@@ -71,6 +71,7 @@ export function placeCard(state, cardIdx, tile) {
       card: card,
       stats: Object.assign({}, card.stats),
       triggers: [],
+      abilities: [],
       movesMade: 0,
       cantMove: true,
       justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
@@ -92,24 +93,26 @@ export function placeCard(state, cardIdx, tile) {
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
 
     playedObject.justPlayed = false;
-  }
 
-  if (player.target.choosing) {
-    // Target still needs to be selected, so roll back playing the card (and return old state).
+    if (player.target.choosing) {
+      // Target still needs to be selected, so roll back playing the card (and return old state).
 
-    currentPlayer(state).target = player.target;
-    currentPlayer(state).status = {
-      message: `Choose a target for ${card.name}'s ability.`,
-      type: 'text'
-    };
+      currentPlayer(state).target = player.target;
+      currentPlayer(state).status = {
+        message: `Choose a target for ${card.name}'s ability.`,
+        type: 'text'
+      };
 
-    state.placementTile = tile;  // Store the tile the object was played on, for the actual placement later.
-    return state;
+      state.placementTile = tile;  // Store the tile the object was played on, for the actual placement later.
+      return state;
+    } else {
+      // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
+      // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
+      tempState = applyAbilities(tempState);
+      return tempState;
+    }
   } else {
-    // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
-    // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
-    tempState = applyAbilities(tempState);
-    return tempState;
+    return state;
   }
 }
 

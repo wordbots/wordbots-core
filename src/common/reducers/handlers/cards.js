@@ -1,6 +1,6 @@
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
-import { splitSentences } from '../../util/cards';
+import { cardsToJson, cardsFromJson, splitSentences } from '../../util/cards';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -18,9 +18,26 @@ const cardsHandlers = {
     return updateDefaultDeck(state);
   },
 
+  closeExportDialog: function (state) {
+    return Object.assign({}, state, {exportedJson: null});
+  },
+
   deleteDeck: function (state, deckId) {
     state.decks = state.decks.filter(deck => deck.id !== deckId);
     return state;
+  },
+
+  exportCards: function (state, cards) {
+    return Object.assign({}, state, {exportedJson: cardsToJson(cards)});
+  },
+
+  importCards: function (state, json) {
+    // Add new cards that are not duplicates.
+    cardsFromJson(json)
+      .filter(card => !state.cards.map(c => c.id).includes(card.id))
+      .forEach(card => { state.cards.unshift(card); });
+
+    return updateDefaultDeck(state);
   },
 
   openCardForEditing: function (state, card) {
@@ -31,9 +48,9 @@ const cardsHandlers = {
       spriteID: card.spriteID,
       sentences: splitSentences(card.text).map(s => ({sentence: s, result: {}})),
       cost: card.cost,
-      health: card.stats.health,
-      speed: card.stats.speed,
-      attack: card.stats.attack,
+      health: (card.stats || {}).health,
+      speed: (card.stats || {}).speed,
+      attack: (card.stats || {}).attack,
       setText: card.text
     });
   },

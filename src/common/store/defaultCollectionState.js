@@ -8,7 +8,8 @@ const defaultState = {
       name: 'Default',
       cards: collection.slice(0, 30)
     }
-  ]
+  ],
+  exportedJson: null
 };
 
 export default defaultState;

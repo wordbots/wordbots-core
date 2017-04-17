@@ -1,13 +1,13 @@
 // Adapted from https://github.com/not-surt/spritegen .
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { number, string } from 'prop-types';
 
-import { hashCode, inBrowser } from '../../util/common';
+import { hashCode, inBrowser } from '../util/common';
 
-export default class Sprite extends Component {
+export default class Sprite extends PureComponent {
   static propTypes = {
-  id: string,
+    id: string,
     size: number,
     scale: number,
     spacing: number,

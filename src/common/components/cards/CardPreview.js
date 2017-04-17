@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 
-import Card from '../game/Card';
-
-import Sentence from './Sentence';
+import Card from '../card/Card';
+import Sentence from '../card/Sentence';
 
 export default class CardPreview extends Component {
   static propTypes = {
@@ -31,7 +30,6 @@ export default class CardPreview extends Component {
         <Card
           name={this.props.name || '[Unnamed]'}
           spriteID={this.props.spriteID}
-          visible
           type={this.props.type}
           img={'char'}
           cost={this.props.energy}
@@ -39,9 +37,8 @@ export default class CardPreview extends Component {
           cardStats={stats}
           text={this.props.sentences.map(s => Sentence(s.sentence, s.result))}
           rawText={this.props.sentences.map(s => s.sentence).join('. ')}
+          parseResults={JSON.stringify(this.props.sentences.map(s => s.result))}
           scale={3}
-
-          onCardHover={() => {}}
           onSpriteClick={this.props.onSpriteClick} />
       </div>
     );

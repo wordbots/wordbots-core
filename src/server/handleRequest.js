@@ -1,4 +1,4 @@
-import childProcess from 'child_process';
+import { execSync } from 'child_process';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -11,6 +11,8 @@ import configureStore from '../common/store/configureStore';
 import getUser from '../common/api/user';
 import packagejson from '../../package.json';
 
+import produceApiResponse from './api';
+
 export default function handleRequest(request, response) {
   getUser(request.cookies.token || false, (user) => {
     const store = getStore(request, user);
@@ -20,7 +22,7 @@ export default function handleRequest(request, response) {
 
 function getVersionWithSha() {
   const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
-  const sha = childProcess.execSync(shaCommand).toString().trim().slice(0, 7);
+  const sha = execSync(shaCommand).toString().trim().slice(0, 7);
   return `${packagejson.version}+${sha}`;
 }
 
@@ -42,26 +44,30 @@ function getStore(request, user) {
 }
 
 function produceResponse(response, store, location) {
-  const context = {};
-  const html = ReactDOMServer.renderToString(
-    <Provider store={store}>
-      <StaticRouter location={location} context={context}>
-        <App />
-      </StaticRouter>
-    </Provider>
-  );
-
-  if (context.url) {
-    response
-      .writeHead(301, { Location: context.url })
-      .end();
+  if (location.startsWith('/api')) {
+    return produceApiResponse(response, location);
   } else {
-    const head = Helmet.rewind();
-    const initialState = Object.assign(store.getState());
+    const context = {};
+    const html = ReactDOMServer.renderToString(
+      <Provider store={store}>
+        <StaticRouter location={location} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    );
 
-    response
-      .status(200)
-      .end(renderFullPage(html, initialState, head));
+    if (context.url) {
+      response
+        .writeHead(301, { Location: context.url })
+        .end();
+    } else {
+      const head = Helmet.rewind();
+      const initialState = Object.assign(store.getState());
+
+      response
+        .status(200)
+        .end(renderFullPage(html, initialState, head));
+    }
   }
 }
 

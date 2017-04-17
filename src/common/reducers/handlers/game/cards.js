@@ -94,9 +94,9 @@ export function placeCard(state, cardIdx, tile) {
     }
 
     tempState = discardCards(tempState, [card]);
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
     tempState = triggerEvent(tempState, 'afterPlayed', {object: playedObject});
     tempState = applyAbilities(tempState);
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
 
     playedObject.justPlayed = false;
 

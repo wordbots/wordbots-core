@@ -180,6 +180,7 @@ export function validAttackHexes(state, playerName, startHex, speed, object) {
 export function logAction(state, player, action, cards, timestamp) {
   const playerStr = player ? (player.name === state.player ? 'You ' : `${state.usernames[player.name]} `) : '';
   const message = {
+    id: state.actionId,
     user: '[Game]',
     text: `${playerStr}${action}.`,
     timestamp: timestamp || Date.now(),

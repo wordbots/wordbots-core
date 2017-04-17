@@ -1,5 +1,6 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
+import { id } from '../util/common';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
@@ -7,7 +8,7 @@ import defaultState from '../store/defaultGameState';
 import g from './handlers/game';
 
 export default function game(oldState = cloneDeep(defaultState), action) {
-  let state = Object.assign({}, oldState);
+  let state = Object.assign({}, oldState, {actionId: id()});  // Note: actionId is to correctly merge actions in the action log.
 
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.

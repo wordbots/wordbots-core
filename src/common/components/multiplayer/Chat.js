@@ -7,7 +7,9 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import { sortBy } from 'lodash';
+import { groupBy, map, sortBy } from 'lodash';
+
+import { id } from '../../util/common';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -30,6 +32,14 @@ export default class Chat extends Component {
     };
   }
 
+  shouldComponentUpdate(prevProps) {
+    return (this.props.messages.length !== prevProps.messages.length || this.props.roomName !== prevProps.roomName);
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
   scrollToBottom() {
     const scrollHeight = this.chat.scrollHeight;
     const height = this.chat.clientHeight;
@@ -37,10 +47,17 @@ export default class Chat extends Component {
     this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props !== prevProps) {
-      this.scrollToBottom();
+  mergeMessagesById(messages) {
+    function getId(msg) { return msg.id || id(); }
+
+    function join(msgs) {
+      return Object.assign({}, msgs[0], {
+        text: msgs.map(m => m.text).join(' '),
+        cards: Object.assign({}, ...msgs.map(m => m.cards))
+      });
     }
+
+    return sortBy(map(groupBy(messages, getId), join), 'timestamp');
   }
 
   filterMessage(message) {
@@ -72,7 +89,7 @@ export default class Chat extends Component {
     if (card) {
       return (
         <span
-          key={phrase}
+          key={id()}
           style={{fontWeight: 'bold', cursor: 'pointer'}}
           onMouseOver={() => this.props.onHoverCard({card: card, stats: card.stats})}
           onMouseOut={() => this.props.onHoverCard(null)}>
@@ -81,7 +98,7 @@ export default class Chat extends Component {
       );
     } else {
       return (
-        <span key={phrase}>
+        <span key={id()}>
           {phrase}
         </span>
       );
@@ -137,7 +154,7 @@ export default class Chat extends Component {
               overflowY: 'scroll'
             }}>
             {
-              sortBy(this.props.messages, 'timestamp')
+              this.mergeMessagesById(this.props.messages)
                 .filter(this.filterMessage.bind(this))
                 .map(this.renderMessage.bind(this))
             }

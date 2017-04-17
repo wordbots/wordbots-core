@@ -4,7 +4,7 @@ import { createRenderer } from 'react-test-renderer/shallow';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import * as creator from '../src/common/containers/Creator';
-import * as play from '../src/common/containers/Play';
+import * as gameArea from '../src/common/containers/GameArea';
 
 injectTapEventPlugin();
 
@@ -20,8 +20,8 @@ export function renderElement(elt, deep = false) {
 
 /* eslint-disable react/no-multi-comp */
 
-export function createGame(state, dispatch = () => {}) {
-  return React.createElement(play.Play, Object.assign(play.mapStateToProps(state), play.mapDispatchToProps(dispatch)));
+export function createGameArea(state, dispatch = () => {}) {
+  return React.createElement(gameArea.GameArea, Object.assign(gameArea.mapStateToProps(state), gameArea.mapDispatchToProps(dispatch)));
 }
 
 function createCreator(state, dispatch = () => {}) {
@@ -38,7 +38,7 @@ export function getComponent(type, componentClass, state, dispatch = () => {}, p
 
 function instantiator(type) {
   return {
-    'Play': createGame,
+    'GameArea': createGameArea,
     'Creator': createCreator
   }[type];
 }

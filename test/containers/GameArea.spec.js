@@ -4,7 +4,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { getDefaultState, combineState } from '../testHelpers';
-import { renderElement, getComponent, createGame } from '../reactHelpers';
+import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card';
 import CardViewer from '../../src/common/components/card/CardViewer';
 import Board from '../../src/common/components/game/Board';
@@ -18,23 +18,25 @@ import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
 
-describe('Game container', () => {
+describe('GameArea container', () => {
   it('renders the default game state', () => {
     const state = combineState(getDefaultState());
 
-    const game = createGame(state);
+    const game = createGameArea(state);
     const dom = renderElement(game);
 
     // Gross but necessary for comparing bound methods.
-    const [ , , board, endTurnBtn] = dom.props.children[1].props.children[1].props.children;
+    const mainDiv = dom.props.children[1].props.children[1];
+    const [ , , board, endTurnBtn] = mainDiv.props.children;
 
     expect(dom.props.children).toEqual([
       <Helmet title="Game"/>,
-      <Paper style={{padding: 20, position: 'relative'}}>
-        <PlayerArea
-          color={'orange'}
-          gameProps={game.props} />
-        <div style={{position: 'relative'}}>
+      <Paper style={{height: 1100, position: 'relative'}}>
+        <PlayerArea opponent gameProps={game.props} />
+        <div
+          ref={mainDiv.ref}
+          style={{position: 'absolute', left: 0, top: 250, bottom: 250, right: 0}}
+        >
           <CardViewer />
           <Status
             player={'orange'}
@@ -47,6 +49,7 @@ describe('Game container', () => {
             player={'orange'}
             currentTurn={'orange'}
             playingCardType={null}
+            height={600}
             onSelectTile={board.props.onSelectTile}
             onHoverTile={board.props.onHoverTile}
             />
@@ -54,19 +57,12 @@ describe('Game container', () => {
             enabled
             onClick={endTurnBtn.props.onClick} />
         </div>
-        <PlayerArea
-          color={'blue'}
-          gameProps={game.props} />
+        <PlayerArea gameProps={game.props} />
         <VictoryScreen
           winnerColor={null}
           winnerName={null}
           onClick={game.props.onVictoryScreenClick} />
-      </Paper>,
-      <Chat
-        roomName={null}
-        messages={[]}
-        onSendMessage={game.props.onSendChatMessage}
-        onHoverCard={game.props.onHoverTile} />
+      </Paper>
     ]);
   });
 
@@ -81,37 +77,37 @@ describe('Game container', () => {
     }
 
     function clickCard(predicate) {
-      getComponent('Play', Card, state, dispatch, predicate).props
+      getComponent('GameArea', Card, state, dispatch, predicate).props
         .onCardClick();
       return dispatchedActions.pop();
     }
     function clickHex(id) {
-      getComponent('Play', HexGrid, state, dispatch).props
+      getComponent('GameArea', HexGrid, state, dispatch).props
         .actions.onClick(HexUtils.IDToHex(id));
       return dispatchedActions.pop();
     }
     function hoverHex(id, type) {
-      getComponent('Play', HexGrid, state, dispatch).props
+      getComponent('GameArea', HexGrid, state, dispatch).props
         .actions.onHexHover(HexUtils.IDToHex(id), {type: type});
       return dispatchedActions.pop();
     }
     function clickEndTurn() {
-      getComponent('Play', RaisedButton, state, dispatch).props
+      getComponent('GameArea', RaisedButton, state, dispatch).props
         .onTouchTap();
       return dispatchedActions.pop();
     }
 
     // Hover.
     expect(
-      hoverHex('4,0,-4', 'mouseenter')
+      hoverHex('3,0,-3', 'mouseenter')
     ).toEqual(
       actions.setHoveredTile({
-        card: createGame(state).props.orangePieces['4,0,-4'].card,
+        card: createGameArea(state).props.orangePieces['3,0,-3'].card,
         stats: {health: 20}
       })
     );
     expect(
-      hoverHex('4,0,-4', 'mouseleave')
+      hoverHex('3,0,-3', 'mouseleave')
     ).toEqual(
       actions.setHoveredTile(null)
     );
@@ -125,9 +121,9 @@ describe('Game container', () => {
 
     // Place object.
     expect(
-      clickHex('3,0,-3')
+      clickHex('2,0,-2')
     ).toEqual(
-      actions.placeCard('3,0,-3', 0)
+      actions.placeCard('2,0,-2', 0)
     );
 
     // End turn.
@@ -141,16 +137,16 @@ describe('Game container', () => {
 
     // Set selected tile.
     expect(
-      clickHex('3,0,-3')
+      clickHex('2,0,-2')
     ).toEqual(
-      actions.setSelectedTile('3,0,-3', 'orange')
+      actions.setSelectedTile('2,0,-2', 'orange')
     );
 
     // Move.
     expect(
-      clickHex('2,0,-2')
+      clickHex('1,0,-1')
     ).toEqual(
-      actions.moveRobot('3,0,-3', '2,0,-2')
+      actions.moveRobot('2,0,-2', '1,0,-1')
     );
 
     // TODO attack.

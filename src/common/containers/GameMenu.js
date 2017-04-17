@@ -17,6 +17,7 @@ export function mapStateToProps(state) {
 
   return {
     player: state.game.player,
+    currentTurn: state.game.currentTurn,
     isMyTurn: state.game.currentTurn === state.game.player,
     selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
   };
@@ -44,6 +45,7 @@ export class GameMenu extends Component {
     open: bool,
 
     player: string,
+    currentTurn: string,
     isMyTurn: bool,
     selectedPiece: object,
 
@@ -91,7 +93,8 @@ export class GameMenu extends Component {
       timer: `${minutes}:${seconds}`,
       timerStyle: {
         color: color,
-        textAlign: 'center'
+        textAlign: 'center',
+        backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn]
       }
     });
   }
@@ -124,8 +127,7 @@ export class GameMenu extends Component {
       <Drawer
         open={this.props.open}
         containerStyle={{
-          top: 66,
-          paddingTop: 10
+          top: 64
       }}>
         <MenuItem 
           primaryText={this.state.timer} 

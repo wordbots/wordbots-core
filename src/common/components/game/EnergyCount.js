@@ -4,14 +4,6 @@ import Paper from 'material-ui/Paper';
 
 const EnergyCount = ({color, playerName, energy, isCurrentPlayer}) => (
   <div>
-    <div style={{
-      margin: '0 -5px 3px -15px',
-      color: {orange: '#ffb85d', blue: '#badbff'}[color],
-      fontWeight: 'bold',
-      textAlign: 'center'
-    }}>
-      {playerName}
-    </div>
     <Paper
       zDepth={2}
       circle
@@ -39,10 +31,8 @@ const EnergyCount = ({color, playerName, energy, isCurrentPlayer}) => (
   </div>
 );
 
-
 EnergyCount.propTypes = {
   color: string,
-  playerName: string,
   energy: object,
   isCurrentPlayer: bool
 };

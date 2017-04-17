@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { object, string, bool } from 'prop-types';
 
 import Hand from './Hand';
+import PlayerName from './PlayerName';
 import EnergyCount from './EnergyCount';
 import Deck from './Deck';
 
@@ -32,6 +33,10 @@ class PlayerArea extends Component {
         width: '100%',
         boxSizing: 'border-box'
       }}>
+        <PlayerName
+          opponent={opponent}
+          color={color}
+          playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]}  />
         <EnergyCount
           color={color}
           playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]}

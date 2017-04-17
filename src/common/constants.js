@@ -7,8 +7,8 @@ export const KEEP_DECKS_UNSHUFFLED = false;
 
 export const STARTING_PLAYER_HEALTH = 20;
 
-export const BLUE_CORE_HEX = '-4,0,4';
-export const ORANGE_CORE_HEX = '4,0,-4';
+export const BLUE_CORE_HEX = '-3,0,3';
+export const ORANGE_CORE_HEX = '3,0,-3';
 
 export const TYPE_ROBOT = 0;
 export const TYPE_EVENT = 1;
@@ -22,7 +22,7 @@ export const GRID_CONFIG = {
   layout: { width: 6, height: 6, flat: false, spacing: 0 },
   origin: { x: 0, y: 0 },
   map: 'hexagon',
-  mapProps: [ 4 ]
+  mapProps: [ 3 ]
 };
 
 const typeToStringMapping = {

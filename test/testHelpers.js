@@ -1,5 +1,8 @@
 import _ from 'lodash';
 
+import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
+import { instantiateCard } from '../src/common/util/common';
+import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards, applyAbilities } from '../src/common/util/game';
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import { collection, attackBotCard } from '../src/common/store/cards';
@@ -7,8 +10,6 @@ import defaultGameState from '../src/common/store/defaultGameState';
 import defaultCreatorState from '../src/common/store/defaultCreatorState';
 import defaultCollectionState from '../src/common/store/defaultCollectionState';
 import defaultSocketState from '../src/common/store/defaultSocketState';
-import { instantiateCard } from '../src/common/util/common';
-import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards } from '../src/common/util/game';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
@@ -45,7 +46,7 @@ export function queryRobotAttributes(state, hex) {
 }
 
 export function queryPlayerHealth(state, playerName) {
-  return queryObjectAttribute(state, {'blue': '-4,0,4', 'orange': '4,0,-4'}[playerName], 'health');
+  return queryObjectAttribute(state, {'blue': BLUE_CORE_HEX, 'orange': ORANGE_CORE_HEX}[playerName], 'health');
 }
 
 export function drawCardToHand(state, playerName, card) {
@@ -165,23 +166,21 @@ export function attack(state, source, target, asNewTurn = false) {
 }
 
 export function setUpBoardState(players) {
-  let state = getDefaultState();
-
-  function placeObjects(playerName, placementHex) {
+  function placeObjects(state, playerName, placementHexes) {
     if (players[playerName]) {
       _.forOwn(players[playerName], (card, hex) => {
-        if (hex === '-3,0,3' || hex === '3,0,-3') {
-          throw `${hex} must remain unoccupied in setUpBoardState()`;
-        }
-
+        const placementHex = placementHexes.find(h => !allObjectsOnBoard(state)[h]);
         state = playObject(state, playerName, card, placementHex);
         state = transportObject(state, placementHex, hex);
       });
     }
+    return state;
   }
 
-  placeObjects('blue', '-3,0,3');
-  placeObjects('orange', '3,0,-3');
+  let state = getDefaultState();
+  state = placeObjects(state, 'blue', ['-3,1,2', '-2,0-2', '-2,-1,3']);
+  state = placeObjects(state, 'orange', ['3,-1,-2', '2,0,-2', '2,1,-3']);
+  state = applyAbilities(state);
 
   return state;
 }

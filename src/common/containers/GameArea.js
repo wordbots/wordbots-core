@@ -4,9 +4,9 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
+import { isNil } from 'lodash';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isNil } from 'lodash';
 
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
@@ -15,8 +15,6 @@ import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import VictoryScreen from '../components/game/VictoryScreen';
-import Chat from '../components/multiplayer/Chat';
-import Lobby from '../components/multiplayer/Lobby';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
@@ -26,12 +24,10 @@ export function mapStateToProps(state) {
   const currentPlayer = state.game.players[state.game.currentTurn];
 
   return {
-    started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     usernames: state.game.usernames,
     winner: state.game.winner,
-    actionLog: state.game.actionLog,
 
     selectedTile: activePlayer.selectedTile,
     selectedCard: activePlayer.selectedCard,
@@ -54,34 +50,12 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
-    socket: state.socket,
-    availableDecks: state.collection.decks,
-
     sidebarOpen: state.layout.present.sidebarOpen
   };
 }
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onConnect: () => {
-      dispatch(socketActions.connect());
-    },
-    onHostGame: (name, deck) => {
-      dispatch(socketActions.host(name, deck));
-    },
-    onJoinGame: (id, name, deck) => {
-      dispatch(socketActions.join(id, name, deck));
-    },
-    onSpectateGame: (id) => {
-      dispatch(socketActions.spectate(id));
-    },
-    onSetUsername: (username) => {
-      dispatch(socketActions.setUsername(username));
-    },
-    onSendChatMessage: (msg) => {
-      dispatch(socketActions.chat(msg));
-    },
-
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
     },
@@ -118,14 +92,12 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class Game extends Component {
+export class GameArea extends Component {
   static propTypes = {
-    started: bool,
     player: string,
     currentTurn: string,
     usernames: object,
     winner: string,
-    actionLog: array,
 
     selectedTile: string,
     selectedCard: number,
@@ -148,17 +120,8 @@ export class Game extends Component {
     blueDeck: array,
     orangeDeck: array,
 
-    socket: object,
-    availableDecks: array,
-
     sidebarOpen: bool,
 
-    onConnect: func,
-    onHostGame: func,
-    onJoinGame: func,
-    onSpectateGame: func,
-    onSetUsername: func,
-    onSendChatMessage: func,
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
@@ -171,6 +134,7 @@ export class Game extends Component {
     onVictoryScreenClick: func
   };
 
+
   // For testing.
   static childContextTypes = {
     muiTheme: object.isRequired
@@ -179,10 +143,28 @@ export class Game extends Component {
     return {muiTheme: getMuiTheme(baseTheme)};
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      areaHeight: 1100,
+      boardHeight: 600
+    };
+  }
+
   componentDidMount() {
-    if (!this.props.socket.connected) {
-      this.props.onConnect();
-    }
+    this.updateHeight();
+
+    window.onresize = () => {
+      this.updateHeight();
+    };
+  }
+
+  updateHeight() {
+    this.setState({
+      areaHeight: window.innerHeight - 200,
+      boardHeight: window.innerHeight - 450
+    });
   }
 
   isMyTurn() {
@@ -255,20 +237,30 @@ export class Game extends Component {
     }
   }
 
-  renderGameArea() {
-    if (this.props.started) {
-      return (
-        <Paper style={{padding: 20, position: 'relative'}}>
-          <PlayerArea
-            color="orange"
-            gameProps={this.props} />
+  render() {
+    return (
+      <div>
+        <Helmet title="Game"/>
 
-          <div style={{position: 'relative'}}>
+        <Paper style={{position: 'relative', height: this.state.areaHeight}}>
+          <PlayerArea
+            opponent
+            gameProps={this.props} />
+          <div 
+            ref={(board) => {this.boardArea = board;}} 
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 125,
+              bottom: 125,
+              right: 0
+          }}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
             <Board
+              height={this.state.boardHeight}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
               selectedTile={this.props.selectedTile}
@@ -284,45 +276,15 @@ export class Game extends Component {
           </div>
 
           <PlayerArea
-            color="blue"
             gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
             onClick={this.props.onVictoryScreenClick} />
         </Paper>
-      );
-    } else {
-      return (
-        <Lobby
-          socket={this.props.socket}
-          availableDecks={this.props.availableDecks}
-          onConnect={this.props.onConnect}
-          onHostGame={this.props.onHostGame}
-          onJoinGame={this.props.onJoinGame}
-          onSpectateGame={this.props.onSpectateGame}
-          onSetUsername={this.props.onSetUsername} />
-      );
-    }
-  }
-
-  render() {
-    return (
-      <div style={{
-        paddingLeft: this.props.sidebarOpen ? 256 : 0,
-        paddingRight: 256,
-        margin: '48px 72px'
-      }}>
-        <Helmet title="Game"/>
-        {this.renderGameArea()}
-        <Chat
-          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage}
-          onHoverCard={this.props.onHoverTile} />
       </div>
     );
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Game));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GameArea));

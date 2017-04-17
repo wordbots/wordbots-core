@@ -21,6 +21,8 @@ class Home extends Component {
   };
 
   render() {
+    const [version, sha] = this.props.version.split('+');
+
     return (
       <div style={{
         paddingLeft: this.props.sidebarOpen ? 256 : 0,
@@ -31,7 +33,7 @@ class Home extends Component {
         <div style={{display: 'flex', justifyContent: 'stretch'}}>
           <div style={{width: '50%', marginRight: 20}}>
             <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={whatIsWordbots(this.props.version)} />
+              <MarkdownBlock source={whatIsWordbots(version, sha)} />
             </Paper>
 
             <Paper style={{padding: '5px 20px', marginTop: 20}}>
@@ -52,8 +54,8 @@ class Home extends Component {
 
 export default withRouter(connect(mapStateToProps)(Home));
 
-const whatIsWordbots = (version) => (`
-# Wordbots ${version}
+const whatIsWordbots = (version, sha) => (`
+# Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
 ![](http://app.wordbots.io/static/screenshot_mini.png)
 **Wordbots** is a customizable hex-based card game with a twist – _you_, the player,
 get to create the cards!

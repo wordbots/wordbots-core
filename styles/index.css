@@ -39,6 +39,10 @@ a {
   font-weight: bold;
 }
 
+.markdownBlock a:hover {
+  text-decoration: underline;
+}
+
 /* Hexgrid */
 #hexgrid svg {
   margin: 0 auto;

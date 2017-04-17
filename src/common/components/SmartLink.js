@@ -7,7 +7,7 @@ const SmartLink = (props) => {
   const style = {color: 'red', fontWeight: 'bold'};
 
   if (props.href.match(/^(https?:)?\/\//)) {
-    return <a href={props.href} style={style}>{props.children}</a>;
+    return <a href={props.href} style={style} target="_blank">{props.children}</a>;
   } else {
     return <Link to={props.href} style={style}>{props.children}</Link>;
   }

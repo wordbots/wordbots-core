@@ -136,7 +136,8 @@ export class GameArea extends Component {
     super(props);
 
     this.state = {
-      height: 0
+      areaHeight: 1100,
+      boardHeight: 600
     }
   }
 
@@ -149,11 +150,10 @@ export class GameArea extends Component {
   }
 
   updateHeight() {
-    if (this.boardArea) {
-      this.setState({
-        height: this.boardArea.offsetHeight
-      });
-    }
+    this.setState({
+      areaHeight: window.innerHeight - 200,
+      boardHeight: this.boardArea.offsetHeight
+    });
   }
 
   isMyTurn() {
@@ -231,18 +231,24 @@ export class GameArea extends Component {
       <div>
         <Helmet title="Game"/>
 
-        <Paper style={{position: 'relative'}}>
+        <Paper style={{position: 'relative', height: this.state.areaHeight}}>
           <PlayerArea
             opponent
             gameProps={this.props} />
 
-          <div style={{position: 'relative'}} ref={(board) => { this.boardArea = board; }}>
+          <div ref={(board) => {this.boardArea = board;}} style={{
+            position: 'absolute',
+            left: 0,
+            top: 250,
+            bottom: 250,
+            right: 0
+          }}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
             <Board
-              height={this.state.height}
+              height={this.state.boardHeight}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
               selectedTile={this.props.selectedTile}

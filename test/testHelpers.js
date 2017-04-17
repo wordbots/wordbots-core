@@ -174,17 +174,22 @@ export function activate(state, hex, abilityIdx, target = null, asNewTurn = fals
 
   if (target && target.hex) {
     return game(state, [
-      actions.activateObject(hex, abilityIdx),
+      actions.setSelectedTile(hex, player.name),
+      actions.activateObject(abilityIdx),
       actions.setSelectedTile(target.hex, player.name)
     ]);
   } else if (target && has(target, 'card')) {
     const cardIdx = isObject(target.card) ? findIndex(player.hand, c => c.name === target.card.name) : target.card;
     return game(state, [
-      actions.activateObject(hex, abilityIdx),
+      actions.setSelectedTile(hex, player.name),
+      actions.activateObject(abilityIdx),
       actions.setSelectedCard(cardIdx, player.name)
     ]);
   } else {
-    return game(state, actions.activateObject(hex, abilityIdx));
+    return game(state, [
+      actions.setSelectedTile(hex, player.name),
+      actions.activateObject(abilityIdx)
+    ]);
   }
 }
 

@@ -45,10 +45,10 @@ export function moveRobotAndAttack(from, to, target) {
   };
 }
 
-export function activateObject(tile, abilityIdx) {
+export function activateObject(abilityIdx) {
   return {
     type: ACTIVATE_OBJECT,
-    payload: { tile, abilityIdx }
+    payload: { abilityIdx }
   };
 }
 

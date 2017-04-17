@@ -5,11 +5,10 @@ import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions,
   validPlacementHexes,
-  discardCards, logAction,
+  discardCards, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import { splitSentences } from '../../../util/cards';
-import { arbitraryPlayerState } from '../../../store/defaultGameState';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {
@@ -110,7 +109,7 @@ export function placeCard(state, cardIdx, tile) {
         type: 'text'
       };
 
-      state.placementTile = tile;  // Store the tile the object was played on, for the actual placement later.
+      state.callbackAfterTargetSelected = (newState => placeCard(newState, cardIdx, tile));
       return state;
     } else {
       // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
@@ -123,7 +122,7 @@ export function placeCard(state, cardIdx, tile) {
   }
 }
 
-export function playEvent(state, cardIdx, command) {
+function playEvent(state, cardIdx) {
   const player = currentPlayer(state);
   const card = player.hand[cardIdx];
   const cmd = card.command;
@@ -142,6 +141,7 @@ export function playEvent(state, cardIdx, command) {
     card.justPlayed = false;
 
     if (player.target.choosing) {
+      state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
       player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else {
       state = discardCards(state, [card]);
@@ -153,36 +153,6 @@ export function playEvent(state, cardIdx, command) {
     }
   }
   state = checkVictoryConditions(state);
-
-  return state;
-}
-
-export function setTargetAndExecuteQueuedAction(state, target) {
-  const player = currentPlayer(state);
-
-  // Select target tile for event or afterPlayed trigger.
-  player.target = {
-    chosen: [target],
-    choosing: false,
-    possibleHexes: [],
-    possibleCards: []
-  };
-
-  // Perform the trigger.
-  if (state.callbackAfterTargetSelected) {
-    state = state.callbackAfterTargetSelected(state);
-    state.callbackAfterTargetSelected = null;
-  } else {
-    const card = player.hand[player.selectedCard];
-    if (card.type === TYPE_EVENT) {
-      state = playEvent(state, player.selectedCard);
-    } else {
-      state = placeCard(state, player.selectedCard, state.placementTile);
-    }
-  }
-
-  // Reset target.
-  state.players[player.name].target = arbitraryPlayerState().target;
 
   return state;
 }

@@ -1,15 +1,12 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card';
 import CardViewer from '../../src/common/components/card/CardViewer';
-import Activate from '../../src/common/components/game/Activate';
 import Board from '../../src/common/components/game/Board';
-import EndTurnButton from '../../src/common/components/game/EndTurnButton';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
@@ -27,7 +24,7 @@ describe('GameArea container', () => {
 
     // Gross but necessary for comparing bound methods.
     const mainDiv = dom.props.children[1].props.children[1];
-    const [leftDiv, , board, endTurnBtn] = mainDiv.props.children;
+    const board = mainDiv.props.children[2];
 
     expect(dom.props.children).toEqual([
       <Helmet title="Game"/>,
@@ -37,12 +34,7 @@ describe('GameArea container', () => {
           ref={mainDiv.ref}
           style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0}}
         >
-          <div style={{position: 'absolute', left: 10, top: 0, bottom: 0, margin: 'auto', height: 354}}>
-            <CardViewer hoveredCard={undefined} />
-            <Activate
-              piece={null}
-              onClick={leftDiv.props.children[1].props.onClick} />
-          </div>
+          <CardViewer hoveredCard={undefined} />
           <Status
             player={'orange'}
             status={state.game.players.orange.status} />
@@ -58,9 +50,6 @@ describe('GameArea container', () => {
             onSelectTile={board.props.onSelectTile}
             onHoverTile={board.props.onHoverTile}
             />
-          <EndTurnButton
-            enabled
-            onClick={endTurnBtn.props.onClick} />
         </div>
         <PlayerArea gameProps={game.props} />
         <VictoryScreen
@@ -96,11 +85,6 @@ describe('GameArea container', () => {
         .actions.onHexHover(HexUtils.IDToHex(id), {type: type});
       return dispatchedActions.pop();
     }
-    function clickEndTurn() {
-      getComponent('GameArea', RaisedButton, state, dispatch, (b => b.props.label === 'End Turn')).props
-        .onTouchTap();
-      return dispatchedActions.pop();
-    }
 
     // Hover.
     expect(
@@ -131,14 +115,8 @@ describe('GameArea container', () => {
       actions.placeCard('2,0,-2', 0)
     );
 
-    // End turn.
-    expect(
-      clickEndTurn()
-    ).toEqual(
-      actions.passTurn('orange')
-    );
-
-    dispatch(actions.passTurn('blue'));  // Simulate opponent ending their turn.
+    dispatch(actions.passTurn('orange'));
+    dispatch(actions.passTurn('blue'));
 
     // Set selected tile.
     expect(

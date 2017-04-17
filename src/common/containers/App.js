@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import { func, string, object } from 'prop-types';
+import { bool, func, string, object } from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import cookie from 'react-cookie';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
 import { inBrowser } from '../util/common';
 import * as UserActions from '../actions/user';
+import NavMenu from '../components/NavMenu';
+import GameMenu from '../containers/GameMenu';
 import Creator from '../containers/Creator';
 import Collection from '../containers/Collection';
 import Deck from '../containers/Deck';
@@ -33,7 +33,8 @@ function mapStateToProps(state) {
   return {
     version: state.version,
     user: state.user,
-    layout: state.layout.present
+    layout: state.layout.present,
+    inGame: state.game.started
   };
 }
 
@@ -59,7 +60,8 @@ class App extends Component {
     children: object,
     user: object,
     version: string,
-    layout: object
+    layout: object,
+    inGame: bool
   };
 
   constructor(props) {
@@ -115,16 +117,6 @@ class App extends Component {
     };
   }
 
-  renderLink(path, text, icon) {
-    return (
-      <NavLink exact to={path} activeClassName="activeNavLink">
-        <MenuItem primaryText={text} leftIcon={
-          <FontIcon className="material-icons">{icon}</FontIcon>
-        }/>
-      </NavLink>
-    );
-  }
-
   render() {
     //const { user, version } = this.props;
 
@@ -149,22 +141,16 @@ class App extends Component {
           />
         </div>
         <div>
-          <Drawer open={this.state.open} containerStyle={{top: 66, paddingTop: 10}}>
-            {this.renderLink('/', 'Home', 'home')}
-            {this.renderLink('/collection', 'Collection', 'recent_actors')}
-            {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
-            {this.renderLink('/decks', 'Decks', 'view_list')}
-            {this.renderLink('/play', 'Play', 'videogame_asset')}
-          </Drawer>
+          {this.props.inGame ? <GameMenu open={this.state.open} /> : <NavMenu open={this.state.open} />}
           <div>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/home" component={Home} />
-              <Route path="/play" component={Play} />
-              <Route path="/creator" component={Creator} />
               <Route path="/collection" component={Collection} />
-              <Route path="/deck" component={Deck} />
+              <Route path="/creator" component={Creator} />
               <Route path="/decks" component={Decks} />
+              <Route path="/deck" component={Deck} />
+              <Route path="/play" component={Play} />
             </Switch>
           </div>
         </div>

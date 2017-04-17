@@ -4,12 +4,10 @@ import { stringToType } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
-  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
-
-import { setTargetAndExecuteQueuedAction } from './cards';
 
 export function setHoveredTile(state, card) {
   return Object.assign({}, state, {hoveredCard: card});
@@ -22,7 +20,7 @@ export function setSelectedTile(state, playerName, tile) {
   if (isCurrentPlayer &&
       player.target.choosing &&
       player.target.possibleHexes.includes(tile) &&
-      player.selectedCard !== null) {
+      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
@@ -106,13 +104,15 @@ export function attack(state, source, target) {
   return state;
 }
 
-export function activateObject(state, hexId, abilityIdx) {
+export function activateObject(state, abilityIdx, selectedHexId = null) {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  const tempState = cloneDeep(state);
+  let tempState = cloneDeep(state);
+
+  const hexId = selectedHexId || currentPlayer(tempState).selectedTile;
   const object = allObjectsOnBoard(tempState)[hexId];
 
-  if (!object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
+  if (object && !object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
     const player = currentPlayer(tempState);
     const ability = object.activatedAbilities[abilityIdx];
 
@@ -126,12 +126,16 @@ export function activateObject(state, hexId, abilityIdx) {
         type: 'text'
       };
 
-      state.callbackAfterTargetSelected = (newState => activateObject(newState, hexId, abilityIdx));
+      state.callbackAfterTargetSelected = (newState => activateObject(newState, abilityIdx, hexId));
 
       return state;
     } else {
       object.cantActivate = true;
       object.cantAttack = true;
+
+      tempState = logAction(tempState, player, `activated |${object.card.name}|'s ability`, {
+        [object.card.name]: object.card
+      });
 
       return tempState;
     }

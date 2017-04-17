@@ -10,9 +10,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
-import Activate from '../components/game/Activate';
 import Board from '../components/game/Board';
-import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import VictoryScreen from '../components/game/VictoryScreen';
@@ -66,14 +64,8 @@ export function mapDispatchToProps(dispatch) {
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
     },
-    onActivateObject: (hexId, abilityIdx) => {
-      dispatch(gameActions.activateObject(hexId, abilityIdx));
-    },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
-    },
-    onPassTurn: (player) => {
-      dispatch(gameActions.passTurn(player));
     },
     onSelectCard: (index, player) => {
       dispatch(gameActions.setSelectedCard(index, player));
@@ -129,11 +121,9 @@ export class GameArea extends Component {
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
-    onActivateObject: func,
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
-    onPassTurn: func,
     onHoverCard: func,
     onHoverTile: func,
     onVictoryScreenClick: func
@@ -262,19 +252,7 @@ export class GameArea extends Component {
               bottom: 125,
               right: 0
           }}>
-            <div style={{
-              position: 'absolute',
-              left: 10,
-              top: 0,
-              bottom: 0,
-              margin: 'auto',
-              height: 236 * 1.5
-            }}>
-              <CardViewer hoveredCard={this.hoveredCard()} />
-              <Activate
-                piece={this.props.selectedTile && this.myPieces()[this.props.selectedTile] ? this.myPieces()[this.props.selectedTile] : null}
-                onClick={idx => this.props.onActivateObject(this.props.selectedTile, idx)} />
-            </div>
+            <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
@@ -289,9 +267,6 @@ export class GameArea extends Component {
               playingCardType={this.props.playingCardType}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
-            <EndTurnButton
-              enabled={this.isMyTurn()}
-              onClick={() => this.props.onPassTurn(this.props.player)} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen

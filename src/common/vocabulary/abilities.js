@@ -32,11 +32,15 @@ export function abilities(state) {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
         apply: function (target) {
-          target.activatedAbilities = (target.activatedAbilities || []).concat({
-            aid: aid,
-            text: state.currentCmdText.replace('Activate: ', ''),
-            cmd: action
-          });
+          target.activatedAbilities = (target.activatedAbilities || []);
+
+          if (!target.activatedAbilities.find(a => a.aid === aid)) {
+            target.activatedAbilities = target.activatedAbilities.concat({
+              aid: aid,
+              text: state.currentCmdText.replace('Activate: ', ''),
+              cmd: action
+            });
+          }
         },
         unapply: function (target) {
           target.activatedAbilities = (target.activatedAbilities || []).filter(a => a.aid !== aid);

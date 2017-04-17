@@ -1,3 +1,4 @@
+import { id } from '../util/common';
 import { reversedCmd, executeCmd } from '../util/game';
 
 export function setAbility(state, currentObject, source) {
@@ -25,8 +26,26 @@ export function unsetAbility(state, currentObject, source) {
 
 export function abilities(state) {
   return {
+    activated: function (targetFunc, action) {
+      const aid = id();
+      return {
+        aid: aid,
+        targets: `(${targetFunc.toString()})`,
+        apply: function (target) {
+          target.activatedAbilities = (target.activatedAbilities || []).concat({
+            aid: aid,
+            text: state.currentCmdText.replace('Activate: ', ''),
+            cmd: action
+          });
+        },
+        unapply: function (target) {
+          target.activatedAbilities = (target.activatedAbilities || []).filter(a => a.aid !== aid);
+        }
+      };
+    },
+
     attributeAdjustment: function (targetFunc, attr, func) {
-      const aid = Math.random().toString(36);
+      const aid = id();
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
@@ -51,7 +70,7 @@ export function abilities(state) {
     },
 
     applyEffect: function (targetFunc, effect, props = {}) {
-      const aid = Math.random().toString(36);
+      const aid = id();
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
@@ -75,7 +94,7 @@ export function abilities(state) {
     },
 
     giveAbility: function (targetFunc, cmd) {
-      const aid = Math.random().toString(36);
+      const aid = id();
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,

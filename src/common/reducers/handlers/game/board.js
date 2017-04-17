@@ -1,9 +1,11 @@
+import { cloneDeep } from 'lodash';
+
 import { stringToType } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
-  triggerEvent, applyAbilities
+  executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
@@ -70,6 +72,7 @@ export function attack(state, source, target) {
     const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
     if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
       attacker.cantMove = true;
+      attacker.cantActivate = true;
 
       // console.log(defender.card.type);
       state = triggerEvent(state, 'afterAttack', {
@@ -101,6 +104,40 @@ export function attack(state, source, target) {
   }
 
   return state;
+}
+
+export function activateObject(state, hexId, abilityIdx) {
+  // Work on a copy of the state in case we have to rollback
+  // (if a target needs to be selected for an afterPlayed trigger).
+  const tempState = cloneDeep(state);
+  const object = allObjectsOnBoard(tempState)[hexId];
+
+  if (!object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
+    const player = currentPlayer(tempState);
+    const ability = object.activatedAbilities[abilityIdx];
+
+    executeCmd(tempState, ability.cmd, object);
+
+    if (player.target.choosing) {
+      // Target still needs to be selected, so roll back playing the card (and return old state).
+      currentPlayer(state).target = player.target;
+      currentPlayer(state).status = {
+        message: `Choose a target for ${object.card.name}'s ability.`,
+        type: 'text'
+      };
+
+      state.callbackAfterTargetSelected = (newState => activateObject(newState, hexId, abilityIdx));
+
+      return state;
+    } else {
+      object.cantActivate = true;
+      object.cantAttack = true;
+
+      return tempState;
+    }
+  } else {
+    return state;
+  }
 }
 
 // Low-level "move" of an object.

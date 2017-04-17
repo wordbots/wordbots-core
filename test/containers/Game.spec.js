@@ -7,6 +7,7 @@ import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGame } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card';
 import CardViewer from '../../src/common/components/card/CardViewer';
+import Activate from '../../src/common/components/game/Activate';
 import Board from '../../src/common/components/game/Board';
 import EndTurnButton from '../../src/common/components/game/EndTurnButton';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
@@ -26,7 +27,7 @@ describe('Game container', () => {
     const dom = renderElement(game);
 
     // Gross but necessary for comparing bound methods.
-    const [ , , board, endTurnBtn] = dom.props.children[1].props.children[1].props.children;
+    const [leftDiv, , board, endTurnBtn] = dom.props.children[1].props.children[1].props.children;
 
     expect(dom.props.children).toEqual([
       <Helmet title="Game"/>,
@@ -35,7 +36,12 @@ describe('Game container', () => {
           color={'orange'}
           gameProps={game.props} />
         <div style={{position: 'relative'}}>
-          <CardViewer />
+          <div style={{position: 'absolute', left: 10, top: 0, bottom: 0, margin: 'auto', height: 354}}>
+            <CardViewer />
+            <Activate
+              piece={null}
+              onClick={leftDiv.props.children[1].props.onClick} />
+          </div>
           <Status
             player={'orange'}
             status={state.game.players.orange.status} />
@@ -96,7 +102,7 @@ describe('Game container', () => {
       return dispatchedActions.pop();
     }
     function clickEndTurn() {
-      getComponent('Game', RaisedButton, state, dispatch).props
+      getComponent('Game', RaisedButton, state, dispatch, (b => b.props.label === 'End Turn')).props
         .onTouchTap();
       return dispatchedActions.pop();
     }

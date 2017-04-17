@@ -1,6 +1,6 @@
 import { startNewGame, passTurn } from './game/turns';
 import { setSelectedCard, placeCard } from './game/cards';
-import { setHoveredTile, setSelectedTile, moveRobot, attack } from './game/board';
+import { setHoveredTile, setSelectedTile, moveRobot, attack, activateObject } from './game/board';
 
 const gameHandlers = {
   newGame: startNewGame,
@@ -12,7 +12,8 @@ const gameHandlers = {
   setHoveredTile: setHoveredTile,
   setSelectedTile: setSelectedTile,
   moveRobot: moveRobot,
-  attack: attack
+  attack: attack,
+  activateObject: activateObject
 };
 
 export default gameHandlers;

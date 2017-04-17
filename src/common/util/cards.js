@@ -24,7 +24,7 @@ const KEYWORDS = {
 };
 
 const HINTS = {
-  'activate:': 'Robots and structures can Activate once per turn (but can\'t activate and attack in the same turn)'
+  'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
 };
 
 //

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { cloneDeep, findIndex, forOwn, has, isObject, mapValues, pickBy } from 'lodash';
 
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
@@ -12,7 +12,7 @@ import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards } from '.
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 
 export function getDefaultState() {
-  const state = _.cloneDeep(defaultGameState);
+  const state = cloneDeep(defaultGameState);
   const deck = [instantiateCard(attackBotCard)].concat(collection);
   return game(state, actions.startGame({orange: deck, blue: deck}));
 }
@@ -28,8 +28,8 @@ export function combineState(gameState = defaultGameState) {
 }
 
 export function objectsOnBoardOfType(state, objectType) {
-  const objects = _.pickBy(allObjectsOnBoard(state), obj => obj.card.type === objectType);
-  return _.mapValues(objects, obj => obj.card.name);
+  const objects = pickBy(allObjectsOnBoard(state), obj => obj.card.type === objectType);
+  return mapValues(objects, obj => obj.card.name);
 }
 
 export function queryObjectAttribute(state, hex, attr) {
@@ -84,7 +84,7 @@ export function playObject(state, playerName, card, hex, target = null) {
       actions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && target.card) {
-    const cardIdx = _.findIndex(player.hand, c => c.name === target.card.name);
+    const cardIdx = findIndex(player.hand, c => c.name === target.card.name);
     return game(state, [
       actions.setSelectedCard(0, playerName),
       actions.placeCard(hex, 0),
@@ -117,8 +117,8 @@ export function playEvent(state, playerName, card, target = null) {
       actions.setSelectedCard(0, playerName),
       actions.setSelectedTile(target.hex, playerName)
     ]);
-  } else if (target && target.card) {
-    const cardIdx = _.findIndex(player.hand, c => c.name === target.card.name);
+  } else if (target && has(target, 'card')) {
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, c => c.name === target.card.name) : target.card;
     return game(state, [
       actions.setSelectedCard(0, playerName),
       actions.setSelectedCard(0, playerName),
@@ -164,12 +164,35 @@ export function attack(state, source, target, asNewTurn = false) {
   ]);
 }
 
+export function activate(state, hex, abilityIdx, target = null, asNewTurn = false) {
+  const player = ownerOf(state, allObjectsOnBoard(state)[hex]);
+
+  if (asNewTurn) {
+    state = newTurn(state, player.name);
+  }
+
+  if (target && target.hex) {
+    return game(state, [
+      actions.activateObject(hex, abilityIdx),
+      actions.setSelectedTile(target.hex, player.name)
+    ]);
+  } else if (target && has(target, 'card')) {
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, c => c.name === target.card.name) : target.card;
+    return game(state, [
+      actions.activateObject(hex, abilityIdx),
+      actions.setSelectedCard(cardIdx, player.name)
+    ]);
+  } else {
+    return game(state, actions.activateObject(hex, abilityIdx));
+  }
+}
+
 export function setUpBoardState(players) {
   let state = getDefaultState();
 
   function placeObjects(playerName, placementHex) {
     if (players[playerName]) {
-      _.forOwn(players[playerName], (card, hex) => {
+      forOwn(players[playerName], (card, hex) => {
         if (hex === '-3,0,3' || hex === '3,0,-3') {
           throw `${hex} must remain unoccupied in setUpBoardState()`;
         }

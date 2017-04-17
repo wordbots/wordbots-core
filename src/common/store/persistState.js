@@ -33,8 +33,8 @@ export function loadState(state) {
 
       state.collection.cards = builtinCards.concat(JSON.parse(collection).filter(c => c.source !== 'builtin'));
 
-      state.collection.decks = compact(JSON.parse(decks)).map(deck =>
-        Object.assign({}, deck, {cards: deck.cards.map(getNewCopyIfBuiltinCard)})
+      state.collection.decks = JSON.parse(decks).map(deck =>
+        Object.assign({}, deck, {cards: compact(deck.cards).map(getNewCopyIfBuiltinCard)})
       );
     }
   }

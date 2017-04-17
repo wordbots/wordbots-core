@@ -10,6 +10,7 @@ import { isNil } from 'lodash';
 
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
+import Activate from '../components/game/Activate';
 import Board from '../components/game/Board';
 import EndTurnButton from '../components/game/EndTurnButton';
 import PlayerArea from '../components/game/PlayerArea';
@@ -91,6 +92,9 @@ export function mapDispatchToProps(dispatch) {
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
     },
+    onActivateObject: (hexId, abilityIdx) => {
+      dispatch(gameActions.activateObject(hexId, abilityIdx));
+    },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
     },
@@ -162,6 +166,7 @@ export class Game extends Component {
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
+    onActivateObject: func,
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
@@ -191,6 +196,10 @@ export class Game extends Component {
 
   allPieces() {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
+  }
+
+  myPieces() {
+    return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
   hoveredCard() {
@@ -264,7 +273,12 @@ export class Game extends Component {
             gameProps={this.props} />
 
           <div style={{position: 'relative'}}>
-            <CardViewer hoveredCard={this.hoveredCard()} />
+            <div style={{position: 'absolute', left: 10, top: 0, bottom: 0, margin: 'auto', height: 236 * 1.5}}>
+              <CardViewer hoveredCard={this.hoveredCard()} />
+              <Activate
+                piece={this.props.selectedTile && this.myPieces()[this.props.selectedTile] ? this.myPieces()[this.props.selectedTile] : null}
+                onClick={idx => this.props.onActivateObject(this.props.selectedTile, idx)} />
+            </div>
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />

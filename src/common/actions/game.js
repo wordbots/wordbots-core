@@ -3,6 +3,7 @@ export const NEW_GAME = 'NEW_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
 export const MOVE_ROBOT_AND_ATTACK = 'MOVE_ROBOT_AND_ATTACK';
+export const ACTIVATE_OBJECT = 'ACTIVATE_OBJECT';
 export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
@@ -41,6 +42,13 @@ export function moveRobotAndAttack(from, to, target) {
   return {
     type: MOVE_ROBOT_AND_ATTACK,
     payload: { from, to, target }
+  };
+}
+
+export function activateObject(tile, abilityIdx) {
+  return {
+    type: ACTIVATE_OBJECT,
+    payload: { tile, abilityIdx }
   };
 }
 

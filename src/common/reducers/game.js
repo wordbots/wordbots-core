@@ -33,6 +33,9 @@ export default function game(oldState = cloneDeep(defaultState), action) {
         return state;
       }
 
+      case gameActions.ACTIVATE_OBJECT:
+        return g.activateObject(state, action.payload.tile, action.payload.abilityIdx);
+
       case gameActions.PLACE_CARD:
         return g.placeCard(state, action.payload.cardIdx, action.payload.tile);
 

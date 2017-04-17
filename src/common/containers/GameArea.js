@@ -163,8 +163,10 @@ export class GameArea extends Component {
   updateHeight() {
     this.setState({
       areaHeight: window.innerHeight - 200,
-      boardHeight: this.boardArea.offsetHeight
+      boardHeight: window.innerHeight - 450
     });
+
+    console.log(this.state.areaHeight, this.state.boardHeight);
   }
 
   isMyTurn() {

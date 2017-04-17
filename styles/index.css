@@ -549,7 +549,7 @@ a {
 /* Hand hover animation */
 
 #handTop:hover {
-  top: 0 !important;
+  top: -80px !important;
   transition: all 300ms ease-in-out;
 }
 

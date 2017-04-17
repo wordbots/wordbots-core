@@ -93,8 +93,11 @@ export default class Hand extends Component {
         style={{
           display: 'flex',
           justifyContent: 'center',
-          width: '100%',
-          position: 'absolute'
+          width: 'calc(100% - 400px)',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          margin: '0 auto'
         }}>
         {this.renderCards()}
       </CSSTransitionGroup>

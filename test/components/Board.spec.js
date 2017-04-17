@@ -9,7 +9,7 @@ import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
 
 describe('Board component', () => {
   it('renders the default board state', () => {
-    const gridProps = getComponent('Game', HexGrid, combineState(getDefaultState())).props;
+    const gridProps = getComponent('Play', HexGrid, combineState(getDefaultState())).props;
 
     expect(gridProps.width).toEqual(GRID_CONFIG.width);
     expect(gridProps.height).toEqual(GRID_CONFIG.height);
@@ -32,7 +32,7 @@ describe('Board component', () => {
     const state = gameReducer(getDefaultState(), actions.setSelectedCard(0, 'orange'));
 
     let dispatchedAction = null;
-    const hexGrid = getComponent('Game', HexGrid, combineState(state), (action => { dispatchedAction = action; }));
+    const hexGrid = getComponent('Play', HexGrid, combineState(state), (action => { dispatchedAction = action; }));
 
     it('are colored green', () => {
       expect(hexGrid.props.hexColors).toEqual({
@@ -68,7 +68,7 @@ describe('Board component', () => {
     state = gameReducer(state, actions.setSelectedTile('1,0,-1', 'orange'));
 
     let dispatchedAction = null;
-    const hexGrid = getComponent('Game', HexGrid, combineState(state), (action => { dispatchedAction = action; }));
+    const hexGrid = getComponent('Play', HexGrid, combineState(state), (action => { dispatchedAction = action; }));
 
     it('are colored as expected', () => {
       expect(hexGrid.props.hexColors).toEqual({
@@ -124,7 +124,7 @@ describe('Board component', () => {
     state = playObject(state, 'orange', attackBotCard, '3,0,-3');
     state = playEvent(state, 'blue', shockCard);
 
-    const hexGrid = getComponent('Game', HexGrid, combineState(state));
+    const hexGrid = getComponent('Play', HexGrid, combineState(state));
 
     expect(hexGrid.props.hexColors).toEqual({
       '-4,0,4': 'blue',  // Blue core

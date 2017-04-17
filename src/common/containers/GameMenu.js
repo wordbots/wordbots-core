@@ -56,13 +56,69 @@ export class GameMenu extends Component {
     super(props);
 
     this.state = {
-      selectedAbility: 0
+      selectedAbility: 0,
+      timer: '1:30',
+      timerStyle: {
+        color: 'black',
+        textAlign: 'center'
+      }
     };
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      this.tickTimer();
+    }, 1000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.isMyTurn !== this.props.isMyTurn) {
+      this.resetTimer();
+    }
+  }
+
+  resetTimer() {
+    this.setTimer(1, 30, 'black');
+  }
+
+  padDigits(seconds) { 
+    return (seconds < 10 ? '0' : '') + seconds;
+  }
+
+  setTimer(minutes, seconds, color) {
+    this.setState({
+      selectedAbility: this.state.selectedAbility,
+      timer: `${minutes}:${seconds}`,
+      timerStyle: {
+        color: color,
+        textAlign: 'center'
+      }
+    });
+  }
+
+  tickTimer() {
+    const [, minutes, seconds] = this.state.timer.match(/(.):(..)/).map(num => parseInt(num));
+
+    if (minutes === 1) {
+      if (seconds === 0) {
+        this.setTimer(0, 59, 'black');
+      } else {
+        this.setTimer(1, this.padDigits(seconds - 1), 'black');
+      }
+    } else if (seconds > 0 && seconds <= 6) {
+      this.setTimer(0, this.padDigits(seconds - 1), 'red');
+    } else if (seconds > 0) {
+      this.setTimer(0, this.padDigits(seconds - 1), 'black');      
+    } else {
+      if (this.props.isMyTurn) {
+        this.props.onPassTurn(this.props.player);
+      }
+    } 
   }
 
   render() {
     const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
-    const canActivateAbility = (abilities.length > 0) && !this.props.selectedPiece.cantActivate;
+    const canActivateAbility = (abilities.length > 0) && !this.props.selectedPiece.cantActivate ;
 
     return (
       <Drawer
@@ -71,6 +127,10 @@ export class GameMenu extends Component {
           top: 66,
           paddingTop: 10
       }}>
+        <MenuItem 
+          primaryText={this.state.timer} 
+          style={this.state.timerStyle} />
+        <Divider />
         <MenuItem
           primaryText="End Turn"
           disabled={!this.props.isMyTurn}

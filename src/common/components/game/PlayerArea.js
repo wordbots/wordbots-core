@@ -14,7 +14,11 @@ class PlayerArea extends Component {
         return 'blue';
       }
     } else {
-      return playerColor;
+      if (playerColor === 'neither') {
+        return 'orange';
+      } else {
+        return playerColor;
+      }
     }
   }
 

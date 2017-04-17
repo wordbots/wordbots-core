@@ -48,7 +48,7 @@ export function mapDispatchToProps(dispatch) {
     },
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
-    },
+    }
   };
 }
 

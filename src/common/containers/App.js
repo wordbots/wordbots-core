@@ -18,7 +18,7 @@ import Creator from '../containers/Creator';
 import Collection from '../containers/Collection';
 import Deck from '../containers/Deck';
 import Decks from '../containers/Decks';
-import Game from '../containers/Game';
+import Play from '../containers/Play';
 import Home from '../containers/Home';
 import PersonalTheme from '../themes/personal';
 
@@ -154,13 +154,13 @@ class App extends Component {
             {this.renderLink('/collection', 'Collection', 'recent_actors')}
             {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
             {this.renderLink('/decks', 'Decks', 'view_list')}
-            {this.renderLink('/game', 'Play', 'videogame_asset')}
+            {this.renderLink('/play', 'Play', 'videogame_asset')}
           </Drawer>
           <div>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/home" component={Home} />
-              <Route path="/game" component={Game} />
+              <Route path="/play" component={Play} />
               <Route path="/creator" component={Creator} />
               <Route path="/collection" component={Collection} />
               <Route path="/deck" component={Deck} />

@@ -31,7 +31,7 @@ export function loadState(state) {
         state.socket.username = username;
       }
 
-      state.collection.cards = builtinCards.concat(JSON.parse(collection).filter(c => c.source !== 'builtin'));
+      state.collection.cards = builtinCards.concat(compact(JSON.parse(collection)).filter(c => c.source !== 'builtin'));
 
       state.collection.decks = JSON.parse(decks).map(deck =>
         Object.assign({}, deck, {cards: compact(deck.cards).map(getNewCopyIfBuiltinCard)})

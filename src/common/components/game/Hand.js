@@ -20,7 +20,8 @@ export default class Hand extends Component {
     hoveredCard: number,
     targetableCards: array,
     status: object,
-    curved: bool
+    curved: bool,
+    opponent: bool
   };
 
   calculateAvailableWidth() {
@@ -85,13 +86,18 @@ export default class Hand extends Component {
   render() {
     return (
       <CSSTransitionGroup
+        id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
         transitionEnterTimeout={500}
         transitionLeave={false}
         style={{
           display: 'flex',
           justifyContent: 'center',
-          width: '100%'
+          width: 'calc(100% - 400px)',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          margin: '0 auto'
         }}>
         {this.renderCards()}
       </CSSTransitionGroup>

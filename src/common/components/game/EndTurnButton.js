@@ -3,7 +3,7 @@ import { bool, func } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 
 const EndTurnButton = ({enabled, onClick}) => (
-  <div style={{position: 'absolute', top: 0, bottom: 0, right: 0, height: 36, margin: 'auto', color: 'white'}}>
+  <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
     <RaisedButton
       disabled={!enabled}
       label="End Turn"

@@ -9,3 +9,10 @@ then
     hash=$(git rev-parse HEAD)
     heroku config:set $hash_name=$hash --app wordbots-game
 fi
+
+if [ $branch == "staging" ]
+then
+    hash_name=HEAD_HASH
+    hash=$(git rev-parse HEAD)
+    heroku config:set $hash_name=$hash --app wordbots-game-staging
+fi

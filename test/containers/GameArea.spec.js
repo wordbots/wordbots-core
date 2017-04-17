@@ -1,6 +1,4 @@
 import React from 'react';
-import Helmet from 'react-helmet';
-import Paper from 'material-ui/Paper';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';

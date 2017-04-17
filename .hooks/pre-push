@@ -1,7 +1,11 @@
-if [ "$1" = "heroku" ]
+# To install:
+# > cp .hooks/pre-push .git/hooks/pre-push
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ $branch == "master" ]
 then
     hash_name=HEAD_HASH
     hash=$(git rev-parse HEAD)
-    echo Setting $hash_name to $hash
     heroku config:set $hash_name=$hash --app wordbots-game
 fi

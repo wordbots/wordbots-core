@@ -21,7 +21,8 @@ export default class Hand extends Component {
     hoveredCard: number,
     targetableCards: array,
     status: object,
-    curved: bool
+    curved: bool,
+    opponent: bool
   };
 
   calculateAvailableWidth() {

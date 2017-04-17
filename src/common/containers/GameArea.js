@@ -138,7 +138,7 @@ export class GameArea extends Component {
     this.state = {
       areaHeight: 1100,
       boardHeight: 600
-    }
+    };
   }
 
   componentDidMount() {

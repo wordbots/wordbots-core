@@ -1,6 +1,4 @@
 import React from 'react';
-import Helmet from 'react-helmet';
-import Paper from 'material-ui/Paper';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';
@@ -22,41 +20,38 @@ describe('GameArea container', () => {
     const game = createGameArea(state);
     const dom = renderElement(game);
 
-    // Gross but necessary for comparing bound methods.
-    const mainDiv = dom.props.children[1].props.children[1];
+    const paper = dom.props.children[2];
+    const mainDiv = paper.props.children[1];
     const board = mainDiv.props.children[2];
 
-    expect(dom.props.children).toEqual([
-      <Helmet title="Game"/>,
-      <Paper style={{position: 'relative', height: 1100}}>
-        <PlayerArea opponent gameProps={game.props} />
-        <div
-          ref={mainDiv.ref}
-          style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0}}
-        >
-          <CardViewer hoveredCard={undefined} />
-          <Status
-            player={'orange'}
-            status={state.game.players.orange.status} />
-          <Board
-            selectedTile={null}
-            target={state.game.players.orange.target}
-            bluePieces={state.game.players.blue.robotsOnBoard}
-            orangePieces={state.game.players.orange.robotsOnBoard}
-            player={'orange'}
-            currentTurn={'orange'}
-            playingCardType={null}
-            height={600}
-            onSelectTile={board.props.onSelectTile}
-            onHoverTile={board.props.onHoverTile}
-            />
-        </div>
-        <PlayerArea gameProps={game.props} />
-        <VictoryScreen
-          winnerColor={null}
-          winnerName={null}
-          onClick={game.props.onVictoryScreenClick} />
-      </Paper>
+    expect(paper.props.children).toEqual([
+      <PlayerArea opponent gameProps={game.props} />,
+      <div
+        ref={mainDiv.ref}
+        style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0}}
+      >
+        <CardViewer hoveredCard={undefined} />
+        <Status
+          player={'orange'}
+          status={state.game.players.orange.status} />
+        <Board
+          selectedTile={null}
+          target={state.game.players.orange.target}
+          bluePieces={state.game.players.blue.robotsOnBoard}
+          orangePieces={state.game.players.orange.robotsOnBoard}
+          player={'orange'}
+          currentTurn={'orange'}
+          playingCardType={null}
+          height={600}
+          onSelectTile={board.props.onSelectTile}
+          onHoverTile={board.props.onHoverTile}
+          />
+      </div>,
+      <PlayerArea gameProps={game.props} />,
+      <VictoryScreen
+        winnerColor={null}
+        winnerName={null}
+        onClick={game.props.onVictoryScreenClick} />
     ]);
   });
 

@@ -12,7 +12,7 @@ function createMockCanvas() {
     try {
       const Canvas = require('canvas');
       return new Canvas();
-    } catch {
+    } catch (e) {
       return null;
     }
   }

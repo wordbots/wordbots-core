@@ -1,6 +1,10 @@
-import { isArray, isEmpty } from 'lodash';
+import { isArray, isEmpty, shuffle, take } from 'lodash';
 
 import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util/game';
+
+function collectionType(collection) {
+  return isArray(collection[0]) ? 'objects' : 'cards';
+}
 
 // Targets are all functions that return an array,
 // of either of players, cards, or pieces (objects on board).
@@ -10,13 +14,15 @@ import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } f
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
-      if (isArray(collection[0])) {
-        // Collection of objects.
+      if (collectionType(collection) === 'objects') {
         return collection.map(([hex, obj]) => obj);
       } else {
-        // Collection of cards.
         return collection;
       }
+    },
+
+    allPlayers: function () {
+      return [currentPlayer(state), opponentPlayer(state)];
     },
 
     // Note: Unlike other target functions, choose() can return an [hex]
@@ -36,14 +42,12 @@ export default function targets(state, currentObject) {
           // Prepare target selection.
           player.target.choosing = true;
 
-          if (isArray(collection[0])) {
-            // Collection of objects.
+          if (collectionType(collection) === 'objects') {
             // Don't allow player to pick the object that is being played (if any).
             player.target.possibleHexes = collection.filter(([hex, obj]) => !obj || !obj.justPlayed)
                                                     .map(([hex, obj]) => hex);
             player.target.possibleCards = [];
           } else {
-            // Collection of cards.
             player.target.possibleCards = collection.map(card => card.id);
             player.target.possibleHexes = [];
           }
@@ -54,8 +58,9 @@ export default function targets(state, currentObject) {
       }
     },
 
-    thisRobot: function () {
-      return [currentObject];
+    controllerOf: function (objects) {
+      // Assume that only one object is ever passed in here.
+      return (objects.length === 1) ? [ownerOf(state, objects[0])] : [];
     },
 
     // Currently salient object.
@@ -75,14 +80,6 @@ export default function targets(state, currentObject) {
       return state.itP ? [state.itP] : [];
     },
 
-    self: function () {
-      if (currentObject) {
-        return [ownerOf(state, currentObject)];
-      } else {
-        return [currentPlayer(state)];
-      }
-    },
-
     opponent: function () {
       if (currentObject) {
         return [state.players[opponent(ownerOf(state, currentObject).name)]];
@@ -91,13 +88,21 @@ export default function targets(state, currentObject) {
       }
     },
 
-    allPlayers: function () {
-      return [currentPlayer(state), opponentPlayer(state)];
+    random: function (num, collection) {
+      const candidates = collectionType(collection) === 'objects' ? collection.map(([hex, obj]) => obj) : collection;
+      return take(shuffle(candidates), num);
     },
 
-    controllerOf: function (objects) {
-      // Assume that only one object is ever passed in here.
-      return (objects.length === 1) ? [ownerOf(state, objects[0])] : [];
+    self: function () {
+      if (currentObject) {
+        return [ownerOf(state, currentObject)];
+      } else {
+        return [currentPlayer(state)];
+      }
+    },
+
+    thisRobot: function () {
+      return [currentObject];
     }
   };
 }

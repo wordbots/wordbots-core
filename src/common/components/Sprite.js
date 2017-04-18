@@ -18,11 +18,8 @@ export default class Sprite extends PureComponent {
     const size = (this.props.size + (this.props.spacing || 0)) * 2;
 
     // Draw to a mock canvas, then create an image using the dataURL.
-    // (Don't try to render anything on the server because it's too complicated.)
-    if (!inBrowser()) {
-      return null;
-    } else {
-      const mockCanvasElt = document.createElement('canvas');
+    const mockCanvasElt = this.createMockCanvas();
+    if (mockCanvasElt) {
       mockCanvasElt.width = size;
       mockCanvasElt.height = size;
       const dataURL = this.drawSprite(mockCanvasElt, {
@@ -47,6 +44,21 @@ export default class Sprite extends PureComponent {
         return (
           <image xlinkHref={dataURL} width={1} height={1} style={{imageRendering: 'pixelated'}} />
         );
+      }
+    } else {
+      return null;
+    }
+  }
+
+  createMockCanvas() {
+    if (inBrowser()) {
+      return document.createElement('canvas');
+    } else {
+      try {
+        const Canvas = require('canvas');
+        return new Canvas();
+      } catch (e) {
+        return null;
       }
     }
   }

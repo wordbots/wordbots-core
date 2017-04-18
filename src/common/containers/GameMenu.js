@@ -17,6 +17,7 @@ export function mapStateToProps(state) {
 
   return {
     player: state.game.player,
+    currentTurn: state.game.currentTurn,
     isMyTurn: state.game.currentTurn === state.game.player,
     selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
   };
@@ -44,6 +45,7 @@ export class GameMenu extends Component {
     open: bool,
 
     player: string,
+    currentTurn: string,
     isMyTurn: bool,
     selectedPiece: object,
 
@@ -56,21 +58,89 @@ export class GameMenu extends Component {
     super(props);
 
     this.state = {
-      selectedAbility: 0
+      selectedAbility: 0,
+      timer: '1:30',
+      timerStyle: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: '24',
+        fontWeight: 'normal',
+        fontFamily: 'Carter One',
+        cursor: 'default'
+      }
     };
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      this.tickTimer();
+    }, 1000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.currentTurn !== this.props.currentTurn) {
+      this.resetTimer();
+    }
+  }
+
+  resetTimer() {
+    this.setTimer(1, 30, 'white');
+  }
+
+  padDigits(seconds) { 
+    return (seconds < 10 ? '0' : '') + seconds;
+  }
+
+  setTimer(minutes, seconds, color) {
+    this.setState({
+      selectedAbility: this.state.selectedAbility,
+      timer: `${minutes}:${seconds}`,
+      timerStyle: {
+        color: color,
+        textAlign: 'center',
+        backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],
+        fontSize: 24,
+        fontWeight: color === 'red' ? 'bold' : 'normal',
+        fontFamily: 'Carter One',
+        cursor: 'default'
+      }
+    });
+  }
+
+  tickTimer() {
+    const [, minutes, seconds] = this.state.timer.match(/(.):(..)/).map(num => parseInt(num));
+
+    if (minutes === 1) {
+      if (seconds === 0) {
+        this.setTimer(0, 59, 'white');
+      } else {
+        this.setTimer(1, this.padDigits(seconds - 1), 'white');
+      }
+    } else if (seconds > 0 && seconds <= 6) {
+      this.setTimer(0, this.padDigits(seconds - 1), 'red');
+    } else if (seconds > 0) {
+      this.setTimer(0, this.padDigits(seconds - 1), 'white');      
+    } else {
+      if (this.props.isMyTurn) {
+        this.props.onPassTurn(this.props.player);
+      }
+    } 
   }
 
   render() {
     const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
-    const canActivateAbility = (abilities.length > 0) && !this.props.selectedPiece.cantActivate;
+    const canActivateAbility = (abilities.length > 0) && !this.props.selectedPiece.cantActivate ;
 
     return (
       <Drawer
         open={this.props.open}
         containerStyle={{
-          top: 66,
-          paddingTop: 10
+          top: 64
       }}>
+        <MenuItem 
+          primaryText={this.state.timer} 
+          style={this.state.timerStyle} />
+        <Divider />
         <MenuItem
           primaryText="End Turn"
           disabled={!this.props.isMyTurn}

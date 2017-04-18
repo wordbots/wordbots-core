@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'production') {
       new ExtractTextPlugin('app.css'),
       new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
       new CopyWebpackPlugin([{from: 'static'}]),
-      new webpack.IgnorePlugin(/node_modules\/canvas/)
+      new webpack.IgnorePlugin(/canvas/)
     ],
     stats: {
       warnings: false
@@ -89,7 +89,7 @@ if (process.env.NODE_ENV === 'production') {
       new webpack.HotModuleReplacementPlugin(),
       new ExtractTextPlugin('app.css'),
       new CopyWebpackPlugin([{from: 'static'}]),
-      new webpack.IgnorePlugin(/node_modules\/canvas/)
+      new webpack.IgnorePlugin(/canvas/)
     ]
   });
 

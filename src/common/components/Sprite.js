@@ -5,19 +5,6 @@ import { number, string } from 'prop-types';
 
 import { hashCode, inBrowser } from '../util/common';
 
-function createMockCanvas() {
-  if (inBrowser()) {
-    return document.createElement('canvas');
-  } else {
-    try {
-      const Canvas = require('canvas');
-      return new Canvas();
-    } catch (e) {
-      return null;
-    }
-  }
-}
-
 export default class Sprite extends PureComponent {
   static propTypes = {
     id: string,
@@ -31,7 +18,7 @@ export default class Sprite extends PureComponent {
     const size = (this.props.size + (this.props.spacing || 0)) * 2;
 
     // Draw to a mock canvas, then create an image using the dataURL.
-    const mockCanvasElt = createMockCanvas();
+    const mockCanvasElt = this.createMockCanvas();
     if (mockCanvasElt) {
       mockCanvasElt.width = size;
       mockCanvasElt.height = size;
@@ -60,6 +47,19 @@ export default class Sprite extends PureComponent {
       }
     } else {
       return null;
+    }
+  }
+
+  createMockCanvas() {
+    if (inBrowser()) {
+      return document.createElement('canvas');
+    } else {
+      try {
+        const Canvas = require('canvas');
+        return new Canvas();
+      } catch (e) {
+        return null;
+      }
     }
   }
 

@@ -41,7 +41,8 @@ if (process.env.NODE_ENV === 'production') {
       }),
       new ExtractTextPlugin('app.css'),
       new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
-      new CopyWebpackPlugin([{from: 'static'}])
+      new CopyWebpackPlugin([{from: 'static'}]),
+      new webpack.IgnorePlugin(/node_modules\/canvas/)
     ],
     stats: {
       warnings: false
@@ -78,7 +79,6 @@ if (process.env.NODE_ENV === 'production') {
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
       { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) }
-
     ]},
     entry: [
       'whatwg-fetch',
@@ -88,7 +88,8 @@ if (process.env.NODE_ENV === 'production') {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new ExtractTextPlugin('app.css'),
-      new CopyWebpackPlugin([{from: 'static'}])
+      new CopyWebpackPlugin([{from: 'static'}]),
+      new webpack.IgnorePlugin(/node_modules\/canvas/)
     ]
   });
 

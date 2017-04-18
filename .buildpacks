@@ -1,3 +1,2 @@
-https://github.com/heroku/heroku-buildpack-nodejs
-https://github.com/jerrysu/heroku-buildpack-webpack
-https://github.com/stomita/heroku-buildpack-phantomjs
+https://github.com/mojodna/heroku-buildpack-cairo.git
+https://github.com/heroku/heroku-buildpack-nodejs.git

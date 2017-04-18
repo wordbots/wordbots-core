@@ -1,6 +1,6 @@
 import { cloneDeep, isArray } from 'lodash';
 
-import { TYPE_EVENT } from '../../../constants';
+import { TYPE_EVENT, stringToType } from '../../../constants';
 import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions,
@@ -95,6 +95,10 @@ export function placeCard(state, cardIdx, tile) {
 
     tempState = discardCards(tempState, [card]);
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
+    tempState = triggerEvent(tempState, 'afterCardPlay', {
+      player: true,
+      condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
+    });
     tempState = triggerEvent(tempState, 'afterPlayed', {object: playedObject});
     tempState = applyAbilities(tempState);
 
@@ -146,6 +150,10 @@ function playEvent(state, cardIdx) {
     } else {
       state = discardCards(state, [card]);
       state = logAction(state, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
+      state = triggerEvent(state, 'afterCardPlay', {
+        player: true,
+        condition: t => stringToType(t.cardType) === TYPE_EVENT || t.cardType === 'allobjects'
+      });
 
       player.status.message = '';
       player.selectedCard = null;

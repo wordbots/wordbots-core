@@ -61,7 +61,8 @@ const defaultState = {
   usernames: {},
   hoveredCard: null,
   winner: null,
-  actionLog: []
+  actionLog: [],
+  memory: {}
 };
 
 export default defaultState;

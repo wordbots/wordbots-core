@@ -265,8 +265,6 @@ export class GameArea extends Component {
   render() {
     return (
       <div>
-        <Helmet title="Game"/>
-
         {this.renderNotification()}
 
         <Paper

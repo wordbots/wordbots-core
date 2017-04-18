@@ -1,4 +1,5 @@
-import { isArray, isEmpty, shuffle, take } from 'lodash';
+import { isArray, isEmpty } from 'lodash';
+import { pick } from 'shuffle-array';
 
 import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, ownerOf } from '../util/game';
 
@@ -90,7 +91,8 @@ export default function targets(state, currentObject) {
 
     random: function (num, collection) {
       const candidates = collectionType(collection) === 'objects' ? collection.map(([hex, obj]) => obj) : collection;
-      return take(shuffle(candidates), num);
+      const chosen = pick(candidates, {picks: num, rng: state.rng});
+      return isArray(chosen) ? chosen : [chosen];
     },
 
     self: function () {

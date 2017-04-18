@@ -38,3 +38,9 @@ export function objectsMatchingConditions(state) {
     return toPairs(objects);
   };
 }
+
+export function other(state, currentObject) {
+  return function (collection) {
+    return collection.filter(([hex, obj]) => obj.id !== currentObject.id);
+  };
+}

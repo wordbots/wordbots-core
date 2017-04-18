@@ -72,6 +72,8 @@
     "redux-thunk": "2.2.0",
     "redux-undo": "0.6.1",
     "repng": "^1.0.0-b7",
+    "seed-random": "^2.2.0",
+    "shuffle-array": "^1.0.1",
     "style-loader": "0.16.1",
     "substitute-loader": "^1.0.0",
     "url-loader": "0.5.8",

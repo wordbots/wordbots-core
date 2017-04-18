@@ -1,4 +1,5 @@
 import { cloneDeep, filter, findKey, flatMap, isArray, some, without } from 'lodash';
+import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
@@ -191,8 +192,8 @@ export function logAction(state, player, action, cards, timestamp) {
   return state;
 }
 
-export function newGame(state, player, usernames, decks) {
-  state = Object.assign(state, cloneDeep(defaultState), {player: player}); // Reset game state.
+export function newGame(state, player, usernames, decks, seed) {
+  state = Object.assign(state, cloneDeep(defaultState), {player: player, rng: seededRNG(seed)}); // Reset game state.
   state.usernames = usernames;
   state.players.blue = bluePlayerState(decks.blue);
   state.players.orange = orangePlayerState(decks.orange);
@@ -291,9 +292,12 @@ export function executeCmd(state, cmd, currentObject = null, source = null) {
   const cardsInHand = vocabulary.cardsInHand(state);
   const objectsInPlay = vocabulary.objectsInPlay(state);
   const objectsMatchingConditions = vocabulary.objectsMatchingConditions(state);
+  const other = vocabulary.other(state, currentObject);
   const attributeSum = vocabulary.attributeSum(state);
   const attributeValue = vocabulary.attributeValue(state);
   const count = vocabulary.count(state);
+  const save = vocabulary.save(state);
+  const load = vocabulary.load(state);
 
   // console.log(cmd);
   return eval(cmd)();

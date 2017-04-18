@@ -3,7 +3,7 @@ import targets from './targets';
 import conditions from './conditions';
 import { setTrigger, unsetTrigger, triggers } from './triggers';
 import { setAbility, unsetAbility, abilities } from './abilities';
-import { allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions } from './collections';
+import { allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions, other } from './collections';
 import { attributeSum, attributeValue, count } from './numbers';
 
 const vocabulary = {
@@ -24,10 +24,14 @@ const vocabulary = {
   cardsInHand: cardsInHand,
   objectsInPlay: objectsInPlay,
   objectsMatchingConditions: objectsMatchingConditions,
+  other: other,
 
   attributeSum: attributeSum,
   attributeValue: attributeValue,
-  count: count
+  count: count,
+
+  save: (state) => (key, value) => { state.memory[key] = value; },
+  load: (state) => (key) => state.memory[key]
 };
 
 export default vocabulary;

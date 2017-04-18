@@ -165,6 +165,7 @@ export default function launchWebsocketServer(server, path) {
     const usernames = {'orange': state.usernames[opponentID], 'blue': state.usernames[clientID]};
     const decks = {'orange': opponent.deck, 'blue': deck};
     const gameName = opponent.name;
+    const seed = generateID();
 
     state.waitingPlayers = state.waitingPlayers.filter(p => p.id !== opponentID);
     state.games.push({
@@ -177,12 +178,13 @@ export default function launchWebsocketServer(server, path) {
 
       actions: [],
       decks: decks,
-      usernames: usernames
+      usernames: usernames,
+      startingSeed: seed
     });
 
     console.log(`${clientID} joined game ${gameName} against ${opponentID}.`);
-    sendMessage('ws:GAME_START', {'player': 'blue', 'decks': decks, 'usernames': usernames}, [clientID]);
-    sendMessage('ws:GAME_START', {'player': 'orange', 'decks': decks, 'usernames': usernames}, [opponentID]);
+    sendMessage('ws:GAME_START', {'player': 'blue', 'decks': decks, 'usernames': usernames, 'seed': seed}, [clientID]);
+    sendMessage('ws:GAME_START', {'player': 'orange', 'decks': decks, 'usernames': usernames, 'seed': seed}, [opponentID]);
     sendChat(`Entering game ${gameName} ...`, [clientID, opponent.id]);
     broadcastInfo();
   }
@@ -193,7 +195,12 @@ export default function launchWebsocketServer(server, path) {
     game.spectators.push(clientID);
 
     console.log(`${clientID} joined game ${game.name} as a spectator.`);
-    sendMessage('ws:GAME_START', {'player': 'neither', 'decks': game.decks, 'usernames': game.usernames}, [clientID]);
+    sendMessage('ws:GAME_START', {
+      'player': 'neither',
+      'decks': game.decks,
+      'usernames': game.usernames,
+      'seed': game.startingSeed
+    }, [clientID]);
     sendMessage('ws:CURRENT_STATE', {'actions': game.actions}, [clientID]);
     sendChat(`Entering game ${game.name} as a spectator ...`, [clientID]);
     sendChat(`${state.usernames[clientID]} has joined as a spectator.`, findOpponents(clientID));

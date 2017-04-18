@@ -20,7 +20,7 @@ describe('GameArea container', () => {
     const game = createGameArea(state);
     const dom = renderElement(game);
 
-    const paper = dom.props.children[2];
+    const paper = dom.props.children[1];
     const mainDiv = paper.props.children[1];
     const board = mainDiv.props.children[2];
 

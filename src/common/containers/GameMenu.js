@@ -61,8 +61,12 @@ export class GameMenu extends Component {
       selectedAbility: 0,
       timer: '1:30',
       timerStyle: {
-        color: 'black',
-        textAlign: 'center'
+        color: 'white',
+        textAlign: 'center',
+        fontSize: '24',
+        fontWeight: 'normal',
+        fontFamily: 'Carter One',
+        cursor: 'default'
       }
     };
   }
@@ -80,7 +84,7 @@ export class GameMenu extends Component {
   }
 
   resetTimer() {
-    this.setTimer(1, 30, 'black');
+    this.setTimer(1, 30, 'white');
   }
 
   padDigits(seconds) { 
@@ -94,7 +98,11 @@ export class GameMenu extends Component {
       timerStyle: {
         color: color,
         textAlign: 'center',
-        backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn]
+        backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],
+        fontSize: 24,
+        fontWeight: color === 'red' ? 'bold' : 'normal',
+        fontFamily: 'Carter One',
+        cursor: 'default'
       }
     });
   }
@@ -104,14 +112,14 @@ export class GameMenu extends Component {
 
     if (minutes === 1) {
       if (seconds === 0) {
-        this.setTimer(0, 59, 'black');
+        this.setTimer(0, 59, 'white');
       } else {
-        this.setTimer(1, this.padDigits(seconds - 1), 'black');
+        this.setTimer(1, this.padDigits(seconds - 1), 'white');
       }
     } else if (seconds > 0 && seconds <= 6) {
       this.setTimer(0, this.padDigits(seconds - 1), 'red');
     } else if (seconds > 0) {
-      this.setTimer(0, this.padDigits(seconds - 1), 'black');      
+      this.setTimer(0, this.padDigits(seconds - 1), 'white');      
     } else {
       if (this.props.isMyTurn) {
         this.props.onPassTurn(this.props.player);

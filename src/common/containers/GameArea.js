@@ -240,7 +240,7 @@ export class GameArea extends Component {
   renderNotification() {
     const options = {
       tag: 'wordbots',
-      body: 'It\'s your turn!',
+      body: '',
       icon: '/static/android-icon-144x144.png',
       lang: 'en',
       dir: 'ltr',
@@ -248,6 +248,8 @@ export class GameArea extends Component {
     };
 
     if (this.props.currentTurn === this.props.player) {
+      options.body = 'It\'s your turn!';
+
       return (
         <Notification
           timeout={2000}

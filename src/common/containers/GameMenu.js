@@ -78,7 +78,7 @@ export class GameMenu extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.isMyTurn !== this.props.isMyTurn) {
+    if (prevProps.currentTurn !== this.props.currentTurn) {
       this.resetTimer();
     }
   }

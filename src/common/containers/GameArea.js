@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
-import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
@@ -266,7 +265,6 @@ export class GameArea extends Component {
     return (
       <div>
         {this.renderNotification()}
-
         <Paper
           style={{
             position: 'relative',

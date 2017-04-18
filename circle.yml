@@ -2,6 +2,10 @@ machine:
   node:
     version: 7.0.0
 
+dependencies:
+  override:
+    - npm install --no-optional
+
 test:
   override:
     - node_modules/eslint/bin/eslint.js .

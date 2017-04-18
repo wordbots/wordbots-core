@@ -186,12 +186,7 @@ export default class Card extends Component {
   }
 
   renderImage() {
-    if (!inBrowser()) {
-      const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
-      return (
-        <div style={{ width, height }} />
-      );
-    } if (this.props.type === TYPE_CORE) {
+    if (this.props.type === TYPE_CORE) {
       const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
       return (
         <div style={{

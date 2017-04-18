@@ -86,10 +86,10 @@ if (process.env.NODE_ENV === 'production') {
       './src/client/index.js'
     ],
     plugins: [
+      new webpack.IgnorePlugin(/canvas/),
       new webpack.HotModuleReplacementPlugin(),
       new ExtractTextPlugin('app.css'),
-      new CopyWebpackPlugin([{from: 'static'}]),
-      new webpack.IgnorePlugin(/canvas/)
+      new CopyWebpackPlugin([{from: 'static'}])
     ]
   });
 

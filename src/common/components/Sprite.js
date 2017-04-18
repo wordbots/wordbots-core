@@ -9,8 +9,12 @@ function createMockCanvas() {
   if (inBrowser()) {
     return document.createElement('canvas');
   } else {
-    const Canvas = require('canvas');
-    return new Canvas();
+    try {
+      const Canvas = require('canvas');
+      return new Canvas();
+    } catch {
+      return null;
+    }
   }
 }
 
@@ -28,30 +32,34 @@ export default class Sprite extends PureComponent {
 
     // Draw to a mock canvas, then create an image using the dataURL.
     const mockCanvasElt = createMockCanvas();
-    mockCanvasElt.width = size;
-    mockCanvasElt.height = size;
-    const dataURL = this.drawSprite(mockCanvasElt, {
-      seed: hashCode(this.props.id),
+    if (mockCanvasElt) {
+      mockCanvasElt.width = size;
+      mockCanvasElt.height = size;
+      const dataURL = this.drawSprite(mockCanvasElt, {
+        seed: hashCode(this.props.id),
 
-      // Available properties: seed, pal, colours, size, spacing, zoom,
-      // scaler0, scaler1, falloff, probmin, probmax, bias, gain, mirrorh, mirrorv, despeckle, despur
-      pal: 'nes',
-      colours: 5,
-      falloff: 'cosine',
-      mirrorh: 1,
-      mirrorv: 0,
-      size: this.props.size,
-      spacing: this.props.spacing || 0
-    });
+        // Available properties: seed, pal, colours, size, spacing, zoom,
+        // scaler0, scaler1, falloff, probmin, probmax, bias, gain, mirrorh, mirrorv, despeckle, despur
+        pal: 'nes',
+        colours: 5,
+        falloff: 'cosine',
+        mirrorh: 1,
+        mirrorv: 0,
+        size: this.props.size,
+        spacing: this.props.spacing || 0
+      });
 
-    if (this.props.output === 'html') {
-      return (
-        <img src={dataURL} width={size * (this.props.scale || 1)} height={size * (this.props.scale || 1)} style={{imageRendering: 'pixelated'}} />
-      );
-    } else if (this.props.output === 'svg') {
-      return (
-        <image xlinkHref={dataURL} width={1} height={1} style={{imageRendering: 'pixelated'}} />
-      );
+      if (this.props.output === 'html') {
+        return (
+          <img src={dataURL} width={size * (this.props.scale || 1)} height={size * (this.props.scale || 1)} style={{imageRendering: 'pixelated'}} />
+        );
+      } else if (this.props.output === 'svg') {
+        return (
+          <image xlinkHref={dataURL} width={1} height={1} style={{imageRendering: 'pixelated'}} />
+        );
+      }
+    } else {
+      return null;
     }
   }
 

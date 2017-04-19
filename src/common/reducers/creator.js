@@ -1,9 +1,10 @@
 import { fromPairs } from 'lodash';
 
+import { id } from '../util/common';
+import { getSentencesFromInput, replaceSynonyms } from '../util/cards';
 import defaultState from '../store/defaultCreatorState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
-import { id } from '../util/common';
 
 import c from './handlers/cards';
 
@@ -26,12 +27,14 @@ export default function creator(oldState = defaultState, action) {
       return state;
 
     case creatorActions.SET_TEXT: {
+      const sentences = getSentencesFromInput(action.payload.text);
       const validCurrentParses = fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
-      state.sentences = action.payload.sentences.map(sentence => ({
+
+      state.text = replaceSynonyms(action.payload.text);
+      state.sentences = sentences.map(sentence => ({
         sentence: sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}
       }));
-      state.setText = null;
       return state;
     }
 

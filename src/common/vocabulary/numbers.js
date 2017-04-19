@@ -4,21 +4,19 @@ import { getAttribute } from '../util/game';
 
 export function attributeSum(state) {
   return function (collection, attribute) {
-    return sum(collection.map(([hex, object]) =>
-      getAttribute(object, attribute)
-    ));
+    return sum(collection.entries.map(obj => getAttribute(obj, attribute)));
   };
 }
 
 export function attributeValue(state) {
   return function (targetObjects, attribute) {
-    const object = targetObjects[0]; // targetObjects is an array of objects, so unpack.
+    const object = targetObjects.entries[0]; // targetObjects is an array of objects, so unpack.
     return getAttribute(object, attribute);
   };
 }
 
 export function count(state) {
   return function (collection) {
-    return size(collection);
+    return size(collection.entries);
   };
 }

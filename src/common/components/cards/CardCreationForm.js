@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, string } from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { every, isNull } from 'lodash';
+import { every } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
-import { getSentencesFromInput, requestParse } from '../../util/cards';
+import { getSentencesFromInput, requestParse, splitSentences } from '../../util/cards';
 
 import NumberField from './NumberField';
 
@@ -25,8 +25,6 @@ export default class CardCreationForm extends Component {
     speed: number,
     health: number,
     energy: number,
-    sentences: array,
-    setText: string,
     isNewCard: bool,
 
     onSetName: func,
@@ -45,8 +43,8 @@ export default class CardCreationForm extends Component {
     }
 
     // This should only happen when we're loading an existing card (from Collection view).
-    if (this.props.setText) {
-      this.onUpdateText(this.props.setText, this.props.type);
+    if (this.props.text !== '') {
+      this.onUpdateText(this.props.text, this.props.type);
     }
   }
 
@@ -54,12 +52,12 @@ export default class CardCreationForm extends Component {
     const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
-    this.props.onSetText(sentences);
+    this.props.onSetText(text);
     requestParse(sentences, parserMode, this.props.onParseComplete);
   }
 
   nonEmptySentences() {
-    return this.props.sentences.filter(s => /\S/.test(s.sentence));
+    return splitSentences(this.props.text).filter(s => /\S/.test(s.sentence));
   }
 
   hasCardText() {
@@ -106,8 +104,7 @@ export default class CardCreationForm extends Component {
               onChange={(e, i, value) => {
                 this.props.onSetType(value);
                 // Re-parse card text because different card types now have different validations.
-                const cardText = this.props.sentences.map(s => s.sentence).join('. ');
-                this.onUpdateText(cardText, value);
+                this.onUpdateText(this.props.text, value);
               }}>
               {
                 CREATABLE_TYPES.map(type => <MenuItem key={type} value={type} primaryText={typeToString(type)}/>)
@@ -130,8 +127,7 @@ export default class CardCreationForm extends Component {
 
           <TextField
             multiLine
-            defaultValue=""
-            value={isNull(this.props.setText) ? undefined : this.props.setText}
+            value={this.props.text}
             hintText={this.hasCardText() ? '' : 'Card Text'}
             style={{width: '100%'}}
             onChange={e => { this.onUpdateText(e.target.value); }} />

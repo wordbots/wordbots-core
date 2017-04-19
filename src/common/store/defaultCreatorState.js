@@ -5,12 +5,12 @@ const defaultState = {
   name: '',
   spriteID: id(),
   type: 0,
+  text: '',
   sentences: [],
   attack: 1,
   speed: 1,
   health: 1,
-  energy: 1,
-  setText: null  // Used to inject text into the card creation form (e.g. when a card is loaded for editing).
+  energy: 1
 };
 
 export default defaultState;

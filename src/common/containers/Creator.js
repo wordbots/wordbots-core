@@ -21,7 +21,7 @@ export function mapStateToProps(state) {
     cost: state.creator.energy,
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
-    setText: state.creator.setText,
+    text: state.creator.text,
     sidebarOpen: state.layout.present.sidebarOpen
   };
 }
@@ -57,7 +57,7 @@ export class Creator extends Component {
     id: string,
     name: string,
     type: number,
-    setText: string,
+    text: string,
     sentences: array,
     spriteID: string,
     attack: number,
@@ -97,15 +97,14 @@ export class Creator extends Component {
             speed={this.props.speed}
             health={this.props.health}
             energy={this.props.cost}
-            sentences={this.props.sentences}
-            setText={this.props.setText}
+            text={this.props.text}
             isNewCard={this.props.id ? true : false}
-            onSetName={(name) => { this.props.onSetName(name); }}
-            onSetType={(type) => { this.props.onSetType(type); }}
-            onSetText={(text) => { this.props.onSetText(text); }}
-            onSetAttribute={(attr, value) => { this.props.onSetAttribute(attr, value); }}
-            onParseComplete={(idx, sentence, json) => { this.props.onParseComplete(idx, sentence, json); }}
-            onSpriteClick={() => { this.props.onSpriteClick(); }}
+            onSetName={this.props.onSetName}
+            onSetType={this.props.onSetType}
+            onSetText={this.props.onSetText}
+            onSetAttribute={this.props.onSetAttribute}
+            onParseComplete={this.props.onParseComplete}
+            onSpriteClick={this.props.onSpriteClick}
             onAddToCollection={() => {
               this.props.onAddToCollection(this.props);
               if (this.props.history) {

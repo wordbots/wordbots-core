@@ -1,4 +1,4 @@
-import { flatMap, has, isString } from 'lodash';
+import { flatMap, has } from 'lodash';
 
 import { getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HexUtils from '../components/react-hexgrid/HexUtils';
@@ -8,12 +8,15 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 
 export default function conditions(state) {
   return {
-    adjacentTo: function (hexesOrObjects) {
-      const neighborHexIds = flatMap(hexesOrObjects, hexOrObj =>
-        getAdjacentHexes(HexUtils.IDToHex(isString(hexOrObj) ? hexOrObj : getHex(state, hexOrObj)))
-      ).map(HexUtils.getID);
+    adjacentTo: function (targets) {
+      let neighborHexIds = [];
+      if (targets.type === 'hexes') {
+        neighborHexIds = flatMap(targets.entries, hex => getAdjacentHexes(HexUtils.IDToHex(hex)));
+      } else if (targets.type === 'objects') {
+        neighborHexIds = flatMap(targets.entries, obj => getAdjacentHexes(HexUtils.IDToHex(getHex(state, obj))));
+      }
 
-      return ((hex, obj) => neighborHexIds.includes(hex));
+      return ((hex, obj) => neighborHexIds.map(HexUtils.getID).includes(hex));
     },
 
     attributeComparison: function (attr, comp) {
@@ -21,7 +24,7 @@ export default function conditions(state) {
     },
 
     controlledBy: function (players) {
-      const player = players[0]; // Player target is always in the form of list, so just unpack it.
+      const player = players.entries[0]; // Unpack player target.
       return ((hex, obj) => has(player.robotsOnBoard, hex));
     }
   };

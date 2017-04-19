@@ -82,7 +82,7 @@ export function allowedToAttack(state, attacker, targetHex) {
   } else if (hasEffect(attacker, 'canonlyattack')) {
     const defender = allObjectsOnBoard(state)[targetHex];
     if (defender) {
-      const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), e => e.target.map(t => t.id));
+      const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), e => e.target.entries.map(t => t.id));
       return validTargetIds.includes(defender.id);
     }
   } else {
@@ -238,9 +238,9 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     delete state.players[ownerName].robotsOnBoard[hex];
 
     // Unapply any abilities that this object had.
-    (object.abilities || []).forEach((ability) => {
-      (ability.currentTargets || []).forEach(ability.unapply);
-    });
+    (object.abilities || [])
+      .filter(ability => ability.currentTargets)
+      .forEach(ability => { ability.currentTargets.entries.forEach(ability.unapply); });
 
     state = checkVictoryConditions(state);
   }
@@ -321,7 +321,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
     object.triggers
       .map(t => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
-        t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object);
+        t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
         return Object.assign({}, t, {object: object});
       })
       .filter(t => t.trigger.type === triggerType && condition(t.trigger))
@@ -354,13 +354,15 @@ export function applyAbilities(state) {
   Object.values(allObjectsOnBoard(state)).forEach(obj => {
     obj.abilities.forEach(ability => {
       // Unapply this ability for all previously targeted objects.
-      (ability.currentTargets || []).forEach(ability.unapply);
+      if (ability.currentTargets) {
+        ability.currentTargets.entries.forEach(ability.unapply);
+      }
 
       if (!ability.disabled) {
         // Apply this ability to all targeted objects.
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
         ability.currentTargets = executeCmd(state, ability.targets, obj);
-        ability.currentTargets.forEach(ability.apply);
+        ability.currentTargets.entries.forEach(ability.apply);
       }
     });
 

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import ReactTooltip from 'react-tooltip';
+import { capitalize } from 'lodash';
 
-import { id, toProperCase, inBrowser } from '../../util/common';
+import { id, inBrowser } from '../../util/common';
 
 export default class CardStat extends Component {
   static propTypes = {
@@ -82,7 +83,7 @@ export default class CardStat extends Component {
         <Paper circle
           zDepth={1}
           data-for={tooltipId}
-          data-tip={toProperCase(this.props.type)}
+          data-tip={capitalize(this.props.type)}
           style={!inBrowser() ? Object.assign(baseStyle, headlessStyle) : baseStyle}>
           <ReactTooltip id={tooltipId} />
           <div style={{

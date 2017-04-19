@@ -1,26 +1,24 @@
-import { every, pickBy, toPairs } from 'lodash';
+import { every } from 'lodash';
 
-import { allObjectsOnBoard, matchesType } from '../util/game';
+import { allObjectsOnBoard, getHex, matchesType } from '../util/game';
 import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import HexUtils from '../components/react-hexgrid/HexUtils';
 
-// A collection is a function that returns either an array of cards in a players' hand
-// or an array of [hex, object] pairs representing objects on the board.
+// A collection is a function that returns one of:
+//    {type: 'cards', entries: <an array of cards in a players' hand>}
+//    {type: 'objects', entries: <array of objects on the board>}
+//    {type: 'hexes', entries: <array of hex ids>}
 
 export function allTiles(state) {
   return function () {
-    const tiles = {};
-    GridGenerator.hexagon(4).forEach((hex) => {
-      tiles[HexUtils.getID(hex)] = allObjectsOnBoard(state)[HexUtils.getID(hex)];
-    });
-    return toPairs(tiles);
+    return {type: 'hexes', entries: GridGenerator.hexagon(4).map(HexUtils.getID)};
   };
 }
 
 export function cardsInHand(state) {
   return function (players, cardType) {
-    const player = players[0]; // Player target is always in the form of list, so just unpack it.
-    return player.hand.filter(c => matchesType(c, cardType) && !c.justPlayed);
+    const player = players.entries[0]; // Unpack player target.
+    return {type: 'cards', entries: player.hand.filter(c => matchesType(c, cardType) && !c.justPlayed)};
   };
 }
 
@@ -32,15 +30,15 @@ export function objectsInPlay(state) {
 
 export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
-    const objects = pickBy(allObjectsOnBoard(state), (obj, hex) =>
-      matchesType(obj, objType) && every(conditions.map(cond => cond(hex, obj)))
+    const objects = Object.values(allObjectsOnBoard(state)).filter(obj =>
+      matchesType(obj, objType) && every(conditions.map(cond => cond(getHex(state, obj), obj)))
     );
-    return toPairs(objects);
+    return {type: 'objects', entries: objects};
   };
 }
 
 export function other(state, currentObject) {
   return function (collection) {
-    return collection.filter(([hex, obj]) => obj.id !== currentObject.id);
+    return {type: 'objects', entries: collection.entries.filter(obj => obj.id !== currentObject.id)};
   };
 }

@@ -18,10 +18,6 @@ export function hashCode(s) {
   return Math.abs(value);
 }
 
-export function toProperCase(str) {
-  return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-}
-
 export function compareCertainKeys(obj1, obj2, keys) {
   return !some(keys, key => !isEqual(obj1[key], obj2[key]));
 }

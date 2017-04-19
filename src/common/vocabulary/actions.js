@@ -10,11 +10,11 @@ import {
 export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
-      objects.forEach(object => { Object.assign(object, {movesMade: 0, cantMove: false}); });
+      objects.entries.forEach(object => { Object.assign(object, {movesMade: 0, cantMove: false}); });
     },
 
     dealDamage: function (targets, amount) {
-      targets.forEach(target => {
+      targets.entries.forEach(target => {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
@@ -29,22 +29,22 @@ export default function actions(state) {
     },
 
     destroy: function (objects) {
-      objects.forEach(object => {
+      objects.entries.forEach(object => {
         object.isDestroyed = true;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
     },
 
     discard: function (cards) {
-      discardCards(state, cards);
+      discardCards(state, cards.entries);
     },
 
     draw: function (players, count) {
-      players.forEach(player => { drawCards(state, player, count); });
+      players.entries.forEach(player => { drawCards(state, player, count); });
     },
 
     modifyAttribute: function (objects, attr, func) {
-      objects.forEach(object => {
+      objects.entries.forEach(object => {
         if (attr === 'allattributes') {
           object.stats = mapValues(object.stats, clamp(func));
         } else if (attr === 'cost') {
@@ -56,7 +56,7 @@ export default function actions(state) {
     },
 
     modifyEnergy: function (players, func) {
-      players.forEach(player => {
+      players.entries.forEach(player => {
         player.energy = applyFuncToField(player.energy, func, 'available');
       });
     },
@@ -66,9 +66,9 @@ export default function actions(state) {
     },
 
     takeControl: function (players, objects) {
-      const newOwner = players[0]; // Unpack player.
+      const newOwner = players.entries[0]; // Unpack player.
 
-      objects.forEach(object => {
+      objects.entries.forEach(object => {
         const currentOwner = ownerOf(state, object);
         if (newOwner.name !== currentOwner.name) {
           const hex = getHex(state, object);

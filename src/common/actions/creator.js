@@ -9,48 +9,35 @@ export const ADD_TO_COLLECTION = 'ADD_TO_COLLECTION';
 export function setName(name) {
   return {
     type: SET_NAME,
-    payload: {
-      name: name
-    }
+    payload: { name }
   };
 }
 
 export function setType(type) {
   return {
     type: SET_TYPE,
-    payload: {
-      type: type
-    }
+    payload: { type }
   };
 }
 
 export function setAttribute(attr, value) {
   return {
     type: SET_ATTRIBUTE,
-    payload: {
-      attr: attr,
-      value: value
-    }
+    payload: { attr, value }
   };
 }
 
-export function setText(sentences) {
+export function setText(text) {
   return {
     type: SET_TEXT,
-    payload: {
-      sentences: sentences
-    }
+    payload: { text }
   };
 }
 
 export function parseComplete(idx, sentence, result) {
   return {
     type: PARSE_COMPLETE,
-    payload: {
-      idx: idx,
-      sentence: sentence,
-      result: result
-    }
+    payload: { idx, sentence, result }
   };
 }
 

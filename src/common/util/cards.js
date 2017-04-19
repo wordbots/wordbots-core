@@ -1,19 +1,16 @@
-import { compact, countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
+import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
-
-import { toProperCase } from './common';
 
 //
 // 0. Card-related constants (used below).
 //
 
 const CARD_SCHEMA_VERSION = 1;
-
 const PARSE_DEBOUNCE_MS = 500;
 
-const SUBSTITUTIONS = {
-  'creature': 'robot'
+const SYNONYMS = {
+  'robot': ['creature', 'minion']
 };
 
 const KEYWORDS = {
@@ -61,14 +58,19 @@ export const sortFunctions = [
 // 2. Text parsing.
 //
 
+export function replaceSynonyms(text) {
+  return reduce(SYNONYMS, ((str, synonyms, term) =>
+    str.replace(new RegExp(`(${synonyms.join('|')})`, 'g'), term)
+       .replace(new RegExp(`(${synonyms.map(capitalize).join('|')})`, 'g'), capitalize(term))
+  ), text);
+}
+
 export function splitSentences(str) {
   return (str || '').split(/[\\.!\?]/).filter(s => /\S/.test(s));
 }
 
 export function getSentencesFromInput(text) {
-  text = reduce(SUBSTITUTIONS, (str, output, input) => str.replace(new RegExp(input, 'g'), output), text);
-
-  let sentences = splitSentences(text);
+  let sentences = splitSentences(replaceSynonyms(text));
   sentences = flatMap(sentences, s => isKeywordExpression(s) ? s.replace(/,/g, ',|').split('|') : s);
 
   return sentences;
@@ -92,10 +94,10 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 //
 
 const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
-  [k, new RegExp(`(has|have) (${k}|${toProperCase(k)})`)]
+  [k, new RegExp(`(has|have) (${k}|${capitalize(k)})`)]
 ));
 const hintRegexes = fromPairs(Object.keys(HINTS).map(h =>
-  [h, new RegExp(`((${h}|${toProperCase(h)}))`)]
+  [h, new RegExp(`((${h}|${capitalize(h)}))`)]
 ));
 
 function phrases(sentence) {

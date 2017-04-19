@@ -71,10 +71,10 @@ export default class CardCreationForm extends Component {
     return (
       this.props.name && this.props.name !== '[Unnamed]' &&
         CREATABLE_TYPES.includes(this.props.type) &&
-        this.props.energy >= 0 &&
-        (this.props.attack >= 0 || this.props.type !== TYPE_ROBOT) &&
-        (this.props.speed >= 0 || this.props.type !== TYPE_ROBOT) &&
-        (this.props.health >= 1 || this.props.type === TYPE_EVENT) &&
+        (this.props.energy >= 0 && this.props.energy <= 20) &&
+        ((this.props.attack >= 0 && this.props.attack <= 10) || this.props.type !== TYPE_ROBOT) &&
+        ((this.props.speed >= 0 && this.props.speed <= 10) || this.props.type !== TYPE_ROBOT) &&
+        ((this.props.health >= 1 && this.props.health <= 10)|| this.props.type === TYPE_EVENT) &&
         (this.hasCardText() || this.props.type !== TYPE_EVENT) &&  // Events must have some card text.
         every(this.nonEmptySentences(), s => s.result.js)
     );
@@ -93,6 +93,7 @@ export default class CardCreationForm extends Component {
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
+              maxValue={20}
               style={{flexBasis: 0, flexGrow: 1}}
               onChange={v => { this.props.onSetAttribute('energy', v); }} />
           </div>
@@ -139,12 +140,14 @@ export default class CardCreationForm extends Component {
             <NumberField
               label="Attack"
               value={this.props.attack}
+              maxValue={10}
               style={{width: '100%', marginRight: 25}}
               disabled={this.props.type !== TYPE_ROBOT}
               onChange={v => { this.props.onSetAttribute('attack', v); }} />
             <NumberField
               label="Health"
               value={this.props.health}
+              maxValue={10}
               style={{width: '100%', marginRight: 25}}
               disabled={this.props.type === TYPE_EVENT}
               onChange={v => { this.props.onSetAttribute('health', v); }} />

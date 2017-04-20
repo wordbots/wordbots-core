@@ -53,3 +53,4 @@ exclude_paths:
   - src/common/components/Sprite.js
   - src/common/components/react-hexgrid/
   - src/common/components/react-textfit/
+  - styles/lib.css

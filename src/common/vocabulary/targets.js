@@ -87,7 +87,7 @@ export default function targets(state, currentObject) {
 
     // Currently salient player.
     itP: function () {
-      return {type: 'players', entries: compact([state.itP])};
+      return {type: 'players', entries: compact([state.itP || opponentPlayer(state)])};
     },
 
     opponent: function () {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, func, number, string } from 'prop-types';
+import { array, bool, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -12,7 +12,7 @@ import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
-import { getSentencesFromInput, requestParse, splitSentences } from '../../util/cards';
+import { getSentencesFromInput, requestParse } from '../../util/cards';
 
 import NumberField from './NumberField';
 
@@ -21,6 +21,7 @@ export default class CardCreationForm extends Component {
     name: string,
     type: number,
     text: string,
+    sentences: array,
     attack: number,
     speed: number,
     health: number,
@@ -57,7 +58,7 @@ export default class CardCreationForm extends Component {
   }
 
   nonEmptySentences() {
-    return splitSentences(this.props.text).filter(s => /\S/.test(s.sentence));
+    return this.props.sentences.filter(s => /\S/.test(s.sentence));
   }
 
   hasCardText() {

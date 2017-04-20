@@ -98,6 +98,7 @@ export class Creator extends Component {
             health={this.props.health}
             energy={this.props.cost}
             text={this.props.text}
+            sentences={this.props.sentences}
             isNewCard={this.props.id ? true : false}
             onSetName={this.props.onSetName}
             onSetType={this.props.onSetType}

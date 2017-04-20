@@ -51,7 +51,7 @@ const cardsHandlers = {
       health: (card.stats || {}).health,
       speed: (card.stats || {}).speed,
       attack: (card.stats || {}).attack,
-      setText: card.text
+      text: card.text
     });
   },
 

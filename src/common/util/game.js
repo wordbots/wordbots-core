@@ -1,4 +1,4 @@
-import { cloneDeep, filter, findKey, flatMap, isArray, some, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, without } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -201,6 +201,34 @@ export function newGame(state, player, usernames, decks, seed) {
   return state;
 }
 
+export function startTurn(state) {
+  const player = currentPlayer(state);
+  player.energy.total = Math.min(player.energy.total + 1, 10);
+  player.energy.available = player.energy.total;
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
+    Object.assign({}, robot, {cantActivate: false, cantAttack: false, cantMove: false, movesMade: 0})
+  ));
+
+  state = drawCards(state, player, 1);
+  state = triggerEvent(state, 'beginningOfTurn', {player: true});
+
+  return state;
+}
+
+export function endTurn(state) {
+  const player = currentPlayer(state);
+  player.selectedCard = null;
+  player.selectedTile = null;
+  player.status.message = '';
+  player.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+
+  state = triggerEvent(state, 'endOfTurn', {player: true});
+  state.currentTurn = opponentName(state);
+  state.hoveredCardIdx = null;
+
+  return state;
+}
+
 export function drawCards(state, player, count) {
   player.hand = player.hand.concat(player.deck.splice(0, count));
   state = applyAbilities(state);
@@ -276,7 +304,7 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 //
 
 export function executeCmd(state, cmd, currentObject = null, source = null) {
-  console.log(cmd);
+  // console.log(cmd);
 
   const vocabulary = buildVocabulary(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];

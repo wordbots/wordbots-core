@@ -18,14 +18,15 @@ export default function produceApiResponse(response, location) {
 
 function renderCard(response, query) {
   const card = JSON.parse(query.card);
+  const text = card.text.includes('%20') ? decodeURIComponent(card.text) : card.text;  // Text might be double-escaped.
 
   const props = {
     name: card.name,
     type: card.type,
     cost: card.cost,
     baseCost: card.cost,
-    text: splitSentences(card.text).map(Sentence),
-    rawText: card.text,
+    text: splitSentences(text).map(Sentence),
+    rawText: text,
     stats: card.stats,
     cardStats: card.stats,
     source: card.source

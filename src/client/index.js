@@ -9,6 +9,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
 import '../../styles/index.css';
+import '../../styles/lib.css';
 /* eslint-enable import/no-unassigned-import */
 
 const rootElement = document.getElementById('root');

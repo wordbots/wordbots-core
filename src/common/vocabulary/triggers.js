@@ -50,6 +50,10 @@ export function triggers(state) {
       };
     },
 
+    afterMoved: function (targetFunc) {
+      // TODO
+    },
+
     afterPlayed: function (targetFunc) {
       return {
         'type': 'afterPlayed',

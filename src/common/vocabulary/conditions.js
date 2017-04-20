@@ -26,6 +26,14 @@ export default function conditions(state) {
     controlledBy: function (players) {
       const player = players.entries[0]; // Unpack player target.
       return ((hex, obj) => has(player.robotsOnBoard, hex));
+    },
+
+    hasProperty: function (property) {
+      // TODO
+    },
+
+    withinDistanceOf: function (distance, targets) {
+      // TODO
     }
   };
 }

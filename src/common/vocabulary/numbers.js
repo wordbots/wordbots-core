@@ -20,3 +20,9 @@ export function count(state) {
     return size(collection.entries);
   };
 }
+
+export function energyAmount(state) {
+  return function (player) {
+    // TODO
+  };
+}

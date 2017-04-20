@@ -15,7 +15,7 @@ function Word(word, keywords, result) {
       const tooltipId = id();
       return (
         <span key={id()}>
-          {' '}<b data-for={tooltipId} data-tip={`${keywords[word]}.`}>{word}</b>
+          {' '}<b data-for={tooltipId} data-tip={keywords[word]}>{word}</b>
           <ReactTooltip id={tooltipId} />
         </span>
       );

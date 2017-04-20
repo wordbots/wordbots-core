@@ -56,7 +56,7 @@ export const tankBotCard = {
 export const concentrationCard = {
   name: 'Concentration',
   text: 'Draw two cards.',
-  command: '(function () { actions["draw"](targets["self"](), 2); })',
+  command: "(function () { actions['draw'](targets['self'](), 2); })",
   cost: 1,
   type: TYPE_EVENT
 };
@@ -72,13 +72,7 @@ const superchargeCard = {
 export const rampageCard = {
   name: 'Rampage',
   text: 'Give all robots you control +2 attack.',
-  // command: '(function () { actions["modifyAttribute"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])), "attack", function (x) { return x + 2; }); })',
-
-  // While "Give all robots you control +2 attack" is the canonical text for this card,
-  // let's make sure that "Robots you control get +2 attack" also works.
-  // (Note that the objectsMatchingConditions collection is being passed directly to the action!)
-  command: '(function () { actions["modifyAttribute"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]), "attack", function (x) { return x + 2; }); })',
-
+  command: "(function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack', function (x) { return x + 2; }); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -86,7 +80,7 @@ export const rampageCard = {
 export const wrathOfRobotGodCard = {
   name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
-  command: '(function () { actions["destroy"](targets["all"](objectsInPlay("robot"))); })',
+  command: "(function () { actions['destroy'](objectsInPlay('robot')); })",
   cost: 5,
   type: TYPE_EVENT
 };
@@ -94,7 +88,7 @@ export const wrathOfRobotGodCard = {
 export const threedomCard = {
   name: 'Threedom',
   text: 'Set all stats of all robots in play to 3.',
-  command: '(function () { actions["setAttribute"](targets["all"](objectsInPlay("robot")), "allattributes", 3); })',
+  command: "(function () { actions['setAttribute'](objectsInPlay('robot'), 'allattributes', 3); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -110,7 +104,7 @@ const earthquakeCard = {
 export const discountCard = {
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
-  command: '(function () { actions["modifyAttribute"](targets["all"](cardsInHand(targets["self"](), "anycard")), "cost", function (x) { return x - 1; }); })',
+  command: "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 1; }); })",
   cost: 2,
   type: TYPE_EVENT
 };
@@ -135,8 +129,8 @@ export const incinerateCard = {
   name: 'Incinerate',
   text: 'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
   command: [
-    '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + attributeSum(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]), "attack"); }); })',
-    '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })'
+    "(function () { actions['modifyEnergy'](targets['self'](), function (x) { return x + attributeSum(objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack'); }); })",
+    "(function () { actions['destroy'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })"
   ],
   cost: 1,
   type: TYPE_EVENT
@@ -177,7 +171,7 @@ export const botOfPainCard = {
   },
   text: 'At the end of each turn, each robot takes 1 damage.',
   abilities: [
-    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { actions['dealDamage'](targets['all'](objectsInPlay('robot')), 1); })); })"
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { actions['dealDamage'](objectsInPlay('robot'), 1); })); })"
   ]
 };
 

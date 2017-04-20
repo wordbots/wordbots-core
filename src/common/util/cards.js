@@ -14,10 +14,17 @@ const SYNONYMS = {
 };
 
 const KEYWORDS = {
-  'defender': 'This robot can\'t attack',
-  'haste': 'This robot can move and attack immediately after it is played',
-  'jump': 'This robot can move over other objects',
-  'taunt': 'Your opponent\'s adjacent robots can only attack this object'
+  'defender': 'This robot can\'t attack.',
+  'haste': 'This robot can move and attack immediately after it is played.',
+  'jump': 'This robot can move over other objects.',
+  'taunt': 'Your opponent\'s adjacent robots can only attack this object.',
+
+  'startup:': 'When this object is played',
+  'start up:': 'When this object is played',
+  'start-up:': 'When this object is played',
+  'shutdown:': 'When this object is destroyed',
+  'shut down:': 'When this object is destroyed',
+  'shut-down:': 'When this object is destroyed'
 };
 
 const HINTS = {
@@ -94,7 +101,7 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 //
 
 const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
-  [k, new RegExp(`(has|have) (${k}|${capitalize(k)})`)]
+  [k, new RegExp(`(has |have |^)(${k}|${capitalize(k)})`)]
 ));
 const hintRegexes = fromPairs(Object.keys(HINTS).map(h =>
   [h, new RegExp(`((${h}|${capitalize(h)}))`)]

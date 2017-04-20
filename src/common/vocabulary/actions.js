@@ -4,7 +4,8 @@ import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
   ownerOf, getHex,
-  drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
+  drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  executeCmd
 } from '../util/game';
 
 export default function actions(state) {
@@ -47,8 +48,10 @@ export default function actions(state) {
       // TODO
     },
 
-    giveAbility: function (target, ability) {
-      // TODO
+    giveAbility: function (objects, abilityCmd) {
+      objects.entries.forEach(object => {
+        executeCmd(state, abilityCmd, object);
+      });
     },
 
     modifyAttribute: function (objects, attr, func) {
@@ -69,7 +72,7 @@ export default function actions(state) {
       });
     },
 
-    restoreHealth: function (target) {
+    restoreHealth: function (objects) {
       // TODO
     },
 

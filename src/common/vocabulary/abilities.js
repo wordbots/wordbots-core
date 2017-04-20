@@ -3,6 +3,7 @@ import { reversedCmd, executeCmd } from '../util/game';
 
 export function setAbility(state, currentObject, source) {
   return function (ability) {
+    console.log(currentObject);
     if (!source || !currentObject.abilities.find(a => a.source === source)) {
       ability = Object.assign(ability, {source: source});
       currentObject.abilities = currentObject.abilities.concat([ability]);

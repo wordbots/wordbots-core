@@ -276,6 +276,8 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 //
 
 export function executeCmd(state, cmd, currentObject = null, source = null) {
+  console.log(cmd);
+
   const vocabulary = buildVocabulary(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
 

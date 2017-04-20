@@ -88,7 +88,8 @@ export function placeCard(state, cardIdx, tile) {
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
-        tempState.currentCmdText = splitSentences(card.text)[idx];
+        const cmdText = splitSentences(card.text)[idx];
+        tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
         executeCmd(tempState, cmd, playedObject);
       });
     }
@@ -129,16 +130,17 @@ export function placeCard(state, cardIdx, tile) {
 function playEvent(state, cardIdx) {
   const player = currentPlayer(state);
   const card = player.hand[cardIdx];
-  const cmd = card.command;
   const timestamp = Date.now();
 
   if (player.energy.available >= getCost(card)) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
     card.justPlayed = true;
 
-    (isArray(cmd) ? cmd : [cmd]).forEach((subcmd) => {
+    (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {
+      const cmdText = splitSentences(card.text)[idx];
       if (!player.target.choosing) {
-        executeCmd(state, subcmd);
+        state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+        executeCmd(state, cmd);
       }
     });
 
@@ -154,6 +156,7 @@ function playEvent(state, cardIdx) {
         player: true,
         condition: t => stringToType(t.cardType) === TYPE_EVENT || t.cardType === 'allobjects'
       });
+      state = applyAbilities(state);
 
       player.status.message = '';
       player.selectedCard = null;

@@ -10,7 +10,9 @@ const CARD_SCHEMA_VERSION = 1;
 const PARSE_DEBOUNCE_MS = 500;
 
 const SYNONYMS = {
-  'robot': ['creature', 'minion']
+  'robot': ['creature', 'minion'],
+  'startup': ['start up', 'start-up'],
+  'shutdown': ['shut down', 'shut-down']
 };
 
 const KEYWORDS = {
@@ -18,13 +20,8 @@ const KEYWORDS = {
   'haste': 'This robot can move and attack immediately after it is played.',
   'jump': 'This robot can move over other objects.',
   'taunt': 'Your opponent\'s adjacent robots can only attack this object.',
-
   'startup:': 'When this object is played,',
-  'start up:': 'When this object is played,',
-  'start-up:': 'When this object is played,',
-  'shutdown:': 'When this object is destroyed,',
-  'shut down:': 'When this object is destroyed,',
-  'shut-down:': 'When this object is destroyed,'
+  'shutdown:': 'When this object is destroyed,'
 };
 
 const HINTS = {

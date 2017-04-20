@@ -72,7 +72,17 @@ const superchargeCard = {
 export const rampageCard = {
   name: 'Rampage',
   text: 'Give all robots you control +2 attack.',
+<<<<<<< HEAD
   command: "(function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack', function (x) { return x + 2; }); })",
+=======
+  // command: '(function () { actions["modifyAttribute"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])), "attack", function (x) { return x + 2; }); })',
+
+  // While "Give all robots you control +2 attack" is the canonical text for this card,
+  // let's make sure that "Robots you control get +2 attack" also works.
+  // (Note that the objectsMatchingConditions collection is being passed directly to the action!)
+  command: '(function () { actions["modifyAttribute"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]), "attack", function (x) { return x + 2; }); })',
+
+>>>>>>> 7a44f671c780ac64575aedbb6f03d4d29ec282bc
   cost: 3,
   type: TYPE_EVENT
 };

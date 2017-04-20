@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
+import FontIcon from 'material-ui/FontIcon';
 import ReactTooltip from 'react-tooltip';
 import { capitalize } from 'lodash';
 
@@ -17,80 +18,99 @@ export default class CardStat extends Component {
   static defaultProps = {
     scale: 1
   };
-
-  get backgroundColor() {
+s
+  get iconClass() {
     switch (this.props.type) {
       case 'attack':
-        return '#E57373';
+        return 'crossed-swords';
       case 'speed':
-        return '#03A9F4';
+        return 'shoe-prints';
       case 'health':
-        return '#81C784';
+        return 'health';
     }
   }
 
-  get textStyle() {
+  get textColor() {
     if (this.props.current && this.props.current > this.props.base) {
-      return {
-        textColor: '#81C784',
-        webkitTextStroke: '1px white'
-      };
+      return '#81C784';
     } else if (this.props.current && this.props.current < this.props.base) {
-      return {
-        textColor: '#E57373',
-        webkitTextStroke: '1px white'
-      };
+      return '#E57373';
     } else {
-      return {
-        textColor: 'white',
-        webkitTextStroke: 'none'
-      };
+      return '#444';
     }
+  }
+
+  get icon() {
+    return (
+      <FontIcon
+        className={`ra ra-${this.iconClass}`}
+        style={{
+          fontSize: 14 * this.props.scale,
+          color: this.textColor,
+          marginRight: 4 * this.props.scale
+        }} />
+    );
   }
 
   render() {
+    return inBrowser() ? this.renderNewStyle() : this.renderOldStyle();
+  }
+
+  renderNewStyle() {
     const tooltipId = id();
-    const { textColor, webkitTextStroke } = this.textStyle;
+    return (
+      <div
+        data-for={tooltipId}
+        data-tip={capitalize(this.props.type)}
+        style={{
+          float: 'left',
+          width: '33%',
+          lineHeight: '14px',
+          color: this.textColor,
+          fontFamily: 'Carter One, Arial',
+          fontSize: 18 * this.props.scale,
+          textAlign: 'center',
+          cursor: 'pointer',
+          paddingBottom: 6 * this.props.scale
+      }}>
+        <ReactTooltip id={tooltipId} />
+        {this.icon}
+        {this.props.current || this.props.base}
+      </div>
+    );
+  }
 
-    const baseStyle = {
-      width: 32 * this.props.scale,
-      height: 32 * this.props.scale,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: this.backgroundColor,
-      color: '#fff',
-      fontFamily: 'Carter One',
-      fontSize: 22 * this.props.scale
-    };
-
-    const headlessStyle = {
-      paddingTop: 10,
-      textAlign: 'center',
-      fontFamily: 'Carter One, Arial',
-      fontWeight: 'bold',
-      fontSize: 18 * this.props.scale
-    };
-
-    // Workaround for virtual DOM without flexbox support.
-    const headlessContainerStyle = {
-      float: 'left',
-      marginRight: 6
-    };
+  renderOldStyle() {
+    function backgroundColor(type) {
+      switch (type) {
+        case 'attack':
+          return '#E57373';
+        case 'speed':
+          return '#03A9F4';
+        case 'health':
+          return '#81C784';
+      }
+    }
 
     return (
-      <div style={!inBrowser() ? headlessContainerStyle : {}}>
+      <div style={{float: 'left', width: '33%'}}>
         <Paper circle
           zDepth={1}
-          data-for={tooltipId}
-          data-tip={capitalize(this.props.type)}
-          style={!inBrowser() ? Object.assign(baseStyle, headlessStyle) : baseStyle}>
-          <ReactTooltip id={tooltipId} />
-          <div style={{
-            lineHeight: '14px',
-            WebkitTextStroke: webkitTextStroke,
-            color: textColor
-          }}>{this.props.current || this.props.base}</div>
+          style={{
+            width: 32,
+            height: 32,
+            backgroundColor: backgroundColor(this.props.type),
+            textAlign: 'center',
+            fontFamily: 'Carter One, Arial',
+            fontWeight: 'bold',
+            fontSize: 18,
+            margin: 8,
+            marginBottom: 4,
+            paddingTop: 4
+        }}>
+          <span style={{color: '#fff'}}>
+            {this.props.current || this.props.base}
+          </span>
         </Paper>
       </div>
     );

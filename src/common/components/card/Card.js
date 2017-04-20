@@ -138,7 +138,7 @@ export default class Card extends Component {
     const baseStyle = {
       padding: 6 * this.props.scale,
       paddingBottom: 0,
-      height: (this.props.type !== TYPE_EVENT ? 48 : 96) * this.props.scale,
+      height: (this.props.type !== TYPE_EVENT ? 70 : 96) * this.props.scale,
       width: '100%',
       boxSizing: 'border-box'
     };
@@ -258,9 +258,10 @@ export default class Card extends Component {
 
   renderStatsArea() {
     const style = {
-      display: 'flex',
-      justifyContent: 'space-between',
-      padding: 10 * this.props.scale
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      padding: 0
     };
 
     if (this.props.type === TYPE_ROBOT) {
@@ -323,7 +324,8 @@ export default class Card extends Component {
                   borderRadius: 5 * this.props.scale,
                   userSelect: 'none',
                   cursor: 'pointer',
-                  border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336'
+                  border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
+                  position: 'relative'
                 }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}
               >
                 <CardHeader

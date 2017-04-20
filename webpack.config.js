@@ -31,7 +31,8 @@ if (process.env.NODE_ENV === 'production') {
         include: __dirname
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) }
+      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) },
+      { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=public/fonts/[name].[ext]' }
     ]},
     plugins : [
       new webpack.DefinePlugin({
@@ -78,7 +79,8 @@ if (process.env.NODE_ENV === 'production') {
         }
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) }
+      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) },
+      { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=public/fonts/[name].[ext]' }
     ]},
     entry: [
       'whatwg-fetch',

@@ -22,6 +22,7 @@ export function cardsInHand(state) {
   };
 }
 
+// Included here for backwards compatibility, but no longer outputted by the parser.
 export function objectsInPlay(state) {
   return function (objType) {
     return objectsMatchingConditions(state)(objType, []);

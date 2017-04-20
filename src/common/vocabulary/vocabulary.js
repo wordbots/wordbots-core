@@ -4,34 +4,40 @@ import conditions from './conditions';
 import { setTrigger, unsetTrigger, triggers } from './triggers';
 import { setAbility, unsetAbility, abilities } from './abilities';
 import { allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions, other } from './collections';
-import { attributeSum, attributeValue, count } from './numbers';
+import { attributeSum, attributeValue, count, energyAmount } from './numbers';
 
-const vocabulary = {
-  actions: actions,
-  targets: targets,
-  conditions: conditions,
-  triggers: triggers,
-  abilities: abilities,
+export default function vocabulary(state, currentObject = null, source = null) {
+  return {
+    actions: actions(state),
+    targets: targets(state, currentObject),
+    conditions: conditions(state),
+    triggers: triggers(state),
+    abilities: abilities(state),
 
-  // Global methods
+    // Global methods:
 
-  setTrigger: setTrigger,
-  unsetTrigger: unsetTrigger,
-  setAbility: setAbility,
-  unsetAbility: unsetAbility,
+    // Set/unset triggers + abilities
+    setTrigger: setTrigger(state, currentObject, source),
+    unsetTrigger: unsetTrigger(state, currentObject, source),
+    setAbility: setAbility(state, currentObject, source),
+    unsetAbility: unsetAbility(state, currentObject, source),
 
-  allTiles: allTiles,
-  cardsInHand: cardsInHand,
-  objectsInPlay: objectsInPlay,
-  objectsMatchingConditions: objectsMatchingConditions,
-  other: other,
+    // Collections
+    allTiles: allTiles(state),
+    cardsInHand: cardsInHand(state),
+    objectsInPlay: objectsInPlay(state),
+    objectsMatchingConditions: objectsMatchingConditions(state),
+    other: other(state, currentObject),
 
-  attributeSum: attributeSum,
-  attributeValue: attributeValue,
-  count: count,
+    // Quantities
+    attributeSum: attributeSum(state),
+    attributeValue: attributeValue(state),
+    count: count(state),
+    energyAmount: energyAmount(state),
 
-  save: (state) => (key, value) => { state.memory[key] = value; },
-  load: (state) => (key) => state.memory[key]
-};
+    // Utility methods:
 
-export default vocabulary;
+    save: (key, value) => { state.memory[key] = value; },
+    load: (key) => state.memory[key]
+  };
+}

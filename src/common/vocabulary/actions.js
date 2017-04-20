@@ -43,6 +43,14 @@ export default function actions(state) {
       players.entries.forEach(player => { drawCards(state, player, count); });
     },
 
+    endTurn: function () {
+      // TODO
+    },
+
+    giveAbility: function (target, ability) {
+      // TODO
+    },
+
     modifyAttribute: function (objects, attr, func) {
       objects.entries.forEach(object => {
         if (attr === 'allattributes') {
@@ -61,8 +69,16 @@ export default function actions(state) {
       });
     },
 
+    restoreHealth: function (target) {
+      // TODO
+    },
+
     setAttribute: function (objects, attr, num) {
       this.modifyAttribute(objects, attr, () => num);
+    },
+
+    swapAttributes: function (objects, attr1, attr2) {
+      // TODO
     },
 
     takeControl: function (players, objects) {

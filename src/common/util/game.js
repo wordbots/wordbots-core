@@ -3,7 +3,7 @@ import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
-import vocabulary from '../vocabulary/vocabulary';
+import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import Hex from '../components/react-hexgrid/Hex';
 import HexUtils from '../components/react-hexgrid/HexUtils';
@@ -275,34 +275,13 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 // IV. Card behavior: actions, triggers, passive abilities.
 //
 
-/* eslint-disable no-unused-vars */
 export function executeCmd(state, cmd, currentObject = null, source = null) {
-  const actions = vocabulary.actions(state);
-  const targets = vocabulary.targets(state, currentObject);
-  const conditions = vocabulary.conditions(state);
-  const triggers = vocabulary.triggers(state);
-  const abilities = vocabulary.abilities(state);
+  const vocabulary = buildVocabulary(state, currentObject, source);
+  const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
 
-  // Global methods
-  const setTrigger = vocabulary.setTrigger(state, currentObject, source);
-  const unsetTrigger = vocabulary.unsetTrigger(state, currentObject, source);
-  const setAbility = vocabulary.setAbility(state, currentObject, source);
-  const unsetAbility = vocabulary.unsetAbility(state, currentObject, source);
-  const allTiles = vocabulary.allTiles(state);
-  const cardsInHand = vocabulary.cardsInHand(state);
-  const objectsInPlay = vocabulary.objectsInPlay(state);
-  const objectsMatchingConditions = vocabulary.objectsMatchingConditions(state);
-  const other = vocabulary.other(state, currentObject);
-  const attributeSum = vocabulary.attributeSum(state);
-  const attributeValue = vocabulary.attributeValue(state);
-  const count = vocabulary.count(state);
-  const save = vocabulary.save(state);
-  const load = vocabulary.load(state);
-
-  // console.log(cmd);
-  return eval(cmd)();
+  const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
+  return eval(wrappedCmd)(...definitions);
 }
-/* eslint-enable no-unused-vars */
 
 export function triggerEvent(state, triggerType, target = {}, defaultBehavior = null) {
   // Formulate the trigger condition.

@@ -86,6 +86,8 @@ export function placeCard(state, cardIdx, tile) {
     player.status.message = '';
     player.selectedTile = tile;
 
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
+
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
         const cmdText = splitSentences(card.text)[idx];
@@ -94,14 +96,7 @@ export function placeCard(state, cardIdx, tile) {
       });
     }
 
-    tempState = discardCards(tempState, [card]);
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
-    tempState = triggerEvent(tempState, 'afterCardPlay', {
-      player: true,
-      condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
-    });
     tempState = triggerEvent(tempState, 'afterPlayed', {object: playedObject});
-    tempState = applyAbilities(tempState);
 
     playedObject.justPlayed = false;
 
@@ -117,9 +112,13 @@ export function placeCard(state, cardIdx, tile) {
       state.callbackAfterTargetSelected = (newState => placeCard(newState, cardIdx, tile));
       return state;
     } else {
-      // Apply abilities one more time, in case the current object needs to be targeted by any abilities.
-      // Recall that the played object was previously marked as justPlayed, to prevent it from being able to target itself.
+      tempState = discardCards(tempState, [card]);
+      tempState = triggerEvent(tempState, 'afterCardPlay', {
+        player: true,
+        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
+      });
       tempState = applyAbilities(tempState);
+
       return tempState;
     }
   } else {

@@ -17,6 +17,7 @@ export function mapStateToProps(state) {
   return {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
+    gameOver: state.game.winner !== null,
     isMyTurn: state.game.currentTurn === state.game.player,
     selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
   };
@@ -45,6 +46,7 @@ export class GameMenu extends Component {
 
     player: string,
     currentTurn: string,
+    gameOver: bool,
     isMyTurn: bool,
     selectedPiece: object,
 
@@ -72,7 +74,9 @@ export class GameMenu extends Component {
 
   componentDidMount() {
     setInterval(() => {
-      this.tickTimer();
+      if (!this.props.gameOver) {
+        this.tickTimer();
+      }
     }, 1000);
   }
 
@@ -169,11 +173,12 @@ export class GameMenu extends Component {
         <Divider />
         <MenuItem
           primaryText="End Turn"
-          disabled={!this.props.isMyTurn}
+          disabled={!this.props.isMyTurn || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         <MenuItem
           primaryText="Forfeit"
+          disabled={this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">close</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
         <Divider />

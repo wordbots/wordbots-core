@@ -280,10 +280,10 @@ export class GameArea extends Component {
               bottom: 125,
               right: 0
           }}>
-            <CardViewer hoveredCard={this.hoveredCard()} />
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
+            <CardViewer hoveredCard={this.hoveredCard()} />
             <Board
               height={this.state.boardHeight}
               player={this.props.player}

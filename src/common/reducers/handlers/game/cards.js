@@ -128,7 +128,11 @@ export function placeCard(state, cardIdx, tile) {
 }
 
 function playEvent(state, cardIdx) {
-  const player = currentPlayer(state);
+  // Work on a copy of the state in case we have to rollback
+  // (if a target needs to be selected for an afterPlayed trigger).
+  let tempState = cloneDeep(state);
+
+  const player = currentPlayer(tempState);
   const card = player.hand[cardIdx];
   const timestamp = Date.now();
 
@@ -136,34 +140,42 @@ function playEvent(state, cardIdx) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
     card.justPlayed = true;
 
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
+
     (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {
       const cmdText = splitSentences(card.text)[idx];
       if (!player.target.choosing) {
-        state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
-        executeCmd(state, cmd);
+        tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+        executeCmd(tempState, cmd);
       }
     });
 
-    card.justPlayed = false;
-
     if (player.target.choosing) {
+      // Target still needs to be selected, so roll back playing the card (and return old state).
+
       state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
-      player.status = { message: `Choose a target for ${card.name}.`, type: 'text' };
+      currentPlayer(state).target = player.target;
+      currentPlayer(state).status = {message: `Choose a target for ${card.name}.`, type: 'text'};
+
+      return state;
     } else {
-      state = discardCards(state, [card]);
-      state = logAction(state, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
-      state = triggerEvent(state, 'afterCardPlay', {
+      card.justPlayed = false;
+
+      tempState = discardCards(tempState, [card]);
+      tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
         condition: t => stringToType(t.cardType) === TYPE_EVENT || t.cardType === 'allobjects'
       });
-      state = applyAbilities(state);
+      tempState = applyAbilities(tempState);
+      tempState = checkVictoryConditions(tempState);
 
       player.status.message = '';
       player.selectedCard = null;
       player.energy.available -= getCost(card);
-    }
-  }
-  state = checkVictoryConditions(state);
 
-  return state;
+      return tempState;
+    }
+  } else {
+    return state;
+  }
 }

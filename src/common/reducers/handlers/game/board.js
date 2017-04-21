@@ -47,6 +47,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     movingRobot.movesMade += distance;
 
     state = transportObject(state, fromHex, toHex);
+    state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
     state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
@@ -72,7 +73,6 @@ export function attack(state, source, target) {
       attacker.cantMove = true;
       attacker.cantActivate = true;
 
-      // console.log(defender.card.type);
       state = triggerEvent(state, 'afterAttack', {
         object: attacker,
         condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')

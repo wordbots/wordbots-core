@@ -17,7 +17,8 @@ export default function produceApiResponse(response, location) {
 }
 
 function renderCard(response, query) {
-  const card = JSON.parse(query.card.replace(/%27/g, '\\"'));
+  const cardJson = query.card.replace(/%27/g, '\\"').replace(/\n/g, '\\n');
+  const card = JSON.parse(cardJson);
 
   const props = {
     name: card.name,

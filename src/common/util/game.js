@@ -115,8 +115,9 @@ export function checkVictoryConditions(state) {
 // II. Grid-related helper functions.
 //
 
-export function allHexes() { return GridGenerator.hexagon(3); }
-export function allHexIds() { return allHexes().map(HexUtils.getID); }
+export function allHexIds() {
+  return GridGenerator.hexagon(3).map(HexUtils.getID);
+}
 
 export function getHex(state, object) {
   return findKey(allObjectsOnBoard(state), ['id', object.id]);
@@ -266,10 +267,12 @@ export function discardCards(state, cards) {
 
 export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
-  object.stats.health -= amount;
 
-  state = triggerEvent(state, 'afterDamageReceived', {object: object});
-  state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
+  if (!object.beingDestroyed) {
+    object.stats.health -= amount;
+    state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
+    state = triggerEvent(state, 'afterDamageReceived', {object: object});
+  }
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
@@ -279,9 +282,11 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
-  } else {
-    state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
+  } else if (!object.beingDestroyed) {
+    object.beingDestroyed = true;
+
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
+    state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
     delete state.players[ownerName].robotsOnBoard[hex];
 
@@ -300,6 +305,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
 export function setTargetAndExecuteQueuedAction(state, target) {
   const player = currentPlayer(state);
+  const targetCard = allObjectsOnBoard(state)[target] ? allObjectsOnBoard(state)[target].card : (target.card || target);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
@@ -311,6 +317,7 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 
   // Perform the trigger.
   state = state.callbackAfterTargetSelected(state);
+  state = logAction(state, null, `|${targetCard.name}| was targeted`, {[targetCard.name]: targetCard});
   state.callbackAfterTargetSelected = null;
 
   // Reset target.

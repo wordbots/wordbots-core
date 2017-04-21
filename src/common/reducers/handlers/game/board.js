@@ -118,13 +118,17 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
     const player = currentPlayer(tempState);
     const ability = object.activatedAbilities[abilityIdx];
 
+    tempState = logAction(tempState, player, `activated |${object.card.name}|'s "${ability.text}" ability`, {
+      [object.card.name]: object.card
+    });
+
     executeCmd(tempState, ability.cmd, object);
 
     if (player.target.choosing) {
       // Target still needs to be selected, so roll back playing the card (and return old state).
       currentPlayer(state).target = player.target;
       currentPlayer(state).status = {
-        message: `Choose a target for ${object.card.name}'s ability.`,
+        message: `Choose a target for ${object.card.name}'s ${ability.text} ability.`,
         type: 'text'
       };
 
@@ -134,10 +138,6 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
     } else {
       object.cantActivate = true;
       object.cantAttack = true;
-
-      tempState = logAction(tempState, player, `activated |${object.card.name}|'s ability`, {
-        [object.card.name]: object.card
-      });
 
       return tempState;
     }

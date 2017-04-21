@@ -1,6 +1,6 @@
 import { flatMap, has, some } from 'lodash';
 
-import { allHexes, getHex, getAttribute, getAdjacentHexes } from '../util/game';
+import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HU from '../components/react-hexgrid/HexUtils';
 
 // Conditions are all (hexId, obj) -> bool functions.
@@ -38,7 +38,9 @@ export default function conditions(state) {
 
     withinDistanceOf: function (distance, targets) {
       const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
-      const nearbyHexIds = allHexes().filter(h1 => some(targetHexIds.map(HU.IDToHex), h2 => HU.distance(h1, h2) <= distance));
+      const nearbyHexIds = allHexIds().filter(h1 =>
+        some(targetHexIds, h2 => HU.distance(HU.IDToHex(h1), HU.IDToHex(h2)) <= distance)
+      );
 
       return ((hexId, obj) => nearbyHexIds.includes(hexId));
     }

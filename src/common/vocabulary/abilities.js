@@ -28,16 +28,19 @@ export function abilities(state) {
   return {
     activated: function (targetFunc, action) {
       const aid = id();
+      const cmdText = state.currentCmdText;
+
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
         apply: function (target) {
+
           target.activatedAbilities = (target.activatedAbilities || []);
 
           if (!target.activatedAbilities.find(a => a.aid === aid)) {
             target.activatedAbilities = target.activatedAbilities.concat({
               aid: aid,
-              text: state.currentCmdText.replace('Activate: ', ''),
+              text: cmdText.replace('Activate: ', ''),
               cmd: action
             });
           }

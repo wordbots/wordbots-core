@@ -29,7 +29,15 @@ export default function conditions(state) {
     },
 
     hasProperty: function (property) {
-      // TODO
+      switch (property) {
+        case 'attackedlastturn': return ((hex, obj) => obj.attackedLastTurn);
+        case 'attackedthisturn': return ((hex, obj) => obj.attackedThisTurn);
+        case 'movedlastturn': return ((hex, obj) => obj.movedLastTurn);
+        case 'movedthisturn': return ((hex, obj) => obj.movedThisTurn);
+
+        case 'isdamaged':
+          return ((hex, obj) => getAttribute(obj, 'health') < obj.card.stats.health);
+      }
     },
 
     withinDistanceOf: function (distance, targets) {

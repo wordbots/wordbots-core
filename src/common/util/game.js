@@ -206,7 +206,16 @@ export function startTurn(state) {
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
-    Object.assign({}, robot, {cantActivate: false, cantAttack: false, cantMove: false, movesMade: 0})
+    Object.assign({}, robot, {
+      movesMade: 0,
+      cantActivate: false,
+      cantAttack: false,
+      cantMove: false,
+      attackedThisTurn: false,
+      movedThisTurn: false,
+      attackedLastTurn: robot.attackedThisTurn,
+      movedLastTurn: robot.movedThisTurn
+    })
   ));
 
   state = drawCards(state, player, 1);
@@ -221,6 +230,14 @@ export function endTurn(state) {
   player.selectedTile = null;
   player.status.message = '';
   player.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
+    Object.assign({}, robot, {
+      attackedThisTurn: false,
+      movedThisTurn: false,
+      attackedLastTurn: robot.attackedThisTurn,
+      movedLastTurn: robot.movedThisTurn
+    })
+  ));
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
   state.currentTurn = opponentName(state);

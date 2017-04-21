@@ -45,6 +45,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
 
     const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
     movingRobot.movesMade += distance;
+    movingRobot.movedThisTurn = true;
 
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
@@ -72,6 +73,7 @@ export function attack(state, source, target) {
     if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
       attacker.cantMove = true;
       attacker.cantActivate = true;
+      attacker.attackedThisTurn = true;
 
       state = triggerEvent(state, 'afterAttack', {
         object: attacker,

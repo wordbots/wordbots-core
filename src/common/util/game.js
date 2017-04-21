@@ -115,6 +115,9 @@ export function checkVictoryConditions(state) {
 // II. Grid-related helper functions.
 //
 
+export function allHexes() { return GridGenerator.hexagon(3); }
+export function allHexIds() { return allHexes().map(HexUtils.getID); }
+
 export function getHex(state, object) {
   return findKey(allObjectsOnBoard(state), ['id', object.id]);
 }
@@ -128,8 +131,8 @@ export function getAdjacentHexes(hex) {
     new Hex(hex.q - 1, hex.r, hex.s + 1),
     new Hex(hex.q + 1, hex.r, hex.s - 1)
   ].filter(adjacentHex =>
-    // Filter out hexes that are not on the 4-radius hex grid.
-    GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(adjacentHex))
+    // Filter out hexes that are not on the 3-radius hex grid.
+    allHexIds().includes(HexUtils.getID(adjacentHex))
   );
 }
 

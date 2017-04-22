@@ -7,7 +7,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import { groupBy, map, sortBy } from 'lodash';
+import { groupBy, isEqual, map, sortBy } from 'lodash';
 
 import { id } from '../../util/common';
 
@@ -32,8 +32,10 @@ export default class Chat extends Component {
     };
   }
 
-  shouldComponentUpdate(prevProps) {
-    return (this.props.messages.length !== prevProps.messages.length || this.props.roomName !== prevProps.roomName);
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.messages.length !== nextProps.messages.length
+      || this.props.roomName !== nextProps.roomName
+      || !isEqual(this.state, nextState);
   }
 
   componentDidUpdate() {

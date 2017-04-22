@@ -51,7 +51,7 @@
     "react": "^15.5.4",
     "react-addons-perf": "^15.4.2",
     "react-bar-chart": "wordbots/react-bar-chart",
-    "react-cookie": "^1.0.5",
+    "react-cookie": "^2.0.6",
     "react-dom": "^15.5.4",
     "react-ga": "^2.2.0",
     "react-helmet": "^5.0.3",

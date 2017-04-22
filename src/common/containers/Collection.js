@@ -7,11 +7,13 @@ import { Link } from 'react-router-dom';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import { isFunction, without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import CardBack from '../components/card/CardBack';
 import CardGrid from '../components/cards/CardGrid';
+import CardTable from '../components/cards/CardTable';
 import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
@@ -72,6 +74,7 @@ class Collection extends Component {
       },
       costRange: [0, 20],
       sortingCriteria: 3,
+      searchText: '',
       sortingOrder: 0,
       selectedCardIds: [],
       importDialogOpen: false
@@ -103,6 +106,54 @@ class Collection extends Component {
     };
   }
 
+  renderCardCollection() {
+    if (this.state.view === 0) {
+      return (
+        <CardGrid
+          cards={this.props.cards}
+          selectedCardIds={this.state.selectedCardIds}
+          filterFunc={this.isCardVisible.bind(this)}
+          sortFunc={sortFunctions[this.state.sortingCriteria]}
+          sortOrder={this.state.sortingOrder}
+          searchText={this.state.searchText}
+          onCardClick={id => {
+            const card = this.props.cards.find(c => c.id === id);
+            if (card.source !== 'builtin') {
+              this.updateState(state => {
+                if (state.selectedCardIds.includes(id)) {
+                  return {selectedCardIds: without(state.selectedCardIds, id)};
+                } else {
+                  return {selectedCardIds: [...state.selectedCardIds, id]};
+                }
+              });
+            }
+          }}>
+          <Link to="/creator">
+            <div style={{padding: '24px 0 12px 0', marginRight: 15}}>
+              <CardBack hoverable customText="New Card" />
+            </div>
+          </Link>
+        </CardGrid>
+      );
+    } else {
+      return (
+        <CardTable
+          cards={this.props.cards}
+          filterFunc={this.isCardVisible.bind(this)}
+          sortFunc={sortFunctions[this.state.sortingCriteria]}
+          sortOrder={this.state.sortingOrder}
+          searchText={this.state.searchText}
+          onSelection={(selectedRows) => {
+            if (selectedRows === 'all') {
+              console.log(selectedRows);
+            } else {
+              console.log(selectedRows);
+            }
+          }}/>
+      );
+    }
+  }
+
   render() {
     return (
       <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
@@ -126,30 +177,7 @@ class Collection extends Component {
             />
 
           <div style={{marginTop: 50, marginLeft: 40}}>
-            <CardGrid
-              cards={this.props.cards}
-              selectedCardIds={this.state.selectedCardIds}
-              filterFunc={this.isCardVisible.bind(this)}
-              sortFunc={sortFunctions[this.state.sortingCriteria]}
-              sortOrder={this.state.sortingOrder}
-              onCardClick={id => {
-                const card = this.props.cards.find(c => c.id === id);
-                if (card.source !== 'builtin') {
-                  this.updateState(state => {
-                    if (state.selectedCardIds.includes(id)) {
-                      return {selectedCardIds: without(state.selectedCardIds, id)};
-                    } else {
-                      return {selectedCardIds: [...state.selectedCardIds, id]};
-                    }
-                  });
-                }
-              }}>
-              <Link to="/creator">
-                <div style={{padding: '24px 0 12px 0', marginRight: 15}}>
-                  <CardBack hoverable customText="New Card" />
-                </div>
-              </Link>
-            </CardGrid>
+            {this.renderCardCollection()}
           </div>
 
           <div style={{
@@ -166,6 +194,16 @@ class Collection extends Component {
                 fontSize: 28,
                 marginBottom: 20
               }}>Filters</div>
+
+              <div style={{
+                fontWeight: 700,
+                fontSize: 14,
+                marginBottom: 10
+              }}>Search</div>
+
+              <TextField hintText="Search for cards." style={{marginBottom: 10}} onChange={(event, newValue) => {
+                this.setState({searchText: newValue});
+              }}/>
 
               <SortControls
                 criteria={this.state.sortingCriteria}

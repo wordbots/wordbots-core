@@ -18,7 +18,7 @@ export default class CardStat extends Component {
   static defaultProps = {
     scale: 1
   };
-s
+
   get iconClass() {
     switch (this.props.type) {
       case 'attack':

@@ -19,23 +19,6 @@ export default class CardTable extends Component {
     onSelection: func
   };
 
-  searchCards(card) {
-    return (card.name.toLowerCase().includes(this.props.searchText.toLowerCase()) || 
-      (card.text || '').toLowerCase().includes(this.props.searchText.toLowerCase()));
-  }
-
-  sortCards(a, b) {
-    const f = this.props.sortFunc;
-
-    if (f(a) < f(b)) {
-      return this.props.sortOrder ? 1 : -1;
-    } else if (f(a) > f(b)) {
-      return this.props.sortOrder ? -1 : 1;
-    } else {
-      return 0;
-    }
-  }
-
   sourceToString(source) {
     if (source === 'user') {
       return 'You';
@@ -58,7 +41,7 @@ export default class CardTable extends Component {
     }
   }
 
-  renderCardRow(card) {
+  renderCardRow(card, index) {
     return (
       <TableRow 
         key={card.id} 
@@ -66,7 +49,7 @@ export default class CardTable extends Component {
         selectable={card.source === 'user'}>
         <TableRowColumn width={200}>{card.name}</TableRowColumn>
         <TableRowColumn width={100}>{typeToString(card.type)}</TableRowColumn>
-        <TableRowColumn width={100}>{this.sourceToString(card.source)}</TableRowColumn>
+        <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
         <TableRowColumn>{card.text}</TableRowColumn>
         <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
         <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>
@@ -92,15 +75,21 @@ export default class CardTable extends Component {
       }}>
         <Table
           multiSelectable
-          onRowSelection={this.props.onSelection}>
+          onRowSelection={(selectedRows) => {
+            if (selectedRows === 'none') {
+              this.props.onSelection([]);
+            } else {
+              this.props.onSelection(selectedRows.map(rowIndex => this.props.cards[rowIndex].id));
+            }
+          }}>
           <TableHeader
-            displaySelectAll
             adjustForCheckbox
-            enableSelectAll>
+            displaySelectAll={false}
+            enableSelectAll={false}>
             <TableRow>
               <TableHeaderColumn width={200}>Name</TableHeaderColumn>
               <TableHeaderColumn width={100}>Type</TableHeaderColumn>
-              <TableHeaderColumn width={100}>Creator</TableHeaderColumn>
+              <TableHeaderColumn width={50}>Creator</TableHeaderColumn>
               <TableHeaderColumn>Card Text</TableHeaderColumn>
               <TableHeaderColumn width={30}>Attack</TableHeaderColumn>
               <TableHeaderColumn width={30}>Health</TableHeaderColumn>
@@ -112,11 +101,7 @@ export default class CardTable extends Component {
             displayRowCheckbox
             deselectOnClickaway
             showRowHover>
-              {this.props.cards
-                .filter(this.searchCards.bind(this))
-                .filter(this.props.filterFunc)
-                .sort(this.sortCards.bind(this))
-                .map(this.renderCardRow.bind(this))}
+              {this.props.cards.map(this.renderCardRow.bind(this))}
           </TableBody>
         </Table>
       </div>

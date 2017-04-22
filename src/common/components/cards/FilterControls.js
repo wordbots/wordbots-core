@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { func } from 'prop-types';
 import Toggle from 'material-ui/Toggle';
-import TextField from 'material-ui/TextField';
 import { Range } from 'rc-slider';
 
 export default class FilterControls extends Component {

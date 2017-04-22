@@ -106,16 +106,34 @@ class Collection extends Component {
     };
   }
 
+  searchCards(card) {
+    return (card.name.toLowerCase().includes(this.state.searchText.toLowerCase()) || 
+      (card.text || '').toLowerCase().includes(this.state.searchText.toLowerCase()));
+  }
+
+  sortCards(a, b) {
+    const f = sortFunctions[this.state.sortingCriteria];
+
+    if (f(a) < f(b)) {
+      return this.state.sortingOrder ? 1 : -1;
+    } else if (f(a) > f(b)) {
+      return this.state.sortingOrder ? -1 : 1;
+    } else {
+      return 0;
+    }
+  }
+
   renderCardCollection() {
+    const cards = this.props.cards
+      .filter(this.searchCards.bind(this))
+      .filter(this.isCardVisible.bind(this))
+      .sort(this.sortCards.bind(this));
+
     if (this.state.view === 0) {
       return (
         <CardGrid
-          cards={this.props.cards}
+          cards={cards}
           selectedCardIds={this.state.selectedCardIds}
-          filterFunc={this.isCardVisible.bind(this)}
-          sortFunc={sortFunctions[this.state.sortingCriteria]}
-          sortOrder={this.state.sortingOrder}
-          searchText={this.state.searchText}
           onCardClick={id => {
             const card = this.props.cards.find(c => c.id === id);
             if (card.source !== 'builtin') {
@@ -138,18 +156,8 @@ class Collection extends Component {
     } else {
       return (
         <CardTable
-          cards={this.props.cards}
-          filterFunc={this.isCardVisible.bind(this)}
-          sortFunc={sortFunctions[this.state.sortingCriteria]}
-          sortOrder={this.state.sortingOrder}
-          searchText={this.state.searchText}
-          onSelection={(selectedRows) => {
-            if (selectedRows === 'all') {
-              console.log(selectedRows);
-            } else {
-              console.log(selectedRows);
-            }
-          }}/>
+          cards={cards}
+          onSelection={selectedRows => { this.updateState({selectedCardIds: selectedRows}); }}/>
       );
     }
   }

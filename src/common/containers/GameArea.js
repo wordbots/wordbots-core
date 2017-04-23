@@ -272,13 +272,14 @@ export class GameArea extends Component {
         }}>
           <PlayerArea opponent gameProps={this.props} />
           <div
-            ref={(board) => {this.boardArea = board;}}
+            ref={board => {this.boardArea = board;}}
             style={{
               position: 'absolute',
               left: 0,
               top: 125,
               bottom: 125,
-              right: 0
+              right: 0,
+              zIndex: 9999
           }}>
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Status

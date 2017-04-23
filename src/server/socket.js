@@ -192,19 +192,21 @@ export default function launchWebsocketServer(server, path) {
   function spectateGame(clientID, gameID) {
     const game = state.games.find(g => g.id === gameID);
 
-    game.spectators.push(clientID);
+    if (game) {
+      game.spectators.push(clientID);
 
-    console.log(`${clientID} joined game ${game.name} as a spectator.`);
-    sendMessage('ws:GAME_START', {
-      'player': 'neither',
-      'decks': game.decks,
-      'usernames': game.usernames,
-      'seed': game.startingSeed
-    }, [clientID]);
-    sendMessage('ws:CURRENT_STATE', {'actions': game.actions}, [clientID]);
-    sendChat(`Entering game ${game.name} as a spectator ...`, [clientID]);
-    sendChat(`${state.usernames[clientID]} has joined as a spectator.`, findOpponents(clientID));
-    broadcastInfo();
+      console.log(`${clientID} joined game ${game.name} as a spectator.`);
+      sendMessage('ws:GAME_START', {
+        'player': 'neither',
+        'decks': game.decks,
+        'usernames': game.usernames,
+        'seed': game.startingSeed
+      }, [clientID]);
+      sendMessage('ws:CURRENT_STATE', {'actions': game.actions}, [clientID]);
+      sendChat(`Entering game ${game.name} as a spectator ...`, [clientID]);
+      sendChat(`${state.usernames[clientID]} has joined as a spectator.`, findOpponents(clientID));
+      broadcastInfo();
+    }
   }
 
   function leaveGame(clientID) {

@@ -40,6 +40,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return Object.assign(bindActionCreators(UserActions, dispatch), {
+    onRouting(path) {
+       // To signal to reducers that the route has changed.
+      dispatch({type: 'OPEN_PAGE', value: { path }});
+    },
     toggleSidebar(value) {
       dispatch({type: 'TOGGLE_SIDEBAR', value: value});
     }
@@ -55,6 +59,7 @@ class App extends Component {
     getUserInfo: func,
     toggleClearCookie: func,
     toggleSidebar: func,
+    onRouting: func,
     undo: func,
     redo: func,
     children: object,
@@ -101,6 +106,7 @@ class App extends Component {
     // Hacky analytics implementation.
     if (inBrowser() && window.location.pathname !== currentLocation) {
       currentLocation = window.location.pathname;
+      this.props.onRouting(currentLocation);
       ReactGA.set({ page: currentLocation });
       ReactGA.pageview(currentLocation);
     }

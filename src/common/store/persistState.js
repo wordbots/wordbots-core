@@ -1,4 +1,4 @@
-import { compact, find, random } from 'lodash';
+import { compact, find, isString, random } from 'lodash';
 
 import { collection as builtinCards } from './cards';
 
@@ -6,47 +6,64 @@ import { collection as builtinCards } from './cards';
 // (DANGER - use this sparingly, as it clears all localStorage.)
 const CURRENT_VERSION = 8;
 
-function isValidUsername(username) {
-  return username && username !== 'null' && !username.startsWith('Guest');
-}
-
-function getNewCopyIfBuiltinCard(card) {
-  return (card.source === 'builtin') ? (find(builtinCards, {'name': card.name}) || card) : card;
-}
-
-export function loadState(state) {
-  // Set a default username.
-  if (state.socket) {  // This check is necessary to avoid errors in server-side rendering.
-    state.socket.username = `Guest${random(100000,999999)}`;
-  }
-
+function canLoadState() {
   if (typeof localStorage !== 'undefined' && localStorage['wb$version']) {
     const savedVersion = parseInt(localStorage['wb$version']);
     if (savedVersion === CURRENT_VERSION) {
+      return true;
+    } else {
+      localStorage[`wb$backup.v${savedVersion}`] = JSON.stringify(localStorage);
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+export function saveToLocalStorage(key, value) {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('wb$version', CURRENT_VERSION);
+    localStorage.setItem(`wb$${key}`, isString(value) ? value : JSON.stringify(value));
+  }
+}
+
+export function loadUsername(socketState) {
+  if (socketState) {
+    // This check is necessary to avoid errors in server-side rendering.
+    socketState.username = `Guest${random(100000,999999)}`;
+
+    if (canLoadState()) {
       const username = localStorage['wb$username'];
-      const collection = localStorage['wb$collection'];
-      const decks = localStorage['wb$decks'];
-
-      if (isValidUsername(username)) {
-        state.socket.username = username;
+      if (username && username !== 'null' && !username.startsWith('Guest')) {
+        socketState.username = username;
       }
+    }
+  }
+  return socketState;
+}
 
-      state.collection.cards = builtinCards.concat(compact(JSON.parse(collection)).filter(c => c.source !== 'builtin'));
+export function loadCards(collectionState) {
+  if (canLoadState()) {
+    const cards = localStorage['wb$collection'];
+    if (cards) {
+      collectionState.cards = builtinCards.concat(compact(JSON.parse(cards)).filter(c => c.source !== 'builtin'));
+    }
+  }
+  return collectionState;
+}
 
-      state.collection.decks = JSON.parse(decks).map(deck =>
+export function loadDecks(collectionState) {
+  function getNewCopyIfBuiltinCard(card) {
+    return (card.source === 'builtin') ? (find(builtinCards, {'name': card.name}) || card) : card;
+  }
+
+  if (canLoadState()) {
+    const decks = localStorage['wb$decks'];
+    if (decks) {
+      collectionState.decks = JSON.parse(decks).map(deck =>
         Object.assign({}, deck, {cards: compact(deck.cards).map(getNewCopyIfBuiltinCard)})
       );
     }
   }
-
-  return state;
-}
-
-export function saveState(state) {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('wb$version', CURRENT_VERSION);
-    localStorage.setItem('wb$username', state.socket.username);
-    localStorage.setItem('wb$collection', JSON.stringify(state.collection.cards));
-    localStorage.setItem('wb$decks', JSON.stringify(state.collection.decks));
-  }
+  return collectionState;
 }

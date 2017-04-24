@@ -207,13 +207,13 @@ class Collection extends Component {
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
-                marginBottom: 10
+                marginBottom: 20
               }}>Collection Layout</div>
 
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-around',
-                marginBottom: 10
+                marginBottom: 20
               }}>
                 <FontIcon
                   className="material-icons"
@@ -226,7 +226,10 @@ class Collection extends Component {
                     backgroundColor: this.state.layout === 0 ? 
                       '#FFC7C3' :
                       '#EEEEEE',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    width: '100%',
+                    textAlign: 'center',
+                    marginRight: 10
                   }}
                   onClick={() => { this.setState({layout: 0});}}>
                   view_module
@@ -242,7 +245,9 @@ class Collection extends Component {
                     backgroundColor: this.state.layout === 0 ? 
                       '#EEEEEE' :
                       '#FFC7C3',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    width: '100%',
+                    textAlign: 'center'
                   }}
                   onClick={() => { this.setState({layout: 1});}}>
                   view_list

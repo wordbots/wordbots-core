@@ -83,7 +83,7 @@ export default class CardTable extends Component {
             }
           }}>
           <TableHeader
-            adjustForCheckbox
+            adjustForCheckbox={false}
             displaySelectAll={false}
             enableSelectAll={false}>
             <TableRow>
@@ -98,7 +98,7 @@ export default class CardTable extends Component {
             </TableRow>
           </TableHeader>
           <TableBody
-            displayRowCheckbox
+            displayRowCheckbox={false}
             deselectOnClickaway
             showRowHover>
               {this.props.cards.map(this.renderCardRow.bind(this))}

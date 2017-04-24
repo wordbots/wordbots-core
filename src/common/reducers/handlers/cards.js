@@ -1,4 +1,4 @@
-import { some, sortBy } from 'lodash';
+import { some } from 'lodash';
 
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id, compareCertainKeys } from '../../util/common';

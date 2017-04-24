@@ -11,9 +11,6 @@ export default class CardGrid extends Component {
     children: element,
     cards: array,
     selectedCardIds: array,
-    filterFunc: func,
-    sortFunc: func,
-    sortOrder: number,
 
     onCardClick: func
   };
@@ -66,11 +63,7 @@ export default class CardGrid extends Component {
         margin: 10
       }}>
         {this.props.children}
-        {!inBrowser() ? null :
-          this.props.cards
-            .filter(this.props.filterFunc)
-            .sort(this.sortCards.bind(this))
-            .map(this.renderCard.bind(this))}
+        {!inBrowser() ? null : this.props.cards.map(this.renderCard.bind(this))}
       </div>
     );
   }

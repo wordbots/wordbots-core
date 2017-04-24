@@ -77,7 +77,8 @@ class Collection extends Component {
       searchText: '',
       sortingOrder: 0,
       selectedCardIds: [],
-      importDialogOpen: false
+      importDialogOpen: false,
+      layout: 0
     };
   }
 
@@ -129,7 +130,7 @@ class Collection extends Component {
       .filter(this.isCardVisible.bind(this))
       .sort(this.sortCards.bind(this));
 
-    if (this.state.view === 0) {
+    if (this.state.layout === 0) {
       return (
         <CardGrid
           cards={cards}
@@ -202,6 +203,51 @@ class Collection extends Component {
                 fontSize: 28,
                 marginBottom: 20
               }}>Filters</div>
+
+              <div style={{
+                fontWeight: 700,
+                fontSize: 14,
+                marginBottom: 10
+              }}>Collection Layout</div>
+
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                marginBottom: 10
+              }}>
+                <FontIcon
+                  className="material-icons"
+                  style={{
+                    color: 'black',
+                    fontSize: 36,
+                    padding: 10,
+                    borderRadius: 3,
+                    boxShadow: '1px 1px 3px #CCC',
+                    backgroundColor: this.state.layout === 0 ? 
+                      '#FFC7C3' :
+                      '#EEEEEE',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => { this.setState({layout: 0});}}>
+                  view_module
+                </FontIcon>
+                <FontIcon
+                  className="material-icons"
+                  style={{
+                    color: 'black',
+                    fontSize: 36,
+                    padding: 10,
+                    borderRadius: 3,
+                    boxShadow: '1px 1px 3px #CCC',
+                    backgroundColor: this.state.layout === 0 ? 
+                      '#EEEEEE' :
+                      '#FFC7C3',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => { this.setState({layout: 1});}}>
+                  view_list
+                </FontIcon>
+              </div>
 
               <div style={{
                 fontWeight: 700,

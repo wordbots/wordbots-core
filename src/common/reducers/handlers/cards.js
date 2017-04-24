@@ -1,4 +1,4 @@
-import { some, sortBy } from 'lodash';
+import { some } from 'lodash';
 
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id, compareCertainKeys } from '../../util/common';
@@ -24,7 +24,7 @@ const cardsHandlers = {
 
     saveCardsToLocalStorage(state);
 
-    return updateDefaultDeck(state);
+    return state;
   },
 
   closeExportDialog: function (state) {
@@ -49,7 +49,7 @@ const cardsHandlers = {
 
     saveCardsToLocalStorage(state);
 
-    return updateDefaultDeck(state);
+    return state;
   },
 
   openCardForEditing: function (state, card) {
@@ -76,7 +76,7 @@ const cardsHandlers = {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
     saveCardsToLocalStorage(state);
 
-    return updateDefaultDeck(state);
+    return state;
   },
 
   saveDeck: function (state, deckId, name, cardIds) {
@@ -142,15 +142,9 @@ function areIdenticalCards(card1, card2) {
 function saveCardsToLocalStorage(state) {
   saveToLocalStorage('collection', state.cards);
 }
+
 function saveDecksToLocalStorage(state) {
   saveToLocalStorage('decks', state.decks);
-}
-
-function updateDefaultDeck(state) {
-  const mostRecentCards = sortBy(state.cards, ['timestamp', 'name']).reverse().slice(0, 30);
-  Object.assign(state.decks.find(d => d.id === '[default]'), {cards: mostRecentCards});
-  saveDecksToLocalStorage(state);
-  return state;
 }
 
 export default cardsHandlers;

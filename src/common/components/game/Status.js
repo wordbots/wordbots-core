@@ -22,12 +22,13 @@ export default class Status extends Component {
       <div style={{
         display: 'inline-block',
         position: 'absolute',
-        left: 10,
+        top: 0,
         margin: 'auto',
+        width: '100%',
         height: 20,
+        textAlign: 'center',
         fontFamily: 'Carter One',
         fontSize: 20,
-        bottom: 70,
         color: this.color
       }}>
         {this.props.status.message}

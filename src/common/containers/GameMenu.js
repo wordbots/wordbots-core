@@ -6,7 +6,6 @@ import Divider from 'material-ui/Divider';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
-import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
 
 import { opponent } from '../util/game';
 import * as gameActions from '../actions/game';
@@ -18,6 +17,7 @@ export function mapStateToProps(state) {
   return {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
+    gameOver: state.game.winner !== null,
     isMyTurn: state.game.currentTurn === state.game.player,
     selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
   };
@@ -46,6 +46,7 @@ export class GameMenu extends Component {
 
     player: string,
     currentTurn: string,
+    gameOver: bool,
     isMyTurn: bool,
     selectedPiece: object,
 
@@ -73,7 +74,9 @@ export class GameMenu extends Component {
 
   componentDidMount() {
     setInterval(() => {
-      this.tickTimer();
+      if (!this.props.gameOver) {
+        this.tickTimer();
+      }
     }, 1000);
   }
 
@@ -87,7 +90,7 @@ export class GameMenu extends Component {
     this.setTimer(1, 30, 'white');
   }
 
-  padDigits(seconds) { 
+  padDigits(seconds) {
     return (seconds < 10 ? '0' : '') + seconds;
   }
 
@@ -119,49 +122,67 @@ export class GameMenu extends Component {
     } else if (seconds > 0 && seconds <= 6) {
       this.setTimer(0, this.padDigits(seconds - 1), 'red');
     } else if (seconds > 0) {
-      this.setTimer(0, this.padDigits(seconds - 1), 'white');      
+      this.setTimer(0, this.padDigits(seconds - 1), 'white');
     } else {
       if (this.props.isMyTurn) {
         this.props.onPassTurn(this.props.player);
       }
-    } 
+    }
+  }
+
+  renderActivatedAbilities() {
+    const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
+
+    if (abilities.length > 0) {
+      const canActivateAbility = this.props.isMyTurn && !this.props.selectedPiece.cantActivate;
+
+      return (
+        <div>
+          <MenuItem
+            disabled
+            primaryText="Activated Abilities"
+            style={{
+              textAlign: 'center',
+              cursor: 'auto',
+              color: '#333',
+              fontWeight: 'bold'
+            }} />
+          {abilities.map((ability, idx) =>
+            <MenuItem
+              disabled={!canActivateAbility}
+              primaryText={`${ability.text}.`}
+              onClick={() => { this.props.onActivate(idx); }} />
+          )}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 
   render() {
-    const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
-    const canActivateAbility = (abilities.length > 0) && !this.props.selectedPiece.cantActivate ;
-
     return (
       <Drawer
         open={this.props.open}
         containerStyle={{
           top: 64
       }}>
-        <MenuItem 
-          primaryText={this.state.timer} 
+        <MenuItem
+          primaryText={this.state.timer}
           style={this.state.timerStyle} />
         <Divider />
         <MenuItem
           primaryText="End Turn"
-          disabled={!this.props.isMyTurn}
+          disabled={!this.props.isMyTurn || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         <MenuItem
           primaryText="Forfeit"
+          disabled={this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">close</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
         <Divider />
-        <MenuItem
-          primaryText="Activate Ability"
-          disabled={!this.props.isMyTurn || !canActivateAbility}
-          leftIcon={<FontIcon className="material-icons">star</FontIcon>}
-          rightIcon={<ArrowDropRight />}
-          menuItems={abilities.map((ability, idx) =>
-            <MenuItem
-              primaryText={`${ability.text}.`}
-              onClick={() => { this.props.onActivate(idx); }} />
-          )}
-        />
+        {this.renderActivatedAbilities()}
         <Divider />
       </Drawer>
     );

@@ -30,10 +30,10 @@ describe('GameArea container', () => {
         ref={mainDiv.ref}
         style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0, zIndex: 9999}}
       >
-        <CardViewer hoveredCard={undefined} />
         <Status
           player={'orange'}
           status={state.game.players.orange.status} />
+        <CardViewer hoveredCard={undefined} />
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}

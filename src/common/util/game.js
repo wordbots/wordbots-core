@@ -1,4 +1,4 @@
-import { cloneDeep, filter, findKey, flatMap, isArray, some, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, without } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -115,6 +115,10 @@ export function checkVictoryConditions(state) {
 // II. Grid-related helper functions.
 //
 
+export function allHexIds() {
+  return GridGenerator.hexagon(3).map(HexUtils.getID);
+}
+
 export function getHex(state, object) {
   return findKey(allObjectsOnBoard(state), ['id', object.id]);
 }
@@ -128,8 +132,8 @@ export function getAdjacentHexes(hex) {
     new Hex(hex.q - 1, hex.r, hex.s + 1),
     new Hex(hex.q + 1, hex.r, hex.s - 1)
   ].filter(adjacentHex =>
-    // Filter out hexes that are not on the 4-radius hex grid.
-    GridGenerator.hexagon(4).map(HexUtils.getID).includes(HexUtils.getID(adjacentHex))
+    // Filter out hexes that are not on the 3-radius hex grid.
+    allHexIds().includes(HexUtils.getID(adjacentHex))
   );
 }
 
@@ -201,6 +205,51 @@ export function newGame(state, player, usernames, decks, seed) {
   return state;
 }
 
+export function startTurn(state) {
+  const player = currentPlayer(state);
+  player.energy.total = Math.min(player.energy.total + 1, 10);
+  player.energy.available = player.energy.total;
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
+    Object.assign({}, robot, {
+      movesMade: 0,
+      cantActivate: false,
+      cantAttack: false,
+      cantMove: false,
+      attackedThisTurn: false,
+      movedThisTurn: false,
+      attackedLastTurn: robot.attackedThisTurn,
+      movedLastTurn: robot.movedThisTurn
+    })
+  ));
+
+  state = drawCards(state, player, 1);
+  state = triggerEvent(state, 'beginningOfTurn', {player: true});
+
+  return state;
+}
+
+export function endTurn(state) {
+  const player = currentPlayer(state);
+  player.selectedCard = null;
+  player.selectedTile = null;
+  player.status.message = '';
+  player.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
+    Object.assign({}, robot, {
+      attackedThisTurn: false,
+      movedThisTurn: false,
+      attackedLastTurn: robot.attackedThisTurn,
+      movedLastTurn: robot.movedThisTurn
+    })
+  ));
+
+  state = triggerEvent(state, 'endOfTurn', {player: true});
+  state.currentTurn = opponentName(state);
+  state.hoveredCardIdx = null;
+
+  return state;
+}
+
 export function drawCards(state, player, count) {
   player.hand = player.hand.concat(player.deck.splice(0, count));
   state = applyAbilities(state);
@@ -218,10 +267,12 @@ export function discardCards(state, cards) {
 
 export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   const object = allObjectsOnBoard(state)[hex];
-  object.stats.health -= amount;
 
-  state = triggerEvent(state, 'afterDamageReceived', {object: object});
-  state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
+  if (!object.beingDestroyed) {
+    object.stats.health -= amount;
+    state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
+    state = triggerEvent(state, 'afterDamageReceived', {object: object});
+  }
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
@@ -231,9 +282,11 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
-  } else {
-    state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
+  } else if (!object.beingDestroyed) {
+    object.beingDestroyed = true;
+
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
+    state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
     delete state.players[ownerName].robotsOnBoard[hex];
 
@@ -252,6 +305,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
 export function setTargetAndExecuteQueuedAction(state, target) {
   const player = currentPlayer(state);
+  const targetCard = allObjectsOnBoard(state)[target] ? allObjectsOnBoard(state)[target].card : (target.card || target);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
@@ -263,6 +317,7 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 
   // Perform the trigger.
   state = state.callbackAfterTargetSelected(state);
+  state = logAction(state, null, `|${targetCard.name}| was targeted`, {[targetCard.name]: targetCard});
   state.callbackAfterTargetSelected = null;
 
   // Reset target.
@@ -276,6 +331,8 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 //
 
 export function executeCmd(state, cmd, currentObject = null, source = null) {
+  // console.log(cmd);
+
   const vocabulary = buildVocabulary(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
 

@@ -25,7 +25,7 @@ export default class NavMenu extends Component {
       <Drawer
         open={this.props.open}
         containerStyle={{
-          top: 66,
+          top: 54,
           paddingTop: 10
       }}>
         {this.renderLink('/', 'Home', 'home')}

@@ -23,6 +23,6 @@ export function count(state) {
 
 export function energyAmount(state) {
   return function (player) {
-    // TODO
+    return player.energy.available;
   };
 }

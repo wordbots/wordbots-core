@@ -46,7 +46,7 @@ export function isCardVisible(card, filters, costRange) {
 
 export function groupCards(cards) {
   return uniqBy(cards, 'name').map(card =>
-    Object.assign(card, {count: countBy(cards, c => c.name)[card.name]})
+    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
   );
 }
 

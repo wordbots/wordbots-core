@@ -1,6 +1,9 @@
+import { some, sortBy } from 'lodash';
+
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { id } from '../../util/common';
+import { id, compareCertainKeys } from '../../util/common';
 import { cardsToJson, cardsFromJson, splitSentences } from '../../util/cards';
+import { saveToLocalStorage } from '../../store/persistState';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -11,9 +14,15 @@ const cardsHandlers = {
       const existingCard = state.cards.find(c => c.id === cardProps.id);
       Object.assign(existingCard, card);
     } else {
-      // Creating a new card.
-      state.cards.unshift(card);
+      if (some(state.cards, c => areIdenticalCards(c, card))) {
+        // There's already an identical card in the collection - log some kind of warning to the user.
+      } else {
+        // Creating a new card.
+        state.cards.push(card);
+      }
     }
+
+    saveCardsToLocalStorage(state);
 
     return updateDefaultDeck(state);
   },
@@ -24,6 +33,7 @@ const cardsHandlers = {
 
   deleteDeck: function (state, deckId) {
     state.decks = state.decks.filter(deck => deck.id !== deckId);
+    saveDecksToLocalStorage(state);
     return state;
   },
 
@@ -36,6 +46,8 @@ const cardsHandlers = {
     cardsFromJson(json)
       .filter(card => !state.cards.map(c => c.id).includes(card.id))
       .forEach(card => { state.cards.unshift(card); });
+
+    saveCardsToLocalStorage(state);
 
     return updateDefaultDeck(state);
   },
@@ -62,6 +74,8 @@ const cardsHandlers = {
 
   removeFromCollection: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
+    saveCardsToLocalStorage(state);
+
     return updateDefaultDeck(state);
   },
 
@@ -83,6 +97,8 @@ const cardsHandlers = {
       });
     }
 
+    saveDecksToLocalStorage(state);
+
     return state;
   }
 };
@@ -99,7 +115,8 @@ function createCardFromProps(props) {
     spriteID: props.spriteID,
     text: sentences.map(s => `${s.sentence}. `).join(''),
     cost: props.cost,
-    source: 'user'  // In the future, this will specify *which* user created the card.
+    source: 'user',  // In the future, this will specify *which* user created the card.
+    timestamp: Date.now()
   };
 
   if (props.type === TYPE_EVENT) {
@@ -116,8 +133,23 @@ function createCardFromProps(props) {
   return card;
 }
 
+function areIdenticalCards(card1, card2) {
+  // TODO: Once we have better UX for this, it's time to start getting stricter
+  // (no longer care about the name, and check abilities/command rather than text).
+  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
+}
+
+function saveCardsToLocalStorage(state) {
+  saveToLocalStorage('collection', state.cards);
+}
+function saveDecksToLocalStorage(state) {
+  saveToLocalStorage('decks', state.decks);
+}
+
 function updateDefaultDeck(state) {
-  Object.assign(state.decks.find(d => d.id === '[default]'), {cards: state.cards.slice(0, 30)});
+  const mostRecentCards = sortBy(state.cards, ['timestamp', 'name']).reverse().slice(0, 30);
+  Object.assign(state.decks.find(d => d.id === '[default]'), {cards: mostRecentCards});
+  saveDecksToLocalStorage(state);
   return state;
 }
 

@@ -3,14 +3,12 @@ import multi from 'redux-multi';
 import thunk from 'redux-thunk';
 
 import { ALWAYS_ENABLE_DEV_TOOLS } from '../constants';
-import promiseMiddleware from '../api/promiseMiddleware';
-import createSocketMiddleware from '../api/socketMiddleware';
+import promiseMiddleware from '../middleware/promiseMiddleware';
+import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
 import * as ga from '../actions/game';
 import * as la from '../actions/layout';
 import * as sa from '../actions/socket';
-
-import { loadState, saveState } from './persistState';
 
 const middlewareBuilder = () => {
   const universalMiddleware = [thunk, promiseMiddleware, multi];
@@ -58,7 +56,7 @@ const middlewareBuilder = () => {
 const finalCreateStore = compose(...middlewareBuilder())(createStore);
 
 export default function configureStore(initialState) {
-  const store = finalCreateStore(rootReducer, loadState(initialState));
+  const store = finalCreateStore(rootReducer, initialState);
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
@@ -67,8 +65,6 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextRootReducer);
     });
   }
-
-  store.subscribe(() => { saveState(store.getState()); });
 
   return store;
 }

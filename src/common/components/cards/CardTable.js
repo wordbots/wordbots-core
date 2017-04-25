@@ -71,7 +71,8 @@ export default class CardTable extends Component {
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
         width: 'calc(100% - 20px)',
-        marginRight: 10
+        marginRight: 10,
+        boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px'
       }}>
         <Table
           multiSelectable
@@ -85,16 +86,17 @@ export default class CardTable extends Component {
           <TableHeader
             adjustForCheckbox={false}
             displaySelectAll={false}
-            enableSelectAll={false}>
+            enableSelectAll={false}
+            style={{backgroundColor: '#f44336'}}>
             <TableRow>
-              <TableHeaderColumn width={100}>Name</TableHeaderColumn>
-              <TableHeaderColumn width={100}>Type</TableHeaderColumn>
-              <TableHeaderColumn width={50}>Creator</TableHeaderColumn>
-              <TableHeaderColumn>Card Text</TableHeaderColumn>
-              <TableHeaderColumn width={30}>Attack</TableHeaderColumn>
-              <TableHeaderColumn width={30}>Health</TableHeaderColumn>
-              <TableHeaderColumn width={30}>Speed</TableHeaderColumn>
-              <TableHeaderColumn width={30}>Cost</TableHeaderColumn>
+              <TableHeaderColumn width={100} style={{color: 'white'}}>Name</TableHeaderColumn>
+              <TableHeaderColumn width={100} style={{color: 'white'}}>Type</TableHeaderColumn>
+              <TableHeaderColumn width={50} style={{color: 'white'}}>Creator</TableHeaderColumn>
+              <TableHeaderColumn style={{color: 'white'}}>Card Text</TableHeaderColumn>
+              <TableHeaderColumn width={30} style={{color: 'white'}}>Attack</TableHeaderColumn>
+              <TableHeaderColumn width={30} style={{color: 'white'}}>Health</TableHeaderColumn>
+              <TableHeaderColumn width={30} style={{color: 'white'}}>Speed</TableHeaderColumn>
+              <TableHeaderColumn width={30} style={{color: 'white'}}>Cost</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody

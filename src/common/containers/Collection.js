@@ -108,7 +108,7 @@ class Collection extends Component {
   }
 
   searchCards(card) {
-    return (card.name.toLowerCase().includes(this.state.searchText.toLowerCase()) || 
+    return (card.name.toLowerCase().includes(this.state.searchText.toLowerCase()) ||
       (card.text || '').toLowerCase().includes(this.state.searchText.toLowerCase()));
   }
 
@@ -202,7 +202,7 @@ class Collection extends Component {
                 fontWeight: 700,
                 fontSize: 14,
                 marginBottom: 20
-              }}>Collection Layout</div>
+              }}>Layout</div>
 
               <div style={{
                 display: 'flex',
@@ -217,7 +217,7 @@ class Collection extends Component {
                     padding: 10,
                     borderRadius: 3,
                     boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? 
+                    backgroundColor: this.state.layout === 0 ?
                       '#FFC7C3' :
                       '#EEEEEE',
                     cursor: 'pointer',
@@ -236,7 +236,7 @@ class Collection extends Component {
                     padding: 10,
                     borderRadius: 3,
                     boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? 
+                    backgroundColor: this.state.layout === 0 ?
                       '#EEEEEE' :
                       '#FFC7C3',
                     cursor: 'pointer',
@@ -254,16 +254,17 @@ class Collection extends Component {
                 marginBottom: 10
               }}>Search</div>
 
-              <TextField hintText="Search for cards." style={{marginBottom: 10}} onChange={(event, newValue) => {
-                this.setState({searchText: newValue});
-              }}/>
+              <TextField
+                hintText="Enter card name or text"
+                style={{marginBottom: 10}}
+                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
 
               <SortControls
                 criteria={this.state.sortingCriteria}
                 order={this.state.sortingOrder}
                 onSetCriteria={value => { this.updateState({sortingCriteria: value}); }}
-                onSetOrder={value => { this.updateState({sortingOrder: value}); }}
-                />
+                onSetOrder={value => { this.updateState({sortingOrder: value}); }} />
+
               <FilterControls
                 onToggleFilter={this.toggleFilter.bind(this)}
                 onSetCostRange={values => {
@@ -300,10 +301,10 @@ class Collection extends Component {
               label="Export Selected"
               labelPosition="before"
               secondary
-              disabled={this.state.selectedCardIds.length === 0}
               icon={<FontIcon className="material-icons">file_download</FontIcon>}
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
+                console.log(this.state.selectedCardIds);
                 const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
                 this.props.onExportCards(cards);
                 this.updateState({selectedCardIds: []});

@@ -1,9 +1,9 @@
-import { some } from 'lodash';
+import { some, uniqBy } from 'lodash';
 
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id, compareCertainKeys } from '../../util/common';
+import { saveUserData } from '../../util/firebase';
 import { cardsToJson, cardsFromJson, splitSentences } from '../../util/cards';
-import { saveToLocalStorage } from '../../store/persistState';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -22,7 +22,7 @@ const cardsHandlers = {
       }
     }
 
-    saveCardsToLocalStorage(state);
+    saveCards(state);
 
     return state;
   },
@@ -33,7 +33,7 @@ const cardsHandlers = {
 
   deleteDeck: function (state, deckId) {
     state.decks = state.decks.filter(deck => deck.id !== deckId);
-    saveDecksToLocalStorage(state);
+    saveDecks(state);
     return state;
   },
 
@@ -47,8 +47,14 @@ const cardsHandlers = {
       .filter(card => !state.cards.map(c => c.id).includes(card.id))
       .forEach(card => { state.cards.unshift(card); });
 
-    saveCardsToLocalStorage(state);
+    saveCards(state);
 
+    return state;
+  },
+
+  loadState: function (state, data) {
+    state = loadCards(state, data);
+    state = loadDecks(state, data);
     return state;
   },
 
@@ -74,7 +80,7 @@ const cardsHandlers = {
 
   removeFromCollection: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
-    saveCardsToLocalStorage(state);
+    saveCards(state);
 
     return state;
   },
@@ -97,7 +103,7 @@ const cardsHandlers = {
       });
     }
 
-    saveDecksToLocalStorage(state);
+    saveDecks(state);
 
     return state;
   }
@@ -139,12 +145,24 @@ function areIdenticalCards(card1, card2) {
   return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
 }
 
-function saveCardsToLocalStorage(state) {
-  saveToLocalStorage('collection', state.cards);
+function loadCards(state, data) {
+  state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+  return state;
 }
 
-function saveDecksToLocalStorage(state) {
-  saveToLocalStorage('decks', state.decks);
+function loadDecks(state, data) {
+  if (data.decks) {
+    state.decks = data.decks;
+  }
+  return state;
+}
+
+function saveCards(state) {
+  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
+}
+
+function saveDecks(state) {
+  saveUserData('decks', state.decks);
 }
 
 export default cardsHandlers;

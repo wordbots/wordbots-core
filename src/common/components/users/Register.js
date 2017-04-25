@@ -29,7 +29,7 @@ class Register extends Component {
   handleSubmit = (evt) => {
     evt.preventDefault();
     register(this.email.value, this.pw.value)
-      .catch(e => { console.log(e); this.setState({error: e.message}); });
+      .catch(e => { this.setState({error: e.message}); });
   }
 
   render() {

@@ -3,7 +3,6 @@ import { isArray, reduce } from 'lodash';
 import defaultState from '../store/defaultCollectionState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
-import { loadCards, loadDecks } from '../store/persistState';
 
 import c from './handlers/cards';
 
@@ -16,7 +15,7 @@ export default function collection(oldState = defaultState, action) {
   } else {
     switch (action.type) {
       case 'OPEN_PAGE':
-        return loadCards(loadDecks(state));
+        return c.loadState(state, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:
         return c.addToCollection(state, action.payload);

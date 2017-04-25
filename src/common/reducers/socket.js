@@ -2,14 +2,14 @@ import { cloneDeep, concat } from 'lodash';
 
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultSocketState';
-import { loadUsername, saveToLocalStorage } from '../store/persistState';
+// import { loadUsername, saveToLocalStorage } from '../store/persistState';
 
 export default function socket(oldState = cloneDeep(defaultState), action) {
   const state = Object.assign({}, oldState);
 
   switch (action.type) {
-    case 'OPEN_PAGE':
-      return loadUsername(state);
+    //case 'OPEN_PAGE':
+    //  return loadUsername(state);
 
     case socketActions.CONNECTING:
       return Object.assign(state, {connected: false, connecting: true});
@@ -56,7 +56,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       return Object.assign(state, {gameName: null});
 
     case socketActions.SET_USERNAME:
-      saveToLocalStorage('username', action.payload.username);
+      // saveToLocalStorage('username', action.payload.username);
       return Object.assign(state, {username: action.payload.username});
 
     default:

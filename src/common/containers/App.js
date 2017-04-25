@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
 import { inBrowser } from '../util/common';
-import { auth } from '../util/firebase';
+import { auth, loadUserData } from '../util/firebase';
 import NavMenu from '../components/NavMenu';
 import Login from '../components/users/Login';
 import Register from '../components/users/Register';
@@ -40,9 +40,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return Object.assign({
-    onRouting(path) {
+    onLoadData(path, data) {
        // To signal to reducers that the route has changed.
-      dispatch({type: 'OPEN_PAGE', value: { path }});
+      dispatch({type: 'OPEN_PAGE', payload: { path, data }});
     },
     toggleSidebar(value) {
       dispatch({type: 'TOGGLE_SIDEBAR', value: value});
@@ -59,7 +59,7 @@ class App extends Component {
     getUserInfo: func,
     toggleClearCookie: func,
     toggleSidebar: func,
-    onRouting: func,
+    onLoadData: func,
     undo: func,
     redo: func,
     children: object,
@@ -80,7 +80,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.logPageView();
+    this.onPageOpen();
   }
 
   componentDidMount() {
@@ -88,26 +88,38 @@ class App extends Component {
       this.setState({
         authed: user ? true : false,
         loading: false
-      });
+      }, this.dispatchUserData);
     });
   }
 
   componentWillUpdate() {
-    this.logPageView();
+    this.onPageOpen();
   }
 
   componentWillUnmount() {
     this.removeListener();
   }
 
-  logPageView() {
-    // Hacky analytics implementation.
-    if (inBrowser() && window.location.pathname !== currentLocation) {
-      currentLocation = window.location.pathname;
-      this.props.onRouting(currentLocation);
-      ReactGA.set({ page: currentLocation });
-      ReactGA.pageview(currentLocation);
+  onPageOpen() {
+    if (this.state.authed) {
+      this.dispatchUserData();
     }
+
+    if (inBrowser() && window.location.pathname !== currentLocation) {
+      this.logAnalytics();
+    }
+  }
+
+  logAnalytics() {
+    currentLocation = window.location.pathname;
+    ReactGA.set({ page: currentLocation });
+    ReactGA.pageview(currentLocation);
+  }
+
+  dispatchUserData() {
+    loadUserData().then(data => {
+      this.props.onLoadData(window.location.pathname, data);
+    });
   }
 
   handleToggle() {
@@ -169,14 +181,16 @@ class App extends Component {
               </IconButton>}
           />
         </div>
-        <div>
-          {
-            this.props.inGame ?
-              <GameMenu open={this.state.sidebarOpen} /> :
-              <NavMenu open={this.state.sidebarOpen} authed={this.state.authed} />
-          }
-          {this.state.authed ? this.loggedInRoutes : this.loggedOutRoutes}
-        </div>
+        {
+          this.state.loading ? null : <div>
+            {
+              this.props.inGame ?
+                <GameMenu open={this.state.sidebarOpen} /> :
+                <NavMenu open={this.state.sidebarOpen} authed={this.state.authed} />
+            }
+            {this.state.authed ? this.loggedInRoutes : this.loggedOutRoutes}
+          </div>
+        }
       </div>
     );
   }

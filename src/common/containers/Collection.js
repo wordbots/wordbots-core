@@ -8,7 +8,7 @@ import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { isFunction, without } from 'lodash';
+import { without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import CardBack from '../components/card/CardBack';

@@ -4,6 +4,7 @@ import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id, compareCertainKeys } from '../../util/common';
 import { saveUserData } from '../../util/firebase';
 import { cardsToJson, cardsFromJson, splitSentences } from '../../util/cards';
+import defaultState from '../../store/defaultCollectionState';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -146,14 +147,24 @@ function areIdenticalCards(card1, card2) {
 }
 
 function loadCards(state, data) {
-  state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+  if (data) {
+    state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+  } else {
+    state.cards = defaultState.cards;
+  }
+
   return state;
 }
 
 function loadDecks(state, data) {
-  if (data.decks) {
-    state.decks = data.decks;
+  if (data) {
+    if (data.decks) {
+      state.decks = data.decks;
+    }
+  } else {
+    state.decks = defaultState.decks;
   }
+
   return state;
 }
 

@@ -10,7 +10,7 @@ import { logout } from '../util/firebase';
 export default class NavMenu extends Component {
   static propTypes = {
     open: bool,
-    authed: bool
+    loggedIn: bool
   };
 
   renderLink(path, text, icon) {
@@ -26,7 +26,7 @@ export default class NavMenu extends Component {
   render() {
     const containerStyle = {top: 54, paddingTop: 10};
 
-    if (this.props.authed) {
+    if (this.props.loggedIn) {
       return (
         <Drawer open={this.props.open} containerStyle={containerStyle}>
           {this.renderLink('/', 'Home', 'home')}
@@ -46,6 +46,10 @@ export default class NavMenu extends Component {
           {this.renderLink('/', 'Home', 'home')}
           {this.renderLink('/login', 'Login', 'person')}
           {this.renderLink('/register', 'Register', 'person_add')}
+          {this.renderLink('/collection', 'Collection', 'recent_actors')}
+          {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
+          {this.renderLink('/decks', 'Decks', 'view_list')}
+          {this.renderLink('/play', 'Play', 'videogame_asset')}
         </Drawer>
       );
     }

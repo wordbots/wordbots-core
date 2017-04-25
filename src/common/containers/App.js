@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
 import { inBrowser } from '../util/common';
-import { auth, loadUserData } from '../util/firebase';
+import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import NavMenu from '../components/NavMenu';
 import Login from '../components/users/Login';
 import Register from '../components/users/Register';
@@ -40,9 +40,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return Object.assign({
-    onLoadData(path, data) {
+    onReceiveFirebaseData(data) {
        // To signal to reducers that the route has changed.
-      dispatch({type: 'OPEN_PAGE', payload: { path, data }});
+      dispatch({type: 'FIREBASE_DATA', payload: { data }});
     },
     toggleSidebar(value) {
       dispatch({type: 'TOGGLE_SIDEBAR', value: value});
@@ -59,7 +59,7 @@ class App extends Component {
     getUserInfo: func,
     toggleClearCookie: func,
     toggleSidebar: func,
-    onLoadData: func,
+    onReceiveFirebaseData: func,
     undo: func,
     redo: func,
     children: object,
@@ -73,53 +73,38 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      authed: false,
+      loggedIn: false,
       currentLocation: null,
       sidebarOpen: true
     };
   }
 
   componentWillMount() {
-    this.onPageOpen();
+    this.logAnalytics();
   }
 
   componentDidMount() {
-    this.removeListener = auth().onAuthStateChanged(user => {
-      this.setState({
-        authed: user ? true : false,
-        loading: false
-      }, this.dispatchUserData);
+    onLogin(() => {
+      this.setState({loading: false, loggedIn: true});
+      listenToUserData(this.props.onReceiveFirebaseData);
+    });
+
+    onLogout(() => {
+      this.setState({loading: false, loggedIn: false});
+      this.props.onReceiveFirebaseData(null);
     });
   }
 
   componentWillUpdate() {
-    this.onPageOpen();
-  }
-
-  componentWillUnmount() {
-    this.removeListener();
-  }
-
-  onPageOpen() {
-    if (this.state.authed) {
-      this.dispatchUserData();
-    }
-
-    if (inBrowser() && window.location.pathname !== currentLocation) {
-      this.logAnalytics();
-    }
+    this.logAnalytics();
   }
 
   logAnalytics() {
-    currentLocation = window.location.pathname;
-    ReactGA.set({ page: currentLocation });
-    ReactGA.pageview(currentLocation);
-  }
-
-  dispatchUserData() {
-    loadUserData().then(data => {
-      this.props.onLoadData(window.location.pathname, data);
-    });
+    if (inBrowser() && window.location.pathname !== currentLocation) {
+      currentLocation = window.location.pathname;
+      ReactGA.set({ page: currentLocation });
+      ReactGA.pageview(currentLocation);
+    }
   }
 
   handleToggle() {
@@ -133,64 +118,69 @@ class App extends Component {
     };
   }
 
-  get loggedInRoutes() {
+  get title() {
     return (
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/home" component={Home} />
-        <Route path="/collection" component={Collection} />
-        <Route path="/creator" component={Creator} />
-        <Route path="/decks" component={Decks} />
-        <Route path="/deck" component={Deck} />
-        <Route path="/play" component={Play} />
-        <Route render={() => <Redirect to="/"/>} />
-      </Switch>
+      <div style={{height: 66}}>
+        <AppBar
+          zDepth={1}
+          title={
+            <Link style={{
+              color: '#fff', fontFamily: 'Carter One', fontSize: 32
+            }} to="/">WORDBOTS</Link>
+          }
+          style={{
+            position: 'fixed',
+            top: 0
+          }}
+          iconElementLeft={
+            <IconButton onClick={this.handleToggle.bind(this)}>
+              <FontIcon className="material-icons">menu</FontIcon>
+            </IconButton>
+          }
+        />
+      </div>
     );
   }
 
-  get loggedOutRoutes() {
-    return (
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/home" component={Home} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route render={() => <Redirect to="/login"/>} />
-      </Switch>
-    );
+  get sidebar() {
+    if (this.state.loading) {
+      return null;
+    } else if (this.props.inGame) {
+      return <GameMenu open={this.state.sidebarOpen} />;
+    } else {
+      return <NavMenu open={this.state.sidebarOpen} loggedIn={this.state.loggedIn} />;
+    }
+  }
+
+  get content() {
+    if (this.state.loading) {
+      return null;
+    } else {
+      return (
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/home" component={Home} />
+          {!this.state.loggedIn && <Route path="/login" component={Login} />}
+          {!this.state.loggedIn && <Route path="/register" component={Register} />}
+          <Route path="/collection" component={Collection} />
+          <Route path="/creator" component={Creator} />
+          <Route path="/decks" component={Decks} />
+          <Route path="/deck" component={Deck} />
+          <Route path="/play" component={Play} />
+          <Route render={() => <Redirect to="/"/>} />
+        </Switch>
+      );
+    }
   }
 
   render() {
     return (
       <div>
-        <div style={{height: 66}}>
-          <AppBar
-            zDepth={1}
-            title={
-              <Link style={{
-                color: '#fff', fontFamily: 'Carter One', fontSize: 32
-              }} to="/">WORDBOTS</Link>
-            }
-            style={{
-              position: 'fixed',
-              top: 0
-            }}
-            iconElementLeft={
-              <IconButton onClick={this.handleToggle.bind(this)}>
-                <FontIcon className="material-icons">menu</FontIcon>
-              </IconButton>}
-          />
+        {this.title}
+        <div>
+          {this.sidebar}
+          {this.content}
         </div>
-        {
-          this.state.loading ? null : <div>
-            {
-              this.props.inGame ?
-                <GameMenu open={this.state.sidebarOpen} /> :
-                <NavMenu open={this.state.sidebarOpen} authed={this.state.authed} />
-            }
-            {this.state.authed ? this.loggedInRoutes : this.loggedOutRoutes}
-          </div>
-        }
       </div>
     );
   }

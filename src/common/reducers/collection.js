@@ -14,7 +14,7 @@ export default function collection(oldState = defaultState, action) {
     return reduce(action, collection, state);
   } else {
     switch (action.type) {
-      case 'OPEN_PAGE':
+      case 'FIREBASE_DATA':
         return c.loadState(state, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:

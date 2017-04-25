@@ -11,8 +11,6 @@ const config = {
 
 fb.initializeApp(config);
 
-export const auth = fb.auth;
-
 function saveUser(user) {
   return fb.database().ref()
     .child(`users/${user.uid}/info`)
@@ -25,7 +23,7 @@ function saveUser(user) {
 
 function getLoggedInUser() {
   return new Promise((resolve, reject) => {
-    auth().onAuthStateChanged(user => {
+    fb.auth().onAuthStateChanged(user => {
       if (user) {
         resolve(user);
       } else {
@@ -35,35 +33,43 @@ function getLoggedInUser() {
   });
 }
 
+export function onLogin(callback) {
+  return fb.auth().onAuthStateChanged(user => user && callback());
+}
+
+export function onLogout(callback) {
+  return fb.auth().onAuthStateChanged(user => !user && callback());
+}
+
 export function register(email, pw) {
-  return auth().createUserWithEmailAndPassword(email, pw)
+  return fb.auth().createUserWithEmailAndPassword(email, pw)
     .then(saveUser);
 }
 
 export function login(email, pw) {
-  return auth().signInWithEmailAndPassword(email, pw);
+  return fb.auth().signInWithEmailAndPassword(email, pw);
 }
 
 export function logout() {
-  return auth().signOut();
+  return fb.auth().signOut();
 }
 
 export function resetPassword(email) {
-  return auth().sendPasswordResetEmail(email);
+  return fb.auth().sendPasswordResetEmail(email);
 }
 
-export function loadUserData() {
-  return getLoggedInUser().then(user =>
+export function listenToUserData(callback) {
+  return getLoggedInUser().then(user => {
     fb.database()
       .ref(`users/${user.uid}`)
-      .once('value')
-  ).then(snapshot => snapshot.val());
+      .on('value', (snapshot) => { callback(snapshot.val()); });
+  });
 }
 
 export function saveUserData(key, value) {
   getLoggedInUser().then(user => {
-    fb.database().ref()
-    .child(`users/${user.uid}/${key}`)
-    .set(value);
+    fb.database()
+      .ref(`users/${user.uid}/${key}`)
+      .set(value);
   });
 }

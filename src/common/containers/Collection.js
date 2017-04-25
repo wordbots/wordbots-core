@@ -86,21 +86,15 @@ class Collection extends Component {
     return isCardVisible(card, this.state.filters, this.state.costRange);
   }
 
-  updateState(newProps, callback = () => {}) {
-    this.setState((s =>
-      Object.assign({}, s, isFunction(newProps) ? newProps(s) : newProps)
-    ), callback);
-  }
-
   updateSelectedCardsWithFilter() {
-    this.updateState(state => (
+    this.setState(state => (
       {selectedCardIds: state.selectedCardIds.filter(id => this.isCardVisible(this.props.cards.find(c => c.id === id)))}
     ));
   }
 
   toggleFilter(filter) {
     return (e, toggled) => {
-      this.updateState(
+      this.setState(
         state => ({filters: Object.assign({}, state.filters, {[filter]: toggled})}),
         () => { this.updateSelectedCardsWithFilter(); }
       );
@@ -138,7 +132,7 @@ class Collection extends Component {
           onCardClick={id => {
             const card = this.props.cards.find(c => c.id === id);
             if (card.source !== 'builtin') {
-              this.updateState(state => {
+              this.setState(state => {
                 if (state.selectedCardIds.includes(id)) {
                   return {selectedCardIds: without(state.selectedCardIds, id)};
                 } else {
@@ -158,7 +152,7 @@ class Collection extends Component {
       return (
         <CardTable
           cards={cards}
-          onSelection={selectedRows => { this.updateState({selectedCardIds: selectedRows}); }}/>
+          onSelection={selectedRows => { this.setState({selectedCardIds: selectedRows}); }}/>
       );
     }
   }
@@ -181,7 +175,7 @@ class Collection extends Component {
 
           <ImportDialog
             open={this.state.importDialogOpen}
-            onClose={() => { this.updateState({importDialogOpen: false}); }}
+            onClose={() => { this.setState({importDialogOpen: false}); }}
             onImport={this.props.onImportCards}
             />
 
@@ -262,13 +256,13 @@ class Collection extends Component {
               <SortControls
                 criteria={this.state.sortingCriteria}
                 order={this.state.sortingOrder}
-                onSetCriteria={value => { this.updateState({sortingCriteria: value}); }}
-                onSetOrder={value => { this.updateState({sortingOrder: value}); }} />
+                onSetCriteria={value => { this.setState({sortingCriteria: value}); }}
+                onSetOrder={value => { this.setState({sortingOrder: value}); }} />
 
               <FilterControls
                 onToggleFilter={this.toggleFilter.bind(this)}
                 onSetCostRange={values => {
-                  this.updateState({costRange: values}, () => { this.updateSelectedCardsWithFilter(); });
+                  this.setState({costRange: values}, () => { this.updateSelectedCardsWithFilter(); });
                 }} />
             </Paper>
 
@@ -294,7 +288,7 @@ class Collection extends Component {
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
                 this.props.onRemoveFromCollection(this.state.selectedCardIds);
-                this.updateState({selectedCardIds: []});
+                this.setState({selectedCardIds: []});
               }}
             />
             <RaisedButton
@@ -304,10 +298,9 @@ class Collection extends Component {
               icon={<FontIcon className="material-icons">file_download</FontIcon>}
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
-                console.log(this.state.selectedCardIds);
                 const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
                 this.props.onExportCards(cards);
-                this.updateState({selectedCardIds: []});
+                this.setState({selectedCardIds: []});
               }}
             />
             <RaisedButton
@@ -317,7 +310,7 @@ class Collection extends Component {
               icon={<FontIcon className="material-icons">file_upload</FontIcon>}
               style={{width: '100%', marginTop: 20}}
               onClick={() => {
-                this.updateState({importDialogOpen: true, selectedCardIds: []});
+                this.setState({importDialogOpen: true, selectedCardIds: []});
               }}
             />
           </div>

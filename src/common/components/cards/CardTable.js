@@ -99,7 +99,7 @@ export default class CardTable extends Component {
           </TableHeader>
           <TableBody
             displayRowCheckbox={false}
-            deselectOnClickaway
+            deselectOnClickaway={false}
             showRowHover>
               {this.props.cards.map(this.renderCardRow.bind(this))}
           </TableBody>

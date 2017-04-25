@@ -5,9 +5,12 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
+import { logout } from '../util/firebase';
+
 export default class NavMenu extends Component {
   static propTypes = {
-    open: bool
+    open: bool,
+    authed: bool
   };
 
   renderLink(path, text, icon) {
@@ -21,19 +24,30 @@ export default class NavMenu extends Component {
   }
 
   render() {
-    return (
-      <Drawer
-        open={this.props.open}
-        containerStyle={{
-          top: 54,
-          paddingTop: 10
-      }}>
-        {this.renderLink('/', 'Home', 'home')}
-        {this.renderLink('/collection', 'Collection', 'recent_actors')}
-        {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
-        {this.renderLink('/decks', 'Decks', 'view_list')}
-        {this.renderLink('/play', 'Play', 'videogame_asset')}
-      </Drawer>
-    );
+    const containerStyle = {top: 54, paddingTop: 10};
+
+    if (this.props.authed) {
+      return (
+        <Drawer open={this.props.open} containerStyle={containerStyle}>
+          {this.renderLink('/', 'Home', 'home')}
+          {this.renderLink('/collection', 'Collection', 'recent_actors')}
+          {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
+          {this.renderLink('/decks', 'Decks', 'view_list')}
+          {this.renderLink('/play', 'Play', 'videogame_asset')}
+          <MenuItem
+            primaryText="Logout"
+            onClick={logout}
+            leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
+        </Drawer>
+      );
+    } else {
+      return (
+        <Drawer open={this.props.open} containerStyle={containerStyle}>
+          {this.renderLink('/', 'Home', 'home')}
+          {this.renderLink('/login', 'Login', 'person')}
+          {this.renderLink('/register', 'Register', 'person_add')}
+        </Drawer>
+      );
+    }
   }
 }

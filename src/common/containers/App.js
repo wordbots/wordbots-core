@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { bool, func, string, object } from 'prop-types';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router';
+import { Route, Redirect, Switch, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import cookie from 'react-cookie';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
 import { inBrowser } from '../util/common';
-import * as UserActions from '../actions/user';
+import { auth } from '../util/firebase';
 import NavMenu from '../components/NavMenu';
+import Login from '../components/users/Login';
+import Register from '../components/users/Register';
 import GameMenu from '../containers/GameMenu';
 import Creator from '../containers/Creator';
 import Collection from '../containers/Collection';
@@ -39,7 +39,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return Object.assign(bindActionCreators(UserActions, dispatch), {
+  return Object.assign({
     onRouting(path) {
        // To signal to reducers that the route has changed.
       dispatch({type: 'OPEN_PAGE', value: { path }});
@@ -63,7 +63,6 @@ class App extends Component {
     undo: func,
     redo: func,
     children: object,
-    user: object,
     version: string,
     layout: object,
     inGame: bool
@@ -73,33 +72,32 @@ class App extends Component {
     super(props);
 
     this.state = {
+      loading: true,
+      authed: false,
       currentLocation: null,
-      open: true
+      sidebarOpen: true
     };
-  }
-
-  componentWillReceiveProps(nextState) {
-    if (nextState.user.token && !cookie.load('token')) {
-      //console.log('Setting up token in cookie');
-      cookie.save('token', nextState.user.token);
-    }
-
-    if (nextState.user.token && !nextState.user.info) {
-      this.props.getUserInfo(nextState.user);
-    }
-
-    if (nextState.user.clearCookie && cookie.load('token')) {
-      cookie.remove('token');
-      this.props.toggleClearCookie();
-    }
   }
 
   componentWillMount() {
     this.logPageView();
   }
 
+  componentDidMount() {
+    this.removeListener = auth().onAuthStateChanged(user => {
+      this.setState({
+        authed: user ? true : false,
+        loading: false
+      });
+    });
+  }
+
   componentWillUpdate() {
     this.logPageView();
+  }
+
+  componentWillUnmount() {
+    this.removeListener();
   }
 
   logPageView() {
@@ -114,7 +112,7 @@ class App extends Component {
 
   handleToggle() {
     this.props.toggleSidebar(!this.state.open);
-    this.setState({open: !this.state.open});
+    this.setState({sidebarOpen: !this.state.sidebarOpen});
   }
 
   getChildContext() {
@@ -123,9 +121,34 @@ class App extends Component {
     };
   }
 
-  render() {
-    //const { user, version } = this.props;
+  get loggedInRoutes() {
+    return (
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/home" component={Home} />
+        <Route path="/collection" component={Collection} />
+        <Route path="/creator" component={Creator} />
+        <Route path="/decks" component={Decks} />
+        <Route path="/deck" component={Deck} />
+        <Route path="/play" component={Play} />
+        <Route render={() => <Redirect to="/"/>} />
+      </Switch>
+    );
+  }
 
+  get loggedOutRoutes() {
+    return (
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/home" component={Home} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route render={() => <Redirect to="/login"/>} />
+      </Switch>
+    );
+  }
+
+  render() {
     return (
       <div>
         <div style={{height: 66}}>
@@ -147,18 +170,12 @@ class App extends Component {
           />
         </div>
         <div>
-          {this.props.inGame ? <GameMenu open={this.state.open} /> : <NavMenu open={this.state.open} />}
-          <div>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/home" component={Home} />
-              <Route path="/collection" component={Collection} />
-              <Route path="/creator" component={Creator} />
-              <Route path="/decks" component={Decks} />
-              <Route path="/deck" component={Deck} />
-              <Route path="/play" component={Play} />
-            </Switch>
-          </div>
+          {
+            this.props.inGame ?
+              <GameMenu open={this.state.sidebarOpen} /> :
+              <NavMenu open={this.state.sidebarOpen} authed={this.state.authed} />
+          }
+          {this.state.authed ? this.loggedInRoutes : this.loggedOutRoutes}
         </div>
       </div>
     );

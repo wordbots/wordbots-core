@@ -1,6 +1,10 @@
 import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+import defaultState from '../store/defaultCollectionState';
+
+import { compareCertainKeys } from './common';
+import { saveUserData } from './firebase';
 
 //
 // 0. Card-related constants (used below).
@@ -139,6 +143,12 @@ export function expandKeywords(sentence) {
 // 3. Miscellaneous helper functions pertaining to cards.
 //
 
+export function areIdenticalCards(card1, card2) {
+  // TODO: Once we have better UX for this, it's time to start getting stricter
+  // (no longer care about the name, and check abilities/command rather than text).
+  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
+}
+
 export function cardsToJson(cards) {
   cards = cards.map(c => Object.assign({}, c, {schemaVersion: CARD_SCHEMA_VERSION}));
   return JSON.stringify(cards).replace(/\\"/g, '%27');
@@ -148,4 +158,34 @@ export function cardsFromJson(json) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   return JSON.parse(json.replace(/%27/g, '\\"'));
+}
+
+export function loadCardsFromFirebase(state, data) {
+  if (data) {
+    state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+  } else {
+    state.cards = defaultState.cards;
+  }
+
+  return state;
+}
+
+export function loadDecksFromFirebase(state, data) {
+  if (data) {
+    if (data.decks) {
+      state.decks = data.decks;
+    }
+  } else {
+    state.decks = defaultState.decks;
+  }
+
+  return state;
+}
+
+export function saveCardsToFirebase(state) {
+  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
+}
+
+export function saveDecksToFirebase(state) {
+  saveUserData('decks', state.decks);
 }

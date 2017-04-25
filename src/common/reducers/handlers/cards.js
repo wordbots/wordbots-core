@@ -1,10 +1,11 @@
-import { some, uniqBy } from 'lodash';
+import { some } from 'lodash';
 
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { id, compareCertainKeys } from '../../util/common';
-import { saveUserData } from '../../util/firebase';
-import { cardsToJson, cardsFromJson, splitSentences } from '../../util/cards';
-import defaultState from '../../store/defaultCollectionState';
+import { id } from '../../util/common';
+import {
+  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
+  loadCardsFromFirebase, loadDecksFromFirebase, saveCardsToFirebase, saveDecksToFirebase
+} from '../../util/cards';
 
 const cardsHandlers = {
   addToCollection: function (state, cardProps) {
@@ -23,7 +24,7 @@ const cardsHandlers = {
       }
     }
 
-    saveCards(state);
+    saveCardsToFirebase(state);
 
     return state;
   },
@@ -34,7 +35,7 @@ const cardsHandlers = {
 
   deleteDeck: function (state, deckId) {
     state.decks = state.decks.filter(deck => deck.id !== deckId);
-    saveDecks(state);
+    saveDecksToFirebase(state);
     return state;
   },
 
@@ -48,14 +49,14 @@ const cardsHandlers = {
       .filter(card => !state.cards.map(c => c.id).includes(card.id))
       .forEach(card => { state.cards.unshift(card); });
 
-    saveCards(state);
+    saveCardsToFirebase(state);
 
     return state;
   },
 
   loadState: function (state, data) {
-    state = loadCards(state, data);
-    state = loadDecks(state, data);
+    state = loadCardsFromFirebase(state, data);
+    state = loadDecksFromFirebase(state, data);
     return state;
   },
 
@@ -81,7 +82,7 @@ const cardsHandlers = {
 
   removeFromCollection: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
-    saveCards(state);
+    saveCardsToFirebase(state);
 
     return state;
   },
@@ -104,7 +105,7 @@ const cardsHandlers = {
       });
     }
 
-    saveDecks(state);
+    saveDecksToFirebase(state);
 
     return state;
   }
@@ -138,42 +139,6 @@ function createCardFromProps(props) {
   }
 
   return card;
-}
-
-function areIdenticalCards(card1, card2) {
-  // TODO: Once we have better UX for this, it's time to start getting stricter
-  // (no longer care about the name, and check abilities/command rather than text).
-  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
-}
-
-function loadCards(state, data) {
-  if (data) {
-    state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
-  } else {
-    state.cards = defaultState.cards;
-  }
-
-  return state;
-}
-
-function loadDecks(state, data) {
-  if (data) {
-    if (data.decks) {
-      state.decks = data.decks;
-    }
-  } else {
-    state.decks = defaultState.decks;
-  }
-
-  return state;
-}
-
-function saveCards(state) {
-  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
-}
-
-function saveDecks(state) {
-  saveUserData('decks', state.decks);
 }
 
 export default cardsHandlers;

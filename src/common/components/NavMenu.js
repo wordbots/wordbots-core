@@ -29,7 +29,7 @@ export default class NavMenu extends Component {
           paddingTop: 10
       }}>
         {this.renderLink('/', 'Home', 'home')}
-        {this.renderLink('/collection', 'Collection', 'recent_actors')}
+        {this.renderLink('/collection', 'Collection', 'view_module')}
         {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}

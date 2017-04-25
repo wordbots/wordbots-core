@@ -111,7 +111,7 @@ class App extends Component {
   }
 
   handleToggle() {
-    this.props.toggleSidebar(!this.state.open);
+    this.props.toggleSidebar(!this.state.sidebarOpen);
     this.setState({sidebarOpen: !this.state.sidebarOpen});
   }
 

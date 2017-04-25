@@ -7,6 +7,7 @@ import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constan
 //
 
 const CARD_SCHEMA_VERSION = 1;
+const PARSER_URL = 'http://parser.wordbots.io/parse';  // 'http://localhost:8080/parse';
 const PARSE_DEBOUNCE_MS = 500;
 
 const SYNONYMS = {
@@ -45,7 +46,7 @@ export function isCardVisible(card, filters, costRange) {
 
 export function groupCards(cards) {
   return uniqBy(cards, 'name').map(card =>
-    Object.assign(card, {count: countBy(cards, c => c.name)[card.name]})
+    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
   );
 }
 
@@ -87,7 +88,7 @@ function parse(sentences, mode, callback) {
   sentences
     .forEach((sentence, idx) => {
       const parserInput = encodeURIComponent(expandKeywords(sentence));
-      const parseUrl = `http://parser.wordbots.io/parse?input=${parserInput}&format=js&mode=${mode}`;
+      const parseUrl = `${PARSER_URL}?input=${parserInput}&format=js&mode=${mode}`;
       fetch(parseUrl)
         .then(response => response.json())
         .then(json => { callback(idx, sentence, json); });
@@ -142,12 +143,12 @@ export function expandKeywords(sentence) {
 //
 
 export function cardsToJson(cards) {
-  cards = cards.map(c => Object.assign(c, {schemaVersion: CARD_SCHEMA_VERSION}));
-  return JSON.stringify(cards);
+  cards = cards.map(c => Object.assign({}, c, {schemaVersion: CARD_SCHEMA_VERSION}));
+  return JSON.stringify(cards).replace(/\\"/g, '%27');
 }
 
 export function cardsFromJson(json) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
-  return JSON.parse(json);
+  return JSON.parse(json.replace(/%27/g, '\\"'));
 }

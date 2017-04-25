@@ -28,7 +28,7 @@ export default class Lobby extends Component {
     super(props);
 
     this.state = {
-      selectedDeck: 0
+      selectedDeck: this.props.availableDecks.length - 1
     };
   }
 

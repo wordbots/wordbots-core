@@ -1,8 +1,6 @@
 import { every } from 'lodash';
 
-import { allObjectsOnBoard, getHex, matchesType } from '../util/game';
-import GridGenerator from '../components/react-hexgrid/GridGenerator';
-import HexUtils from '../components/react-hexgrid/HexUtils';
+import { allObjectsOnBoard, allHexIds, getHex, matchesType } from '../util/game';
 
 // A collection is a function that returns one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}
@@ -11,7 +9,7 @@ import HexUtils from '../components/react-hexgrid/HexUtils';
 
 export function allTiles(state) {
   return function () {
-    return {type: 'hexes', entries: GridGenerator.hexagon(4).map(HexUtils.getID)};
+    return {type: 'hexes', entries: allHexIds()};
   };
 }
 

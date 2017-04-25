@@ -4,7 +4,8 @@ import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
   ownerOf, getHex,
-  drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex
+  startTurn, endTurn, drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  executeCmd
 } from '../util/game';
 
 export default function actions(state) {
@@ -44,11 +45,13 @@ export default function actions(state) {
     },
 
     endTurn: function () {
-      // TODO
+      state = Object.assign(state, startTurn(endTurn(state)));
     },
 
-    giveAbility: function (target, ability) {
-      // TODO
+    giveAbility: function (objects, abilityCmd) {
+      objects.entries.forEach(object => {
+        executeCmd(state, abilityCmd, object);
+      });
     },
 
     modifyAttribute: function (objects, attr, func) {
@@ -69,8 +72,12 @@ export default function actions(state) {
       });
     },
 
-    restoreHealth: function (target) {
-      // TODO
+    restoreHealth: function (objects) {
+      objects.entries.forEach(object => {
+        if (object.stats.health < object.card.stats.health) {
+          object.stats.health = object.card.stats.health;
+        }
+      });
     },
 
     setAttribute: function (objects, attr, num) {
@@ -78,7 +85,12 @@ export default function actions(state) {
     },
 
     swapAttributes: function (objects, attr1, attr2) {
-      // TODO
+      objects.entries.forEach(object => {
+        const [savedAttr1, savedAttr2] = [object.stats[attr1], object.stats[attr2]];
+        object.stats[attr2] = savedAttr1;
+        object.stats[attr1] = savedAttr2;
+        updateOrDeleteObjectAtHex(state, object, getHex(state, object));
+      });
     },
 
     takeControl: function (players, objects) {

@@ -50,8 +50,11 @@ export function triggers(state) {
       };
     },
 
-    afterMoved: function (targetFunc) {
-      // TODO
+    afterMove: function (targetFunc) {
+      return {
+        'type': 'afterMove',
+        'targetFunc': `(${targetFunc.toString()})`
+      };
     },
 
     afterPlayed: function (targetFunc) {

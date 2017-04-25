@@ -115,7 +115,6 @@ class Decks extends Component {
           <RaisedButton
             label="Edit"
             primary
-            disabled={deck.id === '[default]'}
             onClick={() => {
               this.props.onEditDeck(deck.id);
               this.props.history.push('/deck');

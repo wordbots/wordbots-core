@@ -41,6 +41,7 @@ export default class FilterControls extends Component {
             defaultToggled
             onToggle={this.props.onToggleFilter('structures')} />
         </div>
+
         <div key="cost" style={{marginBottom: 20}}>
           <div style={{
             fontWeight: 700,

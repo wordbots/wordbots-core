@@ -55,7 +55,10 @@ export const sortFunctions = [
   c => [c.cost, c.name],
   c => c.name,
   c => [typeToString(c.type), c.cost, c.name],
-  c => [c.source === 'builtin', c.cost, c.name]
+  c => [c.source === 'builtin', c.cost, c.name],
+  c => [c.stats ? (c.stats.attack || 0) : 0, c.cost, c.name],
+  c => [c.stats ? (c.stats.health || 0) : 0, c.cost, c.name],
+  c => [c.stats ? (c.stats.speed || 0) : 0, c.name]
 ];
 
 //

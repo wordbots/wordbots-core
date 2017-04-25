@@ -47,7 +47,7 @@ export default class CardTable extends Component {
         key={card.id} 
         selected={(this.props.selectedCardIds || []).includes(card.id)} 
         selectable={card.source === 'user'}>
-        <TableRowColumn width={100}>{card.name}</TableRowColumn>
+        <TableRowColumn width={100} tooltip={card.name} tooltipPosition="bottom-center">{card.name}</TableRowColumn>
         <TableRowColumn width={100}>{typeToString(card.type)}</TableRowColumn>
         <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
         <TableRowColumn>{card.text}</TableRowColumn>

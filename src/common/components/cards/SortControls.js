@@ -39,7 +39,7 @@ export default class SortControls extends Component {
           fontSize: 14
         }}>Sorting</div>
 
-        {this.renderSelectField('criteria', ['By Cost', 'By Name', 'By Type', 'By Creator'])}
+        {this.renderSelectField('criteria', ['By Cost', 'By Name', 'By Type', 'By Creator', 'By Attack', 'By Health', 'By Speed'])}
         {this.renderSelectField('order', ['Ascending', 'Descending'])}
       </div>
     );

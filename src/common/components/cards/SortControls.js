@@ -17,10 +17,10 @@ export default class SortControls extends Component {
     return (newProps.criteria !== this.props.criteria) || (newProps.order !== this.props.order);
   }
 
-  renderSelectField(field, items) {
+  renderSelectField(field, items, margin) {
     return (
       <SelectField
-        style={{width: '100%'}}
+        style={{width: '100%', marginRight: margin}}
         value={this.props[field]}
         floatingLabelText={capitalize(field)}
         onChange={(e, i, value) => { this.props[`onSet${capitalize(field)}`](value); }}>
@@ -39,8 +39,10 @@ export default class SortControls extends Component {
           fontSize: 14
         }}>Sorting</div>
 
-        {this.renderSelectField('criteria', ['By Cost', 'By Name', 'By Type', 'By Creator', 'By Attack', 'By Health', 'By Speed'])}
-        {this.renderSelectField('order', ['Ascending', 'Descending'])}
+        <div style={{display: 'flex'}}>
+          {this.renderSelectField('criteria', ['By Cost', 'By Name', 'By Type', 'By Creator', 'By Attack', 'By Health', 'By Speed'], 10)}
+          {this.renderSelectField('order', ['Ascending', 'Descending'], 0)}
+        </div>
       </div>
     );
   }

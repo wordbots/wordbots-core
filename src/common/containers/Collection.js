@@ -199,12 +199,6 @@ class Collection extends Component {
               padding: 20
             }}>
               <div style={{
-                fontWeight: 100,
-                fontSize: 28,
-                marginBottom: 20
-              }}>Filters</div>
-
-              <div style={{
                 fontWeight: 700,
                 fontSize: 14,
                 marginBottom: 20

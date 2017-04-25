@@ -63,15 +63,9 @@ class Deck extends Component {
     return compact(this.state.selectedCardIds.map(id => this.props.cards.find(c => c.id === id)));
   }
 
-  updateState(newProps) {
-    this.setState(s =>
-      Object.assign({}, s, isFunction(newProps) ? newProps(s) : newProps)
-    );
-  }
-
   toggleFilter(filter) {
     return (e, toggled) => {
-      this.updateState(s => ({filters: Object.assign({}, s.filters, {[filter]: toggled})}));
+      this.setState(s => ({filters: Object.assign({}, s.filters, {[filter]: toggled})}));
     };
   }
 
@@ -92,7 +86,7 @@ class Deck extends Component {
               sortFunc={sortFunctions[this.state.sortingCriteria]}
               sortOrder={this.state.sortingOrder}
               onCardClick={id => {
-                this.updateState(state => ({selectedCardIds: [...state.selectedCardIds, id]}));
+                this.setState(state => ({selectedCardIds: [...state.selectedCardIds, id]}));
               }} />
           </div>
 
@@ -111,7 +105,7 @@ class Deck extends Component {
                 name={this.props.deck ? this.props.deck.name : ''}
                 cards={this.selectedCards()}
                 onCardClick={id => {
-                  this.updateState(state => {
+                  this.setState(state => {
                     state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);
                     return state;
                   });
@@ -142,12 +136,12 @@ class Deck extends Component {
               <SortControls
                 criteria={this.state.sortingCriteria}
                 order={this.state.sortingOrder}
-                onSetCriteria={value => { this.updateState({sortingCriteria: value}); }}
-                onSetOrder={value => { this.updateState({sortingOrder: value}); }}
+                onSetCriteria={value => { this.setState({sortingCriteria: value}); }}
+                onSetOrder={value => { this.setState({sortingOrder: value}); }}
                 />
               <FilterControls
                 onToggleFilter={this.toggleFilter.bind(this)}
-                onSetCostRange={values => { this.updateState({costRange: values}); }} />
+                onSetCostRange={values => { this.setState({costRange: values}); }} />
             </Paper>
           </div>
         </div>

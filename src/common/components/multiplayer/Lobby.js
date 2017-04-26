@@ -19,8 +19,7 @@ export default class Lobby extends Component {
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onHostGame: func,
-    onSetUsername: func
+    onHostGame: func
   };
 
   constructor(props) {

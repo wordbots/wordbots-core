@@ -22,6 +22,7 @@ export function mapStateToProps(state) {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
+    loggedIn: state.global.user !== null,
     sidebarOpen: state.global.sidebarOpen
   };
 }
@@ -64,6 +65,7 @@ export class Creator extends Component {
     speed: number,
     health: number,
     cost: number,
+    loggedIn: bool,
     sidebarOpen: bool,
 
     history: object,
@@ -91,6 +93,7 @@ export class Creator extends Component {
         <Helmet title="Creator"/>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
+            loggedIn={this.props.loggedIn}
             name={this.props.name}
             type={this.props.type}
             attack={this.props.attack}

@@ -19,6 +19,7 @@ function mapStateToProps(state) {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
     deck: state.collection.currentDeck,
+    loggedIn: state.global.user !== null,
     sidebarOpen: state.global.sidebarOpen
   };
 }
@@ -36,6 +37,7 @@ class Deck extends Component {
     id: string,
     cards: array,
     deck: object,
+    loggedIn: bool,
     sidebarOpen: bool,
 
     history: object,
@@ -110,6 +112,7 @@ class Deck extends Component {
                 id={this.props.id}
                 name={this.props.deck ? this.props.deck.name : ''}
                 cards={this.selectedCards()}
+                loggedIn={this.props.loggedIn}
                 onCardClick={id => {
                   this.updateState(state => {
                     state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);

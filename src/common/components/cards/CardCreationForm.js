@@ -13,6 +13,7 @@ import 'whatwg-fetch';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import NumberField from './NumberField';
 
@@ -27,6 +28,7 @@ export default class CardCreationForm extends Component {
     health: number,
     energy: number,
     isNewCard: bool,
+    loggedIn: bool,
 
     onSetName: func,
     onSetType: func,
@@ -157,13 +159,15 @@ export default class CardCreationForm extends Component {
               onChange={v => { this.props.onSetAttribute('speed', v); }} />
           </div>
 
-          <RaisedButton
-            primary
-            fullWidth
-            label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
-            disabled={!this.isValid()}
-            style={{marginTop: 20}}
-            onTouchTap={e => { this.props.onAddToCollection(); }} />
+          <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+            <RaisedButton
+              primary
+              fullWidth
+              label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
+              disabled={!this.isValid()}
+              style={{marginTop: 20}}
+              onTouchTap={e => { this.props.onAddToCollection(); }} />
+          </MustBeLoggedIn>
         </Paper>
       </div>
     );

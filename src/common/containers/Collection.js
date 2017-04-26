@@ -16,12 +16,14 @@ import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
 import SortControls from '../components/cards/SortControls';
+import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
     exportedJson: state.collection.exportedJson,
+    loggedIn: state.global.user !== null,
     sidebarOpen: state.global.sidebarOpen
   };
 }
@@ -50,6 +52,7 @@ class Collection extends Component {
   static propTypes = {
     cards: array,
     exportedJson: string,
+    loggedIn: bool,
     sidebarOpen: bool,
 
     history: object,
@@ -180,54 +183,56 @@ class Collection extends Component {
                 }} />
             </Paper>
 
-            <RaisedButton
-              label="Edit Selected"
-              labelPosition="before"
-              secondary
-              disabled={this.state.selectedCardIds.length !== 1}
-              icon={<FontIcon className="material-icons">edit</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
-              onClick={() => {
-                const id = this.state.selectedCardIds[0];
-                this.props.onEditCard(this.props.cards.find(c => c.id === id));
-                this.props.history.push('/creator');
-              }}
-            />
-            <RaisedButton
-              label="Delete Selected"
-              labelPosition="before"
-              secondary
-              disabled={this.state.selectedCardIds.length === 0}
-              icon={<FontIcon className="material-icons">delete</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
-              onClick={() => {
-                this.props.onRemoveFromCollection(this.state.selectedCardIds);
-                this.updateState({selectedCardIds: []});
-              }}
-            />
-            <RaisedButton
-              label="Export Selected"
-              labelPosition="before"
-              secondary
-              disabled={this.state.selectedCardIds.length === 0}
-              icon={<FontIcon className="material-icons">file_download</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
-              onClick={() => {
-                const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
-                this.props.onExportCards(cards);
-                this.updateState({selectedCardIds: []});
-              }}
-            />
-            <RaisedButton
-              label="Import Cards"
-              labelPosition="before"
-              secondary
-              icon={<FontIcon className="material-icons">file_upload</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
-              onClick={() => {
-                this.updateState({importDialogOpen: true, selectedCardIds: []});
-              }}
-            />
+            <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+              <RaisedButton
+                label="Edit Selected"
+                labelPosition="before"
+                secondary
+                disabled={this.state.selectedCardIds.length !== 1}
+                icon={<FontIcon className="material-icons">edit</FontIcon>}
+                style={{width: '100%', marginTop: 20}}
+                onClick={() => {
+                  const id = this.state.selectedCardIds[0];
+                  this.props.onEditCard(this.props.cards.find(c => c.id === id));
+                  this.props.history.push('/creator');
+                }}
+              />
+              <RaisedButton
+                label="Delete Selected"
+                labelPosition="before"
+                secondary
+                disabled={this.state.selectedCardIds.length === 0}
+                icon={<FontIcon className="material-icons">delete</FontIcon>}
+                style={{width: '100%', marginTop: 20}}
+                onClick={() => {
+                  this.props.onRemoveFromCollection(this.state.selectedCardIds);
+                  this.updateState({selectedCardIds: []});
+                }}
+              />
+              <RaisedButton
+                label="Export Selected"
+                labelPosition="before"
+                secondary
+                disabled={this.state.selectedCardIds.length === 0}
+                icon={<FontIcon className="material-icons">file_download</FontIcon>}
+                style={{width: '100%', marginTop: 20}}
+                onClick={() => {
+                  const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
+                  this.props.onExportCards(cards);
+                  this.updateState({selectedCardIds: []});
+                }}
+              />
+              <RaisedButton
+                label="Import Cards"
+                labelPosition="before"
+                secondary
+                icon={<FontIcon className="material-icons">file_upload</FontIcon>}
+                style={{width: '100%', marginTop: 20}}
+                onClick={() => {
+                  this.updateState({importDialogOpen: true, selectedCardIds: []});
+                }}
+              />
+            </MustBeLoggedIn>
           </div>
         </div>
       </div>

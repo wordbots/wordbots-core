@@ -11,11 +11,13 @@ import { sortBy } from 'lodash';
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import { groupCards } from '../util/cards';
 import CardViewer from '../components/card/CardViewer';
+import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
     decks: state.collection.decks,
+    loggedIn: state.global.user !== null,
     sidebarOpen: state.global.sidebarOpen
   };
 }
@@ -37,6 +39,7 @@ function mapDispatchToProps(dispatch) {
 class Decks extends Component {
   static propTypes = {
     decks: array,
+    loggedIn: bool,
     sidebarOpen: bool,
 
     history: object,
@@ -108,24 +111,23 @@ class Decks extends Component {
           fontSize: 32,
           fontWeight: 100
         }}>{deck.name}</div>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between'
-        }}>
-          <RaisedButton
-            label="Edit"
-            primary
-            onClick={() => {
-              this.props.onEditDeck(deck.id);
-              this.props.history.push('/deck');
-            }}
-            style={{marginRight: 10, width: '100%'}} />
-          <RaisedButton
-            label="Delete"
-            disabled={deck.id === '[default]'}
-            onClick={e => { this.props.onDeleteDeck(deck.id); }}
-            primary
-            style={{width: '100%'}}/>
+        <div>
+          <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+            <RaisedButton
+              label="Edit"
+              primary
+              onClick={() => {
+                this.props.onEditDeck(deck.id);
+                this.props.history.push('/deck');
+              }}
+              style={{float: 'left', marginRight: 10, width: '45%'}} />
+            <RaisedButton
+              label="Delete"
+              disabled={deck.id === '[default]'}
+              onClick={e => { this.props.onDeleteDeck(deck.id); }}
+              primary
+              style={{float: 'left', width: '45%'}}/>
+          </MustBeLoggedIn>
         </div>
 
         <div style={{padding: '0 10px 10px 10px'}}>
@@ -163,15 +165,18 @@ class Decks extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 50, marginLeft: 40}}>
-            <RaisedButton
-              label="New Deck"
-              secondary
-              style={{margin: 10}}
-              labelStyle={{fontFamily: 'Carter One'}}
-              onClick={() => {
-                this.props.onCreateDeck();
-                this.props.history.push('/deck');
-              }} />
+            <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+              <RaisedButton
+                label="New Deck"
+                secondary
+                style={{margin: 10}}
+                labelStyle={{fontFamily: 'Carter One'}}
+                onClick={() => {
+                  this.props.onCreateDeck();
+                  this.props.history.push('/deck');
+                }} />
+            </MustBeLoggedIn>
+
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',

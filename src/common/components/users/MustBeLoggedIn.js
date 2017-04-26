@@ -22,17 +22,20 @@ const MustBeLoggedIn = (props) => {
             <div
               data-for={tooltipId}
               data-tip="You must be logged in to perform this action."
-              style={pick(child.props.style, ['float', 'width', 'margin', 'marginTop', 'marginRight'])}
-            >
-              {React.cloneElement(child, {
-                disabled: true,
-                style: {
-                  ...child.props.style,
-                  float: 'none',
-                  width: child.props.style.width ? '100%' : null,
-                  margin: 0
-                }
-              })}
+              style={
+                pick(child.props.style, ['float', 'width', 'margin', 'marginTop', 'marginRight'])
+            }>
+              {
+                React.cloneElement(child, {
+                  disabled: true,
+                  style: {
+                    ...child.props.style,
+                    float: 'none',
+                    width: child.props.style.width ? '100%' : null,
+                    margin: 0
+                  }
+                })
+              }
             </div>
           )
         }

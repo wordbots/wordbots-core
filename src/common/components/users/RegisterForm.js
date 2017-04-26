@@ -45,6 +45,7 @@ export default class Register extends Component {
         <TextField
           value={this.state.password}
           floatingLabelText="Password"
+          type="password"
           onChange={e => { this.setState({password: e.target.value}); }} />
 
         {

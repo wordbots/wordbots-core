@@ -42,8 +42,8 @@ class Login extends Component {
 
   resetPassword = (email) => {
     resetPassword(email)
-      .then(() => { this.setState({loginError: `Password reset email sent to ${this.email.value}.`}); })
-      .catch(() => { this.setState({loginError: 'Email address not found.'}); });
+      .then(() => { this.setState({loginError: `Password reset email sent to ${email}.`}); })
+      .catch(e => { this.setState({loginError: 'Email address not found.'}); });
   }
 
   paperStyle = {

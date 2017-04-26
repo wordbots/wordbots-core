@@ -3,7 +3,6 @@ import { array, bool, func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -11,7 +10,6 @@ import TextField from 'material-ui/TextField';
 import { without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
-import CardBack from '../components/card/CardBack';
 import CardGrid from '../components/cards/CardGrid';
 import CardTable from '../components/cards/CardTable';
 import ExportDialog from '../components/cards/ExportDialog';
@@ -140,13 +138,7 @@ class Collection extends Component {
                 }
               });
             }
-          }}>
-          <Link to="/creator">
-            <div style={{padding: '24px 0 12px 0', marginRight: 15}}>
-              <CardBack hoverable customText="New Card" />
-            </div>
-          </Link>
-        </CardGrid>
+          }} />
       );
     } else {
       return (
@@ -180,7 +172,7 @@ class Collection extends Component {
             />
 
           <div style={{marginTop: 50, marginLeft: 40}}>
-            {this.renderCardCollection()}
+            <div>{this.renderCardCollection()}</div>
           </div>
 
           <div style={{
@@ -267,12 +259,24 @@ class Collection extends Component {
             </Paper>
 
             <RaisedButton
+              label="New Card"
+              labelPosition="after"
+              secondary
+              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
+              style={{width: '100%', marginTop: 10, height: 48}}
+              buttonStyle={{textAlign: 'left'}}
+              onClick={() => {
+                this.props.history.push('/creator');
+              }}
+            />
+            <RaisedButton
               label="Edit Selected"
-              labelPosition="before"
+              labelPosition="after"
               secondary
               disabled={this.state.selectedCardIds.length !== 1}
-              icon={<FontIcon className="material-icons">edit</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
+              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
+              style={{width: '100%', marginTop: 10, height: 48}}
+              buttonStyle={{textAlign: 'left'}}
               onClick={() => {
                 const id = this.state.selectedCardIds[0];
                 this.props.onEditCard(this.props.cards.find(c => c.id === id));
@@ -281,11 +285,12 @@ class Collection extends Component {
             />
             <RaisedButton
               label="Delete Selected"
-              labelPosition="before"
+              labelPosition="after"
               secondary
               disabled={this.state.selectedCardIds.length === 0}
-              icon={<FontIcon className="material-icons">delete</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
+              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
+              style={{width: '100%', marginTop: 10, height: 48}}
+              buttonStyle={{textAlign: 'left'}}
               onClick={() => {
                 this.props.onRemoveFromCollection(this.state.selectedCardIds);
                 this.setState({selectedCardIds: []});
@@ -293,10 +298,11 @@ class Collection extends Component {
             />
             <RaisedButton
               label="Export Selected"
-              labelPosition="before"
+              labelPosition="after"
               secondary
-              icon={<FontIcon className="material-icons">file_download</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
+              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
+              style={{width: '100%', marginTop: 10, height: 48}}
+              buttonStyle={{textAlign: 'left'}}
               onClick={() => {
                 const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
                 this.props.onExportCards(cards);
@@ -305,10 +311,11 @@ class Collection extends Component {
             />
             <RaisedButton
               label="Import Cards"
-              labelPosition="before"
+              labelPosition="after"
               secondary
-              icon={<FontIcon className="material-icons">file_upload</FontIcon>}
-              style={{width: '100%', marginTop: 20}}
+              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
+              style={{width: '100%', marginTop: 10, height: 48}}
+              buttonStyle={{textAlign: 'left'}}
               onClick={() => {
                 this.setState({importDialogOpen: true, selectedCardIds: []});
               }}

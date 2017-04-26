@@ -72,6 +72,7 @@ export default class CardTable extends Component {
         justifyContent: 'flex-start',
         width: 'calc(100% - 20px)',
         marginRight: 10,
+        marginBottom: 20,
         boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px'
       }}>
         <Table

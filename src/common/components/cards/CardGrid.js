@@ -6,6 +6,8 @@ import { splitSentences } from '../../util/cards';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 
+import PageSwitcher from './PageSwitcher';
+
 export default class CardGrid extends Component {
   static propTypes = {
     children: element,
@@ -14,6 +16,14 @@ export default class CardGrid extends Component {
 
     onCardClick: func
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      page: 1
+    };
+  }
 
   renderCard(card) {
     return (
@@ -42,16 +52,25 @@ export default class CardGrid extends Component {
   }
 
   render() {
+    const firstCardOnPage = (this.state.page - 1) * 20;
+    const cards = this.props.cards.slice(firstCardOnPage, firstCardOnPage + 20);
+    const maxPages = Math.floor(this.props.cards.length / 20) + 1;
+
     return (
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-start',
-        width: '100%',
-        margin: 10
+        width: 'calc(100% - 10px)'
       }}>
-        {this.props.children}
-        {!inBrowser() ? null : this.props.cards.map(this.renderCard.bind(this))}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start'
+        }}>{!inBrowser() ? null : cards.map(this.renderCard.bind(this))}</div>
+        
+        <PageSwitcher
+          page={this.state.page}
+          maxPages={maxPages}
+          prevPage={() => this.setState({page: this.state.page - 1})}
+          nextPage={() => this.setState({page: this.state.page + 1})}/>
       </div>
     );
   }

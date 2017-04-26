@@ -22,7 +22,7 @@ function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
     exportedJson: state.collection.exportedJson,
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

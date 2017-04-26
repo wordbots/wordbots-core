@@ -19,7 +19,7 @@ function mapStateToProps(state) {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
     deck: state.collection.currentDeck,
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

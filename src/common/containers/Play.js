@@ -19,7 +19,7 @@ export function mapStateToProps(state) {
     socket: state.socket,
     availableDecks: state.collection.decks,
 
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

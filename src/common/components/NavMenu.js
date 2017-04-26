@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool } from 'prop-types';
+import { bool, object } from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
@@ -10,7 +10,7 @@ import { logout } from '../util/firebase';
 export default class NavMenu extends Component {
   static propTypes = {
     open: bool,
-    loggedIn: bool
+    user: object
   };
 
   renderLink(path, text, icon) {
@@ -26,7 +26,7 @@ export default class NavMenu extends Component {
   render() {
     const containerStyle = {top: 54, paddingTop: 10};
 
-    if (this.props.loggedIn) {
+    if (this.props.user) {
       return (
         <Drawer open={this.props.open} containerStyle={containerStyle}>
           {this.renderLink('/', 'Home', 'home')}
@@ -35,7 +35,7 @@ export default class NavMenu extends Component {
           {this.renderLink('/decks', 'Decks', 'view_list')}
           {this.renderLink('/play', 'Play', 'videogame_asset')}
           <MenuItem
-            primaryText="Logout"
+            primaryText={`Logout ${this.props.user.displayName}`}
             onClick={logout}
             leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
         </Drawer>

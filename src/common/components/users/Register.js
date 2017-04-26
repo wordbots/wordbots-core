@@ -9,7 +9,7 @@ import { register } from '../../util/firebase';
 
 export function mapStateToProps(state) {
   return {
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 
@@ -28,7 +28,7 @@ class Register extends Component {
 
   handleSubmit = (evt) => {
     evt.preventDefault();
-    register(this.email.value, this.pw.value)
+    register(this.email.value, this.username.value, this.pw.value)
       .catch(e => { this.setState({error: e.message}); });
   }
 
@@ -45,11 +45,15 @@ class Register extends Component {
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label>Email</label>
-              <input className="form-control" ref={(email) => this.email = email} placeholder="Email"/>
+              <input placeholder="Email" ref={(email) => this.email = email} />
+            </div>
+            <div className="form-group">
+              <label>Username</label>
+              <input placeholder="Username" ref={(username) => this.username = username} />
             </div>
             <div className="form-group">
               <label>Password</label>
-              <input type="password" className="form-control" placeholder="Password" ref={(pw) => this.pw = pw} />
+              <input type="password" placeholder="Password" ref={(pw) => this.pw = pw} />
             </div>
             {
               this.state.error &&

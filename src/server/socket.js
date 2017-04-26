@@ -63,7 +63,13 @@ export default function launchWebsocketServer(server, path) {
       if (!oldUsername) {
         sendChat(`${payload.username || clientID} has entered the lobby.`);
       } else if (oldUsername !== payload.username) {
-        sendChat(`${oldUsername} has changed their name to ${payload.username}.`);
+        if (oldUsername === 'Guest') {
+          sendChat(`${payload.username} has logged in.`);
+        } else if (payload.username === 'Guest') {
+          sendChat(`${oldUsername} has logged out.`);
+        } else {
+          sendChat(`${oldUsername} has changed their name to ${payload.username}.`);
+        }
       }
       broadcastInfo();
     } else if (type === 'ws:CHAT') {

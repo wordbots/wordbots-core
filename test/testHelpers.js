@@ -20,11 +20,11 @@ export function getDefaultState() {
 
 export function combineState(gameState = defaultGameState) {
   return {
+    global: {},
     game: gameState,
     creator: defaultCreatorState,
     collection: defaultCollectionState,
-    socket: defaultSocketState,
-    layout: {present: {}}
+    socket: defaultSocketState
   };
 }
 

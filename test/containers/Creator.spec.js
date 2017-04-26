@@ -17,7 +17,7 @@ describe('Creator container', () => {
         collection: collectionReducer(state.collection, action),
         creator: creatorReducer(state.creator, action),
         game: gameReducer(state.game, action),
-        layout: { present: {} }
+        global: {}
       };
     }
 

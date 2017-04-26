@@ -16,7 +16,7 @@ import * as collectionActions from '../actions/collection';
 function mapStateToProps(state) {
   return {
     decks: state.collection.decks,
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

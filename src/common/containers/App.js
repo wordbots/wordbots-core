@@ -10,6 +10,7 @@ import FontIcon from 'material-ui/FontIcon';
 
 import { inBrowser } from '../util/common';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
+import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import Login from '../components/users/Login';
 import Register from '../components/users/Register';
@@ -32,20 +33,25 @@ if (inBrowser()) {
 function mapStateToProps(state) {
   return {
     version: state.version,
-    user: state.user,
-    layout: state.layout.present,
+    user: state.global.user,
+    sidebarOpen: state.global.sidebarOpen,
     inGame: state.game.started
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return Object.assign({
-    onReceiveFirebaseData(data) {
-       // To signal to reducers that the route has changed.
-      dispatch({type: 'FIREBASE_DATA', payload: { data }});
+    onLoggedIn(user) {
+      dispatch(actions.loggedIn(user));
     },
-    toggleSidebar(value) {
-      dispatch({type: 'TOGGLE_SIDEBAR', value: value});
+    onLoggedOut() {
+      dispatch(actions.loggedOut());
+    },
+    onReceiveFirebaseData(data) {
+      dispatch(actions.firebaseData(data));
+    },
+    onToggleSidebar(value) {
+      dispatch(actions.toggleSidebar(value));
     }
   });
 }
@@ -56,15 +62,16 @@ class App extends Component {
   };
 
   static propTypes = {
-    getUserInfo: func,
-    toggleClearCookie: func,
-    toggleSidebar: func,
+    onLoggedIn: func,
+    onLoggedOut: func,
     onReceiveFirebaseData: func,
-    undo: func,
-    redo: func,
+    onToggleSidebar: func,
+
     children: object,
+
     version: string,
-    layout: object,
+    user: object,
+    sidebarOpen: bool,
     inGame: bool
   };
 
@@ -73,9 +80,7 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      loggedIn: false,
-      currentLocation: null,
-      sidebarOpen: true
+      currentLocation: null
     };
   }
 
@@ -84,13 +89,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    onLogin(() => {
-      this.setState({loading: false, loggedIn: true});
+    onLogin((user) => {
+      this.setState({loading: false});
+      this.props.onLoggedIn(user.toJSON());
       listenToUserData(this.props.onReceiveFirebaseData);
     });
 
     onLogout(() => {
-      this.setState({loading: false, loggedIn: false});
+      this.setState({loading: false});
+      this.props.onLoggedOut();
       this.props.onReceiveFirebaseData(null);
     });
   }
@@ -105,11 +112,6 @@ class App extends Component {
       ReactGA.set({ page: currentLocation });
       ReactGA.pageview(currentLocation);
     }
-  }
-
-  handleToggle() {
-    this.props.toggleSidebar(!this.state.sidebarOpen);
-    this.setState({sidebarOpen: !this.state.sidebarOpen});
   }
 
   getChildContext() {
@@ -133,7 +135,7 @@ class App extends Component {
             top: 0
           }}
           iconElementLeft={
-            <IconButton onClick={this.handleToggle.bind(this)}>
+            <IconButton onClick={() => { this.props.onToggleSidebar(!this.props.sidebarOpen); }}>
               <FontIcon className="material-icons">menu</FontIcon>
             </IconButton>
           }
@@ -146,9 +148,9 @@ class App extends Component {
     if (this.state.loading) {
       return null;
     } else if (this.props.inGame) {
-      return <GameMenu open={this.state.sidebarOpen} />;
+      return <GameMenu open={this.props.sidebarOpen} />;
     } else {
-      return <NavMenu open={this.state.sidebarOpen} loggedIn={this.state.loggedIn} />;
+      return <NavMenu open={this.props.sidebarOpen} user={this.props.user} />;
     }
   }
 
@@ -160,8 +162,8 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/home" component={Home} />
-          {!this.state.loggedIn && <Route path="/login" component={Login} />}
-          {!this.state.loggedIn && <Route path="/register" component={Register} />}
+          {!this.props.user && <Route path="/login" component={Login} />}
+          {!this.props.user && <Route path="/register" component={Register} />}
           <Route path="/collection" component={Collection} />
           <Route path="/creator" component={Creator} />
           <Route path="/decks" component={Decks} />

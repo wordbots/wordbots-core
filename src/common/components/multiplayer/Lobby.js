@@ -9,7 +9,6 @@ import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
-import UsernamePicker from './UsernamePicker';
 import Waiting from './Waiting';
 
 export default class Lobby extends Component {
@@ -32,7 +31,7 @@ export default class Lobby extends Component {
     };
   }
 
-  getDeck() {
+  get deck() {
     const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
     return KEEP_DECKS_UNSHUFFLED ? deck : shuffle(deck);
   }
@@ -48,10 +47,6 @@ export default class Lobby extends Component {
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
           onConnect={this.props.onConnect} />
-        <UsernamePicker
-          clientId={skt.clientId}
-          username={skt.username}
-          onSetUsername={this.props.onSetUsername} />
         {
           skt.hosting ?
             <Waiting /> :
@@ -64,10 +59,10 @@ export default class Lobby extends Component {
                 openGames={skt.waitingPlayers}
                 inProgressGames={skt.games}
                 usernameMap={skt.clientIdToUsername}
-                onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.getDeck()); }}
+                onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.deck); }}
                 onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />
               <HostGame
-                onHostGame={gameName => { this.props.onHostGame(gameName, this.getDeck()); }} />
+                onHostGame={gameName => { this.props.onHostGame(gameName, this.deck); }} />
             </div>
         }
       </div>

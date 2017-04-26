@@ -1,6 +1,7 @@
 import { LOG_SOCKET_IO } from '../constants';
 import { logIfFlagSet } from '../util/common';
-import * as actions from '../actions/socket';
+import * as ga from '../actions/global';
+import * as sa from '../actions/socket';
 
 // const ENDPOINT = 'ws://localhost:3000/socket';  // Local
 const ENDPOINT = 'ws://app.wordbots.io/socket';  // Remote
@@ -11,20 +12,30 @@ const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle se
 function createSocketMiddleware({excludedActions = []}) {
   return store => {
     let socket, keepaliveNeeded;
+    let username = 'Guest';
 
     const sendQueue = [];
 
     function handleAction(action, nextMiddleware) {
-      if (action.type === actions.CONNECT) {
+      if (action.type === sa.CONNECT) {
         connect();
       } else {
-        send(action);
+        if (action.type === ga.LOGGED_IN) {
+          username = action.payload.user.displayName;
+          send(sa.setUsername(username));
+        } else if (action.type === ga.LOGGED_OUT) {
+          username = 'Guest';
+          send(sa.setUsername(username));
+        } else {
+          send(action);
+        }
+
         return nextMiddleware(action);
       }
     }
 
     function connect() {
-      store.dispatch(actions.connecting());
+      store.dispatch(sa.connecting());
 
       socket = new WebSocket(ENDPOINT);
       socket.onopen = connected;
@@ -33,8 +44,8 @@ function createSocketMiddleware({excludedActions = []}) {
     }
 
     function connected() {
-      store.dispatch(actions.connected());
-      send(actions.setUsername(localStorage['wb$username']));
+      store.dispatch(sa.connected());
+      send(sa.setUsername(username));
 
       while (sendQueue.length > 0) {
         send(sendQueue.shift());
@@ -42,7 +53,7 @@ function createSocketMiddleware({excludedActions = []}) {
     }
 
     function disconnected() {
-      store.dispatch(actions.disconnected());
+      store.dispatch(sa.disconnected());
     }
 
     function send(action) {
@@ -72,7 +83,7 @@ function createSocketMiddleware({excludedActions = []}) {
         if (socket.readyState === WebSocket.CLOSED) {
           connect();
         } else if (socket.readyState === WebSocket.OPEN && keepaliveNeeded) {
-          socket.send(JSON.stringify(actions.keepalive()));
+          socket.send(JSON.stringify(sa.keepalive()));
         }
       }
       keepaliveNeeded = true;

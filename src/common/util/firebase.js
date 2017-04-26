@@ -9,14 +9,17 @@ const config = {
   messagingSenderId: '913868073872'
 };
 
-fb.initializeApp(config);
+if (fb.apps.length === 0) {
+  fb.initializeApp(config);
+}
 
 function saveUser(user) {
   return fb.database().ref()
     .child(`users/${user.uid}/info`)
     .set({
+      uid: user.uid,
       email: user.email,
-      uid: user.uid
+      displayName: user.displayName
     })
     .then(() => user);
 }
@@ -34,20 +37,24 @@ function getLoggedInUser() {
 }
 
 export function onLogin(callback) {
-  return fb.auth().onAuthStateChanged(user => user && callback());
+  return fb.auth().onAuthStateChanged(user => user && callback(user));
 }
 
 export function onLogout(callback) {
   return fb.auth().onAuthStateChanged(user => !user && callback());
 }
 
-export function register(email, pw) {
-  return fb.auth().createUserWithEmailAndPassword(email, pw)
-    .then(saveUser);
+export function register(email, username, password) {
+  return fb.auth().createUserWithEmailAndPassword(email, password)
+    .then(user => {
+      user
+        .updateProfile({displayName: username})
+        .then(() => { saveUser(user); });
+    });
 }
 
-export function login(email, pw) {
-  return fb.auth().signInWithEmailAndPassword(email, pw);
+export function login(email, password) {
+  return fb.auth().signInWithEmailAndPassword(email, password);
 }
 
 export function logout() {

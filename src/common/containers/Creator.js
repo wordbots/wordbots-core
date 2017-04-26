@@ -22,7 +22,7 @@ export function mapStateToProps(state) {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

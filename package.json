@@ -70,7 +70,6 @@
     "redux-logger": "3.0.1",
     "redux-multi": "0.1.12",
     "redux-thunk": "2.2.0",
-    "redux-undo": "0.6.1",
     "repng": "^1.0.0",
     "seed-random": "^2.2.0",
     "shuffle-array": "^1.0.1",

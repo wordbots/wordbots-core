@@ -9,7 +9,7 @@ import { login, resetPassword } from '../../util/firebase';
 
 export function mapStateToProps(state) {
   return {
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

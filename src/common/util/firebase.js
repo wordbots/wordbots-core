@@ -38,11 +38,11 @@ function getLoggedInUser() {
 }
 
 export function onLogin(callback) {
-  return fb.auth().onAuthStateChanged(user => user && callback(user));
+  return getLoggedInUser().then(callback);
 }
 
 export function onLogout(callback) {
-  return fb.auth().onAuthStateChanged(user => !user && callback());
+  return getLoggedInUser().catch(callback);
 }
 
 export function register(email, username, password) {
@@ -83,15 +83,17 @@ export function saveUserData(key, value) {
 }
 
 export function indexParsedSentence(sentence, tokens, js) {
-  const nodes = js.match(/\w*\['\w*/g).map(n => n.replace('[\'', '/'));
+  getLoggedInUser().then(() => {
+    const nodes = js.match(/\w*\['\w*/g).map(n => n.replace('[\'', '/'));
 
-  const locations = uniq(concat(
-    ['cardText/all'],
-    tokens.map(t => `cardText/byToken/${t}`),
-    nodes.map(n => `cardText/byNode/${n}`)
-  ));
+    const locations = uniq(concat(
+      ['cardText/all'],
+      tokens.map(t => `cardText/byToken/${t}`),
+      nodes.map(n => `cardText/byNode/${n}`)
+    ));
 
-  locations.forEach(loc => {
-    fb.database().ref(loc).push(sentence);
+    locations.forEach(loc => {
+      fb.database().ref(loc).push(sentence);
+    });
   });
 }

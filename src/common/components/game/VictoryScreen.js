@@ -31,7 +31,7 @@ export default class VictoryScreen extends Component {
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
           color: colors[this.props.winnerColor],
           borderRadius: 2,
-          zIndex: 1
+          zIndex: 99999
       }}>
         <CSSTransitionGroup
           transitionName="card-viewer-fade"

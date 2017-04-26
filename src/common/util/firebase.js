@@ -1,4 +1,5 @@
 import fb from 'firebase';
+import { concat, uniq } from 'lodash';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -78,5 +79,19 @@ export function saveUserData(key, value) {
     fb.database()
       .ref(`users/${user.uid}/${key}`)
       .set(value);
+  });
+}
+
+export function indexParsedSentence(sentence, tokens, js) {
+  const nodes = js.match(/\w*\['\w*/g).map(n => n.replace('[\'', '/'));
+
+  const locations = uniq(concat(
+    ['cardText/all'],
+    tokens.map(t => `cardText/byToken/${t}`),
+    nodes.map(n => `cardText/byNode/${n}`)
+  ));
+
+  locations.forEach(loc => {
+    fb.database().ref(loc).push(sentence);
   });
 }

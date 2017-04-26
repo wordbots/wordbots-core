@@ -4,7 +4,7 @@ import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constan
 import defaultState from '../store/defaultCollectionState';
 
 import { compareCertainKeys } from './common';
-import { saveUserData } from './firebase';
+import { saveUserData, indexParsedSentence } from './firebase';
 
 //
 // 0. Card-related constants (used below).
@@ -86,13 +86,18 @@ export function getSentencesFromInput(text) {
 }
 
 function parse(sentences, mode, callback) {
-  sentences
-    .forEach((sentence, idx) => {
-      const parserInput = encodeURIComponent(expandKeywords(sentence));
-      const parseUrl = `${PARSER_URL}?input=${parserInput}&format=js&mode=${mode}`;
-      fetch(parseUrl)
-        .then(response => response.json())
-        .then(json => { callback(idx, sentence, json); });
+  sentences.forEach((sentence, idx) => {
+    const parserInput = encodeURIComponent(expandKeywords(sentence));
+    const parseUrl = `${PARSER_URL}?input=${parserInput}&format=js&mode=${mode}`;
+
+    fetch(parseUrl)
+      .then(response => response.json())
+      .then(json => {
+        callback(idx, sentence, json);
+        if (json.tokens && json.js) {
+          indexParsedSentence(sentence, json.tokens, json.js);
+        }
+      });
   });
 }
 

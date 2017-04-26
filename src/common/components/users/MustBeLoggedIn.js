@@ -7,7 +7,11 @@ import { id } from '../../util/common';
 
 const MustBeLoggedIn = (props) => {
   if (props.loggedIn) {
-    return props.children;
+    return (
+      <div>
+        {props.children}
+      </div>
+    );
   } else {
     const tooltipId = id();
     return (
@@ -18,11 +22,16 @@ const MustBeLoggedIn = (props) => {
             <div
               data-for={tooltipId}
               data-tip="You must be logged in to perform this action."
-              style={pick(child.props.style, ['margin', 'marginTop', 'marginRight'])}
+              style={pick(child.props.style, ['float', 'width', 'margin', 'marginTop', 'marginRight'])}
             >
               {React.cloneElement(child, {
                 disabled: true,
-                style: {...child.props.style, margin: 0}
+                style: {
+                  ...child.props.style,
+                  float: 'none',
+                  width: child.props.style.width ? '100%' : null,
+                  margin: 0
+                }
               })}
             </div>
           )

@@ -12,15 +12,14 @@ import { inBrowser } from '../util/common';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
-import Login from '../components/users/Login';
-import Register from '../components/users/Register';
 import GameMenu from '../containers/GameMenu';
-import Creator from '../containers/Creator';
 import Collection from '../containers/Collection';
+import Creator from '../containers/Creator';
 import Deck from '../containers/Deck';
 import Decks from '../containers/Decks';
-import Play from '../containers/Play';
 import Home from '../containers/Home';
+import Login from '../containers/Login';
+import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
 
 // Hacky analytics implementation.
@@ -163,7 +162,6 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/home" component={Home} />
           {!this.props.user && <Route path="/login" component={Login} />}
-          {!this.props.user && <Route path="/register" component={Register} />}
           <Route path="/collection" component={Collection} />
           <Route path="/creator" component={Creator} />
           <Route path="/decks" component={Decks} />

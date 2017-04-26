@@ -45,7 +45,6 @@ export default class NavMenu extends Component {
         <Drawer open={this.props.open} containerStyle={containerStyle}>
           {this.renderLink('/', 'Home', 'home')}
           {this.renderLink('/login', 'Login', 'person')}
-          {this.renderLink('/register', 'Register', 'person_add')}
           {this.renderLink('/collection', 'Collection', 'recent_actors')}
           {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
           {this.renderLink('/decks', 'Decks', 'view_list')}

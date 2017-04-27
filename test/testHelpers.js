@@ -1,8 +1,8 @@
 import { cloneDeep, findIndex, forOwn, has, isObject, mapValues, pickBy } from 'lodash';
 
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
-import { instantiateCard } from '../src/common/util/common';
 import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards, applyAbilities } from '../src/common/util/game';
+import { instantiateCard } from '../src/common/util/cards';
 import game from '../src/common/reducers/game';
 import * as actions from '../src/common/actions/game';
 import { collection, attackBotCard } from '../src/common/store/cards';

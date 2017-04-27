@@ -3,7 +3,7 @@ import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, redu
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import defaultState from '../store/defaultCollectionState';
 
-import { compareCertainKeys } from './common';
+import { id as generateId, compareCertainKeys } from './common';
 import { saveUserData, indexParsedSentence } from './firebase';
 
 //
@@ -41,6 +41,13 @@ export function areIdenticalCards(card1, card2) {
   // TODO: Once we have better UX for this, it's time to start getting stricter
   // (no longer care about the name, and check abilities/command rather than text).
   return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
+}
+
+export function instantiateCard(card) {
+  return Object.assign({}, card, {
+    id: generateId(),
+    baseCost: card.cost
+  });
 }
 
 //

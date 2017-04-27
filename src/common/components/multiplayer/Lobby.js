@@ -3,8 +3,7 @@ import { array, func, object } from 'prop-types';
 import { shuffle } from 'lodash';
 
 import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
-import { instantiateCard } from '../../util/common';
-import { cardsInDeck } from '../../util/cards';
+import { instantiateCard, cardsInDeck } from '../../util/cards';
 
 import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';

@@ -41,10 +41,3 @@ export function logIfFlagSet(flag, msg) {
     /* eslint-enable no-console */
   }
 }
-
-export function instantiateCard(card) {
-  return Object.assign({}, card, {
-    id: id(),
-    baseCost: card.cost
-  });
-}

@@ -1,5 +1,4 @@
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
-import { instantiateCard } from '../util/common';
 
 /* eslint-disable quotes */
 

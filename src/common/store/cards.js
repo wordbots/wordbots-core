@@ -1,9 +1,9 @@
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
 import { instantiateCard } from '../util/common';
 
-// Note: Exported cards are used in either defaultState (cores) or in tests.
-
 /* eslint-disable quotes */
+
+// I. Kernels
 
 export const blueCoreCard = {
   name: 'Blue Kernel',
@@ -29,6 +29,8 @@ export const orangeCoreCard = {
   source: 'builtin'
 };
 
+// II. Test-only cards
+
 export const attackBotCard = {
   name: 'Attack Bot',
   cost: 1,
@@ -41,7 +43,78 @@ export const attackBotCard = {
   abilities: []
 };
 
-export const tankBotCard = {
+export const twoFourBotCard = {
+  name: 'Tank Bot',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 4,
+    speed: 1,
+    attack: 2
+  },
+  abilities: []
+};
+
+export const wisdomBotCard = {
+  name: 'Wisdom Bot',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 1
+  },
+  text: 'Whenever this robot takes damage, draw a card.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterDamageReceived'](function () { return targets['thisRobot'](); }), (function () { actions['draw'](targets['self'](), 1); })); })"
+  ]
+};
+
+export const hasteBotCard = {
+  name: 'Haste Bot',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 1,
+    speed: 1,
+    attack: 3
+  },
+  text: 'Haste',
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAgain'](targets['thisRobot']()); })); })"
+  ]
+};
+
+export const investorBotCard = {
+  name: 'Investor Bot',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 2,
+    attack: 1
+  },
+  text: 'When this robot is played, reduce the cost of a card in your hand by 2.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](targets['choose'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 2; }); })); })"
+  ]
+};
+
+// III. Core set
+
+const oneBotCard = {
+  name: 'One Bot',
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    health: 2,
+    speed: 2,
+    attack: 1
+  },
+  abilities: []
+};
+
+const tankBotCard = {
   name: 'Tank Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -55,9 +128,9 @@ export const tankBotCard = {
 
 export const concentrationCard = {
   name: 'Concentration',
-  text: 'Draw two cards.',
+  text: 'Draw 2 cards.',
   command: "(function () { actions['draw'](targets['self'](), 2); })",
-  cost: 1,
+  cost: 2,
   type: TYPE_EVENT
 };
 
@@ -81,7 +154,7 @@ export const wrathOfRobotGodCard = {
   name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
   command: "(function () { actions['destroy'](objectsInPlay('robot')); })",
-  cost: 5,
+  cost: 10,
   type: TYPE_EVENT
 };
 
@@ -89,7 +162,7 @@ export const threedomCard = {
   name: 'Threedom',
   text: 'Set all stats of all robots in play to 3.',
   command: "(function () { actions['setAttribute'](objectsInPlay('robot'), 'allattributes', 3); })",
-  cost: 3,
+  cost: 4,
   type: TYPE_EVENT
 };
 
@@ -97,7 +170,7 @@ const earthquakeCard = {
   name: 'Earthquake',
   text: 'Destroy all robots that have less than 2 speed.',
   command: '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))]))); })',
-  cost: 4,
+  cost: 5,
   type: TYPE_EVENT
 };
 
@@ -105,23 +178,15 @@ export const discountCard = {
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
   command: "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 1; }); })",
-  cost: 2,
-  type: TYPE_EVENT
-};
-
-const untapCard = {
-  name: 'Untap',
-  text: 'All robots you control can move again.',
-  command: '(function () { actions["canMoveAgain"](targets["all"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',
   cost: 3,
   type: TYPE_EVENT
 };
 
 export const missileStrikeCard = {
   name: 'Missile Strike',
-  text: 'Deal 5 damage to your opponent.',
-  command: '(function () { actions["dealDamage"](targets["opponent"](), 5); })',
-  cost: 5,
+  text: 'Deal 4 damage to your opponent.',
+  command: '(function () { actions["dealDamage"](targets["opponent"](), 4); })',
+  cost: 4,
   type: TYPE_EVENT
 };
 
@@ -132,7 +197,7 @@ export const incinerateCard = {
     "(function () { actions['modifyEnergy'](targets['self'](), function (x) { return x + attributeSum(objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack'); }); })",
     "(function () { actions['destroy'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })"
   ],
-  cost: 1,
+  cost: 0,
   type: TYPE_EVENT
 };
 
@@ -148,7 +213,7 @@ export const shockCard = {
   name: 'Shock',
   text: 'Deal 3 damage to a robot.',
   command: '(function () { actions["dealDamage"](targets["choose"](objectsInPlay("robot")), 3); })',
-  cost: 1,
+  cost: 3,
   type: TYPE_EVENT
 };
 
@@ -162,12 +227,12 @@ export const firestormCard = {
 
 export const botOfPainCard = {
   name: 'Bot of Pain',
-  cost: 3,
+  cost: 6,
   type: TYPE_ROBOT,
   stats: {
     health: 3,
     speed: 1,
-    attack: 2
+    attack: 5
   },
   text: 'At the end of each turn, each robot takes 1 damage.',
   abilities: [
@@ -190,34 +255,19 @@ export const dojoDiscipleCard = {
   ]
 };
 
-export const wisdomBotCard = {
-  name: 'Wisdom Bot',
-  cost: 2,
-  type: TYPE_ROBOT,
-  stats: {
-    health: 3,
-    speed: 1,
-    attack: 1
-  },
-  text: 'Whenever this robot takes damage, draw a card.',
-  abilities: [
-    "(function () { setTrigger(triggers['afterDamageReceived'](function () { return targets['thisRobot'](); }), (function () { actions['draw'](targets['self'](), 1); })); })"
-  ]
-};
-
 export const generalBotCard = {
   name: 'General Bot',
   cost: 5,
   type: TYPE_ROBOT,
   stats: {
-    health: 5,
-    speed: 1,
-    attack: 5
+    health: 3,
+    speed: 3,
+    attack: 1
   },
-  text: 'Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again.',
+  text: 'Your adjacent robots have +1 attack. When this robot is played, all other robots can move again.',
   abilities: [
     '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()), conditions["controlledBy"](targets["self"]())])); }, "attack", function (x) { return x + 1; })); })',
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['canMoveAgain'](targets['all'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]))); })); })"
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['canMoveAgain'](other(objectsMatchingConditions('robot', []))); })); })"
   ]
 };
 
@@ -238,10 +288,10 @@ export const monkeyBotCard = {
 
 export const fortificationCard = {
   name: 'Fortification',
-  cost: 1,
+  cost: 2,
   type: TYPE_STRUCTURE,
   stats: {
-    health: 5
+    health: 4
   },
   text: 'Your adjacent robots have +1 health.',
   abilities: [
@@ -254,9 +304,9 @@ export const defenderBotCard = {
   cost: 4,
   type: TYPE_ROBOT,
   stats: {
-    health: 3,
-    speed: 1,
-    attack: 3
+    health: 4,
+    speed: 4,
+    attack: 2
   },
   text: 'Defender,. taunt',
   abilities: [
@@ -265,28 +315,13 @@ export const defenderBotCard = {
   ]
 };
 
-export const hasteBotCard = {
-  name: 'Haste Bot',
-  cost: 2,
-  type: TYPE_ROBOT,
-  stats: {
-    health: 1,
-    speed: 1,
-    attack: 3
-  },
-  text: 'Haste',
-  abilities: [
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAgain'](targets['thisRobot']()); })); })"
-  ]
-};
-
 export const recruiterBotCard = {
   name: 'Recruiter Bot',
-  cost: 4,
+  cost: 3,
   type: TYPE_ROBOT,
   stats: {
     health: 1,
-    speed: 1,
+    speed: 2,
     attack: 1
   },
   text: 'Robots you play cost 1 less energy.',
@@ -297,7 +332,7 @@ export const recruiterBotCard = {
 
 export const flametongueBotCard = {
   name: 'Flametongue Bot',
-  cost: 3,
+  cost: 5,
   type: TYPE_ROBOT,
   stats: {
     health: 2,
@@ -307,21 +342,6 @@ export const flametongueBotCard = {
   text: 'When this robot is played, deal 4 damage.',
   abilities: [
     "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['choose'](objectsInPlay('allobjects')), 4); })); })"
-  ]
-};
-
-export const investorBotCard = {
-  name: 'Investor Bot',
-  cost: 3,
-  type: TYPE_ROBOT,
-  stats: {
-    health: 2,
-    speed: 2,
-    attack: 1
-  },
-  text: 'When this robot is played, reduce the cost of a card in your hand by 2.',
-  abilities: [
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](targets['choose'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 2; }); })); })"
   ]
 };
 
@@ -369,7 +389,7 @@ export const energyWellCard = {
   cost: 2,
   type: TYPE_STRUCTURE,
   stats: {
-    health: 10
+    health: 5
   },
   text: "At the start of each player's turn, that player gains 1 energy if they control an adjacent robot.",
   abilities: [
@@ -381,7 +401,7 @@ export const smashCard = {
   "name": "Smash",
   "type": TYPE_EVENT,
   "text": "Destroy a structure.",
-  "cost": 1,
+  "cost": 2,
   "command": [
     "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })"
   ]
@@ -425,15 +445,15 @@ export const recyclerCard = {
     "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard'))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })\")); })"
   ],
   stats: {
-    health: 1,
-    speed: 1,
+    health: 2,
+    speed: 2,
     attack: 1
   }
 };
 /* eslint-enable quotes */
 
 export const collection = [
-  attackBotCard,
+  oneBotCard,
   dojoDiscipleCard,
   concentrationCard,
   flametongueBotCard,
@@ -444,13 +464,11 @@ export const collection = [
   martyrBotCard,
   superchargeCard,
   recruiterBotCard,
-  investorBotCard,
   earthquakeCard,
   defenderBotCard,
   threedomCard,
   monkeyBotCard,
   generalBotCard,
-  wisdomBotCard,
   botOfPainCard,
   tankBotCard,
   firestormCard,
@@ -459,9 +477,7 @@ export const collection = [
   discountCard,
   missileStrikeCard,
   rampageCard,
-  untapCard,
   wrathOfRobotGodCard,
-  hasteBotCard,
   energyWellCard,
   smashCard,
   antiGravityFieldCard,

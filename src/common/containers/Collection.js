@@ -199,14 +199,12 @@ class Collection extends Component {
                 <FontIcon
                   className="material-icons"
                   style={{
-                    color: 'black',
+                    color: this.state.layout === 0 ? 'white' : 'black',
                     fontSize: 36,
                     padding: 10,
                     borderRadius: 3,
                     boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ?
-                      '#FFC7C3' :
-                      '#EEEEEE',
+                    backgroundColor: this.state.layout === 0 ? '#F44336' : '#EEEEEE',
                     cursor: 'pointer',
                     width: '100%',
                     textAlign: 'center',
@@ -218,14 +216,12 @@ class Collection extends Component {
                 <FontIcon
                   className="material-icons"
                   style={{
-                    color: 'black',
+                    color: this.state.layout === 0 ? 'black' : 'white',
                     fontSize: 36,
                     padding: 10,
                     borderRadius: 3,
                     boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ?
-                      '#EEEEEE' :
-                      '#FFC7C3',
+                    backgroundColor: this.state.layout === 0 ? '#EEEEEE' : '#F44336',
                     cursor: 'pointer',
                     width: '100%',
                     textAlign: 'center'

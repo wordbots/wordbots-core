@@ -38,9 +38,8 @@ const HINTS = {
 //
 
 export function areIdenticalCards(card1, card2) {
-  // TODO: Once we have better UX for this, it's time to start getting stricter
-  // (no longer care about the name, and check abilities/command rather than text).
-  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
+  // TODO: Check abilities/command rather than text.
+  return compareCertainKeys(card1, card2, ['type', 'cost', 'text', 'stats']);
 }
 
 export function cardsInDeck(deck, cards) {

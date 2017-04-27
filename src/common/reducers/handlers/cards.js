@@ -77,17 +77,19 @@ const cardsHandlers = {
   saveCard: function (state, cardProps) {
     const card = createCardFromProps(cardProps);
 
-    if (cardProps.id) {
+    // Is there already a card with the same ID (i.e. we're currently editing it)
+    // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
+    const existingCard = state.cards.find(c => c.id === cardProps.id || areIdenticalCards(c, card));
+
+    if (existingCard) {
       // Editing an existing card.
-      const existingCard = state.cards.find(c => c.id === cardProps.id);
-      Object.assign(existingCard, card);
-    } else {
-      if (some(state.cards, c => areIdenticalCards(c, card))) {
-        // There's already an identical card in the collection - log some kind of warning to the user.
+      if (existingCard.source === 'builtin') {
+        // TODO Log warning about not being about not being able to replace builtin cards.
       } else {
-        // Creating a new card.
-        state.cards.push(card);
+        Object.assign(existingCard, card, {id: existingCard.id});
       }
+    } else {
+      state.cards.push(card);
     }
 
     saveCardsToFirebase(state);

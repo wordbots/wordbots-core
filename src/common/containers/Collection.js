@@ -297,6 +297,7 @@ class Collection extends Component {
               label="Export Selected"
               labelPosition="after"
               secondary
+              disabled={this.state.selectedCardIds.length === 0}
               icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
               style={{width: '100%', marginTop: 10, height: 48}}
               buttonStyle={{textAlign: 'left'}}

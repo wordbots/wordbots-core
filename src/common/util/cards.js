@@ -43,6 +43,10 @@ export function areIdenticalCards(card1, card2) {
   return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
 }
 
+export function cardsInDeck(deck, cards) {
+  return compact((deck.cardIds || []).map(id => cards.find(c => c.id === id)));
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
     id: generateId(),
@@ -53,10 +57,6 @@ export function instantiateCard(card) {
 //
 // 2. Helper functions for card-related components.
 //
-
-export function cardsInDeck(deck, cards) {
-  return compact(deck.cardIds.map(id => cards.find(c => c.id === id)));
-}
 
 export function groupCards(cards) {
   return uniqBy(cards, 'id').map(card =>

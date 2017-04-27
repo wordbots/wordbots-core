@@ -32,6 +32,9 @@ function mapDispatchToProps(dispatch) {
     onDeleteDeck: (deckId) => {
       dispatch(collectionActions.deleteDeck(deckId));
     },
+    onDuplicateDeck: (deckId) => {
+      dispatch(collectionActions.duplicateDeck(deckId));
+    },
     onEditDeck: (deckId) => {
       dispatch(collectionActions.editDeck(deckId));
     }
@@ -137,13 +140,18 @@ class Decks extends Component {
                 this.props.onEditDeck(deck.id);
                 this.props.history.push('/deck');
               }}
-              style={{float: 'left', marginRight: 10, width: '45%'}} />
+              style={{float: 'left', marginRight: 10, width: '31%'}} />
+            <RaisedButton
+              label="Duplicate"
+              primary
+              onClick={() => { this.props.onDuplicateDeck(deck.id); }}
+              style={{float: 'left', marginRight: 10, width: '31%'}} />
             <RaisedButton
               label="Delete"
               disabled={deck.id === '[default]'}
               onClick={e => { this.props.onDeleteDeck(deck.id); }}
               primary
-              style={{float: 'left', width: '45%'}}/>
+              style={{float: 'left', width: '31%'}}/>
           </MustBeLoggedIn>
         </div>
 

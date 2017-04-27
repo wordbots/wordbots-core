@@ -1,5 +1,6 @@
 export const CLOSE_EXPORT_DIALOG = 'CLOSE_EXPORT_DIALOG';
 export const DELETE_DECK = 'DELETE_DECK';
+export const DUPLICATE_DECK = 'DUPLICATE_DECK';
 export const EDIT_DECK = 'EDIT_DECK';
 export const EXPORT_CARDS = 'EXPORT_CARDS';
 export const IMPORT_CARDS = 'IMPORT_CARDS';
@@ -16,6 +17,13 @@ export function closeExportDialog() {
 export function deleteDeck(deckId) {
   return {
     type: DELETE_DECK,
+    payload: { deckId }
+  };
+}
+
+export function duplicateDeck(deckId) {
+  return {
+    type: DUPLICATE_DECK,
     payload: { deckId }
   };
 }

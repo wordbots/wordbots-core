@@ -24,6 +24,15 @@ const cardsHandlers = {
     return state;
   },
 
+  duplicateDeck: function (state, deckId) {
+    const deck = state.decks.find(d => d.id === deckId);
+    const copy = Object.assign({}, deck, {id: id(), name: `${deck.name} Copy`});
+
+    state.decks.push(copy);
+    saveDecksToFirebase(state);
+    return state;
+  },
+
   exportCards: function (state, cards) {
     return Object.assign({}, state, {exportedJson: cardsToJson(cards)});
   },

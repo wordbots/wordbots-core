@@ -38,11 +38,11 @@ function getLoggedInUser() {
 }
 
 export function onLogin(callback) {
-  return getLoggedInUser().then(callback);
+  return fb.auth().onAuthStateChanged(user => user && callback(user));
 }
 
 export function onLogout(callback) {
-  return getLoggedInUser().catch(callback);
+  return fb.auth().onAuthStateChanged(user => !user && callback());
 }
 
 export function register(email, username, password) {

@@ -122,9 +122,9 @@ describe('Game reducer', () => {
     it('should be able to handle combat between robots', () => {
       let state = getDefaultState();
       // First, let's move all these bots into a position where they can attack one another.
-      state = playObject(state, 'orange', cards.tankBotCard, '2,0,-2');
+      state = playObject(state, 'orange', cards.twoFourBotCard, '2,0,-2');
       state = playObject(state, 'orange', cards.attackBotCard, '3,-1,-2');
-      state = playObject(state, 'blue', cards.tankBotCard, '-2,0,2');
+      state = playObject(state, 'blue', cards.twoFourBotCard, '-2,0,2');
       state = playObject(state, 'blue', cards.attackBotCard, '-3,1,2');
       state = newTurn(state, 'orange');
       state = moveRobot(state, '2,0,-2', '1,0,-1');
@@ -244,7 +244,7 @@ describe('Game reducer', () => {
 
       // "Deal 5 damage to your opponent."
       state = playEvent(state, 'orange', cards.missileStrikeCard);
-      expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 5);
+      expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
     });
 
     it('should be able to play events that target selected tiles or cards', () => {
@@ -266,8 +266,8 @@ describe('Game reducer', () => {
       // Test ability to select a card in hand.
       // "Discard a robot card. Gain life equal to its health."
       // (This also tests the ability to store 'it' in game state for later retrieval.)
-      state = drawCardToHand(state, 'blue', cards.tankBotCard);
-      state = playEvent(state, 'blue', cards.consumeCard, {card: cards.tankBotCard});
+      state = drawCardToHand(state, 'blue', cards.twoFourBotCard);
+      state = playEvent(state, 'blue', cards.consumeCard, {card: cards.twoFourBotCard});
       expect(
         state.players.blue.hand.length
       ).toEqual(getDefaultState().players.blue.hand.length);
@@ -284,8 +284,8 @@ describe('Game reducer', () => {
           '1,0,-1': cards.attackBotCard // 1/1
         },
         'blue': {
-          '-1,0,1': cards.tankBotCard, // 2/4
-          '0,-1,1': cards.tankBotCard, // 2/4
+          '-1,0,1': cards.twoFourBotCard, // 2/4
+          '0,-1,1': cards.twoFourBotCard, // 2/4
           '-1,1,0': cards.attackBotCard // 1/1
         }
       });
@@ -333,7 +333,7 @@ describe('Game reducer', () => {
           '0,0,0': cards.attackBotCard
         },
         'blue': {
-          '-1,0,1': cards.tankBotCard,
+          '-1,0,1': cards.twoFourBotCard,
           '0,-1,1': cards.attackBotCard,
           '-2,0,2': cards.arenaCard
         }
@@ -351,7 +351,7 @@ describe('Game reducer', () => {
           '1,0,-1': cards.defenderBotCard  // adjacent to Martyr Bot (but already controlled by orange)
         },
         'blue': {
-          '-1,0,1': cards.tankBotCard,  // will attack
+          '-1,0,1': cards.twoFourBotCard,  // will attack
           '-1,1,0': cards.attackBotCard,  // adjacent to Martyr Bot
           '-2,0,2': cards.monkeyBotCard  // not adjacent to Martyr Bot
         }
@@ -400,7 +400,7 @@ describe('Game reducer', () => {
           '1,-2,1': cards.attackBotCard // 1/1
         },
         'blue': {
-          '2,0,-2': cards.tankBotCard, // 2/4
+          '2,0,-2': cards.twoFourBotCard, // 2/4
           '-2,0,2': cards.wisdomBotCard, // 1/3
           '0,-1,1': cards.monkeyBotCard // 2/2
         }
@@ -555,16 +555,16 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('1/1/2');
       state = playEvent(state, 'orange', cards.threedomCard);  // "Set all stats of all robots in play to 3."
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('3/3/3');
-      state = playObject(state, 'orange', cards.generalBotCard, '2,1,-3');  // 5/5; +1/0
+      state = playObject(state, 'orange', cards.generalBotCard, '2,1,-3');  // 1/3; +1/0
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('4/3/3');
       state = playEvent(state, 'orange', cards.rampageCard);  // "Give all robots you control +2 attack."
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('6/3/3');
       state = playObject(state, 'orange', cards.fortificationCard, '1,1,-2');  // +0/1
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('6/4/3');
-      expect(queryRobotAttributes(state, '2,1,-3')).toEqual('7/6/1');
+      expect(queryRobotAttributes(state, '2,1,-3')).toEqual('3/4/3');
       const energy = state.players.orange.energy.available;
       state = playEvent(state, 'orange', cards.incinerateCard);  // "Gain energy equal to the total power of robots you control. Destroy all robots you control."
-      expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (5+2));
+      expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (1+2));
     });
 
     it('should let objects assign keywords to other objects', () => {

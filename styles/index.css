@@ -66,3 +66,58 @@ a {
   bottom: -150px;
   transition: all 300ms ease-in-out;
 }
+
+/* Energy curve */
+
+.bar {
+  fill: #64B5F6;
+}
+
+.bar:hover {
+  fill: #90CAF9;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  display: none;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis {
+  display: none;
+}
+
+/* Scroll Bar Style */
+
+::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+  background-color: #f44336;
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}

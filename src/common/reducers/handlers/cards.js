@@ -1,5 +1,3 @@
-import { some } from 'lodash';
-
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
 import {

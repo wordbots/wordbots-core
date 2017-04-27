@@ -52,6 +52,7 @@ class Decks extends Component {
 
     onCreateDeck: func,
     onDeleteDeck: func,
+    onDuplicateDeck: func,
     onEditDeck: func
   };
 

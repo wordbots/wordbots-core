@@ -30,7 +30,8 @@ export default class CardGrid extends Component {
       <div
         key={card.id}
         style={{
-          marginRight: 15
+          marginRight: 15,
+          marginTop: -12
       }}>
         <Card
           collection
@@ -65,7 +66,7 @@ export default class CardGrid extends Component {
           flexWrap: 'wrap',
           justifyContent: 'flex-start'
         }}>{!inBrowser() ? null : cards.map(this.renderCard.bind(this))}</div>
-        
+
         <PageSwitcher
           page={this.state.page}
           maxPages={maxPages}

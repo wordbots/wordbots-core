@@ -17,7 +17,8 @@ export function mapStateToProps(state) {
     actionLog: state.game.actionLog,
 
     socket: state.socket,
-    availableDecks: state.collection.decks,
+    cards: state.collection.cards,
+    availableDecks: state.collection.decks.filter(d => d.cardIds.length === 30),
 
     sidebarOpen: state.global.sidebarOpen
   };
@@ -57,6 +58,7 @@ export class Play extends Component {
     sidebarOpen: bool,
 
     socket: object,
+    cards: array,
     availableDecks: array,
 
     history: object,
@@ -80,6 +82,7 @@ export class Play extends Component {
     return (
       <Lobby
         socket={this.props.socket}
+        cards={this.props.cards}
         availableDecks={this.props.availableDecks}
         onConnect={this.props.onConnect}
         onHostGame={this.props.onHostGame}

@@ -18,7 +18,7 @@ export default function collection(oldState = defaultState, action) {
         return c.loadState(state, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:
-        return c.addToCollection(state, action.payload);
+        return c.saveCard(state, action.payload);
 
       case collectionActions.CLOSE_EXPORT_DIALOG:
         return c.closeExportDialog(state);
@@ -36,7 +36,7 @@ export default function collection(oldState = defaultState, action) {
         return c.importCards(state, action.payload.json);
 
       case collectionActions.REMOVE_FROM_COLLECTION:
-        return c.removeFromCollection(state, action.payload.ids);
+        return c.deleteCards(state, action.payload.ids);
 
       case collectionActions.SAVE_DECK:
         return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds);

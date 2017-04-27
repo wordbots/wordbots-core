@@ -4,6 +4,7 @@ import { shuffle } from 'lodash';
 
 import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
 import { instantiateCard } from '../../util/common';
+import { cardsInDeck } from '../../util/cards';
 
 import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';
@@ -15,6 +16,7 @@ export default class Lobby extends Component {
   static propTypes = {
     socket: object,
     availableDecks: array,
+    cards: array,
 
     onConnect: func,
     onJoinGame: func,
@@ -30,9 +32,14 @@ export default class Lobby extends Component {
     };
   }
 
+  get hasNoDecks() {
+    return this.props.availableDecks.length === 0;
+  }
+
   get deck() {
-    const deck = this.props.availableDecks[this.state.selectedDeck].cards.map(instantiateCard);
-    return KEEP_DECKS_UNSHUFFLED ? deck : shuffle(deck);
+    const deck = this.props.availableDecks[this.state.selectedDeck];
+    const cards = cardsInDeck(deck).map(instantiateCard);
+    return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
   }
 
   render() {
@@ -51,16 +58,19 @@ export default class Lobby extends Component {
             <Waiting /> :
             <div>
               <DeckPicker
+                cards={this.props.cards}
                 availableDecks={this.props.availableDecks}
                 selectedDeckIdx={this.state.selectedDeck}
                 onChooseDeck={idx => { this.setState({selectedDeck: idx}); }} />
               <GameBrowser
+                cannotJoinGame={this.hasNoDecks}
                 openGames={skt.waitingPlayers}
                 inProgressGames={skt.games}
                 usernameMap={skt.clientIdToUsername}
                 onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.deck); }}
                 onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />
               <HostGame
+                disabled={this.hasNoDecks}
                 onHostGame={gameName => { this.props.onHostGame(gameName, this.deck); }} />
             </div>
         }

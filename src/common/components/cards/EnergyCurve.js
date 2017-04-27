@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { array, number } from 'prop-types';
 import BarChart from 'react-bar-chart';
 
 // Widget to display the current energy curve for a set of cards
 export default class EnergyCurve extends Component {
   static propTypes = {
-    cards: array
+    cards: array,
+    height: number
   };
+
+  static defaultProps = {
+    height: 130
+  }
 
 	constructor(props) {
     super(props);
@@ -67,14 +72,9 @@ export default class EnergyCurve extends Component {
 
     return (
       <div ref="root">
-        <div style={{
-          fontWeight: 100,
-          fontSize: 28
-        }}>Energy Curve</div>
-
         <BarChart
           width={this.state.width}
-          height={130}
+          height={this.props.height}
           margin={margins}
           data={this.parseCards(this.props.cards)} />
       </div>

@@ -8,29 +8,14 @@ import {
 } from '../../util/cards';
 
 const cardsHandlers = {
-  addToCollection: function (state, cardProps) {
-    const card = createCardFromProps(cardProps);
-
-    if (cardProps.id) {
-      // Editing an existing card.
-      const existingCard = state.cards.find(c => c.id === cardProps.id);
-      Object.assign(existingCard, card);
-    } else {
-      if (some(state.cards, c => areIdenticalCards(c, card))) {
-        // There's already an identical card in the collection - log some kind of warning to the user.
-      } else {
-        // Creating a new card.
-        state.cards.push(card);
-      }
-    }
-
-    saveCardsToFirebase(state);
-
-    return state;
-  },
-
   closeExportDialog: function (state) {
     return Object.assign({}, state, {exportedJson: null});
+  },
+
+  deleteCards: function (state, ids) {
+    state.cards = state.cards.filter(c => !ids.includes(c.id));
+    saveCardsToFirebase(state);
+    return state;
   },
 
   deleteDeck: function (state, deckId) {
@@ -80,28 +65,38 @@ const cardsHandlers = {
     return state;
   },
 
-  removeFromCollection: function (state, ids) {
-    state.cards = state.cards.filter(c => !ids.includes(c.id));
+  saveCard: function (state, cardProps) {
+    const card = createCardFromProps(cardProps);
+
+    if (cardProps.id) {
+      // Editing an existing card.
+      const existingCard = state.cards.find(c => c.id === cardProps.id);
+      Object.assign(existingCard, card);
+    } else {
+      if (some(state.cards, c => areIdenticalCards(c, card))) {
+        // There's already an identical card in the collection - log some kind of warning to the user.
+      } else {
+        // Creating a new card.
+        state.cards.push(card);
+      }
+    }
+
     saveCardsToFirebase(state);
 
     return state;
   },
 
-  saveDeck: function (state, deckId, name, cardIds) {
-    const cards = cardIds.map(cardId => state.cards.find(c => c.id === cardId));
-
+  saveDeck: function (state, deckId, name, cardIds = []) {
     if (deckId) {
       // Existing deck.
-      Object.assign(state.decks.find(d => d.id === deckId), {
-        name: name,
-        cards: cards
-      });
+      const deck = state.decks.find(d => d.id === deckId);
+      Object.assign(deck, { name, cardIds });
     } else {
       // New deck.
       state.decks.push({
         id: id(),
-        name: name,
-        cards: cards
+        name,
+        cardIds
       });
     }
 
@@ -117,7 +112,7 @@ function createCardFromProps(props) {
   const command = sentences.map(s => s.result.js);
 
   const card = {
-    id: id(),
+    id: props.id || id(),
     name: props.name,
     type: props.type,
     spriteID: props.spriteID,

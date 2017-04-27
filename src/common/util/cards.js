@@ -37,6 +37,16 @@ const HINTS = {
 // 1. Helper functions for card-related components.
 //
 
+export function cardsInDeck(deck, cards) {
+  return compact(deck.cardIds.map(id => cards.find(c => c.id === id)));
+}
+
+export function groupCards(cards) {
+  return uniqBy(cards, 'id').map(card =>
+    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
+  );
+}
+
 export function isCardVisible(card, filters, costRange) {
   if ((!filters.robots && card.type === TYPE_ROBOT) ||
       (!filters.events && card.type === TYPE_EVENT) ||
@@ -46,12 +56,6 @@ export function isCardVisible(card, filters, costRange) {
   } else {
     return true;
   }
-}
-
-export function groupCards(cards) {
-  return uniqBy(cards, 'name').map(card =>
-    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
-  );
 }
 
 // Sorting functions for card grids:

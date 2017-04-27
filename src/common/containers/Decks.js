@@ -6,16 +6,18 @@ import { withRouter } from 'react-router';
 import Badge from 'material-ui/Badge';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import { sortBy } from 'lodash';
+import FontIcon from 'material-ui/FontIcon';
+import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
-import { groupCards } from '../util/cards';
+import { cardsInDeck, groupCards } from '../util/cards';
 import CardViewer from '../components/card/CardViewer';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
+    cards: state.collection.cards,
     decks: state.collection.decks,
     loggedIn: state.global.user !== null,
     sidebarOpen: state.global.sidebarOpen
@@ -38,6 +40,7 @@ function mapDispatchToProps(dispatch) {
 
 class Decks extends Component {
   static propTypes = {
+    cards: array,
     decks: array,
     loggedIn: bool,
     sidebarOpen: bool,
@@ -100,17 +103,31 @@ class Decks extends Component {
   }
 
   renderDeck(deck) {
-    const robots = deck.cards.filter(c => c.type === TYPE_ROBOT);
-    const structures = deck.cards.filter(c => c.type === TYPE_STRUCTURE);
-    const events = deck.cards.filter(c => c.type === TYPE_EVENT);
+    const cards = cardsInDeck(deck, this.props.cards);
+    const [robots, structures, events] = [TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT].map(t => filter(cards, ['type', t]));
+    const isComplete = (cards.length === 30);
 
     return (
-      <Paper key={deck.name} style={{marginRight: 20, marginBottom: 20, padding: 10}}>
-        <div style={{
-          marginBottom: 15,
-          fontSize: 32,
-          fontWeight: 100
-        }}>{deck.name}</div>
+      <Paper
+        key={deck.name}
+        style={{marginRight: 20, marginBottom: 20, padding: 10}}
+      >
+        <div style={{display: 'flex', marginBottom: 15}}>
+          <div style={{flex: 1, fontSize: 32, fontWeight: 100}}>
+            {deck.name}
+          </div>
+
+          <div style={{flex: 1, textAlign: 'right', fontSize: 24, color: (isComplete ? 'green' : 'red')}}>
+            <FontIcon
+              className="material-icons"
+              style={{paddingRight: 5, color: (isComplete ? 'green' : 'red')}}
+            >
+              {isComplete ? 'done' : 'warning'}
+            </FontIcon>
+            {cards.length} cards
+          </div>
+        </div>
+
         <div>
           <MustBeLoggedIn loggedIn={this.props.loggedIn}>
             <RaisedButton
@@ -184,9 +201,7 @@ class Decks extends Component {
               width: '100%',
               margin: 10
             }}>
-              {
-                this.props.decks.map(this.renderDeck.bind(this))
-              }
+              {this.props.decks.map(this.renderDeck.bind(this))}
             </div>
           </div>
 

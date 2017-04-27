@@ -57,7 +57,7 @@ class Deck extends Component {
       costRange: [0, 20],
       sortingCriteria: 3,
       sortingOrder: 0,
-      selectedCardIds: props.deck ? props.deck.cards.map(c => c.id) : []
+      selectedCardIds: props.deck ? props.deck.cardIds : []
     };
   }
 
@@ -129,6 +129,11 @@ class Deck extends Component {
               padding: 20,
               marginBottom: 20
             }}>
+              <div style={{
+                fontWeight: 100,
+                fontSize: 28
+              }}>Energy Curve</div>
+
               <EnergyCurve
                 cards={this.selectedCards()} />
             </Paper>

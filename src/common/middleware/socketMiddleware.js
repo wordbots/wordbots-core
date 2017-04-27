@@ -3,10 +3,6 @@ import { logIfFlagSet } from '../util/common';
 import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
 
-// const ENDPOINT = 'ws://localhost:3000/socket';  // Local
-const ENDPOINT = 'ws://app.wordbots.io/socket';  // Remote
-// const ENDPOINT = 'wss://wordbots-game.herokuapp.com/socket';  // Remote (SSL)
-
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
 function createSocketMiddleware({excludedActions = []}) {
@@ -37,7 +33,7 @@ function createSocketMiddleware({excludedActions = []}) {
     function connect() {
       store.dispatch(sa.connecting());
 
-      socket = new WebSocket(ENDPOINT);
+      socket = new WebSocket(`ws://${window.location.host}/socket`);
       socket.onopen = connected;
       socket.onclose = disconnected;
       socket.onmessage = receive;

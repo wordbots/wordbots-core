@@ -34,7 +34,17 @@ const HINTS = {
 };
 
 //
-// 1. Helper functions for card-related components.
+// 1. Miscellaneous helper functions pertaining to cards.
+//
+
+export function areIdenticalCards(card1, card2) {
+  // TODO: Once we have better UX for this, it's time to start getting stricter
+  // (no longer care about the name, and check abilities/command rather than text).
+  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
+}
+
+//
+// 2. Helper functions for card-related components.
 //
 
 export function cardsInDeck(deck, cards) {
@@ -60,15 +70,16 @@ export function isCardVisible(card, filters, costRange) {
 
 // Sorting functions for card grids:
 // 0 = cost, 1 = name, 2 = type, 3 = source
+// (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
 export const sortFunctions = [
-  c => [c.cost, c.name],
+  c => [c.cost.toString(36), c.name],
   c => c.name,
-  c => [typeToString(c.type), c.cost, c.name],
-  c => [c.source === 'builtin', c.cost, c.name]
+  c => [typeToString(c.type), c.cost.toString(36), c.name],
+  c => [c.source === 'builtin', c.cost.toString(36), c.name]
 ];
 
 //
-// 2. Text parsing.
+// 3. Text parsing.
 //
 
 export function replaceSynonyms(text) {
@@ -108,7 +119,7 @@ function parse(sentences, mode, callback) {
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
 //
-// 2.5. Keyword abilities.
+// 3.5. Keyword abilities.
 //
 
 const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
@@ -149,14 +160,8 @@ export function expandKeywords(sentence) {
 }
 
 //
-// 3. Miscellaneous helper functions pertaining to cards.
+// 3. Import/export.
 //
-
-export function areIdenticalCards(card1, card2) {
-  // TODO: Once we have better UX for this, it's time to start getting stricter
-  // (no longer care about the name, and check abilities/command rather than text).
-  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
-}
 
 export function cardsToJson(cards) {
   cards = cards.map(c => Object.assign({}, c, {schemaVersion: CARD_SCHEMA_VERSION}));

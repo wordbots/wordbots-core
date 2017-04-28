@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { number, string } from 'prop-types';
+import { bool, number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import ReactTooltip from 'react-tooltip';
@@ -12,7 +12,8 @@ export default class CardStat extends Component {
     type: string,
     base: number,
     current: number,
-    scale: number
+    scale: number,
+    noTooltip: bool
   };
 
   static defaultProps = {
@@ -57,27 +58,38 @@ export default class CardStat extends Component {
   }
 
   renderNewStyle() {
-    const tooltipId = id();
-    return (
-      <div
-        data-for={tooltipId}
-        data-tip={capitalize(this.props.type)}
-        style={{
-          float: 'left',
-          width: '33%',
-          lineHeight: '14px',
-          color: this.textColor,
-          fontFamily: 'Carter One, Arial',
-          fontSize: 18 * this.props.scale,
-          textAlign: 'center',
-          cursor: 'pointer',
-          paddingBottom: 6 * this.props.scale
-      }}>
-        <ReactTooltip id={tooltipId} />
-        {this.icon}
-        {this.props.current || this.props.base}
-      </div>
-    );
+    const style = {
+        float: 'left',
+        width: '33%',
+        lineHeight: '14px',
+        color: this.textColor,
+        fontFamily: 'Carter One',
+        fontSize: 18 * this.props.scale,
+        textAlign: 'center',
+        paddingBottom: 6 * this.props.scale
+    };
+
+    if (this.props.noTooltip) {
+      return (
+        <div style={style}>
+          {this.icon}
+          {this.props.current || this.props.base}
+        </div>
+      );
+    } else {
+      const tooltipId = id();
+      return (
+        <div
+          data-for={tooltipId}
+          data-tip={capitalize(this.props.type)}
+          style={Object.assign(style, {cursor: 'pointer'})}
+        >
+          <ReactTooltip id={tooltipId} />
+          {this.icon}
+          {this.props.current || this.props.base}
+        </div>
+      );
+    }
   }
 
   renderOldStyle() {

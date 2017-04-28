@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, element, func } from 'prop-types';
+import { array, bool, func } from 'prop-types';
 
 import { inBrowser } from '../../util/common';
 import { splitSentences } from '../../util/cards';
@@ -8,9 +8,9 @@ import Sentence from '../card/Sentence';
 
 export default class CardGrid extends Component {
   static propTypes = {
-    children: element,
     cards: array,
     selectedCardIds: array,
+    selectable: bool,
 
     onCardClick: func
   };
@@ -44,7 +44,7 @@ export default class CardGrid extends Component {
           cost={card.cost}
           baseCost={card.cost}
           source={card.source}
-          selected={(this.props.selectedCardIds || []).includes(card.id)}
+          selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
           onCardClick={this.props.onCardClick} />
       </div>
     );

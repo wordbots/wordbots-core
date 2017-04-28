@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, number } from 'prop-types';
+import { array, bool, func, number } from 'prop-types';
 import { without } from 'lodash';
 
 import PageSwitcher from './PageSwitcher';
@@ -11,6 +11,8 @@ export default class CardCollection extends Component {
     cards: array,
     selectedCardIds: array,
     layout: number,
+    allowMultipleSelection: bool,
+    onlySelectCustomCards: bool,
 
     onSelection: func
   };
@@ -35,6 +37,21 @@ export default class CardCollection extends Component {
     return this.props.cards.slice((this.currentPage - 1) * 20, this.currentPage * 20);
   }
 
+  isSelectable(card) {
+    return !this.props.onlySelectCustomCards || card.source !== 'builtin';
+  }
+
+  onCardClick = (id) => {
+    const card = this.cards.find(c => c.id === id);
+    if (this.isSelectable(card)) {
+      if (this.props.selectedCardIds.includes(id) && !this.props.allowMultipleSelection) {
+        this.props.onSelection(without(this.props.selectedCardIds, id));
+      } else {
+        this.props.onSelection([...this.props.selectedCardIds, id]);
+      }
+    }
+  }
+
   renderPageControls() {
     return (
       <PageSwitcher
@@ -48,27 +65,20 @@ export default class CardCollection extends Component {
   renderGrid() {
     return (
      <CardGrid
+        selectable={!this.props.allowMultipleSelection}
         cards={this.cards}
         selectedCardIds={this.props.selectedCardIds}
-        onCardClick={id => {
-          const card = this.cards.find(c => c.id === id);
-          if (card.source !== 'builtin') {
-            if (this.props.selectedCardIds.includes(id)) {
-              this.props.onSelection(without(this.props.selectedCardIds, id));
-            } else {
-              this.props.onSelection([...this.props.selectedCardIds, id]);
-            }
-          }
-        }} />
+        onCardClick={this.onCardClick} />
     );
   }
 
   renderTable() {
     return (
       <CardTable
+        selectable={!this.props.allowMultipleSelection}
         cards={this.cards}
         selectedCardIds={this.props.selectedCardIds}
-        onSelection={selectedRows => this.props.onSelection(selectedRows)}/>
+        onCardClick={this.onCardClick}/>
     );
   }
 

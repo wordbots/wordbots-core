@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func } from 'prop-types';
+import { array, bool, func } from 'prop-types';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
   from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
@@ -11,8 +11,9 @@ export default class CardTable extends Component {
   static propTypes = {
     cards: array,
     selectedCardIds: array,
+    selectable: bool,
 
-    onSelection: func
+    onCardClick: func
   };
 
   constructor(props) {
@@ -35,6 +36,7 @@ export default class CardTable extends Component {
     if (stats && stats[type]) {
       return (
         <CardStat
+          noTooltip
           type={type}
           base={stats ? stats[type] : ''}
           current={stats ? stats[type] : ''}
@@ -45,12 +47,25 @@ export default class CardTable extends Component {
     }
   }
 
+  renderCardCost(cost) {
+    return (
+      <Badge
+        badgeContent={cost}
+        badgeStyle={{
+          width: 30, height: 30, backgroundColor: '#00bcd4',
+          fontFamily: 'Carter One', fontSize: 16, color: 'white'
+        }}
+        style={{padding: 0, width: 24, height: 24}} />
+    );
+  }
+
   renderCardRow(card, index) {
     return (
       <TableRow
         key={card.id}
-        selected={(this.props.selectedCardIds || []).includes(card.id)}
-        selectable={card.source === 'user'}>
+        selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
+        selectable={!this.props.selectable || card.source !== 'builtin'}
+      >
         <TableRowColumn width={130}>{card.name}</TableRowColumn>
         <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
         <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
@@ -58,15 +73,7 @@ export default class CardTable extends Component {
         <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
         <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>
         <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('speed', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>
-          <Badge
-            badgeContent={card.cost}
-            badgeStyle={{
-              width: 30, height: 30, backgroundColor: '#00bcd4',
-              fontFamily: 'Carter One', fontSize: 16, color: 'white'
-            }}
-            style={{padding: 0, width: 24, height: 24}} />
-        </TableRowColumn>
+        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardCost(card.cost)}</TableRowColumn>
       </TableRow>
     );
   }
@@ -82,12 +89,9 @@ export default class CardTable extends Component {
         }}>
           <Table
             multiSelectable
-            onRowSelection={(selectedRows) => {
-              if (selectedRows === 'none') {
-                this.props.onSelection([]);
-              } else {
-                this.props.onSelection(selectedRows.map(rowIndex => this.props.cards[rowIndex].id));
-              }
+            selectable={this.props.selectable}
+            onCellClick={(row, col) => {
+              this.props.onCardClick(this.props.cards[row].id);
             }}>
             <TableHeader
               adjustForCheckbox={false}

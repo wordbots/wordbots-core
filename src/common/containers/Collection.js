@@ -122,6 +122,7 @@ class Collection extends Component {
 
     return (
       <CardCollection
+        onlySelectCustomCards
         layout={this.state.layout}
         cards={cards}
         selectedCardIds={this.state.selectedCardIds}

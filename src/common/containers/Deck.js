@@ -108,6 +108,7 @@ class Deck extends Component {
 
     return (
       <CardCollection
+        allowMultipleSelection
         layout={this.state.layout}
         cards={cards}
         selectedCardIds={this.state.selectedCardIds}

@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { every } from 'lodash';
+import { compact } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
@@ -57,26 +57,86 @@ export default class CardCreationForm extends Component {
     requestParse(sentences, parserMode, this.props.onParseComplete);
   }
 
-  nonEmptySentences() {
+  get robot() { return this.props.type === TYPE_ROBOT; }
+  get event() { return this.props.type === TYPE_EVENT; }
+
+  get nonEmptySentences() {
     return this.props.sentences.filter(s => /\S/.test(s.sentence));
   }
 
-  hasCardText() {
-    return this.nonEmptySentences().length > 0;
+  get hasCardText() {
+    return this.nonEmptySentences.length > 0;
   }
 
-  isValid() {
-    // Name exists + type is valid + stats are present + all sentences parseable.
-    return (
-      this.props.name && this.props.name !== '[Unnamed]' &&
-        CREATABLE_TYPES.includes(this.props.type) &&
-        (this.props.energy >= 0 && this.props.energy <= 20) &&
-        ((this.props.attack >= 0 && this.props.attack <= 10) || this.props.type !== TYPE_ROBOT) &&
-        ((this.props.speed >= 0 && this.props.speed <= 3) || this.props.type !== TYPE_ROBOT) &&
-        ((this.props.health >= 1 && this.props.health <= 10)|| this.props.type === TYPE_EVENT) &&
-        (this.hasCardText() || this.props.type !== TYPE_EVENT) &&  // Events must have some card text.
-        every(this.nonEmptySentences(), s => s.result.js)
-    );
+  get fullParse() {
+    return compact(this.nonEmptySentences.map(s => s.result.js)).join(' ');
+  }
+
+  get parseErrors() {
+    return compact(this.nonEmptySentences.map(s => s.result.error));
+  }
+
+  get nameError() {
+    if (!this.props.name || this.props.name === '[Unnamed]') {
+      return 'A name is required.';
+    }
+  }
+
+  get typeError() {
+    if (!CREATABLE_TYPES.includes(this.props.type)) {
+      return 'Invalid type.';
+    }
+  }
+
+  get costError() {
+    if (this.props.energy < 0 || this.props.energy > 20) {
+      return 'Not between 0 and 20.';
+    }
+  }
+
+  get attackError() {
+    if (this.robot && (this.props.attack < 0 || this.props.attack > 10)) {
+      return 'Not between 0 and 10.';
+    }
+  }
+
+  get healthError() {
+    if (!this.event && (this.props.health < 1 || this.props.health > 10)) {
+      return 'Not between 1 and 10.';
+    }
+  }
+
+  get speedError() {
+    if (this.robot && (this.props.speed < 0 || this.props.speed > 3)) {
+      return 'Not between 0 and 3.';
+    }
+  }
+
+  get textError() {
+    if (this.event && !this.hasCardText) {
+      return 'Events must have card text.';
+    }
+
+    if (this.parseErrors.length > 0) {
+      return this.parseErrors.map(e => e.endsWith('.') ? e : `${e}.`).join(' ');
+    } else if (this.nonEmptySentences.find(s => !s.result.js)) {
+      return 'Sentences are still being parsed ...';
+    } else {
+      // Check for >1 target in each logical unit of the parsed JS.
+      // Activated abilities separate logical units:
+      //     BAD <- "Deal 2 damage. Destroy a structure."
+      //    GOOD <- "Activate: Deal 2 damage. Activate: Destroy a structure."
+      const units = compact(this.fullParse.split('abilities[\'activated\']'));
+      const numTargets = units.map(unit => (unit.match(/choose/g) || []).length);
+      if (numTargets.find(n => n > 1)) {
+        return `We do not yet support multiple target selection (expected 0 or 1 targets, got ${numTargets.find(n => n > 1)}).`;
+      }
+    }
+  }
+
+  get isValid() {
+    return !this.nameError && !this.typeError && !this.costError && !this.attackError &&
+      !this.healthError && !this.speedError && !this.textError;
   }
 
   render() {
@@ -88,12 +148,14 @@ export default class CardCreationForm extends Component {
               value={this.props.name}
               floatingLabelText="Card Name"
               style={{flexBasis: 0, flexGrow: 3, marginRight: 25}}
+              errorText={this.nameError}
               onChange={e => { this.props.onSetName(e.target.value); }} />
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
               maxValue={20}
               style={{flexBasis: 0, flexGrow: 1}}
+              errorText={this.costError}
               onChange={v => { this.props.onSetAttribute('energy', v); }} />
           </div>
 
@@ -129,8 +191,9 @@ export default class CardCreationForm extends Component {
           <TextField
             multiLine
             value={this.props.text}
-            hintText={this.hasCardText() ? '' : 'Card Text'}
+            hintText={this.hasCardText ? '' : 'Card Text'}
             style={{width: '100%'}}
+            errorText={this.textError}
             onChange={e => { this.onUpdateText(e.target.value); }} />
 
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -139,21 +202,24 @@ export default class CardCreationForm extends Component {
               value={this.props.attack}
               maxValue={10}
               style={{width: '100%', marginRight: 25}}
-              disabled={this.props.type !== TYPE_ROBOT}
+              disabled={!this.robot}
+              errorText={this.attackError}
               onChange={v => { this.props.onSetAttribute('attack', v); }} />
             <NumberField
               label="Health"
               value={this.props.health}
               maxValue={10}
               style={{width: '100%', marginRight: 25}}
-              disabled={this.props.type === TYPE_EVENT}
+              disabled={this.event}
+              errorText={this.healthError}
               onChange={v => { this.props.onSetAttribute('health', v); }} />
             <NumberField
               label="Speed"
               value={this.props.speed}
               maxValue={3}
               style={{width: '100%', marginRight: 25}}
-              disabled={this.props.type !== TYPE_ROBOT}
+              disabled={!this.robot}
+              errorText={this.speedError}
               onChange={v => { this.props.onSetAttribute('speed', v); }} />
           </div>
 
@@ -161,7 +227,7 @@ export default class CardCreationForm extends Component {
             primary
             fullWidth
             label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
-            disabled={!this.isValid()}
+            disabled={!this.isValid}
             style={{marginTop: 20}}
             onTouchTap={e => { this.props.onAddToCollection(); }} />
         </Paper>

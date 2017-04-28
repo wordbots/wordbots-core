@@ -7,16 +7,10 @@ import Badge from 'material-ui/Badge';
 import { typeToString } from '../../constants';
 import CardStat from '../card/CardStat';
 
-import PageSwitcher from './PageSwitcher';
-
 export default class CardTable extends Component {
   static propTypes = {
     cards: array,
     selectedCardIds: array,
-    filterFunc: func,
-    sortFunc: func,
-    sortOrder: number,
-    searchText: string,
 
     onSelection: func
   };
@@ -75,10 +69,6 @@ export default class CardTable extends Component {
   }
 
   render() {
-    const firstCardOnPage = (this.state.page - 1) * 20;
-    const cards = this.props.cards.slice(firstCardOnPage, firstCardOnPage + 20);
-    const maxPages = Math.floor(this.props.cards.length / 20) + 1;
-
     return (
       <div>
         <div style={{
@@ -93,7 +83,7 @@ export default class CardTable extends Component {
               if (selectedRows === 'none') {
                 this.props.onSelection([]);
               } else {
-                this.props.onSelection(selectedRows.map(rowIndex => cards[rowIndex].id));
+                this.props.onSelection(selectedRows.map(rowIndex => this.props.cards[rowIndex].id));
               }
             }}>
             <TableHeader
@@ -116,15 +106,10 @@ export default class CardTable extends Component {
               displayRowCheckbox={false}
               deselectOnClickaway={false}
               showRowHover>
-                {cards.map(this.renderCardRow.bind(this))}
+                {this.props.cards.map(this.renderCardRow.bind(this))}
             </TableBody>
           </Table>
         </div>
-        <PageSwitcher
-          page={this.state.page}
-          maxPages={maxPages}
-          prevPage={() => this.setState({page: this.state.page - 1})}
-          nextPage={() => this.setState({page: this.state.page + 1})}/>
       </div>
     );
   }

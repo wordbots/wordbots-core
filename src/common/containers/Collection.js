@@ -7,11 +7,9 @@ import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { without } from 'lodash';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
-import CardGrid from '../components/cards/CardGrid';
-import CardTable from '../components/cards/CardTable';
+import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
@@ -122,31 +120,13 @@ class Collection extends Component {
       .filter(this.isCardVisible.bind(this))
       .sort(this.sortCards.bind(this));
 
-    if (this.state.layout === 0) {
-      return (
-        <CardGrid
-          cards={cards}
-          selectedCardIds={this.state.selectedCardIds}
-          onCardClick={id => {
-            const card = this.props.cards.find(c => c.id === id);
-            if (card.source !== 'builtin') {
-              this.setState(state => {
-                if (state.selectedCardIds.includes(id)) {
-                  return {selectedCardIds: without(state.selectedCardIds, id)};
-                } else {
-                  return {selectedCardIds: [...state.selectedCardIds, id]};
-                }
-              });
-            }
-          }} />
-      );
-    } else {
-      return (
-        <CardTable
-          cards={cards}
-          onSelection={selectedRows => { this.setState({selectedCardIds: selectedRows}); }}/>
-      );
-    }
+    return (
+      <CardCollection
+        layout={this.state.layout}
+        cards={cards}
+        selectedCardIds={this.state.selectedCardIds}
+        onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+    );
   }
 
   render() {
@@ -171,7 +151,7 @@ class Collection extends Component {
             onImport={this.props.onImportCards}
             />
 
-          <div style={{marginTop: 50, marginLeft: 40}}>
+          <div style={{marginTop: 50, marginLeft: 40, width: '100%'}}>
             <div>{this.renderCardCollection()}</div>
           </div>
 

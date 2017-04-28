@@ -34,9 +34,9 @@ export default class CardTable extends Component {
   renderCardRowStat(type, stats) {
     if (stats && stats[type]) {
       return (
-        <CardStat 
-          type={type} 
-          base={stats ? stats[type] : ''} 
+        <CardStat
+          type={type}
+          base={stats ? stats[type] : ''}
           current={stats ? stats[type] : ''}
           scale={1} />
       );
@@ -47,12 +47,12 @@ export default class CardTable extends Component {
 
   renderCardRow(card, index) {
     return (
-      <TableRow 
-        key={card.id} 
-        selected={(this.props.selectedCardIds || []).includes(card.id)} 
+      <TableRow
+        key={card.id}
+        selected={(this.props.selectedCardIds || []).includes(card.id)}
         selectable={card.source === 'user'}>
-        <TableRowColumn width={100}>{card.name}</TableRowColumn>
-        <TableRowColumn width={100}>{typeToString(card.type)}</TableRowColumn>
+        <TableRowColumn width={130}>{card.name}</TableRowColumn>
+        <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
         <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
         <TableRowColumn>{card.text}</TableRowColumn>
         <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
@@ -61,8 +61,11 @@ export default class CardTable extends Component {
         <TableRowColumn width={30} style={{textAlign: 'center'}}>
           <Badge
             badgeContent={card.cost}
-            badgeStyle={{backgroundColor: '#00bcd4', fontFamily: 'Carter One', color: 'white'}}
-            style={{padding: 0, width: 24, height: 24 }} />
+            badgeStyle={{
+              width: 30, height: 30, backgroundColor: '#00bcd4',
+              fontFamily: 'Carter One', fontSize: 16, color: 'white'
+            }}
+            style={{padding: 0, width: 24, height: 24}} />
         </TableRowColumn>
       </TableRow>
     );
@@ -92,14 +95,14 @@ export default class CardTable extends Component {
               enableSelectAll={false}
               style={{backgroundColor: '#f44336'}}>
               <TableRow>
-                <TableHeaderColumn width={100} style={{color: 'white'}}>Name</TableHeaderColumn>
-                <TableHeaderColumn width={100} style={{color: 'white'}}>Type</TableHeaderColumn>
-                <TableHeaderColumn width={50} style={{color: 'white'}}>Creator</TableHeaderColumn>
-                <TableHeaderColumn style={{color: 'white'}}>Card Text</TableHeaderColumn>
-                <TableHeaderColumn width={30} style={{color: 'white'}}>Attack</TableHeaderColumn>
-                <TableHeaderColumn width={30} style={{color: 'white'}}>Health</TableHeaderColumn>
-                <TableHeaderColumn width={30} style={{color: 'white'}}>Speed</TableHeaderColumn>
-                <TableHeaderColumn width={30} style={{color: 'white'}}>Cost</TableHeaderColumn>
+                <TableHeaderColumn width={130}>Name</TableHeaderColumn>
+                <TableHeaderColumn width={70}>Type</TableHeaderColumn>
+                <TableHeaderColumn width={50}>Creator</TableHeaderColumn>
+                <TableHeaderColumn>Text</TableHeaderColumn>
+                <TableHeaderColumn width={30}>Attack</TableHeaderColumn>
+                <TableHeaderColumn width={30}>Health</TableHeaderColumn>
+                <TableHeaderColumn width={30}>Speed</TableHeaderColumn>
+                <TableHeaderColumn width={30}>Cost</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody

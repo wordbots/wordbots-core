@@ -9,6 +9,7 @@ export default class NumberField extends Component {
     maxValue: number,
     style: object,
     disabled: bool,
+    errorText: string,
     onChange: func
   };
 
@@ -26,6 +27,7 @@ export default class NumberField extends Component {
         min="0"
         max={this.props.maxValue}
         disabled={this.props.disabled}
+        errorText={this.props.errorText}
         onChange={e => { this.props.onChange(parseInt(e.target.value)); }} />
     );
   }

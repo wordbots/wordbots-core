@@ -20,7 +20,7 @@ export default class DeckPicker extends Component {
   }
 
   get cardsInDeck() {
-    return cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
+    return this.noDecks ? [] : cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
   }
 
   render() {

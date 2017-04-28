@@ -47,6 +47,12 @@ a {
   cursor: not-allowed !important;
 }
 
+th {
+  font-weight: bold !important;
+  color: white !important;
+  font-size: 1em !important;
+}
+
 /* Hand hover animation */
 
 #handTop:hover {

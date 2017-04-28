@@ -23,34 +23,31 @@ export default class NavMenu extends Component {
     );
   }
 
-  render() {
-    const containerStyle = {top: 54, paddingTop: 10};
-
-    if (this.props.user) {
-      return (
-        <Drawer open={this.props.open} containerStyle={containerStyle}>
-          {this.renderLink('/', 'Home', 'home')}
-          {this.renderLink('/collection', 'Collection', 'recent_actors')}
-          {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
-          {this.renderLink('/decks', 'Decks', 'view_list')}
-          {this.renderLink('/play', 'Play', 'videogame_asset')}
-          <MenuItem
+  renderLogoutButton() {
+    return (
+      <MenuItem
             primaryText={`Logout ${this.props.user.displayName}`}
             onClick={logout}
             leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
-        </Drawer>
-      );
-    } else {
-      return (
-        <Drawer open={this.props.open} containerStyle={containerStyle}>
-          {this.renderLink('/', 'Home', 'home')}
-          {this.renderLink('/login', 'Login', 'person')}
-          {this.renderLink('/collection', 'Collection', 'recent_actors')}
-          {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
-          {this.renderLink('/decks', 'Decks', 'view_list')}
-          {this.renderLink('/play', 'Play', 'videogame_asset')}
-        </Drawer>
-      );
-    }
+    );
+  }
+
+  render() {
+    return (
+      <Drawer
+        open={this.props.open}
+        containerStyle={{
+          top: 54,
+          paddingTop: 10
+      }}>
+        {this.renderLink('/', 'Home', 'home')}
+        {!this.props.user && this.renderLink('/login', 'Login', 'person')}
+        {this.renderLink('/collection', 'Collection', 'view_module')}
+        {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
+        {this.renderLink('/decks', 'Decks', 'view_list')}
+        {this.renderLink('/play', 'Play', 'videogame_asset')}
+        {this.props.user && this.renderLogoutButton()}
+      </Drawer>
+    );
   }
 }

@@ -60,7 +60,7 @@ export default class CardCollection extends Component {
             }
           }
         }} />
-    )
+    );
   }
 
   renderTable() {

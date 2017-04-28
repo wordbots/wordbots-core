@@ -23,14 +23,26 @@ export default class CardCollection extends Component {
     };
   }
 
-  renderCardCollection(cards) {
+  get numPages() {
+    return Math.ceil(this.props.cards.length / 20);
+  }
+
+  get currentPage() {
+    return Math.min(this.state.page, this.numPages);
+  }
+
+  get cards() {
+    return this.props.cards.slice((this.currentPage - 1) * 20, this.currentPage * 20);
+  }
+
+  renderCardCollection() {
     if (this.props.layout === 0) {
       return (
         <CardGrid
-          cards={cards}
+          cards={this.cards}
           selectedCardIds={this.props.selectedCardIds}
           onCardClick={id => {
-            const card = this.props.cards.find(c => c.id === id);
+            const card = this.cards.find(c => c.id === id);
             if (card.source !== 'builtin') {
               if (this.props.selectedCardIds.includes(id)) {
                 this.props.onSelection(without(this.props.selectedCardIds, id));
@@ -43,33 +55,29 @@ export default class CardCollection extends Component {
     } else {
       return (
         <CardTable
-          cards={cards}
+          cards={this.cards}
           selectedCardIds={this.props.selectedCardIds}
           onSelection={selectedRows => this.props.onSelection(selectedRows)}/>
       );
     }
-  } 
+  }
+
+  renderPageControls() {
+    return (
+      <PageSwitcher
+          page={this.currentPage}
+          maxPages={this.numPages}
+          prevPage={() => this.setState({page: this.currentPage - 1})}
+          nextPage={() => this.setState({page: this.currentPage + 1})}/>
+    );
+  }
 
   render() {
-    const firstCardOnPage = (this.state.page - 1) * 20;
-    const cards = this.props.cards.slice(firstCardOnPage, firstCardOnPage + 20);
-    const maxPages = Math.floor(this.props.cards.length / 20) + 1;
-
     return (
       <div style={{width: '100%'}}>
-        <PageSwitcher
-          page={this.state.page}
-          maxPages={maxPages}
-          prevPage={() => this.setState({page: this.state.page - 1})}
-          nextPage={() => this.setState({page: this.state.page + 1})}/>
-
-        {this.renderCardCollection(cards)}
-
-        <PageSwitcher
-          page={this.state.page}
-          maxPages={maxPages}
-          prevPage={() => this.setState({page: this.state.page - 1})}
-          nextPage={() => this.setState({page: this.state.page + 1})}/>
+        {this.renderPageControls()}
+        {this.renderCardCollection()}
+        {this.renderPageControls()}
       </div>
     );
   }

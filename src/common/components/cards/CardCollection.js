@@ -35,33 +35,6 @@ export default class CardCollection extends Component {
     return this.props.cards.slice((this.currentPage - 1) * 20, this.currentPage * 20);
   }
 
-  renderCardCollection() {
-    if (this.props.layout === 0) {
-      return (
-        <CardGrid
-          cards={this.cards}
-          selectedCardIds={this.props.selectedCardIds}
-          onCardClick={id => {
-            const card = this.cards.find(c => c.id === id);
-            if (card.source !== 'builtin') {
-              if (this.props.selectedCardIds.includes(id)) {
-                this.props.onSelection(without(this.props.selectedCardIds, id));
-              } else {
-                this.props.onSelection([...this.props.selectedCardIds, id]);
-              }
-            }
-          }} />
-      );
-    } else {
-      return (
-        <CardTable
-          cards={this.cards}
-          selectedCardIds={this.props.selectedCardIds}
-          onSelection={selectedRows => this.props.onSelection(selectedRows)}/>
-      );
-    }
-  }
-
   renderPageControls() {
     return (
       <PageSwitcher
@@ -72,11 +45,38 @@ export default class CardCollection extends Component {
     );
   }
 
+  renderGrid() {
+    return (
+     <CardGrid
+        cards={this.cards}
+        selectedCardIds={this.props.selectedCardIds}
+        onCardClick={id => {
+          const card = this.cards.find(c => c.id === id);
+          if (card.source !== 'builtin') {
+            if (this.props.selectedCardIds.includes(id)) {
+              this.props.onSelection(without(this.props.selectedCardIds, id));
+            } else {
+              this.props.onSelection([...this.props.selectedCardIds, id]);
+            }
+          }
+        }} />
+    )
+  }
+
+  renderTable() {
+    return (
+      <CardTable
+        cards={this.cards}
+        selectedCardIds={this.props.selectedCardIds}
+        onSelection={selectedRows => this.props.onSelection(selectedRows)}/>
+    );
+  }
+
   render() {
     return (
       <div style={{width: '100%'}}>
         {this.renderPageControls()}
-        {this.renderCardCollection()}
+        {this.props.layout === 0 ? this.renderGrid() : this.renderTable()}
         {this.renderPageControls()}
       </div>
     );

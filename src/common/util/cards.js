@@ -1,4 +1,4 @@
-import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, reduce, uniqBy } from 'lodash';
+import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, reduce, uniqBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 
@@ -11,6 +11,18 @@ const PARSER_URL = 'http://parser.wordbots.io/parse';  // 'http://localhost:8080
 const PARSE_DEBOUNCE_MS = 500;
 
 const SYNONYMS = {
+  ' 0 ': ' zero ',
+  ' 1 ': ' one ',
+  ' 2 ': ' two ',
+  ' 3 ': ' three ',
+  ' 4 ': ' four ',
+  ' 5 ': ' five ',
+  ' 6 ': ' six ',
+  ' 7 ': ' seven ',
+  ' 8 ': ' eight ',
+  ' 9 ': ' nine ',
+  ' 10 ': ' ten ',
+
   'robot': ['creature', 'minion'],
   'startup': ['start up', 'start-up'],
   'shutdown': ['shut down', 'shut-down']
@@ -64,10 +76,11 @@ export const sortFunctions = [
 //
 
 export function replaceSynonyms(text) {
-  return reduce(SYNONYMS, ((str, synonyms, term) =>
-    str.replace(new RegExp(`(${synonyms.join('|')})`, 'g'), term)
-       .replace(new RegExp(`(${synonyms.map(capitalize).join('|')})`, 'g'), capitalize(term))
-  ), text);
+  return reduce(SYNONYMS, ((str, synonyms, term) => {
+    synonyms = isArray(synonyms) ? synonyms : [synonyms];
+    return str.replace(new RegExp(`(${synonyms.join('|')})`, 'g'), term)
+              .replace(new RegExp(`(${synonyms.map(capitalize).join('|')})`, 'g'), capitalize(term));
+  }), text);
 }
 
 export function splitSentences(str) {

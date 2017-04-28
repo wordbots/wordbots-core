@@ -151,13 +151,12 @@ class Collection extends Component {
             onImport={this.props.onImportCards}
             />
 
-          <div style={{marginTop: 50, marginLeft: 40, width: '100%'}}>
+          <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
             <div>{this.renderCardCollection()}</div>
           </div>
 
           <div style={{
-            margin: 50,
-            marginLeft: 0,
+            margin: '30px 50px 50px 0',
             width: 300,
             minWidth: 300
           }}>

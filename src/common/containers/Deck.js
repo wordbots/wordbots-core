@@ -125,13 +125,12 @@ class Deck extends Component {
           justifyContent: 'space-between',
           alignItems: 'flex-start'
         }}>
-          <div style={{marginTop: 50, marginLeft: 40, width: '100%'}}>
+          <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
             {this.renderCardCollection()}
           </div>
 
           <div style={{
-            margin: 50,
-            marginLeft: 0,
+            margin: '30px 50px 50px 0',
             width: 300,
             minWidth: 300
           }}>

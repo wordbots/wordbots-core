@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, element, func, number } from 'prop-types';
+import { array, bool, func } from 'prop-types';
 
 import { inBrowser } from '../../util/common';
 import { splitSentences } from '../../util/cards';
@@ -8,26 +8,19 @@ import Sentence from '../card/Sentence';
 
 export default class CardGrid extends Component {
   static propTypes = {
-    children: element,
     cards: array,
     selectedCardIds: array,
-    filterFunc: func,
-    sortFunc: func,
-    sortOrder: number,
+    selectable: bool,
 
     onCardClick: func
   };
 
-  sortCards(a, b) {
-    const f = this.props.sortFunc;
+  constructor(props) {
+    super(props);
 
-    if (f(a) < f(b)) {
-      return this.props.sortOrder ? 1 : -1;
-    } else if (f(a) > f(b)) {
-      return this.props.sortOrder ? -1 : 1;
-    } else {
-      return 0;
-    }
+    this.state = {
+      page: 1
+    };
   }
 
   renderCard(card) {
@@ -35,7 +28,8 @@ export default class CardGrid extends Component {
       <div
         key={card.id}
         style={{
-          marginRight: 15
+          marginRight: 15,
+          marginTop: -12
       }}>
         <Card
           collection
@@ -50,7 +44,7 @@ export default class CardGrid extends Component {
           cost={card.cost}
           baseCost={card.cost}
           source={card.source}
-          selected={(this.props.selectedCardIds || []).includes(card.id)}
+          selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
           onCardClick={this.props.onCardClick} />
       </div>
     );
@@ -59,18 +53,13 @@ export default class CardGrid extends Component {
   render() {
     return (
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-start',
-        width: '100%',
-        margin: 10
+        width: 'calc(100% - 10px)'
       }}>
-        {this.props.children}
-        {!inBrowser() ? null :
-          this.props.cards
-            .filter(this.props.filterFunc)
-            .sort(this.sortCards.bind(this))
-            .map(this.renderCard.bind(this))}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start'
+        }}>{!inBrowser() ? null : this.props.cards.map(this.renderCard.bind(this))}</div>
       </div>
     );
   }

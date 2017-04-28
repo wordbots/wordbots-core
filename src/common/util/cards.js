@@ -65,10 +65,13 @@ export function groupCards(cards) {
 // Sorting functions for card grids:
 // 0 = cost, 1 = name, 2 = type, 3 = source
 export const sortFunctions = [
-  c => [c.cost, c.name],
-  c => c.name,
-  c => [typeToString(c.type), c.cost, c.name],
-  c => [c.source === 'builtin', c.cost, c.name]
+  c => [c.cost, c.name.toLowerCase()],
+  c => c.name.toLowerCase(),
+  c => [typeToString(c.type), c.cost, c.name.toLowerCase()],
+  c => [c.source === 'builtin', c.cost, c.name.toLowerCase()],
+  c => [c.stats ? (c.stats.attack || 0) : 0, c.cost, c.name],
+  c => [c.stats ? (c.stats.health || 0) : 0, c.cost, c.name],
+  c => [c.stats ? (c.stats.speed || 0) : 0, c.name]
 ];
 
 //

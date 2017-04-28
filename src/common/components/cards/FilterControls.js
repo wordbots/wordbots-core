@@ -23,7 +23,7 @@ export default class FilterControls extends Component {
             fontWeight: 700,
             fontSize: 14,
             marginBottom: 10
-          }}>Card Types</div>
+          }}>Filter by Card Type</div>
 
           <Toggle
             style={toggleStyle}
@@ -41,12 +41,13 @@ export default class FilterControls extends Component {
             defaultToggled
             onToggle={this.props.onToggleFilter('structures')} />
         </div>
+
         <div key="cost" style={{marginBottom: 20}}>
           <div style={{
             fontWeight: 700,
             fontSize: 14,
             marginBottom: 20
-          }}>Card Cost</div>
+          }}>Filter by Cost</div>
 
           <div>
             <Range

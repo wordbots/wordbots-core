@@ -7,11 +7,13 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+import FlatButton from 'material-ui/FlatButton';
 
 import { inBrowser } from '../util/common';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
+import LoginDialog from '../components/users/LoginDialog';
 import GameMenu from '../containers/GameMenu';
 import Collection from '../containers/Collection';
 import Creator from '../containers/Creator';
@@ -79,7 +81,8 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      currentLocation: null
+      currentLocation: null,
+      loginOpen: false
     };
   }
 
@@ -119,11 +122,22 @@ class App extends Component {
     };
   }
 
+  handleLoginOpen() {
+    this.setState({
+      loginOpen: true
+    });
+  }
+
+  handleLoginClose() {
+    this.setState({
+      loginOpen: false
+    });
+  }
+
   get title() {
     return (
       <div style={{height: 66}}>
         <AppBar
-          zDepth={1}
           title={
             <Link style={{
               color: '#fff', fontFamily: 'Carter One', fontSize: 32
@@ -137,6 +151,13 @@ class App extends Component {
             <IconButton onClick={() => { this.props.onToggleSidebar(!this.props.sidebarOpen); }}>
               <FontIcon className="material-icons">menu</FontIcon>
             </IconButton>
+          }
+          iconElementRight={!this.props.user && 
+            <FlatButton 
+              label="Login"
+              labelPosition="before"
+              onTouchTap={() => this.handleLoginOpen()}
+              icon={<FontIcon className="material-icons">person</FontIcon>} />
           }
         />
       </div>
@@ -181,6 +202,7 @@ class App extends Component {
           {this.sidebar}
           {this.content}
         </div>
+        <LoginDialog loginOpen={this.state.loginOpen} handleClose={() => this.handleLoginClose()} />
       </div>
     );
   }

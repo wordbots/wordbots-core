@@ -30,6 +30,13 @@ export function applyFuncToField(obj, func, field) {
   return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
 }
 
+// http://stackoverflow.com/a/28248573
+export function arrayToSentence(arr) {
+  return arr.slice(0, -2).join(', ') +
+    (arr.slice(0, -2).length ? ', ' : '') +
+    arr.slice(-2).join(' and ');
+}
+
 export function inBrowser() {
   return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
 }

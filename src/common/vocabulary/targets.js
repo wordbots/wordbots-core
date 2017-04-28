@@ -1,7 +1,11 @@
-import { compact, every, isArray, isEmpty } from 'lodash';
+import { compact, every, fromPairs, isArray, isEmpty } from 'lodash';
 import { pick } from 'shuffle-array';
 
-import { opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf } from '../util/game';
+import { arrayToSentence } from '../util/common';
+import {
+  opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf,
+  logAction
+} from '../util/game';
 
 // Targets are all functions that return one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}
@@ -99,8 +103,18 @@ export default function targets(state, currentObject) {
     },
 
     random: function (num, collection) {
-      const chosen = pick(collection.entries, {picks: num, rng: state.rng});
-      return {type: collection.type, entries: isArray(chosen) ? chosen : [chosen]};
+      let chosen = pick(collection.entries, {picks: num, rng: state.rng});
+      chosen = isArray(chosen) ? chosen : [chosen];
+
+      // Log the random selection.
+      if (chosen.length > 0 && ['cards', 'objects'].includes(collection.type)) {
+        const cards = fromPairs(chosen.map(c => c.card ? [c.card.name, c.card] : [c.name, c]));
+        const names = Object.keys(cards).map(name => `|${name}|`);
+        const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+        logAction(state, null, explanationStr, cards);
+      }
+
+      return {type: collection.type, entries: chosen};
     },
 
     self: function () {

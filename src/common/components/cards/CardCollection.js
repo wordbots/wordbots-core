@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, number, string } from 'prop-types';
+import { array, func, number } from 'prop-types';
 import { without } from 'lodash';
 
 import PageSwitcher from './PageSwitcher';

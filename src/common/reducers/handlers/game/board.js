@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
@@ -82,7 +82,9 @@ export function attack(state, source, target) {
         dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
       );
 
-      state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+      if (!hasEffect(defender, 'cannotfightback')) {
+        state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+      }
 
       // Move attacker to defender's space (if possible).
       if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {

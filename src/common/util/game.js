@@ -68,7 +68,7 @@ export function getCost(card) {
   }
 }
 
-function hasEffect(object, effect) {
+export function hasEffect(object, effect) {
   return some((object.effects || []), eff => eff.effect === effect);
 }
 

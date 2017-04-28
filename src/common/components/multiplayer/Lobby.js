@@ -37,7 +37,7 @@ export default class Lobby extends Component {
 
   get deck() {
     const deck = this.props.availableDecks[this.state.selectedDeck];
-    const cards = cardsInDeck(deck).map(instantiateCard);
+    const cards = cardsInDeck(deck, this.props.cards).map(instantiateCard);
     return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
   }
 

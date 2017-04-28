@@ -13,6 +13,16 @@ a {
   text-decoration: none;
 }
 
+thead {
+  background-color: #f44336 !important;
+}
+
+th {
+  font-weight: bold !important;
+  color: white !important;
+  font-size: 1em !important;
+}
+
 .activeNavLink > div > span {
   background-color: #d8d8d8 !important;
 }
@@ -45,12 +55,6 @@ a {
 
 .notAllowed button {
   cursor: not-allowed !important;
-}
-
-th {
-  font-weight: bold !important;
-  color: white !important;
-  font-size: 1em !important;
 }
 
 /* Hand hover animation */

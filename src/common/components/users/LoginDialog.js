@@ -17,7 +17,7 @@ export default class LoginDialog extends Component {
 
     this.state = {
       error: null,
-      register: true,
+      register: false,
       email: '',
       username: '',
       password: ''

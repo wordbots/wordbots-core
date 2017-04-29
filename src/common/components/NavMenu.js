@@ -26,9 +26,9 @@ export default class NavMenu extends Component {
   renderLogoutButton() {
     return (
       <MenuItem
-            primaryText={`Logout ${this.props.user.displayName}`}
-            onClick={logout}
-            leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
+        primaryText={`Logout`}
+        onClick={logout}
+        leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
     );
   }
 
@@ -41,7 +41,6 @@ export default class NavMenu extends Component {
           paddingTop: 10
       }}>
         {this.renderLink('/', 'Home', 'home')}
-        {!this.props.user && this.renderLink('/login', 'Login', 'person')}
         {this.renderLink('/collection', 'Collection', 'view_module')}
         {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}

@@ -11,6 +11,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import { inBrowser } from '../util/common';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
+
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
@@ -20,7 +21,6 @@ import Creator from '../containers/Creator';
 import Deck from '../containers/Deck';
 import Decks from '../containers/Decks';
 import Home from '../containers/Home';
-import Login from '../containers/Login';
 import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
 
@@ -123,15 +123,38 @@ class App extends Component {
   }
 
   handleLoginOpen() {
-    this.setState({
-      loginOpen: true
-    });
+    this.setState({loginOpen: true});
   }
 
   handleLoginClose() {
-    this.setState({
-      loginOpen: false
-    });
+    this.setState({loginOpen: false});
+  }
+
+  handleOnRequestChange(value) {
+    switch (value) {
+      case 1:
+        logout();
+    }
+  }
+
+  get rightElement() {
+    if (this.props.user) {
+      return (
+        <FlatButton 
+          label={this.props.user.displayName}
+          labelPosition="before"
+          onTouchTap={() => this.handleUserMenuOpen()}
+          icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
+      );
+    } else {
+      return (
+        <FlatButton 
+          label="Login"
+          labelPosition="before"
+          onTouchTap={() => this.handleLoginOpen()}
+          icon={<FontIcon className="material-icons">person</FontIcon>} />
+      );
+    }
   }
 
   get title() {
@@ -152,13 +175,7 @@ class App extends Component {
               <FontIcon className="material-icons">menu</FontIcon>
             </IconButton>
           }
-          iconElementRight={!this.props.user && 
-            <FlatButton 
-              label="Login"
-              labelPosition="before"
-              onTouchTap={() => this.handleLoginOpen()}
-              icon={<FontIcon className="material-icons">person</FontIcon>} />
-          }
+          iconElementRight={this.rightElement}
         />
       </div>
     );
@@ -182,7 +199,6 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/home" component={Home} />
-          {!this.props.user && <Route path="/login" component={Login} />}
           <Route path="/collection" component={Collection} />
           <Route path="/creator" component={Creator} />
           <Route path="/decks" component={Decks} />

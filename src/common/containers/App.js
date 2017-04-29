@@ -8,9 +8,12 @@ import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import FlatButton from 'material-ui/FlatButton';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 
 import { inBrowser } from '../util/common';
-import { listenToUserData, onLogin, onLogout } from '../util/firebase';
+import { listenToUserData, onLogin, onLogout, logout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
@@ -129,14 +132,44 @@ class App extends Component {
     this.setState({loginOpen: false});
   }
 
+
+  handleUserMenuOpen(event) {
+    event.preventDefault();
+
+    this.setState({
+      userOpen: true,
+      anchorEl: event.currentTarget
+    });
+  }
+
+  handleRequestClose() {
+    this.setState({userOpen: false});
+  }
+
   get rightElement() {
     if (this.props.user) {
       return (
-        <FlatButton 
-          label={this.props.user.displayName}
-          labelPosition="before"
-          onTouchTap={() => this.handleUserMenuOpen()}
-          icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
+        <div style={{marginTop: 7}}>
+          <FlatButton
+            style={{color: 'white'}}
+            label={this.props.user.displayName}
+            labelPosition="before"
+            onTouchTap={(e) => this.handleUserMenuOpen(e)}
+            icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
+          <Popover
+            open={this.state.userOpen}
+            anchorEl={this.state.anchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            onRequestClose={() => this.handleRequestClose()}>
+            <Menu>
+              <MenuItem 
+                primaryText="Logout" 
+                onClick={() => { logout(); this.handleRequestClose(); }}
+                leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
+            </Menu>
+          </Popover>
+        </div>
       );
     } else {
       return (

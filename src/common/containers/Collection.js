@@ -171,6 +171,17 @@ class Collection extends Component {
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
+                marginBottom: 10
+              }}>Search</div>
+
+              <TextField
+                hintText="Enter card name or text"
+                style={{marginBottom: 10}}
+                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
+
+              <div style={{
+                fontWeight: 700,
+                fontSize: 14,
                 marginBottom: 20
               }}>Layout</div>
 
@@ -213,17 +224,6 @@ class Collection extends Component {
                   view_list
                 </FontIcon>
               </div>
-
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 10
-              }}>Search</div>
-
-              <TextField
-                hintText="Enter card name or text"
-                style={{marginBottom: 10}}
-                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
 
               <SortControls
                 criteria={this.state.sortingCriteria}

@@ -5,8 +5,6 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { logout } from '../util/firebase';
-
 export default class NavMenu extends Component {
   static propTypes = {
     open: bool,
@@ -22,16 +20,6 @@ export default class NavMenu extends Component {
       </NavLink>
     );
   }
-
-  renderLogoutButton() {
-    return (
-      <MenuItem
-        primaryText={'Logout'}
-        onClick={logout}
-        leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
-    );
-  }
-
   render() {
     return (
       <Drawer
@@ -45,7 +33,6 @@ export default class NavMenu extends Component {
         {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}
-        {this.props.user && this.renderLogoutButton()}
       </Drawer>
     );
   }

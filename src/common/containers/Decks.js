@@ -121,7 +121,14 @@ class Decks extends Component {
             {deck.name}
           </div>
 
-          <div style={{flex: 1, textAlign: 'right', fontSize: 24, color: (isComplete ? 'green' : 'red')}}>
+          <div style={{
+            flex: 1, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'flex-end',
+            textAlign: 'right', 
+            fontSize: 24, 
+            color: (isComplete ? 'green' : 'red')}}>
             <FontIcon
               className="material-icons"
               style={{paddingRight: 5, color: (isComplete ? 'green' : 'red')}}

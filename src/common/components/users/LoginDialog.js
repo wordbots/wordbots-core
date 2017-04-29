@@ -52,6 +52,12 @@ export default class LoginDialog extends Component {
       .catch(e => { this.setState({error: 'Email address not found.'}); });
   }
 
+  handleKeyPress(t) {
+    if (t.charCode === 13 && !this.submitDisabled()) {
+      this.submit();
+    }
+  }
+
   notEmpty(fields) {
     return fields.reduce((base, field) => base && (field !== ''), true);
   }
@@ -64,6 +70,14 @@ export default class LoginDialog extends Component {
     }
   }
 
+  submit() {
+    if (this.state.register) {
+      this.register(this.state.email, this.state.username, this.state.password);
+    } else {
+      this.login(this.state.email, this.state.password);
+    }
+  }
+
   renderLoginForm() {
     return (
       <div style={{position: 'relative'}}>
@@ -72,6 +86,7 @@ export default class LoginDialog extends Component {
             value={this.state.email}
             style={{width: '100%'}}
             floatingLabelText="Email address"
+            onKeyPress={(t) => this.handleKeyPress(t)}
             onChange={e => this.setState({email: e.target.value})} />
         </div>
 
@@ -82,6 +97,7 @@ export default class LoginDialog extends Component {
               value={this.state.username}
               style={{width: '100%'}}
               floatingLabelText="Username"
+              onKeyPress={(t) => this.handleKeyPress(t)}
               onChange={e => { this.setState({username: e.target.value}); }} />
           </div>
         }
@@ -92,6 +108,7 @@ export default class LoginDialog extends Component {
             style={{width: '100%'}}
             floatingLabelText="Password"
             type="password"
+            onKeyPress={(t) => this.handleKeyPress(t)}
             onChange={e => this.setState({password: e.target.value})} />
         </div>
 
@@ -152,13 +169,7 @@ export default class LoginDialog extends Component {
         label={this.state.register ? 'Register' : 'Login'}
         primary
         disabled={this.submitDisabled()}
-        onTouchTap={() => {
-          if (this.state.register) {
-            this.register(this.state.email, this.state.username, this.state.password);
-          } else {
-            this.login(this.state.email, this.state.password);
-          }
-        }}
+        onTouchTap={() => this.submit()}
       />
     ];
 

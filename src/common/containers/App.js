@@ -11,7 +11,6 @@ import FlatButton from 'material-ui/FlatButton';
 
 import { inBrowser } from '../util/common';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
-
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
@@ -128,13 +127,6 @@ class App extends Component {
 
   handleLoginClose() {
     this.setState({loginOpen: false});
-  }
-
-  handleOnRequestChange(value) {
-    switch (value) {
-      case 1:
-        logout();
-    }
   }
 
   get rightElement() {

@@ -26,7 +26,7 @@ export default class NavMenu extends Component {
   renderLogoutButton() {
     return (
       <MenuItem
-        primaryText={`Logout`}
+        primaryText={'Logout'}
         onClick={logout}
         leftIcon={<FontIcon className="material-icons">person</FontIcon>}/>
     );

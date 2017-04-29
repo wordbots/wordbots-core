@@ -57,6 +57,12 @@ th {
   cursor: not-allowed !important;
 }
 
+/* moz Sprite Fix */
+
+.wb-sprite {
+  image-rendering: -moz-crisp-edges;
+}
+
 /* Hand hover animation */
 
 #handTop:hover {

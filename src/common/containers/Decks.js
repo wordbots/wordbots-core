@@ -224,7 +224,7 @@ class Decks extends Component {
           <div style={{
             margin: 50,
             marginLeft: 0,
-            width: 220,
+            width: 230,
             height: 300,
             position: 'relative'
           }}>

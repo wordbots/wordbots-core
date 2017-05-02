@@ -13,6 +13,16 @@ a {
   text-decoration: none;
 }
 
+thead {
+  background-color: #f44336 !important;
+}
+
+th {
+  font-weight: bold !important;
+  color: white !important;
+  font-size: 1em !important;
+}
+
 .activeNavLink > div > span {
   background-color: #d8d8d8 !important;
 }
@@ -43,10 +53,14 @@ a {
   text-decoration: underline;
 }
 
-th {
-  font-weight: bold !important;
-  color: white !important;
-  font-size: 1em !important;
+.notAllowed button {
+  cursor: not-allowed !important;
+}
+
+/* moz Sprite Fix */
+
+.wb-sprite {
+  image-rendering: -moz-crisp-edges;
 }
 
 /* Hand hover animation */

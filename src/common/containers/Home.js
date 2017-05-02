@@ -10,7 +10,7 @@ import MarkdownBlock from '../components/MarkdownBlock';
 export function mapStateToProps(state) {
   return {
     version: state.version,
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 

@@ -21,7 +21,8 @@ function mapStateToProps(state) {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
     deck: state.collection.currentDeck,
-    sidebarOpen: state.layout.present.sidebarOpen
+    loggedIn: state.global.user !== null,
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 
@@ -38,6 +39,7 @@ class Deck extends Component {
     id: string,
     cards: array,
     deck: object,
+    loggedIn: bool,
     sidebarOpen: bool,
 
     history: object,
@@ -58,7 +60,7 @@ class Deck extends Component {
       sortingCriteria: 3,
       sortingOrder: 0,
       searchText: '',
-      selectedCardIds: props.deck ? props.deck.cards.map(c => c.id) : [],
+      selectedCardIds: props.deck ? props.deck.cardIds : [],
       layout: 0
     };
   }
@@ -84,8 +86,8 @@ class Deck extends Component {
   }
 
   searchCards(card) {
-    return (card.name.toLowerCase().includes(this.state.searchText.toLowerCase()) ||
-      (card.text || '').toLowerCase().includes(this.state.searchText.toLowerCase()));
+    const query = this.state.searchText.toLowerCase();
+    return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
   }
 
   sortCards(a, b) {
@@ -143,6 +145,7 @@ class Deck extends Component {
                 id={this.props.id}
                 name={this.props.deck ? this.props.deck.name : ''}
                 cards={this.selectedCards()}
+                loggedIn={this.props.loggedIn}
                 onCardClick={id => {
                   this.setState(state => {
                     state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);
@@ -159,6 +162,11 @@ class Deck extends Component {
               padding: 20,
               marginBottom: 20
             }}>
+              <div style={{
+                fontWeight: 100,
+                fontSize: 28
+              }}>Energy Curve</div>
+
               <EnergyCurve
                 cards={this.selectedCards()} />
             </Paper>
@@ -166,6 +174,17 @@ class Deck extends Component {
             <Paper style={{
               padding: 20
             }}>
+              <div style={{
+                fontWeight: 700,
+                fontSize: 14,
+                marginBottom: 10
+              }}>Search</div>
+
+              <TextField
+                hintText="Enter card name or text"
+                style={{marginBottom: 10}}
+                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
+
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
@@ -211,17 +230,6 @@ class Deck extends Component {
                   view_list
                 </FontIcon>
               </div>
-
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 10
-              }}>Search</div>
-
-              <TextField
-                hintText="Enter card name or text"
-                style={{marginBottom: 10}}
-                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
 
               <SortControls
                 criteria={this.state.sortingCriteria}

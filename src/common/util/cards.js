@@ -1,6 +1,10 @@
 import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, reduce, uniqBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+import defaultState from '../store/defaultCollectionState';
+
+import { id as generateId, compareCertainKeys } from './common';
+import { saveUserData, indexParsedSentence } from './firebase';
 
 //
 // 0. Card-related constants (used below).
@@ -42,8 +46,34 @@ const HINTS = {
 };
 
 //
-// 1. Helper functions for card-related components.
+// 1. Miscellaneous helper functions pertaining to cards.
 //
+
+export function areIdenticalCards(card1, card2) {
+  // TODO: Check abilities/command rather than text.
+  return compareCertainKeys(card1, card2, ['type', 'cost', 'text', 'stats']);
+}
+
+export function cardsInDeck(deck, cards) {
+  return compact((deck.cardIds || []).map(id => cards.find(c => c.id === id)));
+}
+
+export function instantiateCard(card) {
+  return Object.assign({}, card, {
+    id: generateId(),
+    baseCost: card.cost
+  });
+}
+
+//
+// 2. Helper functions for card-related components.
+//
+
+export function groupCards(cards) {
+  return uniqBy(cards, 'id').map(card =>
+    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
+  );
+}
 
 export function isCardVisible(card, filters, costRange) {
   if ((!filters.robots && card.type === TYPE_ROBOT) ||
@@ -56,26 +86,21 @@ export function isCardVisible(card, filters, costRange) {
   }
 }
 
-export function groupCards(cards) {
-  return uniqBy(cards, 'name').map(card =>
-    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
-  );
-}
-
 // Sorting functions for card grids:
-// 0 = cost, 1 = name, 2 = type, 3 = source
+// 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
+// (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
 export const sortFunctions = [
-  c => [c.cost, c.name.toLowerCase()],
+  c => [c.cost.toString(36), c.name.toLowerCase()],
   c => c.name.toLowerCase(),
-  c => [typeToString(c.type), c.cost, c.name.toLowerCase()],
-  c => [c.source === 'builtin', c.cost, c.name.toLowerCase()],
-  c => [c.stats ? (c.stats.attack || 0) : 0, c.cost, c.name],
-  c => [c.stats ? (c.stats.health || 0) : 0, c.cost, c.name],
-  c => [c.stats ? (c.stats.speed || 0) : 0, c.name]
+  c => [typeToString(c.type), c.cost.toString(36), c.name.toLowerCase()],
+  c => [c.source === 'builtin', c.cost.toString(36), c.name.toLowerCase()],
+  c => [(c.stats && c.stats.attack || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
+  c => [(c.stats && c.stats.health || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
+  c => [(c.stats && c.stats.speed || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()]
 ];
 
 //
-// 2. Text parsing.
+// 3. Text parsing.
 //
 
 export function replaceSynonyms(text) {
@@ -98,20 +123,25 @@ export function getSentencesFromInput(text) {
 }
 
 function parse(sentences, mode, callback) {
-  sentences
-    .forEach((sentence, idx) => {
-      const parserInput = encodeURIComponent(expandKeywords(sentence));
-      const parseUrl = `${PARSER_URL}?input=${parserInput}&format=js&mode=${mode}`;
-      fetch(parseUrl)
-        .then(response => response.json())
-        .then(json => { callback(idx, sentence, json); });
+  sentences.forEach((sentence, idx) => {
+    const parserInput = encodeURIComponent(expandKeywords(sentence));
+    const parseUrl = `${PARSER_URL}?input=${parserInput}&format=js&mode=${mode}`;
+
+    fetch(parseUrl)
+      .then(response => response.json())
+      .then(json => {
+        callback(idx, sentence, json);
+        if (json.tokens && json.js) {
+          indexParsedSentence(sentence, json.tokens, json.js);
+        }
+      });
   });
 }
 
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
 //
-// 2.5. Keyword abilities.
+// 3.5. Keyword abilities.
 //
 
 const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
@@ -152,7 +182,7 @@ export function expandKeywords(sentence) {
 }
 
 //
-// 3. Miscellaneous helper functions pertaining to cards.
+// 3. Import/export.
 //
 
 export function cardsToJson(cards) {
@@ -164,4 +194,34 @@ export function cardsFromJson(json) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   return JSON.parse(json.replace(/%27/g, '\\"'));
+}
+
+export function loadCardsFromFirebase(state, data) {
+  if (data) {
+    state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+  } else {
+    state.cards = defaultState.cards;
+  }
+
+  return state;
+}
+
+export function loadDecksFromFirebase(state, data) {
+  if (data) {
+    if (data.decks) {
+      state.decks = data.decks;
+    }
+  } else {
+    state.decks = defaultState.decks;
+  }
+
+  return state;
+}
+
+export function saveCardsToFirebase(state) {
+  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
+}
+
+export function saveDecksToFirebase(state) {
+  saveUserData('decks', state.decks);
 }

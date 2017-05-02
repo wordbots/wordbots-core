@@ -1,5 +1,4 @@
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
-import { instantiateCard } from '../util/common';
 
 /* eslint-disable quotes */
 
@@ -483,6 +482,10 @@ export const collection = [
   antiGravityFieldCard,
   magpieMachineCard,
   recyclerCard
-].map(c =>
-  Object.assign(instantiateCard(c), {source: 'builtin'})
+].map(card =>
+  Object.assign(card, {
+    id: `builtin/${card.name}`,
+    baseCost: card.cost,
+    source: 'builtin'
+  })
 );

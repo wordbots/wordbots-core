@@ -1,39 +1,33 @@
-import { some } from 'lodash';
-
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { id, compareCertainKeys } from '../../util/common';
-import { cardsToJson, cardsFromJson, splitSentences } from '../../util/cards';
-import { saveToLocalStorage } from '../../store/persistState';
+import { id } from '../../util/common';
+import {
+  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
+  loadCardsFromFirebase, loadDecksFromFirebase, saveCardsToFirebase, saveDecksToFirebase
+} from '../../util/cards';
 
 const cardsHandlers = {
-  addToCollection: function (state, cardProps) {
-    const card = createCardFromProps(cardProps);
-
-    if (cardProps.id) {
-      // Editing an existing card.
-      const existingCard = state.cards.find(c => c.id === cardProps.id);
-      Object.assign(existingCard, card);
-    } else {
-      if (some(state.cards, c => areIdenticalCards(c, card))) {
-        // There's already an identical card in the collection - log some kind of warning to the user.
-      } else {
-        // Creating a new card.
-        state.cards.push(card);
-      }
-    }
-
-    saveCardsToLocalStorage(state);
-
-    return state;
-  },
-
   closeExportDialog: function (state) {
     return Object.assign({}, state, {exportedJson: null});
   },
 
+  deleteCards: function (state, ids) {
+    state.cards = state.cards.filter(c => !ids.includes(c.id));
+    saveCardsToFirebase(state);
+    return state;
+  },
+
   deleteDeck: function (state, deckId) {
     state.decks = state.decks.filter(deck => deck.id !== deckId);
-    saveDecksToLocalStorage(state);
+    saveDecksToFirebase(state);
+    return state;
+  },
+
+  duplicateDeck: function (state, deckId) {
+    const deck = state.decks.find(d => d.id === deckId);
+    const copy = Object.assign({}, deck, {id: id(), name: `${deck.name} Copy`});
+
+    state.decks.push(copy);
+    saveDecksToFirebase(state);
     return state;
   },
 
@@ -47,8 +41,14 @@ const cardsHandlers = {
       .filter(card => !state.cards.map(c => c.id).includes(card.id))
       .forEach(card => { state.cards.unshift(card); });
 
-    saveCardsToLocalStorage(state);
+    saveCardsToFirebase(state);
 
+    return state;
+  },
+
+  loadState: function (state, data) {
+    state = loadCardsFromFirebase(state, data);
+    state = loadDecksFromFirebase(state, data);
     return state;
   },
 
@@ -72,32 +72,44 @@ const cardsHandlers = {
     return state;
   },
 
-  removeFromCollection: function (state, ids) {
-    state.cards = state.cards.filter(c => !ids.includes(c.id));
-    saveCardsToLocalStorage(state);
+  saveCard: function (state, cardProps) {
+    const card = createCardFromProps(cardProps);
+
+    // Is there already a card with the same ID (i.e. we're currently editing it)
+    // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
+    const existingCard = state.cards.find(c => c.id === cardProps.id || areIdenticalCards(c, card));
+
+    if (existingCard) {
+      // Editing an existing card.
+      if (existingCard.source === 'builtin') {
+        // TODO Log warning about not being about not being able to replace builtin cards.
+      } else {
+        Object.assign(existingCard, card, {id: existingCard.id});
+      }
+    } else {
+      state.cards.push(card);
+    }
+
+    saveCardsToFirebase(state);
 
     return state;
   },
 
-  saveDeck: function (state, deckId, name, cardIds) {
-    const cards = cardIds.map(cardId => state.cards.find(c => c.id === cardId));
-
+  saveDeck: function (state, deckId, name, cardIds = []) {
     if (deckId) {
       // Existing deck.
-      Object.assign(state.decks.find(d => d.id === deckId), {
-        name: name,
-        cards: cards
-      });
+      const deck = state.decks.find(d => d.id === deckId);
+      Object.assign(deck, { name, cardIds });
     } else {
       // New deck.
       state.decks.push({
         id: id(),
-        name: name,
-        cards: cards
+        name,
+        cardIds
       });
     }
 
-    saveDecksToLocalStorage(state);
+    saveDecksToFirebase(state);
 
     return state;
   }
@@ -109,7 +121,7 @@ function createCardFromProps(props) {
   const command = sentences.map(s => s.result.js);
 
   const card = {
-    id: id(),
+    id: props.id || id(),
     name: props.name,
     type: props.type,
     spriteID: props.spriteID,
@@ -131,20 +143,6 @@ function createCardFromProps(props) {
   }
 
   return card;
-}
-
-function areIdenticalCards(card1, card2) {
-  // TODO: Once we have better UX for this, it's time to start getting stricter
-  // (no longer care about the name, and check abilities/command rather than text).
-  return compareCertainKeys(card1, card2, ['name', 'type', 'cost', 'text', 'stats']);
-}
-
-function saveCardsToLocalStorage(state) {
-  saveToLocalStorage('collection', state.cards);
-}
-
-function saveDecksToLocalStorage(state) {
-  saveToLocalStorage('decks', state.decks);
 }
 
 export default cardsHandlers;

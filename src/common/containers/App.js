@@ -1,25 +1,29 @@
 import React, { Component } from 'react';
 import { bool, func, string, object } from 'prop-types';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router';
+import { Route, Redirect, Switch, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import cookie from 'react-cookie';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+import FlatButton from 'material-ui/FlatButton';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 
 import { inBrowser } from '../util/common';
-import * as UserActions from '../actions/user';
+import { listenToUserData, onLogin, onLogout, logout } from '../util/firebase';
+import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
+import LoginDialog from '../components/users/LoginDialog';
 import GameMenu from '../containers/GameMenu';
-import Creator from '../containers/Creator';
 import Collection from '../containers/Collection';
+import Creator from '../containers/Creator';
 import Deck from '../containers/Deck';
 import Decks from '../containers/Decks';
-import Play from '../containers/Play';
 import Home from '../containers/Home';
+import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
 
 // Hacky analytics implementation.
@@ -32,20 +36,25 @@ if (inBrowser()) {
 function mapStateToProps(state) {
   return {
     version: state.version,
-    user: state.user,
-    layout: state.layout.present,
+    user: state.global.user,
+    sidebarOpen: state.global.sidebarOpen,
     inGame: state.game.started
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return Object.assign(bindActionCreators(UserActions, dispatch), {
-    onRouting(path) {
-       // To signal to reducers that the route has changed.
-      dispatch({type: 'OPEN_PAGE', value: { path }});
+  return Object.assign({
+    onLoggedIn(user) {
+      dispatch(actions.loggedIn(user));
     },
-    toggleSidebar(value) {
-      dispatch({type: 'TOGGLE_SIDEBAR', value: value});
+    onLoggedOut() {
+      dispatch(actions.loggedOut());
+    },
+    onReceiveFirebaseData(data) {
+      dispatch(actions.firebaseData(data));
+    },
+    onToggleSidebar(value) {
+      dispatch(actions.toggleSidebar(value));
     }
   });
 }
@@ -56,16 +65,16 @@ class App extends Component {
   };
 
   static propTypes = {
-    getUserInfo: func,
-    toggleClearCookie: func,
-    toggleSidebar: func,
-    onRouting: func,
-    undo: func,
-    redo: func,
+    onLoggedIn: func,
+    onLoggedOut: func,
+    onReceiveFirebaseData: func,
+    onToggleSidebar: func,
+
     children: object,
-    user: object,
+
     version: string,
-    layout: object,
+    user: object,
+    sidebarOpen: bool,
     inGame: bool
   };
 
@@ -73,48 +82,40 @@ class App extends Component {
     super(props);
 
     this.state = {
+      loading: true,
       currentLocation: null,
-      open: true
+      loginOpen: false
     };
   }
 
-  componentWillReceiveProps(nextState) {
-    if (nextState.user.token && !cookie.load('token')) {
-      //console.log('Setting up token in cookie');
-      cookie.save('token', nextState.user.token);
-    }
-
-    if (nextState.user.token && !nextState.user.info) {
-      this.props.getUserInfo(nextState.user);
-    }
-
-    if (nextState.user.clearCookie && cookie.load('token')) {
-      cookie.remove('token');
-      this.props.toggleClearCookie();
-    }
+  componentWillMount() {
+    this.logAnalytics();
   }
 
-  componentWillMount() {
-    this.logPageView();
+  componentDidMount() {
+    onLogin((user) => {
+      this.setState({loading: false});
+      this.props.onLoggedIn(user.toJSON());
+      listenToUserData(this.props.onReceiveFirebaseData);
+    });
+
+    onLogout(() => {
+      this.setState({loading: false});
+      this.props.onLoggedOut();
+      this.props.onReceiveFirebaseData(null);
+    });
   }
 
   componentWillUpdate() {
-    this.logPageView();
+    this.logAnalytics();
   }
 
-  logPageView() {
-    // Hacky analytics implementation.
+  logAnalytics() {
     if (inBrowser() && window.location.pathname !== currentLocation) {
       currentLocation = window.location.pathname;
-      this.props.onRouting(currentLocation);
       ReactGA.set({ page: currentLocation });
       ReactGA.pageview(currentLocation);
     }
-  }
-
-  handleToggle() {
-    this.props.toggleSidebar(!this.state.open);
-    this.setState({open: !this.state.open});
   }
 
   getChildContext() {
@@ -123,43 +124,126 @@ class App extends Component {
     };
   }
 
-  render() {
-    //const { user, version } = this.props;
+  handleLoginOpen() {
+    this.setState({loginOpen: true});
+  }
 
+  handleLoginClose() {
+    this.setState({loginOpen: false});
+  }
+
+
+  handleUserMenuOpen(event) {
+    event.preventDefault();
+
+    this.setState({
+      userOpen: true,
+      anchorEl: event.currentTarget
+    });
+  }
+
+  handleRequestClose() {
+    this.setState({userOpen: false});
+  }
+
+  get rightElement() {
+    if (this.props.user) {
+      return (
+        <div style={{marginTop: 7}}>
+          <FlatButton
+            style={{color: 'white'}}
+            label={this.props.user.displayName}
+            labelPosition="before"
+            onTouchTap={(e) => this.handleUserMenuOpen(e)}
+            icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
+          <Popover
+            open={this.state.userOpen}
+            anchorEl={this.state.anchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            onRequestClose={() => this.handleRequestClose()}>
+            <Menu>
+              <MenuItem 
+                primaryText="Logout" 
+                onClick={() => { logout(); this.handleRequestClose(); }}
+                leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
+            </Menu>
+          </Popover>
+        </div>
+      );
+    } else {
+      return (
+        <FlatButton 
+          label="Login"
+          labelPosition="before"
+          onTouchTap={() => this.handleLoginOpen()}
+          icon={<FontIcon className="material-icons">person</FontIcon>} />
+      );
+    }
+  }
+
+  get title() {
+    return (
+      <div style={{height: 66}}>
+        <AppBar
+          title={
+            <Link style={{
+              color: '#fff', fontFamily: 'Carter One', fontSize: 32
+            }} to="/">WORDBOTS</Link>
+          }
+          style={{
+            position: 'fixed',
+            top: 0
+          }}
+          iconElementLeft={
+            <IconButton onClick={() => { this.props.onToggleSidebar(!this.props.sidebarOpen); }}>
+              <FontIcon className="material-icons">menu</FontIcon>
+            </IconButton>
+          }
+          iconElementRight={this.rightElement}
+        />
+      </div>
+    );
+  }
+
+  get sidebar() {
+    if (this.state.loading) {
+      return null;
+    } else if (this.props.inGame) {
+      return <GameMenu open={this.props.sidebarOpen} />;
+    } else {
+      return <NavMenu open={this.props.sidebarOpen} user={this.props.user} />;
+    }
+  }
+
+  get content() {
+    if (this.state.loading) {
+      return null;
+    } else {
+      return (
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/home" component={Home} />
+          <Route path="/collection" component={Collection} />
+          <Route path="/creator" component={Creator} />
+          <Route path="/decks" component={Decks} />
+          <Route path="/deck" component={Deck} />
+          <Route path="/play" component={Play} />
+          <Route render={() => <Redirect to="/"/>} />
+        </Switch>
+      );
+    }
+  }
+
+  render() {
     return (
       <div>
-        <div style={{height: 66}}>
-          <AppBar
-            zDepth={1}
-            title={
-              <Link style={{
-                color: '#fff', fontFamily: 'Carter One', fontSize: 32
-              }} to="/">WORDBOTS</Link>
-            }
-            style={{
-              position: 'fixed',
-              top: 0
-            }}
-            iconElementLeft={
-              <IconButton onClick={this.handleToggle.bind(this)}>
-                <FontIcon className="material-icons">menu</FontIcon>
-              </IconButton>}
-          />
-        </div>
+        {this.title}
         <div>
-          {this.props.inGame ? <GameMenu open={this.state.open} /> : <NavMenu open={this.state.open} />}
-          <div>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/home" component={Home} />
-              <Route path="/collection" component={Collection} />
-              <Route path="/creator" component={Creator} />
-              <Route path="/decks" component={Decks} />
-              <Route path="/deck" component={Deck} />
-              <Route path="/play" component={Play} />
-            </Switch>
-          </div>
+          {this.sidebar}
+          {this.content}
         </div>
+        <LoginDialog loginOpen={this.state.loginOpen} handleClose={() => this.handleLoginClose()} />
       </div>
     );
   }

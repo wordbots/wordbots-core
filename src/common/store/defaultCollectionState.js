@@ -6,9 +6,10 @@ const defaultState = {
     {
       id: '[default]',
       name: 'Default',
-      cards: collection.slice(0, 30)
+      cardIds: collection.slice(0, 30).map(c => c.id)
     }
   ],
+  currentDeck: null,
   exportedJson: null
 };
 

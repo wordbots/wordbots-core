@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool } from 'prop-types';
+import { bool, object } from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
@@ -7,7 +7,8 @@ import FontIcon from 'material-ui/FontIcon';
 
 export default class NavMenu extends Component {
   static propTypes = {
-    open: bool
+    open: bool,
+    user: object
   };
 
   renderLink(path, text, icon) {
@@ -19,7 +20,6 @@ export default class NavMenu extends Component {
       </NavLink>
     );
   }
-
   render() {
     return (
       <Drawer

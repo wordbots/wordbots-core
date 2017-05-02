@@ -1,7 +1,6 @@
 const defaultState = {
   connecting: false,
   connected: false,
-  username: null,
   clientId: null,
 
   hosting: false,

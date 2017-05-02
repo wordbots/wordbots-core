@@ -8,16 +8,13 @@ import Helmet from 'react-helmet';
 
 import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
-import getUser from '../common/api/user';
 import packagejson from '../../package.json';
 
 import produceApiResponse from './api';
 
 export default function handleRequest(request, response) {
-  getUser(request.cookies.token || false, (user) => {
-    const store = getStore(request, user);
-    produceResponse(response, store, request.url);
-  });
+  const store = getStore(request);
+  produceResponse(response, store, request.url);
 }
 
 function getVersionWithSha() {
@@ -26,21 +23,10 @@ function getVersionWithSha() {
   return `${packagejson.version}+${sha}`;
 }
 
-function getStore(request, user) {
-  if (user) {
-    return configureStore({
-      version: getVersionWithSha(),
-      user: {
-        userId: user.id,
-        info: user,
-        token: request.cookies.token
-      }
-    });
-  } else {
-    return configureStore({
-      version: getVersionWithSha()
-    });
-  }
+function getStore(request) {
+  return configureStore({
+    version: getVersionWithSha()
+  });
 }
 
 function produceResponse(response, store, location) {

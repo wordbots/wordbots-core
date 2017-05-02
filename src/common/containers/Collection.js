@@ -14,13 +14,15 @@ import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
 import SortControls from '../components/cards/SortControls';
+import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
     exportedJson: state.collection.exportedJson,
-    sidebarOpen: state.layout.present.sidebarOpen
+    loggedIn: state.global.user !== null,
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 
@@ -48,6 +50,7 @@ class Collection extends Component {
   static propTypes = {
     cards: array,
     exportedJson: string,
+    loggedIn: bool,
     sidebarOpen: bool,
 
     history: object,
@@ -98,8 +101,8 @@ class Collection extends Component {
   }
 
   searchCards(card) {
-    return (card.name.toLowerCase().includes(this.state.searchText.toLowerCase()) ||
-      (card.text || '').toLowerCase().includes(this.state.searchText.toLowerCase()));
+    const query = this.state.searchText.toLowerCase();
+    return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
   }
 
   sortCards(a, b) {
@@ -168,6 +171,17 @@ class Collection extends Component {
               <div style={{
                 fontWeight: 700,
                 fontSize: 14,
+                marginBottom: 10
+              }}>Search</div>
+
+              <TextField
+                hintText="Enter card name or text"
+                style={{marginBottom: 10}}
+                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
+
+              <div style={{
+                fontWeight: 700,
+                fontSize: 14,
                 marginBottom: 20
               }}>Layout</div>
 
@@ -211,17 +225,6 @@ class Collection extends Component {
                 </FontIcon>
               </div>
 
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 10
-              }}>Search</div>
-
-              <TextField
-                hintText="Enter card name or text"
-                style={{marginBottom: 10}}
-                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
-
               <SortControls
                 criteria={this.state.sortingCriteria}
                 order={this.state.sortingOrder}
@@ -235,69 +238,71 @@ class Collection extends Component {
                 }} />
             </Paper>
 
-            <RaisedButton
-              label="New Card"
-              labelPosition="after"
-              secondary
-              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
-              style={{width: '100%', marginTop: 10, height: 48}}
-              buttonStyle={{textAlign: 'left'}}
-              onClick={() => {
-                this.props.history.push('/creator');
-              }}
-            />
-            <RaisedButton
-              label="Edit Selected"
-              labelPosition="after"
-              secondary
-              disabled={this.state.selectedCardIds.length !== 1}
-              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
-              style={{width: '100%', marginTop: 10, height: 48}}
-              buttonStyle={{textAlign: 'left'}}
-              onClick={() => {
-                const id = this.state.selectedCardIds[0];
-                this.props.onEditCard(this.props.cards.find(c => c.id === id));
-                this.props.history.push('/creator');
-              }}
-            />
-            <RaisedButton
-              label="Delete Selected"
-              labelPosition="after"
-              secondary
-              disabled={this.state.selectedCardIds.length === 0}
-              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
-              style={{width: '100%', marginTop: 10, height: 48}}
-              buttonStyle={{textAlign: 'left'}}
-              onClick={() => {
-                this.props.onRemoveFromCollection(this.state.selectedCardIds);
-                this.setState({selectedCardIds: []});
-              }}
-            />
-            <RaisedButton
-              label="Export Selected"
-              labelPosition="after"
-              secondary
-              disabled={this.state.selectedCardIds.length === 0}
-              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
-              style={{width: '100%', marginTop: 10, height: 48}}
-              buttonStyle={{textAlign: 'left'}}
-              onClick={() => {
-                const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
-                this.props.onExportCards(cards);
-                this.setState({selectedCardIds: []});
-              }}
-            />
-            <RaisedButton
-              label="Import Cards"
-              labelPosition="after"
-              secondary
-              icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
-              style={{width: '100%', marginTop: 10, height: 48}}
-              buttonStyle={{textAlign: 'left'}}
-              onClick={() => {
-                this.setState({importDialogOpen: true, selectedCardIds: []});
-              }}
-            />
+            <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+              <RaisedButton
+                label="New Card"
+                labelPosition="after"
+                secondary
+                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
+                style={{width: '100%', marginTop: 10, height: 48}}
+                buttonStyle={{textAlign: 'left'}}
+                onClick={() => {
+                  this.props.history.push('/creator');
+                }}
+              />
+              <RaisedButton
+                label="Edit Selected"
+                labelPosition="after"
+                secondary
+                disabled={this.state.selectedCardIds.length !== 1}
+                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
+                style={{width: '100%', marginTop: 10, height: 48}}
+                buttonStyle={{textAlign: 'left'}}
+                onClick={() => {
+                  const id = this.state.selectedCardIds[0];
+                  this.props.onEditCard(this.props.cards.find(c => c.id === id));
+                  this.props.history.push('/creator');
+                }}
+              />
+              <RaisedButton
+                label="Delete Selected"
+                labelPosition="after"
+                secondary
+                disabled={this.state.selectedCardIds.length === 0}
+                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
+                style={{width: '100%', marginTop: 10, height: 48}}
+                buttonStyle={{textAlign: 'left'}}
+                onClick={() => {
+                  this.props.onRemoveFromCollection(this.state.selectedCardIds);
+                  this.setState({selectedCardIds: []});
+                }}
+              />
+              <RaisedButton
+                label="Export Selected"
+                labelPosition="after"
+                secondary
+                disabled={this.state.selectedCardIds.length === 0}
+                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
+                style={{width: '100%', marginTop: 10, height: 48}}
+                buttonStyle={{textAlign: 'left'}}
+                onClick={() => {
+                  const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
+                  this.props.onExportCards(cards);
+                  this.setState({selectedCardIds: []});
+                }}
+              />
+              <RaisedButton
+                label="Import Cards"
+                labelPosition="after"
+                secondary
+                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
+                style={{width: '100%', marginTop: 10, height: 48}}
+                buttonStyle={{textAlign: 'left'}}
+                onClick={() => {
+                  this.setState({importDialogOpen: true, selectedCardIds: []});
+                }}
+              />
+            </MustBeLoggedIn>
           </div>
         </div>
       </div>

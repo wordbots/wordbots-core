@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { array, func, string } from 'prop-types';
+import { array, bool, func, string } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
 import { groupCards } from '../../util/cards';
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 // Widget representing the deck currently being created or modified.
 export default class ActiveDeck extends Component {
@@ -13,6 +14,7 @@ export default class ActiveDeck extends Component {
     id: string,
     cards: array,
     name: string,
+    loggedIn: bool,
 
     onCardClick: func,
     onSaveDeck: func
@@ -86,15 +88,17 @@ export default class ActiveDeck extends Component {
           </div>
         )}
 
-        <RaisedButton
-          label="Save Deck"
-          labelPosition="before"
-          secondary
-          disabled={this.state.name === '' || this.props.cards.length !== 30}
-          icon={<FontIcon className="material-icons">save</FontIcon>}
-          style={{width: '100%', marginTop: 20}}
-          onClick={() => { this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id)); }}
-        />
+        <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+          <RaisedButton
+            label="Save Deck"
+            labelPosition="before"
+            secondary
+            disabled={!this.state.name}
+            icon={<FontIcon className="material-icons">save</FontIcon>}
+            style={{width: '100%', marginTop: 20}}
+            onClick={() => { this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id)); }}
+          />
+        </MustBeLoggedIn>
       </div>
     );
   }

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { array, func, object } from 'prop-types';
+import { array, bool, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 export default class GameBrowser extends Component {
   static propTypes = {
-    buttonStyle: object,
     openGames: array,
     inProgressGames: array,
     usernameMap: object,
+    cannotJoinGame: bool,
 
     onJoinGame: func,
     onSpectateGame: func
@@ -32,6 +32,7 @@ export default class GameBrowser extends Component {
                 <RaisedButton
                   secondary
                   label="Join Game"
+                  disabled={this.props.cannotJoinGame}
                   onTouchTap={() => { this.props.onJoinGame(game.id, game.name); }} /> :
                 <RaisedButton
                   secondary

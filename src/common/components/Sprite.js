@@ -38,11 +38,11 @@ export default class Sprite extends PureComponent {
 
       if (this.props.output === 'html') {
         return (
-          <img src={dataURL} width={size * (this.props.scale || 1)} height={size * (this.props.scale || 1)} style={{imageRendering: 'pixelated'}} />
+          <img className="wb-sprite" src={dataURL} width={size * (this.props.scale || 1)} height={size * (this.props.scale || 1)} style={{imageRendering: 'pixelated'}} />
         );
       } else if (this.props.output === 'svg') {
         return (
-          <image xlinkHref={dataURL} width={1} height={1} style={{imageRendering: 'pixelated'}} />
+          <image className="wb-sprite" xlinkHref={dataURL} width={1} height={1} style={{imageRendering: 'pixelated'}} />
         );
       }
     } else {

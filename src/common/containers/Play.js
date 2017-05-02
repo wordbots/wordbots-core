@@ -17,9 +17,10 @@ export function mapStateToProps(state) {
     actionLog: state.game.actionLog,
 
     socket: state.socket,
-    availableDecks: state.collection.decks,
+    cards: state.collection.cards,
+    availableDecks: state.collection.decks.filter(d => d.cardIds.length === 30),
 
-    sidebarOpen: state.layout.present.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen
   };
 }
 
@@ -36,9 +37,6 @@ export function mapDispatchToProps(dispatch) {
     },
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
-    },
-    onSetUsername: (username) => {
-      dispatch(socketActions.setUsername(username));
     },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
@@ -60,6 +58,7 @@ export class Play extends Component {
     sidebarOpen: bool,
 
     socket: object,
+    cards: array,
     availableDecks: array,
 
     history: object,
@@ -68,7 +67,6 @@ export class Play extends Component {
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onSetUsername: func,
     onSendChatMessage: func,
     onHoverCard: func,
     onHoverTile: func
@@ -84,12 +82,12 @@ export class Play extends Component {
     return (
       <Lobby
         socket={this.props.socket}
+        cards={this.props.cards}
         availableDecks={this.props.availableDecks}
         onConnect={this.props.onConnect}
         onHostGame={this.props.onHostGame}
         onJoinGame={this.props.onJoinGame}
-        onSpectateGame={this.props.onSpectateGame}
-        onSetUsername={this.props.onSetUsername} />
+        onSpectateGame={this.props.onSpectateGame} />
     );
   }
 

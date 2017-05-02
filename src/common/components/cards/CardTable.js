@@ -97,7 +97,7 @@ export default class CardTable extends Component {
               adjustForCheckbox={false}
               displaySelectAll={false}
               enableSelectAll={false}
-              style={{backgroundColor: '#f44336'}}>
+            >
               <TableRow>
                 <TableHeaderColumn width={130}>Name</TableHeaderColumn>
                 <TableHeaderColumn width={70}>Type</TableHeaderColumn>

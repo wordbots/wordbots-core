@@ -13,6 +13,7 @@ import 'whatwg-fetch';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import NumberField from './NumberField';
 
@@ -27,6 +28,7 @@ export default class CardCreationForm extends Component {
     health: number,
     energy: number,
     isNewCard: bool,
+    loggedIn: bool,
 
     onSetName: func,
     onSetType: func,
@@ -78,7 +80,7 @@ export default class CardCreationForm extends Component {
 
   get nameError() {
     if (!this.props.name || this.props.name === '[Unnamed]') {
-      return 'A name is required.';
+      return 'This card needs a name!';
     }
   }
 
@@ -89,26 +91,48 @@ export default class CardCreationForm extends Component {
   }
 
   get costError() {
+    if (!parseInt(this.props.energy)) {
+      return 'Invalid cost.';
+    }
+
     if (this.props.energy < 0 || this.props.energy > 20) {
       return 'Not between 0 and 20.';
     }
   }
 
   get attackError() {
-    if (this.robot && (this.props.attack < 0 || this.props.attack > 10)) {
-      return 'Not between 0 and 10.';
+    if (this.robot) {
+      if (!parseInt(this.props.attack)) {
+        return 'Invalid attack.';
+      }
+
+      if (this.props.attack < 0 || this.props.attack > 10) {
+        return 'Not between 0 and 10.';
+      }
     }
   }
 
   get healthError() {
-    if (!this.event && (this.props.health < 1 || this.props.health > 10)) {
-      return 'Not between 1 and 10.';
+    if (!this.event) {
+      if (!parseInt(this.props.health)) {
+        return 'Invalid health.';
+      }
+
+      if (this.props.health < 1 || this.props.health > 10) {
+        return 'Not between 1 and 10.';
+      }
     }
   }
 
   get speedError() {
-    if (this.robot && (this.props.speed < 0 || this.props.speed > 3)) {
-      return 'Not between 0 and 3.';
+    if (this.robot) {
+      if (!parseInt(this.props.speed)) {
+        return 'Invalid speed.';
+      }
+
+      if (this.props.speed < 0 || this.props.speed > 3) {
+        return 'Not between 0 and 3.';
+      }
     }
   }
 
@@ -223,13 +247,15 @@ export default class CardCreationForm extends Component {
               onChange={v => { this.props.onSetAttribute('speed', v); }} />
           </div>
 
-          <RaisedButton
+          <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+            <RaisedButton
             primary
             fullWidth
             label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
             disabled={!this.isValid}
             style={{marginTop: 20}}
             onTouchTap={e => { this.props.onAddToCollection(); }} />
+          </MustBeLoggedIn>
         </Paper>
       </div>
     );

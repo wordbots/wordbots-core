@@ -3,7 +3,6 @@ import { isArray, reduce } from 'lodash';
 import defaultState from '../store/defaultCollectionState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
-import { loadCards, loadDecks } from '../store/persistState';
 
 import c from './handlers/cards';
 
@@ -15,17 +14,20 @@ export default function collection(oldState = defaultState, action) {
     return reduce(action, collection, state);
   } else {
     switch (action.type) {
-      case 'OPEN_PAGE':
-        return loadCards(loadDecks(state));
+      case 'FIREBASE_DATA':
+        return c.loadState(state, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:
-        return c.addToCollection(state, action.payload);
+        return c.saveCard(state, action.payload);
 
       case collectionActions.CLOSE_EXPORT_DIALOG:
         return c.closeExportDialog(state);
 
       case collectionActions.DELETE_DECK:
         return c.deleteDeck(state, action.payload.deckId);
+
+      case collectionActions.DUPLICATE_DECK:
+        return c.duplicateDeck(state, action.payload.deckId);
 
       case collectionActions.EDIT_DECK:
         return c.openDeckForEditing(state, action.payload.deckId);
@@ -37,7 +39,7 @@ export default function collection(oldState = defaultState, action) {
         return c.importCards(state, action.payload.json);
 
       case collectionActions.REMOVE_FROM_COLLECTION:
-        return c.removeFromCollection(state, action.payload.ids);
+        return c.deleteCards(state, action.payload.ids);
 
       case collectionActions.SAVE_DECK:
         return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds);

@@ -3,12 +3,16 @@ import { array, bool, func, number, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator';
+
+import Dictionary from './Dictionary';
 
 export function mapStateToProps(state) {
   return {
@@ -87,8 +91,15 @@ export class Creator extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{position: 'relative'}}>
         <Helmet title="Creator"/>
+
+        <RaisedButton
+          label="Open Dictionary"
+          primary
+          style={{position: 'absolute', top: 10, left: 10}}
+          onClick={() => { this.props.history.push('/creator/dictionary'); }} />
+
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
             loggedIn={this.props.loggedIn}
@@ -124,6 +135,14 @@ export class Creator extends Component {
             energy={this.props.cost}
             onSpriteClick={() => { this.props.onSpriteClick(); }} />
         </div>
+        <Dialog
+          open={this.props.history !== undefined && this.props.history.location.pathname.includes('dictionary')}
+          contentStyle={{width: '90%', maxWidth: 'none'}}
+          onRequestClose={() => { this.props.history.push('/creator'); }}
+          actions={[<RaisedButton primary label="Close" onTouchTap={() => { this.props.history.push('/creator'); }} />]}
+        >
+          <Dictionary />
+        </Dialog>
       </div>
     );
   }

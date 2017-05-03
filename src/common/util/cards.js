@@ -226,3 +226,9 @@ export function saveCardsToFirebase(state) {
 export function saveDecksToFirebase(state) {
   saveUserData('decks', state.decks);
 }
+
+export function loadParserLexicon(callback) {
+  fetch(`${PARSER_URL}/lexicon?format=json`)
+    .then(response => response.json())
+    .then(callback);
+}

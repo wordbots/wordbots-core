@@ -66,14 +66,14 @@ class Dictionary extends Component {
 
   render() {
     return (
-      <div style={{margin: '48px 72px'}}>
+      <div>
         <Helmet title={this.hash ? `Dictionary: ${this.hash}` : 'Dictionary'}/>
 
-        <div style={{marginTop: 20}}>
-          <Paper style={{padding: '5px 20px', marginBottom: 10}}>
+        <div>
+          <div style={{marginBottom: 15}}>
             This dictionary is automatically generated based on cards that players create.
             As more cards are created, the dictionary will become more and more comprehensive!
-          </Paper>
+          </div>
 
           <Toolbar style={{backgroundColor: '#f44336'}}>
             <ToolbarGroup>
@@ -85,7 +85,7 @@ class Dictionary extends Component {
             <div style={{width: '20%'}}>
               <Paper style={{
                 overflowY: 'scroll',
-                height: '75vh'
+                height: '65vh'
               }}>
                 <List>
                 {this.props.tokens.map((token, idx) =>
@@ -93,7 +93,7 @@ class Dictionary extends Component {
                     primaryText={token.replace(' \'', '\'')}
                     onTouchTap={() => {
                       this.setState({selectedIdx: idx});
-                      this.props.history.push(`/dictionary#${token}`);
+                      this.props.history.push(`${this.props.history.location.pathname}#${token}`);
                     }}
                     style={{
                       cursor: 'pointer',
@@ -105,7 +105,7 @@ class Dictionary extends Component {
             </div>
 
             <div style={{width: '80%'}}>
-              <Paper style={{height: '75vh'}}>
+              <Paper style={{height: '65vh'}}>
                 <Toolbar>
                   <ToolbarGroup>
                     <ToolbarTitle text={this.token.replace(' \'', '\'')} />

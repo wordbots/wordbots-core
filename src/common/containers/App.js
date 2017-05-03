@@ -25,7 +25,6 @@ import Collection from '../containers/Collection';
 import Creator from '../containers/Creator';
 import Deck from '../containers/Deck';
 import Decks from '../containers/Decks';
-import Dictionary from '../containers/Dictionary';
 import Home from '../containers/Home';
 import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
@@ -233,7 +232,6 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/home" component={Home} />
-            <Route path="/dictionary" component={Dictionary} />
             <Route path="/collection" component={Collection} />
             <Route path="/creator" component={Creator} />
             <Route path="/decks" component={Decks} />

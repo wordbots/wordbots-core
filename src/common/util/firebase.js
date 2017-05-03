@@ -1,7 +1,7 @@
 import fb from 'firebase';
 import { concat, uniq } from 'lodash';
 
-import { PARSER_URL } from '../constants';
+import { loadParserLexicon } from './cards.js';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -77,15 +77,13 @@ export function listenToUserData(callback) {
 }
 
 export function listenToDictionaryData(callback) {
-  fetch(`${PARSER_URL}/lexicon?format=json`)
-    .then(response => response.json())
-    .then(json => {
-      callback({
-        dictionary: {
-          definitions: json
-        }
-      });
+  loadParserLexicon(json => {
+    callback({
+      dictionary: {
+        definitions: json
+      }
     });
+  });
 
   return getLoggedInUser().then(user => {
     fb.database()

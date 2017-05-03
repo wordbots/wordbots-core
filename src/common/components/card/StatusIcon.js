@@ -3,6 +3,7 @@ import FontIcon from 'material-ui/FontIcon';
 import ReactTooltip from 'react-tooltip';
 import { isObject } from 'lodash';
 
+import { PARSER_URL } from '../../constants';
 import { id } from '../../util/common';
 import { expandKeywords } from '../../util/cards';
 
@@ -30,7 +31,7 @@ function StatusIcon(text, result) {
 
     if (isParsed) {
       const parserInput = encodeURIComponent(expandKeywords(text));
-      const treeUrl = `http://parser.wordbots.io/parse?input=${parserInput}&format=svg`;
+      const treeUrl = `${PARSER_URL}/parse?input=${parserInput}&format=svg`;
 
       return (
         <a href={treeUrl} target="_blank">

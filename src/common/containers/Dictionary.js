@@ -8,6 +8,8 @@ import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { List, ListItem } from 'material-ui/List';
 import { uniq } from 'lodash';
 
+import StatusIcon from '../components/card/StatusIcon';
+
 export function mapStateToProps(state) {
   const tokens = uniq([].concat(
     Object.keys(state.global.dictionary.definitions),
@@ -25,19 +27,32 @@ class Dictionary extends Component {
   static propTypes = {
     tokens: array,
     definitionsByToken: object,
-    examplesByToken: object
+    examplesByToken: object,
+
+    history: object
   }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedIdx: 0
+      selectedIdx: null
     };
   }
 
+  shouldComponentUpdate() {
+    if (this.hash && this.state.selectedIdx === null && this.props.tokens.indexOf(this.hash) > -1) {
+      this.setState({selectedIdx: this.props.tokens.indexOf(this.hash)});
+    }
+    return true;
+  }
+
+  get hash() {
+    return this.props.history.location.hash.split('#')[1];
+  }
+
   get token() {
-    return this.props.tokens[this.state.selectedIdx];
+    return this.props.tokens[this.state.selectedIdx || 0] || '';
   }
 
   get definitions() {
@@ -45,34 +60,44 @@ class Dictionary extends Component {
   }
 
   get examples() {
-    return uniq(Object.values(this.props.examplesByToken[this.token] || {}));
+    const examples = Object.values(this.props.examplesByToken[this.token] || {});
+    return uniq(examples.map(e => e.replace('\n', '')));
   }
 
   render() {
     return (
       <div style={{margin: '48px 72px'}}>
-        <Helmet title="Dictionary"/>
+        <Helmet title={this.hash ? `Dictionary: ${this.hash}` : 'Dictionary'}/>
 
         <div style={{marginTop: 20}}>
+          <Paper style={{padding: '5px 20px', marginBottom: 10}}>
+            This dictionary is automatically generated based on cards that players create.
+            As more cards are created, the dictionary will become more and more comprehensive!
+          </Paper>
+
           <Toolbar style={{backgroundColor: '#f44336'}}>
             <ToolbarGroup>
               <ToolbarTitle text="Dictionary" style={{color: 'white'}} />
             </ToolbarGroup>
           </Toolbar>
+
           <div style={{display: 'flex', justifyContent: 'stretch'}}>
             <div style={{width: '20%'}}>
               <Paper style={{
                 overflowY: 'scroll',
-                height: '80vh'
+                height: '75vh'
               }}>
                 <List>
-                {this.props.tokens.map((t, idx) =>
+                {this.props.tokens.map((token, idx) =>
                   <ListItem
-                    primaryText={t}
-                    onTouchTap={() => this.setState({selectedIdx: idx})}
+                    primaryText={token.replace(' \'', '\'')}
+                    onTouchTap={() => {
+                      this.setState({selectedIdx: idx});
+                      this.props.history.push(`/dictionary#${token}`);
+                    }}
                     style={{
                       cursor: 'pointer',
-                      fontWeight: idx === this.state.selectedIdx ? 'bold' : 'normal'
+                      backgroundColor: idx === this.state.selectedIdx ? '#ddd' : '#fff'
                     }} />
                 )}
                 </List>
@@ -80,27 +105,32 @@ class Dictionary extends Component {
             </div>
 
             <div style={{width: '80%'}}>
-              <Paper style={{height: '80vh'}}>
+              <Paper style={{height: '75vh'}}>
                 <Toolbar>
                   <ToolbarGroup>
-                    <ToolbarTitle text={this.token} />
+                    <ToolbarTitle text={this.token.replace(' \'', '\'')} />
                   </ToolbarGroup>
                 </Toolbar>
 
                 <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
-                  <b>Definitions:</b>
+                  <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
                   <ol>
                     {this.definitions.map(d =>
                       <li>
-                        <div>Syntax: {d.syntax}.</div>
-                        <div>Semantics: {d.semantics}</div>
+                        <strong>{d.syntax}. </strong>
+                        {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
                       </li>
                     )}
                   </ol>
 
-                  <b>Examples:</b>
+                  <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
                   <ul>
-                    {this.examples.map(e => <li>{e}.</li>)}
+                    {this.examples.map(e =>
+                      <li>
+                        {e}.&nbsp;
+                        {StatusIcon(e, {parsed: true})}
+                      </li>
+                    )}
                   </ul>
                 </div>
               </Paper>

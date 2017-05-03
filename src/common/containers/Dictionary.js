@@ -48,7 +48,7 @@ class Dictionary extends Component {
 
   render() {
     const paperStyle = {
-      height: '80vh',
+      height: '75vh',
       padding: '5px 20px',
       overflowY: 'scroll'
     };
@@ -56,6 +56,11 @@ class Dictionary extends Component {
     return (
       <div style={{margin: '48px 72px'}}>
         <Helmet title="Dictionary"/>
+
+        <Paper style={{padding: paperStyle.padding}}>
+          This dictionary is automatically generated based on cards that players create.
+          As more cards are created, the dictionary will become more and more comprehensive!
+        </Paper>
 
         <div style={{display: 'flex', justifyContent: 'stretch', marginTop: 20}}>
           <div style={{width: '30%'}}>

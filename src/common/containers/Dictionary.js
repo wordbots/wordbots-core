@@ -97,7 +97,7 @@ class Dictionary extends Component {
                     }}
                     style={{
                       cursor: 'pointer',
-                      backgroundColor: idx === this.state.selectedIdx ? '#ddd' : '#fff'
+                      backgroundColor: idx === (this.state.selectedIdx || 0) ? '#ddd' : '#fff'
                     }} />
                 )}
                 </List>

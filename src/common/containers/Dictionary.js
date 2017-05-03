@@ -53,7 +53,6 @@ class Dictionary extends Component {
       <div style={{margin: '48px 72px'}}>
         <Helmet title="Dictionary"/>
 
-<<<<<<< HEAD
         <div style={{marginTop: 20}}>
           <Toolbar style={{backgroundColor: '#f44336'}}>
             <ToolbarGroup>
@@ -68,9 +67,9 @@ class Dictionary extends Component {
               }}>
                 <List>
                 {this.props.tokens.map((t, idx) =>
-                  <ListItem 
-                    primaryText={t} 
-                    onTouchTap={() => this.setState({selectedIdx: idx})} 
+                  <ListItem
+                    primaryText={t}
+                    onTouchTap={() => this.setState({selectedIdx: idx})}
                     style={{
                       cursor: 'pointer',
                       fontWeight: idx === this.state.selectedIdx ? 'bold' : 'normal'

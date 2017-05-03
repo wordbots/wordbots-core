@@ -4,6 +4,8 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
+import { List, ListItem } from 'material-ui/List';
 import { uniq } from 'lodash';
 
 export function mapStateToProps(state) {
@@ -47,55 +49,62 @@ class Dictionary extends Component {
   }
 
   render() {
-    const paperStyle = {
-      height: '80vh',
-      padding: '5px 20px',
-      overflowY: 'scroll'
-    };
-
     return (
       <div style={{margin: '48px 72px'}}>
         <Helmet title="Dictionary"/>
 
-        <div style={{display: 'flex', justifyContent: 'stretch', marginTop: 20}}>
-          <div style={{width: '30%'}}>
-            <Paper style={paperStyle}>
-              {this.props.tokens.map((t, idx) =>
-                <div
-                  onTouchTap={() => { this.setState({selectedIdx: idx}); }}
-                  style={{
-                    cursor: 'pointer',
-                    fontWeight: idx === this.state.selectedIdx ? 'bold' : 'normal'
-                }}>
-                  {t}
-                </div>
-              )}
-            </Paper>
-          </div>
-
-          <div style={{width: '70%'}}>
-            <Paper style={paperStyle}>
-              <div style={{
-                fontWeight: 700,
-                fontSize: 20,
-                marginBottom: 10
-              }}>{this.token}</div>
-
-              <b>Definitions:</b>
-              <ol>
-                {this.definitions.map(d =>
-                  <li>
-                    <div>Syntax: {d.syntax}.</div>
-                    <div>Semantics: {d.semantics}</div>
-                  </li>
+        <div style={{marginTop: 20}}>
+          <Toolbar style={{backgroundColor: '#f44336'}}>
+            <ToolbarGroup>
+              <ToolbarTitle text="Dictionary" style={{color: 'white'}} />
+            </ToolbarGroup>
+          </Toolbar>
+          <div style={{display: 'flex', justifyContent: 'stretch'}}>
+            <div style={{width: '20%'}}>
+              <Paper style={{
+                overflowY: 'scroll',
+                height: '80vh'
+              }}>
+                <List>
+                {this.props.tokens.map((t, idx) =>
+                  <ListItem 
+                    primaryText={t} 
+                    onTouchTap={() => this.setState({selectedIdx: idx})} 
+                    style={{
+                      cursor: 'pointer',
+                      fontWeight: idx === this.state.selectedIdx ? 'bold' : 'normal'
+                    }} />
                 )}
-              </ol>
+                </List>
+              </Paper>
+            </div>
 
-              <b>Examples:</b>
-              <ul>
-                {this.examples.map(e => <li>{e}.</li>)}
-              </ul>
-            </Paper>
+            <div style={{width: '80%'}}>
+              <Paper style={{height: '80vh'}}>
+                <Toolbar>
+                  <ToolbarGroup>
+                    <ToolbarTitle text={this.token} />
+                  </ToolbarGroup>
+                </Toolbar>
+
+                <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
+                  <b>Definitions:</b>
+                  <ol>
+                    {this.definitions.map(d =>
+                      <li>
+                        <div>Syntax: {d.syntax}.</div>
+                        <div>Semantics: {d.semantics}</div>
+                      </li>
+                    )}
+                  </ol>
+
+                  <b>Examples:</b>
+                  <ul>
+                    {this.examples.map(e => <li>{e}.</li>)}
+                  </ul>
+                </div>
+              </Paper>
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import fb from 'firebase';
 import { concat, uniq } from 'lodash';
 
+import { PARSER_URL } from '../constants';
+
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
   authDomain: 'wordbots.firebaseapp.com',
@@ -71,6 +73,30 @@ export function listenToUserData(callback) {
     fb.database()
       .ref(`users/${user.uid}`)
       .on('value', (snapshot) => { callback(snapshot.val()); });
+  });
+}
+
+export function listenToDictionaryData(callback) {
+  fetch(`${PARSER_URL}/lexicon?format=json`)
+    .then(response => response.json())
+    .then(json => {
+      callback({
+        dictionary: {
+          definitions: json
+        }
+      });
+    });
+
+  return getLoggedInUser().then(user => {
+    fb.database()
+      .ref('cardText/byToken')
+      .on('value', (snapshot) => {
+        callback({
+          dictionary: {
+            examplesByToken: snapshot.val()
+          }
+        });
+      });
   });
 }
 

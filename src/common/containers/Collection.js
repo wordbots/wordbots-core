@@ -51,7 +51,6 @@ class Collection extends Component {
     cards: array,
     exportedJson: string,
     loggedIn: bool,
-    sidebarOpen: bool,
 
     history: object,
 
@@ -135,7 +134,7 @@ class Collection extends Component {
 
   render() {
     return (
-      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
+      <div>
         <Helmet title="Collection"/>
 
         <div style={{

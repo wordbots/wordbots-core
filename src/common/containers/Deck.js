@@ -21,8 +21,7 @@ function mapStateToProps(state) {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
     deck: state.collection.currentDeck,
-    loggedIn: state.global.user !== null,
-    sidebarOpen: state.global.sidebarOpen
+    loggedIn: state.global.user !== null
   };
 }
 
@@ -40,7 +39,6 @@ class Deck extends Component {
     cards: array,
     deck: object,
     loggedIn: bool,
-    sidebarOpen: bool,
 
     history: object,
 
@@ -120,7 +118,7 @@ class Deck extends Component {
 
   render() {
     return (
-      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
+      <div>
         <Helmet title="Building Deck"/>
 
         <div style={{

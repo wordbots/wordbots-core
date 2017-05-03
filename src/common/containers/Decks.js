@@ -19,8 +19,7 @@ function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
     decks: state.collection.decks,
-    loggedIn: state.global.user !== null,
-    sidebarOpen: state.global.sidebarOpen
+    loggedIn: state.global.user !== null
   };
 }
 
@@ -46,7 +45,6 @@ class Decks extends Component {
     cards: array,
     decks: array,
     loggedIn: bool,
-    sidebarOpen: bool,
 
     history: object,
 
@@ -122,12 +120,12 @@ class Decks extends Component {
           </div>
 
           <div style={{
-            flex: 1, 
-            display: 'flex', 
-            alignItems: 'center', 
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'flex-end',
-            textAlign: 'right', 
-            fontSize: 24, 
+            textAlign: 'right',
+            fontSize: 24,
             color: (isComplete ? 'green' : 'red')}}>
             <FontIcon
               className="material-icons"
@@ -189,7 +187,7 @@ class Decks extends Component {
 
   render() {
     return (
-      <div style={{height: '100%', paddingLeft: this.props.sidebarOpen ? 256 : 0}}>
+      <div>
         <Helmet title="Decks" />
 
         <div style={{

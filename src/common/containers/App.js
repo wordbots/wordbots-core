@@ -11,9 +11,12 @@ import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+/* eslint-disable import/no-unassigned-import */
+import 'whatwg-fetch';
+/* eslint-enable import/no-unassigned-import */
 
 import { inBrowser } from '../util/common';
-import { listenToUserData, onLogin, onLogout, logout } from '../util/firebase';
+import { listenToDictionaryData, listenToUserData, onLogin, onLogout, logout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
@@ -22,6 +25,7 @@ import Collection from '../containers/Collection';
 import Creator from '../containers/Creator';
 import Deck from '../containers/Deck';
 import Decks from '../containers/Decks';
+import Dictionary from '../containers/Dictionary';
 import Home from '../containers/Home';
 import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
@@ -93,6 +97,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    listenToDictionaryData(this.props.onReceiveFirebaseData);
+
     onLogin((user) => {
       this.setState({loading: false});
       this.props.onLoggedIn(user.toJSON());
@@ -163,8 +169,8 @@ class App extends Component {
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
             onRequestClose={() => this.handleRequestClose()}>
             <Menu>
-              <MenuItem 
-                primaryText="Logout" 
+              <MenuItem
+                primaryText="Logout"
                 onClick={() => { logout(); this.handleRequestClose(); }}
                 leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
             </Menu>
@@ -173,7 +179,7 @@ class App extends Component {
       );
     } else {
       return (
-        <FlatButton 
+        <FlatButton
           label="Login"
           labelPosition="before"
           onTouchTap={() => this.handleLoginOpen()}
@@ -221,16 +227,21 @@ class App extends Component {
       return null;
     } else {
       return (
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/home" component={Home} />
-          <Route path="/collection" component={Collection} />
-          <Route path="/creator" component={Creator} />
-          <Route path="/decks" component={Decks} />
-          <Route path="/deck" component={Deck} />
-          <Route path="/play" component={Play} />
-          <Route render={() => <Redirect to="/"/>} />
-        </Switch>
+        <div style={{
+          paddingLeft: this.props.sidebarOpen ? 256 : 0
+        }}>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/home" component={Home} />
+            <Route path="/dictionary" component={Dictionary} />
+            <Route path="/collection" component={Collection} />
+            <Route path="/creator" component={Creator} />
+            <Route path="/decks" component={Decks} />
+            <Route path="/deck" component={Deck} />
+            <Route path="/play" component={Play} />
+            <Route render={() => <Redirect to="/"/>} />
+          </Switch>
+        </div>
       );
     }
   }

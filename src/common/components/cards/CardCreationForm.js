@@ -7,9 +7,6 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { compact } from 'lodash';
-/* eslint-disable import/no-unassigned-import */
-import 'whatwg-fetch';
-/* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { getSentencesFromInput, requestParse } from '../../util/cards';

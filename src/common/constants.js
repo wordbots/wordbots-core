@@ -1,5 +1,7 @@
 import { capitalize, invert } from 'lodash';
 
+export const PARSER_URL = 'http://parser.wordbots.io';  // 'http://localhost:8080';
+
 // Debug flags.
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;

@@ -162,7 +162,7 @@ class Dictionary extends Component {
           {uniq((examples[term] || [])
             .map(e => e.replace('\n', '')))
             .map(e =>
-              <li>
+              <li key={e}>
                 {contractKeywords(e)}.&nbsp;
                 {StatusIcon(e, {parsed: true})}
               </li>
@@ -178,7 +178,7 @@ class Dictionary extends Component {
         <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
         <ol>
           {this.dictionaryDefinitions.map(d =>
-            <li>
+            <li key={d}>
               <strong>{d.syntax}. </strong>
               {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
             </li>

@@ -68,7 +68,7 @@ class Dictionary extends Component {
 
   get title() {
     return [
-      `Dictionary : ${this.dictionaryDisplayTerm}`,
+      `Dictionary : ${this.dictionaryTerm}`,
       `Thesaurus : ${this.thesaurusTerm}`,
       `Keywords : ${this.keywordsTerm}`
     ][this.state.tabIdx];
@@ -79,12 +79,6 @@ class Dictionary extends Component {
   }
   get dictionaryTerm() {
     return this.dictionaryTerms[this.state.selectedDictionaryIdx || 0] || '';
-  }
-  get dictionaryDisplayTerm() {
-    return this.dictionaryTerm.replace(' \'', '\'');
-  }
-  get dictionaryDefinitions() {
-    return this.props.definitionsByToken[this.dictionaryTerm] || [];
   }
 
   get thesaurusTerms() {
@@ -102,9 +96,6 @@ class Dictionary extends Component {
   }
   get keywordsTerm() {
     return this.keywordsTerms[this.state.selectedKeywordsIdx || 0] || '';
-  }
-  get keywordsDefinition() {
-    return this.keywords[this.keywordsTerm.toLowerCase()];
   }
 
   get subheadingStyle() {
@@ -125,7 +116,7 @@ class Dictionary extends Component {
     return (
       <Toolbar>
         <ToolbarGroup>
-          <ToolbarTitle text={term} />
+          <ToolbarTitle text={term.replace(' \'', '\'')} />
         </ToolbarGroup>
       </Toolbar>
     );
@@ -150,11 +141,12 @@ class Dictionary extends Component {
   }
 
   renderDictionaryDefinitions() {
+    const definitions = this.props.definitionsByToken[this.dictionaryTerm] || [];
     return (
       <div key="definitions">
         <span style={this.subheadingStyle}>Definitions</span>
         <ol>
-          {this.dictionaryDefinitions.map(d =>
+          {definitions.map(d =>
             <li key={`${d.syntax}${d.semantics}`}>
               <strong>{d.syntax}. </strong>
               {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
@@ -166,11 +158,12 @@ class Dictionary extends Component {
   }
 
   renderKeywordsDefinition() {
+    const definition = this.keywords[this.keywordsTerm.toLowerCase()];
     return (
       <div key="definition">
         <span style={this.subheadingStyle}>Definition</span>
         <p>
-          {this.keywordsDefinition.endsWith(',') ? `${this.keywordsDefinition} [...] .` : this.keywordsDefinition}
+          {definition.endsWith(',') ? `${definition} [...] .` : definition}
         </p>
       </div>
     );
@@ -215,7 +208,7 @@ class Dictionary extends Component {
           }}>
             <Tab label="Dictionary" value={0}>
               {
-                this.renderBook(this.dictionaryTerms, this.state.selectedDictionaryIdx, this.dictionaryDisplayTerm, [
+                this.renderBook(this.dictionaryTerms, this.state.selectedDictionaryIdx, this.dictionaryTerm, [
                   this.renderDictionaryDefinitions(),
                   this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)
                 ])

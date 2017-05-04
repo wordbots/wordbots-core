@@ -107,11 +107,14 @@ class Dictionary extends Component {
     return this.keywords[this.keywordsTerm.toLowerCase()];
   }
 
-  get pageStyle() {
-    return {padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'};
-  }
-  get subheadingStyle() {
-    return {display: 'flex', justifyContent: 'stretch'};
+  get styles() {
+    return {
+      dictionary: {display: 'flex', justifyContent: 'stretch'},
+      rightPane: {width: '80%'},
+      rightPanePaper: {height: '65vh'},
+      page: {padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'},
+      subheading: {fontSize: 24, fontWeight: 100}
+    };
   }
 
   setHash() {
@@ -137,7 +140,7 @@ class Dictionary extends Component {
   renderExamples(examples, term) {
     return (
       <div>
-        <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
+        <span style={this.styles.subheading}>Examples</span>
         <ul>
           {uniq((examples[term] || [])
             .map(e => e.replace('\n', '')))
@@ -155,7 +158,7 @@ class Dictionary extends Component {
   renderDictionaryDefinitions() {
     return (
       <div>
-        <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
+        <span style={this.styles.subheading}>Definitions</span>
         <ol>
           {this.dictionaryDefinitions.map(d =>
             <li key={`${d.syntax}${d.semantics}`}>
@@ -171,7 +174,7 @@ class Dictionary extends Component {
   renderKeywordsDefinition() {
     return (
       <div>
-        <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
+        <span style={this.styles.subheading}>Definition</span>
         <p>
           {this.keywordsDefinition.endsWith(',') ? `${this.keywordsDefinition} [...] .` : this.keywordsDefinition}
         </p>
@@ -181,17 +184,17 @@ class Dictionary extends Component {
 
   renderDictionary() {
     return (
-      <div style={this.subheadingStyle}>
+      <div style={this.styles.dictionary}>
         <DictionarySidebar
           terms={this.dictionaryTerms}
           selectedIdx={this.state.selectedDictionaryIdx}
           onClick={(idx) => this.onSelectTerm(idx)} />
 
-        <div style={{width: '80%'}}>
-          <Paper style={{height: '65vh'}}>
+        <div style={this.styles.rightPane}>
+          <Paper style={this.styles.rightPanePaper}>
             {this.renderTerm(this.dictionaryDisplayTerm)}
 
-            <div style={this.pageStyle}>
+            <div style={this.styles.page}>
               {this.renderDictionaryDefinitions()}
               {this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)}
             </div>
@@ -203,17 +206,17 @@ class Dictionary extends Component {
 
   renderThesaurus() {
     return (
-      <div style={this.subheadingStyle}>
+      <div style={this.styles.dictionary}>
         <DictionarySidebar
           terms={this.thesaurusTerms}
           selectedIdx={this.state.selectedThesaurusIdx}
           onClick={(idx) => this.onSelectTerm(idx)} />
 
-        <div style={{width: '80%'}}>
-          <Paper style={{height: '65vh'}}>
+        <div style={this.styles.rightPane}>
+          <Paper style={this.styles.rightPanePaper}>
             {this.renderTerm(this.thesaurusTerm)}
 
-            <div style={this.pageStyle}>
+            <div style={this.styles.page}>
               {this.renderExamples(this.props.examplesByNode, this.thesaurusTerm)}
             </div>
           </Paper>
@@ -224,17 +227,17 @@ class Dictionary extends Component {
 
   renderKeywords() {
     return (
-      <div style={this.subheadingStyle}>
+      <div style={this.styles.dictionary}>
         <DictionarySidebar
           terms={this.keywordsTerms}
           selectedIdx={this.state.selectedKeywordsIdx}
           onClick={(idx) => this.onSelectTerm(idx)} />
 
-        <div style={{width: '80%'}}>
-          <Paper style={{height: '65vh'}}>
+        <div style={this.styles.rightPane}>
+          <Paper style={this.styles.rightPanePaper}>
             {this.renderTerm(this.keywordsTerm)}
 
-            <div style={this.pageStyle}>
+            <div style={this.styles.page}>
               {this.renderKeywordsDefinition()}
             </div>
           </Paper>

@@ -77,6 +77,10 @@ export function listenToUserData(callback) {
 }
 
 export function listenToDictionaryData(callback) {
+  function cleanupExamples(examples) {
+    return uniq(Object.values(examples).map(e => e.replace('\n', '')));
+  }
+
   loadParserLexicon(json => {
     callback({
       dictionary: {
@@ -97,8 +101,8 @@ export function listenToDictionaryData(callback) {
 
       callback({
         dictionary: {
-          examplesByToken: mapValues(examplesByToken, Object.values),
-          examplesByNode: mapValues(examplesByNode, Object.values)
+          examplesByToken: mapValues(examplesByToken, cleanupExamples),
+          examplesByNode: mapValues(examplesByNode, cleanupExamples)
         }
       });
     });

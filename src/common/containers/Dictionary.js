@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { capitalize, uniq } from 'lodash';
+import { capitalize } from 'lodash';
 
 import { KEYWORDS, HINTS, contractKeywords } from '../util/cards';
 import StatusIcon from '../components/card/StatusIcon';
@@ -132,21 +132,21 @@ class Dictionary extends Component {
   }
 
   renderExamples(examples, term) {
-    return (
-      <div key="examples">
-        <span style={this.subheadingStyle}>Examples</span>
-        <ul>
-          {uniq((examples[term] || [])
-            .map(e => e.replace('\n', '')))
-            .map(e =>
+    if (examples[term]) {
+      return (
+        <div key="examples">
+          <span style={this.subheadingStyle}>Examples</span>
+          <ul>
+            {examples[term].map(e =>
               <li key={e}>
                 {contractKeywords(e)}.&nbsp;
                 {StatusIcon(e, {parsed: true})}
               </li>
-          )}
-        </ul>
-      </div>
-    );
+            )}
+          </ul>
+        </div>
+      );
+    }
   }
 
   renderDictionaryDefinitions() {

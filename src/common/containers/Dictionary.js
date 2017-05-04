@@ -5,16 +5,18 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { List, ListItem } from 'material-ui/List';
+import { List } from 'material-ui/List';
 import { uniq } from 'lodash';
 
 import StatusIcon from '../components/card/StatusIcon';
+import DictionaryTerm from '../components/cards/DictionaryTerm';
 
 export function mapStateToProps(state) {
   const tokens = uniq([].concat(
     Object.keys(state.global.dictionary.definitions),
     Object.keys(state.global.dictionary.examplesByToken)
-  )).sort();
+  )).filter(t => t !== '"' && t !== '\'')
+    .sort();
 
   return {
     tokens: tokens,
@@ -89,15 +91,12 @@ class Dictionary extends Component {
               }}>
                 <List>
                 {this.props.tokens.map((token, idx) =>
-                  <ListItem
-                    primaryText={token.replace(' \'', '\'')}
-                    onTouchTap={() => {
+                  <DictionaryTerm
+                    token={token.replace(' \'', '\'')}
+                    selected={idx === (this.state.selectedIdx || 0)}
+                    onClick={() => {
                       this.setState({selectedIdx: idx});
                       this.props.history.push(`${this.props.history.location.pathname}#${token}`);
-                    }}
-                    style={{
-                      cursor: 'pointer',
-                      backgroundColor: idx === (this.state.selectedIdx || 0) ? '#ddd' : '#fff'
                     }} />
                 )}
                 </List>

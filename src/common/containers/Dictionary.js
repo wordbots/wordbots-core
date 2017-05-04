@@ -173,7 +173,7 @@ class Dictionary extends Component {
       <div>
         <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
         <p>
-          {this.keywordsDefinition}
+          {this.keywordsDefinition.endsWith(',') ? `${this.keywordsDefinition} [...] .` : this.keywordsDefinition}
         </p>
       </div>
     );

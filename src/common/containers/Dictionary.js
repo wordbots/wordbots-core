@@ -72,7 +72,7 @@ class Dictionary extends Component {
   }
 
   get hash() {
-    return this.props.history.location.hash.split('#')[1];
+    return this.props.history.location.hash.split('#')[1] || '';
   }
 
   get dictionaryTerm() {

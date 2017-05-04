@@ -107,14 +107,8 @@ class Dictionary extends Component {
     return this.keywords[this.keywordsTerm.toLowerCase()];
   }
 
-  get styles() {
-    return {
-      dictionary: {display: 'flex', justifyContent: 'stretch'},
-      rightPane: {width: '80%'},
-      rightPanePaper: {height: '65vh'},
-      page: {padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'},
-      subheading: {fontSize: 24, fontWeight: 100}
-    };
+  get subheadingStyle() {
+    return {fontSize: 24, fontWeight: 100};
   }
 
   setHash() {
@@ -139,8 +133,8 @@ class Dictionary extends Component {
 
   renderExamples(examples, term) {
     return (
-      <div>
-        <span style={this.styles.subheading}>Examples</span>
+      <div key="examples">
+        <span style={this.subheadingStyle}>Examples</span>
         <ul>
           {uniq((examples[term] || [])
             .map(e => e.replace('\n', '')))
@@ -157,8 +151,8 @@ class Dictionary extends Component {
 
   renderDictionaryDefinitions() {
     return (
-      <div>
-        <span style={this.styles.subheading}>Definitions</span>
+      <div key="definitions">
+        <span style={this.subheadingStyle}>Definitions</span>
         <ol>
           {this.dictionaryDefinitions.map(d =>
             <li key={`${d.syntax}${d.semantics}`}>
@@ -173,8 +167,8 @@ class Dictionary extends Component {
 
   renderKeywordsDefinition() {
     return (
-      <div>
-        <span style={this.styles.subheading}>Definition</span>
+      <div key="definition">
+        <span style={this.subheadingStyle}>Definition</span>
         <p>
           {this.keywordsDefinition.endsWith(',') ? `${this.keywordsDefinition} [...] .` : this.keywordsDefinition}
         </p>
@@ -182,63 +176,20 @@ class Dictionary extends Component {
     );
   }
 
-  renderDictionary() {
+  renderBook(terms, selectedIdx, selectedTerm, content) {
     return (
-      <div style={this.styles.dictionary}>
+      <div style={{display: 'flex', justifyContent: 'stretch'}}>
         <DictionarySidebar
-          terms={this.dictionaryTerms}
-          selectedIdx={this.state.selectedDictionaryIdx}
-          onClick={(idx) => this.onSelectTerm(idx)} />
+          terms={terms}
+          selectedIdx={selectedIdx}
+          onClick={this.onSelectTerm.bind(this)} />
 
-        <div style={this.styles.rightPane}>
-          <Paper style={this.styles.rightPanePaper}>
-            {this.renderTerm(this.dictionaryDisplayTerm)}
+        <div style={{width: '80%'}}>
+          <Paper style={{height: '65vh'}}>
+            {this.renderTerm(selectedTerm)}
 
-            <div style={this.styles.page}>
-              {this.renderDictionaryDefinitions()}
-              {this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)}
-            </div>
-          </Paper>
-        </div>
-      </div>
-    );
-  }
-
-  renderThesaurus() {
-    return (
-      <div style={this.styles.dictionary}>
-        <DictionarySidebar
-          terms={this.thesaurusTerms}
-          selectedIdx={this.state.selectedThesaurusIdx}
-          onClick={(idx) => this.onSelectTerm(idx)} />
-
-        <div style={this.styles.rightPane}>
-          <Paper style={this.styles.rightPanePaper}>
-            {this.renderTerm(this.thesaurusTerm)}
-
-            <div style={this.styles.page}>
-              {this.renderExamples(this.props.examplesByNode, this.thesaurusTerm)}
-            </div>
-          </Paper>
-        </div>
-      </div>
-    );
-  }
-
-  renderKeywords() {
-    return (
-      <div style={this.styles.dictionary}>
-        <DictionarySidebar
-          terms={this.keywordsTerms}
-          selectedIdx={this.state.selectedKeywordsIdx}
-          onClick={(idx) => this.onSelectTerm(idx)} />
-
-        <div style={this.styles.rightPane}>
-          <Paper style={this.styles.rightPanePaper}>
-            {this.renderTerm(this.keywordsTerm)}
-
-            <div style={this.styles.page}>
-              {this.renderKeywordsDefinition()}
+            <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
+              {content}
             </div>
           </Paper>
         </div>
@@ -263,13 +214,26 @@ class Dictionary extends Component {
               this.setState({tabIdx: idx}, this.setHash.bind(this));
           }}>
             <Tab label="Dictionary" value={0}>
-              {this.renderDictionary()}
+              {
+                this.renderBook(this.dictionaryTerms, this.state.selectedDictionaryIdx, this.dictionaryDisplayTerm, [
+                  this.renderDictionaryDefinitions(),
+                  this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)
+                ])
+              }
             </Tab>
             <Tab label="Thesaurus" value={1}>
-              {this.renderThesaurus()}
+              {
+                this.renderBook(this.thesaurusTerms, this.state.selectedThesaurusIdx, this.thesaurusTerm, [
+                  this.renderExamples(this.props.examplesByNode, this.thesaurusTerm)
+                ])
+              }
             </Tab>
             <Tab label="Keywords" value={2}>
-              {this.renderKeywords()}
+              {
+                this.renderBook(this.keywordsTerms, this.state.selectedKeywordsIdx, this.keywordsTerm, [
+                  this.renderKeywordsDefinition()
+                ])
+              }
             </Tab>
           </Tabs>
         </div>

@@ -14,14 +14,7 @@ import StatusIcon from '../components/card/StatusIcon';
 import DictionaryTerm from '../components/cards/DictionaryTerm';
 
 export function mapStateToProps(state) {
-  const tokens = uniq([].concat(
-    Object.keys(state.global.dictionary.definitions),
-    Object.keys(state.global.dictionary.examplesByToken)
-  )).filter(t => t !== '"' && t !== '\'')
-    .sort();
-
   return {
-    tokens: tokens,
     definitionsByToken: state.global.dictionary.definitions,
     examplesByToken: state.global.dictionary.examplesByToken,
     examplesByNode: state.global.dictionary.examplesByNode
@@ -30,7 +23,6 @@ export function mapStateToProps(state) {
 
 class Dictionary extends Component {
   static propTypes = {
-    tokens: array,
     definitionsByToken: object,
     examplesByToken: object,
     examplesByNode: object,
@@ -52,20 +44,20 @@ class Dictionary extends Component {
   componentWillReceiveProps() {
     if (this.hash) {
       const [ type, term ] = this.hash.split(':');
-      if (type === 'd' && this.state.selectedDictionaryIdx === null && this.props.tokens.indexOf(term) > -1) {
+      if (type === 'd' && this.dictionaryTerms.indexOf(term) > -1) {
         this.setState({
           tabIdx: 0,
-          selectedDictionaryIdx: this.props.tokens.indexOf(term)
+          selectedDictionaryIdx: this.state.selectedDictionaryIdx || this.dictionaryTerms.indexOf(term)
         });
-      } else if (type === 't' && this.state.selectedThesaurusIdx === null && this.thesaurusTerms.indexOf(term) > -1) {
+      } else if (type === 't' && this.thesaurusTerms.indexOf(term) > -1) {
         this.setState({
           tabIdx: 1,
-          selectedThesaurusIdx: this.thesaurusTerms.indexOf(term)
+          selectedThesaurusIdx: this.state.selectedThesaurusIdx || this.thesaurusTerms.indexOf(term)
         });
-      } else if (type === 'k' && this.state.selectedKeywordsIdx === null && this.keywordsTerms.indexOf(term) > -1) {
+      } else if (type === 'k' && this.keywordsTerms.indexOf(term) > -1) {
         this.setState({
           tabIdx: 2,
-          selectedKeywordsIdx: this.keywordsTerms.indexOf(term)
+          selectedKeywordsIdx: this.state.selectedKeywordsIdx || this.keywordsTerms.indexOf(term)
         });
       }
     }
@@ -75,64 +67,60 @@ class Dictionary extends Component {
     return this.props.history.location.hash.split('#')[1] || '';
   }
 
-  get dictionaryTerm() {
-    return this.props.tokens[this.state.selectedDictionaryIdx || 0] || '';
+  get title() {
+    return [
+      `Dictionary : ${this.dictionaryDisplayTerm}`,
+      `Thesaurus : ${this.thesaurusTerm}`,
+      `Keywords : ${this.keywordsTerm}`
+    ][this.state.tabIdx];
   }
 
+  get dictionaryTerms() {
+    return Object.keys(this.props.definitionsByToken).filter(t => t !== '"' && t !== '\'').sort();
+  }
+  get dictionaryTerm() {
+    return this.dictionaryTerms[this.state.selectedDictionaryIdx || 0] || '';
+  }
+  get dictionaryDisplayTerm() {
+    return this.dictionaryTerm.replace(' \'', '\'');
+  }
   get dictionaryDefinitions() {
     return this.props.definitionsByToken[this.dictionaryTerm] || [];
   }
 
-  get dictionaryExamples() {
-    const examples = Object.values(this.props.examplesByToken[this.dictionaryTerm] || {});
-    return uniq(examples.map(e => e.replace('\n', '')));
-  }
-
   get thesaurusTerms() {
-    return flatMap(this.props.examplesByNode, ((nodes, type) => Object.keys(nodes).map(node => `${type}.${node}`)));
+    return Object.keys(this.props.examplesByNode).sort();
   }
-
   get thesaurusTerm() {
     return this.thesaurusTerms[this.state.selectedThesaurusIdx || 0] || '';
-  }
-
-  get thesaurusExamples() {
-    const [ type, node ] = this.thesaurusTerm.split('.');
-    if (this.props.examplesByNode && this.props.examplesByNode[type] && this.props.examplesByNode[type][node]) {
-      const examples = Object.values(this.props.examplesByNode[type][node]);
-      return uniq(examples.map(e => e.replace('\n', '')));
-    } else {
-      return [];
-    }
   }
 
   get keywords() {
     return Object.assign({}, KEYWORDS, HINTS);
   }
-
   get keywordsTerms() {
     return Object.keys(this.keywords).sort().map(k => capitalize(k));
   }
-
   get keywordsTerm() {
     return this.keywordsTerms[this.state.selectedKeywordsIdx || 0] || '';
   }
-
   get keywordsDefinition() {
     return this.keywords[this.keywordsTerm.toLowerCase()];
   }
 
-  setHash() {
-    if (this.state.tabIdx === 0) {
-      this.props.history.push(`${this.props.history.location.pathname}#d:${this.dictionaryTerm}`);
-    } else if (this.state.tabIdx === 1) {
-      this.props.history.push(`${this.props.history.location.pathname}#t:${this.thesaurusTerm}`);
-    } else if (this.state.tabIdx === 2) {
-      this.props.history.push(`${this.props.history.location.pathname}#k:${this.keywordsTerm}`);
-    }
+  get pageStyle() {
+    return {padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'};
+  }
+  get subheadingStyle() {
+    return {display: 'flex', justifyContent: 'stretch'};
   }
 
-  renderSidebar(tokens, selectedIdx, type) {
+  setHash() {
+    const newHash = [`d:${this.dictionaryTerm}`, `t:${this.thesaurusTerm}`, `k:${this.keywordsTerm}`][this.state.tabIdx];
+    this.props.history.push(`${this.props.history.location.pathname}#${newHash}`);
+  }
+
+  renderTerms(tokens, selectedIdx) {
     return (
       <div style={{width: '20%'}}>
         <Paper style={{
@@ -156,41 +144,73 @@ class Dictionary extends Component {
     );
   }
 
+  renderTerm(term) {
+    return (
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarTitle text={term} />
+        </ToolbarGroup>
+      </Toolbar>
+    );
+  }
+
+  renderExamples(examples, term) {
+    return (
+      <div>
+        <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
+        <ul>
+          {uniq((examples[term] || [])
+            .map(e => e.replace('\n', '')))
+            .map(e =>
+              <li>
+                {contractKeywords(e)}.&nbsp;
+                {StatusIcon(e, {parsed: true})}
+              </li>
+          )}
+        </ul>
+      </div>
+    );
+  }
+
+  renderDictionaryDefinitions() {
+    return (
+      <div>
+        <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
+        <ol>
+          {this.dictionaryDefinitions.map(d =>
+            <li>
+              <strong>{d.syntax}. </strong>
+              {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
+            </li>
+          )}
+        </ol>
+      </div>
+    );
+  }
+
+  renderKeywordsDefinition() {
+    return (
+      <div>
+        <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
+        <p>
+          {this.keywordsDefinition}
+        </p>
+      </div>
+    );
+  }
+
   renderDictionary() {
     return (
-      <div style={{display: 'flex', justifyContent: 'stretch'}}>
-        <Helmet title={this.hash.includes('d:') ? `Dictionary: ${this.hash.split(':')[1]}` : 'Dictionary'}/>
-
-        {this.renderSidebar(this.props.tokens, this.state.selectedDictionaryIdx, 'dictionary')}
+      <div style={this.subheadingStyle}>
+        {this.renderTerms(this.dictionaryTerms, this.state.selectedDictionaryIdx)}
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>
-            <Toolbar>
-              <ToolbarGroup>
-                <ToolbarTitle text={this.dictionaryTerm.replace(' \'', '\'')} />
-              </ToolbarGroup>
-            </Toolbar>
+            {this.renderTerm(this.dictionaryDisplayTerm)}
 
-            <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
-              <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
-              <ol>
-                {this.dictionaryDefinitions.map(d =>
-                  <li>
-                    <strong>{d.syntax}. </strong>
-                    {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
-                  </li>
-                )}
-              </ol>
-
-              <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
-              <ul>
-                {this.dictionaryExamples.map(e =>
-                  <li>
-                    {contractKeywords(e)}.&nbsp;
-                    {StatusIcon(e, {parsed: true})}
-                  </li>
-                )}
-              </ul>
+            <div style={this.pageStyle}>
+              {this.renderDictionaryDefinitions()}
+              {this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)}
             </div>
           </Paper>
         </div>
@@ -200,29 +220,15 @@ class Dictionary extends Component {
 
   renderThesaurus() {
     return (
-      <div style={{display: 'flex', justifyContent: 'stretch'}}>
-        <Helmet title={this.hash.includes('t:') ? `Thesaurus: ${this.hash.split(':')[1]}` : 'Thesaurus'}/>
-
-        {this.renderSidebar(this.thesaurusTerms, this.state.selectedThesaurusIdx, 'thesaurus')}
+      <div style={this.subheadingStyle}>
+        {this.renderTerms(this.thesaurusTerms, this.state.selectedThesaurusIdx)}
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>
-            <Toolbar>
-              <ToolbarGroup>
-                <ToolbarTitle text={this.thesaurusTerm} />
-              </ToolbarGroup>
-            </Toolbar>
+            {this.renderTerm(this.thesaurusTerm)}
 
-            <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
-              <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
-              <ul>
-                {this.thesaurusExamples.map(e =>
-                  <li>
-                    {contractKeywords(e)}.&nbsp;
-                    {StatusIcon(e, {parsed: true})}
-                  </li>
-                )}
-              </ul>
+            <div style={this.pageStyle}>
+              {this.renderExamples(this.props.examplesByNode, this.thesaurusTerm)}
             </div>
           </Paper>
         </div>
@@ -232,24 +238,15 @@ class Dictionary extends Component {
 
   renderKeywords() {
     return (
-      <div style={{display: 'flex', justifyContent: 'stretch'}}>
-        <Helmet title={this.hash.includes('k:') ? `Keywords: ${this.hash.split(':')[1]}` : 'Keywords'}/>
-
-        {this.renderSidebar(this.keywordsTerms, this.state.selectedKeywordsIdx, 'keywords')}
+      <div style={this.subheadingStyle}>
+        {this.renderTerms(this.keywordsTerms, this.state.selectedKeywordsIdx)}
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>
-            <Toolbar>
-              <ToolbarGroup>
-                <ToolbarTitle text={this.keywordsTerm} />
-              </ToolbarGroup>
-            </Toolbar>
+            {this.renderTerm(this.keywordsTerm)}
 
-            <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
-              <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
-              <p>
-                {this.keywordsDefinition}
-              </p>
+            <div style={this.pageStyle}>
+              {this.renderKeywordsDefinition()}
             </div>
           </Paper>
         </div>
@@ -261,6 +258,8 @@ class Dictionary extends Component {
     return (
       <div>
         <div>
+          <Helmet title={this.title} />
+
           <div style={{marginBottom: 15}}>
             This dictionary is automatically generated based on cards that players create.
             As more cards are created, the dictionary will become more and more comprehensive!
@@ -272,19 +271,13 @@ class Dictionary extends Component {
               this.setState({tabIdx: idx}, this.setHash.bind(this));
           }}>
             <Tab label="Dictionary" value={0}>
-              <div>
-                {this.renderDictionary()}
-              </div>
+              {this.renderDictionary()}
             </Tab>
             <Tab label="Thesaurus" value={1}>
-              <div>
-                {this.renderThesaurus()}
-              </div>
+              {this.renderThesaurus()}
             </Tab>
             <Tab label="Keywords" value={2}>
-              <div>
-                {this.renderKeywords()}
-              </div>
+              {this.renderKeywords()}
             </Tab>
           </Tabs>
         </div>

@@ -1,5 +1,5 @@
 import fb from 'firebase';
-import { concat, uniq } from 'lodash';
+import { concat, flatMap, fromPairs, mapValues, uniq } from 'lodash';
 
 import { loadParserLexicon } from './cards.js';
 
@@ -89,10 +89,16 @@ export function listenToDictionaryData(callback) {
     .ref('cardText')
     .on('value', (snapshot) => {
       const val = snapshot.val();
+
+      const examplesByToken = val.byToken;
+
+      const nodes = flatMap(val.byNode, ((entries, type) => Object.keys(entries).map(entry => `${type}.${entry}`)));
+      const examplesByNode = fromPairs(nodes.map(n => [n, val.byNode[n.split('.')[0]][n.split('.')[1]]]));
+
       callback({
         dictionary: {
-          examplesByNode: val.byNode,
-          examplesByToken: val.byToken
+          examplesByToken: mapValues(examplesByToken, Object.values),
+          examplesByNode: mapValues(examplesByNode, Object.values)
         }
       });
     });

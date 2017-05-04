@@ -8,23 +8,23 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize } from 'lodash';
 
-import { KEYWORDS, HINTS, contractKeywords } from '../util/cards';
+import { allKeywords, contractKeywords } from '../util/cards';
 import StatusIcon from '../components/card/StatusIcon';
 import DictionarySidebar from '../components/cards/DictionarySidebar';
 
 export function mapStateToProps(state) {
   return {
-    definitionsByToken: state.global.dictionary.definitions,
-    examplesByToken: state.global.dictionary.examplesByToken,
-    examplesByNode: state.global.dictionary.examplesByNode
+    dictionaryDefinitions: state.global.dictionary.definitions,
+    dictionaryExamples: state.global.dictionary.examplesByToken,
+    thesaurusExamples: state.global.dictionary.examplesByNode
   };
 }
 
 class Dictionary extends Component {
   static propTypes = {
-    definitionsByToken: object,
-    examplesByToken: object,
-    examplesByNode: object,
+    dictionaryDefinitions: object,
+    dictionaryExamples: object,
+    thesaurusExamples: object,
 
     history: object
   }
@@ -34,79 +34,79 @@ class Dictionary extends Component {
 
     this.state = {
       tabIdx: 0,
-      selectedDictionaryIdx: 0,
-      selectedThesaurusIdx: 0,
-      selectedKeywordsIdx: 0
+      dictionaryIdx: null,
+      thesaurusIdx: null,
+      keywordsIdx: null
     };
   }
 
   componentWillReceiveProps() {
-    if (this.hash) {
-      const [ type, term ] = this.hash.split(':');
-      if (type === 'd' && this.dictionaryTerms.indexOf(term) > -1) {
-        this.setState({
-          tabIdx: 0,
-          selectedDictionaryIdx: this.state.selectedDictionaryIdx || this.dictionaryTerms.indexOf(term)
-        });
-      } else if (type === 't' && this.thesaurusTerms.indexOf(term) > -1) {
-        this.setState({
-          tabIdx: 1,
-          selectedThesaurusIdx: this.state.selectedThesaurusIdx || this.thesaurusTerms.indexOf(term)
-        });
-      } else if (type === 'k' && this.keywordsTerms.indexOf(term) > -1) {
-        this.setState({
-          tabIdx: 2,
-          selectedKeywordsIdx: this.state.selectedKeywordsIdx || this.keywordsTerms.indexOf(term)
-        });
-      }
+    const hash = this.props.history.location.hash.split('#')[1];
+    if (hash) {
+      const [ type, term ] = hash.split(':');
+      const newTabIdx = ['d', 't', 'k'].indexOf(type);
+
+      this.changeTab(newTabIdx, () => {
+        this.setTerm(term);
+      });
     }
   }
 
-  get hash() {
-    return this.props.history.location.hash.split('#')[1] || '';
-  }
-
   get currentTab() {
-    return ['Dictionary', 'Thesaurus', 'Keywords'][this.state.tabIdx];
-  }
-  get currentTerm() {
-    return [this.dictionaryTerm, this.thesaurusTerm, this.keywordsTerm][this.state.tabIdx];
+    return ['dictionary', 'thesaurus', 'keywords'][this.state.tabIdx];
   }
 
   get dictionaryTerms() {
-    return Object.keys(this.props.definitionsByToken).filter(t => t !== '"' && t !== '\'').sort();
+    return Object.keys(this.props.dictionaryDefinitions).filter(t => t !== '"' && t !== '\'').sort();
   }
   get dictionaryTerm() {
-    return this.dictionaryTerms[this.state.selectedDictionaryIdx] || '';
+    return this.dictionaryTerms[this.state.dictionaryIdx || 0] || '';
   }
 
   get thesaurusTerms() {
-    return Object.keys(this.props.examplesByNode).sort();
+    return Object.keys(this.props.thesaurusExamples).sort();
   }
   get thesaurusTerm() {
-    return this.thesaurusTerms[this.state.selectedThesaurusIdx] || '';
+    return this.thesaurusTerms[this.state.thesaurusIdx || 0] || '';
   }
 
-  get keywords() {
-    return Object.assign({}, KEYWORDS, HINTS);
-  }
   get keywordsTerms() {
-    return Object.keys(this.keywords).sort().map(k => capitalize(k));
+    return Object.keys(allKeywords()).sort().map(k => capitalize(k));
   }
   get keywordsTerm() {
-    return this.keywordsTerms[this.state.selectedKeywordsIdx] || '';
+    return this.keywordsTerms[this.state.keywordsIdx || 0] || '';
+  }
+
+  changeTab(idx, callback = null) {
+    this.setState({tabIdx: idx}, () => {
+      callback ? callback() : this.setHash();
+    });
+  }
+
+  selectTerm(idx) {
+    this.setState({ [`${this.currentTab}Idx`]: idx }, () => {
+      this.setHash();
+    });
+  }
+
+  setTerm(term) {
+    const terms = this[`${this.currentTab}Terms`];
+    if (terms.indexOf(term) > -1 && this.state[`${this.currentTab}Idx`] === null) {
+      this.selectTerm(terms.indexOf(term));
+    }
   }
 
   setHash() {
-    const newHash = `#${this.currentTab.toLowerCase()[0]}:${this.currentTerm}`;
-    this.props.history.push(`${this.props.history.location.pathname}${newHash}`);
+    const tab = this.currentTab;
+    const term = this[`${tab}Term`];
+    this.props.history.push(`${this.props.history.location.pathname}#${tab.toLowerCase()[0]}:${term}`);
   }
 
-  renderTerm() {
-    const term = this.currentTerm.replace(' \'', '\'');  // e.g. "robot 's" => "robot's"
+  renderTitle() {
+    const term = this[`${this.currentTab}Term`].replace(' \'', '\'');  // e.g. "robot 's" => "robot's"
     return (
       <div>
-        <Helmet title={`${this.currentTab} : ${term}`} />
+        <Helmet title={`${capitalize(this.currentTab)} : ${term}`} />
         <Toolbar>
           <ToolbarGroup>
             <ToolbarTitle text={term} />
@@ -114,6 +114,14 @@ class Dictionary extends Component {
         </Toolbar>
       </div>
     );
+  }
+
+  renderPage() {
+    return [
+      [this.renderDictionaryDefinitions(), this.renderExamples(this.props.dictionaryExamples, this.dictionaryTerm)],
+      this.renderExamples(this.props.thesaurusExamples, this.thesaurusTerm),
+      this.renderKeywordsDefinition()
+    ][this.state.tabIdx];
   }
 
   renderExamples(examples, term) {
@@ -134,7 +142,7 @@ class Dictionary extends Component {
   }
 
   renderDictionaryDefinitions() {
-    const definitions = this.props.definitionsByToken[this.dictionaryTerm] || [];
+    const definitions = this.props.dictionaryDefinitions[this.dictionaryTerm] || [];
     return (
       <div key="definitions">
         <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
@@ -151,38 +159,13 @@ class Dictionary extends Component {
   }
 
   renderKeywordsDefinition() {
-    const definition = this.keywords[this.keywordsTerm.toLowerCase()];
+    const definition = allKeywords()[this.keywordsTerm.toLowerCase()];
     return (
       <div key="definition">
         <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
         <p>
           {definition.endsWith(',') ? `${definition} [...] .` : definition}
         </p>
-      </div>
-    );
-  }
-
-  renderBook(terms, selectedIdx, content) {
-    return (
-      <div style={{display: 'flex', justifyContent: 'stretch'}}>
-        <DictionarySidebar
-          terms={terms}
-          selectedIdx={selectedIdx}
-          onClick={(idx) => {
-            this.setState({
-              [`selected${this.currentTab}Idx`]: idx
-            }, this.setHash.bind(this));
-          }} />
-
-        <div style={{width: '80%'}}>
-          <Paper style={{height: '65vh'}}>
-            {this.renderTerm()}
-
-            <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
-              {content}
-            </div>
-          </Paper>
-        </div>
       </div>
     );
   }
@@ -198,32 +181,29 @@ class Dictionary extends Component {
 
           <Tabs
             value={this.state.tabIdx}
-            onChange={(idx) => {
-              this.setState({tabIdx: idx}, this.setHash.bind(this));
-          }}>
-            <Tab label="Dictionary" value={0}>
-              {
-                this.renderBook(this.dictionaryTerms, this.state.selectedDictionaryIdx, [
-                  this.renderDictionaryDefinitions(),
-                  this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)
-                ])
-              }
-            </Tab>
-            <Tab label="Thesaurus" value={1}>
-              {
-                this.renderBook(this.thesaurusTerms, this.state.selectedThesaurusIdx, [
-                  this.renderExamples(this.props.examplesByNode, this.thesaurusTerm)
-                ])
-              }
-            </Tab>
-            <Tab label="Keywords" value={2}>
-              {
-                this.renderBook(this.keywordsTerms, this.state.selectedKeywordsIdx, [
-                  this.renderKeywordsDefinition()
-                ])
-              }
-            </Tab>
+            onChange={(idx) => { this.changeTab(idx); }}
+          >
+            <Tab label="Dictionary" value={0} />
+            <Tab label="Thesaurus" value={1} />
+            <Tab label="Keywords" value={2} />
           </Tabs>
+
+          <div style={{display: 'flex', justifyContent: 'stretch'}}>
+            <DictionarySidebar
+              terms={this[`${this.currentTab}Terms`]}
+              selectedIdx={this.state[`${this.currentTab}Idx`]}
+              onClick={(idx) => { this.selectTerm(idx); }} />
+
+            <div style={{width: '80%'}}>
+              <Paper style={{height: '65vh'}}>
+                {this.renderTitle()}
+
+                <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
+                  {this.renderPage()}
+                </div>
+              </Paper>
+            </div>
+            </div>
         </div>
       </div>
     );

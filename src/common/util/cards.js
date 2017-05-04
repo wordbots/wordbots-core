@@ -31,7 +31,7 @@ const SYNONYMS = {
   'shutdown': ['shut down', 'shut-down']
 };
 
-export const KEYWORDS = {
+const KEYWORDS = {
   'defender': 'This robot can\'t attack.',
   'haste': 'This robot can move and attack immediately after it is played.',
   'jump': 'This robot can move over other objects.',
@@ -40,7 +40,7 @@ export const KEYWORDS = {
   'shutdown:': 'When this object is destroyed,'
 };
 
-export const HINTS = {
+const HINTS = {
   'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
 };
 
@@ -154,6 +154,10 @@ function phrases(sentence) {
   return sentence.split(',')
                  .filter(s => /\S/.test(s))
                  .map(s => s.trim());
+}
+
+export function allKeywords() {
+  return Object.assign({}, KEYWORDS, HINTS);
 }
 
 export function isKeywordExpression(sentence, hintsToo = false) {

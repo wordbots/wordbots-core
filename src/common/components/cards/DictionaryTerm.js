@@ -16,7 +16,6 @@ export default class DictionaryTerm extends Component {
   render() {
     return (
       <ListItem
-        key={this.props.token}
         primaryText={this.props.token}
         onTouchTap={this.props.onClick}
         style={{

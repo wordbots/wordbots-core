@@ -1,7 +1,8 @@
 const defaultState = {
   dictionary: {
     definitions: {},
-    examplesByToken: {}
+    examplesByToken: {},
+    examplesByNode: {}
   },
   sidebarOpen: true,
   user: null

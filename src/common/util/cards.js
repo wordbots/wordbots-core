@@ -1,4 +1,4 @@
-import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, reduce, uniqBy } from 'lodash';
+import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, mapValues, reduce, uniqBy } from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import defaultState from '../store/defaultCollectionState';
@@ -31,7 +31,7 @@ const SYNONYMS = {
   'shutdown': ['shut down', 'shut-down']
 };
 
-const KEYWORDS = {
+export const KEYWORDS = {
   'defender': 'This robot can\'t attack.',
   'haste': 'This robot can move and attack immediately after it is played.',
   'jump': 'This robot can move over other objects.',
@@ -40,7 +40,7 @@ const KEYWORDS = {
   'shutdown:': 'When this object is destroyed,'
 };
 
-const HINTS = {
+export const HINTS = {
   'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
 };
 
@@ -178,6 +178,14 @@ export function keywordsInSentence(sentence, hintsToo = false) {
 export function expandKeywords(sentence) {
   const keywords = keywordsInSentence(sentence);
   return reduce(keywords, (str, def, keyword) => str.replace(keyword, def), sentence);
+}
+
+export function contractKeywords(sentence) {
+  const keywords = mapValues(KEYWORDS, k => k.split(/(\,|\.)/)[0]);
+  return reduce(keywords, ((str, def, keyword) =>
+    str.replace(`"${def}"`, capitalize(keyword))
+       .replace(def, capitalize(keyword))
+  ), sentence);
 }
 
 //

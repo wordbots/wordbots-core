@@ -85,17 +85,17 @@ export function listenToDictionaryData(callback) {
     });
   });
 
-  return getLoggedInUser().then(user => {
-    fb.database()
-      .ref('cardText/byToken')
-      .on('value', (snapshot) => {
-        callback({
-          dictionary: {
-            examplesByToken: snapshot.val()
-          }
-        });
+  fb.database()
+    .ref('cardText')
+    .on('value', (snapshot) => {
+      const val = snapshot.val();
+      callback({
+        dictionary: {
+          examplesByNode: val.byNode,
+          examplesByToken: val.byToken
+        }
       });
-  });
+    });
 }
 
 export function saveUserData(key, value) {

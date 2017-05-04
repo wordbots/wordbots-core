@@ -34,9 +34,9 @@ class Dictionary extends Component {
 
     this.state = {
       tabIdx: 0,
-      selectedDictionaryIdx: null,
-      selectedThesaurusIdx: null,
-      selectedKeywordsIdx: null
+      selectedDictionaryIdx: 0,
+      selectedThesaurusIdx: 0,
+      selectedKeywordsIdx: 0
     };
   }
 
@@ -66,26 +66,25 @@ class Dictionary extends Component {
     return this.props.history.location.hash.split('#')[1] || '';
   }
 
-  get title() {
-    return [
-      `Dictionary : ${this.dictionaryTerm}`,
-      `Thesaurus : ${this.thesaurusTerm}`,
-      `Keywords : ${this.keywordsTerm}`
-    ][this.state.tabIdx];
+  get currentTab() {
+    return ['Dictionary', 'Thesaurus', 'Keywords'][this.state.tabIdx];
+  }
+  get currentTerm() {
+    return [this.dictionaryTerm, this.thesaurusTerm, this.keywordsTerm][this.state.tabIdx];
   }
 
   get dictionaryTerms() {
     return Object.keys(this.props.definitionsByToken).filter(t => t !== '"' && t !== '\'').sort();
   }
   get dictionaryTerm() {
-    return this.dictionaryTerms[this.state.selectedDictionaryIdx || 0] || '';
+    return this.dictionaryTerms[this.state.selectedDictionaryIdx] || '';
   }
 
   get thesaurusTerms() {
     return Object.keys(this.props.examplesByNode).sort();
   }
   get thesaurusTerm() {
-    return this.thesaurusTerms[this.state.selectedThesaurusIdx || 0] || '';
+    return this.thesaurusTerms[this.state.selectedThesaurusIdx] || '';
   }
 
   get keywords() {
@@ -95,30 +94,25 @@ class Dictionary extends Component {
     return Object.keys(this.keywords).sort().map(k => capitalize(k));
   }
   get keywordsTerm() {
-    return this.keywordsTerms[this.state.selectedKeywordsIdx || 0] || '';
-  }
-
-  get subheadingStyle() {
-    return {fontSize: 24, fontWeight: 100};
+    return this.keywordsTerms[this.state.selectedKeywordsIdx] || '';
   }
 
   setHash() {
-    const newHash = [`d:${this.dictionaryTerm}`, `t:${this.thesaurusTerm}`, `k:${this.keywordsTerm}`][this.state.tabIdx];
-    this.props.history.push(`${this.props.history.location.pathname}#${newHash}`);
+    const newHash = `#${this.currentTab.toLowerCase()[0]}:${this.currentTerm}`;
+    this.props.history.push(`${this.props.history.location.pathname}${newHash}`);
   }
 
-  onSelectTerm(idx) {
-    const idxKey = ['selectedDictionaryIdx', 'selectedThesaurusIdx', 'selectedKeywordsIdx'][this.state.tabIdx];
-    this.setState({[idxKey]: idx}, this.setHash.bind(this));
-  }
-
-  renderTerm(term) {
+  renderTerm() {
+    const term = this.currentTerm.replace(' \'', '\'');  // e.g. "robot 's" => "robot's"
     return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarTitle text={term.replace(' \'', '\'')} />
-        </ToolbarGroup>
-      </Toolbar>
+      <div>
+        <Helmet title={`${this.currentTab} : ${term}`} />
+        <Toolbar>
+          <ToolbarGroup>
+            <ToolbarTitle text={term} />
+          </ToolbarGroup>
+        </Toolbar>
+      </div>
     );
   }
 
@@ -126,12 +120,11 @@ class Dictionary extends Component {
     if (examples[term]) {
       return (
         <div key="examples">
-          <span style={this.subheadingStyle}>Examples</span>
+          <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
           <ul>
             {examples[term].map(e =>
               <li key={e}>
-                {contractKeywords(e)}.&nbsp;
-                {StatusIcon(e, {parsed: true})}
+                {contractKeywords(e)}.&nbsp;{StatusIcon(e, {parsed: true})}
               </li>
             )}
           </ul>
@@ -144,7 +137,7 @@ class Dictionary extends Component {
     const definitions = this.props.definitionsByToken[this.dictionaryTerm] || [];
     return (
       <div key="definitions">
-        <span style={this.subheadingStyle}>Definitions</span>
+        <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
         <ol>
           {definitions.map(d =>
             <li key={`${d.syntax}${d.semantics}`}>
@@ -161,7 +154,7 @@ class Dictionary extends Component {
     const definition = this.keywords[this.keywordsTerm.toLowerCase()];
     return (
       <div key="definition">
-        <span style={this.subheadingStyle}>Definition</span>
+        <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
         <p>
           {definition.endsWith(',') ? `${definition} [...] .` : definition}
         </p>
@@ -169,17 +162,21 @@ class Dictionary extends Component {
     );
   }
 
-  renderBook(terms, selectedIdx, selectedTerm, content) {
+  renderBook(terms, selectedIdx, content) {
     return (
       <div style={{display: 'flex', justifyContent: 'stretch'}}>
         <DictionarySidebar
           terms={terms}
           selectedIdx={selectedIdx}
-          onClick={this.onSelectTerm.bind(this)} />
+          onClick={(idx) => {
+            this.setState({
+              [`selected${this.currentTab}Idx`]: idx
+            }, this.setHash.bind(this));
+          }} />
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>
-            {this.renderTerm(selectedTerm)}
+            {this.renderTerm()}
 
             <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
               {content}
@@ -194,8 +191,6 @@ class Dictionary extends Component {
     return (
       <div>
         <div>
-          <Helmet title={this.title} />
-
           <div style={{marginBottom: 15}}>
             This dictionary is automatically generated based on cards that players create.
             As more cards are created, the dictionary will become more and more comprehensive!
@@ -208,7 +203,7 @@ class Dictionary extends Component {
           }}>
             <Tab label="Dictionary" value={0}>
               {
-                this.renderBook(this.dictionaryTerms, this.state.selectedDictionaryIdx, this.dictionaryTerm, [
+                this.renderBook(this.dictionaryTerms, this.state.selectedDictionaryIdx, [
                   this.renderDictionaryDefinitions(),
                   this.renderExamples(this.props.examplesByToken, this.dictionaryTerm)
                 ])
@@ -216,14 +211,14 @@ class Dictionary extends Component {
             </Tab>
             <Tab label="Thesaurus" value={1}>
               {
-                this.renderBook(this.thesaurusTerms, this.state.selectedThesaurusIdx, this.thesaurusTerm, [
+                this.renderBook(this.thesaurusTerms, this.state.selectedThesaurusIdx, [
                   this.renderExamples(this.props.examplesByNode, this.thesaurusTerm)
                 ])
               }
             </Tab>
             <Tab label="Keywords" value={2}>
               {
-                this.renderBook(this.keywordsTerms, this.state.selectedKeywordsIdx, this.keywordsTerm, [
+                this.renderBook(this.keywordsTerms, this.state.selectedKeywordsIdx, [
                   this.renderKeywordsDefinition()
                 ])
               }

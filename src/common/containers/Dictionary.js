@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { array, object } from 'prop-types';
+import { object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { List } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { capitalize, flatMap, uniq } from 'lodash';
+import { capitalize, uniq } from 'lodash';
 
 import { KEYWORDS, HINTS, contractKeywords } from '../util/cards';
 import StatusIcon from '../components/card/StatusIcon';
-import DictionaryTerm from '../components/cards/DictionaryTerm';
+import DictionarySidebar from '../components/cards/DictionarySidebar';
 
 export function mapStateToProps(state) {
   return {
@@ -120,28 +119,9 @@ class Dictionary extends Component {
     this.props.history.push(`${this.props.history.location.pathname}#${newHash}`);
   }
 
-  renderTerms(tokens, selectedIdx) {
-    return (
-      <div style={{width: '20%'}}>
-        <Paper style={{
-          overflowY: 'scroll',
-          height: '65vh'
-        }}>
-          <List>
-          {tokens.map((token, idx) =>
-            <DictionaryTerm
-              key={token}
-              token={token.replace(' \'', '\'')}
-              selected={idx === (selectedIdx || 0)}
-              onClick={() => {
-                const idxKey = ['selectedDictionaryIdx', 'selectedThesaurusIdx', 'selectedKeywordsIdx'][this.state.tabIdx];
-                this.setState({[idxKey]: idx}, this.setHash.bind(this));
-              }} />
-          )}
-          </List>
-        </Paper>
-      </div>
-    );
+  onSelectTerm(idx) {
+    const idxKey = ['selectedDictionaryIdx', 'selectedThesaurusIdx', 'selectedKeywordsIdx'][this.state.tabIdx];
+    this.setState({[idxKey]: idx}, this.setHash.bind(this));
   }
 
   renderTerm(term) {
@@ -178,7 +158,7 @@ class Dictionary extends Component {
         <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
         <ol>
           {this.dictionaryDefinitions.map(d =>
-            <li key={d}>
+            <li key={`${d.syntax}${d.semantics}`}>
               <strong>{d.syntax}. </strong>
               {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
             </li>
@@ -202,7 +182,10 @@ class Dictionary extends Component {
   renderDictionary() {
     return (
       <div style={this.subheadingStyle}>
-        {this.renderTerms(this.dictionaryTerms, this.state.selectedDictionaryIdx)}
+        <DictionarySidebar
+          terms={this.dictionaryTerms}
+          selectedIdx={this.state.selectedDictionaryIdx}
+          onClick={(idx) => this.onSelectTerm(idx)} />
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>
@@ -221,7 +204,10 @@ class Dictionary extends Component {
   renderThesaurus() {
     return (
       <div style={this.subheadingStyle}>
-        {this.renderTerms(this.thesaurusTerms, this.state.selectedThesaurusIdx)}
+        <DictionarySidebar
+          terms={this.thesaurusTerms}
+          selectedIdx={this.state.selectedThesaurusIdx}
+          onClick={(idx) => this.onSelectTerm(idx)} />
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>
@@ -239,7 +225,10 @@ class Dictionary extends Component {
   renderKeywords() {
     return (
       <div style={this.subheadingStyle}>
-        {this.renderTerms(this.keywordsTerms, this.state.selectedKeywordsIdx)}
+        <DictionarySidebar
+          terms={this.keywordsTerms}
+          selectedIdx={this.state.selectedKeywordsIdx}
+          onClick={(idx) => this.onSelectTerm(idx)} />
 
         <div style={{width: '80%'}}>
           <Paper style={{height: '65vh'}}>

@@ -1,5 +1,7 @@
 import fb from 'firebase';
-import { concat, uniq } from 'lodash';
+import { concat, flatMap, fromPairs, mapValues, uniq } from 'lodash';
+
+import { loadParserLexicon } from './cards.js';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -72,6 +74,38 @@ export function listenToUserData(callback) {
       .ref(`users/${user.uid}`)
       .on('value', (snapshot) => { callback(snapshot.val()); });
   });
+}
+
+export function listenToDictionaryData(callback) {
+  function cleanupExamples(examples) {
+    return uniq(Object.values(examples).map(e => e.replace('\n', '')));
+  }
+
+  loadParserLexicon(json => {
+    callback({
+      dictionary: {
+        definitions: json
+      }
+    });
+  });
+
+  fb.database()
+    .ref('cardText')
+    .on('value', (snapshot) => {
+      const val = snapshot.val();
+
+      const examplesByToken = val.byToken;
+
+      const nodes = flatMap(val.byNode, ((entries, type) => Object.keys(entries).map(entry => `${type}.${entry}`)));
+      const examplesByNode = fromPairs(nodes.map(n => [n, val.byNode[n.split('.')[0]][n.split('.')[1]]]));
+
+      callback({
+        dictionary: {
+          examplesByToken: mapValues(examplesByToken, cleanupExamples),
+          examplesByNode: mapValues(examplesByNode, cleanupExamples)
+        }
+      });
+    });
 }
 
 export function saveUserData(key, value) {

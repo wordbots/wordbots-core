@@ -1,6 +1,6 @@
-import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, reduce, uniqBy } from 'lodash';
+import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, mapValues, reduce, uniqBy } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import defaultState from '../store/defaultCollectionState';
 
 import { id as generateId, compareCertainKeys } from './common';
@@ -11,7 +11,6 @@ import { saveUserData, indexParsedSentence } from './firebase';
 //
 
 const CARD_SCHEMA_VERSION = 1;
-const PARSER_URL = 'http://parser.wordbots.io/parse';  // 'http://localhost:8080/parse';
 const PARSE_DEBOUNCE_MS = 500;
 
 const SYNONYMS = {
@@ -125,7 +124,7 @@ export function getSentencesFromInput(text) {
 function parse(sentences, mode, callback) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
-    const parseUrl = `${PARSER_URL}?input=${parserInput}&format=js&mode=${mode}`;
+    const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
 
     fetch(parseUrl)
       .then(response => response.json())
@@ -157,6 +156,10 @@ function phrases(sentence) {
                  .map(s => s.trim());
 }
 
+export function allKeywords() {
+  return Object.assign({}, KEYWORDS, HINTS);
+}
+
 export function isKeywordExpression(sentence, hintsToo = false) {
   return every(phrases(sentence), p => KEYWORDS[p.toLowerCase()]);
 }
@@ -181,6 +184,14 @@ export function expandKeywords(sentence) {
   return reduce(keywords, (str, def, keyword) => str.replace(keyword, def), sentence);
 }
 
+export function contractKeywords(sentence) {
+  const keywords = mapValues(KEYWORDS, k => k.split(/(\,|\.)/)[0]);
+  return reduce(keywords, ((str, def, keyword) =>
+    str.replace(`"${def}"`, capitalize(keyword))
+       .replace(def, capitalize(keyword))
+  ), sentence);
+}
+
 //
 // 3. Import/export.
 //
@@ -198,7 +209,9 @@ export function cardsFromJson(json) {
 
 export function loadCardsFromFirebase(state, data) {
   if (data) {
-    state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+    if (data.cards) {
+      state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+    }
   } else {
     state.cards = defaultState.cards;
   }
@@ -224,4 +237,10 @@ export function saveCardsToFirebase(state) {
 
 export function saveDecksToFirebase(state) {
   saveUserData('decks', state.decks);
+}
+
+export function loadParserLexicon(callback) {
+  fetch(`${PARSER_URL}/lexicon?format=json`)
+    .then(response => response.json())
+    .then(callback);
 }

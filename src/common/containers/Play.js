@@ -18,9 +18,7 @@ export function mapStateToProps(state) {
 
     socket: state.socket,
     cards: state.collection.cards,
-    availableDecks: state.collection.decks.filter(d => d.cardIds.length === 30),
-
-    sidebarOpen: state.global.sidebarOpen
+    availableDecks: state.collection.decks.filter(d => d.cardIds.length === 30)
   };
 }
 
@@ -54,8 +52,6 @@ export class Play extends Component {
   static propTypes = {
     started: bool,
     actionLog: array,
-
-    sidebarOpen: bool,
 
     socket: object,
     cards: array,
@@ -93,11 +89,7 @@ export class Play extends Component {
 
   render() {
     return (
-      <div style={{
-        paddingLeft: this.props.sidebarOpen ? 256 : 0,
-        paddingRight: 256,
-        margin: '48px 72px'
-      }}>
+      <div style={{paddingRight: 256, margin: '48px 72px'}}>
         <Helmet title="Play"/>
         {this.props.started ? <GameArea /> : this.lobby}
         <Chat

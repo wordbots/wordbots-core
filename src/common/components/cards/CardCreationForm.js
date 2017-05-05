@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, string } from 'prop-types';
+import { array, bool, func, number, string, object } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { compact } from 'lodash';
-/* eslint-disable import/no-unassigned-import */
-import 'whatwg-fetch';
-/* eslint-enable import/no-unassigned-import */
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
+import Dictionary from '../../containers/Dictionary';
 
 import NumberField from './NumberField';
 
@@ -29,6 +28,8 @@ export default class CardCreationForm extends Component {
     energy: number,
     isNewCard: bool,
     loggedIn: bool,
+
+    history: object,
 
     onSetName: func,
     onSetType: func,
@@ -212,13 +213,22 @@ export default class CardCreationForm extends Component {
             </div>
           </div>
 
-          <TextField
-            multiLine
-            value={this.props.text}
-            hintText={this.hasCardText ? '' : 'Card Text'}
-            style={{width: '100%'}}
-            errorText={this.textError}
-            onChange={e => { this.onUpdateText(e.target.value); }} />
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <TextField
+              multiLine
+              value={this.props.text}
+              hintText={this.hasCardText ? '' : 'Card Text'}
+              style={{width: '80%', marginRight: 25}}
+              errorText={this.textError}
+              onChange={e => { this.onUpdateText(e.target.value); }} />
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <RaisedButton
+                label="Open Dictionary"
+                primary
+                style={{width: 160}}
+                onClick={() => { this.props.history.push('/creator/dictionary'); }} />
+            </div>
+          </div>
 
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <NumberField
@@ -257,6 +267,15 @@ export default class CardCreationForm extends Component {
             onTouchTap={e => { this.props.onAddToCollection(); }} />
           </MustBeLoggedIn>
         </Paper>
+
+        <Dialog
+          open={this.props.history !== undefined && this.props.history.location.pathname.includes('dictionary')}
+          contentStyle={{width: '90%', maxWidth: 'none'}}
+          onRequestClose={() => { this.props.history.push('/creator'); }}
+          actions={[<RaisedButton primary label="Close" onTouchTap={() => { this.props.history.push('/creator'); }} />]}
+        >
+          <Dictionary />
+        </Dialog>
       </div>
     );
   }

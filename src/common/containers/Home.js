@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, string } from 'prop-types';
+import { string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -9,25 +9,20 @@ import MarkdownBlock from '../components/MarkdownBlock';
 
 export function mapStateToProps(state) {
   return {
-    version: state.version,
-    sidebarOpen: state.global.sidebarOpen
+    version: state.version
   };
 }
 
 class Home extends Component {
   static propTypes = {
-    version: string,
-    sidebarOpen: bool
+    version: string
   };
 
   render() {
     const [version, sha] = this.props.version.split('+');
 
     return (
-      <div style={{
-        paddingLeft: this.props.sidebarOpen ? 256 : 0,
-        margin: '48px 72px'
-      }}>
+      <div style={{margin: '48px 72px'}}>
         <Helmet title="Home"/>
 
         <div style={{display: 'flex', justifyContent: 'stretch'}}>

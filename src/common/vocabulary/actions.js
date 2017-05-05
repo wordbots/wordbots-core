@@ -72,10 +72,14 @@ export default function actions(state) {
       });
     },
 
-    restoreHealth: function (objects) {
+    restoreHealth: function (objects, num) {
       objects.entries.forEach(object => {
         if (object.stats.health < object.card.stats.health) {
-          object.stats.health = object.card.stats.health;
+          if (num) {
+            object.stats.health = Math.min(object.card.stats.health, object.stats.health + num);
+          } else {
+            object.stats.health = object.card.stats.health;
+          }
         }
       });
     },

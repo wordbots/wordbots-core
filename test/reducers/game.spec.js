@@ -122,9 +122,9 @@ describe('Game reducer', () => {
     it('should be able to handle combat between robots', () => {
       let state = getDefaultState();
       // First, let's move all these bots into a position where they can attack one another.
-      state = playObject(state, 'orange', cards.twoFourBotCard, '2,0,-2');
+      state = playObject(state, 'orange', cards.twoBotCard, '2,0,-2');
       state = playObject(state, 'orange', cards.attackBotCard, '3,-1,-2');
-      state = playObject(state, 'blue', cards.twoFourBotCard, '-2,0,2');
+      state = playObject(state, 'blue', cards.twoBotCard, '-2,0,2');
       state = playObject(state, 'blue', cards.attackBotCard, '-3,1,2');
       state = newTurn(state, 'orange');
       state = moveRobot(state, '2,0,-2', '1,0,-1');
@@ -136,33 +136,33 @@ describe('Game reducer', () => {
       state = moveRobot(state, '1,0,-1', '0,0,0');
       state = moveRobot(state, '1,-1,0', '0,-1,1');
 
-      const orangeTankBotPos = '0,0,0';
-      let blueTankBotPos = '-1,0,1';
+      const orangeTwoBotPos = '0,0,0';
+      let blueTwoBotPos = '-1,0,1';
       const orangeAttackBotPos = '0,-1,1';
       const blueAttackBotPos = '-1,1,0';
 
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-      ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
+      ).toEqual([orangeTwoBotPos, blueTwoBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
       // Robots can't attack inaccessible robots.
       state = newTurn(state, 'blue');
       state = attack(state, blueAttackBotPos, orangeAttackBotPos);
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-      ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
+      ).toEqual([orangeTwoBotPos, blueTwoBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
       // Robots can't attack friendly robots.
-      state = attack(state, blueAttackBotPos, blueTankBotPos);
+      state = attack(state, blueAttackBotPos, blueTwoBotPos);
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-      ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
+      ).toEqual([orangeTwoBotPos, blueTwoBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
-      // Combat when no robot dies. [Both Tank Bots should now be down to 4-2=2 health.]
-      state = attack(state, blueTankBotPos, orangeTankBotPos);
+      // Combat when no robot dies. [Both Two Bots should now be down to 4-2=2 health.]
+      state = attack(state, blueTwoBotPos, orangeTwoBotPos);
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-      ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
+      ).toEqual([orangeTwoBotPos, blueTwoBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
       // Combat when attacker dies.
       // Also, let's test moveAndAttack while we're at it, by moving the blue attack bot out of range and
@@ -171,26 +171,26 @@ describe('Game reducer', () => {
       state = newTurn(state, 'blue');
       state = game(state, [
         actions.setSelectedTile('-2,1,1', 'blue'),
-        actions.moveRobotAndAttack('-2,1,1', blueAttackBotPos, orangeTankBotPos)
+        actions.moveRobotAndAttack('-2,1,1', blueAttackBotPos, orangeTwoBotPos)
       ]);
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-      ).toEqual([orangeTankBotPos, blueTankBotPos, orangeAttackBotPos].sort());
+      ).toEqual([orangeTwoBotPos, blueTwoBotPos, orangeAttackBotPos].sort());
 
       // Combat when defender dies and attacker takes its place.
       state = newTurn(state, 'blue');
-      state = attack(state, blueTankBotPos, orangeAttackBotPos);
-      blueTankBotPos = orangeAttackBotPos;
+      state = attack(state, blueTwoBotPos, orangeAttackBotPos);
+      blueTwoBotPos = orangeAttackBotPos;
       expect(
-        state.players.blue.robotsOnBoard[blueTankBotPos].card.name
-      ).toEqual('Tank Bot');
+        state.players.blue.robotsOnBoard[blueTwoBotPos].card.name
+      ).toEqual('Two Bot');
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
-      ).toEqual([orangeTankBotPos, blueTankBotPos].sort());
+      ).toEqual([orangeTwoBotPos, blueTwoBotPos].sort());
 
       // Combat when both robots die.
       state = newTurn(state, 'orange');
-      state = attack(state, orangeTankBotPos, blueTankBotPos);
+      state = attack(state, orangeTwoBotPos, blueTwoBotPos);
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({});
@@ -266,8 +266,8 @@ describe('Game reducer', () => {
       // Test ability to select a card in hand.
       // "Discard a robot card. Gain life equal to its health."
       // (This also tests the ability to store 'it' in game state for later retrieval.)
-      state = drawCardToHand(state, 'blue', cards.twoFourBotCard);
-      state = playEvent(state, 'blue', cards.consumeCard, {card: cards.twoFourBotCard});
+      state = drawCardToHand(state, 'blue', cards.twoBotCard);
+      state = playEvent(state, 'blue', cards.consumeCard, {card: cards.twoBotCard});
       expect(
         state.players.blue.hand.length
       ).toEqual(getDefaultState().players.blue.hand.length);
@@ -284,8 +284,8 @@ describe('Game reducer', () => {
           '1,0,-1': cards.attackBotCard // 1/1
         },
         'blue': {
-          '-1,0,1': cards.twoFourBotCard, // 2/4
-          '0,-1,1': cards.twoFourBotCard, // 2/4
+          '-1,0,1': cards.twoBotCard, // 2/4
+          '0,-1,1': cards.twoBotCard, // 2/4
           '-1,1,0': cards.attackBotCard // 1/1
         }
       });
@@ -294,7 +294,7 @@ describe('Game reducer', () => {
       ).toEqual(['0,0,0', '1,0,-1', '-1,0,1', '0,-1,1', '-1,1,0'].sort());
       state = newTurn(state, 'orange');
       state = attack(state, '0,0,0', '-1,0,1');
-      // Only the two Tank Bots (each receiving 2 damage) should survive the carnage.
+      // Only the two Two Bots (each receiving 2 damage) should survive the carnage.
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
       ).toEqual(['-1,0,1', '0,-1,1'].sort());
@@ -333,7 +333,7 @@ describe('Game reducer', () => {
           '0,0,0': cards.attackBotCard
         },
         'blue': {
-          '-1,0,1': cards.twoFourBotCard,
+          '-1,0,1': cards.twoBotCard,
           '0,-1,1': cards.attackBotCard,
           '-2,0,2': cards.arenaCard
         }
@@ -351,7 +351,7 @@ describe('Game reducer', () => {
           '1,0,-1': cards.defenderBotCard  // adjacent to Martyr Bot (but already controlled by orange)
         },
         'blue': {
-          '-1,0,1': cards.twoFourBotCard,  // will attack
+          '-1,0,1': cards.twoBotCard,  // will attack
           '-1,1,0': cards.attackBotCard,  // adjacent to Martyr Bot
           '-2,0,2': cards.monkeyBotCard  // not adjacent to Martyr Bot
         }
@@ -360,7 +360,7 @@ describe('Game reducer', () => {
         state = newTurn(state, 'blue');
         state = attack(state, '-1,0,1', '0,0,0');
       });
-      // Orange has taken control of Tank Bot (now in Martyr Bot's position) and Attack Bot.
+      // Orange has taken control of Two Bot (now in Martyr Bot's position) and Attack Bot.
       expect(
         Object.keys(state.players.orange.robotsOnBoard).sort()
       ).toEqual([ORANGE_CORE_HEX, '1,0,-1', '0,0,0', '-1,1,0'].sort());
@@ -400,7 +400,7 @@ describe('Game reducer', () => {
           '1,-2,1': cards.attackBotCard // 1/1
         },
         'blue': {
-          '2,0,-2': cards.twoFourBotCard, // 2/4
+          '2,0,-2': cards.twoBotCard, // 2/4
           '-2,0,2': cards.wisdomBotCard, // 1/3
           '0,-1,1': cards.monkeyBotCard // 2/2
         }
@@ -555,16 +555,16 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('1/1/2');
       state = playEvent(state, 'orange', cards.threedomCard);  // "Set all stats of all robots in play to 3."
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('3/3/3');
-      state = playObject(state, 'orange', cards.generalBotCard, '2,1,-3');  // 1/3; +1/0
+      state = playObject(state, 'orange', cards.generalBotCard, '2,1,-3');  // 2/5; +1/0
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('4/3/3');
       state = playEvent(state, 'orange', cards.rampageCard);  // "Give all robots you control +2 attack."
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('6/3/3');
       state = playObject(state, 'orange', cards.fortificationCard, '1,1,-2');  // +0/1
       expect(queryRobotAttributes(state, '2,0,-2')).toEqual('6/4/3');
-      expect(queryRobotAttributes(state, '2,1,-3')).toEqual('3/4/3');
+      expect(queryRobotAttributes(state, '2,1,-3')).toEqual('4/6/3');
       const energy = state.players.orange.energy.available;
       state = playEvent(state, 'orange', cards.incinerateCard);  // "Gain energy equal to the total power of robots you control. Destroy all robots you control."
-      expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (1+2));
+      expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (2+2));
     });
 
     it('should let objects assign keywords to other objects', () => {

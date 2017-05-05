@@ -6,6 +6,8 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/58e73f0926a5bb0052203185/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58e73f0926a5bb0052203185)
 [![Greenkeeper badge](https://badges.greenkeeper.io/wordbots/wordbots-core.svg)](https://greenkeeper.io/)
 
+[![](http://imgur.com/q7lBCUn.png)](https://www.patreon.com/wordbots)
+
 ## Development installation
 
 ```

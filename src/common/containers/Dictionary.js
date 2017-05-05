@@ -150,7 +150,7 @@ class Dictionary extends Component {
           {definitions.map(d =>
             <li key={`${d.syntax}${d.semantics}`}>
               <strong>{d.syntax}. </strong>
-              {d.semantics.replace(/=>/g, '→').replace(/\,(\w)/g, '\, $1')}
+              {d.semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/\,(\w)/g, '\, $1')}
             </li>
           )}
         </ol>

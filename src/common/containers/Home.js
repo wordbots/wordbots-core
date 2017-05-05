@@ -32,7 +32,7 @@ class Home extends Component {
             </Paper>
 
             <Paper style={{padding: '5px 20px', marginTop: 20}}>
-              <MarkdownBlock source={leaveYourFeedback} />
+              <MarkdownBlock source={getInvolved} />
             </Paper>
           </div>
 
@@ -59,23 +59,24 @@ Wordbots is currently in **alpha**.
 We _have_ a working (but not fully complete) parser for card text, basic gameplay functionality, and a lobby for multiplayer gameplay.
 We _don't_ currently have any mechanism to ensure that cards are reasonably balanced –
 that's still something we're brainstorming.
-
-Wordbots is under active development.
-Follow our progress on [GitHub](https://github.com/wordbots).
 `);
 
-const leaveYourFeedback = `
-## Leave Your Feedback
-Got comments or questions? Is something not working? Are some elements of the game confusing?
+const getInvolved = `
+## Get Involved!
 
-Is a card not parsing correctly when it should?
-_(This in particular is important to us at this stage.)_
+Interested in Wordbots? There are many ways you can get involved:
 
-We want your feedback. Please fill out
-[this form](https://docs.google.com/forms/d/e/1FAIpQLSed43Rc8HcdZug7uW8Jdxsa6CpHP8kQLnioIz_tiFos2NvMtQ/viewform?usp=sf_link)
-on your way out.
+1. Join us on [our Discord channel](http://discord.wordbots.io) to discuss Wordbots.
 
-P.S. [Join us on Discord!](http://discord.wordbots.io)
+2. Got comments or questions? Is something not working? Are some elements of the game confusing?
+[Fill out our feedback form](https://docs.google.com/forms/d/e/1FAIpQLSed43Rc8HcdZug7uW8Jdxsa6CpHP8kQLnioIz_tiFos2NvMtQ/viewform?usp=sf_link)
+to let us know.
+
+3. Technical folks, follow the development of the game on [GitHub](http://git.wordbots.io).
+Feel free to add issues or even make a pull request if you're feeling brave.
+
+4. Last but not least, donations enable us to keep working on Wordbots, so if you're feeling generous,
+[send a dollar or two our way on Patreon](https://www.patreon.com/wordbots).
 `;
 
 const howToPlay = `

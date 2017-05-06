@@ -189,7 +189,7 @@ class App extends Component {
 
   get title() {
     return (
-      <div style={{height: 66}}>
+      <div style={{height: 64}}>
         <AppBar
           title={
             <Link style={{

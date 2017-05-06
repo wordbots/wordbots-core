@@ -110,7 +110,7 @@ export default class Chat extends Component {
   render() {
     return (
       <div>
-        <Drawer openSecondary docked containerStyle={{paddingTop: '66px'}}>
+        <Drawer openSecondary docked containerStyle={{paddingTop: '64px'}}>
           <Toolbar>
             <ToolbarGroup>
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />

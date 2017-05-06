@@ -17,7 +17,6 @@ import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
-import Background from '../../../static/black_bg_lodyas.png';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
@@ -158,8 +157,8 @@ export class GameArea extends Component {
 
   updateHeight() {
     this.setState({
-      areaHeight: window.innerHeight - 66,
-      boardHeight: window.innerHeight - 66 - 150
+      areaHeight: window.innerHeight - 64,
+      boardHeight: window.innerHeight - 64 - 150
     });
   }
 
@@ -237,6 +236,8 @@ export class GameArea extends Component {
     }
   }
 
+  loadBackground = () => require('../components/img/black_bg_lodyas.png');
+
   renderNotification() {
     const options = {
       tag: 'wordbots',
@@ -270,7 +271,7 @@ export class GameArea extends Component {
           style={{
             position: 'relative',
             height: this.state.areaHeight,
-            background: `url(${Background})`
+            background: `url(${this.loadBackground()})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
           <div

@@ -76,7 +76,7 @@
     "style-loader": "0.17.0",
     "substitute-loader": "^1.0.0",
     "url-loader": "0.5.8",
-    "webpack": "2.5.0",
+    "webpack": "2.5.1",
     "whatwg-fetch": "^2.0.3",
     "ws": "^2.2.3"
   },

@@ -89,7 +89,10 @@ export class Play extends Component {
 
   render() {
     return (
-      <div style={{paddingRight: 256, margin: '48px 72px'}}>
+      <div style={{
+        paddingRight: 256,
+        margin: this.props.started ? 0 : '48px 72px'
+      }}>
         <Helmet title="Play"/>
         {this.props.started ? <GameArea /> : this.lobby}
         <Chat

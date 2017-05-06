@@ -17,6 +17,7 @@ import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
+import Background from '../../../static/black_bg_lodyas.png';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
@@ -142,8 +143,8 @@ export class GameArea extends Component {
     super(props);
 
     this.state = {
-      areaHeight: 1100,
-      boardHeight: 600
+      areaHeight: 1250,
+      boardHeight: 1000
     };
   }
 
@@ -157,8 +158,8 @@ export class GameArea extends Component {
 
   updateHeight() {
     this.setState({
-      areaHeight: window.innerHeight - 200,
-      boardHeight: window.innerHeight - 450
+      areaHeight: window.innerHeight - 66,
+      boardHeight: window.innerHeight - 66 - 150
     });
   }
 
@@ -268,7 +269,8 @@ export class GameArea extends Component {
         <Paper
           style={{
             position: 'relative',
-            height: this.state.areaHeight
+            height: this.state.areaHeight,
+            background: `url(${Background})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
           <div
@@ -276,8 +278,8 @@ export class GameArea extends Component {
             style={{
               position: 'absolute',
               left: 0,
-              top: 125,
-              bottom: 125,
+              top: 75,
+              bottom: 75,
               right: 0,
               zIndex: 9999
           }}>

@@ -39,7 +39,6 @@ class PlayerArea extends Component {
           playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]}  />
         <EnergyCount
           color={color}
-          playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]}
           energy={gameProps[`${color}Energy`]}
           isCurrentPlayer={gameProps.currentTurn === color} />
         <Hand

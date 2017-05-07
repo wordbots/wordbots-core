@@ -52,13 +52,13 @@ export default class HexShape extends React.Component {
   getStyles(hex) {
     const styles = {};
 
-    if (this.props.fill || (hex.props !== {} && typeof(hex.props.image) !== 'undefined')) {
+    // if (this.props.fill || (hex.props !== {} && typeof(hex.props.image) !== 'undefined')) {
       styles.fill = `url(#${ HexUtils.getID(hex) })`;
-    }
+    // }
 
-    if (this.props.selected) {
-      styles.strokeWidth = 0.5;
-    }
+    // if (this.props.selected) {
+    //   styles.strokeWidth = 0.5;
+    // }
 
     return styles;
   }
@@ -79,13 +79,15 @@ export default class HexShape extends React.Component {
 
   getPieceStats() {
     if (this.props.pieceStats) {
+      const healthTextPositionY = this.props.pieceStats.health >= 20 ? 2.95 : 3;
+
       if (this.props.pieceStats.attack !== undefined) {
         return (
           <g>
             <circle style={{
               fill: '#E57373'
-            }} cx="-3" cy="2" r="2" />
-            <text x="-3" y="3" textAnchor="middle" style={{
+            }} cx="-2.5" cy="2" r="2" />
+            <text x="-2.5" y="3" textAnchor="middle" style={{
               fontFamily: 'Carter One',
               fontSize: '0.19em',
               fill: '#FFFFFF',
@@ -93,8 +95,8 @@ export default class HexShape extends React.Component {
             }}>{this.props.pieceStats.attack}</text>
             <circle style={{
               fill: '#81C784'
-            }} cx="3" cy="2" r="2" />
-            <text x="3" y="3" textAnchor="middle" style={{
+            }} cx="2.5" cy="2" r="2" />
+            <text x="2.5" y="3" textAnchor="middle" style={{
               fontFamily: 'Carter One',
               fontSize: '0.19em',
               fill: '#FFFFFF',
@@ -107,10 +109,10 @@ export default class HexShape extends React.Component {
           <g>
             <circle style={{
               fill: '#81C784'
-            }} cx="3" cy="2" r="2" />
-            <text x="3" y="3" textAnchor="middle" style={{
+            }} cx="2.5" cy="2" r="2" />
+            <text x="2.5" y={healthTextPositionY} textAnchor="middle" style={{
               fontFamily: 'Carter One',
-              fontSize: '0.19em',
+              fontSize: this.props.pieceStats.health >= 20 ? '0.14em' : '0.19em',
               fill: '#FFFFFF',
               fillOpacity: 1
             }}>{this.props.pieceStats.health}</text>

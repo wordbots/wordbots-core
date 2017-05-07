@@ -37,6 +37,9 @@ engines:
         enabled: false
       import/prefer-default-export:
         enabled: false
+      # react/jsx-wrap-multilines behavior inconsistent between versions of eslint-plugin-react.
+      react/jsx-wrap-multilines:
+        enabled: false
   fixme:
     enabled: true
   markdownlint:

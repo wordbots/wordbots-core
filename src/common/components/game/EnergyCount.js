@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { bool, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
+import { id } from '../../util/common';
+
 class EnergyCount extends Component {
   static propTypes = {
     color: string,
@@ -11,13 +13,15 @@ class EnergyCount extends Component {
 
   renderEnergyTile(color, filled) {
     return (
-      <Paper style={{
-        height: 64,
-        width: 18,
-        backgroundColor: filled ? {orange: '#ffb85d', blue: '#badbff'}[color] : 'transparent',
-        marginLeft: 8,
-        border: '3px solid white',
-        borderRadius: 4
+      <Paper
+        key={id()}
+        style={{
+          height: 64,
+          width: 18,
+          backgroundColor: filled ? {orange: '#ffb85d', blue: '#badbff'}[color] : 'transparent',
+          marginLeft: 8,
+          border: '3px solid white',
+          borderRadius: 4
       }} />
     );
   }
@@ -47,7 +51,7 @@ class EnergyCount extends Component {
     return (
       <div style={{display: 'flex'}}>
         {this.renderEnergyTiles()}
-      </div> 
+      </div>
     );
   }
 }

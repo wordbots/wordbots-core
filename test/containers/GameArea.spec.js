@@ -28,7 +28,7 @@ describe('GameArea container', () => {
       <PlayerArea opponent gameProps={game.props} />,
       <div
         ref={mainDiv.ref}
-        style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0, zIndex: 9999}}
+        style={{position: 'absolute', left: 0, top: 75, bottom: 75, right: 0, zIndex: 9999}}
       >
         <Status
           player={'orange'}
@@ -42,7 +42,7 @@ describe('GameArea container', () => {
           player={'orange'}
           currentTurn={'orange'}
           playingCardType={null}
-          height={600}
+          height={1000}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
           />

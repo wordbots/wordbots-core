@@ -8,6 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Notification from 'react-web-notification';
 
+import { inBrowser } from '../util/common';
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
@@ -236,7 +237,9 @@ export class GameArea extends Component {
     }
   }
 
-  loadBackground = () => require('../components/img/black_bg_lodyas.png');
+  loadBackground() {
+    return inBrowser() ? require('../components/img/black_bg_lodyas.png') : '';
+  }
 
   renderNotification() {
     const options = {
@@ -271,7 +274,10 @@ export class GameArea extends Component {
           style={{
             position: 'relative',
             height: this.state.areaHeight,
-            background: `url(${this.loadBackground()})`
+            background:
+
+
+            `url(${this.loadBackground()})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
           <div

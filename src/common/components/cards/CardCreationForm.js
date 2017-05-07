@@ -76,7 +76,11 @@ export default class CardCreationForm extends Component {
   }
 
   get parseErrors() {
-    return compact(this.nonEmptySentences.map(s => s.result.error));
+    return compact(this.nonEmptySentences.map(s => s.result.error)).map(error =>
+      (`${error}.`)
+        .replace('..', '')
+        .replace('Parser did not produce a valid expression', 'Parser error')
+    );
   }
 
   get nameError() {
@@ -143,7 +147,7 @@ export default class CardCreationForm extends Component {
     }
 
     if (this.parseErrors.length > 0) {
-      return this.parseErrors.map(e => e.endsWith('.') ? e : `${e}.`).join(' ');
+      return this.parseErrors.join(' ');
     } else if (this.nonEmptySentences.find(s => !s.result.js)) {
       return 'Sentences are still being parsed ...';
     } else {
@@ -188,7 +192,7 @@ export default class CardCreationForm extends Component {
             <SelectField
               value={this.props.type}
               floatingLabelText="Card Type"
-              style={{width: '80%', marginRight: 25}}
+              style={{width: '70%', marginRight: 25}}
               onChange={(e, i, value) => {
                 this.props.onSetType(value);
                 // Re-parse card text because different card types now have different validations.
@@ -218,8 +222,9 @@ export default class CardCreationForm extends Component {
               multiLine
               value={this.props.text}
               hintText={this.hasCardText ? '' : 'Card Text'}
-              style={{width: '80%', marginRight: 25}}
+              style={{width: '70%', marginRight: 25}}
               errorText={this.textError}
+              errorStyle={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
               onChange={e => { this.onUpdateText(e.target.value); }} />
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <RaisedButton

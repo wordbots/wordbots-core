@@ -85,8 +85,10 @@ export default class HexShape extends React.Component {
         return (
           <g>
             <circle style={{
-              fill: '#E57373'
-            }} cx="-2.5" cy="2" r="2" />
+              fill: '#E57373',
+              strokeWidth: 0.2,
+              stroke: '#777'
+            }} cx="-2.5" cy="2" r="2" filter="url(#dropShadow)"/>
             <text x="-2.5" y="3" textAnchor="middle" style={{
               fontFamily: 'Carter One',
               fontSize: '0.19em',
@@ -94,8 +96,10 @@ export default class HexShape extends React.Component {
               fillOpacity: 1
             }}>{this.props.pieceStats.attack}</text>
             <circle style={{
-              fill: '#81C784'
-            }} cx="2.5" cy="2" r="2" />
+              fill: '#81C784',
+              strokeWidth: 0.2,
+              stroke: '#777'
+            }} cx="2.5" cy="2" r="2" filter="url(#dropShadow)"/>
             <text x="2.5" y="3" textAnchor="middle" style={{
               fontFamily: 'Carter One',
               fontSize: '0.19em',
@@ -108,8 +112,10 @@ export default class HexShape extends React.Component {
         return (
           <g>
             <circle style={{
-              fill: '#81C784'
-            }} cx="2.5" cy="2" r="2" />
+              fill: '#81C784',
+              strokeWidth: 0.2,
+              stroke: '#777'
+            }} cx="2.5" cy="2" r="2" filter="url(#dropShadow)"/>
             <text x="2.5" y={healthTextPositionY} textAnchor="middle" style={{
               fontFamily: 'Carter One',
               fontSize: this.props.pieceStats.health >= 20 ? '0.14em' : '0.19em',

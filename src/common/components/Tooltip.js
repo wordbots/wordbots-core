@@ -19,29 +19,17 @@ export default class Tooltip extends Component {
 
   render() {
     const tooltipId = id();
+    const SpanOrDiv = this.props.inline ? 'span' : 'div';
 
-    if (this.props.inline) {
-      return (
-        <span>
-          <span data-tip={this.props.text} data-for={tooltipId}>
-            {this.props.children}
-          </span>
-          <span style={this.props.style}>
-            <ReactTooltip id={tooltipId} />
-          </span>
-        </span>
-      );
-    } else {
-      return (
-        <div>
-          <div data-tip={this.props.text} data-for={tooltipId}>
-            {this.props.children}
-          </div>
-          <div style={this.props.style}>
-            <ReactTooltip id={tooltipId} />
-          </div>
-        </div>
-      );
-    }
+    return (
+      <SpanOrDiv>
+        <SpanOrDiv data-tip={this.props.text} data-for={tooltipId}>
+          {this.props.children}
+        </SpanOrDiv>
+        <SpanOrDiv style={this.props.style}>
+          <ReactTooltip id={tooltipId} />
+        </SpanOrDiv>
+      </SpanOrDiv>
+    );
   }
 }

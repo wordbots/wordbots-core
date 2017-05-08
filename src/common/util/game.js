@@ -77,7 +77,7 @@ function getEffect(object, effect) {
 }
 
 export function allowedToAttack(state, attacker, targetHex) {
-  if (attacker.cantAttack || hasEffect(attacker, 'cannotattack')) {
+  if (attacker.card.type !== TYPE_ROBOT || attacker.cantAttack || hasEffect(attacker, 'cannotattack')) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
     const defender = allObjectsOnBoard(state)[targetHex];

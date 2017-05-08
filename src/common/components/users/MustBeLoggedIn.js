@@ -1,52 +1,48 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { array, bool, object, oneOfType } from 'prop-types';
-import ReactTooltip from 'react-tooltip';
 import { pick } from 'lodash';
 
-import { id } from '../../util/common';
+import Tooltip from '../Tooltip';
 
-const MustBeLoggedIn = (props) => {
-  if (props.loggedIn) {
+export default class MustBeLoggedIn extends Component {
+  static propTypes = {
+    loggedIn: bool,
+    children: oneOfType([array, object])
+  };
+
+  renderDisabledChild(child) {
+    const propagatedStyleKeys = ['float', 'width', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'];
+
+    const parentStyle = pick(child.props.style, propagatedStyleKeys);
+    const childStyle = {
+      ...child.props.style,
+      float: 'none',
+      width: child.props.style.width ? '100%' : null,
+      margin: 0
+    };
+
     return (
-      <div>
-        {props.children}
-      </div>
-    );
-  } else {
-    const tooltipId = id();
-    return (
-      <div className="notAllowed">
-        <ReactTooltip id={tooltipId} />
-        {
-          React.Children.map(props.children, child =>
-            <div
-              data-for={tooltipId}
-              data-tip="You must be logged in to perform this action."
-              style={
-                pick(child.props.style, ['float', 'width', 'margin', 'marginTop', 'marginRight'])
-            }>
-              {
-                React.cloneElement(child, {
-                  disabled: true,
-                  style: {
-                    ...child.props.style,
-                    float: 'none',
-                    width: child.props.style.width ? '100%' : null,
-                    margin: 0
-                  }
-                })
-              }
-            </div>
-          )
-        }
-      </div>
+      <Tooltip text="You must be logged in to perform this action.">
+        <div style={parentStyle}>
+          {React.cloneElement(child, { disabled: true, style: childStyle })}
+        </div>
+      </Tooltip>
     );
   }
-};
 
-MustBeLoggedIn.propTypes = {
-  loggedIn: bool,
-  children: oneOfType([array, object])
-};
-
-export default MustBeLoggedIn;
+  render() {
+    if (this.props.loggedIn) {
+      return (
+        <div>
+          {this.props.children}
+        </div>
+      );
+    } else {
+      return (
+        <div className="notAllowed">
+          {React.Children.map(this.props.children, this.renderDisabledChild)}
+        </div>
+      );
+    }
+  }
+}

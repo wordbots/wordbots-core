@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
 
 import { id, inBrowser } from '../../util/common';
+import Tooltip from '../Tooltip';
 
 function Word(word, keywords, result) {
   if ((result.unrecognizedTokens || []).includes(word.toLowerCase())) {
@@ -12,11 +12,9 @@ function Word(word, keywords, result) {
     );
   } else if (keywords[word]) {
     if (inBrowser()) {
-      const tooltipId = id();
       return (
         <span key={id()}>
-          {' '}<b data-for={tooltipId} data-tip={keywords[word]}>{word}</b>
-          <ReactTooltip id={tooltipId} />
+          {' '}<Tooltip inline text={keywords[word]}><b>{word}</b></Tooltip>
         </span>
       );
     } else {

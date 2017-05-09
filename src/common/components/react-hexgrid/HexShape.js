@@ -1,6 +1,5 @@
 import React from 'react';
 import { bool, object, string } from 'prop-types';
-import { isUndefined } from 'lodash';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';

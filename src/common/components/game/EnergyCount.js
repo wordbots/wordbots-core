@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bool, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
+import { times } from 'lodash';
 
 import { id } from '../../util/common';
 
@@ -31,13 +32,13 @@ class EnergyCount extends Component {
     const emptyEnergy = energy.total - energy.available;
     const energyTiles = [];
 
-    for (let i = 0; i < energy.available; i++) {
+    times(energy.available, () => {
       energyTiles.push(this.renderEnergyTile(color, true));
-    }
+    });
 
-    for (let i = 0; i < emptyEnergy; i++) {
+    times(emptyEnergy, () => {
       energyTiles.push(this.renderEnergyTile(color, false));
-    }
+    });
 
     if (energy.total === 0) {
       energyTiles.push(this.renderEnergyTile(color, false));

@@ -608,18 +608,19 @@ describe('Game reducer', () => {
     });
 
     it('should let objects assign triggered abilities to other objects', () => {
-      function handSize() {
-        return state.players.orange.hand.length;
-      }
-
       let state = setUpBoardState({
         'orange': {
           '-3,1,2': cards.attackBotCard
         }
       });
-      let currentHandSize = handSize();
+
+      function handSize() {
+        return state.players.orange.hand.length;
+      }
 
       // No card draw.
+      state = newTurn(state, 'orange');
+      let currentHandSize = handSize();
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize);
 
@@ -627,7 +628,9 @@ describe('Game reducer', () => {
       state = playObject(state, 'orange', cards.magpieMachineCard, '2,0,-2');
 
       // Card draw.
+      state = newTurn(state, 'orange');
       currentHandSize = handSize();
+      //console.log(state.players.orange.robotsOnBoard['-3,1,2']);
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize + 1);
 
@@ -636,6 +639,7 @@ describe('Game reducer', () => {
       expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('2,0,-2');
 
       // No card draw.
+      state = newTurn(state, 'orange');
       currentHandSize = handSize();
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize);

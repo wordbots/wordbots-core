@@ -11,7 +11,15 @@ import {
 export default function actions(state) {
   return {
     canMoveAgain: function (objects) {
-      objects.entries.forEach(object => { Object.assign(object, {movesMade: 0, cantMove: false}); });
+      objects.entries.forEach(object => {
+        Object.assign(object, {movesMade: 0, cantMove: false});
+      });
+    },
+
+    canMoveAndAttackAgain: function (objects) {
+      objects.entries.forEach(object => {
+        Object.assign(object, {movesMade: 0, cantMove: false, cantAttack: false});
+      });
     },
 
     dealDamage: function (targets, amount) {

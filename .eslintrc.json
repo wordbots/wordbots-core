@@ -15,6 +15,23 @@
     "comma-dangle": 2,
     "eol-last": 2,
     "eqeqeq": 2,
+    "jsx-quotes": 2,
+    "no-console": 1,
+    "no-shadow": 2,
+    "no-unused-vars": [2, { "args": "none" }],
+    "no-var": 2,
+    "prefer-arrow-callback": 2,
+    "prefer-const": 2,
+    "prefer-spread": 2,
+    "prefer-template": 2,
+    "quotes": [2, "single"],
+    "semi": 2,
+    "space-before-function-paren": [2, {
+      "anonymous": "always",
+      "named": "never"
+    }],
+    "strict": [2, "global"],
+
     "import/no-unresolved": 2,
     "import/named": 2,
     "import/default": 2,
@@ -25,15 +42,12 @@
     "import/newline-after-import": 2,
     "import/no-unassigned-import": 2,
     "import/prefer-default-export": 1,
-    "jsx-quotes": 2,
-    "no-console": 1,
-    "no-shadow": 2,
-    "no-unused-vars": [2, { "args": "none" }],
-    "no-var": 2,
-    "prefer-arrow-callback": 2,
-    "prefer-const": 2,
-    "prefer-spread": 2,
-    "prefer-template": 2,
+
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/valid-expect": "error",
+
     "react/jsx-boolean-value": 2,
     "react/jsx-no-undef": 2,
     "react/jsx-sort-props": 0,
@@ -47,17 +61,11 @@
     "react/no-unknown-property": 2,
     "react/prop-types": 2,
     "react/react-in-jsx-scope": 2,
-    "react/self-closing-comp": 2,
-    "quotes": [2, "single"],
-    "semi": 2,
-    "space-before-function-paren": [2, {
-      "anonymous": "always",
-      "named": "never"
-    }],
-    "strict": [2, "global"]
+    "react/self-closing-comp": 2
   },
   "plugins": [
-    "react",
-    "import"
+    "import",
+    "jest",
+    "react"
   ]
 }

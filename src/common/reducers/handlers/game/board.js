@@ -72,6 +72,7 @@ export function attack(state, source, target) {
     const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
     if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
       attacker.cantMove = true;
+      attacker.cantAttack = true;
       attacker.cantActivate = true;
       attacker.attackedThisTurn = true;
 

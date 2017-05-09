@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { object, string } from 'prop-types';
+import { isUndefined } from 'lodash';
 
 export default class HexPointers extends Component {
   static propTypes = {
@@ -38,7 +39,7 @@ export default class HexPointers extends Component {
 
   render() {
     const hex = this.props.hex;
-    if (hex.props === {} || typeof(hex.props.arrows) === 'undefined')
+    if (hex.props === {} || isUndefined(hex.props.arrows))
       return null;
 
     const arrows = hex.props.arrows;

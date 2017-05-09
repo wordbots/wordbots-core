@@ -1,4 +1,11 @@
+import { isEqual, omit } from 'lodash';
+
 export function setTrigger(state, currentObject, source) {
+  function areTriggersEqual(t1, t2) {
+    return isEqual(omit(t1, ['trigger']), omit(t2, ['trigger'])) &&
+      isEqual(omit(t1.trigger, ['targets']), omit(t2.trigger, ['targets']));
+  }
+
   return function (trigger, action, props = {}) {
     const triggerObj = Object.assign({
       trigger: trigger,
@@ -7,7 +14,9 @@ export function setTrigger(state, currentObject, source) {
       source: source
     }, props);
 
-    currentObject.triggers = currentObject.triggers.concat([triggerObj]);
+    if (!currentObject.triggers.find(t => areTriggersEqual(t, triggerObj))) {
+      currentObject.triggers = currentObject.triggers.concat([triggerObj]);
+    }
   };
 }
 

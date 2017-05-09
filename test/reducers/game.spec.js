@@ -28,7 +28,7 @@ describe('Game reducer', () => {
       // Can't play a robot if the player doesn't have enough energy.
       // (We don't use the playObject() helper here because it automatically sets player.energy.)
       state = drawCardToHand(state, 'orange', cards.generalBotCard);
-      const cardIdx = findIndex(state.players.orange.hand, c => c.name === cards.generalBotCard.name);
+      const cardIdx = findIndex(state.players.orange.hand, ['name', cards.generalBotCard.name]);
       state = newTurn(state, 'orange');
       state = game(state, [
         actions.setSelectedCard(cardIdx, 'orange'),
@@ -423,7 +423,7 @@ describe('Game reducer', () => {
       state = drawCardToHand(state, 'orange', cards.flametongueBotCard);
       state = playObject(state, 'orange', cards.investorBotCard, '2,0,-2', {card: cards.flametongueBotCard});
       expect(
-        find(state.players.orange.hand, c => c.name === 'Flametongue Bot').cost
+        find(state.players.orange.hand, {name: 'Flametongue Bot'}).cost
       ).toEqual(cards.flametongueBotCard.cost - 2);
 
       // Test ability to select an object on the board.
@@ -608,18 +608,19 @@ describe('Game reducer', () => {
     });
 
     it('should let objects assign triggered abilities to other objects', () => {
-      function handSize() {
-        return state.players.orange.hand.length;
-      }
-
       let state = setUpBoardState({
         'orange': {
           '-3,1,2': cards.attackBotCard
         }
       });
-      let currentHandSize = handSize();
+
+      function handSize() {
+        return state.players.orange.hand.length;
+      }
 
       // No card draw.
+      state = newTurn(state, 'orange');
+      let currentHandSize = handSize();
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize);
 
@@ -627,7 +628,9 @@ describe('Game reducer', () => {
       state = playObject(state, 'orange', cards.magpieMachineCard, '2,0,-2');
 
       // Card draw.
+      state = newTurn(state, 'orange');
       currentHandSize = handSize();
+      //console.log(state.players.orange.robotsOnBoard['-3,1,2']);
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize + 1);
 
@@ -636,6 +639,7 @@ describe('Game reducer', () => {
       expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('2,0,-2');
 
       // No card draw.
+      state = newTurn(state, 'orange');
       currentHandSize = handSize();
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize);

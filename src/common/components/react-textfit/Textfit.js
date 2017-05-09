@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { bool, func, number, object, oneOf, string } from 'prop-types';
 import { findDOMNode } from 'react-dom';
+import { isFunction } from 'lodash';
 
 import shallowEqual from './utils/shallowEqual';
 import series from './utils/series';
@@ -238,7 +239,7 @@ export default class Textfit extends Component {
     return (
       <div style={finalStyle} {...props}>
         <span ref="wrapper" style={wrapperStyle}>
-          {text && typeof children === 'function'
+          {text && isFunction(children)
             ? ready
               ? children(text)
               : text

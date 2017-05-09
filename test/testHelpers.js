@@ -29,8 +29,8 @@ export function combineState(gameState = defaultGameState) {
 }
 
 export function objectsOnBoardOfType(state, objectType) {
-  const objects = pickBy(allObjectsOnBoard(state), obj => obj.card.type === objectType);
-  return mapValues(objects, obj => obj.card.name);
+  const objects = pickBy(allObjectsOnBoard(state), {card: {type: objectType}});
+  return mapValues(objects, 'card.name');
 }
 
 export function queryObjectAttribute(state, hex, attr) {
@@ -85,7 +85,7 @@ export function playObject(state, playerName, card, hex, target = null) {
       actions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && target.card) {
-    const cardIdx = findIndex(player.hand, c => c.name === target.card.name);
+    const cardIdx = findIndex(player.hand, ['name', target.card.name]);
     return game(state, [
       actions.setSelectedCard(0, playerName),
       actions.placeCard(hex, 0),
@@ -119,7 +119,7 @@ export function playEvent(state, playerName, card, target = null) {
       actions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && has(target, 'card')) {
-    const cardIdx = isObject(target.card) ? findIndex(player.hand, c => c.name === target.card.name) : target.card;
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
     return game(state, [
       actions.setSelectedCard(0, playerName),
       actions.setSelectedCard(0, playerName),
@@ -179,7 +179,7 @@ export function activate(state, hex, abilityIdx, target = null, asNewTurn = fals
       actions.setSelectedTile(target.hex, player.name)
     ]);
   } else if (target && has(target, 'card')) {
-    const cardIdx = isObject(target.card) ? findIndex(player.hand, c => c.name === target.card.name) : target.card;
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
     return game(state, [
       actions.setSelectedTile(hex, player.name),
       actions.activateObject(abilityIdx),

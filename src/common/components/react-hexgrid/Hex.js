@@ -1,3 +1,5 @@
+import { compareCertainKeys } from '../../util/common';
+
 class Hex {
   constructor(q, r, s, props = {}) {
     this.q = q;
@@ -7,11 +9,7 @@ class Hex {
   }
 
   equals(otherHex) {
-    return (
-      this.q === otherHex.q &&
-      this.r === otherHex.r &&
-      this.s === otherHex.s
-    );
+    return compareCertainKeys(this, otherHex, ['q', 'r', 's']);
   }
 
   distance(otherHex) {

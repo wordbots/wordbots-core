@@ -1,7 +1,9 @@
+import { compact } from 'lodash';
+
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
 import {
-  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
+  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, getSentencesFromInput, parse,
   loadCardsFromFirebase, loadDecksFromFirebase, saveCardsToFirebase, saveDecksToFirebase
 } from '../../util/cards';
 
@@ -39,9 +41,23 @@ const cardsHandlers = {
     // Add new cards that are not duplicates.
     cardsFromJson(json)
       .filter(card => !state.cards.map(c => c.id).includes(card.id))
-      .forEach(card => { state.cards.unshift(card); });
+      .forEach(card => {
+        const isEvent = card.type === TYPE_EVENT;
+        const sentences = getSentencesFromInput(card.text);
+        const parseResults = [];
 
-    saveCardsToFirebase(state);
+        parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
+          parseResults[idx] = response.js;
+
+          // Are we done parsing?
+          if (compact(parseResults).length === sentences.length) {
+            card[isEvent ? 'command' : 'abilities'] = parseResults;
+            console.log(card);
+            state.cards.unshift(card);
+            saveCardsToFirebase(state);
+          }
+        });
+    });
 
     return state;
   },

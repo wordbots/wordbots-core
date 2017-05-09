@@ -1,4 +1,7 @@
-import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, mapValues, reduce, uniqBy } from 'lodash';
+import {
+  capitalize, compact, countBy, debounce, every, flatMap, fromPairs,
+  isArray, mapValues, omit, reduce, uniqBy
+} from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import defaultState from '../store/defaultCollectionState';
@@ -121,7 +124,7 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-function parse(sentences, mode, callback) {
+export function parse(sentences, mode, callback) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -201,10 +204,15 @@ export function contractKeywords(sentence) {
 //
 
 export function cardsToJson(cards) {
-  cards = cards.map(c => Object.assign({}, c, {schemaVersion: CARD_SCHEMA_VERSION}));
+  cards = cards.map(card => {
+    card = omit(card, ['abilities', 'command']);
+    return Object.assign({}, card, {schemaVersion: CARD_SCHEMA_VERSION});
+  });
   return JSON.stringify(cards).replace(/\\"/g, '%27');
 }
 
+// Note that the cards returned by cardsFromJson() are un-parsed and so
+// are missing their abilities/command field.
 export function cardsFromJson(json) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.

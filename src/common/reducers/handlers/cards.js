@@ -52,7 +52,6 @@ const cardsHandlers = {
           // Are we done parsing?
           if (compact(parseResults).length === sentences.length) {
             card[isEvent ? 'command' : 'abilities'] = parseResults;
-            console.log(card);
             state.cards.unshift(card);
             saveCardsToFirebase(state);
           }

@@ -54,7 +54,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.loggedOut());
     },
     onReceiveFirebaseData(data) {
-      dispatch(actions.firebaseData(data));
+      dispatch(actions.firebaseData(data || {}));
     },
     onToggleSidebar(value) {
       dispatch(actions.toggleSidebar(value));

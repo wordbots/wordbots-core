@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { bool, number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
-import ReactTooltip from 'react-tooltip';
 import { capitalize } from 'lodash';
 
-import { id, inBrowser } from '../../util/common';
+import { inBrowser } from '../../util/common';
+import Tooltip from '../Tooltip';
 
 export default class CardStat extends Component {
   static propTypes = {
@@ -77,17 +77,13 @@ export default class CardStat extends Component {
         </div>
       );
     } else {
-      const tooltipId = id();
       return (
-        <div
-          data-for={tooltipId}
-          data-tip={capitalize(this.props.type)}
-          style={Object.assign(style, {cursor: 'pointer'})}
-        >
-          <ReactTooltip id={tooltipId} />
-          {this.icon}
-          {this.props.current || this.props.base}
-        </div>
+        <Tooltip text={capitalize(this.props.type)}>
+          <div style={Object.assign(style, {cursor: 'pointer'})}>
+            {this.icon}
+            {this.props.current || this.props.base}
+          </div>
+        </Tooltip>
       );
     }
   }

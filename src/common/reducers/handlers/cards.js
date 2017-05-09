@@ -38,24 +38,9 @@ const cardsHandlers = {
   },
 
   importCards: function (state, json) {
-    // Add new cards that are not duplicates.
-    cardsFromJson(json)
-      .filter(card => !state.cards.map(c => c.id).includes(card.id))
-      .forEach(card => {
-        const isEvent = card.type === TYPE_EVENT;
-        const sentences = getSentencesFromInput(card.text);
-        const parseResults = [];
-
-        parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
-          parseResults[idx] = response.js;
-
-          // Are we done parsing?
-          if (compact(parseResults).length === sentences.length) {
-            card[isEvent ? 'command' : 'abilities'] = parseResults;
-            state.cards.unshift(card);
-            saveCardsToFirebase(state);
-          }
-        });
+    cardsFromJson(json, card => {
+      state.cards.push(card);
+      saveCardsToFirebase(state);
     });
 
     return state;

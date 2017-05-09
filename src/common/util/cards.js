@@ -1,6 +1,6 @@
 import {
   capitalize, compact, countBy, debounce, every, flatMap, fromPairs,
-  isArray, mapValues, omit, reduce, uniqBy
+  isArray, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
@@ -124,7 +124,7 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-export function parse(sentences, mode, callback) {
+function parse(sentences, mode, callback) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -145,6 +145,24 @@ export function parse(sentences, mode, callback) {
 }
 
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
+
+// Given a card that is complete except for command/abilities,
+// parse the text to fill in command/abilities, then trigger callback.
+function parseCard(card, callback) {
+  const isEvent = card.type === TYPE_EVENT;
+  const sentences = getSentencesFromInput(card.text);
+  const parseResults = [];
+
+  parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
+    parseResults[idx] = response.js;
+
+    // Are we done parsing?
+    if (compact(parseResults).length === sentences.length) {
+      card[isEvent ? 'command' : 'abilities'] = parseResults;
+      callback(card);
+    }
+  });
+}
 
 //
 // 3.5. Keyword abilities.
@@ -204,19 +222,25 @@ export function contractKeywords(sentence) {
 //
 
 export function cardsToJson(cards) {
-  cards = cards.map(card => {
-    card = omit(card, ['abilities', 'command']);
-    return Object.assign({}, card, {schemaVersion: CARD_SCHEMA_VERSION});
-  });
-  return JSON.stringify(cards).replace(/\\"/g, '%27');
+  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'text', 'stats'];
+  const cardsToExport = cards.map(card =>
+    Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION})
+  );
+  return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
 
-// Note that the cards returned by cardsFromJson() are un-parsed and so
-// are missing their abilities/command field.
-export function cardsFromJson(json) {
+export function cardsFromJson(json, callback) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
-  return JSON.parse(json.replace(/%27/g, '\\"'));
+  JSON.parse(json.replace(/%27/g, '\\"'))
+    .map(card =>
+      Object.assign({}, omit(card, ['schema']), {
+        id: generateId(),
+        source: 'user',
+        timestamp: Date.now()
+      })
+    )
+    .forEach(card => { parseCard(card, callback); });
 }
 
 export function loadCardsFromFirebase(state, data) {

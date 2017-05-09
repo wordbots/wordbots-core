@@ -1,3 +1,5 @@
+/* eslint-disable no-loops/no-loops */
+
 import Hex from './Hex';
 
 class GridGenerator {

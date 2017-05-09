@@ -9,7 +9,7 @@ import { login, register, resetPassword } from '../../util/firebase';
 export default class LoginDialog extends Component {
   static propTypes = {
     loginOpen: bool,
-    handleClose: func 
+    handleClose: func
   };
 
   constructor(props) {
@@ -26,30 +26,30 @@ export default class LoginDialog extends Component {
 
   register = (email, username, password) => {
     register(email, username, password)
-      .then(e => { 
-        this.setState({error: null}); 
+      .then(() => {
+        this.setState({error: null});
         this.props.handleClose();
       })
-      .catch(e => { 
-        this.setState({error: e.message}); 
+      .catch(e => {
+        this.setState({error: `Error: ${e.message}`});
       });
   }
 
   login = (email, password) => {
     login(email, password)
-      .then(e => { 
-        this.setState({error: null}); 
+      .then(() => {
+        this.setState({error: null});
         this.props.handleClose();
       })
-      .catch(() => { 
-        this.setState({error: 'Invalid username/password.'}); 
+      .catch(() => {
+        this.setState({error: 'Error: Invalid username/password.'});
       });
   }
 
   resetPassword = (email) => {
     resetPassword(email)
       .then(() => { this.setState({error: `Password reset email sent to ${email}.`}); })
-      .catch(e => { this.setState({error: 'Email address not found.'}); });
+      .catch(e => { this.setState({error: 'Error: Email address not found.'}); });
   }
 
   handleKeyPress(t) {
@@ -115,7 +115,7 @@ export default class LoginDialog extends Component {
         {
           this.state.error &&
           <div style={{color: 'red', marginTop: 10, fontSize: 12}}>
-            Error: {this.state.error}
+            {this.state.error}
           </div>
         }
       </div>
@@ -127,9 +127,9 @@ export default class LoginDialog extends Component {
       return (
         <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
           <span>
-            Have an account? &nbsp; 
-            <span 
-              style={{fontWeight: 'bold', cursor: 'pointer'}} 
+            Have an account? &nbsp;
+            <span
+              style={{fontWeight: 'bold', cursor: 'pointer'}}
               onClick={() => this.setState({register: false})}>
               Login
             </span>
@@ -140,9 +140,9 @@ export default class LoginDialog extends Component {
       return (
         <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
           <span>
-            Don't have an account? &nbsp; 
-            <span 
-              style={{fontWeight: 'bold', cursor: 'pointer'}} 
+            Don't have an account? &nbsp;
+            <span
+              style={{fontWeight: 'bold', cursor: 'pointer'}}
               onClick={() => this.setState({register: true})}>
               Register
             </span>

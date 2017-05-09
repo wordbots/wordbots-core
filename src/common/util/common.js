@@ -10,6 +10,7 @@ export function id() {
 export function hashCode(s) {
   if (!s) return 0;
   let value = 0;
+  // eslint-disable-next-line no-loops/no-loops
   for (let i = 0; i < s.length; i++) {
     const char = s.charCodeAt(i);
     value = ((value<<5)-value)+char;

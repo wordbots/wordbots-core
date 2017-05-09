@@ -1,5 +1,5 @@
 import fb from 'firebase';
-import { concat, flatMap, fromPairs, mapValues, uniq } from 'lodash';
+import { concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
 import { loadParserLexicon } from './cards.js';
 
@@ -48,12 +48,15 @@ export function onLogout(callback) {
 }
 
 export function register(email, username, password) {
+  function postRegister(user) {
+    return user.updateProfile({displayName: username})
+               .then(() => { saveUser(user); })
+               .catch(noop);
+  }
+
   return fb.auth().createUserWithEmailAndPassword(email, password)
-    .then(user => {
-      user
-        .updateProfile({displayName: username})
-        .then(() => { saveUser(user); });
-    });
+    .then(postRegister)
+    .catch(noop);
 }
 
 export function login(email, password) {
@@ -109,25 +112,29 @@ export function listenToDictionaryData(callback) {
 }
 
 export function saveUserData(key, value) {
-  getLoggedInUser().then(user => {
-    fb.database()
-      .ref(`users/${user.uid}/${key}`)
-      .set(value);
-  });
+  getLoggedInUser()
+    .then(user => {
+      fb.database()
+        .ref(`users/${user.uid}/${key}`)
+        .set(value);
+    })
+    .catch(noop);
 }
 
 export function indexParsedSentence(sentence, tokens, js) {
-  getLoggedInUser().then(() => {
-    const nodes = js.match(/\w*\['\w*/g).map(n => n.replace('[\'', '/'));
+  getLoggedInUser()
+    .then(() => {
+      const nodes = js.match(/\w*\['\w*/g).map(n => n.replace('[\'', '/'));
 
-    const locations = uniq(concat(
-      ['cardText/all'],
-      tokens.map(t => `cardText/byToken/${t}`),
-      nodes.map(n => `cardText/byNode/${n}`)
-    ));
+      const locations = uniq(concat(
+        ['cardText/all'],
+        tokens.map(t => `cardText/byToken/${t}`),
+        nodes.map(n => `cardText/byNode/${n}`)
+      ));
 
-    locations.forEach(loc => {
-      fb.database().ref(loc).push(sentence);
-    });
-  });
+      locations.forEach(loc => {
+        fb.database().ref(loc).push(sentence);
+      });
+    })
+    .catch(noop);
 }

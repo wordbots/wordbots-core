@@ -5,6 +5,8 @@
 // We can't use the identicons-react NPM package because
 // it is improperly exported (as ES6 rather than ES5).
 
+/* eslint-disable no-loops/no-loops */
+
 import React, { Component } from 'react';
 import { number, string } from 'prop-types';
 import { noop } from 'lodash';

@@ -1,3 +1,5 @@
+import { some } from 'lodash';
+
 import { compareCertainKeys } from '../../util/common';
 
 class Hex {
@@ -21,11 +23,7 @@ class Hex {
   }
 
   isInArray(hexArray) {
-    for (let i = 0; i < hexArray.length; i++) {
-      if (this.equals(hexArray[i])) {
-        return true;
-      }
-    }
+    return some(hexArray, hex => this.equals(hex));
   }
 }
 

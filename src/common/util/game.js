@@ -1,4 +1,4 @@
-import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, without } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -156,13 +156,13 @@ export function validPlacementHexes(state, playerName, type) {
 export function validMovementHexes(state, startHex, speed, object) {
   let validHexes = [startHex];
 
-  for (let distance = 0; distance < speed; distance++) {
+  times(speed, () => {
     const newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
       hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
     );
 
     validHexes = validHexes.concat(newHexes);
-  }
+  });
 
   validHexes = validHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 

@@ -8,7 +8,11 @@
     "es6": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:lodash/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:lodash/recommended",
+    "plugin:promise/recommended"
+  ],
   "parser": "babel-eslint",
   "rules": {
     "arrow-body-style": 2,
@@ -45,14 +49,20 @@
     "import/no-unassigned-import": 2,
     "import/prefer-default-export": 1,
 
-    "jest/no-disabled-tests": "warn",
-    "jest/no-focused-tests": "error",
-    "jest/no-identical-title": "error",
-    "jest/valid-expect": "error",
+    "jest/no-disabled-tests": 1,
+    "jest/no-focused-tests": 2,
+    "jest/no-identical-title": 2,
+    "jest/valid-expect": 2,
 
     "lodash/import-scope": 0,
     "lodash/prefer-constant": 0,
     "lodash/prefer-lodash-method": 0,
+
+    "no-loops/no-loops": 2,
+
+    "promise/always-return": 0,
+    "promise/avoid-new": 0,
+    "promise/no-callback-in-promise": 0,
 
     "react/jsx-boolean-value": 2,
     "react/jsx-no-undef": 2,
@@ -74,6 +84,8 @@
     "import",
     "jest",
     "lodash",
+    "no-loops",
+    "promise",
     "react"
   ],
   "settings": {

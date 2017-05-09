@@ -133,6 +133,10 @@ function parse(sentences, mode, callback) {
         if (json.tokens && json.js) {
           indexParsedSentence(sentence, json.tokens, json.js);
         }
+      })
+      .catch(e => {
+        // TODO better error handling
+        throw(`Parser error: ${e}`);
       });
   });
 }
@@ -242,5 +246,9 @@ export function saveDecksToFirebase(state) {
 export function loadParserLexicon(callback) {
   fetch(`${PARSER_URL}/lexicon?format=json`)
     .then(response => response.json())
-    .then(callback);
+    .then(callback)
+    .catch(e => {
+      // TODO better error handling
+      throw(`Error retrieving lexicon: ${e}`);
+    });
 }

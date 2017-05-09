@@ -1,5 +1,7 @@
 // Adapted from https://github.com/not-surt/spritegen .
 
+/* eslint-disable no-loops/no-loops */
+
 import React, { PureComponent } from 'react';
 import { number, string } from 'prop-types';
 import { isUndefined } from 'lodash';

@@ -9,8 +9,7 @@ function createSocketMiddleware({excludedActions = []}) {
   return store => {
     let socket, keepaliveNeeded;
     let username = 'Guest';
-
-    const sendQueue = [];
+    let sendQueue = [];
 
     function handleAction(action, nextMiddleware) {
       if (action.type === sa.CONNECT) {
@@ -43,9 +42,8 @@ function createSocketMiddleware({excludedActions = []}) {
       store.dispatch(sa.connected());
       send(sa.setUsername(username));
 
-      while (sendQueue.length > 0) {
-        send(sendQueue.shift());
-      }
+      sendQueue.forEach(send);
+      sendQueue = [];
     }
 
     function disconnected() {

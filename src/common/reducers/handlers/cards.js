@@ -1,9 +1,7 @@
-import { compact } from 'lodash';
-
 import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
 import {
-  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, getSentencesFromInput, parse,
+  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
   loadCardsFromFirebase, loadDecksFromFirebase, saveCardsToFirebase, saveDecksToFirebase
 } from '../../util/cards';
 
@@ -38,11 +36,7 @@ const cardsHandlers = {
   },
 
   importCards: function (state, json) {
-    cardsFromJson(json, card => {
-      state.cards.push(card);
-      saveCardsToFirebase(state);
-    });
-
+    cardsFromJson(json, card => { saveCard(state, card); });
     return state;
   },
 
@@ -74,25 +68,7 @@ const cardsHandlers = {
 
   saveCard: function (state, cardProps) {
     const card = createCardFromProps(cardProps);
-
-    // Is there already a card with the same ID (i.e. we're currently editing it)
-    // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
-    const existingCard = state.cards.find(c => c.id === cardProps.id || areIdenticalCards(c, card));
-
-    if (existingCard) {
-      // Editing an existing card.
-      if (existingCard.source === 'builtin') {
-        // TODO Log warning about not being about not being able to replace builtin cards.
-      } else {
-        Object.assign(existingCard, card, {id: existingCard.id});
-      }
-    } else {
-      state.cards.push(card);
-    }
-
-    saveCardsToFirebase(state);
-
-    return state;
+    return saveCard(state, card);
   },
 
   saveDeck: function (state, deckId, name, cardIds = []) {
@@ -143,6 +119,27 @@ function createCardFromProps(props) {
   }
 
   return card;
+}
+
+// Saves a card, either as a new card or replacing an existing card.
+function saveCard(state, card) {
+  // Is there already a card with the same ID (i.e. we're currently editing it)
+  // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
+  const existingCard = state.cards.find(c => c.id === card.id || areIdenticalCards(c, card));
+
+  if (existingCard) {
+    // Editing an existing card.
+    if (existingCard.source === 'builtin') {
+      // TODO Log warning about not being about not being able to replace builtin cards.
+    } else {
+      Object.assign(existingCard, card, {id: existingCard.id});
+    }
+  } else {
+    state.cards.push(card);
+  }
+
+  saveCardsToFirebase(state);
+  return state;
 }
 
 export default cardsHandlers;

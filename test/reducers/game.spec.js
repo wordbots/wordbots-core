@@ -28,7 +28,7 @@ describe('Game reducer', () => {
       // Can't play a robot if the player doesn't have enough energy.
       // (We don't use the playObject() helper here because it automatically sets player.energy.)
       state = drawCardToHand(state, 'orange', cards.generalBotCard);
-      const cardIdx = findIndex(state.players.orange.hand, c => c.name === cards.generalBotCard.name);
+      const cardIdx = findIndex(state.players.orange.hand, ['name', cards.generalBotCard.name]);
       state = newTurn(state, 'orange');
       state = game(state, [
         actions.setSelectedCard(cardIdx, 'orange'),
@@ -423,7 +423,7 @@ describe('Game reducer', () => {
       state = drawCardToHand(state, 'orange', cards.flametongueBotCard);
       state = playObject(state, 'orange', cards.investorBotCard, '2,0,-2', {card: cards.flametongueBotCard});
       expect(
-        find(state.players.orange.hand, c => c.name === 'Flametongue Bot').cost
+        find(state.players.orange.hand, {name: 'Flametongue Bot'}).cost
       ).toEqual(cards.flametongueBotCard.cost - 2);
 
       // Test ability to select an object on the board.

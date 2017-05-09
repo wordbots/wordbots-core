@@ -8,7 +8,7 @@
     "es6": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:lodash/recommended"],
   "parser": "babel-eslint",
   "rules": {
     "arrow-body-style": 2,
@@ -32,6 +32,8 @@
     }],
     "strict": [2, "global"],
 
+    "compat/compat": 2,
+
     "import/no-unresolved": 2,
     "import/named": 2,
     "import/default": 2,
@@ -47,6 +49,10 @@
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
     "jest/valid-expect": "error",
+
+    "lodash/import-scope": 0,
+    "lodash/prefer-constant": 0,
+    "lodash/prefer-lodash-method": 0,
 
     "react/jsx-boolean-value": 2,
     "react/jsx-no-undef": 2,
@@ -64,8 +70,13 @@
     "react/self-closing-comp": 2
   },
   "plugins": [
+    "compat",
     "import",
     "jest",
+    "lodash",
     "react"
-  ]
+  ],
+  "settings": {
+    "polyfills": ["fetch"]
+  }
 }

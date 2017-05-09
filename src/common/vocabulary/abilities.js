@@ -98,6 +98,7 @@ export function abilities(state) {
 
     freezeAttribute: function (targetFunc, attribute) {
       // TODO
+      throw 'Not yet implemented!';
     },
 
     giveAbility: function (targetFunc, cmd) {

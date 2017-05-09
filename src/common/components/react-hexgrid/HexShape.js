@@ -1,5 +1,6 @@
 import React from 'react';
 import { bool, object, string } from 'prop-types';
+import { isUndefined } from 'lodash';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
@@ -52,7 +53,7 @@ export default class HexShape extends React.Component {
   getStyles(hex) {
     const styles = {};
 
-    if (this.props.fill || (hex.props !== {} && typeof(hex.props.image) !== 'undefined')) {
+    if (this.props.fill || (hex.props !== {} && !isUndefined(hex.props.image))) {
       styles.fill = `url(#${ HexUtils.getID(hex) })`;
     }
 

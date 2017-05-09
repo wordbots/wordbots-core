@@ -27,7 +27,7 @@ export default function actions(state) {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
-          hex = findKey(target.robotsOnBoard, obj => obj.card.type === TYPE_CORE);
+          hex = findKey(target.robotsOnBoard, {card: {type: TYPE_CORE}});
         } else {
           // target is an object, so find its hex.
           hex = getHex(state, target);

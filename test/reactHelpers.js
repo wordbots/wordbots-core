@@ -2,6 +2,7 @@ import React from 'react';
 import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
 import { createRenderer } from 'react-test-renderer/shallow';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import { noop } from 'lodash';
 
 import * as creator from '../src/common/containers/Creator';
 import * as gameArea from '../src/common/containers/GameArea';
@@ -20,17 +21,17 @@ export function renderElement(elt, deep = false) {
 
 /* eslint-disable react/no-multi-comp */
 
-export function createGameArea(state, dispatch = () => {}) {
+export function createGameArea(state, dispatch = noop) {
   return React.createElement(gameArea.GameArea, Object.assign(gameArea.mapStateToProps(state), gameArea.mapDispatchToProps(dispatch)));
 }
 
-function createCreator(state, dispatch = () => {}) {
+function createCreator(state, dispatch = noop) {
   return React.createElement(creator.Creator, Object.assign(creator.mapStateToProps(state), creator.mapDispatchToProps(dispatch)));
 }
 
 /* eslint-enable react/no-multi-comp */
 
-export function getComponent(type, componentClass, state, dispatch = () => {}, predicate = () => {}) {
+export function getComponent(type, componentClass, state, dispatch = noop, predicate = noop) {
   const playElt = renderElement(instantiator(type)(state, dispatch), true);
   const components = scryRenderedComponentsWithType(playElt, componentClass);
   return (components.length === 1) ? components[0] : components.find(predicate);

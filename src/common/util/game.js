@@ -39,9 +39,9 @@ export function allObjectsOnBoard(state) {
 }
 
 export function ownerOf(state, object) {
-  if (some(state.players.blue.robotsOnBoard, o => o.id === object.id)) {
+  if (some(state.players.blue.robotsOnBoard, ['id', object.id])) {
     return state.players.blue;
-  } else if (some(state.players.orange.robotsOnBoard, o => o.id === object.id)) {
+  } else if (some(state.players.orange.robotsOnBoard, ['id', object.id])) {
     return state.players.orange;
   }
 }
@@ -69,7 +69,7 @@ export function getCost(card) {
 }
 
 export function hasEffect(object, effect) {
-  return some((object.effects || []), eff => eff.effect === effect);
+  return some((object.effects || []), ['effect', effect]);
 }
 
 function getEffect(object, effect) {
@@ -77,7 +77,7 @@ function getEffect(object, effect) {
 }
 
 export function allowedToAttack(state, attacker, targetHex) {
-  if (attacker.cantAttack || hasEffect(attacker, 'cannotattack')) {
+  if (attacker.card.type !== TYPE_ROBOT || attacker.cantAttack || hasEffect(attacker, 'cannotattack')) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
     const defender = allObjectsOnBoard(state)[targetHex];
@@ -102,9 +102,9 @@ export function matchesType(objectOrCard, cardTypeQuery) {
 }
 
 export function checkVictoryConditions(state) {
-  if (!some(state.players.blue.robotsOnBoard, o => o.card.type === TYPE_CORE)) {
+  if (!some(state.players.blue.robotsOnBoard, {card: {type: TYPE_CORE}})) {
     state.winner = 'orange';
-  } else if (!some(state.players.orange.robotsOnBoard, o => o.card.type === TYPE_CORE)) {
+  } else if (!some(state.players.orange.robotsOnBoard, {card: {type: TYPE_CORE}})) {
     state.winner = 'blue';
   }
 
@@ -365,7 +365,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
 
   // Execute the defaultBehavior of the event (if any), unless any of the triggers overrides it.
   // Note: At the moment, only afterAttack events can be overridden.
-  if (defaultBehavior && !some(triggers, t => t.override)) {
+  if (defaultBehavior && !some(triggers, 'override')) {
     state = defaultBehavior(state);
   }
 

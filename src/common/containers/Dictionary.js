@@ -91,7 +91,7 @@ class Dictionary extends Component {
 
   setTerm(term) {
     const terms = this[`${this.currentTab}Terms`];
-    if (terms.indexOf(term) > -1 && this.state[`${this.currentTab}Idx`] === null) {
+    if (terms.includes(term) && this.state[`${this.currentTab}Idx`] === null) {
       this.selectTerm(terms.indexOf(term));
     }
   }

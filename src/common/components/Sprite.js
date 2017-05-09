@@ -2,6 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import { number, string } from 'prop-types';
+import { isUndefined } from 'lodash';
 
 import { hashCode, inBrowser } from '../util/common';
 
@@ -446,7 +447,7 @@ export default class Sprite extends PureComponent {
           const neighbours = getNeighbours(tile, x, y);
           let count = 0;
           for(let i = 0; i < neighbours.length; i++) {
-            if(typeof neighbours[i] !== 'undefined' && !coloursEqual([255, 255, 255, 0], neighbours[i]))
+            if(!isUndefined(neighbours[i]) && !coloursEqual([255, 255, 255, 0], neighbours[i]))
               count++;
           }
           if(count === 1) {

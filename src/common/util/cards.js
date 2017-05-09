@@ -70,7 +70,7 @@ export function instantiateCard(card) {
 
 export function groupCards(cards) {
   return uniqBy(cards, 'id').map(card =>
-    Object.assign({}, card, {count: countBy(cards, c => c.name)[card.name]})
+    Object.assign({}, card, {count: countBy(cards, 'name')[card.name]})
   );
 }
 

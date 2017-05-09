@@ -1,4 +1,4 @@
-const noop = () => {};
+import { noop } from 'lodash';
 
 /**
  * Repeatedly call fn, while test returns true. Calls callback when stopped, or an error occurs.

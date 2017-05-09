@@ -68,7 +68,7 @@ export const hasteBotCard = {
   },
   text: 'Haste',
   abilities: [
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAgain'](targets['thisRobot']()); })); })"
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAndAttackAgain'](targets['thisRobot']()); })); })"
   ]
 };
 
@@ -373,7 +373,7 @@ const friendlyRiotShieldCard = {
   text: 'Defender,. haste',
   abilities: [
     "(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'cannotattack')); })",
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAgain'](targets['thisRobot']()); })); })"
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAndAttackAgain'](targets['thisRobot']()); })); })"
   ]
 };
 

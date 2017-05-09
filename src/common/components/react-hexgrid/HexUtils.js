@@ -1,3 +1,5 @@
+import { compareCertainKeys } from '../../util/common';
+
 import Hex from './Hex';
 import Point from './Point';
 
@@ -9,7 +11,7 @@ class HexUtils {
   ];
 
   static equals(a, b) {
-    return a.q === b.q && a.r === b.r && a.s === b.s;
+    return compareCertainKeys(a, b, ['q', 'r', 's']);
   }
 
   static add(a, b) {

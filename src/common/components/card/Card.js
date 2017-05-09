@@ -5,7 +5,7 @@ import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isEqual } from 'lodash';
+import { isEqual, noop } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import { compareCertainKeys, inBrowser } from '../../util/common';
@@ -66,9 +66,9 @@ export default class Card extends Component {
     yTranslation: 0,
     zIndex: 0,
 
-    onCardClick: () => {},
-    onCardHover: () => {},
-    onSpriteClick: () => {}
+    onCardClick: noop,
+    onCardHover: noop,
+    onSpriteClick: noop
   }
 
   // (For server-side rendering via /api/card.png)
@@ -201,7 +201,7 @@ export default class Card extends Component {
       const [width, height] = [25 * this.props.scale, 42 * this.props.scale];
       return (
         <div
-          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
+          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
           style={{
             width: width,
             height: height,
@@ -213,7 +213,7 @@ export default class Card extends Component {
     } else {
       return (
         <div
-          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : () => {}}
+          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
           style={{
             width: 48 * this.props.scale,
             height: 48 * this.props.scale,

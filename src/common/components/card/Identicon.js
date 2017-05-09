@@ -7,6 +7,7 @@
 
 import React, { Component } from 'react';
 import { number, string } from 'prop-types';
+import { noop } from 'lodash';
 
 import { hashCode } from '../../util/common';
 
@@ -57,8 +58,7 @@ export default class Identicon extends Component {
         });
         rects.push(rect);
       },
-      end: function () {
-      }
+      end: noop
     });
     return React.createElement('svg', {width: width}, rects);
   }

@@ -2,12 +2,18 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, ownerOf, hasEffect,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
+
+function selectTile(state, tile) {
+  currentPlayer(state).selectedTile = tile;
+  currentPlayer(state).selectedCard = null;
+  return state;
+}
 
 export function setHoveredTile(state, card) {
   return Object.assign({}, state, {hoveredCard: card});
@@ -25,8 +31,7 @@ export function setSelectedTile(state, playerName, tile) {
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    player.selectedTile = (player.selectedTile === tile) ? null : tile;
-    player.selectedCard = null;
+    state = selectTile(state, (player.selectedTile === tile) ? null : tile);
     player.status.message = '';
     return state;
   }
@@ -37,7 +42,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const movingRobot = player.robotsOnBoard[fromHex];
 
   // Is the move valid?
-  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movesLeft(movingRobot), movingRobot);
+  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex));
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
     const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
     movingRobot.movesMade += distance;
@@ -50,7 +55,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
 
     if (!asPartOfAttack) {
-      currentPlayer(state).selectedTile = toHex;
+      state = selectTile(state, toHex);
     }
   }
 
@@ -69,7 +74,7 @@ export function attack(state, source, target) {
 
   if (attacker) {
     // Is the attack valid?
-    const validHexes = validAttackHexes(state, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
+    const validHexes = validAttackHexes(state, HexUtils.IDToHex(source));
     if (validHexes.map(HexUtils.getID).includes(target)) {
       attacker.cantMove = true;
       attacker.cantAttack = true;
@@ -102,8 +107,7 @@ export function attack(state, source, target) {
       }
 
       state = applyAbilities(state);
-
-      currentPlayer(state).selectedTile = null;
+      state = selectTile(state, null);
     }
   }
 

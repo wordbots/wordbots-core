@@ -205,7 +205,7 @@ export class GameArea extends Component {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
-  onSelectTile(hexId, action, intermediateMoveHexId) {
+  onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
     if (action === 'move') {
       this.movePiece(hexId);
     } else if (action === 'attack') {
@@ -221,8 +221,7 @@ export class GameArea extends Component {
     if (action === 'mouseleave') {
       this.props.onHoverTile(null);
     } else {
-      const piece = this.props.bluePieces[hexId] || this.props.orangePieces[hexId];
-
+      const piece = this.allPieces()[hexId];
       if (piece) {
         this.props.onHoverTile({
           card: piece.card,

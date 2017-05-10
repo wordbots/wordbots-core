@@ -1,4 +1,4 @@
-import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy } from 'lodash';
+import _, { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -64,7 +64,7 @@ export function getCost(card) {
   }
 }
 
-export function movesLeft(robot) {
+function movesLeft(robot) {
   return robot.cantMove ? 0 : getAttribute(robot, 'speed') - robot.movesMade;
 }
 
@@ -76,7 +76,7 @@ function getEffect(object, effect) {
   return (object.effects || []).filter(eff => eff.effect === effect).map(eff => eff.props);
 }
 
-export function allowedToAttack(state, attacker, targetHex) {
+function allowedToAttack(state, attacker, targetHex) {
   const defender = allObjectsOnBoard(state)[HexUtils.getID(targetHex)];
 
   if (!defender ||
@@ -157,10 +157,12 @@ export function validPlacementHexes(state, playerName, type) {
   return hexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
-export function validMovementHexes(state, startHex, speed, object) {
+export function validMovementHexes(state, startHex) {
+  const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)];
+
   let potentialMovementHexes = [startHex];
 
-  times(speed, () => {
+  times(movesLeft(object), () => {
     const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter(hex =>
       hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
     );
@@ -171,9 +173,10 @@ export function validMovementHexes(state, startHex, speed, object) {
   return potentialMovementHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
-export function validAttackHexes(state, startHex, speed, object) {
-  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed, object));
-  const potentialAttackHexes = uniqBy(flatMap(validMoveHexes, getAdjacentHexes), HexUtils.getID);
+export function validAttackHexes(state, startHex) {
+  const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)];
+  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex));
+  const potentialAttackHexes = _(validMoveHexes).flatMap(getAdjacentHexes).uniqBy(HexUtils.getID).value();
 
   return potentialAttackHexes.filter(hex => allowedToAttack(state, object, hex));
 }

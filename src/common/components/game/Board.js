@@ -6,7 +6,7 @@ import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
-  getAttribute, movesLeft, allowedToAttack, ownerOf,
+  getAttribute, movesLeft, ownerOf,
   getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
 } from '../../util/game';
 
@@ -38,6 +38,17 @@ export default class Board extends Component {
     };
   }
 
+  // Many util functions require a game state object, so we create a dummy one with minimal data.
+  // TODO find a less gross approach?
+  get dummyGameState() {
+    return {
+      players: {
+        blue: {name: 'blue', robotsOnBoard: this.props.bluePieces},
+        orange: {name: 'orange', robotsOnBoard: this.props.orangePieces}
+      }
+    };
+  }
+
   isMyTurn() {
     return this.props.currentTurn === this.props.player;
   }
@@ -59,7 +70,7 @@ export default class Board extends Component {
   }
 
   getValidAttackHexes(startHex, speed, piece) {
-    return validAttackHexes(this.dummyGameState, this.props.currentTurn, startHex, speed, piece);
+    return validAttackHexes(this.dummyGameState, startHex, speed, piece);
   }
 
   updateHexColors() {
@@ -67,7 +78,12 @@ export default class Board extends Component {
 
     forOwn(this.allPieces(), (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
-      const canMove = this.props.currentTurn === owner && movesLeft(piece) > 0;
+
+      const validHexes = (owner === this.props.currentTurn) ? [].concat(
+        this.getValidMovementHexes(HexUtils.IDToHex(hex), movesLeft(piece), piece),
+        this.getValidAttackHexes(HexUtils.IDToHex(hex), movesLeft(piece), piece)
+      ) : [];
+      const canMove = validHexes.length > 0;
 
       hexColors[hex] = `${canMove ? 'bright_' : ''}${owner}`;
     });
@@ -80,7 +96,7 @@ export default class Board extends Component {
       } else if (this.props.selectedTile) {
         const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
 
-        if (selectedPiece && movesLeft(selectedPiece) > 0) {
+        if (selectedPiece) {
           const hex = HexUtils.IDToHex(this.props.selectedTile);
           hexColors = this.colorMovementHexes(hex, hexColors, movesLeft(selectedPiece));
         }
@@ -96,18 +112,14 @@ export default class Board extends Component {
 
   colorMovementHexes(hex, hexColors, speed) {
     const selectedPiece = this.currentPlayerPieces()[this.props.selectedTile];
-    const newHexColors = Object.assign({}, hexColors);
 
-    const movementHexIds = this.getValidMovementHexes(hex, speed, selectedPiece).map(HexUtils.getID);
-    const attackHexIds = this.getValidAttackHexes(hex, speed, selectedPiece).map(HexUtils.getID);
+    this.getValidMovementHexes(hex, speed, selectedPiece)
+      .forEach(h => { hexColors[HexUtils.getID(h)] = 'green'; });
 
-    movementHexIds.forEach(h => { newHexColors[h] = 'green'; });
+    this.getValidAttackHexes(hex, speed, selectedPiece)
+      .forEach(h => { hexColors[HexUtils.getID(h)] = 'red'; });
 
-    attackHexIds
-      .filter(h => allowedToAttack(this.dummyGameState, selectedPiece, h))
-      .forEach(h => { newHexColors[h] = 'red'; });
-
-    return newHexColors;
+    return hexColors;
   }
 
   onHexClick(hex, event) {
@@ -136,7 +148,7 @@ export default class Board extends Component {
 
       if (movementHexes.includes(hid)) {
         action = 'move';
-      } else if (attackHexes.includes(hid) && allowedToAttack(this.dummyGameState, selectedPiece, hid)) {
+      } else if (attackHexes.includes(hid)) {
         action = 'attack';
 
         if (!getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
@@ -160,15 +172,6 @@ export default class Board extends Component {
   }
 
   render() {
-    // Many util functions require a game state object, so we create a dummy one with minimal data.
-    // TODO find a less gross approach?
-    this.dummyGameState = {
-      players: {
-        blue: {name: 'blue', robotsOnBoard: this.props.bluePieces},
-        orange: {name: 'orange', robotsOnBoard: this.props.orangePieces}
-      }
-    };
-
     const { grid } = this.state;
     const hexColors = this.updateHexColors();
 

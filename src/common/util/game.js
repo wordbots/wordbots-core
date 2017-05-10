@@ -1,4 +1,4 @@
-import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -77,17 +77,18 @@ function getEffect(object, effect) {
 }
 
 export function allowedToAttack(state, attacker, targetHex) {
-  if (attacker.card.type !== TYPE_ROBOT ||
+  const defender = allObjectsOnBoard(state)[HexUtils.getID(targetHex)];
+
+  if (!defender ||
+      ownerOf(state, defender).name === ownerOf(state, attacker).name ||
+      attacker.card.type !== TYPE_ROBOT ||
       attacker.cantAttack ||
       hasEffect(attacker, 'cannotattack') ||
       getAttribute(attacker, 'attack') <= 0) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
-    const defender = allObjectsOnBoard(state)[targetHex];
-    if (defender) {
-      const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), e => e.target.entries.map(t => t.id));
-      return validTargetIds.includes(defender.id);
-    }
+    const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), e => e.target.entries.map(t => t.id));
+    return validTargetIds.includes(defender.id);
   } else {
     return true;
   }
@@ -157,28 +158,24 @@ export function validPlacementHexes(state, playerName, type) {
 }
 
 export function validMovementHexes(state, startHex, speed, object) {
-  let validHexes = [startHex];
+  let potentialMovementHexes = [startHex];
 
   times(speed, () => {
-    const newHexes = flatMap(validHexes, getAdjacentHexes).filter(hex =>
+    const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter(hex =>
       hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
     );
 
-    validHexes = validHexes.concat(newHexes);
+    potentialMovementHexes = uniqBy(potentialMovementHexes.concat(newHexes), HexUtils.getID);
   });
 
-  validHexes = validHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
-
-  return without(validHexes, startHex);
+  return potentialMovementHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
-export function validAttackHexes(state, playerName, startHex, speed, object) {
+export function validAttackHexes(state, startHex, speed, object) {
   const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed, object));
-  const potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
+  const potentialAttackHexes = uniqBy(flatMap(validMoveHexes, getAdjacentHexes), HexUtils.getID);
 
-  return potentialAttackHexes.filter((hex) =>
-    Object.keys(state.players[opponent(playerName)].robotsOnBoard).includes(HexUtils.getID(hex))
-  );
+  return potentialAttackHexes.filter(hex => allowedToAttack(state, object, hex));
 }
 
 //
@@ -308,7 +305,6 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
 export function setTargetAndExecuteQueuedAction(state, target) {
   const player = currentPlayer(state);
-  const targetCard = allObjectsOnBoard(state)[target] ? allObjectsOnBoard(state)[target].card : (target.card || target);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
@@ -318,9 +314,14 @@ export function setTargetAndExecuteQueuedAction(state, target) {
     possibleCards: []
   };
 
+  // Log the target.
+  const targetCard = allObjectsOnBoard(state)[target] ? allObjectsOnBoard(state)[target].card : (target.card || target);
+  if (targetCard) {
+    state = logAction(state, null, `|${targetCard.name}| was targeted`, {[targetCard.name]: targetCard});
+  }
+
   // Perform the trigger.
   state = state.callbackAfterTargetSelected(state);
-  state = logAction(state, null, `|${targetCard.name}| was targeted`, {[targetCard.name]: targetCard});
   state.callbackAfterTargetSelected = null;
 
   // Reset target.

@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf, hasEffect,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
@@ -39,10 +39,6 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   // Is the move valid?
   const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movesLeft(movingRobot), movingRobot);
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
-    if (!asPartOfAttack) {
-      currentPlayer(state).selectedTile = null;
-    }
-
     const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
     movingRobot.movesMade += distance;
     movingRobot.movedThisTurn = true;
@@ -52,6 +48,10 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
+
+    if (!asPartOfAttack) {
+      currentPlayer(state).selectedTile = toHex;
+    }
   }
 
   return state;
@@ -69,8 +69,8 @@ export function attack(state, source, target) {
 
   if (attacker) {
     // Is the attack valid?
-    const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
-    if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
+    const validHexes = validAttackHexes(state, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
+    if (validHexes.map(HexUtils.getID).includes(target)) {
       attacker.cantMove = true;
       attacker.cantAttack = true;
       attacker.cantActivate = true;

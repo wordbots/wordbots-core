@@ -49,7 +49,7 @@ export default class ImportDialog extends Component {
           id="tf"
           multiLine
           floatingLabelText="Exported card JSON"
-          style={{width: '100%'}}
+          style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           onChange={e => { this.setState({importedJson: e.target.value}); }}
         />
       </Dialog>

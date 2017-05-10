@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { func, number, object, string } from 'prop-types';
-import { forOwn, intersectionBy, mapValues, some } from 'lodash';
+import { forOwn, intersection, mapValues, some } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
@@ -141,14 +141,13 @@ export default class Board extends Component {
 
         if (!getAdjacentHexes(hex).map(HexUtils.getID).includes(HexUtils.getID(selectedHex))) {
           // Attack destination is not adjacent to current position, so we need an intermediate move action.
-          const possibleMoveHexes = intersectionBy(
-            getAdjacentHexes(hex),
-            this.getValidMovementHexes(selectedHex, speed - 1, selectedPiece),
-            HexUtils.getID
+          const possibleMoveHexes = intersection(
+            getAdjacentHexes(hex).map(HexUtils.getID),
+            this.getValidMovementHexes(selectedHex, speed, selectedPiece).map(HexUtils.getID)
           );
 
           // Since getValidAttackHexes().includes(hex), we're guaranteed that there's at least one valid intermediate hex.
-          intermediateMoveHex = HexUtils.getID(possibleMoveHexes[0]);
+          intermediateMoveHex = possibleMoveHexes[0];
         }
       }
     }

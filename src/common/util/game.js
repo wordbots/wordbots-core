@@ -55,10 +55,6 @@ export function getAttribute(object, attr) {
   }
 }
 
-export function movesLeft(robot) {
-  return robot.cantMove ? 0 : getAttribute(robot, 'speed') - robot.movesMade;
-}
-
 export function getCost(card) {
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.
@@ -66,6 +62,10 @@ export function getCost(card) {
   } else {
     return card.cost;
   }
+}
+
+export function movesLeft(robot) {
+  return robot.cantMove ? 0 : getAttribute(robot, 'speed') - robot.movesMade;
 }
 
 export function hasEffect(object, effect) {
@@ -77,7 +77,10 @@ function getEffect(object, effect) {
 }
 
 export function allowedToAttack(state, attacker, targetHex) {
-  if (attacker.card.type !== TYPE_ROBOT || attacker.cantAttack || hasEffect(attacker, 'cannotattack')) {
+  if (attacker.card.type !== TYPE_ROBOT ||
+      attacker.cantAttack ||
+      hasEffect(attacker, 'cannotattack') ||
+      getAttribute(attacker, 'attack') <= 0) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
     const defender = allObjectsOnBoard(state)[targetHex];
@@ -170,7 +173,7 @@ export function validMovementHexes(state, startHex, speed, object) {
 }
 
 export function validAttackHexes(state, playerName, startHex, speed, object) {
-  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed - 1, object));
+  const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex, speed, object));
   const potentialAttackHexes = flatMap(validMoveHexes, getAdjacentHexes);
 
   return potentialAttackHexes.filter((hex) =>

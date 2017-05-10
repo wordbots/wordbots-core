@@ -47,11 +47,11 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     movingRobot.movesMade += distance;
     movingRobot.movedThisTurn = true;
 
+    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
-    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
   }
 
   return state;
@@ -76,6 +76,11 @@ export function attack(state, source, target) {
       attacker.cantActivate = true;
       attacker.attackedThisTurn = true;
 
+      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
+        [defender.card.name]: defender.card,
+        [attacker.card.name]: attacker.card
+      });
+
       state = triggerEvent(state, 'afterAttack', {
         object: attacker,
         condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')
@@ -83,7 +88,7 @@ export function attack(state, source, target) {
         dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
       );
 
-      if (!hasEffect(defender, 'cannotfightback')) {
+      if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
         state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
       }
 
@@ -97,10 +102,6 @@ export function attack(state, source, target) {
       }
 
       state = applyAbilities(state);
-      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
-        [defender.card.name]: defender.card,
-        [attacker.card.name]: attacker.card
-      });
 
       currentPlayer(state).selectedTile = null;
     }

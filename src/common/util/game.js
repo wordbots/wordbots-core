@@ -1,4 +1,4 @@
-import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, without } from 'lodash';
+import { cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, values, without } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -334,7 +334,7 @@ export function executeCmd(state, cmd, currentObject = null, source = null) {
   // console.log(cmd);
 
   const vocabulary = buildVocabulary(state, currentObject, source);
-  const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
+  const [terms, definitions] = [Object.keys(vocabulary), values(vocabulary)];
 
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
   return eval(wrappedCmd)(...definitions);
@@ -353,7 +353,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
   }
 
   // Look up any relevant triggers for this condition.
-  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
+  const triggers = flatMap(values(allObjectsOnBoard(state)), (object =>
     object.triggers
       .map(t => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
@@ -387,7 +387,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
 }
 
 export function applyAbilities(state) {
-  Object.values(allObjectsOnBoard(state)).forEach(obj => {
+  values(allObjectsOnBoard(state)).forEach(obj => {
     obj.abilities.forEach(ability => {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {

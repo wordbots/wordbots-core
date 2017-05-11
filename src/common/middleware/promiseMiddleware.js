@@ -13,10 +13,10 @@ export default function promiseMiddleware() {
         next({ ...rest, req, type: SUCCESS });
         return true;
       })
-      .catch(error => {
-        next({ ...rest, error, type: FAILURE });
+      .catch(err => {
+        next({ ...rest, err, type: FAILURE });
         /* eslint-disable no-console */
-        console.log(error);
+        console.log(err);
         /* eslint-enable no-console */
         return false;
       });

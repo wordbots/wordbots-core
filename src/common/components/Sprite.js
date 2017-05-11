@@ -60,7 +60,7 @@ export default class Sprite extends PureComponent {
       try {
         const Canvas = require('canvas');
         return new Canvas();
-      } catch (e) {
+      } catch (err) {
         return null;
       }
     }

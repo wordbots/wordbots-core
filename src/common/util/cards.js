@@ -137,9 +137,9 @@ function parse(sentences, mode, callback) {
           indexParsedSentence(sentence, json.tokens, json.js);
         }
       })
-      .catch(e => {
+      .catch(err => {
         // TODO better error handling
-        throw(`Parser error: ${e}`);
+        throw(`Parser error: ${err}`);
       });
   });
 }
@@ -279,8 +279,8 @@ export function loadParserLexicon(callback) {
   fetch(`${PARSER_URL}/lexicon?format=json`)
     .then(response => response.json())
     .then(callback)
-    .catch(e => {
+    .catch(err => {
       // TODO better error handling
-      throw(`Error retrieving lexicon: ${e}`);
+      throw(`Error retrieving lexicon: ${err}`);
     });
 }

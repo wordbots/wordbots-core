@@ -257,16 +257,12 @@ export class GameArea extends Component {
     };
 
     if (this.props.currentTurn === this.props.player) {
-      options.body = 'It\'s your turn!';
-
       return (
         <Notification
           timeout={2000}
-          title={'Wordbots.'}
-          options={options}
-          onClick={(e, tag) => {
-            window.focus();
-          }} />
+          title="Wordbots."
+          options={{body: 'It\'s your turn!', ...options}}
+          onClick={() => { window.focus(); }} />
       );
     }
   }
@@ -279,14 +275,10 @@ export class GameArea extends Component {
           style={{
             position: 'relative',
             height: this.state.areaHeight,
-            background:
-
-
-            `url(${this.loadBackground()})`
+            background: `url(${this.loadBackground()})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
           <div
-            ref={board => {this.boardArea = board;}}
             style={{
               position: 'absolute',
               left: 0,

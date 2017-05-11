@@ -19,6 +19,7 @@ export function mapStateToProps(state) {
     currentTurn: state.game.currentTurn,
     gameOver: state.game.winner !== null,
     isMyTurn: state.game.currentTurn === state.game.player,
+    isSpectator: !['blue', 'orange'].includes(state.game.player),
     selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
   };
 }
@@ -48,6 +49,7 @@ export class GameMenu extends Component {
     currentTurn: string,
     gameOver: bool,
     isMyTurn: bool,
+    isSpectator: bool,
     selectedPiece: object,
 
     onActivate: func,
@@ -178,7 +180,7 @@ export class GameMenu extends Component {
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         <MenuItem
           primaryText="Forfeit"
-          disabled={this.props.gameOver}
+          disabled={this.props.isSpectator || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">close</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
         <Divider />

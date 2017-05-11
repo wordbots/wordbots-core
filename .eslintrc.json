@@ -11,7 +11,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:lodash/recommended",
-    "plugin:promise/recommended"
+    "plugin:promise/recommended",
+    "plugin:unicorn/recommended"
   ],
   "parser": "babel-eslint",
   "rules": {
@@ -54,6 +55,7 @@
     "jest/no-identical-title": 2,
     "jest/valid-expect": 2,
 
+    "lodash/chaining": [1, "always", 3],
     "lodash/import-scope": 0,
     "lodash/prefer-constant": 0,
     "lodash/prefer-lodash-method": 0,
@@ -77,7 +79,10 @@
     "react/no-unknown-property": 2,
     "react/prop-types": 2,
     "react/react-in-jsx-scope": 2,
-    "react/self-closing-comp": 2
+    "react/self-closing-comp": 2,
+
+    "unicorn/no-process-exit": 0,
+    "unicorn/filename-case": 0
   },
   "plugins": [
     "compat",
@@ -86,7 +91,8 @@
     "lodash",
     "no-loops",
     "promise",
-    "react"
+    "react",
+    "unicorn"
   ],
   "settings": {
     "polyfills": ["fetch"]

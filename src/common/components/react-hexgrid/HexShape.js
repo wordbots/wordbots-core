@@ -1,5 +1,8 @@
 import React from 'react';
 import { bool, object, string } from 'prop-types';
+import { isUndefined } from 'lodash';
+
+import { DISPLAY_HEX_IDS } from '../../constants';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
@@ -17,14 +20,13 @@ export default class HexShape extends React.Component {
     selected: bool
   };
 
-  getPoints(hex) {
-    const points = this.props.layout.getPolygonPoints(hex);
-
-    return points.map(point => `${point.x  },${  point.y}`).join(' ');
+  get points() {
+    const points = this.props.layout.getPolygonPoints(this.props.hex);
+    return points.map(point => `${point.x},${point.y}`).join(' ');
   }
 
-  getPiecePoints(hex) {
-    const points = this.props.layout.getPolygonPoints(hex);
+  get piecePoints() {
+    const points = this.props.layout.getPolygonPoints(this.props.hex);
 
     if (this.props.pieceImg) {
       // Old hex coords - for kernels & other things with static art.
@@ -32,41 +34,43 @@ export default class HexShape extends React.Component {
       points[4].y = points[4].y * 1.5;
       points[5].y = points[5].y * 1.5;
 
-      return points.map(point => `${point.x  },${  point.y}`).join(' ');
+      return points.map(point => `${point.x},${point.y}`).join(' ');
     } else {
       // New hex coords - for sprites.
 
       points[4].y = points[4].y + 2;
       points[5].y = points[5].y + 2;
 
-      return points.map(point => `${point.x  },${  point.y - 2}`).join(' ');
+      return points.map(point => `${point.x},${point.y - 2}`).join(' ');
     }
   }
 
-  translate() {
+  get translate() {
     const hex = this.props.hex;
     const pixel = HexUtils.hexToPixel(hex, this.props.layout);
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
-  getStyles(hex) {
-    const styles = {};
+  get hexStyles() {
+    const hex = this.props.hex;
 
-    // if (this.props.fill || (hex.props !== {} && !isUndefined(hex.props.image))) {
-      styles.fill = `url(#${ HexUtils.getID(hex) })`;
-    // }
-
-    // if (this.props.selected) {
-    //   styles.strokeWidth = 0.5;
-    // }
-
-    return styles;
+    if (this.props.selected) {
+      return {
+        stroke: '#666',
+        strokeWidth: 0.8,
+        fillOpacity: 0
+      };
+    } else {
+      return {
+        fill: `url(#${HexUtils.getID(hex)})`
+      };
+    }
   }
 
-  getPieceStyles(hex) {
+  get pieceStyles() {
     if (this.props.pieceImg !== {}) {
       return {
-        fill: `url(#${ HexUtils.getID(hex) }_piece)`,
+        fill: `url(#${HexUtils.getID(this.props.hex)}_piece)`,
         stroke: 'none'
       };
     } else {
@@ -77,85 +81,85 @@ export default class HexShape extends React.Component {
     }
   }
 
-  getPieceStats() {
-    if (this.props.pieceStats) {
-      const healthTextPositionY = this.props.pieceStats.health >= 20 ? 2.95 : 3;
-
-      if (this.props.pieceStats.attack !== undefined) {
-        return (
-          <g>
-            <circle style={{
-              fill: '#E57373',
-              strokeWidth: 0.2,
-              stroke: '#777'
-            }} cx="-2.5" cy="2" r="2" filter="url(#dropShadow)"/>
-            <text x="-2.5" y="3" textAnchor="middle" style={{
-              fontFamily: 'Carter One',
-              fontSize: '0.19em',
-              fill: '#FFFFFF',
-              fillOpacity: 1
-            }}>{this.props.pieceStats.attack}</text>
-            <circle style={{
-              fill: '#81C784',
-              strokeWidth: 0.2,
-              stroke: '#777'
-            }} cx="2.5" cy="2" r="2" filter="url(#dropShadow)"/>
-            <text x="2.5" y="3" textAnchor="middle" style={{
-              fontFamily: 'Carter One',
-              fontSize: '0.19em',
-              fill: '#FFFFFF',
-              fillOpacity: 1
-            }}>{this.props.pieceStats.health}</text>
-          </g>
-        );
-      } else {
-        return (
-          <g>
-            <circle style={{
-              fill: '#81C784',
-              strokeWidth: 0.2,
-              stroke: '#777'
-            }} cx="2.5" cy="2" r="2" filter="url(#dropShadow)"/>
-            <text x="2.5" y={healthTextPositionY} textAnchor="middle" style={{
-              fontFamily: 'Carter One',
-              fontSize: this.props.pieceStats.health >= 20 ? '0.14em' : '0.19em',
-              fill: '#FFFFFF',
-              fillOpacity: 1
-            }}>{this.props.pieceStats.health}</text>
-          </g>
-        );
-      }
+  renderHexPattern() {
+    if (!this.props.selected) {
+      return (
+        <HexPattern
+          hex={this.props.hex}
+          fill={this.props.fill}
+          pieceImg={this.props.pieceImg}
+          images={this.props.images} />
+      );
     } else {
       return null;
     }
   }
 
-  render() {
-    const hex = this.props.hex;
-    const text = (hex.props.text) ? hex.props.text : ''; //HexUtils.getID(hex);
-    const actions = this.props.actions;
-    const styles = this.getStyles(hex);
-    const pieceStyles = this.getPieceStyles(hex);
-    const points = this.getPoints(hex);
-    const piecePoints = this.getPiecePoints(hex);
-    const pieceStats = this.getPieceStats();
+  renderPolygons() {
+    const hexPolygon = <polygon key="p1" points={this.points} style={this.hexStyles} />;
+    const piecePolygon = <polygon key="p2" points={this.piecePoints} style={this.pieceStyles} />;
+    const hexPointers = <HexPointers key="hp" hex={this.props.hex} points={this.points} />;
+
+    if (this.props.selected) {
+      return [hexPolygon, hexPointers];
+    } else {
+      return [hexPolygon, piecePolygon, hexPointers];
+    }
+  }
+
+  renderStat(stat) {
+    const xPos = {attack: -3, health: 3}[stat];
+    const textStyle = {
+      fontFamily: 'Carter One',
+      fontSize: '0.19em',
+      fill: '#FFFFFF',
+      fillOpacity: 1
+    };
+    const circleStyle = {
+      fill: {attack: '#E57373', health: '#81C784'}[stat],
+      strokeWidth: 0.2,
+      stroke: '#777'
+    };
 
     return (
-      <g className="shape-group" transform={this.translate()} draggable="true"
-        onMouseEnter={e => actions.onHexHover(this.props.hex, e)}
-        onMouseLeave={e => actions.onHexHover(this.props.hex, e)}
-        onClick={e => actions.onClick(this.props.hex, e)}
-        >
-        <HexPattern
-          hex={hex}
-          fill={this.props.fill}
-          pieceImg={this.props.pieceImg}
-          images={this.props.images} />
-        <polygon points={points} style={{...styles}} />
-        <polygon points={piecePoints} style={{...pieceStyles}} />
-        <HexPointers hex={hex} points={points} />
-        <text x="0" y="0.3em" textAnchor="middle">{text}</text>
-        {pieceStats}
+      <g key={stat}>
+        <circle cx={xPos} cy="2" r="2" style={circleStyle} filter="url(#dropShadow)" />
+        <text x={xPos} y="3" textAnchor="middle" style={textStyle}>
+          {this.props.pieceStats[stat]}
+        </text>
+      </g>
+    );
+  }
+
+  renderPieceStats() {
+    const stats = this.props.pieceStats;
+    if (stats && !isUndefined(stats.attack)) {
+      return [this.renderStat('attack'), this.renderStat('health')];
+    } else if (stats && !isUndefined(stats.health)) {
+      return this.renderStat('health');
+    } else {
+      return null;
+    }
+  }
+
+  renderText() {
+    const text = (DISPLAY_HEX_IDS && HexUtils.getID(this.props.hex)) || this.props.hex.props.text || '';
+    return <text x="0" y="0.3em" textAnchor="middle">{text}</text>;
+  }
+
+  render() {
+    return (
+      <g
+        draggable
+        transform={this.translate}
+        onMouseEnter={e => this.props.actions.onHexHover(this.props.hex, e)}
+        onMouseLeave={e => this.props.actions.onHexHover(this.props.hex, e)}
+        onClick={e => this.props.actions.onClick(this.props.hex, e)}
+      >
+        {this.renderHexPattern()}
+        {this.renderPolygons()}
+        {this.renderPieceStats()}
+        {this.renderText()}
       </g>
     );
   }

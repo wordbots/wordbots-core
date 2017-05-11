@@ -58,7 +58,7 @@ describe('Board component', () => {
       },
       blue: {
         '-1,0,1': attackBotCard,  // Attackable (adjacent to 0,0,0)
-        '-2,0,2': attackBotCard,  // Blocked by the piece at -1,0,1
+        '-2,-1,3': attackBotCard,  // Blocked by the pieces at -1,0,1 and -1,-1,2
         '-1,-1,2': attackBotCard  // Attackable (via move+attack)
       }
     });
@@ -73,7 +73,7 @@ describe('Board component', () => {
         '-3,0,3': 'blue',  // Blue core
         '-1,0,1': 'red',  // Blue piece (can be attacked)
         '-1,-1,2': 'red',  // Blue piece (can be attacked)
-        '-2,0,2': 'blue',  // Blue piece (blocked from being attacked by the piece at 0,0,0)
+        '-2,-1,3': 'blue',  // Blue piece (blocked from being attacked by the pieces at 0,0,0 and -1,-1,2)
         '3,0,-3': 'orange',  // Orange core
         '0,0,0': 'bright_orange',  // Orange piece (currently selected)
         '1,0,-1': 'bright_orange',  // Orange piece

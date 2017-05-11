@@ -7,7 +7,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import { groupBy, isEqual, map, sortBy } from 'lodash';
+import { chain as _, isEqual } from 'lodash';
 
 import { id } from '../../util/common';
 
@@ -50,8 +50,6 @@ export default class Chat extends Component {
   }
 
   mergeMessagesById(messages) {
-    function getId(msg) { return msg.id || id(); }
-
     function join(msgs) {
       return Object.assign({}, msgs[0], {
         text: msgs.map(m => m.text).join(' '),
@@ -59,7 +57,11 @@ export default class Chat extends Component {
       });
     }
 
-    return sortBy(map(groupBy(messages, getId), join), 'timestamp');
+    return _(messages)
+            .groupBy(msg => msg.id || id())
+            .map(join)
+            .sortBy('timestamp')
+            .value();
   }
 
   filterMessage(message) {

@@ -2,12 +2,18 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, movesLeft, allowedToAttack, ownerOf, hasEffect,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
+
+function selectTile(state, tile) {
+  currentPlayer(state).selectedTile = tile;
+  currentPlayer(state).selectedCard = null;
+  return state;
+}
 
 export function setHoveredTile(state, card) {
   return Object.assign({}, state, {hoveredCard: card});
@@ -25,8 +31,7 @@ export function setSelectedTile(state, playerName, tile) {
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    player.selectedTile = (player.selectedTile === tile) ? null : tile;
-    player.selectedCard = null;
+    state = selectTile(state, (player.selectedTile === tile) ? null : tile);
     player.status.message = '';
     return state;
   }
@@ -37,21 +42,21 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const movingRobot = player.robotsOnBoard[fromHex];
 
   // Is the move valid?
-  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex), movesLeft(movingRobot), movingRobot);
+  const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex));
   if (validHexes.map(HexUtils.getID).includes(toHex)) {
-    if (!asPartOfAttack) {
-      currentPlayer(state).selectedTile = null;
-    }
-
     const distance = HexUtils.IDToHex(toHex).distance(HexUtils.IDToHex(fromHex));
     movingRobot.movesMade += distance;
     movingRobot.movedThisTurn = true;
 
+    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
-    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
+
+    if (!asPartOfAttack) {
+      state = selectTile(state, toHex);
+    }
   }
 
   return state;
@@ -69,12 +74,17 @@ export function attack(state, source, target) {
 
   if (attacker) {
     // Is the attack valid?
-    const validHexes = validAttackHexes(state, player.name, HexUtils.IDToHex(source), movesLeft(attacker), attacker);
-    if (validHexes.map(HexUtils.getID).includes(target) && allowedToAttack(state, attacker, target)) {
+    const validHexes = validAttackHexes(state, HexUtils.IDToHex(source));
+    if (validHexes.map(HexUtils.getID).includes(target)) {
       attacker.cantMove = true;
       attacker.cantAttack = true;
       attacker.cantActivate = true;
       attacker.attackedThisTurn = true;
+
+      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
+        [defender.card.name]: defender.card,
+        [attacker.card.name]: attacker.card
+      });
 
       state = triggerEvent(state, 'afterAttack', {
         object: attacker,
@@ -83,7 +93,7 @@ export function attack(state, source, target) {
         dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
       );
 
-      if (!hasEffect(defender, 'cannotfightback')) {
+      if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
         state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
       }
 
@@ -97,12 +107,7 @@ export function attack(state, source, target) {
       }
 
       state = applyAbilities(state);
-      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
-        [defender.card.name]: defender.card,
-        [attacker.card.name]: attacker.card
-      });
-
-      currentPlayer(state).selectedTile = null;
+      state = selectTile(state, null);
     }
   }
 

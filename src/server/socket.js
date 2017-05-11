@@ -112,8 +112,8 @@ export default function launchWebsocketServer(server, path) {
     sockets.forEach(socket => {
       try {
         socket.send(message);
-      } catch (e) {
-        console.warn(`Failed to send message ${message} to ${recipientIDs}: ${e.message}`);
+      } catch (err) {
+        console.warn(`Failed to send message ${message} to ${recipientIDs}: ${err.message}`);
       }
     });
   }

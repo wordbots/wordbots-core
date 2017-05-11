@@ -36,25 +36,38 @@ export default class HexGrid extends Component {
     return { hexagons, layout };
   }
 
-  render() {
-    const { hexColors, pieceImgs, pieceStats } = this.props;
+  renderHexes() {
+    return this.props.hexagons.map((hex, index) => (
+      <HexShape
+        key={index}
+        hex={hex}
+        layout={this.props.layout}
+        actions={this.props.actions}
+        fill={this.props.hexColors[HexUtils.getID(hex)]}
+        pieceImg={this.props.pieceImgs[HexUtils.getID(hex)] || {}}
+        pieceStats={this.props.pieceStats[HexUtils.getID(hex)]}
+        images={loadImages()} />
+    ));
+  }
 
+  renderSelectedHex() {
+    const selectedHex = this.props.hexagons.find(hex => HexUtils.getID(hex) === this.props.selectedHexId);
+    if (selectedHex) {
+      return (
+        <HexShape
+          selected
+          hex={selectedHex}
+          layout={this.props.layout}
+          actions={this.props.actions} />
+      );
+    }
+  }
+
+  render() {
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        {
-          this.props.hexagons.map((hex, index) => (
-              <HexShape
-                key={index}
-                hex={hex}
-                layout={this.props.layout}
-                actions={this.props.actions}
-                fill={hexColors[HexUtils.getID(hex)]}
-                pieceImg={pieceImgs[HexUtils.getID(hex)] || {}}
-                pieceStats={pieceStats[HexUtils.getID(hex)]}
-                images={loadImages()}
-                selected={this.props.selectedHexId === HexUtils.getID(hex)} />
-            ))
-        }
+        {this.renderHexes()}
+        {this.renderSelectedHex()}
         <Path {...this.props.path} layout={this.props.layout} />
         <defs>
           <filter id="dropShadow" width="5" x="-1" height="5" y="-1">

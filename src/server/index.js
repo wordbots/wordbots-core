@@ -1,5 +1,6 @@
-/* eslint-disable */
-// Babel itself need a var declaration, so we disable eslint for this file.
+/* eslint-disable no-var */
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-unassigned-import */
 
 var babel = require('babel-core/register')({
 	presets: ['es2015', 'stage-2', 'react']

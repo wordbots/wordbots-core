@@ -30,8 +30,8 @@ export default class LoginDialog extends Component {
         this.setState({error: null});
         this.props.handleClose();
       })
-      .catch(e => {
-        this.setState({error: `Error: ${e.message}`});
+      .catch(err => {
+        this.setState({error: `Error: ${err.message}`});
       });
   }
 
@@ -49,7 +49,7 @@ export default class LoginDialog extends Component {
   resetPassword = (email) => {
     resetPassword(email)
       .then(() => { this.setState({error: `Password reset email sent to ${email}.`}); })
-      .catch(e => { this.setState({error: 'Error: Email address not found.'}); });
+      .catch(() => { this.setState({error: 'Error: Email address not found.'}); });
   }
 
   handleKeyPress(t) {

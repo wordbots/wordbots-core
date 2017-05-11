@@ -7,7 +7,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import _, { isEqual } from 'lodash';
+import { chain as _, isEqual } from 'lodash';
 
 import { id } from '../../util/common';
 

@@ -36,13 +36,7 @@ const cardsHandlers = {
   },
 
   importCards: function (state, json) {
-    // Add new cards that are not duplicates.
-    cardsFromJson(json)
-      .filter(card => !state.cards.map(c => c.id).includes(card.id))
-      .forEach(card => { state.cards.unshift(card); });
-
-    saveCardsToFirebase(state);
-
+    cardsFromJson(json, card => { saveCard(state, card); });
     return state;
   },
 
@@ -74,25 +68,7 @@ const cardsHandlers = {
 
   saveCard: function (state, cardProps) {
     const card = createCardFromProps(cardProps);
-
-    // Is there already a card with the same ID (i.e. we're currently editing it)
-    // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
-    const existingCard = state.cards.find(c => c.id === cardProps.id || areIdenticalCards(c, card));
-
-    if (existingCard) {
-      // Editing an existing card.
-      if (existingCard.source === 'builtin') {
-        // TODO Log warning about not being about not being able to replace builtin cards.
-      } else {
-        Object.assign(existingCard, card, {id: existingCard.id});
-      }
-    } else {
-      state.cards.push(card);
-    }
-
-    saveCardsToFirebase(state);
-
-    return state;
+    return saveCard(state, card);
   },
 
   saveDeck: function (state, deckId, name, cardIds = []) {
@@ -143,6 +119,27 @@ function createCardFromProps(props) {
   }
 
   return card;
+}
+
+// Saves a card, either as a new card or replacing an existing card.
+function saveCard(state, card) {
+  // Is there already a card with the same ID (i.e. we're currently editing it)
+  // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
+  const existingCard = state.cards.find(c => c.id === card.id || areIdenticalCards(c, card));
+
+  if (existingCard) {
+    // Editing an existing card.
+    if (existingCard.source === 'builtin') {
+      // TODO Log warning about not being about not being able to replace builtin cards.
+    } else {
+      Object.assign(existingCard, card, {id: existingCard.id});
+    }
+  } else {
+    state.cards.push(card);
+  }
+
+  saveCardsToFirebase(state);
+  return state;
 }
 
 export default cardsHandlers;

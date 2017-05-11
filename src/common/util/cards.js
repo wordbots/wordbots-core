@@ -1,4 +1,7 @@
-import { capitalize, compact, countBy, debounce, every, flatMap, fromPairs, isArray, mapValues, reduce, uniqBy } from 'lodash';
+import {
+  capitalize, compact, countBy, debounce, every, flatMap, fromPairs,
+  isArray, mapValues, omit, pick, reduce, uniqBy
+} from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
 import defaultState from '../store/defaultCollectionState';
@@ -143,6 +146,24 @@ function parse(sentences, mode, callback) {
 
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
+// Given a card that is complete except for command/abilities,
+// parse the text to fill in command/abilities, then trigger callback.
+function parseCard(card, callback) {
+  const isEvent = card.type === TYPE_EVENT;
+  const sentences = getSentencesFromInput(card.text);
+  const parseResults = [];
+
+  parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
+    parseResults[idx] = response.js;
+
+    // Are we done parsing?
+    if (compact(parseResults).length === sentences.length) {
+      card[isEvent ? 'command' : 'abilities'] = parseResults;
+      callback(card);
+    }
+  });
+}
+
 //
 // 3.5. Keyword abilities.
 //
@@ -201,14 +222,25 @@ export function contractKeywords(sentence) {
 //
 
 export function cardsToJson(cards) {
-  cards = cards.map(c => Object.assign({}, c, {schemaVersion: CARD_SCHEMA_VERSION}));
-  return JSON.stringify(cards).replace(/\\"/g, '%27');
+  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'text', 'stats'];
+  const cardsToExport = cards.map(card =>
+    Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION})
+  );
+  return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
 
-export function cardsFromJson(json) {
+export function cardsFromJson(json, callback) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
-  return JSON.parse(json.replace(/%27/g, '\\"'));
+  JSON.parse(json.replace(/%27/g, '\\"'))
+    .map(card =>
+      Object.assign({}, omit(card, ['schema']), {
+        id: generateId(),
+        source: 'user',
+        timestamp: Date.now()
+      })
+    )
+    .forEach(card => { parseCard(card, callback); });
 }
 
 export function loadCardsFromFirebase(state, data) {

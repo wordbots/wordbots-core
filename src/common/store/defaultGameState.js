@@ -30,7 +30,7 @@ function playerState(color, collection, coreCard, coreHexId) {
       [coreHexId]: {
         id: `${color}Core`,
         card: coreCard,
-        stats: coreCard.stats,
+        stats: Object.assign({}, coreCard.stats),
         movesMade: 0,
         triggers: [],
         abilities: []

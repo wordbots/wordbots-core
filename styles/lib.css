@@ -13,14 +13,14 @@
   fill-opacity: 1;
 }
 
-#hexgrid svg g:hover {
-  fill: #EEE;
-}
-
 #hexgrid svg g polygon {
   stroke: #777;
   stroke-width: 0.2px;
   transition: fill-opacity .2s;
+}
+
+#hexgrid svg g polygon:hover {
+  fill-opacity: 0.75;
 }
 
 #hexgrid svg g text {

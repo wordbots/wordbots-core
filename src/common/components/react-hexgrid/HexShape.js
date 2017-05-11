@@ -57,7 +57,7 @@ export default class HexShape extends React.Component {
     if (this.props.selected) {
       return {
         stroke: '#666',
-        strokeWidth: 0.8,
+        strokeWidth: 0.6,
         fillOpacity: 0
       };
     } else {

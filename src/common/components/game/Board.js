@@ -104,11 +104,11 @@ export default class Board extends Component {
     if (this.isMyTurn) {
       if (this.props.target.choosing) {
         color(this.props.target.possibleHexes, 'green');
+      } else if (this.playingAnObject) {
+        color(this.placementHexes, 'green');
       } else if (this.selectedPiece) {
         color(this.getValidMovementHexes(this.selectedHex), 'green');
         color(this.getValidAttackHexes(this.selectedHex), 'red');
-      } else if (this.playingAnObject) {
-        color(this.placementHexes, 'green');
       }
     }
 

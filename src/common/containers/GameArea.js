@@ -157,6 +157,10 @@ export class GameArea extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps, nextState) {
+    this.setState({selectedHexId: nextProps.selectedTile});
+  }
+
   updateHeight() {
     this.setState({
       areaHeight: window.innerHeight - 64,

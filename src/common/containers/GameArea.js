@@ -143,7 +143,8 @@ export class GameArea extends Component {
 
     this.state = {
       areaHeight: 1100,
-      boardHeight: 600
+      boardHeight: 600,
+      selectedHexId: props.selectedTile
     };
   }
 
@@ -186,7 +187,7 @@ export class GameArea extends Component {
     return this.props.hoveredCard ||
       cardFromIndex(this.props.hoveredCardIdx) ||
       cardFromIndex(this.props.selectedCard) ||
-      this.allPieces()[this.props.selectedTile];
+      this.allPieces()[this.state.selectedHexId];
   }
 
   movePiece(hexId, asPartOfAttack = false) {
@@ -205,7 +206,7 @@ export class GameArea extends Component {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
-  onSelectTile(hexId, action, intermediateMoveHexId) {
+  onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
     if (action === 'move') {
       this.movePiece(hexId);
     } else if (action === 'attack') {
@@ -213,6 +214,7 @@ export class GameArea extends Component {
     } else if (action === 'place') {
       this.placePiece(hexId);
     } else {
+      this.setState({selectedHexId: hexId});
       this.props.onSelectTile(hexId, this.props.player);
     }
   }
@@ -221,8 +223,7 @@ export class GameArea extends Component {
     if (action === 'mouseleave') {
       this.props.onHoverTile(null);
     } else {
-      const piece = this.props.bluePieces[hexId] || this.props.orangePieces[hexId];
-
+      const piece = this.allPieces()[hexId];
       if (piece) {
         this.props.onHoverTile({
           card: piece.card,
@@ -289,7 +290,7 @@ export class GameArea extends Component {
               height={this.state.boardHeight}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
-              selectedTile={this.props.selectedTile}
+              selectedTile={this.state.selectedHexId}
               target={this.props.target}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}

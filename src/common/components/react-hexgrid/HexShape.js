@@ -2,6 +2,8 @@ import React from 'react';
 import { bool, object, string } from 'prop-types';
 import { isUndefined } from 'lodash';
 
+import { DISPLAY_HEX_IDS } from '../../constants';
+
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
@@ -49,7 +51,7 @@ export default class HexShape extends React.Component {
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
-  get styles() {
+  get hexStyles() {
     const hex = this.props.hex;
 
     if (this.props.selected) {
@@ -96,54 +98,41 @@ export default class HexShape extends React.Component {
   }
 
   renderPolygons() {
-    const polygon = <polygon key="p1" points={this.points} style={this.styles} />;
+    const hexPolygon = <polygon key="p1" points={this.points} style={this.hexStyles} />;
     const piecePolygon = <polygon key="p2" points={this.piecePoints} style={this.pieceStyles} />;
-    const hexPointers = <HexPointers hex={this.props.hex} points={this.points} />;
+    const hexPointers = <HexPointers key="hp" hex={this.props.hex} points={this.points} />;
 
     if (this.props.selected) {
-      return [polygon, hexPointers];
+      return [hexPolygon, hexPointers];
     } else {
-      return [polygon, piecePolygon, hexPointers];
+      return [hexPolygon, piecePolygon, hexPointers];
     }
   }
 
   renderPieceStats() {
-    if (this.props.pieceStats) {
-      if (this.props.pieceStats.attack !== undefined) {
+    const stats = this.props.pieceStats;
+    const statsStyle = {
+      fontFamily: 'Carter One',
+      fontSize: '0.19em',
+      fill: '#FFFFFF',
+      fillOpacity: 1
+    };
+
+    if (stats) {
+      if (stats.attack !== undefined) {
         return (
           <g>
-            <circle style={{
-              fill: '#E57373'
-            }} cx="-3" cy="2" r="2" />
-            <text x="-3" y="3" textAnchor="middle" style={{
-              fontFamily: 'Carter One',
-              fontSize: '0.19em',
-              fill: '#FFFFFF',
-              fillOpacity: 1
-            }}>{this.props.pieceStats.attack}</text>
-            <circle style={{
-              fill: '#81C784'
-            }} cx="3" cy="2" r="2" />
-            <text x="3" y="3" textAnchor="middle" style={{
-              fontFamily: 'Carter One',
-              fontSize: '0.19em',
-              fill: '#FFFFFF',
-              fillOpacity: 1
-            }}>{this.props.pieceStats.health}</text>
+            <circle cx="-3" cy="2" r="2" style={{fill: '#E57373'}} />
+            <text x="-3" y="3" textAnchor="middle" style={statsStyle}>{stats.attack}</text>
+            <circle cx="3" cy="2" r="2" style={{fill: '#81C784'}} />
+            <text x="3" y="3" textAnchor="middle" style={statsStyle}>{stats.health}</text>
           </g>
         );
       } else {
         return (
           <g>
-            <circle style={{
-              fill: '#81C784'
-            }} cx="3" cy="2" r="2" />
-            <text x="3" y="3" textAnchor="middle" style={{
-              fontFamily: 'Carter One',
-              fontSize: '0.19em',
-              fill: '#FFFFFF',
-              fillOpacity: 1
-            }}>{this.props.pieceStats.health}</text>
+            <circle cx="3" cy="2" r="2" style={{fill: '#81C784'}} />
+            <text x="3" y="3" textAnchor="middle" style={statsStyle}>{stats.health}</text>
           </g>
         );
       }
@@ -152,12 +141,15 @@ export default class HexShape extends React.Component {
     }
   }
 
+  renderText() {
+    const text = (DISPLAY_HEX_IDS && HexUtils.getID(this.props.hex)) || this.props.hex.props.text || '';
+    return <text x="0" y="0.3em" textAnchor="middle">{text}</text>;
+  }
+
   render() {
-    const text = this.props.hex.props.text || ''; //HexUtils.getID(this.props.hex);
     return (
       <g
         draggable
-        className="shape-group"
         transform={this.translate}
         onMouseEnter={e => this.props.actions.onHexHover(this.props.hex, e)}
         onMouseLeave={e => this.props.actions.onHexHover(this.props.hex, e)}
@@ -166,7 +158,7 @@ export default class HexShape extends React.Component {
         {this.renderHexPattern()}
         {this.renderPolygons()}
         {this.renderPieceStats()}
-        <text x="0" y="0.3em" textAnchor="middle">{text}</text>
+        {this.renderText()}
       </g>
     );
   }

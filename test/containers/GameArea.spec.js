@@ -21,11 +21,12 @@ describe('GameArea container', () => {
     const dom = renderElement(game);
 
     const paper = dom.props.children[1];
-    const mainDiv = paper.props.children[1];
-    const board = mainDiv.props.children[2];
+    const mainDiv = paper.props.children[2];
+    const board = mainDiv.props.children[1];
 
     expect(paper.props.children).toEqual([
       <PlayerArea opponent gameProps={game.props} />,
+      <CardViewer hoveredCard={undefined} />,
       <div
         ref={mainDiv.ref}
         style={{
@@ -38,7 +39,6 @@ describe('GameArea container', () => {
         <Status
           player={'orange'}
           status={state.game.players.orange.status} />
-        <CardViewer hoveredCard={undefined} />
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}

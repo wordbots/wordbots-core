@@ -149,17 +149,23 @@ export class GameArea extends Component {
   }
 
   componentDidMount() {
-    this.updateHeight();
-
-    window.onresize = () => {
-      this.updateHeight();
-    };
+    this.updateDimensions();
+    window.onresize = () => { this.updateDimensions(); };
   }
 
-  updateHeight() {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.sidebarOpen !== this.props.sidebarOpen) {
+      this.updateDimensions(nextProps);
+    }
+  }
+
+  updateDimensions(props = this.props) {
+    const maxBoardHeight = window.innerHeight - 64 - 150;
+    const maxBoardWidth = window.innerWidth - (props.sidebarOpen ? 512 : 256);
+
     this.setState({
       areaHeight: window.innerHeight - 64,
-      boardSize: window.innerHeight - 64 - 150
+      boardSize: Math.min(maxBoardWidth, maxBoardHeight)
     });
   }
 
@@ -273,6 +279,7 @@ export class GameArea extends Component {
             background: `url(${this.loadBackground()})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
+          <CardViewer hoveredCard={this.hoveredCard()} />
           <div
             style={{
               position: 'absolute',
@@ -287,7 +294,6 @@ export class GameArea extends Component {
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
-            <CardViewer hoveredCard={this.hoveredCard()} />
             <Board
               size={this.state.boardSize}
               player={this.props.player}

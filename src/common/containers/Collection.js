@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import { find, pick } from 'lodash';
+import { find, noop, pick } from 'lodash';
 
 import { getDisplayedCards, isCardVisible } from '../util/cards';
 import CardCollection from '../components/cards/CardCollection';
@@ -74,6 +74,7 @@ class Collection extends Component {
       },
       costRange: [0, 20],
       sortCriteria: 3,
+      sortOrder: 0,
       searchText: '',
       selectedCardIds: [],
       importDialogOpen: false,
@@ -95,6 +96,11 @@ class Collection extends Component {
     }));
   }
 
+  // this.set(key)(value) = this.setState({key: value})
+  set = (key, callback = noop) => (value) => {
+    this.setState({[key]: value}, callback);
+  }
+
   toggleFilter = (filter) => (e, toggled) => {
     this.setState(state => ({
       filters: Object.assign({}, state.filters, {[filter]: toggled})
@@ -104,22 +110,21 @@ class Collection extends Component {
   renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
-        <SearchControls
-          onChange={value => { this.setState({searchText: value}); }} />
+        <SearchControls onChange={this.set('searchText')} />
 
         <LayoutControls
           layout={this.state.layout}
-          onSetLayout={value => { this.setState({layout: value}); }} />
+          onSetLayout={this.set('layout')} />
 
         <SortControls
           criteria={this.state.sortCriteria}
           order={this.state.sortOrder}
-          onSetCriteria={value => { this.setState({sortCriteria: value}); }}
-          onSetOrder={value => { this.setState({sortOrder: value}); }} />
+          onSetCriteria={this.set('sortCriteria')}
+          onSetOrder={this.set('sortOrder')} />
 
         <FilterControls
           onToggleFilter={this.toggleFilter}
-          onSetCostRange={values => { this.setState({costRange: values}, this.refreshSelection); }} />
+          onSetCostRange={this.set('costRange', this.refreshSelection)} />
       </Paper>
     );
   }
@@ -207,14 +212,12 @@ class Collection extends Component {
           <ExportDialog
             open={this.props.exportedJson !== null}
             text={this.props.exportedJson}
-            onClose={this.props.onCloseExportDialog}
-            />
+            onClose={this.props.onCloseExportDialog} />
 
           <ImportDialog
             open={this.state.importDialogOpen}
             onClose={() => { this.setState({importDialogOpen: false}); }}
-            onImport={this.props.onImportCards}
-            />
+            onImport={this.props.onImportCards} />
 
           <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
             <div>

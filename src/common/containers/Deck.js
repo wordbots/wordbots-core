@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
-import { compact, find, pick } from 'lodash';
+import { compact, find, noop, pick } from 'lodash';
 
 import { getDisplayedCards } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
@@ -72,6 +72,11 @@ class Deck extends Component {
     return getDisplayedCards(this.props.cards, opts);
   }
 
+  // this.set(key)(value) = this.setState({key: value})
+  set = (key, callback = noop) => (value) => {
+    this.setState({[key]: value}, callback);
+  }
+
   toggleFilter = (filter) => (e, toggled) => {
     this.setState(state => ({
       filters: Object.assign({}, state.filters, {[filter]: toggled})
@@ -81,22 +86,21 @@ class Deck extends Component {
   renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
-        <SearchControls
-          onChange={value => { this.setState({searchText: value}); }} />
+        <SearchControls onChange={this.set('searchText')} />
 
         <LayoutControls
           layout={this.state.layout}
-          onSetLayout={value => { this.setState({layout: value}); }} />
+          onSetLayout={this.set('layout')} />
 
         <SortControls
-          criteria={this.state.sortingCriteria}
-          order={this.state.sortingOrder}
-          onSetCriteria={value => { this.setState({sortingCriteria: value}); }}
-          onSetOrder={value => { this.setState({sortingOrder: value}); }} />
+          criteria={this.state.sortCriteria}
+          order={this.state.sortOrder}
+          onSetCriteria={this.set('sortCriteria')}
+          onSetOrder={this.set('sortOrder')} />
 
         <FilterControls
           onToggleFilter={this.toggleFilter}
-          onSetCostRange={values => { this.setState({costRange: values}); }} />
+          onSetCostRange={this.set('costRange', this.refreshSelection)} />
       </Paper>
     );
   }

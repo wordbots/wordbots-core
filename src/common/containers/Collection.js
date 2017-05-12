@@ -6,13 +6,14 @@ import { withRouter } from 'react-router';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 
 import { isCardVisible, sortFunctions } from '../util/cards';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
-import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
+import FilterControls from '../components/cards/FilterControls';
+import LayoutControls from '../components/cards/LayoutControls';
+import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
@@ -167,62 +168,12 @@ class Collection extends Component {
               padding: 20,
               marginBottom: 10
             }}>
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 10
-              }}>Search</div>
+              <SearchControls
+                onChange={value => { this.setState({searchText: value}); }} />
 
-              <TextField
-                hintText="Enter card name or text"
-                style={{marginBottom: 10}}
-                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
-
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 20
-              }}>Layout</div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                marginBottom: 20
-              }}>
-                <FontIcon
-                  className="material-icons"
-                  style={{
-                    color: this.state.layout === 0 ? 'white' : 'black',
-                    fontSize: 36,
-                    padding: 10,
-                    borderRadius: 3,
-                    boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? '#F44336' : '#EEEEEE',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'center',
-                    marginRight: 10
-                  }}
-                  onClick={() => { this.setState({layout: 0});}}>
-                  view_module
-                </FontIcon>
-                <FontIcon
-                  className="material-icons"
-                  style={{
-                    color: this.state.layout === 0 ? 'black' : 'white',
-                    fontSize: 36,
-                    padding: 10,
-                    borderRadius: 3,
-                    boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? '#EEEEEE' : '#F44336',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'center'
-                  }}
-                  onClick={() => { this.setState({layout: 1});}}>
-                  view_list
-                </FontIcon>
-              </div>
+              <LayoutControls
+                layout={this.state.layout}
+                onSetLayout={value => { this.setState({layout: value}); }} />
 
               <SortControls
                 criteria={this.state.sortingCriteria}

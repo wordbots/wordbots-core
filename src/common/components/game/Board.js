@@ -20,7 +20,7 @@ export default class Board extends Component {
     selectedTile: string,
     playingCardType: number,
     target: object,
-    height: number,
+    size: number,
 
     onSelectTile: func,
     onHoverTile: func
@@ -176,8 +176,8 @@ export default class Board extends Component {
           hexColors={this.hexColors}
           pieceImgs={this.pieceImages}
           pieceStats={this.pieceStats}
-          width={this.props.height}
-          height={this.props.height}
+          width={this.props.size}
+          height={this.props.size}
           hexagons={grid.hexagons}
           layout={grid.layout}
           selectedHexId={this.selectedHexId}

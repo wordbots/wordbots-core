@@ -144,7 +144,7 @@ export class GameArea extends Component {
 
     this.state = {
       areaHeight: 1250,
-      boardHeight: 1000
+      boardSize: 1000
     };
   }
 
@@ -159,7 +159,7 @@ export class GameArea extends Component {
   updateHeight() {
     this.setState({
       areaHeight: window.innerHeight - 64,
-      boardHeight: window.innerHeight - 64 - 150
+      boardSize: window.innerHeight - 64 - 150
     });
   }
 
@@ -279,14 +279,17 @@ export class GameArea extends Component {
               left: 0,
               top: 75,
               bottom: 75,
-              right: 0
+              right: 0,
+              margin: '0 auto',
+              zIndex: 999,
+              width: this.state.boardSize
           }}>
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
             <CardViewer hoveredCard={this.hoveredCard()} />
             <Board
-              height={this.state.boardHeight}
+              size={this.state.boardSize}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
               selectedTile={this.props.selectedTile}

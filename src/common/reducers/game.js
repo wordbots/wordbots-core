@@ -69,7 +69,7 @@ export default function game(oldState = cloneDeep(defaultState), action) {
         return Object.assign(state, {winner: action.payload.winner});
 
       default:
-        return state;
+        return oldState;
     }
   }
 }

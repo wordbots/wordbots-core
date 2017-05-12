@@ -108,10 +108,12 @@ export default class HexShape extends React.Component {
   }
 
   renderStat(stat) {
+    const value = this.props.pieceStats[stat];
+
     const xPos = {attack: -3, health: 3}[stat];
     const textStyle = {
       fontFamily: 'Carter One',
-      fontSize: '0.19em',
+      fontSize: value >= 20 ? '0.15em' : '0.19em',
       fill: '#FFFFFF',
       fillOpacity: 1
     };
@@ -125,7 +127,7 @@ export default class HexShape extends React.Component {
       <g key={stat}>
         <circle cx={xPos} cy="2" r="2" style={circleStyle} filter="url(#dropShadow)" />
         <text x={xPos} y="3" textAnchor="middle" style={textStyle}>
-          {this.props.pieceStats[stat]}
+          {value}
         </text>
       </g>
     );

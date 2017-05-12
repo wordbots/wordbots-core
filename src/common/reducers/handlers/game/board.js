@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  activePlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
+  activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities

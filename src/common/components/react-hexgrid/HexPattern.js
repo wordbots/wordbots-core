@@ -38,7 +38,9 @@ export default class HexPattern extends Component {
 
   fillPattern() {
     const id = HexUtils.getID(this.props.hex);
-    const fillImage = this.props.fill ? this.props.images[`${this.props.fill  }_tile`] : '';
+    const fillImage = this.props.fill ? 
+      this.props.images[`${this.props.fill  }_tile`] : 
+      this.props.images['floor'];
 
     return (
       <pattern id={id} patternUnits="userSpaceOnUse" x="-15" y="-10" width="30" height="20">

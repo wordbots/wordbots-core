@@ -56,16 +56,14 @@ export default class HexShape extends React.Component {
 
     if (this.props.selected) {
       return {
-        stroke: '#999',
-        strokeWidth: 0.5,
+        stroke: '#666',
+        strokeWidth: 0.6,
         fillOpacity: 0
       };
-    } else if (this.props.fill || (hex.props !== {} && !isUndefined(hex.props.image))) {
+    } else {
       return {
         fill: `url(#${HexUtils.getID(hex)})`
       };
-    } else {
-      return {};
     }
   }
 
@@ -109,33 +107,39 @@ export default class HexShape extends React.Component {
     }
   }
 
-  renderPieceStats() {
-    const stats = this.props.pieceStats;
-    const statsStyle = {
+  renderStat(stat) {
+    const value = this.props.pieceStats[stat];
+    const isLargeNumber = value >= 20;
+
+    const xPos = {attack: -3, health: 3}[stat];
+    const textStyle = {
       fontFamily: 'Carter One',
-      fontSize: '0.19em',
+      fontSize: isLargeNumber ? '0.14em' : '0.18em',
       fill: '#FFFFFF',
       fillOpacity: 1
     };
+    const circleStyle = {
+      fill: {attack: '#E57373', health: '#81C784'}[stat],
+      strokeWidth: 0.2,
+      stroke: '#777'
+    };
 
-    if (stats) {
-      if (stats.attack !== undefined) {
-        return (
-          <g>
-            <circle cx="-3" cy="2" r="2" style={{fill: '#E57373'}} />
-            <text x="-3" y="3" textAnchor="middle" style={statsStyle}>{stats.attack}</text>
-            <circle cx="3" cy="2" r="2" style={{fill: '#81C784'}} />
-            <text x="3" y="3" textAnchor="middle" style={statsStyle}>{stats.health}</text>
-          </g>
-        );
-      } else {
-        return (
-          <g>
-            <circle cx="3" cy="2" r="2" style={{fill: '#81C784'}} />
-            <text x="3" y="3" textAnchor="middle" style={statsStyle}>{stats.health}</text>
-          </g>
-        );
-      }
+    return (
+      <g key={stat}>
+        <circle cx={xPos} cy="2" r="2" style={circleStyle} filter="url(#dropShadow)" />
+        <text x={xPos} y={isLargeNumber ? 2.8 : 3} textAnchor="middle" style={textStyle}>
+          {value}
+        </text>
+      </g>
+    );
+  }
+
+  renderPieceStats() {
+    const stats = this.props.pieceStats;
+    if (stats && !isUndefined(stats.attack)) {
+      return [this.renderStat('attack'), this.renderStat('health')];
+    } else if (stats && !isUndefined(stats.health)) {
+      return this.renderStat('health');
     } else {
       return null;
     }

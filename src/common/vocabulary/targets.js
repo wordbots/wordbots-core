@@ -1,4 +1,4 @@
-import { compact, every, fromPairs, isArray, isEmpty } from 'lodash';
+import { compact, every, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
 import { arrayToSentence } from '../util/common';
@@ -104,7 +104,7 @@ export default function targets(state, currentObject) {
 
     random: function (num, collection) {
       let chosen = pick(collection.entries, {picks: num, rng: state.rng});
-      chosen = isArray(chosen) ? chosen : [chosen];
+      chosen = isUndefined(chosen) ? [] : (isArray(chosen) ? chosen : [chosen]);
 
       // Log the random selection.
       if (chosen.length > 0 && ['cards', 'objects'].includes(collection.type)) {

@@ -115,6 +115,13 @@ export function checkVictoryConditions(state) {
   return state;
 }
 
+// Given a target that may be a card, object, or hex, return the appropriate card if possible.
+function determineTargetCard(state, target) {
+  const targetObj = allObjectsOnBoard(state)[target] || target;
+  const targetCard = (targetObj && targetObj.card) || targetObj;
+  return (targetCard && targetCard.name) ? targetCard : null;
+}
+
 //
 // II. Grid-related helper functions.
 //
@@ -181,18 +188,32 @@ export function validAttackHexes(state, startHex) {
   return potentialAttackHexes.filter(hex => allowedToAttack(state, object, hex));
 }
 
+export function validActionHexes(state, startHex) {
+  const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)] || {};
+  const movementHexes = validMovementHexes(state, startHex);
+  const attackHexes = validAttackHexes(state, startHex);
+  const actionHexes = ((object.activatedAbilities || []).length > 0 && !object.cantActivate) ? [startHex] : [];
+
+  return [].concat(movementHexes, attackHexes, actionHexes);
+}
+
 //
 // III. Effects on game state that are performed in many different places.
 //
 
-export function logAction(state, player, action, cards, timestamp) {
+export function logAction(state, player, action, cards, timestamp, target = null) {
   const playerStr = player ? (player.name === state.player ? 'You ' : `${state.usernames[player.name]} `) : '';
+
+  target = determineTargetCard(state, target);
+  const targetStr = target ? `, targeting |${target.name}|` : '';
+  const targetCards = target ? {[target.name]: target} : {};
+
   const message = {
     id: state.actionId,
     user: '[Game]',
-    text: `${playerStr}${action}.`,
+    text: `${playerStr}${action}${targetStr}.`,
     timestamp: timestamp || Date.now(),
-    cards: cards
+    cards: Object.assign({}, cards, targetCards)
   };
 
   state.actionLog.push(message);
@@ -218,6 +239,7 @@ export function passTurn(state, player) {
 
 function startTurn(state) {
   const player = currentPlayer(state);
+  player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
@@ -324,12 +346,6 @@ export function setTargetAndExecuteQueuedAction(state, target) {
     possibleHexes: [],
     possibleCards: []
   };
-
-  // Log the target.
-  const targetCard = allObjectsOnBoard(state)[target] ? allObjectsOnBoard(state)[target].card : (target.card || target);
-  if (targetCard) {
-    state = logAction(state, null, `|${targetCard.name}| was targeted`, {[targetCard.name]: targetCard});
-  }
 
   // Perform the trigger.
   state = state.callbackAfterTargetSelected(state);

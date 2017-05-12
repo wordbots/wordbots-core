@@ -51,12 +51,12 @@ export default class CardCostBadge extends Component {
     if (this.props.cost < this.props.baseCost) {
       return Object.assign(baseStyle, {
         color: '#81C784',
-        WebkitTextStroke: '0.5px white'
+        WebkitTextStroke: '1px white'
       });
     } else if (this.props.cost > this.props.baseCost) {
       return Object.assign(baseStyle, {
         color: '#E57373',
-        WebkitTextStroke: '0.5px white'
+        WebkitTextStroke: '1px white'
       });
     } else {
       return baseStyle;

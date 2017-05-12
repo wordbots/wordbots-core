@@ -12,7 +12,9 @@ export default function loadImages() {
       'green_tile': require('../img/green_tile.png'),
 
       'core_blue': require('../img/core_blue.png'),
-      'core_orange': require('../img/core_orange.png')
+      'core_orange': require('../img/core_orange.png'),
+
+      'floor': require('../img/floor.png')
     };
   }
 }

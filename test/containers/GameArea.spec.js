@@ -21,19 +21,24 @@ describe('GameArea container', () => {
     const dom = renderElement(game);
 
     const paper = dom.props.children[1];
-    const mainDiv = paper.props.children[1];
-    const board = mainDiv.props.children[2];
+    const mainDiv = paper.props.children[2];
+    const board = mainDiv.props.children[1];
 
     expect(paper.props.children).toEqual([
       <PlayerArea opponent gameProps={game.props} />,
+      <CardViewer hoveredCard={undefined} />,
       <div
         ref={mainDiv.ref}
-        style={{position: 'absolute', left: 0, top: 125, bottom: 125, right: 0, zIndex: 9999}}
-      >
+        style={{
+          position: 'absolute',
+          left: 0, top: 75, bottom: 75, right: 0,
+          margin: '0 auto',
+          width: 1000,
+          zIndex: 999
+      }}>
         <Status
           player={'orange'}
           status={state.game.players.orange.status} />
-        <CardViewer hoveredCard={undefined} />
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}
@@ -42,7 +47,7 @@ describe('GameArea container', () => {
           player={'orange'}
           currentTurn={'orange'}
           playingCardType={null}
-          height={600}
+          size={1000}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
           />

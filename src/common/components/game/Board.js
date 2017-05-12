@@ -7,7 +7,7 @@ import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, ownerOf,
-  getHex, getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes
+  getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes
 } from '../../util/game';
 
 export default class Board extends Component {
@@ -20,7 +20,7 @@ export default class Board extends Component {
     selectedTile: string,
     playingCardType: number,
     target: object,
-    height: number,
+    size: number,
 
     onSelectTile: func,
     onHoverTile: func
@@ -97,18 +97,18 @@ export default class Board extends Component {
 
     forOwn(this.allPieces, (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
-      const canMove = (owner === this.props.currentTurn) && this.canMoveOrAttack(piece);
+      const canMove = (owner === this.props.currentTurn) && this.hasValidActions(HexUtils.IDToHex(hex));
       color([hex], `${canMove ? 'bright_' : ''}${owner}`);
     });
 
     if (this.isMyTurn) {
       if (this.props.target.choosing) {
         color(this.props.target.possibleHexes, 'green');
+      } else if (this.playingAnObject) {
+        color(this.placementHexes, 'green');
       } else if (this.selectedPiece) {
         color(this.getValidMovementHexes(this.selectedHex), 'green');
         color(this.getValidAttackHexes(this.selectedHex), 'red');
-      } else if (this.playingAnObject) {
-        color(this.placementHexes, 'green');
       }
     }
 
@@ -118,14 +118,11 @@ export default class Board extends Component {
   getValidMovementHexes(startHex) {
     return validMovementHexes(this.dummyGameState, startHex);
   }
-
   getValidAttackHexes(startHex) {
     return validAttackHexes(this.dummyGameState, startHex);
   }
-
-  canMoveOrAttack(piece) {
-    const hex = HexUtils.IDToHex(getHex(this.dummyGameState, piece));
-    return this.getValidMovementHexes(hex).length > 0 || this.getValidAttackHexes(hex).length > 0;
+  hasValidActions(startHex) {
+    return validActionHexes(this.dummyGameState, startHex).length > 0;
   }
 
   onHexClick(hex) {
@@ -139,6 +136,8 @@ export default class Board extends Component {
       } else {
         this.props.onSelectTile(hexId);
       }
+    } else {
+      this.props.onSelectTile(hexId);
     }
   }
 
@@ -177,8 +176,8 @@ export default class Board extends Component {
           hexColors={this.hexColors}
           pieceImgs={this.pieceImages}
           pieceStats={this.pieceStats}
-          width={this.props.height}
-          height={this.props.height}
+          width={this.props.size}
+          height={this.props.size}
           hexagons={grid.hexagons}
           layout={grid.layout}
           selectedHexId={this.selectedHexId}

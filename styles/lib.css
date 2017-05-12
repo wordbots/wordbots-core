@@ -4,8 +4,8 @@
 #hexgrid svg {
   margin: 0 auto;
   display: block;
-  filter: drop-shadow(3px 3px 5px #DDD);
-  -webkit-filter: drop-shadow(3px 3px 5px #DDD);
+  filter: drop-shadow(0px 12px 0px #444) drop-shadow(5px 7px 5px #222);
+  -webkit-filter: drop-shadow(0px 12px 0px #444) drop-shadow(5px 7px 5px #222);
 }
 
 #hexgrid svg g {
@@ -13,14 +13,14 @@
   fill-opacity: 1;
 }
 
-#hexgrid svg g:hover {
-  fill: #EEE;
+#hexgrid svg g polygon {
+  stroke: #777;
+  stroke-width: 0.2px;
+  transition: fill-opacity .2s;
 }
 
-#hexgrid svg g polygon {
-  stroke: #CCC;
-  stroke-width: 0.2;
-  transition: fill-opacity .2s;
+#hexgrid svg g polygon:hover {
+  fill-opacity: 0.75;
 }
 
 #hexgrid svg g text {

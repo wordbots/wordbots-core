@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
+  activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
@@ -10,8 +10,8 @@ import {
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 function selectTile(state, tile) {
-  currentPlayer(state).selectedTile = tile;
-  currentPlayer(state).selectedCard = null;
+  activePlayer(state).selectedTile = tile;
+  activePlayer(state).selectedCard = null;
   return state;
 }
 
@@ -31,7 +31,8 @@ export function setSelectedTile(state, playerName, tile) {
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    state = selectTile(state, (player.selectedTile === tile) ? null : tile);
+    player.selectedTile = (player.selectedTile === tile) ? null : tile;
+    player.selectedCard = null;
     player.status.message = '';
     return state;
   }
@@ -126,9 +127,9 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
     const player = currentPlayer(tempState);
     const ability = object.activatedAbilities[abilityIdx];
 
-    tempState = logAction(tempState, player, `activated |${object.card.name}|'s "${ability.text}" ability`, {
-      [object.card.name]: object.card
-    });
+    const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
+    const target = player.target.chosen ? player.target.chosen[0] : null;
+    tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
 
     executeCmd(tempState, ability.cmd, object);
 

@@ -1,6 +1,7 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
 import { id } from '../util/common';
+import { triggerSound } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
@@ -65,8 +66,11 @@ export default function game(oldState = cloneDeep(defaultState), action) {
         // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
         return reduce(action.payload.actions, game, state);
 
-      case socketActions.FORFEIT:
-        return Object.assign(state, {winner: action.payload.winner});
+      case socketActions.FORFEIT: {
+        state = Object.assign(state, {winner: action.payload.winner});
+        state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
+        return state;
+      }
 
       default:
         return oldState;

@@ -8,7 +8,10 @@ import defaultState from '../store/defaultGameState';
 import g from './handlers/game';
 
 export default function game(oldState = cloneDeep(defaultState), action) {
-  let state = Object.assign({}, oldState, {actionId: id()});  // Note: actionId is to correctly merge actions in the action log.
+  let state = Object.assign({}, oldState, {
+    actionId: id(),  // actionId is used to correctly merge actions in the action log.
+    sfxQueue: []  // Clear the sound effects queue on every reducer step.
+  });
 
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.

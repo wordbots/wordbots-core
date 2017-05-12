@@ -4,7 +4,7 @@ import { stringToType } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
-  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
+  triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -48,6 +48,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     movingRobot.movesMade += distance;
     movingRobot.movedThisTurn = true;
 
+    state = triggerSound(state, 'move.wav');
     state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});

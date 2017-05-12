@@ -185,6 +185,11 @@ export function validAttackHexes(state, startHex) {
 // III. Effects on game state that are performed in many different places.
 //
 
+export function triggerSound(state, filename) {
+  state.sfxQueue.push(filename);
+  return state;
+}
+
 export function logAction(state, player, action, cards, timestamp) {
   const playerStr = player ? (player.name === state.player ? 'You ' : `${state.usernames[player.name]} `) : '';
   const message = {

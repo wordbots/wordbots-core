@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
-import { isNil } from 'lodash';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Notification from 'react-web-notification';
+import { isNil } from 'lodash';
 
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
+import Sfx from '../components/game/Sfx';
 import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -48,6 +49,8 @@ export function mapStateToProps(state) {
 
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
+
+    sfxQueue: state.game.sfxQueue,
 
     sidebarOpen: state.global.sidebarOpen
   };
@@ -115,6 +118,8 @@ export class GameArea extends Component {
 
     blueDeck: array,
     orangeDeck: array,
+
+    sfxQueue: array,
 
     sidebarOpen: bool,
 
@@ -265,7 +270,10 @@ export class GameArea extends Component {
   render() {
     return (
       <div>
-        {this.renderNotification()}
+        <div>
+          {this.renderNotification()}
+          <Sfx queue={this.props.sfxQueue} />
+        </div>
         <Paper
           style={{
             position: 'relative',

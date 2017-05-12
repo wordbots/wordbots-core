@@ -145,7 +145,6 @@ export class GameArea extends Component {
     this.state = {
       areaHeight: 1250,
       boardHeight: 1000,
-      selectedHexId: props.selectedTile
     };
   }
 
@@ -155,10 +154,6 @@ export class GameArea extends Component {
     window.onresize = () => {
       this.updateHeight();
     };
-  }
-
-  componentWillReceiveProps(nextProps, nextState) {
-    this.setState({selectedHexId: nextProps.selectedTile});
   }
 
   updateHeight() {
@@ -192,7 +187,7 @@ export class GameArea extends Component {
     return this.props.hoveredCard ||
       cardFromIndex(this.props.hoveredCardIdx) ||
       cardFromIndex(this.props.selectedCard) ||
-      this.allPieces()[this.state.selectedHexId];
+      this.allPieces()[this.props.selectedTile];
   }
 
   movePiece(hexId, asPartOfAttack = false) {
@@ -294,7 +289,7 @@ export class GameArea extends Component {
               height={this.state.boardHeight}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
-              selectedTile={this.state.selectedHexId}
+              selectedTile={this.props.selectedTile}
               target={this.props.target}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}

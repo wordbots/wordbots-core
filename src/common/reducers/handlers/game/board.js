@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
+  activePlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
@@ -10,8 +10,8 @@ import {
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 function selectTile(state, tile) {
-  currentPlayer(state).selectedTile = tile;
-  currentPlayer(state).selectedCard = null;
+  activePlayer(state).selectedTile = tile;
+  activePlayer(state).selectedCard = null;
   return state;
 }
 
@@ -22,6 +22,7 @@ export function setHoveredTile(state, card) {
 export function setSelectedTile(state, playerName, tile) {
   const player = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);
+  const isActivePlayer = (playerName === activePlayer(state).name);
 
   if (isCurrentPlayer &&
       player.target.choosing &&
@@ -29,7 +30,7 @@ export function setSelectedTile(state, playerName, tile) {
       (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
-  } else {
+  } else if (isActivePlayer) {
     // Toggle tile selection.
     state = selectTile(state, (player.selectedTile === tile) ? null : tile);
     player.status.message = '';

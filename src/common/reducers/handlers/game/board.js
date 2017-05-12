@@ -22,7 +22,6 @@ export function setHoveredTile(state, card) {
 export function setSelectedTile(state, playerName, tile) {
   const player = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);
-  const isActivePlayer = (playerName === activePlayer(state).name);
 
   if (isCurrentPlayer &&
       player.target.choosing &&
@@ -30,9 +29,10 @@ export function setSelectedTile(state, playerName, tile) {
       (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
-  } else if (isActivePlayer) {
+  } else {
     // Toggle tile selection.
-    state = selectTile(state, (player.selectedTile === tile) ? null : tile);
+    player.selectedTile = (player.selectedTile === tile) ? null : tile;
+    player.selectedCard = null;
     player.status.message = '';
     return state;
   }

@@ -12,8 +12,8 @@ export default class LayoutControls extends Component {
     return (newProps.layout !== this.props.layout);
   }
 
-  render() {
-    const iconStyle = {
+  get baseIconStyle() {
+    return {
       fontSize: 36,
       padding: 10,
       borderRadius: 3,
@@ -23,6 +23,27 @@ export default class LayoutControls extends Component {
       textAlign: 'center',
       marginRight: 10
     };
+  }
+
+  renderButton(layout, iconName) {
+    const selected = (this.props.layout === layout);
+    return (
+      <FontIcon
+        className="material-icons"
+        style={{
+          ...this.baseIconStyle,
+          color: selected ? 'white' : 'black',
+          backgroundColor: selected ? '#F44336' : '#EEEEEE'
+        }}
+        onClick={() => { this.props.onSetLayout(layout); }}
+      >
+        {iconName}
+      </FontIcon>
+    );
+  }
+
+  render() {
+
 
     return (
       <div>
@@ -37,28 +58,8 @@ export default class LayoutControls extends Component {
           justifyContent: 'space-around',
           marginBottom: 20
         }}>
-          <FontIcon
-            className="material-icons"
-            style={{
-              color: this.props.layout === 0 ? 'white' : 'black',
-              backgroundColor: this.props.layout === 0 ? '#F44336' : '#EEEEEE',
-              ...iconStyle
-            }}
-            onClick={() => { this.props.onSetLayout(0); }}
-          >
-            view_module
-          </FontIcon>
-          <FontIcon
-            className="material-icons"
-            style={{
-              color: this.props.layout === 1 ? 'white' : 'black',
-              backgroundColor: this.props.layout === 1 ? '#F44336' : '#EEEEEE',
-              ...iconStyle
-            }}
-            onClick={() => { this.props.onSetLayout(1); }}
-          >
-            view_list
-          </FontIcon>
+          {this.renderButton(0, 'view_module')}
+          {this.renderButton(1, 'view_list')}
         </div>
       </div>
     );

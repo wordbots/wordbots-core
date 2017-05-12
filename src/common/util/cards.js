@@ -71,13 +71,32 @@ export function instantiateCard(card) {
 // 2. Helper functions for card-related components.
 //
 
+// Sorting functions for card grids:
+// 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
+// (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
+const sortFunctions = [
+  c => [c.cost.toString(36), c.name.toLowerCase()],
+  c => c.name.toLowerCase(),
+  c => [typeToString(c.type), c.cost.toString(36), c.name.toLowerCase()],
+  c => [c.source === 'builtin', c.cost.toString(36), c.name.toLowerCase()],
+  c => [(c.stats && c.stats.attack || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
+  c => [(c.stats && c.stats.health || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
+  c => [(c.stats && c.stats.speed || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()]
+];
+
 export function groupCards(cards) {
   return uniqBy(cards, 'id').map(card =>
     Object.assign({}, card, {count: countBy(cards, 'name')[card.name]})
   );
 }
 
-export function isCardVisible(card, filters, costRange) {
+export function getDisplayedCards(cards, opts = {}) {
+  return cards
+    .filter(card => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
+    .sort((c1, c2) => sortCards(c1, c2, opts.sortCriteria, opts.sortOrder));
+}
+
+export function isCardVisible(card, filters = {}, costRange = [0, 0]) {
   if ((!filters.robots && card.type === TYPE_ROBOT) ||
       (!filters.events && card.type === TYPE_EVENT) ||
       (!filters.structures && card.type === TYPE_STRUCTURE) ||
@@ -88,18 +107,22 @@ export function isCardVisible(card, filters, costRange) {
   }
 }
 
-// Sorting functions for card grids:
-// 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
-// (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
-export const sortFunctions = [
-  c => [c.cost.toString(36), c.name.toLowerCase()],
-  c => c.name.toLowerCase(),
-  c => [typeToString(c.type), c.cost.toString(36), c.name.toLowerCase()],
-  c => [c.source === 'builtin', c.cost.toString(36), c.name.toLowerCase()],
-  c => [(c.stats && c.stats.attack || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
-  c => [(c.stats && c.stats.health || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
-  c => [(c.stats && c.stats.speed || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()]
-];
+function searchCards(card, query = '') {
+  query = query.toLowerCase();
+  return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
+}
+
+function sortCards(c1, c2, criteria, order) {
+  const f = sortFunctions[criteria];
+
+  if (f(c1) < f(c2)) {
+    return order ? 1 : -1;
+  } else if (f(c1) > f(c2)) {
+    return order ? -1 : 1;
+  } else {
+    return 0;
+  }
+}
 
 //
 // 3. Text parsing.

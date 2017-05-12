@@ -6,13 +6,15 @@ import { withRouter } from 'react-router';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import { find, noop, pick } from 'lodash';
 
-import { isCardVisible, sortFunctions } from '../util/cards';
+import { getDisplayedCards, isCardVisible } from '../util/cards';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
-import FilterControls from '../components/cards/FilterControls';
 import ImportDialog from '../components/cards/ImportDialog';
+import FilterControls from '../components/cards/FilterControls';
+import LayoutControls from '../components/cards/LayoutControls';
+import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
@@ -71,64 +73,129 @@ class Collection extends Component {
         structures: true
       },
       costRange: [0, 20],
-      sortingCriteria: 3,
+      sortCriteria: 3,
+      sortOrder: 0,
       searchText: '',
-      sortingOrder: 0,
       selectedCardIds: [],
       importDialogOpen: false,
       layout: 0
     };
   }
 
-  isCardVisible(card) {
-    return isCardVisible(card, this.state.filters, this.state.costRange);
+  get displayedCards() {
+    const opts = pick(this.state, ['searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder']);
+    return getDisplayedCards(this.props.cards, opts);
   }
 
-  updateSelectedCardsWithFilter() {
-    this.setState(state => (
-      {selectedCardIds: state.selectedCardIds.filter(id => this.isCardVisible(this.props.cards.find(c => c.id === id)))}
-    ));
+  // Update selected cards with filter.
+  refreshSelection = () => {
+    this.setState(state => ({
+      selectedCardIds: state.selectedCardIds.filter(id =>
+        isCardVisible(find(this.props.cards, { id }), this.state.filters, this.state.costRange)
+      )
+    }));
   }
 
-  toggleFilter(filter) {
-    return (e, toggled) => {
-      this.setState(
-        state => ({filters: Object.assign({}, state.filters, {[filter]: toggled})}),
-        () => { this.updateSelectedCardsWithFilter(); }
-      );
-    };
+  // this.set(key)(value) = this.setState({key: value})
+  set = (key, callback = noop) => (value) => {
+    this.setState({[key]: value}, callback);
   }
 
-  searchCards(card) {
-    const query = this.state.searchText.toLowerCase();
-    return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
+  toggleFilter = (filter) => (e, toggled) => {
+    this.setState(state => ({
+      filters: Object.assign({}, state.filters, {[filter]: toggled})
+    }), this.refreshSelection);
   }
 
-  sortCards(a, b) {
-    const f = sortFunctions[this.state.sortingCriteria];
-
-    if (f(a) < f(b)) {
-      return this.state.sortingOrder ? 1 : -1;
-    } else if (f(a) > f(b)) {
-      return this.state.sortingOrder ? -1 : 1;
-    } else {
-      return 0;
-    }
-  }
-
-  renderCardCollection() {
-    const cards = this.props.cards
-      .filter(this.searchCards.bind(this))
-      .filter(this.isCardVisible.bind(this))
-      .sort(this.sortCards.bind(this));
-
+  renderSidebarControls() {
     return (
-      <CardCollection
-        onlySelectCustomCards
-        layout={this.state.layout}
-        cards={cards}
-        selectedCardIds={this.state.selectedCardIds}
-        onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+      <Paper style={{padding: 20, marginBottom: 10}}>
+        <SearchControls onChange={this.set('searchText')} />
+
+        <LayoutControls
+          layout={this.state.layout}
+          onSetLayout={this.set('layout')} />
+
+        <SortControls
+          criteria={this.state.sortCriteria}
+          order={this.state.sortOrder}
+          onSetCriteria={this.set('sortCriteria')}
+          onSetOrder={this.set('sortOrder')} />
+
+        <FilterControls
+          onToggleFilter={this.toggleFilter}
+          onSetCostRange={this.set('costRange', this.refreshSelection)} />
+      </Paper>
+    );
+  }
+
+  renderSidebarButtons() {
+    return (
+      <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+        <RaisedButton
+          label="New Card"
+          labelPosition="after"
+          secondary
+          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
+          style={{width: '100%', marginTop: 10, height: 48}}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={() => {
+            this.props.history.push('/creator');
+          }}
+        />
+        <RaisedButton
+          label="Edit Selected"
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length !== 1}
+          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
+          style={{width: '100%', marginTop: 10, height: 48}}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={() => {
+            const id = this.state.selectedCardIds[0];
+            this.props.onEditCard(this.props.cards.find(c => c.id === id));
+            this.props.history.push('/creator');
+          }}
+        />
+        <RaisedButton
+          label="Delete Selected"
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length === 0}
+          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
+          style={{width: '100%', marginTop: 10, height: 48}}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={() => {
+            this.props.onRemoveFromCollection(this.state.selectedCardIds);
+            this.setState({selectedCardIds: []});
+          }}
+        />
+        <RaisedButton
+          label="Export Selected"
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length === 0}
+          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
+          style={{width: '100%', marginTop: 10, height: 48}}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={() => {
+            const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
+            this.props.onExportCards(cards);
+            this.setState({selectedCardIds: []});
+          }}
+        />
+        <RaisedButton
+          label="Import Cards"
+          labelPosition="after"
+          secondary
+          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
+          style={{width: '100%', marginTop: 10, height: 48}}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={() => {
+            this.setState({importDialogOpen: true, selectedCardIds: []});
+          }}
+        />
+      </MustBeLoggedIn>
     );
   }
 
@@ -145,17 +212,22 @@ class Collection extends Component {
           <ExportDialog
             open={this.props.exportedJson !== null}
             text={this.props.exportedJson}
-            onClose={this.props.onCloseExportDialog}
-            />
+            onClose={this.props.onCloseExportDialog} />
 
           <ImportDialog
             open={this.state.importDialogOpen}
             onClose={() => { this.setState({importDialogOpen: false}); }}
-            onImport={this.props.onImportCards}
-            />
+            onImport={this.props.onImportCards} />
 
           <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
-            <div>{this.renderCardCollection()}</div>
+            <div>
+              <CardCollection
+                onlySelectCustomCards
+                layout={this.state.layout}
+                cards={this.displayedCards}
+                selectedCardIds={this.state.selectedCardIds}
+                onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+            </div>
           </div>
 
           <div style={{
@@ -163,145 +235,8 @@ class Collection extends Component {
             width: 300,
             minWidth: 300
           }}>
-            <Paper style={{
-              padding: 20,
-              marginBottom: 10
-            }}>
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 10
-              }}>Search</div>
-
-              <TextField
-                hintText="Enter card name or text"
-                style={{marginBottom: 10}}
-                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
-
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 20
-              }}>Layout</div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                marginBottom: 20
-              }}>
-                <FontIcon
-                  className="material-icons"
-                  style={{
-                    color: this.state.layout === 0 ? 'white' : 'black',
-                    fontSize: 36,
-                    padding: 10,
-                    borderRadius: 3,
-                    boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? '#F44336' : '#EEEEEE',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'center',
-                    marginRight: 10
-                  }}
-                  onClick={() => { this.setState({layout: 0});}}>
-                  view_module
-                </FontIcon>
-                <FontIcon
-                  className="material-icons"
-                  style={{
-                    color: this.state.layout === 0 ? 'black' : 'white',
-                    fontSize: 36,
-                    padding: 10,
-                    borderRadius: 3,
-                    boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? '#EEEEEE' : '#F44336',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'center'
-                  }}
-                  onClick={() => { this.setState({layout: 1});}}>
-                  view_list
-                </FontIcon>
-              </div>
-
-              <SortControls
-                criteria={this.state.sortingCriteria}
-                order={this.state.sortingOrder}
-                onSetCriteria={value => { this.setState({sortingCriteria: value}); }}
-                onSetOrder={value => { this.setState({sortingOrder: value}); }} />
-
-              <FilterControls
-                onToggleFilter={this.toggleFilter.bind(this)}
-                onSetCostRange={values => {
-                  this.setState({costRange: values}, () => { this.updateSelectedCardsWithFilter(); });
-                }} />
-            </Paper>
-
-            <MustBeLoggedIn loggedIn={this.props.loggedIn}>
-              <RaisedButton
-                label="New Card"
-                labelPosition="after"
-                secondary
-                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
-                style={{width: '100%', marginTop: 10, height: 48}}
-                buttonStyle={{textAlign: 'left'}}
-                onClick={() => {
-                  this.props.history.push('/creator');
-                }}
-              />
-              <RaisedButton
-                label="Edit Selected"
-                labelPosition="after"
-                secondary
-                disabled={this.state.selectedCardIds.length !== 1}
-                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
-                style={{width: '100%', marginTop: 10, height: 48}}
-                buttonStyle={{textAlign: 'left'}}
-                onClick={() => {
-                  const id = this.state.selectedCardIds[0];
-                  this.props.onEditCard(this.props.cards.find(c => c.id === id));
-                  this.props.history.push('/creator');
-                }}
-              />
-              <RaisedButton
-                label="Delete Selected"
-                labelPosition="after"
-                secondary
-                disabled={this.state.selectedCardIds.length === 0}
-                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
-                style={{width: '100%', marginTop: 10, height: 48}}
-                buttonStyle={{textAlign: 'left'}}
-                onClick={() => {
-                  this.props.onRemoveFromCollection(this.state.selectedCardIds);
-                  this.setState({selectedCardIds: []});
-                }}
-              />
-              <RaisedButton
-                label="Export Selected"
-                labelPosition="after"
-                secondary
-                disabled={this.state.selectedCardIds.length === 0}
-                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
-                style={{width: '100%', marginTop: 10, height: 48}}
-                buttonStyle={{textAlign: 'left'}}
-                onClick={() => {
-                  const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
-                  this.props.onExportCards(cards);
-                  this.setState({selectedCardIds: []});
-                }}
-              />
-              <RaisedButton
-                label="Import Cards"
-                labelPosition="after"
-                secondary
-                icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
-                style={{width: '100%', marginTop: 10, height: 48}}
-                buttonStyle={{textAlign: 'left'}}
-                onClick={() => {
-                  this.setState({importDialogOpen: true, selectedCardIds: []});
-                }}
-              />
-            </MustBeLoggedIn>
+            {this.renderSidebarControls()}
+            {this.renderSidebarButtons()}
           </div>
         </div>
       </div>

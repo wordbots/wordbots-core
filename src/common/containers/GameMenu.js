@@ -8,7 +8,7 @@ import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
 import { DISABLE_TURN_TIMER } from '../constants';
-import { opponent } from '../util/game';
+import { allObjectsOnBoard, opponent } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 
@@ -21,7 +21,7 @@ export function mapStateToProps(state) {
     gameOver: state.game.winner !== null,
     isMyTurn: state.game.currentTurn === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
-    selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
+    selectedPiece: allObjectsOnBoard(state.game)[activePlayer.selectedTile]
   };
 }
 

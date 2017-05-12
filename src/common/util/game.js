@@ -188,6 +188,15 @@ export function validAttackHexes(state, startHex) {
   return potentialAttackHexes.filter(hex => allowedToAttack(state, object, hex));
 }
 
+export function validActionHexes(state, startHex) {
+  const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)] || {};
+  const movementHexes = validMovementHexes(state, startHex);
+  const attackHexes = validAttackHexes(state, startHex);
+  const actionHexes = ((object.activatedAbilities || []).length > 0 && !object.cantActivate) ? [startHex] : [];
+
+  return [].concat(movementHexes, attackHexes, actionHexes);
+}
+
 //
 // III. Effects on game state that are performed in many different places.
 //

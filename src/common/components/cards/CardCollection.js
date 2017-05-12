@@ -58,35 +58,20 @@ export default class CardCollection extends Component {
           page={this.currentPage}
           maxPages={this.numPages}
           prevPage={() => this.setState({page: this.currentPage - 1})}
-          nextPage={() => this.setState({page: this.currentPage + 1})}/>
-    );
-  }
-
-  renderGrid() {
-    return (
-     <CardGrid
-        selectable={!this.props.allowMultipleSelection}
-        cards={this.cards}
-        selectedCardIds={this.props.selectedCardIds}
-        onCardClick={this.onCardClick} />
-    );
-  }
-
-  renderTable() {
-    return (
-      <CardTable
-        selectable={!this.props.allowMultipleSelection}
-        cards={this.cards}
-        selectedCardIds={this.props.selectedCardIds}
-        onCardClick={this.onCardClick}/>
+          nextPage={() => this.setState({page: this.currentPage + 1})} />
     );
   }
 
   render() {
+    const GridOrTable = this.props.layout === 0 ? CardGrid : CardTable;
     return (
       <div style={{width: '100%'}}>
         {this.renderPageControls()}
-        {this.props.layout === 0 ? this.renderGrid() : this.renderTable()}
+        <GridOrTable
+          selectable={!this.props.allowMultipleSelection}
+          cards={this.cards}
+          selectedCardIds={this.props.selectedCardIds}
+          onCardClick={this.onCardClick}/>
         {this.renderPageControls()}
       </div>
     );

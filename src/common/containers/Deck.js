@@ -100,7 +100,7 @@ class Deck extends Component {
 
         <FilterControls
           onToggleFilter={this.toggleFilter}
-          onSetCostRange={this.set('costRange', this.refreshSelection)} />
+          onSetCostRange={this.set('costRange')} />
       </Paper>
     );
   }

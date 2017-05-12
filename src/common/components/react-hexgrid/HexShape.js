@@ -108,7 +108,9 @@ export default class HexShape extends React.Component {
   }
 
   renderStat(stat) {
-    const isLargeNumber = this.props.pieceStats[stat] >= 20;
+    const value = this.props.pieceStats[stat];
+    const isLargeNumber = value >= 20;
+
     const xPos = {attack: -3, health: 3}[stat];
     const textStyle = {
       fontFamily: 'Carter One',
@@ -126,7 +128,7 @@ export default class HexShape extends React.Component {
       <g key={stat}>
         <circle cx={xPos} cy="2" r="2" style={circleStyle} filter="url(#dropShadow)" />
         <text x={xPos} y={isLargeNumber ? 2.8 : 3} textAnchor="middle" style={textStyle}>
-          {this.props.pieceStats[stat]}
+          {value}
         </text>
       </g>
     );

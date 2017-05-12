@@ -250,7 +250,6 @@ export class GameArea extends Component {
   renderNotification() {
     const options = {
       tag: 'wordbots',
-      body: '',
       icon: '/static/android-icon-144x144.png',
       lang: 'en',
       dir: 'ltr',
@@ -262,7 +261,7 @@ export class GameArea extends Component {
         <Notification
           timeout={2000}
           title="Wordbots."
-          options={{body: 'It\'s your turn!', ...options}}
+          options={{...options, body: 'It\'s your turn!'}}
           onClick={() => { window.focus(); }} />
       );
     }

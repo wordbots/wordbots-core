@@ -284,8 +284,7 @@ export class GameArea extends Component {
               left: 0,
               top: 75,
               bottom: 75,
-              right: 0,
-              zIndex: 9999
+              right: 0
           }}>
             <Status
               player={this.props.player}

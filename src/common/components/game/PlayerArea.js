@@ -31,7 +31,8 @@ class PlayerArea extends Component {
         bottom: opponent ? 'auto' : 0,
         top: opponent ? 0 : 'auto',
         width: '100%',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        zIndex: 100
       }}>
         <PlayerName
           opponent={opponent}

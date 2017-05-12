@@ -13,7 +13,7 @@ export default class Status extends Component {
     } else if (this.props.status.type === 'warning') {
       return '#FFEB3B';
     } else {
-      return '#444444';
+      return '#CCCCCC';
     }
   }
 
@@ -22,7 +22,7 @@ export default class Status extends Component {
       <div style={{
         display: 'inline-block',
         position: 'absolute',
-        top: 0,
+        top: 50,
         margin: 'auto',
         width: '100%',
         height: 20,

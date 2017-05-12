@@ -28,7 +28,7 @@ describe('GameArea container', () => {
       <PlayerArea opponent gameProps={game.props} />,
       <div
         ref={mainDiv.ref}
-        style={{position: 'absolute', left: 0, top: 75, bottom: 75, right: 0, zIndex: 9999}}
+        style={{position: 'absolute', left: 0, top: 75, bottom: 75, right: 0}}
       >
         <Status
           player={'orange'}

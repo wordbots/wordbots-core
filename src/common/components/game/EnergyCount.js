@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper';
 import { times } from 'lodash';
 
 import { id } from '../../util/common';
+import Tooltip from '../Tooltip';
 
 class EnergyCount extends Component {
   static propTypes = {
@@ -47,12 +48,16 @@ class EnergyCount extends Component {
     return energyTiles;
   }
 
-
   render() {
     return (
-      <div style={{display: 'flex'}}>
-        {this.renderEnergyTiles()}
-      </div>
+      <Tooltip
+        text={`${this.props.energy.available}/${this.props.energy.total} Energy`}
+        style={{fontFamily: 'Carter One'}}
+      >
+        <div style={{display: 'flex'}}>
+          {this.renderEnergyTiles()}
+        </div>
+      </Tooltip>
     );
   }
 }

@@ -86,7 +86,8 @@ export function placeCard(state, cardIdx, tile) {
     player.status.message = '';
     player.selectedTile = tile;
 
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
+    const target = player.target.chosen ? player.target.chosen[0] : null;
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
@@ -139,7 +140,8 @@ function playEvent(state, cardIdx) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
     card.justPlayed = true;
 
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp);
+    const target = player.target.chosen ? player.target.chosen[0] : null;
+    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
 
     (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {
       const cmdText = splitSentences(card.text)[idx];

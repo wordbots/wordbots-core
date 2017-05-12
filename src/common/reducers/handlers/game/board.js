@@ -126,9 +126,9 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
     const player = currentPlayer(tempState);
     const ability = object.activatedAbilities[abilityIdx];
 
-    tempState = logAction(tempState, player, `activated |${object.card.name}|'s "${ability.text}" ability`, {
-      [object.card.name]: object.card
-    });
+    const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
+    const target = player.target.chosen ? player.target.chosen[0] : null;
+    tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
 
     executeCmd(tempState, ability.cmd, object);
 

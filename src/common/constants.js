@@ -6,6 +6,7 @@ export const PARSER_URL = 'http://parser.wordbots.io';  // 'http://localhost:808
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;
 export const KEEP_DECKS_UNSHUFFLED = false;
+export const DISABLE_TURN_TIMER = true;
 export const DISPLAY_HEX_IDS = false;
 
 export const STARTING_PLAYER_HEALTH = 20;

@@ -7,6 +7,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
+import { DISABLE_TURN_TIMER } from '../constants';
 import { opponent } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -75,8 +76,9 @@ export class GameMenu extends Component {
   }
 
   componentDidMount() {
+    this.resetTimer();
     setInterval(() => {
-      if (!this.props.gameOver) {
+      if (!this.props.gameOver && !DISABLE_TURN_TIMER) {
         this.tickTimer();
       }
     }, 1000);

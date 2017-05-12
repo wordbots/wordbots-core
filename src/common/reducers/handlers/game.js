@@ -1,9 +1,10 @@
-import { startNewGame, passTurn } from './game/turns';
+import { newGame, passTurn } from '../../util/game';
+
 import { setSelectedCard, placeCard } from './game/cards';
 import { setHoveredTile, setSelectedTile, moveRobot, attack, activateObject } from './game/board';
 
 const gameHandlers = {
-  newGame: startNewGame,
+  newGame: newGame,
   passTurn: passTurn,
 
   setSelectedCard: setSelectedCard,

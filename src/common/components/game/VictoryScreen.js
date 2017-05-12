@@ -23,6 +23,7 @@ export default class VictoryScreen extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           position: 'absolute',
+          textAlign: 'center',
           left: 0,
           top: 0,
           bottom: 0,

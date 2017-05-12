@@ -1,40 +1,65 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { bool, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
+import { times } from 'lodash';
 
-const EnergyCount = ({color, energy, isCurrentPlayer}) => (
-  <div>
-    <Paper
-      zDepth={2}
-      circle
-      style={{
-        backgroundColor: isCurrentPlayer ? '#00bcd4' : '#ccc',
-        width: 50,
-        height: 50,
-        textAlign: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-        userSelect: 'none',
-        cursor: 'pointer',
-        minWidth: 50,
-        marginRight: 8
-    }}>
-      <div
+import { id } from '../../util/common';
+import Tooltip from '../Tooltip';
+
+class EnergyCount extends Component {
+  static propTypes = {
+    color: string,
+    energy: object,
+    isCurrentPlayer: bool
+  }
+
+  renderEnergyTile(color, filled) {
+    return (
+      <Paper
+        key={id()}
         style={{
-          alignSelf: 'center',
-          color: 'white',
-          fontFamily: 'Carter One'
-        }}>
-        {energy.available} / {energy.total}
-      </div>
-    </Paper>
-  </div>
-);
+          height: 64,
+          width: 18,
+          backgroundColor: filled ? {orange: '#ffb85d', blue: '#badbff'}[color] : 'transparent',
+          marginLeft: 8,
+          border: '3px solid white',
+          borderRadius: 4
+      }} />
+    );
+  }
 
-EnergyCount.propTypes = {
-  color: string,
-  energy: object,
-  isCurrentPlayer: bool
-};
+  renderEnergyTiles() {
+    const { color, energy } = this.props;
+    const emptyEnergy = energy.total - energy.available;
+    const energyTiles = [];
+
+    times(energy.available, () => {
+      energyTiles.push(this.renderEnergyTile(color, true));
+    });
+
+    times(emptyEnergy, () => {
+      energyTiles.push(this.renderEnergyTile(color, false));
+    });
+
+    if (energy.total === 0) {
+      energyTiles.push(this.renderEnergyTile(color, false));
+    }
+
+    return energyTiles;
+  }
+
+  render() {
+    return (
+      <Tooltip
+        text={`${this.props.energy.available}/${this.props.energy.total} Energy`}
+        style={{fontFamily: 'Carter One'}}
+      >
+        <div style={{display: 'flex'}}>
+          {this.renderEnergyTiles()}
+        </div>
+      </Tooltip>
+    );
+  }
+}
 
 export default EnergyCount;

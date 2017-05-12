@@ -4,7 +4,7 @@ import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
   ownerOf, getHex,
-  startTurn, endTurn, drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  passTurn, drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   executeCmd
 } from '../util/game';
 
@@ -53,7 +53,7 @@ export default function actions(state) {
     },
 
     endTurn: function () {
-      state = Object.assign(state, startTurn(endTurn(state)));
+      state = Object.assign(state, passTurn(state));
     },
 
     giveAbility: function (objects, abilityCmd) {

@@ -53,27 +53,51 @@ export default class CardStat extends Component {
     );
   }
 
+  get statText() {
+    const baseStatStyle = {
+      position: 'absolute',
+      top: -5,
+      left: -10,
+      color: 'black',
+      fontSize: 10 * this.props.scale,
+      textDecoration: 'line-through'
+    };
+
+    if (this.props.current && this.props.current !== this.props.base) {
+      return (
+        <span style={{position: 'relative'}}>
+          <span style={baseStatStyle}>
+            &nbsp;{this.props.base}&nbsp;
+          </span>
+          {this.props.current}
+        </span>
+      );
+    } else {
+      return this.props.base;
+    }
+  }
+
   render() {
     return inBrowser() ? this.renderNewStyle() : this.renderOldStyle();
   }
 
   renderNewStyle() {
     const style = {
-        float: 'left',
-        width: '33%',
-        lineHeight: '14px',
-        color: this.textColor,
-        fontFamily: 'Carter One',
-        fontSize: 18 * this.props.scale,
-        textAlign: 'center',
-        paddingBottom: 6 * this.props.scale
+      float: 'left',
+      width: '33%',
+      lineHeight: '14px',
+      color: this.textColor,
+      fontFamily: 'Carter One',
+      fontSize: 18 * this.props.scale,
+      textAlign: 'center',
+      paddingBottom: 6 * this.props.scale
     };
 
     if (this.props.noTooltip) {
       return (
         <div style={style}>
           {this.icon}
-          {this.props.current || this.props.base}
+          {this.statText}
         </div>
       );
     } else {
@@ -81,7 +105,7 @@ export default class CardStat extends Component {
         <Tooltip text={capitalize(this.props.type)}>
           <div style={Object.assign(style, {cursor: 'pointer'})}>
             {this.icon}
-            {this.props.current || this.props.base}
+            {this.statText}
           </div>
         </Tooltip>
       );

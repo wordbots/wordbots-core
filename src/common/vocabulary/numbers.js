@@ -11,7 +11,7 @@ export function attributeSum(state) {
 export function attributeValue(state) {
   return function (targetObjects, attribute) {
     const object = targetObjects.entries[0]; // targetObjects is an array of objects, so unpack.
-    return getAttribute(object, attribute);
+    return object ? getAttribute(object, attribute) : 0;
   };
 }
 

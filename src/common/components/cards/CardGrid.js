@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, bool, func } from 'prop-types';
 
-import { inBrowser } from '../../util/common';
+import { id, inBrowser } from '../../util/common';
 import { splitSentences } from '../../util/cards';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
@@ -26,7 +26,7 @@ export default class CardGrid extends Component {
   renderCard(card) {
     return (
       <div
-        key={card.id}
+        key={card.id || id()}
         style={{
           marginRight: 15,
           marginTop: -12

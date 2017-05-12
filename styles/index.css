@@ -67,24 +67,24 @@ th {
 
 #handTop:hover {
   top: -80px !important;
-  transition: all 300ms ease-in-out;
-  z-index: 99999;
+  transition: top 300ms ease-in-out;
 }
 
 #handBottom:hover {
   bottom: 0 !important;
-  transition: all 300ms ease-in-out;
-  z-index: 99999;
+  transition: bottom 300ms ease-in-out;
 }
 
 #handTop {
+  z-index: 1000;
   top: -150px;
-  transition: all 300ms ease-in-out;
+  transition: top 300ms ease-in-out;
 }
 
 #handBottom {
+  z-index: 1000;
   bottom: -150px;
-  transition: all 300ms ease-in-out;
+  transition: bottom 300ms ease-in-out;
 }
 
 /* Energy curve */

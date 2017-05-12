@@ -4,15 +4,15 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import FontIcon from 'material-ui/FontIcon';
-import { compact } from 'lodash';
+import { compact, find, noop, pick } from 'lodash';
 
-import { isCardVisible, sortFunctions } from '../util/cards';
+import { getDisplayedCards } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
-import EnergyCurve from '../components/cards/EnergyCurve';
 import CardCollection from '../components/cards/CardCollection';
+import EnergyCurve from '../components/cards/EnergyCurve';
 import FilterControls from '../components/cards/FilterControls';
+import LayoutControls from '../components/cards/LayoutControls';
+import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import * as collectionActions from '../actions/collection';
 
@@ -55,64 +55,53 @@ class Deck extends Component {
         structures: true
       },
       costRange: [0, 20],
-      sortingCriteria: 3,
-      sortingOrder: 0,
+      sortCriteria: 3,
+      sortOrder: 0,
       searchText: '',
       selectedCardIds: props.deck ? props.deck.cardIds : [],
       layout: 0
     };
   }
 
-  selectedCards() {
-    return compact(this.state.selectedCardIds.map(id => this.props.cards.find(c => c.id === id)));
+  get selectedCards() {
+    return compact(this.state.selectedCardIds.map(id => find(this.props.cards, { id })));
   }
 
-  isCardVisible(card) {
-    return isCardVisible(card, this.state.filters, this.state.costRange);
+  get displayedCards() {
+    const opts = pick(this.state, ['searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder']);
+    return getDisplayedCards(this.props.cards, opts);
   }
 
-  updateSelectedCardsWithFilter() {
-    this.setState(state => (
-      {selectedCardIds: state.selectedCardIds.filter(id => this.isCardVisible(this.props.cards.find(c => c.id === id)))}
-    ));
+  // this.set(key)(value) = this.setState({key: value})
+  set = (key, callback = noop) => (value) => {
+    this.setState({[key]: value}, callback);
   }
 
-  toggleFilter(filter) {
-    return (e, toggled) => {
-      this.setState(s => ({filters: Object.assign({}, s.filters, {[filter]: toggled})}));
-    };
+  toggleFilter = (filter) => (e, toggled) => {
+    this.setState(state => ({
+      filters: Object.assign({}, state.filters, {[filter]: toggled})
+    }));
   }
 
-  searchCards(card) {
-    const query = this.state.searchText.toLowerCase();
-    return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
-  }
-
-  sortCards(a, b) {
-    const f = sortFunctions[this.state.sortingCriteria];
-
-    if (f(a) < f(b)) {
-      return this.state.sortingOrder ? 1 : -1;
-    } else if (f(a) > f(b)) {
-      return this.state.sortingOrder ? -1 : 1;
-    } else {
-      return 0;
-    }
-  }
-
-  renderCardCollection() {
-    const cards = this.props.cards
-      .filter(this.searchCards.bind(this))
-      .filter(this.isCardVisible.bind(this))
-      .sort(this.sortCards.bind(this));
-
+  renderSidebarControls() {
     return (
-      <CardCollection
-        allowMultipleSelection
-        layout={this.state.layout}
-        cards={cards}
-        selectedCardIds={this.state.selectedCardIds}
-        onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+      <Paper style={{padding: 20, marginBottom: 10}}>
+        <SearchControls onChange={this.set('searchText')} />
+
+        <LayoutControls
+          layout={this.state.layout}
+          onSetLayout={this.set('layout')} />
+
+        <SortControls
+          criteria={this.state.sortCriteria}
+          order={this.state.sortOrder}
+          onSetCriteria={this.set('sortCriteria')}
+          onSetOrder={this.set('sortOrder')} />
+
+        <FilterControls
+          onToggleFilter={this.toggleFilter}
+          onSetCostRange={this.set('costRange')} />
+      </Paper>
     );
   }
 
@@ -127,7 +116,12 @@ class Deck extends Component {
           alignItems: 'flex-start'
         }}>
           <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
-            {this.renderCardCollection()}
+            <CardCollection
+              allowMultipleSelection
+              layout={this.state.layout}
+              cards={this.displayedCards}
+              selectedCardIds={this.state.selectedCardIds}
+              onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
           </div>
 
           <div style={{
@@ -135,14 +129,11 @@ class Deck extends Component {
             width: 300,
             minWidth: 300
           }}>
-            <Paper style={{
-              padding: 20,
-              marginBottom: 20
-            }}>
+            <Paper style={{padding: 20, marginBottom: 20}}>
               <ActiveDeck
                 id={this.props.id}
                 name={this.props.deck ? this.props.deck.name : ''}
-                cards={this.selectedCards()}
+                cards={this.selectedCards}
                 loggedIn={this.props.loggedIn}
                 onCardClick={id => {
                   this.setState(state => {
@@ -156,91 +147,12 @@ class Deck extends Component {
                 }} />
             </Paper>
 
-            <Paper style={{
-              padding: 20,
-              marginBottom: 20
-            }}>
-              <div style={{
-                fontWeight: 100,
-                fontSize: 28
-              }}>Energy Curve</div>
-
-              <EnergyCurve
-                cards={this.selectedCards()} />
+            <Paper style={{padding: 20, marginBottom: 20}}>
+              <div style={{fontWeight: 100, fontSize: 28}}>Energy Curve</div>
+              <EnergyCurve cards={this.selectedCards} />
             </Paper>
 
-            <Paper style={{
-              padding: 20
-            }}>
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 10
-              }}>Search</div>
-
-              <TextField
-                hintText="Enter card name or text"
-                style={{marginBottom: 10}}
-                onChange={(event, newValue) => { this.setState({searchText: newValue}); }}/>
-
-              <div style={{
-                fontWeight: 700,
-                fontSize: 14,
-                marginBottom: 20
-              }}>Layout</div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                marginBottom: 20
-              }}>
-                <FontIcon
-                  className="material-icons"
-                  style={{
-                    color: this.state.layout === 0 ? 'white' : 'black',
-                    fontSize: 36,
-                    padding: 10,
-                    borderRadius: 3,
-                    boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? '#F44336' : '#EEEEEE',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'center',
-                    marginRight: 10
-                  }}
-                  onClick={() => { this.setState({layout: 0});}}>
-                  view_module
-                </FontIcon>
-                <FontIcon
-                  className="material-icons"
-                  style={{
-                    color: this.state.layout === 0 ? 'black' : 'white',
-                    fontSize: 36,
-                    padding: 10,
-                    borderRadius: 3,
-                    boxShadow: '1px 1px 3px #CCC',
-                    backgroundColor: this.state.layout === 0 ? '#EEEEEE' : '#F44336',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'center'
-                  }}
-                  onClick={() => { this.setState({layout: 1});}}>
-                  view_list
-                </FontIcon>
-              </div>
-
-              <SortControls
-                criteria={this.state.sortingCriteria}
-                order={this.state.sortingOrder}
-                onSetCriteria={value => { this.setState({sortingCriteria: value}); }}
-                onSetOrder={value => { this.setState({sortingOrder: value}); }} />
-
-              <FilterControls
-                onToggleFilter={this.toggleFilter.bind(this)}
-                onSetCostRange={values => {
-                  this.setState({costRange: values}, () => { this.updateSelectedCardsWithFilter(); });
-                }} />
-            </Paper>
+            {this.renderSidebarControls()}
           </div>
         </div>
       </div>

@@ -7,7 +7,8 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { opponent } from '../util/game';
+import { DISABLE_TURN_TIMER } from '../constants';
+import { allObjectsOnBoard, opponent } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 
@@ -19,7 +20,8 @@ export function mapStateToProps(state) {
     currentTurn: state.game.currentTurn,
     gameOver: state.game.winner !== null,
     isMyTurn: state.game.currentTurn === state.game.player,
-    selectedPiece: activePlayer ? activePlayer.robotsOnBoard[activePlayer.selectedTile] : undefined
+    isSpectator: !['blue', 'orange'].includes(state.game.player),
+    selectedPiece: allObjectsOnBoard(state.game)[activePlayer.selectedTile]
   };
 }
 
@@ -48,6 +50,7 @@ export class GameMenu extends Component {
     currentTurn: string,
     gameOver: bool,
     isMyTurn: bool,
+    isSpectator: bool,
     selectedPiece: object,
 
     onActivate: func,
@@ -73,8 +76,9 @@ export class GameMenu extends Component {
   }
 
   componentDidMount() {
+    this.resetTimer();
     setInterval(() => {
-      if (!this.props.gameOver) {
+      if (!this.props.gameOver && !DISABLE_TURN_TIMER) {
         this.tickTimer();
       }
     }, 1000);
@@ -178,7 +182,7 @@ export class GameMenu extends Component {
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         <MenuItem
           primaryText="Forfeit"
-          disabled={this.props.gameOver}
+          disabled={this.props.isSpectator || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">close</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
         <Divider />

@@ -8,6 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
+import { inBrowser } from '../util/common';
 import { getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
@@ -147,24 +148,29 @@ export class GameArea extends Component {
     super(props);
 
     this.state = {
-      areaHeight: 1100,
-      boardHeight: 600,
-      selectedHexId: props.selectedTile
+      areaHeight: 1250,
+      boardSize: 1000
     };
   }
 
   componentDidMount() {
-    this.updateHeight();
-
-    window.onresize = () => {
-      this.updateHeight();
-    };
+    this.updateDimensions();
+    window.onresize = () => { this.updateDimensions(); };
   }
 
-  updateHeight() {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.sidebarOpen !== this.props.sidebarOpen) {
+      this.updateDimensions(nextProps);
+    }
+  }
+
+  updateDimensions(props = this.props) {
+    const maxBoardHeight = window.innerHeight - 64 - 150;
+    const maxBoardWidth = window.innerWidth - (props.sidebarOpen ? 512 : 256);
+
     this.setState({
-      areaHeight: window.innerHeight - 200,
-      boardHeight: window.innerHeight - 450
+      areaHeight: window.innerHeight - 64,
+      boardSize: Math.min(maxBoardWidth, maxBoardHeight)
     });
   }
 
@@ -192,7 +198,7 @@ export class GameArea extends Component {
     return this.props.hoveredCard ||
       cardFromIndex(this.props.hoveredCardIdx) ||
       cardFromIndex(this.props.selectedCard) ||
-      this.allPieces()[this.state.selectedHexId];
+      this.allPieces()[this.props.selectedTile];
   }
 
   movePiece(hexId, asPartOfAttack = false) {
@@ -242,10 +248,13 @@ export class GameArea extends Component {
     }
   }
 
+  loadBackground() {
+    return inBrowser() ? require('../components/img/black_bg_lodyas.png') : '';
+  }
+
   renderNotification() {
     const options = {
       tag: 'wordbots',
-      body: '',
       icon: '/static/android-icon-144x144.png',
       lang: 'en',
       dir: 'ltr',
@@ -253,16 +262,12 @@ export class GameArea extends Component {
     };
 
     if (this.props.currentTurn === this.props.player) {
-      options.body = 'It\'s your turn!';
-
       return (
         <Notification
           timeout={2000}
-          title={'Wordbots.'}
-          options={options}
-          onClick={(e, tag) => {
-            window.focus();
-          }} />
+          title="Wordbots."
+          options={{...options, body: 'It\'s your turn!'}}
+          onClick={() => { window.focus(); }} />
       );
     }
   }
@@ -277,28 +282,30 @@ export class GameArea extends Component {
         <Paper
           style={{
             position: 'relative',
-            height: this.state.areaHeight
+            height: this.state.areaHeight,
+            background: `url(${this.loadBackground()})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
+          <CardViewer hoveredCard={this.hoveredCard()} />
           <div
-            ref={board => {this.boardArea = board;}}
             style={{
               position: 'absolute',
               left: 0,
-              top: 125,
-              bottom: 125,
+              top: 75,
+              bottom: 75,
               right: 0,
-              zIndex: 9999
+              margin: '0 auto',
+              zIndex: 999,
+              width: this.state.boardSize
           }}>
             <Status
               player={this.props.player}
               status={this.isMyTurn() ? this.props.status : {}} />
-            <CardViewer hoveredCard={this.hoveredCard()} />
             <Board
-              height={this.state.boardHeight}
+              size={this.state.boardSize}
               player={this.props.player}
               currentTurn={this.props.currentTurn}
-              selectedTile={this.state.selectedHexId}
+              selectedTile={this.props.selectedTile}
               target={this.props.target}
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}

@@ -5,6 +5,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import Badge from 'material-ui/Badge';
 
 import { typeToString } from '../../constants';
+import { id } from '../../util/common';
 import CardStat from '../card/CardStat';
 
 export default class CardTable extends Component {
@@ -62,7 +63,7 @@ export default class CardTable extends Component {
   renderCardRow(card, index) {
     return (
       <TableRow
-        key={card.id}
+        key={card.id || id()}
         selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
         selectable={!this.props.selectable || card.source !== 'builtin'}
       >

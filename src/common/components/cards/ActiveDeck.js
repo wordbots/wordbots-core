@@ -35,10 +35,11 @@ export default class ActiveDeck extends Component {
           fontWeight: 100,
           fontSize: 28
         }}>
-          Deck&nbsp;
+          Deck [
           <span style={{color: (this.props.cards.length === 30) ? 'green' : 'red'}}>
-            [{this.props.cards.length}]
+            &nbsp;{this.props.cards.length}&nbsp;
           </span>
+          / 30 ]
         </div>
 
         <TextField

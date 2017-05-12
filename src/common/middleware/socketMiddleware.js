@@ -16,7 +16,7 @@ function createSocketMiddleware({excludedActions = []}) {
         connect();
       } else {
         if (action.type === ga.LOGGED_IN) {
-          username = action.payload.user.displayName;
+          username = action.payload.user.displayName || username;
           send(sa.setUsername(username));
         } else if (action.type === ga.LOGGED_OUT) {
           username = 'Guest';

@@ -42,7 +42,7 @@ export default class Sfx extends Component {
       return (
         <Sound
           url={`/static/sound/${this.currentSound}`}
-          volume={70}
+          volume={45}
           playStatus={Sound.status.PLAYING}
           onFinishedPlaying={this.proceedToNextSound} />
       );

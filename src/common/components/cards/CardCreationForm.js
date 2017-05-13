@@ -168,31 +168,50 @@ export default class CardCreationForm extends Component {
       !this.healthError && !this.speedError && !this.textError;
   }
 
+  get styles() {
+    return {
+      section: {display: 'flex', justifyContent: 'space-between'},
+
+      leftCol: {width: '70%', marginRight: 25},
+      rightCol: {width: 160},
+
+      attribute: {width: '100%', marginRight: 25}
+    };
+  }
+
   render() {
     return (
-      <div style={{width: '50%', padding: 64}}>
-        <Paper style={{padding: 48}}>
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div style={{
+        width: '60%',
+        flex: 1,
+        padding: 64
+      }}>
+        <Paper style={{
+          padding: 48,
+          maxWidth: 800,
+          margin: '0 auto'
+        }}>
+          <div style={this.styles.section}>
             <TextField
               value={this.props.name}
               floatingLabelText="Card Name"
-              style={{flexBasis: 0, flexGrow: 3, marginRight: 25}}
+              style={this.styles.leftCol}
               errorText={this.nameError}
               onChange={e => { this.props.onSetName(e.target.value); }} />
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
               maxValue={20}
-              style={{flexBasis: 0, flexGrow: 1}}
+              style={this.styles.rightCol}
               errorText={this.costError}
               onChange={v => { this.props.onSetAttribute('energy', v); }} />
           </div>
 
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div style={this.styles.section}>
             <SelectField
               value={this.props.type}
               floatingLabelText="Card Type"
-              style={{width: '70%', marginRight: 25}}
+              style={this.styles.leftCol}
               onChange={(e, i, value) => {
                 this.props.onSetType(value);
                 // Re-parse card text because different card types now have different validations.
@@ -206,7 +225,7 @@ export default class CardCreationForm extends Component {
               <RaisedButton
                 secondary
                 label="New Image"
-                style={{width: 160}}
+                style={this.styles.rightCol}
                 labelPosition="after"
                 onTouchTap={(e) => { this.props.onSpriteClick(); }}>
                 <FontIcon className="material-icons" style={{
@@ -217,30 +236,31 @@ export default class CardCreationForm extends Component {
             </div>
           </div>
 
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div style={this.styles.section}>
             <TextField
               multiLine
               value={this.props.text}
               hintText={this.hasCardText ? '' : 'Card Text'}
-              style={{width: '70%', marginRight: 25}}
+              style={this.styles.leftCol}
               errorText={this.textError}
               errorStyle={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
               onChange={e => { this.onUpdateText(e.target.value); }} />
+
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <RaisedButton
                 label="Open Dictionary"
                 primary
-                style={{width: 160}}
+                style={this.styles.rightCol}
                 onClick={() => { this.props.history.push('/creator/dictionary'); }} />
             </div>
           </div>
 
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div style={this.styles.section}>
             <NumberField
               label="Attack"
               value={this.props.attack}
               maxValue={10}
-              style={{width: '100%', marginRight: 25}}
+              style={this.styles.attribute}
               disabled={!this.robot}
               errorText={this.attackError}
               onChange={v => { this.props.onSetAttribute('attack', v); }} />
@@ -248,7 +268,7 @@ export default class CardCreationForm extends Component {
               label="Health"
               value={this.props.health}
               maxValue={10}
-              style={{width: '100%', marginRight: 25}}
+              style={this.styles.attribute}
               disabled={this.event}
               errorText={this.healthError}
               onChange={v => { this.props.onSetAttribute('health', v); }} />
@@ -256,7 +276,7 @@ export default class CardCreationForm extends Component {
               label="Speed"
               value={this.props.speed}
               maxValue={3}
-              style={{width: '100%', marginRight: 25}}
+              style={this.styles.attribute}
               disabled={!this.robot}
               errorText={this.speedError}
               onChange={v => { this.props.onSetAttribute('speed', v); }} />
@@ -274,7 +294,7 @@ export default class CardCreationForm extends Component {
         </Paper>
 
         <Dialog
-          open={this.props.history !== undefined && this.props.history.location.pathname.includes('dictionary')}
+          open={this.props.history && this.props.history.location.pathname.includes('dictionary')}
           contentStyle={{width: '90%', maxWidth: 'none'}}
           onRequestClose={() => { this.props.history.push('/creator'); }}
           actions={[<RaisedButton primary label="Close" onTouchTap={() => { this.props.history.push('/creator'); }} />]}

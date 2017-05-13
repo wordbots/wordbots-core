@@ -30,7 +30,16 @@ export default class CardPreview extends Component {
   render() {
     if (inBrowser()) {
       return (
-        <div style={{width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 64}}>
+        <div style={{
+          width: '40%',
+          display: 'flex',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 64,
+          paddingLeft: 20,
+          paddingTop: 40
+        }}>
           <Card
             name={this.props.name || '[Unnamed]'}
             spriteID={this.props.spriteID}

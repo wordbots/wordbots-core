@@ -7,7 +7,7 @@ import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { compact } from 'lodash';
+import { capitalize, compact, isNaN } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
@@ -15,6 +15,14 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import Dictionary from '../../containers/Dictionary';
 
 import NumberField from './NumberField';
+
+function ensureInRange(name, value, min, max) {
+  if (isNaN(parseInt(value))) {
+    return `Invalid ${name}.`;
+  } else if (value < min || value > max) {
+    return `Not between ${min} and ${max}.`;
+  }
+}
 
 export default class CardCreationForm extends Component {
   static propTypes = {
@@ -96,48 +104,24 @@ export default class CardCreationForm extends Component {
   }
 
   get costError() {
-    if (!parseInt(this.props.energy)) {
-      return 'Invalid cost.';
-    }
-
-    if (this.props.energy < 0 || this.props.energy > 20) {
-      return 'Not between 0 and 20.';
-    }
+    return ensureInRange('cost', this.props.energy, 0, 20);
   }
 
   get attackError() {
     if (this.robot) {
-      if (!parseInt(this.props.attack)) {
-        return 'Invalid attack.';
-      }
-
-      if (this.props.attack < 0 || this.props.attack > 10) {
-        return 'Not between 0 and 10.';
-      }
+      return ensureInRange('attack', this.props.attack, 0, 10);
     }
   }
 
   get healthError() {
     if (!this.event) {
-      if (!parseInt(this.props.health)) {
-        return 'Invalid health.';
-      }
-
-      if (this.props.health < 1 || this.props.health > 10) {
-        return 'Not between 1 and 10.';
-      }
+      return ensureInRange('health', this.props.health, 1, 10);
     }
   }
 
   get speedError() {
     if (this.robot) {
-      if (!parseInt(this.props.speed)) {
-        return 'Invalid speed.';
-      }
-
-      if (this.props.speed < 0 || this.props.speed > 3) {
-        return 'Not between 0 and 3.';
-      }
+      return ensureInRange('speed', this.props.speed, 0, 3);
     }
   }
 
@@ -170,27 +154,42 @@ export default class CardCreationForm extends Component {
 
   get styles() {
     return {
+      container: {width: '60%', flex: 1, padding: 64},
+      paper: {padding: 48, maxWidth: 800, margin: '0 auto'},
+      dictionary: {width: '90%', maxWidth: 'none'},
+
       section: {display: 'flex', justifyContent: 'space-between'},
 
       leftCol: {width: '70%', marginRight: 25},
       rightCol: {width: 160},
+      attribute: {width: '100%', marginRight: 25},
+      saveButton: {marginTop: 20},
 
-      attribute: {width: '100%', marginRight: 25}
+      icon: {verticalAlign: 'middle', color: 'white'}
     };
+  }
+
+  setAttribute = (key) => (value) => {
+    this.props.onSetAttribute(key, value);
+  }
+
+  renderAttributeField(attribute, enabled = true, opts = {}) {
+    return (
+      <NumberField
+        label={capitalize(attribute)}
+        value={this.props[attribute]}
+        maxValue={opts.max || 10}
+        style={this.styles.attribute}
+        disabled={!enabled}
+        errorText={this[`${attribute}Error`]}
+        onChange={this.setAttribute(attribute)} />
+    );
   }
 
   render() {
     return (
-      <div style={{
-        width: '60%',
-        flex: 1,
-        padding: 64
-      }}>
-        <Paper style={{
-          padding: 48,
-          maxWidth: 800,
-          margin: '0 auto'
-        }}>
+      <div style={this.styles.container}>
+        <Paper style={this.styles.paper}>
           <div style={this.styles.section}>
             <TextField
               value={this.props.name}
@@ -204,7 +203,7 @@ export default class CardCreationForm extends Component {
               maxValue={20}
               style={this.styles.rightCol}
               errorText={this.costError}
-              onChange={v => { this.props.onSetAttribute('energy', v); }} />
+              onChange={this.setAttribute('energy')} />
           </div>
 
           <div style={this.styles.section}>
@@ -218,7 +217,9 @@ export default class CardCreationForm extends Component {
                 this.onUpdateText(this.props.text, value);
               }}>
               {
-                CREATABLE_TYPES.map(type => <MenuItem key={type} value={type} primaryText={typeToString(type)}/>)
+                CREATABLE_TYPES.map(type =>
+                  <MenuItem key={type} value={type} primaryText={typeToString(type)} />
+                )
               }
             </SelectField>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -227,11 +228,8 @@ export default class CardCreationForm extends Component {
                 label="New Image"
                 style={this.styles.rightCol}
                 labelPosition="after"
-                onTouchTap={(e) => { this.props.onSpriteClick(); }}>
-                <FontIcon className="material-icons" style={{
-                  verticalAlign: 'middle',
-                  color: 'white'
-                }}>refresh</FontIcon>
+                onTouchTap={() => { this.props.onSpriteClick(); }}>
+                <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
               </RaisedButton>
             </div>
           </div>
@@ -256,49 +254,32 @@ export default class CardCreationForm extends Component {
           </div>
 
           <div style={this.styles.section}>
-            <NumberField
-              label="Attack"
-              value={this.props.attack}
-              maxValue={10}
-              style={this.styles.attribute}
-              disabled={!this.robot}
-              errorText={this.attackError}
-              onChange={v => { this.props.onSetAttribute('attack', v); }} />
-            <NumberField
-              label="Health"
-              value={this.props.health}
-              maxValue={10}
-              style={this.styles.attribute}
-              disabled={this.event}
-              errorText={this.healthError}
-              onChange={v => { this.props.onSetAttribute('health', v); }} />
-            <NumberField
-              label="Speed"
-              value={this.props.speed}
-              maxValue={3}
-              style={this.styles.attribute}
-              disabled={!this.robot}
-              errorText={this.speedError}
-              onChange={v => { this.props.onSetAttribute('speed', v); }} />
+            {this.renderAttributeField('attack', this.robot)}
+            {this.renderAttributeField('health', !this.event)}
+            {this.renderAttributeField('speed', this.robot, {max: 3})}
           </div>
 
           <MustBeLoggedIn loggedIn={this.props.loggedIn}>
             <RaisedButton
-            primary
-            fullWidth
-            label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
-            disabled={!this.isValid}
-            style={{marginTop: 20}}
-            onTouchTap={e => { this.props.onAddToCollection(); }} />
+              primary
+              fullWidth
+              label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
+              disabled={!this.isValid}
+              style={this.styles.saveButton}
+              onTouchTap={() => { this.props.onAddToCollection(); }} />
           </MustBeLoggedIn>
         </Paper>
 
         <Dialog
           open={this.props.history && this.props.history.location.pathname.includes('dictionary')}
-          contentStyle={{width: '90%', maxWidth: 'none'}}
+          contentStyle={this.styles.dictionary}
           onRequestClose={() => { this.props.history.push('/creator'); }}
-          actions={[<RaisedButton primary label="Close" onTouchTap={() => { this.props.history.push('/creator'); }} />]}
-        >
+          actions={[
+            <RaisedButton
+              primary
+              label="Close"
+              onTouchTap={() => { this.props.history.push('/creator'); }} />
+        ]}>
           <Dictionary />
         </Dialog>
       </div>

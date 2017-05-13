@@ -5,6 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/wordbots/wordbots-core/badges/gpa.svg)](https://codeclimate.com/github/wordbots/wordbots-core)
 [![Dependency Status](https://www.versioneye.com/user/projects/58e73f0926a5bb0052203185/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58e73f0926a5bb0052203185)
 [![Greenkeeper badge](https://badges.greenkeeper.io/wordbots/wordbots-core.svg)](https://greenkeeper.io/)
+[![NSP Status](https://nodesecurity.io/orgs/wordbots/projects/5d6bd7c0-460e-45f0-93a4-d671ca75fd39/badge)](https://nodesecurity.io/orgs/wordbots/projects/5d6bd7c0-460e-45f0-93a4-d671ca75fd39)
 [![Discord badge](https://img.shields.io/discord/301800217055985665.svg)](http://discord.wordbots.io)
 
 [![](http://imgur.com/q7lBCUn.png)](https://www.patreon.com/wordbots)

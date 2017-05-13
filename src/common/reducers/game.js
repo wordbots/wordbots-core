@@ -1,6 +1,7 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
 import { id } from '../util/common';
+import { triggerSound } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
@@ -8,7 +9,10 @@ import defaultState from '../store/defaultGameState';
 import g from './handlers/game';
 
 export default function game(oldState = cloneDeep(defaultState), action) {
-  let state = Object.assign({}, oldState, {actionId: id()});  // Note: actionId is to correctly merge actions in the action log.
+  let state = Object.assign({}, oldState, {
+    actionId: id(),  // actionId is used to correctly merge actions in the action log.
+    sfxQueue: []  // Clear the sound effects queue on every reducer step.
+  });
 
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
@@ -62,11 +66,14 @@ export default function game(oldState = cloneDeep(defaultState), action) {
         // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
         return reduce(action.payload.actions, game, state);
 
-      case socketActions.FORFEIT:
-        return Object.assign(state, {winner: action.payload.winner});
+      case socketActions.FORFEIT: {
+        state = Object.assign(state, {winner: action.payload.winner});
+        state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
+        return state;
+      }
 
       default:
-        return state;
+        return oldState;
     }
   }
 }

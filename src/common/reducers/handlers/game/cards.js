@@ -5,7 +5,7 @@ import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions,
   validPlacementHexes,
-  discardCards, logAction, setTargetAndExecuteQueuedAction,
+  triggerSound, discardCards, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import { splitSentences } from '../../../util/cards';
@@ -79,6 +79,7 @@ export function placeCard(state, cardIdx, tile) {
       justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
                         // target themselves for afterPlayed triggers.
     };
+    const target = player.target.chosen ? player.target.chosen[0] : null;
 
     player.robotsOnBoard[tile] = playedObject;
     player.energy.available -= getCost(card);
@@ -86,7 +87,7 @@ export function placeCard(state, cardIdx, tile) {
     player.status.message = '';
     player.selectedTile = tile;
 
-    const target = player.target.chosen ? player.target.chosen[0] : null;
+    tempState = triggerSound(tempState, 'spawn.wav');
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
 
     if (card.abilities.length > 0) {
@@ -141,6 +142,8 @@ function playEvent(state, cardIdx) {
     card.justPlayed = true;
 
     const target = player.target.chosen ? player.target.chosen[0] : null;
+
+    tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
 
     (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {

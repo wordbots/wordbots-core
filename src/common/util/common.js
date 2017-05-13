@@ -42,6 +42,14 @@ export function inBrowser() {
   return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
 }
 
+export function soundEnabled() {
+  return localStorage['wb$soundEnabled'] === 'true';
+}
+
+export function toggleSound() {
+  localStorage['wb$soundEnabled'] = !soundEnabled();
+}
+
 export function logIfFlagSet(flag, msg) {
   if (flag) {
     /* eslint-disable no-console */

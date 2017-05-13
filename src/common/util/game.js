@@ -112,6 +112,11 @@ export function checkVictoryConditions(state) {
     state.winner = 'blue';
   }
 
+  if (state.winner) {
+    state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
+    state = logAction(state, state.winner, state.winner === state.player ? ' win' : 'wins');
+  }
+
   return state;
 }
 
@@ -201,6 +206,11 @@ export function validActionHexes(state, startHex) {
 // III. Effects on game state that are performed in many different places.
 //
 
+export function triggerSound(state, filename) {
+  state.sfxQueue.push(filename);
+  return state;
+}
+
 export function logAction(state, player, action, cards, timestamp, target = null) {
   const playerStr = player ? (player.name === state.player ? 'You ' : `${state.usernames[player.name]} `) : '';
 
@@ -226,6 +236,7 @@ export function newGame(state, player, usernames, decks, seed) {
   state.players.blue = bluePlayerState(decks.blue);
   state.players.orange = orangePlayerState(decks.orange);
   state.started = true;
+  state = triggerSound(state, 'yourmove.wav');
   return state;
 }
 
@@ -257,6 +268,9 @@ function startTurn(state) {
 
   state = drawCards(state, player, 1);
   state = triggerEvent(state, 'beginningOfTurn', {player: true});
+  if (player.name === state.player) {
+    state = triggerSound(state, 'yourmove.wav');
+  }
 
   return state;
 }
@@ -318,6 +332,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
+    state = triggerSound(state, 'destroyed.wav');
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 

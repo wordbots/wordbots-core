@@ -14,7 +14,13 @@ let webpackConfig = {
   },
   plugins: [
     new webpack.NoErrorsPlugin()
-  ]
+  ],
+  resolve: {
+    alias: {
+      // Disable soundmanager2 console output by using release build.
+      soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
+    }
+  }
 };
 
 if (process.env.NODE_ENV === 'production') {
@@ -34,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
       { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) },
       { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=public/fonts/[name].[ext]' }
     ]},
-    plugins : [
+    plugins: [
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify('production')

@@ -188,17 +188,31 @@ export class GameArea extends Component {
 
   hoveredCard() {
     const hand = this.props[`${this.props.player}Hand`];
-    const cardFromIndex = (idx => {
+
+    const cardFromIndex = (idx) => {
       if (!isNil(idx) && hand[idx]) {
         const card = hand[idx];
         return {card: card, stats: card.stats};
       }
-    });
+    };
+    const cardFromHex = (hex) => {
+      const piece = this.allPieces()[hex];
+      if (piece) {
+        return {
+          card: piece.card,
+          stats: {
+            attack: getAttribute(piece, 'attack'),
+            health: getAttribute(piece, 'health'),
+            speed: getAttribute(piece, 'speed')
+          }
+        };
+      }
+    };
 
     return this.props.hoveredCard ||
       cardFromIndex(this.props.hoveredCardIdx) ||
       cardFromIndex(this.props.selectedCard) ||
-      this.allPieces()[this.props.selectedTile];
+      cardFromHex(this.props.selectedTile);
   }
 
   movePiece(hexId, asPartOfAttack = false) {

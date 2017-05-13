@@ -8,20 +8,23 @@ import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
 import { DISABLE_TURN_TIMER } from '../constants';
-import { allObjectsOnBoard, opponent } from '../util/game';
+import { soundEnabled, toggleSound } from '../util/common';
+import { allObjectsOnBoard, opponent, ownerOf } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player];
+  const selectedPiece = allObjectsOnBoard(state.game)[activePlayer.selectedTile];
 
   return {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     gameOver: state.game.winner !== null,
     isMyTurn: state.game.currentTurn === state.game.player,
+    isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
-    selectedPiece: allObjectsOnBoard(state.game)[activePlayer.selectedTile]
+    selectedPiece: selectedPiece
   };
 }
 
@@ -50,6 +53,7 @@ export class GameMenu extends Component {
     currentTurn: string,
     gameOver: bool,
     isMyTurn: bool,
+    isMyPiece: bool,
     isSpectator: bool,
     selectedPiece: object,
 
@@ -138,7 +142,7 @@ export class GameMenu extends Component {
     const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
 
     if (abilities.length > 0) {
-      const canActivateAbility = this.props.isMyTurn && !this.props.selectedPiece.cantActivate;
+      const canActivateAbility = this.props.isMyTurn && this.props.isMyPiece && !this.props.selectedPiece.cantActivate;
 
       return (
         <div>
@@ -168,9 +172,8 @@ export class GameMenu extends Component {
     return (
       <Drawer
         open={this.props.open}
-        containerStyle={{
-          top: 64
-      }}>
+        containerStyle={{top: 64}}
+      >
         <MenuItem
           primaryText={this.state.timer}
           style={this.state.timerStyle} />
@@ -188,6 +191,23 @@ export class GameMenu extends Component {
         <Divider />
         {this.renderActivatedAbilities()}
         <Divider />
+
+        <div style={{
+          position: 'absolute',
+          bottom: 64,
+          width: '100%'
+        }}>
+          <Divider />
+          <MenuItem
+            primaryText={`Sound: ${soundEnabled() ? 'On' : 'Off'}`}
+            leftIcon={<FontIcon className="material-icons">
+              {soundEnabled() ? 'volume_up' : 'volume_off'}
+            </FontIcon>}
+            onClick={() => {
+              toggleSound();
+              this.forceUpdate();
+            }} />
+        </div>
       </Drawer>
     );
   }

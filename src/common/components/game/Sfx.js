@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array } from 'prop-types';
 
-import { inBrowser } from '../../util/common';
+import { inBrowser, soundEnabled } from '../../util/common';
 
 let Sound;
 if (inBrowser()) {
@@ -25,6 +25,10 @@ export default class Sfx extends Component {
     this.setState({idx: 0});
   }
 
+  get enabled() {
+    return inBrowser() && Sound && soundEnabled();
+  }
+
   get currentSound() {
     return this.props.queue[this.state.idx];
   }
@@ -34,12 +38,13 @@ export default class Sfx extends Component {
   }
 
   render() {
-    if (inBrowser() && this.currentSound) {
+    if (this.enabled && this.currentSound) {
       return (
         <Sound
           url={`/static/sound/${this.currentSound}`}
+          volume={70}
           playStatus={Sound.status.PLAYING}
-          onFinishedPlaying={this.proceedToNextSound.bind(this)}/>
+          onFinishedPlaying={this.proceedToNextSound.bind(this)} />
       );
     } else {
       return null;

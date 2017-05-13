@@ -131,6 +131,8 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
 
     const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
     const target = player.target.chosen ? player.target.chosen[0] : null;
+
+    tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
 
     executeCmd(tempState, ability.cmd, object);

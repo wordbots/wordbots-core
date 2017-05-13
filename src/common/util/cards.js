@@ -47,6 +47,12 @@ const HINTS = {
   'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
 };
 
+function objToRegexes(obj) {
+  return fromPairs(Object.keys(obj).map(k => [k, new RegExp(`(${k}|${capitalize(k)})`)]));
+}
+const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
+const HINT_REGEXES = objToRegexes(HINTS);
+
 //
 // 1. Miscellaneous helper functions pertaining to cards.
 //
@@ -70,19 +76,6 @@ export function instantiateCard(card) {
 //
 // 2. Helper functions for card-related components.
 //
-
-// Sorting functions for card grids:
-// 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
-// (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
-const sortFunctions = [
-  c => [c.cost.toString(36), c.name.toLowerCase()],
-  c => c.name.toLowerCase(),
-  c => [typeToString(c.type), c.cost.toString(36), c.name.toLowerCase()],
-  c => [c.source === 'builtin', c.cost.toString(36), c.name.toLowerCase()],
-  c => [(c.stats && c.stats.attack || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
-  c => [(c.stats && c.stats.health || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()],
-  c => [(c.stats && c.stats.speed || 0).toString(36), c.cost.toString(36), c.name.toLowerCase()]
-];
 
 export function groupCards(cards) {
   return uniqBy(cards, 'id').map(card =>
@@ -113,7 +106,29 @@ function searchCards(card, query = '') {
 }
 
 function sortCards(c1, c2, criteria, order) {
-  const f = sortFunctions[criteria];
+  // Individual sort columns that are composed into sort functions below.
+  const [cost, name, type, source, attack, health, speed] = [
+    c => c.cost.toString(36),
+    c => c.name.toLowerCase(),
+    c => typeToString(c.type),
+    c => c.source === 'builtin',
+    c => (c.stats && c.stats.attack || 0).toString(36),
+    c => (c.stats && c.stats.health || 0).toString(36),
+    c => (c.stats && c.stats.speed || 0).toString(36)
+  ];
+
+  // Sorting functions for card collections:
+  // 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
+  // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
+  const f = [
+    c => [cost(c), name(c)],
+    c => [name(c), cost(c)],
+    c => [type(c), cost(c), name(c)],
+    c => [source(c), cost(c), name(c)],
+    c => [attack(c), cost(c), name(c)],
+    c => [health(c), cost(c), name(c)],
+    c => [speed(c), cost(c), name(c)]
+  ][criteria];
 
   if (f(c1) < f(c2)) {
     return order ? 1 : -1;
@@ -191,13 +206,6 @@ function parseCard(card, callback) {
 // 3.5. Keyword abilities.
 //
 
-const keywordRegexes = fromPairs(Object.keys(KEYWORDS).map(k =>
-  [k, new RegExp(`(${k}|${capitalize(k)})`)]
-));
-const hintRegexes = fromPairs(Object.keys(HINTS).map(h =>
-  [h, new RegExp(`(${h}|${capitalize(h)})`)]
-));
-
 function phrases(sentence) {
   return sentence.split(',')
                  .filter(s => /\S/.test(s))
@@ -214,7 +222,7 @@ export function isKeywordExpression(sentence, hintsToo = false) {
 
 export function keywordsInSentence(sentence, hintsToo = false) {
   const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
-  const regexes = hintsToo ? Object.assign({}, keywordRegexes, hintRegexes) : keywordRegexes;
+  const regexes = hintsToo ? Object.assign({}, KEYWORD_REGEXES, HINT_REGEXES) : KEYWORD_REGEXES;
 
   if (isKeywordExpression(sentence)) {
     return fromPairs(phrases(sentence).map(p => [p, keywords[p.toLowerCase()]]));

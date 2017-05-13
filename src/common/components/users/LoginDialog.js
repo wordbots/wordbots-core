@@ -123,33 +123,18 @@ export default class LoginDialog extends Component {
   }
 
   renderFormSwitcher() {
-    if (this.state.register) {
-      return (
-        <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
-          <span>
-            Have an account? &nbsp;
-            <span
-              style={{fontWeight: 'bold', cursor: 'pointer'}}
-              onClick={() => this.setState({register: false})}>
-              Login
-            </span>
+    return (
+      <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
+        <span>
+          {this.state.register ? 'Have an account?' : 'Don\'t have an account?'} &nbsp;
+          <span
+            style={{fontWeight: 'bold', cursor: 'pointer'}}
+            onClick={() => this.setState({register: !this.state.register})}>
+            {this.state.register ? 'Login' : 'Register'}
           </span>
-        </div>
-      );
-    } else {
-      return (
-        <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
-          <span>
-            Don't have an account? &nbsp;
-            <span
-              style={{fontWeight: 'bold', cursor: 'pointer'}}
-              onClick={() => this.setState({register: true})}>
-              Register
-            </span>
-          </span>
-        </div>
-      );
-    }
+        </span>
+      </div>
+    );
   }
 
   render() {

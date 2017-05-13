@@ -17,7 +17,8 @@ let webpackConfig = {
   ],
   resolve: {
     alias: {
-       soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
+      // Disable soundmanager2 console output by using release build.
+      soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
     }
   }
 };

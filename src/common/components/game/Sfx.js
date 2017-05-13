@@ -33,7 +33,7 @@ export default class Sfx extends Component {
     return this.props.queue[this.state.idx];
   }
 
-  proceedToNextSound() {
+  proceedToNextSound = () => {
     this.setState({idx: this.state.idx + 1});
   }
 
@@ -44,7 +44,7 @@ export default class Sfx extends Component {
           url={`/static/sound/${this.currentSound}`}
           volume={70}
           playStatus={Sound.status.PLAYING}
-          onFinishedPlaying={this.proceedToNextSound.bind(this)} />
+          onFinishedPlaying={this.proceedToNextSound} />
       );
     } else {
       return null;

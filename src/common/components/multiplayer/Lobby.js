@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { array, func, object } from 'prop-types';
 
-import CustomLobby from './CustomLobby';
 import LobbyStatus from './LobbyStatus';
 import Waiting from './Waiting';
+import CustomLobby from './CustomLobby';
+import ModeSelection from './ModeSelection';
 
 export default class Lobby extends Component {
   static propTypes = {
@@ -21,8 +22,40 @@ export default class Lobby extends Component {
     super(props);
 
     this.state = {
-      selectedDeck: this.props.availableDecks.length - 1
+      gameMode: null
     };
+  }
+
+  renderGameModeSelection() {
+    const skt = this.props.socket;
+
+    if (this.state.gameMode) {
+      switch(this.state.gameMode) {
+        case 0:
+          break;
+        case 1:
+          return (
+            skt.hosting ? 
+              <Waiting /> : 
+              <CustomLobby
+                socket={this.props.socket}
+                availableDecks={this.props.availableDecks}
+                cards={this.props.cards}
+                onJoinGame={this.props.onJoinGame}
+                onSpectateGame={this.props.onSpectateGame}
+                onHostGame={this.props.onHostGame} />
+          );
+        case 2:
+          break;
+        case 3:
+          break;
+      }
+    } else {
+      return (
+        <ModeSelection 
+          onSelectMode={(mode) => this.setState({ gameMode: mode })}/>
+      );
+    }
   }
 
   render() {
@@ -36,16 +69,7 @@ export default class Lobby extends Component {
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
           onConnect={this.props.onConnect} />
-        {
-          skt.hosting ? 
-            <Waiting /> : 
-            <CustomLobby 
-              availableDecks={this.props.availableDecks}
-              cards={this.props.cards}
-              onJoinGame={this.props.onJoinGame}
-              onSpectateGame={this.props.onSpectateGame}
-              onHostGame={this.props.onHostGame} />
-        }
+        {this.renderGameModeSelection()}
       </div>
     );
   }

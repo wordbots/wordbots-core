@@ -15,7 +15,6 @@ export default class Lobby extends Component {
     availableDecks: array,
     cards: array,
 
-    onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
     onHostGame: func

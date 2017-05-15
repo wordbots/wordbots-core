@@ -3,12 +3,17 @@ import { array, bool, func, number, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { isUndefined } from 'lodash';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator';
+
+import Dictionary from './Dictionary';
 
 export function mapStateToProps(state) {
   return {
@@ -85,6 +90,24 @@ export class Creator extends Component {
     return {muiTheme: getMuiTheme(baseTheme)};
   }
 
+  get dictionaryIsOpen() {
+    return !isUndefined(this.props.history) && this.props.history.location.pathname.includes('dictionary');
+  }
+
+  openDictionary = () => {
+    this.props.history.push('/creator/dictionary');
+  }
+  closeDictionary = () => {
+    this.props.history.push('/creator');
+  }
+
+  addToCollection = () => {
+    this.props.onAddToCollection(this.props);
+    if (this.props.history) {
+      this.props.history.push('/collection');
+    }
+  }
+
   render() {
     return (
       <div style={{position: 'relative'}}>
@@ -92,7 +115,6 @@ export class Creator extends Component {
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
-            history={this.props.history}
             loggedIn={this.props.loggedIn}
             name={this.props.name}
             type={this.props.type}
@@ -109,12 +131,8 @@ export class Creator extends Component {
             onSetAttribute={this.props.onSetAttribute}
             onParseComplete={this.props.onParseComplete}
             onSpriteClick={this.props.onSpriteClick}
-            onAddToCollection={() => {
-              this.props.onAddToCollection(this.props);
-              if (this.props.history) {
-                this.props.history.push('/collection');
-              }
-            }} />
+            onOpenDictionary={this.openDictionary}
+            onAddToCollection={this.addToCollection} />
           <CardPreview
             name={this.props.name}
             type={this.props.type}
@@ -124,8 +142,19 @@ export class Creator extends Component {
             speed={this.props.speed}
             health={this.props.health}
             energy={this.props.cost}
-            onSpriteClick={() => { this.props.onSpriteClick(); }} />
+            onSpriteClick={this.props.onSpriteClick} />
         </div>
+
+
+
+        <Dialog
+          open={this.dictionaryIsOpen}
+          contentStyle={{width: '90%', maxWidth: 'none'}}
+          onRequestClose={this.closeDictionary}
+          actions={[<RaisedButton primary label="Close" onTouchTap={this.closeDictionary} />]}
+        >
+          <Dictionary />
+        </Dialog>
       </div>
     );
   }

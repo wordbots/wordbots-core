@@ -35,6 +35,7 @@ let webpackConfig = {
     rules: [
       {
         test: /\.js$/,
+        include: /src/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -42,7 +43,7 @@ let webpackConfig = {
         }
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?sourceMap'}) },
+      { test: /\.css$/, loader: ExtractTextPlugin.extract({use: 'css-loader?sourceMap', fallback: 'style-loader'}) },
       { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=public/fonts/[name].[ext]' }
     ]
   },
@@ -67,10 +68,6 @@ let webpackConfig = {
 if (process.env.NODE_ENV === 'production') {
   webpackConfig = merge(webpackConfig, {
     devtool: 'source-map',
-    entry : [
-      'webpack-hot-middleware/client',
-      ...webpackConfig.entry
-    ],
     plugins: [
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: JSON.stringify('production') }
@@ -78,13 +75,15 @@ if (process.env.NODE_ENV === 'production') {
       new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
       ...webpackConfig.plugins
     ],
-    stats: {
-      warnings: false
-    }
+    stats: { warnings: false }
   });
 } else {
   webpackConfig = merge(webpackConfig, {
     devtool: 'inline-source-map',
+    entry: [
+      'webpack-hot-middleware/client',
+      ...webpackConfig.entry
+    ],
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       ...webpackConfig.plugins

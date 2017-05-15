@@ -1,5 +1,5 @@
 import fb from 'firebase';
-import { concat, flatMap, fromPairs, mapValues, noop, uniq, values } from 'lodash';
+import { concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
 import { loadParserLexicon } from './cards.js';
 
@@ -81,7 +81,7 @@ export function listenToUserData(callback) {
 
 export function listenToDictionaryData(callback) {
   function cleanupExamples(examples) {
-    return uniq(values(examples).map(e => e.replace('\n', '')));
+    return uniq(Object.values(examples).map(e => e.replace('\n', '')));
   }
 
   loadParserLexicon(json => {

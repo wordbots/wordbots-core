@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, string, object } from 'prop-types';
+import { array, bool, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
-import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { capitalize, compact, isNaN } from 'lodash';
@@ -12,7 +11,6 @@ import { capitalize, compact, isNaN } from 'lodash';
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
-import Dictionary from '../../containers/Dictionary';
 
 import NumberField from './NumberField';
 
@@ -37,15 +35,14 @@ export default class CardCreationForm extends Component {
     isNewCard: bool,
     loggedIn: bool,
 
-    history: object,
-
     onSetName: func,
     onSetType: func,
     onSetText: func,
     onSetAttribute: func,
     onParseComplete: func,
     onSpriteClick: func,
-    onAddToCollection: func
+    onAddToCollection: func,
+    onOpenDictionary: func
   };
 
   componentDidMount() {
@@ -156,7 +153,6 @@ export default class CardCreationForm extends Component {
     return {
       container: {width: '60%', flex: 1, padding: 64},
       paper: {padding: 48, maxWidth: 800, margin: '0 auto'},
-      dictionary: {width: '90%', maxWidth: 'none'},
 
       section: {display: 'flex', justifyContent: 'space-between'},
 
@@ -249,7 +245,7 @@ export default class CardCreationForm extends Component {
                 label="Open Dictionary"
                 primary
                 style={this.styles.rightCol}
-                onClick={() => { this.props.history.push('/creator/dictionary'); }} />
+                onClick={this.props.onOpenDictionary} />
             </div>
           </div>
 
@@ -269,19 +265,6 @@ export default class CardCreationForm extends Component {
               onTouchTap={() => { this.props.onAddToCollection(); }} />
           </MustBeLoggedIn>
         </Paper>
-
-        <Dialog
-          open={this.props.history && this.props.history.location.pathname.includes('dictionary')}
-          contentStyle={this.styles.dictionary}
-          onRequestClose={() => { this.props.history.push('/creator'); }}
-          actions={[
-            <RaisedButton
-              primary
-              label="Close"
-              onTouchTap={() => { this.props.history.push('/creator'); }} />
-        ]}>
-          <Dictionary />
-        </Dialog>
       </div>
     );
   }

@@ -1,9 +1,12 @@
 {
   "name": "wordbots",
   "version": "0.5.4-alpha",
-  "apiHost": "10.0.0.9",
-  "apiPort": "3000",
   "description": "A card-and-board game that showcases card game semantic parsing",
+  "license": "MIT",
+  "browserslist": [
+    "last 4 versions",
+    "chrome >= 48"
+  ],
   "scripts": {
     "slate": "rm -rf node_modules && npm install",
     "clean": "rm -rf dist",
@@ -16,9 +19,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jacobnisnevich/wordbots-core.git"
+    "url": "git+https://github.com/wordbots/wordbots-core.git"
   },
-  "license": "MIT",
   "dependencies": {
     "axios": "0.16.1",
     "babel-core": "^6.24.1",
@@ -29,6 +31,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",
     "babel-preset-react": "^6.24.1",

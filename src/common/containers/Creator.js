@@ -145,8 +145,6 @@ export class Creator extends Component {
             onSpriteClick={this.props.onSpriteClick} />
         </div>
 
-
-
         <Dialog
           open={this.dictionaryIsOpen}
           contentStyle={{width: '90%', maxWidth: 'none'}}

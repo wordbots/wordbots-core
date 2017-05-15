@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { array } from 'prop-types';
+import { isEmpty, isEqual } from 'lodash';
 
 import { inBrowser, soundEnabled } from '../../util/common';
 
@@ -21,6 +22,12 @@ export default class Sfx extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const newSoundsQueued = !isEmpty(nextProps.queue) && (!isEqual(this.props.queue, nextProps.queue) || this.paused);
+    const nextSoundInQueue = nextState.idx > this.state.idx;
+    return newSoundsQueued || nextSoundInQueue;
+  }
+
   componentWillReceiveProps(props) {
     this.setState({idx: 0});
   }
@@ -33,12 +40,16 @@ export default class Sfx extends Component {
     return this.props.queue[this.state.idx];
   }
 
+  get paused() {
+    return !this.currentSound;
+  }
+
   proceedToNextSound = () => {
     this.setState({idx: this.state.idx + 1});
   }
 
   render() {
-    if (this.enabled && this.currentSound) {
+    if (this.enabled && !this.paused) {
       return (
         <Sound
           url={`/static/sound/${this.currentSound}`}

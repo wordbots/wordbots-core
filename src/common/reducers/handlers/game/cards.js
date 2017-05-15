@@ -75,6 +75,7 @@ export function placeCard(state, cardIdx, tile) {
       abilities: [],
       movesMade: 0,
       cantMove: true,
+      cantAttack: true,
       cantActivate: true,
       justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
                         // target themselves for afterPlayed triggers.

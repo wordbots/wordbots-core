@@ -1,4 +1,4 @@
-import { chain as _, cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy, values } from 'lodash';
+import { chain as _, cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy } from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -112,6 +112,11 @@ export function checkVictoryConditions(state) {
     state.winner = 'blue';
   }
 
+  if (state.winner) {
+    state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
+    state = logAction(state, state.winner, state.winner === state.player ? ' win' : 'wins');
+  }
+
   return state;
 }
 
@@ -201,6 +206,11 @@ export function validActionHexes(state, startHex) {
 // III. Effects on game state that are performed in many different places.
 //
 
+export function triggerSound(state, filename) {
+  state.sfxQueue.push(filename);
+  return state;
+}
+
 export function logAction(state, player, action, cards, timestamp, target = null) {
   const playerStr = player ? (player.name === state.player ? 'You ' : `${state.usernames[player.name]} `) : '';
 
@@ -226,6 +236,7 @@ export function newGame(state, player, usernames, decks, seed) {
   state.players.blue = bluePlayerState(decks.blue);
   state.players.orange = orangePlayerState(decks.orange);
   state.started = true;
+  state = triggerSound(state, 'yourmove.wav');
   return state;
 }
 
@@ -257,6 +268,9 @@ function startTurn(state) {
 
   state = drawCards(state, player, 1);
   state = triggerEvent(state, 'beginningOfTurn', {player: true});
+  if (player.name === state.player) {
+    state = triggerSound(state, 'yourmove.wav');
+  }
 
   return state;
 }
@@ -318,6 +332,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
+    state = triggerSound(state, 'destroyed.wav');
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
@@ -365,7 +380,7 @@ export function executeCmd(state, cmd, currentObject = null, source = null) {
   // console.log(cmd);
 
   const vocabulary = buildVocabulary(state, currentObject, source);
-  const [terms, definitions] = [Object.keys(vocabulary), values(vocabulary)];
+  const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
 
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
   return eval(wrappedCmd)(...definitions);
@@ -384,7 +399,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
   }
 
   // Look up any relevant triggers for this condition.
-  const triggers = flatMap(values(allObjectsOnBoard(state)), (object =>
+  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
     object.triggers
       .map(t => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
@@ -418,7 +433,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
 }
 
 export function applyAbilities(state) {
-  values(allObjectsOnBoard(state)).forEach(obj => {
+  Object.values(allObjectsOnBoard(state)).forEach(obj => {
     obj.abilities.forEach(ability => {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {

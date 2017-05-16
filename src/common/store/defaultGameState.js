@@ -64,7 +64,8 @@ const defaultState = {
   hoveredCard: null,
   winner: null,
   actionLog: [],
-  memory: {}
+  memory: {},
+  sfxQueue: []
 };
 
 export default defaultState;

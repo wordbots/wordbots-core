@@ -4,7 +4,7 @@ import { stringToType } from '../../../constants';
 import {
   activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
-  logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
+  triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
@@ -49,6 +49,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     movingRobot.movesMade += distance;
     movingRobot.movedThisTurn = true;
 
+    state = triggerSound(state, 'move.wav');
     state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
@@ -82,6 +83,7 @@ export function attack(state, source, target) {
       attacker.cantActivate = true;
       attacker.attackedThisTurn = true;
 
+      state = triggerSound(state, 'attack.wav');
       state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
         [defender.card.name]: defender.card,
         [attacker.card.name]: attacker.card
@@ -129,6 +131,8 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
 
     const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
     const target = player.target.chosen ? player.target.chosen[0] : null;
+
+    tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
 
     executeCmd(tempState, ability.cmd, object);

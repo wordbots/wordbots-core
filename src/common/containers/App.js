@@ -29,7 +29,6 @@ import Home from '../containers/Home';
 import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
 
-// Hacky analytics implementation.
 let ReactGA, currentLocation;
 if (inBrowser()) {
   ReactGA = require('react-ga');

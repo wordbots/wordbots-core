@@ -240,6 +240,18 @@ export function newGame(state, player, usernames, decks, seed) {
   return state;
 }
 
+export function startTutorial(state) {
+  // Reset game state and enable tutorial mode.
+  state = Object.assign(state, cloneDeep(defaultState), {
+    started: true,
+    usernames: {orange: 'You', blue: 'CPU'},
+    tutorial: true,
+    tutorialStep: 0
+  });
+  state = triggerSound(state, 'yourmove.wav');
+  return state;
+}
+
 export function passTurn(state, player) {
   if (state.currentTurn === player) {
     return startTurn(endTurn(state));

@@ -85,7 +85,7 @@ export function mapDispatchToProps(dispatch) {
     },
     onVictoryScreenClick: () => {
       dispatch([
-        gameActions.newGame(),
+        gameActions.endGame(),
         socketActions.leave()
       ]);
     }

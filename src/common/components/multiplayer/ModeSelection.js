@@ -19,20 +19,19 @@ export default class ModeSelection extends Component {
         flexWrap: 'wrap',
         flexDirection: 'row'
       }}>
-        <GameMode 
-          name="Tutorial" 
-          onSelect={() => this.props.onSelectMode(0)} 
-          disabled />
-        <GameMode 
-          name="Custom Game" 
+        <GameMode
+          name="Tutorial"
+          onSelect={() => this.props.onSelectMode(0)} />
+        <GameMode
+          name="Custom Game"
           onSelect={() => this.props.onSelectMode(1)} />
-        <GameMode 
-          name="Ranked Matchmaking" 
-          onSelect={() => this.props.onSelectMode(2)} 
+        <GameMode
+          name="Ranked Matchmaking"
+          onSelect={() => this.props.onSelectMode(2)}
           disabled/>
-        <GameMode 
-          name="Unranked Matchmaking" 
-          onSelect={() => this.props.onSelectMode(3)} 
+        <GameMode
+          name="Unranked Matchmaking"
+          onSelect={() => this.props.onSelectMode(3)}
           disabled/>
       </div>
     );

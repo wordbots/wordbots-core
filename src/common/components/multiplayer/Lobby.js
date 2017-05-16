@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { array, func, object } from 'prop-types';
 
+import { MODE_TUTORIAL } from '../../constants';
+
 import LobbyStatus from './LobbyStatus';
 import Waiting from './Waiting';
 import CustomLobby from './CustomLobby';
@@ -15,7 +17,8 @@ export default class Lobby extends Component {
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onHostGame: func
+    onHostGame: func,
+    onStartTutorial: func
   };
 
   constructor(props) {
@@ -24,6 +27,14 @@ export default class Lobby extends Component {
     this.state = {
       gameMode: null
     };
+  }
+
+  selectMode = (mode) => {
+    if (mode === MODE_TUTORIAL) {
+      this.props.onStartTutorial();
+    } else {
+      this.setState({ gameMode: mode });
+    }
   }
 
   renderGameModeSelection() {
@@ -35,8 +46,8 @@ export default class Lobby extends Component {
           break;
         case 1:
           return (
-            skt.hosting ? 
-              <Waiting /> : 
+            skt.hosting ?
+              <Waiting /> :
               <CustomLobby
                 socket={this.props.socket}
                 availableDecks={this.props.availableDecks}
@@ -52,8 +63,7 @@ export default class Lobby extends Component {
       }
     } else {
       return (
-        <ModeSelection 
-          onSelectMode={(mode) => this.setState({ gameMode: mode })}/>
+        <ModeSelection onSelectMode={this.selectMode}/>
       );
     }
   }

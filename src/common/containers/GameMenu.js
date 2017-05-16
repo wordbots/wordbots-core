@@ -21,6 +21,7 @@ export function mapStateToProps(state) {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     gameOver: state.game.winner !== null,
+    isTutorial: state.game.tutorial,
     isMyTurn: state.game.currentTurn === state.game.player,
     isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
@@ -52,6 +53,7 @@ export class GameMenu extends Component {
     player: string,
     currentTurn: string,
     gameOver: bool,
+    isTutorial: bool,
     isMyTurn: bool,
     isMyPiece: bool,
     isSpectator: bool,
@@ -82,7 +84,7 @@ export class GameMenu extends Component {
   componentDidMount() {
     this.resetTimer();
     setInterval(() => {
-      if (!this.props.gameOver && !DISABLE_TURN_TIMER) {
+      if (!this.props.gameOver && !this.props.isTutorial && !DISABLE_TURN_TIMER) {
         this.tickTimer();
       }
     }, 1000);
@@ -138,6 +140,16 @@ export class GameMenu extends Component {
     }
   }
 
+  renderTimer() {
+    if (!this.props.isTutorial) {
+      return (
+        <MenuItem
+          primaryText={this.state.timer}
+          style={this.state.timerStyle} />
+      );
+    }
+  }
+
   renderActivatedAbilities() {
     const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
 
@@ -174,9 +186,7 @@ export class GameMenu extends Component {
         open={this.props.open}
         containerStyle={{top: 64}}
       >
-        <MenuItem
-          primaryText={this.state.timer}
-          style={this.state.timerStyle} />
+        {this.renderTimer()}
         <Divider />
         <MenuItem
           primaryText="End Turn"

@@ -69,4 +69,17 @@ const defaultState = {
   sfxQueue: []
 };
 
+export const tutorialState = Object.assign({}, defaultState, {
+  started: true,
+  usernames: {orange: 'You', blue: 'CPU'},
+  tutorial: true,
+  tutorialSteps: [
+    {
+      tooltip: {},
+      action: {},
+      response: {}
+    }
+  ]
+});
+
 export default defaultState;

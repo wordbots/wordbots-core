@@ -72,7 +72,7 @@
     "redux-devtools": "^3.3.2",
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.2.0",
-    "redux-logger": "3.0.1",
+    "redux-logger": "3.0.6",
     "redux-multi": "0.1.12",
     "redux-thunk": "2.2.0",
     "repng": "^1.0.0",

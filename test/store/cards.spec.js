@@ -7,7 +7,7 @@ describe('Built-in cards', () => {
     const state = getDefaultState();
 
     const dummyCurrentObj = {
-      id: 'orangeCore',
+      id: 'orangeCore',  // (Object id that is guaranteed to exist.)
       stats: { attack: 1, health: 1, speed: 1 },
       abilities: [],
       triggers: []

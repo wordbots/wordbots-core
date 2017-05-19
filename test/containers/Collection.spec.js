@@ -1,4 +1,6 @@
 import { scryRenderedComponentsWithType } from 'react-dom/test-utils';
+import RaisedButton from 'material-ui/RaisedButton';
+import { cloneDeep } from 'lodash';
 
 import { combineState } from '../testHelpers';
 import { createCollection, renderElement } from '../reactHelpers';
@@ -17,6 +19,15 @@ describe('Collection container', () => {
   const CARDS_IN_PAGE = 20;
   const DEFAULT_COST_MAX = 20;
 
+  const customCard = {
+    id: 'customCardId',
+    name: 'Custom Card',
+    source: 'user',
+    type: 1,
+    cost: 1,
+    text: ''
+  };
+
   let state, dispatch, collection;
 
   function component(componentClass) {
@@ -27,7 +38,7 @@ describe('Collection container', () => {
   beforeEach(() => {
     const dispatchedActions = [];
 
-    state = combineState();
+    state = cloneDeep(combineState());
     dispatch = (action) => {
       // console.log(action);
       dispatchedActions.push(action);
@@ -89,15 +100,7 @@ describe('Collection container', () => {
   });
 
   it('should be able to select custom cards but not built-in cards', () => {
-    state.collection.cards.push({
-      id: 'customCardId',
-      name: 'Custom Card',
-      source: 'user',
-      type: 1,
-      cost: 1,
-      text: ''
-    });
-
+    state.collection.cards.push(customCard);
     collection = renderElement(createCollection(state, dispatch), true);
 
     component(CardGrid).props.onCardClick(cards[0].id);
@@ -106,4 +109,21 @@ describe('Collection container', () => {
     component(CardGrid).props.onCardClick('customCardId');
     expect(collection.state.selectedCardIds.length).toEqual(1);
   });
+
+  it('should be able to remove custom cards from the collection', () => {
+    state.collection.cards.push(customCard);
+    collection = renderElement(createCollection(state, dispatch), true);
+
+    const numCards = state.collection.cards.length;
+
+    component(CardGrid).props.onCardClick('customCardId');
+
+    component(RaisedButton)
+      .find(b => b.props.label === 'Delete Selected')
+      .props.onClick();
+
+    expect(state.collection.cards.length).toEqual(numCards - 1);
+  });
+
+  // TODO Test sort, edit, import/export.
 });

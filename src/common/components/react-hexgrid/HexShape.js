@@ -1,5 +1,6 @@
 import React from 'react';
 import { bool, object, string } from 'prop-types';
+import Popover from 'react-popover';
 import { isUndefined } from 'lodash';
 
 import { DISPLAY_HEX_IDS } from '../../constants';
@@ -13,6 +14,7 @@ export default class HexShape extends React.Component {
     hex: object.isRequired,
     layout: object.isRequired,
     actions: object.isRequired,
+    tooltip: object,
     fill: string,
     images: object,
     pieceImg: object,
@@ -79,6 +81,10 @@ export default class HexShape extends React.Component {
         stroke: 'none'
       };
     }
+  }
+
+  get shouldRenderTooltip() {
+    return HexUtils.getID(this.props.hex) === (this.props.tooltip || {}).hex;
   }
 
   renderHexPattern() {
@@ -150,7 +156,7 @@ export default class HexShape extends React.Component {
     return <text x="0" y="0.3em" textAnchor="middle">{text}</text>;
   }
 
-  render() {
+  renderHex() {
     return (
       <g
         draggable
@@ -165,5 +171,30 @@ export default class HexShape extends React.Component {
         {this.renderText()}
       </g>
     );
+  }
+
+  renderHexWithTooltip() {
+    const tooltipStyle = {
+      border: '1px solid black',
+      padding: 5,
+      background: '#CCC'
+    };
+    const tooltipContainerStyle = {
+      zIndex: 99999,
+      marginTop: 15
+    };
+
+    return (
+      <Popover
+        isOpen
+        body={<div style={tooltipStyle}>{this.props.tooltip.text}</div>}
+        style={tooltipContainerStyle}>
+        {this.renderHex()}
+      </Popover>
+    );
+  }
+
+  render() {
+    return this.shouldRenderTooltip ? this.renderHexWithTooltip() : this.renderHex();
   }
 }

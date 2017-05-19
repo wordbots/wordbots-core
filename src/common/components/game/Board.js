@@ -21,6 +21,7 @@ export default class Board extends Component {
     playingCardType: number,
     target: object,
     size: number,
+    tooltip: object,
 
     onSelectTile: func,
     onHoverTile: func
@@ -181,6 +182,7 @@ export default class Board extends Component {
           hexagons={grid.hexagons}
           layout={grid.layout}
           selectedHexId={this.selectedHexId}
+          tooltip={this.props.tooltip}
           actions={{
             onClick: this.onHexClick.bind(this),
             onHexHover: this.onHexHover.bind(this)

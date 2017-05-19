@@ -15,6 +15,7 @@ export default class HexGrid extends Component {
     actions: object.isRequired,
     layout: object.isRequired,
     hexagons: array.isRequired,
+    tooltip: object,
     path: object,
     hexColors: object,
     pieceImgs: object,
@@ -46,7 +47,8 @@ export default class HexGrid extends Component {
         fill={this.props.hexColors[HexUtils.getID(hex)]}
         pieceImg={this.props.pieceImgs[HexUtils.getID(hex)] || {}}
         pieceStats={this.props.pieceStats[HexUtils.getID(hex)]}
-        images={loadImages()} />
+        images={loadImages()}
+        tooltip={this.props.tooltip} />
     ));
   }
 

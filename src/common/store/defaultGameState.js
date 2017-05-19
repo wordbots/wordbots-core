@@ -75,7 +75,10 @@ export const tutorialState = Object.assign({}, defaultState, {
   tutorial: true,
   tutorialSteps: [
     {
-      tooltip: {},
+      tooltip: {
+        hex: '0,0,0',
+        text: 'Welcome to Wordbots!'
+      },
       action: {},
       response: {}
     }

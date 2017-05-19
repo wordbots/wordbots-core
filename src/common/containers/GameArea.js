@@ -52,6 +52,7 @@ export function mapStateToProps(state) {
     orangeDeck: state.game.players.orange.deck,
 
     sfxQueue: state.game.sfxQueue,
+    tooltip: state.game.tutorial ? state.game.tutorialSteps[0].tooltip : {},
 
     sidebarOpen: state.global.sidebarOpen
   };
@@ -121,6 +122,7 @@ export class GameArea extends Component {
     orangeDeck: array,
 
     sfxQueue: array,
+    tooltip: object,
 
     sidebarOpen: bool,
 
@@ -324,6 +326,7 @@ export class GameArea extends Component {
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               playingCardType={this.props.playingCardType}
+              tooltip={this.props.tooltip}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
           </div>

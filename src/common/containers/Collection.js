@@ -6,6 +6,8 @@ import { withRouter } from 'react-router';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { find, noop, pick } from 'lodash';
 
 import { getDisplayedCards, isCardVisible } from '../util/cards';
@@ -19,7 +21,7 @@ import SortControls from '../components/cards/SortControls';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
     exportedJson: state.collection.exportedJson,
@@ -28,7 +30,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onCloseExportDialog: () => {
       dispatch(collectionActions.closeExportDialog());
@@ -48,7 +50,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class Collection extends Component {
+export class Collection extends Component {
   static propTypes = {
     cards: array,
     exportedJson: string,
@@ -80,6 +82,14 @@ class Collection extends Component {
       importDialogOpen: false,
       layout: 0
     };
+  }
+
+  // For testing.
+  static childContextTypes = {
+    muiTheme: object.isRequired
+  };
+  getChildContext() {
+    return {muiTheme: getMuiTheme(baseTheme)};
   }
 
   get displayedCards() {

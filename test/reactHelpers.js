@@ -4,6 +4,7 @@ import { createRenderer } from 'react-test-renderer/shallow';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { noop } from 'lodash';
 
+import * as coll from '../src/common/containers/Collection';
 import * as creator from '../src/common/containers/Creator';
 import * as gameArea from '../src/common/containers/GameArea';
 
@@ -29,6 +30,10 @@ function createCreator(state, dispatch = noop) {
   return React.createElement(creator.Creator, Object.assign(creator.mapStateToProps(state), creator.mapDispatchToProps(dispatch)));
 }
 
+export function createCollection(state, dispatch = noop) {
+  return React.createElement(coll.Collection, Object.assign(coll.mapStateToProps(state), coll.mapDispatchToProps(dispatch)));
+}
+
 /* eslint-enable react/no-multi-comp */
 
 export function getComponent(type, componentClass, state, dispatch = noop, predicate = noop) {
@@ -40,6 +45,7 @@ export function getComponent(type, componentClass, state, dispatch = noop, predi
 function instantiator(type) {
   return {
     'GameArea': createGameArea,
-    'Creator': createCreator
+    'Creator': createCreator,
+    'Collection': createCollection
   }[type];
 }

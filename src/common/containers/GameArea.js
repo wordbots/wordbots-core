@@ -52,7 +52,7 @@ export function mapStateToProps(state) {
     orangeDeck: state.game.players.orange.deck,
 
     sfxQueue: state.game.sfxQueue,
-    tooltip: state.game.tutorial ? state.game.tutorialSteps[0].tooltip : {},
+    tooltip: state.game.tutorial ? state.game.tutorialSteps[0].tooltip : undefined,
 
     sidebarOpen: state.global.sidebarOpen
   };

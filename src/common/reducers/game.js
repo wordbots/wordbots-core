@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, reduce } from 'lodash';
+import { cloneDeep, isArray, isEqual, reduce } from 'lodash';
 
 import { id } from '../util/common';
 import { triggerSound } from '../util/game';
@@ -17,6 +17,9 @@ export default function game(oldState = cloneDeep(defaultState), action) {
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
     return reduce(action, game, state);
+  } else if (state.tutorial && !isEqual(action, state.tutorialSteps[0].action)) {
+    // In tutorial mode, only one specific action is allowed at any given time.
+    return oldState;
   } else {
     switch (action.type) {
       case socketActions.GAME_START:

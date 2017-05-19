@@ -1,4 +1,5 @@
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
+import * as actions from '../actions/game';
 
 import * as cards from './cards';
 
@@ -79,7 +80,7 @@ export const tutorialState = Object.assign({}, defaultState, {
         hex: '0,0,0',
         text: 'Welcome to Wordbots!'
       },
-      action: {},
+      action: actions.setSelectedTile('0,0,0', 'orange'),
       response: {}
     }
   ]

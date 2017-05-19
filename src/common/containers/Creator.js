@@ -7,13 +7,11 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isUndefined } from 'lodash';
 
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
+import Dictionary from '../components/cards/Dictionary';
 import * as creatorActions from '../actions/creator';
-
-import Dictionary from './Dictionary';
 
 export function mapStateToProps(state) {
   return {
@@ -27,7 +25,11 @@ export function mapStateToProps(state) {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
-    loggedIn: state.global.user !== null
+    loggedIn: state.global.user !== null,
+
+    dictionaryDefinitions: state.global.dictionary.definitions,
+    dictionaryExamples: state.global.dictionary.examplesByToken,
+    thesaurusExamples: state.global.dictionary.examplesByNode
   };
 }
 
@@ -58,6 +60,14 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Creator extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      dictionaryOpen: false
+    };
+  }
+
   static propTypes = {
     id: string,
     name: string,
@@ -70,6 +80,10 @@ export class Creator extends Component {
     health: number,
     cost: number,
     loggedIn: bool,
+
+    dictionaryDefinitions: object,
+    dictionaryExamples: object,
+    thesaurusExamples: object,
 
     history: object,
 
@@ -90,15 +104,18 @@ export class Creator extends Component {
     return {muiTheme: getMuiTheme(baseTheme)};
   }
 
-  get dictionaryIsOpen() {
-    return !isUndefined(this.props.history) && this.props.history.location.pathname.includes('dictionary');
+  openDictionary = () => {
+    this.setState({dictionaryOpen: true});
+    if (this.props.history) {
+      this.props.history.push('/creator/dictionary');
+    }
   }
 
-  openDictionary = () => {
-    this.props.history.push('/creator/dictionary');
-  }
   closeDictionary = () => {
-    this.props.history.push('/creator');
+    this.setState({dictionaryOpen: false});
+    if (this.props.history) {
+      this.props.history.push('/creator');
+    }
   }
 
   addToCollection = () => {
@@ -146,12 +163,16 @@ export class Creator extends Component {
         </div>
 
         <Dialog
-          open={this.dictionaryIsOpen}
+          open={this.state.dictionaryOpen}
           contentStyle={{width: '90%', maxWidth: 'none'}}
           onRequestClose={this.closeDictionary}
           actions={[<RaisedButton primary label="Close" onTouchTap={this.closeDictionary} />]}
         >
-          <Dictionary />
+          <Dictionary
+            dictionaryDefinitions={this.props.dictionaryDefinitions}
+            dictionaryExamples={this.props.dictionaryExamples}
+            thesaurusExamples={this.props.thesaurusExamples}
+            history={this.props.history} />
         </Dialog>
       </div>
     );

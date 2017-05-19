@@ -1,4 +1,4 @@
-import {clamp as _clamp, isEqual, some} from 'lodash';
+import {clamp as _clamp, isEqual, isNaN, some} from 'lodash';
 
 // Utility functions used everywhere.
 
@@ -36,6 +36,15 @@ export function arrayToSentence(arr) {
   return arr.slice(0, -2).join(', ') +
     (arr.slice(0, -2).length ? ', ' : '') +
     arr.slice(-2).join(' and ');
+}
+
+// Returns error on failure or nothing on success.
+export function ensureInRange(name, value, min, max) {
+  if (isNaN(parseInt(value))) {
+    return `Invalid ${name}.`;
+  } else if (value < min || value > max) {
+    return `Not between ${min} and ${max}.`;
+  }
 }
 
 export function inBrowser() {

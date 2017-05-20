@@ -3,10 +3,9 @@ import { flatMap, has, some } from 'lodash';
 import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HU from '../components/react-hexgrid/HexUtils';
 
-// Conditions are all (hexId, obj) -> bool functions.
+// Conditions are (hexId, obj) -> bool functions.
 // They are used by the objectsMatchingConditions() collection.
-
-export default function conditions(state) {
+export function conditions(state) {
   return {
     adjacentTo: function (targets) {
       const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
@@ -45,6 +44,16 @@ export default function conditions(state) {
       );
 
       return ((hexId, obj) => nearbyHexIds.includes(hexId));
+    }
+  };
+}
+
+// Global conditions simply return a boolean.
+export function globalConditions(state) {
+  return {
+    targetHasProperty: function (target, property) {
+      const condition = conditions(state).hasProperty(property);
+      return target.entries.every(obj => condition(getHex(state, obj), obj));
     }
   };
 }

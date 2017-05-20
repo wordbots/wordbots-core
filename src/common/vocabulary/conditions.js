@@ -26,13 +26,15 @@ export default function conditions(state) {
 
     hasProperty: function (property) {
       switch (property) {
+        // Simple properties.
         case 'attackedlastturn': return ((hexId, obj) => obj.attackedLastTurn);
         case 'attackedthisturn': return ((hexId, obj) => obj.attackedThisTurn);
         case 'movedlastturn': return ((hexId, obj) => obj.movedLastTurn);
         case 'movedthisturn': return ((hexId, obj) => obj.movedThisTurn);
+        case 'isdestroyed': return ((hexId, obj) => obj.isDestroyed);
 
-        case 'isdamaged':
-          return ((hexId, obj) => getAttribute(obj, 'health') < obj.card.stats.health);
+        // Complex properties.
+        case 'isdamaged': return ((hexId, obj) => getAttribute(obj, 'health') < obj.card.stats.health);
       }
     },
 

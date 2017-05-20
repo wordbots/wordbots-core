@@ -1,6 +1,6 @@
 import actions from './actions';
 import targets from './targets';
-import { conditions, globalConditions } from './conditions';
+import { objectConditions, globalConditions } from './conditions';
 import { setTrigger, unsetTrigger, triggers } from './triggers';
 import { setAbility, unsetAbility, abilities } from './abilities';
 import { allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions, other } from './collections';
@@ -10,7 +10,7 @@ export default function vocabulary(state, currentObject = null, source = null) {
   return {
     actions: actions(state),
     targets: targets(state, currentObject),
-    conditions: conditions(state),
+    conditions: objectConditions(state),
     globalConditions: globalConditions(state),
     triggers: triggers(state),
     abilities: abilities(state),

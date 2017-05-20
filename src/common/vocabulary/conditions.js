@@ -3,9 +3,24 @@ import { flatMap, has, some } from 'lodash';
 import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HU from '../components/react-hexgrid/HexUtils';
 
-// Conditions are (hexId, obj) -> bool functions.
+function objectHasProperty(obj, property) {
+  switch (property) {
+    // Simple properties.
+    case 'attackedlastturn': return obj.attackedLastTurn;
+    case 'attackedthisturn': return obj.attackedThisTurn;
+    case 'movedlastturn': return obj.movedLastTurn;
+    case 'movedthisturn': return obj.movedThisTurn;
+    case 'isdestroyed': return obj.isDestroyed;
+
+    // Complex properties.
+    case 'isdamaged':
+      return getAttribute(obj, 'health') < obj.card.stats.health;
+  }
+}
+
+// Object conditions are (hexId, obj) -> bool functions.
 // They are used by the objectsMatchingConditions() collection.
-export function conditions(state) {
+export function objectConditions(state) {
   return {
     adjacentTo: function (targets) {
       const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
@@ -24,17 +39,7 @@ export function conditions(state) {
     },
 
     hasProperty: function (property) {
-      switch (property) {
-        // Simple properties.
-        case 'attackedlastturn': return ((hexId, obj) => obj.attackedLastTurn);
-        case 'attackedthisturn': return ((hexId, obj) => obj.attackedThisTurn);
-        case 'movedlastturn': return ((hexId, obj) => obj.movedLastTurn);
-        case 'movedthisturn': return ((hexId, obj) => obj.movedThisTurn);
-        case 'isdestroyed': return ((hexId, obj) => obj.isDestroyed);
-
-        // Complex properties.
-        case 'isdamaged': return ((hexId, obj) => getAttribute(obj, 'health') < obj.card.stats.health);
-      }
+      return ((hexId, obj) => objectHasProperty(obj, property));
     },
 
     withinDistanceOf: function (distance, targets) {
@@ -49,11 +54,15 @@ export function conditions(state) {
 }
 
 // Global conditions simply return a boolean.
+// They're used in if-expressions.
 export function globalConditions(state) {
   return {
+    collectionExists: function (collection) {
+      return collection.length > 0;
+    },
+
     targetHasProperty: function (target, property) {
-      const condition = conditions(state).hasProperty(property);
-      return target.entries.every(obj => condition(getHex(state, obj), obj));
+      return target.entries.every(obj => objectHasProperty(obj, property));
     }
   };
 }

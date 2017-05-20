@@ -14,7 +14,7 @@ export default class HexShape extends React.Component {
     hex: object.isRequired,
     layout: object.isRequired,
     actions: object.isRequired,
-    tooltip: object,
+    tutorialStep: object,
     fill: string,
     images: object,
     pieceImg: object,
@@ -84,7 +84,7 @@ export default class HexShape extends React.Component {
   }
 
   get shouldRenderTooltip() {
-    return HexUtils.getID(this.props.hex) === (this.props.tooltip || {}).hex;
+    return this.props.tutorialStep && (HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex);
   }
 
   renderHexPattern() {
@@ -176,7 +176,11 @@ export default class HexShape extends React.Component {
   render() {
     if (this.shouldRenderTooltip) {
       return (
-        <TutorialTooltip text={this.props.tooltip.text}>
+        <TutorialTooltip
+          tutorialStep={this.props.tutorialStep}
+          onNextStep={() => { this.props.actions.onTutorialStep(false); }}
+          onPrevStep={() => { this.props.actions.onTutorialStep(true); }}
+        >
           {this.renderHex()}
         </TutorialTooltip>
       );

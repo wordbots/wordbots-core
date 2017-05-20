@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { array, object, oneOfType, string } from 'prop-types';
+import { array, func, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
+import RaisedButton from 'material-ui/RaisedButton';
 
 export default class TutorialTooltip extends Component {
   static propTypes = {
     children: oneOfType([array, object]),
-    text: string
+    tutorialStep: object,
+
+    onNextStep: func,
+    onPrevStep: func
   };
 
   get styles() {
@@ -22,6 +26,10 @@ export default class TutorialTooltip extends Component {
     };
   }
 
+  get step() {
+    return this.props.tutorialStep;
+  }
+
   render() {
     return (
       <Popover
@@ -29,7 +37,10 @@ export default class TutorialTooltip extends Component {
         style={this.styles.container}
         body={
           <div style={this.styles.tooltip}>
-            {this.props.text}
+            <p>{this.step.idx + 1} / {this.step.numSteps}</p>
+            <p>{this.step.tooltip.text}</p>
+            <RaisedButton label="<" onClick={this.props.onPrevStep} />
+            <RaisedButton label=">" onClick={this.props.onNextStep} />
           </div>
         }
       >

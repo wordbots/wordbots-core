@@ -52,7 +52,7 @@ export function mapStateToProps(state) {
     orangeDeck: state.game.players.orange.deck,
 
     sfxQueue: state.game.sfxQueue,
-    tooltip: currentTutorialStep(state.game).tooltip,
+    tutorialStep: currentTutorialStep(state.game),
 
     sidebarOpen: state.global.sidebarOpen
   };
@@ -89,6 +89,9 @@ export function mapDispatchToProps(dispatch) {
         gameActions.endGame(),
         socketActions.leave()
       ]);
+    },
+    onTutorialStep: (back) => {
+      dispatch(gameActions.tutorialStep(back));
     }
   };
 }
@@ -122,7 +125,7 @@ export class GameArea extends Component {
     orangeDeck: array,
 
     sfxQueue: array,
-    tooltip: object,
+    tutorialStep: object,
 
     sidebarOpen: bool,
 
@@ -134,7 +137,8 @@ export class GameArea extends Component {
     onSelectTile: func,
     onHoverCard: func,
     onHoverTile: func,
-    onVictoryScreenClick: func
+    onVictoryScreenClick: func,
+    onTutorialStep: func
   };
 
 
@@ -326,9 +330,10 @@ export class GameArea extends Component {
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               playingCardType={this.props.playingCardType}
-              tooltip={this.props.tooltip}
+              tutorialStep={this.props.tutorialStep}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
-              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
+              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
+              onTutorialStep={this.props.onTutorialStep} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen

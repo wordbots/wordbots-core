@@ -35,7 +35,13 @@ export function opponentPlayer(state) {
 }
 
 export function currentTutorialStep(state) {
-  return state.tutorialSteps ? state.tutorialSteps[state.tutorialCurrentStepIdx] : {};
+  if (state.tutorialSteps) {
+    const step = state.tutorialSteps[state.tutorialCurrentStepIdx];
+    return Object.assign({}, step, {
+      idx: state.tutorialCurrentStepIdx,
+      numSteps: state.tutorialSteps.length
+    });
+  }
 }
 
 export function allObjectsOnBoard(state) {

@@ -1,4 +1,5 @@
 export const START_TUTORIAL = 'START_TUTORIAL';
+export const TUTORIAL_STEP = 'TUTORIAL_STEP';
 export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
@@ -14,6 +15,13 @@ export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
 export function startTutorial() {
   return {
     type: START_TUTORIAL
+  };
+}
+
+export function tutorialStep(back = false) {
+  return {
+    type: TUTORIAL_STEP,
+    payload: { back }
   };
 }
 

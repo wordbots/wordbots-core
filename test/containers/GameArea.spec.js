@@ -50,6 +50,7 @@ describe('GameArea container', () => {
           size={1000}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
+          onTutorialStep={board.props.onTutorialStep}
           />
       </div>,
       <PlayerArea gameProps={game.props} />,

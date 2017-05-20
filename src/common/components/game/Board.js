@@ -21,10 +21,11 @@ export default class Board extends Component {
     playingCardType: number,
     target: object,
     size: number,
-    tooltip: object,
+    tutorialStep: object,
 
     onSelectTile: func,
-    onHoverTile: func
+    onHoverTile: func,
+    onTutorialStep: func
   };
 
   constructor(props) {
@@ -182,10 +183,11 @@ export default class Board extends Component {
           hexagons={grid.hexagons}
           layout={grid.layout}
           selectedHexId={this.selectedHexId}
-          tooltip={this.props.tooltip}
+          tutorialStep={this.props.tutorialStep}
           actions={{
             onClick: this.onHexClick.bind(this),
-            onHexHover: this.onHexHover.bind(this)
+            onHexHover: this.onHexHover.bind(this),
+            onTutorialStep: this.props.onTutorialStep
           }} />
       </div>
     );

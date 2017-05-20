@@ -18,7 +18,7 @@ function objectHasProperty(obj, property) {
   }
 }
 
-// Object conditions are (hexId, obj) -> bool functions.
+// Object conditions return (hexId, obj) -> bool functions.
 // They are used by the objectsMatchingConditions() collection.
 export function objectConditions(state) {
   return {

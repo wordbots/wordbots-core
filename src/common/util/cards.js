@@ -1,5 +1,5 @@
 import {
-  capitalize, compact, countBy, debounce, every, flatMap, fromPairs,
+  capitalize, compact, countBy, debounce, flatMap, fromPairs,
   isArray, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
@@ -217,7 +217,7 @@ export function allKeywords() {
 }
 
 export function isKeywordExpression(sentence, hintsToo = false) {
-  return every(phrases(sentence), p => KEYWORDS[p.toLowerCase()]);
+  return phrases(sentence).every(p => KEYWORDS[p.toLowerCase()]);
 }
 
 export function keywordsInSentence(sentence, hintsToo = false) {

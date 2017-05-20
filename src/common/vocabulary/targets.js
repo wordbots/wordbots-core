@@ -1,4 +1,4 @@
-import { compact, every, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
+import { compact, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
 import { arrayToSentence } from '../util/common';
@@ -38,7 +38,7 @@ export default function targets(state, currentObject) {
           return {type: 'cards', entries: chosenTargets};
         } else {
           // Return objects if possible or hexes if not.
-          if (every(chosenTargets, hex => allObjectsOnBoard(state)[hex])) {
+          if (chosenTargets.every(hex => allObjectsOnBoard(state)[hex])) {
             return {type: 'objects', entries: chosenTargets.map(hex => allObjectsOnBoard(state)[hex])};
           } else {
             return {type: 'hexes', entries: chosenTargets};

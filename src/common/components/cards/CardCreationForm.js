@@ -6,21 +6,14 @@ import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { capitalize, compact, isNaN } from 'lodash';
+import { capitalize, compact } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
+import { ensureInRange } from '../../util/common';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import NumberField from './NumberField';
-
-function ensureInRange(name, value, min, max) {
-  if (isNaN(parseInt(value))) {
-    return `Invalid ${name}.`;
-  } else if (value < min || value > max) {
-    return `Not between ${min} and ${max}.`;
-  }
-}
 
 export default class CardCreationForm extends Component {
   static propTypes = {

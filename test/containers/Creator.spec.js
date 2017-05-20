@@ -17,20 +17,24 @@ describe('Creator container', () => {
         collection: collectionReducer(state.collection, action),
         creator: creatorReducer(state.creator, action),
         game: gameReducer(state.game, action),
-        global: {}
+        global: state.global
       };
+    }
+
+    function form() {
+      return getComponent('Creator', CardCreationForm, state, dispatch).props;
     }
 
     const numCards = state.collection.cards.length;
     const newCardName = 'Test Card';
 
-    getComponent('Creator', CardCreationForm, state, dispatch).props
-      .onSetName(newCardName);
+    form().onOpenDictionary();  // (Test ability to open the Dictionary.)
+
+    form().onSetName(newCardName);
 
     expect(state.creator.name).toEqual(newCardName);
 
-    getComponent('Creator', CardCreationForm, state, dispatch).props
-      .onAddToCollection();
+    form().onAddToCollection();
 
     expect(state.collection.cards.length).toEqual(numCards + 1);
 

@@ -1,26 +1,17 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize } from 'lodash';
 
-import { allKeywords, contractKeywords } from '../util/cards';
-import StatusIcon from '../components/card/StatusIcon';
-import DictionarySidebar from '../components/cards/DictionarySidebar';
+import { allKeywords, contractKeywords } from '../../util/cards';
+import StatusIcon from '../card/StatusIcon';
 
-export function mapStateToProps(state) {
-  return {
-    dictionaryDefinitions: state.global.dictionary.definitions,
-    dictionaryExamples: state.global.dictionary.examplesByToken,
-    thesaurusExamples: state.global.dictionary.examplesByNode
-  };
-}
+import DictionarySidebar from './DictionarySidebar';
 
-class Dictionary extends Component {
+export default class Dictionary extends Component {
   static propTypes = {
     dictionaryDefinitions: object,
     dictionaryExamples: object,
@@ -41,14 +32,16 @@ class Dictionary extends Component {
   }
 
   componentWillReceiveProps() {
-    const hash = this.props.history.location.hash.split('#')[1];
-    if (hash) {
-      const [ type, term ] = hash.split(':');
-      const newTabIdx = ['d', 't', 'k'].indexOf(type);
+    if (this.props.history) {
+      const hash = this.props.history.location.hash.split('#')[1];
+      if (hash) {
+        const [ type, term ] = hash.split(':');
+        const newTabIdx = ['d', 't', 'k'].indexOf(type);
 
-      this.changeTab(newTabIdx, () => {
-        this.setTerm(term);
-      });
+        this.changeTab(newTabIdx, () => {
+          this.setTerm(term);
+        });
+      }
     }
   }
 
@@ -99,7 +92,9 @@ class Dictionary extends Component {
   setHash() {
     const tab = this.currentTab;
     const term = this[`${tab}Term`];
-    this.props.history.push(`${this.props.history.location.pathname}#${tab.toLowerCase()[0]}:${term}`);
+    if (this.props.history) {
+      this.props.history.push(`${this.props.history.location.pathname}#${tab.toLowerCase()[0]}:${term}`);
+    }
   }
 
   renderTitle() {
@@ -209,5 +204,3 @@ class Dictionary extends Component {
     );
   }
 }
-
-export default withRouter(connect(mapStateToProps)(Dictionary));

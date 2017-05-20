@@ -74,6 +74,7 @@ export const tutorialState = Object.assign({}, defaultState, {
   started: true,
   usernames: {orange: 'You', blue: 'CPU'},
   tutorial: true,
+  tutorialCurrentStepIdx: 0,
   tutorialSteps: [
     {
       tooltip: {
@@ -81,6 +82,14 @@ export const tutorialState = Object.assign({}, defaultState, {
         text: 'Welcome to Wordbots!'
       },
       action: actions.setSelectedTile('0,0,0', 'orange'),
+      response: {}
+    },
+    {
+      tooltip: {
+        hex: '0,0,0',
+        text: 'Step 2'
+      },
+      action: {},
       response: {}
     }
   ]

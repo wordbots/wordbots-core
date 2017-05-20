@@ -1,9 +1,9 @@
 import React from 'react';
 import { bool, object, string } from 'prop-types';
-import Popover from 'react-popover';
 import { isUndefined } from 'lodash';
 
 import { DISPLAY_HEX_IDS } from '../../constants';
+import TutorialTooltip from '../game/TutorialTooltip';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
@@ -173,28 +173,15 @@ export default class HexShape extends React.Component {
     );
   }
 
-  renderHexWithTooltip() {
-    const tooltipStyle = {
-      border: '1px solid black',
-      padding: 5,
-      background: '#CCC'
-    };
-    const tooltipContainerStyle = {
-      zIndex: 99999,
-      marginTop: 15
-    };
-
-    return (
-      <Popover
-        isOpen
-        body={<div style={tooltipStyle}>{this.props.tooltip.text}</div>}
-        style={tooltipContainerStyle}>
-        {this.renderHex()}
-      </Popover>
-    );
-  }
-
   render() {
-    return this.shouldRenderTooltip ? this.renderHexWithTooltip() : this.renderHex();
+    if (this.shouldRenderTooltip) {
+      return (
+        <TutorialTooltip text={this.props.tooltip.text}>
+          {this.renderHex()}
+        </TutorialTooltip>
+      );
+    } else {
+      return this.renderHex();
+    }
   }
 }

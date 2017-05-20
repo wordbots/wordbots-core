@@ -1,21 +1,24 @@
-import { newGame, passTurn, startTutorial } from '../../util/game';
+import { newGame, passTurn } from '../../util/game';
 
 import { setSelectedCard, placeCard } from './game/cards';
 import { setHoveredTile, setSelectedTile, moveRobot, attack, activateObject } from './game/board';
+import { startTutorial, handleTutorialAction } from './game/tutorial';
 
 const gameHandlers = {
-  newGame: newGame,
-  startTutorial: startTutorial,
-  passTurn: passTurn,
+  newGame,
+  passTurn,
 
-  setSelectedCard: setSelectedCard,
-  placeCard: placeCard,
+  setSelectedCard,
+  placeCard,
 
-  setHoveredTile: setHoveredTile,
-  setSelectedTile: setSelectedTile,
-  moveRobot: moveRobot,
-  attack: attack,
-  activateObject: activateObject
+  setHoveredTile,
+  setSelectedTile,
+  moveRobot,
+  attack,
+  activateObject,
+
+  startTutorial,
+  handleTutorialAction
 };
 
 export default gameHandlers;

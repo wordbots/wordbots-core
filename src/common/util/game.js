@@ -2,9 +2,7 @@ import { chain as _, cloneDeep, filter, findKey, flatMap, isArray, mapValues, so
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
-import defaultState, {
-  bluePlayerState, orangePlayerState, arbitraryPlayerState, tutorialState
-} from '../store/defaultGameState';
+import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
 import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/react-hexgrid/GridGenerator';
 import Hex from '../components/react-hexgrid/Hex';
@@ -34,6 +32,10 @@ export function currentPlayer(state) {
 
 export function opponentPlayer(state) {
   return state.players[opponentName(state)];
+}
+
+export function currentTutorialStep(state) {
+  return state.tutorialSteps ? state.tutorialSteps[state.tutorialCurrentStepIdx] : {};
 }
 
 export function allObjectsOnBoard(state) {
@@ -238,13 +240,6 @@ export function newGame(state, player, usernames, decks, seed) {
   state.players.blue = bluePlayerState(decks.blue);
   state.players.orange = orangePlayerState(decks.orange);
   state.started = true;
-  state = triggerSound(state, 'yourmove.wav');
-  return state;
-}
-
-export function startTutorial(state) {
-  // Reset game state and enable tutorial mode.
-  state = Object.assign(state, cloneDeep(tutorialState));
   state = triggerSound(state, 'yourmove.wav');
   return state;
 }

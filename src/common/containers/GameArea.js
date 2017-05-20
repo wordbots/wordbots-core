@@ -9,7 +9,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
 import { inBrowser } from '../util/common';
-import { getAttribute } from '../util/game';
+import { currentTutorialStep, getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
@@ -52,7 +52,7 @@ export function mapStateToProps(state) {
     orangeDeck: state.game.players.orange.deck,
 
     sfxQueue: state.game.sfxQueue,
-    tooltip: state.game.tutorial ? state.game.tutorialSteps[0].tooltip : undefined,
+    tooltip: currentTutorialStep(state.game).tooltip,
 
     sidebarOpen: state.global.sidebarOpen
   };

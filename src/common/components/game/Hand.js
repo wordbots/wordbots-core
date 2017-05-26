@@ -8,20 +8,24 @@ import { splitSentences } from '../../util/cards';
 import { getCost } from '../../util/game';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
+import TutorialTooltip from '../game/TutorialTooltip';
 
 export default class Hand extends Component {
   static propTypes = {
     name: string,
     cards: array,
     isActivePlayer: bool,
-    onSelectCard: func,
-    onHoverCard: func,
     selectedCard: number,
     hoveredCard: number,
     targetableCards: array,
     status: object,
     curved: bool,
-    opponent: bool
+    opponent: bool,
+    tutorialStep: object,
+
+    onSelectCard: func,
+    onHoverCard: func,
+    onTutorialStep: func
   };
 
   calculateAvailableWidth() {
@@ -53,32 +57,40 @@ export default class Hand extends Component {
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
       return (
-        <Card
+        <TutorialTooltip
           key={card.id}
-          numCards={numCards}
-          status={this.props.status}
-          name={card.name}
-          spriteID={card.spriteID}
-          type={card.type}
-          text={splitSentences(card.text).map(Sentence)}
-          rawText={card.text || ''}
-          img={card.img}
-          cost={getCost(card)}
-          baseCost={card.baseCost}
-          cardStats={card.stats}
-          source={card.source}
+          tutorialStep={this.props.tutorialStep}
+          enabled={this.props.tutorialStep.tooltip.card === card.name}
+          onNextStep={() => { this.props.onTutorialStep(); }}
+          onPrevStep={() => { this.props.onTutorialStep(true); }}
+        >
+          <Card
+            key={card.id}
+            numCards={numCards}
+            status={this.props.status}
+            name={card.name}
+            spriteID={card.spriteID}
+            type={card.type}
+            text={splitSentences(card.text).map(Sentence)}
+            rawText={card.text || ''}
+            img={card.img}
+            cost={getCost(card)}
+            baseCost={card.baseCost}
+            cardStats={card.stats}
+            source={card.source}
 
-          selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
-          targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
-          visible={this.props.isActivePlayer}
+            selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
+            targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
+            visible={this.props.isActivePlayer}
 
-          margin={idx < numCards - 1 ? cardMargin : 0}
-          rotation={this.props.curved ? rotationDegs : 0}
-          yTranslation={this.props.curved ? translationPx : 0}
-          zIndex={zIndex}
+            margin={idx < numCards - 1 ? cardMargin : 0}
+            rotation={this.props.curved ? rotationDegs : 0}
+            yTranslation={this.props.curved ? translationPx : 0}
+            zIndex={zIndex}
 
-          onCardClick={e => { this.props.onSelectCard(idx); }}
-          onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+            onCardClick={e => { this.props.onSelectCard(idx); }}
+            onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+        </TutorialTooltip>
       );
     });
   }

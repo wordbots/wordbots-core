@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, object, oneOfType } from 'prop-types';
+import { array, bool, func, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -7,9 +7,14 @@ export default class TutorialTooltip extends Component {
   static propTypes = {
     children: oneOfType([array, object]),
     tutorialStep: object,
+    enabled: bool,
 
     onNextStep: func,
     onPrevStep: func
+  };
+
+  static defaultProps = {
+    enabled: true
   };
 
   get styles() {
@@ -26,8 +31,8 @@ export default class TutorialTooltip extends Component {
       },
       percent: {
         position: 'absolute',
-        top: 5,
-        right: 5,
+        top: 8,
+        right: 8,
         fontSize: 10,
         color: '#666'
       },
@@ -49,34 +54,53 @@ export default class TutorialTooltip extends Component {
     return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
   }
 
-  render() {
-    return (
-      <Popover
-        isOpen
-        style={this.styles.container}
-        body={
-          <div style={this.styles.tooltip}>
-            <div style={this.styles.percent}>
-              {this.pctComplete}% complete
-            </div>
-
-            <p>{this.step.tooltip.text}</p>
-
-            <RaisedButton
-              label="PREV"
-              disabled={this.step.idx === 0}
-              style={this.styles.leftButton}
-              onClick={this.props.onPrevStep} />
-            <RaisedButton
-              label="NEXT"
-              disabled={this.pctComplete === 100}
-              style={this.styles.rightButton}
-              onClick={this.props.onNextStep} />
-          </div>
-        }
-      >
-        {this.props.children}
-      </Popover>
+  renderButtons() {
+    const backButton = (
+      <RaisedButton
+        label="BACK"
+        disabled={this.step.idx === 0}
+        style={this.styles.leftButton}
+        onClick={this.props.onPrevStep}
+      />
     );
+    const nextButton = (
+      <RaisedButton
+        label={this.pctComplete === 100 ? 'FINISH' : 'NEXT'}
+        style={this.styles.rightButton}
+        onClick={this.props.onNextStep} />
+    );
+
+    return (
+      <div>
+        {backButton}
+        {this.step.action ? null : nextButton}
+      </div>
+    );
+  }
+
+  render() {
+    if (this.props.enabled) {
+      return (
+        <Popover
+          isOpen
+          style={this.styles.container}
+          body={
+            <div style={this.styles.tooltip}>
+              <div style={this.styles.percent}>
+                {this.pctComplete}% complete
+              </div>
+
+              <p>{this.step.tooltip.text}</p>
+
+              {this.renderButtons()}
+            </div>
+          }
+        >
+          {this.props.children}
+        </Popover>
+      );
+    } else {
+      return this.props.children;
+    }
   }
 }

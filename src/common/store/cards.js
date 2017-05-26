@@ -95,6 +95,24 @@ export const wrathOfRobotGodCard = {
   type: TYPE_EVENT
 };
 
+// IIa. Tutorial-only cards.
+
+export const upgradeCard = {
+  name: 'Upgrade',
+  text: 'Give a robot +2 attack and +2 health.',
+  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
+  cost: 2,
+  type: TYPE_EVENT
+};
+
+export const rechargeCard = {
+  name: 'Recharge',
+  text: 'All of your robots can move and attack again.',
+  command: "(function () { actions['canMoveAndAttackAgain'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })",
+  cost: 2,
+  type: TYPE_EVENT
+};
+
 // III. Core set
 
 // IIIa. Robots
@@ -123,7 +141,7 @@ export const twoBotCard = {
   abilities: []
 };
 
-const redBotCard = {
+export const redBotCard = {
   name: 'Red Bot',
   cost: 3,
   type: TYPE_ROBOT,

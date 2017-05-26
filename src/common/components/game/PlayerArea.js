@@ -45,14 +45,16 @@ class PlayerArea extends Component {
           // curved
           opponent={opponent}
           name={color}
-          onSelectCard={idx => gameProps.onSelectCard(idx, color)}
-          onHoverCard={gameProps.onHoverCard}
           selectedCard={gameProps.selectedCard}
           hoveredCard={gameProps.hoveredCardIdx}
           targetableCards={gameProps.target.possibleCards}
           isActivePlayer={gameProps.player === color}
           cards={gameProps[`${color}Hand`]}
-          status={gameProps.status} />
+          status={gameProps.status}
+          tutorialStep={gameProps.tutorialStep}
+          onSelectCard={idx => gameProps.onSelectCard(idx, color)}
+          onHoverCard={gameProps.onHoverCard}
+          onTutorialStep={gameProps.onTutorialStep} />
         <Deck deck={gameProps[`${color}Deck`]} />
       </div>
     );

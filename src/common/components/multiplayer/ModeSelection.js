@@ -23,7 +23,7 @@ export default class ModeSelection extends Component {
           name="Tutorial"
           onSelect={() => this.props.onSelectMode(0)} />
         <GameMode
-          name="Custom Game"
+          name="Casual Game"
           onSelect={() => this.props.onSelectMode(1)} />
         <GameMode
           name="Ranked Matchmaking"

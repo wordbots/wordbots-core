@@ -9,9 +9,10 @@ import FontIcon from 'material-ui/FontIcon';
 
 import { DISABLE_TURN_TIMER } from '../constants';
 import { soundEnabled, toggleSound } from '../util/common';
-import { allObjectsOnBoard, opponent, ownerOf } from '../util/game';
+import { allObjectsOnBoard, opponent, ownerOf, currentTutorialStep } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
+import TutorialTooltip from '../components/game/TutorialTooltip';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player];
@@ -25,7 +26,8 @@ export function mapStateToProps(state) {
     isMyTurn: state.game.currentTurn === state.game.player,
     isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
-    selectedPiece: selectedPiece
+    selectedPiece: selectedPiece,
+    tutorialStep: currentTutorialStep(state.game)
   };
 }
 
@@ -42,6 +44,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onPassTurn: (player) => {
       dispatch(gameActions.passTurn(player));
+    },
+    onTutorialStep: (back) => {
+      dispatch(gameActions.tutorialStep(back));
     }
   };
 }
@@ -58,10 +63,12 @@ export class GameMenu extends Component {
     isMyPiece: bool,
     isSpectator: bool,
     selectedPiece: object,
+    tutorialStep: object,
 
     onActivate: func,
     onForfeit: func,
-    onPassTurn: func
+    onPassTurn: func,
+    onTutorialStep: func
   };
 
   constructor(props) {
@@ -188,16 +195,25 @@ export class GameMenu extends Component {
       >
         {this.renderTimer()}
         <Divider />
-        <MenuItem
-          primaryText="End Turn"
-          disabled={!this.props.isMyTurn || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
-          onClick={() => { this.props.onPassTurn(this.props.player); }} />
+
+        <TutorialTooltip
+          tutorialStep={this.props.tutorialStep}
+          enabled={this.props.tutorialStep.tooltip.location === 'endTurnButton'}
+          onNextStep={() => { this.props.onTutorialStep(); }}
+          onPrevStep={() => { this.props.onTutorialStep(true); }}
+        >
+          <MenuItem
+            primaryText="End Turn"
+            disabled={!this.props.isMyTurn || this.props.gameOver}
+            leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
+            onClick={() => { this.props.onPassTurn(this.props.player); }} />
+        </TutorialTooltip>
         <MenuItem
           primaryText="Forfeit"
           disabled={this.props.isSpectator || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">close</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+
         <Divider />
         {this.renderActivatedAbilities()}
         <Divider />

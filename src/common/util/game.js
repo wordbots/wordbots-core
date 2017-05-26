@@ -41,6 +41,8 @@ export function currentTutorialStep(state) {
       idx: state.tutorialCurrentStepIdx,
       numSteps: state.tutorialSteps.length
     });
+  } else {
+    return {tooltip: {}};
   }
 }
 
@@ -124,7 +126,7 @@ export function checkVictoryConditions(state) {
 
   if (state.winner) {
     state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
-    state = logAction(state, state.winner, state.winner === state.player ? ' win' : 'wins');
+    state = logAction(state, state.players[state.winner], state.winner === state.player ? ' win' : 'wins');
   }
 
   return state;

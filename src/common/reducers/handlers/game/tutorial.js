@@ -1,4 +1,5 @@
 import { cloneDeep, isEqual } from 'lodash';
+import { apply as applyPatch, compare } from 'fast-json-patch';
 
 import { handleAction } from '../../game';
 import { currentTutorialStep, passTurn } from '../../../util/game';
@@ -17,17 +18,19 @@ function nextStep(state) {
       state = handleAction(state, action);
     }
 
-    state = Object.assign({}, state, {
-      prev: oldState,
-      tutorialCurrentStepIdx: state.tutorialCurrentStepIdx + 1
-    });
+    state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx + 1;
+    state.undoStack.push(compare(state, oldState));
   }
 
   return state;
 }
 
 function prevStep(state) {
-  return state.prev || state;
+  if (state.undoStack.length > 0) {
+    applyPatch(state, state.undoStack.pop());
+  }
+
+  return state;
 }
 
 export function startTutorial(state) {
@@ -37,7 +40,8 @@ export function startTutorial(state) {
     usernames: {orange: 'You', blue: 'CPU'},
     tutorial: true,
     tutorialCurrentStepIdx: 0,
-    tutorialSteps: tutorialScript
+    tutorialSteps: tutorialScript,
+    undoStack: []
   });
 
   // Set up the decks, hand, and board as we want it.
@@ -47,6 +51,7 @@ export function startTutorial(state) {
   // Start new turn.
   state = passTurn(state, 'orange');
   state = passTurn(state, 'blue');
+  state.sfxQueue = ['yourmove.wav'];
 
   return state;
 }

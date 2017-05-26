@@ -65,7 +65,12 @@ export function startTutorial(state) {
 }
 
 export function endTutorial(state) {
-  return cloneDeep(defaultState);
+  return Object.assign(state, cloneDeep(defaultState), {
+    started: false,
+    tutorial: false,
+    tutorialCurrentStepIdx: 0,
+    undoStack: []
+  });
 }
 
 export function handleTutorialAction(state, action) {

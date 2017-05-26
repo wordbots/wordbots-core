@@ -99,7 +99,7 @@ export const wrathOfRobotGodCard = {
 
 // IIIa. Robots
 
-const oneBotCard = {
+export const oneBotCard = {
   name: 'One Bot',
   cost: 1,
   type: TYPE_ROBOT,

@@ -1,5 +1,4 @@
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
-import * as actions from '../actions/game';
 
 import * as cards from './cards';
 
@@ -69,30 +68,5 @@ const defaultState = {
   memory: {},
   sfxQueue: []
 };
-
-export const tutorialState = Object.assign({}, defaultState, {
-  started: true,
-  usernames: {orange: 'You', blue: 'CPU'},
-  tutorial: true,
-  tutorialCurrentStepIdx: 0,
-  tutorialSteps: [
-    {
-      tooltip: {
-        hex: '0,0,0',
-        text: 'Welcome to Wordbots!'
-      },
-      action: actions.setSelectedTile('0,0,0', 'orange'),
-      response: {}
-    },
-    {
-      tooltip: {
-        hex: '0,0,0',
-        text: 'Step 2'
-      },
-      action: {},
-      response: {}
-    }
-  ]
-});
 
 export default defaultState;

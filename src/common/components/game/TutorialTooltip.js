@@ -19,15 +19,34 @@ export default class TutorialTooltip extends Component {
         marginTop: 15
       },
       tooltip: {
+        width: 330,
         border: '1px solid black',
-        padding: 5,
-        background: '#CCC'
+        padding: 10,
+        background: '#D8D8D8'
+      },
+      percent: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        fontSize: 10,
+        color: '#666'
+      },
+      leftButton: {
+        width: 100
+      },
+      rightButton: {
+        width: 100,
+        float: 'right'
       }
     };
   }
 
   get step() {
     return this.props.tutorialStep;
+  }
+
+  get pctComplete() {
+    return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
   }
 
   render() {
@@ -37,10 +56,22 @@ export default class TutorialTooltip extends Component {
         style={this.styles.container}
         body={
           <div style={this.styles.tooltip}>
-            <p>{this.step.idx + 1} / {this.step.numSteps}</p>
+            <div style={this.styles.percent}>
+              {this.pctComplete}% complete
+            </div>
+
             <p>{this.step.tooltip.text}</p>
-            <RaisedButton label="<" onClick={this.props.onPrevStep} />
-            <RaisedButton label=">" onClick={this.props.onNextStep} />
+
+            <RaisedButton
+              label="PREV"
+              disabled={this.step.idx === 0}
+              style={this.styles.leftButton}
+              onClick={this.props.onPrevStep} />
+            <RaisedButton
+              label="NEXT"
+              disabled={this.pctComplete === 100}
+              style={this.styles.rightButton}
+              onClick={this.props.onNextStep} />
           </div>
         }
       >

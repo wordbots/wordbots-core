@@ -7,7 +7,7 @@ export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;
 export const KEEP_DECKS_UNSHUFFLED = false;
 export const DISABLE_TURN_TIMER = false;
-export const DISPLAY_HEX_IDS = false;
+export const DISPLAY_HEX_IDS = true;
 
 export const MODE_TUTORIAL = 0;
 export const MODE_CUSTOM = 1;

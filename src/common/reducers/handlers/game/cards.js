@@ -56,7 +56,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
   }
 }
 
-export function placeCard(state, cardIdx, tile) {
+export function placeCard(state, cardIdx, tile, inTutorial = false) {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -65,8 +65,10 @@ export function placeCard(state, cardIdx, tile) {
   const card = player.hand[cardIdx];
   const timestamp = Date.now();
 
-  if (player.energy.available >= getCost(card) &&
-      validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
+  const validHexes = validPlacementHexes(state, player.name, card.type).map(HexUtils.getID);
+  const canPlaceCard = player.energy.available >= getCost(card) && validHexes.includes(tile);
+
+  if (canPlaceCard || inTutorial) {
     const playedObject = {
       id: id(),
       card: card,

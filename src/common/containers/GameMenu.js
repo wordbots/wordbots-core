@@ -198,7 +198,7 @@ export class GameMenu extends Component {
 
         <TutorialTooltip
           tutorialStep={this.props.tutorialStep}
-          enabled={this.props.tutorialStep.tooltip.location === 'endTurnButton'}
+          enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
           onNextStep={() => { this.props.onTutorialStep(); }}
           onPrevStep={() => { this.props.onTutorialStep(true); }}
         >

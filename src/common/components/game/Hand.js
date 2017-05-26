@@ -60,7 +60,7 @@ export default class Hand extends Component {
         <TutorialTooltip
           key={card.id}
           tutorialStep={this.props.tutorialStep}
-          enabled={this.props.tutorialStep.tooltip.card === card.name}
+          enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.card === card.name}
           onNextStep={() => { this.props.onTutorialStep(); }}
           onPrevStep={() => { this.props.onTutorialStep(true); }}
         >

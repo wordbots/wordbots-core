@@ -41,8 +41,6 @@ export function currentTutorialStep(state) {
       idx: state.tutorialCurrentStepIdx,
       numSteps: state.tutorialSteps.length
     });
-  } else {
-    return {tooltip: {}};
   }
 }
 

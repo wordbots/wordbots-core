@@ -79,7 +79,7 @@ export default class TutorialTooltip extends Component {
   }
 
   render() {
-    if (this.props.enabled) {
+    if (this.step && this.props.enabled) {
       return (
         <Popover
           isOpen

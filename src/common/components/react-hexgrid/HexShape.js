@@ -180,6 +180,7 @@ export default class HexShape extends React.Component {
           tutorialStep={this.props.tutorialStep}
           onNextStep={() => { this.props.actions.onTutorialStep(false); }}
           onPrevStep={() => { this.props.actions.onTutorialStep(true); }}
+          onEndTutorial={this.props.actions.onEndGame}
         >
           {this.renderHex()}
         </TutorialTooltip>

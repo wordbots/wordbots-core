@@ -25,7 +25,8 @@ export default class Board extends Component {
 
     onSelectTile: func,
     onHoverTile: func,
-    onTutorialStep: func
+    onTutorialStep: func,
+    onEndGame: func
   };
 
   constructor(props) {
@@ -187,7 +188,8 @@ export default class Board extends Component {
           actions={{
             onClick: this.onHexClick.bind(this),
             onHexHover: this.onHexHover.bind(this),
-            onTutorialStep: this.props.onTutorialStep
+            onTutorialStep: this.props.onTutorialStep,
+            onEndGame: this.props.onEndGame
           }} />
       </div>
     );

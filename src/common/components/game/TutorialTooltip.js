@@ -4,6 +4,7 @@ import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+import { noop } from 'lodash';
 
 import Tooltip from '../Tooltip';
 
@@ -16,13 +17,15 @@ export default class TutorialTooltip extends Component {
     left: number,
 
     onNextStep: func,
-    onPrevStep: func
+    onPrevStep: func,
+    onEndTutorial: func
   };
 
   static defaultProps = {
     enabled: true,
     top: 15,
-    left: 0
+    left: 0,
+    onEndTutorial: noop
   };
 
   get styles() {
@@ -69,6 +72,10 @@ export default class TutorialTooltip extends Component {
     return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
   }
 
+  get isComplete() {
+    return this.pctComplete === 100;
+  }
+
   get backButton() {
     return (
       <Tooltip inline text="Go back a step">
@@ -87,9 +94,9 @@ export default class TutorialTooltip extends Component {
     if (!this.step.action) {
       return (
         <RaisedButton
-          label={this.pctComplete === 100 ? 'FINISH' : 'NEXT'}
+          label={this.isComplete ? 'FINISH' : 'NEXT'}
           style={this.styles.nextButton}
-          onClick={this.props.onNextStep}
+          onClick={this.isComplete ? this.props.onEndTutorial : this.props.onNextStep}
         />
       );
     }

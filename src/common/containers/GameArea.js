@@ -84,7 +84,7 @@ export function mapDispatchToProps(dispatch) {
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
-    onVictoryScreenClick: () => {
+    onEndGame: () => {
       dispatch([
         gameActions.endGame(),
         socketActions.leave()
@@ -137,7 +137,7 @@ export class GameArea extends Component {
     onSelectTile: func,
     onHoverCard: func,
     onHoverTile: func,
-    onVictoryScreenClick: func,
+    onEndGame: func,
     onTutorialStep: func
   };
 
@@ -333,13 +333,14 @@ export class GameArea extends Component {
               tutorialStep={this.props.tutorialStep}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
-              onTutorialStep={this.props.onTutorialStep} />
+              onTutorialStep={this.props.onTutorialStep}
+              onEndGame={this.props.onEndGame} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.props.onVictoryScreenClick} />
+            onClick={this.props.onEndGame} />
         </Paper>
       </div>
     );

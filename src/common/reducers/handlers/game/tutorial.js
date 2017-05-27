@@ -22,7 +22,11 @@ function nextStep(state) {
       state = handleAction(state, response);
     });
 
-    state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx + 1;
+    if (state.tutorialCurrentStepIdx === state.tutorialSteps.length) {
+      state = endTutorial(state);
+    } else {
+      state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx + 1;
+    }
     state.undoStack.push(compare(state, oldState));
   }
 
@@ -69,6 +73,7 @@ export function endTutorial(state) {
     started: false,
     tutorial: false,
     tutorialCurrentStepIdx: 0,
+    tutorialSteps: [],
     undoStack: []
   });
 }
@@ -283,10 +288,6 @@ const tutorialScript = [
     tooltip: {
       hex: '0,0,0',
       text: 'Congratulations! You\'ve completed the tutorial, and you\'re all ready to experience Wordbots. What\'s next? Try playing some games. Make your own cards. Build a deck. The sky\'s the limit! Enjoy your time here :-)'
-    },
-    responses: [
-      actions.endGame(),
-      socketActions.leave()
-    ]
+    }
   }
 ];

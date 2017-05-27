@@ -57,6 +57,10 @@ th {
   cursor: not-allowed !important;
 }
 
+.Popover-tipShape {
+  fill: red;
+}
+
 /* moz Sprite Fix */
 
 .wb-sprite {

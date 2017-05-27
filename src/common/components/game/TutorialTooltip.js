@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { array, bool, func, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 
 export default class TutorialTooltip extends Component {
   static propTypes = {
@@ -36,10 +38,16 @@ export default class TutorialTooltip extends Component {
         fontSize: 10,
         color: '#666'
       },
-      leftButton: {
-        width: 100
+      text: {
+        marginTop: 20,
+        marginBottom: 10
       },
-      rightButton: {
+      backButton: {
+        width: 32,
+        height: 32,
+        padding: 0
+      },
+      nextButton: {
         width: 100,
         float: 'right'
       }
@@ -54,26 +62,41 @@ export default class TutorialTooltip extends Component {
     return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
   }
 
-  renderButtons() {
-    const backButton = (
-      <RaisedButton
-        label="BACK"
-        disabled={this.step.idx === 0}
-        style={this.styles.leftButton}
-        onClick={this.props.onPrevStep}
-      />
-    );
-    const nextButton = (
-      <RaisedButton
-        label={this.pctComplete === 100 ? 'FINISH' : 'NEXT'}
-        style={this.styles.rightButton}
-        onClick={this.props.onNextStep} />
-    );
+  get backButton() {
+    if (this.step.idx > 0) {
+      return (
+        <IconButton onClick={this.props.onPrevStep} style={this.styles.backButton}>
+          <FontIcon className="material-icons" color="#666">replay</FontIcon>
+        </IconButton>
+      );
+    }
+  }
 
+  get nextButton() {
+    if (!this.step.action) {
+      return (
+        <RaisedButton
+          label={this.pctComplete === 100 ? 'FINISH' : 'NEXT'}
+          style={this.styles.nextButton}
+          onClick={this.props.onNextStep}
+        />
+      );
+    }
+  }
+
+  get tooltipBody() {
     return (
-      <div>
-        {backButton}
-        {this.step.action ? null : nextButton}
+      <div style={this.styles.tooltip}>
+        <div style={this.styles.percent}>
+          {this.pctComplete}% complete
+        </div>
+
+        <div style={this.styles.text}>
+          {this.step.tooltip.text}
+        </div>
+
+        {this.backButton}
+        {this.nextButton}
       </div>
     );
   }
@@ -84,17 +107,8 @@ export default class TutorialTooltip extends Component {
         <Popover
           isOpen
           style={this.styles.container}
-          body={
-            <div style={this.styles.tooltip}>
-              <div style={this.styles.percent}>
-                {this.pctComplete}% complete
-              </div>
-
-              <p>{this.step.tooltip.text}</p>
-
-              {this.renderButtons()}
-            </div>
-          }
+          tipSize={15}
+          body={this.tooltipBody}
         >
           {this.props.children}
         </Popover>

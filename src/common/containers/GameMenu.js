@@ -157,6 +157,36 @@ export class GameMenu extends Component {
     }
   }
 
+  renderButtons() {
+    const buttonTextWithTooltip = (text, locationID) => (
+      <TutorialTooltip
+        tutorialStep={this.props.tutorialStep}
+        enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === locationID}
+        top={0}
+        left={40}
+        onNextStep={() => { this.props.onTutorialStep(); }}
+        onPrevStep={() => { this.props.onTutorialStep(true); }}
+      >
+        <span>{text}</span>
+      </TutorialTooltip>
+    );
+
+    return (
+      <div>
+        <MenuItem
+          primaryText={buttonTextWithTooltip('End Turn', 'endTurnButton')}
+          disabled={!this.props.isMyTurn || this.props.gameOver}
+          leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
+          onClick={() => { this.props.onPassTurn(this.props.player); }} />
+        <MenuItem
+          primaryText={buttonTextWithTooltip('Forfeit', 'forfeitButton')}
+          disabled={this.props.isSpectator || this.props.gameOver}
+          leftIcon={<FontIcon className="material-icons">close</FontIcon>}
+          onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+      </div>
+    );
+  }
+
   renderActivatedAbilities() {
     const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
 
@@ -187,34 +217,31 @@ export class GameMenu extends Component {
     }
   }
 
+  renderSoundWidget() {
+    return (
+      <MenuItem
+        primaryText={`Sound: ${soundEnabled() ? 'On' : 'Off'}`}
+        leftIcon={
+          <FontIcon className="material-icons">
+            {soundEnabled() ? 'volume_up' : 'volume_off'}
+          </FontIcon>
+        }
+        onClick={() => {
+          toggleSound();
+          this.forceUpdate();
+        }} />
+    );
+  }
+
   render() {
     return (
-      <Drawer
-        open={this.props.open}
-        containerStyle={{top: 64}}
-      >
+      <Drawer open={this.props.open} containerStyle={{top: 64}}>
         {this.renderTimer()}
         <Divider />
 
-        <TutorialTooltip
-          tutorialStep={this.props.tutorialStep}
-          enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
-          onNextStep={() => { this.props.onTutorialStep(); }}
-          onPrevStep={() => { this.props.onTutorialStep(true); }}
-        >
-          <MenuItem
-            primaryText="End Turn"
-            disabled={!this.props.isMyTurn || this.props.gameOver}
-            leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
-            onClick={() => { this.props.onPassTurn(this.props.player); }} />
-        </TutorialTooltip>
-        <MenuItem
-          primaryText="Forfeit"
-          disabled={this.props.isSpectator || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons">close</FontIcon>}
-          onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
-
+        {this.renderButtons()}
         <Divider />
+
         {this.renderActivatedAbilities()}
         <Divider />
 
@@ -224,15 +251,7 @@ export class GameMenu extends Component {
           width: '100%'
         }}>
           <Divider />
-          <MenuItem
-            primaryText={`Sound: ${soundEnabled() ? 'On' : 'Off'}`}
-            leftIcon={<FontIcon className="material-icons">
-              {soundEnabled() ? 'volume_up' : 'volume_off'}
-            </FontIcon>}
-            onClick={() => {
-              toggleSound();
-              this.forceUpdate();
-            }} />
+          {this.renderSoundWidget()}
         </div>
       </Drawer>
     );

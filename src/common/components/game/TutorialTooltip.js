@@ -1,29 +1,36 @@
 import React, { Component } from 'react';
-import { array, bool, func, object, oneOfType } from 'prop-types';
+import { array, bool, func, number, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+
+import Tooltip from '../Tooltip';
 
 export default class TutorialTooltip extends Component {
   static propTypes = {
     children: oneOfType([array, object]),
     tutorialStep: object,
     enabled: bool,
+    top: number,
+    left: number,
 
     onNextStep: func,
     onPrevStep: func
   };
 
   static defaultProps = {
-    enabled: true
+    enabled: true,
+    top: 15,
+    left: 0
   };
 
   get styles() {
     return {
       container: {
         zIndex: 99999,
-        marginTop: 15
+        marginTop: this.props.top,
+        marginLeft: this.props.left
       },
       tooltip: {
         width: 330,
@@ -63,13 +70,17 @@ export default class TutorialTooltip extends Component {
   }
 
   get backButton() {
-    if (this.step.idx > 0) {
-      return (
-        <IconButton onClick={this.props.onPrevStep} style={this.styles.backButton}>
-          <FontIcon className="material-icons" color="#666">replay</FontIcon>
+    return (
+      <Tooltip inline text="Go back a step">
+        <IconButton
+          onClick={this.props.onPrevStep}
+          disabled={this.step.idx === 0}
+          style={this.styles.backButton}
+        >
+          <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>replay</FontIcon>
         </IconButton>
-      );
-    }
+      </Tooltip>
+    );
   }
 
   get nextButton() {

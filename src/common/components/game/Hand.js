@@ -102,6 +102,7 @@ export default class Hand extends Component {
         transitionName="hand"
         transitionEnterTimeout={500}
         transitionLeave={false}
+        className={isNull(this.props.selectedCard) ? '' : 'selected'}
         style={{
           display: 'flex',
           justifyContent: 'center',

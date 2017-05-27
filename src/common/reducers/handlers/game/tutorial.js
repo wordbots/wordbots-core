@@ -189,21 +189,21 @@ const tutorialScript = [
   {
     tooltip: {
       card: 'Upgrade',
-      text: 'Click on this here card.'
+      text: 'Events are cards whose effects happen immediately. Click on this here event card.'
     },
     action: actions.setSelectedCard(0, 'orange')
   },
   {
     tooltip: {
       card: 'Upgrade',
-      text: 'Events are cards whose effects happen immediately. Click on this event again to play it.'
+      text: 'And click on it again to confirm that we want to play it.'
     },
     action: actions.setSelectedCard(0, 'orange')
   },
   {
     tooltip: {
       hex: '0,0,0',
-      text: 'And now click our One Bot to apply the Upgrade event to it. Let\'s see what happens!'
+      text: 'Now click our One Bot to apply the Upgrade event to it. Let\'s see what happens!'
     },
     action: actions.setSelectedTile('0,0,0', 'orange')
   },
@@ -231,6 +231,12 @@ const tutorialScript = [
     tooltip: {
       hex: '-2,0,2',
       text: 'Okay, what happened here? Our One Bot dealt 3 damage to the enemy robot, which was enough to destroy it. The enemy robot dealt 3 damage to us too, but fortunately our robot just barely survived. Good job, One Bot!'
+    }
+  },
+  {
+    tooltip: {
+      hex: '-2,0,2',
+      text: '(You can see all this information in the game log at the right side of the screen.)'
     }
   },
   {

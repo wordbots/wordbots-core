@@ -74,7 +74,7 @@ th {
   transition: top 300ms ease-in-out;
 }
 
-#handBottom:hover {
+#handBottom:hover, #handBottom.selected {
   bottom: 0 !important;
   transition: bottom 300ms ease-in-out;
 }

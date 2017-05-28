@@ -171,8 +171,7 @@ export class Creator extends Component {
           <Dictionary
             dictionaryDefinitions={this.props.dictionaryDefinitions}
             dictionaryExamples={this.props.dictionaryExamples}
-            thesaurusExamples={this.props.thesaurusExamples}
-            history={this.props.history} />
+            thesaurusExamples={this.props.thesaurusExamples} />
         </Dialog>
       </div>
     );

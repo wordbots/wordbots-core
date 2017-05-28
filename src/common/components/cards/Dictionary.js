@@ -3,8 +3,11 @@ import { object } from 'prop-types';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import Divider from 'material-ui/Divider';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { capitalize } from 'lodash';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import { capitalize, noop } from 'lodash';
 
 import { allKeywords, contractKeywords } from '../../util/cards';
 import StatusIcon from '../card/StatusIcon';
@@ -15,9 +18,7 @@ export default class Dictionary extends Component {
   static propTypes = {
     dictionaryDefinitions: object,
     dictionaryExamples: object,
-    thesaurusExamples: object,
-
-    history: object
+    thesaurusExamples: object
   }
 
   constructor(props) {
@@ -27,22 +28,9 @@ export default class Dictionary extends Component {
       tabIdx: 0,
       dictionaryIdx: null,
       thesaurusIdx: null,
-      keywordsIdx: null
+      keywordsIdx: null,
+      searchText: ''
     };
-  }
-
-  componentWillReceiveProps() {
-    if (this.props.history) {
-      const hash = this.props.history.location.hash.split('#')[1];
-      if (hash) {
-        const [ type, term ] = hash.split(':');
-        const newTabIdx = ['d', 't', 'k'].indexOf(type);
-
-        this.changeTab(newTabIdx, () => {
-          this.setTerm(term);
-        });
-      }
-    }
   }
 
   get currentTab() {
@@ -70,31 +58,15 @@ export default class Dictionary extends Component {
     return this.keywordsTerms[this.state.keywordsIdx || 0] || '';
   }
 
-  changeTab(idx, callback = null) {
-    this.setState({tabIdx: idx}, () => {
-      callback ? callback() : this.setHash();
-    });
+  changeTab(idx, callback = noop) {
+    this.setState({
+      tabIdx: idx,
+      searchText: ''
+    }, callback);
   }
 
   selectTerm(idx) {
-    this.setState({ [`${this.currentTab}Idx`]: idx }, () => {
-      this.setHash();
-    });
-  }
-
-  setTerm(term) {
-    const terms = this[`${this.currentTab}Terms`];
-    if (terms.includes(term) && this.state[`${this.currentTab}Idx`] === null) {
-      this.selectTerm(terms.indexOf(term));
-    }
-  }
-
-  setHash() {
-    const tab = this.currentTab;
-    const term = this[`${tab}Term`];
-    if (this.props.history) {
-      this.props.history.push(`${this.props.history.location.pathname}#${tab.toLowerCase()[0]}:${term}`);
-    }
+    this.setState({ [`${this.currentTab}Idx`]: idx });
   }
 
   renderTitle() {
@@ -157,7 +129,7 @@ export default class Dictionary extends Component {
     const definition = allKeywords()[this.keywordsTerm.toLowerCase()];
     return (
       <div key="definition">
-        <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
+        <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>}
         <p>
           {definition.endsWith(',') ? `${definition} [...] .` : definition}
         </p>
@@ -174,18 +146,30 @@ export default class Dictionary extends Component {
             As more cards are created, the dictionary will become more and more comprehensive!
           </div>
 
-          <Tabs
-            value={this.state.tabIdx}
-            onChange={(idx) => { this.changeTab(idx); }}
-          >
-            <Tab label="Dictionary" value={0} />
-            <Tab label="Thesaurus" value={1} />
-            <Tab label="Keywords" value={2} />
-          </Tabs>
+          <div style={{display: 'flex', backgroundColor: 'rgb(0, 188, 212)'}}>
+            <Tabs
+              value={this.state.tabIdx}
+              onChange={(idx) => { this.changeTab(idx); }}
+              style={{width: '80%'}}
+            >
+              <Tab label="Dictionary" value={0} />
+              <Tab label="Thesaurus" value={1} />
+              <Tab label="Keywords" value={2} />
+            </Tabs>
 
-          <div style={{display: 'flex', justifyContent: 'stretch'}}>
+            <TextField
+              value={this.state.searchText}
+              hintText="Search for a term ... "
+              style={{width: '20%', margin: '0 10px'}}
+              hintStyle={{color: '#eee'}}
+              inputStyle={{color: '#eee'}}
+              onChange={(e) => { this.setState({searchText: e.target.value}); }} />
+          </div>
+
+          <div style={{display: 'flex', justifyContent: 'stretch', marginTop: 8}}>
             <DictionarySidebar
               terms={this[`${this.currentTab}Terms`]}
+              searchText={this.state.searchText}
               selectedIdx={this.state[`${this.currentTab}Idx`]}
               onClick={(idx) => { this.selectTerm(idx); }} />
 

@@ -8,7 +8,7 @@ import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { inBrowser } from '../util/common';
-import { listenToDictionaryData, listenToUserData, onLogin, onLogout } from '../util/firebase';
+import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
@@ -33,8 +33,7 @@ if (inBrowser()) {
 function mapStateToProps(state) {
   return {
     sidebarOpen: state.global.sidebarOpen,
-    inGame: state.game.started,
-    dictionary: state.global.dictionary
+    inGame: state.game.started
   };
 }
 
@@ -60,7 +59,6 @@ class App extends Component {
   static propTypes = {
     sidebarOpen: bool,
     inGame: bool,
-    dictionary: object,
 
     history: object,
 
@@ -84,8 +82,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    listenToDictionaryData(this.props.onReceiveFirebaseData);
-
     onLogin((user) => {
       this.setState({loading: false});
       this.props.onLoggedIn(user.toJSON());
@@ -156,7 +152,7 @@ class App extends Component {
       return (
         <div>
           <LoginDialog history={history} />
-          <DictionaryDialog history={history} dictionary={this.props.dictionary} />
+          <DictionaryDialog history={history} />
         </div>
       );
     }

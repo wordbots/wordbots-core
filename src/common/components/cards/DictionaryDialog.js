@@ -8,6 +8,7 @@ import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, uniq } from 'lodash';
 
 import { allKeywords, contractKeywords } from '../../util/cards';
+import { listenToDictionaryData } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 import StatusIcon from '../card/StatusIcon';
 
@@ -24,12 +25,25 @@ export default class DictionaryDialog extends Component {
     super(props);
 
     this.state = {
+      dictionary: {
+        definitions: {},
+        examplesByToken: {},
+        examplesByNode: {}
+      },
       tabIdx: 0,
       dictionaryTerm: null,
       thesaurusTerm: null,
       keywordsTerm: null,
       searchText: ''
     };
+  }
+
+  componentDidMount() {
+    listenToDictionaryData(data => {
+      this.setState({
+        dictionary: Object.assign({}, this.state.dictionary, data.dictionary)
+      });
+    });
   }
 
   get currentTab() {
@@ -45,10 +59,10 @@ export default class DictionaryDialog extends Component {
                  .sort();
   }
   get dictionaryDefinitions() {
-    return this.cleanupTerms(this.props.dictionary.definitions);
+    return this.cleanupTerms(this.state.dictionary.definitions);
   }
   get dictionaryExamples() {
-    return this.cleanupTerms(this.props.dictionary.examplesByToken);
+    return this.cleanupTerms(this.state.dictionary.examplesByToken);
   }
 
   get thesaurusTerms() {
@@ -57,7 +71,7 @@ export default class DictionaryDialog extends Component {
                  .sort();
   }
   get thesaurusExamples() {
-    return this.props.dictionary.examplesByNode;
+    return this.state.dictionary.examplesByNode;
   }
 
   get keywordsTerms() {

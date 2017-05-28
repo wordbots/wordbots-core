@@ -94,6 +94,29 @@ export default class DictionaryDialog extends Component {
     );
   }
 
+  renderTabs() {
+    const tabColor = 'rgb(0, 188, 212)';
+    const tabStyle = {backgroundColor: tabColor};
+
+    return (
+      <div style={{display: 'flex', backgroundColor: tabColor}}>
+        <Tabs
+          value={this.state.tabIdx}
+          onChange={(tabIdx) => { this.setState({ tabIdx }); }}
+          style={{width: '80%'}}
+          inkBarStyle={{backgroundColor: '#eee', height: 4}}
+        >
+          <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
+          <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>
+          <Tab value={2} label={`Keywords (${this.keywordsTerms.length})`} style={tabStyle} />
+        </Tabs>
+
+        <DictionarySearchBar
+          onChange={(searchText) => this.setState({ searchText })} />
+      </div>
+    );
+  }
+
   renderPage() {
     return [
       [this.renderDictionaryDefinitions(), this.renderExamples(this.dictionaryExamples, this.currentTerm)],
@@ -152,7 +175,6 @@ export default class DictionaryDialog extends Component {
   }
 
   renderDictionary() {
-    const tabColor = 'rgb(0, 188, 212)';
     return (
       <div>
         <div>
@@ -161,30 +183,7 @@ export default class DictionaryDialog extends Component {
             As more cards are created, the dictionary will become more and more comprehensive!
           </div>
 
-          <div style={{display: 'flex', backgroundColor: tabColor}}>
-            <Tabs
-              value={this.state.tabIdx}
-              onChange={(tabIdx) => { this.setState({ tabIdx }); }}
-              style={{width: '80%'}}
-              inkBarStyle={{backgroundColor: '#eee', height: 4}}
-            >
-              <Tab
-                label={`Dictionary (${this.dictionaryTerms.length})`}
-                value={0}
-                style={{backgroundColor: tabColor}} />
-              <Tab
-                label={`Thesaurus (${this.thesaurusTerms.length})`}
-                value={1}
-                style={{backgroundColor: tabColor}}/>
-              <Tab
-                label={`Keywords (${this.keywordsTerms.length})`}
-                value={2}
-                style={{backgroundColor: tabColor}} />
-            </Tabs>
-
-            <DictionarySearchBar
-              onChange={(searchText) => this.setState({ searchText })} />
-          </div>
+          {this.renderTabs()}
 
           <div style={{display: 'flex', justifyContent: 'stretch', marginTop: 8}}>
             <DictionarySidebar

@@ -3,6 +3,14 @@ import { array, bool, element, object, oneOfType, string } from 'prop-types';
 import { Route } from 'react-router';
 import Dialog from 'material-ui/Dialog';
 
+function transformHistory(history, func) {
+  if (history && history.location) {
+    const currentPath = history.location.pathname;
+    const newPath = func(currentPath);
+    history.push(newPath);
+  }
+}
+
 export default class RouterDialog extends Component {
   static propTypes = {
     path: string,
@@ -22,19 +30,11 @@ export default class RouterDialog extends Component {
   }
 
   static openDialog(history, dialogPath) {
-    if (history && history.location) {
-      const currentPath = history.location.pathname;
-      const newPath = `${currentPath.replace(/\/\/\w*/, '')}//${dialogPath}`;
-      history.push(newPath);
-    }
+    transformHistory(history, path => `${path.replace(/\/\/\w*/, '')}//${dialogPath}`);
   }
 
   static closeDialog(history) {
-    if (history && history.location) {
-      const currentPath = history.location.pathname;
-      const newPath = currentPath.replace(/\/\/\w*/, '');
-      history.push(newPath);
-    }
+    transformHistory(history, path => path.replace(/\/\/\w*/, ''));
   }
 
   render() {

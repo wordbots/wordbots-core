@@ -1,13 +1,7 @@
 import { red500, red700, lightBlack, pinkA200, grey100, grey500, darkBlack, white, grey300 } from 'material-ui/styles/colors';
 import { fade } from 'material-ui/utils/colorManipulator';
-import Spacing from 'material-ui/styles/spacing';
-import zIndex from 'material-ui/styles/zIndex';
-
-zIndex.appBar = 2000;
 
 export default {
-  spacing: Spacing,
-  zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
   palette: {
     primary1Color: red500,

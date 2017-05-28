@@ -1,33 +1,28 @@
 import React, { Component } from 'react';
-import { bool, func, string, object } from 'prop-types';
+import { bool, func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
-import FlatButton from 'material-ui/FlatButton';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { inBrowser } from '../util/common';
-import { listenToDictionaryData, listenToUserData, onLogin, onLogout, logout } from '../util/firebase';
+import { listenToDictionaryData, listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
+import DictionaryDialog from '../components/cards/DictionaryDialog';
 import LoginDialog from '../components/users/LoginDialog';
-import GameMenu from '../containers/GameMenu';
-import Collection from '../containers/Collection';
-import Creator from '../containers/Creator';
-import Deck from '../containers/Deck';
-import Decks from '../containers/Decks';
-import Home from '../containers/Home';
-import Play from '../containers/Play';
 import PersonalTheme from '../themes/personal';
+
+import TitleBar from './TitleBar';
+import GameMenu from './GameMenu';
+import Collection from './Collection';
+import Creator from './Creator';
+import Deck from './Deck';
+import Decks from './Decks';
+import Home from './Home';
+import Play from './Play';
 
 let ReactGA, currentLocation;
 if (inBrowser()) {
@@ -37,15 +32,14 @@ if (inBrowser()) {
 
 function mapStateToProps(state) {
   return {
-    version: state.version,
-    user: state.global.user,
     sidebarOpen: state.global.sidebarOpen,
-    inGame: state.game.started
+    inGame: state.game.started,
+    dictionary: state.global.dictionary
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return Object.assign({
+  return {
     onLoggedIn(user) {
       dispatch(actions.loggedIn(user));
     },
@@ -54,11 +48,8 @@ function mapDispatchToProps(dispatch) {
     },
     onReceiveFirebaseData(data) {
       dispatch(actions.firebaseData(data || {}));
-    },
-    onToggleSidebar(value) {
-      dispatch(actions.toggleSidebar(value));
     }
-  });
+  };
 }
 
 class App extends Component {
@@ -67,17 +58,16 @@ class App extends Component {
   };
 
   static propTypes = {
+    sidebarOpen: bool,
+    inGame: bool,
+    dictionary: object,
+
+    history: object,
+
     onLoggedIn: func,
     onLoggedOut: func,
     onReceiveFirebaseData: func,
-    onToggleSidebar: func,
-
-    children: object,
-
-    version: string,
-    user: object,
-    sidebarOpen: bool,
-    inGame: bool
+    onToggleSidebar: func
   };
 
   constructor(props) {
@@ -85,8 +75,7 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      currentLocation: null,
-      loginOpen: false
+      currentLocation: null
     };
   }
 
@@ -128,95 +117,13 @@ class App extends Component {
     };
   }
 
-  handleLoginOpen() {
-    this.setState({loginOpen: true});
-  }
-
-  handleLoginClose() {
-    this.setState({loginOpen: false});
-  }
-
-
-  handleUserMenuOpen(event) {
-    event.preventDefault();
-
-    this.setState({
-      userOpen: true,
-      anchorEl: event.currentTarget
-    });
-  }
-
-  handleRequestClose() {
-    this.setState({userOpen: false});
-  }
-
-  get rightElement() {
-    if (this.props.user) {
-      return (
-        <div style={{marginTop: 7}}>
-          <FlatButton
-            style={{color: 'white'}}
-            label={this.props.user.displayName}
-            labelPosition="before"
-            onTouchTap={(e) => this.handleUserMenuOpen(e)}
-            icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
-          <Popover
-            open={this.state.userOpen}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            onRequestClose={() => this.handleRequestClose()}>
-            <Menu>
-              <MenuItem
-                primaryText="Logout"
-                onClick={() => { logout(); this.handleRequestClose(); }}
-                leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
-            </Menu>
-          </Popover>
-        </div>
-      );
-    } else {
-      return (
-        <FlatButton
-          label="Login"
-          labelPosition="before"
-          onTouchTap={() => this.handleLoginOpen()}
-          icon={<FontIcon className="material-icons">person</FontIcon>} />
-      );
-    }
-  }
-
-  get title() {
-    return (
-      <div style={{height: 64}}>
-        <AppBar
-          title={
-            <Link style={{
-              color: '#fff', fontFamily: 'Carter One', fontSize: 32
-            }} to="/">WORDBOTS</Link>
-          }
-          style={{
-            position: 'fixed',
-            top: 0
-          }}
-          iconElementLeft={
-            <IconButton onClick={() => { this.props.onToggleSidebar(!this.props.sidebarOpen); }}>
-              <FontIcon className="material-icons">menu</FontIcon>
-            </IconButton>
-          }
-          iconElementRight={this.rightElement}
-        />
-      </div>
-    );
-  }
-
   get sidebar() {
     if (this.state.loading) {
       return null;
     } else if (this.props.inGame) {
       return <GameMenu open={this.props.sidebarOpen} />;
     } else {
-      return <NavMenu open={this.props.sidebarOpen} user={this.props.user} />;
+      return <NavMenu open={this.props.sidebarOpen} />;
     }
   }
 
@@ -243,15 +150,27 @@ class App extends Component {
     }
   }
 
+  get dialogs() {
+    if (!this.state.loading) {
+      const history = this.props.history;
+      return (
+        <div>
+          <LoginDialog history={history} />
+          <DictionaryDialog history={history} dictionary={this.props.dictionary} />
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div>
-        {this.title}
+        <TitleBar />
         <div>
           {this.sidebar}
           {this.content}
         </div>
-        <LoginDialog loginOpen={this.state.loginOpen} handleClose={() => this.handleLoginClose()} />
+        {this.dialogs}
       </div>
     );
   }

@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
+import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
+import RouterDialog from '../components/RouterDialog';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
-import Dictionary from '../components/cards/Dictionary';
 import * as creatorActions from '../actions/creator';
 
 export function mapStateToProps(state) {
@@ -25,11 +23,7 @@ export function mapStateToProps(state) {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
-    loggedIn: state.global.user !== null,
-
-    dictionaryDefinitions: state.global.dictionary.definitions,
-    dictionaryExamples: state.global.dictionary.examplesByToken,
-    thesaurusExamples: state.global.dictionary.examplesByNode
+    loggedIn: state.global.user !== null
   };
 }
 
@@ -81,11 +75,7 @@ export class Creator extends Component {
     cost: number,
     loggedIn: bool,
 
-    dictionaryDefinitions: object,
-    dictionaryExamples: object,
-    thesaurusExamples: object,
-
-    history: object,
+    history: oneOfType([array, object]),
 
     onSetName: func,
     onSetType: func,
@@ -96,33 +86,24 @@ export class Creator extends Component {
     onAddToCollection: func
   };
 
+  static defaultProps = {
+    history: []
+  }
+
   // For testing.
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext() {
-    return {muiTheme: getMuiTheme(baseTheme)};
-  }
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+
 
   openDictionary = () => {
-    this.setState({dictionaryOpen: true});
-    if (this.props.history) {
-      this.props.history.push('/creator/dictionary');
-    }
-  }
-
-  closeDictionary = () => {
-    this.setState({dictionaryOpen: false});
-    if (this.props.history) {
-      this.props.history.push('/creator');
-    }
+    RouterDialog.openDialog(this.props.history, 'dictionary');
   }
 
   addToCollection = () => {
     this.props.onAddToCollection(this.props);
-    if (this.props.history) {
-      this.props.history.push('/collection');
-    }
+    this.props.history.push('/collection');
   }
 
   render() {
@@ -161,18 +142,6 @@ export class Creator extends Component {
             energy={this.props.cost}
             onSpriteClick={this.props.onSpriteClick} />
         </div>
-
-        <Dialog
-          open={this.state.dictionaryOpen}
-          contentStyle={{width: '90%', maxWidth: 'none'}}
-          onRequestClose={this.closeDictionary}
-          actions={[<RaisedButton primary label="Close" onTouchTap={this.closeDictionary} />]}
-        >
-          <Dictionary
-            dictionaryDefinitions={this.props.dictionaryDefinitions}
-            dictionaryExamples={this.props.dictionaryExamples}
-            thesaurusExamples={this.props.thesaurusExamples} />
-        </Dialog>
       </div>
     );
   }

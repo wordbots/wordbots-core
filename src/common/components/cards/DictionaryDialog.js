@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 import { object } from 'prop-types';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, uniq } from 'lodash';
 
 import { allKeywords, contractKeywords } from '../../util/cards';
+import RouterDialog from '../RouterDialog';
 import StatusIcon from '../card/StatusIcon';
 
 import DictionarySearchBar from './DictionarySearchBar';
 import DictionarySidebar from './DictionarySidebar';
 
-export default class Dictionary extends Component {
+export default class DictionaryDialog extends Component {
   static propTypes = {
-    dictionaryDefinitions: object,
-    dictionaryExamples: object,
-    thesaurusExamples: object
+    dictionary: object,
+    history: object
   }
 
   constructor(props) {
@@ -44,13 +45,19 @@ export default class Dictionary extends Component {
                  .sort();
   }
   get dictionaryDefinitions() {
-    return mapKeys(this.props.dictionaryDefinitions, (def, term) => term.replace(' \'', '\'')); // e.g. "robot 's" => "robot's"
+    return this.cleanupTerms(this.props.dictionary.definitions);
+  }
+  get dictionaryExamples() {
+    return this.cleanupTerms(this.props.dictionary.examplesByToken);
   }
 
   get thesaurusTerms() {
-    return Object.keys(this.props.thesaurusExamples)
+    return Object.keys(this.thesaurusExamples)
                  .filter(t => t.includes(this.state.searchText))
                  .sort();
+  }
+  get thesaurusExamples() {
+    return this.props.dictionary.examplesByNode;
   }
 
   get keywordsTerms() {
@@ -60,16 +67,19 @@ export default class Dictionary extends Component {
                  .map(k => capitalize(k));
   }
 
-  selectTerm = (term) => {
-    this.setState({ [`${this.currentTab}Term`]: term });
-  }
-
+  cleanupTerms = (obj) => (
+    mapKeys(obj, (value, term) => term.replace(' \'', '\''))
+  )
   cleanupExample = (example) => (
     capitalize(contractKeywords(example).trim()).replace(/,$/, '')
   )
   cleanupSemantics = (semantics) => (
     semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/\,(\w)/g, '\, $1')
   )
+
+  selectTerm = (term) => {
+    this.setState({ [`${this.currentTab}Term`]: term });
+  }
 
   renderTitle() {
     return (
@@ -86,8 +96,8 @@ export default class Dictionary extends Component {
 
   renderPage() {
     return [
-      [this.renderDictionaryDefinitions(), this.renderExamples(this.props.dictionaryExamples, this.currentTerm)],
-      this.renderExamples(this.props.thesaurusExamples, this.currentTerm),
+      [this.renderDictionaryDefinitions(), this.renderExamples(this.dictionaryExamples, this.currentTerm)],
+      this.renderExamples(this.thesaurusExamples, this.currentTerm),
       this.renderKeywordsDefinition()
     ][this.state.tabIdx];
   }
@@ -141,7 +151,8 @@ export default class Dictionary extends Component {
     }
   }
 
-  render() {
+  renderDictionary() {
+    const tabColor = 'rgb(0, 188, 212)';
     return (
       <div>
         <div>
@@ -150,16 +161,25 @@ export default class Dictionary extends Component {
             As more cards are created, the dictionary will become more and more comprehensive!
           </div>
 
-          <div style={{display: 'flex', backgroundColor: 'rgb(0, 188, 212)'}}>
+          <div style={{display: 'flex', backgroundColor: tabColor}}>
             <Tabs
               value={this.state.tabIdx}
               onChange={(tabIdx) => { this.setState({ tabIdx }); }}
               style={{width: '80%'}}
-              inkBarStyle={{backgroundColor: '#eee', height: 4, marginTop: -4}}
+              inkBarStyle={{backgroundColor: '#eee', height: 4}}
             >
-              <Tab label={`Dictionary (${this.dictionaryTerms.length})`} value={0} />
-              <Tab label={`Thesaurus (${this.thesaurusTerms.length})`} value={1} />
-              <Tab label={`Keywords (${this.keywordsTerms.length})`} value={2} />
+              <Tab
+                label={`Dictionary (${this.dictionaryTerms.length})`}
+                value={0}
+                style={{backgroundColor: tabColor}} />
+              <Tab
+                label={`Thesaurus (${this.thesaurusTerms.length})`}
+                value={1}
+                style={{backgroundColor: tabColor}}/>
+              <Tab
+                label={`Keywords (${this.keywordsTerms.length})`}
+                value={2}
+                style={{backgroundColor: tabColor}} />
             </Tabs>
 
             <DictionarySearchBar
@@ -184,6 +204,23 @@ export default class Dictionary extends Component {
             </div>
         </div>
       </div>
+    );
+  }
+
+  render() {
+    return (
+      <RouterDialog
+        path="dictionary"
+        history={history}
+        style={{width: '90%', maxWidth: 'none'}}
+        actions={[
+          <RaisedButton
+            primary
+            label="Close"
+            onTouchTap={() => { RouterDialog.closeDialog(history); }} />
+      ]}>
+        {this.renderDictionary()}
+      </RouterDialog>
     );
   }
 }

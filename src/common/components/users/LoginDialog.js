@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { bool, func } from 'prop-types';
-import Dialog from 'material-ui/Dialog';
+import { object } from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 
 import { login, register, resetPassword } from '../../util/firebase';
+import RouterDialog from '../RouterDialog';
 
 export default class LoginDialog extends Component {
   static propTypes = {
-    loginOpen: bool,
-    handleClose: func
+    history: object
   };
 
   constructor(props) {
@@ -24,11 +23,15 @@ export default class LoginDialog extends Component {
     };
   }
 
+  handleClose = () => {
+    RouterDialog.closeDialog(this.props.history);
+  }
+
   register = (email, username, password) => {
     register(email, username, password)
       .then(() => {
         this.setState({error: null});
-        this.props.handleClose();
+        this.handleClose();
       })
       .catch(err => {
         this.setState({error: `Error: ${err.message}`});
@@ -39,7 +42,7 @@ export default class LoginDialog extends Component {
     login(email, password)
       .then(() => {
         this.setState({error: null});
-        this.props.handleClose();
+        this.handleClose();
       })
       .catch(() => {
         this.setState({error: 'Error: Invalid username/password.'});
@@ -138,11 +141,11 @@ export default class LoginDialog extends Component {
   }
 
   render() {
-    const loginActions = [
+    const actions = [
       <FlatButton
         label="Cancel"
         primary
-        onTouchTap={() => this.props.handleClose()}
+        onTouchTap={this.handleClose}
       />,
       <FlatButton
         label="Forgot Password?"
@@ -159,21 +162,21 @@ export default class LoginDialog extends Component {
     ];
 
     if (this.state.register) {
-      loginActions.splice(1, 1);
+      actions.splice(1, 1);
     }
 
     return (
-      <Dialog
-        title={this.state.register ? 'Register' : 'Login'}
-        actions={loginActions}
+      <RouterDialog
         modal
-        contentStyle={{width: 400, position: 'relative'}}
-        open={this.props.loginOpen}>
-
+        path="login"
+        title={this.state.register ? 'Register' : 'Login'}
+        actions={actions}
+        style={{width: 400, position: 'relative'}}
+      >
         {this.renderLoginForm()}
 
         {this.renderFormSwitcher()}
-      </Dialog>
+      </RouterDialog>
     );
   }
 }

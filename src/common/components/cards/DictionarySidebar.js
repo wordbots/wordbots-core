@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, number, string } from 'prop-types';
+import { array, func, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import { List } from 'material-ui/List';
 
@@ -8,8 +8,7 @@ import DictionaryTerm from './DictionaryTerm';
 export default class DictionarySidebar extends Component {
   static propTypes = {
     terms: array,
-    searchText: string,
-    selectedIdx: number,
+    selectedTerm: string,
     onClick: func
   }
 
@@ -17,21 +16,13 @@ export default class DictionarySidebar extends Component {
     return nextProps.terms !== this.props.terms;
   }
 
-  get terms() {
-    return this.props.terms.map(t => t.replace(' \'', '\''));
-  }
-
-  renderTerm(term, idx) {
-    if (!this.props.searchText || term.toLowerCase().includes(this.props.searchText.toLowerCase())) {
-      return (
-        <DictionaryTerm
-          key={term}
-          token={term}
-          selected={idx === (this.props.selectedIdx || 0)}
-          onClick={() => this.props.onClick(idx)} />
-      );
-    }
-  }
+  renderTerm = (term) => (
+    <DictionaryTerm
+      key={term}
+      token={term}
+      selected={term === this.props.selectedTerm}
+      onClick={() => this.props.onClick(term)} />
+  );
 
   render() {
     return (
@@ -41,7 +32,7 @@ export default class DictionarySidebar extends Component {
           height: '65vh'
         }}>
           <List style={{padding: 0}}>
-            {this.terms.map((term, idx) => this.renderTerm(term, idx))}
+            {this.props.terms.map(this.renderTerm)}
           </List>
         </Paper>
       </div>

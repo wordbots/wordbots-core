@@ -18,7 +18,6 @@ import DictionarySidebar from './DictionarySidebar';
 
 export default class DictionaryDialog extends Component {
   static propTypes = {
-    dictionary: object,
     history: object
   }
 

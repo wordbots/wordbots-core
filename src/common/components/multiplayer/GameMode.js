@@ -4,10 +4,15 @@ import Paper from 'material-ui/Paper';
 
 export default class GameMode extends Component {
   static propTypes = {
-    name: string, 
+    name: string,
+    imagePath: string,
     onSelect: func,
     disabled: bool
   };
+
+  static defaultProps = {
+    imagePath: ''
+  }
 
   constructor(props) {
     super(props);
@@ -29,7 +34,7 @@ export default class GameMode extends Component {
         shadow: 3
       });
     }
-  } 
+  }
 
   onMouseOut() {
     this.setState({
@@ -71,14 +76,13 @@ export default class GameMode extends Component {
           height: 150,
           width: '100%',
           marginBottom: 10,
-          border: '1px dashed grey',
-          fontWeight: 100,
-          fontSize: 24,
           color: 'grey',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
-        }}>Picture Goes Here</div>
+        }}>
+          <img src={this.props.imagePath} style={{width: '100%'}} />
+        </div>
         <div style={{
           webkitTextStroke: '1px black',
           color: '#f44336',

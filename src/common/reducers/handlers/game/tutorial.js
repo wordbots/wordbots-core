@@ -27,6 +27,7 @@ function nextStep(state) {
     } else {
       state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx + 1;
     }
+
     state.undoStack.push(compare(state, oldState));
   }
 

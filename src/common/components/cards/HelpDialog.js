@@ -47,15 +47,15 @@ In a nutshell:
 * **Triggered ability**: "Whenever this robot attacks, your adjacent robots get +1 health."
 * **Activated ability**: "Activate: Give a robot +1 health."
 
-There are two types of sentences: actions and abilities. Events have actions; robots and structures have abilities.
+There are two types of sentences: _actions_ and _abilities_. Events have actions; robots and structures have abilities.
 
-There are three types of abilities: passive, triggered, and activated.
+There are three types of abilities: _passive_, _triggered_, and _activated_.
 
 An **action** is an effect that happens immediately (for example, "Give a robot +1 health" or “Draw a card”).
 
-A **passive ability** is performed continuously. For example, if a robot has the passive ability "Your adjacent robots have +1 health", the robots adjacent to it *at any given point in time *will have +1 health. This means that when that robot moves, the effect will move with it. If that robot is destroyed, the effect will go away.
+A **passive ability** is performed continuously. For example, if a robot has the passive ability "Your adjacent robots have +1 health", the robots adjacent to it *at any given point in time* will have +1 health. This means that when that robot moves, the effect will move with it. If that robot is destroyed, the effect will go away.
 
-A **triggered ability** is something that happens each time a certain *trigger* occurs. For example, let’s say a robot has the triggered ability "Whenever this robot attacks, your adjacent robots get +1 health." The associated action (“your adjacent robots get +1 health”) will happen *each time *that robot attacks. This means that, for example, if the robot attacks three times from the same position, its adjacent robots will get +3 health.
+A **triggered ability** is something that happens each time a certain *trigger* occurs. For example, let’s say a robot has the triggered ability "Whenever this robot attacks, your adjacent robots get +1 health." The associated action (“your adjacent robots get +1 health”) will happen *each time* that robot attacks. This means that, for example, if the robot attacks three times from the same position, its adjacent robots will get +3 health.
 
 An **activated ability** can be performed once per turn at the player’s discretion. For example, a robot with the activated ability "Activate: Give a robot +1 health." can be *activated* once per turn to perform the associated action . Robots can’t activate and attack in the same turn, and they can’t activate the turn they’re played.
 

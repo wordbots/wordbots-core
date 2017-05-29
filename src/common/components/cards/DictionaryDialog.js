@@ -39,14 +39,7 @@ export default class DictionaryDialog extends Component {
   }
 
   componentWillMount() {
-    const hash = getHash(this.props.history);
-    if (hash) {
-      const [ type, term ] = hash.split(':');
-
-      this.setState({ tabIdx: 'dtk'.indexOf(type) }, () => {
-        this.selectTerm(term);
-      });
-    }
+    this.checkHash();
   }
 
   componentDidMount() {
@@ -57,6 +50,10 @@ export default class DictionaryDialog extends Component {
     });
   }
 
+  componentWillReceiveProps() {
+    this.checkHash();
+  }
+
   get currentTab() {
     return ['dictionary', 'thesaurus', 'keywords'][this.state.tabIdx];
   }
@@ -65,6 +62,11 @@ export default class DictionaryDialog extends Component {
   }
   get selectedTerm() {
     return (this.state[`${this.currentTab}Term`] || this.currentTabTerms[0]);
+  }
+
+  get hash() {
+    const tabKey = this.currentTab.toLowerCase()[0];
+    return `${tabKey}:${this.selectedTerm}`;
   }
 
   get dictionaryTerms() {
@@ -111,9 +113,20 @@ export default class DictionaryDialog extends Component {
     this.setState({ [`${this.currentTab}Term`]: term }, callback);
   }
 
+  checkHash = () => {
+    const hash = getHash(this.props.history);
+    if (hash && hash !== this.hash) {
+      const [ type, term ] = hash.split(':');
+      const tabIdx = 'dtk'.indexOf(type);
+
+      this.setState({ tabIdx }, () => {
+        this.selectTerm(term);
+      });
+    }
+  }
+
   updateHash = () => {
-    const tabKey = this.currentTab.toLowerCase()[0];
-    setHash(this.props.history, `${tabKey}:${this.selectedTerm}`);
+    setHash(this.props.history, this.hash);
   }
 
   renderTitle() {

@@ -242,16 +242,17 @@ export default class DictionaryDialog extends Component {
   }
 
   render() {
+    const history = this.props.history;
     return (
       <RouterDialog
         path="dictionary"
-        history={this.props.history}
+        history={history}
         style={{width: '90%', maxWidth: 'none'}}
         actions={[
           <RaisedButton
             primary
             label="Close"
-            onTouchTap={() => { RouterDialog.closeDialog(this.props.history); }} />
+            onTouchTap={() => { RouterDialog.closeDialog(history); }} />
       ]}>
         {this.renderDictionary()}
       </RouterDialog>

@@ -11,17 +11,19 @@ export default class HelpDialog extends Component {
   };
 
   render() {
+    const history = this.props.history;
     return (
       <RouterDialog
         scroll
         path="help"
         title="How to Write a Card"
+        history={history}
         style={{width: 800}}
         actions={[
           <RaisedButton
             primary
             label="Close"
-            onTouchTap={() => { RouterDialog.closeDialog(this.props.history); }} />
+            onTouchTap={() => { RouterDialog.closeDialog(history); }} />
       ]}>
         <MarkdownBlock source={helpText} />
       </RouterDialog>

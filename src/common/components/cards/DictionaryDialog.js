@@ -5,8 +5,9 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { capitalize, mapKeys, uniq } from 'lodash';
+import { capitalize, mapKeys, noop, uniq } from 'lodash';
 
+import { getHash, setHash } from '../../util/common';
 import { allKeywords, contractKeywords } from '../../util/cards';
 import { listenToDictionaryData } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
@@ -38,6 +39,17 @@ export default class DictionaryDialog extends Component {
     };
   }
 
+  componentWillMount() {
+    const hash = getHash(this.props.history);
+    if (hash) {
+      const [ type, term ] = hash.split(':');
+
+      this.setState({ tabIdx: 'dtk'.indexOf(type) }, () => {
+        this.selectTerm(term);
+      });
+    }
+  }
+
   componentDidMount() {
     listenToDictionaryData(data => {
       this.setState({
@@ -49,8 +61,11 @@ export default class DictionaryDialog extends Component {
   get currentTab() {
     return ['dictionary', 'thesaurus', 'keywords'][this.state.tabIdx];
   }
-  get currentTerm() {
-    return (this.state[`${this.currentTab}Term`] || this[`${this.currentTab}Terms`][0]);
+  get currentTabTerms() {
+    return this[`${this.currentTab}Terms`];
+  }
+  get selectedTerm() {
+    return (this.state[`${this.currentTab}Term`] || this.currentTabTerms[0]);
   }
 
   get dictionaryTerms() {
@@ -91,17 +106,22 @@ export default class DictionaryDialog extends Component {
     semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/\,(\w)/g, '\, $1')
   )
 
-  selectTerm = (term) => {
-    this.setState({ [`${this.currentTab}Term`]: term });
+  selectTerm = (term, callback = noop) => {
+    this.setState({ [`${this.currentTab}Term`]: term }, callback);
+  }
+
+  updateHash = () => {
+    const tabKey = this.currentTab.toLowerCase()[0];
+    setHash(this.props.history, `${tabKey}:${this.selectedTerm}`);
   }
 
   renderTitle() {
     return (
       <div>
-        <Helmet title={`${capitalize(this.currentTab)} : ${this.currentTerm}`} />
+        <Helmet title={`${capitalize(this.currentTab)} : ${this.selectedTerm}`} />
         <Toolbar>
           <ToolbarGroup>
-            <ToolbarTitle text={this.currentTerm} />
+            <ToolbarTitle text={this.selectedTerm} />
           </ToolbarGroup>
         </Toolbar>
       </div>
@@ -116,7 +136,7 @@ export default class DictionaryDialog extends Component {
       <div style={{display: 'flex', backgroundColor: tabColor}}>
         <Tabs
           value={this.state.tabIdx}
-          onChange={(tabIdx) => { this.setState({ tabIdx }); }}
+          onChange={(tabIdx) => { this.setState({ tabIdx }, this.updateHash); }}
           style={{width: '80%'}}
           inkBarStyle={{backgroundColor: '#eee', height: 4, marginTop: -4, zIndex: 10}}
         >
@@ -133,8 +153,8 @@ export default class DictionaryDialog extends Component {
 
   renderPage() {
     return [
-      [this.renderDictionaryDefinitions(), this.renderExamples(this.dictionaryExamples, this.currentTerm)],
-      this.renderExamples(this.thesaurusExamples, this.currentTerm),
+      [this.renderDictionaryDefinitions(), this.renderExamples(this.dictionaryExamples, this.selectedTerm)],
+      this.renderExamples(this.thesaurusExamples, this.selectedTerm),
       this.renderKeywordsDefinition()
     ][this.state.tabIdx];
   }
@@ -158,7 +178,7 @@ export default class DictionaryDialog extends Component {
   }
 
   renderDictionaryDefinitions() {
-    const definitions = this.dictionaryDefinitions[this.currentTerm] || [];
+    const definitions = this.dictionaryDefinitions[this.selectedTerm] || [];
     return (
       <div key="definitions">
         <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
@@ -174,7 +194,7 @@ export default class DictionaryDialog extends Component {
   }
 
   renderKeywordsDefinition() {
-    const term = this.currentTerm ? this.currentTerm.toLowerCase() : null;
+    const term = this.selectedTerm ? this.selectedTerm.toLowerCase() : null;
     const definition = allKeywords()[term];
     if (definition) {
       return (
@@ -201,9 +221,9 @@ export default class DictionaryDialog extends Component {
 
           <div style={{display: 'flex', justifyContent: 'stretch', marginTop: 8}}>
             <DictionarySidebar
-              terms={this[`${this.currentTab}Terms`]}
-              selectedTerm={this.currentTerm}
-              onClick={this.selectTerm} />
+              terms={this.currentTabTerms}
+              selectedTerm={this.selectedTerm}
+              onClick={(term) => { this.selectTerm(term, this.updateHash); }} />
 
             <div style={{width: '80%'}}>
               <Paper style={{height: '65vh'}}>

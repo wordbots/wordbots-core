@@ -99,7 +99,9 @@ export default class DictionaryDialog extends Component {
     mapKeys(obj, (value, term) => term.replace(' \'', '\''))
   )
   cleanupExample = (example) => (
-    capitalize(contractKeywords(example).trim()).replace(/,$/, '')
+    capitalize(contractKeywords(example).trim())
+      .replace(/,$/, '')
+      .replace('activate:', 'Activate:')
   )
   cleanupSemantics = (semantics) => (
     semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/\,(\w)/g, '\, $1')
@@ -213,7 +215,7 @@ export default class DictionaryDialog extends Component {
         <div>
           <div style={{marginBottom: 15}}>
             This dictionary is automatically generated based on cards that players create.
-            As more cards are created, the dictionary will become more and more comprehensive!
+            As more cards are created, it will become more and more comprehensive!
           </div>
 
           {this.renderTabs()}

@@ -96,9 +96,8 @@ export class Creator extends Component {
   };
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
-
-  openDictionary = () => {
-    RouterDialog.openDialog(this.props.history, 'dictionary');
+  openDialog = (dialogPath) => {
+    RouterDialog.openDialog(this.props.history, dialogPath);
   }
 
   addToCollection = () => {
@@ -129,7 +128,7 @@ export class Creator extends Component {
             onSetAttribute={this.props.onSetAttribute}
             onParseComplete={this.props.onParseComplete}
             onSpriteClick={this.props.onSpriteClick}
-            onOpenDictionary={this.openDictionary}
+            onOpenDialog={this.openDialog}
             onAddToCollection={this.addToCollection} />
           <CardPreview
             name={this.props.name}

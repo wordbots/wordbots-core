@@ -12,6 +12,7 @@ export default class RouterDialog extends Component {
     style: object,
     actions: array,
     modal: bool,
+    scroll: bool,
     history: object,
 
     children: oneOfType([array, element])
@@ -20,7 +21,8 @@ export default class RouterDialog extends Component {
   static defaultProps = {
     style: {},
     actions: [],
-    modal: false
+    modal: false,
+    scroll: false
   }
 
   static openDialog(history, dialogPath) {
@@ -37,6 +39,8 @@ export default class RouterDialog extends Component {
         <Dialog
           open
           modal={this.props.modal}
+          autoScrollBodyContent={this.props.scroll}
+          title={this.props.title}
           contentStyle={this.props.style}
           onRequestClose={() => { RouterDialog.closeDialog(this.props.history); }}
           actions={this.props.actions}

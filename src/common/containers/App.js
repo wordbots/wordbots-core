@@ -12,6 +12,7 @@ import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
+import HelpDialog from '../components/cards/HelpDialog';
 import LoginDialog from '../components/users/LoginDialog';
 import PersonalTheme from '../themes/personal';
 
@@ -153,6 +154,7 @@ class App extends Component {
         <div>
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
+          <HelpDialog history={history} />
         </div>
       );
     }

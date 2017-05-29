@@ -1,7 +1,11 @@
 import { red500, red700, lightBlack, pinkA200, grey100, grey500, darkBlack, white, grey300 } from 'material-ui/styles/colors';
 import { fade } from 'material-ui/utils/colorManipulator';
+import zIndex from 'material-ui/styles/zIndex';
 
 export default {
+  zIndex: Object.assign({}, zIndex, {
+    appBar: 2000
+  }),
   fontFamily: 'Roboto, sans-serif',
   palette: {
     primary1Color: red500,

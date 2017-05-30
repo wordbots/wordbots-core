@@ -23,6 +23,7 @@ export default class HelpDialog extends Component {
           <RaisedButton
             primary
             label="Close"
+            key="Close"
             onTouchTap={() => { RouterDialog.closeDialog(history); }} />
       ]}>
         <MarkdownBlock source={helpText} />

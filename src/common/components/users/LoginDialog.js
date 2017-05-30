@@ -144,17 +144,20 @@ export default class LoginDialog extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
+        key="Cancel"
         primary
         onTouchTap={this.handleClose}
       />,
       <FlatButton
         label="Forgot Password?"
+        key="Forgot Password?"
         primary
         disabled={!this.notEmpty([this.state.email])}
         onTouchTap={() => this.resetPassword(this.state.email)}
       />,
       <FlatButton
         label={this.state.register ? 'Register' : 'Login'}
+        key="Register/Login"
         primary
         disabled={this.submitDisabled()}
         onTouchTap={() => this.submit()}

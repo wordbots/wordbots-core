@@ -55,11 +55,7 @@ export default class HexPointers extends Component {
 
     return (
       <g>
-        {
-          polygons.map((polygonPoints, index) =>
-            // return <polygon key={index} polygonPoints={polygonPoints} />
-             <path d={polygonPoints} />)
-        }
+        {polygons.map((polygonPoints, idx) => <path key={idx} d={polygonPoints} />)}
       </g>
     );
   }

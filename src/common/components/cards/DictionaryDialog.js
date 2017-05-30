@@ -66,7 +66,7 @@ export default class DictionaryDialog extends Component {
 
   get hash() {
     const tabKey = this.currentTab.toLowerCase()[0];
-    return `${tabKey}:${this.selectedTerm}`;
+    return this.selectedTerm ? `${tabKey}:${this.selectedTerm}` : null;
   }
 
   get dictionaryTerms() {
@@ -265,6 +265,7 @@ export default class DictionaryDialog extends Component {
           <RaisedButton
             primary
             label="Close"
+            key="Close"
             onTouchTap={() => { RouterDialog.closeDialog(history); }} />
       ]}>
         {this.renderDictionary()}

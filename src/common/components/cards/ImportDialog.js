@@ -24,11 +24,13 @@ export default class ImportDialog extends Component {
       <RaisedButton
         primary
         label="Close"
+        key="Close"
         onTouchTap={this.props.onClose}
         style={{marginRight: 10}} />,
       <RaisedButton
         secondary
         label="Import"
+        key="Import"
         onTouchTap={() => {
           this.props.onImport(this.state.importedJson);
           this.props.onClose();

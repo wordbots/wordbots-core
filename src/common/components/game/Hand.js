@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import ReactDOM from 'react-dom';
 import { isEmpty, isNull } from 'lodash';
 
 import { splitSentences } from '../../util/cards';
@@ -25,7 +24,7 @@ export default class Hand extends Component {
   };
 
   calculateAvailableWidth() {
-    this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
+    this.availableWidth = this.node.offsetWidth;
   }
 
   componentDidMount() {
@@ -86,6 +85,7 @@ export default class Hand extends Component {
   render() {
     return (
       <CSSTransitionGroup
+        ref={node => this.node = node}
         id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
         transitionEnterTimeout={500}

@@ -135,15 +135,6 @@ export class GameArea extends Component {
     onVictoryScreenClick: func
   };
 
-
-  // For testing.
-  static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-  getChildContext() {
-    return {muiTheme: getMuiTheme(baseTheme)};
-  }
-
   constructor(props) {
     super(props);
 
@@ -152,6 +143,12 @@ export class GameArea extends Component {
       boardSize: 1000
     };
   }
+
+  // For testing.
+  static childContextTypes = {
+    muiTheme: object.isRequired
+  };
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
   componentDidMount() {
     this.updateDimensions();

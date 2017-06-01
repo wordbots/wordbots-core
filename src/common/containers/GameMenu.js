@@ -157,6 +157,7 @@ export class GameMenu extends Component {
             }} />
           {abilities.map((ability, idx) =>
             <MenuItem
+              key={idx}
               disabled={!canActivateAbility}
               primaryText={`${ability.text}.`}
               onClick={() => { this.props.onActivate(idx); }} />

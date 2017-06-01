@@ -75,9 +75,7 @@ export default class Card extends Component {
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext() {
-    return {muiTheme: getMuiTheme(baseTheme)};
-  }
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
   constructor(props) {
     super(props);

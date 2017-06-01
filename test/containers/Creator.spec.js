@@ -28,7 +28,9 @@ describe('Creator container', () => {
     const numCards = state.collection.cards.length;
     const newCardName = 'Test Card';
 
-    form().onOpenDictionary();  // (Test ability to open the Dictionary.)
+    // While we're here, test the ability to open Help and Dictionary dialogs.
+    form().onOpenDialog('help');
+    form().onOpenDialog('dictionary');
 
     form().onSetName(newCardName);
 

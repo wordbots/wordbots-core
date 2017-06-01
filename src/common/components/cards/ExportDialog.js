@@ -22,12 +22,13 @@ export default class ExportDialog extends Component {
 
   get actions() {
     return [
-      <span style={{paddingRight: 20, color: '#ff8888'}}>
+      <span key="status" style={{paddingRight: 20, color: '#ff8888'}}>
         {this.state.status}
       </span>,
 
       <CopyToClipboard
         text={this.props.text}
+        key="copy"
         onCopy={() => {
           this.setState({status: 'Copied to clipboard.'});
           this.selectText();
@@ -41,17 +42,14 @@ export default class ExportDialog extends Component {
       <RaisedButton
         primary
         label="Close"
-        onTouchTap={this.close.bind(this)} />
+        key="close"
+        onTouchTap={this.close} />
     ];
   }
 
-  close() {
+  close = () => {
     this.props.onClose();
     this.setState({status: ''});
-  }
-
-  selectText() {
-    this.refs['tf'].select();
   }
 
   render() {
@@ -61,17 +59,17 @@ export default class ExportDialog extends Component {
         modal={false}
         repositionOnUpdate={false}
         open={this.props.open}
-        onRequestClose={this.close.bind(this)}
+        onRequestClose={this.close}
         actions={this.actions}
       >
         <TextField
           id="tf"
-          ref="tf"
+          ref={(textField) => { this.textField = textField; }}
           multiLine
           rowsMax={10}
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           value={this.props.text}
-          onTouchTap={this.selectText.bind(this)}
+          onTouchTap={() => { this.textField.select(); }}
         />
       </Dialog>
     );

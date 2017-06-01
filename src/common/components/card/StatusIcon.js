@@ -32,7 +32,7 @@ function StatusIcon(text, result) {
       const treeUrl = `${PARSER_URL}/parse?input=${parserInput}&format=svg`;
 
       return (
-        <a href={treeUrl} target="_blank">
+        <a href={treeUrl} target="_blank" rel="noopener noreferrer">
           {icon}
         </a>
       );

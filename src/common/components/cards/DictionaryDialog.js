@@ -244,7 +244,7 @@ export default class DictionaryDialog extends Component {
             <Paper style={{height: '100%'}}>
               {this.renderTitle()}
 
-              <div style={{padding: 20, height: '100%', overflowY: 'auto', boxSizing: 'border-box'}}>
+              <div style={{padding: 20, height: '65vh', overflowY: 'auto', boxSizing: 'border-box'}}>
                 {this.renderPage()}
               </div>
             </Paper>

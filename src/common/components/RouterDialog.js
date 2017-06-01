@@ -10,6 +10,7 @@ export default class RouterDialog extends Component {
     path: string,
     title: string,
     style: object,
+    bodyStyle: object,
     actions: array,
     modal: bool,
     scroll: bool,
@@ -39,6 +40,7 @@ export default class RouterDialog extends Component {
         <Dialog
           open
           modal={this.props.modal}
+          bodyStyle={this.props.bodyStyle}
           autoScrollBodyContent={this.props.scroll}
           title={this.props.title}
           contentStyle={this.props.style}

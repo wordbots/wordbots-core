@@ -26,7 +26,7 @@ export default class DictionarySidebar extends Component {
 
   render() {
     return (
-      <div style={{width: '20%'}}>
+      <div>
         <Paper style={{
           overflowY: 'scroll',
           height: '65vh'

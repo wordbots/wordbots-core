@@ -38,13 +38,13 @@ export default class DictionarySidebar extends Component {
 
   render() {
     return (
-      <div style={{display: 'flex', width: '20%'}}>
+      <div style={{display: 'flex', alignItems: 'center',width: '100%', height: 56}}>
         <TextField
           value={this.state.text}
           hintText="Search for a term ... "
-          style={{width: '80%', margin: '0 10px'}}
-          hintStyle={{color: '#eee'}}
-          inputStyle={{color: '#eee'}}
+          style={{width: '100%', margin: '0 10px'}}
+          hintStyle={{color: '#AAA'}}
+          inputStyle={{color: '#666'}}
           onChange={(e) => { this.setText(e.target.value); }} />
         {this.renderClearButton()}
       </div>

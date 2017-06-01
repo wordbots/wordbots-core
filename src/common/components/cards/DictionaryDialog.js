@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { object } from 'prop-types';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, noop, uniq } from 'lodash';
@@ -151,16 +152,18 @@ export default class DictionaryDialog extends Component {
         <Tabs
           value={this.state.tabIdx}
           onChange={(tabIdx) => { this.setState({ tabIdx }, this.updateHash); }}
-          style={{width: '80%'}}
-          inkBarStyle={{backgroundColor: '#eee', height: 4, marginTop: -4, zIndex: 10}}
+          style={{width: '100%'}}
+          inkBarStyle={{backgroundColor: '#eee', height: 6, marginTop: -6, zIndex: 10}}
         >
           <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
           <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>
           <Tab value={2} label={`Keywords (${this.keywordsTerms.length})`} style={tabStyle} />
         </Tabs>
 
-        <DictionarySearchBar
-          onChange={(searchText) => this.setState({ searchText })} />
+        <IconButton
+          onTouchTap={() => { RouterDialog.closeDialog(this.props.history); }}>
+          <FontIcon className="material-icons" color="white">close</FontIcon>
+        </IconButton>
       </div>
     );
   }
@@ -225,31 +228,28 @@ export default class DictionaryDialog extends Component {
   renderDictionary() {
     return (
       <div>
-        <div>
-          <div style={{marginBottom: 15}}>
-            This dictionary is automatically generated based on cards that players create.
-            As more cards are created, it will become more and more comprehensive!
-          </div>
+        {this.renderTabs()}
 
-          {this.renderTabs()}
-
-          <div style={{display: 'flex', justifyContent: 'stretch', marginTop: 8}}>
+        <div style={{display: 'flex', justifyContent: 'stretch'}}>
+          <div style={{width: '20%'}}>
+            <DictionarySearchBar
+              onChange={(searchText) => this.setState({ searchText })} />
             <DictionarySidebar
               terms={this.currentTabTerms}
               selectedTerm={this.selectedTerm}
               onClick={(term) => { this.selectTerm(term, this.updateHash); }} />
+          </div>
 
-            <div style={{width: '80%'}}>
-              <Paper style={{height: '65vh'}}>
-                {this.renderTitle()}
+          <div style={{width: '80%'}}>
+            <Paper style={{height: '100%'}}>
+              {this.renderTitle()}
 
-                <div style={{padding: 20, height: 'calc(100% - 56px)', overflowY: 'auto', boxSizing: 'border-box'}}>
-                  {this.renderPage()}
-                </div>
-              </Paper>
-            </div>
-            </div>
-        </div>
+              <div style={{padding: 20, height: '100%', overflowY: 'auto', boxSizing: 'border-box'}}>
+                {this.renderPage()}
+              </div>
+            </Paper>
+          </div>
+          </div>
       </div>
     );
   }
@@ -260,14 +260,8 @@ export default class DictionaryDialog extends Component {
       <RouterDialog
         path="dictionary"
         history={history}
-        style={{width: '90%', maxWidth: 'none'}}
-        actions={[
-          <RaisedButton
-            primary
-            label="Close"
-            key="Close"
-            onTouchTap={() => { RouterDialog.closeDialog(history); }} />
-      ]}>
+        bodyStyle={{padding: 0}}
+        style={{width: '80%', maxWidth: 'none'}}>
         {this.renderDictionary()}
       </RouterDialog>
     );

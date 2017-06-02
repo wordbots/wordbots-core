@@ -1,5 +1,6 @@
-export const START_GAME = 'START_GAME';
-export const NEW_GAME = 'NEW_GAME';
+export const START_TUTORIAL = 'START_TUTORIAL';
+export const TUTORIAL_STEP = 'TUTORIAL_STEP';
+export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
 export const MOVE_ROBOT_AND_ATTACK = 'MOVE_ROBOT_AND_ATTACK';
@@ -11,16 +12,22 @@ export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
 
-export function startGame(decks) {
+export function startTutorial() {
   return {
-    type: START_GAME,
-    payload: { decks }
+    type: START_TUTORIAL
   };
 }
 
-export function newGame() {
+export function tutorialStep(back = false) {
   return {
-    type: NEW_GAME
+    type: TUTORIAL_STEP,
+    payload: { back }
+  };
+}
+
+export function endGame() {
+  return {
+    type: END_GAME
   };
 }
 

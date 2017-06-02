@@ -51,13 +51,15 @@ describe('GameArea container', () => {
           size={1000}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
+          onTutorialStep={board.props.onTutorialStep}
+          onEndGame={board.props.onEndGame}
           />
       </div>,
       <PlayerArea gameProps={game.props} />,
       <VictoryScreen
         winnerColor={null}
         winnerName={null}
-        onClick={game.props.onVictoryScreenClick} />
+        onClick={game.props.onEndGame} />
     ]);
   });
   /* eslint-enable react/jsx-key */

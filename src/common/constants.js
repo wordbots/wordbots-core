@@ -9,6 +9,9 @@ export const KEEP_DECKS_UNSHUFFLED = false;
 export const DISABLE_TURN_TIMER = false;
 export const DISPLAY_HEX_IDS = false;
 
+export const MODE_TUTORIAL = 0;
+export const MODE_CUSTOM = 1;
+
 export const STARTING_PLAYER_HEALTH = 20;
 
 export const BLUE_CORE_HEX = '-3,0,3';

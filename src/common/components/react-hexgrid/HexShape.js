@@ -3,6 +3,7 @@ import { bool, object, string } from 'prop-types';
 import { isUndefined } from 'lodash';
 
 import { DISPLAY_HEX_IDS } from '../../constants';
+import TutorialTooltip from '../game/TutorialTooltip';
 
 import HexPattern from './HexPattern';
 import HexPointers from './HexPointers';
@@ -13,6 +14,7 @@ export default class HexShape extends React.Component {
     hex: object.isRequired,
     layout: object.isRequired,
     actions: object.isRequired,
+    tutorialStep: object,
     fill: string,
     images: object,
     pieceImg: object,
@@ -79,6 +81,10 @@ export default class HexShape extends React.Component {
         stroke: 'none'
       };
     }
+  }
+
+  get shouldRenderTooltip() {
+    return this.props.tutorialStep && (HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex);
   }
 
   renderHexPattern() {
@@ -150,7 +156,7 @@ export default class HexShape extends React.Component {
     return <text x="0" y="0.3em" textAnchor="middle">{text}</text>;
   }
 
-  render() {
+  renderHex() {
     return (
       <g
         draggable
@@ -165,5 +171,22 @@ export default class HexShape extends React.Component {
         {this.renderText()}
       </g>
     );
+  }
+
+  render() {
+    if (this.shouldRenderTooltip) {
+      return (
+        <TutorialTooltip
+          tutorialStep={this.props.tutorialStep}
+          onNextStep={() => { this.props.actions.onTutorialStep(false); }}
+          onPrevStep={() => { this.props.actions.onTutorialStep(true); }}
+          onEndTutorial={this.props.actions.onEndGame}
+        >
+          {this.renderHex()}
+        </TutorialTooltip>
+      );
+    } else {
+      return this.renderHex();
+    }
   }
 }

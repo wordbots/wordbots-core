@@ -53,16 +53,17 @@ function playerState(color, collection, coreCard, coreHexId) {
 
 const defaultState = {
   storeKey: 'game',
-  started: false,
   players: {
     blue: bluePlayerState([]),
     orange: orangePlayerState([])
   },
+  started: false,
+  tutorial: false,
+  winner: null,
   currentTurn: STARTING_PLAYER,
   player: STARTING_PLAYER,
   usernames: {},
   hoveredCard: null,
-  winner: null,
   actionLog: [],
   memory: {},
   sfxQueue: []

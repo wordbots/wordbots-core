@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { array, func, object } from 'prop-types';
-import { shuffle } from 'lodash';
 
-import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
-import { instantiateCard, cardsInDeck } from '../../util/cards';
+import { MODE_TUTORIAL } from '../../constants';
 
-import DeckPicker from './DeckPicker';
-import GameBrowser from './GameBrowser';
-import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
 import Waiting from './Waiting';
+import CustomLobby from './CustomLobby';
+import ModeSelection from './ModeSelection';
 
 export default class Lobby extends Component {
   static propTypes = {
@@ -20,25 +17,55 @@ export default class Lobby extends Component {
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onHostGame: func
+    onHostGame: func,
+    onStartTutorial: func
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedDeck: this.props.availableDecks.length - 1
+      gameMode: null
     };
   }
 
-  get hasNoDecks() {
-    return this.props.availableDecks.length === 0;
+  selectMode = (mode) => {
+    if (mode === MODE_TUTORIAL) {
+      this.props.onStartTutorial();
+    } else {
+      this.setState({ gameMode: mode });
+    }
   }
 
-  get deck() {
-    const deck = this.props.availableDecks[this.state.selectedDeck];
-    const cards = cardsInDeck(deck, this.props.cards).map(instantiateCard);
-    return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
+  renderGameModeSelection() {
+    const skt = this.props.socket;
+
+    if (this.state.gameMode) {
+      switch(this.state.gameMode) {
+        case 0:
+          break;
+        case 1:
+          return (
+            skt.hosting ?
+              <Waiting /> :
+              <CustomLobby
+                socket={this.props.socket}
+                availableDecks={this.props.availableDecks}
+                cards={this.props.cards}
+                onJoinGame={this.props.onJoinGame}
+                onSpectateGame={this.props.onSpectateGame}
+                onHostGame={this.props.onHostGame} />
+          );
+        case 2:
+          break;
+        case 3:
+          break;
+      }
+    } else {
+      return (
+        <ModeSelection onSelectMode={this.selectMode}/>
+      );
+    }
   }
 
   render() {
@@ -52,27 +79,7 @@ export default class Lobby extends Component {
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
           onConnect={this.props.onConnect} />
-        {
-          skt.hosting ?
-            <Waiting /> :
-            <div>
-              <DeckPicker
-                cards={this.props.cards}
-                availableDecks={this.props.availableDecks}
-                selectedDeckIdx={this.state.selectedDeck}
-                onChooseDeck={idx => { this.setState({selectedDeck: idx}); }} />
-              <GameBrowser
-                cannotJoinGame={this.hasNoDecks}
-                openGames={skt.waitingPlayers}
-                inProgressGames={skt.games}
-                usernameMap={skt.clientIdToUsername}
-                onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.deck); }}
-                onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />
-              <HostGame
-                disabled={this.hasNoDecks}
-                onHostGame={gameName => { this.props.onHostGame(gameName, this.deck); }} />
-            </div>
-        }
+        {this.renderGameModeSelection()}
       </div>
     );
   }

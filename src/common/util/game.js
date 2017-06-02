@@ -34,6 +34,16 @@ export function opponentPlayer(state) {
   return state.players[opponentName(state)];
 }
 
+export function currentTutorialStep(state) {
+  if (state.tutorialSteps) {
+    const step = state.tutorialSteps[state.tutorialCurrentStepIdx];
+    return Object.assign({}, step, {
+      idx: state.tutorialCurrentStepIdx,
+      numSteps: state.tutorialSteps.length
+    });
+  }
+}
+
 export function allObjectsOnBoard(state) {
   return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
 }
@@ -114,7 +124,7 @@ export function checkVictoryConditions(state) {
 
   if (state.winner) {
     state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
-    state = logAction(state, state.winner, state.winner === state.player ? ' win' : 'wins');
+    state = logAction(state, state.players[state.winner], state.winner === state.player ? ' win' : 'wins');
   }
 
   return state;

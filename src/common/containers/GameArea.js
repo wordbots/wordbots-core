@@ -9,7 +9,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
 import { inBrowser } from '../util/common';
-import { getAttribute } from '../util/game';
+import { currentTutorialStep, getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
@@ -52,6 +52,7 @@ export function mapStateToProps(state) {
     orangeDeck: state.game.players.orange.deck,
 
     sfxQueue: state.game.sfxQueue,
+    tutorialStep: currentTutorialStep(state.game),
 
     sidebarOpen: state.global.sidebarOpen
   };
@@ -83,11 +84,14 @@ export function mapDispatchToProps(dispatch) {
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
-    onVictoryScreenClick: () => {
+    onEndGame: () => {
       dispatch([
-        gameActions.newGame(),
+        gameActions.endGame(),
         socketActions.leave()
       ]);
+    },
+    onTutorialStep: (back) => {
+      dispatch(gameActions.tutorialStep(back));
     }
   };
 }
@@ -121,6 +125,7 @@ export class GameArea extends Component {
     orangeDeck: array,
 
     sfxQueue: array,
+    tutorialStep: object,
 
     sidebarOpen: bool,
 
@@ -132,7 +137,8 @@ export class GameArea extends Component {
     onSelectTile: func,
     onHoverCard: func,
     onHoverTile: func,
-    onVictoryScreenClick: func
+    onEndGame: func,
+    onTutorialStep: func
   };
 
   constructor(props) {
@@ -321,14 +327,17 @@ export class GameArea extends Component {
               bluePieces={this.props.bluePieces}
               orangePieces={this.props.orangePieces}
               playingCardType={this.props.playingCardType}
+              tutorialStep={this.props.tutorialStep}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
-              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)} />
+              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
+              onTutorialStep={this.props.onTutorialStep}
+              onEndGame={this.props.onEndGame} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.props.onVictoryScreenClick} />
+            onClick={this.props.onEndGame} />
         </Paper>
       </div>
     );

@@ -36,6 +36,9 @@ export function mapDispatchToProps(dispatch) {
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
+    onStartTutorial: () => {
+      dispatch(gameActions.startTutorial());
+    },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
     },
@@ -63,6 +66,8 @@ export class Play extends Component {
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
+    onStartTutorial: func,
+
     onSendChatMessage: func,
     onHoverCard: func,
     onHoverTile: func
@@ -83,7 +88,8 @@ export class Play extends Component {
         onConnect={this.props.onConnect}
         onHostGame={this.props.onHostGame}
         onJoinGame={this.props.onJoinGame}
-        onSpectateGame={this.props.onSpectateGame} />
+        onSpectateGame={this.props.onSpectateGame}
+        onStartTutorial={this.props.onStartTutorial} />
     );
   }
 

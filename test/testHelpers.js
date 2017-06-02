@@ -4,7 +4,8 @@ import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
 import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards, applyAbilities } from '../src/common/util/game';
 import { instantiateCard } from '../src/common/util/cards';
 import game from '../src/common/reducers/game';
-import * as actions from '../src/common/actions/game';
+import * as gameActions from '../src/common/actions/game';
+import * as socketActions from '../src/common/actions/socket';
 import { collection, attackBotCard } from '../src/common/store/cards';
 import defaultGameState from '../src/common/store/defaultGameState';
 import defaultCreatorState from '../src/common/store/defaultCreatorState';
@@ -15,7 +16,8 @@ import { transportObject } from '../src/common/reducers/handlers/game/board';
 export function getDefaultState() {
   const state = cloneDeep(defaultGameState);
   const deck = [instantiateCard(attackBotCard)].concat(collection);
-  return game(state, actions.startGame({orange: deck, blue: deck}));
+  const simulatedGameStartAction = {type: socketActions.GAME_START, payload: {decks: {orange: deck, blue: deck}}};
+  return game(state, simulatedGameStartAction);
 }
 
 export function combineState(gameState = defaultGameState) {
@@ -58,10 +60,10 @@ export function drawCardToHand(state, playerName, card) {
 export function newTurn(state, playerName) {
   if (state.currentTurn === playerName) {
     // Pass twice.
-    return game(state, [actions.passTurn(playerName), actions.passTurn(opponent(playerName))]);
+    return game(state, [gameActions.passTurn(playerName), gameActions.passTurn(opponent(playerName))]);
   } else {
     // Pass once.
-    return game(state, actions.passTurn(state.currentTurn));
+    return game(state, gameActions.passTurn(state.currentTurn));
   }
 }
 
@@ -80,21 +82,21 @@ export function playObject(state, playerName, card, hex, target = null) {
 
   if (target && target.hex) {
     return game(state, [
-      actions.setSelectedCard(0, playerName),
-      actions.placeCard(hex, 0),
-      actions.setSelectedTile(target.hex, playerName)
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.placeCard(hex, 0),
+      gameActions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && target.card) {
     const cardIdx = findIndex(player.hand, ['name', target.card.name]);
     return game(state, [
-      actions.setSelectedCard(0, playerName),
-      actions.placeCard(hex, 0),
-      actions.setSelectedCard(cardIdx, playerName)
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.placeCard(hex, 0),
+      gameActions.setSelectedCard(cardIdx, playerName)
     ]);
   } else {
     return game(state, [
-      actions.setSelectedCard(0, playerName),
-      actions.placeCard(hex, 0)
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.placeCard(hex, 0)
     ]);
   }
 }
@@ -114,21 +116,21 @@ export function playEvent(state, playerName, card, target = null) {
 
   if (target && target.hex) {
     return game(state, [
-      actions.setSelectedCard(0, playerName),
-      actions.setSelectedCard(0, playerName),
-      actions.setSelectedTile(target.hex, playerName)
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && has(target, 'card')) {
     const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
     return game(state, [
-      actions.setSelectedCard(0, playerName),
-      actions.setSelectedCard(0, playerName),
-      actions.setSelectedCard(cardIdx, playerName)
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.setSelectedCard(cardIdx, playerName)
     ]);
   } else {
     return game(state, [
-      actions.setSelectedCard(0, playerName),
-      actions.setSelectedCard(0, playerName)
+      gameActions.setSelectedCard(0, playerName),
+      gameActions.setSelectedCard(0, playerName)
     ]);
   }
 }
@@ -144,8 +146,8 @@ export function moveRobot(state, fromHex, toHex, asNewTurn = false) {
   }
 
   return game(state, [
-    actions.setSelectedTile(fromHex, state.currentTurn),
-    actions.moveRobot(fromHex, toHex)
+    gameActions.setSelectedTile(fromHex, state.currentTurn),
+    gameActions.moveRobot(fromHex, toHex)
   ]);
 }
 
@@ -160,8 +162,8 @@ export function attack(state, source, target, asNewTurn = false) {
   }
 
   return game(state, [
-    actions.setSelectedTile(source, state.currentTurn),
-    actions.attack(source, target)
+    gameActions.setSelectedTile(source, state.currentTurn),
+    gameActions.attack(source, target)
   ]);
 }
 
@@ -174,21 +176,21 @@ export function activate(state, hex, abilityIdx, target = null, asNewTurn = fals
 
   if (target && target.hex) {
     return game(state, [
-      actions.setSelectedTile(hex, player.name),
-      actions.activateObject(abilityIdx),
-      actions.setSelectedTile(target.hex, player.name)
+      gameActions.setSelectedTile(hex, player.name),
+      gameActions.activateObject(abilityIdx),
+      gameActions.setSelectedTile(target.hex, player.name)
     ]);
   } else if (target && has(target, 'card')) {
     const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
     return game(state, [
-      actions.setSelectedTile(hex, player.name),
-      actions.activateObject(abilityIdx),
-      actions.setSelectedCard(cardIdx, player.name)
+      gameActions.setSelectedTile(hex, player.name),
+      gameActions.activateObject(abilityIdx),
+      gameActions.setSelectedCard(cardIdx, player.name)
     ]);
   } else {
     return game(state, [
-      actions.setSelectedTile(hex, player.name),
-      actions.activateObject(abilityIdx)
+      gameActions.setSelectedTile(hex, player.name),
+      gameActions.activateObject(abilityIdx)
     ]);
   }
 }

@@ -32,7 +32,7 @@ export default class EnergyCurve extends Component {
 
   updateWidth() {
     this.setState({
-      width: this.refs.root.offsetWidth
+      width: this.node.offsetWidth
     });
   }
 
@@ -72,7 +72,7 @@ export default class EnergyCurve extends Component {
     };
 
     return (
-      <div ref="root">
+      <div ref={(node) => { this.node = node; }}>
         <BarChart
           width={this.state.width}
           height={this.props.height}

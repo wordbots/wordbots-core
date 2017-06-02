@@ -88,9 +88,7 @@ export class Collection extends Component {
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext() {
-    return {muiTheme: getMuiTheme(baseTheme)};
-  }
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
   get displayedCards() {
     const opts = pick(this.state, ['searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder']);

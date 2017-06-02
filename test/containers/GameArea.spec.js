@@ -24,6 +24,7 @@ describe('GameArea container', () => {
     const mainDiv = paper.props.children[2];
     const board = mainDiv.props.children[1];
 
+    /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
       <PlayerArea opponent gameProps={game.props} />,
       <CardViewer hoveredCard={undefined} />,
@@ -61,6 +62,7 @@ describe('GameArea container', () => {
         onClick={game.props.onEndGame} />
     ]);
   });
+  /* eslint-enable react/jsx-key */
 
   it('should propagate events', () => {
     const dispatchedActions = [];

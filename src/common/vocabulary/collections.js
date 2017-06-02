@@ -1,5 +1,3 @@
-import { every } from 'lodash';
-
 import { allObjectsOnBoard, allHexIds, getHex, matchesType } from '../util/game';
 
 // A collection is a function that returns one of:
@@ -30,7 +28,7 @@ export function objectsInPlay(state) {
 export function objectsMatchingConditions(state) {
   return function (objType, conditions) {
     const objects = Object.values(allObjectsOnBoard(state)).filter(obj =>
-      matchesType(obj, objType) && every(conditions.map(cond => cond(getHex(state, obj), obj)))
+      matchesType(obj, objType) && conditions.every(cond => cond(getHex(state, obj), obj))
     );
     return {type: 'objects', entries: objects};
   };

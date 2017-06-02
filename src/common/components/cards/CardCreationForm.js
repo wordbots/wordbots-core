@@ -35,7 +35,7 @@ export default class CardCreationForm extends Component {
     onParseComplete: func,
     onSpriteClick: func,
     onAddToCollection: func,
-    onOpenDictionary: func
+    onOpenDialog: func
   };
 
   componentDidMount() {
@@ -145,12 +145,13 @@ export default class CardCreationForm extends Component {
   get styles() {
     return {
       container: {width: '60%', flex: 1, padding: 64},
-      paper: {padding: 48, maxWidth: 800, margin: '0 auto'},
+      paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
 
       section: {display: 'flex', justifyContent: 'space-between'},
 
       leftCol: {width: '70%', marginRight: 25},
-      rightCol: {width: 160},
+      rightColContainer: {display: 'flex', alignItems: 'center'},
+      rightCol: {width: 210},
       attribute: {width: '100%', marginRight: 25},
       saveButton: {marginTop: 20},
 
@@ -211,7 +212,7 @@ export default class CardCreationForm extends Component {
                 )
               }
             </SelectField>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <div style={this.styles.rightColContainer}>
               <RaisedButton
                 secondary
                 label="New Image"
@@ -233,12 +234,18 @@ export default class CardCreationForm extends Component {
               errorStyle={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
               onChange={e => { this.onUpdateText(e.target.value); }} />
 
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <RaisedButton
-                label="Open Dictionary"
-                primary
-                style={this.styles.rightCol}
-                onClick={this.props.onOpenDictionary} />
+            <div style={this.styles.rightColContainer}>
+              <div style={this.styles.rightCol}>
+                <RaisedButton
+                  label="Help"
+                  primary
+                  style={{marginRight: 5}}
+                  onClick={() => { this.props.onOpenDialog('help'); }} />
+                <RaisedButton
+                  label="Dictionary"
+                  primary
+                  onClick={() => { this.props.onOpenDialog('dictionary'); }} />
+              </div>
             </div>
           </div>
 

@@ -1,6 +1,8 @@
 // The react-textfit npm package currently doesn't support React 15.0.
 // So, we must keep our own copy here.
 
+/* eslint-disable react/no-string-refs */
+
 import React, { Component } from 'react';
 import { bool, func, number, object, oneOf, string } from 'prop-types';
 import { findDOMNode } from 'react-dom';

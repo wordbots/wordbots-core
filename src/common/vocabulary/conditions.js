@@ -3,10 +3,24 @@ import { flatMap, has, some } from 'lodash';
 import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HU from '../components/react-hexgrid/HexUtils';
 
-// Conditions are all (hexId, obj) -> bool functions.
-// They are used by the objectsMatchingConditions() collection.
+function objectHasProperty(obj, property) {
+  switch (property) {
+    // Simple properties.
+    case 'attackedlastturn': return obj.attackedLastTurn;
+    case 'attackedthisturn': return obj.attackedThisTurn;
+    case 'movedlastturn': return obj.movedLastTurn;
+    case 'movedthisturn': return obj.movedThisTurn;
+    case 'isdestroyed': return obj.isDestroyed;
 
-export default function conditions(state) {
+    // Complex properties.
+    case 'isdamaged':
+      return getAttribute(obj, 'health') < obj.card.stats.health;
+  }
+}
+
+// Object conditions return (hexId, obj) -> bool functions.
+// They are used by the objectsMatchingConditions() collection.
+export function objectConditions(state) {
   return {
     adjacentTo: function (targets) {
       const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
@@ -25,15 +39,7 @@ export default function conditions(state) {
     },
 
     hasProperty: function (property) {
-      switch (property) {
-        case 'attackedlastturn': return ((hexId, obj) => obj.attackedLastTurn);
-        case 'attackedthisturn': return ((hexId, obj) => obj.attackedThisTurn);
-        case 'movedlastturn': return ((hexId, obj) => obj.movedLastTurn);
-        case 'movedthisturn': return ((hexId, obj) => obj.movedThisTurn);
-
-        case 'isdamaged':
-          return ((hexId, obj) => getAttribute(obj, 'health') < obj.card.stats.health);
-      }
+      return ((hexId, obj) => objectHasProperty(obj, property));
     },
 
     withinDistanceOf: function (distance, targets) {
@@ -43,6 +49,20 @@ export default function conditions(state) {
       );
 
       return ((hexId, obj) => nearbyHexIds.includes(hexId));
+    }
+  };
+}
+
+// Global conditions simply return a boolean.
+// They're used in if-expressions.
+export function globalConditions(state) {
+  return {
+    collectionExists: function (collection) {
+      return collection.length > 0;
+    },
+
+    targetHasProperty: function (target, property) {
+      return target.entries.every(obj => objectHasProperty(obj, property));
     }
   };
 }

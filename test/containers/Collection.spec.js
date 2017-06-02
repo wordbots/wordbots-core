@@ -19,8 +19,9 @@ describe('Collection container', () => {
   const CARDS_IN_PAGE = 20;
   const DEFAULT_COST_MAX = 20;
 
+  const customCardId = 'customCardId';
   const customCard = {
-    id: 'customCardId',
+    id: customCardId,
     name: 'Custom Card',
     source: 'user',
     type: 1,
@@ -106,7 +107,7 @@ describe('Collection container', () => {
     component(CardGrid).props.onCardClick(cards[0].id);
     expect(collection.state.selectedCardIds.length).toEqual(0);
 
-    component(CardGrid).props.onCardClick('customCardId');
+    component(CardGrid).props.onCardClick(customCardId);
     expect(collection.state.selectedCardIds.length).toEqual(1);
   });
 
@@ -116,7 +117,7 @@ describe('Collection container', () => {
 
     const numCards = state.collection.cards.length;
 
-    component(CardGrid).props.onCardClick('customCardId');
+    component(CardGrid).props.onCardClick(customCardId);
 
     component(RaisedButton)
       .find(b => b.props.label === 'Delete Selected')

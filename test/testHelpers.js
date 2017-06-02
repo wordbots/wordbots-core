@@ -22,13 +22,7 @@ export function getDefaultState() {
 
 export function combineState(gameState = defaultGameState) {
   return {
-    global: {
-      dictionary: {
-        definitions: {term: [{syntax: 'S', semantics: 'semantics'}]},
-        examplesByToken: {term: ['ex1', 'ex2']},
-        examplesByNode: {node: ['ex1', 'ex2']}
-      }
-    },
+    global: {},
     game: gameState,
     creator: defaultCreatorState,
     collection: defaultCollectionState,

@@ -22,7 +22,6 @@
     "url": "git+https://github.com/wordbots/wordbots-core.git"
   },
   "dependencies": {
-    "axios": "0.16.1",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.2",
     "babel-jest": "^20.0.3",

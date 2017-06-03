@@ -34,26 +34,26 @@ export default class RouterDialog extends Component {
     transformHistory(history, path => path.replace(/\/\/\w*/, ''));
   }
 
+  renderDialog = () => (
+    <Dialog
+      open
+      repositionOnUpdate={false}
+      modal={this.props.modal}
+      bodyStyle={this.props.bodyStyle}
+      autoScrollBodyContent={this.props.scroll}
+      title={this.props.title}
+      contentStyle={this.props.style}
+      actions={this.props.actions}
+      onRequestClose={() => {
+        RouterDialog.closeDialog(this.props.history);
+    }}>
+      {this.props.children}
+    </Dialog>
+  )
+
   render() {
     if (this.props.history) {
-      return (
-        <Route path={`*//${this.props.path}`} render={() => (
-          <Dialog
-            open
-            repositionOnUpdate={false}
-            modal={this.props.modal}
-            bodyStyle={this.props.bodyStyle}
-            autoScrollBodyContent={this.props.scroll}
-            title={this.props.title}
-            contentStyle={this.props.style}
-            actions={this.props.actions}
-            onRequestClose={() => {
-              RouterDialog.closeDialog(this.props.history);
-          }}>
-            {this.props.children}
-          </Dialog>
-        )} />
-      );
+      return <Route path={`*//${this.props.path}`} render={this.renderDialog} />;
     } else {
       return null;
     }

@@ -69,6 +69,7 @@ function renderFullPage(html, initialState, head) {
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
         <meta property="og:url" content="http://app.wordbots.io" />
         <meta property="og:type" content="website" />

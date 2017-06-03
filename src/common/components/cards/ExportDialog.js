@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { bool, func, string } from 'prop-types';
+import { object, string } from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+import RouterDialog from '../RouterDialog';
+
 export default class ExportDialog extends Component {
   static propTypes = {
-    open: bool,
-    text: string,
-    onClose: func
+    history: object,
+    text: string
   };
 
   constructor() {
@@ -48,18 +48,17 @@ export default class ExportDialog extends Component {
   }
 
   close = () => {
-    this.props.onClose();
-    this.setState({status: ''});
+    this.setState({status: ''}, () => {
+      RouterDialog.closeDialog(this.props.history);
+    });
   }
 
   render() {
     return (
-      <Dialog
+      <RouterDialog
+        path="export"
         title="Exported Cards"
-        modal={false}
-        repositionOnUpdate={false}
-        open={this.props.open}
-        onRequestClose={this.close}
+        history={this.props.history}
         actions={this.actions}
       >
         <TextField
@@ -71,7 +70,7 @@ export default class ExportDialog extends Component {
           value={this.props.text}
           onTouchTap={() => { this.textField.select(); }}
         />
-      </Dialog>
+      </RouterDialog>
     );
   }
 }

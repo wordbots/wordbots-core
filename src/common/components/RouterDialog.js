@@ -39,14 +39,16 @@ export default class RouterDialog extends Component {
       <Route path={`*//${this.props.path}`} render={() => (
         <Dialog
           open
+          repositionOnUpdate={false}
           modal={this.props.modal}
           bodyStyle={this.props.bodyStyle}
           autoScrollBodyContent={this.props.scroll}
           title={this.props.title}
           contentStyle={this.props.style}
-          onRequestClose={() => { RouterDialog.closeDialog(this.props.history); }}
           actions={this.props.actions}
-        >
+          onRequestClose={() => {
+            RouterDialog.closeDialog(this.props.history);
+        }}>
           {this.props.children}
         </Dialog>
       )} />

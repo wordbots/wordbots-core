@@ -17,17 +17,18 @@ export default class Tooltip extends Component {
     style: {}
   }
 
+  tooltipId = id();
+
   render() {
-    const tooltipId = id();
     const SpanOrDiv = this.props.inline ? 'span' : 'div';
 
     return (
       <SpanOrDiv>
-        <SpanOrDiv data-tip={this.props.text} data-for={tooltipId}>
+        <SpanOrDiv data-tip={this.props.text} data-for={this.tooltipId}>
           {this.props.children}
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>
-          <ReactTooltip id={tooltipId} />
+          <ReactTooltip id={this.tooltipId} />
         </SpanOrDiv>
       </SpanOrDiv>
     );

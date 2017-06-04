@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { bool, func } from 'prop-types';
-import Dialog from 'material-ui/Dialog';
+import { func, object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+import RouterDialog from '../RouterDialog';
+
 export default class ImportDialog extends Component {
   static propTypes = {
-    open: bool,
-    onClose: func,
+    history: object,
     onImport: func
   };
 
@@ -25,7 +25,7 @@ export default class ImportDialog extends Component {
         primary
         label="Close"
         key="Close"
-        onTouchTap={this.props.onClose}
+        onTouchTap={this.close}
         style={{marginRight: 10}} />,
       <RaisedButton
         secondary
@@ -33,18 +33,21 @@ export default class ImportDialog extends Component {
         key="Import"
         onTouchTap={() => {
           this.props.onImport(this.state.importedJson);
-          this.props.onClose();
+          this.close();
         }} />
     ];
   }
 
+  close = () => {
+    RouterDialog.closeDialog(this.props.history);
+  }
+
   render() {
     return (
-      <Dialog
+      <RouterDialog
+        path="import"
         title="Import Cards"
-        modal={false}
-        open={this.props.open}
-        onRequestClose={this.props.onClose}
+        history={this.props.history}
         actions={this.actions}
       >
         <TextField
@@ -54,7 +57,7 @@ export default class ImportDialog extends Component {
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           onChange={e => { this.setState({importedJson: e.target.value}); }}
         />
-      </Dialog>
+      </RouterDialog>
     );
   }
 }

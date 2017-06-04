@@ -11,6 +11,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { find, noop, pick } from 'lodash';
 
 import { getDisplayedCards, isCardVisible } from '../util/cards';
+import RouterDialog from '../components/RouterDialog';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
 import ImportDialog from '../components/cards/ImportDialog';
@@ -79,7 +80,6 @@ export class Collection extends Component {
       sortOrder: 0,
       searchText: '',
       selectedCardIds: [],
-      importDialogOpen: false,
       layout: 0
     };
   }
@@ -188,8 +188,10 @@ export class Collection extends Component {
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
             const cards = this.props.cards.filter(c => this.state.selectedCardIds.includes(c.id));
-            this.props.onExportCards(cards);
-            this.setState({selectedCardIds: []});
+            this.setState({selectedCardIds: []}, () => {
+              this.props.onExportCards(cards);
+              RouterDialog.openDialog(this.props.history, 'export');
+            });
           }}
         />
         <RaisedButton
@@ -200,7 +202,9 @@ export class Collection extends Component {
           style={{width: '100%', marginTop: 10, height: 48}}
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
-            this.setState({importDialogOpen: true, selectedCardIds: []});
+            this.setState({selectedCardIds: []}, () => {
+              RouterDialog.openDialog(this.props.history, 'import');
+            });
           }}
         />
       </MustBeLoggedIn>
@@ -218,13 +222,11 @@ export class Collection extends Component {
           alignItems: 'flex-start'
         }}>
           <ExportDialog
-            open={this.props.exportedJson !== null}
-            text={this.props.exportedJson}
-            onClose={this.props.onCloseExportDialog} />
+            history={this.props.history}
+            text={this.props.exportedJson} />
 
           <ImportDialog
-            open={this.state.importDialogOpen}
-            onClose={() => { this.setState({importDialogOpen: false}); }}
+            history={this.props.history}
             onImport={this.props.onImportCards} />
 
           <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>

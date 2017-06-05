@@ -54,7 +54,7 @@ export function mapStateToProps(state) {
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
 
-    sidebarOpen: state.global.sidebarOpen
+    sidebarOpen: state.global.sidebarOpen || state.game.tutorial
   };
 }
 

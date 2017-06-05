@@ -33,7 +33,7 @@ if (inBrowser()) {
 
 function mapStateToProps(state) {
   return {
-    sidebarOpen: state.global.sidebarOpen,
+    sidebarOpen: state.global.sidebarOpen || state.game.tutorial,
     inGame: state.game.started
   };
 }

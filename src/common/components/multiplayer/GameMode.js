@@ -56,6 +56,7 @@ export default class GameMode extends Component {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          textAlign: 'center',
           fontWeight: 100
         }}>UNDER CONSTRUCTION</div>
       );

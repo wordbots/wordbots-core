@@ -79,7 +79,7 @@
     "repng": "^1.0.0",
     "seed-random": "^2.2.0",
     "shuffle-array": "^1.0.1",
-    "style-loader": "0.18.1",
+    "style-loader": "0.18.2",
     "substitute-loader": "^1.0.0",
     "url-loader": "0.5.8",
     "webpack": "2.6.1",

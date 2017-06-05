@@ -153,7 +153,7 @@ export default class DictionaryDialog extends Component {
           value={this.state.tabIdx}
           onChange={(tabIdx) => { this.setState({ tabIdx }, this.updateHash); }}
           style={{width: '100%'}}
-          inkBarStyle={{backgroundColor: '#eee', height: 6, marginTop: -6, zIndex: 10}}
+          inkBarStyle={{height: 7, marginTop: -7, zIndex: 10}}
         >
           <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
           <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>

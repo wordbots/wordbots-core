@@ -151,6 +151,7 @@ export class GameMenu extends Component {
     if (!this.props.isTutorial) {
       return (
         <MenuItem
+          disabled
           primaryText={this.state.timer}
           style={this.state.timerStyle} />
       );

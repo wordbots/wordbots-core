@@ -17,9 +17,7 @@ export default class Tooltip extends Component {
     style: {}
   }
 
-  get tooltipId() {
-    return id();
-  }
+  tooltipId = id()
 
   render() {
     const SpanOrDiv = this.props.inline ? 'span' : 'div';

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
+import ReactDOM from 'react-dom';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import { isEmpty, isNull } from 'lodash';
 
@@ -28,7 +29,8 @@ export default class Hand extends Component {
   };
 
   calculateAvailableWidth() {
-    this.availableWidth = this.node.offsetWidth;
+    // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
+    this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;  // eslint-disable-line react/no-find-dom-node
   }
 
   componentDidMount() {
@@ -97,7 +99,6 @@ export default class Hand extends Component {
   render() {
     return (
       <CSSTransitionGroup
-        ref={node => this.node = node}
         id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
         transitionEnterTimeout={500}

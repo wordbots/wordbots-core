@@ -84,10 +84,11 @@ export default class GameMode extends Component {
           <img src={this.props.imagePath} style={{width: '100%'}} />
         </div>
         <div style={{
-          webkitTextStroke: '1px black',
-          color: '#f44336',
+          textAlign: 'center',
           fontSize: 32,
-          fontFamily: 'Carter One'
+          fontFamily: 'Carter One',
+          color: '#f44336',
+          WebkitTextStroke: '1px black'
         }}>{this.props.name}</div>
       </div>
     );

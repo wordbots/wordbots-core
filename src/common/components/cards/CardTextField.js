@@ -44,27 +44,26 @@ export default class CardTextField extends Component {
     this.props.onUpdateText(this.props.text.replace(suggestion.original, suggestion.new));
   }
 
+  renderSuggestion(suggestion) {
+    return (
+      <span key={suggestion.new}>
+        &nbsp;
+        <a
+          onClick={() => { this.useSuggestion(suggestion); }}
+          style={{cursor: 'pointer', textDecoration: 'underline'}}
+        >
+          {suggestion.new}
+        </a>
+        &nbsp;
+      </span>
+    );
+  }
+
   renderDidYouMean() {
-    console.log(this.textSuggestions);
     if (this.textSuggestions.length > 0) {
       return (
         <div style={{marginTop: 5}}>
-          Did you mean:
-          {
-            this.textSuggestions.map(suggestion => (
-              <span key={suggestion.new}>
-                &nbsp;
-                <a
-                  onClick={() => { this.useSuggestion(suggestion); }}
-                  style={{cursor: 'pointer', textDecoration: 'underline'}}
-                >
-                  {suggestion.new}
-                </a>
-                &nbsp;
-              </span>
-            ))
-          }
-          ?
+          Did you mean: {this.textSuggestions.map(this.renderSuggestion)} ?
         </div>
       );
     }

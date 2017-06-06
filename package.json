@@ -50,6 +50,7 @@
     "lodash": "^4.17.4",
     "material-ui": "^0.18.0",
     "merge": "1.2.0",
+    "minimum-edit-distance": "^1.1.4",
     "prop-types": "^15.5.8",
     "rc-slider": "^8.0.0",
     "react": "^15.5.4",

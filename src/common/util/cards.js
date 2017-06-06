@@ -1,6 +1,7 @@
+import editDistance from 'minimum-edit-distance';
 import {
   capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, omit, pick, reduce, uniqBy
+  isArray, mapValues, omit, pick, reduce, uniqBy, words
 } from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
@@ -73,6 +74,14 @@ export function instantiateCard(card) {
   });
 }
 
+export function findSimilarText(sentence, corpus) {
+  const wordsInSentence = words(sentence);
+  return corpus.filter(text =>
+    (text.startsWith(wordsInSentence[0]) || text.endsWith(wordsInSentence.slice(-1))) &&
+      editDistance.diff(words(text), wordsInSentence).distance === 1
+  );
+}
+
 //
 // 2. Helper functions for card-related components.
 //
@@ -107,6 +116,7 @@ function searchCards(card, query = '') {
 
 function sortCards(c1, c2, criteria, order) {
   // Individual sort columns that are composed into sort functions below.
+  // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const [cost, name, type, source, attack, health, speed] = [
     c => c.cost.toString(36),
     c => c.name.toLowerCase(),
@@ -119,7 +129,6 @@ function sortCards(c1, c2, criteria, order) {
 
   // Sorting functions for card collections:
   // 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
-  // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const f = [
     c => [cost(c), name(c)],
     c => [name(c), cost(c)],
@@ -200,6 +209,15 @@ function parseCard(card, callback) {
       callback(card);
     }
   });
+}
+
+// How many targets are there in each logical unit of the parsed JS?
+export function numTargetsPerLogicalUnit(parsedJS) {
+  // Activated abilities separate logical units:
+  //     BAD <- "Deal 2 damage. Destroy a structure."
+  //    GOOD <- "Activate: Deal 2 damage. Activate: Destroy a structure."
+  const units = compact(parsedJS.split('abilities[\'activated\']'));
+  return units.map(unit => (unit.match(/choose/g) || []).length);
 }
 
 //

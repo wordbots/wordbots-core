@@ -67,7 +67,7 @@ export default class DictionaryDialog extends Component {
 
   get hash() {
     const tabKey = this.currentTab.toLowerCase()[0];
-    return this.selectedTerm ? `${tabKey}:${this.selectedTerm}` : null;
+    return `${tabKey}:${this.selectedTerm || ''}`;
   }
 
   get dictionaryTerms() {

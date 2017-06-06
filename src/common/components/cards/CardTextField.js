@@ -16,14 +16,6 @@ export default class CardTextField extends Component {
     onOpenDialog: func
   };
 
-  constructor() {
-    super();
-
-    this.setState({
-      examples: []
-    });
-  }
-
   componentDidMount() {
     getAllCardText((examples) => {
       this.setState({ examples });
@@ -37,7 +29,7 @@ export default class CardTextField extends Component {
       const original = s.sentence.trim();
       if (s.result.error === 'Not a valid passive, triggered, or activated ability.') {
         suggestions.push({original: original, new: `Startup: ${original}`});
-      } else {
+      } else if (this.state && this.state.examples) {
         const similarText = findSimilarText(original, this.state.examples);
         suggestions = suggestions.concat(similarText.map(suggestion => (
           { original: original, new: suggestion }

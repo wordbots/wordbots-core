@@ -1,7 +1,6 @@
-import editDistance from 'minimum-edit-distance';
 import {
   capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, omit, pick, reduce, uniqBy, words
+  isArray, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
@@ -72,14 +71,6 @@ export function instantiateCard(card) {
     id: generateId(),
     baseCost: card.cost
   });
-}
-
-export function findSimilarText(sentence, corpus) {
-  const wordsInSentence = words(sentence);
-  return corpus.filter(text =>
-    (text.startsWith(wordsInSentence[0]) || text.endsWith(wordsInSentence.slice(-1))) &&
-      editDistance.diff(words(text), wordsInSentence).distance === 1
-  );
 }
 
 //

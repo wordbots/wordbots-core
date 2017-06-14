@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { array, func, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import { buildNGrams } from 'word-ngrams';
+import { mapValues, sortBy } from 'lodash';
 
-import { findSimilarText } from '../../util/cards';
+import { bigramNLL, normalizeProps } from '../../util/common';
 import { getAllCardText } from '../../util/firebase';
 
 export default class CardTextField extends Component {
@@ -17,8 +19,10 @@ export default class CardTextField extends Component {
   };
 
   componentDidMount() {
-    getAllCardText((examples) => {
-      this.setState({ examples });
+    getAllCardText(examples => {
+      const allExampleText = examples.join(' . ').toLowerCase();
+      const bigramProbs = mapValues(buildNGrams(allExampleText, 2), normalizeProps);
+      this.setState({ bigramProbs });
     });
   }
 
@@ -29,37 +33,36 @@ export default class CardTextField extends Component {
       const original = s.sentence.trim();
       if (s.result.error === 'Not a valid passive, triggered, or activated ability.') {
         suggestions.push({original: original, new: `Startup: ${original}`});
-      } else if (this.state && this.state.examples) {
-        const similarText = findSimilarText(original, this.state.examples);
-        suggestions = suggestions.concat(similarText.map(suggestion => (
+      } else if (s.result.suggestions && this.state && this.state.bigramProbs) {
+        const suggestionsFromParser = sortBy(s.result.suggestions, (sugg => bigramNLL(sugg, this.state.bigramProbs)));
+        console.log(suggestionsFromParser);
+        suggestions = suggestions.concat(suggestionsFromParser.map((suggestion => (
           { original: original, new: suggestion }
-        )));
+        ))));
       }
     });
 
     return suggestions.slice(0, 5);
   }
 
-  useSuggestion(suggestion) {
+  useSuggestion = (suggestion) => {
     this.props.onUpdateText(this.props.text.replace(suggestion.original, suggestion.new));
   }
 
-  renderSuggestion(suggestion) {
-    return (
-      <span key={suggestion.new}>
-        &nbsp;
-        <a
-          onClick={() => { this.useSuggestion(suggestion); }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
-        >
-          {suggestion.new}
-        </a>
-        &nbsp;
-      </span>
-    );
-  }
+  renderSuggestion = (suggestion) => (
+    <span key={suggestion.new}>
+      &nbsp;
+      <a
+        onClick={() => { this.useSuggestion(suggestion); }}
+        style={{cursor: 'pointer', textDecoration: 'underline'}}
+      >
+        {suggestion.new}
+      </a>
+      &nbsp;
+    </span>
+  )
 
-  renderDidYouMean() {
+  renderDidYouMean = () => {
     if (this.textSuggestions.length > 0) {
       return (
         <div style={{marginTop: 5}}>
@@ -69,7 +72,7 @@ export default class CardTextField extends Component {
     }
   }
 
-  renderTextErrors() {
+  renderTextErrors = () => {
     if (this.props.error) {
       return (
         <div style={{

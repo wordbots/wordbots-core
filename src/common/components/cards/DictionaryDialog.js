@@ -107,7 +107,7 @@ export default class DictionaryDialog extends Component {
       .replace('activate:', 'Activate:')
   )
   cleanupSemantics = (semantics) => (
-    semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/\,(\w)/g, '\, $1')
+    semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/,(\w)/g, ', $1')
   )
 
   selectTerm = (term, callback = noop) => {

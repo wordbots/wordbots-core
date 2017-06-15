@@ -152,7 +152,7 @@ export function replaceSynonyms(text) {
 }
 
 export function splitSentences(str) {
-  return (str || '').split(/[\\.!\?]/).filter(s => /\S/.test(s));
+  return (str || '').split(/[\\.!?]/).filter(s => /\S/.test(s));
 }
 
 export function getSentencesFromInput(text) {
@@ -250,7 +250,7 @@ export function expandKeywords(sentence) {
 }
 
 export function contractKeywords(sentence) {
-  const keywords = mapValues(KEYWORDS, k => k.split(/(\,|\.)/)[0]);
+  const keywords = mapValues(KEYWORDS, k => k.split(/(,|\.)/)[0]);
   return reduce(keywords, ((str, def, keyword) =>
     str.replace(`"${def}"`, capitalize(keyword))
        .replace(def, capitalize(keyword))

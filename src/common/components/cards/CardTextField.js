@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { array, func, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { buildNGrams } from 'word-ngrams';
-import { mapValues, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 
-import { bigramNLL, normalizeProps } from '../../util/common';
+import { bigramNLL, prepareBigramProbs } from '../../util/common';
 import { getAllCardText } from '../../util/firebase';
 
 export default class CardTextField extends Component {
@@ -20,8 +19,8 @@ export default class CardTextField extends Component {
 
   componentDidMount() {
     getAllCardText(examples => {
-      const allExampleText = examples.join(' . ').toLowerCase();
-      const bigramProbs = mapValues(buildNGrams(allExampleText, 2), normalizeProps);
+      const allExampleText = examples.map(e => `${e.toLowerCase()} . `).join();
+      const bigramProbs = prepareBigramProbs(allExampleText);
       this.setState({ bigramProbs });
     });
   }
@@ -35,7 +34,6 @@ export default class CardTextField extends Component {
         suggestions.push({original: original, new: `Startup: ${original}`});
       } else if (s.result.suggestions && this.state && this.state.bigramProbs) {
         const suggestionsFromParser = sortBy(s.result.suggestions, (sugg => bigramNLL(sugg, this.state.bigramProbs)));
-        console.log(suggestionsFromParser);
         suggestions = suggestions.concat(suggestionsFromParser.map((suggestion => (
           { original: original, new: suggestion }
         ))));

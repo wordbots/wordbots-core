@@ -48,10 +48,24 @@ export function ensureInRange(name, value, min, max) {
   }
 }
 
-// e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
-export function normalizeProps(obj) {
-  const total = sum(Object.values(obj));
-  return mapValues(obj, val => val / total);
+export function prepareBigramProbs(corpus) {
+  // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
+  function normalizeProps(obj) {
+    const total = sum(Object.values(obj));
+    return mapValues(obj, val => val / total);
+  }
+
+  const bigrams = mapValues(buildNGrams(corpus, 2), normalizeProps);
+
+  // Manually set the probability to zero for certain phrases that
+  // (while technically valid) we don't really want to allow.
+  const DISALLOWED_PHRASES = ['all a'];
+  DISALLOWED_PHRASES.forEach((phrase) => {
+    const [first, second] = phrase.split(' ');
+    bigrams[first][second] = 0;
+  });
+
+  return bigrams;
 }
 
 export function bigramNLL(phrase, bigramProbs) {

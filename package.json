@@ -84,6 +84,7 @@
     "url-loader": "0.5.8",
     "webpack": "2.6.1",
     "whatwg-fetch": "^2.0.3",
+    "word-ngrams": "^0.2.0",
     "ws": "^3.0.0"
   },
   "devDependencies": {

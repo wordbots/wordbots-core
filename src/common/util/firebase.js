@@ -79,11 +79,20 @@ export function listenToUserData(callback) {
   });
 }
 
-export function listenToDictionaryData(callback) {
-  function cleanupExamples(examples) {
-    return uniq(Object.values(examples).map(e => e.replace('\n', '')));
-  }
+function cleanupExamples(examples) {
+  return uniq(Object.values(examples).map(e => e.replace('\n', '')));
+}
 
+export function getAllCardText(callback) {
+  fb.database()
+    .ref('cardText/all')
+    .once('value', (snapshot) => {
+      const examples = cleanupExamples(snapshot.val());
+      callback(examples);
+    });
+}
+
+export function listenToDictionaryData(callback) {
   loadParserLexicon(json => {
     callback({
       dictionary: {

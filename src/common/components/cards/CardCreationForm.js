@@ -10,9 +10,10 @@ import { capitalize, compact } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { ensureInRange } from '../../util/common';
-import { getSentencesFromInput, requestParse } from '../../util/cards';
+import { getSentencesFromInput, requestParse, numTargetsPerLogicalUnit } from '../../util/cards';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
+import CardTextField from './CardTextField';
 import NumberField from './NumberField';
 
 export default class CardCreationForm extends Component {
@@ -50,14 +51,6 @@ export default class CardCreationForm extends Component {
     }
   }
 
-  onUpdateText(text, cardType) {
-    const parserMode = (cardType || this.props.type) === TYPE_EVENT ? 'event' : 'object';
-    const sentences = getSentencesFromInput(text);
-
-    this.props.onSetText(text);
-    requestParse(sentences, parserMode, this.props.onParseComplete);
-  }
-
   get robot() { return this.props.type === TYPE_ROBOT; }
   get event() { return this.props.type === TYPE_EVENT; }
 
@@ -76,7 +69,7 @@ export default class CardCreationForm extends Component {
   get parseErrors() {
     return compact(this.nonEmptySentences.map(s => s.result.error)).map(error =>
       (`${error}.`)
-        .replace('..', '')
+        .replace('..', '.')
         .replace('Parser did not produce a valid expression', 'Parser error')
     );
   }
@@ -126,13 +119,9 @@ export default class CardCreationForm extends Component {
       return 'Sentences are still being parsed ...';
     } else {
       // Check for >1 target in each logical unit of the parsed JS.
-      // Activated abilities separate logical units:
-      //     BAD <- "Deal 2 damage. Destroy a structure."
-      //    GOOD <- "Activate: Deal 2 damage. Activate: Destroy a structure."
-      const units = compact(this.fullParse.split('abilities[\'activated\']'));
-      const numTargets = units.map(unit => (unit.match(/choose/g) || []).length);
-      if (numTargets.find(n => n > 1)) {
-        return `We do not yet support multiple target selection (expected 0 or 1 targets, got ${numTargets.find(n => n > 1)}).`;
+      const tooManyTargets = numTargetsPerLogicalUnit(this.fullParse).find(n => n > 1);
+      if (tooManyTargets) {
+        return `We do not yet support multiple target selection (expected 0 or 1 targets, got ${tooManyTargets}).`;
       }
     }
   }
@@ -161,6 +150,14 @@ export default class CardCreationForm extends Component {
 
   setAttribute = (key) => (value) => {
     this.props.onSetAttribute(key, value);
+  }
+
+  onUpdateText(text, cardType) {
+    const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
+    const sentences = getSentencesFromInput(text);
+
+    this.props.onSetText(text);
+    requestParse(sentences, parserMode, this.props.onParseComplete);
   }
 
   renderAttributeField(attribute, enabled = true, opts = {}) {
@@ -224,30 +221,12 @@ export default class CardCreationForm extends Component {
             </div>
           </div>
 
-          <div style={this.styles.section}>
-            <TextField
-              multiLine
-              value={this.props.text}
-              hintText={this.hasCardText ? '' : 'Card Text'}
-              style={this.styles.leftCol}
-              errorText={this.textError}
-              errorStyle={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
-              onChange={e => { this.onUpdateText(e.target.value); }} />
-
-            <div style={this.styles.rightColContainer}>
-              <div style={this.styles.rightCol}>
-                <RaisedButton
-                  label="Help"
-                  primary
-                  style={{marginRight: 5}}
-                  onClick={() => { this.props.onOpenDialog('help'); }} />
-                <RaisedButton
-                  label="Dictionary"
-                  primary
-                  onClick={() => { this.props.onOpenDialog('dictionary'); }} />
-              </div>
-            </div>
-          </div>
+          <CardTextField
+            text={this.props.text}
+            sentences={this.nonEmptySentences}
+            error={this.textError}
+            onUpdateText={(text) => { this.onUpdateText(text, this.props.type); }}
+            onOpenDialog={this.props.onOpenDialog} />
 
           <div style={this.styles.section}>
             {this.renderAttributeField('attack', this.robot)}

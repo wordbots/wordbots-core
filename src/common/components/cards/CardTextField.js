@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
 import { bigramNLL, prepareBigramProbs } from '../../util/common';
-import { getAllCardText } from '../../util/firebase';
+import { getCardTextCorpus } from '../../util/firebase';
 
 export default class CardTextField extends Component {
   static propTypes = {
@@ -18,10 +18,8 @@ export default class CardTextField extends Component {
   };
 
   componentDidMount() {
-    getAllCardText(examples => {
-      const allExampleText = examples.map(e => `${e.toLowerCase()} . `).join();
-      const bigramProbs = prepareBigramProbs(allExampleText);
-      this.setState({ bigramProbs });
+    getCardTextCorpus(corpus => {
+      this.setState({ bigramProbs: prepareBigramProbs(corpus) });
     });
   }
 

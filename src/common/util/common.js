@@ -58,7 +58,7 @@ export function prepareBigramProbs(corpus) {
   const bigrams = mapValues(buildNGrams(corpus, 2), normalizeProps);
 
   // Manually set the probability to zero for certain phrases that
-  // (while technically valid) we don't really want to allow.
+  // (while technically valid) aren't the best way of wording something.
   const DISALLOWED_PHRASES = ['all a'];
   DISALLOWED_PHRASES.forEach((phrase) => {
     const [first, second] = phrase.split(' ');

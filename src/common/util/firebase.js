@@ -1,7 +1,7 @@
 import fb from 'firebase';
 import { concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
-import { loadParserLexicon } from './cards.js';
+import { expandKeywords, loadParserLexicon } from './cards';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -83,12 +83,13 @@ function cleanupExamples(examples) {
   return uniq(Object.values(examples).map(e => e.replace('\n', '')));
 }
 
-export function getAllCardText(callback) {
+export function getCardTextCorpus(callback) {
   fb.database()
     .ref('cardText/all')
     .once('value', (snapshot) => {
       const examples = cleanupExamples(snapshot.val());
-      callback(examples);
+      const corpus = examples.map(ex => `${expandKeywords(ex).toLowerCase()} . `).join();
+      callback(corpus);
     });
 }
 

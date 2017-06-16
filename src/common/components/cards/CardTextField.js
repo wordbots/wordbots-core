@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { array, func, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { sortBy } from 'lodash';
+import { chain as _ } from 'lodash';
 
 import { bigramNLL, prepareBigramProbs } from '../../util/common';
 import { getCardTextCorpus } from '../../util/firebase';
@@ -24,21 +24,15 @@ export default class CardTextField extends Component {
   }
 
   get textSuggestions() {
-    let suggestions = [];
-
-    this.props.sentences.forEach((s, idx) => {
-      const original = s.sentence.trim();
-      if (s.result.error === 'Not a valid passive, triggered, or activated ability.') {
-        suggestions.push({original: original, new: `Startup: ${original}`});
-      } else if (s.result.suggestions && this.state && this.state.bigramProbs) {
-        const suggestionsFromParser = sortBy(s.result.suggestions, (sugg => bigramNLL(sugg, this.state.bigramProbs)));
-        suggestions = suggestions.concat(suggestionsFromParser.map((suggestion => (
-          { original: original, new: suggestion }
-        ))));
-      }
-    });
-
-    return suggestions.slice(0, 5);
+    if (this.state && this.state.bigramProbs) {
+      return _(this.props.sentences)
+              .flatMap(s => (s.result.suggestions || []).map(sugg => ({ original: s.sentence.trim(), new: sugg })))
+              .sortBy(suggestion => bigramNLL(suggestion.new, this.state.bigramProbs))
+              .slice(0, 5)
+              .value();
+    } else {
+      return [];
+    }
   }
 
   useSuggestion = (suggestion) => {

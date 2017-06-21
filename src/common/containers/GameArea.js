@@ -167,7 +167,7 @@ export class GameArea extends Component {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
         props.onAIResponse();
       }
-    }, 1000);
+    }, 1250);
   }
 
   // For testing.

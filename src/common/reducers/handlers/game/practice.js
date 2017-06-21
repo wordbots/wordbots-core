@@ -7,7 +7,7 @@ import {
   newGame, passTurn
 } from '../../../util/game';
 import * as builtinCards from '../../../store/cards';
-import HexUtils from '../../../components/react-hexgrid/HexUtils';
+import HU from '../../../components/react-hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
 import { moveRobot, attack } from './board';
@@ -61,7 +61,7 @@ function playACard(state) {
     } else {
       const validHexes = validPlacementHexes(state, ai.name, card.type);
       if (validHexes.length > 0) {
-        state = placeCard(state, idx, HexUtils.getID(sample(validHexes)));
+        state = placeCard(state, idx, HU.getID(sample(validHexes)));
       }
     }
   }
@@ -76,10 +76,9 @@ function moveARobot(state) {
   if (robots.length > 0 && Math.random() > 0.1) {  // (10% chance a given robot does nothing.)
     const robot = sample(robots);
     const robotHexId = findKey(ai.robotsOnBoard, {id: robot.id});
-    const robotHex = HexUtils.IDToHex(robotHexId);
 
-    const moveHexIds = validMovementHexes(state, robotHex).map(HexUtils.getID);
-    const attackHexIds = validAttackHexes(state, robotHex).map(HexUtils.getID);
+    const moveHexIds = validMovementHexes(state, HU.IDToHex(robotHexId)).map(HU.getID);
+    const attackHexIds = validAttackHexes(state, HU.IDToHex(robotHexId)).map(HU.getID);
     const targetHexIds = moveHexIds.concat(attackHexIds);
 
     if (attackHexIds.includes(ORANGE_CORE_HEX)) {
@@ -87,7 +86,7 @@ function moveARobot(state) {
       state = moveAndAttack(state, robotHexId, ORANGE_CORE_HEX);
     } else if (targetHexIds.length > 0) {
       // Prefer hexes closer to the orange core.
-      const hexDistribution = targetHexIds.reduce((acc, hex) => [acc, ...times(priority(hex), () => hex)], []);
+      const hexDistribution = targetHexIds.reduce((acc, hex) => acc.concat(times(priority(hex), () => hex)), []);
       const targetHexId = sample(hexDistribution);
 
       if (attackHexIds.includes(targetHexId)) {
@@ -102,7 +101,7 @@ function moveARobot(state) {
 }
 
 function moveAndAttack(state, sourceHexId, targetHexId) {
-  const intermediateHexId = intermediateMoveHexId(state, HexUtils.IDToHex(sourceHexId), HexUtils.IDToHex(targetHexId));
+  const intermediateHexId = intermediateMoveHexId(state, HU.IDToHex(sourceHexId), HU.IDToHex(targetHexId));
 
   if (intermediateHexId) {
     state = moveRobot(state, sourceHexId, intermediateHexId);
@@ -114,8 +113,8 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
   return state;
 }
 
-function priority(hex) {
-  return (7 - HexUtils.distance(hex, HexUtils.IDToHex(ORANGE_CORE_HEX))) * 3;
+function priority(hexId) {
+  return (7 - HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX))) * 3;
 }
 
 function availableCards(state, ai) {
@@ -128,7 +127,7 @@ function availableCards(state, ai) {
 function availableRobots(state, ai) {
   return filter(ai.robotsOnBoard, (obj, hex) =>
     obj.card.type === TYPE_ROBOT &&
-      validMovementHexes(state, HexUtils.IDToHex(hex)).concat(validAttackHexes(state, HexUtils.IDToHex(hex))).length > 0
+      validMovementHexes(state, HU.IDToHex(hex)).concat(validAttackHexes(state, HU.IDToHex(hex))).length > 0
   );
 }
 

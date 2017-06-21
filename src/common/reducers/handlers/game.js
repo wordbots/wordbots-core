@@ -3,7 +3,7 @@ import { newGame, passTurn } from '../../util/game';
 import { setSelectedCard, placeCard } from './game/cards';
 import { setHoveredTile, setSelectedTile, moveRobot, attack, activateObject } from './game/board';
 import { startTutorial, handleTutorialAction } from './game/tutorial';
-import { startPractice } from './game/practice';
+import { startPractice, aiResponse } from './game/practice';
 
 const gameHandlers = {
   newGame,
@@ -21,7 +21,8 @@ const gameHandlers = {
   startTutorial,
   handleTutorialAction,
 
-  startPractice
+  startPractice,
+  aiResponse
 };
 
 export default gameHandlers;

@@ -36,6 +36,9 @@ export function handleAction(oldState, action) {
     case gameActions.START_PRACTICE:
       return g.startPractice(state);
 
+    case gameActions.AI_RESPONSE:
+      return g.aiResponse(state);
+
     case gameActions.END_GAME:
       return Object.assign(state, {started: false});
 

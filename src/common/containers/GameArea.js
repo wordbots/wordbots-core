@@ -54,6 +54,7 @@ export function mapStateToProps(state) {
 
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
+    isPractice: state.game.practice,
 
     sidebarOpen: state.global.sidebarOpen || state.game.tutorial
   };
@@ -93,6 +94,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
+    },
+    onAIResponse: () => {
+      dispatch(gameActions.aiResponse());
     }
   };
 }
@@ -128,6 +132,7 @@ export class GameArea extends Component {
 
     sfxQueue: array,
     tutorialStep: object,
+    isPractice: bool,
 
     sidebarOpen: bool,
 
@@ -142,7 +147,8 @@ export class GameArea extends Component {
     onHoverCard: func,
     onHoverTile: func,
     onEndGame: func,
-    onTutorialStep: func
+    onTutorialStep: func,
+    onAIResponse: func
   };
 
   constructor(props) {
@@ -156,6 +162,12 @@ export class GameArea extends Component {
     if (!props.started) {
       this.props.history.push('/play');
     }
+
+    setInterval(() => {
+      if (this.props.isPractice && this.props.currentTurn === 'blue') {
+        props.onAIResponse();
+      }
+    }, 1000);
   }
 
   // For testing.

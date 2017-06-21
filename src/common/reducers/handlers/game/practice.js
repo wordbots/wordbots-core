@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 
+import { passTurn } from '../../../util/game';
 import { collection } from '../../../store/cards';
 import defaultState from '../../../store/defaultGameState';
 
@@ -18,4 +19,14 @@ export function startPractice(state) {
   state.players.blue.hand = collection.slice(0, 2);
 
   return state;
+}
+
+export function aiResponse(state) {
+  if (state.usernames[state.currentTurn] !== 'Computer') {
+    return state;
+  }
+
+  const rand = Math.random();
+  console.log(rand);
+  return rand < 0.2 ? passTurn(state, state.currentTurn) : state;
 }

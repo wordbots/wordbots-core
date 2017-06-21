@@ -164,7 +164,7 @@ export class GameArea extends Component {
     }
 
     setInterval(() => {
-      if (this.props.isPractice && this.props.currentTurn === 'blue') {
+      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
         props.onAIResponse();
       }
     }, 1000);

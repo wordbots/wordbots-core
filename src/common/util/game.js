@@ -1,4 +1,7 @@
-import { chain as _, cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy } from 'lodash';
+import {
+  chain as _, cloneDeep, filter, findKey, flatMap,
+  intersection, isArray, mapValues, some, times, uniqBy
+} from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
@@ -210,6 +213,16 @@ export function validActionHexes(state, startHex) {
   const actionHexes = ((object.activatedAbilities || []).length > 0 && !object.cantActivate) ? [startHex] : [];
 
   return [].concat(movementHexes, attackHexes, actionHexes);
+}
+
+export function intermediateMoveHexId(state, startHex, attackHex) {
+  if (getAdjacentHexes(startHex).map(HexUtils.getID).includes(HexUtils.getID(attackHex))) {
+    return null;
+  } else {
+    const adjacentHexIds = getAdjacentHexes(attackHex).map(HexUtils.getID);
+    const movementHexIds = validMovementHexes(state, startHex).map(HexUtils.getID);
+    return intersection(movementHexIds, adjacentHexIds)[0];
+  }
 }
 
 //

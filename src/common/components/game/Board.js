@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { func, number, object, string } from 'prop-types';
-import { forOwn, intersection, isString, mapValues } from 'lodash';
+import { forOwn, isString, mapValues } from 'lodash';
 
 import HexGrid from '../react-hexgrid/HexGrid';
 import HexUtils from '../react-hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, ownerOf,
-  getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes
+  validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId
 } from '../../util/game';
 
 export default class Board extends Component {
@@ -146,21 +146,13 @@ export default class Board extends Component {
 
   onMoveOrAttack(hex) {
     const hexId = HexUtils.getID(hex);
-    const adjacentHexIds = getAdjacentHexes(hex).map(HexUtils.getID);
     const movementHexIds = this.getValidMovementHexes(this.selectedHex).map(HexUtils.getID);
     const attackHexIds = this.getValidAttackHexes(this.selectedHex).map(HexUtils.getID);
 
     if (movementHexIds.includes(hexId)) {
       this.props.onSelectTile(hexId, 'move');
     } else if (attackHexIds.includes(hexId)) {
-      if (adjacentHexIds.includes(this.selectedHexId)) {
-        // Attack destination is adjacent to current position, so we can attack directly.
-        this.props.onSelectTile(hexId, 'attack');
-      } else {
-        // Attack destination is not adjacent to current position, so we need an intermediate move action.
-        // Since attackHexIds.includes(hexId), we're guaranteed that there's at least one valid intermediate hex.
-        this.props.onSelectTile(hexId, 'attack', intersection(movementHexIds, adjacentHexIds)[0]);
-      }
+      this.props.onSelectTile(hexId, 'attack', intermediateMoveHexId(this.dummyGameState, this.selectedHex, hex));
     } else {
       this.props.onSelectTile(hexId);
     }

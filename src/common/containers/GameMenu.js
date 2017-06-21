@@ -122,7 +122,8 @@ export class GameMenu extends Component {
         fontSize: 24,
         fontWeight: color === 'red' ? 'bold' : 'normal',
         fontFamily: 'Carter One',
-        cursor: 'default'
+        cursor: 'default',
+        padding: this.props.open ? '0 16px': 0 
       }
     });
   }
@@ -172,17 +173,21 @@ export class GameMenu extends Component {
       </TutorialTooltip>
     );
 
+    const iconStyle = {
+      left: this.props.open ? 4 : 8
+    };
+
     return (
       <div>
         <MenuItem
-          primaryText={buttonTextWithTooltip('End Turn', 'endTurnButton')}
+          primaryText={this.props.open ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
           disabled={!this.props.isMyTurn || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
+          leftIcon={<FontIcon className="material-icons" style={iconStyle}>timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         <MenuItem
-          primaryText={buttonTextWithTooltip('Forfeit', 'forfeitButton')}
+          primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
           disabled={this.props.isSpectator || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons">close</FontIcon>}
+          leftIcon={<FontIcon className="material-icons" style={iconStyle}>close</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
       </div>
     );
@@ -220,11 +225,15 @@ export class GameMenu extends Component {
   }
 
   renderSoundWidget() {
+    const iconStyle = {
+      left: this.props.open ? 4 : 8
+    };
+
     return (
       <MenuItem
-        primaryText={`Sound: ${soundEnabled() ? 'On' : 'Off'}`}
+        primaryText={this.props.open ? `Sound: ${soundEnabled() ? 'On' : 'Off'}` : ''}
         leftIcon={
-          <FontIcon className="material-icons">
+          <FontIcon className="material-icons" style={iconStyle}>
             {soundEnabled() ? 'volume_up' : 'volume_off'}
           </FontIcon>
         }
@@ -237,7 +246,10 @@ export class GameMenu extends Component {
 
   render() {
     return (
-      <Drawer open={this.props.open} containerStyle={{top: 64}}>
+      <Drawer open containerStyle={{
+        top: 64,
+        width: this.props.open ? 256 : 64
+      }}>
         {this.renderTimer()}
         <Divider />
 

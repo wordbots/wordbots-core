@@ -253,7 +253,7 @@ export function logAction(state, player, action, cards, timestamp, target = null
   return state;
 }
 
-export function newGame(state, player, usernames, decks, seed) {
+export function newGame(state, player, usernames, decks, seed = 0) {
   state = Object.assign(state, cloneDeep(defaultState), {player: player, rng: seededRNG(seed)}); // Reset game state.
   state.usernames = usernames;
   state.players.blue = bluePlayerState(decks.blue);

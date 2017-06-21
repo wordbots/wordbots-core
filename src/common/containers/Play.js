@@ -35,8 +35,8 @@ export function mapDispatchToProps(dispatch) {
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
-    onStartPractice: () => {
-      dispatch(gameActions.startPractice());
+    onStartPractice: (deck) => {
+      dispatch(gameActions.startPractice(deck));
     },
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
@@ -81,6 +81,16 @@ export class Play extends Component {
     }
   }
 
+  selectMode = (mode, deck) => {
+    if (mode === 'tutorial') {
+      this.props.onStartTutorial();
+    } else if (mode === 'practice') {
+      this.props.onStartPractice(deck);
+    }
+
+    this.props.history.push(`play/${mode}`);
+  }
+
   get lobby() {
     return (
       <Lobby
@@ -92,15 +102,7 @@ export class Play extends Component {
         onHostGame={this.props.onHostGame}
         onJoinGame={this.props.onJoinGame}
         onSpectateGame={this.props.onSpectateGame}
-        onSelectMode={(mode) => {
-          if (mode === 'tutorial') {
-            this.props.onStartTutorial();
-          } else if (mode === 'practice') {
-            this.props.onStartPractice();
-          }
-
-          this.props.history.push(`play/${mode}`);
-        }} />
+        onSelectMode={this.selectMode} />
     );
   }
 

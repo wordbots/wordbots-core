@@ -14,9 +14,10 @@ export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
 
-export function startPractice() {
+export function startPractice(deck) {
   return {
-    type: START_PRACTICE
+    type: START_PRACTICE,
+    payload: { deck }
   };
 }
 

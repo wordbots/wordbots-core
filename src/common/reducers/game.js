@@ -34,7 +34,7 @@ export function handleAction(oldState, action) {
       return g.startTutorial(state);
 
     case gameActions.START_PRACTICE:
-      return g.startPractice(state);
+      return g.startPractice(state, action.payload.deck);
 
     case gameActions.AI_RESPONSE:
       return g.aiResponse(state);

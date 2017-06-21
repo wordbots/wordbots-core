@@ -1,34 +1,25 @@
-import { cloneDeep, filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
+import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT } from '../../../constants';
 import { id } from '../../../util/common';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
-  passTurn
+  newGame, passTurn
 } from '../../../util/game';
 import * as builtinCards from '../../../store/cards';
-import defaultState from '../../../store/defaultGameState';
 import HexUtils from '../../../components/react-hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
 import { moveRobot, attack } from './board';
 
-export function startPractice(state) {
-  // Reset game state and enable practice mode.
-  state = Object.assign(state, cloneDeep(defaultState), {
-    started: true,
-    practice: true,
-    usernames: {orange: 'Human', blue: 'Computer'}
-  });
+export function startPractice(state, deck) {
+  const decks = {
+    orange: deck,
+    blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
+  };
 
-  // Set up.
-  const orangeDeck = shuffle(builtinCards.collection).slice(0, 30).map(card => Object.assign({}, card, {id: id()}));
-  const blueDeck = shuffle(aiDeck).map(card => Object.assign({}, card, {id: id()}));
-
-  state.players.orange.hand = orangeDeck.slice(0, 2);
-  state.players.orange.deck = orangeDeck.slice(2);
-  state.players.blue.hand = blueDeck.slice(0, 2);
-  state.players.blue.deck = blueDeck.slice(2);
+  state = newGame(state, 'orange', {orange: 'Human', blue: 'Computer'}, decks);
+  state.practice = true;
 
   return state;
 }

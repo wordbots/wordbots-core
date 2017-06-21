@@ -22,6 +22,7 @@ export function mapStateToProps(state) {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     gameOver: state.game.winner !== null,
+    isPractice: state.game.practice,
     isTutorial: state.game.tutorial,
     isMyTurn: state.game.currentTurn === state.game.player,
     isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
@@ -42,8 +43,14 @@ export function mapDispatchToProps(dispatch) {
         socketActions.leave()
       ]);
     },
-    onPassTurn: (player) => {
+    onPassTurn: (player, aiResponse = false) => {
       dispatch(gameActions.passTurn(player));
+
+      if (aiResponse) {
+        setTimeout(() => {
+          dispatch(gameActions.passTurn(opponent(player)));
+        }, 1000);
+      }
     },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
@@ -58,6 +65,7 @@ export class GameMenu extends Component {
     player: string,
     currentTurn: string,
     gameOver: bool,
+    isPractice: bool,
     isTutorial: bool,
     isMyTurn: bool,
     isMyPiece: bool,
@@ -142,7 +150,7 @@ export class GameMenu extends Component {
       this.setTimer(0, this.padDigits(seconds - 1), 'white');
     } else {
       if (this.props.isMyTurn) {
-        this.props.onPassTurn(this.props.player);
+        this.props.onPassTurn(this.props.player, this.props.isPractice);
       }
     }
   }
@@ -178,7 +186,7 @@ export class GameMenu extends Component {
           primaryText={buttonTextWithTooltip('End Turn', 'endTurnButton')}
           disabled={!this.props.isMyTurn || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
-          onClick={() => { this.props.onPassTurn(this.props.player); }} />
+          onClick={() => { this.props.onPassTurn(this.props.player, this.props.isPractice); }} />
         <MenuItem
           primaryText={buttonTextWithTooltip('Forfeit', 'forfeitButton')}
           disabled={this.props.isSpectator || this.props.gameOver}

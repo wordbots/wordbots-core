@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { array, func, object } from 'prop-types';
-
-import { MODE_TUTORIAL } from '../../constants';
+import { array, func, object, string } from 'prop-types';
 
 import LobbyStatus from './LobbyStatus';
 import Waiting from './Waiting';
-import CustomLobby from './CustomLobby';
+import CasualLobby from './CasualLobby';
 import ModeSelection from './ModeSelection';
 
 export default class Lobby extends Component {
   static propTypes = {
     socket: object,
+    gameMode: string,
     availableDecks: array,
     cards: array,
 
@@ -18,53 +17,27 @@ export default class Lobby extends Component {
     onJoinGame: func,
     onSpectateGame: func,
     onHostGame: func,
-    onStartTutorial: func
+    onStartTutorial: func,
+    onSelectMode: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      gameMode: null
-    };
-  }
-
-  selectMode = (mode) => {
-    if (mode === MODE_TUTORIAL) {
-      this.props.onStartTutorial();
-    } else {
-      this.setState({ gameMode: mode });
-    }
-  }
-
   renderGameModeSelection() {
-    const skt = this.props.socket;
-
-    if (this.state.gameMode) {
-      switch(this.state.gameMode) {
-        case 0:
-          break;
-        case 1:
-          return (
-            skt.hosting ?
-              <Waiting /> :
-              <CustomLobby
-                socket={this.props.socket}
-                availableDecks={this.props.availableDecks}
-                cards={this.props.cards}
-                onJoinGame={this.props.onJoinGame}
-                onSpectateGame={this.props.onSpectateGame}
-                onHostGame={this.props.onHostGame} />
-          );
-        case 2:
-          break;
-        case 3:
-          break;
+    if (this.props.gameMode === '/casual') {
+      if (this.props.socket.hosting) {
+        return <Waiting />;
+      } else {
+        return (
+          <CasualLobby
+            socket={this.props.socket}
+            availableDecks={this.props.availableDecks}
+            cards={this.props.cards}
+            onJoinGame={this.props.onJoinGame}
+            onSpectateGame={this.props.onSpectateGame}
+            onHostGame={this.props.onHostGame} />
+        );
       }
     } else {
-      return (
-        <ModeSelection onSelectMode={this.selectMode}/>
-      );
+      return <ModeSelection onSelectMode={this.props.onSelectMode}/>;
     }
   }
 
@@ -72,7 +45,7 @@ export default class Lobby extends Component {
     const skt = this.props.socket;
 
     return (
-      <div>
+      <div style={{padding: '48px 72px'}}>
         <LobbyStatus
           connecting={skt.connecting}
           connected={skt.connected}

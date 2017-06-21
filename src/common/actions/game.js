@@ -1,3 +1,4 @@
+export const START_PRACTICE = 'START_PRACTICE';
 export const START_TUTORIAL = 'START_TUTORIAL';
 export const TUTORIAL_STEP = 'TUTORIAL_STEP';
 export const END_GAME = 'END_GAME';
@@ -11,6 +12,12 @@ export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
+
+export function startPractice() {
+  return {
+    type: START_PRACTICE
+  };
+}
 
 export function startTutorial() {
   return {

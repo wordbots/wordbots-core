@@ -25,6 +25,7 @@ export function mapStateToProps(state) {
   const currentPlayer = state.game.players[state.game.currentTurn];
 
   return {
+    started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     usernames: state.game.usernames,
@@ -98,6 +99,7 @@ export function mapDispatchToProps(dispatch) {
 
 export class GameArea extends Component {
   static propTypes = {
+    started: bool,
     player: string,
     currentTurn: string,
     usernames: object,
@@ -129,6 +131,8 @@ export class GameArea extends Component {
 
     sidebarOpen: bool,
 
+    history: object,
+
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
@@ -148,6 +152,10 @@ export class GameArea extends Component {
       areaHeight: 1250,
       boardSize: 1000
     };
+
+    if (!props.started) {
+      this.props.history.push('/play');
+    }
   }
 
   // For testing.
@@ -296,6 +304,7 @@ export class GameArea extends Component {
           {this.renderNotification()}
           <Sfx queue={this.props.sfxQueue} />
         </div>
+
         <Paper
           style={{
             position: 'relative',
@@ -331,13 +340,19 @@ export class GameArea extends Component {
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               onTutorialStep={this.props.onTutorialStep}
-              onEndGame={this.props.onEndGame} />
+              onEndGame={() => {
+                this.props.onEndGame();
+                this.props.history.push('/play');
+              }} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.props.onEndGame} />
+            onClick={() => {
+              this.props.onEndGame();
+              this.props.history.push('/play');
+            }} />
         </Paper>
       </div>
     );

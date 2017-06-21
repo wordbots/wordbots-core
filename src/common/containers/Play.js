@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { bool, func, object, array } from 'prop-types';
+import { func, object, array } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { Route, Redirect, Switch, withRouter } from 'react-router';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
@@ -13,7 +13,6 @@ import GameArea from './GameArea';
 
 export function mapStateToProps(state) {
   return {
-    started: state.game.started,
     actionLog: state.game.actionLog,
 
     socket: state.socket,
@@ -36,6 +35,9 @@ export function mapDispatchToProps(dispatch) {
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
+    onStartPractice: () => {
+      dispatch(gameActions.startPractice());
+    },
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
     },
@@ -53,7 +55,6 @@ export function mapDispatchToProps(dispatch) {
 
 export class Play extends Component {
   static propTypes = {
-    started: bool,
     actionLog: array,
 
     socket: object,
@@ -67,6 +68,7 @@ export class Play extends Component {
     onJoinGame: func,
     onSpectateGame: func,
     onStartTutorial: func,
+    onStartPractice: func,
 
     onSendChatMessage: func,
     onHoverCard: func,
@@ -83,24 +85,38 @@ export class Play extends Component {
     return (
       <Lobby
         socket={this.props.socket}
+        gameMode={this.props.history.location.pathname.split('/play')[1]}
         cards={this.props.cards}
         availableDecks={this.props.availableDecks}
         onConnect={this.props.onConnect}
         onHostGame={this.props.onHostGame}
         onJoinGame={this.props.onJoinGame}
         onSpectateGame={this.props.onSpectateGame}
-        onStartTutorial={this.props.onStartTutorial} />
+        onSelectMode={(mode) => {
+          if (mode === 'tutorial') {
+            this.props.onStartTutorial();
+          } else if (mode === 'practice') {
+            this.props.onStartPractice();
+          }
+
+          this.props.history.push(`play/${mode}`);
+        }} />
     );
   }
 
   render() {
     return (
-      <div style={{
-        paddingRight: 256,
-        margin: this.props.started ? 0 : '48px 72px'
-      }}>
+      <div style={{paddingRight: 256}}>
         <Helmet title="Play"/>
-        {this.props.started ? <GameArea /> : this.lobby}
+
+        <Switch>
+          <Route exact path="/play" render={() => this.lobby} />
+          <Route path="/play/tutorial" component={GameArea} />
+          <Route path="/play/practice" component={GameArea} />
+          <Route path="/play/casual" render={() => this.lobby} />
+          <Route render={() => <Redirect to="/play" />} />
+        </Switch>
+
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages.concat(this.props.actionLog)}

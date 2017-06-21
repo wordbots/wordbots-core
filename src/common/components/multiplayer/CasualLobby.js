@@ -9,7 +9,7 @@ import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';
 import HostGame from './HostGame';
 
-export default class Lobby extends Component {
+export default class CasualLobby extends Component {
   static propTypes = {
     socket: object,
     availableDecks: array,

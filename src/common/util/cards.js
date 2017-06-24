@@ -1,6 +1,6 @@
 import {
   capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, omit, pick, reduce, uniqBy
+  isArray, mapValues, pick, reduce, uniqBy
 } from 'lodash';
 
 import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
@@ -274,7 +274,7 @@ export function cardsFromJson(json, callback) {
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
     .map(card =>
-      Object.assign({}, omit(card, ['schema']), {
+      Object.assign({}, card, {
         id: generateId(),
         source: 'user',
         timestamp: Date.now()
@@ -308,7 +308,7 @@ export function loadDecksFromFirebase(state, data) {
 }
 
 export function saveCardsToFirebase(state) {
-  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
+  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin').map(c => ({...c, schema: CARD_SCHEMA_VERSION})));
 }
 
 export function saveDecksToFirebase(state) {

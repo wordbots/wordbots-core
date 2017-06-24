@@ -17,6 +17,7 @@ import CardCostBadge from './CardCostBadge';
 import CardStat from './CardStat';
 import CardBack from './CardBack';
 import Identicon from './Identicon';
+import TriangleArt from './TriangleArt';
 
 export default class Card extends Component {
   static propTypes = {
@@ -196,16 +197,19 @@ export default class Card extends Component {
         </div>
       );
     } else if (this.props.type === TYPE_EVENT) {
-      const [width, height] = [25 * this.props.scale, 42 * this.props.scale];
+      const [width, height] = [134 * this.props.scale, 42 * this.props.scale];
       return (
         <div
           onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
           style={{
             width: width,
-            height: height,
-            margin: `${10 * this.props.scale}px auto 0`
+            height: height
         }}>
-          <Identicon id={this.props.spriteID || this.props.name} width={width} size={4} />
+          <TriangleArt
+            id={this.props.spriteID || this.props.name}
+            width={width}
+            height={height}
+            cellSize={15 * this.props.scale} />
         </div>
       );
     } else {

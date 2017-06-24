@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { number, string } from 'prop-types';
 import trianglify from 'trianglify';
 
+import { inBrowser } from '../../util/common';
+
 export default class TriangleArt extends PureComponent {
   static propTypes = {
     id: string,
@@ -21,7 +23,7 @@ export default class TriangleArt extends PureComponent {
 
   render = () => (
     <img
-      src={trianglify(this.opts).png()}
+      src={inBrowser() ? trianglify(this.opts).png() : ''}
       width={this.props.width}
       height={this.props.height}
       style={{imageRendering: 'pixelated'}} />

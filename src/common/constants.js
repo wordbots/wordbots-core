@@ -1,13 +1,19 @@
 import { capitalize, invert } from 'lodash';
 
-export const PARSER_URL = 'http://parser.wordbots.io';  // 'http://localhost:8080';
-
 // Debug flags.
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;
 export const KEEP_DECKS_UNSHUFFLED = false;
 export const DISABLE_TURN_TIMER = false;
 export const DISPLAY_HEX_IDS = false;
+
+export const PARSER_URL = 'http://parser.wordbots.io';  // 'http://localhost:8080';
+export const PARSE_DEBOUNCE_MS = 500;
+
+export const CARD_SCHEMA_VERSION = 1;
+export const SPRITE_VERSION = 2;
+// Sprite changes:
+// * 1->2: trianglify instead of identicons for events
 
 export const MODE_TUTORIAL = 0;
 export const MODE_CUSTOM = 1;

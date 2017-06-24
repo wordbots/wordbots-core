@@ -1,9 +1,12 @@
 import {
   capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, pick, reduce, uniqBy
+  isArray, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
-import { PARSER_URL, TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../constants';
+import {
+  CARD_SCHEMA_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
+  TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString
+} from '../constants';
 import defaultState from '../store/defaultCollectionState';
 
 import { id as generateId, compareCertainKeys } from './common';
@@ -12,9 +15,6 @@ import { saveUserData, indexParsedSentence } from './firebase';
 //
 // 0. Card-related constants (used below).
 //
-
-const CARD_SCHEMA_VERSION = 1;
-const PARSE_DEBOUNCE_MS = 500;
 
 const SYNONYMS = {
   ' 0 ': ' zero ',
@@ -262,7 +262,7 @@ export function contractKeywords(sentence) {
 //
 
 export function cardsToJson(cards) {
-  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'text', 'stats'];
+  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats'];
   const cardsToExport = cards.map(card =>
     Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION})
   );
@@ -274,7 +274,7 @@ export function cardsFromJson(json, callback) {
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
     .map(card =>
-      Object.assign({}, card, {
+      Object.assign({}, omit(card, ['schema']), {
         id: generateId(),
         source: 'user',
         timestamp: Date.now()
@@ -308,7 +308,7 @@ export function loadDecksFromFirebase(state, data) {
 }
 
 export function saveCardsToFirebase(state) {
-  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin').map(c => ({...c, schema: CARD_SCHEMA_VERSION})));
+  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
 }
 
 export function saveDecksToFirebase(state) {

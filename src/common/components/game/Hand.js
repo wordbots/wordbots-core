@@ -71,6 +71,7 @@ export default class Hand extends Component {
             status={this.props.status}
             name={card.name}
             spriteID={card.spriteID}
+            spriteV={card.spriteV}
             type={card.type}
             text={splitSentences(card.text).map(Sentence)}
             rawText={card.text || ''}

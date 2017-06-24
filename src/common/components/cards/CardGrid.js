@@ -36,6 +36,7 @@ export default class CardGrid extends Component {
           id={card.id}
           name={card.name}
           spriteID={card.spriteID}
+          spriteV={card.spriteV}
           type={card.type}
           text={splitSentences(card.text).map(Sentence)}
           rawText={card.text || ''}

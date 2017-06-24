@@ -26,6 +26,7 @@ export default class Card extends Component {
     id: string,
     name: string,
     spriteID: string,
+    spriteV: number,
     type: number,
     text: oneOfType([string, array]),
     rawText: string,
@@ -57,6 +58,7 @@ export default class Card extends Component {
   static defaultProps = {
     stats: {},
     parseResults: '',
+    spriteV: 1,
 
     visible: true,
     selected: false,
@@ -197,21 +199,37 @@ export default class Card extends Component {
         </div>
       );
     } else if (this.props.type === TYPE_EVENT) {
-      const [width, height] = [134 * this.props.scale, 42 * this.props.scale];
-      return (
-        <div
-          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
-          style={{
-            width: width,
-            height: height
-        }}>
-          <TriangleArt
-            id={this.props.spriteID || this.props.name}
-            width={width}
-            height={height}
-            cellSize={15 * this.props.scale} />
-        </div>
-      );
+      if (this.props.spriteV < 2 && this.props.source !== 'builtin') {
+        // Legacy event images.
+        const [width, height] = [25 * this.props.scale, 42 * this.props.scale];
+        return (
+          <div
+            onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
+            style={{
+              width: width,
+              height: height,
+              margin: `${10 * this.props.scale}px auto 0`
+          }}>
+            <Identicon id={this.props.spriteID || this.props.name} width={width} size={4} />
+          </div>
+        );
+      } else {
+        const [width, height] = [140 * this.props.scale - 6, 42 * this.props.scale];
+        return (
+          <div
+            onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
+            style={{
+              width: width,
+              height: height
+          }}>
+            <TriangleArt
+              id={this.props.spriteID || this.props.name}
+              width={width}
+              height={height}
+              cellSize={15 * this.props.scale} />
+          </div>
+        );
+      }
     } else {
       return (
         <div
@@ -221,7 +239,12 @@ export default class Card extends Component {
             height: 48 * this.props.scale,
             margin: '2px auto 3px'
         }}>
-          <Sprite id={this.props.spriteID || this.props.name} size={24} scale={this.props.scale} output="html" />
+          <Sprite
+            id={this.props.spriteID || this.props.name}
+            palette={this.props.type === TYPE_ROBOT ? 'nes' : 'greys'}
+            size={24}
+            scale={this.props.scale}
+            output="html" />
         </div>
       );
     }

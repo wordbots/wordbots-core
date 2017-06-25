@@ -17,6 +17,8 @@ import 'whatwg-fetch';
 import { logout } from '../util/firebase';
 import * as actions from '../actions/global';
 import RouterDialog from '../components/RouterDialog';
+import Tooltip from '../components/Tooltip';
+
 
 function mapStateToProps(state) {
   return {
@@ -122,9 +124,13 @@ class TitleBar extends Component {
             top: 0
           }}
           iconElementLeft={
-            <IconButton onClick={() => { this.props.onToggleSidebar(!this.props.sidebarOpen); }}>
-              <FontIcon className="material-icons">menu</FontIcon>
-            </IconButton>
+            <Tooltip text={this.props.sidebarOpen ? 'Collapse Menu' : 'Expand Menu'}>
+              <IconButton onClick={() => { 
+                this.props.onToggleSidebar(!this.props.sidebarOpen); 
+              }}>
+                <FontIcon className="material-icons" color="white">menu</FontIcon>
+              </IconButton>
+            </Tooltip>
           }
           iconElementRight={this.userMenu}
         />

@@ -69,8 +69,8 @@ export default class Board extends Component {
   }
 
   get pieceImages() {
-    return mapValues(this.allPieces, piece =>
-      piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name}
+    return mapValues(this.allPieces, p =>
+      p.card.img ? {img: p.card.img} : {sprite: p.card.spriteID || p.card.name, type: p.card.type}
     );
   }
 

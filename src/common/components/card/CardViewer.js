@@ -34,6 +34,7 @@ export default class CardViewer extends Component {
                 name={this.props.hoveredCard.card.name}
                 type={this.props.hoveredCard.card.type}
                 spriteID={this.props.hoveredCard.card.spriteID}
+                spriteV={this.props.hoveredCard.card.spriteV}
                 text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
                 rawText={this.props.hoveredCard.card.text}
                 img={this.props.hoveredCard.card.img}

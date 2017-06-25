@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { bool, func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -17,6 +16,7 @@ import 'whatwg-fetch';
 import { logout } from '../util/firebase';
 import * as actions from '../actions/global';
 import RouterDialog from '../components/RouterDialog';
+import Tooltip from '../components/Tooltip';
 
 function mapStateToProps(state) {
   return {
@@ -113,18 +113,22 @@ class TitleBar extends Component {
       <div style={{height: 64}}>
         <AppBar
           title={
-            <Link style={{
+            <div style={{
               color: '#fff', fontFamily: 'Carter One', fontSize: 32
-            }} to="/">WORDBOTS</Link>
+            }}>WORDBOTS</div>
           }
           style={{
             position: 'fixed',
             top: 0
           }}
           iconElementLeft={
-            <IconButton onClick={() => { this.props.onToggleSidebar(!this.props.sidebarOpen); }}>
-              <FontIcon className="material-icons">menu</FontIcon>
-            </IconButton>
+            <Tooltip text={this.props.sidebarOpen ? 'Collapse Menu' : 'Expand Menu'} place="right">
+              <IconButton onClick={() => {
+                this.props.onToggleSidebar(!this.props.sidebarOpen);
+              }}>
+                <FontIcon className="material-icons" color="white">menu</FontIcon>
+              </IconButton>
+            </Tooltip>
           }
           iconElementRight={this.userMenu}
         />

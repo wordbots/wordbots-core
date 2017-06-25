@@ -1,4 +1,4 @@
-import { TYPE_EVENT, TYPE_ROBOT } from '../../constants';
+import { SPRITE_VERSION, TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
 import {
   areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
@@ -101,6 +101,7 @@ function createCardFromProps(props) {
     name: props.name,
     type: props.type,
     spriteID: props.spriteID,
+    spriteV: SPRITE_VERSION,
     text: sentences.map(s => `${s.sentence}. `).join(''),
     cost: props.cost,
     source: 'user',  // In the future, this will specify *which* user created the card.

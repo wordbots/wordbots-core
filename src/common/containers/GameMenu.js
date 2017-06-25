@@ -13,6 +13,7 @@ import { allObjectsOnBoard, opponent, ownerOf, currentTutorialStep } from '../ut
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import TutorialTooltip from '../components/game/TutorialTooltip';
+import Tooltip from '../components/Tooltip';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player];
@@ -119,10 +120,11 @@ export class GameMenu extends Component {
         color: color,
         textAlign: 'center',
         backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],
-        fontSize: 24,
+        fontSize: this.props.open ? 24 : 18,
         fontWeight: color === 'red' ? 'bold' : 'normal',
         fontFamily: 'Carter One',
-        cursor: 'default'
+        cursor: 'default',
+        padding: this.props.open ? '0 16px': 0
       }
     });
   }
@@ -158,6 +160,17 @@ export class GameMenu extends Component {
     }
   }
 
+  get styles() {
+    return {
+      icon: {
+        left: this.props.open ? 4 : 8
+      },
+      tooltip: {
+        zIndex: 99999
+      }
+    };
+  }
+
   renderButtons() {
     const buttonTextWithTooltip = (text, locationID) => (
       <TutorialTooltip
@@ -174,16 +187,20 @@ export class GameMenu extends Component {
 
     return (
       <div>
+      <Tooltip disable={this.props.open} text="End Turn" place="right" style={this.styles.tooltip}>
         <MenuItem
-          primaryText={buttonTextWithTooltip('End Turn', 'endTurnButton')}
+          primaryText={this.props.open ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
           disabled={!this.props.isMyTurn || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons">timer</FontIcon>}
+          leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
-        <MenuItem
-          primaryText={buttonTextWithTooltip('Forfeit', 'forfeitButton')}
-          disabled={this.props.isSpectator || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons">close</FontIcon>}
-          onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+        </Tooltip>
+        <Tooltip disable={this.props.open} text="Forfeit" place="right" style={this.styles.tooltip}>
+          <MenuItem
+            primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
+            disabled={this.props.isSpectator || this.props.gameOver}
+            leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>flag</FontIcon>}
+            onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+        </Tooltip>
       </div>
     );
   }
@@ -220,24 +237,34 @@ export class GameMenu extends Component {
   }
 
   renderSoundWidget() {
+    const soundText = `Sound: ${soundEnabled() ? 'On' : 'Off'}`;
+
     return (
-      <MenuItem
-        primaryText={`Sound: ${soundEnabled() ? 'On' : 'Off'}`}
-        leftIcon={
-          <FontIcon className="material-icons">
-            {soundEnabled() ? 'volume_up' : 'volume_off'}
-          </FontIcon>
-        }
-        onClick={() => {
-          toggleSound();
-          this.forceUpdate();
-        }} />
+      <Tooltip disable={this.props.open} text={soundText} style={this.styles.tooltip}>
+        <MenuItem
+          primaryText={this.props.open ? soundText : ''}
+          leftIcon={
+            <FontIcon className="material-icons" style={this.styles.icon}>
+              {soundEnabled() ? 'volume_up' : 'volume_off'}
+            </FontIcon>
+          }
+          onClick={() => {
+            toggleSound();
+            this.forceUpdate();
+          }}/>
+      </Tooltip>
     );
   }
 
   render() {
     return (
-      <Drawer open={this.props.open} containerStyle={{top: 64}}>
+      <Drawer open containerStyle={{
+        top: 64,
+        width: this.props.open ? 256 : 64,
+        transition: 'width 200ms ease-in-out',
+        height: 'calc(100% - 64px)',
+        overflow: 'visible'
+      }}>
         {this.renderTimer()}
         <Divider />
 
@@ -249,7 +276,7 @@ export class GameMenu extends Component {
 
         <div style={{
           position: 'absolute',
-          bottom: 64,
+          bottom: 0,
           width: '100%'
         }}>
           <Divider />

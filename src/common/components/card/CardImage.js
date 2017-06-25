@@ -48,7 +48,7 @@ export default class CardImage extends Component {
           </div>
         );
       } else {
-        const [width, height] = [140 * this.props.scale - 6, 42 * this.props.scale];
+        const [width, height] = [140 * this.props.scale - 6, 52 * this.props.scale];
         return (
           <div
             onClick={this.props.onSpriteClick}

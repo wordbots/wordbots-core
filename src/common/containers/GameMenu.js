@@ -13,6 +13,7 @@ import { allObjectsOnBoard, opponent, ownerOf, currentTutorialStep } from '../ut
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import TutorialTooltip from '../components/game/TutorialTooltip';
+import Tooltip from '../components/Tooltip';
 
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player];
@@ -159,6 +160,17 @@ export class GameMenu extends Component {
     }
   }
 
+  get styles() {
+    return {
+      icon: {
+        left: this.props.open ? 4 : 8
+      },
+      tooltip: {
+        zIndex: 99999
+      }
+    };
+  }
+
   renderButtons() {
     const buttonTextWithTooltip = (text, locationID) => (
       <TutorialTooltip
@@ -173,22 +185,22 @@ export class GameMenu extends Component {
       </TutorialTooltip>
     );
 
-    const iconStyle = {
-      left: this.props.open ? 4 : 8
-    };
-
     return (
       <div>
+      <Tooltip disable={this.props.open} text="End Turn" style={this.styles.tooltip}>
         <MenuItem
           primaryText={this.props.open ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
           disabled={!this.props.isMyTurn || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons" style={iconStyle}>timer</FontIcon>}
+          leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
-        <MenuItem
-          primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
-          disabled={this.props.isSpectator || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons" style={iconStyle}>flag</FontIcon>}
-          onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+        </Tooltip>
+        <Tooltip disable={this.props.open} text="Forfeit" style={this.styles.tooltip}>
+          <MenuItem
+            primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
+            disabled={this.props.isSpectator || this.props.gameOver}
+            leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>flag</FontIcon>}
+            onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+        </Tooltip>
       </div>
     );
   }
@@ -225,22 +237,22 @@ export class GameMenu extends Component {
   }
 
   renderSoundWidget() {
-    const iconStyle = {
-      left: this.props.open ? 4 : 8
-    };
+    const soundText = `Sound: ${soundEnabled() ? 'On' : 'Off'}`;
 
     return (
-      <MenuItem
-        primaryText={this.props.open ? `Sound: ${soundEnabled() ? 'On' : 'Off'}` : ''}
-        leftIcon={
-          <FontIcon className="material-icons" style={iconStyle}>
-            {soundEnabled() ? 'volume_up' : 'volume_off'}
-          </FontIcon>
-        }
-        onClick={() => {
-          toggleSound();
-          this.forceUpdate();
-        }} />
+      <Tooltip disable={this.props.open} text={soundText} style={this.styles.tooltip}>
+        <MenuItem
+          primaryText={this.props.open ? soundText : ''}
+          leftIcon={
+            <FontIcon className="material-icons" style={this.styles.icon}>
+              {soundEnabled() ? 'volume_up' : 'volume_off'}
+            </FontIcon>
+          }
+          onClick={() => {
+            toggleSound();
+            this.forceUpdate();
+          }}/>
+      </Tooltip>
     );
   }
 
@@ -249,7 +261,9 @@ export class GameMenu extends Component {
       <Drawer open containerStyle={{
         top: 64,
         width: this.props.open ? 256 : 64,
-        transition: 'width 200ms ease-in-out'
+        transition: 'width 200ms ease-in-out',
+        height: 'calc(100% - 64px)',
+        overflow: 'visible'
       }}>
         {this.renderTimer()}
         <Divider />
@@ -262,7 +276,7 @@ export class GameMenu extends Component {
 
         <div style={{
           position: 'absolute',
-          bottom: this.props.open ? 64 : 48,
+          bottom: 0,
           width: '100%'
         }}>
           <Divider />

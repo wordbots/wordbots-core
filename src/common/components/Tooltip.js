@@ -9,7 +9,8 @@ export default class Tooltip extends Component {
     inline: bool,
     style: object,
     text: string.isRequired,
-    children: oneOfType([array, object])
+    children: oneOfType([array, object]),
+    disable: bool
   };
 
   static defaultProps = {
@@ -28,7 +29,7 @@ export default class Tooltip extends Component {
           {this.props.children}
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>
-          <ReactTooltip id={this.tooltipId} />
+          <ReactTooltip id={this.tooltipId} disable={this.props.disable || false}/>
         </SpanOrDiv>
       </SpanOrDiv>
     );

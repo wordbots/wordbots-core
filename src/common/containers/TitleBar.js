@@ -113,9 +113,9 @@ class TitleBar extends Component {
       <div style={{height: 64}}>
         <AppBar
           title={
-            <Link style={{
+            <div style={{
               color: '#fff', fontFamily: 'Carter One', fontSize: 32
-            }} to="/">WORDBOTS</Link>
+            }}>WORDBOTS</div>
           }
           style={{
             position: 'fixed',

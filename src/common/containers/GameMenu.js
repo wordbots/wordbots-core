@@ -119,7 +119,7 @@ export class GameMenu extends Component {
         color: color,
         textAlign: 'center',
         backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],
-        fontSize: 24,
+        fontSize: this.props.open ? 24 : 18,
         fontWeight: color === 'red' ? 'bold' : 'normal',
         fontFamily: 'Carter One',
         cursor: 'default',
@@ -187,7 +187,7 @@ export class GameMenu extends Component {
         <MenuItem
           primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
           disabled={this.props.isSpectator || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons" style={iconStyle}>close</FontIcon>}
+          leftIcon={<FontIcon className="material-icons" style={iconStyle}>flag</FontIcon>}
           onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
       </div>
     );
@@ -248,7 +248,8 @@ export class GameMenu extends Component {
     return (
       <Drawer open containerStyle={{
         top: 64,
-        width: this.props.open ? 256 : 64
+        width: this.props.open ? 256 : 64,
+        transition: 'width 200ms ease-in-out'
       }}>
         {this.renderTimer()}
         <Divider />
@@ -261,7 +262,7 @@ export class GameMenu extends Component {
 
         <div style={{
           position: 'absolute',
-          bottom: 64,
+          bottom: this.props.open ? 64 : 48,
           width: '100%'
         }}>
           <Divider />

@@ -11,21 +11,28 @@ export default class NavMenu extends Component {
   };
 
   renderLink(path, text, icon) {
+    const iconStyle = {
+      left: this.props.open ? 4 : 8
+    };
+
     return (
       <NavLink exact to={path} activeClassName="activeNavLink">
-        <MenuItem primaryText={text} leftIcon={
-          <FontIcon className="material-icons">{icon}</FontIcon>
+        <MenuItem primaryText={this.props.open ? text : ''} leftIcon={
+          <FontIcon className="material-icons" style={iconStyle}>{icon}</FontIcon>
         }/>
       </NavLink>
     );
   }
+
   render() {
     return (
       <Drawer
-        open={this.props.open}
+        open
         containerStyle={{
           top: 54,
-          paddingTop: 10
+          paddingTop: 10,
+          width: this.props.open ? 256 : 64,
+          transition: 'width 200ms ease-in-out'
       }}>
         {this.renderLink('/', 'Home', 'home')}
         {this.renderLink('/collection', 'Collection', 'view_module')}

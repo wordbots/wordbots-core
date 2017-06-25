@@ -128,19 +128,16 @@ class App extends Component {
     if (this.state.loading) {
       return null;
     } else {
-      let paddingLeft = 0;
+      let paddingLeft = 64;
 
       if (this.props.sidebarOpen) {
         paddingLeft = 256;
-      } else {
-        if (this.props.inGame) {
-          paddingLeft = 64;
-        }
       }
 
       return (
         <div style={{
-          paddingLeft: paddingLeft
+          paddingLeft: paddingLeft,
+          transition: 'padding-left 200ms ease-in-out'
         }}>
           <Switch>
             <Route exact path="/" component={Home} />

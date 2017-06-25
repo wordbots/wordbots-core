@@ -38,7 +38,7 @@ export function opponentPlayer(state) {
 }
 
 export function currentTutorialStep(state) {
-  if (state.tutorialSteps) {
+  if (state.tutorial && state.tutorialSteps) {
     const step = state.tutorialSteps[state.tutorialCurrentStepIdx];
     return Object.assign({}, step, {
       idx: state.tutorialCurrentStepIdx,

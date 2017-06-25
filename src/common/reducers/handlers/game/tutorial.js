@@ -44,7 +44,7 @@ function prevStep(state) {
 
 function deck(cardList) {
   const filler = [cards.oneBotCard, cards.oneBotCard, cards.oneBotCard, cards.oneBotCard];
-  return cardList.concat(filler).map(card => Object.assign({}, card, {id: id()}));
+  return cardList.concat(filler).map(card => ({...card, source: 'builtin', id: id()}));
 }
 
 export function startTutorial(state) {

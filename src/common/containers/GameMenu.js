@@ -66,6 +66,8 @@ export class GameMenu extends Component {
     selectedPiece: object,
     tutorialStep: object,
 
+    history: object,
+
     onActivate: func,
     onForfeit: func,
     onPassTurn: func,
@@ -199,7 +201,13 @@ export class GameMenu extends Component {
             primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
             disabled={this.props.isSpectator || this.props.gameOver}
             leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>flag</FontIcon>}
-            onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
+            onClick={() => {
+              this.props.onForfeit(opponent(this.props.player));
+
+              if (this.props.isTutorial) {
+                this.props.history.push('/play');
+              }
+            }} />
         </Tooltip>
       </div>
     );

@@ -12,12 +12,20 @@ export default class TriangleArt extends PureComponent {
     cellSize: number
   };
 
+  // Simple random number seeded by id.
+  get rand() {
+    return (parseInt(this.props.id, 36) % 1000000) / 1000000;
+  }
+
   get opts() {
+    const cellSizeVariance = (0.5 + this.rand * 1.5);  // (between 0.5 and 2)
+
     return {
       seed: this.props.id,
       width: this.props.width,
       height: this.props.height,
-      cell_size: this.props.cellSize
+      cell_size: this.props.cellSize * cellSizeVariance,
+      y_colors: 'random'
     };
   }
 

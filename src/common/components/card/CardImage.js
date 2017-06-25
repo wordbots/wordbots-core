@@ -60,7 +60,7 @@ export default class CardImage extends Component {
               id={this.props.spriteID}
               width={width}
               height={height}
-              cellSize={15 * this.props.scale} />
+              cellSize={30 * this.props.scale} />
           </div>
         );
       }

@@ -9,14 +9,12 @@ import { isEqual, noop } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import { compareCertainKeys, inBrowser } from '../../util/common';
-import loadImages from '../react-hexgrid/HexGridImages';
 import Textfit from '../react-textfit/Textfit';
-import Sprite from '../Sprite';
 
-import CardCostBadge from './CardCostBadge';
-import CardStat from './CardStat';
 import CardBack from './CardBack';
-import Identicon from './Identicon';
+import CardCostBadge from './CardCostBadge';
+import CardImage from './CardImage';
+import CardStat from './CardStat';
 
 export default class Card extends Component {
   static propTypes = {
@@ -25,6 +23,7 @@ export default class Card extends Component {
     id: string,
     name: string,
     spriteID: string,
+    spriteV: number,
     type: number,
     text: oneOfType([string, array]),
     rawText: string,
@@ -56,6 +55,7 @@ export default class Card extends Component {
   static defaultProps = {
     stats: {},
     parseResults: '',
+    spriteV: 1,
 
     visible: true,
     selected: false,
@@ -183,46 +183,6 @@ export default class Card extends Component {
     }
   }
 
-  renderImage() {
-    if (this.props.type === TYPE_CORE) {
-      const [width, height] = [50 * this.props.scale, 52 * this.props.scale];
-      return (
-        <div style={{
-          width: width,
-          height: height,
-          margin: '3px auto 0'
-        }}>
-          <img src={loadImages()[this.props.img]} width={width} height={height} />
-        </div>
-      );
-    } else if (this.props.type === TYPE_EVENT) {
-      const [width, height] = [25 * this.props.scale, 42 * this.props.scale];
-      return (
-        <div
-          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
-          style={{
-            width: width,
-            height: height,
-            margin: `${10 * this.props.scale}px auto 0`
-        }}>
-          <Identicon id={this.props.spriteID || this.props.name} width={width} size={4} />
-        </div>
-      );
-    } else {
-      return (
-        <div
-          onClick={this.props.onSpriteClick ? this.props.onSpriteClick : noop}
-          style={{
-            width: 48 * this.props.scale,
-            height: 48 * this.props.scale,
-            margin: '2px auto 3px'
-        }}>
-          <Sprite id={this.props.spriteID || this.props.name} size={24} scale={this.props.scale} output="html" />
-        </div>
-      );
-    }
-  }
-
   renderText() {
     if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
@@ -335,7 +295,14 @@ export default class Card extends Component {
 
                 <Divider/>
 
-                {this.renderImage()}
+                <CardImage
+                  type={this.props.type}
+                  spriteID={this.props.spriteID || this.props.name}
+                  spriteV={this.props.spriteV}
+                  img={this.props.img}
+                  source={this.props.source}
+                  scale={this.props.scale}
+                  onSpriteClick={this.props.onSpriteClick} />
 
                 <Divider/>
 

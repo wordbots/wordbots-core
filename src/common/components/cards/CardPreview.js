@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 
+import { SPRITE_VERSION } from '../../constants';
 import { inBrowser } from '../../util/common';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
@@ -43,6 +44,7 @@ export default class CardPreview extends Component {
           <Card
             name={this.props.name || '[Unnamed]'}
             spriteID={this.props.spriteID}
+            spriteV={SPRITE_VERSION}
             type={this.props.type}
             img={'char'}
             cost={this.props.energy}

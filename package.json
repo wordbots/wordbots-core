@@ -81,6 +81,7 @@
     "shuffle-array": "^1.0.1",
     "style-loader": "0.18.2",
     "substitute-loader": "^1.0.0",
+    "trianglify": "wordbots/trianglify",
     "url-loader": "^0.5.9",
     "webpack": "^3.0.0",
     "whatwg-fetch": "^2.0.3",

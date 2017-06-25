@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { object, string } from 'prop-types';
 
+import { TYPE_STRUCTURE } from '../../constants';
 import Sprite from '../Sprite';
 
 import HexUtils from './HexUtils';
@@ -30,7 +31,12 @@ export default class HexPattern extends Component {
         <pattern id={`${id}_piece`} height="100%" width="100%"
           patternContentUnits="objectBoundingBox" viewBox="0 0 1 1"
           preserveAspectRatio="xMidYMid">
-          <Sprite id={image.sprite} size={24} spacing={6} output="svg" />
+          <Sprite
+            id={image.sprite}
+            size={24}
+            spacing={6}
+            output="svg"
+            palette={image.type === TYPE_STRUCTURE ? 'greys' : 'nes'} />
         </pattern>
       );
     }
@@ -38,8 +44,8 @@ export default class HexPattern extends Component {
 
   fillPattern() {
     const id = HexUtils.getID(this.props.hex);
-    const fillImage = this.props.fill ? 
-      this.props.images[`${this.props.fill  }_tile`] : 
+    const fillImage = this.props.fill ?
+      this.props.images[`${this.props.fill  }_tile`] :
       this.props.images['floor'];
 
     return (

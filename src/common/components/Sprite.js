@@ -14,6 +14,7 @@ export default class Sprite extends PureComponent {
     size: number,
     scale: number,
     spacing: number,
+    palette: string,
     output: string
   };
 
@@ -30,7 +31,7 @@ export default class Sprite extends PureComponent {
 
         // Available properties: seed, pal, colours, size, spacing, zoom,
         // scaler0, scaler1, falloff, probmin, probmax, bias, gain, mirrorh, mirrorv, despeckle, despur
-        pal: 'nes',
+        pal: this.props.palette,
         colours: 5,
         falloff: 'cosine',
         mirrorh: 1,

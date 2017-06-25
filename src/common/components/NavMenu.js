@@ -22,7 +22,7 @@ export default class NavMenu extends Component {
 
     return (
       <NavLink exact to={path} activeClassName="activeNavLink">
-        <Tooltip disable={this.props.open} text={text} style={tooltipStyle}>
+        <Tooltip disable={this.props.open} text={text} place="right" style={tooltipStyle}>
           <MenuItem primaryText={this.props.open ? text : ''} leftIcon={
             <FontIcon className="material-icons" style={iconStyle}>{icon}</FontIcon>
           }/>

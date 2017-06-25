@@ -10,12 +10,15 @@ export default class Tooltip extends Component {
     style: object,
     text: string.isRequired,
     children: oneOfType([array, object]),
-    disable: bool
+    disable: bool,
+    place: string
   };
 
   static defaultProps = {
     inline: false,
-    style: {}
+    style: {},
+    disable: false,
+    place: 'top'
   }
 
   tooltipId = id()
@@ -29,7 +32,10 @@ export default class Tooltip extends Component {
           {this.props.children}
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>
-          <ReactTooltip id={this.tooltipId} disable={this.props.disable || false}/>
+          <ReactTooltip
+            id={this.tooltipId}
+            disable={this.props.disable}
+            place={this.props.place} />
         </SpanOrDiv>
       </SpanOrDiv>
     );

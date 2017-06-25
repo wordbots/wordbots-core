@@ -18,7 +18,6 @@ import * as actions from '../actions/global';
 import RouterDialog from '../components/RouterDialog';
 import Tooltip from '../components/Tooltip';
 
-
 function mapStateToProps(state) {
   return {
     user: state.global.user,
@@ -123,9 +122,9 @@ class TitleBar extends Component {
             top: 0
           }}
           iconElementLeft={
-            <Tooltip text={this.props.sidebarOpen ? 'Collapse Menu' : 'Expand Menu'}>
-              <IconButton onClick={() => { 
-                this.props.onToggleSidebar(!this.props.sidebarOpen); 
+            <Tooltip text={this.props.sidebarOpen ? 'Collapse Menu' : 'Expand Menu'} place="right">
+              <IconButton onClick={() => {
+                this.props.onToggleSidebar(!this.props.sidebarOpen);
               }}>
                 <FontIcon className="material-icons" color="white">menu</FontIcon>
               </IconButton>

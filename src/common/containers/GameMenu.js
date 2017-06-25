@@ -124,7 +124,7 @@ export class GameMenu extends Component {
         fontWeight: color === 'red' ? 'bold' : 'normal',
         fontFamily: 'Carter One',
         cursor: 'default',
-        padding: this.props.open ? '0 16px': 0 
+        padding: this.props.open ? '0 16px': 0
       }
     });
   }
@@ -187,14 +187,14 @@ export class GameMenu extends Component {
 
     return (
       <div>
-      <Tooltip disable={this.props.open} text="End Turn" style={this.styles.tooltip}>
+      <Tooltip disable={this.props.open} text="End Turn" place="right" style={this.styles.tooltip}>
         <MenuItem
           primaryText={this.props.open ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
           disabled={!this.props.isMyTurn || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         </Tooltip>
-        <Tooltip disable={this.props.open} text="Forfeit" style={this.styles.tooltip}>
+        <Tooltip disable={this.props.open} text="Forfeit" place="right" style={this.styles.tooltip}>
           <MenuItem
             primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
             disabled={this.props.isSpectator || this.props.gameOver}

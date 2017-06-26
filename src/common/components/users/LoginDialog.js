@@ -173,6 +173,7 @@ export default class LoginDialog extends Component {
         modal
         path="login"
         title={this.state.register ? 'Register' : 'Login'}
+        history={history}
         actions={actions}
         style={{width: 400, position: 'relative'}}
       >

@@ -13,6 +13,7 @@ import MenuItem from 'material-ui/MenuItem';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
+import { isFlagSet, toggleFlag } from '../util/browser';
 import { logout } from '../util/firebase';
 import * as actions from '../actions/global';
 import RouterDialog from '../components/RouterDialog';
@@ -27,8 +28,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onToggleSidebar(value) {
-      dispatch(actions.toggleSidebar(value));
+    onRerenderApp(value) {
+      dispatch(actions.rerender(value));
     }
   };
 }
@@ -40,7 +41,7 @@ class TitleBar extends Component {
 
     history: object,
 
-    onToggleSidebar: func
+    onRerenderApp: func
   };
 
   constructor(props) {
@@ -56,7 +57,7 @@ class TitleBar extends Component {
     RouterDialog.openDialog(this.props.history, 'login');
   }
 
-  handleUserMenuOpen = (event) => {
+  openUserMenu = (event) => {
     event.preventDefault();
 
     this.setState({
@@ -65,8 +66,13 @@ class TitleBar extends Component {
     });
   }
 
-  handleRequestClose = () => {
+  closeUserMenu = () => {
     this.setState({userOpen: false});
+  }
+
+  toggleSidebar = () => {
+    toggleFlag('sidebarCollapsed');
+    this.props.onRerenderApp();
   }
 
   get userMenu() {
@@ -77,21 +83,18 @@ class TitleBar extends Component {
             style={{color: 'white'}}
             label={this.props.user.displayName}
             labelPosition="before"
-            onTouchTap={(e) => this.handleUserMenuOpen(e)}
+            onTouchTap={(e) => this.openUserMenu(e)}
             icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
           <Popover
             open={this.state.userOpen}
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            onRequestClose={this.handleRequestClose}>
+            onRequestClose={this.closeUserMenu}>
             <Menu>
               <MenuItem
                 primaryText="Logout"
-                onClick={() => {
-                  logout();
-                  this.handleRequestClose();
-                }}
+                onClick={() => { logout(); this.closeUserMenu(); }}
                 leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
             </Menu>
           </Popover>
@@ -122,10 +125,11 @@ class TitleBar extends Component {
             top: 0
           }}
           iconElementLeft={
-            <Tooltip text={this.props.sidebarOpen ? 'Collapse Menu' : 'Expand Menu'} place="right">
-              <IconButton onClick={() => {
-                this.props.onToggleSidebar(!this.props.sidebarOpen);
-              }}>
+            <Tooltip
+              text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
+              place="right"
+            >
+              <IconButton onClick={this.toggleSidebar}>
                 <FontIcon className="material-icons" color="white">menu</FontIcon>
               </IconButton>
             </Tooltip>

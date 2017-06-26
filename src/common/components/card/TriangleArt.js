@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { number, string } from 'prop-types';
 import trianglify from 'trianglify';
 
-import { inBrowser } from '../../util/common';
+import { inBrowser } from '../../util/browser';
 
 export default class TriangleArt extends PureComponent {
   static propTypes = {

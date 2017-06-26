@@ -1,5 +1,4 @@
 import * as ga from '../actions/global';
-import { GAME_START } from '../actions/socket';
 import defaultState from '../store/defaultGlobalState';
 
 export default function global(state = defaultState, action) {
@@ -17,11 +16,8 @@ export default function global(state = defaultState, action) {
     case ga.LOGGED_OUT:
       return Object.assign(state, {user: null});
 
-    case ga.TOGGLE_SIDEBAR:
-      return Object.assign(state, {sidebarOpen: action.payload.value});
-
-    case GAME_START:
-      return Object.assign(state, {sidebarOpen: true});  // Always open sidebar when a game starts.
+    case ga.RE_RENDER:
+      return Object.assign(state, {renderId: state.renderId + 1});
 
     default:
       return state;

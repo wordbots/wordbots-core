@@ -96,7 +96,7 @@ export function inBrowser() {
 export function transformHistory(history, func) {
   if (history && history.location) {
     const currentPath = history.location.pathname;
-    const newPath = func(currentPath);
+    const newPath = func(currentPath === '/' ? '/home' : currentPath);
     history.push(newPath);
   }
 }

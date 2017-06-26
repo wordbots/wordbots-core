@@ -115,7 +115,20 @@ class Deck extends Component {
           justifyContent: 'space-between',
           alignItems: 'flex-start'
         }}>
-          <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
+          <div style={{
+            margin: '30px 10px 50px 30px',
+            width: 300,
+            minWidth: 300
+          }}>
+            <Paper style={{padding: 20, marginBottom: 20}}>
+              <div style={{fontWeight: 100, fontSize: 28}}>Energy Curve</div>
+              <EnergyCurve cards={this.selectedCards} />
+            </Paper>
+
+            {this.renderSidebarControls()}
+          </div>
+
+          <div style={{marginTop: 10, width: '100%'}}>
             <CardCollection
               allowMultipleSelection
               layout={this.state.layout}
@@ -125,11 +138,11 @@ class Deck extends Component {
           </div>
 
           <div style={{
-            margin: '30px 50px 50px 0',
+            margin: '30px 30px 50px 10px',
             width: 300,
             minWidth: 300
           }}>
-            <Paper style={{padding: 20, marginBottom: 20}}>
+            <Paper style={{padding: 20}}>
               <ActiveDeck
                 id={this.props.id}
                 name={this.props.deck ? this.props.deck.name : ''}
@@ -146,13 +159,6 @@ class Deck extends Component {
                   this.props.history.push('/decks');
                 }} />
             </Paper>
-
-            <Paper style={{padding: 20, marginBottom: 20}}>
-              <div style={{fontWeight: 100, fontSize: 28}}>Energy Curve</div>
-              <EnergyCurve cards={this.selectedCards} />
-            </Paper>
-
-            {this.renderSidebarControls()}
           </div>
         </div>
       </div>

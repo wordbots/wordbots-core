@@ -16,8 +16,8 @@ export default class CardGrid extends Component {
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-        margin: '20px 0',
-        width: 'calc(100% - 20px)'
+        margin: '20px',
+        width: 'calc(100% - 40px)'
       }}>
         <RaisedButton
           icon={<FontIcon className="material-icons">arrow_back</FontIcon>}

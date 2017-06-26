@@ -19,9 +19,8 @@ export default class LayoutControls extends Component {
       borderRadius: 3,
       boxShadow: '1px 1px 3px #CCC',
       cursor: 'pointer',
-      width: '100%',
-      textAlign: 'center',
-      marginRight: 10
+      width: '40%',
+      textAlign: 'center'
     };
   }
 
@@ -55,7 +54,7 @@ export default class LayoutControls extends Component {
 
         <div style={{
           display: 'flex',
-          justifyContent: 'space-around',
+          justifyContent: 'space-between',
           marginBottom: 20
         }}>
           {this.renderButton(0, 'view_module')}

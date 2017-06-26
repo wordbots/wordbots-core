@@ -55,10 +55,10 @@ export default class CardCollection extends Component {
   renderPageControls() {
     return (
       <PageSwitcher
-          page={this.currentPage}
-          maxPages={this.numPages}
-          prevPage={() => this.setState({page: this.currentPage - 1})}
-          nextPage={() => this.setState({page: this.currentPage + 1})} />
+        page={this.currentPage}
+        maxPages={this.numPages}
+        prevPage={() => this.setState({page: this.currentPage - 1})}
+        nextPage={() => this.setState({page: this.currentPage + 1})} />
     );
   }
 

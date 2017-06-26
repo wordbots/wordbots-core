@@ -16,6 +16,12 @@ export default function actions(state) {
       });
     },
 
+    canAttackAgain: function (objects) {
+      objects.entries.forEach(object => {
+        Object.assign(object, {cantAttack: false});
+      });
+    },
+
     canMoveAndAttackAgain: function (objects) {
       objects.entries.forEach(object => {
         Object.assign(object, {movesMade: 0, cantMove: false, cantAttack: false});

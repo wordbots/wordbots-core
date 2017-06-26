@@ -8,7 +8,7 @@ import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
 import { DISABLE_TURN_TIMER } from '../constants';
-import { soundEnabled, toggleSound } from '../util/common';
+import { isFlagSet, toggleFlag } from '../util/browser';
 import { allObjectsOnBoard, opponent, ownerOf, currentTutorialStep } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -54,8 +54,6 @@ export function mapDispatchToProps(dispatch) {
 
 export class GameMenu extends Component {
   static propTypes = {
-    open: bool,
-
     player: string,
     currentTurn: string,
     gameOver: bool,
@@ -104,6 +102,10 @@ export class GameMenu extends Component {
     }
   }
 
+  get isExpanded() {
+    return !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
+  }
+
   resetTimer() {
     this.setTimer(1, 30, 'white');
   }
@@ -120,11 +122,11 @@ export class GameMenu extends Component {
         color: color,
         textAlign: 'center',
         backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],
-        fontSize: this.props.open ? 24 : 18,
+        fontSize: this.isExpanded ? 24 : 18,
         fontWeight: color === 'red' ? 'bold' : 'normal',
         fontFamily: 'Carter One',
         cursor: 'default',
-        padding: this.props.open ? '0 16px': 0
+        padding: this.isExpanded ? '0 16px': 0
       }
     });
   }
@@ -163,7 +165,7 @@ export class GameMenu extends Component {
   get styles() {
     return {
       icon: {
-        left: this.props.open ? 4 : 8
+        left: this.isExpanded ? 4 : 8
       },
       tooltip: {
         zIndex: 99999
@@ -187,16 +189,16 @@ export class GameMenu extends Component {
 
     return (
       <div>
-      <Tooltip disable={this.props.open} text="End Turn" place="right" style={this.styles.tooltip}>
+      <Tooltip disable={this.isExpanded} text="End Turn" place="right" style={this.styles.tooltip}>
         <MenuItem
-          primaryText={this.props.open ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
+          primaryText={this.isExpanded ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
           disabled={!this.props.isMyTurn || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         </Tooltip>
-        <Tooltip disable={this.props.open} text="Forfeit" place="right" style={this.styles.tooltip}>
+        <Tooltip disable={this.isExpanded} text="Forfeit" place="right" style={this.styles.tooltip}>
           <MenuItem
-            primaryText={this.props.open ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
+            primaryText={this.isExpanded ? buttonTextWithTooltip('Forfeit', 'forfeitButton') : ''}
             disabled={this.props.isSpectator || this.props.gameOver}
             leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>flag</FontIcon>}
             onClick={() => { this.props.onForfeit(opponent(this.props.player)); }} />
@@ -237,19 +239,19 @@ export class GameMenu extends Component {
   }
 
   renderSoundWidget() {
-    const soundText = `Sound: ${soundEnabled() ? 'On' : 'Off'}`;
+    const soundText = `Sound: ${isFlagSet('sound') ? 'On' : 'Off'}`;
 
     return (
-      <Tooltip disable={this.props.open} text={soundText} style={this.styles.tooltip}>
+      <Tooltip disable={this.isExpanded} text={soundText} style={this.styles.tooltip}>
         <MenuItem
-          primaryText={this.props.open ? soundText : ''}
+          primaryText={this.isExpanded ? soundText : ''}
           leftIcon={
             <FontIcon className="material-icons" style={this.styles.icon}>
-              {soundEnabled() ? 'volume_up' : 'volume_off'}
+              {isFlagSet('sound') ? 'volume_up' : 'volume_off'}
             </FontIcon>
           }
           onClick={() => {
-            toggleSound();
+            toggleFlag('sound');
             this.forceUpdate();
           }}/>
       </Tooltip>
@@ -260,7 +262,7 @@ export class GameMenu extends Component {
     return (
       <Drawer open containerStyle={{
         top: 64,
-        width: this.props.open ? 256 : 64,
+        width: this.isExpanded ? 256 : 64,
         transition: 'width 200ms ease-in-out',
         height: 'calc(100% - 64px)',
         overflow: 'visible'

@@ -48,6 +48,10 @@ export function ensureInRange(name, value, min, max) {
   }
 }
 
+// Helper methods relating to bigrams.
+
+const DISALLOWED_PHRASES = ['all a'];
+
 export function prepareBigramProbs(corpus) {
   // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
   function normalizeValues(obj) {
@@ -59,7 +63,6 @@ export function prepareBigramProbs(corpus) {
 
   // Manually set the probability to zero for certain phrases that
   // (while technically valid) aren't the best way of wording something.
-  const DISALLOWED_PHRASES = ['all a'];
   DISALLOWED_PHRASES.forEach((phrase) => {
     const [first, second] = phrase.split(' ');
     bigrams[first][second] = 0;

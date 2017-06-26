@@ -1,7 +1,7 @@
 export const FIREBASE_DATA = 'FIREBASE_DATA';
 export const LOGGED_IN = 'LOGGED_IN';
 export const LOGGED_OUT = 'LOGGED_OUT';
-export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';
+export const RE_RENDER = 'RE_RENDER';
 
 export function firebaseData(data) {
   return {
@@ -23,9 +23,8 @@ export function loggedOut() {
   };
 }
 
-export function toggleSidebar(value) {
+export function reRender() {
   return {
-    type: TOGGLE_SIDEBAR,
-    payload: { value }
+    type: RE_RENDER
   };
 }

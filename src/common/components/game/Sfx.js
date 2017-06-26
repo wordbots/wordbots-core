@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { array } from 'prop-types';
 import { isEmpty, isEqual } from 'lodash';
 
-import { inBrowser, soundEnabled } from '../../util/common';
+import { inBrowser, isFlagSet } from '../../util/browser';
 
 let Sound;
 if (inBrowser()) {
@@ -33,7 +33,7 @@ export default class Sfx extends Component {
   }
 
   get enabled() {
-    return inBrowser() && Sound && soundEnabled();
+    return inBrowser() && Sound && isFlagSet('sound');
   }
 
   get currentSound() {

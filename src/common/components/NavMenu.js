@@ -1,35 +1,42 @@
 import React, { Component } from 'react';
-import { bool } from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
+import { isFlagSet } from '../util/browser';
 import Tooltip from '../components/Tooltip';
 
 export default class NavMenu extends Component {
-  static propTypes = {
-    open: bool
-  };
-
-  renderLink(path, text, icon) {
-    const iconStyle = {
-      left: this.props.open ? 4 : 8
-    };
-    const tooltipStyle = {
-      zIndex: 99999
-    };
-
-    return (
-      <NavLink exact to={path} activeClassName="activeNavLink">
-        <Tooltip disable={this.props.open} text={text} place="right" style={tooltipStyle}>
-          <MenuItem primaryText={this.props.open ? text : ''} leftIcon={
-            <FontIcon className="material-icons" style={iconStyle}>{icon}</FontIcon>
-          }/>
-        </Tooltip>
-      </NavLink>
-    );
+  get isExpanded() {
+    return !isFlagSet('sidebarCollapsed');
   }
+
+  renderIcon = (icon) => (
+    <FontIcon
+      className="material-icons"
+      style={{
+        left: this.isExpanded ? 4 : 8
+    }}>
+      {icon}
+    </FontIcon>
+  )
+
+  renderLink = (path, text, icon) => (
+    <NavLink exact to={path} activeClassName="activeNavLink">
+      <Tooltip
+        disable={this.isExpanded}
+        text={text}
+        place="right"
+        style={{
+          zIndex: 99999
+      }}>
+        <MenuItem
+          primaryText={this.isExpanded ? text : ''}
+          leftIcon={this.renderIcon(icon)} />
+      </Tooltip>
+    </NavLink>
+  )
 
   render() {
     return (
@@ -38,7 +45,7 @@ export default class NavMenu extends Component {
         containerStyle={{
           top: 54,
           paddingTop: 10,
-          width: this.props.open ? 256 : 64,
+          width: this.isExpanded ? 256 : 64,
           transition: 'width 200ms ease-in-out',
           height: 'calc(100% - 54px)',
           overflow: 'visible'

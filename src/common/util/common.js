@@ -78,39 +78,3 @@ export function bigramNLL(phrase, bigramProbs) {
 
   return logLikelihood;
 }
-
-export function logIfFlagSet(flag, msg) {
-  if (flag) {
-    /* eslint-disable no-console */
-    console.log(msg);
-    /* eslint-enable no-console */
-  }
-}
-
-// Browser-specific code below: browser detection, history manipulation, sound management.
-
-export function inBrowser() {
-  return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
-}
-
-export function transformHistory(history, func) {
-  if (history && history.location) {
-    const currentPath = history.location.pathname;
-    const newPath = func(currentPath === '/' ? '/home' : currentPath);
-    history.push(newPath);
-  }
-}
-
-export function getHash(history) {
-  return history && history.location.hash.split('#')[1];
-}
-export function setHash(history, hash) {
-  transformHistory(history, path => `${path}#${hash}`);
-}
-
-export function soundEnabled() {
-  return localStorage['wb$soundEnabled'] === 'true';
-}
-export function toggleSound() {
-  localStorage['wb$soundEnabled'] = !soundEnabled();
-}

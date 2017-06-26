@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, func, object } from 'prop-types';
+import { bool, func, number, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -7,7 +7,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { inBrowser } from '../util/common';
+import { isFlagSet, logAnalytics } from '../util/browser';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
@@ -25,16 +25,11 @@ import Decks from './Decks';
 import Home from './Home';
 import Play from './Play';
 
-let ReactGA, currentLocation;
-if (inBrowser()) {
-  ReactGA = require('react-ga');
-  ReactGA.initialize('UA-345959-18');
-}
-
 function mapStateToProps(state) {
   return {
-    sidebarOpen: state.global.sidebarOpen || state.game.tutorial,
-    inGame: state.game.started
+    inGame: state.game.started,
+    inTutorial: state.game.tutorial,
+    renderId: state.global.renderId
   };
 }
 
@@ -58,8 +53,9 @@ class App extends Component {
   };
 
   static propTypes = {
-    sidebarOpen: bool,
     inGame: bool,
+    inTutorial: bool,
+    renderId: number,
 
     history: object,
 
@@ -79,7 +75,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.logAnalytics();
+    logAnalytics();
   }
 
   componentDidMount() {
@@ -97,15 +93,7 @@ class App extends Component {
   }
 
   componentWillUpdate() {
-    this.logAnalytics();
-  }
-
-  logAnalytics() {
-    if (inBrowser() && window.location.pathname !== currentLocation) {
-      currentLocation = window.location.pathname;
-      ReactGA.set({ page: currentLocation });
-      ReactGA.pageview(currentLocation);
-    }
+    logAnalytics();
   }
 
   getChildContext() {
@@ -114,13 +102,17 @@ class App extends Component {
     };
   }
 
+  get isSidebarExpanded() {
+    return !isFlagSet('sidebarCollapsed') || this.props.inTutorial;
+  }
+
   get sidebar() {
     if (this.state.loading) {
       return null;
     } else if (this.props.inGame) {
-      return <GameMenu open={this.props.sidebarOpen} />;
+      return <GameMenu />;
     } else {
-      return <NavMenu open={this.props.sidebarOpen} />;
+      return <NavMenu />;
     }
   }
 
@@ -128,15 +120,9 @@ class App extends Component {
     if (this.state.loading) {
       return null;
     } else {
-      let paddingLeft = 64;
-
-      if (this.props.sidebarOpen) {
-        paddingLeft = 256;
-      }
-
       return (
         <div style={{
-          paddingLeft: paddingLeft,
+          paddingLeft: this.isSidebarExpanded ? 256 : 64,
           transition: 'padding-left 200ms ease-in-out'
         }}>
           <Switch>

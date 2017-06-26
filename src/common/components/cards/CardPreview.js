@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 
 import { SPRITE_VERSION } from '../../constants';
-import { inBrowser } from '../../util/common';
+import { inBrowser } from '../../util/browser';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 

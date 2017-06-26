@@ -1,5 +1,5 @@
 const defaultState = {
-  sidebarOpen: true,
+  renderId: 0,
   user: null
 };
 

@@ -6,7 +6,8 @@ import React, { PureComponent } from 'react';
 import { number, string } from 'prop-types';
 import { isUndefined } from 'lodash';
 
-import { hashCode, inBrowser } from '../util/common';
+import { hashCode } from '../util/common';
+import { inBrowser } from '../util/browser';
 
 export default class Sprite extends PureComponent {
   static propTypes = {

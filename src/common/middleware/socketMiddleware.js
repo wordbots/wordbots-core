@@ -1,5 +1,5 @@
 import { LOG_SOCKET_IO } from '../constants';
-import { logIfFlagSet } from '../util/common';
+import { logIfFlagSet } from '../util/browser';
 import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
 

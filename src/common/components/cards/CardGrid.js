@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { array, bool, func } from 'prop-types';
 
-import { id, inBrowser } from '../../util/common';
+import { id } from '../../util/common';
+import { inBrowser } from '../../util/browser';
 import { splitSentences } from '../../util/cards';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';

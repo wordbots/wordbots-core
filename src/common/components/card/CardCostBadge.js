@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { element, number, string } from 'prop-types';
 import Badge from 'material-ui/Badge';
 
-import { inBrowser } from '../../util/common';
+import { inBrowser } from '../../util/browser';
 
 export default class CardCostBadge extends Component {
   static propTypes = {

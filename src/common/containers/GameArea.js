@@ -8,7 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
-import { inBrowser } from '../util/common';
+import { inBrowser } from '../util/browser';
 import { currentTutorialStep, getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';

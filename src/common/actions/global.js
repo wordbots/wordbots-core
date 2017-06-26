@@ -23,7 +23,7 @@ export function loggedOut() {
   };
 }
 
-export function reRender() {
+export function rerender() {
   return {
     type: RE_RENDER
   };

@@ -29,7 +29,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onRerenderApp(value) {
-      dispatch(actions.reRender(value));
+      dispatch(actions.rerender(value));
     }
   };
 }

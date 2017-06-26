@@ -146,6 +146,16 @@ export default class ActiveDeck extends Component {
     );
   }
 
+  renderCardGroup(type) {
+    return (
+      <div>
+        {sortBy(groupCards(selectType(this.props.cards, type)), ['cost', 'name']).map((card, idx) =>
+          this.renderCard(card, idx, type)
+        )}       
+      </div>
+    );
+  }
+
   renderCardList() {
     if (this.state.grouping === 0) {
       return (
@@ -164,9 +174,7 @@ export default class ActiveDeck extends Component {
             marginBottom: 10
           }}>Robots</div>
 
-          {sortBy(groupCards(selectType(this.props.cards, 0)), ['cost', 'name']).map((card, idx) =>
-            this.renderCard(card, idx, 0)
-          )}
+          {this.renderCardGroup(0)}
 
           <div style={{
             fontWeight: 700,
@@ -175,9 +183,7 @@ export default class ActiveDeck extends Component {
             marginTop: 10
           }}>Events</div>
 
-          {sortBy(groupCards(selectType(this.props.cards, 1)), ['cost', 'name']).map((card, idx) =>
-            this.renderCard(card, idx, 1)
-          )}
+          {this.renderCardGroup(1)}
 
           <div style={{
             fontWeight: 700,
@@ -186,9 +192,7 @@ export default class ActiveDeck extends Component {
             marginTop: 10
           }}>Structures</div>
 
-          {sortBy(groupCards(selectType(this.props.cards, 3)), ['cost', 'name']).map((card, idx) =>
-            this.renderCard(card, idx, 3)
-          )}
+          {this.renderCardGroup(3)}
         </div>
       );
     }

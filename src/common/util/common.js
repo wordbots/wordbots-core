@@ -97,7 +97,6 @@ export function transformHistory(history, func) {
   if (history && history.location) {
     const currentPath = history.location.pathname;
     const newPath = func(currentPath === '/' ? '/home' : currentPath);
-    console.log([currentPath, newPath]);
     history.push(newPath);
   }
 }

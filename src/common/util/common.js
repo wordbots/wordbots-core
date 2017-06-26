@@ -50,12 +50,12 @@ export function ensureInRange(name, value, min, max) {
 
 export function prepareBigramProbs(corpus) {
   // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
-  function normalizeProps(obj) {
+  function normalizeValues(obj) {
     const total = sum(Object.values(obj));
     return mapValues(obj, val => val / total);
   }
 
-  const bigrams = mapValues(buildNGrams(corpus, 2), normalizeProps);
+  const bigrams = mapValues(buildNGrams(corpus, 2), normalizeValues);
 
   // Manually set the probability to zero for certain phrases that
   // (while technically valid) aren't the best way of wording something.

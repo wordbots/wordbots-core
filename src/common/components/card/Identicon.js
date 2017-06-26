@@ -22,8 +22,8 @@ export default class Identicon extends Component {
 
   generate(id, options, generator) {
     const size = options.size;
-    const hash = options.hash || hashCode;
-    const value = hash(id);
+    const hashFn = options.hash || hashCode;
+    const value = hashFn(id);
     const bin = value.toString(2);
     generator.start(value);
     let n = 0;

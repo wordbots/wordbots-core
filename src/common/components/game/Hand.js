@@ -74,33 +74,35 @@ export default class Hand extends Component {
           onNextStep={() => { this.props.onTutorialStep(); }}
           onPrevStep={() => { this.props.onTutorialStep(true); }}
         >
-          <Card
-            key={card.id}
-            numCards={numCards}
-            status={this.props.status}
-            name={card.name}
-            spriteID={card.spriteID}
-            spriteV={card.spriteV}
-            type={card.type}
-            text={splitSentences(card.text).map(Sentence)}
-            rawText={card.text || ''}
-            img={card.img}
-            cost={getCost(card)}
-            baseCost={card.baseCost}
-            cardStats={card.stats}
-            source={card.source}
+          <div>
+            <Card
+              key={card.id}
+              numCards={numCards}
+              status={this.props.status}
+              name={card.name}
+              spriteID={card.spriteID}
+              spriteV={card.spriteV}
+              type={card.type}
+              text={splitSentences(card.text).map(Sentence)}
+              rawText={card.text || ''}
+              img={card.img}
+              cost={getCost(card)}
+              baseCost={card.baseCost}
+              cardStats={card.stats}
+              source={card.source}
 
-            selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
-            targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
-            visible={this.props.isActivePlayer}
+              selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
+              targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
+              visible={this.props.isActivePlayer}
 
-            margin={idx < numCards - 1 ? cardMargin : 0}
-            rotation={this.props.curved ? rotationDegs : 0}
-            yTranslation={this.props.curved ? translationPx : 0}
-            zIndex={zIndex}
+              margin={idx < numCards - 1 ? cardMargin : 0}
+              rotation={this.props.curved ? rotationDegs : 0}
+              yTranslation={this.props.curved ? translationPx : 0}
+              zIndex={zIndex}
 
-            onCardClick={e => { this.props.onSelectCard(idx); }}
-            onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+              onCardClick={e => { this.props.onSelectCard(idx); }}
+              onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+          </div>
         </TutorialTooltip>
       );
     });
@@ -111,6 +113,7 @@ export default class Hand extends Component {
       <CSSTransitionGroup
         id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
+        transitionAppear
         transitionEnterTimeout={500}
         transitionLeave={false}
         className={isNull(this.props.selectedCard) ? '' : 'selected'}

@@ -1,7 +1,7 @@
-.hand-enter {
+.hand-appear, .hand-enter {
   transform: translate(500%);
 }
-.hand-enter-active {
+.hand-appear-active, .hand-enter-active {
   transform: translate(0%);
   transition: transform 500ms ease-in-out;
 }
@@ -22,10 +22,10 @@
   transition: opacity 100ms ease-in-out;
 }
 
-.hex-piece-appear {
+.hex-piece-appear, .hex-piece-enter {
   opacity: 0;
 }
-.hex-piece-appear-active {
+.hex-piece-appear-active, .hex-piece-enter-active {
   opacity: 1;
 }
 

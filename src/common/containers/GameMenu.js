@@ -79,7 +79,7 @@ export class GameMenu extends Component {
       timerStyle: {
         color: 'white',
         textAlign: 'center',
-        fontSize: '24',
+        fontSize: 24,
         fontWeight: 'normal',
         fontFamily: 'Carter One',
         cursor: 'default'

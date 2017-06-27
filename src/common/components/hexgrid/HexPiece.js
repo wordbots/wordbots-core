@@ -2,6 +2,8 @@ import React from 'react';
 import { object } from 'prop-types';
 import { isUndefined } from 'lodash';
 
+import { ANIMATION_TIME_MS } from '../../constants';
+
 import PiecePattern from './PiecePattern';
 import HexUtils from './HexUtils';
 
@@ -35,8 +37,9 @@ export default class HexPiece extends React.Component {
   }
 
   get translate() {
-    const hex = this.props.hex;
-    const pixel = HexUtils.hexToPixel(hex, this.props.layout);
+    const attackingHex = this.props.piece.attacking ? HexUtils.IDToHex(this.props.piece.attacking) : null;
+    const renderedHex = attackingHex ? HexUtils.lerp(this.props.hex, attackingHex, 0.8) : this.props.hex;
+    const pixel = HexUtils.hexToPixel(renderedHex, this.props.layout);
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
@@ -109,7 +112,7 @@ export default class HexPiece extends React.Component {
         onMouseLeave={e => this.props.actions.onHexHover(this.props.hex, e)}
         onClick={e => this.props.actions.onClick(this.props.hex, e)}
         style={{
-          transition: 'transform 400ms ease-in-out'
+          transition: `transform ${ANIMATION_TIME_MS}ms ease-in-out`
       }}>
         <PiecePattern piece={this.props.piece} />
         <polygon key="p2" points={this.points} style={this.styles} />

@@ -28,6 +28,8 @@ export const TYPE_EVENT = 1;
 export const TYPE_CORE = 2;
 export const TYPE_STRUCTURE = 3;
 
+export const ANIMATION_TIME_MS = 400;
+
 export const CREATABLE_TYPES = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
 
 export const GRID_CONFIG = {

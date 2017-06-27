@@ -114,7 +114,7 @@ export function attack(state, source, target) {
     }
   }
 
-  return state;
+  return {...state, attack: {from: source, to: target}};
 }
 
 export function activateObject(state, abilityIdx, selectedHexId = null) {

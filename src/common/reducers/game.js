@@ -48,6 +48,9 @@ export function handleAction(oldState, action) {
       return state;
     }
 
+    case gameActions.ATTACK_COMPLETE:
+      return Object.assign(state, {attack: null});
+
     case gameActions.ACTIVATE_OBJECT:
       return g.activateObject(state, action.payload.abilityIdx);
 

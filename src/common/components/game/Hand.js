@@ -28,9 +28,9 @@ export default class Hand extends Component {
     onTutorialStep: func
   };
 
-  calculateAvailableWidth() {
-    // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
-    this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;  // eslint-disable-line react/no-find-dom-node
+  constructor() {
+    super();
+    this.availableWidth = 500;
   }
 
   componentDidMount() {
@@ -39,6 +39,15 @@ export default class Hand extends Component {
 
   componentWillUpdate() {
     this.calculateAvailableWidth();
+  }
+
+  calculateAvailableWidth() {
+    // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
+    /* eslint-disable react/no-find-dom-node */
+    if (ReactDOM.findDOMNode(this)) {
+      this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
+    }
+    /* eslint-enable react/no-find-dom-node */
   }
 
   renderCards() {

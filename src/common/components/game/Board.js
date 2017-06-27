@@ -22,6 +22,7 @@ export default class Board extends Component {
     target: object,
     size: number,
     tutorialStep: object,
+    attack: object,
 
     onSelectTile: func,
     onHoverTile: func,
@@ -69,14 +70,15 @@ export default class Board extends Component {
   }
 
   get piecesOnGrid() {
-    return mapValues(this.allPieces, piece => ({
+    return mapValues(this.allPieces, (piece, hex) => ({
       id: piece.id,
       type: piece.card.type,
       image: piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name},
       stats: {
         health: getAttribute(piece, 'health'),
         attack: getAttribute(piece, 'attack')
-      }
+      },
+      attacking: (this.props.attack && this.props.attack.from === hex) ? this.props.attack.to : null
     }));
   }
 

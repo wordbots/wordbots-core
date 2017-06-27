@@ -8,6 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
+import { ANIMATION_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
 import { currentTutorialStep, getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
@@ -38,6 +39,7 @@ export function mapStateToProps(state) {
 
     status: activePlayer.status,
     target: activePlayer.target,
+    attack: state.game.attack,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,
@@ -65,9 +67,11 @@ export function mapDispatchToProps(dispatch) {
     },
     onAttackRobot: (sourceHexId, targetHexId) => {
       dispatch(gameActions.attack(sourceHexId, targetHexId));
+      setTimeout(() => { dispatch(gameActions.attackComplete()); }, ANIMATION_TIME_MS);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
+      setTimeout(() => { dispatch(gameActions.attackComplete()); }, ANIMATION_TIME_MS);
     },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
@@ -111,6 +115,7 @@ export class GameArea extends Component {
 
     status: object,
     target: object,
+    attack: object,
 
     blueHand: array,
     orangeHand: array,
@@ -328,6 +333,7 @@ export class GameArea extends Component {
               orangePieces={this.props.orangePieces}
               playingCardType={this.props.playingCardType}
               tutorialStep={this.props.tutorialStep}
+              attack={this.props.attack}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               onTutorialStep={this.props.onTutorialStep}

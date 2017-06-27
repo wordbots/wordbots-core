@@ -1,11 +1,11 @@
 import { getDefaultState, combineState, setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers';
 import { getComponent } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
-import { STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
+import { TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';
 import { attackBotCard, shockCard } from '../../src/common/store/cards';
-import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
-import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
+import HexGrid from '../../src/common/components/hexgrid/HexGrid';
+import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 
 describe('Board component', () => {
   it('renders the default board state', () => {
@@ -17,13 +17,28 @@ describe('Board component', () => {
       { '-3,0,3': 'blue', '3,0,-3': 'orange' }
     );
 
-    expect(gridProps.pieceImgs).toEqual(
-      { '-3,0,3': {img: 'core_blue'}, '3,0,-3': {img: 'core_orange'} }
-    );
-
-    expect(gridProps.pieceStats).toEqual(
-      { '-3,0,3': {health: STARTING_PLAYER_HEALTH}, '3,0,-3': {health: STARTING_PLAYER_HEALTH} }
-    );
+    expect(gridProps.pieces).toEqual({
+      '-3,0,3': {
+        'id': 'blueCore',
+        'image': {
+          'img': 'core_blue'
+        },
+        'stats': {
+          'health': STARTING_PLAYER_HEALTH
+        },
+        'type': TYPE_CORE
+      },
+      '3,0,-3': {
+        'id': 'orangeCore',
+        'image': {
+          'img': 'core_orange'
+        },
+        'stats': {
+          'health': STARTING_PLAYER_HEALTH
+        },
+        'type': TYPE_CORE
+      }
+    });
   });
 
   describe('[Valid placement hexes]', () => {

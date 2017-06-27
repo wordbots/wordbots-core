@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { func, number, object, string } from 'prop-types';
 import { forOwn, intersection, isString, mapValues } from 'lodash';
 
-import HexGrid from '../react-hexgrid/HexGrid';
-import HexUtils from '../react-hexgrid/HexUtils';
+import HexGrid from '../hexgrid/HexGrid';
+import HexUtils from '../hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, ownerOf,
@@ -68,16 +68,15 @@ export default class Board extends Component {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  get pieceImages() {
-    return mapValues(this.allPieces, p =>
-      p.card.img ? {img: p.card.img} : {sprite: p.card.spriteID || p.card.name, type: p.card.type}
-    );
-  }
-
-  get pieceStats() {
+  get piecesOnGrid() {
     return mapValues(this.allPieces, piece => ({
-      health: getAttribute(piece, 'health'),
-      attack: getAttribute(piece, 'attack')
+      id: piece.id,
+      type: piece.card.type,
+      image: piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name},
+      stats: {
+        health: getAttribute(piece, 'health'),
+        attack: getAttribute(piece, 'attack')
+      }
     }));
   }
 
@@ -177,8 +176,7 @@ export default class Board extends Component {
       <div id="hexgrid">
         <HexGrid
           hexColors={this.hexColors}
-          pieceImgs={this.pieceImages}
-          pieceStats={this.pieceStats}
+          pieces={this.piecesOnGrid}
           width={this.props.size}
           height={this.props.size}
           hexagons={grid.hexagons}

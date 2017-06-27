@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { number, string, object, array } from 'prop-types';
+import { map } from 'lodash';
 
-import HexUtils from './HexUtils';
-import HexShape from './HexShape';
-import Path from './Path';
-import Layout from './Layout';
 import GridGenerator from './GridGenerator';
-import loadImages from './HexGridImages';
+import HexPiece from './HexPiece';
+import HexShape from './HexShape';
+import HexUtils from './HexUtils';
+import Layout from './Layout';
+import Path from './Path';
 
 export default class HexGrid extends Component {
   static propTypes = {
@@ -18,8 +19,7 @@ export default class HexGrid extends Component {
     tutorialStep: object,
     path: object,
     hexColors: object,
-    pieceImgs: object,
-    pieceStats: object,
+    pieces: object,
     selectedHexId: string
   };
 
@@ -45,10 +45,18 @@ export default class HexGrid extends Component {
         layout={this.props.layout}
         actions={this.props.actions}
         fill={this.props.hexColors[HexUtils.getID(hex)]}
-        pieceImg={this.props.pieceImgs[HexUtils.getID(hex)] || {}}
-        pieceStats={this.props.pieceStats[HexUtils.getID(hex)]}
-        images={loadImages()}
         tutorialStep={this.props.tutorialStep} />
+    ));
+  }
+
+  renderPieces() {
+    return map(this.props.pieces, (piece, hex) => (
+      <HexPiece
+        key={piece.id}
+        hex={HexUtils.IDToHex(hex)}
+        layout={this.props.layout}
+        actions={this.props.actions}
+        piece={piece} />
     ));
   }
 
@@ -69,6 +77,7 @@ export default class HexGrid extends Component {
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
         {this.renderHexes()}
+        {this.renderPieces()}
         {this.renderSelectedHex()}
         <Path {...this.props.path} layout={this.props.layout} />
         <defs>

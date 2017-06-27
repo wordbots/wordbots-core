@@ -4,9 +4,9 @@ import seededRNG from 'seed-random';
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
 import buildVocabulary from '../vocabulary/vocabulary';
-import GridGenerator from '../components/react-hexgrid/GridGenerator';
-import Hex from '../components/react-hexgrid/Hex';
-import HexUtils from '../components/react-hexgrid/HexUtils';
+import GridGenerator from '../components/hexgrid/GridGenerator';
+import Hex from '../components/hexgrid/Hex';
+import HexUtils from '../components/hexgrid/HexUtils';
 
 import { clamp } from './common';
 

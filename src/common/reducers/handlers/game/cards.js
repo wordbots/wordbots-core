@@ -9,7 +9,7 @@ import {
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import { splitSentences } from '../../../util/cards';
-import HexUtils from '../../../components/react-hexgrid/HexUtils';
+import HexUtils from '../../../components/hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {
   const player = state.players[playerName];

@@ -118,7 +118,7 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/test",
-      "src/common/components/react-hexgrid/",
+      "src/common/components/hexgrid/",
       "src/common/components/react-textfit/",
       "src/common/components/Sprite.js"
     ],

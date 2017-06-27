@@ -1,5 +1,5 @@
 import { cloneDeep, isEqual } from 'lodash';
-import { apply as applyPatch, compare } from 'fast-json-patch';
+import { applyPatch, compare } from 'fast-json-patch';
 
 import { handleAction } from '../../game';
 import { id } from '../../../util/common';

@@ -7,7 +7,7 @@ import {
   triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
-import HexUtils from '../../../components/react-hexgrid/HexUtils';
+import HexUtils from '../../../components/hexgrid/HexUtils';
 
 function selectTile(state, tile) {
   activePlayer(state).selectedTile = tile;

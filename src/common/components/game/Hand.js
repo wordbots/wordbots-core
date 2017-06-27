@@ -114,6 +114,7 @@ export default class Hand extends Component {
         id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
         transitionAppear
+        transitionAppearTimeout={500}
         transitionEnterTimeout={500}
         transitionLeave={false}
         className={isNull(this.props.selectedCard) ? '' : 'selected'}

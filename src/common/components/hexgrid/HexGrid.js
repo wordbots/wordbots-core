@@ -61,6 +61,7 @@ export default class HexGrid extends Component {
         component="g"
         transitionName="hex-piece"
         transitionAppear
+        transitionAppearTimeout={ANIMATION_TIME_MS}
         transitionEnterTimeout={ANIMATION_TIME_MS}
         transitionLeaveTimeout={ANIMATION_TIME_MS}
       >
@@ -68,7 +69,6 @@ export default class HexGrid extends Component {
           map(this.props.pieces, (piece, hex) => (
             <HexPiece
               key={piece.id}
-              name={piece.id}
               hex={HexUtils.IDToHex(hex)}
               layout={this.props.layout}
               actions={this.props.actions}

@@ -22,19 +22,19 @@ export default class ModeSelection extends Component {
         <GameMode
           name="Tutorial"
           imagePath="/static/tutorial.png"
-          onSelect={() => this.props.onSelectMode(0)} />
+          onSelect={() => this.props.onSelectMode('tutorial')} />
+        <GameMode
+          name="Practice"
+          imagePath="/static/practice.png"
+          onSelect={() => this.props.onSelectMode('practice')} />
         <GameMode
           name="Casual Game"
           imagePath="/static/casual.png"
-          onSelect={() => this.props.onSelectMode(1)} />
+          onSelect={() => this.props.onSelectMode('casual')} />
         <GameMode
           disabled
-          name="Ranked Matchmaking"
-          onSelect={() => this.props.onSelectMode(2)} />
-        <GameMode
-          disabled
-          name="Unranked Matchmaking"
-          onSelect={() => this.props.onSelectMode(3)} />
+          name="Matchmaking"
+          onSelect={() => this.props.onSelectMode('matchmaking')} />
       </div>
     );
   }

@@ -129,6 +129,7 @@ export default class ActiveDeck extends Component {
           isOpen={this.state.hoveredRow === idx && this.state.hoveredSection === type}
           place="below"
           style={this.styles.popover}
+          refreshIntervalMs={5}
           enterExitTransitionDurationMs={5}
           tipSize={0.01}
           body={this.renderHoveredCard(card)}>
@@ -224,8 +225,8 @@ export default class ActiveDeck extends Component {
             justifyContent: 'space-between',
             marginBottom: 20
           }}>
-            {this.renderButton(0, 'format_list_numbered')}
-            {this.renderButton(1, 'format_align_left')}
+            {this.renderButton(0, 'view_headline')}
+            {this.renderButton(1, 'view_agenda')}
           </div>
         </div>
 

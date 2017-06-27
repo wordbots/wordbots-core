@@ -22,10 +22,10 @@
   transition: opacity 100ms ease-in-out;
 }
 
-.hex-piece-appear, .hex-piece-enter {
+.hex-piece-enter {
   opacity: 0;
 }
-.hex-piece-appear-active, .hex-piece-enter-active {
+.hex-piece-enter-active {
   opacity: 1;
 }
 

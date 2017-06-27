@@ -26,6 +26,7 @@ export function mapStateToProps(state) {
   const currentPlayer = state.game.players[state.game.currentTurn];
 
   return {
+    started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     usernames: state.game.usernames,
@@ -55,6 +56,7 @@ export function mapStateToProps(state) {
 
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
+    isPractice: state.game.practice,
 
     sidebarOpen: state.global.sidebarOpen || state.game.tutorial
   };
@@ -103,12 +105,16 @@ export function mapDispatchToProps(dispatch) {
     },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
+    },
+    onAIResponse: () => {
+      dispatch(gameActions.aiResponse());
     }
   };
 }
 
 export class GameArea extends Component {
   static propTypes = {
+    started: bool,
     player: string,
     currentTurn: string,
     usernames: object,
@@ -138,8 +144,11 @@ export class GameArea extends Component {
 
     sfxQueue: array,
     tutorialStep: object,
+    isPractice: bool,
 
     sidebarOpen: bool,
+
+    history: object,
 
     onMoveRobot: func,
     onAttackRobot: func,
@@ -150,7 +159,8 @@ export class GameArea extends Component {
     onHoverCard: func,
     onHoverTile: func,
     onEndGame: func,
-    onTutorialStep: func
+    onTutorialStep: func,
+    onAIResponse: func
   };
 
   constructor(props) {
@@ -160,6 +170,16 @@ export class GameArea extends Component {
       areaHeight: 1250,
       boardSize: 1000
     };
+
+    if (!props.started) {
+      this.props.history.push('/play');
+    }
+
+    setInterval(() => {
+      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
+        props.onAIResponse();
+      }
+    }, 1250);
   }
 
   // For testing.
@@ -308,6 +328,7 @@ export class GameArea extends Component {
           {this.renderNotification()}
           <Sfx queue={this.props.sfxQueue} />
         </div>
+
         <Paper
           style={{
             position: 'relative',
@@ -344,13 +365,19 @@ export class GameArea extends Component {
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               onTutorialStep={this.props.onTutorialStep}
-              onEndGame={this.props.onEndGame} />
+              onEndGame={() => {
+                this.props.onEndGame();
+                this.props.history.push('/play');
+              }} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.props.onEndGame} />
+            onClick={() => {
+              this.props.onEndGame();
+              this.props.history.push('/play');
+            }} />
         </Paper>
       </div>
     );

@@ -23,6 +23,7 @@ describe('GameArea container', () => {
     const paper = dom.props.children[1];
     const mainDiv = paper.props.children[2];
     const board = mainDiv.props.children[1];
+    const victoryScreen = paper.props.children[4];
 
     /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
@@ -60,7 +61,7 @@ describe('GameArea container', () => {
       <VictoryScreen
         winnerColor={null}
         winnerName={null}
-        onClick={game.props.onEndGame} />
+        onClick={victoryScreen.props.onClick} />
     ]);
   });
   /* eslint-enable react/jsx-key */

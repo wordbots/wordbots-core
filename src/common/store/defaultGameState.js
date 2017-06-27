@@ -59,6 +59,7 @@ const defaultState = {
   },
   started: false,
   tutorial: false,
+  practice: false,
   winner: null,
   currentTurn: STARTING_PLAYER,
   player: STARTING_PLAYER,

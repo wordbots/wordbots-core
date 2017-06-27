@@ -153,7 +153,7 @@ export const redBotCard = {
   abilities: []
 };
 
-const blueBotCard = {
+export const blueBotCard = {
   name: 'Blue Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -319,7 +319,7 @@ const madGamblerCard = {
   ]
 };
 
-const thornyBushCard = {
+export const thornyBushCard = {
   name: 'Thorny Bush',
   cost: 2,
   type: TYPE_ROBOT,
@@ -364,7 +364,7 @@ const knowledgeBotCard = {
   ]
 };
 
-const leapFrogBotCard = {
+export const leapFrogBotCard = {
   name: 'Leap Frog Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -379,7 +379,7 @@ const leapFrogBotCard = {
   ]
 };
 
-const friendlyRiotShieldCard = {
+export const friendlyRiotShieldCard = {
   name: 'Friendly Riot Shield',
   cost: 4,
   type: TYPE_ROBOT,
@@ -405,7 +405,7 @@ export const concentrationCard = {
   type: TYPE_EVENT
 };
 
-const superchargeCard = {
+export const superchargeCard = {
   name: 'Supercharge',
   text: 'Gain 2 energy.',
   command: '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + 2; }); })',
@@ -429,7 +429,7 @@ export const threedomCard = {
   type: TYPE_EVENT
 };
 
-const earthquakeCard = {
+export const earthquakeCard = {
   name: 'Earthquake',
   text: 'Destroy all robots that have less than 2 speed.',
   command: '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))]))); })',
@@ -464,7 +464,7 @@ export const incinerateCard = {
   type: TYPE_EVENT
 };
 
-const wisdomCard = {
+export const wisdomCard = {
   name: 'Wisdom',
   text: 'Draw cards equal to the number of robots you control.',
   command: '(function () { actions["draw"](targets["self"](), count(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',

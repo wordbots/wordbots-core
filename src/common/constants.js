@@ -15,9 +15,6 @@ export const SPRITE_VERSION = 2;
 // Sprite changes:
 // * 1->2: trianglify instead of identicons for events
 
-export const MODE_TUTORIAL = 0;
-export const MODE_CUSTOM = 1;
-
 export const STARTING_PLAYER_HEALTH = 20;
 
 export const BLUE_CORE_HEX = '-3,0,3';

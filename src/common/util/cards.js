@@ -29,6 +29,9 @@ const SYNONYMS = {
   ' 9 ': ' nine ',
   ' 10 ': ' ten ',
 
+  'can\'t': 'cannot',
+  'it is': 'it\'s',
+
   'robot': ['creature', 'minion'],
   'startup': ['start up', 'start-up'],
   'shutdown': ['shut down', 'shut-down']

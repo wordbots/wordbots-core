@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
 import ReactDOM from 'react-dom';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { isEmpty, isNull } from 'lodash';
 
 import { splitSentences } from '../../util/cards';

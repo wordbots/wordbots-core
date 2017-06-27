@@ -112,7 +112,7 @@ export default class HexPiece extends React.Component {
         onMouseLeave={e => this.props.actions.onHexHover(this.props.hex, e)}
         onClick={e => this.props.actions.onClick(this.props.hex, e)}
         style={{
-          transition: `transform ${ANIMATION_TIME_MS}ms ease-in-out`
+          transition: `transform ${ANIMATION_TIME_MS}ms ease-in-out, opacity ${ANIMATION_TIME_MS}ms ease-in-out`
       }}>
         <PiecePattern piece={this.props.piece} />
         <polygon key="p2" points={this.points} style={this.styles} />

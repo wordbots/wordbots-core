@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { number, string, object, array } from 'prop-types';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { map } from 'lodash';
+
+import { ANIMATION_TIME_MS } from '../../constants';
 
 import GridGenerator from './GridGenerator';
 import HexPiece from './HexPiece';
@@ -53,14 +56,27 @@ export default class HexGrid extends Component {
   }
 
   renderPieces() {
-    return map(this.props.pieces, (piece, hex) => (
-      <HexPiece
-        key={piece.id}
-        hex={HexUtils.IDToHex(hex)}
-        layout={this.props.layout}
-        actions={this.props.actions}
-        piece={piece} />
-    ));
+    return (
+      <CSSTransitionGroup
+        component="g"
+        transitionName="hex-piece"
+        transitionAppear
+        transitionEnterTimeout={ANIMATION_TIME_MS}
+        transitionLeaveTimeout={ANIMATION_TIME_MS}
+      >
+        {
+          map(this.props.pieces, (piece, hex) => (
+            <HexPiece
+              key={piece.id}
+              name={piece.id}
+              hex={HexUtils.IDToHex(hex)}
+              layout={this.props.layout}
+              actions={this.props.actions}
+              piece={piece} />
+          ))
+        }
+      </CSSTransitionGroup>
+    );
   }
 
   renderSelectedHex() {

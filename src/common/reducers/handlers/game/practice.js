@@ -7,7 +7,7 @@ import {
   newGame, passTurn
 } from '../../../util/game';
 import * as builtinCards from '../../../store/cards';
-import HU from '../../../components/react-hexgrid/HexUtils';
+import HU from '../../../components/hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
 import { moveRobot, attack } from './board';

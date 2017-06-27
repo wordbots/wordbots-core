@@ -1,7 +1,7 @@
 import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
-import { id } from '../../../util/common';
+import { id, convertRange } from '../../../util/common';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
   newGame, passTurn
@@ -82,10 +82,10 @@ function moveARobot(state) {
     const targetHexIds = moveHexIds.concat(attackHexIds);
 
     if (attackHexIds.includes(ORANGE_CORE_HEX)) {
-      // Prioritize attacking the orange core above all else.
+      // Prioritize attacking the orange kernel above all else.
       state = moveAndAttack(state, robotHexId, ORANGE_CORE_HEX);
     } else if (targetHexIds.length > 0) {
-      // Prefer hexes closer to the orange core.
+      // Prefer hexes closer to the orange kernel.
       const hexDistribution = targetHexIds.reduce((acc, hex) => acc.concat(times(priority(hex), () => hex)), []);
       const targetHexId = sample(hexDistribution);
 
@@ -113,8 +113,11 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
   return state;
 }
 
+// How likely a robot is to move to a given hex.
+// Ranges from 1 (for hexes adjacent to the blue kernel) to 16 (for hexes adjacent to the orange kernel).
 function priority(hexId) {
-  return (7 - HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX))) * 3;
+  const distanceToPlayerKernel = HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX));
+  return convertRange(distanceToPlayerKernel, [1, 6], [1, 16]);
 }
 
 function availableCards(state, ai) {
@@ -148,9 +151,9 @@ const aiDeck = [
   builtinCards.fortificationCard,
   builtinCards.martyrBotCard,
   builtinCards.superchargeCard,
+  builtinCards.superchargeCard,
   builtinCards.recruiterBotCard,
   builtinCards.earthquakeCard,
-  builtinCards.defenderBotCard,
   builtinCards.threedomCard,
   builtinCards.monkeyBotCard,
   builtinCards.generalBotCard,
@@ -160,6 +163,6 @@ const aiDeck = [
   builtinCards.rampageCard,
   builtinCards.antiGravityFieldCard,
   builtinCards.thornyBushCard,
-  builtinCards.leapFrogBotCard,
-  builtinCards.friendlyRiotShieldCard
+  builtinCards.thornyBushCard,
+  builtinCards.leapFrogBotCard
 ];

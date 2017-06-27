@@ -43,7 +43,7 @@ export default class HexPiece extends React.Component {
   get styles() {
     if (this.props.piece.image !== {}) {
       return {
-        fill: `url(#${HexUtils.getID(this.props.hex)}_piece)`,
+        fill: `url(#${this.props.piece.id})`,
         stroke: 'none'
       };
     } else {
@@ -111,7 +111,7 @@ export default class HexPiece extends React.Component {
         style={{
           transition: 'transform 400ms ease-in-out'
       }}>
-        <PiecePattern hex={this.props.hex} piece={this.props.piece} />
+        <PiecePattern piece={this.props.piece} />
         <polygon key="p2" points={this.points} style={this.styles} />
         {this.renderPieceStats()}
       </g>

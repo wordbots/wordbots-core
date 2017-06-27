@@ -42,12 +42,6 @@ export function handleAction(oldState, action) {
     case gameActions.ATTACK:
       return g.attack(state, action.payload.source, action.payload.target);
 
-    case gameActions.MOVE_ROBOT_AND_ATTACK: {
-      state = g.moveRobot(state, action.payload.from, action.payload.to, true);
-      state = g.attack(state, action.payload.to, action.payload.target);
-      return state;
-    }
-
     case gameActions.ATTACK_COMPLETE:
       return Object.assign(state, {attack: null});
 

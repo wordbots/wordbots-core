@@ -231,7 +231,14 @@ const tutorialScript = [
       hex: '-2,0,2',
       text: 'Attack the enemy robot!'
     },
-    action: actions.moveRobotAndAttack('0,0,0', '-1,0,1', '-2,0,2')
+    action: actions.moveRobot('0,0,0', '-1,0,1', true)
+  },
+  {
+    tooltip: {
+      hex: '-2,0,2',
+      text: 'Attack the enemy robot!'
+    },
+    action: actions.attack('-1,0,1', '-2,0,2')
   },
   {
     tooltip: {

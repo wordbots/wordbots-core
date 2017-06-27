@@ -60,8 +60,6 @@ export default class HexGrid extends Component {
       <CSSTransitionGroup
         component="g"
         transitionName="hex-piece"
-        transitionAppear
-        transitionAppearTimeout={ANIMATION_TIME_MS}
         transitionEnterTimeout={ANIMATION_TIME_MS}
         transitionLeaveTimeout={ANIMATION_TIME_MS}
       >

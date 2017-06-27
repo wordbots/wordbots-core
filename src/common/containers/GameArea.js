@@ -67,11 +67,18 @@ export function mapDispatchToProps(dispatch) {
     },
     onAttackRobot: (sourceHexId, targetHexId) => {
       dispatch(gameActions.attack(sourceHexId, targetHexId));
-      setTimeout(() => { dispatch(gameActions.attackComplete()); }, ANIMATION_TIME_MS);
+      setTimeout(() => {
+        dispatch(gameActions.attackComplete());
+      }, ANIMATION_TIME_MS);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
-      dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
-      setTimeout(() => { dispatch(gameActions.attackComplete()); }, ANIMATION_TIME_MS);
+      dispatch(gameActions.moveRobot(fromHexId, toHexId, true));
+      setTimeout(() => {
+        dispatch(gameActions.attack(toHexId, targetHexId));
+        setTimeout(() => {
+          dispatch(gameActions.attackComplete());
+        }, ANIMATION_TIME_MS);
+      }, ANIMATION_TIME_MS);
     },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));

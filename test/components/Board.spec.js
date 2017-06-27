@@ -122,7 +122,7 @@ describe('Board component', () => {
         } else if (color === 'red') {
           if (HexUtils.getID(hex) === '-1,-1,2') {
             // This piece can be attacked via Move+attack.
-            expect(dispatchedAction.type).toEqual(actions.MOVE_ROBOT_AND_ATTACK);
+            expect(dispatchedAction.type).toEqual(actions.MOVE_ROBOT);
           } else {
             // This piece can be attacked directly.
             expect(dispatchedAction.type).toEqual(actions.ATTACK);

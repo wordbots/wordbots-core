@@ -65,6 +65,7 @@ const defaultState = {
   usernames: {},
   hoveredCard: null,
   actionLog: [],
+  attack: null,
   memory: {},
   sfxQueue: []
 };

@@ -7,7 +7,6 @@ import HexPiece from './HexPiece';
 import HexShape from './HexShape';
 import HexUtils from './HexUtils';
 import Layout from './Layout';
-import Path from './Path';
 
 export default class HexGrid extends Component {
   static propTypes = {
@@ -37,6 +36,10 @@ export default class HexGrid extends Component {
     return { hexagons, layout };
   }
 
+  get selectedHex() {
+    return this.props.hexagons.find(hex => HexUtils.getID(hex) === this.props.selectedHexId);
+  }
+
   renderHexes() {
     return this.props.hexagons.map((hex, index) => (
       <HexShape
@@ -61,12 +64,11 @@ export default class HexGrid extends Component {
   }
 
   renderSelectedHex() {
-    const selectedHex = this.props.hexagons.find(hex => HexUtils.getID(hex) === this.props.selectedHexId);
-    if (selectedHex) {
+    if (this.selectedHex) {
       return (
         <HexShape
           selected
-          hex={selectedHex}
+          hex={this.selectedHex}
           layout={this.props.layout}
           actions={this.props.actions} />
       );
@@ -79,7 +81,6 @@ export default class HexGrid extends Component {
         {this.renderHexes()}
         {this.renderPieces()}
         {this.renderSelectedHex()}
-        <Path {...this.props.path} layout={this.props.layout} />
         <defs>
           <filter id="dropShadow" width="5" x="-1" height="5" y="-1">
             <feOffset in="SourceAlpha" dx="0.5" dy="0.5" result="offset"/>

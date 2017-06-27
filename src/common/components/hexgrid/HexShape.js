@@ -5,7 +5,6 @@ import { DISPLAY_HEX_IDS } from '../../constants';
 import TutorialTooltip from '../game/TutorialTooltip';
 
 import FillPattern from './FillPattern';
-import HexPointers from './HexPointers';
 import HexUtils from './HexUtils';
 
 export default class HexShape extends React.Component {
@@ -78,7 +77,6 @@ export default class HexShape extends React.Component {
       >
         {this.renderPattern()}
         <polygon key="p1" points={this.points} style={this.hexStyles} />
-        <HexPointers key="hp" hex={this.props.hex} points={this.points} />
         {this.renderText()}
       </g>
     );

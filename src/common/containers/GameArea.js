@@ -82,6 +82,9 @@ export function mapDispatchToProps(dispatch) {
         }, ANIMATION_TIME_MS);
       }, ANIMATION_TIME_MS);
     },
+    onAttackComplete: () => {
+      dispatch(gameActions.attackComplete());
+    },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
     },
@@ -153,6 +156,7 @@ export class GameArea extends Component {
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
+    onAttackComplete: func,
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
@@ -178,6 +182,9 @@ export class GameArea extends Component {
     setInterval(() => {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
         props.onAIResponse();
+        setTimeout(() => {
+          props.onAttackComplete();
+        }, ANIMATION_TIME_MS);
       }
     }, 1250);
   }

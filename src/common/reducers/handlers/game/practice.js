@@ -105,7 +105,8 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
 
   if (intermediateHexId) {
     state = moveRobot(state, sourceHexId, intermediateHexId);
-    state = attack(state, intermediateHexId, targetHexId);
+    // Ignore the attack part of the move for now because it makes the animation look bad.
+    // state = attack(state, intermediateHexId, targetHexId);
   } else {
     state = attack(state, sourceHexId, targetHexId);
   }

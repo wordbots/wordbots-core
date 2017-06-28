@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
-import { isEmpty, isEqual } from 'lodash';
+import { array, number } from 'prop-types';
+import { isEmpty } from 'lodash';
 
 import { inBrowser, isFlagSet } from '../../util/browser';
 
@@ -11,6 +11,7 @@ if (inBrowser()) {
 
 export default class Sfx extends Component {
   static propTypes = {
+    id: number,
     queue: array
   };
 
@@ -23,7 +24,7 @@ export default class Sfx extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const newSoundsQueued = !isEmpty(nextProps.queue) && (!isEqual(this.props.queue, nextProps.queue) || this.paused);
+    const newSoundsQueued = nextProps.id > this.props.id && !isEmpty(nextProps.queue);
     const nextSoundInQueue = nextState.idx > this.state.idx;
     return newSoundsQueued || nextSoundInQueue;
   }

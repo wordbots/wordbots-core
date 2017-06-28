@@ -27,7 +27,8 @@ export function handleAction(oldState, action) {
   if (![actions.ATTACK_COMPLETE, actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)) {
     state = Object.assign(state, {
       actionId: id(),  // actionId is used to correctly merge actions in the action log.
-      sfxQueue: []  // Clear the sound effects queue on every reducer step.
+      sfxQueue: [],  // Reset the sound effects queue on every reducer step.
+      sfxId: state.sfxId + 1
     });
   }
 

@@ -118,7 +118,7 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
 // Ranges from 1 (for hexes adjacent to the blue kernel) to 16 (for hexes adjacent to the orange kernel).
 function priority(hexId) {
   const distanceToPlayerKernel = HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX));
-  return convertRange(distanceToPlayerKernel, [1, 6], [1, 16]);
+  return convertRange(distanceToPlayerKernel, [6, 1], [1, 16]);
 }
 
 function availableCards(state, ai) {

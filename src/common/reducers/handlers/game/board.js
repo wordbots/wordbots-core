@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
@@ -10,8 +10,8 @@ import {
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
 function selectTile(state, tile) {
-  activePlayer(state).selectedTile = tile;
-  activePlayer(state).selectedCard = null;
+  currentPlayer(state).selectedTile = tile;
+  currentPlayer(state).selectedCard = null;
   return state;
 }
 

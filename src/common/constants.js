@@ -26,6 +26,7 @@ export const TYPE_CORE = 2;
 export const TYPE_STRUCTURE = 3;
 
 export const ANIMATION_TIME_MS = 400;
+export const AI_RESPONSE_TIME_MS = 1250;
 
 export const CREATABLE_TYPES = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
 

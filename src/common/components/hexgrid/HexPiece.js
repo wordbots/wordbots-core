@@ -46,7 +46,7 @@ export default class HexPiece extends React.Component {
   get styles() {
     if (this.props.piece.image !== {}) {
       return {
-        fill: `url(#${this.props.piece.id})`,
+        fill: `url(#${this.props.piece.id}-pattern)`,
         stroke: 'none'
       };
     } else {

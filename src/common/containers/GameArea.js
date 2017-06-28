@@ -8,7 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
-import { ANIMATION_TIME_MS } from '../constants';
+import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
 import { currentTutorialStep, getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
@@ -186,7 +186,7 @@ export class GameArea extends Component {
           props.onAttackComplete();
         }, ANIMATION_TIME_MS);
       }
-    }, 1250);
+    }, AI_RESPONSE_TIME_MS);
   }
 
   // For testing.

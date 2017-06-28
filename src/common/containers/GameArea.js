@@ -146,6 +146,7 @@ export class GameArea extends Component {
     blueDeck: array,
     orangeDeck: array,
 
+    sfxId: number,
     sfxQueue: array,
     tutorialStep: object,
     isPractice: bool,

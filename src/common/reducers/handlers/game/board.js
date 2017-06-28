@@ -88,6 +88,7 @@ export function attack(state, source, target) {
         [defender.card.name]: defender.card,
         [attacker.card.name]: attacker.card
       });
+      state.attack = {from: source, to: target};
 
       state = triggerEvent(state, 'afterAttack', {
         object: attacker,
@@ -114,7 +115,7 @@ export function attack(state, source, target) {
     }
   }
 
-  return {...state, attack: {from: source, to: target}};
+  return state;
 }
 
 export function activateObject(state, abilityIdx, selectedHexId = null) {

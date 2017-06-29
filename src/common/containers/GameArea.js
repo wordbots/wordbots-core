@@ -21,6 +21,14 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
+function animate(fns) {
+  if (fns.length > 0) {
+    const [first, ...rest] = fns;
+    first();
+    setTimeout(() => animate(rest), ANIMATION_TIME_MS);
+  }
+}
+
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
   const currentPlayer = state.game.players[state.game.currentTurn];
@@ -69,25 +77,19 @@ export function mapDispatchToProps(dispatch) {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
     },
     onAttackRobot: (sourceHexId, targetHexId) => {
-      dispatch(gameActions.attack(sourceHexId, targetHexId));
-      setTimeout(() => {
-        dispatch(gameActions.attackRetract());
-        setTimeout(() => {
-          dispatch(gameActions.attackComplete());
-        }, ANIMATION_TIME_MS);
-      }, ANIMATION_TIME_MS);
+      animate([
+        () => dispatch(gameActions.attack(sourceHexId, targetHexId)),
+        () => dispatch(gameActions.attackRetract()),
+        () => dispatch(gameActions.attackComplete())
+      ]);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
-      dispatch(gameActions.moveRobot(fromHexId, toHexId, true));
-      setTimeout(() => {
-        dispatch(gameActions.attack(toHexId, targetHexId));
-        setTimeout(() => {
-          dispatch(gameActions.attackRetract());
-          setTimeout(() => {
-            dispatch(gameActions.attackComplete());
-          }, ANIMATION_TIME_MS);
-        }, ANIMATION_TIME_MS);
-      }, ANIMATION_TIME_MS);
+      animate([
+        () => dispatch(gameActions.moveRobot(fromHexId, toHexId, true)),
+        () => dispatch(gameActions.attack(toHexId, targetHexId)),
+        () => dispatch(gameActions.attackRetract()),
+        () => dispatch(gameActions.attackComplete())
+      ]);
     },
     onAttackRetract: () => {
       dispatch(gameActions.attackRetract());
@@ -193,13 +195,11 @@ export class GameArea extends Component {
 
     setInterval(() => {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
-        props.onAIResponse();
-        setTimeout(() => {
-          props.onAttackRetract();
-          setTimeout(() => {
-            props.onAttackComplete();
-          }, ANIMATION_TIME_MS);
-        }, ANIMATION_TIME_MS);
+        animate([
+          props.onAIResponse,
+          props.onAttackRetract,
+          props.onAttackComplete
+        ]);
       }
     }, AI_RESPONSE_TIME_MS);
   }

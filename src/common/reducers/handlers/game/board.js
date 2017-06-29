@@ -125,8 +125,9 @@ export function attackComplete(state) {
 
     state = applyAbilities(state);
     state = selectTile(state, null);
-    state.attack = null;
   }
+
+  state.attack = null;
 
   return state;
 }

@@ -163,7 +163,8 @@ export function attack(state, source, target, asNewTurn = false) {
 
   return game(state, [
     gameActions.setSelectedTile(source, state.currentTurn),
-    gameActions.attack(source, target)
+    gameActions.attack(source, target),
+    gameActions.attackComplete()
   ]);
 }
 

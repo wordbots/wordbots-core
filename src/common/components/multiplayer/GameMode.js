@@ -82,7 +82,7 @@ export default class GameMode extends Component {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <img src={this.props.imagePath} style={{width: '100%'}} />
+          <img src={this.props.imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />
         </div>
         <div style={{
           textAlign: 'center',

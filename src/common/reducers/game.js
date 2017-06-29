@@ -24,7 +24,8 @@ export function handleAction(oldState, action) {
   let state = Object.assign({}, oldState);
 
   // These actions are purely visual and thus shouldn't interrupt the sfxQueue.
-  if (![actions.ATTACK_COMPLETE, actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)) {
+  if (![actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE,
+        actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)) {
     state = Object.assign(state, {
       actionId: id(),  // actionId is used to correctly merge actions in the action log.
       sfxQueue: [],  // Reset the sound effects queue on every reducer step.
@@ -54,8 +55,11 @@ export function handleAction(oldState, action) {
     case actions.ATTACK:
       return g.attack(state, action.payload.source, action.payload.target);
 
+    case actions.ATTACK_RETRACT:
+      return Object.assign(state, {attack: {...state.attack, retract: true}});
+
     case actions.ATTACK_COMPLETE:
-      return Object.assign(state, {attack: null});
+      return g.attackComplete(state);
 
     case actions.ACTIVATE_OBJECT:
       return g.activateObject(state, action.payload.abilityIdx);

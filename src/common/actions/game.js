@@ -5,6 +5,7 @@ export const TUTORIAL_STEP = 'TUTORIAL_STEP';
 export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
+export const ATTACK_RETRACT = 'ATTACK_RETRACT';
 export const ATTACK_COMPLETE = 'ATTACK_COMPLETE';
 export const ACTIVATE_OBJECT = 'ACTIVATE_OBJECT';
 export const PLACE_CARD = 'PLACE_CARD';
@@ -57,6 +58,12 @@ export function attack(source, target) {
   return {
     type: ATTACK,
     payload: { source, target }
+  };
+}
+
+export function attackRetract() {
+  return {
+    type: ATTACK_RETRACT
   };
 }
 

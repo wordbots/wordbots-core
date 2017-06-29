@@ -71,7 +71,10 @@ export function mapDispatchToProps(dispatch) {
     onAttackRobot: (sourceHexId, targetHexId) => {
       dispatch(gameActions.attack(sourceHexId, targetHexId));
       setTimeout(() => {
-        dispatch(gameActions.attackComplete());
+        dispatch(gameActions.attackRetract());
+        setTimeout(() => {
+          dispatch(gameActions.attackComplete());
+        }, ANIMATION_TIME_MS);
       }, ANIMATION_TIME_MS);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
@@ -79,9 +82,15 @@ export function mapDispatchToProps(dispatch) {
       setTimeout(() => {
         dispatch(gameActions.attack(toHexId, targetHexId));
         setTimeout(() => {
-          dispatch(gameActions.attackComplete());
+          dispatch(gameActions.attackRetract());
+          setTimeout(() => {
+            dispatch(gameActions.attackComplete());
+          }, ANIMATION_TIME_MS);
         }, ANIMATION_TIME_MS);
       }, ANIMATION_TIME_MS);
+    },
+    onAttackRetract: () => {
+      dispatch(gameActions.attackRetract());
     },
     onAttackComplete: () => {
       dispatch(gameActions.attackComplete());
@@ -158,6 +167,7 @@ export class GameArea extends Component {
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
+    onAttackRetract: func,
     onAttackComplete: func,
     onPlaceRobot: func,
     onSelectCard: func,
@@ -185,7 +195,10 @@ export class GameArea extends Component {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
         props.onAIResponse();
         setTimeout(() => {
-          props.onAttackComplete();
+          props.onAttackRetract();
+          setTimeout(() => {
+            props.onAttackComplete();
+          }, ANIMATION_TIME_MS);
         }, ANIMATION_TIME_MS);
       }
     }, AI_RESPONSE_TIME_MS);
@@ -276,7 +289,9 @@ export class GameArea extends Component {
   }
 
   onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
-    if (action === 'move') {
+    if (this.props.attack) {
+      return;  // Can't move/attack while an attack is in progress.
+    } if (action === 'move') {
       this.movePiece(hexId);
     } else if (action === 'attack') {
       this.attackPiece(hexId, intermediateMoveHexId);

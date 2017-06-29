@@ -70,6 +70,8 @@ export default class Board extends Component {
   }
 
   get piecesOnGrid() {
+    const attack = this.props.attack;
+
     return mapValues(this.allPieces, (piece, hex) => ({
       id: piece.id,
       type: piece.card.type,
@@ -78,7 +80,7 @@ export default class Board extends Component {
         health: getAttribute(piece, 'health'),
         attack: getAttribute(piece, 'attack')
       },
-      attacking: (this.props.attack && this.props.attack.from === hex) ? this.props.attack.to : null
+      attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null
     }));
   }
 

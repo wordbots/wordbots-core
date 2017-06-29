@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, object, array } from 'prop-types';
+import { bool, func, object, array } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
@@ -13,6 +13,7 @@ import GameArea from './GameArea';
 
 export function mapStateToProps(state) {
   return {
+    started: state.game.started,
     actionLog: state.game.actionLog,
 
     socket: state.socket,
@@ -55,6 +56,7 @@ export function mapDispatchToProps(dispatch) {
 
 export class Play extends Component {
   static propTypes = {
+    started: bool,
     actionLog: array,
 
     socket: object,
@@ -92,18 +94,22 @@ export class Play extends Component {
   }
 
   get lobby() {
-    return (
-      <Lobby
-        socket={this.props.socket}
-        gameMode={this.props.history.location.pathname.split('/play')[1]}
-        cards={this.props.cards}
-        availableDecks={this.props.availableDecks}
-        onConnect={this.props.onConnect}
-        onHostGame={this.props.onHostGame}
-        onJoinGame={this.props.onJoinGame}
-        onSpectateGame={this.props.onSpectateGame}
-        onSelectMode={this.selectMode} />
-    );
+    if (this.props.started) {
+      return <GameArea />
+    } else {
+      return (
+        <Lobby
+          socket={this.props.socket}
+          gameMode={this.props.history.location.pathname.split('/play')[1]}
+          cards={this.props.cards}
+          availableDecks={this.props.availableDecks}
+          onConnect={this.props.onConnect}
+          onHostGame={this.props.onHostGame}
+          onJoinGame={this.props.onJoinGame}
+          onSpectateGame={this.props.onSpectateGame}
+          onSelectMode={this.selectMode} />
+      );
+    }
   }
 
   render() {

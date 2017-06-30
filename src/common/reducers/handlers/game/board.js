@@ -2,16 +2,16 @@ import { cloneDeep } from 'lodash';
 
 import { stringToType } from '../../../constants';
 import {
-  activePlayer, currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
+  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
-import HexUtils from '../../../components/react-hexgrid/HexUtils';
+import HexUtils from '../../../components/hexgrid/HexUtils';
 
 function selectTile(state, tile) {
-  activePlayer(state).selectedTile = tile;
-  activePlayer(state).selectedCard = null;
+  currentPlayer(state).selectedTile = tile;
+  currentPlayer(state).selectedCard = null;
   return state;
 }
 
@@ -88,31 +88,46 @@ export function attack(state, source, target) {
         [defender.card.name]: defender.card,
         [attacker.card.name]: attacker.card
       });
-
-      state = triggerEvent(state, 'afterAttack', {
-        object: attacker,
-        condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')
-      }, () =>
-        dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
-      );
-
-      if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
-        state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
-      }
-
-      // Move attacker to defender's space (if possible).
-      if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
-        state = transportObject(state, source, target);
-
-        // (This is mostly to make sure that the attacker doesn't die as a result of this move.)
-        state = applyAbilities(state);
-        state = updateOrDeleteObjectAtHex(state, attacker, target);
-      }
-
-      state = applyAbilities(state);
-      state = selectTile(state, null);
+      state.attack = {from: source, to: target};
     }
   }
+
+  return state;
+}
+
+// For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
+export function attackComplete(state) {
+  if (state.attack && state.attack.from && state.attack.to) {
+    const [source, target] = [state.attack.from, state.attack.to];
+
+    const attacker = currentPlayer(state).robotsOnBoard[source];
+    const defender = opponentPlayer(state).robotsOnBoard[target];
+
+    state = triggerEvent(state, 'afterAttack', {
+      object: attacker,
+      condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')
+    }, () =>
+      dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
+    );
+
+    if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
+      state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+    }
+
+    // Move attacker to defender's space (if possible).
+    if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
+      state = transportObject(state, source, target);
+
+      // (This is mostly to make sure that the attacker doesn't die as a result of this move.)
+      state = applyAbilities(state);
+      state = updateOrDeleteObjectAtHex(state, attacker, target);
+    }
+
+    state = applyAbilities(state);
+    state = selectTile(state, null);
+  }
+
+  state.attack = null;
 
   return state;
 }

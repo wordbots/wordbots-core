@@ -25,6 +25,5 @@ exclude_paths:
   - src/common/components/img/
   # The following are by-and-large not our own code, so it's not worth analyzing them:
   - src/common/components/Sprite.js
-  - src/common/components/react-hexgrid/
   - src/common/components/react-textfit/
   - styles/lib.css

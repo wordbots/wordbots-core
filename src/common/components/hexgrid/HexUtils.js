@@ -19,7 +19,7 @@ class HexUtils {
   }
 
   static subtract(a, b) {
-    return new Hex(a.q - b.q, a.r - b.r, a.s - b.s);
+    return HexUtils.add(a, HexUtils.multiply(b, -1));
   }
 
   static multiply(a, k) {

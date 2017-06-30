@@ -7,7 +7,7 @@ import {
   newGame, passTurn
 } from '../../../util/game';
 import * as builtinCards from '../../../store/cards';
-import HU from '../../../components/react-hexgrid/HexUtils';
+import HU from '../../../components/hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
 import { moveRobot, attack } from './board';
@@ -105,7 +105,8 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
 
   if (intermediateHexId) {
     state = moveRobot(state, sourceHexId, intermediateHexId);
-    state = attack(state, intermediateHexId, targetHexId);
+    // Ignore the attack part of the move for now because it makes the animation look bad.
+    // state = attack(state, intermediateHexId, targetHexId);
   } else {
     state = attack(state, sourceHexId, targetHexId);
   }
@@ -117,7 +118,7 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
 // Ranges from 1 (for hexes adjacent to the blue kernel) to 16 (for hexes adjacent to the orange kernel).
 function priority(hexId) {
   const distanceToPlayerKernel = HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX));
-  return convertRange(distanceToPlayerKernel, [1, 6], [1, 16]);
+  return convertRange(distanceToPlayerKernel, [6, 1], [1, 16]);
 }
 
 function availableCards(state, ai) {

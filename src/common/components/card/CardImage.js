@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { func, number, string } from 'prop-types';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT } from '../../constants';
-import loadImages from '../react-hexgrid/HexGridImages';
+import loadImages from '../hexgrid/HexGridImages';
 import Sprite from '../Sprite';
 
 import Identicon from './Identicon';

@@ -2,7 +2,7 @@ import { cloneDeep, isArray, reduce } from 'lodash';
 
 import { id } from '../util/common';
 import { triggerSound } from '../util/game';
-import * as gameActions from '../actions/game';
+import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
 
@@ -21,58 +21,65 @@ export default function game(state = cloneDeep(defaultState), action, allowed = 
 }
 
 export function handleAction(oldState, action) {
-  let state = Object.assign({}, oldState, {
-    actionId: id(),  // actionId is used to correctly merge actions in the action log.
-    sfxQueue: []  // Clear the sound effects queue on every reducer step.
-  });
+  let state = Object.assign({}, oldState);
+
+  // These actions are purely visual and thus shouldn't interrupt the sfxQueue.
+  if (![actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE,
+        actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)) {
+    state = Object.assign(state, {
+      actionId: id(),  // actionId is used to correctly merge actions in the action log.
+      sfxQueue: [],  // Reset the sound effects queue on every reducer step.
+      sfxId: state.sfxId + 1
+    });
+  }
 
   switch (action.type) {
     case socketActions.GAME_START:
       return g.newGame(state, action.payload.player || 'orange', action.payload.usernames || {}, action.payload.decks, action.payload.seed);
 
-    case gameActions.START_TUTORIAL:
+    case actions.START_TUTORIAL:
       return g.startTutorial(state);
 
-    case gameActions.START_PRACTICE:
+    case actions.START_PRACTICE:
       return g.startPractice(state, action.payload.deck);
 
-    case gameActions.AI_RESPONSE:
+    case actions.AI_RESPONSE:
       return g.aiResponse(state);
 
-    case gameActions.END_GAME:
+    case actions.END_GAME:
       return Object.assign(state, {started: false});
 
-    case gameActions.MOVE_ROBOT:
+    case actions.MOVE_ROBOT:
       return g.moveRobot(state, action.payload.from, action.payload.to);
 
-    case gameActions.ATTACK:
+    case actions.ATTACK:
       return g.attack(state, action.payload.source, action.payload.target);
 
-    case gameActions.MOVE_ROBOT_AND_ATTACK: {
-      state = g.moveRobot(state, action.payload.from, action.payload.to, true);
-      state = g.attack(state, action.payload.to, action.payload.target);
-      return state;
-    }
+    case actions.ATTACK_RETRACT:
+      return Object.assign(state, {attack: {...state.attack, retract: true}});
 
-    case gameActions.ACTIVATE_OBJECT:
+    case actions.ATTACK_COMPLETE:
+      return g.attackComplete(state);
+
+    case actions.ACTIVATE_OBJECT:
       return g.activateObject(state, action.payload.abilityIdx);
 
-    case gameActions.PLACE_CARD:
+    case actions.PLACE_CARD:
       return g.placeCard(state, action.payload.cardIdx, action.payload.tile);
 
-    case gameActions.PASS_TURN:
+    case actions.PASS_TURN:
       return g.passTurn(state, action.payload.player);
 
-    case gameActions.SET_SELECTED_CARD:
+    case actions.SET_SELECTED_CARD:
       return g.setSelectedCard(state, action.payload.player, action.payload.selectedCard);
 
-    case gameActions.SET_SELECTED_TILE:
+    case actions.SET_SELECTED_TILE:
       return g.setSelectedTile(state, action.payload.player, action.payload.selectedTile);
 
-    case gameActions.SET_HOVERED_CARD:
+    case actions.SET_HOVERED_CARD:
       return Object.assign(state, {hoveredCardIdx: action.payload.hoveredCard});
 
-    case gameActions.SET_HOVERED_TILE:
+    case actions.SET_HOVERED_TILE:
       return g.setHoveredTile(state, action.payload.hoveredCard);
 
     case socketActions.CONNECTING:

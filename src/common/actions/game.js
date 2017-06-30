@@ -5,7 +5,8 @@ export const TUTORIAL_STEP = 'TUTORIAL_STEP';
 export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
-export const MOVE_ROBOT_AND_ATTACK = 'MOVE_ROBOT_AND_ATTACK';
+export const ATTACK_RETRACT = 'ATTACK_RETRACT';
+export const ATTACK_COMPLETE = 'ATTACK_COMPLETE';
 export const ACTIVATE_OBJECT = 'ACTIVATE_OBJECT';
 export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
@@ -60,10 +61,15 @@ export function attack(source, target) {
   };
 }
 
-export function moveRobotAndAttack(from, to, target) {
+export function attackRetract() {
   return {
-    type: MOVE_ROBOT_AND_ATTACK,
-    payload: { from, to, target }
+    type: ATTACK_RETRACT
+  };
+}
+
+export function attackComplete() {
+  return {
+    type: ATTACK_COMPLETE
   };
 }
 

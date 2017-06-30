@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 import { splitSentences } from '../../util/cards';
 
@@ -25,7 +25,8 @@ export default class CardViewer extends Component {
         <CSSTransitionGroup
           transitionName="card-viewer-fade"
           transitionEnterTimeout={100}
-          transitionLeaveTimeout={100}>
+          transitionLeaveTimeout={100}
+        >
           {
             this.props.hoveredCard &&
               <Card

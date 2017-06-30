@@ -1,7 +1,7 @@
 import { flatMap, has, some } from 'lodash';
 
 import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
-import HU from '../components/react-hexgrid/HexUtils';
+import HU from '../components/hexgrid/HexUtils';
 
 function objectHasProperty(obj, property) {
   switch (property) {

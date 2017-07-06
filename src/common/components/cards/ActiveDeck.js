@@ -10,7 +10,8 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 import Tooltip from '../Tooltip';
-import CardTooltip from '../CardTooltip';
+
+import CardTooltip from './CardTooltip';
 
 // Widget representing the deck currently being created or modified.
 export default class ActiveDeck extends Component {
@@ -35,10 +36,6 @@ export default class ActiveDeck extends Component {
 
   get styles() {
     return {
-      popover: {
-        zIndex: 99999,
-        backgroundColor: 'transparent'
-      },
       outerCard: {
         display: 'flex',
         alignItems: 'stretch',
@@ -129,14 +126,9 @@ export default class ActiveDeck extends Component {
   renderCard(card, idx, type) {
     return (
       <div key={idx}>
-        <CardTooltip
-          place="top"
-          style={this.styles.popover}
-          text=""
-          offset={{bottom: 20}}
-          body={this.renderHoveredCard(card)}>
+        <CardTooltip card={this.renderHoveredCard(card)}>
           <div
-            style={this.styles.outerCard}     
+            style={this.styles.outerCard}
             onClick={() => this.props.onCardClick(card.id)}>
             <div style={this.styles.cardCost}>{card.cost}</div>
             <div style={this.styles.cardName}>{card.name}</div>
@@ -152,7 +144,7 @@ export default class ActiveDeck extends Component {
       <div>
         {sortBy(groupCards(selectType(this.props.cards, type)), ['cost', 'name']).map((card, idx) =>
           this.renderCard(card, idx, type)
-        )}       
+        )}
       </div>
     );
   }

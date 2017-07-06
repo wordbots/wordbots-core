@@ -11,9 +11,9 @@ import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import { cardsInDeck, groupCards, splitSentences } from '../util/cards';
-import CardTooltip from '../components/CardTooltip';
 import Card from '../components/card/Card';
 import Sentence from '../components/card/Sentence';
+import CardTooltip from '../components/cards/CardTooltip';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
@@ -62,23 +62,19 @@ class Decks extends Component {
 
   get styles() {
     return {
-      popover: {
-        zIndex: 99999,
-        backgroundColor: 'transparent'
-      },
       cardItem: {
         display: 'flex',
         alignItems: 'stretch'
       },
       cardBadgeStyle: {
-        backgroundColor: '#00bcd4', 
-        fontFamily: 'Carter One', 
-        color: 'white', 
+        backgroundColor: '#00bcd4',
+        fontFamily: 'Carter One',
+        color: 'white',
         marginRight: 10
       },
       cardBadge: {
-        padding: 0, 
-        width: 24, 
+        padding: 0,
+        width: 24,
         height: 24
       },
       cardName: {
@@ -123,12 +119,7 @@ class Decks extends Component {
           height: 24,
           minWidth: 200
       }}>
-        <CardTooltip
-          place="top"
-          style={this.styles.popover}
-          text=""
-          offset={{bottom: 20}}
-          body={this.renderHoveredCard(card)}>
+        <CardTooltip card={this.renderHoveredCard(card)}>
           <div style={this.styles.cardItem}>
             <Badge
               badgeContent={card.cost}

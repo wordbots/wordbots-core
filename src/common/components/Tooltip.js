@@ -8,6 +8,9 @@ export default class Tooltip extends Component {
   static propTypes = {
     inline: bool,
     style: object,
+    body: object,
+    offset: object,
+    class: string, 
     text: string.isRequired,
     children: oneOfType([array, object]),
     disable: bool,
@@ -33,9 +36,13 @@ export default class Tooltip extends Component {
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>
           <ReactTooltip
+            className={this.props.class}
             id={this.tooltipId}
+            offset={this.props.offset}
             disable={this.props.disable}
-            place={this.props.place} />
+            place={this.props.place}>
+            {this.props.body}
+          </ReactTooltip>
         </SpanOrDiv>
       </SpanOrDiv>
     );

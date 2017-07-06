@@ -10,6 +10,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { chain as _, isEqual } from 'lodash';
 
 import { id } from '../../util/common';
+import CardTooltip from '../card/CardTooltip';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -92,13 +93,14 @@ export default class Chat extends Component {
     const card = (message.cards || [])[phrase];
     if (card) {
       return (
-        <span
-          key={id()}
-          style={{fontWeight: 'bold', cursor: 'pointer'}}
-          onMouseOver={() => this.props.onHoverCard({card: card, stats: card.stats})}
-          onMouseOut={() => this.props.onHoverCard(null)}>
-            {phrase}
-        </span>
+        <CardTooltip
+          card={card}>
+          <span
+            key={id()}
+            style={{fontWeight: 'bold', cursor: 'pointer'}}>
+              {phrase}
+          </span>
+        </CardTooltip>
       );
     } else {
       return (
@@ -112,7 +114,7 @@ export default class Chat extends Component {
   render() {
     return (
       <div>
-        <Drawer openSecondary docked containerStyle={{paddingTop: '64px'}}>
+        <Drawer openSecondary docked containerStyle={{paddingTop: '64px', overflow: 'visible'}}>
           <Toolbar>
             <ToolbarGroup>
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />

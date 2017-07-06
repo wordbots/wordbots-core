@@ -37,11 +37,11 @@ export default class CardTooltip extends Component {
 
   render() {
     return (
-      <div>
-        <div data-tip="" data-for={this.tooltipId}>
+      <span>
+        <span data-tip="" data-for={this.tooltipId}>
           {this.props.children}
-        </div>
-        <div style={{zIndex: 99999, backgroundColor: 'transparent'}}>
+        </span>
+        <span style={{zIndex: 99999, backgroundColor: 'transparent'}}>
           <ReactTooltip
             id={this.tooltipId}
             className="hovered-card"
@@ -50,8 +50,8 @@ export default class CardTooltip extends Component {
           >
             {this.renderedCard}
           </ReactTooltip>
-        </div>
-      </div>
+        </span>
+      </span>
     );
   }
 }

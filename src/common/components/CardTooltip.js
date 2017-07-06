@@ -4,20 +4,20 @@ import ReactTooltip from 'react-tooltip';
 
 import { id } from '../util/common';
 
-export default class Tooltip extends Component {
+export default class CardTooltip extends Component {
   static propTypes = {
     inline: bool,
     style: object,
-    text: string.isRequired,
+    body: object,
+    offset: object,
+    class: string, 
     children: oneOfType([array, object]),
-    disable: bool,
     place: string
   };
 
   static defaultProps = {
     inline: false,
     style: {},
-    disable: false,
     place: 'top'
   }
 
@@ -28,14 +28,17 @@ export default class Tooltip extends Component {
 
     return (
       <SpanOrDiv>
-        <SpanOrDiv data-tip={this.props.text} data-for={this.tooltipId}>
+        <SpanOrDiv data-tip="" data-for={this.tooltipId}>
           {this.props.children}
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>
           <ReactTooltip
+            className="hovered-card"
             id={this.tooltipId}
-            disable={this.props.disable}
-            place={this.props.place} />
+            offset={this.props.offset}
+            place={this.props.place}>
+            {this.props.body}
+          </ReactTooltip>
         </SpanOrDiv>
       </SpanOrDiv>
     );

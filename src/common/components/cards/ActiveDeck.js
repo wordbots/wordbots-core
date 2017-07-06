@@ -3,7 +3,6 @@ import { array, bool, func, string } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import Popover from 'react-popover';
 import { sortBy } from 'lodash';
 
 import { groupCards, selectType, splitSentences } from '../../util/cards';
@@ -11,6 +10,7 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 import Tooltip from '../Tooltip';
+import CardTooltip from '../CardTooltip';
 
 // Widget representing the deck currently being created or modified.
 export default class ActiveDeck extends Component {
@@ -108,7 +108,6 @@ export default class ActiveDeck extends Component {
     );
   }
 
-
   renderHoveredCard(card) {
     return (
       <Card
@@ -130,8 +129,7 @@ export default class ActiveDeck extends Component {
   renderCard(card, idx, type) {
     return (
       <div key={idx}>
-        <Tooltip
-          class="hovered-card"
+        <CardTooltip
           place="top"
           style={this.styles.popover}
           text=""
@@ -144,7 +142,7 @@ export default class ActiveDeck extends Component {
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>{card.count > 1 ? card.count : ''}</div>
           </div>
-        </Tooltip>
+        </CardTooltip>
       </div>
     );
   }

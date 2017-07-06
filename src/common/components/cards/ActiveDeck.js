@@ -217,8 +217,8 @@ export default class ActiveDeck extends Component {
             justifyContent: 'space-between',
             marginBottom: 20
           }}>
-            {this.renderButton(0, 'view_headline', 'By Cost')}
-            {this.renderButton(1, 'view_agenda', 'By Type')}
+            {this.renderButton(0, 'view_headline', 'Group by Cost')}
+            {this.renderButton(1, 'view_agenda', 'Group by Type')}
           </div>
         </div>
 

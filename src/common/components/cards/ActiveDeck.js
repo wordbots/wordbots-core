@@ -108,7 +108,6 @@ export default class ActiveDeck extends Component {
     );
   }
 
-
   renderHoveredCard(card) {
     return (
       <Card

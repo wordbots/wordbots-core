@@ -28,7 +28,7 @@ export default class CardTooltip extends Component {
 
     return (
       <SpanOrDiv>
-        <SpanOrDiv data-for={this.tooltipId}>
+        <SpanOrDiv data-tip="" data-for={this.tooltipId}>
           {this.props.children}
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>

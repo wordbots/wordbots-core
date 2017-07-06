@@ -10,6 +10,7 @@ import { groupCards, selectType, splitSentences } from '../../util/cards';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
+import Tooltip from '../Tooltip';
 
 // Widget representing the deck currently being created or modified.
 export default class ActiveDeck extends Component {
@@ -28,8 +29,6 @@ export default class ActiveDeck extends Component {
 
     this.state = {
       name: props.name,
-      hoveredRow: null,
-      hoveredSection: null,
       grouping: 0
     };
   }
@@ -37,7 +36,8 @@ export default class ActiveDeck extends Component {
   get styles() {
     return {
       popover: {
-        zIndex: 99999
+        zIndex: 99999,
+        backgroundColor: 'transparent'
       },
       outerCard: {
         display: 'flex',
@@ -79,27 +79,32 @@ export default class ActiveDeck extends Component {
         borderRadius: 3,
         boxShadow: '1px 1px 3px #CCC',
         cursor: 'pointer',
-        width: '40%',
+        width: '100%',
+        boxSizing: 'border-box',
         textAlign: 'center'
       }
     };
   }
 
-  renderButton(grouping, iconName) {
+  renderButton(grouping, iconName, tooltip) {
     const selected = (this.state.grouping === grouping);
 
     return (
-      <FontIcon
-        className="material-icons"
-        style={{
-          ...this.styles.baseIcon,
-          color: selected ? 'white' : 'black',
-          backgroundColor: selected ? '#F44336' : '#EEEEEE'
-        }}
-        onClick={() => this.setState({grouping: grouping})}
-      >
-        {iconName}
-      </FontIcon>
+      <div style={{width: '47.5%'}}>
+        <Tooltip text={tooltip} place="top" style={{zIndex: 99999}}>
+          <FontIcon
+            className="material-icons"
+            style={{
+              ...this.styles.baseIcon,
+              color: selected ? 'white' : 'black',
+              backgroundColor: selected ? '#F44336' : '#EEEEEE'
+            }}
+            onClick={() => this.setState({grouping: grouping})}
+          >
+            {iconName}
+          </FontIcon>
+        </Tooltip>
+      </div>
     );
   }
 
@@ -125,24 +130,21 @@ export default class ActiveDeck extends Component {
   renderCard(card, idx, type) {
     return (
       <div key={idx}>
-        <Popover
-          isOpen={this.state.hoveredRow === idx && this.state.hoveredSection === type}
-          place="below"
+        <Tooltip
+          class="hovered-card"
+          place="top"
           style={this.styles.popover}
-          refreshIntervalMs={5}
-          enterExitTransitionDurationMs={5}
-          tipSize={0.01}
+          text=""
+          offset={{bottom: 20}}
           body={this.renderHoveredCard(card)}>
           <div
             style={this.styles.outerCard}     
-            onClick={() => this.props.onCardClick(card.id)}
-            onMouseOver={() => this.setState({hoveredRow: idx, hoveredSection: type})}
-            onMouseOut={() => this.setState({hoveredRow: null, hoveredSection: null})}>
+            onClick={() => this.props.onCardClick(card.id)}>
             <div style={this.styles.cardCost}>{card.cost}</div>
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>{card.count > 1 ? card.count : ''}</div>
           </div>
-        </Popover>
+        </Tooltip>
       </div>
     );
   }
@@ -225,8 +227,8 @@ export default class ActiveDeck extends Component {
             justifyContent: 'space-between',
             marginBottom: 20
           }}>
-            {this.renderButton(0, 'view_headline')}
-            {this.renderButton(1, 'view_agenda')}
+            {this.renderButton(0, 'view_headline', 'By Cost')}
+            {this.renderButton(1, 'view_agenda', 'By Type')}
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 /* Hexgrid */
+
 #hexgrid svg {
   margin: 0 auto;
   display: block;
@@ -38,6 +39,21 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* React Tooltip */
+
+.hovered-card.__react_component_tooltip {
+  background-color: transparent !important;
+}
+
+.hovered-card.__react_component_tooltip.show {
+  opacity: 1 !important;
+}
+
+.hovered-card.__react_component_tooltip:after {
+  border-color: transparent !important;
+}
+
 
 /* React Hint */
 

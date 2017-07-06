@@ -42,6 +42,10 @@
 
 /* React Tooltip */
 
+.hovered-card.__react_component_tooltip.place-bottom {
+    margin-top: -30px !important;
+}
+
 .hovered-card.__react_component_tooltip {
   background-color: transparent !important;
 }

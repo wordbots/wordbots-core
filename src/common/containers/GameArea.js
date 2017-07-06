@@ -328,7 +328,7 @@ export class GameArea extends Component {
   renderNotification() {
     const options = {
       tag: 'wordbots',
-      icon: '/static/android-icon-144x144.png',
+      icon: '/static/icons/android-icon-144x144.png',
       lang: 'en',
       dir: 'ltr',
       timestamp: Math.floor(Date.now())

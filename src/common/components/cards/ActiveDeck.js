@@ -5,13 +5,10 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
-import { groupCards, selectType, splitSentences } from '../../util/cards';
-import MustBeLoggedIn from '../users/MustBeLoggedIn';
-import Card from '../card/Card';
-import Sentence from '../card/Sentence';
+import { groupCards, selectType } from '../../util/cards';
 import Tooltip from '../Tooltip';
-
-import CardTooltip from './CardTooltip';
+import CardTooltip from '../card/CardTooltip';
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 // Widget representing the deck currently being created or modified.
 export default class ActiveDeck extends Component {
@@ -105,28 +102,10 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderHoveredCard(card) {
-    return (
-      <Card
-        id={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        spriteV={card.spriteV}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source} />
-    );
-  }
-
   renderCard(card, idx, type) {
     return (
       <div key={idx}>
-        <CardTooltip card={this.renderHoveredCard(card)}>
+        <CardTooltip card={card}>
           <div
             style={this.styles.outerCard}
             onClick={() => this.props.onCardClick(card.id)}>

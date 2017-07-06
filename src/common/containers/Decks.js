@@ -10,10 +10,8 @@ import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
-import { cardsInDeck, groupCards, splitSentences } from '../util/cards';
-import Card from '../components/card/Card';
-import Sentence from '../components/card/Sentence';
-import CardTooltip from '../components/cards/CardTooltip';
+import { cardsInDeck, groupCards } from '../util/cards';
+import CardTooltip from '../components/card/CardTooltip';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
@@ -91,24 +89,6 @@ class Decks extends Component {
     };
   }
 
-  renderHoveredCard(card) {
-    return (
-      <Card
-        id={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        spriteV={card.spriteV}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source} />
-    );
-  }
-
   renderCard(card, idx) {
     return (
       <div
@@ -119,7 +99,7 @@ class Decks extends Component {
           height: 24,
           minWidth: 200
       }}>
-        <CardTooltip card={this.renderHoveredCard(card)}>
+        <CardTooltip card={card}>
           <div style={this.styles.cardItem}>
             <Badge
               badgeContent={card.cost}

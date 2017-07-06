@@ -3,6 +3,10 @@ import { array, object, oneOfType } from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
 import { id } from '../../util/common';
+import { splitSentences } from '../../util/cards';
+
+import Card from './Card';
+import Sentence from './Sentence';
 
 export default class CardTooltip extends Component {
   static propTypes = {
@@ -11,6 +15,25 @@ export default class CardTooltip extends Component {
   };
 
   tooltipId = id()
+
+  get renderedCard() {
+    const card = this.props.card;
+    return (
+      <Card
+        id={card.id}
+        name={card.name}
+        spriteID={card.spriteID}
+        spriteV={card.spriteV}
+        type={card.type}
+        text={splitSentences(card.text).map(Sentence)}
+        rawText={card.text || ''}
+        stats={card.stats}
+        cardStats={card.stats}
+        cost={card.cost}
+        baseCost={card.cost}
+        source={card.source} />
+    );
+  }
 
   render() {
     return (
@@ -25,7 +48,7 @@ export default class CardTooltip extends Component {
             offset={{bottom: 20}}
             place="top"
           >
-            {this.props.card}
+            {this.renderedCard}
           </ReactTooltip>
         </div>
       </div>

@@ -45,7 +45,6 @@ export default class CardTooltip extends Component {
           <ReactTooltip
             id={this.tooltipId}
             className="hovered-card"
-            offset={{bottom: 20}}
             place="top"
           >
             {this.renderedCard}

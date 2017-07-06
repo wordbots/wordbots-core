@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import { array, func, object } from 'prop-types';
+import { array, func, object, string } from 'prop-types';
+import { shuffle } from 'lodash';
 
-import { MODE_TUTORIAL } from '../../constants';
+import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
+import { instantiateCard, cardsInDeck } from '../../util/cards';
 
+import DeckPicker from './DeckPicker';
+import GameBrowser from './GameBrowser';
+import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
-import Waiting from './Waiting';
-import CustomLobby from './CustomLobby';
 import ModeSelection from './ModeSelection';
+import Waiting from './Waiting';
 
 export default class Lobby extends Component {
   static propTypes = {
     socket: object,
+    gameMode: string,
     availableDecks: array,
     cards: array,
 
@@ -18,52 +23,53 @@ export default class Lobby extends Component {
     onJoinGame: func,
     onSpectateGame: func,
     onHostGame: func,
-    onStartTutorial: func
+    onStartTutorial: func,
+    onSelectMode: func
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      gameMode: null
+      selectedDeck: this.props.availableDecks.length - 1
     };
   }
 
-  selectMode = (mode) => {
-    if (mode === MODE_TUTORIAL) {
-      this.props.onStartTutorial();
-    } else {
-      this.setState({ gameMode: mode });
-    }
+  get hasNoDecks() {
+    return this.props.availableDecks.length === 0;
   }
 
-  renderGameModeSelection() {
-    const skt = this.props.socket;
+  get deck() {
+    const deck = this.props.availableDecks[this.state.selectedDeck];
+    const cards = cardsInDeck(deck, this.props.cards).map(instantiateCard);
+    return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
+  }
 
-    if (this.state.gameMode) {
-      switch(this.state.gameMode) {
-        case 0:
-          break;
-        case 1:
-          return (
-            skt.hosting ?
-              <Waiting /> :
-              <CustomLobby
-                socket={this.props.socket}
-                availableDecks={this.props.availableDecks}
-                cards={this.props.cards}
-                onJoinGame={this.props.onJoinGame}
-                onSpectateGame={this.props.onSpectateGame}
-                onHostGame={this.props.onHostGame} />
-          );
-        case 2:
-          break;
-        case 3:
-          break;
+  renderLobbyContent(gameMode, socket) {
+    if (gameMode === '/casual') {
+      if (socket.hosting) {
+        return <Waiting />;
+      } else {
+        return (
+          <div>
+            <GameBrowser
+              cannotJoinGame={this.hasNoDecks}
+              openGames={socket.waitingPlayers}
+              inProgressGames={socket.games}
+              usernameMap={socket.clientIdToUsername}
+              onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.deck); }}
+              onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />
+
+            <HostGame
+              disabled={this.hasNoDecks}
+              onHostGame={(gameName) => { this.props.onHostGame(gameName, this.deck); }} />
+          </div>
+        );
       }
     } else {
       return (
-        <ModeSelection onSelectMode={this.selectMode}/>
+        <ModeSelection
+          onSelectMode={(mode) => { this.props.onSelectMode(mode, this.deck); }}/>
       );
     }
   }
@@ -72,14 +78,21 @@ export default class Lobby extends Component {
     const skt = this.props.socket;
 
     return (
-      <div>
+      <div style={{padding: '48px 72px'}}>
         <LobbyStatus
           connecting={skt.connecting}
           connected={skt.connected}
           playersOnline={skt.playersOnline}
           usernameMap={skt.clientIdToUsername}
           onConnect={this.props.onConnect} />
-        {this.renderGameModeSelection()}
+
+        <DeckPicker
+          cards={this.props.cards}
+          availableDecks={this.props.availableDecks}
+          selectedDeckIdx={this.state.selectedDeck}
+          onChooseDeck={idx => { this.setState({selectedDeck: idx}); }} />
+
+        {this.renderLobbyContent(this.props.gameMode, skt)}
       </div>
     );
   }

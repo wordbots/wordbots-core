@@ -20,6 +20,11 @@ export function hashCode(s) {
   return Math.abs(value);
 }
 
+// https://stackoverflow.com/a/14224813
+export function convertRange(value, r1, r2) {
+  return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
+}
+
 export function compareCertainKeys(obj1, obj2, keys) {
   return !some(keys, key => !isEqual(obj1[key], obj2[key]));
 }
@@ -48,18 +53,21 @@ export function ensureInRange(name, value, min, max) {
   }
 }
 
+// Helper methods relating to bigrams.
+
+const DISALLOWED_PHRASES = ['all a'];
+
 export function prepareBigramProbs(corpus) {
   // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
-  function normalizeProps(obj) {
+  function normalizeValues(obj) {
     const total = sum(Object.values(obj));
     return mapValues(obj, val => val / total);
   }
 
-  const bigrams = mapValues(buildNGrams(corpus, 2), normalizeProps);
+  const bigrams = mapValues(buildNGrams(corpus, 2), normalizeValues);
 
   // Manually set the probability to zero for certain phrases that
   // (while technically valid) aren't the best way of wording something.
-  const DISALLOWED_PHRASES = ['all a'];
   DISALLOWED_PHRASES.forEach((phrase) => {
     const [first, second] = phrase.split(' ');
     bigrams[first][second] = 0;

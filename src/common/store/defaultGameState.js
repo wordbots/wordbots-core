@@ -59,13 +59,16 @@ const defaultState = {
   },
   started: false,
   tutorial: false,
+  practice: false,
   winner: null,
   currentTurn: STARTING_PLAYER,
   player: STARTING_PLAYER,
   usernames: {},
   hoveredCard: null,
   actionLog: [],
+  attack: null,
   memory: {},
+  sfxId: 0,
   sfxQueue: []
 };
 

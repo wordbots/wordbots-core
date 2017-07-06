@@ -8,8 +8,8 @@ import Board from '../../src/common/components/game/Board';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
-import HexGrid from '../../src/common/components/react-hexgrid/HexGrid';
-import HexUtils from '../../src/common/components/react-hexgrid/HexUtils';
+import HexGrid from '../../src/common/components/hexgrid/HexGrid';
+import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
 
@@ -23,6 +23,7 @@ describe('GameArea container', () => {
     const paper = dom.props.children[1];
     const mainDiv = paper.props.children[2];
     const board = mainDiv.props.children[1];
+    const victoryScreen = paper.props.children[4];
 
     /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
@@ -48,6 +49,7 @@ describe('GameArea container', () => {
           player={'orange'}
           currentTurn={'orange'}
           playingCardType={null}
+          attack={null}
           size={1000}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
@@ -59,7 +61,7 @@ describe('GameArea container', () => {
       <VictoryScreen
         winnerColor={null}
         winnerName={null}
-        onClick={game.props.onEndGame} />
+        onClick={victoryScreen.props.onClick} />
     ]);
   });
   /* eslint-enable react/jsx-key */

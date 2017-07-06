@@ -8,6 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isNil } from 'lodash';
 
+import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
 import { currentTutorialStep, getAttribute } from '../util/game';
 import CardViewer from '../components/card/CardViewer';
@@ -20,11 +21,20 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
+function animate(fns) {
+  if (fns.length > 0) {
+    const [first, ...rest] = fns;
+    first();
+    setTimeout(() => animate(rest), ANIMATION_TIME_MS);
+  }
+}
+
 export function mapStateToProps(state) {
   const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
   const currentPlayer = state.game.players[state.game.currentTurn];
 
   return {
+    started: state.game.started,
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     usernames: state.game.usernames,
@@ -38,6 +48,7 @@ export function mapStateToProps(state) {
 
     status: activePlayer.status,
     target: activePlayer.target,
+    attack: state.game.attack,
 
     blueHand: state.game.players.blue.hand,
     orangeHand: state.game.players.orange.hand,
@@ -51,8 +62,10 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
+    sfxId: state.game.sfxId,
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
+    isPractice: state.game.practice,
 
     sidebarOpen: state.global.sidebarOpen || state.game.tutorial
   };
@@ -64,10 +77,25 @@ export function mapDispatchToProps(dispatch) {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
     },
     onAttackRobot: (sourceHexId, targetHexId) => {
-      dispatch(gameActions.attack(sourceHexId, targetHexId));
+      animate([
+        () => dispatch(gameActions.attack(sourceHexId, targetHexId)),
+        () => dispatch(gameActions.attackRetract()),
+        () => dispatch(gameActions.attackComplete())
+      ]);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
-      dispatch(gameActions.moveRobotAndAttack(fromHexId, toHexId, targetHexId));
+      animate([
+        () => dispatch(gameActions.moveRobot(fromHexId, toHexId, true)),
+        () => dispatch(gameActions.attack(toHexId, targetHexId)),
+        () => dispatch(gameActions.attackRetract()),
+        () => dispatch(gameActions.attackComplete())
+      ]);
+    },
+    onAttackRetract: () => {
+      dispatch(gameActions.attackRetract());
+    },
+    onAttackComplete: () => {
+      dispatch(gameActions.attackComplete());
     },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
@@ -92,12 +120,16 @@ export function mapDispatchToProps(dispatch) {
     },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
+    },
+    onAIResponse: () => {
+      dispatch(gameActions.aiResponse());
     }
   };
 }
 
 export class GameArea extends Component {
   static propTypes = {
+    started: bool,
     player: string,
     currentTurn: string,
     usernames: object,
@@ -111,6 +143,7 @@ export class GameArea extends Component {
 
     status: object,
     target: object,
+    attack: object,
 
     blueHand: array,
     orangeHand: array,
@@ -124,21 +157,28 @@ export class GameArea extends Component {
     blueDeck: array,
     orangeDeck: array,
 
+    sfxId: number,
     sfxQueue: array,
     tutorialStep: object,
+    isPractice: bool,
 
     sidebarOpen: bool,
+
+    history: object,
 
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
+    onAttackRetract: func,
+    onAttackComplete: func,
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
     onHoverCard: func,
     onHoverTile: func,
     onEndGame: func,
-    onTutorialStep: func
+    onTutorialStep: func,
+    onAIResponse: func
   };
 
   constructor(props) {
@@ -148,6 +188,20 @@ export class GameArea extends Component {
       areaHeight: 1250,
       boardSize: 1000
     };
+
+    if (!props.started) {
+      this.props.history.push('/play');
+    }
+
+    setInterval(() => {
+      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
+        animate([
+          props.onAIResponse,
+          props.onAttackRetract,
+          props.onAttackComplete
+        ]);
+      }
+    }, AI_RESPONSE_TIME_MS);
   }
 
   // For testing.
@@ -235,7 +289,9 @@ export class GameArea extends Component {
   }
 
   onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
-    if (action === 'move') {
+    if (this.props.attack) {
+      return;  // Can't move/attack while an attack is in progress.
+    } if (action === 'move') {
       this.movePiece(hexId);
     } else if (action === 'attack') {
       this.attackPiece(hexId, intermediateMoveHexId);
@@ -294,8 +350,9 @@ export class GameArea extends Component {
       <div>
         <div>
           {this.renderNotification()}
-          <Sfx queue={this.props.sfxQueue} />
+          <Sfx id={this.props.sfxId} queue={this.props.sfxQueue} />
         </div>
+
         <Paper
           style={{
             position: 'relative',
@@ -328,16 +385,23 @@ export class GameArea extends Component {
               orangePieces={this.props.orangePieces}
               playingCardType={this.props.playingCardType}
               tutorialStep={this.props.tutorialStep}
+              attack={this.props.attack}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               onTutorialStep={this.props.onTutorialStep}
-              onEndGame={this.props.onEndGame} />
+              onEndGame={() => {
+                this.props.onEndGame();
+                this.props.history.push('/play');
+              }} />
           </div>
           <PlayerArea gameProps={this.props} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.props.onEndGame} />
+            onClick={() => {
+              this.props.onEndGame();
+              this.props.history.push('/play');
+            }} />
         </Paper>
       </div>
     );

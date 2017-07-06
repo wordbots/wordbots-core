@@ -1,9 +1,12 @@
+export const START_PRACTICE = 'START_PRACTICE';
+export const AI_RESPONSE = 'AI_RESPONSE';
 export const START_TUTORIAL = 'START_TUTORIAL';
 export const TUTORIAL_STEP = 'TUTORIAL_STEP';
 export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
-export const MOVE_ROBOT_AND_ATTACK = 'MOVE_ROBOT_AND_ATTACK';
+export const ATTACK_RETRACT = 'ATTACK_RETRACT';
+export const ATTACK_COMPLETE = 'ATTACK_COMPLETE';
 export const ACTIVATE_OBJECT = 'ACTIVATE_OBJECT';
 export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
@@ -11,6 +14,19 @@ export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
+
+export function startPractice(deck) {
+  return {
+    type: START_PRACTICE,
+    payload: { deck }
+  };
+}
+
+export function aiResponse() {
+  return {
+    type: AI_RESPONSE
+  };
+}
 
 export function startTutorial() {
   return {
@@ -45,10 +61,15 @@ export function attack(source, target) {
   };
 }
 
-export function moveRobotAndAttack(from, to, target) {
+export function attackRetract() {
   return {
-    type: MOVE_ROBOT_AND_ATTACK,
-    payload: { from, to, target }
+    type: ATTACK_RETRACT
+  };
+}
+
+export function attackComplete() {
+  return {
+    type: ATTACK_COMPLETE
   };
 }
 

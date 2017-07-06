@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { func, number, object, string } from 'prop-types';
-import { forOwn, intersection, isString, mapValues } from 'lodash';
+import { forOwn, isString, mapValues } from 'lodash';
 
-import HexGrid from '../react-hexgrid/HexGrid';
-import HexUtils from '../react-hexgrid/HexUtils';
+import HexGrid from '../hexgrid/HexGrid';
+import HexUtils from '../hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, ownerOf,
-  getAdjacentHexes, validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes
+  validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId
 } from '../../util/game';
 
 export default class Board extends Component {
@@ -22,6 +22,7 @@ export default class Board extends Component {
     target: object,
     size: number,
     tutorialStep: object,
+    attack: object,
 
     onSelectTile: func,
     onHoverTile: func,
@@ -68,16 +69,18 @@ export default class Board extends Component {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  get pieceImages() {
-    return mapValues(this.allPieces, p =>
-      p.card.img ? {img: p.card.img} : {sprite: p.card.spriteID || p.card.name, type: p.card.type}
-    );
-  }
+  get piecesOnGrid() {
+    const attack = this.props.attack;
 
-  get pieceStats() {
-    return mapValues(this.allPieces, piece => ({
-      health: getAttribute(piece, 'health'),
-      attack: getAttribute(piece, 'attack')
+    return mapValues(this.allPieces, (piece, hex) => ({
+      id: piece.id,
+      type: piece.card.type,
+      image: piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name},
+      stats: {
+        health: getAttribute(piece, 'health'),
+        attack: getAttribute(piece, 'attack')
+      },
+      attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null
     }));
   }
 
@@ -146,21 +149,13 @@ export default class Board extends Component {
 
   onMoveOrAttack(hex) {
     const hexId = HexUtils.getID(hex);
-    const adjacentHexIds = getAdjacentHexes(hex).map(HexUtils.getID);
     const movementHexIds = this.getValidMovementHexes(this.selectedHex).map(HexUtils.getID);
     const attackHexIds = this.getValidAttackHexes(this.selectedHex).map(HexUtils.getID);
 
     if (movementHexIds.includes(hexId)) {
       this.props.onSelectTile(hexId, 'move');
     } else if (attackHexIds.includes(hexId)) {
-      if (adjacentHexIds.includes(this.selectedHexId)) {
-        // Attack destination is adjacent to current position, so we can attack directly.
-        this.props.onSelectTile(hexId, 'attack');
-      } else {
-        // Attack destination is not adjacent to current position, so we need an intermediate move action.
-        // Since attackHexIds.includes(hexId), we're guaranteed that there's at least one valid intermediate hex.
-        this.props.onSelectTile(hexId, 'attack', intersection(movementHexIds, adjacentHexIds)[0]);
-      }
+      this.props.onSelectTile(hexId, 'attack', intermediateMoveHexId(this.dummyGameState, this.selectedHex, hex));
     } else {
       this.props.onSelectTile(hexId);
     }
@@ -177,8 +172,7 @@ export default class Board extends Component {
       <div id="hexgrid">
         <HexGrid
           hexColors={this.hexColors}
-          pieceImgs={this.pieceImages}
-          pieceStats={this.pieceStats}
+          pieces={this.piecesOnGrid}
           width={this.props.size}
           height={this.props.size}
           hexagons={grid.hexagons}

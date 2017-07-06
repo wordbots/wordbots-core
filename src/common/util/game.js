@@ -1,12 +1,15 @@
-import { chain as _, cloneDeep, filter, findKey, flatMap, isArray, mapValues, some, times, uniqBy } from 'lodash';
+import {
+  chain as _, cloneDeep, filter, findKey, flatMap,
+  intersection, isArray, mapValues, some, times, uniqBy
+} from 'lodash';
 import seededRNG from 'seed-random';
 
 import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
 import buildVocabulary from '../vocabulary/vocabulary';
-import GridGenerator from '../components/react-hexgrid/GridGenerator';
-import Hex from '../components/react-hexgrid/Hex';
-import HexUtils from '../components/react-hexgrid/HexUtils';
+import GridGenerator from '../components/hexgrid/GridGenerator';
+import Hex from '../components/hexgrid/Hex';
+import HexUtils from '../components/hexgrid/HexUtils';
 
 import { clamp } from './common';
 
@@ -35,7 +38,7 @@ export function opponentPlayer(state) {
 }
 
 export function currentTutorialStep(state) {
-  if (state.tutorialSteps) {
+  if (state.tutorial && state.tutorialSteps) {
     const step = state.tutorialSteps[state.tutorialCurrentStepIdx];
     return Object.assign({}, step, {
       idx: state.tutorialCurrentStepIdx,
@@ -212,6 +215,16 @@ export function validActionHexes(state, startHex) {
   return [].concat(movementHexes, attackHexes, actionHexes);
 }
 
+export function intermediateMoveHexId(state, startHex, attackHex) {
+  if (getAdjacentHexes(startHex).map(HexUtils.getID).includes(HexUtils.getID(attackHex))) {
+    return null;
+  } else {
+    const adjacentHexIds = getAdjacentHexes(attackHex).map(HexUtils.getID);
+    const movementHexIds = validMovementHexes(state, startHex).map(HexUtils.getID);
+    return intersection(movementHexIds, adjacentHexIds)[0];
+  }
+}
+
 //
 // III. Effects on game state that are performed in many different places.
 //
@@ -240,7 +253,7 @@ export function logAction(state, player, action, cards, timestamp, target = null
   return state;
 }
 
-export function newGame(state, player, usernames, decks, seed) {
+export function newGame(state, player, usernames, decks, seed = 0) {
   state = Object.assign(state, cloneDeep(defaultState), {player: player, rng: seededRNG(seed)}); // Reset game state.
   state.usernames = usernames;
   state.players.blue = bluePlayerState(decks.blue);

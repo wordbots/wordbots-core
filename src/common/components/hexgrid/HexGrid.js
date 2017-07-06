@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { number, string, object, array } from 'prop-types';
+import { CSSTransitionGroup } from 'react-transition-group';
+import { chain as _ } from 'lodash';
 
-import HexUtils from './HexUtils';
-import HexShape from './HexShape';
-import Path from './Path';
-import Layout from './Layout';
+import { ANIMATION_TIME_MS } from '../../constants';
+
 import GridGenerator from './GridGenerator';
-import loadImages from './HexGridImages';
+import HexPiece from './HexPiece';
+import HexShape from './HexShape';
+import HexUtils from './HexUtils';
+import Layout from './Layout';
 
 export default class HexGrid extends Component {
   static propTypes = {
@@ -18,8 +21,7 @@ export default class HexGrid extends Component {
     tutorialStep: object,
     path: object,
     hexColors: object,
-    pieceImgs: object,
-    pieceStats: object,
+    pieces: object,
     selectedHexId: string
   };
 
@@ -37,6 +39,10 @@ export default class HexGrid extends Component {
     return { hexagons, layout };
   }
 
+  get selectedHex() {
+    return this.props.hexagons.find(hex => HexUtils.getID(hex) === this.props.selectedHexId);
+  }
+
   renderHexes() {
     return this.props.hexagons.map((hex, index) => (
       <HexShape
@@ -45,20 +51,42 @@ export default class HexGrid extends Component {
         layout={this.props.layout}
         actions={this.props.actions}
         fill={this.props.hexColors[HexUtils.getID(hex)]}
-        pieceImg={this.props.pieceImgs[HexUtils.getID(hex)] || {}}
-        pieceStats={this.props.pieceStats[HexUtils.getID(hex)]}
-        images={loadImages()}
         tutorialStep={this.props.tutorialStep} />
     ));
   }
 
+  renderPieces() {
+    return (
+      <CSSTransitionGroup
+        component="g"
+        transitionName="hex-piece"
+        transitionEnterTimeout={ANIMATION_TIME_MS}
+        transitionLeaveTimeout={ANIMATION_TIME_MS}
+      >
+        {
+          _(this.props.pieces)
+            .toPairs()
+            .sortBy(([hex, piece]) => piece.id)
+            .map(([hex, piece]) => (
+              <HexPiece
+                key={piece.id}
+                hex={HexUtils.IDToHex(hex)}
+                layout={this.props.layout}
+                actions={this.props.actions}
+                piece={piece} />
+            ))
+            .value()
+        }
+      </CSSTransitionGroup>
+    );
+  }
+
   renderSelectedHex() {
-    const selectedHex = this.props.hexagons.find(hex => HexUtils.getID(hex) === this.props.selectedHexId);
-    if (selectedHex) {
+    if (this.selectedHex) {
       return (
         <HexShape
           selected
-          hex={selectedHex}
+          hex={this.selectedHex}
           layout={this.props.layout}
           actions={this.props.actions} />
       );
@@ -69,8 +97,8 @@ export default class HexGrid extends Component {
     return (
       <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
         {this.renderHexes()}
+        {this.renderPieces()}
         {this.renderSelectedHex()}
-        <Path {...this.props.path} layout={this.props.layout} />
         <defs>
           <filter id="dropShadow" width="5" x="-1" height="5" y="-1">
             <feOffset in="SourceAlpha" dx="0.5" dy="0.5" result="offset"/>

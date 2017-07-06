@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { array, bool, func, number, object, string } from 'prop-types';
 import ReactDOM from 'react-dom';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { isEmpty, isNull } from 'lodash';
 
 import { splitSentences } from '../../util/cards';
@@ -28,9 +28,9 @@ export default class Hand extends Component {
     onTutorialStep: func
   };
 
-  calculateAvailableWidth() {
-    // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
-    this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;  // eslint-disable-line react/no-find-dom-node
+  constructor() {
+    super();
+    this.availableWidth = 500;
   }
 
   componentDidMount() {
@@ -39,6 +39,15 @@ export default class Hand extends Component {
 
   componentWillUpdate() {
     this.calculateAvailableWidth();
+  }
+
+  calculateAvailableWidth() {
+    // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
+    /* eslint-disable react/no-find-dom-node */
+    if (ReactDOM.findDOMNode(this)) {
+      this.availableWidth = ReactDOM.findDOMNode(this).offsetWidth;
+    }
+    /* eslint-enable react/no-find-dom-node */
   }
 
   renderCards() {
@@ -65,33 +74,35 @@ export default class Hand extends Component {
           onNextStep={() => { this.props.onTutorialStep(); }}
           onPrevStep={() => { this.props.onTutorialStep(true); }}
         >
-          <Card
-            key={card.id}
-            numCards={numCards}
-            status={this.props.status}
-            name={card.name}
-            spriteID={card.spriteID}
-            spriteV={card.spriteV}
-            type={card.type}
-            text={splitSentences(card.text).map(Sentence)}
-            rawText={card.text || ''}
-            img={card.img}
-            cost={getCost(card)}
-            baseCost={card.baseCost}
-            cardStats={card.stats}
-            source={card.source}
+          <div>
+            <Card
+              key={card.id}
+              numCards={numCards}
+              status={this.props.status}
+              name={card.name}
+              spriteID={card.spriteID}
+              spriteV={card.spriteV}
+              type={card.type}
+              text={splitSentences(card.text).map(Sentence)}
+              rawText={card.text || ''}
+              img={card.img}
+              cost={getCost(card)}
+              baseCost={card.baseCost}
+              cardStats={card.stats}
+              source={card.source}
 
-            selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
-            targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
-            visible={this.props.isActivePlayer}
+              selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
+              targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
+              visible={this.props.isActivePlayer}
 
-            margin={idx < numCards - 1 ? cardMargin : 0}
-            rotation={this.props.curved ? rotationDegs : 0}
-            yTranslation={this.props.curved ? translationPx : 0}
-            zIndex={zIndex}
+              margin={idx < numCards - 1 ? cardMargin : 0}
+              rotation={this.props.curved ? rotationDegs : 0}
+              yTranslation={this.props.curved ? translationPx : 0}
+              zIndex={zIndex}
 
-            onCardClick={e => { this.props.onSelectCard(idx); }}
-            onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+              onCardClick={e => { this.props.onSelectCard(idx); }}
+              onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+          </div>
         </TutorialTooltip>
       );
     });
@@ -102,6 +113,8 @@ export default class Hand extends Component {
       <CSSTransitionGroup
         id={this.props.opponent ? 'handTop' : 'handBottom'}
         transitionName="hand"
+        transitionAppear
+        transitionAppearTimeout={500}
         transitionEnterTimeout={500}
         transitionLeave={false}
         className={isNull(this.props.selectedCard) ? '' : 'selected'}

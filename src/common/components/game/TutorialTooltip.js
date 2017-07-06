@@ -128,6 +128,7 @@ export default class TutorialTooltip extends Component {
           style={this.styles.container}
           tipSize={15}
           body={this.tooltipBody}
+          refreshIntervalMs={50}
         >
           {this.props.children}
         </Popover>

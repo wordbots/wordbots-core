@@ -171,7 +171,9 @@ describe('Game reducer', () => {
       state = newTurn(state, 'blue');
       state = game(state, [
         actions.setSelectedTile('-2,1,1', 'blue'),
-        actions.moveRobotAndAttack('-2,1,1', blueAttackBotPos, orangeTwoBotPos)
+        actions.moveRobot('-2,1,1', blueAttackBotPos, true),
+        actions.attack(blueAttackBotPos, orangeTwoBotPos),
+        actions.attackComplete()
       ]);
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()

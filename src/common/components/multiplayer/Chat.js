@@ -17,8 +17,7 @@ export default class Chat extends Component {
     roomName: string,
     messages: array,
 
-    onSendMessage: func,
-    onHoverCard: func
+    onSendMessage: func
   };
 
   constructor(props) {

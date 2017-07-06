@@ -128,8 +128,7 @@ export class Play extends Component {
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage}
-          onHoverCard={this.props.onHoverTile} />
+          onSendMessage={this.props.onSendChatMessage} />
       </div>
     );
   }

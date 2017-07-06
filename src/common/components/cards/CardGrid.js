@@ -55,7 +55,8 @@ export default class CardGrid extends Component {
   render() {
     return (
       <div style={{
-        width: 'calc(100% - 10px)'
+        width: 'calc(100% - 40px)',
+        margin: '0 20px'
       }}>
         <div style={{
           display: 'flex',

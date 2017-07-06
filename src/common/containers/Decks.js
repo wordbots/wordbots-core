@@ -11,7 +11,7 @@ import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../constants';
 import { cardsInDeck, groupCards } from '../util/cards';
-import CardViewer from '../components/card/CardViewer';
+import CardTooltip from '../components/card/CardTooltip';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
@@ -56,46 +56,59 @@ class Decks extends Component {
 
   constructor(props) {
     super(props);
+  }
 
-    this.state = {
-      hoveredCard: null
+  get styles() {
+    return {
+      cardItem: {
+        display: 'flex',
+        alignItems: 'stretch'
+      },
+      cardBadgeStyle: {
+        backgroundColor: '#00bcd4',
+        fontFamily: 'Carter One',
+        color: 'white',
+        marginRight: 10
+      },
+      cardBadge: {
+        padding: 0,
+        width: 24,
+        height: 24
+      },
+      cardName: {
+        display: 'flex',
+        alignItems: 'center',
+        width: 'calc(100% - 24px)'
+      },
+      cardCount: {
+        width: 20,
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: 'bold'
+      }
     };
   }
 
-  onHover(card) {
-    this.setState({hoveredCard: {card: card, stats: card.stats}});
-  }
-
   renderCard(card, idx) {
-    const isHovered = this.state.hoveredCard && this.state.hoveredCard.card.id === card.id;
-
     return (
       <div
         key={idx}
-        onMouseOver={e => this.onHover(card)}
         style={{
-          backgroundColor: isHovered ? '#eee' : '#fff',
+          backgroundColor: '#FFFFFF',
           marginBottom: 7,
-          display: 'flex',
-          alignItems: 'stretch',
           height: 24,
           minWidth: 200
       }}>
-        <Badge
-          badgeContent={card.cost}
-          badgeStyle={{backgroundColor: '#00bcd4', fontFamily: 'Carter One', color: 'white', marginRight: 10}}
-          style={{padding: 0, width: 24, height: 24 }} />
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: 'calc(100% - 24px)'
-        }}>{card.name}</div>
-        <div style={{
-          width: 20,
-          display: 'flex',
-          alignItems: 'center',
-          fontWeight: 'bold'
-        }}>{card.count > 1 ? `${card.count}x` : ''}</div>
+        <CardTooltip card={card}>
+          <div style={this.styles.cardItem}>
+            <Badge
+              badgeContent={card.cost}
+              badgeStyle={this.styles.cardBadgeStyle}
+              style={this.styles.cardBadge} />
+            <div style={this.styles.cardName}>{card.name}</div>
+            <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
+          </div>
+        </CardTooltip>
       </div>
     );
   }
@@ -217,16 +230,6 @@ class Decks extends Component {
             }}>
               {this.props.decks.map(this.renderDeck.bind(this))}
             </div>
-          </div>
-
-          <div style={{
-            margin: 50,
-            marginLeft: 0,
-            width: 230,
-            height: 300,
-            position: 'relative'
-          }}>
-            <CardViewer hoveredCard={this.state.hoveredCard} />
           </div>
         </div>
       </div>

@@ -86,6 +86,10 @@ export function groupCards(cards) {
   );
 }
 
+export function selectType(cards, type) {
+  return cards.filter((card) => card.type === type);
+} 
+
 export function getDisplayedCards(cards, opts = {}) {
   return cards
     .filter(card => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))

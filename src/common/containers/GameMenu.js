@@ -27,6 +27,7 @@ export function mapStateToProps(state) {
     isMyTurn: state.game.currentTurn === state.game.player,
     isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
+    isAttackHappening: state.game.attack !== null,
     selectedPiece: selectedPiece,
     tutorialStep: currentTutorialStep(state.game)
   };
@@ -61,6 +62,7 @@ export class GameMenu extends Component {
     isMyTurn: bool,
     isMyPiece: bool,
     isSpectator: bool,
+    isAttackHappening: bool,
     selectedPiece: object,
     tutorialStep: object,
 
@@ -147,7 +149,15 @@ export class GameMenu extends Component {
     } else if (seconds > 0) {
       this.setTimer(0, this.padDigits(seconds - 1), 'white');
     } else {
-      if (this.props.isMyTurn) {
+      this.timerEnd();
+    }
+  }
+
+  timerEnd = () => {
+    if (this.props.isMyTurn) {
+      if (this.props.isAttackHappening) {
+        setTimeout(this.timerEnd, 1000);
+      } else {
         this.props.onPassTurn(this.props.player);
       }
     }
@@ -194,7 +204,7 @@ export class GameMenu extends Component {
       <Tooltip disable={this.isExpanded} text="End Turn" place="right" style={this.styles.tooltip}>
         <MenuItem
           primaryText={this.isExpanded ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
-          disabled={!this.props.isMyTurn || this.props.gameOver}
+          disabled={!this.props.isMyTurn || this.props.isAttackHappening || this.props.gameOver}
           leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
           onClick={() => { this.props.onPassTurn(this.props.player); }} />
         </Tooltip>

@@ -83,7 +83,7 @@
     "substitute-loader": "^1.0.0",
     "trianglify": "wordbots/trianglify",
     "url-loader": "^0.5.9",
-    "webpack": "^3.1.0",
+    "webpack": "3.0.0",
     "whatwg-fetch": "^2.0.3",
     "word-ngrams": "^0.2.0",
     "ws": "^3.0.0"

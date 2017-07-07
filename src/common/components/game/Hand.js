@@ -74,7 +74,7 @@ export default class Hand extends Component {
           onNextStep={() => { this.props.onTutorialStep(); }}
           onPrevStep={() => { this.props.onTutorialStep(true); }}
         >
-          <div>
+          <div key={card.id}>
             <Card
               key={card.id}
               numCards={numCards}

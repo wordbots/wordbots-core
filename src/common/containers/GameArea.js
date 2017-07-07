@@ -62,7 +62,6 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
-    sfxId: state.game.sfxId,
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
     isPractice: state.game.practice,
@@ -350,7 +349,7 @@ export class GameArea extends Component {
       <div>
         <div>
           {this.renderNotification()}
-          <Sfx id={this.props.sfxId} queue={this.props.sfxQueue} />
+          <Sfx queue={this.props.sfxQueue} />
         </div>
 
         <Paper

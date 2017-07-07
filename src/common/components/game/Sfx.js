@@ -30,16 +30,12 @@ export default class Sfx extends Component {
     return this.props.queue[this.state.idx];
   }
 
-  get paused() {
-    return !this.currentSound;
-  }
-
   proceedToNextSound = () => {
     this.setState({idx: this.state.idx + 1});
   }
 
   render() {
-    if (this.enabled && !this.paused) {
+    if (this.enabled && this.currentSound) {
       return (
         <Sound
           url={`/static/sound/${this.currentSound}`}

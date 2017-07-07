@@ -230,7 +230,7 @@ export function intermediateMoveHexId(state, startHex, attackHex) {
 //
 
 export function triggerSound(state, filename) {
-  state.sfxQueue.push(filename);
+  state.sfxQueue = [...state.sfxQueue, filename];
   return state;
 }
 

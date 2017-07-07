@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
-import { array, number } from 'prop-types';
-import { isEmpty } from 'lodash';
+import { array } from 'prop-types';
 
 import { inBrowser, isFlagSet } from '../../util/browser';
 
-let Sound;
-if (inBrowser()) {
-  Sound = require('react-sound').default;
-}
+const Sound = inBrowser() ? require('react-sound').default : null;
 
 export default class Sfx extends Component {
   static propTypes = {
-    id: number,
     queue: array
   };
 
@@ -24,13 +19,7 @@ export default class Sfx extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const newSoundsQueued = nextProps.id > this.props.id && !isEmpty(nextProps.queue);
-    const nextSoundInQueue = nextState.idx > this.state.idx;
-    return newSoundsQueued || nextSoundInQueue;
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({idx: 0});
+    return nextProps.queue.length > this.props.queue.length || nextState.idx > this.state.idx;
   }
 
   get enabled() {

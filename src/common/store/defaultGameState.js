@@ -68,7 +68,6 @@ const defaultState = {
   actionLog: [],
   attack: null,
   memory: {},
-  sfxId: 0,
   sfxQueue: []
 };
 

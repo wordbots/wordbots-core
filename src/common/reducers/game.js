@@ -8,6 +8,10 @@ import defaultState from '../store/defaultGameState';
 
 import g from './handlers/game';
 
+const PURELY_VISUAL_ACTIONS = [
+  actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE
+];
+
 export default function game(state = cloneDeep(defaultState), action, allowed = false) {
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
@@ -23,13 +27,9 @@ export default function game(state = cloneDeep(defaultState), action, allowed = 
 export function handleAction(oldState, action) {
   let state = Object.assign({}, oldState);
 
-  // These actions are purely visual and thus shouldn't interrupt the sfxQueue.
-  if (![actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE,
-        actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE].includes(action.type)) {
+  if (!PURELY_VISUAL_ACTIONS.includes(action.type)) {
     state = Object.assign(state, {
-      actionId: id(),  // actionId is used to correctly merge actions in the action log.
-      sfxQueue: [],  // Reset the sound effects queue on every reducer step.
-      sfxId: state.sfxId + 1
+      actionId: id()  // actionId is used to correctly merge actions in the action log.
     });
   }
 

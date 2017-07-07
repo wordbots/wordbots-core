@@ -4,7 +4,7 @@ import {
 } from 'lodash';
 import seededRNG from 'seed-random';
 
-import { TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
+import { MAX_HAND_SIZE, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
 import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/hexgrid/GridGenerator';
@@ -321,7 +321,22 @@ function endTurn(state) {
 }
 
 export function drawCards(state, player, count) {
-  player.hand = player.hand.concat(player.deck.splice(0, count));
+  const numCardsDrawn = Math.min(count, MAX_HAND_SIZE - player.hand.length);
+  const numCardsDiscarded = count - numCardsDrawn;
+
+  if (numCardsDrawn > 0) {
+    player.hand = player.hand.concat(player.deck.splice(0, numCardsDrawn));
+  }
+
+  times(numCardsDiscarded, () => {
+    const card = player.deck[0];
+    player.deck.splice(0, 1);
+    state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
+      [card.name]: card
+    });
+  });
+
+
   state = applyAbilities(state);
   return state;
 }

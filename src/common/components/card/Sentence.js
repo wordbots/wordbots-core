@@ -17,7 +17,7 @@ function Sentence(text, result = {}) {
 
     return (
       <span key={id()} style={{color: color}}>
-        {times(numInitialNewlines, () => <br />)}
+        {times(numInitialNewlines, (i) => <br key={i} />)}
         {phrases.map(p => p.split(' ').map(w => Word(w, keywords, result)))
                 .reduce((a, b) => [a, ',', b])}
         {text.endsWith(',') ? '' : '.'}

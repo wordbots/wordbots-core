@@ -62,7 +62,7 @@ export class GameMenu extends Component {
     isMyTurn: bool,
     isMyPiece: bool,
     isSpectator: bool,
-    isAttackHappening: bool
+    isAttackHappening: bool,
     selectedPiece: object,
     tutorialStep: object,
 

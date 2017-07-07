@@ -3,6 +3,7 @@ import { isArray, reduce } from 'lodash';
 import defaultState from '../store/defaultCollectionState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
+import * as globalActions from '../actions/global';
 
 import c from './handlers/cards';
 
@@ -14,7 +15,7 @@ export default function collection(oldState = defaultState, action) {
     return reduce(action, collection, state);
   } else {
     switch (action.type) {
-      case 'FIREBASE_DATA':
+      case globalActions.FIREBASE_DATA:
         return c.loadState(state, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:

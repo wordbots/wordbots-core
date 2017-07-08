@@ -1,50 +1,24 @@
 import React, { Component } from 'react';
 import { array } from 'prop-types';
 
-import { splitSentences } from '../../util/cards';
-import Sentence from '../card/Sentence';
 import Card from '../card/Card';
 
-class DiscardPile extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentTopCard: null
-    };
-  }
-
-  renderCard(card) {
-    return (
-      <Card
-        id={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        spriteV={card.spriteV}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source} />
-    );
-  }
+export default class DiscardPile extends Component {
+  static propTypes = {
+    cards: array
+  };
 
   renderCards(cards) {
-    const renderedCards = cards.map((card, index) => 
-      <div 
+    return cards.map((card, index) =>
+      <div
         style={{
           display: 'inline-block',
           marginRight: 20
         }}
         key={index}>
-        {this.renderCard(card)}
+        {Card.fromObj(card)}
       </div>
     );
-
-    return renderedCards;
   }
 
   render() {
@@ -59,9 +33,3 @@ class DiscardPile extends Component {
     );
   }
 }
-
-DiscardPile.propTypes = {
-  cards: array
-};
-
-export default DiscardPile;

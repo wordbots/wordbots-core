@@ -9,6 +9,7 @@ import { isEqual, noop } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import { compareCertainKeys } from '../../util/common';
+import { splitSentences } from '../../util/cards';
 import { inBrowser } from '../../util/browser';
 import Textfit from '../react-textfit/Textfit';
 
@@ -16,6 +17,7 @@ import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';
 import CardImage from './CardImage';
 import CardStat from './CardStat';
+import Sentence from './Sentence';
 
 export default class Card extends Component {
   static propTypes = {
@@ -71,6 +73,23 @@ export default class Card extends Component {
     onCardHover: noop,
     onSpriteClick: noop
   }
+
+  static fromObj = (card) => (
+    <Card
+        id={card.id}
+        name={card.name}
+        spriteID={card.spriteID}
+        spriteV={card.spriteV}
+        img={card.img}
+        type={card.type}
+        text={splitSentences(card.text).map(Sentence)}
+        rawText={card.text || ''}
+        stats={card.stats}
+        cardStats={card.stats}
+        cost={card.cost}
+        baseCost={card.cost}
+        source={card.source} />
+  );
 
   // (For server-side rendering via /api/card.png)
   static childContextTypes = {

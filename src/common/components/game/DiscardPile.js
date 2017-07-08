@@ -52,8 +52,7 @@ class DiscardPile extends Component {
 
     return (
       <div style={{
-        display: 'flex',
-        justifyContent: 'center'
+        display: 'flex'
       }}>
         {cards.length > 0 ? this.renderCards(cards) : ''}
       </div>

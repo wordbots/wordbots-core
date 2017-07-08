@@ -166,7 +166,7 @@ function playEvent(state, cardIdx) {
     } else {
       card.justPlayed = false;
 
-      tempState = discardCards(tempState, currentPlayer(state), [card]);
+      tempState = discardCards(tempState, currentPlayer(state).name, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
         condition: t => stringToType(t.cardType) === TYPE_EVENT || t.cardType === 'allobjects'

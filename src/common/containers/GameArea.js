@@ -62,6 +62,9 @@ export function mapStateToProps(state) {
     blueDeck: state.game.players.blue.deck,
     orangeDeck: state.game.players.orange.deck,
 
+    blueDiscardPile: state.game.players.blue.discardPile,
+    orangeDiscardPile: state.game.players.orange.discardPile,
+
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
     isPractice: state.game.practice,
@@ -155,6 +158,9 @@ export class GameArea extends Component {
 
     blueDeck: array,
     orangeDeck: array,
+
+    blueDiscardPile: array,
+    orangeDiscardPile: array,
 
     sfxId: number,
     sfxQueue: array,

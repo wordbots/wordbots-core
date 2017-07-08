@@ -1,12 +1,23 @@
 import React, { Component } from 'react';
 import { object, string, bool } from 'prop-types';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
 
 import Hand from './Hand';
 import PlayerName from './PlayerName';
 import EnergyCount from './EnergyCount';
 import Deck from './Deck';
+import DiscardPile from './DiscardPile';
 
 class PlayerArea extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      discardOpen: false
+    };
+  }
+
   getColor(opponent, playerColor) {
     if (opponent) {
       return (playerColor === 'blue') ? 'orange' : 'blue';
@@ -15,13 +26,11 @@ class PlayerArea extends Component {
     }
   }
 
-  render() {
+  get styles() {
     const opponent = this.props.opponent;
-    const gameProps = this.props.gameProps;
-    const color = this.getColor(opponent, gameProps.player);
 
-    return (
-      <div style={{
+    return {
+      container: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -32,7 +41,26 @@ class PlayerArea extends Component {
         top: opponent ? 0 : 'auto',
         width: '100%',
         boxSizing: 'border-box'
-      }}>
+      },
+      icon: {
+        verticalAlign: 'middle', 
+        color: 'white'
+      }, 
+      discard: {
+        width: 'calc(100% - 10px)',
+        marginTop: opponent ? 10 : 0,
+        marginBottom: opponent ? 0 : 10
+      }
+    };
+  }
+
+  render() {
+    const opponent = this.props.opponent;
+    const gameProps = this.props.gameProps;
+    const color = this.getColor(opponent, gameProps.player);
+
+    return (
+      <div style={this.styles.container}>
         <PlayerName
           opponent={opponent}
           color={color}
@@ -55,7 +83,30 @@ class PlayerArea extends Component {
           onSelectCard={idx => gameProps.onSelectCard(idx, color)}
           onHoverCard={gameProps.onHoverCard}
           onTutorialStep={gameProps.onTutorialStep} />
-        <Deck deck={gameProps[`${color}Deck`]} />
+        
+        <div style={{
+          display: 'flex',
+          flexDirection: opponent ? 'column-reverse' : 'column'
+        }}>
+          <RaisedButton
+            secondary
+            label="Discard Pile"
+            onTouchTap={() => this.setState({ discardOpen: true })}
+            style={this.styles.discard} 
+            disabled={gameProps[`${color}DiscardPile`].length === 0}/>
+          <Deck deck={gameProps[`${color}Deck`]} />
+        </div>
+
+        <Dialog
+          title="Discard Pile"
+          modal={false}
+          open={this.state.discardOpen}
+          contentStyle={{ width: 700 }}
+          bodyStyle={{ overflow: 'auto' }}
+          onRequestClose={() => this.setState({ discardOpen: false })}>
+          <DiscardPile 
+            cards={gameProps[`${color}DiscardPile`]} />
+        </Dialog>
       </div>
     );
   }

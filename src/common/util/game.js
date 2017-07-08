@@ -327,7 +327,14 @@ export function drawCards(state, player, count) {
 }
 
 // Note: This is used to either play or discard a set of cards.
-export function discardCards(state, cards) {
+export function discardCards(state, player, cards) {
+  // At the moment, only the currently active player can ever play or discard a card.
+  player.discardPile = player.discardPile.concat(cards);
+  removeCardsFromHand(state, cards);
+  return state;
+}
+
+export function removeCardsFromHand(state, cards) {
   // At the moment, only the currently active player can ever play or discard a card.
   const player = currentPlayer(state);
   const cardIds = cards.map(c => c.id);
@@ -359,6 +366,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
+    discardCards(state, state.players[ownerName], [state.players[ownerName].robotsOnBoard[hex].card]);
     delete state.players[ownerName].robotsOnBoard[hex];
 
     // Unapply any abilities that this object had.

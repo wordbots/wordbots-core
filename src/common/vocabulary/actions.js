@@ -4,7 +4,7 @@ import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
   ownerOf, getHex,
-  passTurn, drawCards, discardCards, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  passTurn, drawCards, removeCardsFromHand, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   executeCmd
 } from '../util/game';
 
@@ -51,7 +51,7 @@ export default function actions(state) {
     },
 
     discard: function (cards) {
-      discardCards(state, cards.entries);
+      removeCardsFromHand(state, cards.entries);
     },
 
     draw: function (players, count) {

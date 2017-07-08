@@ -46,7 +46,6 @@ export default class CardPreview extends Component {
             spriteID={this.props.spriteID}
             spriteV={SPRITE_VERSION}
             type={this.props.type}
-            img={'char'}
             cost={this.props.energy}
             stats={this.stats}
             cardStats={this.stats}

@@ -25,6 +25,7 @@ function playerState(color, collection, coreCard, coreHexId) {
     },
     hand: collection.slice(0, 2),
     deck: collection.slice(2),
+    discardPile: [],
     collection: collection,
     robotsOnBoard: {
       [coreHexId]: {

@@ -4,8 +4,8 @@ import { TYPE_EVENT, stringToType } from '../../../constants';
 import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions,
-  validPlacementHexes,
-  triggerSound, discardCards, logAction, setTargetAndExecuteQueuedAction,
+  validPlacementHexes, triggerSound, discardCards,
+  removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
 import { splitSentences } from '../../../util/cards';
@@ -115,7 +115,7 @@ export function placeCard(state, cardIdx, tile) {
       state.callbackAfterTargetSelected = (newState => placeCard(newState, cardIdx, tile));
       return state;
     } else {
-      tempState = discardCards(tempState, [card]);
+      tempState = removeCardsFromHand(tempState, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
         condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
@@ -166,7 +166,7 @@ function playEvent(state, cardIdx) {
     } else {
       card.justPlayed = false;
 
-      tempState = discardCards(tempState, [card]);
+      tempState = discardCards(tempState, currentPlayer(state).name, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
         condition: t => stringToType(t.cardType) === TYPE_EVENT || t.cardType === 'allobjects'

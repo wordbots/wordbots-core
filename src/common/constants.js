@@ -16,6 +16,7 @@ export const SPRITE_VERSION = 2;
 // * 1->2: trianglify instead of identicons for events
 
 export const STARTING_PLAYER_HEALTH = 20;
+export const MAX_HAND_SIZE = 7;
 
 export const BLUE_CORE_HEX = '-3,0,3';
 export const ORANGE_CORE_HEX = '3,0,-3';

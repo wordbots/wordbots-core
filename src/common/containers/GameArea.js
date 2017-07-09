@@ -16,6 +16,7 @@ import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import Sfx from '../components/game/Sfx';
+import EventAnimation from '../components/game/EventAnimation';
 import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -65,6 +66,7 @@ export function mapStateToProps(state) {
     blueDiscardPile: state.game.players.blue.discardPile,
     orangeDiscardPile: state.game.players.orange.discardPile,
 
+    eventQueue: state.game.eventQueue,
     sfxQueue: state.game.sfxQueue,
     tutorialStep: currentTutorialStep(state.game),
     isPractice: state.game.practice,
@@ -162,7 +164,7 @@ export class GameArea extends Component {
     blueDiscardPile: array,
     orangeDiscardPile: array,
 
-    sfxId: number,
+    eventQueue: array,
     sfxQueue: array,
     tutorialStep: object,
     isPractice: bool,
@@ -400,6 +402,7 @@ export class GameArea extends Component {
               }} />
           </div>
           <PlayerArea gameProps={this.props} />
+          <EventAnimation eventQueue={this.props.eventQueue} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}

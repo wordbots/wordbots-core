@@ -35,3 +35,19 @@
 .hex-piece-leave-active {
   opacity: 0;
 }
+
+.event-animation-appear, .event-animation-appear {
+  transform: translateY(500%);
+}
+.event-animation-enter-active, .event-animation-appear-active {
+  transform: translateY(0%);
+  transition: transform 500ms ease-in-out;
+}
+
+.event-animation-leave {
+  opacity: 1;
+}
+.event-animation-leave-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}

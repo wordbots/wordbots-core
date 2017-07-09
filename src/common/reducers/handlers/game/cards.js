@@ -178,6 +178,8 @@ function playEvent(state, cardIdx) {
       player.selectedCard = null;
       player.energy.available -= getCost(card);
 
+      tempState.eventQueue = [...tempState.eventQueue, card];
+
       return tempState;
     }
   } else {

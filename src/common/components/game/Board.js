@@ -104,7 +104,9 @@ export default class Board extends Component {
     forOwn(this.allPieces, (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
       const canMove = (owner === this.props.currentTurn) && this.hasValidActions(HexUtils.IDToHex(hex));
-      color([hex], `${canMove ? 'bright_' : ''}${owner}`);
+      const isStructure = piece.card.type === TYPE_STRUCTURE;
+
+      color([hex], `${canMove ? 'bright_' : ''}${owner}${isStructure ? '_grayish' : ''}`);
     });
 
     if (this.isMyTurn) {

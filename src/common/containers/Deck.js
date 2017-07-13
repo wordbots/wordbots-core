@@ -148,7 +148,13 @@ class Deck extends Component {
                 name={this.props.deck ? this.props.deck.name : ''}
                 cards={this.selectedCards}
                 loggedIn={this.props.loggedIn}
-                onCardClick={id => {
+                onIncreaseCardCount={id => {
+                  this.setState(state => {
+                    state.selectedCardIds.push(id);
+                    return state;
+                  });
+                }}
+                onDecreaseCardCount={id => {
                   this.setState(state => {
                     state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);
                     return state;

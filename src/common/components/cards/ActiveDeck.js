@@ -18,7 +18,8 @@ export default class ActiveDeck extends Component {
     name: string,
     loggedIn: bool,
 
-    onCardClick: func,
+    onIncreaseCardCount: func,
+    onDecreaseCardCount: func,
     onSaveDeck: func
   }
 
@@ -55,13 +56,13 @@ export default class ActiveDeck extends Component {
         borderRight: '2px solid #444'
       },
       cardName: {
-        width: 'calc(100% - 30px)',
+        width: 'calc(100% - 65px)',
         marginLeft: 5,
         display: 'flex',
         alignItems: 'center'
       },
       cardCount: {
-        width: 30,
+        width: 65,
         fontWeight: 'bold',
         display: 'flex',
         alignItems: 'center',
@@ -106,12 +107,18 @@ export default class ActiveDeck extends Component {
     return (
       <div key={idx}>
         <CardTooltip card={card}>
-          <div
-            style={this.styles.outerCard}
-            onClick={() => this.props.onCardClick(card.id)}>
+          <div style={this.styles.outerCard}>
             <div style={this.styles.cardCost}>{card.cost}</div>
             <div style={this.styles.cardName}>{card.name}</div>
-            <div style={this.styles.cardCount}>{card.count > 1 ? card.count : ''}</div>
+            <div style={this.styles.cardCount}>
+              <span onClick={() => this.props.onDecreaseCardCount(card.id)}>
+                &nbsp;&ndash;&nbsp;
+              </span>
+              {card.count}
+              <span onClick={() => this.props.onIncreaseCardCount(card.id)}>
+                &nbsp;+&nbsp;
+              </span>
+            </div>
           </div>
         </CardTooltip>
       </div>

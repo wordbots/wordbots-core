@@ -82,7 +82,6 @@ export default class Lobby extends Component {
 
   render() {
     const skt = this.props.socket;
-    console.log(this.props.availableDecks);
 
     return (
       <div style={{padding: '48px 72px'}}>

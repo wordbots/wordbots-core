@@ -82,6 +82,13 @@ Feel free to add issues or even make a pull request if you're feeling brave.
 const howToPlay = `
 ## How to Play
 
+### Try the Tutorial
+The 10-minute [interactice tutorial](/play) is the easiest way to
+get started with Wordbots.
+
+You'll learn the rules of game, how to play cards, and how to move
+and attack with your robots on the board.
+
 ### Create Your Cards
 Check out the built-in cards in your [collection](/collection),
 then make your own custom cards using the [card creator](/creator).
@@ -90,10 +97,11 @@ then make your own custom cards using the [card creator](/creator).
 Use the [deck builder](/decks) to create a deck of 30 cards.
 _(You can use as many copies of a card as you'd like.)_
 
+You can test out your deck against the AI in [practice mode](/play) to see
+how well it works.
+
 ### Defeat Your Opponents
 Go to the [lobby](/play), choose your deck, and host or join a game.
 
-During your turn, you can play events, place robots and structures,
-and move and attack with your robots on the board.
 Destroy your opponent's kernel to win!
 `;

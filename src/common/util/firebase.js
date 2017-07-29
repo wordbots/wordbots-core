@@ -83,7 +83,7 @@ export function listenToRecentCards(callback) {
   return fb.database()
            .ref('recentCards')
            .orderByChild('timestamp')
-           .limitToLast(10)
+           .limitToLast(20)
            .on('value', (snapshot) => { callback(snapshot.val()); });
 }
 

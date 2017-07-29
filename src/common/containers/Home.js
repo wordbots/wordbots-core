@@ -3,7 +3,7 @@ import { func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
+import Carousel from 'react-slick';
 import { uniqBy } from 'lodash';
 
 import { listenToRecentCards } from '../util/firebase';
@@ -44,7 +44,7 @@ class Home extends Component {
 
   componentDidMount() {
     listenToRecentCards(data => {
-      const recentCards = uniqBy(Object.values(data), 'id').slice(0, 5);
+      const recentCards = uniqBy(Object.values(data), 'id').reverse().slice(0, 10);
       this.setState({ recentCards });
     });
   }
@@ -70,6 +70,51 @@ class Home extends Component {
     </PaperButton>
   )
 
+  renderRecentCards = () => {
+    if (this.state.recentCards.length > 0) {
+      return (
+        <div>
+          <Carousel dots autoplay infinite pauseOnHover
+            arrows={false}
+            speed={500}
+            autoplaySpeed={1000}
+            slidesToShow={2}
+            slidesToScroll={1}
+            responsive={[
+              {breakpoint: 920, settings: {slidesToShow: 3}},
+              {breakpoint: 1120, settings: {slidesToShow: 4}},
+              {breakpoint: 1320, settings: {slidesToShow: 5}},
+              {breakpoint: 1520, settings: {slidesToShow: 6}},
+              {breakpoint: 1720, settings: {slidesToShow: 7}},
+              {breakpoint: 1920, settings: {slidesToShow: 8}},
+              {breakpoint: 2120, settings: {slidesToShow: 9}},
+              {breakpoint: 2320, settings: {slidesToShow: 10}}
+            ]
+          }>
+            {
+              this.state.recentCards.map(card =>
+                <div key={card.id}>
+                  {Card.fromObj(card)}
+                </div>
+              )
+            }
+          </Carousel>
+          <p style={{
+            color: '#999',
+            fontSize: 20,
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            textAlign: 'center'
+          }}>
+            Most recently created cards
+          </p>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
     // const [version, sha] = this.props.version.split('+');
 
@@ -77,13 +122,14 @@ class Home extends Component {
       <div style={{margin: '48px 72px'}}>
         <Helmet title="Home"/>
 
-        <Paper style={{
-          margin: '15px 30px',
-          padding: '5px 0px',
-          textAlign: 'center'
+        <div style={{
+          margin: '10px 0',
+          textAlign: 'center',
+          fontSize: 24,
+          color: '#666'
         }}>
-          <p>Welcome to Wordbots, the customizable card game where <i>you</i>, the player, get to create the cards!</p>
-        </Paper>
+          <p>Welcome to Wordbots, the customizable card game where <i><b>you</b></i>, the player, get to create the cards!</p>
+        </div>
 
         <div style={{
           display: 'flex',
@@ -96,21 +142,7 @@ class Home extends Component {
           {this.renderButton('Card Creator', () => { this.props.history.push('creator'); })}
         </div>
 
-        <Paper style={{
-          margin: '15px 30px',
-          padding: '5px 0px',
-          textAlign: 'center'
-        }}>
-          <p>Most recently created cards:</p>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: 900,
-            margin: '0 auto'
-          }}>
-            {this.state.recentCards.map(Card.fromObj)}
-          </div>
-        </Paper>
+        {this.renderRecentCards()}
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, object } from 'prop-types';
+import { array, bool, func, object, oneOfType } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
 export default class PaperButton extends Component {
@@ -8,7 +8,7 @@ export default class PaperButton extends Component {
     onClick: func,
     style: object,
 
-    children: array
+    children: oneOfType([array, object])
   };
 
   constructor(props) {

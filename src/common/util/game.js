@@ -1,5 +1,5 @@
 import {
-  chain as _, cloneDeep, filter, findKey, flatMap,
+  chain as _, cloneDeep, compact, filter, findKey, flatMap,
   intersection, isArray, mapValues, some, times, uniqBy
 } from 'lodash';
 import seededRNG from 'seed-random';
@@ -299,17 +299,33 @@ function startTurn(state) {
 }
 
 function endTurn(state) {
+  function decrementDuration(abilityOrTrigger) {
+    const duration = abilityOrTrigger.duration;
+    if (duration === 1) {
+      // Time's up: Unapply the ability and remove it.
+      if (abilityOrTrigger.unapply) {
+        abilityOrTrigger.currentTargets.entries.forEach(abilityOrTrigger.unapply);
+      }
+      return null;
+    } else {
+      return Object.assign({}, abilityOrTrigger, {duration: duration ? duration - 1 : null});
+    }
+  }
+
   const player = currentPlayer(state);
   player.selectedCard = null;
   player.selectedTile = null;
   player.status.message = '';
   player.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
-    Object.assign({}, robot, {
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, (obj =>
+    Object.assign({}, obj, {
       attackedThisTurn: false,
       movedThisTurn: false,
-      attackedLastTurn: robot.attackedThisTurn,
-      movedLastTurn: robot.movedThisTurn
+      attackedLastTurn: obj.attackedThisTurn,
+      movedLastTurn: obj.movedThisTurn,
+
+      abilities: compact(obj.abilities.map(decrementDuration)),
+      triggers: compact(obj.triggers.map(decrementDuration))
     })
   ));
 

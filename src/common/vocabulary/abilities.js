@@ -4,7 +4,11 @@ import { reversedCmd, executeCmd } from '../util/game';
 export function setAbility(state, currentObject, source) {
   return function (ability) {
     if (!source || !currentObject.abilities.find(a => a.source === source)) {
-      ability = Object.assign(ability, {source: source});
+      ability = Object.assign({}, ability, {
+        source: source,
+        duration: state.memory['duration'] || null
+      });
+
       currentObject.abilities = currentObject.abilities.concat([ability]);
     }
   };

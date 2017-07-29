@@ -69,15 +69,26 @@ export default function actions(state) {
     },
 
     modifyAttribute: function (objects, attr, func) {
-      objects.entries.forEach(object => {
-        if (attr === 'allattributes') {
-          object.stats = mapValues(object.stats, clamp(func));
-        } else if (attr === 'cost') {
-          object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
-        } else {
-          object.stats = applyFuncToField(object.stats, func, attr);
-        }
-      });
+      if (state.memory['duration']) {
+        // Temporary attribute adjustment.
+        objects.entries.forEach(object => {
+          const targetFn = `() => objectsMatchingConditions('allobjects', [conditions['hasId']('${object.id}')])`;
+          const abilityCmd = `() => { setAbility(abilities['attributeAdjustment']("${targetFn}", '${attr}', ${func})); }`;
+
+          executeCmd(state, abilityCmd, object);
+        });
+      } else {
+        // Permanent attribute adjustment.
+        objects.entries.forEach(object => {
+          if (attr === 'allattributes') {
+            object.stats = mapValues(object.stats, clamp(func));
+          } else if (attr === 'cost') {
+            object.cost = clamp(func)(object.cost); // (This should only ever happen to cards in hand.)
+          } else {
+            object.stats = applyFuncToField(object.stats, func, attr);
+          }
+        });
+      }
     },
 
     modifyEnergy: function (players, func) {

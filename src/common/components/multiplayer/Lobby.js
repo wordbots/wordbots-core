@@ -31,8 +31,14 @@ export default class Lobby extends Component {
     super(props);
 
     this.state = {
-      selectedDeck: this.props.availableDecks.length - 1
+      selectedDeck: 0
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.availableDecks.length !== this.props.availableDecks.length) {
+      this.setState({selectedDeck: nextProps.availableDecks.length - 1});
+    }
   }
 
   get hasNoDecks() {
@@ -76,6 +82,7 @@ export default class Lobby extends Component {
 
   render() {
     const skt = this.props.socket;
+    console.log(this.props.availableDecks);
 
     return (
       <div style={{padding: '48px 72px'}}>

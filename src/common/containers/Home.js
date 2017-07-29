@@ -78,17 +78,14 @@ class Home extends Component {
             arrows={false}
             speed={500}
             autoplaySpeed={1000}
-            slidesToShow={2}
             slidesToScroll={1}
             responsive={[
-              {breakpoint: 920, settings: {slidesToShow: 3}},
-              {breakpoint: 1120, settings: {slidesToShow: 4}},
-              {breakpoint: 1320, settings: {slidesToShow: 5}},
-              {breakpoint: 1520, settings: {slidesToShow: 6}},
-              {breakpoint: 1720, settings: {slidesToShow: 7}},
-              {breakpoint: 1920, settings: {slidesToShow: 8}},
-              {breakpoint: 2120, settings: {slidesToShow: 9}},
-              {breakpoint: 2320, settings: {slidesToShow: 10}}
+              {breakpoint: 950, settings: {slidesToShow: 3}},
+              {breakpoint: 1150, settings: {slidesToShow: 4}},
+              {breakpoint: 1350, settings: {slidesToShow: 5}},
+              {breakpoint: 1550, settings: {slidesToShow: 6}},
+              {breakpoint: 1750, settings: {slidesToShow: 7}},
+              {breakpoint: 1950, settings: {slidesToShow: 8}}
             ]
           }>
             {
@@ -100,6 +97,7 @@ class Home extends Component {
             }
           </Carousel>
           <p style={{
+            marginTop: 30,
             color: '#999',
             fontSize: 20,
             fontWeight: 'bold',
@@ -116,7 +114,7 @@ class Home extends Component {
   }
 
   render() {
-    // const [version, sha] = this.props.version.split('+');
+    const [version, sha] = this.props.version.split('+');
 
     return (
       <div style={{margin: '48px 72px'}}>
@@ -143,6 +141,14 @@ class Home extends Component {
         </div>
 
         {this.renderRecentCards()}
+
+        <div style={{
+          position: 'static',
+          bottom: 10,
+          right: 10
+        }}>
+          v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{sha}
+        </div>
       </div>
     );
   }

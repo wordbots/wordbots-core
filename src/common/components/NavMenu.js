@@ -55,6 +55,7 @@ export default class NavMenu extends Component {
         {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}
+        {this.renderLink('/about', 'About', 'info_outline')}
       </Drawer>
     );
   }

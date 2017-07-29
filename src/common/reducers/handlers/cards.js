@@ -2,7 +2,7 @@ import { SPRITE_VERSION, TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
 import {
   areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
-  loadCardsFromFirebase, loadDecksFromFirebase, saveCardsToFirebase, saveDecksToFirebase
+  loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase
 } from '../../util/cards';
 
 const cardsHandlers = {
@@ -112,11 +112,17 @@ function createCardFromProps(props) {
     card.command = command;
   } else {
     card.abilities = command;
-    card.stats = {
-      health: props.health,
-      speed: props.type === TYPE_ROBOT ? props.speed : undefined,
-      attack: props.type === TYPE_ROBOT ? props.attack : undefined
-    };
+    if (props.type === TYPE_ROBOT) {
+      card.stats = {
+        health: props.health,
+        speed: props.speed,
+        attack: props.attack
+      };
+    } else {
+      card.stats = {
+        health: props.health
+      };
+    }
   }
 
   return card;
@@ -139,6 +145,7 @@ function saveCard(state, card) {
     state.cards.push(card);
   }
 
+  saveCardToFirebase(card);
   saveCardsToFirebase(state);
   return state;
 }

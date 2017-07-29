@@ -10,7 +10,7 @@ import {
 import defaultState from '../store/defaultCollectionState';
 
 import { id as generateId, compareCertainKeys } from './common';
-import { saveUserData, indexParsedSentence } from './firebase';
+import { saveUserData, saveRecentCard, indexParsedSentence } from './firebase';
 
 //
 // 0. Card-related constants (used below).
@@ -88,7 +88,7 @@ export function groupCards(cards) {
 
 export function selectType(cards, type) {
   return cards.filter((card) => card.type === type);
-} 
+}
 
 export function getDisplayedCards(cards, opts = {}) {
   return cards
@@ -312,6 +312,10 @@ export function loadDecksFromFirebase(state, data) {
   }
 
   return state;
+}
+
+export function saveCardToFirebase(card) {
+  saveRecentCard(card);
 }
 
 export function saveCardsToFirebase(state) {

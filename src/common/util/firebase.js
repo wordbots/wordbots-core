@@ -79,6 +79,14 @@ export function listenToUserData(callback) {
   });
 }
 
+export function listenToRecentCards(callback) {
+  return fb.database()
+           .ref('recentCards')
+           .orderByChild('timestamp')
+           .limitToLast(10)
+           .on('value', (snapshot) => { callback(snapshot.val()); });
+}
+
 function cleanupExamples(examples) {
   return uniq(Object.values(examples).map(e => e.replace('\n', '')));
 }
@@ -129,6 +137,12 @@ export function saveUserData(key, value) {
         .set(value);
     })
     .catch(noop);
+}
+
+export function saveRecentCard(card) {
+  fb.database()
+    .ref('recentCards')
+    .push(card);
 }
 
 export function indexParsedSentence(sentence, tokens, js) {

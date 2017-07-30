@@ -143,9 +143,10 @@ class Home extends Component {
         {this.renderRecentCards()}
 
         <div style={{
-          position: 'static',
+          position: 'fixed',
           bottom: 10,
-          right: 10
+          right: 10,
+          fontSize: '0.7em'
         }}>
           v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{sha}
         </div>

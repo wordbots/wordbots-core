@@ -74,7 +74,7 @@ class Home extends Component {
     if (this.state.recentCards.length > 0) {
       return (
         <div>
-          <Carousel dots autoplay infinite pauseOnHover
+          <Carousel dots infinite autoplay pauseOnHover
             arrows={false}
             speed={500}
             autoplaySpeed={1000}
@@ -91,7 +91,10 @@ class Home extends Component {
           >
             {
               this.state.recentCards.map(card =>
-                <div key={card.id}>
+                <div key={card.id} style={{
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}>
                   {Card.fromObj(card)}
                 </div>
               )
@@ -127,7 +130,12 @@ class Home extends Component {
           fontSize: 24,
           color: '#666'
         }}>
-          <p>Welcome to Wordbots, the customizable card game where <i><b>you</b></i>, the player, get to create the cards!</p>
+          <p>Welcome to <span style={{
+            fontFamily: 'Carter One',
+            color: '#f44336',
+            WebkitTextStroke: '1px black',
+            fontSize: 28
+          }}>Wordbots</span>, the customizable card game where <i><b>you</b></i>, the player, get to create the cards!</p>
         </div>
 
         <div style={{

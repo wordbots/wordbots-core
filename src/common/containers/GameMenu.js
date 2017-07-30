@@ -244,6 +244,11 @@ export class GameMenu extends Component {
             }} />
           {abilities.map((ability, idx) =>
             <MenuItem
+              style={{
+                whiteSpace: 'normal',
+                lineHeight: '24px',
+                padding: '12px'
+              }}
               key={idx}
               disabled={!canActivateAbility}
               primaryText={`${ability.text}.`}

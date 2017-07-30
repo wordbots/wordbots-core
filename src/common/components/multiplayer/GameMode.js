@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { string, func, bool } from 'prop-types';
-import Paper from 'material-ui/Paper';
+
+import PaperButton from '../PaperButton';
 
 export default class GameMode extends Component {
   static propTypes = {
@@ -12,34 +13,6 @@ export default class GameMode extends Component {
 
   static defaultProps = {
     imagePath: ''
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      shadow: 1
-    };
-  }
-
-  onClick() {
-    if (!this.props.disabled) {
-      this.props.onSelect();
-    }
-  }
-
-  onMouseOver() {
-    if (!this.props.disabled) {
-      this.setState({
-        shadow: 3
-      });
-    }
-  }
-
-  onMouseOut() {
-    this.setState({
-      shadow: 1
-    });
   }
 
   renderOverlay() {
@@ -97,21 +70,19 @@ export default class GameMode extends Component {
 
   render() {
     return (
-      <Paper
-        zDepth={this.state.shadow}
-        onClick={() => this.onClick()}
-        onMouseOver={() => this.onMouseOver()}
-        onMouseOut={() => this.onMouseOut()}
+      <PaperButton
+        disabled={this.props.disabled}
+        onClick={this.props.onSelect}
         style={{
           flexBasis: 'calc(50% - 60px)',
           height: 250,
           margin: 30,
-          position: 'relative',
-          cursor: this.props.disabled ? 'auto' : 'pointer'
-        }}>
+          position: 'relative'
+        }}
+      >
         {this.renderOverlay()}
         {this.renderInner()}
-      </Paper>
+      </PaperButton>
     );
   }
 }

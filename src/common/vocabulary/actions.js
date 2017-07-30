@@ -110,7 +110,13 @@ export default function actions(state) {
     },
 
     setAttribute: function (objects, attr, num) {
-      this.modifyAttribute(objects, attr, () => num);
+      if (state.memory['duration']) {
+        // Temporary attribute adjustment.
+        this.modifyAttribute(objects, attr, `(function () { return ${num}; })`);
+      } else {
+        // Permanent attribute adjustment.
+        this.modifyAttribute(objects, attr, () => num);
+      }
     },
 
     swapAttributes: function (objects, attr1, attr2) {

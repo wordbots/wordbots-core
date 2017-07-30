@@ -85,9 +85,10 @@ class Home extends Component {
               {breakpoint: 1350, settings: {slidesToShow: 5}},
               {breakpoint: 1550, settings: {slidesToShow: 6}},
               {breakpoint: 1750, settings: {slidesToShow: 7}},
-              {breakpoint: 1950, settings: {slidesToShow: 8}}
-            ]
-          }>
+              {breakpoint: 1950, settings: {slidesToShow: 8}},
+              {breakpoint: 100000, settings: 'unslick'}
+            ]}
+          >
             {
               this.state.recentCards.map(card =>
                 <div key={card.id}>

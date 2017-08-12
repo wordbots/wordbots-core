@@ -118,11 +118,10 @@ export class Play extends Component {
         <Helmet title="Play"/>
 
         <Switch>
-          <Route exact path="/play" render={() => this.lobby} />
           <Route path="/play/tutorial" component={GameArea} />
           <Route path="/play/practice" component={GameArea} />
           <Route path="/play/casual" render={() => this.lobby} />
-          <Route render={() => <Redirect to="/play" />} />
+          <Route render={() => this.lobby} />
         </Switch>
 
         <Chat

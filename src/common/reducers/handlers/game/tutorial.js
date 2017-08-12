@@ -86,7 +86,7 @@ export function handleTutorialAction(state, action) {
     return action.payload.back ? prevStep(state) : nextStep(state);
   } else if (action.type === actions.END_GAME || action.type === socketActions.LEAVE) {
     state = endTutorial(state);
-  } else if (action.type === actions.SET_HOVERED_TILE) {
+  } else if ([actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_TILE].includes(action.type)) {
     return handleAction(state, action);
   }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, object, array } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { Route, Redirect, Switch, withRouter } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';

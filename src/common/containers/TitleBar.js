@@ -120,7 +120,7 @@ class TitleBar extends Component {
             <NavLink
               to="/"
               className="topLink"
-              style={{color: '#fff', fontFamily: 'Carter One', fontSize: 32}}
+              style={{fontFamily: 'Carter One', fontSize: 32}}
             >
               WORDBOTS
             </NavLink>

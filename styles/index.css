@@ -124,6 +124,11 @@ th {
   display: none;
 }
 
+a.topLink:hover {
+  color: #ccc;
+  transition: color 300ms ease-in-out;
+}
+
 /* Scroll Bar Style */
 
 ::-webkit-scrollbar-track

@@ -83,7 +83,7 @@ const howToPlay = `
 ## How to Play
 
 ### Try the Tutorial
-The 10-minute [interactice tutorial](/play) is the easiest way to
+The 10-minute [interactive tutorial](/play) is the easiest way to
 get started with Wordbots.
 
 You'll learn the rules of game, how to play cards, and how to move

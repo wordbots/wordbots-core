@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -116,9 +117,13 @@ class TitleBar extends Component {
       <div style={{height: 64}}>
         <AppBar
           title={
-            <div style={{
-              color: '#fff', fontFamily: 'Carter One', fontSize: 32
-            }}>WORDBOTS</div>
+            <NavLink
+              to="/"
+              className="topLink"
+              style={{color: '#fff', fontFamily: 'Carter One', fontSize: 32}}
+            >
+              WORDBOTS
+            </NavLink>
           }
           style={{
             position: 'fixed',

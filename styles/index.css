@@ -61,6 +61,15 @@ th {
   fill: white;
 }
 
+a.topLink {
+  color: #fff;
+  transition: color 300ms ease-in-out;
+}
+
+a.topLink:hover {
+  color: #eee;
+}
+
 /* moz Sprite Fix */
 
 .wb-sprite {

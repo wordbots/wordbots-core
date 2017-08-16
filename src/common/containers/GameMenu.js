@@ -27,7 +27,7 @@ export function mapStateToProps(state) {
     isMyTurn: state.game.currentTurn === state.game.player,
     isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
-    isAttackHappening: state.game.attack !== null,
+    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to,
     selectedPiece: selectedPiece,
     tutorialStep: currentTutorialStep(state.game)
   };
@@ -244,6 +244,11 @@ export class GameMenu extends Component {
             }} />
           {abilities.map((ability, idx) =>
             <MenuItem
+              style={{
+                whiteSpace: 'normal',
+                lineHeight: '24px',
+                padding: '12px'
+              }}
               key={idx}
               disabled={!canActivateAbility}
               primaryText={`${ability.text}.`}

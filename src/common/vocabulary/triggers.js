@@ -11,7 +11,8 @@ export function setTrigger(state, currentObject, source) {
       trigger: trigger,
       action: `(${action.toString()})`,
       override: false,
-      source: source
+      source: source,
+      duration: state.memory['duration'] || null
     }, props);
 
     if (!currentObject.triggers.find(t => areTriggersEqual(t, triggerObj))) {

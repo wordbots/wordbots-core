@@ -98,7 +98,7 @@ export default class Textfit extends Component {
 
   process() {
     const { min, max, mode, forceSingleModeWidth, perfectFit, onReady } = this.props;
-    const el = findDOMNode(this);
+    const el = findDOMNode(this);  // eslint-disable-line react/no-find-dom-node
     const { wrapper } = this.refs;
 
     const originalWidth = innerWidth(el);

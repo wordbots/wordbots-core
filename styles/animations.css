@@ -14,10 +14,10 @@
   transition: opacity 100ms ease-in-out;
 }
 
-.card-viewer-fade-leave {
+.card-viewer-fade-exit {
   opacity: 1;
 }
-.card-viewer-fade-leave-active {
+.card-viewer-fade-exit-active {
   opacity: 0;
   transition: opacity 100ms ease-in-out;
 }
@@ -29,10 +29,10 @@
   opacity: 1;
 }
 
-.hex-piece-leave {
+.hex-piece-exit {
   opacity: 1;
 }
-.hex-piece-leave-active {
+.hex-piece-exit-active {
   opacity: 0;
 }
 

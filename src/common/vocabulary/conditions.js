@@ -38,6 +38,11 @@ export function objectConditions(state) {
       return ((hexId, obj) => has(player.robotsOnBoard, hexId));
     },
 
+    // Only used interally, not exposed by parser.
+    hasId: function (id) {
+      return ((hexId, obj) => obj.id === id);
+    },
+
     hasProperty: function (property) {
       return ((hexId, obj) => objectHasProperty(obj, property));
     },

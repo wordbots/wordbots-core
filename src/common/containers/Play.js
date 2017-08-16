@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, object, array } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { Route, Redirect, Switch, withRouter } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
@@ -118,11 +118,10 @@ export class Play extends Component {
         <Helmet title="Play"/>
 
         <Switch>
-          <Route exact path="/play" render={() => this.lobby} />
           <Route path="/play/tutorial" component={GameArea} />
           <Route path="/play/practice" component={GameArea} />
           <Route path="/play/casual" render={() => this.lobby} />
-          <Route render={() => <Redirect to="/play" />} />
+          <Route render={() => this.lobby} />
         </Switch>
 
         <Chat

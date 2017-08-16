@@ -48,7 +48,7 @@
     "json-loader": "^0.5.4",
     "jsx-loader": "^0.13.2",
     "lodash": "^4.17.4",
-    "material-ui": "^0.18.0",
+    "material-ui": "^0.19.0",
     "merge": "1.2.0",
     "prop-types": "^15.5.8",
     "rc-slider": "^8.0.0",

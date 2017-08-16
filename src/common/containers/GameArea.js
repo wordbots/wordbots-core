@@ -402,7 +402,7 @@ export class GameArea extends Component {
               }} />
           </div>
           <PlayerArea gameProps={this.props} />
-          <EventAnimation eventQueue={this.props.eventQueue} />
+          <EventAnimation eventQueue={this.props.eventQueue} currentTurn={this.props.currentTurn} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}

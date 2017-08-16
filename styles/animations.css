@@ -1,7 +1,7 @@
-.hand-appear, .hand-enter {
+.hand-enter {
   transform: translate(500%);
 }
-.hand-appear-active, .hand-enter-active {
+.hand-enter-active {
   transform: translate(0%);
   transition: transform 500ms ease-in-out;
 }
@@ -13,7 +13,6 @@
   opacity: 1;
   transition: opacity 100ms ease-in-out;
 }
-
 .card-viewer-fade-exit {
   opacity: 1;
 }
@@ -28,7 +27,6 @@
 .hex-piece-enter-active {
   opacity: 1;
 }
-
 .hex-piece-exit {
   opacity: 1;
 }
@@ -36,18 +34,13 @@
   opacity: 0;
 }
 
-.event-animation-appear, .event-animation-appear {
+.event-animation-orange-appear {
   transform: translateY(500%);
 }
-.event-animation-enter-active, .event-animation-appear-active {
+.event-animation-blue-appear {
+  transform: translateY(-500%);
+}
+.event-animation-orange-appear-active, .event-animation-blue-appear-active {
   transform: translateY(0%);
   transition: transform 500ms ease-in-out;
-}
-
-.event-animation-leave {
-  opacity: 1;
-}
-.event-animation-leave-active {
-  opacity: 0;
-  transition: opacity 500ms ease-in-out;
 }

@@ -1,37 +1,41 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
-import { CSSTransitionGroup } from 'react-transition-group';
+import { array, string } from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
+import { EVENT_ANIMATION_TIME_MS } from '../../constants';
 import Card from '../card/Card';
 
 export default class EventAnimation extends Component {
   static propTypes = {
+    currentTurn: string.isRequired,
     eventQueue: array
   };
 
-  constructor(props) {
-    super(props);
+  static defaultProps = {
+    eventQueue: []
+  };
 
-    this.state = {
-      idx: 0
-    };
-  }
+  state = {
+    idx: 0
+  };
 
-  get currentEvent() {
-    if (this.props.eventQueue) {
-      return this.props.eventQueue[this.state.idx];
-    } else {
-      return null;
+  componentDidUpdate(nextProps) {
+    if (nextProps.eventQueue.length > this.props.eventQueue.length) {
+      setTimeout(this.proceedToNextEvent, EVENT_ANIMATION_TIME_MS);
     }
   }
 
+  get currentEvent() {
+    return this.props.eventQueue[this.state.idx];
+  }
+
   proceedToNextEvent = () => {
-    this.setState({idx: this.state.idx + 1});
+    this.setState({idx: this.props.eventQueue.length});
   }
 
   renderEvent() {
-    setTimeout(() => this.proceedToNextEvent(), 1000);
-    return Card.fromObj(this.currentEvent);
+    setTimeout(() => this.proceedToNextEvent(), EVENT_ANIMATION_TIME_MS);
+    return Card.fromObj(this.currentEvent, {scale: 1.3});
   }
 
   render() {
@@ -48,14 +52,15 @@ export default class EventAnimation extends Component {
           right: 0,
           zIndex: 99999
         }}>
-          <CSSTransitionGroup
-            transitionName="event-animation"
-            transitionAppear
-            transitionAppearTimeout={500}
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={500}>
-            {this.renderEvent()}
-          </CSSTransitionGroup>
+          <TransitionGroup>
+            <CSSTransition
+              appear
+              classNames={`event-animation-${this.props.currentTurn}`}
+              timeout={500}
+            >
+              {this.renderEvent()}
+            </CSSTransition>
+          </TransitionGroup>
         </div>
       );
     } else {

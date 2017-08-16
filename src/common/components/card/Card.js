@@ -74,7 +74,7 @@ export default class Card extends Component {
     onSpriteClick: noop
   }
 
-  static fromObj = (card) => (
+  static fromObj = (card, props = {}) => (
     <Card
         id={card.id}
         name={card.name}
@@ -88,7 +88,8 @@ export default class Card extends Component {
         cardStats={card.stats}
         cost={card.cost}
         baseCost={card.cost}
-        source={card.source} />
+        source={card.source}
+        {...props} />
   );
 
   // (For server-side rendering via /api/card.png)

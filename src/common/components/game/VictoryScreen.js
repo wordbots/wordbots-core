@@ -33,8 +33,10 @@ export default class VictoryScreen extends Component {
           borderRadius: 2,
           zIndex: 99999
       }}>
-        <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
-        <div>Click anywhere to return to the lobby.</div>
+        <div>
+          <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
+          <div>Click anywhere to return to the lobby.</div>
+        </div>
       </div>
     );
   }

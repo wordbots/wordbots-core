@@ -69,7 +69,8 @@ const defaultState = {
   actionLog: [],
   attack: null,
   memory: {},
-  sfxQueue: []
+  sfxQueue: [],
+  eventQueue: []
 };
 
 export default defaultState;

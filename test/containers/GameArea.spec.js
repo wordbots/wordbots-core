@@ -5,6 +5,7 @@ import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card';
 import CardViewer from '../../src/common/components/card/CardViewer';
 import Board from '../../src/common/components/game/Board';
+import EventAnimation from '../../src/common/components/game/EventAnimation';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
 import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
@@ -23,7 +24,7 @@ describe('GameArea container', () => {
     const paper = dom.props.children[1];
     const mainDiv = paper.props.children[2];
     const board = mainDiv.props.children[1];
-    const victoryScreen = paper.props.children[4];
+    const victoryScreen = paper.props.children[5];
 
     /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
@@ -58,6 +59,7 @@ describe('GameArea container', () => {
           />
       </div>,
       <PlayerArea gameProps={game.props} />,
+      <EventAnimation eventQueue={[]} currentTurn="orange" />,
       <VictoryScreen
         winnerColor={null}
         winnerName={null}

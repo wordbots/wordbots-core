@@ -59,7 +59,7 @@ describe('GameArea container', () => {
           />
       </div>,
       <PlayerArea gameProps={game.props} />,
-      <EventAnimation eventQueue={[]} />,
+      <EventAnimation eventQueue={[]} currentTurn="orange" />,
       <VictoryScreen
         winnerColor={null}
         winnerName={null}

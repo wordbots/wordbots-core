@@ -82,7 +82,7 @@
     "shuffle-array": "^1.0.1",
     "style-loader": "0.18.2",
     "substitute-loader": "^1.0.0",
-    "trianglify": "wordbots/trianglify",
+    "trianglify": "^1.1.0",
     "url-loader": "^0.5.9",
     "webpack": "^3.4.1",
     "whatwg-fetch": "^2.0.3",

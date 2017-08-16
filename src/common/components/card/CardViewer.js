@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
-import { CSSTransitionGroup } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { splitSentences } from '../../util/cards';
 
@@ -12,6 +12,30 @@ export default class CardViewer extends Component {
     hoveredCard: object
   };
 
+  renderCard() {
+    if (this.props.hoveredCard) {
+      return (
+        <CSSTransition classNames="card-viewer-fade" timeout={100}>
+          <Card
+            scale={1.5}
+            stats={this.props.hoveredCard.stats}
+            name={this.props.hoveredCard.card.name}
+            type={this.props.hoveredCard.card.type}
+            spriteID={this.props.hoveredCard.card.spriteID}
+            spriteV={this.props.hoveredCard.card.spriteV}
+            text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
+            rawText={this.props.hoveredCard.card.text}
+            img={this.props.hoveredCard.card.img}
+            cost={this.props.hoveredCard.card.cost}
+            cardStats={this.props.hoveredCard.card.stats}
+            source={this.props.hoveredCard.card.source} />
+        </CSSTransition>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
     return (
       <div style={{
@@ -22,28 +46,9 @@ export default class CardViewer extends Component {
         margin: 'auto',
         height: 236 * 1.5
       }}>
-        <CSSTransitionGroup
-          transitionName="card-viewer-fade"
-          transitionEnterTimeout={100}
-          transitionLeaveTimeout={100}
-        >
-          {
-            this.props.hoveredCard &&
-              <Card
-                scale={1.5}
-                stats={this.props.hoveredCard.stats}
-                name={this.props.hoveredCard.card.name}
-                type={this.props.hoveredCard.card.type}
-                spriteID={this.props.hoveredCard.card.spriteID}
-                spriteV={this.props.hoveredCard.card.spriteV}
-                text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
-                rawText={this.props.hoveredCard.card.text}
-                img={this.props.hoveredCard.card.img}
-                cost={this.props.hoveredCard.card.cost}
-                cardStats={this.props.hoveredCard.card.stats}
-                source={this.props.hoveredCard.card.source} />
-          }
-        </CSSTransitionGroup>
+        <TransitionGroup>
+          {this.renderCard()}
+        </TransitionGroup>
       </div>
     );
   }

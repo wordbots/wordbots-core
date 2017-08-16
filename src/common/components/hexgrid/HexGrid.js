@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { number, string, object, array } from 'prop-types';
-import { CSSTransitionGroup } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { chain as _ } from 'lodash';
 
 import { ANIMATION_TIME_MS } from '../../constants';
@@ -57,27 +57,27 @@ export default class HexGrid extends Component {
 
   renderPieces() {
     return (
-      <CSSTransitionGroup
-        component="g"
-        transitionName="hex-piece"
-        transitionEnterTimeout={ANIMATION_TIME_MS}
-        transitionLeaveTimeout={ANIMATION_TIME_MS}
-      >
+      <TransitionGroup component="g">
         {
           _(this.props.pieces)
             .toPairs()
             .sortBy(([hex, piece]) => piece.id)
             .map(([hex, piece]) => (
-              <HexPiece
+              <CSSTransition
                 key={piece.id}
-                hex={HexUtils.IDToHex(hex)}
-                layout={this.props.layout}
-                actions={this.props.actions}
-                piece={piece} />
+                classNames="hex-piece"
+                timeout={ANIMATION_TIME_MS}
+              >
+                <HexPiece
+                  hex={HexUtils.IDToHex(hex)}
+                  layout={this.props.layout}
+                  actions={this.props.actions}
+                  piece={piece} />
+              </CSSTransition>
             ))
             .value()
         }
-      </CSSTransitionGroup>
+      </TransitionGroup>
     );
   }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { func, string } from 'prop-types';
-import { CSSTransitionGroup } from 'react-transition-group';
 
 export default class VictoryScreen extends Component {
   static propTypes = {
@@ -34,13 +33,8 @@ export default class VictoryScreen extends Component {
           borderRadius: 2,
           zIndex: 99999
       }}>
-        <CSSTransitionGroup
-          transitionName="card-viewer-fade"
-          transitionEnterTimeout={100}
-          transitionLeaveTimeout={100}>
-          <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
-          <div>Click anywhere to return to the lobby.</div>
-        </CSSTransitionGroup>
+        <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
+        <div>Click anywhere to return to the lobby.</div>
       </div>
     );
   }

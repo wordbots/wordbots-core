@@ -50,29 +50,33 @@ class EnergyCount extends Component {
 
   render() {
     return (
-      <Tooltip
-        text={`${this.props.energy.available}/${this.props.energy.total} Energy`}
-        style={{fontFamily: 'Carter One'}}
-      >
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: '#111',
-          border: '2px solid #AAA',
-          padding: 10,
-          borderRadius: 5,
-          boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: '#111',
+        border: '2px solid #AAA',
+        padding: 10,
+        borderRadius: 5,
+        boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+        color: 'white',
+        fontFamily: 'VT323'
+      }}>
+        <span style={{
+          fontSize: 72,
+          letterSpacing: -6,
+          marginRight: 6
         }}>
-          <div style={{
-            color: 'white',
-            fontFamily: 'VT323',
-            fontSize: 24,
-            transform: 'rotate(-90deg)',
-            margin: '0 -15px'
-          }}>ENERGY</div>
-          {this.renderEnergyTiles()}
+          {this.props.energy.available}
+        </span>
+        <div style={{
+          fontSize: 24,
+          transform: 'rotate(-90deg)',
+          margin: '0 -15px'
+        }}>
+          ENERGY
         </div>
-      </Tooltip>
+        {this.renderEnergyTiles()}
+      </div>
     );
   }
 }

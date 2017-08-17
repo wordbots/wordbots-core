@@ -97,6 +97,16 @@ export default function actions(state) {
       });
     },
 
+    payEnergy: function (players, amount) {
+      players.entries.forEach(player => {
+        if (player.energy.available >= amount) {
+          player.energy.available -= amount;
+        } else {
+          state.invalid = true;
+        }
+      });
+    },
+
     restoreHealth: function (objects, num) {
       objects.entries.forEach(object => {
         if (object.stats.health < object.card.stats.health) {

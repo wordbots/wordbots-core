@@ -4,7 +4,6 @@ import Paper from 'material-ui/Paper';
 import { times } from 'lodash';
 
 import { id } from '../../util/common';
-import Tooltip from '../Tooltip';
 
 class EnergyCount extends Component {
   static propTypes = {

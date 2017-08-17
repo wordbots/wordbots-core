@@ -163,6 +163,10 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
       state.callbackAfterTargetSelected = (newState => activateObject(newState, abilityIdx, hexId));
 
       return state;
+    } else if (tempState.invalid) {
+      // Temp state is invalid (e.g. player unable to pay an energy cost).
+      // So return the old state.
+      return state;
     } else {
       object.cantActivate = true;
       object.cantAttack = true;

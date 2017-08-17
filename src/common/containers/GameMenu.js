@@ -247,7 +247,9 @@ export class GameMenu extends Component {
               style={{
                 whiteSpace: 'normal',
                 lineHeight: '24px',
-                padding: '12px'
+                padding: '12px',
+                minHeight: 0,
+                textAlign: 'center'
               }}
               key={idx}
               disabled={!canActivateAbility}

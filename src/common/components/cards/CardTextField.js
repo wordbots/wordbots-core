@@ -1,14 +1,37 @@
 import React, { Component } from 'react';
-import { array, func, string } from 'prop-types';
+import { array, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { chain as _ } from 'lodash';
+import { chain as _, capitalize, sample, shuffle } from 'lodash';
 
+import { TYPE_EVENT } from '../../constants';
 import { bigramNLL, prepareBigramProbs } from '../../util/common';
+import { parse } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
+
+const cardTextExamples = {
+  event: [],
+  object: []
+};
+
+function findValidCardTextExamples(candidates) {
+  shuffle(candidates)
+    .map(capitalize)
+    .slice(0, 50)
+    .forEach(example => {
+      ['event', 'object'].forEach(mode => {
+        parse([example], mode, (idx, s, json) => {
+          if (!json.error) {
+            cardTextExamples[mode].push(example);
+          }
+        }, false);
+      });
+    });
+}
 
 export default class CardTextField extends Component {
   static propTypes = {
+    type: number,
     text: string,
     sentences: array,
     error: string,
@@ -18,8 +41,11 @@ export default class CardTextField extends Component {
   };
 
   componentDidMount() {
-    getCardTextCorpus(corpus => {
-      this.setState({ bigramProbs: prepareBigramProbs(corpus) });
+    getCardTextCorpus((corpus, examples) => {
+      this.setState({
+        bigramProbs: prepareBigramProbs(corpus)
+      });
+      findValidCardTextExamples(examples);
     });
   }
 
@@ -88,7 +114,7 @@ export default class CardTextField extends Component {
             value={this.props.text}
             floatingLabelText="Card Text"
             style={{width: '85%', marginRight: 10}}
-            rows={2}
+            rows={4}
             onChange={e => { this.props.onUpdateText(e.target.value); }} />
 
           <div>
@@ -100,8 +126,16 @@ export default class CardTextField extends Component {
             <RaisedButton
               label="Dictionary"
               primary
-              style={{width: '100%'}}
+              style={{width: '100%', marginBottom: 8}}
               onClick={() => { this.props.onOpenDialog('dictionary'); }} />
+            <RaisedButton
+              label="Randomize"
+              primary
+              style={{width: '100%'}}
+              onClick={() => {
+                const parserMode = this.props.type === TYPE_EVENT ? 'event' : 'object';
+                this.props.onUpdateText(sample(cardTextExamples[parserMode]), this.props.type, true);
+              }} />
           </div>
         </div>
 

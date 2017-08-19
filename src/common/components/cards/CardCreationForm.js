@@ -152,12 +152,12 @@ export default class CardCreationForm extends Component {
     this.props.onSetAttribute(key, value);
   }
 
-  onUpdateText(text, cardType) {
+  onUpdateText(text, cardType, dontIndex = false) {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
     this.props.onSetText(text);
-    requestParse(sentences, parserMode, this.props.onParseComplete);
+    requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   }
 
   renderAttributeField(attribute, enabled = true, opts = {}) {
@@ -222,6 +222,7 @@ export default class CardCreationForm extends Component {
           </div>
 
           <CardTextField
+            type={this.props.type}
             text={this.props.text}
             sentences={this.nonEmptySentences}
             error={this.textError}

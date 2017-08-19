@@ -1,5 +1,5 @@
 import fb from 'firebase';
-import { concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
 import { expandKeywords, loadParserLexicon } from './cards';
 
@@ -88,7 +88,9 @@ export function listenToRecentCards(callback) {
 }
 
 function cleanupExamples(examples) {
-  return uniq(Object.values(examples).map(e => e.replace('\n', '')));
+  return uniq(Object.values(examples).map(example =>
+    capitalize(example.replace('\n', '')).trim())
+  );
 }
 
 export function getCardTextCorpus(callback) {
@@ -97,7 +99,7 @@ export function getCardTextCorpus(callback) {
     .once('value', (snapshot) => {
       const examples = cleanupExamples(snapshot.val());
       const corpus = examples.map(ex => `${expandKeywords(ex).toLowerCase()} . `).join();
-      callback(corpus);
+      callback(corpus, examples);
     });
 }
 

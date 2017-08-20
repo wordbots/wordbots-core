@@ -9,7 +9,9 @@ import { bigramNLL, prepareBigramProbs } from '../../util/common';
 import { parse } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 
+const NUM_EXAMPLES_TO_CHECK = 100;
 const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
+
 const cardTextExamples = {
   event: [],
   object: []
@@ -54,7 +56,7 @@ export default class CardTextField extends Component {
       this.setState({
         bigramProbs: prepareBigramProbs(corpus)
       });
-      findValidCardTextExamples(examples);
+      findValidCardTextExamples(examples.slice(0, NUM_EXAMPLES_TO_CHECK));
     });
   }
 

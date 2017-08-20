@@ -169,7 +169,7 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-function parse(sentences, mode, callback) {
+export function parse(sentences, mode, callback, index = true) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -178,7 +178,7 @@ function parse(sentences, mode, callback) {
       .then(response => response.json())
       .then(json => {
         callback(idx, sentence, json);
-        if (json.tokens && json.js) {
+        if (index && json.tokens && json.js) {
           indexParsedSentence(sentence, json.tokens, json.js);
         }
       })

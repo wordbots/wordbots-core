@@ -2,31 +2,40 @@ import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { chain as _, capitalize, sample, shuffle } from 'lodash';
+import { chain as _, capitalize, sample, shuffle, times } from 'lodash';
 
 import { TYPE_EVENT } from '../../constants';
 import { bigramNLL, prepareBigramProbs } from '../../util/common';
 import { parse } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 
+const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
 const cardTextExamples = {
   event: [],
   object: []
 };
 
-function findValidCardTextExamples(candidates) {
-  shuffle(candidates)
-    .map(capitalize)
-    .slice(0, 50)
-    .forEach(example => {
+function findValidCardTextExamples(examples) {
+  const candidates = shuffle(examples).map(capitalize);
+
+  let i = 0;
+
+  function tryNext() {
+    const candidate = candidates[i];
+    if (candidate && !candidate.startsWith('"')) {
       ['event', 'object'].forEach(mode => {
-        parse([example], mode, (idx, s, json) => {
+        parse([candidate], mode, (idx, s, json) => {
           if (!json.error) {
-            cardTextExamples[mode].push(example);
+            cardTextExamples[mode].push(candidate);
           }
         }, false);
       });
-    });
+    }
+    i++;
+  }
+
+  times(5, tryNext);
+  setInterval(tryNext, EXAMPLE_LOOKUP_INTERVAL_MS);
 }
 
 export default class CardTextField extends Component {
@@ -47,6 +56,10 @@ export default class CardTextField extends Component {
       });
       findValidCardTextExamples(examples);
     });
+  }
+
+  get parserMode() {
+    return this.props.type === TYPE_EVENT ? 'event' : 'object';
   }
 
   get textSuggestions() {
@@ -105,6 +118,14 @@ export default class CardTextField extends Component {
     }
   }
 
+  renderButton = (label, onClick) => (
+    <RaisedButton
+      label={label}
+      primary
+      style={{width: '100%', marginBottom: 8}}
+      onClick={onClick} />
+  )
+
   render() {
     return (
       <div>
@@ -118,24 +139,16 @@ export default class CardTextField extends Component {
             onChange={e => { this.props.onUpdateText(e.target.value); }} />
 
           <div>
-            <RaisedButton
-              label="Help"
-              primary
-              style={{width: '100%', marginBottom: 8}}
-              onClick={() => { this.props.onOpenDialog('help'); }} />
-            <RaisedButton
-              label="Dictionary"
-              primary
-              style={{width: '100%', marginBottom: 8}}
-              onClick={() => { this.props.onOpenDialog('dictionary'); }} />
-            <RaisedButton
-              label="Randomize"
-              primary
-              style={{width: '100%'}}
-              onClick={() => {
-                const parserMode = this.props.type === TYPE_EVENT ? 'event' : 'object';
-                this.props.onUpdateText(sample(cardTextExamples[parserMode]), this.props.type, true);
-              }} />
+            {this.renderButton('Help', () => {
+              this.props.onOpenDialog('help');
+            })}
+            {this.renderButton('Dictionary', () => {
+              this.props.onOpenDialog('dictionary');
+            })}
+            {this.renderButton('Randomize', () => {
+              console.log(cardTextExamples);
+              this.props.onUpdateText(sample(cardTextExamples[this.parserMode]), this.props.type, true);
+            })}
           </div>
         </div>
 

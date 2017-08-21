@@ -1,6 +1,6 @@
 import {
   capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, omit, pick, reduce, uniqBy
+  isArray, mapValues, omit, pick, reduce, sample, shuffle, times, uniqBy
 } from 'lodash';
 
 import {
@@ -55,6 +55,8 @@ function objToRegexes(obj) {
 }
 const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
 const HINT_REGEXES = objToRegexes(HINTS);
+
+const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
@@ -147,6 +149,43 @@ function sortCards(c1, c2, criteria, order) {
 }
 
 //
+// 2.5. Helper classes.
+//
+
+export class CardTextExampleStore {
+  modes = ['event', 'object'];
+  examples = {
+    event: [],
+    object: []
+  };
+
+  getExample = (mode) => sample(this.examples[mode])
+
+  loadExamples = (sentences, numToTry) => {
+    const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);
+
+    let i = 0;
+
+    const tryNext = () => {
+      const candidate = candidates[i];
+      if (candidate && !candidate.startsWith('"')) {
+        ['event', 'object'].forEach(mode => {
+          parse([candidate], mode, (idx, s, json) => {
+            if (!json.error) {
+              this.examples[mode].push(candidate);
+            }
+          }, false);
+        });
+      }
+      i++;
+    };
+
+    times(5, tryNext);
+    setInterval(tryNext, EXAMPLE_LOOKUP_INTERVAL_MS);
+  }
+}
+
+//
 // 3. Text parsing.
 //
 
@@ -169,7 +208,7 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-export function parse(sentences, mode, callback, index = true) {
+function parse(sentences, mode, callback, index = true) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -265,7 +304,7 @@ export function contractKeywords(sentence) {
 }
 
 //
-// 3. Import/export.
+// 4. Import/export.
 //
 
 export function cardsToJson(cards) {

@@ -2,43 +2,15 @@ import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { chain as _, capitalize, sample, shuffle, times } from 'lodash';
+import FontIcon from 'material-ui/FontIcon';
+import { chain as _ } from 'lodash';
 
 import { TYPE_EVENT } from '../../constants';
 import { bigramNLL, prepareBigramProbs } from '../../util/common';
-import { parse } from '../../util/cards';
+import { CardTextExampleStore } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 
-const NUM_EXAMPLES_TO_CHECK = 100;
-const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
-
-const cardTextExamples = {
-  event: [],
-  object: []
-};
-
-function findValidCardTextExamples(examples) {
-  const candidates = shuffle(examples).map(capitalize);
-
-  let i = 0;
-
-  function tryNext() {
-    const candidate = candidates[i];
-    if (candidate && !candidate.startsWith('"')) {
-      ['event', 'object'].forEach(mode => {
-        parse([candidate], mode, (idx, s, json) => {
-          if (!json.error) {
-            cardTextExamples[mode].push(candidate);
-          }
-        }, false);
-      });
-    }
-    i++;
-  }
-
-  times(5, tryNext);
-  setInterval(tryNext, EXAMPLE_LOOKUP_INTERVAL_MS);
-}
+const exampleStore = new CardTextExampleStore();
 
 export default class CardTextField extends Component {
   static propTypes = {
@@ -56,7 +28,7 @@ export default class CardTextField extends Component {
       this.setState({
         bigramProbs: prepareBigramProbs(corpus)
       });
-      findValidCardTextExamples(examples.slice(0, NUM_EXAMPLES_TO_CHECK));
+      exampleStore.loadExamples(examples, 100);
     });
   }
 
@@ -120,36 +92,42 @@ export default class CardTextField extends Component {
     }
   }
 
-  renderButton = (label, onClick) => (
+  renderButton = (label, icon, onClick) => (
     <RaisedButton
       label={label}
       primary
       style={{width: '100%', marginBottom: 8}}
-      onClick={onClick} />
+      onClick={onClick}
+    >
+      <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
+        {icon}
+      </FontIcon>
+    </RaisedButton>
   )
 
   render() {
     return (
       <div>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <TextField
-            multiLine
-            value={this.props.text}
-            floatingLabelText="Card Text"
-            style={{width: '85%', marginRight: 10}}
-            rows={4}
-            onChange={e => { this.props.onUpdateText(e.target.value); }} />
+          <div style={{width: 'calc(100% - 170px)', marginRight: 15}}>
+            <TextField
+              multiLine
+              value={this.props.text}
+              floatingLabelText="Card Text"
+              style={{width: '100%'}}
+              rows={4}
+              onChange={e => { this.props.onUpdateText(e.target.value); }} />
+          </div>
 
-          <div>
-            {this.renderButton('Help', () => {
+          <div style={{width: 170}}>
+            {this.renderButton('Help', 'help_outline', () => {
               this.props.onOpenDialog('help');
             })}
-            {this.renderButton('Dictionary', () => {
+            {this.renderButton('Dictionary', 'book', () => {
               this.props.onOpenDialog('dictionary');
             })}
-            {this.renderButton('Randomize', () => {
-              console.log(cardTextExamples);
-              this.props.onUpdateText(sample(cardTextExamples[this.parserMode]), this.props.type, true);
+            {this.renderButton('Randomize', 'refresh', () => {
+              this.props.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
             })}
           </div>
         </div>

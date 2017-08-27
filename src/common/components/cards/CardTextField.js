@@ -6,7 +6,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { chain as _ } from 'lodash';
 
 import { TYPE_EVENT } from '../../constants';
-import { bigramNLL, prepareBigramProbs } from '../../util/common';
+import { bigramNLL, prepareBigramProbs } from '../../util/language';
 import { CardTextExampleStore } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 

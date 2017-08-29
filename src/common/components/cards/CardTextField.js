@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import { array, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
 import { chain as _ } from 'lodash';
 
 import { TYPE_EVENT } from '../../constants';
-import { bigramNLL, prepareBigramProbs } from '../../util/language';
-import { CardTextExampleStore } from '../../util/cards';
-import { getCardTextCorpus } from '../../util/firebase';
-
-const exampleStore = new CardTextExampleStore();
+import { bigramNLL } from '../../util/language';
 
 export default class CardTextField extends Component {
   static propTypes = {
@@ -22,19 +16,6 @@ export default class CardTextField extends Component {
     onUpdateText: func,
     onOpenDialog: func
   };
-
-  componentDidMount() {
-    getCardTextCorpus((corpus, examples) => {
-      this.setState({
-        bigramProbs: prepareBigramProbs(corpus)
-      });
-      exampleStore.loadExamples(examples, 100);
-    });
-  }
-
-  get parserMode() {
-    return this.props.type === TYPE_EVENT ? 'event' : 'object';
-  }
 
   get textSuggestions() {
     if (this.state && this.state.bigramProbs) {
@@ -92,43 +73,18 @@ export default class CardTextField extends Component {
     }
   }
 
-  renderButton = (label, icon, onClick) => (
-    <RaisedButton
-      label={label}
-      primary
-      style={{width: '100%', marginBottom: 8}}
-      onClick={onClick}
-    >
-      <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
-        {icon}
-      </FontIcon>
-    </RaisedButton>
-  )
-
   render() {
     return (
       <div>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <div style={{width: 'calc(100% - 170px)', marginRight: 15}}>
+          <div style={{width: '100%'}}>
             <TextField
               multiLine
               value={this.props.text}
               floatingLabelText="Card Text"
               style={{width: '100%'}}
-              rows={4}
+              rows={1}
               onChange={e => { this.props.onUpdateText(e.target.value); }} />
-          </div>
-
-          <div style={{width: 170}}>
-            {this.renderButton('Help', 'help_outline', () => {
-              this.props.onOpenDialog('help');
-            })}
-            {this.renderButton('Dictionary', 'book', () => {
-              this.props.onOpenDialog('dictionary');
-            })}
-            {this.renderButton('Randomize', 'refresh', () => {
-              this.props.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
-            })}
           </div>
         </div>
 

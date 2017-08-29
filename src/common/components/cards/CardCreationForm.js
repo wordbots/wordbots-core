@@ -10,11 +10,15 @@ import { capitalize, compact } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { ensureInRange } from '../../util/common';
-import { getSentencesFromInput, requestParse, numTargetsPerLogicalUnit } from '../../util/cards';
+import { getSentencesFromInput, requestParse, numTargetsPerLogicalUnit, CardTextExampleStore } from '../../util/cards';
+import { getCardTextCorpus } from '../../util/firebase';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
+import { prepareBigramProbs } from '../../util/language';
 
 import CardTextField from './CardTextField';
 import NumberField from './NumberField';
+
+const exampleStore = new CardTextExampleStore();
 
 export default class CardCreationForm extends Component {
   static propTypes = {
@@ -49,6 +53,13 @@ export default class CardCreationForm extends Component {
     if (this.props.text !== '') {
       this.onUpdateText(this.props.text, this.props.type);
     }
+
+    getCardTextCorpus((corpus, examples) => {
+      this.setState({
+        bigramProbs: prepareBigramProbs(corpus)
+      });
+      exampleStore.loadExamples(examples, 100);
+    });
   }
 
   get robot() { return this.props.type === TYPE_ROBOT; }
@@ -64,6 +75,10 @@ export default class CardCreationForm extends Component {
 
   get fullParse() {
     return compact(this.nonEmptySentences.map(s => s.result.js)).join(' ');
+  }
+
+  get parserMode() {
+    return this.props.type === TYPE_EVENT ? 'event' : 'object';
   }
 
   get parseErrors() {
@@ -160,6 +175,19 @@ export default class CardCreationForm extends Component {
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   }
 
+  renderButton = (label, icon, onClick) => (
+    <RaisedButton
+      label={label}
+      primary
+      style={{width: '31%', marginBottom: 8}}
+      onClick={onClick}
+    >
+      <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
+        {icon}
+      </FontIcon>
+    </RaisedButton>
+  )
+
   renderAttributeField(attribute, enabled = true, opts = {}) {
     return (
       <NumberField
@@ -177,6 +205,18 @@ export default class CardCreationForm extends Component {
     return (
       <div style={this.styles.container}>
         <Paper style={this.styles.paper}>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            {this.renderButton('Help', 'help_outline', () => {
+              this.props.onOpenDialog('help');
+            })}
+            {this.renderButton('Dictionary', 'book', () => {
+              this.props.onOpenDialog('dictionary');
+            })}
+            {this.renderButton('Randomize', 'refresh', () => {
+              this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
+            })}
+          </div>
+
           <div style={this.styles.section}>
             <TextField
               value={this.props.name}
@@ -197,7 +237,7 @@ export default class CardCreationForm extends Component {
             <SelectField
               value={this.props.type}
               floatingLabelText="Card Type"
-              style={this.styles.leftCol}
+              style={{width: 'calc(100% - 60px)'}}
               onChange={(e, i, value) => {
                 this.props.onSetType(value);
                 // Re-parse card text because different card types now have different validations.
@@ -212,8 +252,7 @@ export default class CardCreationForm extends Component {
             <div style={this.styles.rightColContainer}>
               <RaisedButton
                 secondary
-                label="New Image"
-                style={this.styles.rightCol}
+                style={{width: 40, minWidth: 40}}
                 labelPosition="after"
                 onTouchTap={() => { this.props.onSpriteClick(); }}>
                 <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
@@ -226,7 +265,6 @@ export default class CardCreationForm extends Component {
             text={this.props.text}
             sentences={this.nonEmptySentences}
             error={this.textError}
-            onUpdateText={(text) => { this.onUpdateText(text, this.props.type); }}
             onOpenDialog={this.props.onOpenDialog} />
 
           <div style={this.styles.section}>

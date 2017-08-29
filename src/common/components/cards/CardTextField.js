@@ -3,7 +3,6 @@ import { array, func, number, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { chain as _ } from 'lodash';
 
-import { TYPE_EVENT } from '../../constants';
 import { bigramNLL } from '../../util/language';
 
 export default class CardTextField extends Component {

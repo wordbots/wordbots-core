@@ -10,7 +10,7 @@ export default class Sfx extends Component {
     queue: array
   };
 
-  constructor(props) {
+  constructor (props) {
     super();
 
     this.state = {
@@ -18,15 +18,15 @@ export default class Sfx extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate (nextProps, nextState) {
     return nextProps.queue.length > this.props.queue.length || nextState.idx > this.state.idx;
   }
 
-  get enabled() {
+  get enabled () {
     return inBrowser() && Sound && isFlagSet('sound');
   }
 
-  get currentSound() {
+  get currentSound () {
     return this.props.queue[this.state.idx];
   }
 
@@ -34,7 +34,7 @@ export default class Sfx extends Component {
     this.setState({idx: this.state.idx + 1});
   };
 
-  render() {
+  render () {
     if (this.enabled && this.currentSound) {
       return (
         <Sound

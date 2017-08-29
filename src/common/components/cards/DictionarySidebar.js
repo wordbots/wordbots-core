@@ -12,7 +12,7 @@ export default class DictionarySidebar extends Component {
     onClick: func
   };
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate (nextProps) {
     return nextProps.terms !== this.props.terms;
   }
 
@@ -25,7 +25,7 @@ export default class DictionarySidebar extends Component {
     />
   );
 
-  render() {
+  render () {
     return (
       <div>
         <Paper

@@ -19,13 +19,13 @@ export default class EventAnimation extends Component {
     idx: 0
   };
 
-  componentDidUpdate(nextProps) {
+  componentDidUpdate (nextProps) {
     if (nextProps.eventQueue.length > this.props.eventQueue.length) {
       setTimeout(this.proceedToNextEvent, EVENT_ANIMATION_TIME_MS);
     }
   }
 
-  get currentEvent() {
+  get currentEvent () {
     return this.props.eventQueue[this.state.idx];
   }
 
@@ -33,12 +33,12 @@ export default class EventAnimation extends Component {
     this.setState({idx: this.props.eventQueue.length});
   };
 
-  renderEvent() {
+  renderEvent () {
     setTimeout(() => this.proceedToNextEvent(), EVENT_ANIMATION_TIME_MS);
     return Card.fromObj(this.currentEvent, {scale: 1.3});
   }
 
-  render() {
+  render () {
     if (this.currentEvent) {
       return (
         <div
@@ -55,7 +55,11 @@ export default class EventAnimation extends Component {
           }}
         >
           <TransitionGroup>
-            <CSSTransition appear classNames={`event-animation-${this.props.currentTurn}`} timeout={500}>
+            <CSSTransition
+              appear
+              classNames={`event-animation-${this.props.currentTurn}`}
+              timeout={500}
+            >
               {this.renderEvent()}
             </CSSTransition>
           </TransitionGroup>

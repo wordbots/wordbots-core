@@ -15,7 +15,7 @@ export default class GameMode extends Component {
     imagePath: ''
   };
 
-  renderOverlay() {
+  renderOverlay () {
     if (this.props.disabled) {
       return (
         <div
@@ -40,7 +40,7 @@ export default class GameMode extends Component {
     }
   }
 
-  renderInner() {
+  renderInner () {
     return (
       <div
         style={{
@@ -80,7 +80,7 @@ export default class GameMode extends Component {
     );
   }
 
-  render() {
+  render () {
     return (
       <PaperButton
         disabled={this.props.disabled}

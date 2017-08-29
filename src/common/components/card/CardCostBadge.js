@@ -15,11 +15,11 @@ export default class CardCostBadge extends Component {
     transform: string
   };
 
-  get badgeContent() {
+  get badgeContent () {
     return <div style={this.badgeContentStyle}>{this.props.cost}</div>;
   }
 
-  get badgeContentStyle() {
+  get badgeContentStyle () {
     if (inBrowser()) {
       return {};
     } else {
@@ -32,7 +32,7 @@ export default class CardCostBadge extends Component {
     }
   }
 
-  get badgeContainerStyle() {
+  get badgeContainerStyle () {
     const baseStyle = {
       top: 12,
       right: -4,
@@ -59,7 +59,7 @@ export default class CardCostBadge extends Component {
     }
   }
 
-  get rootStyle() {
+  get rootStyle () {
     return {
       paddingLeft: 0,
       paddingRight: 0,
@@ -69,9 +69,13 @@ export default class CardCostBadge extends Component {
     };
   }
 
-  render() {
+  render () {
     return (
-      <Badge badgeContent={this.badgeContent} badgeStyle={this.badgeContainerStyle} style={this.rootStyle}>
+      <Badge
+        badgeContent={this.badgeContent}
+        badgeStyle={this.badgeContainerStyle}
+        style={this.rootStyle}
+      >
         {this.props.children}
       </Badge>
     );

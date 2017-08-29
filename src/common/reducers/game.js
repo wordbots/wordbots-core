@@ -15,7 +15,7 @@ const PURELY_VISUAL_ACTIONS = [
   actions.SET_HOVERED_TILE
 ];
 
-export default function game(state = cloneDeep(defaultState), action, allowed = false){
+export default function game (state = cloneDeep(defaultState), action, allowed = false){
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
     return reduce(action, game, state);
@@ -27,7 +27,7 @@ export default function game(state = cloneDeep(defaultState), action, allowed = 
   }
 }
 
-export function handleAction(oldState, action){
+export function handleAction (oldState, action){
   let state = Object.assign({}, oldState);
 
   if (!PURELY_VISUAL_ACTIONS.includes(action.type)) {

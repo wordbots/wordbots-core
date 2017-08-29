@@ -9,11 +9,11 @@ export default class DictionaryTerm extends Component {
     onClick: func
   };
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate (nextProps) {
     return nextProps.token !== this.props.token || nextProps.selected !== this.props.selected;
   }
 
-  render() {
+  render () {
     return (
       <ListItem
         primaryText={this.props.token}

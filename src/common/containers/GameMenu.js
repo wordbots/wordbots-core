@@ -15,7 +15,7 @@ import * as socketActions from '../actions/socket';
 import TutorialTooltip from '../components/game/TutorialTooltip';
 import Tooltip from '../components/Tooltip';
 
-export function mapStateToProps(state){
+export function mapStateToProps (state){
   const activePlayer = state.game.players[state.game.player];
   const selectedPiece = allObjectsOnBoard(state.game)[activePlayer.selectedTile];
 
@@ -33,7 +33,7 @@ export function mapStateToProps(state){
   };
 }
 
-export function mapDispatchToProps(dispatch){
+export function mapDispatchToProps (dispatch){
   return {
     onActivate: abilityIdx => {
       dispatch(gameActions.activateObject(abilityIdx));
@@ -71,7 +71,7 @@ export class GameMenu extends Component {
     onTutorialStep: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -88,7 +88,7 @@ export class GameMenu extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.resetTimer();
     setInterval(() => {
       if (!this.props.gameOver && !this.props.isTutorial && !DISABLE_TURN_TIMER) {
@@ -97,25 +97,25 @@ export class GameMenu extends Component {
     }, 1000);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     if (prevProps.currentTurn !== this.props.currentTurn) {
       this.resetTimer();
     }
   }
 
-  get isExpanded() {
+  get isExpanded () {
     return !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
   }
 
-  resetTimer() {
+  resetTimer () {
     this.setTimer(1, 30, 'white');
   }
 
-  padDigits(seconds) {
+  padDigits (seconds) {
     return (seconds < 10 ? '0' : '') + seconds;
   }
 
-  setTimer(minutes, seconds, color) {
+  setTimer (minutes, seconds, color) {
     this.setState({
       selectedAbility: this.state.selectedAbility,
       timer: `${minutes}:${seconds}`,
@@ -132,7 +132,7 @@ export class GameMenu extends Component {
     });
   }
 
-  tickTimer() {
+  tickTimer () {
     const [ , minutes, seconds ] = this.state.timer.match(/(.):(..)/).map(num => parseInt(num));
 
     if (minutes === 1) {
@@ -160,13 +160,13 @@ export class GameMenu extends Component {
     }
   };
 
-  renderTimer() {
+  renderTimer () {
     if (!this.props.isTutorial) {
       return <MenuItem disabled primaryText={this.state.timer} style={this.state.timerStyle} />;
     }
   }
 
-  get styles() {
+  get styles () {
     return {
       icon: {
         left: this.isExpanded ? 4 : 8
@@ -177,7 +177,7 @@ export class GameMenu extends Component {
     };
   }
 
-  renderButtons() {
+  renderButtons () {
     const buttonTextWithTooltip = (text, locationID) => (
       <TutorialTooltip
         tutorialStep={this.props.tutorialStep}
@@ -197,7 +197,12 @@ export class GameMenu extends Component {
 
     return (
       <div>
-        <Tooltip disable={this.isExpanded} text="End Turn" place="right" style={this.styles.tooltip}>
+        <Tooltip
+          disable={this.isExpanded}
+          text="End Turn"
+          place="right"
+          style={this.styles.tooltip}
+        >
           <MenuItem
             primaryText={this.isExpanded ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
             disabled={!this.props.isMyTurn || this.props.isAttackHappening || this.props.gameOver}
@@ -233,11 +238,13 @@ export class GameMenu extends Component {
     );
   }
 
-  renderActivatedAbilities() {
-    const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
+  renderActivatedAbilities () {
+    const abilities =
+      (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
 
     if (abilities.length > 0) {
-      const canActivateAbility = this.props.isMyTurn && this.props.isMyPiece && !this.props.selectedPiece.cantActivate;
+      const canActivateAbility =
+        this.props.isMyTurn && this.props.isMyPiece && !this.props.selectedPiece.cantActivate;
 
       return (
         <div>
@@ -275,7 +282,7 @@ export class GameMenu extends Component {
     }
   }
 
-  renderSoundWidget() {
+  renderSoundWidget () {
     const soundText = `Sound: ${isFlagSet('sound') ? 'On' : 'Off'}`;
 
     return (
@@ -296,7 +303,7 @@ export class GameMenu extends Component {
     );
   }
 
-  render() {
+  render () {
     return (
       <Drawer
         open

@@ -16,7 +16,7 @@ export default class CardGrid extends Component {
     onCardClick: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -24,7 +24,7 @@ export default class CardGrid extends Component {
     };
   }
 
-  renderCard(card) {
+  renderCard (card) {
     return (
       <div
         key={card.id || id()}
@@ -54,7 +54,7 @@ export default class CardGrid extends Component {
     );
   }
 
-  render() {
+  render () {
     return (
       <div
         style={{

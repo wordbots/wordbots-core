@@ -15,15 +15,17 @@ export default class DeckPicker extends Component {
     onChooseDeck: func
   };
 
-  get noDecks() {
+  get noDecks () {
     return this.props.availableDecks.length === 0;
   }
 
-  get cardsInDeck() {
-    return this.noDecks ? [] : cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
+  get cardsInDeck () {
+    return this.noDecks
+      ? []
+      : cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
   }
 
-  render() {
+  render () {
     return (
       <Paper style={{display: 'flex', padding: 20, marginBottom: 20}}>
         <SelectField
@@ -34,7 +36,7 @@ export default class DeckPicker extends Component {
             this.props.onChooseDeck(idx);
           }}
           disabled={this.noDecks}
-          errorText={this.noDecks ? 'You don\'t have any complete (30-card) decks!' : null}
+          errorText={this.noDecks ? "You don't have any complete (30-card) decks!" : null}
         >
           {this.props.availableDecks.map((deck, idx) => (
             <MenuItem key={idx} value={idx} primaryText={`${deck.name}`} />

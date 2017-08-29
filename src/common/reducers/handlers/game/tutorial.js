@@ -9,7 +9,7 @@ import * as socketActions from '../../../actions/socket';
 import * as cards from '../../../store/cards';
 import defaultState from '../../../store/defaultGameState';
 
-function nextStep(state){
+function nextStep (state){
   if (state.tutorialCurrentStepIdx < state.tutorialSteps.length) {
     const oldState = cloneDeep(state);
     const currentStep = currentTutorialStep(state);
@@ -34,7 +34,7 @@ function nextStep(state){
   return state;
 }
 
-function prevStep(state){
+function prevStep (state){
   if (state.undoStack.length > 0) {
     applyPatch(state, state.undoStack.pop());
   }
@@ -42,12 +42,12 @@ function prevStep(state){
   return state;
 }
 
-function deck(cardList){
+function deck (cardList){
   const filler = [ cards.oneBotCard, cards.oneBotCard, cards.oneBotCard, cards.oneBotCard ];
   return cardList.concat(filler).map(card => ({...card, source: 'builtin', id: id()}));
 }
 
-export function startTutorial(state){
+export function startTutorial (state){
   // Reset game state and enable tutorial mode.
   state = Object.assign(state, cloneDeep(defaultState), {
     started: true,
@@ -69,7 +69,7 @@ export function startTutorial(state){
   return state;
 }
 
-export function endTutorial(state){
+export function endTutorial (state){
   return Object.assign(state, cloneDeep(defaultState), {
     started: false,
     tutorial: false,
@@ -79,14 +79,18 @@ export function endTutorial(state){
   });
 }
 
-export function handleTutorialAction(state, action){
+export function handleTutorialAction (state, action){
   if (isEqual(action, currentTutorialStep(state).action)) {
     state = nextStep(state);
   } else if (action.type === actions.TUTORIAL_STEP) {
     return action.payload.back ? prevStep(state) : nextStep(state);
   } else if (action.type === actions.END_GAME || action.type === socketActions.LEAVE) {
     state = endTutorial(state);
-  } else if ([ actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_TILE ].includes(action.type)) {
+  } else if (
+    [ actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_TILE ].includes(
+      action.type
+    )
+  ) {
     return handleAction(state, action);
   }
 
@@ -104,27 +108,29 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '3,0,-3',
-      text: 'This blocky guy here is your kernel. When its health goes to zero, you lose the game. Sad!'
+      text:
+        'This blocky guy here is your kernel. When its health goes to zero, you lose the game. Sad!'
     },
     responses: [ actions.setSelectedTile('-3,0,3', 'orange') ]
   },
   {
     tooltip: {
       hex: '-3,0,3',
-      text: 'And this bad boy is your opponent\'s kernel. Your goal is to destroy it!'
+      text: "And this bad boy is your opponent's kernel. Your goal is to destroy it!"
     }
   },
   {
     tooltip: {
       card: 'One Bot',
-      text: 'This is your hand of cards. Let\'s click on this One Bot fellow.'
+      text: "This is your hand of cards. Let's click on this One Bot fellow."
     },
     action: actions.setSelectedCard(0, 'orange')
   },
   {
     tooltip: {
       hex: '2,0,-2',
-      text: 'You can play robots anywhere adjacent to your kernel. This tile over here looks nice. Let\'s click on it.'
+      text:
+        "You can play robots anywhere adjacent to your kernel. This tile over here looks nice. Let's click on it."
     },
     action: actions.placeCard('2,0,-2', 0)
   },
@@ -132,14 +138,14 @@ const tutorialScript = [
     tooltip: {
       hex: '2,0,-2',
       text:
-        'Say hello to our new friend, One Bot! It would be nice to move towards the enemy, but robots can\'t move or attack on the turn they\'re played.'
+        "Say hello to our new friend, One Bot! It would be nice to move towards the enemy, but robots can't move or attack on the turn they're played."
     }
   },
   {
     tooltip: {
       location: 'endTurnButton',
       text:
-        'There\'s not really anything else we can do this turn. Click this button to end the turn, and we\'ll see what our opponent does.'
+        "There's not really anything else we can do this turn. Click this button to end the turn, and we'll see what our opponent does."
     },
     action: actions.passTurn('orange'),
     responses: [ actions.passTurn('blue') ]
@@ -148,13 +154,13 @@ const tutorialScript = [
     tooltip: {
       hex: '0,0,0',
       text:
-        'Looks like our opponent didn\'t do anything on their turn. How very mysterious. But that\'s all the better for us!'
+        "Looks like our opponent didn't do anything on their turn. How very mysterious. But that's all the better for us!"
     }
   },
   {
     tooltip: {
       hex: '2,0,-2',
-      text: 'Click on this li\'l guy again. It\'s time for One Bot to go on an adventure.'
+      text: "Click on this li'l guy again. It's time for One Bot to go on an adventure."
     },
     action: actions.setSelectedTile('2,0,-2', 'orange')
   },
@@ -162,14 +168,15 @@ const tutorialScript = [
     tooltip: {
       hex: '0,0,0',
       text:
-        'Over on the left you can see One Bot\'s stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here.'
+        "Over on the left you can see One Bot's stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here."
     },
     action: actions.moveRobot('2,0,-2', '0,0,0')
   },
   {
     tooltip: {
       location: 'endTurnButton',
-      text: 'Nice! We\'ve advanced two steps closer to victory. Let\'s end our turn and wait for the opponent.'
+      text:
+        "Nice! We've advanced two steps closer to victory. Let's end our turn and wait for the opponent."
     },
     action: actions.passTurn('orange'),
     responses: [ actions.placeCard('-2,0,2', 0), actions.passTurn('blue') ]
@@ -177,20 +184,22 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '-2,0,2',
-      text: 'Oh dear, it looks like our opponent has played a robot in our way. And it looks to be an intimidating one!'
+      text:
+        'Oh dear, it looks like our opponent has played a robot in our way. And it looks to be an intimidating one!'
     },
     responses: [ actions.setSelectedTile('-2,0,2', 'orange') ]
   },
   {
     tooltip: {
       hex: '-2,0,2',
-      text: 'Let\'s take a closer look: 3 attack and 3 health? There\'s no way our little bot can win in a fair fight ...'
+      text:
+        "Let's take a closer look: 3 attack and 3 health? There's no way our little bot can win in a fair fight ..."
     }
   },
   {
     tooltip: {
       card: 'Upgrade',
-      text: 'But who says we want a fair fight? Let\'s give our robot a little boost.'
+      text: "But who says we want a fair fight? Let's give our robot a little boost."
     }
   },
   {
@@ -210,7 +219,7 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '0,0,0',
-      text: 'Now click our One Bot to apply the Upgrade event to it. Let\'s see what happens!'
+      text: "Now click our One Bot to apply the Upgrade event to it. Let's see what happens!"
     },
     action: actions.setSelectedTile('0,0,0', 'orange')
   },
@@ -223,7 +232,7 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '0,0,0',
-      text: 'Click on it once more. It\'s time for it to go on a rampage.'
+      text: "Click on it once more. It's time for it to go on a rampage."
     },
     action: actions.setSelectedTile('0,0,0', 'orange')
   },
@@ -263,13 +272,14 @@ const tutorialScript = [
   {
     tooltip: {
       card: 'Recharge',
-      text: 'Are you seeing what I\'m seeing?'
+      text: "Are you seeing what I'm seeing?"
     }
   },
   {
     tooltip: {
       card: 'Recharge',
-      text: 'We can recharge our robot to use it again this turn! You know the drill. Click the event card.'
+      text:
+        'We can recharge our robot to use it again this turn! You know the drill. Click the event card.'
     },
     action: actions.setSelectedCard(0, 'orange')
   },
@@ -298,7 +308,7 @@ const tutorialScript = [
     tooltip: {
       hex: '0,0,0',
       text:
-        'Congratulations! You\'ve completed the tutorial, and you\'re all ready to experience Wordbots. What\'s next? Try playing some games. Make your own cards. Build a deck. The sky\'s the limit! Enjoy your time here :-)'
+        "Congratulations! You've completed the tutorial, and you're all ready to experience Wordbots. What's next? Try playing some games. Make your own cards. Build a deck. The sky's the limit! Enjoy your time here :-)"
     }
   }
 ];

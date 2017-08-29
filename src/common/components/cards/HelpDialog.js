@@ -10,7 +10,7 @@ export default class HelpDialog extends Component {
     history: object
   };
 
-  render() {
+  render () {
     const history = this.props.history;
     return (
       <RouterDialog

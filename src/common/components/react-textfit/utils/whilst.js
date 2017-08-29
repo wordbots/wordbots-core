@@ -8,9 +8,9 @@ import {noop} from 'lodash';
  * @param {Function} callback A callback which is called after the test fails and repeated execution of fn has stopped.
  */
 
-export default function whilst(test, iterator, callback = noop){
+export default function whilst (test, iterator, callback = noop){
   if (test()) {
-    iterator(function next(err, ...args){
+    iterator(function next (err, ...args){
       if (err) {
         callback(err);
       } else if (test.apply(this, args)) {

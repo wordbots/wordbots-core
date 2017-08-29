@@ -7,7 +7,7 @@ import {keywordsInSentence} from '../../util/cards';
 import StatusIcon from './StatusIcon';
 import Word from './Word';
 
-function Sentence(text, result = {}){
+function Sentence (text, result = {}){
   const keywords = keywordsInSentence(text, true);
   const color = result.js ? 'green' : result.error ? 'red' : 'black';
 
@@ -18,7 +18,9 @@ function Sentence(text, result = {}){
     return (
       <span key={id()} style={{color: color}}>
         {times(numInitialNewlines, i => <br key={i} />)}
-        {phrases.map(p => p.split(' ').map(w => Word(w, keywords, result))).reduce((a, b) => [ a, ',', b ])}
+        {phrases
+          .map(p => p.split(' ').map(w => Word(w, keywords, result)))
+          .reduce((a, b) => [ a, ',', b ])}
         {text.endsWith(',') ? '' : '.'}
         {StatusIcon(text, result)}
       </span>

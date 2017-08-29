@@ -99,7 +99,7 @@ export default class Card extends Component {
   };
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -107,7 +107,7 @@ export default class Card extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate (nextProps, nextState) {
     const trackedProps = [
       'name',
       'spriteID',
@@ -127,26 +127,28 @@ export default class Card extends Component {
       'zIndex'
     ];
 
-    return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
+    return (
+      !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state)
+    );
   }
 
-  onMouseEnter() {
+  onMouseEnter () {
     this.setState({
       shadow: 3
     });
   }
 
-  onMouseLeave() {
+  onMouseLeave () {
     this.setState({
       shadow: 2
     });
   }
 
-  get numChars() {
+  get numChars () {
     return this.props.rawText ? this.props.rawText.length : this.props.text.length;
   }
 
-  get textAreaStyle() {
+  get textAreaStyle () {
     const baseStyle = {
       height: 106 * this.props.scale
     };
@@ -166,7 +168,7 @@ export default class Card extends Component {
     }
   }
 
-  get textFitStyle() {
+  get textFitStyle () {
     const baseStyle = {
       padding: 6 * this.props.scale,
       paddingBottom: 0,
@@ -188,7 +190,7 @@ export default class Card extends Component {
     }
   }
 
-  renderTitle() {
+  renderTitle () {
     if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round(180 / this.props.name.length);
@@ -220,10 +222,12 @@ export default class Card extends Component {
     }
   }
 
-  renderText() {
+  renderText () {
     if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
-      const maxFontSize = Math.round((this.props.type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
+      const maxFontSize = Math.round(
+        (this.props.type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars)
+      );
       return (
         <div
           style={Object.assign(this.textFitStyle, {
@@ -235,14 +239,19 @@ export default class Card extends Component {
       );
     } else {
       return (
-        <Textfit autoResize={false} mode="multi" max={14 * this.props.scale} style={this.textFitStyle}>
+        <Textfit
+          autoResize={false}
+          mode="multi"
+          max={14 * this.props.scale}
+          style={this.textFitStyle}
+        >
           {this.props.text}
         </Textfit>
       );
     }
   }
 
-  renderStat(type) {
+  renderStat (type) {
     return (
       <CardStat
         type={type}
@@ -253,7 +262,7 @@ export default class Card extends Component {
     );
   }
 
-  renderStatsArea() {
+  renderStatsArea () {
     const style = {
       position: 'absolute',
       bottom: 0,
@@ -270,19 +279,25 @@ export default class Card extends Component {
         </CardText>
       );
     } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
-      return <CardText style={Object.assign(style, {marginLeft: '31%'})}>{this.renderStat('health')}</CardText>;
+      return (
+        <CardText style={Object.assign(style, {marginLeft: '31%'})}>
+          {this.renderStat('health')}
+        </CardText>
+      );
     }
   }
 
-  render() {
+  render () {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
-      boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection
+      boxShadow: `${(this.props.status && this.props.status.type === 'error') ||
+      this.props.collection
         ? redShadow
         : greenShadow} 0px 0px 20px 5px`
     };
-    const transform = `rotate(${this.props.rotation}deg) translate(0px, ${this.props.yTranslation}px)`;
+    const transform = `rotate(${this.props.rotation}deg) translate(0px, ${this.props
+      .yTranslation}px)`;
 
     if (!this.props.visible) {
       return (
@@ -330,7 +345,8 @@ export default class Card extends Component {
                     borderRadius: 5 * this.props.scale,
                     userSelect: 'none',
                     cursor: 'pointer',
-                    border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
+                    border:
+                      this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
                     position: 'relative'
                   },
                   this.props.selected || this.props.targetable ? selectedStyle : {}

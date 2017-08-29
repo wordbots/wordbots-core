@@ -10,7 +10,7 @@ export default class MustBeLoggedIn extends Component {
     children: oneOfType([ array, object ])
   };
 
-  renderDisabledChild(child) {
+  renderDisabledChild (child) {
     const propagatedStyleKeys = [
       'float',
       'width',
@@ -31,16 +31,22 @@ export default class MustBeLoggedIn extends Component {
 
     return (
       <Tooltip text="You must be logged in to perform this action.">
-        <div style={parentStyle}>{React.cloneElement(child, {disabled: true, style: childStyle})}</div>
+        <div style={parentStyle}>
+          {React.cloneElement(child, {disabled: true, style: childStyle})}
+        </div>
       </Tooltip>
     );
   }
 
-  render() {
+  render () {
     if (this.props.loggedIn) {
       return <div>{this.props.children}</div>;
     } else {
-      return <div className="notAllowed">{React.Children.map(this.props.children, this.renderDisabledChild)}</div>;
+      return (
+        <div className="notAllowed">
+          {React.Children.map(this.props.children, this.renderDisabledChild)}
+        </div>
+      );
     }
   }
 }

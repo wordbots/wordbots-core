@@ -47,8 +47,8 @@ const SYNONYMS = {
   ' 9 ': ' nine ',
   ' 10 ': ' ten ',
 
-  'can\'t': 'cannot',
-  'it is': 'it\'s',
+  "can't": 'cannot',
+  'it is': "it's",
 
   robot: [ 'creature', 'minion' ],
   startup: [ 'start up', 'start-up' ],
@@ -56,19 +56,20 @@ const SYNONYMS = {
 };
 
 const KEYWORDS = {
-  defender: 'This robot can\'t attack.',
+  defender: "This robot can't attack.",
   haste: 'This robot can move and attack immediately after it is played.',
   jump: 'This robot can move over other objects.',
-  taunt: 'Your opponent\'s adjacent robots can only attack this object.',
+  taunt: "Your opponent's adjacent robots can only attack this object.",
   'startup:': 'When this object is played,',
   'shutdown:': 'When this object is destroyed,'
 };
 
 const HINTS = {
-  'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
+  'activate:':
+    "Objects can Activate once per turn. (Robots can't activate and attack in the same turn)"
 };
 
-function objToRegexes(obj){
+function objToRegexes (obj){
   return fromPairs(Object.keys(obj).map(k => [ k, new RegExp(`(${k}|${capitalize(k)})`) ]));
 }
 const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
@@ -80,16 +81,16 @@ const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
 // 1. Miscellaneous helper functions pertaining to cards.
 //
 
-export function areIdenticalCards(card1, card2){
+export function areIdenticalCards (card1, card2){
   // TODO: Check abilities/command rather than text.
   return compareCertainKeys(card1, card2, [ 'type', 'cost', 'text', 'stats' ]);
 }
 
-export function cardsInDeck(deck, cards){
+export function cardsInDeck (deck, cards){
   return compact((deck.cardIds || []).map(id => cards.find(c => c.id === id)));
 }
 
-export function instantiateCard(card){
+export function instantiateCard (card){
   return Object.assign({}, card, {
     id: generateId(),
     baseCost: card.cost
@@ -100,21 +101,26 @@ export function instantiateCard(card){
 // 2. Helper functions for card-related components.
 //
 
-export function groupCards(cards){
-  return uniqBy(cards, 'id').map(card => Object.assign({}, card, {count: countBy(cards, 'name')[card.name]}));
+export function groupCards (cards){
+  return uniqBy(cards, 'id').map(card =>
+    Object.assign({}, card, {count: countBy(cards, 'name')[card.name]})
+  );
 }
 
-export function selectType(cards, type){
+export function selectType (cards, type){
   return cards.filter(card => card.type === type);
 }
 
-export function getDisplayedCards(cards, opts = {}){
+export function getDisplayedCards (cards, opts = {}){
   return cards
-    .filter(card => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
+    .filter(
+      card =>
+        isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText)
+    )
     .sort((c1, c2) => sortCards(c1, c2, opts.sortCriteria, opts.sortOrder));
 }
 
-export function isCardVisible(card, filters = {}, costRange = [ 0, 0 ]){
+export function isCardVisible (card, filters = {}, costRange = [ 0, 0 ]){
   if (
     (!filters.robots && card.type === TYPE_ROBOT) ||
     (!filters.events && card.type === TYPE_EVENT) ||
@@ -127,12 +133,12 @@ export function isCardVisible(card, filters = {}, costRange = [ 0, 0 ]){
   }
 }
 
-function searchCards(card, query = ''){
+function searchCards (card, query = ''){
   query = query.toLowerCase();
   return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
 }
 
-function sortCards(c1, c2, criteria, order){
+function sortCards (c1, c2, criteria, order){
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const [ cost, name, type, source, attack, health, speed ] = [
@@ -177,7 +183,7 @@ export class CardTextExampleStore {
     object: []
   };
 
-  getExample = mode => sample(this.examples[mode]);
+  getExample = mode => `${sample(this.examples[mode])}.`;
 
   loadExamples = (sentences, numToTry) => {
     const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);
@@ -212,7 +218,7 @@ export class CardTextExampleStore {
 // 3. Text parsing.
 //
 
-export function replaceSynonyms(text){
+export function replaceSynonyms (text){
   return reduce(
     SYNONYMS,
     (str, synonyms, term) => {
@@ -225,18 +231,21 @@ export function replaceSynonyms(text){
   );
 }
 
-export function splitSentences(str){
+export function splitSentences (str){
   return (str || '').split(/[\\.!?]/).filter(s => /\S/.test(s));
 }
 
-export function getSentencesFromInput(text){
+export function getSentencesFromInput (text){
   let sentences = splitSentences(replaceSynonyms(text));
-  sentences = flatMap(sentences, s => (isKeywordExpression(s) ? s.replace(/,/g, ',|').split('|') : s));
+  sentences = flatMap(
+    sentences,
+    s => (isKeywordExpression(s) ? s.replace(/,/g, ',|').split('|') : s)
+  );
 
   return sentences;
 }
 
-function parse(sentences, mode, callback, index = true){
+function parse (sentences, mode, callback, index = true){
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -260,7 +269,7 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.
-function parseCard(card, callback){
+function parseCard (card, callback){
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text);
   const parseResults = [];
@@ -277,11 +286,11 @@ function parseCard(card, callback){
 }
 
 // How many targets are there in each logical unit of the parsed JS?
-export function numTargetsPerLogicalUnit(parsedJS){
+export function numTargetsPerLogicalUnit (parsedJS){
   // Activated abilities separate logical units:
   //     BAD <- "Deal 2 damage. Destroy a structure."
   //    GOOD <- "Activate: Deal 2 damage. Activate: Destroy a structure."
-  const units = compact(parsedJS.split('abilities[\'activated\']'));
+  const units = compact(parsedJS.split("abilities['activated']"));
   return units.map(unit => (unit.match(/choose/g) || []).length);
 }
 
@@ -289,19 +298,19 @@ export function numTargetsPerLogicalUnit(parsedJS){
 // 3.5. Keyword abilities.
 //
 
-function phrases(sentence){
+function phrases (sentence){
   return sentence.split(',').filter(s => /\S/.test(s)).map(s => s.trim());
 }
 
-export function allKeywords(){
+export function allKeywords (){
   return Object.assign({}, KEYWORDS, HINTS);
 }
 
-export function isKeywordExpression(sentence, hintsToo = false){
+export function isKeywordExpression (sentence, hintsToo = false){
   return phrases(sentence).every(p => KEYWORDS[p.toLowerCase()]);
 }
 
-export function keywordsInSentence(sentence, hintsToo = false){
+export function keywordsInSentence (sentence, hintsToo = false){
   const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
   const regexes = hintsToo ? Object.assign({}, KEYWORD_REGEXES, HINT_REGEXES) : KEYWORD_REGEXES;
 
@@ -318,16 +327,17 @@ export function keywordsInSentence(sentence, hintsToo = false){
   }
 }
 
-export function expandKeywords(sentence){
+export function expandKeywords (sentence){
   const keywords = keywordsInSentence(sentence);
   return reduce(keywords, (str, def, keyword) => str.replace(keyword, def), sentence);
 }
 
-export function contractKeywords(sentence){
+export function contractKeywords (sentence){
   const keywords = mapValues(KEYWORDS, k => k.split(/(,|\.)/)[0]);
   return reduce(
     keywords,
-    (str, def, keyword) => str.replace(`"${def}"`, capitalize(keyword)).replace(def, capitalize(keyword)),
+    (str, def, keyword) =>
+      str.replace(`"${def}"`, capitalize(keyword)).replace(def, capitalize(keyword)),
     sentence
   );
 }
@@ -336,13 +346,15 @@ export function contractKeywords(sentence){
 // 4. Import/export.
 //
 
-export function cardsToJson(cards){
+export function cardsToJson (cards){
   const exportedFields = [ 'name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats' ];
-  const cardsToExport = cards.map(card => Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION}));
+  const cardsToExport = cards.map(card =>
+    Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION})
+  );
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
 
-export function cardsFromJson(json, callback){
+export function cardsFromJson (json, callback){
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
@@ -358,7 +370,7 @@ export function cardsFromJson(json, callback){
     });
 }
 
-export function loadCardsFromFirebase(state, data){
+export function loadCardsFromFirebase (state, data){
   if (data) {
     if (data.cards) {
       state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
@@ -370,7 +382,7 @@ export function loadCardsFromFirebase(state, data){
   return state;
 }
 
-export function loadDecksFromFirebase(state, data){
+export function loadDecksFromFirebase (state, data){
   if (data) {
     if (data.decks) {
       state.decks = data.decks;
@@ -382,21 +394,24 @@ export function loadDecksFromFirebase(state, data){
   return state;
 }
 
-export function saveCardToFirebase(card){
+export function saveCardToFirebase (card){
   saveRecentCard(card);
 }
 
-export function saveCardsToFirebase(state){
+export function saveCardsToFirebase (state){
   saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
 }
 
-export function saveDecksToFirebase(state){
+export function saveDecksToFirebase (state){
   saveUserData('decks', state.decks);
 }
 
-export function loadParserLexicon(callback){
-  fetch(`${PARSER_URL}/lexicon?format=json`).then(response => response.json()).then(callback).catch(err => {
-    // TODO better error handling
-    throw `Error retrieving lexicon: ${err}`;
-  });
+export function loadParserLexicon (callback){
+  fetch(`${PARSER_URL}/lexicon?format=json`)
+    .then(response => response.json())
+    .then(callback)
+    .catch(err => {
+      // TODO better error handling
+      throw `Error retrieving lexicon: ${err}`;
+    });
 }

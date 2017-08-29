@@ -11,11 +11,11 @@ export default class PiecePattern extends Component {
     piece: object.isRequired
   };
 
-  get images() {
+  get images () {
     return loadImages();
   }
 
-  render() {
+  render () {
     const id = this.props.piece.id;
     const image = this.props.piece.image;
 
@@ -30,7 +30,12 @@ export default class PiecePattern extends Component {
             viewBox="-0.1 -0.05 1 1"
             preserveAspectRatio="xMidYMid"
           >
-            <image xlinkHref={this.images[image.img]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid" />
+            <image
+              xlinkHref={this.images[image.img]}
+              width="0.8"
+              height="0.8"
+              preserveAspectRatio="xMidYMid"
+            />
           </pattern>
         </defs>
       );

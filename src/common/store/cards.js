@@ -1,4 +1,10 @@
-import {STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE} from '../constants';
+import {
+  STARTING_PLAYER_HEALTH,
+  TYPE_ROBOT,
+  TYPE_EVENT,
+  TYPE_CORE,
+  TYPE_STRUCTURE
+} from '../constants';
 
 /* eslint-disable quotes */
 
@@ -411,7 +417,8 @@ export const concentrationCard = {
 export const superchargeCard = {
   name: 'Supercharge',
   text: 'Gain 2 energy.',
-  command: '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + 2; }); })',
+  command:
+    '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + 2; }); })',
   cost: 0,
   type: TYPE_EVENT
 };
@@ -461,7 +468,8 @@ export const missileStrikeCard = {
 
 export const incinerateCard = {
   name: 'Incinerate',
-  text: 'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
+  text:
+    'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
   command: [
     "(function () { actions['modifyEnergy'](targets['self'](), function (x) { return x + attributeSum(objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack'); }); })",
     "(function () { actions['destroy'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })"
@@ -512,12 +520,15 @@ export const smashCard = {
   type: TYPE_EVENT,
   text: 'Destroy a structure.',
   cost: 2,
-  command: [ "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })" ]
+  command: [
+    "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })"
+  ]
 };
 
 const empCard = {
   name: 'EMP',
-  text: 'Set the attack and speed of all robots to 0. \nGive all robots "Activate: Destroy this robot".',
+  text:
+    'Set the attack and speed of all robots to 0. \nGive all robots "Activate: Destroy this robot".',
   command: [
     "(function () { (function () { save('target', objectsMatchingConditions('robot', [])); })(); (function () { actions['setAttribute'](load('target'), 'attack', 0); })(); (function () { actions['setAttribute'](load('target'), 'speed', 0); })(); })",
     "(function () { actions['giveAbility'](objectsMatchingConditions('robot', []), \"(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \\\"(function () { actions['destroy'](targets['thisRobot']()); })\\\")); })\"); })"
@@ -548,7 +559,8 @@ export const energyWellCard = {
   stats: {
     health: 5
   },
-  text: "At the start of each player's turn, that player gains 1 energy if they control an adjacent robot.",
+  text:
+    "At the start of each player's turn, that player gains 1 energy if they control an adjacent robot.",
   abilities: [
     "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['allPlayers'](); }), (function () { if ((objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['itP']())]).length > 0)) { ((function () { actions['modifyEnergy'](targets['itP'](), function (x) { return x + 1; }); }))(); } })); })"
   ]
@@ -644,7 +656,8 @@ const theBombCard = {
   stats: {
     health: 2
   },
-  text: 'Activate: Destroy this structure. \nShutdown: Deal 2 damage to all objects within 2 spaces.',
+  text:
+    'Activate: Destroy this structure. \nShutdown: Deal 2 damage to all objects within 2 spaces.',
   abilities: [
     "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['destroy'](targets['thisRobot']()); })\")); })",
     "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['dealDamage'](objectsMatchingConditions('allobjects', [conditions['withinDistanceOf'](2, targets['thisRobot']())]), 2); })); })"

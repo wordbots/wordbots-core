@@ -12,7 +12,7 @@ export default class CardViewer extends Component {
     hoveredCard: object
   };
 
-  renderCard() {
+  renderCard () {
     if (this.props.hoveredCard) {
       return (
         <CSSTransition classNames="card-viewer-fade" timeout={100}>
@@ -23,7 +23,9 @@ export default class CardViewer extends Component {
             type={this.props.hoveredCard.card.type}
             spriteID={this.props.hoveredCard.card.spriteID}
             spriteV={this.props.hoveredCard.card.spriteV}
-            text={splitSentences(this.props.hoveredCard.card.text).map(s => Sentence(s, {parsed: true}))}
+            text={splitSentences(this.props.hoveredCard.card.text).map(s =>
+              Sentence(s, {parsed: true})
+            )}
             rawText={this.props.hoveredCard.card.text}
             img={this.props.hoveredCard.card.img}
             cost={this.props.hoveredCard.card.cost}
@@ -37,7 +39,7 @@ export default class CardViewer extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div
         style={{

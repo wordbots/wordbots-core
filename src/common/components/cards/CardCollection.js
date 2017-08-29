@@ -17,7 +17,7 @@ export default class CardCollection extends Component {
     onSelection: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -25,19 +25,19 @@ export default class CardCollection extends Component {
     };
   }
 
-  get numPages() {
+  get numPages () {
     return Math.ceil(this.props.cards.length / 20);
   }
 
-  get currentPage() {
+  get currentPage () {
     return Math.min(this.state.page, this.numPages);
   }
 
-  get cards() {
+  get cards () {
     return this.props.cards.slice((this.currentPage - 1) * 20, this.currentPage * 20);
   }
 
-  isSelectable(card) {
+  isSelectable (card) {
     return !this.props.onlySelectCustomCards || card.source !== 'builtin';
   }
 
@@ -52,7 +52,7 @@ export default class CardCollection extends Component {
     }
   };
 
-  renderPageControls() {
+  renderPageControls () {
     return (
       <PageSwitcher
         page={this.currentPage}
@@ -63,7 +63,7 @@ export default class CardCollection extends Component {
     );
   }
 
-  render() {
+  render () {
     const GridOrTable = this.props.layout === 0 ? CardGrid : CardTable;
     return (
       <div style={{width: '100%'}}>

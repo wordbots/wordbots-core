@@ -28,20 +28,20 @@ export default class Hand extends Component {
     onTutorialStep: func
   };
 
-  constructor() {
+  constructor () {
     super();
     this.availableWidth = 500;
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.calculateAvailableWidth();
   }
 
-  componentWillUpdate() {
+  componentWillUpdate () {
     this.calculateAvailableWidth();
   }
 
-  calculateAvailableWidth() {
+  calculateAvailableWidth () {
     // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
     /* eslint-disable react/no-find-dom-node */
     if (ReactDOM.findDOMNode(this)) {
@@ -50,17 +50,21 @@ export default class Hand extends Component {
     /* eslint-enable react/no-find-dom-node */
   }
 
-  renderCards() {
+  renderCards () {
     const widthPerCard = 151;
     const defaultMargin = 24;
     const maxWidth = this.availableWidth - 20;
     const numCards = this.props.cards.length;
     const baseWidth = numCards * widthPerCard;
-    const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
+    const cardMargin = maxWidth
+      ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin)
+      : defaultMargin;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
     return this.props.cards.map((card, idx) => {
-      const zIndex = isNull(this.props.hoveredCard) ? 0 : 1000 - Math.abs(this.props.hoveredCard - idx) * 10;
+      const zIndex = isNull(this.props.hoveredCard)
+        ? 0
+        : 1000 - Math.abs(this.props.hoveredCard - idx) * 10;
 
       // TODO this isn't quite right ...
       const rotationDegs = (idx - (numCards - 1) / 2) * 5;
@@ -94,9 +98,12 @@ export default class Hand extends Component {
                 cardStats={card.stats}
                 source={card.source}
                 selected={
-                  this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)
+                  this.props.selectedCard === idx &&
+                  (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)
                 }
-                targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
+                targetable={
+                  this.props.isActivePlayer && this.props.targetableCards.includes(card.id)
+                }
                 visible={this.props.isActivePlayer}
                 margin={idx < numCards - 1 ? cardMargin : 0}
                 rotation={this.props.curved ? rotationDegs : 0}
@@ -116,7 +123,7 @@ export default class Hand extends Component {
     });
   }
 
-  render() {
+  render () {
     return (
       <TransitionGroup
         id={this.props.opponent ? 'handTop' : 'handBottom'}

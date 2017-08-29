@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {bool, string} from 'prop-types';
 
 class PlayerName extends Component {
-  render() {
+  render () {
     return (
       <div
         style={{

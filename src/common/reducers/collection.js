@@ -7,7 +7,7 @@ import * as globalActions from '../actions/global';
 
 import c from './handlers/cards';
 
-export default function collection(oldState = defaultState, action){
+export default function collection (oldState = defaultState, action){
   const state = Object.assign({}, oldState);
 
   if (isArray(action)) {

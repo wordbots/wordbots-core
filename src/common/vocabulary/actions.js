@@ -13,7 +13,7 @@ import {
   executeCmd
 } from '../util/game';
 
-export default function actions(state){
+export default function actions (state){
   return {
     canAttackAgain: function (objects){
       objects.entries.forEach(object => {

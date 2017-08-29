@@ -17,7 +17,7 @@ export default class NumberField extends Component {
     maxValue: 10
   };
 
-  render() {
+  render () {
     return (
       <TextField
         value={this.props.value}

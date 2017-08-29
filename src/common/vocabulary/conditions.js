@@ -3,7 +3,7 @@ import {flatMap, has, some} from 'lodash';
 import {allHexIds, getHex, getAttribute, getAdjacentHexes} from '../util/game';
 import HU from '../components/hexgrid/HexUtils';
 
-function objectHasProperty(obj, property){
+function objectHasProperty (obj, property){
   switch (property) {
     // Simple properties.
     case 'attackedlastturn':
@@ -25,11 +25,14 @@ function objectHasProperty(obj, property){
 
 // Object conditions return (hexId, obj) -> bool functions.
 // They are used by the objectsMatchingConditions() collection.
-export function objectConditions(state){
+export function objectConditions (state){
   return {
     adjacentTo: function (targets){
-      const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
-      const neighborHexes = flatMap(targetHexIds, hid => getAdjacentHexes(HU.IDToHex(hid))).map(HU.getID);
+      const targetHexIds =
+        targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
+      const neighborHexes = flatMap(targetHexIds, hid => getAdjacentHexes(HU.IDToHex(hid))).map(
+        HU.getID
+      );
 
       return (hexId, obj) => neighborHexes.includes(hexId);
     },
@@ -53,7 +56,8 @@ export function objectConditions(state){
     },
 
     withinDistanceOf: function (distance, targets){
-      const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
+      const targetHexIds =
+        targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
       const nearbyHexIds = allHexIds().filter(h1 =>
         some(targetHexIds, h2 => HU.distance(HU.IDToHex(h1), HU.IDToHex(h2)) <= distance)
       );
@@ -65,7 +69,7 @@ export function objectConditions(state){
 
 // Global conditions simply return a boolean.
 // They're used in if-expressions.
-export function globalConditions(state){
+export function globalConditions (state){
   return {
     collectionExists: function (collection){
       return collection.length > 0;

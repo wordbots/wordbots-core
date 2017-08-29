@@ -5,7 +5,11 @@ import ReactMarkdown from 'react-markdown';
 import SmartLink from './SmartLink';
 
 const MarkdownBlock = props => (
-  <ReactMarkdown source={props.source} containerProps={{className: 'markdownBlock'}} renderers={{Link: SmartLink}} />
+  <ReactMarkdown
+    source={props.source}
+    containerProps={{className: 'markdownBlock'}}
+    renderers={{Link: SmartLink}}
+  />
 );
 
 MarkdownBlock.propTypes = {

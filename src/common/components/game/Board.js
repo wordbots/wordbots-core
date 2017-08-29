@@ -35,7 +35,7 @@ export default class Board extends Component {
     onEndGame: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     const boardConfig = GRID_CONFIG;
@@ -49,7 +49,7 @@ export default class Board extends Component {
 
   // Many util functions require a game state object, so we create a dummy one with minimal data.
   // TODO find a less gross approach?
-  get dummyGameState() {
+  get dummyGameState () {
     return {
       players: {
         blue: {name: 'blue', robotsOnBoard: this.props.bluePieces},
@@ -58,29 +58,33 @@ export default class Board extends Component {
     };
   }
 
-  get isMyTurn() {
+  get isMyTurn () {
     return this.props.currentTurn === this.props.player;
   }
 
-  get playingAnObject() {
-    return this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE;
+  get playingAnObject () {
+    return (
+      this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE
+    );
   }
 
-  get currentPlayerPieces() {
+  get currentPlayerPieces () {
     return this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  get allPieces() {
+  get allPieces () {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  get piecesOnGrid() {
+  get piecesOnGrid () {
     const attack = this.props.attack;
 
     return mapValues(this.allPieces, (piece, hex) => ({
       id: piece.id,
       type: piece.card.type,
-      image: piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name},
+      image: piece.card.img
+        ? {img: piece.card.img}
+        : {sprite: piece.card.spriteID || piece.card.name},
       stats: {
         health: getAttribute(piece, 'health'),
         attack: getAttribute(piece, 'attack')
@@ -89,24 +93,28 @@ export default class Board extends Component {
     }));
   }
 
-  get selectedHexId() {
+  get selectedHexId () {
     return this.props.selectedTile;
   }
-  get selectedHex() {
+  get selectedHex () {
     return HexUtils.IDToHex(this.selectedHexId);
   }
-  get selectedPiece() {
+  get selectedPiece () {
     return this.currentPlayerPieces[this.selectedHexId];
   }
 
-  get placementHexes() {
-    return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
+  get placementHexes () {
+    return validPlacementHexes(
+      this.dummyGameState,
+      this.props.currentTurn,
+      this.props.playingCardType
+    );
   }
 
-  get hexColors() {
+  get hexColors () {
     const hexColors = {};
 
-    function color(hexes, colorName){
+    function color (hexes, colorName){
       hexes.forEach(hex => {
         hexColors[isString(hex) ? hex : HexUtils.getID(hex)] = colorName;
       });
@@ -114,7 +122,8 @@ export default class Board extends Component {
 
     forOwn(this.allPieces, (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
-      const canMove = owner === this.props.currentTurn && this.hasValidActions(HexUtils.IDToHex(hex));
+      const canMove =
+        owner === this.props.currentTurn && this.hasValidActions(HexUtils.IDToHex(hex));
       const isStructure = piece.card.type === TYPE_STRUCTURE;
 
       color([ hex ], `${canMove ? 'bright_' : ''}${owner}${isStructure ? '_grayish' : ''}`);
@@ -134,17 +143,17 @@ export default class Board extends Component {
     return hexColors;
   }
 
-  getValidMovementHexes(startHex) {
+  getValidMovementHexes (startHex) {
     return validMovementHexes(this.dummyGameState, startHex);
   }
-  getValidAttackHexes(startHex) {
+  getValidAttackHexes (startHex) {
     return validAttackHexes(this.dummyGameState, startHex);
   }
-  hasValidActions(startHex) {
+  hasValidActions (startHex) {
     return validActionHexes(this.dummyGameState, startHex).length > 0;
   }
 
-  onHexClick(hex) {
+  onHexClick (hex) {
     const hexId = HexUtils.getID(hex);
 
     if (this.isMyTurn) {
@@ -160,7 +169,7 @@ export default class Board extends Component {
     }
   }
 
-  onMoveOrAttack(hex) {
+  onMoveOrAttack (hex) {
     const hexId = HexUtils.getID(hex);
     const movementHexIds = this.getValidMovementHexes(this.selectedHex).map(HexUtils.getID);
     const attackHexIds = this.getValidAttackHexes(this.selectedHex).map(HexUtils.getID);
@@ -168,17 +177,21 @@ export default class Board extends Component {
     if (movementHexIds.includes(hexId)) {
       this.props.onSelectTile(hexId, 'move');
     } else if (attackHexIds.includes(hexId)) {
-      this.props.onSelectTile(hexId, 'attack', intermediateMoveHexId(this.dummyGameState, this.selectedHex, hex));
+      this.props.onSelectTile(
+        hexId,
+        'attack',
+        intermediateMoveHexId(this.dummyGameState, this.selectedHex, hex)
+      );
     } else {
       this.props.onSelectTile(hexId);
     }
   }
 
-  onHexHover(hex, event) {
+  onHexHover (hex, event) {
     this.props.onHoverTile(HexUtils.getID(hex), event.type);
   }
 
-  render() {
+  render () {
     const {grid} = this.state;
 
     return (

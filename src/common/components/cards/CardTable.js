@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import {array, bool, func} from 'prop-types';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
 
 import {typeToString} from '../../constants';
@@ -16,7 +23,7 @@ export default class CardTable extends Component {
     onCardClick: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -24,7 +31,7 @@ export default class CardTable extends Component {
     };
   }
 
-  sourceToString(source) {
+  sourceToString (source) {
     if (source === 'user') {
       return 'You';
     } else {
@@ -32,17 +39,23 @@ export default class CardTable extends Component {
     }
   }
 
-  renderCardRowStat(type, stats) {
+  renderCardRowStat (type, stats) {
     if (stats && stats[type]) {
       return (
-        <CardStat noTooltip type={type} base={stats ? stats[type] : ''} current={stats ? stats[type] : ''} scale={1} />
+        <CardStat
+          noTooltip
+          type={type}
+          base={stats ? stats[type] : ''}
+          current={stats ? stats[type] : ''}
+          scale={1}
+        />
       );
     } else {
       return '';
     }
   }
 
-  renderCardCost(cost) {
+  renderCardCost (cost) {
     return (
       <Badge
         badgeContent={cost}
@@ -59,7 +72,7 @@ export default class CardTable extends Component {
     );
   }
 
-  renderCardRow(card, index) {
+  renderCardRow (card, index) {
     return (
       <TableRow
         key={card.id || id()}
@@ -86,7 +99,7 @@ export default class CardTable extends Component {
     );
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div

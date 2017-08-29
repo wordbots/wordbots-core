@@ -17,10 +17,19 @@ const middlewareBuilder = () => {
 
   if (process.browser) {
     const socketMiddleware = createSocketMiddleware({
-      excludedActions: [ ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED ]
+      excludedActions: [
+        ga.SET_HOVERED_CARD,
+        ga.SET_HOVERED_TILE,
+        sa.CONNECTING,
+        sa.CONNECTED,
+        sa.DISCONNECTED
+      ]
     });
 
-    if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
+    if (
+      (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') &&
+      !ALWAYS_ENABLE_DEV_TOOLS
+    ) {
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
       allComposeElements = [ middleware ];
     } else {
@@ -31,7 +40,8 @@ const middlewareBuilder = () => {
       window.Perf = Perf;
 
       const logger = createLogger({
-        predicate: (getState, action) => ![ ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE ].includes(action.type)
+        predicate: (getState, action) =>
+          ![ ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE ].includes(action.type)
       });
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
@@ -47,7 +57,7 @@ const middlewareBuilder = () => {
 
 const finalCreateStore = compose(...middlewareBuilder())(createStore);
 
-export default function configureStore(initialState){
+export default function configureStore (initialState){
   const store = finalCreateStore(rootReducer, initialState);
 
   if (module.hot) {

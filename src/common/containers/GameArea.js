@@ -22,7 +22,7 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import {arbitraryPlayerState} from '../store/defaultGameState';
 
-function animate(fns){
+function animate (fns){
   if (fns.length > 0) {
     const [ first, ...rest ] = fns;
     first();
@@ -30,7 +30,7 @@ function animate(fns){
   }
 }
 
-export function mapStateToProps(state){
+export function mapStateToProps (state){
   const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
   const currentPlayer = state.game.players[state.game.currentTurn];
 
@@ -45,7 +45,10 @@ export function mapStateToProps(state){
     selectedCard: activePlayer.selectedCard,
     hoveredCardIdx: state.game.hoveredCardIdx,
     hoveredCard: state.game.hoveredCard,
-    playingCardType: currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard].type : null,
+    playingCardType:
+      currentPlayer.selectedCard !== null
+        ? currentPlayer.hand[currentPlayer.selectedCard].type
+        : null,
 
     status: activePlayer.status,
     target: activePlayer.target,
@@ -75,7 +78,7 @@ export function mapStateToProps(state){
   };
 }
 
-export function mapDispatchToProps(dispatch){
+export function mapDispatchToProps (dispatch){
   return {
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -185,7 +188,7 @@ export class GameArea extends Component {
     onAIResponse: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -210,20 +213,20 @@ export class GameArea extends Component {
   };
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
-  componentDidMount() {
+  componentDidMount () {
     this.updateDimensions();
     window.onresize = () => {
       this.updateDimensions();
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.sidebarOpen !== this.props.sidebarOpen) {
       this.updateDimensions(nextProps);
     }
   }
 
-  updateDimensions(props = this.props) {
+  updateDimensions (props = this.props) {
     const maxBoardHeight = window.innerHeight - 64 - 150;
     const maxBoardWidth = window.innerWidth - (props.sidebarOpen ? 512 : 256);
 
@@ -233,19 +236,19 @@ export class GameArea extends Component {
     });
   }
 
-  isMyTurn() {
+  isMyTurn () {
     return this.props.currentTurn === this.props.player;
   }
 
-  allPieces() {
+  allPieces () {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  myPieces() {
+  myPieces () {
     return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  hoveredCard() {
+  hoveredCard () {
     const hand = this.props[`${this.props.player}Hand`];
 
     const cardFromIndex = idx => {
@@ -276,11 +279,11 @@ export class GameArea extends Component {
     );
   }
 
-  movePiece(hexId, asPartOfAttack = false) {
+  movePiece (hexId, asPartOfAttack = false) {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
   }
 
-  attackPiece(hexId, intermediateMoveHexId) {
+  attackPiece (hexId, intermediateMoveHexId) {
     if (intermediateMoveHexId) {
       this.props.onMoveRobotAndAttack(this.props.selectedTile, intermediateMoveHexId, hexId);
     } else {
@@ -288,11 +291,11 @@ export class GameArea extends Component {
     }
   }
 
-  placePiece(hexId) {
+  placePiece (hexId) {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
-  onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
+  onSelectTile (hexId, action = null, intermediateMoveHexId = null) {
     if (this.props.attack) {
       return; // Can't move/attack while an attack is in progress.
     }
@@ -308,7 +311,7 @@ export class GameArea extends Component {
     }
   }
 
-  onHoverTile(hexId, action) {
+  onHoverTile (hexId, action) {
     if (action === 'mouseleave') {
       this.props.onHoverTile(null);
     } else {
@@ -326,11 +329,11 @@ export class GameArea extends Component {
     }
   }
 
-  loadBackground() {
+  loadBackground () {
     return inBrowser() ? require('../components/img/black_bg_lodyas.png') : '';
   }
 
-  renderNotification() {
+  renderNotification () {
     const options = {
       tag: 'wordbots',
       icon: '/static/icons/android-icon-144x144.png',
@@ -344,7 +347,7 @@ export class GameArea extends Component {
         <Notification
           timeout={2000}
           title="Wordbots."
-          options={{...options, body: 'It\'s your turn!'}}
+          options={{...options, body: "It's your turn!"}}
           onClick={() => {
             window.focus();
           }}
@@ -353,7 +356,7 @@ export class GameArea extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div>
@@ -394,7 +397,8 @@ export class GameArea extends Component {
               playingCardType={this.props.playingCardType}
               tutorialStep={this.props.tutorialStep}
               attack={this.props.attack}
-              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
+              onSelectTile={(hexId, action, intmedMoveHexId) =>
+                this.onSelectTile(hexId, action, intmedMoveHexId)}
               onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               onTutorialStep={this.props.onTutorialStep}
               onEndGame={() => {

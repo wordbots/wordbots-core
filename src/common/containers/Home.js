@@ -11,13 +11,13 @@ import * as gameActions from '../actions/game';
 import PaperButton from '../components/PaperButton';
 import Card from '../components/card/Card';
 
-export function mapStateToProps(state){
+export function mapStateToProps (state){
   return {
     version: state.version
   };
 }
 
-export function mapDispatchToProps(dispatch){
+export function mapDispatchToProps (dispatch){
   return {
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
@@ -34,7 +34,7 @@ class Home extends Component {
     onStartTutorial: func
   };
 
-  constructor() {
+  constructor () {
     super();
 
     this.state = {
@@ -42,7 +42,7 @@ class Home extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     listenToRecentCards(data => {
       const recentCards = uniqBy(Object.values(data), 'id').reverse().slice(0, 10);
       this.setState({recentCards});
@@ -127,7 +127,7 @@ class Home extends Component {
     }
   };
 
-  render() {
+  render () {
     const [ version, sha ] = this.props.version.split('+');
 
     return (
@@ -192,7 +192,9 @@ class Home extends Component {
             fontSize: '0.7em'
           }}
         >
-          v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{sha}
+          v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>
+            {version}
+          </a>+{sha}
         </div>
       </div>
     );

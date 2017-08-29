@@ -1,7 +1,7 @@
 import {isEqual, omit} from 'lodash';
 
-export function setTrigger(state, currentObject, source){
-  function areTriggersEqual(t1, t2){
+export function setTrigger (state, currentObject, source){
+  function areTriggersEqual (t1, t2){
     return (
       isEqual(omit(t1, [ 'trigger' ]), omit(t2, [ 'trigger' ])) &&
       isEqual(omit(t1.trigger, [ 'targets' ]), omit(t2.trigger, [ 'targets' ]))
@@ -26,13 +26,13 @@ export function setTrigger(state, currentObject, source){
   };
 }
 
-export function unsetTrigger(state, currentObject, source){
+export function unsetTrigger (state, currentObject, source){
   return function (trigger, action, props = {}){
     currentObject.triggers = currentObject.triggers.filter(t => t.source !== source);
   };
 }
 
-export function triggers(state){
+export function triggers (state){
   return {
     afterAttack: function (targetFunc, defenderType){
       return {

@@ -2,7 +2,15 @@ import {compact, fromPairs, isArray, isEmpty, isUndefined} from 'lodash';
 import {pick} from 'shuffle-array';
 
 import {arrayToSentence} from '../util/common';
-import {opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf, logAction} from '../util/game';
+import {
+  opponent,
+  currentPlayer,
+  opponentPlayer,
+  allObjectsOnBoard,
+  getHex,
+  ownerOf,
+  logAction
+} from '../util/game';
 
 // Targets are all functions that return one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}
@@ -11,7 +19,7 @@ import {opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, owne
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
 
-export default function targets(state, currentObject){
+export default function targets (state, currentObject){
   return {
     all: function (collection){
       return collection;
@@ -36,7 +44,10 @@ export default function targets(state, currentObject){
         } else {
           // Return objects if possible or hexes if not.
           if (chosenTargets.every(hex => allObjectsOnBoard(state)[hex])) {
-            return {type: 'objects', entries: chosenTargets.map(hex => allObjectsOnBoard(state)[hex])};
+            return {
+              type: 'objects',
+              entries: chosenTargets.map(hex => allObjectsOnBoard(state)[hex])
+            };
           } else {
             return {type: 'hexes', entries: chosenTargets};
           }
@@ -73,7 +84,10 @@ export default function targets(state, currentObject){
 
     controllerOf: function (objects){
       // Assume that only one object is ever passed in here.
-      return {type: 'players', entries: objects.entries.length === 1 ? [ ownerOf(state, objects.entries[0]) ] : []};
+      return {
+        type: 'players',
+        entries: objects.entries.length === 1 ? [ ownerOf(state, objects.entries[0]) ] : []
+      };
     },
 
     // Currently salient object.
@@ -95,7 +109,10 @@ export default function targets(state, currentObject){
 
     opponent: function (){
       if (currentObject) {
-        return {type: 'players', entries: [ state.players[opponent(ownerOf(state, currentObject).name)] ]};
+        return {
+          type: 'players',
+          entries: [ state.players[opponent(ownerOf(state, currentObject).name)] ]
+        };
       } else {
         return {type: 'players', entries: [ opponentPlayer(state) ]};
       }
@@ -107,9 +124,13 @@ export default function targets(state, currentObject){
 
       // Log the random selection.
       if (chosen.length > 0 && [ 'cards', 'objects' ].includes(collection.type)) {
-        const cards = fromPairs(chosen.map(c => (c.card ? [ c.card.name, c.card ] : [ c.name, c ])));
+        const cards = fromPairs(
+          chosen.map(c => (c.card ? [ c.card.name, c.card ] : [ c.name, c ]))
+        );
         const names = Object.keys(cards).map(name => `|${name}|`);
-        const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+        const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1
+          ? 'was'
+          : 'were'} selected`;
         logAction(state, null, explanationStr, cards);
       }
 

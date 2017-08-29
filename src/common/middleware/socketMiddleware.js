@@ -5,13 +5,13 @@ import * as sa from '../actions/socket';
 
 const KEEPALIVE_INTERVAL_SECS = 5; // (Heroku kills connection after 55 idle sec.)
 
-function createSocketMiddleware({excludedActions = []}){
+function createSocketMiddleware ({excludedActions = []}){
   return store => {
     let socket, keepaliveNeeded;
     let username = 'Guest';
     let sendQueue = [];
 
-    function handleAction(action, nextMiddleware){
+    function handleAction (action, nextMiddleware){
       if (action.type === sa.CONNECT) {
         connect();
       } else {
@@ -29,7 +29,7 @@ function createSocketMiddleware({excludedActions = []}){
       }
     }
 
-    function connect(){
+    function connect (){
       store.dispatch(sa.connecting());
 
       socket = new WebSocket(`ws://${window.location.host}/socket`);
@@ -38,7 +38,7 @@ function createSocketMiddleware({excludedActions = []}){
       socket.onmessage = receive;
     }
 
-    function connected(){
+    function connected (){
       store.dispatch(sa.connected());
       send(sa.setUsername(username));
 
@@ -46,11 +46,11 @@ function createSocketMiddleware({excludedActions = []}){
       sendQueue = [];
     }
 
-    function disconnected(){
+    function disconnected (){
       store.dispatch(sa.disconnected());
     }
 
-    function send(action){
+    function send (action){
       if (socket && !action.fromServer && !excludedActions.includes(action.type)) {
         // Either send the action or queue it to send later.
         if (socket.readyState === WebSocket.OPEN) {
@@ -63,7 +63,7 @@ function createSocketMiddleware({excludedActions = []}){
       }
     }
 
-    function receive(event){
+    function receive (event){
       const msg = event.data;
       const action = JSON.parse(msg);
 
@@ -71,7 +71,7 @@ function createSocketMiddleware({excludedActions = []}){
       store.dispatch(Object.assign({}, action, {fromServer: true}));
     }
 
-    function keepalive(){
+    function keepalive (){
       if (socket) {
         // If the socket is open, keepalive if necessary. If the socket is closed, try to re-open it.
         if (socket.readyState === WebSocket.CLOSED) {

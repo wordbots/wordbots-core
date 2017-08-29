@@ -20,7 +20,7 @@ export default class Identicon extends Component {
     size: number
   };
 
-  generate(id, options, generator) {
+  generate (id, options, generator) {
     const size = options.size;
     const hashFn = options.hash || hashCode;
     const value = hashFn(id);
@@ -38,7 +38,7 @@ export default class Identicon extends Component {
     generator.end();
   }
 
-  render() {
+  render () {
     const width = this.props.width;
     const size = this.props.size;
     const side = width / (size * 2 - 1);

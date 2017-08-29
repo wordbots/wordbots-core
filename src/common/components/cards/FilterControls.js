@@ -9,11 +9,11 @@ export default class FilterControls extends Component {
     onSetCostRange: func
   };
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate () {
     return false;
   }
 
-  render() {
+  render () {
     const toggleStyle = {marginBottom: 10};
 
     return (
@@ -29,8 +29,18 @@ export default class FilterControls extends Component {
             Filter by Card Type
           </div>
 
-          <Toggle style={toggleStyle} label="Robots" defaultToggled onToggle={this.props.onToggleFilter('robots')} />
-          <Toggle style={toggleStyle} label="Events" defaultToggled onToggle={this.props.onToggleFilter('events')} />
+          <Toggle
+            style={toggleStyle}
+            label="Robots"
+            defaultToggled
+            onToggle={this.props.onToggleFilter('robots')}
+          />
+          <Toggle
+            style={toggleStyle}
+            label="Events"
+            defaultToggled
+            onToggle={this.props.onToggleFilter('events')}
+          />
           <Toggle
             style={toggleStyle}
             label="Structures"

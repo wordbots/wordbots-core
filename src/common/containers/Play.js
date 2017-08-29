@@ -11,7 +11,7 @@ import * as gameActions from '../actions/game';
 
 import GameArea from './GameArea';
 
-export function mapStateToProps(state){
+export function mapStateToProps (state){
   return {
     started: state.game.started,
     actionLog: state.game.actionLog,
@@ -22,7 +22,7 @@ export function mapStateToProps(state){
   };
 }
 
-export function mapDispatchToProps(dispatch){
+export function mapDispatchToProps (dispatch){
   return {
     onConnect: () => {
       dispatch(socketActions.connect());
@@ -77,7 +77,7 @@ export class Play extends Component {
     onHoverTile: func
   };
 
-  componentDidMount() {
+  componentDidMount () {
     if (!this.props.socket.connected) {
       this.props.onConnect();
     }
@@ -93,7 +93,7 @@ export class Play extends Component {
     this.props.history.push(`play/${mode}`);
   };
 
-  get lobby() {
+  get lobby () {
     if (this.props.started) {
       return <GameArea />;
     } else {
@@ -113,7 +113,7 @@ export class Play extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div style={{paddingRight: 256}}>
         <Helmet title="Play" />

@@ -9,7 +9,7 @@ export default class Deck extends Component {
     deck: array
   };
 
-  render() {
+  render () {
     if (this.props.deck.length > 0) {
       return (
         <Tooltip text={`${this.props.deck.length} Cards`} style={{fontFamily: 'Carter One'}}>

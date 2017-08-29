@@ -2,7 +2,14 @@ import React, {Component} from 'react';
 import {array, bool, func, object} from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table';
 
 export default class GameBrowser extends Component {
   static propTypes = {
@@ -15,17 +22,21 @@ export default class GameBrowser extends Component {
     onSpectateGame: func
   };
 
-  get games() {
+  get games () {
     return this.props.openGames.concat(this.props.inProgressGames);
   }
 
-  renderTableRows() {
+  renderTableRows () {
     if (this.games.length > 0) {
       return this.games.map(game => (
         <TableRow key={game.id}>
           <TableRowColumn>{game.name}</TableRowColumn>
-          <TableRowColumn>{game.players.map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
-          <TableRowColumn>{(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
+          <TableRowColumn>
+            {game.players.map(p => this.props.usernameMap[p]).join(', ')}
+          </TableRowColumn>
+          <TableRowColumn>
+            {(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}
+          </TableRowColumn>
           <TableRowColumn style={{textAlign: 'right'}}>
             {game.players.length === 1 ? (
               <RaisedButton
@@ -68,7 +79,7 @@ export default class GameBrowser extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <Paper
         style={{

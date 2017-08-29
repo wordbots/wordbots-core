@@ -23,7 +23,7 @@ export default class ActiveDeck extends Component {
     onSaveDeck: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -32,7 +32,7 @@ export default class ActiveDeck extends Component {
     };
   }
 
-  get styles() {
+  get styles () {
     return {
       outerCard: {
         display: 'flex',
@@ -81,7 +81,7 @@ export default class ActiveDeck extends Component {
     };
   }
 
-  renderButton(grouping, iconName, tooltip) {
+  renderButton (grouping, iconName, tooltip) {
     const selected = this.state.grouping === grouping;
 
     return (
@@ -103,7 +103,7 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderCard(card, idx, type) {
+  renderCard (card, idx, type) {
     return (
       <div key={idx}>
         <CardTooltip card={card}>
@@ -111,7 +111,9 @@ export default class ActiveDeck extends Component {
             <div style={this.styles.cardCost}>{card.cost}</div>
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>
-              <span onClick={() => this.props.onDecreaseCardCount(card.id)}>&nbsp;&ndash;&nbsp;</span>
+              <span onClick={() => this.props.onDecreaseCardCount(card.id)}>
+                &nbsp;&ndash;&nbsp;
+              </span>
               {card.count}
               <span onClick={() => this.props.onIncreaseCardCount(card.id)}>&nbsp;+&nbsp;</span>
             </div>
@@ -121,21 +123,24 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderCardGroup(type) {
+  renderCardGroup (type) {
     return (
       <div>
-        {sortBy(groupCards(selectType(this.props.cards, type)), [ 'cost', 'name' ]).map((card, idx) =>
-          this.renderCard(card, idx, type)
-        )}
+        {sortBy(groupCards(selectType(this.props.cards, type)), [
+          'cost',
+          'name'
+        ]).map((card, idx) => this.renderCard(card, idx, type))}
       </div>
     );
   }
 
-  renderCardList() {
+  renderCardList () {
     if (this.state.grouping === 0) {
       return (
         <div>
-          {sortBy(groupCards(this.props.cards), [ 'cost', 'name' ]).map((card, idx) => this.renderCard(card, idx))}
+          {sortBy(groupCards(this.props.cards), [ 'cost', 'name' ]).map((card, idx) =>
+            this.renderCard(card, idx)
+          )}
         </div>
       );
     } else {
@@ -183,7 +188,7 @@ export default class ActiveDeck extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div
@@ -232,7 +237,11 @@ export default class ActiveDeck extends Component {
             icon={<FontIcon className="material-icons">save</FontIcon>}
             style={{width: '100%', marginTop: 20}}
             onClick={() => {
-              this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id));
+              this.props.onSaveDeck(
+                this.props.id,
+                this.state.name,
+                this.props.cards.map(c => c.id)
+              );
             }}
           />
         </MustBeLoggedIn>

@@ -6,7 +6,7 @@ import {PARSER_URL} from '../../constants';
 import {expandKeywords} from '../../util/cards';
 import Tooltip from '../Tooltip';
 
-function StatusIcon(text, result){
+function StatusIcon (text, result){
   if (isObject(result)) {
     const isParsed = result.js || result.parsed;
 

@@ -10,7 +10,7 @@ import Deck from './Deck';
 import DiscardPile from './DiscardPile';
 
 class PlayerArea extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -18,7 +18,7 @@ class PlayerArea extends Component {
     };
   }
 
-  getColor(opponent, playerColor) {
+  getColor (opponent, playerColor) {
     if (opponent) {
       return playerColor === 'blue' ? 'orange' : 'blue';
     } else {
@@ -26,7 +26,7 @@ class PlayerArea extends Component {
     }
   }
 
-  get styles() {
+  get styles () {
     const opponent = this.props.opponent;
 
     return {
@@ -54,7 +54,7 @@ class PlayerArea extends Component {
     };
   }
 
-  render() {
+  render () {
     const opponent = this.props.opponent;
     const gameProps = this.props.gameProps;
     const color = this.getColor(opponent, gameProps.player);

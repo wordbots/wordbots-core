@@ -14,7 +14,7 @@ export default class EnergyCurve extends Component {
     height: 130
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -22,7 +22,7 @@ export default class EnergyCurve extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.updateWidth();
 
     window.onresize = () => {
@@ -30,13 +30,13 @@ export default class EnergyCurve extends Component {
     };
   }
 
-  updateWidth() {
+  updateWidth () {
     this.setState({
       width: this.node.offsetWidth
     });
   }
 
-  parseCards(cards) {
+  parseCards (cards) {
     const curve = {};
 
     cards.forEach(card => {
@@ -61,7 +61,7 @@ export default class EnergyCurve extends Component {
     return data;
   }
 
-  render() {
+  render () {
     const margins = {
       top: 15,
       right: 10,

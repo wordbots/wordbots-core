@@ -16,10 +16,12 @@ export default class CardTextField extends Component {
     onOpenDialog: func
   };
 
-  get textSuggestions() {
+  get textSuggestions () {
     if (this.state && this.state.bigramProbs) {
       return _(this.props.sentences)
-        .flatMap(s => (s.result.suggestions || []).map(sugg => ({original: s.sentence.trim(), new: sugg})))
+        .flatMap(s =>
+          (s.result.suggestions || []).map(sugg => ({original: s.sentence.trim(), new: sugg}))
+        )
         .sortBy(suggestion => bigramNLL(suggestion.new, this.state.bigramProbs))
         .slice(0, 5)
         .value();
@@ -49,7 +51,11 @@ export default class CardTextField extends Component {
 
   renderDidYouMean = () => {
     if (this.textSuggestions.length > 0) {
-      return <div style={{marginTop: 5}}>Did you mean: {this.textSuggestions.map(this.renderSuggestion)} ?</div>;
+      return (
+        <div style={{marginTop: 5}}>
+          Did you mean: {this.textSuggestions.map(this.renderSuggestion)} ?
+        </div>
+      );
     }
   };
 
@@ -70,7 +76,7 @@ export default class CardTextField extends Component {
     }
   };
 
-  render() {
+  render () {
     return (
       <div>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>

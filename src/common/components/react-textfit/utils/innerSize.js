@@ -1,5 +1,5 @@
 // Calculate height without padding.
-export function innerHeight(el){
+export function innerHeight (el){
   const style = window.getComputedStyle(el, null);
   return (
     el.clientHeight -
@@ -9,7 +9,7 @@ export function innerHeight(el){
 }
 
 // Calculate width without padding.
-export function innerWidth(el){
+export function innerWidth (el){
   const style = window.getComputedStyle(el, null);
   return (
     el.clientWidth -

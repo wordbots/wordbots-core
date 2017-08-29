@@ -11,7 +11,7 @@ export default class CardGrid extends Component {
     nextPage: func
   };
 
-  render() {
+  render () {
     return (
       <div
         style={{

@@ -5,27 +5,30 @@ import {allObjectsOnBoard, allHexIds, getHex, matchesType} from '../util/game';
 //    {type: 'objects', entries: <array of objects on the board>}
 //    {type: 'hexes', entries: <array of hex ids>}
 
-export function allTiles(state){
+export function allTiles (state){
   return function (){
     return {type: 'hexes', entries: allHexIds()};
   };
 }
 
-export function cardsInHand(state){
+export function cardsInHand (state){
   return function (players, cardType){
     const player = players.entries[0]; // Unpack player target.
-    return {type: 'cards', entries: player.hand.filter(c => matchesType(c, cardType) && !c.justPlayed)};
+    return {
+      type: 'cards',
+      entries: player.hand.filter(c => matchesType(c, cardType) && !c.justPlayed)
+    };
   };
 }
 
 // Included here for backwards compatibility, but no longer outputted by the parser.
-export function objectsInPlay(state){
+export function objectsInPlay (state){
   return function (objType){
     return objectsMatchingConditions(state)(objType, []);
   };
 }
 
-export function objectsMatchingConditions(state){
+export function objectsMatchingConditions (state){
   return function (objType, conditions){
     const objects = Object.values(allObjectsOnBoard(state)).filter(
       obj => matchesType(obj, objType) && conditions.every(cond => cond(getHex(state, obj), obj))
@@ -34,8 +37,11 @@ export function objectsMatchingConditions(state){
   };
 }
 
-export function other(state, currentObject){
+export function other (state, currentObject){
   return function (collection){
-    return {type: 'objects', entries: collection.entries.filter(obj => obj.id !== currentObject.id)};
+    return {
+      type: 'objects',
+      entries: collection.entries.filter(obj => obj.id !== currentObject.id)
+    };
   };
 }

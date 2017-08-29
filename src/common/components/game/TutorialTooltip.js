@@ -28,7 +28,7 @@ export default class TutorialTooltip extends Component {
     onEndTutorial: noop
   };
 
-  get styles() {
+  get styles () {
     return {
       container: {
         zIndex: 99999,
@@ -65,22 +65,26 @@ export default class TutorialTooltip extends Component {
     };
   }
 
-  get step() {
+  get step () {
     return this.props.tutorialStep;
   }
 
-  get pctComplete() {
+  get pctComplete () {
     return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
   }
 
-  get isComplete() {
+  get isComplete () {
     return this.pctComplete === 100;
   }
 
-  get backButton() {
+  get backButton () {
     return (
       <Tooltip inline text="Go back a step">
-        <IconButton onClick={this.props.onPrevStep} disabled={this.step.idx === 0} style={this.styles.backButton}>
+        <IconButton
+          onClick={this.props.onPrevStep}
+          disabled={this.step.idx === 0}
+          style={this.styles.backButton}
+        >
           <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>
             replay
           </FontIcon>
@@ -89,7 +93,7 @@ export default class TutorialTooltip extends Component {
     );
   }
 
-  get nextButton() {
+  get nextButton () {
     if (!this.step.action) {
       return (
         <RaisedButton
@@ -101,7 +105,7 @@ export default class TutorialTooltip extends Component {
     }
   }
 
-  get tooltipBody() {
+  get tooltipBody () {
     return (
       <div style={this.styles.tooltip}>
         <div style={this.styles.percent}>{this.pctComplete}% complete</div>
@@ -114,10 +118,16 @@ export default class TutorialTooltip extends Component {
     );
   }
 
-  render() {
+  render () {
     if (this.step && this.props.enabled) {
       return (
-        <Popover isOpen style={this.styles.container} tipSize={15} body={this.tooltipBody} refreshIntervalMs={50}>
+        <Popover
+          isOpen
+          style={this.styles.container}
+          tipSize={15}
+          body={this.tooltipBody}
+          refreshIntervalMs={50}
+        >
           {this.props.children}
         </Popover>
       );

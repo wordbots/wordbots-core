@@ -3,8 +3,12 @@ import {render} from 'react-dom';
 
 import DevTools from '../common/containers/DevTools';
 
-export default function createDevToolsWindow(store){
-  const popup = window.open(null, 'Redux DevTools', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no');
+export default function createDevToolsWindow (store){
+  const popup = window.open(
+    null,
+    'Redux DevTools',
+    'menubar=no,location=no,resizable=yes,scrollbars=no,status=no'
+  );
   // Reload in case it already exists
   popup.location.reload();
 

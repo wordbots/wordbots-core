@@ -26,7 +26,7 @@ import Home from './Home';
 import Play from './Play';
 import About from './About';
 
-function mapStateToProps(state){
+function mapStateToProps (state){
   return {
     inGame: state.game.started,
     inTutorial: state.game.tutorial,
@@ -34,15 +34,15 @@ function mapStateToProps(state){
   };
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch){
   return {
-    onLoggedIn(user) {
+    onLoggedIn (user) {
       dispatch(actions.loggedIn(user));
     },
-    onLoggedOut() {
+    onLoggedOut () {
       dispatch(actions.loggedOut());
     },
-    onReceiveFirebaseData(data) {
+    onReceiveFirebaseData (data) {
       dispatch(actions.firebaseData(data));
     }
   };
@@ -66,7 +66,7 @@ class App extends Component {
     onToggleSidebar: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -75,11 +75,11 @@ class App extends Component {
     };
   }
 
-  componentWillMount() {
+  componentWillMount () {
     logAnalytics();
   }
 
-  componentDidMount() {
+  componentDidMount () {
     onLogin(user => {
       this.setState({loading: false});
       this.props.onLoggedIn(user.toJSON());
@@ -93,21 +93,21 @@ class App extends Component {
     });
   }
 
-  componentWillUpdate() {
+  componentWillUpdate () {
     logAnalytics();
   }
 
-  getChildContext() {
+  getChildContext () {
     return {
       muiTheme: getMuiTheme(PersonalTheme)
     };
   }
 
-  get isSidebarExpanded() {
+  get isSidebarExpanded () {
     return !isFlagSet('sidebarCollapsed') || this.props.inTutorial;
   }
 
-  get sidebar() {
+  get sidebar () {
     if (this.state.loading) {
       return null;
     } else if (this.props.inGame) {
@@ -117,7 +117,7 @@ class App extends Component {
     }
   }
 
-  get content() {
+  get content () {
     if (this.state.loading) {
       return null;
     } else {
@@ -144,7 +144,7 @@ class App extends Component {
     }
   }
 
-  get dialogs() {
+  get dialogs () {
     if (!this.state.loading) {
       const history = this.props.history;
       return (
@@ -157,7 +157,7 @@ class App extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div>
         <TitleBar />

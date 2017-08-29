@@ -13,38 +13,38 @@ class HexUtils {
     new Hex(0, 1, -1)
   ];
 
-  static equals(a, b) {
+  static equals (a, b) {
     return compareCertainKeys(a, b, [ 'q', 'r', 's' ]);
   }
 
-  static add(a, b) {
+  static add (a, b) {
     return new Hex(a.q + b.q, a.r + b.r, a.s + b.s);
   }
 
-  static subtract(a, b) {
+  static subtract (a, b) {
     return HexUtils.add(a, HexUtils.multiply(b, -1));
   }
 
-  static multiply(a, k) {
+  static multiply (a, k) {
     return new Hex(a.q * k, a.r * k, a.s * k);
   }
 
-  static lengths(hex) {
+  static lengths (hex) {
     return parseInt((Math.abs(hex.q) + Math.abs(hex.r) + Math.abs(hex.s)) / 2);
   }
 
-  static distance(a, b) {
+  static distance (a, b) {
     return HexUtils.lengths(HexUtils.subtract(a, b));
   }
 
-  static direction(direction) {
+  static direction (direction) {
     return HexUtils.DIRECTIONS[(6 + direction % 6) % 6];
   }
-  static neighbour(hex, direction) {
+  static neighbour (hex, direction) {
     return HexUtils.add(hex, HexUtils.direction(direction));
   }
 
-  static round(hex) {
+  static round (hex) {
     let rq = Math.round(hex.q);
     let rr = Math.round(hex.r);
     let rs = Math.round(hex.s);
@@ -60,7 +60,7 @@ class HexUtils {
     return new Hex(rq, rr, rs);
   }
 
-  static hexToPixel(hex, layout) {
+  static hexToPixel (hex, layout) {
     const s = layout.spacing;
     const M = layout.orientation;
     let x = (M.f0 * hex.q + M.f1 * hex.r) * layout.size.x;
@@ -71,29 +71,32 @@ class HexUtils {
     return new Point(x + layout.origin.x, y + layout.origin.y);
   }
 
-  static pixelToHex(point, layout) {
+  static pixelToHex (point, layout) {
     const M = layout.orientation;
-    const pt = new Point((point.x - layout.origin.x) / layout.size.x, (point.y - layout.origin.y) / layout.size.y);
+    const pt = new Point(
+      (point.x - layout.origin.x) / layout.size.x,
+      (point.y - layout.origin.y) / layout.size.y
+    );
     const q = M.b0 * pt.x + M.b1 * pt.y;
     const r = M.b2 * pt.x + M.b3 * pt.y;
     return new Hex(q, r, -q - r);
   }
 
-  static lerp(a, b, t) {
+  static lerp (a, b, t) {
     return new Hex(a.q + (b.q - a.q) * t, a.r + (b.r - a.r) * t, a.s + (b.s - a.s) * t);
   }
 
-  static getID(hex) {
+  static getID (hex) {
     return `${hex.q},${hex.r},${hex.s}`;
   }
 
-  static IDToHex(hexId) {
+  static IDToHex (hexId) {
     const coords = hexId.split(',').map(coord => parseInt(coord, 10));
 
     return new Hex(...coords);
   }
 
-  static coordsToID(q, r, s) {
+  static coordsToID (q, r, s) {
     return `${q},${r},${s}`;
   }
 }

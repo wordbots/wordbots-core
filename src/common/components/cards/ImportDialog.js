@@ -11,7 +11,7 @@ export default class ImportDialog extends Component {
     onImport: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -19,9 +19,15 @@ export default class ImportDialog extends Component {
     };
   }
 
-  get actions() {
+  get actions () {
     return [
-      <RaisedButton primary label="Close" key="Close" onTouchTap={this.close} style={{marginRight: 10}} />,
+      <RaisedButton
+        primary
+        label="Close"
+        key="Close"
+        onTouchTap={this.close}
+        style={{marginRight: 10}}
+      />,
       <RaisedButton
         secondary
         label="Import"
@@ -38,9 +44,14 @@ export default class ImportDialog extends Component {
     RouterDialog.closeDialog(this.props.history);
   };
 
-  render() {
+  render () {
     return (
-      <RouterDialog path="import" title="Import Cards" history={this.props.history} actions={this.actions}>
+      <RouterDialog
+        path="import"
+        title="Import Cards"
+        history={this.props.history}
+        actions={this.actions}
+      >
         <TextField
           id="tf"
           multiLine

@@ -21,17 +21,17 @@ import {
 } from '../../../util/game';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-function selectTile(state, tile){
+function selectTile (state, tile){
   currentPlayer(state).selectedTile = tile;
   currentPlayer(state).selectedCard = null;
   return state;
 }
 
-export function setHoveredTile(state, card){
+export function setHoveredTile (state, card){
   return Object.assign({}, state, {hoveredCard: card});
 }
 
-export function setSelectedTile(state, playerName, tile){
+export function setSelectedTile (state, playerName, tile){
   const player = state.players[playerName];
   const isCurrentPlayer = playerName === state.currentTurn;
 
@@ -52,7 +52,7 @@ export function setSelectedTile(state, playerName, tile){
   }
 }
 
-export function moveRobot(state, fromHex, toHex, asPartOfAttack = false){
+export function moveRobot (state, fromHex, toHex, asPartOfAttack = false){
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
 
@@ -64,7 +64,9 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false){
     movingRobot.movedThisTurn = true;
 
     state = triggerSound(state, 'move.wav');
-    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
+    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {
+      [movingRobot.card.name]: movingRobot.card
+    });
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
@@ -78,7 +80,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false){
   return state;
 }
 
-export function attack(state, source, target){
+export function attack (state, source, target){
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.
 
@@ -98,10 +100,15 @@ export function attack(state, source, target){
       attacker.attackedThisTurn = true;
 
       state = triggerSound(state, 'attack.wav');
-      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
-        [defender.card.name]: defender.card,
-        [attacker.card.name]: attacker.card
-      });
+      state = logAction(
+        state,
+        player,
+        `attacked |${defender.card.name}| with |${attacker.card.name}|`,
+        {
+          [defender.card.name]: defender.card,
+          [attacker.card.name]: attacker.card
+        }
+      );
       state.attack = {from: source, to: target};
     }
   }
@@ -110,7 +117,7 @@ export function attack(state, source, target){
 }
 
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
-export function attackComplete(state){
+export function attackComplete (state){
   if (state.attack && state.attack.from && state.attack.to) {
     const [ source, target ] = [ state.attack.from, state.attack.to ];
 
@@ -123,13 +130,20 @@ export function attackComplete(state){
       {
         object: attacker,
         condition: t =>
-          !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'
+          !t.defenderType ||
+          stringToType(t.defenderType) === defender.card.type ||
+          t.defenderType === 'allobjects'
       },
       () => dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
     );
 
     if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
-      state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+      state = dealDamageToObjectAtHex(
+        state,
+        getAttribute(defender, 'attack') || 0,
+        source,
+        'combat'
+      );
     }
 
     // Move attacker to defender's space (if possible).
@@ -150,7 +164,7 @@ export function attackComplete(state){
   return state;
 }
 
-export function activateObject(state, abilityIdx, selectedHexId = null){
+export function activateObject (state, abilityIdx, selectedHexId = null){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -158,7 +172,12 @@ export function activateObject(state, abilityIdx, selectedHexId = null){
   const hexId = selectedHexId || currentPlayer(tempState).selectedTile;
   const object = allObjectsOnBoard(tempState)[hexId];
 
-  if (object && !object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
+  if (
+    object &&
+    !object.cantActivate &&
+    object.activatedAbilities &&
+    object.activatedAbilities[abilityIdx]
+  ) {
     const player = currentPlayer(tempState);
     const ability = object.activatedAbilities[abilityIdx];
 
@@ -166,7 +185,14 @@ export function activateObject(state, abilityIdx, selectedHexId = null){
     const target = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
-    tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
+    tempState = logAction(
+      tempState,
+      player,
+      logMsg,
+      {[object.card.name]: object.card},
+      null,
+      target
+    );
 
     executeCmd(tempState, ability.cmd, object);
 
@@ -198,7 +224,7 @@ export function activateObject(state, abilityIdx, selectedHexId = null){
 
 // Low-level "move" of an object.
 // Used by moveRobot(), attack(), and in tests.
-export function transportObject(state, fromHex, toHex){
+export function transportObject (state, fromHex, toHex){
   const robot = allObjectsOnBoard(state)[fromHex];
   const owner = ownerOf(state, robot);
 

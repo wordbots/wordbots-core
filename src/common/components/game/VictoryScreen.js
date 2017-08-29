@@ -8,7 +8,7 @@ export default class VictoryScreen extends Component {
     onClick: func
   };
 
-  render() {
+  render () {
     const colors = {
       orange: '#ffb85d',
       blue: '#badbff'

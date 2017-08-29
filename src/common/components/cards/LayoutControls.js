@@ -8,11 +8,11 @@ export default class LayoutControls extends Component {
     onSetLayout: func
   };
 
-  shouldComponentUpdate(newProps) {
+  shouldComponentUpdate (newProps) {
     return newProps.layout !== this.props.layout;
   }
 
-  get baseIconStyle() {
+  get baseIconStyle () {
     return {
       fontSize: 36,
       padding: 10,
@@ -24,7 +24,7 @@ export default class LayoutControls extends Component {
     };
   }
 
-  renderButton(layout, iconName) {
+  renderButton (layout, iconName) {
     const selected = this.props.layout === layout;
     return (
       <FontIcon
@@ -43,7 +43,7 @@ export default class LayoutControls extends Component {
     );
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div

@@ -8,11 +8,11 @@ export default class ModeSelection extends Component {
     onSelectMode: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     return (
       <div
         style={{
@@ -36,7 +36,11 @@ export default class ModeSelection extends Component {
           imagePath="/static/casual.png"
           onSelect={() => this.props.onSelectMode('casual')}
         />
-        <GameMode disabled name="Matchmaking" onSelect={() => this.props.onSelectMode('matchmaking')} />
+        <GameMode
+          disabled
+          name="Matchmaking"
+          onSelect={() => this.props.onSelectMode('matchmaking')}
+        />
       </div>
     );
   }

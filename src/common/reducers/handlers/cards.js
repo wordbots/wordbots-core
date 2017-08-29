@@ -101,7 +101,7 @@ const cardsHandlers = {
 };
 
 // Converts card from cardCreator store format -> format for collection and game stores.
-function createCardFromProps(props){
+function createCardFromProps (props){
   const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
   const command = sentences.map(s => s.result.js);
 
@@ -138,7 +138,7 @@ function createCardFromProps(props){
 }
 
 // Saves a card, either as a new card or replacing an existing card.
-function saveCard(state, card){
+function saveCard (state, card){
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
   const existingCard = state.cards.find(c => c.id === card.id || areIdenticalCards(c, card));

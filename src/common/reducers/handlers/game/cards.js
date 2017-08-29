@@ -19,7 +19,7 @@ import {
 import {splitSentences} from '../../../util/cards';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-export function setSelectedCard(state, playerName, cardIdx){
+export function setSelectedCard (state, playerName, cardIdx){
   const player = state.players[playerName];
   const isCurrentPlayer = playerName === state.currentTurn;
   const selectedCard = player.hand[cardIdx];
@@ -41,7 +41,11 @@ export function setSelectedCard(state, playerName, cardIdx){
     if (player.selectedCard === cardIdx) {
       // Clicked on already selected card => Deselect or play event
 
-      if (isCurrentPlayer && selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
+      if (
+        isCurrentPlayer &&
+        selectedCard.type === TYPE_EVENT &&
+        getCost(selectedCard) <= energy.available
+      ) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = null;
@@ -69,7 +73,7 @@ export function setSelectedCard(state, playerName, cardIdx){
   }
 }
 
-export function placeCard(state, cardIdx, tile){
+export function placeCard (state, cardIdx, tile){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -104,12 +108,21 @@ export function placeCard(state, cardIdx, tile){
     player.selectedTile = tile;
 
     tempState = triggerSound(tempState, 'spawn.wav');
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+    tempState = logAction(
+      tempState,
+      player,
+      `played |${card.name}|`,
+      {[card.name]: card},
+      timestamp,
+      target
+    );
 
     if (card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
         const cmdText = splitSentences(card.text)[idx];
-        tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+        tempState.currentCmdText = cmdText.includes('"')
+          ? cmdText.split('"')[1].replace(/"/g, '')
+          : cmdText;
         executeCmd(tempState, cmd, playedObject);
       });
     }
@@ -144,7 +157,7 @@ export function placeCard(state, cardIdx, tile){
   }
 }
 
-function playEvent(state, cardIdx){
+function playEvent (state, cardIdx){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -160,12 +173,21 @@ function playEvent(state, cardIdx){
     const target = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+    tempState = logAction(
+      tempState,
+      player,
+      `played |${card.name}|`,
+      {[card.name]: card},
+      timestamp,
+      target
+    );
 
     (isArray(card.command) ? card.command : [ card.command ]).forEach((cmd, idx) => {
       const cmdText = splitSentences(card.text)[idx];
       if (!player.target.choosing) {
-        tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+        tempState.currentCmdText = cmdText.includes('"')
+          ? cmdText.split('"')[1].replace(/"/g, '')
+          : cmdText;
         executeCmd(tempState, cmd);
       }
     });

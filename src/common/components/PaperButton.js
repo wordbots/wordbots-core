@@ -11,7 +11,7 @@ export default class PaperButton extends Component {
     children: oneOfType([ array, object ])
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -35,7 +35,7 @@ export default class PaperButton extends Component {
     this.setState({shadow: 1});
   };
 
-  render() {
+  render () {
     return (
       <Paper
         zDepth={this.state.shadow}

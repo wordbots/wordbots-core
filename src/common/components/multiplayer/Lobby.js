@@ -27,7 +27,7 @@ export default class Lobby extends Component {
     onSelectMode: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -35,23 +35,23 @@ export default class Lobby extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.availableDecks.length !== this.props.availableDecks.length) {
       this.setState({selectedDeck: nextProps.availableDecks.length - 1});
     }
   }
 
-  get hasNoDecks() {
+  get hasNoDecks () {
     return this.props.availableDecks.length === 0;
   }
 
-  get deck() {
+  get deck () {
     const deck = this.props.availableDecks[this.state.selectedDeck];
     const cards = cardsInDeck(deck, this.props.cards).map(instantiateCard);
     return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
   }
 
-  renderLobbyContent(gameMode, socket) {
+  renderLobbyContent (gameMode, socket) {
     if (gameMode === '/casual') {
       if (socket.hosting) {
         return <Waiting />;
@@ -91,7 +91,7 @@ export default class Lobby extends Component {
     }
   }
 
-  render() {
+  render () {
     const skt = this.props.socket;
 
     return (

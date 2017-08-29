@@ -10,7 +10,7 @@ export default class HostGame extends Component {
     onHostGame: func
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -18,7 +18,7 @@ export default class HostGame extends Component {
     };
   }
 
-  render() {
+  render () {
     return (
       <Paper style={{padding: 20, marginBottom: 20, position: 'relative'}}>
         <TextField
@@ -30,7 +30,17 @@ export default class HostGame extends Component {
             this.setState({gameName: e.target.value});
           }}
         />
-        <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 20,
+            height: 36,
+            margin: 'auto',
+            color: 'white'
+          }}
+        >
           <RaisedButton
             secondary
             disabled={this.props.disabled || this.state.gameName === ''}

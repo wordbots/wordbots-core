@@ -10,13 +10,15 @@ export default class FillPattern extends Component {
     fill: string
   };
 
-  get images() {
+  get images () {
     return loadImages();
   }
 
-  render() {
+  render () {
     const id = HexUtils.getID(this.props.hex);
-    const fillImage = this.props.fill ? this.images[`${this.props.fill}_tile`] : this.images['floor'];
+    const fillImage = this.props.fill
+      ? this.images[`${this.props.fill}_tile`]
+      : this.images['floor'];
 
     return (
       <defs>

@@ -8,7 +8,7 @@ import * as creatorActions from '../actions/creator';
 
 import c from './handlers/cards';
 
-export default function creator(oldState = defaultState, action){
+export default function creator (oldState = defaultState, action){
   const state = Object.assign({}, oldState);
 
   switch (action.type) {

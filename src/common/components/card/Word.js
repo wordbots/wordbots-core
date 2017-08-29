@@ -4,7 +4,7 @@ import {id} from '../../util/common';
 import {inBrowser} from '../../util/browser';
 import Tooltip from '../Tooltip';
 
-function Word(word, keywords, result){
+function Word (word, keywords, result){
   if ((result.unrecognizedTokens || []).includes(word.toLowerCase())) {
     return (
       <span key={id()}>

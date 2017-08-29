@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { array, string } from 'prop-types';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import React, {Component} from 'react';
+import {array, string} from 'prop-types';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
-import { EVENT_ANIMATION_TIME_MS } from '../../constants';
+import {EVENT_ANIMATION_TIME_MS} from '../../constants';
 import Card from '../card/Card';
 
 export default class EventAnimation extends Component {
@@ -31,7 +31,7 @@ export default class EventAnimation extends Component {
 
   proceedToNextEvent = () => {
     this.setState({idx: this.props.eventQueue.length});
-  }
+  };
 
   renderEvent() {
     setTimeout(() => this.proceedToNextEvent(), EVENT_ANIMATION_TIME_MS);
@@ -41,23 +41,21 @@ export default class EventAnimation extends Component {
   render() {
     if (this.currentEvent) {
       return (
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          right: 0,
-          zIndex: 99999
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            right: 0,
+            zIndex: 99999
+          }}
+        >
           <TransitionGroup>
-            <CSSTransition
-              appear
-              classNames={`event-animation-${this.props.currentTurn}`}
-              timeout={500}
-            >
+            <CSSTransition appear classNames={`event-animation-${this.props.currentTurn}`} timeout={500}>
               {this.renderEvent()}
             </CSSTransition>
           </TransitionGroup>

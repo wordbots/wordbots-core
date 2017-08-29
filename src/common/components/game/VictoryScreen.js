@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { func, string } from 'prop-types';
+import React, {Component} from 'react';
+import {func, string} from 'prop-types';
 
 export default class VictoryScreen extends Component {
   static propTypes = {
@@ -10,8 +10,8 @@ export default class VictoryScreen extends Component {
 
   render() {
     const colors = {
-      'orange': '#ffb85d',
-      'blue': '#badbff'
+      orange: '#ffb85d',
+      blue: '#badbff'
     };
 
     return (
@@ -32,7 +32,8 @@ export default class VictoryScreen extends Component {
           color: colors[this.props.winnerColor],
           borderRadius: 2,
           zIndex: 99999
-      }}>
+        }}
+      >
         <div>
           <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
           <div>Click anywhere to return to the lobby.</div>

@@ -15,11 +15,31 @@ class Orientation {
 }
 
 class Layout {
-  static LAYOUT_FLAT = new Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0);
-  static LAYOUT_POINTY = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
+  static LAYOUT_FLAT = new Orientation(
+    3.0 / 2.0,
+    0.0,
+    Math.sqrt(3.0) / 2.0,
+    Math.sqrt(3.0),
+    2.0 / 3.0,
+    0.0,
+    -1.0 / 3.0,
+    Math.sqrt(3.0) / 3.0,
+    0.0
+  );
+  static LAYOUT_POINTY = new Orientation(
+    Math.sqrt(3.0),
+    Math.sqrt(3.0) / 2.0,
+    0.0,
+    3.0 / 2.0,
+    Math.sqrt(3.0) / 3.0,
+    -1.0 / 3.0,
+    0.0,
+    2.0 / 3.0,
+    0.5
+  );
 
   constructor(layout, origin) {
-    this.orientation = (layout.flat) ? Layout.LAYOUT_FLAT : Layout.LAYOUT_POINTY;
+    this.orientation = layout.flat ? Layout.LAYOUT_FLAT : Layout.LAYOUT_POINTY;
     this.size = new Point(layout.width, layout.height);
     this.origin = origin || new Point(0, 0);
     this.spacing = layout.spacing || 1;

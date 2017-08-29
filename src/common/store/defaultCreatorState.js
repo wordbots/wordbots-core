@@ -1,7 +1,7 @@
-import { id } from '../util/common';
+import {id} from '../util/common';
 
 const defaultState = {
-  id: null,  // Only exists for existing cards that are being edited (not new cards).
+  id: null, // Only exists for existing cards that are being edited (not new cards).
   name: '',
   spriteID: id(),
   type: 0,

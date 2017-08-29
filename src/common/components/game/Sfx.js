@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { array } from 'prop-types';
+import React, {Component} from 'react';
+import {array} from 'prop-types';
 
-import { inBrowser, isFlagSet } from '../../util/browser';
+import {inBrowser, isFlagSet} from '../../util/browser';
 
 const Sound = inBrowser() ? require('react-sound').default : null;
 
@@ -32,7 +32,7 @@ export default class Sfx extends Component {
 
   proceedToNextSound = () => {
     this.setState({idx: this.state.idx + 1});
-  }
+  };
 
   render() {
     if (this.enabled && this.currentSound) {
@@ -41,7 +41,8 @@ export default class Sfx extends Component {
           url={`/static/sound/${this.currentSound}`}
           volume={45}
           playStatus={Sound.status.PLAYING}
-          onFinishedPlaying={this.proceedToNextSound} />
+          onFinishedPlaying={this.proceedToNextSound}
+        />
       );
     } else {
       return null;

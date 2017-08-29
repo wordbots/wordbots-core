@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { object } from 'prop-types';
+import React, {Component} from 'react';
+import {object} from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 
-import { login, register, resetPassword } from '../../util/firebase';
+import {login, register, resetPassword} from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 
 export default class LoginDialog extends Component {
@@ -25,7 +25,7 @@ export default class LoginDialog extends Component {
 
   handleClose = () => {
     RouterDialog.closeDialog(this.props.history);
-  }
+  };
 
   register = (email, username, password) => {
     register(email, username, password)
@@ -36,7 +36,7 @@ export default class LoginDialog extends Component {
       .catch(err => {
         this.setState({error: `Error: ${err.message}`});
       });
-  }
+  };
 
   login = (email, password) => {
     login(email, password)
@@ -47,13 +47,17 @@ export default class LoginDialog extends Component {
       .catch(() => {
         this.setState({error: 'Error: Invalid username/password.'});
       });
-  }
+  };
 
-  resetPassword = (email) => {
+  resetPassword = email => {
     resetPassword(email)
-      .then(() => { this.setState({error: `Password reset email sent to ${email}.`}); })
-      .catch(() => { this.setState({error: 'Error: Email address not found.'}); });
-  }
+      .then(() => {
+        this.setState({error: `Password reset email sent to ${email}.`});
+      })
+      .catch(() => {
+        this.setState({error: 'Error: Email address not found.'});
+      });
+  };
 
   handleKeyPress(t) {
     if (t.charCode === 13 && !this.submitDisabled()) {
@@ -62,14 +66,14 @@ export default class LoginDialog extends Component {
   }
 
   notEmpty(fields) {
-    return fields.reduce((base, field) => base && (field !== ''), true);
+    return fields.reduce((base, field) => base && field !== '', true);
   }
 
   submitDisabled() {
     if (this.state.register) {
-      return !this.notEmpty([this.state.email, this.state.username, this.state.password]);
+      return !this.notEmpty([ this.state.email, this.state.username, this.state.password ]);
     } else {
-      return !this.notEmpty([this.state.email, this.state.password]);
+      return !this.notEmpty([ this.state.email, this.state.password ]);
     }
   }
 
@@ -89,21 +93,24 @@ export default class LoginDialog extends Component {
             value={this.state.email}
             style={{width: '100%'}}
             floatingLabelText="Email address"
-            onKeyPress={(t) => this.handleKeyPress(t)}
-            onChange={e => this.setState({email: e.target.value})} />
+            onKeyPress={t => this.handleKeyPress(t)}
+            onChange={e => this.setState({email: e.target.value})}
+          />
         </div>
 
-        {
-          this.state.register &&
+        {this.state.register && (
           <div>
             <TextField
               value={this.state.username}
               style={{width: '100%'}}
               floatingLabelText="Username"
-              onKeyPress={(t) => this.handleKeyPress(t)}
-              onChange={e => { this.setState({username: e.target.value}); }} />
+              onKeyPress={t => this.handleKeyPress(t)}
+              onChange={e => {
+                this.setState({username: e.target.value});
+              }}
+            />
           </div>
-        }
+        )}
 
         <div>
           <TextField
@@ -111,16 +118,12 @@ export default class LoginDialog extends Component {
             style={{width: '100%'}}
             floatingLabelText="Password"
             type="password"
-            onKeyPress={(t) => this.handleKeyPress(t)}
-            onChange={e => this.setState({password: e.target.value})} />
+            onKeyPress={t => this.handleKeyPress(t)}
+            onChange={e => this.setState({password: e.target.value})}
+          />
         </div>
 
-        {
-          this.state.error &&
-          <div style={{color: 'red', marginTop: 10, fontSize: 12}}>
-            {this.state.error}
-          </div>
-        }
+        {this.state.error && <div style={{color: 'red', marginTop: 10, fontSize: 12}}>{this.state.error}</div>}
       </div>
     );
   }
@@ -132,7 +135,8 @@ export default class LoginDialog extends Component {
           {this.state.register ? 'Have an account?' : 'Don\'t have an account?'} &nbsp;
           <span
             style={{fontWeight: 'bold', cursor: 'pointer'}}
-            onClick={() => this.setState({register: !this.state.register})}>
+            onClick={() => this.setState({register: !this.state.register})}
+          >
             {this.state.register ? 'Login' : 'Register'}
           </span>
         </span>
@@ -142,17 +146,12 @@ export default class LoginDialog extends Component {
 
   render() {
     const actions = [
-      <FlatButton
-        label="Cancel"
-        key="Cancel"
-        primary
-        onTouchTap={this.handleClose}
-      />,
+      <FlatButton label="Cancel" key="Cancel" primary onTouchTap={this.handleClose} />,
       <FlatButton
         label="Forgot Password?"
         key="Forgot Password?"
         primary
-        disabled={!this.notEmpty([this.state.email])}
+        disabled={!this.notEmpty([ this.state.email ])}
         onTouchTap={() => this.resetPassword(this.state.email)}
       />,
       <FlatButton

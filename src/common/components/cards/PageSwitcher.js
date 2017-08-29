@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { number, func } from 'prop-types';
+import React, {Component} from 'react';
+import {number, func} from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 
@@ -13,12 +13,14 @@ export default class CardGrid extends Component {
 
   render() {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        margin: '20px',
-        width: 'calc(100% - 40px)'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          margin: '20px',
+          width: 'calc(100% - 40px)'
+        }}
+      >
         <RaisedButton
           icon={<FontIcon className="material-icons">arrow_back</FontIcon>}
           disabled={this.props.page <= 1}

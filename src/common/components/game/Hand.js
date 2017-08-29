@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, number, object, string} from 'prop-types';
 import ReactDOM from 'react-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { isEmpty, isNull } from 'lodash';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import {isEmpty, isNull} from 'lodash';
 
-import { splitSentences } from '../../util/cards';
-import { getCost } from '../../util/game';
+import {splitSentences} from '../../util/cards';
+import {getCost} from '../../util/game';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 import TutorialTooltip from '../game/TutorialTooltip';
@@ -60,24 +60,23 @@ export default class Hand extends Component {
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
     return this.props.cards.map((card, idx) => {
-      const zIndex = isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
+      const zIndex = isNull(this.props.hoveredCard) ? 0 : 1000 - Math.abs(this.props.hoveredCard - idx) * 10;
 
       // TODO this isn't quite right ...
-      const rotationDegs = (idx - (numCards - 1)/2) * 5;
+      const rotationDegs = (idx - (numCards - 1) / 2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
       return (
-        <CSSTransition
-          key={card.id}
-          classNames="hand"
-          exit={false}
-          timeout={500}
-        >
+        <CSSTransition key={card.id} classNames="hand" exit={false} timeout={500}>
           <TutorialTooltip
             tutorialStep={this.props.tutorialStep}
             enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.card === card.name}
-            onNextStep={() => { this.props.onTutorialStep(); }}
-            onPrevStep={() => { this.props.onTutorialStep(true); }}
+            onNextStep={() => {
+              this.props.onTutorialStep();
+            }}
+            onPrevStep={() => {
+              this.props.onTutorialStep(true);
+            }}
           >
             <div>
               <Card
@@ -94,18 +93,22 @@ export default class Hand extends Component {
                 baseCost={card.baseCost}
                 cardStats={card.stats}
                 source={card.source}
-
-                selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
+                selected={
+                  this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)
+                }
                 targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
                 visible={this.props.isActivePlayer}
-
                 margin={idx < numCards - 1 ? cardMargin : 0}
                 rotation={this.props.curved ? rotationDegs : 0}
                 yTranslation={this.props.curved ? translationPx : 0}
                 zIndex={zIndex}
-
-                onCardClick={e => { this.props.onSelectCard(idx); }}
-                onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+                onCardClick={e => {
+                  this.props.onSelectCard(idx);
+                }}
+                onCardHover={overOrOut => {
+                  this.props.onHoverCard(overOrOut ? idx : null);
+                }}
+              />
             </div>
           </TutorialTooltip>
         </CSSTransition>
@@ -126,7 +129,8 @@ export default class Hand extends Component {
           left: 0,
           right: 0,
           margin: '0 auto'
-        }}>
+        }}
+      >
         {this.renderCards()}
       </TransitionGroup>
     );

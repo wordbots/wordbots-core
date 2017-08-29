@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {object, string} from 'prop-types';
 
 export default class Status extends Component {
   static propTypes = {
@@ -19,18 +19,20 @@ export default class Status extends Component {
 
   render() {
     return (
-      <div style={{
-        display: 'inline-block',
-        position: 'absolute',
-        top: 50,
-        margin: 'auto',
-        width: '100%',
-        height: 20,
-        textAlign: 'center',
-        fontFamily: 'Carter One',
-        fontSize: 20,
-        color: this.color
-      }}>
+      <div
+        style={{
+          display: 'inline-block',
+          position: 'absolute',
+          top: 50,
+          margin: 'auto',
+          width: '100%',
+          height: 20,
+          textAlign: 'center',
+          fontFamily: 'Carter One',
+          fontSize: 20,
+          color: this.color
+        }}
+      >
         {this.props.status.message}
       </div>
     );

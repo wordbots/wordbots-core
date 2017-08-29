@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { bool, func, number, object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {bool, func, number, object, string} from 'prop-types';
 import TextField from 'material-ui/TextField';
 
 export default class NumberField extends Component {
@@ -15,7 +15,7 @@ export default class NumberField extends Component {
 
   static defaultProps = {
     maxValue: 10
-  }
+  };
 
   render() {
     return (
@@ -28,7 +28,10 @@ export default class NumberField extends Component {
         max={this.props.maxValue}
         disabled={this.props.disabled}
         errorText={this.props.errorText}
-        onChange={e => { this.props.onChange(parseInt(e.target.value)); }} />
+        onChange={e => {
+          this.props.onChange(parseInt(e.target.value));
+        }}
+      />
     );
   }
 }

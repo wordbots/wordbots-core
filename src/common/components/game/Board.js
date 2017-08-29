@@ -1,13 +1,18 @@
-import React, { Component } from 'react';
-import { func, number, object, string } from 'prop-types';
-import { forOwn, isString, mapValues } from 'lodash';
+import React, {Component} from 'react';
+import {func, number, object, string} from 'prop-types';
+import {forOwn, isString, mapValues} from 'lodash';
 
 import HexGrid from '../hexgrid/HexGrid';
 import HexUtils from '../hexgrid/HexUtils';
-import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
+import {TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG} from '../../constants';
 import {
-  getAttribute, ownerOf,
-  validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId
+  getAttribute,
+  ownerOf,
+  validPlacementHexes,
+  validMovementHexes,
+  validAttackHexes,
+  validActionHexes,
+  intermediateMoveHexId
 } from '../../util/game';
 
 export default class Board extends Component {
@@ -62,7 +67,7 @@ export default class Board extends Component {
   }
 
   get currentPlayerPieces() {
-    return (this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces);
+    return this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
   get allPieces() {
@@ -80,13 +85,19 @@ export default class Board extends Component {
         health: getAttribute(piece, 'health'),
         attack: getAttribute(piece, 'attack')
       },
-      attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null
+      attacking: attack && attack.from === hex && !attack.retract ? attack.to : null
     }));
   }
 
-  get selectedHexId() { return this.props.selectedTile; }
-  get selectedHex() { return HexUtils.IDToHex(this.selectedHexId); }
-  get selectedPiece() { return this.currentPlayerPieces[this.selectedHexId]; }
+  get selectedHexId() {
+    return this.props.selectedTile;
+  }
+  get selectedHex() {
+    return HexUtils.IDToHex(this.selectedHexId);
+  }
+  get selectedPiece() {
+    return this.currentPlayerPieces[this.selectedHexId];
+  }
 
   get placementHexes() {
     return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
@@ -95,7 +106,7 @@ export default class Board extends Component {
   get hexColors() {
     const hexColors = {};
 
-    function color(hexes, colorName) {
+    function color(hexes, colorName){
       hexes.forEach(hex => {
         hexColors[isString(hex) ? hex : HexUtils.getID(hex)] = colorName;
       });
@@ -103,10 +114,10 @@ export default class Board extends Component {
 
     forOwn(this.allPieces, (piece, hex) => {
       const owner = ownerOf(this.dummyGameState, piece).name;
-      const canMove = (owner === this.props.currentTurn) && this.hasValidActions(HexUtils.IDToHex(hex));
+      const canMove = owner === this.props.currentTurn && this.hasValidActions(HexUtils.IDToHex(hex));
       const isStructure = piece.card.type === TYPE_STRUCTURE;
 
-      color([hex], `${canMove ? 'bright_' : ''}${owner}${isStructure ? '_grayish' : ''}`);
+      color([ hex ], `${canMove ? 'bright_' : ''}${owner}${isStructure ? '_grayish' : ''}`);
     });
 
     if (this.isMyTurn) {
@@ -168,7 +179,7 @@ export default class Board extends Component {
   }
 
   render() {
-    const { grid } = this.state;
+    const {grid} = this.state;
 
     return (
       <div id="hexgrid">
@@ -186,7 +197,8 @@ export default class Board extends Component {
             onHexHover: this.onHexHover.bind(this),
             onTutorialStep: this.props.onTutorialStep,
             onEndGame: this.props.onEndGame
-          }} />
+          }}
+        />
       </div>
     );
   }

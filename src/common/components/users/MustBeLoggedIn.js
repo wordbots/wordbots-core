@@ -1,17 +1,25 @@
-import React, { Component } from 'react';
-import { array, bool, object, oneOfType } from 'prop-types';
-import { pick } from 'lodash';
+import React, {Component} from 'react';
+import {array, bool, object, oneOfType} from 'prop-types';
+import {pick} from 'lodash';
 
 import Tooltip from '../Tooltip';
 
 export default class MustBeLoggedIn extends Component {
   static propTypes = {
     loggedIn: bool,
-    children: oneOfType([array, object])
+    children: oneOfType([ array, object ])
   };
 
   renderDisabledChild(child) {
-    const propagatedStyleKeys = ['float', 'width', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'];
+    const propagatedStyleKeys = [
+      'float',
+      'width',
+      'margin',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
+    ];
 
     const parentStyle = pick(child.props.style, propagatedStyleKeys);
     const childStyle = {
@@ -23,26 +31,16 @@ export default class MustBeLoggedIn extends Component {
 
     return (
       <Tooltip text="You must be logged in to perform this action.">
-        <div style={parentStyle}>
-          {React.cloneElement(child, { disabled: true, style: childStyle })}
-        </div>
+        <div style={parentStyle}>{React.cloneElement(child, {disabled: true, style: childStyle})}</div>
       </Tooltip>
     );
   }
 
   render() {
     if (this.props.loggedIn) {
-      return (
-        <div>
-          {this.props.children}
-        </div>
-      );
+      return <div>{this.props.children}</div>;
     } else {
-      return (
-        <div className="notAllowed">
-          {React.Children.map(this.props.children, this.renderDisabledChild)}
-        </div>
-      );
+      return <div className="notAllowed">{React.Children.map(this.props.children, this.renderDisabledChild)}</div>;
     }
   }
 }

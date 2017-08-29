@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { bool, number, string } from 'prop-types';
+import React, {Component} from 'react';
+import {bool, number, string} from 'prop-types';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
-import { capitalize } from 'lodash';
+import {capitalize} from 'lodash';
 
-import { inBrowser } from '../../util/browser';
+import {inBrowser} from '../../util/browser';
 import Tooltip from '../Tooltip';
 
 export default class CardStat extends Component {
@@ -49,7 +49,8 @@ export default class CardStat extends Component {
           fontSize: 14 * this.props.scale,
           color: this.textColor,
           marginRight: 4 * this.props.scale
-        }} />
+        }}
+      />
     );
   }
 
@@ -66,9 +67,7 @@ export default class CardStat extends Component {
     if (this.props.current && this.props.current !== this.props.base) {
       return (
         <span style={{position: 'relative'}}>
-          <span style={baseStatStyle}>
-            &nbsp;{this.props.base}&nbsp;
-          </span>
+          <span style={baseStatStyle}>&nbsp;{this.props.base}&nbsp;</span>
           {this.props.current}
         </span>
       );
@@ -113,7 +112,7 @@ export default class CardStat extends Component {
   }
 
   renderOldStyle() {
-    function backgroundColor(type) {
+    function backgroundColor(type){
       switch (type) {
         case 'attack':
           return '#E57373';
@@ -126,7 +125,8 @@ export default class CardStat extends Component {
 
     return (
       <div style={{float: 'left', width: '33%'}}>
-        <Paper circle
+        <Paper
+          circle
           zDepth={1}
           style={{
             width: 32,
@@ -139,10 +139,9 @@ export default class CardStat extends Component {
             margin: 8,
             marginBottom: 4,
             paddingTop: 4
-        }}>
-          <span style={{color: '#fff'}}>
-            {this.props.current || this.props.base}
-          </span>
+          }}
+        >
+          <span style={{color: '#fff'}}>{this.props.current || this.props.base}</span>
         </Paper>
       </div>
     );

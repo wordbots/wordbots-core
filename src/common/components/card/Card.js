@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, number, object, oneOfType, string} from 'prop-types';
 import Divider from 'material-ui/Divider';
-import { CardHeader, CardText } from 'material-ui/Card';
+import {CardHeader, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isEqual, noop } from 'lodash';
+import {isEqual, noop} from 'lodash';
 
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
-import { compareCertainKeys } from '../../util/common';
-import { splitSentences } from '../../util/cards';
-import { inBrowser } from '../../util/browser';
+import {TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString} from '../../constants';
+import {compareCertainKeys} from '../../util/common';
+import {splitSentences} from '../../util/cards';
+import {inBrowser} from '../../util/browser';
 import Textfit from '../react-textfit/Textfit';
 
 import CardBack from './CardBack';
@@ -21,14 +21,14 @@ import Sentence from './Sentence';
 
 export default class Card extends Component {
   static propTypes = {
-    children: oneOfType([string, array]),
+    children: oneOfType([ string, array ]),
 
     id: string,
     name: string,
     spriteID: string,
     spriteV: number,
     type: number,
-    text: oneOfType([string, array]),
+    text: oneOfType([ string, array ]),
     rawText: string,
     parseResults: string,
     img: string,
@@ -72,31 +72,32 @@ export default class Card extends Component {
     onCardClick: noop,
     onCardHover: noop,
     onSpriteClick: noop
-  }
+  };
 
   static fromObj = (card, props = {}) => (
     <Card
-        id={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        spriteV={card.spriteV}
-        img={card.img}
-        type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
-        rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.source}
-        {...props} />
+      id={card.id}
+      name={card.name}
+      spriteID={card.spriteID}
+      spriteV={card.spriteV}
+      img={card.img}
+      type={card.type}
+      text={splitSentences(card.text).map(Sentence)}
+      rawText={card.text || ''}
+      stats={card.stats}
+      cardStats={card.stats}
+      cost={card.cost}
+      baseCost={card.cost}
+      source={card.source}
+      {...props}
+    />
   );
 
   // (For server-side rendering via /api/card.png)
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   constructor(props) {
     super(props);
@@ -108,10 +109,22 @@ export default class Card extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const trackedProps = [
-      'name', 'spriteID', 'type', 'rawText', 'parseResults',
-      'cardStats', 'stats', 'image', 'cost', 'baseCost',
-      'status', 'visible', 'selected', 'targetable',
-      'margin', 'zIndex'
+      'name',
+      'spriteID',
+      'type',
+      'rawText',
+      'parseResults',
+      'cardStats',
+      'stats',
+      'image',
+      'cost',
+      'baseCost',
+      'status',
+      'visible',
+      'selected',
+      'targetable',
+      'margin',
+      'zIndex'
     ];
 
     return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
@@ -180,11 +193,13 @@ export default class Card extends Component {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round(180 / this.props.name.length);
       return (
-        <div style={{
-          width: 105 * this.props.scale,
-          height: 20 * this.props.scale,
-          fontSize: Math.min(maxFontSize, 16) * this.props.scale
-        }}>
+        <div
+          style={{
+            width: 105 * this.props.scale,
+            height: 20 * this.props.scale,
+            fontSize: Math.min(maxFontSize, 16) * this.props.scale
+          }}
+        >
           {this.props.name}
         </div>
       );
@@ -197,7 +212,8 @@ export default class Card extends Component {
           style={{
             width: 105 * this.props.scale,
             height: 23 * this.props.scale
-        }}>
+          }}
+        >
           {this.props.name}
         </Textfit>
       );
@@ -209,20 +225,17 @@ export default class Card extends Component {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round((this.props.type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
       return (
-        <div style={Object.assign(this.textFitStyle, {
-          fontSize: Math.min(maxFontSize, 14)
-        })}>
+        <div
+          style={Object.assign(this.textFitStyle, {
+            fontSize: Math.min(maxFontSize, 14)
+          })}
+        >
           {this.props.text}
         </div>
       );
     } else {
       return (
-        <Textfit
-          autoResize={false}
-          mode="multi"
-          max={14 * this.props.scale}
-          style={this.textFitStyle}
-        >
+        <Textfit autoResize={false} mode="multi" max={14 * this.props.scale} style={this.textFitStyle}>
           {this.props.text}
         </Textfit>
       );
@@ -231,7 +244,12 @@ export default class Card extends Component {
 
   renderStat(type) {
     return (
-      <CardStat type={type} base={this.props.cardStats[type]} current={this.props.stats[type]} scale={this.props.scale}/>
+      <CardStat
+        type={type}
+        base={this.props.cardStats[type]}
+        current={this.props.stats[type]}
+        scale={this.props.scale}
+      />
     );
   }
 
@@ -252,11 +270,7 @@ export default class Card extends Component {
         </CardText>
       );
     } else if (this.props.type === TYPE_CORE || this.props.type === TYPE_STRUCTURE) {
-      return (
-        <CardText style={Object.assign(style, {marginLeft: '31%'})}>
-          {this.renderStat('health')}
-        </CardText>
-      );
+      return <CardText style={Object.assign(style, {marginLeft: '31%'})}>{this.renderStat('health')}</CardText>;
     }
   }
 
@@ -264,17 +278,21 @@ export default class Card extends Component {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
-      boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
+      boxShadow: `${(this.props.status && this.props.status.type === 'error') || this.props.collection
+        ? redShadow
+        : greenShadow} 0px 0px 20px 5px`
     };
     const transform = `rotate(${this.props.rotation}deg) translate(0px, ${this.props.yTranslation}px)`;
 
     if (!this.props.visible) {
       return (
-        <div style={{
-          padding: '24px 0 12px 0',
-          marginRight: this.props.margin,
-          transform: transform
-        }}>
+        <div
+          style={{
+            padding: '24px 0 12px 0',
+            marginRight: this.props.margin,
+            transform: transform
+          }}
+        >
           <CardBack />
         </div>
       );
@@ -290,31 +308,43 @@ export default class Card extends Component {
             transform={transform}
           >
             <div
-              onClick={() => { this.props.onCardClick(this.props.id); }}
-              onMouseEnter={e => { this.onMouseEnter(); this.props.onCardHover(true); }}
-              onMouseLeave={e => { this.onMouseLeave(); this.props.onCardHover(false); }}
+              onClick={() => {
+                this.props.onCardClick(this.props.id);
+              }}
+              onMouseEnter={e => {
+                this.onMouseEnter();
+                this.props.onCardHover(true);
+              }}
+              onMouseLeave={e => {
+                this.onMouseLeave();
+                this.props.onCardHover(false);
+              }}
             >
               <Paper
                 zDepth={this.state.shadow}
-                style={Object.assign({
-                  width: 140 * this.props.scale,
-                  height: 211 * this.props.scale,
-                  marginRight: 10 * this.props.scale,
-                  borderRadius: 5 * this.props.scale,
-                  userSelect: 'none',
-                  cursor: 'pointer',
-                  border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
-                  position: 'relative'
-                }, (this.props.selected || this.props.targetable ? selectedStyle : {}))}
+                style={Object.assign(
+                  {
+                    width: 140 * this.props.scale,
+                    height: 211 * this.props.scale,
+                    marginRight: 10 * this.props.scale,
+                    borderRadius: 5 * this.props.scale,
+                    userSelect: 'none',
+                    cursor: 'pointer',
+                    border: this.props.source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
+                    position: 'relative'
+                  },
+                  this.props.selected || this.props.targetable ? selectedStyle : {}
+                )}
               >
                 <CardHeader
                   style={{padding: 8 * this.props.scale, height: 'auto'}}
                   title={this.renderTitle()}
                   titleStyle={{fontSize: 15 * this.props.scale}}
                   subtitle={typeToString(this.props.type)}
-                  subtitleStyle={{fontSize: 14 * this.props.scale}} />
+                  subtitleStyle={{fontSize: 14 * this.props.scale}}
+                />
 
-                <Divider/>
+                <Divider />
 
                 <CardImage
                   type={this.props.type}
@@ -323,9 +353,10 @@ export default class Card extends Component {
                   img={this.props.img}
                   source={this.props.source}
                   scale={this.props.scale}
-                  onSpriteClick={this.props.onSpriteClick} />
+                  onSpriteClick={this.props.onSpriteClick}
+                />
 
-                <Divider/>
+                <Divider />
 
                 <div style={this.textAreaStyle}>
                   {this.renderText()}

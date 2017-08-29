@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { bool, func, object, array } from 'prop-types';
+import React, {Component} from 'react';
+import {bool, func, object, array} from 'prop-types';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router';
+import {connect} from 'react-redux';
+import {Route, Switch, withRouter} from 'react-router';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
@@ -11,7 +11,7 @@ import * as gameActions from '../actions/game';
 
 import GameArea from './GameArea';
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state){
   return {
     started: state.game.started,
     actionLog: state.game.actionLog,
@@ -22,7 +22,7 @@ export function mapStateToProps(state) {
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch){
   return {
     onConnect: () => {
       dispatch(socketActions.connect());
@@ -33,22 +33,22 @@ export function mapDispatchToProps(dispatch) {
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
     },
-    onSpectateGame: (id) => {
+    onSpectateGame: id => {
       dispatch(socketActions.spectate(id));
     },
-    onStartPractice: (deck) => {
+    onStartPractice: deck => {
       dispatch(gameActions.startPractice(deck));
     },
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
     },
-    onSendChatMessage: (msg) => {
+    onSendChatMessage: msg => {
       dispatch(socketActions.chat(msg));
     },
-    onHoverCard: (index) => {
+    onHoverCard: index => {
       dispatch(gameActions.setHoveredCard(index));
     },
-    onHoverTile: (card) => {
+    onHoverTile: card => {
       dispatch(gameActions.setHoveredTile(card));
     }
   };
@@ -91,7 +91,7 @@ export class Play extends Component {
     }
 
     this.props.history.push(`play/${mode}`);
-  }
+  };
 
   get lobby() {
     if (this.props.started) {
@@ -107,7 +107,8 @@ export class Play extends Component {
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
           onSpectateGame={this.props.onSpectateGame}
-          onSelectMode={this.selectMode} />
+          onSelectMode={this.selectMode}
+        />
       );
     }
   }
@@ -115,7 +116,7 @@ export class Play extends Component {
   render() {
     return (
       <div style={{paddingRight: 256}}>
-        <Helmet title="Play"/>
+        <Helmet title="Play" />
 
         <Switch>
           <Route path="/play/tutorial" component={GameArea} />
@@ -127,7 +128,8 @@ export class Play extends Component {
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />
+          onSendMessage={this.props.onSendChatMessage}
+        />
       </div>
     );
   }

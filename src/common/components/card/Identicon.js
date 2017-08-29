@@ -7,11 +7,11 @@
 
 /* eslint-disable no-loops/no-loops */
 
-import React, { Component } from 'react';
-import { number, string } from 'prop-types';
-import { noop } from 'lodash';
+import React, {Component} from 'react';
+import {number, string} from 'prop-types';
+import {noop} from 'lodash';
 
-import { hashCode } from '../../util/common';
+import {hashCode} from '../../util/common';
 
 export default class Identicon extends Component {
   static propTypes = {
@@ -28,10 +28,10 @@ export default class Identicon extends Component {
     generator.start(value);
     let n = 0;
     for (let x = 0; x < size; x++) {
-      for (let y = 0; y < size*2; y++) {
+      for (let y = 0; y < size * 2; y++) {
         if (+bin.charAt(n++ % bin.length)) {
           generator.rect(x, y);
-          generator.rect(size*2-x-2, y);
+          generator.rect(size * 2 - x - 2, y);
         }
       }
     }
@@ -41,22 +41,22 @@ export default class Identicon extends Component {
   render() {
     const width = this.props.width;
     const size = this.props.size;
-    const side = width/((size*2)-1);
+    const side = width / (size * 2 - 1);
     let color;
     const rects = [];
 
     this.generate(this.props.id, this.props, {
-      start: function (value) {
+      start: function (value){
         color = `#${Math.abs(value).toString(16).substring(0, 6)}`;
       },
-      rect: function (x, y) {
+      rect: function (x, y){
         const rect = React.createElement('rect', {
           key: String(rects.length),
-          x: String(Math.floor(x*side)),
-          y: String(Math.floor(y*side)),
+          x: String(Math.floor(x * side)),
+          y: String(Math.floor(y * side)),
           width: String(Math.ceil(side)),
           height: String(Math.ceil(side)),
-          style: { fill: color }
+          style: {fill: color}
         });
         rects.push(rect);
       },

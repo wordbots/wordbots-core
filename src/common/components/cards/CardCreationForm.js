@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, number, string} from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { capitalize, compact } from 'lodash';
+import {capitalize, compact} from 'lodash';
 
-import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
-import { ensureInRange } from '../../util/common';
-import { getSentencesFromInput, requestParse, numTargetsPerLogicalUnit, CardTextExampleStore } from '../../util/cards';
-import { getCardTextCorpus } from '../../util/firebase';
-import { prepareBigramProbs } from '../../util/language';
+import {CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString} from '../../constants';
+import {ensureInRange} from '../../util/common';
+import {getSentencesFromInput, requestParse, numTargetsPerLogicalUnit, CardTextExampleStore} from '../../util/cards';
+import {getCardTextCorpus} from '../../util/firebase';
+import {prepareBigramProbs} from '../../util/language';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -63,8 +63,12 @@ export default class CardCreationForm extends Component {
     });
   }
 
-  get robot() { return this.props.type === TYPE_ROBOT; }
-  get event() { return this.props.type === TYPE_EVENT; }
+  get robot() {
+    return this.props.type === TYPE_ROBOT;
+  }
+  get event() {
+    return this.props.type === TYPE_EVENT;
+  }
 
   get nonEmptySentences() {
     return this.props.sentences.filter(s => /\S/.test(s.sentence));
@@ -84,9 +88,7 @@ export default class CardCreationForm extends Component {
 
   get parseErrors() {
     return compact(this.nonEmptySentences.map(s => s.result.error)).map(error =>
-      (`${error}.`)
-        .replace('..', '.')
-        .replace('Parser did not produce a valid expression', 'Parser error')
+      `${error}.`.replace('..', '.').replace('Parser did not produce a valid expression', 'Parser error')
     );
   }
 
@@ -143,8 +145,15 @@ export default class CardCreationForm extends Component {
   }
 
   get isValid() {
-    return !this.nameError && !this.typeError && !this.costError && !this.attackError &&
-      !this.healthError && !this.speedError && !this.textError;
+    return (
+      !this.nameError &&
+      !this.typeError &&
+      !this.costError &&
+      !this.attackError &&
+      !this.healthError &&
+      !this.speedError &&
+      !this.textError
+    );
   }
 
   get styles() {
@@ -164,9 +173,9 @@ export default class CardCreationForm extends Component {
     };
   }
 
-  setAttribute = (key) => (value) => {
+  setAttribute = key => value => {
     this.props.onSetAttribute(key, value);
-  }
+  };
 
   onUpdateText(text, cardType, dontIndex = false) {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
@@ -177,17 +186,12 @@ export default class CardCreationForm extends Component {
   }
 
   renderButton = (label, icon, onClick) => (
-    <RaisedButton
-      label={label}
-      primary
-      style={{width: '31%', marginBottom: 8}}
-      onClick={onClick}
-    >
+    <RaisedButton label={label} primary style={{width: '31%', marginBottom: 8}} onClick={onClick}>
       <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
         {icon}
       </FontIcon>
     </RaisedButton>
-  )
+  );
 
   renderAttributeField(attribute, enabled = true, opts = {}) {
     return (
@@ -198,7 +202,8 @@ export default class CardCreationForm extends Component {
         style={this.styles.attribute}
         disabled={!enabled}
         errorText={this[`${attribute}Error`]}
-        onChange={this.setAttribute(attribute)} />
+        onChange={this.setAttribute(attribute)}
+      />
     );
   }
 
@@ -224,14 +229,18 @@ export default class CardCreationForm extends Component {
               floatingLabelText="Card Name"
               style={this.styles.leftCol}
               errorText={this.nameError}
-              onChange={e => { this.props.onSetName(e.target.value); }} />
+              onChange={e => {
+                this.props.onSetName(e.target.value);
+              }}
+            />
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
               maxValue={20}
               style={this.styles.rightCol}
               errorText={this.costError}
-              onChange={this.setAttribute('energy')} />
+              onChange={this.setAttribute('energy')}
+            />
           </div>
 
           <div style={this.styles.section}>
@@ -243,12 +252,9 @@ export default class CardCreationForm extends Component {
                 this.props.onSetType(value);
                 // Re-parse card text because different card types now have different validations.
                 this.onUpdateText(this.props.text, value);
-              }}>
-              {
-                CREATABLE_TYPES.map(type =>
-                  <MenuItem key={type} value={type} primaryText={typeToString(type)} />
-                )
-              }
+              }}
+            >
+              {CREATABLE_TYPES.map(type => <MenuItem key={type} value={type} primaryText={typeToString(type)} />)}
             </SelectField>
             <div style={this.styles.rightColContainer}>
               <Tooltip text="Generate a new image">
@@ -256,8 +262,13 @@ export default class CardCreationForm extends Component {
                   secondary
                   style={{width: 40, minWidth: 40}}
                   labelPosition="after"
-                  onTouchTap={() => { this.props.onSpriteClick(); }}>
-                  <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
+                  onTouchTap={() => {
+                    this.props.onSpriteClick();
+                  }}
+                >
+                  <FontIcon className="material-icons" style={this.styles.icon}>
+                    refresh
+                  </FontIcon>
                 </RaisedButton>
               </Tooltip>
             </div>
@@ -268,7 +279,8 @@ export default class CardCreationForm extends Component {
             text={this.props.text}
             sentences={this.nonEmptySentences}
             error={this.textError}
-            onOpenDialog={this.props.onOpenDialog} />
+            onOpenDialog={this.props.onOpenDialog}
+          />
 
           <div style={this.styles.section}>
             {this.renderAttributeField('attack', this.robot)}
@@ -283,7 +295,10 @@ export default class CardCreationForm extends Component {
               label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
               disabled={!this.isValid}
               style={this.styles.saveButton}
-              onTouchTap={() => { this.props.onAddToCollection(); }} />
+              onTouchTap={() => {
+                this.props.onAddToCollection();
+              }}
+            />
           </MustBeLoggedIn>
         </Paper>
       </div>

@@ -1,6 +1,6 @@
-import { some } from 'lodash';
+import {some} from 'lodash';
 
-import { compareCertainKeys } from '../../util/common';
+import {compareCertainKeys} from '../../util/common';
 
 class Hex {
   constructor(q, r, s, props = {}) {
@@ -11,15 +11,11 @@ class Hex {
   }
 
   equals(otherHex) {
-    return compareCertainKeys(this, otherHex, ['q', 'r', 's']);
+    return compareCertainKeys(this, otherHex, [ 'q', 'r', 's' ]);
   }
 
   distance(otherHex) {
-    return Math.max(
-        Math.abs(this.q - otherHex.q),
-        Math.abs(this.r - otherHex.r),
-        Math.abs(this.s - otherHex.s)
-    );
+    return Math.max(Math.abs(this.q - otherHex.q), Math.abs(this.r - otherHex.r), Math.abs(this.s - otherHex.s));
   }
 
   isInArray(hexArray) {

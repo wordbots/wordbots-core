@@ -1,7 +1,7 @@
 import React from 'react';
-import { bool, object, string } from 'prop-types';
+import {bool, object, string} from 'prop-types';
 
-import { DISPLAY_HEX_IDS } from '../../constants';
+import {DISPLAY_HEX_IDS} from '../../constants';
 import TutorialTooltip from '../game/TutorialTooltip';
 
 import FillPattern from './FillPattern';
@@ -45,16 +45,12 @@ export default class HexShape extends React.Component {
   }
 
   get shouldRenderTooltip() {
-    return this.props.tutorialStep && (HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex);
+    return this.props.tutorialStep && HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex;
   }
 
   renderPattern() {
     if (!this.props.selected) {
-      return (
-        <FillPattern
-          hex={this.props.hex}
-          fill={this.props.fill} />
-      );
+      return <FillPattern hex={this.props.hex} fill={this.props.fill} />;
     } else {
       return null;
     }
@@ -62,7 +58,11 @@ export default class HexShape extends React.Component {
 
   renderText() {
     if (DISPLAY_HEX_IDS) {
-      return <text x="0" y="0.3em" textAnchor="middle">{HexUtils.getID(this.props.hex) || ''}</text>;
+      return (
+        <text x="0" y="0.3em" textAnchor="middle">
+          {HexUtils.getID(this.props.hex) || ''}
+        </text>
+      );
     }
   }
 
@@ -87,8 +87,12 @@ export default class HexShape extends React.Component {
       return (
         <TutorialTooltip
           tutorialStep={this.props.tutorialStep}
-          onNextStep={() => { this.props.actions.onTutorialStep(false); }}
-          onPrevStep={() => { this.props.actions.onTutorialStep(true); }}
+          onNextStep={() => {
+            this.props.actions.onTutorialStep(false);
+          }}
+          onPrevStep={() => {
+            this.props.actions.onTutorialStep(true);
+          }}
           onEndTutorial={this.props.actions.onEndGame}
         >
           {this.renderHex()}

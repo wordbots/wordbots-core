@@ -1,28 +1,28 @@
-import { size, sum } from 'lodash';
+import {size, sum} from 'lodash';
 
-import { getAttribute } from '../util/game';
+import {getAttribute} from '../util/game';
 
-export function attributeSum(state) {
-  return function (collection, attribute) {
+export function attributeSum(state){
+  return function (collection, attribute){
     return sum(collection.entries.map(obj => getAttribute(obj, attribute)));
   };
 }
 
-export function attributeValue(state) {
-  return function (targetObjects, attribute) {
+export function attributeValue(state){
+  return function (targetObjects, attribute){
     const object = targetObjects.entries[0]; // targetObjects is an array of objects, so unpack.
     return object ? getAttribute(object, attribute) : 0;
   };
 }
 
-export function count(state) {
-  return function (collection) {
+export function count(state){
+  return function (collection){
     return size(collection.entries);
   };
 }
 
-export function energyAmount(state) {
-  return function (player) {
+export function energyAmount(state){
+  return function (player){
     return player.energy.available;
   };
 }

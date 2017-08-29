@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { array, number, func } from 'prop-types';
+import React, {Component} from 'react';
+import {array, number, func} from 'prop-types';
 import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-import { cardsInDeck } from '../../util/cards';
+import {cardsInDeck} from '../../util/cards';
 import EnergyCurve from '../cards/EnergyCurve';
 
 export default class DeckPicker extends Component {
@@ -30,13 +30,15 @@ export default class DeckPicker extends Component {
           value={this.props.selectedDeckIdx}
           floatingLabelText="Choose a deck"
           style={{flex: 2, width: '80%', marginRight: 25}}
-          onChange={(e, idx, v) => { this.props.onChooseDeck(idx); }}
+          onChange={(e, idx, v) => {
+            this.props.onChooseDeck(idx);
+          }}
           disabled={this.noDecks}
           errorText={this.noDecks ? 'You don\'t have any complete (30-card) decks!' : null}
         >
-          {this.props.availableDecks.map((deck, idx) =>
-            <MenuItem key={idx} value={idx} primaryText={`${deck.name}`}/>
-          )}
+          {this.props.availableDecks.map((deck, idx) => (
+            <MenuItem key={idx} value={idx} primaryText={`${deck.name}`} />
+          ))}
         </SelectField>
 
         <div style={{flex: 1}}>
@@ -46,4 +48,3 @@ export default class DeckPicker extends Component {
     );
   }
 }
-

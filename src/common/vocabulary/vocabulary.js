@@ -1,12 +1,12 @@
 import actions from './actions';
 import targets from './targets';
-import { objectConditions, globalConditions } from './conditions';
-import { setTrigger, unsetTrigger, triggers } from './triggers';
-import { setAbility, unsetAbility, abilities } from './abilities';
-import { allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions, other } from './collections';
-import { attributeSum, attributeValue, count, energyAmount } from './numbers';
+import {objectConditions, globalConditions} from './conditions';
+import {setTrigger, unsetTrigger, triggers} from './triggers';
+import {setAbility, unsetAbility, abilities} from './abilities';
+import {allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions, other} from './collections';
+import {attributeSum, attributeValue, count, energyAmount} from './numbers';
 
-export default function vocabulary(state, currentObject = null, source = null) {
+export default function vocabulary(state, currentObject = null, source = null){
   return {
     actions: actions(state),
     targets: targets(state, currentObject),
@@ -38,7 +38,9 @@ export default function vocabulary(state, currentObject = null, source = null) {
 
     // Utility methods:
 
-    save: (key, value) => { state.memory[key] = value; },
-    load: (key) => state.memory[key]
+    save: (key, value) => {
+      state.memory[key] = value;
+    },
+    load: key => state.memory[key]
   };
 }

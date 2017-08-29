@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { func, number } from 'prop-types';
+import React, {Component} from 'react';
+import {func, number} from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 
 export default class LayoutControls extends Component {
@@ -9,7 +9,7 @@ export default class LayoutControls extends Component {
   };
 
   shouldComponentUpdate(newProps) {
-    return (newProps.layout !== this.props.layout);
+    return newProps.layout !== this.props.layout;
   }
 
   get baseIconStyle() {
@@ -25,7 +25,7 @@ export default class LayoutControls extends Component {
   }
 
   renderButton(layout, iconName) {
-    const selected = (this.props.layout === layout);
+    const selected = this.props.layout === layout;
     return (
       <FontIcon
         className="material-icons"
@@ -34,7 +34,9 @@ export default class LayoutControls extends Component {
           color: selected ? 'white' : 'black',
           backgroundColor: selected ? '#F44336' : '#EEEEEE'
         }}
-        onClick={() => { this.props.onSetLayout(layout); }}
+        onClick={() => {
+          this.props.onSetLayout(layout);
+        }}
       >
         {iconName}
       </FontIcon>
@@ -42,21 +44,25 @@ export default class LayoutControls extends Component {
   }
 
   render() {
-
-
     return (
       <div>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14,
-          marginBottom: 20
-        }}>Layout</div>
+        <div
+          style={{
+            fontWeight: 700,
+            fontSize: 14,
+            marginBottom: 20
+          }}
+        >
+          Layout
+        </div>
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: 20
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: 20
+          }}
+        >
           {this.renderButton(0, 'view_module')}
           {this.renderButton(1, 'view_list')}
         </div>

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { array, bool, func, number } from 'prop-types';
-import { without } from 'lodash';
+import React, {Component} from 'react';
+import {array, bool, func, number} from 'prop-types';
+import {without} from 'lodash';
 
 import PageSwitcher from './PageSwitcher';
 import CardGrid from './CardGrid';
@@ -41,16 +41,16 @@ export default class CardCollection extends Component {
     return !this.props.onlySelectCustomCards || card.source !== 'builtin';
   }
 
-  onCardClick = (id) => {
+  onCardClick = id => {
     const card = this.cards.find(c => c.id === id);
     if (this.isSelectable(card)) {
       if (this.props.selectedCardIds.includes(id) && !this.props.allowMultipleSelection) {
         this.props.onSelection(without(this.props.selectedCardIds, id));
       } else {
-        this.props.onSelection([...this.props.selectedCardIds, id]);
+        this.props.onSelection([ ...this.props.selectedCardIds, id ]);
       }
     }
-  }
+  };
 
   renderPageControls() {
     return (
@@ -58,7 +58,8 @@ export default class CardCollection extends Component {
         page={this.currentPage}
         maxPages={this.numPages}
         prevPage={() => this.setState({page: this.currentPage - 1})}
-        nextPage={() => this.setState({page: this.currentPage + 1})} />
+        nextPage={() => this.setState({page: this.currentPage + 1})}
+      />
     );
   }
 
@@ -71,7 +72,8 @@ export default class CardCollection extends Component {
           selectable={!this.props.allowMultipleSelection}
           cards={this.cards}
           selectedCardIds={this.props.selectedCardIds}
-          onCardClick={this.onCardClick}/>
+          onCardClick={this.onCardClick}
+        />
         {this.renderPageControls()}
       </div>
     );

@@ -1,34 +1,39 @@
-import { findKey, mapValues } from 'lodash';
+import {findKey, mapValues} from 'lodash';
 
-import { TYPE_CORE } from '../constants';
-import { clamp, applyFuncToField } from '../util/common';
+import {TYPE_CORE} from '../constants';
+import {clamp, applyFuncToField} from '../util/common';
 import {
-  ownerOf, getHex,
-  passTurn, drawCards, removeCardsFromHand, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  ownerOf,
+  getHex,
+  passTurn,
+  drawCards,
+  removeCardsFromHand,
+  dealDamageToObjectAtHex,
+  updateOrDeleteObjectAtHex,
   executeCmd
 } from '../util/game';
 
-export default function actions(state) {
+export default function actions(state){
   return {
-    canAttackAgain: function (objects) {
+    canAttackAgain: function (objects){
       objects.entries.forEach(object => {
         Object.assign(object, {cantAttack: false});
       });
     },
 
-    canMoveAgain: function (objects) {
+    canMoveAgain: function (objects){
       objects.entries.forEach(object => {
         Object.assign(object, {movesMade: 0, cantMove: false});
       });
     },
 
-    canMoveAndAttackAgain: function (objects) {
+    canMoveAndAttackAgain: function (objects){
       objects.entries.forEach(object => {
         Object.assign(object, {movesMade: 0, cantMove: false, cantAttack: false});
       });
     },
 
-    dealDamage: function (targets, amount) {
+    dealDamage: function (targets, amount){
       targets.entries.forEach(target => {
         let hex;
         if (target.robotsOnBoard) {
@@ -43,32 +48,34 @@ export default function actions(state) {
       });
     },
 
-    destroy: function (objects) {
+    destroy: function (objects){
       objects.entries.forEach(object => {
         object.isDestroyed = true;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
     },
 
-    discard: function (cards) {
+    discard: function (cards){
       removeCardsFromHand(state, cards.entries);
     },
 
-    draw: function (players, count) {
-      players.entries.forEach(player => { drawCards(state, player, count); });
+    draw: function (players, count){
+      players.entries.forEach(player => {
+        drawCards(state, player, count);
+      });
     },
 
-    endTurn: function () {
+    endTurn: function (){
       state = Object.assign(state, passTurn(state));
     },
 
-    giveAbility: function (objects, abilityCmd) {
+    giveAbility: function (objects, abilityCmd){
       objects.entries.forEach(object => {
         executeCmd(state, abilityCmd, object);
       });
     },
 
-    modifyAttribute: function (objects, attr, func) {
+    modifyAttribute: function (objects, attr, func){
       if (state.memory['duration']) {
         // Temporary attribute adjustment.
         objects.entries.forEach(object => {
@@ -91,13 +98,13 @@ export default function actions(state) {
       }
     },
 
-    modifyEnergy: function (players, func) {
+    modifyEnergy: function (players, func){
       players.entries.forEach(player => {
         player.energy = applyFuncToField(player.energy, func, 'available');
       });
     },
 
-    payEnergy: function (players, amount) {
+    payEnergy: function (players, amount){
       players.entries.forEach(player => {
         if (player.energy.available >= amount) {
           player.energy.available -= amount;
@@ -107,7 +114,7 @@ export default function actions(state) {
       });
     },
 
-    restoreHealth: function (objects, num) {
+    restoreHealth: function (objects, num){
       objects.entries.forEach(object => {
         if (object.stats.health < object.card.stats.health) {
           if (num) {
@@ -119,7 +126,7 @@ export default function actions(state) {
       });
     },
 
-    setAttribute: function (objects, attr, num) {
+    setAttribute: function (objects, attr, num){
       if (state.memory['duration']) {
         // Temporary attribute adjustment.
         this.modifyAttribute(objects, attr, `(function () { return ${num}; })`);
@@ -129,16 +136,16 @@ export default function actions(state) {
       }
     },
 
-    swapAttributes: function (objects, attr1, attr2) {
+    swapAttributes: function (objects, attr1, attr2){
       objects.entries.forEach(object => {
-        const [savedAttr1, savedAttr2] = [object.stats[attr1], object.stats[attr2]];
+        const [ savedAttr1, savedAttr2 ] = [ object.stats[attr1], object.stats[attr2] ];
         object.stats[attr2] = savedAttr1;
         object.stats[attr1] = savedAttr2;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
     },
 
-    takeControl: function (players, objects) {
+    takeControl: function (players, objects){
       const newOwner = players.entries[0]; // Unpack player.
 
       objects.entries.forEach(object => {

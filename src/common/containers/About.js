@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { string } from 'prop-types';
+import React, {Component} from 'react';
+import {string} from 'prop-types';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import Paper from 'material-ui/Paper';
 
 import MarkdownBlock from '../components/MarkdownBlock';
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state){
   return {
     version: state.version
   };
@@ -19,11 +19,11 @@ class Home extends Component {
   };
 
   render() {
-    const [version, sha] = this.props.version.split('+');
+    const [ version, sha ] = this.props.version.split('+');
 
     return (
       <div style={{margin: '48px 72px'}}>
-        <Helmet title="About"/>
+        <Helmet title="About" />
 
         <div style={{display: 'flex', justifyContent: 'stretch'}}>
           <div style={{width: '50%', marginRight: 20}}>
@@ -49,7 +49,7 @@ class Home extends Component {
 
 export default withRouter(connect(mapStateToProps)(Home));
 
-const whatIsWordbots = (version, sha) => (`
+const whatIsWordbots = (version, sha) => `
 # Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
 ![](http://app.wordbots.io/static/screenshot_mini.png)
 **Wordbots** is a customizable hex-based card game with a twist – _you_, the player,
@@ -59,7 +59,7 @@ Wordbots is currently in **alpha**.
 We _have_ a working (but not fully complete) parser for card text, basic gameplay functionality, and a lobby for multiplayer gameplay.
 We _don't_ currently have any mechanism to ensure that cards are reasonably balanced –
 that's still something we're brainstorming.
-`);
+`;
 
 const getInvolved = `
 ## Get Involved!

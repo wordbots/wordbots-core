@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { object } from 'prop-types';
+import React, {Component} from 'react';
+import {object} from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import MarkdownBlock from '../MarkdownBlock';
@@ -24,8 +24,12 @@ export default class HelpDialog extends Component {
             primary
             label="Close"
             key="Close"
-            onTouchTap={() => { RouterDialog.closeDialog(history); }} />
-      ]}>
+            onTouchTap={() => {
+              RouterDialog.closeDialog(history);
+            }}
+          />
+        ]}
+      >
         <MarkdownBlock source={helpText} />
       </RouterDialog>
     );

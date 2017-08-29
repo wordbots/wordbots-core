@@ -1,28 +1,35 @@
-import { SPRITE_VERSION, TYPE_EVENT, TYPE_ROBOT } from '../../constants';
-import { id } from '../../util/common';
+import {SPRITE_VERSION, TYPE_EVENT, TYPE_ROBOT} from '../../constants';
+import {id} from '../../util/common';
 import {
-  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
-  loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase
+  areIdenticalCards,
+  cardsToJson,
+  cardsFromJson,
+  splitSentences,
+  loadCardsFromFirebase,
+  loadDecksFromFirebase,
+  saveCardToFirebase,
+  saveCardsToFirebase,
+  saveDecksToFirebase
 } from '../../util/cards';
 
 const cardsHandlers = {
-  closeExportDialog: function (state) {
+  closeExportDialog: function (state){
     return Object.assign({}, state, {exportedJson: null});
   },
 
-  deleteCards: function (state, ids) {
+  deleteCards: function (state, ids){
     state.cards = state.cards.filter(c => !ids.includes(c.id));
     saveCardsToFirebase(state);
     return state;
   },
 
-  deleteDeck: function (state, deckId) {
+  deleteDeck: function (state, deckId){
     state.decks = state.decks.filter(deck => deck.id !== deckId);
     saveDecksToFirebase(state);
     return state;
   },
 
-  duplicateDeck: function (state, deckId) {
+  duplicateDeck: function (state, deckId){
     const deck = state.decks.find(d => d.id === deckId);
     const copy = Object.assign({}, deck, {id: id(), name: `${deck.name} Copy`});
 
@@ -31,22 +38,24 @@ const cardsHandlers = {
     return state;
   },
 
-  exportCards: function (state, cards) {
+  exportCards: function (state, cards){
     return Object.assign({}, state, {exportedJson: cardsToJson(cards)});
   },
 
-  importCards: function (state, json) {
-    cardsFromJson(json, card => { saveCard(state, card); });
+  importCards: function (state, json){
+    cardsFromJson(json, card => {
+      saveCard(state, card);
+    });
     return state;
   },
 
-  loadState: function (state, data) {
+  loadState: function (state, data){
     state = loadCardsFromFirebase(state, data);
     state = loadDecksFromFirebase(state, data);
     return state;
   },
 
-  openCardForEditing: function (state, card) {
+  openCardForEditing: function (state, card){
     return Object.assign(state, {
       id: card.id,
       name: card.name,
@@ -61,21 +70,21 @@ const cardsHandlers = {
     });
   },
 
-  openDeckForEditing: function (state, deckId) {
+  openDeckForEditing: function (state, deckId){
     state.currentDeck = deckId ? state.decks.find(d => d.id === deckId) : null;
     return state;
   },
 
-  saveCard: function (state, cardProps) {
+  saveCard: function (state, cardProps){
     const card = createCardFromProps(cardProps);
     return saveCard(state, card);
   },
 
-  saveDeck: function (state, deckId, name, cardIds = []) {
+  saveDeck: function (state, deckId, name, cardIds = []){
     if (deckId) {
       // Existing deck.
       const deck = state.decks.find(d => d.id === deckId);
-      Object.assign(deck, { name, cardIds });
+      Object.assign(deck, {name, cardIds});
     } else {
       // New deck.
       state.decks.push({
@@ -92,7 +101,7 @@ const cardsHandlers = {
 };
 
 // Converts card from cardCreator store format -> format for collection and game stores.
-function createCardFromProps(props) {
+function createCardFromProps(props){
   const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
   const command = sentences.map(s => s.result.js);
 
@@ -104,7 +113,7 @@ function createCardFromProps(props) {
     spriteV: SPRITE_VERSION,
     text: sentences.map(s => `${s.sentence}. `).join(''),
     cost: props.cost,
-    source: 'user',  // In the future, this will specify *which* user created the card.
+    source: 'user', // In the future, this will specify *which* user created the card.
     timestamp: Date.now()
   };
 
@@ -129,7 +138,7 @@ function createCardFromProps(props) {
 }
 
 // Saves a card, either as a new card or replacing an existing card.
-function saveCard(state, card) {
+function saveCard(state, card){
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
   const existingCard = state.cards.find(c => c.id === card.id || areIdenticalCards(c, card));

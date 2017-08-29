@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {object, string} from 'prop-types';
 
 import HexUtils from './HexUtils';
 import loadImages from './HexGridImages';
@@ -16,9 +16,7 @@ export default class FillPattern extends Component {
 
   render() {
     const id = HexUtils.getID(this.props.hex);
-    const fillImage = this.props.fill ?
-      this.images[`${this.props.fill  }_tile`] :
-      this.images['floor'];
+    const fillImage = this.props.fill ? this.images[`${this.props.fill}_tile`] : this.images['floor'];
 
     return (
       <defs>

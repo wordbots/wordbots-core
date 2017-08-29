@@ -1,4 +1,4 @@
-import { collection } from './cards';
+import {collection} from './cards';
 
 const defaultState = {
   cards: collection,

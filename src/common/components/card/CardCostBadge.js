@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { element, number, string } from 'prop-types';
+import React, {Component} from 'react';
+import {element, number, string} from 'prop-types';
 import Badge from 'material-ui/Badge';
 
-import { inBrowser } from '../../util/browser';
+import {inBrowser} from '../../util/browser';
 
 export default class CardCostBadge extends Component {
   static propTypes = {
@@ -13,14 +13,10 @@ export default class CardCostBadge extends Component {
     margin: number,
     zIndex: number,
     transform: string
-  }
+  };
 
   get badgeContent() {
-    return (
-      <div style={this.badgeContentStyle}>
-        {this.props.cost}
-      </div>
-    );
+    return <div style={this.badgeContentStyle}>{this.props.cost}</div>;
   }
 
   get badgeContentStyle() {
@@ -75,11 +71,7 @@ export default class CardCostBadge extends Component {
 
   render() {
     return (
-      <Badge
-        badgeContent={this.badgeContent}
-        badgeStyle={this.badgeContainerStyle}
-        style={this.rootStyle}
-      >
+      <Badge badgeContent={this.badgeContent} badgeStyle={this.badgeContainerStyle} style={this.rootStyle}>
         {this.props.children}
       </Badge>
     );

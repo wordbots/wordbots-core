@@ -1,7 +1,7 @@
-import { cloneDeep, isArray, reduce } from 'lodash';
+import {cloneDeep, isArray, reduce} from 'lodash';
 
-import { id } from '../util/common';
-import { triggerSound } from '../util/game';
+import {id} from '../util/common';
+import {triggerSound} from '../util/game';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
@@ -9,10 +9,13 @@ import defaultState from '../store/defaultGameState';
 import g from './handlers/game';
 
 const PURELY_VISUAL_ACTIONS = [
-  actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_CARD, actions.SET_HOVERED_TILE
+  actions.ATTACK_RETRACT,
+  actions.ATTACK_COMPLETE,
+  actions.SET_HOVERED_CARD,
+  actions.SET_HOVERED_TILE
 ];
 
-export default function game(state = cloneDeep(defaultState), action, allowed = false) {
+export default function game(state = cloneDeep(defaultState), action, allowed = false){
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
     return reduce(action, game, state);
@@ -24,18 +27,24 @@ export default function game(state = cloneDeep(defaultState), action, allowed = 
   }
 }
 
-export function handleAction(oldState, action) {
+export function handleAction(oldState, action){
   let state = Object.assign({}, oldState);
 
   if (!PURELY_VISUAL_ACTIONS.includes(action.type)) {
     state = Object.assign(state, {
-      actionId: id()  // actionId is used to correctly merge actions in the action log.
+      actionId: id() // actionId is used to correctly merge actions in the action log.
     });
   }
 
   switch (action.type) {
     case socketActions.GAME_START:
-      return g.newGame(state, action.payload.player || 'orange', action.payload.usernames || {}, action.payload.decks, action.payload.seed);
+      return g.newGame(
+        state,
+        action.payload.player || 'orange',
+        action.payload.usernames || {},
+        action.payload.decks,
+        action.payload.seed
+      );
 
     case actions.START_TUTORIAL:
       return g.startTutorial(state);

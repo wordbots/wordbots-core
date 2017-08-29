@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { array, func, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, func, string} from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
@@ -7,9 +7,9 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import { chain as _, isEqual } from 'lodash';
+import {chain as _, isEqual} from 'lodash';
 
-import { id } from '../../util/common';
+import {id} from '../../util/common';
 import CardTooltip from '../card/CardTooltip';
 
 export default class Chat extends Component {
@@ -33,9 +33,11 @@ export default class Chat extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return this.props.messages.length !== nextProps.messages.length
-      || this.props.roomName !== nextProps.roomName
-      || !isEqual(this.state, nextState);
+    return (
+      this.props.messages.length !== nextProps.messages.length ||
+      this.props.roomName !== nextProps.roomName ||
+      !isEqual(this.state, nextState)
+    );
   }
 
   componentDidUpdate() {
@@ -50,18 +52,14 @@ export default class Chat extends Component {
   }
 
   mergeMessagesById(messages) {
-    function join(msgs) {
+    function join(msgs){
       return Object.assign({}, msgs[0], {
         text: msgs.map(m => m.text).join(' '),
         cards: Object.assign({}, ...msgs.map(m => m.cards))
       });
     }
 
-    return _(messages)
-            .groupBy(msg => msg.id || id())
-            .map(join)
-            .sortBy('timestamp')
-            .value();
+    return _(messages).groupBy(msg => msg.id || id()).map(join).sortBy('timestamp').value();
   }
 
   filterMessage(message) {
@@ -79,10 +77,11 @@ export default class Chat extends Component {
       <div
         key={idx}
         style={{
-          color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
+          color: [ '[Game]', '[Server]' ].includes(message.user) ? '#888' : '#000',
           marginBottom: 5,
           wordBreak: 'break-word'
-        }}>
+        }}
+      >
         <b>{message.user}</b>: {message.text.split('|').map(phrase => this.renderPhrase(phrase, message))}
       </div>
     );
@@ -92,21 +91,14 @@ export default class Chat extends Component {
     const card = (message.cards || [])[phrase];
     if (card) {
       return (
-        <CardTooltip
-          card={card}>
-          <span
-            key={id()}
-            style={{fontWeight: 'bold', cursor: 'pointer'}}>
-              {phrase}
+        <CardTooltip card={card}>
+          <span key={id()} style={{fontWeight: 'bold', cursor: 'pointer'}}>
+            {phrase}
           </span>
         </CardTooltip>
       );
     } else {
-      return (
-        <span key={id()}>
-          {phrase}
-        </span>
-      );
+      return <span key={id()}>{phrase}</span>;
     }
   }
 
@@ -119,50 +111,67 @@ export default class Chat extends Component {
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />
             </ToolbarGroup>
             <ToolbarGroup>
-              <IconButton onClick={() => this.setState({
-                chatFieldValue: this.state.chatFieldValue,
-                showServerMsgs: this.state.showServerMsgs,
-                showGameMsgs: this.state.showGameMsgs,
-                showChatMsgs: this.state.showChatMsgs,
-                togglesVisible: !this.state.togglesVisible
-              })}>
-                <FontIcon color="#888" className="material-icons">settings_input_component</FontIcon>
+              <IconButton
+                onClick={() =>
+                  this.setState({
+                    chatFieldValue: this.state.chatFieldValue,
+                    showServerMsgs: this.state.showServerMsgs,
+                    showGameMsgs: this.state.showGameMsgs,
+                    showChatMsgs: this.state.showChatMsgs,
+                    togglesVisible: !this.state.togglesVisible
+                  })}
+              >
+                <FontIcon color="#888" className="material-icons">
+                  settings_input_component
+                </FontIcon>
               </IconButton>
             </ToolbarGroup>
           </Toolbar>
 
-          <div style={{
-            display: this.state.togglesVisible ? 'block' : 'none'
-          }}>
+          <div
+            style={{
+              display: this.state.togglesVisible ? 'block' : 'none'
+            }}
+          >
             <div style={{padding: 10}}>
               <Toggle
                 label="Show server messages"
                 defaultToggled
-                onToggle={(e, value) => { this.setState({showServerMsgs: value}); }} />
+                onToggle={(e, value) => {
+                  this.setState({showServerMsgs: value});
+                }}
+              />
               <Toggle
                 label="Show game messages"
                 defaultToggled
-                onToggle={(e, value) => { this.setState({showGameMsgs: value}); }} />
+                onToggle={(e, value) => {
+                  this.setState({showGameMsgs: value});
+                }}
+              />
               <Toggle
                 label="Show player chat"
                 defaultToggled
-                onToggle={(e, value) => { this.setState({showChatMsgs: value}); }} />
+                onToggle={(e, value) => {
+                  this.setState({showChatMsgs: value});
+                }}
+              />
             </div>
             <Divider />
           </div>
 
           <div
-            ref={(el) => {this.chat = el;}}
+            ref={el => {
+              this.chat = el;
+            }}
             style={{
               padding: 10,
               height: this.state.togglesVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
               overflowY: 'scroll'
-            }}>
-            {
-              this.mergeMessagesById(this.props.messages)
-                .filter(this.filterMessage.bind(this))
-                .map(this.renderMessage.bind(this))
-            }
+            }}
+          >
+            {this.mergeMessagesById(this.props.messages)
+              .filter(this.filterMessage.bind(this))
+              .map(this.renderMessage.bind(this))}
           </div>
 
           <div style={{backgroundColor: '#fff'}}>
@@ -174,7 +183,11 @@ export default class Chat extends Component {
               style={{margin: 10, width: 236}}
               value={this.state.chatFieldValue}
               onChange={this.onChatChange.bind(this)}
-              onKeyPress={e => { if (e.charCode === 13) { this.onChatEnter(); }}}
+              onKeyPress={e => {
+                if (e.charCode === 13) {
+                  this.onChatEnter();
+                }
+              }}
             />
           </div>
         </Drawer>

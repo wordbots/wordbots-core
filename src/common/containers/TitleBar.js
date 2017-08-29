@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { bool, func, object } from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
+import React, {Component} from 'react';
+import {bool, func, object} from 'prop-types';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import {NavLink} from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -14,20 +14,20 @@ import MenuItem from 'material-ui/MenuItem';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { isFlagSet, toggleFlag } from '../util/browser';
-import { logout } from '../util/firebase';
+import {isFlagSet, toggleFlag} from '../util/browser';
+import {logout} from '../util/firebase';
 import * as actions from '../actions/global';
 import RouterDialog from '../components/RouterDialog';
 import Tooltip from '../components/Tooltip';
 
-function mapStateToProps(state) {
+function mapStateToProps(state){
   return {
     user: state.global.user,
     sidebarOpen: state.global.sidebarOpen
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch){
   return {
     onRerenderApp(value) {
       dispatch(actions.rerender(value));
@@ -56,25 +56,25 @@ class TitleBar extends Component {
 
   openLoginDialog = () => {
     RouterDialog.openDialog(this.props.history, 'login');
-  }
+  };
 
-  openUserMenu = (event) => {
+  openUserMenu = event => {
     event.preventDefault();
 
     this.setState({
       userOpen: true,
       anchorEl: event.currentTarget
     });
-  }
+  };
 
   closeUserMenu = () => {
     this.setState({userOpen: false});
-  }
+  };
 
   toggleSidebar = () => {
     toggleFlag('sidebarCollapsed');
     this.props.onRerenderApp();
-  }
+  };
 
   get userMenu() {
     if (this.props.user) {
@@ -84,19 +84,25 @@ class TitleBar extends Component {
             style={{color: 'white'}}
             label={this.props.user.displayName}
             labelPosition="before"
-            onTouchTap={(e) => this.openUserMenu(e)}
-            icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
+            onTouchTap={e => this.openUserMenu(e)}
+            icon={<FontIcon className="material-icons">account_circle</FontIcon>}
+          />
           <Popover
             open={this.state.userOpen}
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            onRequestClose={this.closeUserMenu}>
+            onRequestClose={this.closeUserMenu}
+          >
             <Menu>
               <MenuItem
                 primaryText="Logout"
-                onClick={() => { logout(); this.closeUserMenu(); }}
-                leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
+                onClick={() => {
+                  logout();
+                  this.closeUserMenu();
+                }}
+                leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>}
+              />
             </Menu>
           </Popover>
         </div>
@@ -107,7 +113,8 @@ class TitleBar extends Component {
           label="Login"
           labelPosition="before"
           onTouchTap={this.openLoginDialog}
-          icon={<FontIcon className="material-icons">person</FontIcon>} />
+          icon={<FontIcon className="material-icons">person</FontIcon>}
+        />
       );
     }
   }
@@ -117,11 +124,7 @@ class TitleBar extends Component {
       <div style={{height: 64}}>
         <AppBar
           title={
-            <NavLink
-              to="/"
-              className="topLink"
-              style={{fontFamily: 'Carter One', fontSize: 32}}
-            >
+            <NavLink to="/" className="topLink" style={{fontFamily: 'Carter One', fontSize: 32}}>
               WORDBOTS
             </NavLink>
           }
@@ -130,12 +133,11 @@ class TitleBar extends Component {
             top: 0
           }}
           iconElementLeft={
-            <Tooltip
-              text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
-              place="right"
-            >
+            <Tooltip text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu'} place="right">
               <IconButton onClick={this.toggleSidebar}>
-                <FontIcon className="material-icons" color="white">menu</FontIcon>
+                <FontIcon className="material-icons" color="white">
+                  menu
+                </FontIcon>
               </IconButton>
             </Tooltip>
           }

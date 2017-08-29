@@ -1,4 +1,4 @@
-import { STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE } from '../constants';
+import {STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_EVENT, TYPE_CORE, TYPE_STRUCTURE} from '../constants';
 
 /* eslint-disable quotes */
 
@@ -100,7 +100,8 @@ export const wrathOfRobotGodCard = {
 export const upgradeCard = {
   name: 'Upgrade',
   text: 'Give a robot +2 attack and +2 health.',
-  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
+  command:
+    "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
   cost: 2,
   type: TYPE_EVENT
 };
@@ -108,7 +109,8 @@ export const upgradeCard = {
 export const rechargeCard = {
   name: 'Recharge',
   text: 'All of your robots can move and attack again.',
-  command: "(function () { actions['canMoveAndAttackAgain'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })",
+  command:
+    "(function () { actions['canMoveAndAttackAgain'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })",
   cost: 2,
   type: TYPE_EVENT
 };
@@ -288,10 +290,10 @@ export const martyrBotCard = {
 };
 
 export const recyclerCard = {
-  name: "Recycler",
+  name: 'Recycler',
   type: TYPE_ROBOT,
-  spriteID: "rtom5g6o8yf",
-  text: "Activate: Discard a card, then draw a card.",
+  spriteID: 'rtom5g6o8yf',
+  text: 'Activate: Discard a card, then draw a card.',
   cost: 3,
   abilities: [
     "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard'))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })\")); })"
@@ -312,7 +314,8 @@ const madGamblerCard = {
     health: 1,
     speed: 1
   },
-  text: 'Startup: Gain 2 energy and draw a card. \nShutdown: Your opponent gains 2 energy, then your opponent draws a card',
+  text:
+    'Startup: Gain 2 energy and draw a card. \nShutdown: Your opponent gains 2 energy, then your opponent draws a card',
   abilities: [
     "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { (function () { actions['modifyEnergy'](targets['self'](), function (x) { return x + 2; }); })(); (function () { actions['draw'](targets['self'](), 1); })(); })); })",
     "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { (function () { actions['modifyEnergy'](targets['opponent'](), function (x) { return x + 2; }); })(); (function () { actions['draw'](targets['opponent'](), 1); })(); })); })"
@@ -416,7 +419,8 @@ export const superchargeCard = {
 export const rampageCard = {
   name: 'Rampage',
   text: 'Give all robots you control +2 attack.',
-  command: "(function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack', function (x) { return x + 2; }); })",
+  command:
+    "(function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack', function (x) { return x + 2; }); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -432,7 +436,8 @@ export const threedomCard = {
 export const earthquakeCard = {
   name: 'Earthquake',
   text: 'Destroy all robots that have less than 2 speed.',
-  command: '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))]))); })',
+  command:
+    '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))]))); })',
   cost: 5,
   type: TYPE_EVENT
 };
@@ -440,7 +445,8 @@ export const earthquakeCard = {
 export const discountCard = {
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
-  command: "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 1; }); })",
+  command:
+    "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 1; }); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -467,7 +473,8 @@ export const incinerateCard = {
 export const wisdomCard = {
   name: 'Wisdom',
   text: 'Draw cards equal to the number of robots you control.',
-  command: '(function () { actions["draw"](targets["self"](), count(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',
+  command:
+    '(function () { actions["draw"](targets["self"](), count(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',
   cost: 4,
   type: TYPE_EVENT
 };
@@ -483,7 +490,8 @@ export const shockCard = {
 export const firestormCard = {
   name: 'Firestorm',
   text: 'Deal 1 damage to everything adjacent to a tile.',
-  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("allobjects", [conditions["adjacentTo"](targets["choose"](allTiles()))])), 1); })',
+  command:
+    '(function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("allobjects", [conditions["adjacentTo"](targets["choose"](allTiles()))])), 1); })',
   cost: 3,
   type: TYPE_EVENT
 };
@@ -500,13 +508,11 @@ export const consumeCard = {
 };
 
 export const smashCard = {
-  "name": "Smash",
-  "type": TYPE_EVENT,
-  "text": "Destroy a structure.",
-  "cost": 2,
-  "command": [
-    "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })"
-  ]
+  name: 'Smash',
+  type: TYPE_EVENT,
+  text: 'Destroy a structure.',
+  cost: 2,
+  command: [ "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })" ]
 };
 
 const empCard = {
@@ -549,10 +555,10 @@ export const energyWellCard = {
 };
 
 export const antiGravityFieldCard = {
-  name: "Anti-Gravity Field",
+  name: 'Anti-Gravity Field',
   type: TYPE_STRUCTURE,
-  spriteID: "jjax9vh3xh",
-  text: "All robots have Jump.",
+  spriteID: 'jjax9vh3xh',
+  text: 'All robots have Jump.',
   cost: 3,
   abilities: [
     "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'canmoveoverobjects')); })\")); })"
@@ -576,10 +582,10 @@ const acceleratorCard = {
 };
 
 export const magpieMachineCard = {
-  name: "Magpie Machine",
+  name: 'Magpie Machine',
   type: TYPE_STRUCTURE,
-  spriteID: "vw3x59ovn0q",
-  text: "All robots have \"Whenever this robot attacks a kernel, draw a card\".",
+  spriteID: 'vw3x59ovn0q',
+  text: 'All robots have "Whenever this robot attacks a kernel, draw a card".',
   cost: 3,
   abilities: [
     "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'kernel'), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
@@ -609,7 +615,8 @@ const killingBeamCard = {
   stats: {
     health: 1
   },
-  text: 'At the start of your turn, this structure gains 1 health. \nActivate: Destroy all robots with cost equal to this structure\'s health.',
+  text:
+    "At the start of your turn, this structure gains 1 health. \nActivate: Destroy all robots with cost equal to this structure's health.",
   abilities: [
     "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['self'](); }), (function () { actions['modifyAttribute'](targets['thisRobot'](), 'health', function (x) { return x + 1; }); })); })",
     "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['destroy'](objectsMatchingConditions('robot', [conditions['attributeComparison']('cost', (function (x) { return x === attributeValue(targets['thisRobot'](), 'health'); }))])); })\")); })"
@@ -623,7 +630,7 @@ const healingWellCard = {
   stats: {
     health: 3
   },
-  text: 'Activate: Destroy this structure. \nShutdown: Restore all adjacent robots\' health',
+  text: "Activate: Destroy this structure. \nShutdown: Restore all adjacent robots' health",
   abilities: [
     "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['destroy'](targets['thisRobot']()); })\")); })",
     "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['restoreHealth'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])); })); })"

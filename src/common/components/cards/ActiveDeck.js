@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { array, bool, func, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, string} from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { sortBy } from 'lodash';
+import {sortBy} from 'lodash';
 
-import { groupCards, selectType } from '../../util/cards';
+import {groupCards, selectType} from '../../util/cards';
 import Tooltip from '../Tooltip';
 import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
@@ -21,7 +21,7 @@ export default class ActiveDeck extends Component {
     onIncreaseCardCount: func,
     onDecreaseCardCount: func,
     onSaveDeck: func
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -82,7 +82,7 @@ export default class ActiveDeck extends Component {
   }
 
   renderButton(grouping, iconName, tooltip) {
-    const selected = (this.state.grouping === grouping);
+    const selected = this.state.grouping === grouping;
 
     return (
       <div style={{width: '47.5%'}}>
@@ -111,13 +111,9 @@ export default class ActiveDeck extends Component {
             <div style={this.styles.cardCost}>{card.cost}</div>
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>
-              <span onClick={() => this.props.onDecreaseCardCount(card.id)}>
-                &nbsp;&ndash;&nbsp;
-              </span>
+              <span onClick={() => this.props.onDecreaseCardCount(card.id)}>&nbsp;&ndash;&nbsp;</span>
               {card.count}
-              <span onClick={() => this.props.onIncreaseCardCount(card.id)}>
-                &nbsp;+&nbsp;
-              </span>
+              <span onClick={() => this.props.onIncreaseCardCount(card.id)}>&nbsp;+&nbsp;</span>
             </div>
           </div>
         </CardTooltip>
@@ -128,7 +124,7 @@ export default class ActiveDeck extends Component {
   renderCardGroup(type) {
     return (
       <div>
-        {sortBy(groupCards(selectType(this.props.cards, type)), ['cost', 'name']).map((card, idx) =>
+        {sortBy(groupCards(selectType(this.props.cards, type)), [ 'cost', 'name' ]).map((card, idx) =>
           this.renderCard(card, idx, type)
         )}
       </div>
@@ -139,37 +135,47 @@ export default class ActiveDeck extends Component {
     if (this.state.grouping === 0) {
       return (
         <div>
-          {sortBy(groupCards(this.props.cards), ['cost', 'name']).map((card, idx) =>
-            this.renderCard(card, idx)
-          )}
+          {sortBy(groupCards(this.props.cards), [ 'cost', 'name' ]).map((card, idx) => this.renderCard(card, idx))}
         </div>
       );
     } else {
       return (
         <div>
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10
-          }}>Robots</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10
+            }}
+          >
+            Robots
+          </div>
 
           {this.renderCardGroup(0)}
 
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10,
-            marginTop: 10
-          }}>Events</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10,
+              marginTop: 10
+            }}
+          >
+            Events
+          </div>
 
           {this.renderCardGroup(1)}
 
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10,
-            marginTop: 10
-          }}>Structures</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10,
+              marginTop: 10
+            }}
+          >
+            Structures
+          </div>
 
           {this.renderCardGroup(3)}
         </div>
@@ -180,12 +186,14 @@ export default class ActiveDeck extends Component {
   render() {
     return (
       <div>
-        <div style={{
-          fontWeight: 100,
-          fontSize: 28
-        }}>
+        <div
+          style={{
+            fontWeight: 100,
+            fontSize: 28
+          }}
+        >
           Deck [
-          <span style={{color: (this.props.cards.length === 30) ? 'green' : 'red'}}>
+          <span style={{color: this.props.cards.length === 30 ? 'green' : 'red'}}>
             &nbsp;{this.props.cards.length}&nbsp;
           </span>
           / 30 ]
@@ -195,14 +203,19 @@ export default class ActiveDeck extends Component {
           value={this.state.name}
           floatingLabelText="Deck Name"
           style={{width: '100%', marginBottom: 10}}
-          onChange={e => { this.setState({name: e.target.value}); }} />
+          onChange={e => {
+            this.setState({name: e.target.value});
+          }}
+        />
 
         <div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: 20
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: 20
+            }}
+          >
             {this.renderButton(0, 'view_headline', 'Group by Cost')}
             {this.renderButton(1, 'view_agenda', 'Group by Type')}
           </div>
@@ -218,7 +231,9 @@ export default class ActiveDeck extends Component {
             disabled={!this.state.name}
             icon={<FontIcon className="material-icons">save</FontIcon>}
             style={{width: '100%', marginTop: 20}}
-            onClick={() => { this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id)); }}
+            onClick={() => {
+              this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id));
+            }}
           />
         </MustBeLoggedIn>
       </div>

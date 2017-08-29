@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { bool, func, number, object } from 'prop-types';
-import { connect } from 'react-redux';
-import { Route, Redirect, Switch, withRouter } from 'react-router';
+import React, {Component} from 'react';
+import {bool, func, number, object} from 'prop-types';
+import {connect} from 'react-redux';
+import {Route, Redirect, Switch, withRouter} from 'react-router';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { isFlagSet, logAnalytics } from '../util/browser';
-import { listenToUserData, onLogin, onLogout } from '../util/firebase';
+import {isFlagSet, logAnalytics} from '../util/browser';
+import {listenToUserData, onLogin, onLogout} from '../util/firebase';
 import * as actions from '../actions/global';
 import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
@@ -26,7 +26,7 @@ import Home from './Home';
 import Play from './Play';
 import About from './About';
 
-function mapStateToProps(state) {
+function mapStateToProps(state){
   return {
     inGame: state.game.started,
     inTutorial: state.game.tutorial,
@@ -34,7 +34,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch){
   return {
     onLoggedIn(user) {
       dispatch(actions.loggedIn(user));
@@ -80,7 +80,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    onLogin((user) => {
+    onLogin(user => {
       this.setState({loading: false});
       this.props.onLoggedIn(user.toJSON());
       listenToUserData(this.props.onReceiveFirebaseData);
@@ -122,10 +122,12 @@ class App extends Component {
       return null;
     } else {
       return (
-        <div style={{
-          paddingLeft: this.isSidebarExpanded ? 256 : 64,
-          transition: 'padding-left 200ms ease-in-out'
-        }}>
+        <div
+          style={{
+            paddingLeft: this.isSidebarExpanded ? 256 : 64,
+            transition: 'padding-left 200ms ease-in-out'
+          }}
+        >
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/home" component={Home} />
@@ -135,7 +137,7 @@ class App extends Component {
             <Route path="/deck" component={Deck} />
             <Route path="/play" component={Play} />
             <Route path="/about" component={About} />
-            <Route render={() => <Redirect to="/"/>} />
+            <Route render={() => <Redirect to="/" />} />
           </Switch>
         </div>
       );

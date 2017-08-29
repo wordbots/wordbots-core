@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import React, {Component} from 'react';
+import {array, bool, func, number, object, string} from 'prop-types';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isNil } from 'lodash';
+import {isNil} from 'lodash';
 
-import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
-import { inBrowser } from '../util/browser';
-import { currentTutorialStep, getAttribute } from '../util/game';
+import {ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS} from '../constants';
+import {inBrowser} from '../util/browser';
+import {currentTutorialStep, getAttribute} from '../util/game';
 import CardViewer from '../components/card/CardViewer';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
@@ -20,17 +20,17 @@ import EventAnimation from '../components/game/EventAnimation';
 import VictoryScreen from '../components/game/VictoryScreen';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
-import { arbitraryPlayerState } from '../store/defaultGameState';
+import {arbitraryPlayerState} from '../store/defaultGameState';
 
-function animate(fns) {
+function animate(fns){
   if (fns.length > 0) {
-    const [first, ...rest] = fns;
+    const [ first, ...rest ] = fns;
     first();
     setTimeout(() => animate(rest), ANIMATION_TIME_MS);
   }
 }
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state){
   const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
   const currentPlayer = state.game.players[state.game.currentTurn];
 
@@ -75,7 +75,7 @@ export function mapStateToProps(state) {
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch){
   return {
     onMoveRobot: (fromHexId, toHexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -110,19 +110,16 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId, player) => {
       dispatch(gameActions.setSelectedTile(hexId, player));
     },
-    onHoverCard: (index) => {
+    onHoverCard: index => {
       dispatch(gameActions.setHoveredCard(index));
     },
-    onHoverTile: (card) => {
+    onHoverTile: card => {
       dispatch(gameActions.setHoveredTile(card));
     },
     onEndGame: () => {
-      dispatch([
-        gameActions.endGame(),
-        socketActions.leave()
-      ]);
+      dispatch([ gameActions.endGame(), socketActions.leave() ]);
     },
-    onTutorialStep: (back) => {
+    onTutorialStep: back => {
       dispatch(gameActions.tutorialStep(back));
     },
     onAIResponse: () => {
@@ -202,11 +199,7 @@ export class GameArea extends Component {
 
     setInterval(() => {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
-        animate([
-          props.onAIResponse,
-          props.onAttackRetract,
-          props.onAttackComplete
-        ]);
+        animate([ props.onAIResponse, props.onAttackRetract, props.onAttackComplete ]);
       }
     }, AI_RESPONSE_TIME_MS);
   }
@@ -215,11 +208,13 @@ export class GameArea extends Component {
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   componentDidMount() {
     this.updateDimensions();
-    window.onresize = () => { this.updateDimensions(); };
+    window.onresize = () => {
+      this.updateDimensions();
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -253,13 +248,13 @@ export class GameArea extends Component {
   hoveredCard() {
     const hand = this.props[`${this.props.player}Hand`];
 
-    const cardFromIndex = (idx) => {
+    const cardFromIndex = idx => {
       if (!isNil(idx) && hand[idx]) {
         const card = hand[idx];
         return {card: card, stats: card.stats};
       }
     };
-    const cardFromHex = (hex) => {
+    const cardFromHex = hex => {
       const piece = this.allPieces()[hex];
       if (piece) {
         return {
@@ -273,10 +268,12 @@ export class GameArea extends Component {
       }
     };
 
-    return this.props.hoveredCard ||
+    return (
+      this.props.hoveredCard ||
       cardFromIndex(this.props.hoveredCardIdx) ||
       cardFromIndex(this.props.selectedCard) ||
-      cardFromHex(this.props.selectedTile);
+      cardFromHex(this.props.selectedTile)
+    );
   }
 
   movePiece(hexId, asPartOfAttack = false) {
@@ -297,8 +294,9 @@ export class GameArea extends Component {
 
   onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
     if (this.props.attack) {
-      return;  // Can't move/attack while an attack is in progress.
-    } if (action === 'move') {
+      return; // Can't move/attack while an attack is in progress.
+    }
+    if (action === 'move') {
       this.movePiece(hexId);
     } else if (action === 'attack') {
       this.attackPiece(hexId, intermediateMoveHexId);
@@ -347,7 +345,10 @@ export class GameArea extends Component {
           timeout={2000}
           title="Wordbots."
           options={{...options, body: 'It\'s your turn!'}}
-          onClick={() => { window.focus(); }} />
+          onClick={() => {
+            window.focus();
+          }}
+        />
       );
     }
   }
@@ -365,7 +366,8 @@ export class GameArea extends Component {
             position: 'relative',
             height: this.state.areaHeight,
             background: `url(${this.loadBackground()})`
-        }}>
+          }}
+        >
           <PlayerArea opponent gameProps={this.props} />
           <CardViewer hoveredCard={this.hoveredCard()} />
           <div
@@ -378,10 +380,9 @@ export class GameArea extends Component {
               margin: '0 auto',
               zIndex: 999,
               width: this.state.boardSize
-          }}>
-            <Status
-              player={this.props.player}
-              status={this.isMyTurn() ? this.props.status : {}} />
+            }}
+          >
+            <Status player={this.props.player} status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               size={this.state.boardSize}
               player={this.props.player}
@@ -399,7 +400,8 @@ export class GameArea extends Component {
               onEndGame={() => {
                 this.props.onEndGame();
                 this.props.history.push('/play');
-              }} />
+              }}
+            />
           </div>
           <PlayerArea gameProps={this.props} />
           <EventAnimation eventQueue={this.props.eventQueue} currentTurn={this.props.currentTurn} />
@@ -409,7 +411,8 @@ export class GameArea extends Component {
             onClick={() => {
               this.props.onEndGame();
               this.props.history.push('/play');
-            }} />
+            }}
+          />
         </Paper>
       </div>
     );

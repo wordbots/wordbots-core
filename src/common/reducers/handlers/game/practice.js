@@ -1,21 +1,25 @@
-import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
+import {filter, findIndex, findKey, sample, shuffle, times} from 'lodash';
 
-import { TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
-import { id, convertRange } from '../../../util/common';
+import {TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX} from '../../../constants';
+import {id, convertRange} from '../../../util/common';
 import {
-  validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
-  newGame, passTurn
+  validPlacementHexes,
+  validMovementHexes,
+  validAttackHexes,
+  intermediateMoveHexId,
+  newGame,
+  passTurn
 } from '../../../util/game';
 import * as builtinCards from '../../../store/cards';
 import HU from '../../../components/hexgrid/HexUtils';
 
-import { setSelectedCard, placeCard } from './cards';
-import { moveRobot, attack } from './board';
+import {setSelectedCard, placeCard} from './cards';
+import {moveRobot, attack} from './board';
 
-export function startPractice(state, deck) {
+export function startPractice(state, deck){
   const decks = {
     orange: deck,
-    blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
+    blue: shuffle(aiDeck).map(card => ({...card, id: id()}))
   };
 
   state = newGame(state, 'orange', {orange: 'Human', blue: 'Computer'}, decks);
@@ -24,7 +28,7 @@ export function startPractice(state, deck) {
   return state;
 }
 
-export function aiResponse(state) {
+export function aiResponse(state){
   if (state.usernames[state.currentTurn] !== 'Computer') {
     return state;
   }
@@ -41,11 +45,11 @@ export function aiResponse(state) {
   } else if (cards.length === 0) {
     return moveARobot(state);
   } else {
-    return Math.random() < 0.50 ? playACard(state) : moveARobot(state);
+    return Math.random() < 0.5 ? playACard(state) : moveARobot(state);
   }
 }
 
-function playACard(state) {
+function playACard(state){
   const ai = state.players[state.currentTurn];
   const cards = availableCards(state, ai);
 
@@ -69,11 +73,12 @@ function playACard(state) {
   return state;
 }
 
-function moveARobot(state) {
+function moveARobot(state){
   const ai = state.players[state.currentTurn];
   const robots = availableRobots(state, ai);
 
-  if (robots.length > 0 && Math.random() > 0.1) {  // (10% chance a given robot does nothing.)
+  if (robots.length > 0 && Math.random() > 0.1) {
+    // (10% chance a given robot does nothing.)
     const robot = sample(robots);
     const robotHexId = findKey(ai.robotsOnBoard, {id: robot.id});
 
@@ -100,7 +105,7 @@ function moveARobot(state) {
   return state;
 }
 
-function moveAndAttack(state, sourceHexId, targetHexId) {
+function moveAndAttack(state, sourceHexId, targetHexId){
   const intermediateHexId = intermediateMoveHexId(state, HU.IDToHex(sourceHexId), HU.IDToHex(targetHexId));
 
   if (intermediateHexId) {
@@ -116,21 +121,24 @@ function moveAndAttack(state, sourceHexId, targetHexId) {
 
 // How likely a robot is to move to a given hex.
 // Ranges from 1 (for hexes adjacent to the blue kernel) to 16 (for hexes adjacent to the orange kernel).
-function priority(hexId) {
+function priority(hexId){
   const distanceToPlayerKernel = HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX));
-  return convertRange(distanceToPlayerKernel, [6, 1], [1, 16]);
+  return convertRange(distanceToPlayerKernel, [ 6, 1 ], [ 1, 16 ]);
 }
 
-function availableCards(state, ai) {
-  return ai.hand.filter(card =>
-    card.cost <= ai.energy.available &&
+function availableCards(state, ai){
+  return ai.hand.filter(
+    card =>
+      card.cost <= ai.energy.available &&
       (card.type === TYPE_EVENT || validPlacementHexes(state, ai.name, card.type).length > 0)
   );
 }
 
-function availableRobots(state, ai) {
-  return filter(ai.robotsOnBoard, (obj, hex) =>
-    obj.card.type === TYPE_ROBOT &&
+function availableRobots(state, ai){
+  return filter(
+    ai.robotsOnBoard,
+    (obj, hex) =>
+      obj.card.type === TYPE_ROBOT &&
       validMovementHexes(state, HU.IDToHex(hex)).concat(validAttackHexes(state, HU.IDToHex(hex))).length > 0
   );
 }

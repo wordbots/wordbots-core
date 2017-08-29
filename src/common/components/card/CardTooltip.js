@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { array, object, oneOfType } from 'prop-types';
+import React, {Component} from 'react';
+import {array, object, oneOfType} from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import { id } from '../../util/common';
+import {id} from '../../util/common';
 
 import Card from './Card';
 
 export default class CardTooltip extends Component {
   static propTypes = {
     card: object,
-    children: oneOfType([array, object])
+    children: oneOfType([ array, object ])
   };
 
-  tooltipId = id()
+  tooltipId = id();
 
   render() {
     return (
@@ -21,11 +21,7 @@ export default class CardTooltip extends Component {
           {this.props.children}
         </span>
         <span style={{zIndex: 99999, backgroundColor: 'transparent'}}>
-          <ReactTooltip
-            id={this.tooltipId}
-            className="hovered-card"
-            place="top"
-          >
+          <ReactTooltip id={this.tooltipId} className="hovered-card" place="top">
             {Card.fromObj(this.props.card)}
           </ReactTooltip>
         </span>

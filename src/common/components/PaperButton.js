@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { array, bool, func, object, oneOfType } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, object, oneOfType} from 'prop-types';
 import Paper from 'material-ui/Paper';
 
 export default class PaperButton extends Component {
@@ -8,7 +8,7 @@ export default class PaperButton extends Component {
     onClick: func,
     style: object,
 
-    children: oneOfType([array, object])
+    children: oneOfType([ array, object ])
   };
 
   constructor(props) {
@@ -23,17 +23,17 @@ export default class PaperButton extends Component {
     if (!this.props.disabled) {
       this.props.onClick();
     }
-  }
+  };
 
   onMouseOver = () => {
     if (!this.props.disabled) {
       this.setState({shadow: 3});
     }
-  }
+  };
 
   onMouseOut = () => {
     this.setState({shadow: 1});
-  }
+  };
 
   render() {
     return (

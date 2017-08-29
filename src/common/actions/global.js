@@ -3,27 +3,27 @@ export const LOGGED_IN = 'LOGGED_IN';
 export const LOGGED_OUT = 'LOGGED_OUT';
 export const RE_RENDER = 'RE_RENDER';
 
-export function firebaseData(data) {
+export function firebaseData(data){
   return {
     type: FIREBASE_DATA,
-    payload: { data }
+    payload: {data}
   };
 }
 
-export function loggedIn(user) {
+export function loggedIn(user){
   return {
     type: LOGGED_IN,
-    payload: { user }
+    payload: {user}
   };
 }
 
-export function loggedOut() {
+export function loggedOut(){
   return {
     type: LOGGED_OUT
   };
 }
 
-export function rerender() {
+export function rerender(){
   return {
     type: RE_RENDER
   };

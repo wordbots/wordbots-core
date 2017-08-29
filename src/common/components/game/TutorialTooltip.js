@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, number, object, oneOfType} from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import { noop } from 'lodash';
+import {noop} from 'lodash';
 
 import Tooltip from '../Tooltip';
 
 export default class TutorialTooltip extends Component {
   static propTypes = {
-    children: oneOfType([array, object]),
+    children: oneOfType([ array, object ]),
     tutorialStep: object,
     enabled: bool,
     top: number,
@@ -80,12 +80,10 @@ export default class TutorialTooltip extends Component {
   get backButton() {
     return (
       <Tooltip inline text="Go back a step">
-        <IconButton
-          onClick={this.props.onPrevStep}
-          disabled={this.step.idx === 0}
-          style={this.styles.backButton}
-        >
-          <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>replay</FontIcon>
+        <IconButton onClick={this.props.onPrevStep} disabled={this.step.idx === 0} style={this.styles.backButton}>
+          <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>
+            replay
+          </FontIcon>
         </IconButton>
       </Tooltip>
     );
@@ -106,13 +104,9 @@ export default class TutorialTooltip extends Component {
   get tooltipBody() {
     return (
       <div style={this.styles.tooltip}>
-        <div style={this.styles.percent}>
-          {this.pctComplete}% complete
-        </div>
+        <div style={this.styles.percent}>{this.pctComplete}% complete</div>
 
-        <div style={this.styles.text}>
-          {this.step.tooltip.text}
-        </div>
+        <div style={this.styles.text}>{this.step.tooltip.text}</div>
 
         {this.backButton}
         {this.nextButton}
@@ -123,13 +117,7 @@ export default class TutorialTooltip extends Component {
   render() {
     if (this.step && this.props.enabled) {
       return (
-        <Popover
-          isOpen
-          style={this.styles.container}
-          tipSize={15}
-          body={this.tooltipBody}
-          refreshIntervalMs={50}
-        >
+        <Popover isOpen style={this.styles.container} tipSize={15} body={this.tooltipBody} refreshIntervalMs={50}>
           {this.props.children}
         </Popover>
       );

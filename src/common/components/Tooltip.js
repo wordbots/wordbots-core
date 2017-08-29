@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { array, bool, object, oneOfType, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, object, oneOfType, string} from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import { id } from '../util/common';
+import {id} from '../util/common';
 
 export default class Tooltip extends Component {
   static propTypes = {
     inline: bool,
     style: object,
     text: string.isRequired,
-    children: oneOfType([array, object]),
+    children: oneOfType([ array, object ]),
     disable: bool,
     place: string
   };
@@ -19,9 +19,9 @@ export default class Tooltip extends Component {
     style: {},
     disable: false,
     place: 'top'
-  }
+  };
 
-  tooltipId = id()
+  tooltipId = id();
 
   render() {
     const SpanOrDiv = this.props.inline ? 'span' : 'div';
@@ -32,10 +32,7 @@ export default class Tooltip extends Component {
           {this.props.children}
         </SpanOrDiv>
         <SpanOrDiv style={this.props.style}>
-          <ReactTooltip
-            id={this.tooltipId}
-            disable={this.props.disable}
-            place={this.props.place} />
+          <ReactTooltip id={this.tooltipId} disable={this.props.disable} place={this.props.place} />
         </SpanOrDiv>
       </SpanOrDiv>
     );

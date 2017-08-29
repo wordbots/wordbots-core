@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { object, string, bool } from 'prop-types';
+import React, {Component} from 'react';
+import {object, string, bool} from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 
@@ -20,9 +20,9 @@ class PlayerArea extends Component {
 
   getColor(opponent, playerColor) {
     if (opponent) {
-      return (playerColor === 'blue') ? 'orange' : 'blue';
+      return playerColor === 'blue' ? 'orange' : 'blue';
     } else {
-      return (playerColor === 'neither') ? 'orange' : playerColor;
+      return playerColor === 'neither' ? 'orange' : playerColor;
     }
   }
 
@@ -43,9 +43,9 @@ class PlayerArea extends Component {
         boxSizing: 'border-box'
       },
       icon: {
-        verticalAlign: 'middle', 
+        verticalAlign: 'middle',
         color: 'white'
-      }, 
+      },
       discard: {
         width: 'calc(100% - 10px)',
         marginTop: opponent ? 10 : 0,
@@ -64,11 +64,13 @@ class PlayerArea extends Component {
         <PlayerName
           opponent={opponent}
           color={color}
-          playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]}  />
+          playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]}
+        />
         <EnergyCount
           color={color}
           energy={gameProps[`${color}Energy`]}
-          isCurrentPlayer={gameProps.currentTurn === color} />
+          isCurrentPlayer={gameProps.currentTurn === color}
+        />
         <Hand
           // curved
           opponent={opponent}
@@ -82,18 +84,22 @@ class PlayerArea extends Component {
           tutorialStep={gameProps.tutorialStep}
           onSelectCard={idx => gameProps.onSelectCard(idx, color)}
           onHoverCard={gameProps.onHoverCard}
-          onTutorialStep={gameProps.onTutorialStep} />
-        
-        <div style={{
-          display: 'flex',
-          flexDirection: opponent ? 'column-reverse' : 'column'
-        }}>
+          onTutorialStep={gameProps.onTutorialStep}
+        />
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: opponent ? 'column-reverse' : 'column'
+          }}
+        >
           <RaisedButton
             secondary
             label="Discard Pile"
-            onTouchTap={() => this.setState({ discardOpen: true })}
-            style={this.styles.discard} 
-            disabled={gameProps[`${color}DiscardPile`].length === 0}/>
+            onTouchTap={() => this.setState({discardOpen: true})}
+            style={this.styles.discard}
+            disabled={gameProps[`${color}DiscardPile`].length === 0}
+          />
           <Deck deck={gameProps[`${color}Deck`]} />
         </div>
 
@@ -101,11 +107,11 @@ class PlayerArea extends Component {
           title="Discard Pile"
           modal={false}
           open={this.state.discardOpen}
-          contentStyle={{ width: 700 }}
-          bodyStyle={{ overflow: 'auto' }}
-          onRequestClose={() => this.setState({ discardOpen: false })}>
-          <DiscardPile 
-            cards={gameProps[`${color}DiscardPile`]} />
+          contentStyle={{width: 700}}
+          bodyStyle={{overflow: 'auto'}}
+          onRequestClose={() => this.setState({discardOpen: false})}
+        >
+          <DiscardPile cards={gameProps[`${color}DiscardPile`]} />
         </Dialog>
       </div>
     );

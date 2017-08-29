@@ -1,21 +1,21 @@
-import { id } from '../util/common';
-import { reversedCmd, executeCmd } from '../util/game';
+import {id} from '../util/common';
+import {reversedCmd, executeCmd} from '../util/game';
 
-export function setAbility(state, currentObject, source) {
-  return function (ability) {
+export function setAbility(state, currentObject, source){
+  return function (ability){
     if (!source || !currentObject.abilities.find(a => a.source === source)) {
       ability = Object.assign({}, ability, {
         source: source,
         duration: state.memory['duration'] || null
       });
 
-      currentObject.abilities = currentObject.abilities.concat([ability]);
+      currentObject.abilities = currentObject.abilities.concat([ ability ]);
     }
   };
 }
 
-export function unsetAbility(state, currentObject, source) {
-  return function () {
+export function unsetAbility(state, currentObject, source){
+  return function (){
     currentObject.abilities = currentObject.abilities.map(ability =>
       Object.assign({}, ability, {disabled: ability.source === source})
     );
@@ -28,18 +28,17 @@ export function unsetAbility(state, currentObject, source) {
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
 
-export function abilities(state) {
+export function abilities(state){
   return {
-    activated: function (targetFunc, action) {
+    activated: function (targetFunc, action){
       const aid = id();
       const cmdText = state.currentCmdText;
 
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
-        apply: function (target) {
-
-          target.activatedAbilities = (target.activatedAbilities || []);
+        apply: function (target){
+          target.activatedAbilities = target.activatedAbilities || [];
 
           if (!target.activatedAbilities.find(a => a.aid === aid)) {
             target.activatedAbilities = target.activatedAbilities.concat({
@@ -49,20 +48,20 @@ export function abilities(state) {
             });
           }
         },
-        unapply: function (target) {
+        unapply: function (target){
           target.activatedAbilities = (target.activatedAbilities || []).filter(a => a.aid !== aid);
         }
       };
     },
 
-    attributeAdjustment: function (targetFunc, attr, func) {
+    attributeAdjustment: function (targetFunc, attr, func){
       const aid = id();
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
-        apply: function (target) {
+        apply: function (target){
           if (!target.temporaryStatAdjustments) {
-            target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
+            target.temporaryStatAdjustments = {attack: [], health: [], speed: [], cost: []};
           }
 
           target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].concat({
@@ -70,22 +69,22 @@ export function abilities(state) {
             func: func
           });
         },
-        unapply: function (target) {
+        unapply: function (target){
           if (target.temporaryStatAdjustments) {
-            target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].filter(adj =>
-              adj.aid !== aid
+            target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].filter(
+              adj => adj.aid !== aid
             );
           }
         }
       };
     },
 
-    applyEffect: function (targetFunc, effect, props = {}) {
+    applyEffect: function (targetFunc, effect, props = {}){
       const aid = id();
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
-        apply: function (target) {
+        apply: function (target){
           if (!(target.effects || []).find(eff => eff.aid === aid)) {
             target.effects = (target.effects || []).concat({
               aid: aid,
@@ -94,26 +93,26 @@ export function abilities(state) {
             });
           }
         },
-        unapply: function (target) {
+        unapply: function (target){
           target.effects = (target.effects || []).filter(eff => eff.aid !== aid);
         }
       };
     },
 
-    freezeAttribute: function (targetFunc, attribute) {
+    freezeAttribute: function (targetFunc, attribute){
       // TODO
       throw 'Not yet implemented!';
     },
 
-    giveAbility: function (targetFunc, cmd) {
+    giveAbility: function (targetFunc, cmd){
       const aid = id();
       return {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
-        apply: function (target) {
+        apply: function (target){
           executeCmd(state, cmd, target, aid);
         },
-        unapply: function (target) {
+        unapply: function (target){
           executeCmd(state, reversedCmd(cmd), target, aid);
         }
       };

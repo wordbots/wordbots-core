@@ -1,9 +1,9 @@
-import { cloneDeep, concat } from 'lodash';
+import {cloneDeep, concat} from 'lodash';
 
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultSocketState';
 
-export default function socket(oldState = cloneDeep(defaultState), action) {
+export default function socket(oldState = cloneDeep(defaultState), action){
   const state = Object.assign({}, oldState);
 
   switch (action.type) {
@@ -18,13 +18,13 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
     case socketActions.CHAT: {
       const message = {
-        user: action.payload.sender ? (state.clientIdToUsername[action.payload.sender] || action.payload.sender) : 'You',
+        user: action.payload.sender ? state.clientIdToUsername[action.payload.sender] || action.payload.sender : 'You',
         text: action.payload.msg,
         timestamp: Date.now()
       };
 
       return Object.assign(state, {
-        chatMessages: concat(state.chatMessages, [message])
+        chatMessages: concat(state.chatMessages, [ message ])
       });
     }
 

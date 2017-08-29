@@ -1,15 +1,15 @@
-import { cloneDeep, isEqual } from 'lodash';
-import { applyPatch, compare } from 'fast-json-patch';
+import {cloneDeep, isEqual} from 'lodash';
+import {applyPatch, compare} from 'fast-json-patch';
 
-import { handleAction } from '../../game';
-import { id } from '../../../util/common';
-import { currentTutorialStep, passTurn } from '../../../util/game';
+import {handleAction} from '../../game';
+import {id} from '../../../util/common';
+import {currentTutorialStep, passTurn} from '../../../util/game';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
 import * as cards from '../../../store/cards';
 import defaultState from '../../../store/defaultGameState';
 
-function nextStep(state) {
+function nextStep(state){
   if (state.tutorialCurrentStepIdx < state.tutorialSteps.length) {
     const oldState = cloneDeep(state);
     const currentStep = currentTutorialStep(state);
@@ -34,7 +34,7 @@ function nextStep(state) {
   return state;
 }
 
-function prevStep(state) {
+function prevStep(state){
   if (state.undoStack.length > 0) {
     applyPatch(state, state.undoStack.pop());
   }
@@ -42,12 +42,12 @@ function prevStep(state) {
   return state;
 }
 
-function deck(cardList) {
-  const filler = [cards.oneBotCard, cards.oneBotCard, cards.oneBotCard, cards.oneBotCard];
+function deck(cardList){
+  const filler = [ cards.oneBotCard, cards.oneBotCard, cards.oneBotCard, cards.oneBotCard ];
   return cardList.concat(filler).map(card => ({...card, source: 'builtin', id: id()}));
 }
 
-export function startTutorial(state) {
+export function startTutorial(state){
   // Reset game state and enable tutorial mode.
   state = Object.assign(state, cloneDeep(defaultState), {
     started: true,
@@ -59,8 +59,8 @@ export function startTutorial(state) {
   });
 
   // Set up.
-  state.players.orange.deck = deck([cards.oneBotCard, cards.upgradeCard, cards.rechargeCard]);
-  state.players.blue.deck = deck([cards.redBotCard]);
+  state.players.orange.deck = deck([ cards.oneBotCard, cards.upgradeCard, cards.rechargeCard ]);
+  state.players.blue.deck = deck([ cards.redBotCard ]);
   state.players.orange.robotsOnBoard['3,0,-3'].stats.health = 5;
   state.players.blue.robotsOnBoard['-3,0,3'].stats.health = 3;
   state = passTurn(state, 'orange');
@@ -69,7 +69,7 @@ export function startTutorial(state) {
   return state;
 }
 
-export function endTutorial(state) {
+export function endTutorial(state){
   return Object.assign(state, cloneDeep(defaultState), {
     started: false,
     tutorial: false,
@@ -79,14 +79,14 @@ export function endTutorial(state) {
   });
 }
 
-export function handleTutorialAction(state, action) {
+export function handleTutorialAction(state, action){
   if (isEqual(action, currentTutorialStep(state).action)) {
     state = nextStep(state);
   } else if (action.type === actions.TUTORIAL_STEP) {
     return action.payload.back ? prevStep(state) : nextStep(state);
   } else if (action.type === actions.END_GAME || action.type === socketActions.LEAVE) {
     state = endTutorial(state);
-  } else if ([actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_TILE].includes(action.type)) {
+  } else if ([ actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_TILE ].includes(action.type)) {
     return handleAction(state, action);
   }
 
@@ -99,14 +99,14 @@ const tutorialScript = [
       hex: '0,0,0',
       text: 'Welcome to Wordbots! This tutorial will teach you the basics. Click NEXT to continue.'
     },
-    responses: [actions.setSelectedTile('3,0,-3', 'orange')]
+    responses: [ actions.setSelectedTile('3,0,-3', 'orange') ]
   },
   {
     tooltip: {
       hex: '3,0,-3',
       text: 'This blocky guy here is your kernel. When its health goes to zero, you lose the game. Sad!'
     },
-    responses: [actions.setSelectedTile('-3,0,3', 'orange')]
+    responses: [ actions.setSelectedTile('-3,0,3', 'orange') ]
   },
   {
     tooltip: {
@@ -131,21 +131,24 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '2,0,-2',
-      text: 'Say hello to our new friend, One Bot! It would be nice to move towards the enemy, but robots can\'t move or attack on the turn they\'re played.'
+      text:
+        'Say hello to our new friend, One Bot! It would be nice to move towards the enemy, but robots can\'t move or attack on the turn they\'re played.'
     }
   },
   {
     tooltip: {
       location: 'endTurnButton',
-      text: 'There\'s not really anything else we can do this turn. Click this button to end the turn, and we\'ll see what our opponent does.'
+      text:
+        'There\'s not really anything else we can do this turn. Click this button to end the turn, and we\'ll see what our opponent does.'
     },
     action: actions.passTurn('orange'),
-    responses: [actions.passTurn('blue')]
+    responses: [ actions.passTurn('blue') ]
   },
   {
     tooltip: {
       hex: '0,0,0',
-      text: 'Looks like our opponent didn\'t do anything on their turn. How very mysterious. But that\'s all the better for us!'
+      text:
+        'Looks like our opponent didn\'t do anything on their turn. How very mysterious. But that\'s all the better for us!'
     }
   },
   {
@@ -158,7 +161,8 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '0,0,0',
-      text: 'Over on the left you can see One Bot\'s stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here.'
+      text:
+        'Over on the left you can see One Bot\'s stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here.'
     },
     action: actions.moveRobot('2,0,-2', '0,0,0')
   },
@@ -168,17 +172,14 @@ const tutorialScript = [
       text: 'Nice! We\'ve advanced two steps closer to victory. Let\'s end our turn and wait for the opponent.'
     },
     action: actions.passTurn('orange'),
-    responses: [
-      actions.placeCard('-2,0,2', 0),
-      actions.passTurn('blue')
-    ]
+    responses: [ actions.placeCard('-2,0,2', 0), actions.passTurn('blue') ]
   },
   {
     tooltip: {
       hex: '-2,0,2',
       text: 'Oh dear, it looks like our opponent has played a robot in our way. And it looks to be an intimidating one!'
     },
-    responses: [actions.setSelectedTile('-2,0,2', 'orange')]
+    responses: [ actions.setSelectedTile('-2,0,2', 'orange') ]
   },
   {
     tooltip: {
@@ -243,7 +244,8 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '-2,0,2',
-      text: 'Okay, what happened here? Our One Bot dealt 3 damage to the enemy robot, which was enough to destroy it. The enemy robot dealt 3 damage to us too, but fortunately our robot just barely survived. Good job, One Bot!'
+      text:
+        'Okay, what happened here? Our One Bot dealt 3 damage to the enemy robot, which was enough to destroy it. The enemy robot dealt 3 damage to us too, but fortunately our robot just barely survived. Good job, One Bot!'
     }
   },
   {
@@ -295,7 +297,8 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '0,0,0',
-      text: 'Congratulations! You\'ve completed the tutorial, and you\'re all ready to experience Wordbots. What\'s next? Try playing some games. Make your own cards. Build a deck. The sky\'s the limit! Enjoy your time here :-)'
+      text:
+        'Congratulations! You\'ve completed the tutorial, and you\'re all ready to experience Wordbots. What\'s next? Try playing some games. Make your own cards. Build a deck. The sky\'s the limit! Enjoy your time here :-)'
     }
   }
 ];

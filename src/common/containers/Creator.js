@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, number, object, oneOfType, string} from 'prop-types';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -11,7 +11,7 @@ import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator';
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state){
   return {
     id: state.creator.id,
     name: state.creator.name,
@@ -27,15 +27,15 @@ export function mapStateToProps(state) {
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch){
   return {
-    onSetName: (name) => {
+    onSetName: name => {
       dispatch(creatorActions.setName(name));
     },
-    onSetType: (type) => {
+    onSetType: type => {
       dispatch(creatorActions.setType(type));
     },
-    onSetText: (text) => {
+    onSetText: text => {
       dispatch(creatorActions.setText(text));
     },
     onSetAttribute: (attr, value) => {
@@ -47,7 +47,7 @@ export function mapDispatchToProps(dispatch) {
     onSpriteClick: () => {
       dispatch(creatorActions.regenerateSprite());
     },
-    onAddToCollection: (props) => {
+    onAddToCollection: props => {
       dispatch(creatorActions.addToCollection(props));
     }
   };
@@ -75,7 +75,7 @@ export class Creator extends Component {
     cost: number,
     loggedIn: bool,
 
-    history: oneOfType([array, object]),
+    history: oneOfType([ array, object ]),
 
     onSetName: func,
     onSetType: func,
@@ -88,27 +88,27 @@ export class Creator extends Component {
 
   static defaultProps = {
     history: []
-  }
+  };
 
   // For testing.
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
-  openDialog = (dialogPath) => {
+  openDialog = dialogPath => {
     RouterDialog.openDialog(this.props.history, dialogPath);
-  }
+  };
 
   addToCollection = () => {
     this.props.onAddToCollection(this.props);
     this.props.history.push('/collection');
-  }
+  };
 
   render() {
     return (
       <div style={{position: 'relative'}}>
-        <Helmet title="Creator"/>
+        <Helmet title="Creator" />
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
@@ -129,7 +129,8 @@ export class Creator extends Component {
             onParseComplete={this.props.onParseComplete}
             onSpriteClick={this.props.onSpriteClick}
             onOpenDialog={this.openDialog}
-            onAddToCollection={this.addToCollection} />
+            onAddToCollection={this.addToCollection}
+          />
           <CardPreview
             name={this.props.name}
             type={this.props.type}
@@ -139,7 +140,8 @@ export class Creator extends Component {
             speed={this.props.speed}
             health={this.props.health}
             energy={this.props.cost}
-            onSpriteClick={this.props.onSpriteClick} />
+            onSpriteClick={this.props.onSpriteClick}
+          />
         </div>
       </div>
     );

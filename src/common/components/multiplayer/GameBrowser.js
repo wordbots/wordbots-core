@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { array, bool, func, object } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, object} from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
@@ -21,28 +21,33 @@ export default class GameBrowser extends Component {
 
   renderTableRows() {
     if (this.games.length > 0) {
-      return (
-        this.games.map(game =>
-          <TableRow key={game.id}>
-            <TableRowColumn>{game.name}</TableRowColumn>
-            <TableRowColumn>{game.players.map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
-            <TableRowColumn>{(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
-            <TableRowColumn style={{textAlign: 'right'}}>
-              { game.players.length === 1 ?
-                <RaisedButton
-                  secondary
-                  label="Join Game"
-                  disabled={this.props.cannotJoinGame}
-                  onTouchTap={() => { this.props.onJoinGame(game.id, game.name); }} /> :
-                <RaisedButton
-                  secondary
-                  label="Spectate Game"
-                  onTouchTap={() => { this.props.onSpectateGame(game.id, game.name); }} />
-              }
-            </TableRowColumn>
-          </TableRow>
-        )
-      );
+      return this.games.map(game => (
+        <TableRow key={game.id}>
+          <TableRowColumn>{game.name}</TableRowColumn>
+          <TableRowColumn>{game.players.map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
+          <TableRowColumn>{(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
+          <TableRowColumn style={{textAlign: 'right'}}>
+            {game.players.length === 1 ? (
+              <RaisedButton
+                secondary
+                label="Join Game"
+                disabled={this.props.cannotJoinGame}
+                onTouchTap={() => {
+                  this.props.onJoinGame(game.id, game.name);
+                }}
+              />
+            ) : (
+              <RaisedButton
+                secondary
+                label="Spectate Game"
+                onTouchTap={() => {
+                  this.props.onSpectateGame(game.id, game.name);
+                }}
+              />
+            )}
+          </TableRowColumn>
+        </TableRow>
+      ));
     } else {
       return (
         <TableRow>
@@ -54,7 +59,10 @@ export default class GameBrowser extends Component {
               fontWeight: 300,
               textAlign: 'center',
               padding: 24
-            }}>No open games.</TableRowColumn>
+            }}
+          >
+            No open games.
+          </TableRowColumn>
         </TableRow>
       );
     }
@@ -62,9 +70,11 @@ export default class GameBrowser extends Component {
 
   render() {
     return (
-      <Paper style={{
-        marginBottom: 20
-      }}>
+      <Paper
+        style={{
+          marginBottom: 20
+        }}
+      >
         <Table fixedHeader>
           <TableHeader displaySelectAll={false}>
             <TableRow>
@@ -74,10 +84,7 @@ export default class GameBrowser extends Component {
               <TableHeaderColumn />
             </TableRow>
           </TableHeader>
-          <TableBody
-            showRowHover
-            stripedRows={false}
-            displayRowCheckbox={false}>
+          <TableBody showRowHover stripedRows={false} displayRowCheckbox={false}>
             {this.renderTableRows()}
           </TableBody>
         </Table>

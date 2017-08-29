@@ -2,7 +2,7 @@
 
 export const CONNECT = 'ws:CONNECT';
 
-export function connect() {
+export function connect(){
   return {
     type: CONNECT
   };
@@ -14,19 +14,19 @@ export const CONNECTING = 'ws:CONNECTING';
 export const CONNECTED = 'ws:CONNECTED';
 export const DISCONNECTED = 'ws:DISCONNECTED';
 
-export function connecting() {
+export function connecting(){
   return {
     type: CONNECTING
   };
 }
 
-export function connected() {
+export function connected(){
   return {
     type: CONNECTED
   };
 }
 
-export function disconnected() {
+export function disconnected(){
   return {
     type: DISCONNECTED
   };
@@ -41,42 +41,41 @@ export const LEAVE = 'ws:LEAVE';
 export const SET_USERNAME = 'ws:SET_USERNAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
-export function host(name, deck) {
+export function host(name, deck){
   return {
     type: HOST,
-    payload: { name, deck }
+    payload: {name, deck}
   };
 }
 
-export function join(id, name, deck) {
+export function join(id, name, deck){
   return {
     type: JOIN,
-    payload: { id, name, deck }
+    payload: {id, name, deck}
   };
 }
 
-export function spectate(id, name) {
+export function spectate(id, name){
   return {
     type: SPECTATE,
-    payload: { id, name }
+    payload: {id, name}
   };
 }
 
-export function leave() {
+export function leave(){
   return {
     type: LEAVE
   };
 }
 
-
-export function setUsername(username) {
+export function setUsername(username){
   return {
     type: SET_USERNAME,
-    payload: { username }
+    payload: {username}
   };
 }
 
-export function keepalive() {
+export function keepalive(){
   return {
     type: KEEPALIVE
   };
@@ -87,17 +86,17 @@ export function keepalive() {
 export const CHAT = 'ws:CHAT';
 export const FORFEIT = 'ws:FORFEIT';
 
-export function chat(msg) {
+export function chat(msg){
   return {
     type: CHAT,
-    payload: { msg }
+    payload: {msg}
   };
 }
 
-export function forfeit(winner) {
+export function forfeit(winner){
   return {
     type: FORFEIT,
-    payload: { winner }
+    payload: {winner}
   };
 }
 

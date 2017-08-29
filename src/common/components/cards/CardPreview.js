@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { array, func, number, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, func, number, string} from 'prop-types';
 
-import { SPRITE_VERSION } from '../../constants';
-import { inBrowser } from '../../util/browser';
+import {SPRITE_VERSION} from '../../constants';
+import {inBrowser} from '../../util/browser';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 
@@ -31,16 +31,18 @@ export default class CardPreview extends Component {
   render() {
     if (inBrowser()) {
       return (
-        <div style={{
-          width: '40%',
-          display: 'flex',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: 64,
-          paddingLeft: 20,
-          paddingTop: 40
-        }}>
+        <div
+          style={{
+            width: '40%',
+            display: 'flex',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 64,
+            paddingLeft: 20,
+            paddingTop: 40
+          }}
+        >
           <Card
             name={this.props.name || '[Unnamed]'}
             spriteID={this.props.spriteID}
@@ -53,7 +55,8 @@ export default class CardPreview extends Component {
             rawText={this.props.sentences.map(s => s.sentence).join('. ')}
             parseResults={JSON.stringify(this.props.sentences.map(s => s.result))}
             scale={3}
-            onSpriteClick={this.props.onSpriteClick} />
+            onSpriteClick={this.props.onSpriteClick}
+          />
         </div>
       );
     } else {

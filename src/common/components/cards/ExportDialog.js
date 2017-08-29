@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {object, string} from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -32,18 +32,12 @@ export default class ExportDialog extends Component {
         onCopy={() => {
           this.setState({status: 'Copied to clipboard.'});
           this.selectText();
-      }}>
-        <RaisedButton
-          secondary
-          label="Copy to Clipboard"
-          style={{marginRight: 10}} />
+        }}
+      >
+        <RaisedButton secondary label="Copy to Clipboard" style={{marginRight: 10}} />
       </CopyToClipboard>,
 
-      <RaisedButton
-        primary
-        label="Close"
-        key="close"
-        onTouchTap={this.close} />
+      <RaisedButton primary label="Close" key="close" onTouchTap={this.close} />
     ];
   }
 
@@ -51,24 +45,23 @@ export default class ExportDialog extends Component {
     this.setState({status: ''}, () => {
       RouterDialog.closeDialog(this.props.history);
     });
-  }
+  };
 
   render() {
     return (
-      <RouterDialog
-        path="export"
-        title="Exported Cards"
-        history={this.props.history}
-        actions={this.actions}
-      >
+      <RouterDialog path="export" title="Exported Cards" history={this.props.history} actions={this.actions}>
         <TextField
           id="tf"
-          ref={(textField) => { this.textField = textField; }}
+          ref={textField => {
+            this.textField = textField;
+          }}
           multiLine
           rowsMax={10}
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           value={this.props.text}
-          onTouchTap={() => { this.textField.select(); }}
+          onTouchTap={() => {
+            this.textField.select();
+          }}
         />
       </RouterDialog>
     );

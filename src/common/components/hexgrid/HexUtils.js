@@ -1,17 +1,20 @@
-import { compareCertainKeys } from '../../util/common';
+import {compareCertainKeys} from '../../util/common';
 
 import Hex from './Hex';
 import Point from './Point';
 
 class HexUtils {
-
   static DIRECTIONS = [
-    new Hex(1, 0, -1), new Hex(1, -1, 0), new Hex(0, -1, 1),
-    new Hex(-1, 0, 1), new Hex(-1, 1, 0), new Hex(0, 1, -1)
+    new Hex(1, 0, -1),
+    new Hex(1, -1, 0),
+    new Hex(0, -1, 1),
+    new Hex(-1, 0, 1),
+    new Hex(-1, 1, 0),
+    new Hex(0, 1, -1)
   ];
 
   static equals(a, b) {
-    return compareCertainKeys(a, b, ['q', 'r', 's']);
+    return compareCertainKeys(a, b, [ 'q', 'r', 's' ]);
   }
 
   static add(a, b) {
@@ -35,7 +38,7 @@ class HexUtils {
   }
 
   static direction(direction) {
-    return HexUtils.DIRECTIONS[(6 + (direction % 6)) % 6];
+    return HexUtils.DIRECTIONS[(6 + direction % 6) % 6];
   }
   static neighbour(hex, direction) {
     return HexUtils.add(hex, HexUtils.direction(direction));
@@ -50,12 +53,9 @@ class HexUtils {
     const rDiff = Math.abs(rr - hex.r);
     const sDiff = Math.abs(rs - hex.s);
 
-    if (qDiff > rDiff && qDiff > rDiff)
-        rq = -rr-rs;
-    else if (rDiff > sDiff)
-        rr = -rq-rs;
-    else
-        rs = -rq-rr;
+    if (qDiff > rDiff && qDiff > rDiff) rq = -rr - rs;
+    else if (rDiff > sDiff) rr = -rq - rs;
+    else rs = -rq - rr;
 
     return new Hex(rq, rr, rs);
   }
@@ -88,7 +88,7 @@ class HexUtils {
   }
 
   static IDToHex(hexId) {
-    const coords = hexId.split(',').map((coord) => parseInt(coord, 10));
+    const coords = hexId.split(',').map(coord => parseInt(coord, 10));
 
     return new Hex(...coords);
   }

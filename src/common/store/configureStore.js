@@ -1,8 +1,8 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import multi from 'redux-multi';
 import thunk from 'redux-thunk';
 
-import { ALWAYS_ENABLE_DEV_TOOLS } from '../constants';
+import {ALWAYS_ENABLE_DEV_TOOLS} from '../constants';
 import promiseMiddleware from '../middleware/promiseMiddleware';
 import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
@@ -10,19 +10,19 @@ import * as ga from '../actions/game';
 import * as sa from '../actions/socket';
 
 const middlewareBuilder = () => {
-  const universalMiddleware = [thunk, promiseMiddleware, multi];
+  const universalMiddleware = [ thunk, promiseMiddleware, multi ];
 
   let middleware = {};
   let allComposeElements = [];
 
   if (process.browser) {
     const socketMiddleware = createSocketMiddleware({
-      excludedActions: [ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED]
+      excludedActions: [ ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED ]
     });
 
     if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware);
-      allComposeElements = [middleware];
+      allComposeElements = [ middleware ];
     } else {
       const createLogger = require('redux-logger').createLogger;
       const Perf = require('react-addons-perf');
@@ -31,27 +31,23 @@ const middlewareBuilder = () => {
       window.Perf = Perf;
 
       const logger = createLogger({
-        predicate: (getState, action) => ![ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE].includes(action.type)
+        predicate: (getState, action) => ![ ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE ].includes(action.type)
       });
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
-      allComposeElements = [
-        middleware,
-        DevTools.instrument()
-      ];
+      allComposeElements = [ middleware, DevTools.instrument() ];
     }
   } else {
     middleware = applyMiddleware(...universalMiddleware);
-    allComposeElements = [middleware];
+    allComposeElements = [ middleware ];
   }
 
   return allComposeElements;
-
 };
 
 const finalCreateStore = compose(...middlewareBuilder())(createStore);
 
-export default function configureStore(initialState) {
+export default function configureStore(initialState){
   const store = finalCreateStore(rootReducer, initialState);
 
   if (module.hot) {

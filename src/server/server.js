@@ -12,7 +12,7 @@ injectTapEventPlugin();
 
 const app = express();
 
-function userAgentMiddleware(req, res, next) {
+function userAgentMiddleware(req, res, next){
   global.navigator = {
     userAgent: req.headers['user-agent']
   };
@@ -31,10 +31,10 @@ if (process.env.NODE_ENV !== 'production') {
     }
   });
 
-  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
+  app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: webpackConfig.output.publicPath}));
   app.use(webpackHotMiddleware(compiler));
 } else {
-  app.use('/static', express.static(`${__dirname  }/../../dist`));
+  app.use('/static', express.static(`${__dirname}/../../dist`));
 }
 
 app.use(cookieParser());
@@ -48,4 +48,3 @@ const server = app.listen(process.env.PORT || 3000, () => {
   /* eslint-enable no-console */
 });
 launchWebsocketServer(server, '/socket');
-

@@ -1,44 +1,58 @@
-import { cloneDeep } from 'lodash';
+import {cloneDeep} from 'lodash';
 
-import { stringToType } from '../../../constants';
+import {stringToType} from '../../../constants';
 import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
-  validMovementHexes, validAttackHexes,
-  triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
-  executeCmd, triggerEvent, applyAbilities
+  currentPlayer,
+  opponentPlayer,
+  allObjectsOnBoard,
+  getAttribute,
+  ownerOf,
+  hasEffect,
+  validMovementHexes,
+  validAttackHexes,
+  triggerSound,
+  logAction,
+  dealDamageToObjectAtHex,
+  updateOrDeleteObjectAtHex,
+  setTargetAndExecuteQueuedAction,
+  executeCmd,
+  triggerEvent,
+  applyAbilities
 } from '../../../util/game';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-function selectTile(state, tile) {
+function selectTile(state, tile){
   currentPlayer(state).selectedTile = tile;
   currentPlayer(state).selectedCard = null;
   return state;
 }
 
-export function setHoveredTile(state, card) {
+export function setHoveredTile(state, card){
   return Object.assign({}, state, {hoveredCard: card});
 }
 
-export function setSelectedTile(state, playerName, tile) {
+export function setSelectedTile(state, playerName, tile){
   const player = state.players[playerName];
-  const isCurrentPlayer = (playerName === state.currentTurn);
+  const isCurrentPlayer = playerName === state.currentTurn;
 
-  if (isCurrentPlayer &&
-      player.target.choosing &&
-      player.target.possibleHexes.includes(tile) &&
-      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
+  if (
+    isCurrentPlayer &&
+    player.target.choosing &&
+    player.target.possibleHexes.includes(tile) &&
+    (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)
+  ) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
     // Toggle tile selection.
-    player.selectedTile = (player.selectedTile === tile) ? null : tile;
+    player.selectedTile = player.selectedTile === tile ? null : tile;
     player.selectedCard = null;
     player.status.message = '';
     return state;
   }
 }
 
-export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
+export function moveRobot(state, fromHex, toHex, asPartOfAttack = false){
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
 
@@ -64,7 +78,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   return state;
 }
 
-export function attack(state, source, target) {
+export function attack(state, source, target){
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.
 
@@ -96,18 +110,22 @@ export function attack(state, source, target) {
 }
 
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
-export function attackComplete(state) {
+export function attackComplete(state){
   if (state.attack && state.attack.from && state.attack.to) {
-    const [source, target] = [state.attack.from, state.attack.to];
+    const [ source, target ] = [ state.attack.from, state.attack.to ];
 
     const attacker = currentPlayer(state).robotsOnBoard[source];
     const defender = opponentPlayer(state).robotsOnBoard[target];
 
-    state = triggerEvent(state, 'afterAttack', {
-      object: attacker,
-      condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')
-    }, () =>
-      dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
+    state = triggerEvent(
+      state,
+      'afterAttack',
+      {
+        object: attacker,
+        condition: t =>
+          !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'
+      },
+      () => dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
     );
 
     if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
@@ -132,7 +150,7 @@ export function attackComplete(state) {
   return state;
 }
 
-export function activateObject(state, abilityIdx, selectedHexId = null) {
+export function activateObject(state, abilityIdx, selectedHexId = null){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -160,7 +178,7 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
         type: 'text'
       };
 
-      state.callbackAfterTargetSelected = (newState => activateObject(newState, abilityIdx, hexId));
+      state.callbackAfterTargetSelected = newState => activateObject(newState, abilityIdx, hexId);
 
       return state;
     } else if (tempState.invalid) {
@@ -180,7 +198,7 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
 
 // Low-level "move" of an object.
 // Used by moveRobot(), attack(), and in tests.
-export function transportObject(state, fromHex, toHex) {
+export function transportObject(state, fromHex, toHex){
   const robot = allObjectsOnBoard(state)[fromHex];
   const owner = ownerOf(state, robot);
 

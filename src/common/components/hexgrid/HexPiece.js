@@ -1,8 +1,8 @@
 import React from 'react';
-import { object } from 'prop-types';
-import { isUndefined } from 'lodash';
+import {object} from 'prop-types';
+import {isUndefined} from 'lodash';
 
-import { ANIMATION_TIME_MS } from '../../constants';
+import {ANIMATION_TIME_MS} from '../../constants';
 
 import PiecePattern from './PiecePattern';
 import HexUtils from './HexUtils';
@@ -58,11 +58,7 @@ export default class HexPiece extends React.Component {
   }
 
   renderPattern() {
-    return (
-      <PiecePattern
-        hex={this.props.hex}
-        pieceImg={this.props.piece.image} />
-    );
+    return <PiecePattern hex={this.props.hex} pieceImg={this.props.piece.image} />;
   }
 
   renderStat(stat) {
@@ -95,7 +91,7 @@ export default class HexPiece extends React.Component {
   renderPieceStats() {
     const stats = this.props.piece.stats;
     if (stats && !isUndefined(stats.attack)) {
-      return [this.renderStat('attack'), this.renderStat('health')];
+      return [ this.renderStat('attack'), this.renderStat('health') ];
     } else if (stats && !isUndefined(stats.health)) {
       return this.renderStat('health');
     } else {
@@ -113,7 +109,8 @@ export default class HexPiece extends React.Component {
         onClick={e => this.props.actions.onClick(this.props.hex, e)}
         style={{
           transition: `transform ${ANIMATION_TIME_MS}ms ease-in-out, opacity ${ANIMATION_TIME_MS}ms ease-in-out`
-      }}>
+        }}
+      >
         <PiecePattern piece={this.props.piece} />
         <polygon key="p2" points={this.points} style={this.styles} />
         {this.renderPieceStats()}

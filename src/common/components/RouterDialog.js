@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { array, bool, element, object, oneOfType, string } from 'prop-types';
-import { Route } from 'react-router';
+import React, {Component} from 'react';
+import {array, bool, element, object, oneOfType, string} from 'prop-types';
+import {Route} from 'react-router';
 import Dialog from 'material-ui/Dialog';
 
-import { transformHistory } from '../util/browser';
+import {transformHistory} from '../util/browser';
 
 export default class RouterDialog extends Component {
   static propTypes = {
@@ -16,15 +16,15 @@ export default class RouterDialog extends Component {
     scroll: bool,
     history: object,
 
-    children: oneOfType([array, element])
-  }
+    children: oneOfType([ array, element ])
+  };
 
   static defaultProps = {
     style: {},
     actions: [],
     modal: false,
     scroll: false
-  }
+  };
 
   static openDialog(history, dialogPath) {
     transformHistory(history, path => `${path.replace(/\/\/\w*/, '')}//${dialogPath}`);
@@ -46,10 +46,11 @@ export default class RouterDialog extends Component {
       actions={this.props.actions}
       onRequestClose={() => {
         RouterDialog.closeDialog(this.props.history);
-    }}>
+      }}
+    >
       {this.props.children}
     </Dialog>
-  )
+  );
 
   render() {
     if (this.props.history) {

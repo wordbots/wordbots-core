@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { array, bool, func, object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, object, string} from 'prop-types';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import Paper from 'material-ui/Paper';
-import { compact, find, noop, pick } from 'lodash';
+import {compact, find, noop, pick} from 'lodash';
 
-import { getDisplayedCards } from '../util/cards';
+import {getDisplayedCards} from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import EnergyCurve from '../components/cards/EnergyCurve';
@@ -16,7 +16,7 @@ import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import * as collectionActions from '../actions/collection';
 
-function mapStateToProps(state) {
+function mapStateToProps(state){
   return {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
@@ -25,9 +25,9 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch){
   return {
-    onSaveDeck: function (id, name, cardIds) {
+    onSaveDeck: function (id, name, cardIds){
       dispatch(collectionActions.saveDeck(id, name, cardIds));
     }
   };
@@ -54,7 +54,7 @@ class Deck extends Component {
         events: true,
         structures: true
       },
-      costRange: [0, 20],
+      costRange: [ 0, 20 ],
       sortCriteria: 3,
       sortOrder: 0,
       searchText: '',
@@ -64,43 +64,40 @@ class Deck extends Component {
   }
 
   get selectedCards() {
-    return compact(this.state.selectedCardIds.map(id => find(this.props.cards, { id })));
+    return compact(this.state.selectedCardIds.map(id => find(this.props.cards, {id})));
   }
 
   get displayedCards() {
-    const opts = pick(this.state, ['searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder']);
+    const opts = pick(this.state, [ 'searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder' ]);
     return getDisplayedCards(this.props.cards, opts);
   }
 
   // this.set(key)(value) = this.setState({key: value})
-  set = (key, callback = noop) => (value) => {
+  set = (key, callback = noop) => value => {
     this.setState({[key]: value}, callback);
-  }
+  };
 
-  toggleFilter = (filter) => (e, toggled) => {
+  toggleFilter = filter => (e, toggled) => {
     this.setState(state => ({
       filters: Object.assign({}, state.filters, {[filter]: toggled})
     }));
-  }
+  };
 
   renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
         <SearchControls onChange={this.set('searchText')} />
 
-        <LayoutControls
-          layout={this.state.layout}
-          onSetLayout={this.set('layout')} />
+        <LayoutControls layout={this.state.layout} onSetLayout={this.set('layout')} />
 
         <SortControls
           criteria={this.state.sortCriteria}
           order={this.state.sortOrder}
           onSetCriteria={this.set('sortCriteria')}
-          onSetOrder={this.set('sortOrder')} />
+          onSetOrder={this.set('sortOrder')}
+        />
 
-        <FilterControls
-          onToggleFilter={this.toggleFilter}
-          onSetCostRange={this.set('costRange')} />
+        <FilterControls onToggleFilter={this.toggleFilter} onSetCostRange={this.set('costRange')} />
       </Paper>
     );
   }
@@ -108,18 +105,22 @@ class Deck extends Component {
   render() {
     return (
       <div>
-        <Helmet title="Building Deck"/>
+        <Helmet title="Building Deck" />
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start'
-        }}>
-          <div style={{
-            margin: '30px 10px 50px 30px',
-            width: 300,
-            minWidth: 300
-          }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}
+        >
+          <div
+            style={{
+              margin: '30px 10px 50px 30px',
+              width: 300,
+              minWidth: 300
+            }}
+          >
             <Paper style={{padding: 20, marginBottom: 20}}>
               <div style={{fontWeight: 100, fontSize: 28}}>Energy Curve</div>
               <EnergyCurve cards={this.selectedCards} />
@@ -134,14 +135,17 @@ class Deck extends Component {
               layout={this.state.layout}
               cards={this.displayedCards}
               selectedCardIds={this.state.selectedCardIds}
-              onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+              onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})}
+            />
           </div>
 
-          <div style={{
-            margin: '30px 30px 50px 10px',
-            width: 300,
-            minWidth: 300
-          }}>
+          <div
+            style={{
+              margin: '30px 30px 50px 10px',
+              width: 300,
+              minWidth: 300
+            }}
+          >
             <Paper style={{padding: 20}}>
               <ActiveDeck
                 id={this.props.id}
@@ -163,7 +167,8 @@ class Deck extends Component {
                 onSaveDeck={(id, name, cardIds) => {
                   this.props.onSaveDeck(id, name, cardIds);
                   this.props.history.push('/decks');
-                }} />
+                }}
+              />
             </Paper>
           </div>
         </div>

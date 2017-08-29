@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
-import { number, string } from 'prop-types';
+import React, {PureComponent} from 'react';
+import {number, string} from 'prop-types';
 import trianglify from 'trianglify';
 
-import { inBrowser } from '../../util/browser';
+import {inBrowser} from '../../util/browser';
 
 export default class TriangleArt extends PureComponent {
   static propTypes = {
@@ -18,7 +18,7 @@ export default class TriangleArt extends PureComponent {
   }
 
   get opts() {
-    const cellSizeVariance = (0.5 + this.rand * 1.5);  // (between 0.5 and 2)
+    const cellSizeVariance = 0.5 + this.rand * 1.5; // (between 0.5 and 2)
 
     return {
       seed: this.props.id,
@@ -34,6 +34,7 @@ export default class TriangleArt extends PureComponent {
       src={inBrowser() ? trianglify(this.opts).png() : ''}
       width={this.props.width}
       height={this.props.height}
-      style={{imageRendering: 'pixelated'}} />
-  )
+      style={{imageRendering: 'pixelated'}}
+    />
+  );
 }

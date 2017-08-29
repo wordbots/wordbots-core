@@ -1,14 +1,14 @@
-import { fromPairs } from 'lodash';
+import {fromPairs} from 'lodash';
 
-import { id } from '../util/common';
-import { getSentencesFromInput, replaceSynonyms } from '../util/cards';
+import {id} from '../util/common';
+import {getSentencesFromInput, replaceSynonyms} from '../util/cards';
 import defaultState from '../store/defaultCreatorState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 
 import c from './handlers/cards';
 
-export default function creator(oldState = defaultState, action) {
+export default function creator(oldState = defaultState, action){
   const state = Object.assign({}, oldState);
 
   switch (action.type) {
@@ -28,7 +28,7 @@ export default function creator(oldState = defaultState, action) {
 
     case creatorActions.SET_TEXT: {
       const sentences = getSentencesFromInput(action.payload.text);
-      const validCurrentParses = fromPairs(state.sentences.map(s => [s.sentence, s.result.js]));
+      const validCurrentParses = fromPairs(state.sentences.map(s => [ s.sentence, s.result.js ]));
 
       state.text = replaceSynonyms(action.payload.text);
       state.sentences = sentences.map(sentence => ({
@@ -54,7 +54,7 @@ export default function creator(oldState = defaultState, action) {
 
     case creatorActions.ADD_TO_COLLECTION:
       // Reset card creator state.
-      return Object.assign(state, defaultState, { spriteID: id() });
+      return Object.assign(state, defaultState, {spriteID: id()});
 
     case collectionActions.OPEN_CARD_FOR_EDITING:
       return c.openCardForEditing(state, action.payload.card);

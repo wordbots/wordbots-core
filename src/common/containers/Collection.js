@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { array, bool, func, object, string } from 'prop-types';
+import React, {Component} from 'react';
+import {array, bool, func, object, string} from 'prop-types';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { find, noop, pick } from 'lodash';
+import {find, noop, pick} from 'lodash';
 
-import { getDisplayedCards, isCardVisible } from '../util/cards';
+import {getDisplayedCards, isCardVisible} from '../util/cards';
 import RouterDialog from '../components/RouterDialog';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
@@ -22,7 +22,7 @@ import SortControls from '../components/cards/SortControls';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state){
   return {
     cards: state.collection.cards,
     exportedJson: state.collection.exportedJson,
@@ -31,21 +31,21 @@ export function mapStateToProps(state) {
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch){
   return {
     onCloseExportDialog: () => {
       dispatch(collectionActions.closeExportDialog());
     },
-    onEditCard: (card) => {
+    onEditCard: card => {
       dispatch(collectionActions.openForEditing(card));
     },
-    onExportCards: (cards) => {
+    onExportCards: cards => {
       dispatch(collectionActions.exportCards(cards));
     },
-    onImportCards: (json) => {
+    onImportCards: json => {
       dispatch(collectionActions.importCards(json));
     },
-    onRemoveFromCollection: (cards) => {
+    onRemoveFromCollection: cards => {
       dispatch(collectionActions.removeFromCollection(cards));
     }
   };
@@ -75,7 +75,7 @@ export class Collection extends Component {
         events: true,
         structures: true
       },
-      costRange: [0, 20],
+      costRange: [ 0, 20 ],
       sortCriteria: 3,
       sortOrder: 0,
       searchText: '',
@@ -88,10 +88,10 @@ export class Collection extends Component {
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   get displayedCards() {
-    const opts = pick(this.state, ['searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder']);
+    const opts = pick(this.state, [ 'searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder' ]);
     return getDisplayedCards(this.props.cards, opts);
   }
 
@@ -99,40 +99,43 @@ export class Collection extends Component {
   refreshSelection = () => {
     this.setState(state => ({
       selectedCardIds: state.selectedCardIds.filter(id =>
-        isCardVisible(find(this.props.cards, { id }), this.state.filters, this.state.costRange)
+        isCardVisible(find(this.props.cards, {id}), this.state.filters, this.state.costRange)
       )
     }));
-  }
+  };
 
   // this.set(key)(value) = this.setState({key: value})
-  set = (key, callback = noop) => (value) => {
+  set = (key, callback = noop) => value => {
     this.setState({[key]: value}, callback);
-  }
+  };
 
-  toggleFilter = (filter) => (e, toggled) => {
-    this.setState(state => ({
-      filters: Object.assign({}, state.filters, {[filter]: toggled})
-    }), this.refreshSelection);
-  }
+  toggleFilter = filter => (e, toggled) => {
+    this.setState(
+      state => ({
+        filters: Object.assign({}, state.filters, {[filter]: toggled})
+      }),
+      this.refreshSelection
+    );
+  };
 
   renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
         <SearchControls onChange={this.set('searchText')} />
 
-        <LayoutControls
-          layout={this.state.layout}
-          onSetLayout={this.set('layout')} />
+        <LayoutControls layout={this.state.layout} onSetLayout={this.set('layout')} />
 
         <SortControls
           criteria={this.state.sortCriteria}
           order={this.state.sortOrder}
           onSetCriteria={this.set('sortCriteria')}
-          onSetOrder={this.set('sortOrder')} />
+          onSetOrder={this.set('sortOrder')}
+        />
 
         <FilterControls
           onToggleFilter={this.toggleFilter}
-          onSetCostRange={this.set('costRange', this.refreshSelection)} />
+          onSetCostRange={this.set('costRange', this.refreshSelection)}
+        />
       </Paper>
     );
   }
@@ -144,7 +147,11 @@ export class Collection extends Component {
           label="New Card"
           labelPosition="after"
           secondary
-          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
+          icon={
+            <FontIcon style={{margin: '0 20px'}} className="material-icons">
+              queue
+            </FontIcon>
+          }
           style={{width: '100%', marginTop: 10, height: 48}}
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
@@ -156,7 +163,11 @@ export class Collection extends Component {
           labelPosition="after"
           secondary
           disabled={this.state.selectedCardIds.length !== 1}
-          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
+          icon={
+            <FontIcon style={{margin: '0 20px'}} className="material-icons">
+              edit
+            </FontIcon>
+          }
           style={{width: '100%', marginTop: 10, height: 48}}
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
@@ -170,7 +181,11 @@ export class Collection extends Component {
           labelPosition="after"
           secondary
           disabled={this.state.selectedCardIds.length === 0}
-          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
+          icon={
+            <FontIcon style={{margin: '0 20px'}} className="material-icons">
+              delete
+            </FontIcon>
+          }
           style={{width: '100%', marginTop: 10, height: 48}}
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
@@ -183,7 +198,11 @@ export class Collection extends Component {
           labelPosition="after"
           secondary
           disabled={this.state.selectedCardIds.length === 0}
-          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
+          icon={
+            <FontIcon style={{margin: '0 20px'}} className="material-icons">
+              file_download
+            </FontIcon>
+          }
           style={{width: '100%', marginTop: 10, height: 48}}
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
@@ -198,7 +217,11 @@ export class Collection extends Component {
           label="Import Cards"
           labelPosition="after"
           secondary
-          icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
+          icon={
+            <FontIcon style={{margin: '0 20px'}} className="material-icons">
+              file_upload
+            </FontIcon>
+          }
           style={{width: '100%', marginTop: 10, height: 48}}
           buttonStyle={{textAlign: 'left'}}
           onClick={() => {
@@ -214,20 +237,18 @@ export class Collection extends Component {
   render() {
     return (
       <div>
-        <Helmet title="Collection"/>
+        <Helmet title="Collection" />
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start'
-        }}>
-          <ExportDialog
-            history={this.props.history}
-            text={this.props.exportedJson} />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}
+        >
+          <ExportDialog history={this.props.history} text={this.props.exportedJson} />
 
-          <ImportDialog
-            history={this.props.history}
-            onImport={this.props.onImportCards} />
+          <ImportDialog history={this.props.history} onImport={this.props.onImportCards} />
 
           <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
             <div>
@@ -236,15 +257,18 @@ export class Collection extends Component {
                 layout={this.state.layout}
                 cards={this.displayedCards}
                 selectedCardIds={this.state.selectedCardIds}
-                onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+                onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})}
+              />
             </div>
           </div>
 
-          <div style={{
-            margin: '30px 50px 50px 0',
-            width: 300,
-            minWidth: 300
-          }}>
+          <div
+            style={{
+              margin: '30px 50px 50px 0',
+              width: 300,
+              minWidth: 300
+            }}
+          >
             {this.renderSidebarControls()}
             {this.renderSidebarButtons()}
           </div>

@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { object } from 'prop-types';
+import React, {Component} from 'react';
+import {object} from 'prop-types';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
-import { capitalize, mapKeys, noop, uniq } from 'lodash';
+import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
+import {capitalize, mapKeys, noop, uniq} from 'lodash';
 
-import { getHash, setHash } from '../../util/browser';
-import { allKeywords, contractKeywords } from '../../util/cards';
-import { listenToDictionaryData } from '../../util/firebase';
+import {getHash, setHash} from '../../util/browser';
+import {allKeywords, contractKeywords} from '../../util/cards';
+import {listenToDictionaryData} from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 import StatusIcon from '../card/StatusIcon';
 
@@ -20,7 +20,7 @@ import DictionarySidebar from './DictionarySidebar';
 export default class DictionaryDialog extends Component {
   static propTypes = {
     history: object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -56,13 +56,13 @@ export default class DictionaryDialog extends Component {
   }
 
   get currentTab() {
-    return ['dictionary', 'thesaurus', 'keywords'][this.state.tabIdx];
+    return [ 'dictionary', 'thesaurus', 'keywords' ][this.state.tabIdx];
   }
   get currentTabTerms() {
     return this[`${this.currentTab}Terms`];
   }
   get selectedTerm() {
-    return (this.state[`${this.currentTab}Term`] || this.currentTabTerms[0]);
+    return this.state[`${this.currentTab}Term`] || this.currentTabTerms[0];
   }
 
   get hash() {
@@ -72,8 +72,8 @@ export default class DictionaryDialog extends Component {
 
   get dictionaryTerms() {
     return Object.keys(this.dictionaryDefinitions)
-                 .filter(t => t.includes(this.state.searchText) && t !== '"' && t !== '\'')
-                 .sort();
+      .filter(t => t.includes(this.state.searchText) && t !== '"' && t !== '\'')
+      .sort();
   }
   get dictionaryDefinitions() {
     return this.cleanupTerms(this.state.dictionary.definitions);
@@ -83,36 +83,24 @@ export default class DictionaryDialog extends Component {
   }
 
   get thesaurusTerms() {
-    return Object.keys(this.thesaurusExamples)
-                 .filter(t => t.includes(this.state.searchText))
-                 .sort();
+    return Object.keys(this.thesaurusExamples).filter(t => t.includes(this.state.searchText)).sort();
   }
   get thesaurusExamples() {
     return this.state.dictionary.examplesByNode;
   }
 
   get keywordsTerms() {
-    return Object.keys(allKeywords())
-                 .filter(t => t.includes(this.state.searchText))
-                 .sort()
-                 .map(k => capitalize(k));
+    return Object.keys(allKeywords()).filter(t => t.includes(this.state.searchText)).sort().map(k => capitalize(k));
   }
 
-  cleanupTerms = (obj) => (
-    mapKeys(obj, (value, term) => term.replace(' \'', '\''))
-  )
-  cleanupExample = (example) => (
-    capitalize(contractKeywords(example).trim())
-      .replace(/,$/, '')
-      .replace('activate:', 'Activate:')
-  )
-  cleanupSemantics = (semantics) => (
-    semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/,(\w)/g, ', $1')
-  )
+  cleanupTerms = obj => mapKeys(obj, (value, term) => term.replace(' \'', '\''));
+  cleanupExample = example =>
+    capitalize(contractKeywords(example).trim()).replace(/,$/, '').replace('activate:', 'Activate:');
+  cleanupSemantics = semantics => semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/,(\w)/g, ', $1');
 
   selectTerm = (term, callback = noop) => {
-    this.setState({ [`${this.currentTab}Term`]: term }, callback);
-  }
+    this.setState({[`${this.currentTab}Term`]: term}, callback);
+  };
 
   checkHash = () => {
     const hash = getHash(this.props.history);
@@ -120,15 +108,15 @@ export default class DictionaryDialog extends Component {
       const [ type, term ] = hash.split(':');
       const tabIdx = 'dtk'.indexOf(type);
 
-      this.setState({ tabIdx }, () => {
+      this.setState({tabIdx}, () => {
         this.selectTerm(term);
       });
     }
-  }
+  };
 
   updateHash = () => {
     setHash(this.props.history, this.hash);
-  }
+  };
 
   renderTitle() {
     return (
@@ -151,18 +139,25 @@ export default class DictionaryDialog extends Component {
       <div style={{display: 'flex', backgroundColor: tabColor}}>
         <Tabs
           value={this.state.tabIdx}
-          onChange={(tabIdx) => { this.setState({ tabIdx }, this.updateHash); }}
+          onChange={tabIdx => {
+            this.setState({tabIdx}, this.updateHash);
+          }}
           style={{width: '100%'}}
           inkBarStyle={{height: 7, marginTop: -7, zIndex: 10}}
         >
           <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
-          <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>
+          <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle} />
           <Tab value={2} label={`Keywords (${this.keywordsTerms.length})`} style={tabStyle} />
         </Tabs>
 
         <IconButton
-          onTouchTap={() => { RouterDialog.closeDialog(this.props.history); }}>
-          <FontIcon className="material-icons" color="white">close</FontIcon>
+          onTouchTap={() => {
+            RouterDialog.closeDialog(this.props.history);
+          }}
+        >
+          <FontIcon className="material-icons" color="white">
+            close
+          </FontIcon>
         </IconButton>
       </div>
     );
@@ -170,7 +165,7 @@ export default class DictionaryDialog extends Component {
 
   renderPage() {
     return [
-      [this.renderDictionaryDefinitions(), this.renderExamples(this.dictionaryExamples, this.selectedTerm)],
+      [ this.renderDictionaryDefinitions(), this.renderExamples(this.dictionaryExamples, this.selectedTerm) ],
       this.renderExamples(this.thesaurusExamples, this.selectedTerm),
       this.renderKeywordsDefinition()
     ][this.state.tabIdx];
@@ -183,11 +178,11 @@ export default class DictionaryDialog extends Component {
         <div key="examples">
           <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
           <ul>
-            {examples.map(example =>
+            {examples.map(example => (
               <li key={example}>
                 {example}.&nbsp;{StatusIcon(example, {parsed: true})}
               </li>
-            )}
+            ))}
           </ul>
         </div>
       );
@@ -200,11 +195,12 @@ export default class DictionaryDialog extends Component {
       <div key="definitions">
         <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
         <ol>
-          {definitions.map(d =>
+          {definitions.map(d => (
             <li key={`${d.syntax}${d.semantics}`}>
-              <strong>{d.syntax}. </strong>{this.cleanupSemantics(d.semantics)}
+              <strong>{d.syntax}. </strong>
+              {this.cleanupSemantics(d.semantics)}
             </li>
-          )}
+          ))}
         </ol>
       </div>
     );
@@ -217,9 +213,7 @@ export default class DictionaryDialog extends Component {
       return (
         <div key="definition">
           <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
-          <p>
-            {definition.endsWith(',') ? `${definition} [...] .` : definition}
-          </p>
+          <p>{definition.endsWith(',') ? `${definition} [...] .` : definition}</p>
         </div>
       );
     }
@@ -232,12 +226,14 @@ export default class DictionaryDialog extends Component {
 
         <div style={{display: 'flex', justifyContent: 'stretch'}}>
           <div style={{width: '20%'}}>
-            <DictionarySearchBar
-              onChange={(searchText) => this.setState({ searchText })} />
+            <DictionarySearchBar onChange={searchText => this.setState({searchText})} />
             <DictionarySidebar
               terms={this.currentTabTerms}
               selectedTerm={this.selectedTerm}
-              onClick={(term) => { this.selectTerm(term, this.updateHash); }} />
+              onClick={term => {
+                this.selectTerm(term, this.updateHash);
+              }}
+            />
           </div>
 
           <div style={{width: '80%'}}>
@@ -249,7 +245,7 @@ export default class DictionaryDialog extends Component {
               </div>
             </Paper>
           </div>
-          </div>
+        </div>
       </div>
     );
   }
@@ -261,7 +257,8 @@ export default class DictionaryDialog extends Component {
         path="dictionary"
         history={history}
         bodyStyle={{padding: 0}}
-        style={{width: '80%', maxWidth: 'none'}}>
+        style={{width: '80%', maxWidth: 'none'}}
+      >
         {this.renderDictionary()}
       </RouterDialog>
     );

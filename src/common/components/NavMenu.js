@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, {Component} from 'react';
+import {NavLink} from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { isFlagSet } from '../util/browser';
+import {isFlagSet} from '../util/browser';
 import Tooltip from '../components/Tooltip';
 
 export default class NavMenu extends Component {
@@ -12,15 +12,16 @@ export default class NavMenu extends Component {
     return !isFlagSet('sidebarCollapsed');
   }
 
-  renderIcon = (icon) => (
+  renderIcon = icon => (
     <FontIcon
       className="material-icons"
       style={{
         left: this.isExpanded ? 4 : 8
-    }}>
+      }}
+    >
       {icon}
     </FontIcon>
-  )
+  );
 
   renderLink = (path, text, icon) => (
     <NavLink exact to={path} activeClassName="activeNavLink">
@@ -30,13 +31,12 @@ export default class NavMenu extends Component {
         place="right"
         style={{
           zIndex: 99999
-      }}>
-        <MenuItem
-          primaryText={this.isExpanded ? text : ''}
-          leftIcon={this.renderIcon(icon)} />
+        }}
+      >
+        <MenuItem primaryText={this.isExpanded ? text : ''} leftIcon={this.renderIcon(icon)} />
       </Tooltip>
     </NavLink>
-  )
+  );
 
   render() {
     return (
@@ -49,7 +49,8 @@ export default class NavMenu extends Component {
           transition: 'width 200ms ease-in-out',
           height: 'calc(100% - 54px)',
           overflow: 'visible'
-      }}>
+        }}
+      >
         {this.renderLink('/', 'Home', 'home')}
         {this.renderLink('/collection', 'Collection', 'view_module')}
         {this.renderLink('/creator', 'Creator', 'add_circle_outline')}

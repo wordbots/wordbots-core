@@ -1,9 +1,9 @@
-import { execSync } from 'child_process';
+import {execSync} from 'child_process';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { StaticRouter } from 'react-router';
-import { Provider } from 'react-redux';
+import {StaticRouter} from 'react-router';
+import {Provider} from 'react-redux';
 import Helmet from 'react-helmet';
 
 import App from '../common/containers/App';
@@ -12,24 +12,24 @@ import packagejson from '../../package.json';
 
 import produceApiResponse from './api';
 
-export default function handleRequest(request, response) {
+export default function handleRequest(request, response){
   const store = getStore(request);
   produceResponse(response, store, request.url);
 }
 
-function getVersionWithSha() {
+function getVersionWithSha(){
   const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
   const sha = execSync(shaCommand).toString().trim().slice(0, 7);
   return `${packagejson.version}+${sha}`;
 }
 
-function getStore(request) {
+function getStore(request){
   return configureStore({
     version: getVersionWithSha()
   });
 }
 
-function produceResponse(response, store, location) {
+function produceResponse(response, store, location){
   if (location.startsWith('/api')) {
     return produceApiResponse(response, location);
   } else {
@@ -43,21 +43,17 @@ function produceResponse(response, store, location) {
     );
 
     if (context.url) {
-      response
-        .writeHead(301, { Location: context.url })
-        .end();
+      response.writeHead(301, {Location: context.url}).end();
     } else {
       const head = Helmet.rewind();
       const initialState = Object.assign(store.getState());
 
-      response
-        .status(200)
-        .end(renderFullPage(html, initialState, head));
+      response.status(200).end(renderFullPage(html, initialState, head));
     }
   }
 }
 
-function renderFullPage(html, initialState, head) {
+function renderFullPage(html, initialState, head){
   return `
     <!doctype html>
     <html>

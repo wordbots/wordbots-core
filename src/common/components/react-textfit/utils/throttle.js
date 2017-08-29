@@ -7,29 +7,29 @@
  * @return {Function} A new function that wraps the `func` function passed in.
  */
 
-export default function throttle(func, wait) {
-    let ctx;
-    let args;
-    let rtn;
-    let timeoutID;
-    let last = 0;
+export default function throttle(func, wait){
+  let ctx;
+  let args;
+  let rtn;
+  let timeoutID;
+  let last = 0;
 
-    function call() {
-        timeoutID = 0;
-        last = +new Date();
-        rtn = func.apply(ctx, args);
-        ctx = null;
-        args = null;
+  function call(){
+    timeoutID = 0;
+    last = +new Date();
+    rtn = func.apply(ctx, args);
+    ctx = null;
+    args = null;
+  }
+
+  return function throttled(){
+    ctx = this;
+    args = arguments;
+    const delta = new Date() - last;
+    if (!timeoutID) {
+      if (delta >= wait) call();
+      else timeoutID = setTimeout(call, wait - delta);
     }
-
-    return function throttled() {
-        ctx = this;
-        args = arguments;
-        const delta = new Date() - last;
-        if (!timeoutID) {
-            if (delta >= wait) call();
-            else timeoutID = setTimeout(call, wait - delta);
-        }
-        return rtn;
-    };
+    return rtn;
+  };
 }

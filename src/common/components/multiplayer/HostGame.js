@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { bool, func } from 'prop-types';
+import React, {Component} from 'react';
+import {bool, func} from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -26,13 +26,19 @@ export default class HostGame extends Component {
           value={this.state.gameName}
           floatingLabelText="Game name"
           style={{width: '50%'}}
-          onChange={e => { this.setState({gameName: e.target.value}); }} />
+          onChange={e => {
+            this.setState({gameName: e.target.value});
+          }}
+        />
         <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
           <RaisedButton
             secondary
             disabled={this.props.disabled || this.state.gameName === ''}
             label="Host New Game"
-            onTouchTap={() => { this.props.onHostGame(this.state.gameName); }} />
+            onTouchTap={() => {
+              this.props.onHostGame(this.state.gameName);
+            }}
+          />
         </div>
       </Paper>
     );

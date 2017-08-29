@@ -117,7 +117,7 @@ class App extends Component {
   }
 
   get content() {
-    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? 256 : 64)
+    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? 256 : 64);
 
     if (this.state.loading) {
       return null;

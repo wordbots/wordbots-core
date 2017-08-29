@@ -205,16 +205,18 @@ export default class CardCreationForm extends Component {
   render() {
     return (
       <div style={this.styles.container}>
-        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12}}>
-          {this.renderButton('Help', 'help_outline', () => {
-            this.props.onOpenDialog('help');
-          })}
-          {this.renderButton('Dictionary', 'book', () => {
-            this.props.onOpenDialog('dictionary');
-          })}
-          {this.renderButton('Randomize', 'refresh', () => {
-            this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
-          })}
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12, width: '100%', maxWidth: 800}}>
+            {this.renderButton('Help', 'help_outline', () => {
+              this.props.onOpenDialog('help');
+            })}
+            {this.renderButton('Dictionary', 'book', () => {
+              this.props.onOpenDialog('dictionary');
+            })}
+            {this.renderButton('Randomize', 'refresh', () => {
+              this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
+            })}
+          </div>
         </div>
 
         <Paper style={this.styles.paper}>

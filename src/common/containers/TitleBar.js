@@ -39,6 +39,7 @@ class TitleBar extends Component {
   static propTypes = {
     user: object,
     sidebarOpen: bool,
+    inGame: bool,
 
     history: object,
 
@@ -112,34 +113,51 @@ class TitleBar extends Component {
     }
   }
 
+  get iconLeft() {
+    return (
+      <Tooltip
+        text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
+        place="right"
+      >
+        <IconButton onClick={this.toggleSidebar}>
+          <FontIcon className="material-icons" color="white">menu</FontIcon>
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
+  get title() {
+    if (this.props.inGame) {
+      return (
+        <div style={{fontFamily: 'Carter One', fontSize: 32}}>
+          WORDBOTS
+        </div>
+      );
+    } else {
+      return (
+        <NavLink
+          to="/"
+          className="topLink"
+          style={{fontFamily: 'Carter One', fontSize: 32}}
+        >
+          WORDBOTS
+        </NavLink>
+      );     
+    }
+  }
+
   render() {
     return (
       <div style={{height: 64}}>
         <AppBar
-          title={
-            <NavLink
-              to="/"
-              className="topLink"
-              style={{fontFamily: 'Carter One', fontSize: 32}}
-            >
-              WORDBOTS
-            </NavLink>
-          }
+          title={this.title}
           style={{
             position: 'fixed',
             top: 0
           }}
-          iconElementLeft={
-            <Tooltip
-              text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
-              place="right"
-            >
-              <IconButton onClick={this.toggleSidebar}>
-                <FontIcon className="material-icons" color="white">menu</FontIcon>
-              </IconButton>
-            </Tooltip>
-          }
+          iconElementLeft={this.leftIcon}
           iconElementRight={this.userMenu}
+          showMenuIconButton={!this.props.inGame}
         />
       </div>
     );

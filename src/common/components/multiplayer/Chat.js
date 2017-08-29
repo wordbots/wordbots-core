@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, string } from 'prop-types';
+import { array, func, string, bool } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
@@ -16,6 +16,7 @@ export default class Chat extends Component {
   static propTypes = {
     roomName: string,
     messages: array,
+    halfHeight: bool,
 
     onSendMessage: func
   };
@@ -111,9 +112,13 @@ export default class Chat extends Component {
   }
 
   render() {
+    const paddingTop = this.props.halfHeight ? 0 : '64px';
+    const height = this.props.halfHeight ? '50%' : '100%';
+    const top = this.props.halfHeight ? '50%' : 0;
+
     return (
       <div>
-        <Drawer openSecondary docked containerStyle={{paddingTop: '64px', overflow: 'visible'}}>
+        <Drawer openSecondary docked containerStyle={{paddingTop: paddingTop, height: height, overflow: 'visible', top: top}}>
           <Toolbar>
             <ToolbarGroup>
               <ToolbarTitle text={this.props.roomName || 'Lobby'} />

@@ -17,7 +17,6 @@ import LoginDialog from '../components/users/LoginDialog';
 import PersonalTheme from '../themes/personal';
 
 import TitleBar from './TitleBar';
-import GameMenu from './GameMenu';
 import Collection from './Collection';
 import Creator from './Creator';
 import Deck from './Deck';
@@ -111,19 +110,21 @@ class App extends Component {
     if (this.state.loading) {
       return null;
     } else if (this.props.inGame) {
-      return <GameMenu />;
+      return null;
     } else {
       return <NavMenu />;
     }
   }
 
   get content() {
+    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? 256 : 64)
+
     if (this.state.loading) {
       return null;
     } else {
       return (
         <div style={{
-          paddingLeft: this.isSidebarExpanded ? 256 : 64,
+          paddingLeft: paddingLeft,
           transition: 'padding-left 200ms ease-in-out'
         }}>
           <Switch>
@@ -158,7 +159,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <TitleBar />
+        <TitleBar inGame={this.props.inGame}/>
         <div>
           {this.sidebar}
           {this.content}

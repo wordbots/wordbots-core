@@ -35,7 +35,7 @@ export default class Board extends Component {
     onEndGame: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     const boardConfig = GRID_CONFIG;
@@ -49,7 +49,7 @@ export default class Board extends Component {
 
   // Many util functions require a game state object, so we create a dummy one with minimal data.
   // TODO find a less gross approach?
-  get dummyGameState () {
+  get dummyGameState() {
     return {
       players: {
         blue: {name: 'blue', robotsOnBoard: this.props.bluePieces},
@@ -58,25 +58,25 @@ export default class Board extends Component {
     };
   }
 
-  get isMyTurn () {
+  get isMyTurn() {
     return this.props.currentTurn === this.props.player;
   }
 
-  get playingAnObject () {
+  get playingAnObject() {
     return (
       this.props.playingCardType === TYPE_ROBOT || this.props.playingCardType === TYPE_STRUCTURE
     );
   }
 
-  get currentPlayerPieces () {
+  get currentPlayerPieces() {
     return this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  get allPieces () {
+  get allPieces() {
     return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
   }
 
-  get piecesOnGrid () {
+  get piecesOnGrid() {
     const attack = this.props.attack;
 
     return mapValues(this.allPieces, (piece, hex) => ({
@@ -93,17 +93,17 @@ export default class Board extends Component {
     }));
   }
 
-  get selectedHexId () {
+  get selectedHexId() {
     return this.props.selectedTile;
   }
-  get selectedHex () {
+  get selectedHex() {
     return HexUtils.IDToHex(this.selectedHexId);
   }
-  get selectedPiece () {
+  get selectedPiece() {
     return this.currentPlayerPieces[this.selectedHexId];
   }
 
-  get placementHexes () {
+  get placementHexes() {
     return validPlacementHexes(
       this.dummyGameState,
       this.props.currentTurn,
@@ -111,10 +111,10 @@ export default class Board extends Component {
     );
   }
 
-  get hexColors () {
+  get hexColors() {
     const hexColors = {};
 
-    function color (hexes, colorName){
+    function color(hexes, colorName){
       hexes.forEach(hex => {
         hexColors[isString(hex) ? hex : HexUtils.getID(hex)] = colorName;
       });
@@ -143,17 +143,17 @@ export default class Board extends Component {
     return hexColors;
   }
 
-  getValidMovementHexes (startHex) {
+  getValidMovementHexes(startHex) {
     return validMovementHexes(this.dummyGameState, startHex);
   }
-  getValidAttackHexes (startHex) {
+  getValidAttackHexes(startHex) {
     return validAttackHexes(this.dummyGameState, startHex);
   }
-  hasValidActions (startHex) {
+  hasValidActions(startHex) {
     return validActionHexes(this.dummyGameState, startHex).length > 0;
   }
 
-  onHexClick (hex) {
+  onHexClick(hex) {
     const hexId = HexUtils.getID(hex);
 
     if (this.isMyTurn) {
@@ -169,7 +169,7 @@ export default class Board extends Component {
     }
   }
 
-  onMoveOrAttack (hex) {
+  onMoveOrAttack(hex) {
     const hexId = HexUtils.getID(hex);
     const movementHexIds = this.getValidMovementHexes(this.selectedHex).map(HexUtils.getID);
     const attackHexIds = this.getValidAttackHexes(this.selectedHex).map(HexUtils.getID);
@@ -187,11 +187,11 @@ export default class Board extends Component {
     }
   }
 
-  onHexHover (hex, event) {
+  onHexHover(hex, event) {
     this.props.onHoverTile(HexUtils.getID(hex), event.type);
   }
 
-  render () {
+  render() {
     const {grid} = this.state;
 
     return (

@@ -20,16 +20,16 @@ import * as actions from '../actions/global';
 import RouterDialog from '../components/RouterDialog';
 import Tooltip from '../components/Tooltip';
 
-function mapStateToProps (state){
+function mapStateToProps(state){
   return {
     user: state.global.user,
     sidebarOpen: state.global.sidebarOpen
   };
 }
 
-function mapDispatchToProps (dispatch){
+function mapDispatchToProps(dispatch){
   return {
-    onRerenderApp (value) {
+    onRerenderApp(value) {
       dispatch(actions.rerender(value));
     }
   };
@@ -45,7 +45,7 @@ class TitleBar extends Component {
     onRerenderApp: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -76,7 +76,7 @@ class TitleBar extends Component {
     this.props.onRerenderApp();
   };
 
-  get userMenu () {
+  get userMenu() {
     if (this.props.user) {
       return (
         <div style={{marginTop: 7}}>
@@ -119,7 +119,7 @@ class TitleBar extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={{height: 64}}>
         <AppBar

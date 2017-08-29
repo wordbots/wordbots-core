@@ -15,17 +15,17 @@ import throttle from './utils/throttle';
 import uniqueId from './utils/uniqueId';
 import {innerWidth, innerHeight} from './utils/innerSize';
 
-function assertElementFitsWidth (el, width){
+function assertElementFitsWidth(el, width){
   // -1: temporary bugfix, will be refactored soon
   return el.scrollWidth - 1 <= width;
 }
 
-function assertElementFitsHeight (el, height){
+function assertElementFitsHeight(el, height){
   // -1: temporary bugfix, will be refactored soon
   return el.scrollHeight - 1 <= height;
 }
 
-function noop (){}
+function noop(){}
 
 export default class Textfit extends Component {
   static propTypes = {
@@ -53,7 +53,7 @@ export default class Textfit extends Component {
     onReady: noop
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -62,11 +62,11 @@ export default class Textfit extends Component {
     };
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.handleWindowResize = throttle(this.handleWindowResize, this.props.throttle);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const {autoResize} = this.props;
     if (autoResize) {
       window.addEventListener('resize', this.handleWindowResize.bind(this));
@@ -74,14 +74,14 @@ export default class Textfit extends Component {
     this.process();
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {ready} = this.state;
     if (!ready) return;
     if (shallowEqual(this.props, prevProps)) return;
     this.process();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const {autoResize} = this.props;
     if (autoResize) {
       window.removeEventListener('resize', this.handleWindowResize.bind(this));
@@ -90,11 +90,11 @@ export default class Textfit extends Component {
     this.pid = uniqueId();
   }
 
-  handleWindowResize () {
+  handleWindowResize() {
     this.process();
   }
 
-  process () {
+  process() {
     const {min, max, mode, forceSingleModeWidth, perfectFit, onReady} = this.props;
     const el = findDOMNode(this); // eslint-disable-line react/no-find-dom-node
     const {wrapper} = this.refs;
@@ -213,7 +213,7 @@ export default class Textfit extends Component {
     );
   }
 
-  render () {
+  render() {
     /* eslint-disable no-unused-vars */
     const {
       /* eslint-disable react/prop-types */

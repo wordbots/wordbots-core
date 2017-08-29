@@ -7,7 +7,7 @@ export default class Status extends Component {
     player: string
   };
 
-  get color () {
+  get color() {
     if (this.props.status.type === 'error') {
       return '#F44336';
     } else if (this.props.status.type === 'warning') {
@@ -17,7 +17,7 @@ export default class Status extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div
         style={{

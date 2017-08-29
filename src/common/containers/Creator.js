@@ -11,7 +11,7 @@ import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator';
 
-export function mapStateToProps (state){
+export function mapStateToProps(state){
   return {
     id: state.creator.id,
     name: state.creator.name,
@@ -27,7 +27,7 @@ export function mapStateToProps (state){
   };
 }
 
-export function mapDispatchToProps (dispatch){
+export function mapDispatchToProps(dispatch){
   return {
     onSetName: name => {
       dispatch(creatorActions.setName(name));
@@ -54,7 +54,7 @@ export function mapDispatchToProps (dispatch){
 }
 
 export class Creator extends Component {
-  constructor () {
+  constructor() {
     super();
 
     this.state = {
@@ -105,7 +105,7 @@ export class Creator extends Component {
     this.props.history.push('/collection');
   };
 
-  render () {
+  render() {
     return (
       <div style={{position: 'relative'}}>
         <Helmet title="Creator" />

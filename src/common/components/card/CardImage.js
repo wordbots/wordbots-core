@@ -20,7 +20,7 @@ export default class CardImage extends Component {
     onSpriteClick: func
   };
 
-  render () {
+  render() {
     if (this.props.type === TYPE_CORE) {
       const [ width, height ] = [ 50 * this.props.scale, 52 * this.props.scale ];
       return (

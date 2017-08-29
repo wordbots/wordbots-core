@@ -16,7 +16,7 @@ import HU from '../../../components/hexgrid/HexUtils';
 import {setSelectedCard, placeCard} from './cards';
 import {moveRobot, attack} from './board';
 
-export function startPractice (state, deck){
+export function startPractice(state, deck){
   const decks = {
     orange: deck,
     blue: shuffle(aiDeck).map(card => ({...card, id: id()}))
@@ -28,7 +28,7 @@ export function startPractice (state, deck){
   return state;
 }
 
-export function aiResponse (state){
+export function aiResponse(state){
   if (state.usernames[state.currentTurn] !== 'Computer') {
     return state;
   }
@@ -49,7 +49,7 @@ export function aiResponse (state){
   }
 }
 
-function playACard (state){
+function playACard(state){
   const ai = state.players[state.currentTurn];
   const cards = availableCards(state, ai);
 
@@ -73,7 +73,7 @@ function playACard (state){
   return state;
 }
 
-function moveARobot (state){
+function moveARobot(state){
   const ai = state.players[state.currentTurn];
   const robots = availableRobots(state, ai);
 
@@ -108,7 +108,7 @@ function moveARobot (state){
   return state;
 }
 
-function moveAndAttack (state, sourceHexId, targetHexId){
+function moveAndAttack(state, sourceHexId, targetHexId){
   const intermediateHexId = intermediateMoveHexId(
     state,
     HU.IDToHex(sourceHexId),
@@ -128,12 +128,12 @@ function moveAndAttack (state, sourceHexId, targetHexId){
 
 // How likely a robot is to move to a given hex.
 // Ranges from 1 (for hexes adjacent to the blue kernel) to 16 (for hexes adjacent to the orange kernel).
-function priority (hexId){
+function priority(hexId){
   const distanceToPlayerKernel = HU.distance(HU.IDToHex(hexId), HU.IDToHex(ORANGE_CORE_HEX));
   return convertRange(distanceToPlayerKernel, [ 6, 1 ], [ 1, 16 ]);
 }
 
-function availableCards (state, ai){
+function availableCards(state, ai){
   return ai.hand.filter(
     card =>
       card.cost <= ai.energy.available &&
@@ -141,7 +141,7 @@ function availableCards (state, ai){
   );
 }
 
-function availableRobots (state, ai){
+function availableRobots(state, ai){
   return filter(
     ai.robotsOnBoard,
     (obj, hex) =>

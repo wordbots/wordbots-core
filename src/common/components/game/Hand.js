@@ -28,20 +28,20 @@ export default class Hand extends Component {
     onTutorialStep: func
   };
 
-  constructor () {
+  constructor() {
     super();
     this.availableWidth = 500;
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.calculateAvailableWidth();
   }
 
-  componentWillUpdate () {
+  componentWillUpdate() {
     this.calculateAvailableWidth();
   }
 
-  calculateAvailableWidth () {
+  calculateAvailableWidth() {
     // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
     /* eslint-disable react/no-find-dom-node */
     if (ReactDOM.findDOMNode(this)) {
@@ -50,7 +50,7 @@ export default class Hand extends Component {
     /* eslint-enable react/no-find-dom-node */
   }
 
-  renderCards () {
+  renderCards() {
     const widthPerCard = 151;
     const defaultMargin = 24;
     const maxWidth = this.availableWidth - 20;
@@ -123,7 +123,7 @@ export default class Hand extends Component {
     });
   }
 
-  render () {
+  render() {
     return (
       <TransitionGroup
         id={this.props.opponent ? 'handTop' : 'handBottom'}

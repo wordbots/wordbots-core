@@ -19,7 +19,7 @@ export default class Sprite extends PureComponent {
     output: string
   };
 
-  render () {
+  render() {
     const size = (this.props.size + (this.props.spacing || 0)) * 2;
 
     // Draw to a mock canvas, then create an image using the dataURL.
@@ -67,7 +67,7 @@ export default class Sprite extends PureComponent {
     }
   }
 
-  createMockCanvas () {
+  createMockCanvas() {
     if (inBrowser()) {
       return document.createElement('canvas');
     } else {
@@ -82,14 +82,14 @@ export default class Sprite extends PureComponent {
 
   // The code in drawSprite() is largely taken from
   // https://github.com/not-surt/spritegen
-  drawSprite (elt, props) {
+  drawSprite(elt, props) {
     const PIXEL_SIZE = 4;
 
-    function indexFromCoord (width, x, y){
+    function indexFromCoord(width, x, y){
       return y * width + x;
     }
 
-    function ByteMap (width, height){
+    function ByteMap(width, height){
       Uint8Array.call(this, width * height);
       this.width = width;
       this.height = height;
@@ -104,7 +104,7 @@ export default class Sprite extends PureComponent {
       }
     });
 
-    function LinearCongruentialGenerator (a, c, m){
+    function LinearCongruentialGenerator(a, c, m){
       this.a = a;
       this.c = c;
       this.m = m;
@@ -126,21 +126,21 @@ export default class Sprite extends PureComponent {
     const lcg0 = new LinearCongruentialGenerator(2147483629, 2147483587, Math.pow(2, 31) - 1);
     const lcg1 = new LinearCongruentialGenerator(25214903917, 11, Math.pow(2, 48));
 
-    function random (){
+    function random(){
       return (lcg0.random() + lcg1.random()) % 1;
     }
-    function randomReseed (seed){
+    function randomReseed(seed){
       lcg0.reseed(seed);
       lcg1.reseed(lcg0.random());
     }
 
-    function arraycopy (dest, destStart, src, srcStart, len){
+    function arraycopy(dest, destStart, src, srcStart, len){
       for (let i = 0; i < len; ++i) {
         dest[destStart + i] = src[srcStart + i];
       }
     }
 
-    function getPixel (data, x, y){
+    function getPixel(data, x, y){
       if (x >= 0 && x < data.width && y >= 0 && y < data.height) {
         const colour = new Array();
         arraycopy(
@@ -154,7 +154,7 @@ export default class Sprite extends PureComponent {
       }
     }
 
-    function putPixel (data, x, y, colour){
+    function putPixel(data, x, y, colour){
       if (x >= 0 && x < data.width && y >= 0 && y < data.height) {
         arraycopy(
           data.data,
@@ -166,23 +166,23 @@ export default class Sprite extends PureComponent {
       }
     }
 
-    function coloursEqual (colour0, colour1){
+    function coloursEqual(colour0, colour1){
       for (let i = 0; i < PIXEL_SIZE; ++i) {
         if (colour0[i] !== colour1[i]) return false;
       }
       return true;
     }
 
-    function rgbToRgba (colour){
+    function rgbToRgba(colour){
       return [ colour[0], colour[1], colour[2], 255 ];
     }
 
-    function scale2x (data, x, y){
+    function scale2x(data, x, y){
       const out = getPixel(data, x, y);
       return [ out, out, out, out ];
     }
 
-    function scale3x (data, x, y){
+    function scale3x(data, x, y){
       const out = getPixel(data, x, y);
       return [ out, out, out, out, out, out, out, out, out ];
     }
@@ -190,7 +190,7 @@ export default class Sprite extends PureComponent {
     // A B C
     // D E F  --> E0 E1
     // G H I      E2 E3
-    function scaleEagle2x (data, x, y){
+    function scaleEagle2x(data, x, y){
       const A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
       const B = getPixel(data, x, y > 0 ? y - 1 : 0);
       const C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
@@ -215,7 +215,7 @@ export default class Sprite extends PureComponent {
     // A B C      E0 E1 E2
     // D E F  --> E3 E4 E5
     // G H I      E6 E7 E8
-    function scaleEagle3x (data, x, y){
+    function scaleEagle3x(data, x, y){
       const A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
       const B = getPixel(data, x, y > 0 ? y - 1 : 0);
       const C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
@@ -245,7 +245,7 @@ export default class Sprite extends PureComponent {
     // A B C
     // D E F  --> E0 E1
     // G H I      E2 E3
-    function scaleScale2x (data, x, y){
+    function scaleScale2x(data, x, y){
       const B = getPixel(data, x, y > 0 ? y - 1 : 0);
       const D = getPixel(data, x > 0 ? x - 1 : 0, y);
       const E = getPixel(data, x, y);
@@ -269,7 +269,7 @@ export default class Sprite extends PureComponent {
     // A B C      E0 E1 E2
     // D E F  --> E3 E4 E5
     // G H I      E6 E7 E8
-    function scaleScale3x (data, x, y){
+    function scaleScale3x(data, x, y){
       const A = getPixel(data, x > 0 ? x - 1 : 0, y > 0 ? y - 1 : 0);
       const B = getPixel(data, x, y > 0 ? y - 1 : 0);
       const C = getPixel(data, x < data.width - 1 ? x + 1 : data.width - 1, y > 0 ? y - 1 : 0);
@@ -331,7 +331,7 @@ export default class Sprite extends PureComponent {
       scale3x: {label: 'Scale3x', factor: 3, func: scaleScale3x}
     };
 
-    function scale (src, dest, scaler){
+    function scale(src, dest, scaler){
       for (let y = 0; y < src.height; y++) {
         for (let x = 0; x < src.width; x++) {
           const scaled = scaler.func(src, x, y);
@@ -373,26 +373,26 @@ export default class Sprite extends PureComponent {
       }
     };
 
-    function lerp (start, end, pos){
+    function lerp(start, end, pos){
       return start + (end - start) * pos;
     }
 
-    function bias (b, value){
+    function bias(b, value){
       // y(x) = x^(log(B)/log(0.5))
       return Math.pow(value, Math.log(b) / Math.log(0.5));
     }
 
-    function gain (g, value){
+    function gain(g, value){
       // y(x) =    Bias(2*x, 1-G)/2        if x<0.5
       //           1-Bias(2-2*x, 1-G)/2    if x>0.5
       return value <= 0.5 ? bias(2 * value, 1 - g) / 2 : 1 - bias(2 - 2 * value, 1 - g) / 2;
     }
 
-    function intRandom (max){
+    function intRandom(max){
       return Math.floor(random() * (max + 1)) % (max + 1);
     }
 
-    function pickRandom (array){
+    function pickRandom(array){
       return array[intRandom(array.length - 1)];
     }
 
@@ -407,7 +407,7 @@ export default class Sprite extends PureComponent {
       [ -1, 0 ]
     ];
 
-    function getNeighbours (data, x, y){
+    function getNeighbours(data, x, y){
       const neighbours = new Array();
       for (let i = 0; i < 8; i++) {
         neighbours[i] = getPixel(data, x + neighbourOffsets[i][0], y + neighbourOffsets[i][1]);
@@ -417,7 +417,7 @@ export default class Sprite extends PureComponent {
 
     const palettes = {
       arne: {
-        label: "Arne's",
+        label: 'Arne\'s',
         background: 0,
         colours: [
           [ 0, 0, 0 ],
@@ -439,7 +439,7 @@ export default class Sprite extends PureComponent {
         ]
       },
       dawnbringer: {
-        label: "DawnBringer's",
+        label: 'DawnBringer\'s',
         background: 0,
         colours: [
           [ 20, 12, 28 ],
@@ -629,7 +629,7 @@ export default class Sprite extends PureComponent {
       }
     };
 
-    function SpriteGenerator (options = {}){
+    function SpriteGenerator(options = {}){
       this.options = {};
       for (const key in properties) {
         this.options[key] = properties[key].default;
@@ -808,7 +808,7 @@ export default class Sprite extends PureComponent {
         default: 0.5,
         min: 0,
         max: 1,
-        description: "Perlin's bias function. Bends value toward or away from the extremes."
+        description: 'Perlin\'s bias function. Bends value toward or away from the extremes.'
       },
       gain: {
         type: 'real',
@@ -816,7 +816,7 @@ export default class Sprite extends PureComponent {
         default: 0.5,
         min: 0,
         max: 1,
-        description: "Perlin's gain function. Bends value toward or away from the centre."
+        description: 'Perlin\'s gain function. Bends value toward or away from the centre.'
       },
       mirrorh: {
         type: 'real',

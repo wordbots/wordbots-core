@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 
 import DevTools from '../common/containers/DevTools';
 
-export default function createDevToolsWindow (store){
+export default function createDevToolsWindow(store){
   const popup = window.open(
     null,
     'Redux DevTools',

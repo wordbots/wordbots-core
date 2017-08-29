@@ -8,7 +8,7 @@ import {isFlagSet} from '../util/browser';
 import Tooltip from '../components/Tooltip';
 
 export default class NavMenu extends Component {
-  get isExpanded () {
+  get isExpanded() {
     return !isFlagSet('sidebarCollapsed');
   }
 
@@ -38,7 +38,7 @@ export default class NavMenu extends Component {
     </NavLink>
   );
 
-  render () {
+  render() {
     return (
       <Drawer
         open

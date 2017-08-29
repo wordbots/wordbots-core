@@ -12,7 +12,7 @@ injectTapEventPlugin();
 
 const app = express();
 
-function userAgentMiddleware (req, res, next){
+function userAgentMiddleware(req, res, next){
   global.navigator = {
     userAgent: req.headers['user-agent']
   };

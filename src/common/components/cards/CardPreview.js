@@ -20,7 +20,7 @@ export default class CardPreview extends Component {
     onSpriteClick: func
   };
 
-  get stats () {
+  get stats() {
     return {
       attack: this.props.attack,
       speed: this.props.speed,
@@ -28,7 +28,7 @@ export default class CardPreview extends Component {
     };
   }
 
-  render () {
+  render() {
     if (inBrowser()) {
       return (
         <div

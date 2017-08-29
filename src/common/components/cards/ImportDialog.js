@@ -11,7 +11,7 @@ export default class ImportDialog extends Component {
     onImport: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -19,7 +19,7 @@ export default class ImportDialog extends Component {
     };
   }
 
-  get actions () {
+  get actions() {
     return [
       <RaisedButton
         primary
@@ -44,7 +44,7 @@ export default class ImportDialog extends Component {
     RouterDialog.closeDialog(this.props.history);
   };
 
-  render () {
+  render() {
     return (
       <RouterDialog
         path="import"

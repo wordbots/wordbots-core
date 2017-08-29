@@ -22,7 +22,7 @@ import SortControls from '../components/cards/SortControls';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
-export function mapStateToProps (state){
+export function mapStateToProps(state){
   return {
     cards: state.collection.cards,
     exportedJson: state.collection.exportedJson,
@@ -31,7 +31,7 @@ export function mapStateToProps (state){
   };
 }
 
-export function mapDispatchToProps (dispatch){
+export function mapDispatchToProps(dispatch){
   return {
     onCloseExportDialog: () => {
       dispatch(collectionActions.closeExportDialog());
@@ -66,7 +66,7 @@ export class Collection extends Component {
     onRemoveFromCollection: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -90,7 +90,7 @@ export class Collection extends Component {
   };
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
-  get displayedCards () {
+  get displayedCards() {
     const opts = pick(this.state, [
       'searchText',
       'filters',
@@ -124,7 +124,7 @@ export class Collection extends Component {
     );
   };
 
-  renderSidebarControls () {
+  renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
         <SearchControls onChange={this.set('searchText')} />
@@ -146,7 +146,7 @@ export class Collection extends Component {
     );
   }
 
-  renderSidebarButtons () {
+  renderSidebarButtons() {
     return (
       <MustBeLoggedIn loggedIn={this.props.loggedIn}>
         <RaisedButton
@@ -240,7 +240,7 @@ export class Collection extends Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Helmet title="Collection" />

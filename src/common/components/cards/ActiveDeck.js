@@ -23,7 +23,7 @@ export default class ActiveDeck extends Component {
     onSaveDeck: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -32,7 +32,7 @@ export default class ActiveDeck extends Component {
     };
   }
 
-  get styles () {
+  get styles() {
     return {
       outerCard: {
         display: 'flex',
@@ -81,7 +81,7 @@ export default class ActiveDeck extends Component {
     };
   }
 
-  renderButton (grouping, iconName, tooltip) {
+  renderButton(grouping, iconName, tooltip) {
     const selected = this.state.grouping === grouping;
 
     return (
@@ -103,7 +103,7 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderCard (card, idx, type) {
+  renderCard(card, idx, type) {
     return (
       <div key={idx}>
         <CardTooltip card={card}>
@@ -123,7 +123,7 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderCardGroup (type) {
+  renderCardGroup(type) {
     return (
       <div>
         {sortBy(groupCards(selectType(this.props.cards, type)), [
@@ -134,7 +134,7 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderCardList () {
+  renderCardList() {
     if (this.state.grouping === 0) {
       return (
         <div>
@@ -188,7 +188,7 @@ export default class ActiveDeck extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div

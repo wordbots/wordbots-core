@@ -1,7 +1,7 @@
 import {id} from '../util/common';
 import {reversedCmd, executeCmd} from '../util/game';
 
-export function setAbility (state, currentObject, source){
+export function setAbility(state, currentObject, source){
   return function (ability){
     if (!source || !currentObject.abilities.find(a => a.source === source)) {
       ability = Object.assign({}, ability, {
@@ -14,7 +14,7 @@ export function setAbility (state, currentObject, source){
   };
 }
 
-export function unsetAbility (state, currentObject, source){
+export function unsetAbility(state, currentObject, source){
   return function (){
     currentObject.abilities = currentObject.abilities.map(ability =>
       Object.assign({}, ability, {disabled: ability.source === source})
@@ -28,7 +28,7 @@ export function unsetAbility (state, currentObject, source){
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
 
-export function abilities (state){
+export function abilities(state){
   return {
     activated: function (targetFunc, action){
       const aid = id();

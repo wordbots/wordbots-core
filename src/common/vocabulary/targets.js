@@ -19,7 +19,7 @@ import {
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
 
-export default function targets (state, currentObject){
+export default function targets(state, currentObject){
   return {
     all: function (collection){
       return collection;

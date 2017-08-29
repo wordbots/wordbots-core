@@ -20,7 +20,7 @@ export default class Chat extends Component {
     onSendMessage: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -32,7 +32,7 @@ export default class Chat extends Component {
     };
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.messages.length !== nextProps.messages.length ||
       this.props.roomName !== nextProps.roomName ||
@@ -40,19 +40,19 @@ export default class Chat extends Component {
     );
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.scrollToBottom();
   }
 
-  scrollToBottom () {
+  scrollToBottom() {
     const scrollHeight = this.chat.scrollHeight;
     const height = this.chat.clientHeight;
     const maxScrollTop = scrollHeight - height;
     this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
 
-  mergeMessagesById (messages) {
-    function join (msgs){
+  mergeMessagesById(messages) {
+    function join(msgs){
       return Object.assign({}, msgs[0], {
         text: msgs.map(m => m.text).join(' '),
         cards: Object.assign({}, ...msgs.map(m => m.cards))
@@ -62,7 +62,7 @@ export default class Chat extends Component {
     return _(messages).groupBy(msg => msg.id || id()).map(join).sortBy('timestamp').value();
   }
 
-  filterMessage (message) {
+  filterMessage(message) {
     if (message.user === '[Server]') {
       return this.state.showServerMsgs;
     } else if (message.user === '[Game]') {
@@ -72,7 +72,7 @@ export default class Chat extends Component {
     }
   }
 
-  renderMessage (message, idx) {
+  renderMessage(message, idx) {
     return (
       <div
         key={idx}
@@ -88,7 +88,7 @@ export default class Chat extends Component {
     );
   }
 
-  renderPhrase (phrase, message) {
+  renderPhrase(phrase, message) {
     const card = (message.cards || [])[phrase];
     if (card) {
       return (
@@ -103,7 +103,7 @@ export default class Chat extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Drawer openSecondary docked containerStyle={{paddingTop: '64px', overflow: 'visible'}}>
@@ -198,13 +198,13 @@ export default class Chat extends Component {
     );
   }
 
-  onChatChange (e) {
+  onChatChange(e) {
     this.setState({
       chatFieldValue: e.target.value
     });
   }
 
-  onChatEnter () {
+  onChatEnter() {
     this.props.onSendMessage(this.state.chatFieldValue);
     this.scrollToBottom();
     this.setState({

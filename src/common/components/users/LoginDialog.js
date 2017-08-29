@@ -11,7 +11,7 @@ export default class LoginDialog extends Component {
     history: object
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -59,17 +59,17 @@ export default class LoginDialog extends Component {
       });
   };
 
-  handleKeyPress (t) {
+  handleKeyPress(t) {
     if (t.charCode === 13 && !this.submitDisabled()) {
       this.submit();
     }
   }
 
-  notEmpty (fields) {
+  notEmpty(fields) {
     return fields.reduce((base, field) => base && field !== '', true);
   }
 
-  submitDisabled () {
+  submitDisabled() {
     if (this.state.register) {
       return !this.notEmpty([ this.state.email, this.state.username, this.state.password ]);
     } else {
@@ -77,7 +77,7 @@ export default class LoginDialog extends Component {
     }
   }
 
-  submit () {
+  submit() {
     if (this.state.register) {
       this.register(this.state.email, this.state.username, this.state.password);
     } else {
@@ -85,7 +85,7 @@ export default class LoginDialog extends Component {
     }
   }
 
-  renderLoginForm () {
+  renderLoginForm() {
     return (
       <div style={{position: 'relative'}}>
         <div>
@@ -130,11 +130,11 @@ export default class LoginDialog extends Component {
     );
   }
 
-  renderFormSwitcher () {
+  renderFormSwitcher() {
     return (
       <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
         <span>
-          {this.state.register ? 'Have an account?' : "Don't have an account?"} &nbsp;
+          {this.state.register ? 'Have an account?' : 'Don\'t have an account?'} &nbsp;
           <span
             style={{fontWeight: 'bold', cursor: 'pointer'}}
             onClick={() => this.setState({register: !this.state.register})}
@@ -146,7 +146,7 @@ export default class LoginDialog extends Component {
     );
   }
 
-  render () {
+  render() {
     const actions = [
       <FlatButton label="Cancel" key="Cancel" primary onTouchTap={this.handleClose} />,
       <FlatButton

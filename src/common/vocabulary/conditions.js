@@ -3,7 +3,7 @@ import {flatMap, has, some} from 'lodash';
 import {allHexIds, getHex, getAttribute, getAdjacentHexes} from '../util/game';
 import HU from '../components/hexgrid/HexUtils';
 
-function objectHasProperty (obj, property){
+function objectHasProperty(obj, property){
   switch (property) {
     // Simple properties.
     case 'attackedlastturn':
@@ -25,7 +25,7 @@ function objectHasProperty (obj, property){
 
 // Object conditions return (hexId, obj) -> bool functions.
 // They are used by the objectsMatchingConditions() collection.
-export function objectConditions (state){
+export function objectConditions(state){
   return {
     adjacentTo: function (targets){
       const targetHexIds =
@@ -69,7 +69,7 @@ export function objectConditions (state){
 
 // Global conditions simply return a boolean.
 // They're used in if-expressions.
-export function globalConditions (state){
+export function globalConditions(state){
   return {
     collectionExists: function (collection){
       return collection.length > 0;

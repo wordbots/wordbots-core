@@ -10,7 +10,7 @@ export default class MustBeLoggedIn extends Component {
     children: oneOfType([ array, object ])
   };
 
-  renderDisabledChild (child) {
+  renderDisabledChild(child) {
     const propagatedStyleKeys = [
       'float',
       'width',
@@ -38,7 +38,7 @@ export default class MustBeLoggedIn extends Component {
     );
   }
 
-  render () {
+  render() {
     if (this.props.loggedIn) {
       return <div>{this.props.children}</div>;
     } else {

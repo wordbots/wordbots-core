@@ -12,7 +12,7 @@ export default class CardViewer extends Component {
     hoveredCard: object
   };
 
-  renderCard () {
+  renderCard() {
     if (this.props.hoveredCard) {
       return (
         <CSSTransition classNames="card-viewer-fade" timeout={100}>
@@ -39,7 +39,7 @@ export default class CardViewer extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div
         style={{

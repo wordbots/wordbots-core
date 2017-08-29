@@ -31,7 +31,7 @@ export default class HexGrid extends Component {
     path: {start: null, end: null}
   };
 
-  static generate (config, content) {
+  static generate(config, content) {
     const layout = new Layout(config.layout, config.origin);
     const generator = GridGenerator.getGenerator(config.map);
     const hexagons = generator.apply(this, config.mapProps);
@@ -39,11 +39,11 @@ export default class HexGrid extends Component {
     return {hexagons, layout};
   }
 
-  get selectedHex () {
+  get selectedHex() {
     return this.props.hexagons.find(hex => HexUtils.getID(hex) === this.props.selectedHexId);
   }
 
-  renderHexes () {
+  renderHexes() {
     return this.props.hexagons.map((hex, index) => (
       <HexShape
         key={index}
@@ -56,7 +56,7 @@ export default class HexGrid extends Component {
     ));
   }
 
-  renderPieces () {
+  renderPieces() {
     return (
       <TransitionGroup component="g">
         {_(this.props.pieces)
@@ -77,7 +77,7 @@ export default class HexGrid extends Component {
     );
   }
 
-  renderSelectedHex () {
+  renderSelectedHex() {
     if (this.selectedHex) {
       return (
         <HexShape
@@ -90,7 +90,7 @@ export default class HexGrid extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <svg
         className="grid"

@@ -12,7 +12,7 @@ class EnergyCount extends Component {
     isCurrentPlayer: bool
   };
 
-  renderEnergyTile (color, filled) {
+  renderEnergyTile(color, filled) {
     return (
       <Paper
         key={id()}
@@ -28,7 +28,7 @@ class EnergyCount extends Component {
     );
   }
 
-  renderEnergyTiles () {
+  renderEnergyTiles() {
     const {color, energy} = this.props;
     const emptyEnergy = energy.total - energy.available;
     const energyTiles = [];
@@ -48,7 +48,7 @@ class EnergyCount extends Component {
     return energyTiles;
   }
 
-  render () {
+  render() {
     return (
       <div
         style={{

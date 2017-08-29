@@ -7,11 +7,11 @@ export default class SearchControls extends Component {
     onChange: func
   };
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     return false;
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div

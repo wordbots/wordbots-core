@@ -9,7 +9,7 @@ export default class CardBack extends Component {
     hoverable: bool
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -17,13 +17,13 @@ export default class CardBack extends Component {
     };
   }
 
-  toggleHover () {
+  toggleHover() {
     if (this.props.hoverable) {
       this.setState({hover: !this.state.hover});
     }
   }
 
-  render () {
+  render() {
     let style = {};
 
     if (this.props.deckLength) {

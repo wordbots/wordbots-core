@@ -11,11 +11,11 @@ export default class PiecePattern extends Component {
     piece: object.isRequired
   };
 
-  get images () {
+  get images() {
     return loadImages();
   }
 
-  render () {
+  render() {
     const id = this.props.piece.id;
     const image = this.props.piece.image;
 

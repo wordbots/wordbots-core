@@ -26,11 +26,11 @@ export default class RouterDialog extends Component {
     scroll: false
   };
 
-  static openDialog (history, dialogPath) {
+  static openDialog(history, dialogPath) {
     transformHistory(history, path => `${path.replace(/\/\/\w*/, '')}//${dialogPath}`);
   }
 
-  static closeDialog (history) {
+  static closeDialog(history) {
     transformHistory(history, path => path.replace(/\/\/\w*/, ''));
   }
 
@@ -52,7 +52,7 @@ export default class RouterDialog extends Component {
     </Dialog>
   );
 
-  render () {
+  render() {
     if (this.props.history) {
       return <Route path={`*//${this.props.path}`} render={this.renderDialog} />;
     } else {

@@ -16,7 +16,7 @@ export default class HexPiece extends React.Component {
     piece: object
   };
 
-  get points () {
+  get points() {
     const points = this.props.layout.getPolygonPoints(this.props.hex);
 
     if (this.props.piece.image) {
@@ -36,7 +36,7 @@ export default class HexPiece extends React.Component {
     }
   }
 
-  get translate () {
+  get translate() {
     const attackingHex = this.props.piece.attacking
       ? HexUtils.IDToHex(this.props.piece.attacking)
       : null;
@@ -47,7 +47,7 @@ export default class HexPiece extends React.Component {
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
-  get styles () {
+  get styles() {
     if (this.props.piece.image !== {}) {
       return {
         fill: `url(#${this.props.piece.id}-pattern)`,
@@ -61,11 +61,11 @@ export default class HexPiece extends React.Component {
     }
   }
 
-  renderPattern () {
+  renderPattern() {
     return <PiecePattern hex={this.props.hex} pieceImg={this.props.piece.image} />;
   }
 
-  renderStat (stat) {
+  renderStat(stat) {
     const value = this.props.piece.stats[stat];
     const isLargeNumber = value >= 20;
 
@@ -92,7 +92,7 @@ export default class HexPiece extends React.Component {
     );
   }
 
-  renderPieceStats () {
+  renderPieceStats() {
     const stats = this.props.piece.stats;
     if (stats && !isUndefined(stats.attack)) {
       return [ this.renderStat('attack'), this.renderStat('health') ];
@@ -103,7 +103,7 @@ export default class HexPiece extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <g
         draggable

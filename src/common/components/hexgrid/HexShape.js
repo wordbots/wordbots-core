@@ -17,18 +17,18 @@ export default class HexShape extends React.Component {
     selected: bool
   };
 
-  get points () {
+  get points() {
     const points = this.props.layout.getPolygonPoints(this.props.hex);
     return points.map(point => `${point.x},${point.y}`).join(' ');
   }
 
-  get translate () {
+  get translate() {
     const hex = this.props.hex;
     const pixel = HexUtils.hexToPixel(hex, this.props.layout);
     return `translate(${pixel.x}, ${pixel.y})`;
   }
 
-  get hexStyles () {
+  get hexStyles() {
     const hex = this.props.hex;
 
     if (this.props.selected) {
@@ -44,14 +44,14 @@ export default class HexShape extends React.Component {
     }
   }
 
-  get shouldRenderTooltip () {
+  get shouldRenderTooltip() {
     return (
       this.props.tutorialStep &&
       HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex
     );
   }
 
-  renderPattern () {
+  renderPattern() {
     if (!this.props.selected) {
       return <FillPattern hex={this.props.hex} fill={this.props.fill} />;
     } else {
@@ -59,7 +59,7 @@ export default class HexShape extends React.Component {
     }
   }
 
-  renderText () {
+  renderText() {
     if (DISPLAY_HEX_IDS) {
       return (
         <text x="0" y="0.3em" textAnchor="middle">
@@ -69,7 +69,7 @@ export default class HexShape extends React.Component {
     }
   }
 
-  renderHex () {
+  renderHex() {
     return (
       <g
         draggable
@@ -85,7 +85,7 @@ export default class HexShape extends React.Component {
     );
   }
 
-  render () {
+  render() {
     if (this.shouldRenderTooltip) {
       return (
         <TutorialTooltip

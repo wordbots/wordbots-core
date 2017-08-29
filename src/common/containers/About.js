@@ -7,7 +7,7 @@ import Paper from 'material-ui/Paper';
 
 import MarkdownBlock from '../components/MarkdownBlock';
 
-export function mapStateToProps (state){
+export function mapStateToProps(state){
   return {
     version: state.version
   };
@@ -18,7 +18,7 @@ class Home extends Component {
     version: string
   };
 
-  render () {
+  render() {
     const [ version, sha ] = this.props.version.split('+');
 
     return (

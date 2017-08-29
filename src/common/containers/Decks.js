@@ -15,7 +15,7 @@ import CardTooltip from '../components/card/CardTooltip';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
-function mapStateToProps (state){
+function mapStateToProps(state){
   return {
     cards: state.collection.cards,
     decks: state.collection.decks,
@@ -23,7 +23,7 @@ function mapStateToProps (state){
   };
 }
 
-function mapDispatchToProps (dispatch){
+function mapDispatchToProps(dispatch){
   return {
     onCreateDeck: () => {
       dispatch(collectionActions.editDeck(null));
@@ -54,11 +54,11 @@ class Decks extends Component {
     onEditDeck: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  get styles () {
+  get styles() {
     return {
       cardItem: {
         display: 'flex',
@@ -89,7 +89,7 @@ class Decks extends Component {
     };
   }
 
-  renderCard (card, idx) {
+  renderCard(card, idx) {
     return (
       <div
         key={idx}
@@ -115,11 +115,11 @@ class Decks extends Component {
     );
   }
 
-  renderCards (cards) {
+  renderCards(cards) {
     return sortBy(groupCards(cards), [ 'cost', 'name' ]).map(this.renderCard.bind(this));
   }
 
-  renderDeck (deck) {
+  renderDeck(deck) {
     const cards = cardsInDeck(deck, this.props.cards);
     const [ robots, structures, events ] = [ TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT ].map(t =>
       filter(cards, [ 'type', t ])
@@ -219,7 +219,7 @@ class Decks extends Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Helmet title="Decks" />

@@ -1,4 +1,4 @@
-export default function loadImages (){
+export default function loadImages(){
   // (Don't try to load images while in test mode because it's too complicated.)
   if (
     typeof window !== 'undefined' &&

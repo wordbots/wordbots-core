@@ -10,7 +10,7 @@ export default class HostGame extends Component {
     onHostGame: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -18,7 +18,7 @@ export default class HostGame extends Component {
     };
   }
 
-  render () {
+  render() {
     return (
       <Paper style={{padding: 20, marginBottom: 20, position: 'relative'}}>
         <TextField

@@ -16,7 +16,7 @@ import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import * as collectionActions from '../actions/collection';
 
-function mapStateToProps (state){
+function mapStateToProps(state){
   return {
     id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
     cards: state.collection.cards,
@@ -25,7 +25,7 @@ function mapStateToProps (state){
   };
 }
 
-function mapDispatchToProps (dispatch){
+function mapDispatchToProps(dispatch){
   return {
     onSaveDeck: function (id, name, cardIds){
       dispatch(collectionActions.saveDeck(id, name, cardIds));
@@ -45,7 +45,7 @@ class Deck extends Component {
     onSaveDeck: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -63,11 +63,11 @@ class Deck extends Component {
     };
   }
 
-  get selectedCards () {
+  get selectedCards() {
     return compact(this.state.selectedCardIds.map(id => find(this.props.cards, {id})));
   }
 
-  get displayedCards () {
+  get displayedCards() {
     const opts = pick(this.state, [
       'searchText',
       'filters',
@@ -89,7 +89,7 @@ class Deck extends Component {
     }));
   };
 
-  renderSidebarControls () {
+  renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
         <SearchControls onChange={this.set('searchText')} />
@@ -108,7 +108,7 @@ class Deck extends Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Helmet title="Building Deck" />

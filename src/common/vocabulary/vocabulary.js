@@ -12,7 +12,7 @@ import {
 } from './collections';
 import {attributeSum, attributeValue, count, energyAmount} from './numbers';
 
-export default function vocabulary (state, currentObject = null, source = null){
+export default function vocabulary(state, currentObject = null, source = null){
   return {
     actions: actions(state),
     targets: targets(state, currentObject),

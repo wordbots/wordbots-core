@@ -12,7 +12,7 @@ export default class ExportDialog extends Component {
     text: string
   };
 
-  constructor () {
+  constructor() {
     super();
 
     this.state = {
@@ -20,7 +20,7 @@ export default class ExportDialog extends Component {
     };
   }
 
-  get actions () {
+  get actions() {
     return [
       <span key="status" style={{paddingRight: 20, color: '#ff8888'}}>
         {this.state.status}
@@ -47,7 +47,7 @@ export default class ExportDialog extends Component {
     });
   };
 
-  render () {
+  render() {
     return (
       <RouterDialog
         path="export"

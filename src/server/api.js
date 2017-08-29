@@ -8,7 +8,7 @@ import {splitSentences} from '../common/util/cards';
 import Card from '../common/components/card/Card';
 import Sentence from '../common/components/card/Sentence';
 
-export default function produceApiResponse (response, location){
+export default function produceApiResponse(response, location){
   const {pathname, query} = url.parse(location, true);
 
   if (pathname === '/api/card.png') {
@@ -16,7 +16,7 @@ export default function produceApiResponse (response, location){
   }
 }
 
-function renderCard (response, query){
+function renderCard(response, query){
   const cardJson = query.card.replace(/%27/g, '\\"').replace(/\n/g, '\\n');
   const card = JSON.parse(cardJson);
 

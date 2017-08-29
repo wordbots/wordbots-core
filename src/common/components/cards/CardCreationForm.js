@@ -49,7 +49,7 @@ export default class CardCreationForm extends Component {
     onOpenDialog: func
   };
 
-  componentDidMount () {
+  componentDidMount() {
     // Generate new spriteID on reload.
     if (!this.props.isNewCard) {
       this.props.onSpriteClick();
@@ -68,30 +68,30 @@ export default class CardCreationForm extends Component {
     });
   }
 
-  get robot () {
+  get robot() {
     return this.props.type === TYPE_ROBOT;
   }
-  get event () {
+  get event() {
     return this.props.type === TYPE_EVENT;
   }
 
-  get nonEmptySentences () {
+  get nonEmptySentences() {
     return this.props.sentences.filter(s => /\S/.test(s.sentence));
   }
 
-  get hasCardText () {
+  get hasCardText() {
     return this.nonEmptySentences.length > 0;
   }
 
-  get fullParse () {
+  get fullParse() {
     return compact(this.nonEmptySentences.map(s => s.result.js)).join(' ');
   }
 
-  get parserMode () {
+  get parserMode() {
     return this.props.type === TYPE_EVENT ? 'event' : 'object';
   }
 
-  get parseErrors () {
+  get parseErrors() {
     return compact(this.nonEmptySentences.map(s => s.result.error)).map(error =>
       `${error}.`
         .replace('..', '.')
@@ -99,41 +99,41 @@ export default class CardCreationForm extends Component {
     );
   }
 
-  get nameError () {
+  get nameError() {
     if (!this.props.name || this.props.name === '[Unnamed]') {
       return 'This card needs a name!';
     }
   }
 
-  get typeError () {
+  get typeError() {
     if (!CREATABLE_TYPES.includes(this.props.type)) {
       return 'Invalid type.';
     }
   }
 
-  get costError () {
+  get costError() {
     return ensureInRange('cost', this.props.energy, 0, 20);
   }
 
-  get attackError () {
+  get attackError() {
     if (this.robot) {
       return ensureInRange('attack', this.props.attack, 0, 10);
     }
   }
 
-  get healthError () {
+  get healthError() {
     if (!this.event) {
       return ensureInRange('health', this.props.health, 1, 10);
     }
   }
 
-  get speedError () {
+  get speedError() {
     if (this.robot) {
       return ensureInRange('speed', this.props.speed, 0, 3);
     }
   }
 
-  get textError () {
+  get textError() {
     if (this.event && !this.hasCardText) {
       return 'Events must have card text.';
     }
@@ -151,7 +151,7 @@ export default class CardCreationForm extends Component {
     }
   }
 
-  get isValid () {
+  get isValid() {
     return (
       !this.nameError &&
       !this.typeError &&
@@ -163,7 +163,7 @@ export default class CardCreationForm extends Component {
     );
   }
 
-  get styles () {
+  get styles() {
     return {
       container: {width: '60%', flex: 1, padding: 64},
       paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
@@ -184,7 +184,7 @@ export default class CardCreationForm extends Component {
     this.props.onSetAttribute(key, value);
   };
 
-  onUpdateText (text, cardType, dontIndex = false) {
+  onUpdateText(text, cardType, dontIndex = false) {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
@@ -200,7 +200,7 @@ export default class CardCreationForm extends Component {
     </RaisedButton>
   );
 
-  renderAttributeField (attribute, enabled = true, opts = {}) {
+  renderAttributeField(attribute, enabled = true, opts = {}) {
     return (
       <NumberField
         label={capitalize(attribute)}
@@ -214,7 +214,7 @@ export default class CardCreationForm extends Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div style={this.styles.container}>
         <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12}}>

@@ -22,11 +22,11 @@ export default class GameBrowser extends Component {
     onSpectateGame: func
   };
 
-  get games () {
+  get games() {
     return this.props.openGames.concat(this.props.inProgressGames);
   }
 
-  renderTableRows () {
+  renderTableRows() {
     if (this.games.length > 0) {
       return this.games.map(game => (
         <TableRow key={game.id}>
@@ -79,7 +79,7 @@ export default class GameBrowser extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <Paper
         style={{

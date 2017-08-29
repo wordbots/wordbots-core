@@ -8,11 +8,11 @@ export default class ModeSelection extends Component {
     onSelectMode: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  render () {
+  render() {
     return (
       <div
         style={{

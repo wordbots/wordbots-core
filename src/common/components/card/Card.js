@@ -99,7 +99,7 @@ export default class Card extends Component {
   };
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -107,7 +107,7 @@ export default class Card extends Component {
     };
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     const trackedProps = [
       'name',
       'spriteID',
@@ -132,23 +132,23 @@ export default class Card extends Component {
     );
   }
 
-  onMouseEnter () {
+  onMouseEnter() {
     this.setState({
       shadow: 3
     });
   }
 
-  onMouseLeave () {
+  onMouseLeave() {
     this.setState({
       shadow: 2
     });
   }
 
-  get numChars () {
+  get numChars() {
     return this.props.rawText ? this.props.rawText.length : this.props.text.length;
   }
 
-  get textAreaStyle () {
+  get textAreaStyle() {
     const baseStyle = {
       height: 106 * this.props.scale
     };
@@ -168,7 +168,7 @@ export default class Card extends Component {
     }
   }
 
-  get textFitStyle () {
+  get textFitStyle() {
     const baseStyle = {
       padding: 6 * this.props.scale,
       paddingBottom: 0,
@@ -190,7 +190,7 @@ export default class Card extends Component {
     }
   }
 
-  renderTitle () {
+  renderTitle() {
     if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round(180 / this.props.name.length);
@@ -222,7 +222,7 @@ export default class Card extends Component {
     }
   }
 
-  renderText () {
+  renderText() {
     if (!inBrowser()) {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round(
@@ -251,7 +251,7 @@ export default class Card extends Component {
     }
   }
 
-  renderStat (type) {
+  renderStat(type) {
     return (
       <CardStat
         type={type}
@@ -262,7 +262,7 @@ export default class Card extends Component {
     );
   }
 
-  renderStatsArea () {
+  renderStatsArea() {
     const style = {
       position: 'absolute',
       bottom: 0,
@@ -287,7 +287,7 @@ export default class Card extends Component {
     }
   }
 
-  render () {
+  render() {
     const redShadow = 'rgba(255, 35, 35, 0.95)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {

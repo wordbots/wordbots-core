@@ -3,9 +3,9 @@ import {buildNGrams, listAllNGrams} from 'word-ngrams';
 
 const DISALLOWED_PHRASES = [ 'all a' ];
 
-export function prepareBigramProbs (corpus){
+export function prepareBigramProbs(corpus){
   // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
-  function normalizeValues (obj){
+  function normalizeValues(obj){
     const total = sum(Object.values(obj));
     return mapValues(obj, val => val / total);
   }
@@ -22,7 +22,7 @@ export function prepareBigramProbs (corpus){
   return bigrams;
 }
 
-export function bigramNLL (phrase, bigramProbs){
+export function bigramNLL(phrase, bigramProbs){
   const phraseBigrams = listAllNGrams(buildNGrams(`${phrase} .`, 2)).map(b => b.split(' '));
 
   let logLikelihood = 0;

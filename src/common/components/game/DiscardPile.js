@@ -8,7 +8,7 @@ export default class DiscardPile extends Component {
     cards: array
   };
 
-  renderCards (cards) {
+  renderCards(cards) {
     return cards.map((card, index) => (
       <div
         style={{
@@ -22,7 +22,7 @@ export default class DiscardPile extends Component {
     ));
   }
 
-  render () {
+  render() {
     const cards = this.props.cards;
 
     return (

@@ -1,7 +1,7 @@
 import Point from './Point';
 
 class Orientation {
-  constructor (f0, f1, f2, f3, b0, b1, b2, b3, startAngle) {
+  constructor(f0, f1, f2, f3, b0, b1, b2, b3, startAngle) {
     this.f0 = f0;
     this.f1 = f1;
     this.f2 = f2;
@@ -38,19 +38,19 @@ class Layout {
     0.5
   );
 
-  constructor (layout, origin) {
+  constructor(layout, origin) {
     this.orientation = layout.flat ? Layout.LAYOUT_FLAT : Layout.LAYOUT_POINTY;
     this.size = new Point(layout.width, layout.height);
     this.origin = origin || new Point(0, 0);
     this.spacing = layout.spacing || 1;
   }
 
-  getPointOffset (corner) {
+  getPointOffset(corner) {
     const angle = 2.0 * Math.PI * (corner + this.orientation.startAngle) / 6;
     return new Point(this.size.x * Math.cos(angle), this.size.y * Math.sin(angle));
   }
 
-  getPolygonPoints (hex) {
+  getPolygonPoints(hex) {
     const corners = [];
     const center = new Point(0, 0);
 

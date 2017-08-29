@@ -23,7 +23,7 @@ export default class CardTable extends Component {
     onCardClick: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -31,7 +31,7 @@ export default class CardTable extends Component {
     };
   }
 
-  sourceToString (source) {
+  sourceToString(source) {
     if (source === 'user') {
       return 'You';
     } else {
@@ -39,7 +39,7 @@ export default class CardTable extends Component {
     }
   }
 
-  renderCardRowStat (type, stats) {
+  renderCardRowStat(type, stats) {
     if (stats && stats[type]) {
       return (
         <CardStat
@@ -55,7 +55,7 @@ export default class CardTable extends Component {
     }
   }
 
-  renderCardCost (cost) {
+  renderCardCost(cost) {
     return (
       <Badge
         badgeContent={cost}
@@ -72,7 +72,7 @@ export default class CardTable extends Component {
     );
   }
 
-  renderCardRow (card, index) {
+  renderCardRow(card, index) {
     return (
       <TableRow
         key={card.id || id()}
@@ -99,7 +99,7 @@ export default class CardTable extends Component {
     );
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div

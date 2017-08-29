@@ -19,7 +19,7 @@ import {
 import {splitSentences} from '../../../util/cards';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-export function setSelectedCard (state, playerName, cardIdx){
+export function setSelectedCard(state, playerName, cardIdx){
   const player = state.players[playerName];
   const isCurrentPlayer = playerName === state.currentTurn;
   const selectedCard = player.hand[cardIdx];
@@ -73,7 +73,7 @@ export function setSelectedCard (state, playerName, cardIdx){
   }
 }
 
-export function placeCard (state, cardIdx, tile){
+export function placeCard(state, cardIdx, tile){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -157,7 +157,7 @@ export function placeCard (state, cardIdx, tile){
   }
 }
 
-function playEvent (state, cardIdx){
+function playEvent(state, cardIdx){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);

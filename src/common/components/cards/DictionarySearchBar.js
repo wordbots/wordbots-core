@@ -9,7 +9,7 @@ export default class DictionarySidebar extends Component {
     onChange: func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -23,7 +23,7 @@ export default class DictionarySidebar extends Component {
     });
   };
 
-  renderClearButton () {
+  renderClearButton() {
     if (this.state.text !== '') {
       return (
         <IconButton
@@ -40,7 +40,7 @@ export default class DictionarySidebar extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={{display: 'flex', alignItems: 'center', width: '100%', height: 56}}>
         <TextField

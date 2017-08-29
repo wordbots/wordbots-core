@@ -48,10 +48,10 @@ const typeToStringMapping = {
   [TYPE_STRUCTURE]: 'structure'
 };
 
-export function typeToString (type){
+export function typeToString(type){
   return capitalize(typeToStringMapping[type]);
 }
 
-export function stringToType (str){
+export function stringToType(str){
   return parseInt(invert(typeToStringMapping)[str.toLowerCase()]);
 }

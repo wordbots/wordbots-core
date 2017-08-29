@@ -20,7 +20,7 @@ export default class CardStat extends Component {
     scale: 1
   };
 
-  get iconClass () {
+  get iconClass() {
     switch (this.props.type) {
       case 'attack':
         return 'crossed-swords';
@@ -31,7 +31,7 @@ export default class CardStat extends Component {
     }
   }
 
-  get textColor () {
+  get textColor() {
     if (this.props.current && this.props.current > this.props.base) {
       return '#81C784';
     } else if (this.props.current && this.props.current < this.props.base) {
@@ -41,7 +41,7 @@ export default class CardStat extends Component {
     }
   }
 
-  get icon () {
+  get icon() {
     return (
       <FontIcon
         className={`ra ra-${this.iconClass}`}
@@ -54,7 +54,7 @@ export default class CardStat extends Component {
     );
   }
 
-  get statText () {
+  get statText() {
     const baseStatStyle = {
       position: 'absolute',
       top: -5,
@@ -76,11 +76,11 @@ export default class CardStat extends Component {
     }
   }
 
-  render () {
+  render() {
     return inBrowser() ? this.renderNewStyle() : this.renderOldStyle();
   }
 
-  renderNewStyle () {
+  renderNewStyle() {
     const style = {
       float: 'left',
       width: '33%',
@@ -111,8 +111,8 @@ export default class CardStat extends Component {
     }
   }
 
-  renderOldStyle () {
-    function backgroundColor (type){
+  renderOldStyle() {
+    function backgroundColor(type){
       switch (type) {
         case 'attack':
           return '#E57373';

@@ -16,7 +16,7 @@ export default class CardTextField extends Component {
     onOpenDialog: func
   };
 
-  get textSuggestions () {
+  get textSuggestions() {
     if (this.state && this.state.bigramProbs) {
       return _(this.props.sentences)
         .flatMap(s =>
@@ -76,7 +76,7 @@ export default class CardTextField extends Component {
     }
   };
 
-  render () {
+  render() {
     return (
       <div>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>

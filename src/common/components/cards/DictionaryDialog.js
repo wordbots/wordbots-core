@@ -22,7 +22,7 @@ export default class DictionaryDialog extends Component {
     history: object
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -39,11 +39,11 @@ export default class DictionaryDialog extends Component {
     };
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.checkHash();
   }
 
-  componentDidMount () {
+  componentDidMount() {
     listenToDictionaryData(data => {
       this.setState({
         dictionary: Object.assign({}, this.state.dictionary, data.dictionary)
@@ -51,54 +51,54 @@ export default class DictionaryDialog extends Component {
     });
   }
 
-  componentWillReceiveProps () {
+  componentWillReceiveProps() {
     this.checkHash();
   }
 
-  get currentTab () {
+  get currentTab() {
     return [ 'dictionary', 'thesaurus', 'keywords' ][this.state.tabIdx];
   }
-  get currentTabTerms () {
+  get currentTabTerms() {
     return this[`${this.currentTab}Terms`];
   }
-  get selectedTerm () {
+  get selectedTerm() {
     return this.state[`${this.currentTab}Term`] || this.currentTabTerms[0];
   }
 
-  get hash () {
+  get hash() {
     const tabKey = this.currentTab.toLowerCase()[0];
     return `${tabKey}:${this.selectedTerm || ''}`;
   }
 
-  get dictionaryTerms () {
+  get dictionaryTerms() {
     return Object.keys(this.dictionaryDefinitions)
-      .filter(t => t.includes(this.state.searchText) && t !== '"' && t !== "'")
+      .filter(t => t.includes(this.state.searchText) && t !== '"' && t !== '\'')
       .sort();
   }
-  get dictionaryDefinitions () {
+  get dictionaryDefinitions() {
     return this.cleanupTerms(this.state.dictionary.definitions);
   }
-  get dictionaryExamples () {
+  get dictionaryExamples() {
     return this.cleanupTerms(this.state.dictionary.examplesByToken);
   }
 
-  get thesaurusTerms () {
+  get thesaurusTerms() {
     return Object.keys(this.thesaurusExamples)
       .filter(t => t.includes(this.state.searchText))
       .sort();
   }
-  get thesaurusExamples () {
+  get thesaurusExamples() {
     return this.state.dictionary.examplesByNode;
   }
 
-  get keywordsTerms () {
+  get keywordsTerms() {
     return Object.keys(allKeywords())
       .filter(t => t.includes(this.state.searchText))
       .sort()
       .map(k => capitalize(k));
   }
 
-  cleanupTerms = obj => mapKeys(obj, (value, term) => term.replace(" '", "'"));
+  cleanupTerms = obj => mapKeys(obj, (value, term) => term.replace(' \'', '\''));
   cleanupExample = example =>
     capitalize(contractKeywords(example).trim())
       .replace(/,$/, '')
@@ -126,7 +126,7 @@ export default class DictionaryDialog extends Component {
     setHash(this.props.history, this.hash);
   };
 
-  renderTitle () {
+  renderTitle() {
     return (
       <div>
         <Helmet title={`${capitalize(this.currentTab)} : ${this.selectedTerm}`} />
@@ -139,7 +139,7 @@ export default class DictionaryDialog extends Component {
     );
   }
 
-  renderTabs () {
+  renderTabs() {
     const tabColor = 'rgb(0, 188, 212)';
     const tabStyle = {backgroundColor: tabColor};
 
@@ -171,7 +171,7 @@ export default class DictionaryDialog extends Component {
     );
   }
 
-  renderPage () {
+  renderPage() {
     return [
       [
         this.renderDictionaryDefinitions(),
@@ -182,7 +182,7 @@ export default class DictionaryDialog extends Component {
     ][this.state.tabIdx];
   }
 
-  renderExamples (examplesByTerm, term) {
+  renderExamples(examplesByTerm, term) {
     if (examplesByTerm[term]) {
       const examples = uniq(examplesByTerm[term].map(this.cleanupExample));
       return (
@@ -200,7 +200,7 @@ export default class DictionaryDialog extends Component {
     }
   }
 
-  renderDictionaryDefinitions () {
+  renderDictionaryDefinitions() {
     const definitions = this.dictionaryDefinitions[this.selectedTerm] || [];
     return (
       <div key="definitions">
@@ -217,7 +217,7 @@ export default class DictionaryDialog extends Component {
     );
   }
 
-  renderKeywordsDefinition () {
+  renderKeywordsDefinition() {
     const term = this.selectedTerm ? this.selectedTerm.toLowerCase() : null;
     const definition = allKeywords()[term];
     if (definition) {
@@ -230,7 +230,7 @@ export default class DictionaryDialog extends Component {
     }
   }
 
-  renderDictionary () {
+  renderDictionary() {
     return (
       <div>
         {this.renderTabs()}
@@ -263,7 +263,7 @@ export default class DictionaryDialog extends Component {
     );
   }
 
-  render () {
+  render() {
     const history = this.props.history;
     return (
       <RouterDialog

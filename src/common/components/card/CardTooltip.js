@@ -14,7 +14,7 @@ export default class CardTooltip extends Component {
 
   tooltipId = id();
 
-  render () {
+  render() {
     return (
       <span>
         <span data-tip="" data-for={this.tooltipId}>

@@ -31,27 +31,27 @@ import {clamp} from './common';
 // I. Queries for game state.
 //
 
-export function opponent (playerName){
+export function opponent(playerName){
   return playerName === 'blue' ? 'orange' : 'blue';
 }
 
-export function opponentName (state){
+export function opponentName(state){
   return opponent(state.currentTurn);
 }
 
-export function activePlayer (state){
+export function activePlayer(state){
   return state.players[state.player];
 }
 
-export function currentPlayer (state){
+export function currentPlayer(state){
   return state.players[state.currentTurn];
 }
 
-export function opponentPlayer (state){
+export function opponentPlayer(state){
   return state.players[opponentName(state)];
 }
 
-export function currentTutorialStep (state){
+export function currentTutorialStep(state){
   if (state.tutorial && state.tutorialSteps) {
     const step = state.tutorialSteps[state.tutorialCurrentStepIdx];
     return Object.assign({}, step, {
@@ -61,11 +61,11 @@ export function currentTutorialStep (state){
   }
 }
 
-export function allObjectsOnBoard (state){
+export function allObjectsOnBoard(state){
   return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
 }
 
-export function ownerOf (state, object){
+export function ownerOf(state, object){
   if (some(state.players.blue.robotsOnBoard, [ 'id', object.id ])) {
     return state.players.blue;
   } else if (some(state.players.orange.robotsOnBoard, [ 'id', object.id ])) {
@@ -73,7 +73,7 @@ export function ownerOf (state, object){
   }
 }
 
-export function getAttribute (object, attr){
+export function getAttribute(object, attr){
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
     return object.temporaryStatAdjustments[attr].reduce(
@@ -85,7 +85,7 @@ export function getAttribute (object, attr){
   }
 }
 
-export function getCost (card){
+export function getCost(card){
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.
     return card.temporaryStatAdjustments.cost.reduce((val, adj) => clamp(adj.func)(val), card.cost);
@@ -94,19 +94,19 @@ export function getCost (card){
   }
 }
 
-function movesLeft (robot){
+function movesLeft(robot){
   return robot.cantMove ? 0 : getAttribute(robot, 'speed') - robot.movesMade;
 }
 
-export function hasEffect (object, effect){
+export function hasEffect(object, effect){
   return some(object.effects || [], [ 'effect', effect ]);
 }
 
-function getEffect (object, effect){
+function getEffect(object, effect){
   return (object.effects || []).filter(eff => eff.effect === effect).map(eff => eff.props);
 }
 
-function allowedToAttack (state, attacker, targetHex){
+function allowedToAttack(state, attacker, targetHex){
   const defender = allObjectsOnBoard(state)[HexUtils.getID(targetHex)];
 
   if (
@@ -128,7 +128,7 @@ function allowedToAttack (state, attacker, targetHex){
   }
 }
 
-export function matchesType (objectOrCard, cardTypeQuery){
+export function matchesType(objectOrCard, cardTypeQuery){
   const cardType = objectOrCard.card ? objectOrCard.card.type : objectOrCard.type;
   if ([ 'anycard', 'allobjects' ].includes(cardTypeQuery)) {
     return true;
@@ -139,7 +139,7 @@ export function matchesType (objectOrCard, cardTypeQuery){
   }
 }
 
-export function checkVictoryConditions (state){
+export function checkVictoryConditions(state){
   if (!some(state.players.blue.robotsOnBoard, {card: {type: TYPE_CORE}})) {
     state.winner = 'orange';
   } else if (!some(state.players.orange.robotsOnBoard, {card: {type: TYPE_CORE}})) {
@@ -159,7 +159,7 @@ export function checkVictoryConditions (state){
 }
 
 // Given a target that may be a card, object, or hex, return the appropriate card if possible.
-function determineTargetCard (state, target){
+function determineTargetCard(state, target){
   const targetObj = allObjectsOnBoard(state)[target] || target;
   const targetCard = (targetObj && targetObj.card) || targetObj;
   return targetCard && targetCard.name ? targetCard : null;
@@ -169,15 +169,15 @@ function determineTargetCard (state, target){
 // II. Grid-related helper functions.
 //
 
-export function allHexIds (){
+export function allHexIds(){
   return GridGenerator.hexagon(3).map(HexUtils.getID);
 }
 
-export function getHex (state, object){
+export function getHex(state, object){
   return findKey(allObjectsOnBoard(state), [ 'id', object.id ]);
 }
 
-export function getAdjacentHexes (hex){
+export function getAdjacentHexes(hex){
   return [
     new Hex(hex.q, hex.r - 1, hex.s + 1),
     new Hex(hex.q, hex.r + 1, hex.s - 1),
@@ -191,7 +191,7 @@ export function getAdjacentHexes (hex){
   );
 }
 
-export function validPlacementHexes (state, playerName, type){
+export function validPlacementHexes(state, playerName, type){
   let hexes;
   if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
@@ -209,7 +209,7 @@ export function validPlacementHexes (state, playerName, type){
   return hexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
-export function validMovementHexes (state, startHex){
+export function validMovementHexes(state, startHex){
   const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)];
 
   let potentialMovementHexes = [ startHex ];
@@ -227,7 +227,7 @@ export function validMovementHexes (state, startHex){
   return potentialMovementHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
-export function validAttackHexes (state, startHex){
+export function validAttackHexes(state, startHex){
   const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)];
   const validMoveHexes = [ startHex ].concat(validMovementHexes(state, startHex));
   const potentialAttackHexes = _(validMoveHexes)
@@ -238,7 +238,7 @@ export function validAttackHexes (state, startHex){
   return potentialAttackHexes.filter(hex => allowedToAttack(state, object, hex));
 }
 
-export function validActionHexes (state, startHex){
+export function validActionHexes(state, startHex){
   const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)] || {};
   const movementHexes = validMovementHexes(state, startHex);
   const attackHexes = validAttackHexes(state, startHex);
@@ -248,7 +248,7 @@ export function validActionHexes (state, startHex){
   return [].concat(movementHexes, attackHexes, actionHexes);
 }
 
-export function intermediateMoveHexId (state, startHex, attackHex){
+export function intermediateMoveHexId(state, startHex, attackHex){
   if (getAdjacentHexes(startHex).map(HexUtils.getID).includes(HexUtils.getID(attackHex))) {
     return null;
   } else {
@@ -262,12 +262,12 @@ export function intermediateMoveHexId (state, startHex, attackHex){
 // III. Effects on game state that are performed in many different places.
 //
 
-export function triggerSound (state, filename){
+export function triggerSound(state, filename){
   state.sfxQueue = [ ...state.sfxQueue, filename ];
   return state;
 }
 
-export function logAction (state, player, action, cards, timestamp, target = null){
+export function logAction(state, player, action, cards, timestamp, target = null){
   const playerStr = player
     ? player.name === state.player ? 'You ' : `${state.usernames[player.name]} `
     : '';
@@ -288,7 +288,7 @@ export function logAction (state, player, action, cards, timestamp, target = nul
   return state;
 }
 
-export function newGame (state, player, usernames, decks, seed = 0){
+export function newGame(state, player, usernames, decks, seed = 0){
   state = Object.assign(state, cloneDeep(defaultState), {player: player, rng: seededRNG(seed)}); // Reset game state.
   state.usernames = usernames;
   state.players.blue = bluePlayerState(decks.blue);
@@ -298,7 +298,7 @@ export function newGame (state, player, usernames, decks, seed = 0){
   return state;
 }
 
-export function passTurn (state, player){
+export function passTurn(state, player){
   if (state.currentTurn === player) {
     return startTurn(endTurn(state));
   } else {
@@ -306,7 +306,7 @@ export function passTurn (state, player){
   }
 }
 
-function startTurn (state){
+function startTurn(state){
   const player = currentPlayer(state);
   player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
@@ -333,8 +333,8 @@ function startTurn (state){
   return state;
 }
 
-function endTurn (state){
-  function decrementDuration (abilityOrTrigger){
+function endTurn(state){
+  function decrementDuration(abilityOrTrigger){
     const duration = abilityOrTrigger.duration;
     if (duration === 1) {
       // Time's up: Unapply the ability and remove it.
@@ -371,7 +371,7 @@ function endTurn (state){
   return state;
 }
 
-export function drawCards (state, player, count){
+export function drawCards(state, player, count){
   const numCardsDrawn = Math.min(count, MAX_HAND_SIZE - player.hand.length);
   const numCardsDiscarded = count - numCardsDrawn;
 
@@ -397,7 +397,7 @@ export function drawCards (state, player, count){
 }
 
 // Note: This is used to either play or discard a set of cards.
-export function discardCards (state, color, cards){
+export function discardCards(state, color, cards){
   // At the moment, only the currently active player can ever play or discard a card.
   const player = state.players[color];
   player.discardPile = player.discardPile.concat(cards);
@@ -405,7 +405,7 @@ export function discardCards (state, color, cards){
   return state;
 }
 
-export function removeCardsFromHand (state, cards){
+export function removeCardsFromHand(state, cards){
   // At the moment, only the currently active player can ever play or discard a card.
   const player = currentPlayer(state);
   const cardIds = cards.map(c => c.id);
@@ -413,7 +413,7 @@ export function removeCardsFromHand (state, cards){
   return state;
 }
 
-export function dealDamageToObjectAtHex (state, amount, hex, cause = null){
+export function dealDamageToObjectAtHex(state, amount, hex, cause = null){
   const object = allObjectsOnBoard(state)[hex];
 
   if (!object.beingDestroyed) {
@@ -427,7 +427,7 @@ export function dealDamageToObjectAtHex (state, amount, hex, cause = null){
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-export function updateOrDeleteObjectAtHex (state, object, hex, cause = null){
+export function updateOrDeleteObjectAtHex(state, object, hex, cause = null){
   const ownerName = ownerOf(state, object).name;
 
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
@@ -462,7 +462,7 @@ export function updateOrDeleteObjectAtHex (state, object, hex, cause = null){
   return state;
 }
 
-export function setTargetAndExecuteQueuedAction (state, target){
+export function setTargetAndExecuteQueuedAction(state, target){
   const player = currentPlayer(state);
 
   // Select target tile for event or afterPlayed trigger.
@@ -487,7 +487,7 @@ export function setTargetAndExecuteQueuedAction (state, target){
 // IV. Card behavior: actions, triggers, passive abilities.
 //
 
-export function executeCmd (state, cmd, currentObject = null, source = null){
+export function executeCmd(state, cmd, currentObject = null, source = null){
   // console.log(cmd);
 
   const vocabulary = buildVocabulary(state, currentObject, source);
@@ -497,7 +497,7 @@ export function executeCmd (state, cmd, currentObject = null, source = null){
   return eval(wrappedCmd)(...definitions);
 }
 
-export function triggerEvent (state, triggerType, target = {}, defaultBehavior = null){
+export function triggerEvent(state, triggerType, target = {}, defaultBehavior = null){
   // Formulate the trigger condition.
   const defaultCondition = t => (target.condition ? target.condition(t) : true);
   let condition = defaultCondition;
@@ -543,7 +543,7 @@ export function triggerEvent (state, triggerType, target = {}, defaultBehavior =
   return Object.assign({}, state, {it: null, itP: null});
 }
 
-export function applyAbilities (state){
+export function applyAbilities(state){
   Object.values(allObjectsOnBoard(state)).forEach(obj => {
     obj.abilities.forEach(ability => {
       // Unapply this ability for all previously targeted objects.
@@ -565,6 +565,6 @@ export function applyAbilities (state){
   return state;
 }
 
-export function reversedCmd (cmd){
+export function reversedCmd(cmd){
   return cmd.replace(/setAbility/g, 'unsetAbility').replace(/setTrigger/g, 'unsetTrigger');
 }

@@ -13,11 +13,11 @@ export default class SortControls extends Component {
     onSetOrder: func
   };
 
-  shouldComponentUpdate (newProps) {
+  shouldComponentUpdate(newProps) {
     return newProps.criteria !== this.props.criteria || newProps.order !== this.props.order;
   }
 
-  renderSelectField (field, items, margin) {
+  renderSelectField(field, items, margin) {
     return (
       <SelectField
         style={{width: '100%', marginRight: margin}}
@@ -32,7 +32,7 @@ export default class SortControls extends Component {
     );
   }
 
-  render () {
+  render() {
     const criteria = [
       'By Cost',
       'By Name',

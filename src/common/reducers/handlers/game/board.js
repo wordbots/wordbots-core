@@ -21,17 +21,17 @@ import {
 } from '../../../util/game';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-function selectTile (state, tile){
+function selectTile(state, tile){
   currentPlayer(state).selectedTile = tile;
   currentPlayer(state).selectedCard = null;
   return state;
 }
 
-export function setHoveredTile (state, card){
+export function setHoveredTile(state, card){
   return Object.assign({}, state, {hoveredCard: card});
 }
 
-export function setSelectedTile (state, playerName, tile){
+export function setSelectedTile(state, playerName, tile){
   const player = state.players[playerName];
   const isCurrentPlayer = playerName === state.currentTurn;
 
@@ -52,7 +52,7 @@ export function setSelectedTile (state, playerName, tile){
   }
 }
 
-export function moveRobot (state, fromHex, toHex, asPartOfAttack = false){
+export function moveRobot(state, fromHex, toHex, asPartOfAttack = false){
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
 
@@ -80,7 +80,7 @@ export function moveRobot (state, fromHex, toHex, asPartOfAttack = false){
   return state;
 }
 
-export function attack (state, source, target){
+export function attack(state, source, target){
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.
 
@@ -117,7 +117,7 @@ export function attack (state, source, target){
 }
 
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
-export function attackComplete (state){
+export function attackComplete(state){
   if (state.attack && state.attack.from && state.attack.to) {
     const [ source, target ] = [ state.attack.from, state.attack.to ];
 
@@ -164,7 +164,7 @@ export function attackComplete (state){
   return state;
 }
 
-export function activateObject (state, abilityIdx, selectedHexId = null){
+export function activateObject(state, abilityIdx, selectedHexId = null){
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);
@@ -224,7 +224,7 @@ export function activateObject (state, abilityIdx, selectedHexId = null){
 
 // Low-level "move" of an object.
 // Used by moveRobot(), attack(), and in tests.
-export function transportObject (state, fromHex, toHex){
+export function transportObject(state, fromHex, toHex){
   const robot = allObjectsOnBoard(state)[fromHex];
   const owner = ownerOf(state, robot);
 

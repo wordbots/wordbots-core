@@ -159,7 +159,7 @@ export class CardTextExampleStore {
     object: []
   };
 
-  getExample = (mode) => sample(this.examples[mode])
+  getExample = (mode) => `${sample(this.examples[mode])}.`
 
   loadExamples = (sentences, numToTry) => {
     const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);

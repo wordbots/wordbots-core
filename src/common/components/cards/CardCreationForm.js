@@ -12,8 +12,9 @@ import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../con
 import { ensureInRange } from '../../util/common';
 import { getSentencesFromInput, requestParse, numTargetsPerLogicalUnit, CardTextExampleStore } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
-import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import { prepareBigramProbs } from '../../util/language';
+import Tooltip from '../Tooltip';
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import CardTextField from './CardTextField';
 import NumberField from './NumberField';
@@ -204,19 +205,19 @@ export default class CardCreationForm extends Component {
   render() {
     return (
       <div style={this.styles.container}>
-        <Paper style={this.styles.paper}>
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            {this.renderButton('Help', 'help_outline', () => {
-              this.props.onOpenDialog('help');
-            })}
-            {this.renderButton('Dictionary', 'book', () => {
-              this.props.onOpenDialog('dictionary');
-            })}
-            {this.renderButton('Randomize', 'refresh', () => {
-              this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
-            })}
-          </div>
+        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12}}>
+          {this.renderButton('Help', 'help_outline', () => {
+            this.props.onOpenDialog('help');
+          })}
+          {this.renderButton('Dictionary', 'book', () => {
+            this.props.onOpenDialog('dictionary');
+          })}
+          {this.renderButton('Randomize', 'refresh', () => {
+            this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
+          })}
+        </div>
 
+        <Paper style={this.styles.paper}>
           <div style={this.styles.section}>
             <TextField
               value={this.props.name}
@@ -250,13 +251,15 @@ export default class CardCreationForm extends Component {
               }
             </SelectField>
             <div style={this.styles.rightColContainer}>
-              <RaisedButton
-                secondary
-                style={{width: 40, minWidth: 40}}
-                labelPosition="after"
-                onTouchTap={() => { this.props.onSpriteClick(); }}>
-                <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
-              </RaisedButton>
+              <Tooltip text="Generate a new image">
+                <RaisedButton
+                  secondary
+                  style={{width: 40, minWidth: 40}}
+                  labelPosition="after"
+                  onTouchTap={() => { this.props.onSpriteClick(); }}>
+                  <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
+                </RaisedButton>
+              </Tooltip>
             </div>
           </div>
 

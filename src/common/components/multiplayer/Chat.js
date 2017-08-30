@@ -16,7 +16,7 @@ export default class Chat extends Component {
   static propTypes = {
     roomName: string,
     messages: array,
-    halfHeight: bool,
+    inGame: bool,
 
     onSendMessage: func
   };
@@ -112,16 +112,17 @@ export default class Chat extends Component {
   }
 
   render() {
-    const paddingTop = this.props.halfHeight ? 0 : '64px';
-    const height = this.props.halfHeight ? '50%' : '100%';
-    const top = this.props.halfHeight ? '50%' : 0;
+    const paddingTop = this.props.inGame ? 0 : '64px';
+    const height = this.props.inGame ? '50%' : '100%';
+    const top = this.props.inGame ? '50%' : 0;
+    const chatTitle = this.props.inGame ? 'Chat' : (this.props.roomName || 'Lobby');
 
     return (
       <div>
         <Drawer openSecondary docked containerStyle={{paddingTop: paddingTop, height: height, overflow: 'visible', top: top}}>
           <Toolbar>
             <ToolbarGroup>
-              <ToolbarTitle text={this.props.roomName || 'Lobby'} />
+              <ToolbarTitle text={chatTitle} />
             </ToolbarGroup>
             <ToolbarGroup>
               <IconButton onClick={() => this.setState({

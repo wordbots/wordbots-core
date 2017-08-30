@@ -119,7 +119,7 @@ export class Play extends Component {
         <div>
           {<GameMenu />}
           <Chat
-            halfHeight
+            inGame
             roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
             messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
             onSendMessage={this.props.onSendChatMessage} />

@@ -107,7 +107,7 @@ export class GameMenu extends Component {
   }
 
   get isExpanded() {
-    return !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
+    return true; // !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
   }
 
   resetTimer() {

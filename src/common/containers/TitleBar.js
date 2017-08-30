@@ -113,19 +113,6 @@ class TitleBar extends Component {
     }
   }
 
-  get iconLeft() {
-    return (
-      <Tooltip
-        text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
-        place="right"
-      >
-        <IconButton onClick={this.toggleSidebar}>
-          <FontIcon className="material-icons" color="white">menu</FontIcon>
-        </IconButton>
-      </Tooltip>
-    );
-  }
-
   get title() {
     if (this.props.inGame) {
       return (
@@ -155,7 +142,16 @@ class TitleBar extends Component {
             position: 'fixed',
             top: 0
           }}
-          iconElementLeft={this.leftIcon}
+          iconElementLeft={      
+            <Tooltip
+              text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
+              place="right"
+            >
+              <IconButton onClick={this.toggleSidebar}>
+                <FontIcon className="material-icons" color="white">menu</FontIcon>
+              </IconButton>
+            </Tooltip>
+          }
           iconElementRight={this.userMenu}
           showMenuIconButton={!this.props.inGame}
         />

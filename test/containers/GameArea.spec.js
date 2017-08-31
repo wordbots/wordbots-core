@@ -54,6 +54,7 @@ describe('GameArea container', () => {
           size={1000}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
+          onActivateAbility={board.props.onActivateAbility}
           onTutorialStep={board.props.onTutorialStep}
           onEndGame={board.props.onEndGame}
           />

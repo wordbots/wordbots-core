@@ -100,6 +100,7 @@ export default class HexShape extends React.Component {
       return (
         <AbilitiesTooltip
           activatedAbilities={this.props.activatedAbilities}
+          onActivateAbility={this.props.actions.onActivateAbility}
         >
           {this.renderHex()}
         </AbilitiesTooltip>

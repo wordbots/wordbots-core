@@ -112,14 +112,19 @@ export default class Chat extends Component {
   }
 
   render() {
-    const paddingTop = this.props.inGame ? 0 : '64px';
-    const height = this.props.inGame ? '50%' : '100%';
-    const top = this.props.inGame ? '50%' : 0;
     const chatTitle = this.props.inGame ? 'Chat' : (this.props.roomName || 'Lobby');
+
+    const containerStyle = {
+      paddingTop: this.props.inGame ? 0 : 64,
+      marginTop: this.props.inGame ? 256 : 0,
+      height: this.props.inGame ? 'calc(100% - 256px)' : '100%',
+      overflow: 'visible',
+      boxSizing: 'border-box'
+    };
 
     return (
       <div>
-        <Drawer openSecondary docked containerStyle={{paddingTop: paddingTop, height: height, overflow: 'visible', top: top}}>
+        <Drawer openSecondary docked containerStyle={containerStyle}>
           <Toolbar>
             <ToolbarGroup>
               <ToolbarTitle text={chatTitle} />

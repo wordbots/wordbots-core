@@ -32,7 +32,9 @@ export default class AbilitiesTooltip extends Component {
         {
           this.props.activatedAbilities.map((ability, idx) =>
             <div key={idx}>
-              <RaisedButton label={`Activate: ${ability.text}.`} />
+              <RaisedButton
+                label={`Activate: ${ability.text}.`}
+                onClick={() => { this.props.onActivateAbility(idx); }} />
             </div>
           )
         }

@@ -191,7 +191,8 @@ export class GameMenu extends Component {
         tutorialStep={this.props.tutorialStep}
         enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === locationID}
         top={0}
-        left={40}
+        left={-80}
+        place="left"
         onNextStep={() => { this.props.onTutorialStep(); }}
         onPrevStep={() => { this.props.onTutorialStep(true); }}
       >

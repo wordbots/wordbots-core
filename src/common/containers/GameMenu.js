@@ -107,7 +107,7 @@ export class GameMenu extends Component {
   }
 
   get isExpanded() {
-    return !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
+    return true; // !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
   }
 
   resetTimer() {
@@ -285,11 +285,11 @@ export class GameMenu extends Component {
 
   render() {
     return (
-      <Drawer open containerStyle={{
+      <Drawer openSecondary docked containerStyle={{
         top: 64,
         width: this.isExpanded ? 256 : 64,
         transition: 'width 200ms ease-in-out',
-        height: 'calc(100% - 64px)',
+        height: 'calc(50% - 64px)',
         overflow: 'visible'
       }}>
         {this.renderTimer()}

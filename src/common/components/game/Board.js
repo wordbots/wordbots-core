@@ -87,6 +87,7 @@ export default class Board extends Component {
   get selectedHexId() { return this.props.selectedTile; }
   get selectedHex() { return HexUtils.IDToHex(this.selectedHexId); }
   get selectedPiece() { return this.currentPlayerPieces[this.selectedHexId]; }
+  get selectedActivatedAbilities() { return (this.selectedPiece && this.selectedPiece.activatedAbilities) || []; }
 
   get placementHexes() {
     return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
@@ -181,6 +182,7 @@ export default class Board extends Component {
           layout={grid.layout}
           selectedHexId={this.selectedHexId}
           tutorialStep={this.props.tutorialStep}
+          activatedAbilities={this.selectedActivatedAbilities}
           actions={{
             onClick: this.onHexClick.bind(this),
             onHexHover: this.onHexHover.bind(this),

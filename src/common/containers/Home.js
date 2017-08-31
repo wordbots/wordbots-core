@@ -77,7 +77,7 @@ class Home extends Component {
           <Carousel dots infinite autoplay pauseOnHover
             arrows={false}
             speed={500}
-            autoplaySpeed={1000}
+            autoplaySpeed={1500}
             slidesToScroll={1}
             responsive={[
               {breakpoint: 950, settings: {slidesToShow: 3}},

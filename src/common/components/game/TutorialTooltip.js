@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType } from 'prop-types';
+import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
@@ -15,6 +15,7 @@ export default class TutorialTooltip extends Component {
     enabled: bool,
     top: number,
     left: number,
+    place: string,
 
     onNextStep: func,
     onPrevStep: func,
@@ -45,7 +46,7 @@ export default class TutorialTooltip extends Component {
       percent: {
         position: 'absolute',
         top: 8,
-        right: 8,
+        right: this.props.place === 'left' ? 22 : 8,  // For some reason, left-alignment screws up the right edge.
         fontSize: 10,
         color: '#666'
       },
@@ -129,6 +130,7 @@ export default class TutorialTooltip extends Component {
           tipSize={15}
           body={this.tooltipBody}
           refreshIntervalMs={50}
+          place={this.props.place}
         >
           {this.props.children}
         </Popover>

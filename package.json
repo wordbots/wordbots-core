@@ -101,7 +101,7 @@
     "eslint-plugin-unicorn": "^2.1.1",
     "expect": "1.20.2",
     "ignore-styles": "^5.0.1",
-    "jest": "^20.0.4",
+    "jest": "^21.0.0",
     "jsdom-no-contextify": "3.1.0",
     "mocha": "^3.4.1",
     "react-addons-test-utils": "^15.5.1",

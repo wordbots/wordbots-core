@@ -93,7 +93,7 @@
     "eslint": "^4.1.0",
     "eslint-plugin-compat": "^1.0.4",
     "eslint-plugin-import": "^2.6.0",
-    "eslint-plugin-jest": "^20.0.3",
+    "eslint-plugin-jest": "^21.0.0",
     "eslint-plugin-lodash": "^2.4.2",
     "eslint-plugin-no-loops": "^0.3.0",
     "eslint-plugin-promise": "^3.5.0",

@@ -170,9 +170,9 @@ export function validPlacementHexes(state, playerName, type) {
   let hexes;
   if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
-      hexes = ['-2,-1,3', '-2,0,2', '-3,1,2'].map(HexUtils.IDToHex);
+      hexes = ['0,-3,3', '-1,-2,3', '-2,-1,3', '-3,1,2', '-3,2,1', '-3,3,0'].map(HexUtils.IDToHex);
     } else {
-      hexes = ['3,-1,-2', '2,0,-2', '2,1,-3'].map(HexUtils.IDToHex);
+      hexes = ['3,-3,0', '3,-2,-1', '3,-1,-2', '2,1,-3', '1,2,-3', '0,3,-3'].map(HexUtils.IDToHex);
     }
   } else if (type === TYPE_STRUCTURE) {
     const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);

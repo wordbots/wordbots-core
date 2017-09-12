@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.2",
+    "babel-eslint": "^8.0.0",
     "babel-jest": "^21.0.0",
     "babel-loader": "^7.1.0",
     "babel-plugin-react-transform": "^2.0.2",

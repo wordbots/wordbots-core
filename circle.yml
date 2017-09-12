@@ -9,7 +9,7 @@ dependencies:
 test:
   override:
     - node_modules/eslint/bin/eslint.js .
-    - npm test -- --coverage
+    - npm test . -- --coverage
 
     # Test webpack compilation and ability to start a server without failure.
     - NODE_ENV=test npm start

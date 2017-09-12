@@ -123,14 +123,14 @@ const tutorialScript = [
   },
   {
     tooltip: {
-      hex: '2,0,-2',
+      hex: '2,1,-3',
       text: 'You can play robots anywhere adjacent to your kernel. This tile over here looks nice. Let\'s click on it.'
     },
-    action: actions.placeCard('2,0,-2', 0)
+    action: actions.placeCard('2,1,-3', 0)
   },
   {
     tooltip: {
-      hex: '2,0,-2',
+      hex: '2,1,-3',
       text: 'Say hello to our new friend, One Bot! It would be nice to move towards the enemy, but robots can\'t move or attack on the turn they\'re played.'
     }
   },
@@ -150,17 +150,17 @@ const tutorialScript = [
   },
   {
     tooltip: {
-      hex: '2,0,-2',
+      hex: '2,1,-3',
       text: 'Click on this li\'l guy again. It\'s time for One Bot to go on an adventure.'
     },
-    action: actions.setSelectedTile('2,0,-2', 'orange')
+    action: actions.setSelectedTile('2,1,-3', 'orange')
   },
   {
     tooltip: {
-      hex: '0,0,0',
+      hex: '0,1,-1',
       text: 'Over on the left you can see One Bot\'s stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here.'
     },
-    action: actions.moveRobot('2,0,-2', '0,0,0')
+    action: actions.moveRobot('2,1,-3', '0,1,-1')
   },
   {
     tooltip: {
@@ -169,20 +169,20 @@ const tutorialScript = [
     },
     action: actions.passTurn('orange'),
     responses: [
-      actions.placeCard('-2,0,2', 0),
+      actions.placeCard('-3,1,2', 0),
       actions.passTurn('blue')
     ]
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: 'Oh dear, it looks like our opponent has played a robot in our way. And it looks to be an intimidating one!'
     },
-    responses: [actions.setSelectedTile('-2,0,2', 'orange')]
+    responses: [actions.setSelectedTile('-3,1,2', 'orange')]
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: 'Let\'s take a closer look: 3 attack and 3 health? There\'s no way our little bot can win in a fair fight ...'
     }
   },
@@ -208,47 +208,47 @@ const tutorialScript = [
   },
   {
     tooltip: {
-      hex: '0,0,0',
+      hex: '0,1,-1',
       text: 'Now click our One Bot to apply the Upgrade event to it. Let\'s see what happens!'
     },
-    action: actions.setSelectedTile('0,0,0', 'orange')
+    action: actions.setSelectedTile('0,1,-1', 'orange')
   },
   {
     tooltip: {
-      hex: '0,0,0',
+      hex: '0,1,-1',
       text: 'Wowee! What a transformation! Our robot is now ready to fight with the big boys.'
     }
   },
   {
     tooltip: {
-      hex: '0,0,0',
+      hex: '0,1,-1',
       text: 'Click on it once more. It\'s time for it to go on a rampage.'
     },
-    action: actions.setSelectedTile('0,0,0', 'orange')
+    action: actions.setSelectedTile('0,1,-1', 'orange')
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: 'Attack the enemy robot!'
     },
-    action: actions.moveRobot('0,0,0', '-1,0,1', true)
+    action: actions.moveRobot('0,1,-1', '-2,1,1', true)
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: 'Attack the enemy robot!'
     },
-    action: actions.attack('-1,0,1', '-2,0,2')
+    action: actions.attack('-2,1,1', '-3,1,2')
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: 'Okay, what happened here? Our One Bot dealt 3 damage to the enemy robot, which was enough to destroy it. The enemy robot dealt 3 damage to us too, but fortunately our robot just barely survived. Good job, One Bot!'
     }
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: '(You can see all this information in the game log at the right side of the screen.)'
     }
   },
@@ -280,17 +280,17 @@ const tutorialScript = [
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,1,2',
       text: 'And would you look at that? Our robot can move again! Select it ...'
     },
-    action: actions.setSelectedTile('-2,0,2', 'orange')
+    action: actions.setSelectedTile('-3,1,2', 'orange')
   },
   {
     tooltip: {
-      hex: '-2,0,2',
+      hex: '-3,0,3',
       text: '... and smash the enemy kernel to win!'
     },
-    action: actions.attack('-2,0,2', '-3,0,3')
+    action: actions.attack('-3,1,2', '-3,0,3')
   },
   {
     tooltip: {

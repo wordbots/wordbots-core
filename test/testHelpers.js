@@ -1,7 +1,10 @@
 import { cloneDeep, findIndex, forOwn, has, isObject, mapValues, pickBy } from 'lodash';
 
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
-import { opponent, allObjectsOnBoard, ownerOf, getAttribute, drawCards, applyAbilities } from '../src/common/util/game';
+import {
+  opponent, allObjectsOnBoard, ownerOf, getAttribute, validPlacementHexes,
+  drawCards, applyAbilities
+} from '../src/common/util/game';
 import { instantiateCard } from '../src/common/util/cards';
 import game from '../src/common/reducers/game';
 import * as gameActions from '../src/common/actions/game';
@@ -12,6 +15,7 @@ import defaultCreatorState from '../src/common/store/defaultCreatorState';
 import defaultCollectionState from '../src/common/store/defaultCollectionState';
 import defaultSocketState from '../src/common/store/defaultSocketState';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
+import HexUtils from '../src/common/components/hexgrid/HexUtils';
 
 export function getDefaultState() {
   const state = cloneDeep(defaultGameState);
@@ -197,20 +201,18 @@ export function activate(state, hex, abilityIdx, target = null, asNewTurn = fals
 }
 
 export function setUpBoardState(players) {
-  function placeObjects(state, playerName, placementHexes) {
+  let state = getDefaultState();
+
+  ['blue', 'orange'].forEach(playerName => {
     if (players[playerName]) {
       forOwn(players[playerName], (card, hex) => {
-        const placementHex = placementHexes.find(h => !allObjectsOnBoard(state)[h]);
+        const placementHex = HexUtils.getID(validPlacementHexes(state, playerName, card.type)[0]);
         state = playObject(state, playerName, card, placementHex);
         state = transportObject(state, placementHex, hex);
       });
     }
-    return state;
-  }
+  });
 
-  let state = getDefaultState();
-  state = placeObjects(state, 'blue', ['-3,1,2', '-2,0-2', '-2,-1,3']);
-  state = placeObjects(state, 'orange', ['3,-1,-2', '2,0,-2', '2,1,-3']);
   state = applyAbilities(state);
 
   return state;

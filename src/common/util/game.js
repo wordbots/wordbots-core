@@ -346,10 +346,12 @@ export function drawCards(state, player, count) {
 
   times(numCardsDiscarded, () => {
     const card = player.deck[0];
-    player.deck.splice(0, 1);
-    state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
-      [card.name]: card
-    });
+    if (card) {
+      player.deck.splice(0, 1);
+      state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
+        [card.name]: card
+      });
+    }
   });
 
 

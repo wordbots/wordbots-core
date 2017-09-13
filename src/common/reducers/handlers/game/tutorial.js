@@ -124,7 +124,7 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '2,1,-3',
-      text: 'You can play robots anywhere adjacent to your kernel. This tile over here looks nice. Let\'s click on it.'
+      text: 'You can play robots anywhere on your kernel\'s edge of the board. This tile over here looks nice. Let\'s click on it.'
     },
     action: actions.placeCard('2,1,-3', 0)
   },

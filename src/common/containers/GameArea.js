@@ -6,12 +6,10 @@ import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isNil } from 'lodash';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
-import { currentTutorialStep, getAttribute } from '../util/game';
-import CardViewer from '../components/card/CardViewer';
+import { currentTutorialStep } from '../util/game';
 import Board from '../components/game/Board';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
@@ -43,8 +41,6 @@ export function mapStateToProps(state) {
 
     selectedTile: activePlayer.selectedTile,
     selectedCard: activePlayer.selectedCard,
-    hoveredCardIdx: state.game.hoveredCardIdx,
-    hoveredCard: state.game.hoveredCard,
     playingCardType: currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard].type : null,
 
     status: activePlayer.status,
@@ -110,9 +106,6 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId, player) => {
       dispatch(gameActions.setSelectedTile(hexId, player));
     },
-    onHoverCard: (index) => {
-      dispatch(gameActions.setHoveredCard(index));
-    },
     onHoverTile: (card) => {
       dispatch(gameActions.setHoveredTile(card));
     },
@@ -141,8 +134,6 @@ export class GameArea extends Component {
 
     selectedTile: string,
     selectedCard: number,
-    hoveredCard: object,
-    hoveredCardIdx: number,
     playingCardType: number,
 
     status: object,
@@ -181,8 +172,6 @@ export class GameArea extends Component {
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
-    onHoverCard: func,
-    onHoverTile: func,
     onEndGame: func,
     onTutorialStep: func,
     onAIResponse: func
@@ -250,35 +239,6 @@ export class GameArea extends Component {
     return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  hoveredCard() {
-    const hand = this.props[`${this.props.player}Hand`];
-
-    const cardFromIndex = (idx) => {
-      if (!isNil(idx) && hand[idx]) {
-        const card = hand[idx];
-        return {card: card, stats: card.stats};
-      }
-    };
-    const cardFromHex = (hex) => {
-      const piece = this.allPieces()[hex];
-      if (piece) {
-        return {
-          card: piece.card,
-          stats: {
-            attack: getAttribute(piece, 'attack'),
-            health: getAttribute(piece, 'health'),
-            speed: getAttribute(piece, 'speed')
-          }
-        };
-      }
-    };
-
-    return this.props.hoveredCard ||
-      cardFromIndex(this.props.hoveredCardIdx) ||
-      cardFromIndex(this.props.selectedCard) ||
-      cardFromHex(this.props.selectedTile);
-  }
-
   movePiece(hexId, asPartOfAttack = false) {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
   }
@@ -307,24 +267,6 @@ export class GameArea extends Component {
     } else {
       this.setState({selectedHexId: hexId});
       this.props.onSelectTile(hexId, this.props.player);
-    }
-  }
-
-  onHoverTile(hexId, action) {
-    if (action === 'mouseleave') {
-      this.props.onHoverTile(null);
-    } else {
-      const piece = this.allPieces()[hexId];
-      if (piece) {
-        this.props.onHoverTile({
-          card: piece.card,
-          stats: {
-            attack: getAttribute(piece, 'attack'),
-            speed: getAttribute(piece, 'speed'),
-            health: getAttribute(piece, 'health')
-          }
-        });
-      }
     }
   }
 
@@ -367,7 +309,6 @@ export class GameArea extends Component {
             background: `url(${this.loadBackground()})`
         }}>
           <PlayerArea opponent gameProps={this.props} />
-          <CardViewer hoveredCard={this.hoveredCard()} />
           <div
             style={{
               position: 'absolute',
@@ -394,7 +335,6 @@ export class GameArea extends Component {
               tutorialStep={this.props.tutorialStep}
               attack={this.props.attack}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
-              onHoverTile={(hexId, action) => this.onHoverTile(hexId, action)}
               onTutorialStep={this.props.onTutorialStep}
               onEndGame={() => {
                 this.props.onEndGame();

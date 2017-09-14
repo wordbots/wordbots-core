@@ -22,7 +22,8 @@ export default class HexGrid extends Component {
     path: object,
     hexColors: object,
     pieces: object,
-    selectedHexId: string
+    selectedHexId: string,
+    hoveredHexId: string
   };
 
   static defaultProps = {
@@ -48,10 +49,12 @@ export default class HexGrid extends Component {
       <HexShape
         key={index}
         hex={hex}
+        card={(this.props.pieces[HexUtils.getID(hex)] || {}).card}
         layout={this.props.layout}
         actions={this.props.actions}
         fill={this.props.hexColors[HexUtils.getID(hex)]}
-        tutorialStep={this.props.tutorialStep} />
+        tutorialStep={this.props.tutorialStep}
+        hovered={this.props.hoveredHexId === HexUtils.getID(hex)} />
     ));
   }
 

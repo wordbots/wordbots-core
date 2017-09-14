@@ -3,7 +3,6 @@ import React from 'react';
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card';
-import CardViewer from '../../src/common/components/card/CardViewer';
 import Board from '../../src/common/components/game/Board';
 import EventAnimation from '../../src/common/components/game/EventAnimation';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
@@ -22,14 +21,13 @@ describe('GameArea container', () => {
     const dom = renderElement(game);
 
     const paper = dom.props.children[1];
-    const mainDiv = paper.props.children[2];
+    const mainDiv = paper.props.children[1];
     const board = mainDiv.props.children[1];
-    const victoryScreen = paper.props.children[5];
+    const victoryScreen = paper.props.children[4];
 
     /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
       <PlayerArea opponent gameProps={game.props} />,
-      <CardViewer hoveredCard={undefined} />,
       <div
         ref={mainDiv.ref}
         style={{
@@ -88,26 +86,6 @@ describe('GameArea container', () => {
         .actions.onClick(HexUtils.IDToHex(id));
       return dispatchedActions.pop();
     }
-    function hoverHex(id, type) {
-      getComponent('GameArea', HexGrid, state, dispatch).props
-        .actions.onHexHover(HexUtils.IDToHex(id), {type: type});
-      return dispatchedActions.pop();
-    }
-
-    // Hover.
-    expect(
-      hoverHex('3,0,-3', 'mouseenter')
-    ).toEqual(
-      actions.setHoveredTile({
-        card: createGameArea(state).props.orangePieces['3,0,-3'].card,
-        stats: {health: 20}
-      })
-    );
-    expect(
-      hoverHex('3,0,-3', 'mouseleave')
-    ).toEqual(
-      actions.setHoveredTile(null)
-    );
 
     // Set selected card.
     expect(

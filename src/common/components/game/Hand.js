@@ -24,13 +24,16 @@ export default class Hand extends Component {
     tutorialStep: object,
 
     onSelectCard: func,
-    onHoverCard: func,
     onTutorialStep: func
   };
 
   constructor() {
     super();
+
     this.availableWidth = 500;
+    this.state = {
+      hoveredCardIdx: null
+    };
   }
 
   componentDidMount() {
@@ -60,7 +63,7 @@ export default class Hand extends Component {
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
     return this.props.cards.map((card, idx) => {
-      const zIndex = isNull(this.props.hoveredCard) ? 0 : (1000 - Math.abs(this.props.hoveredCard - idx) * 10);
+      const zIndex = isNull(this.state.hoveredCardIdx) ? 0 : (1000 - Math.abs(this.state.hoveredCardIdx - idx) * 10);
 
       // TODO this isn't quite right ...
       const rotationDegs = (idx - (numCards - 1)/2) * 5;
@@ -105,7 +108,7 @@ export default class Hand extends Component {
                 zIndex={zIndex}
 
                 onCardClick={e => { this.props.onSelectCard(idx); }}
-                onCardHover={overOrOut => { this.props.onHoverCard(overOrOut ? idx : null); }} />
+                onCardHover={overOrOut => { this.setState({ hoveredCardIdx: overOrOut ? idx : null}); }} />
             </div>
           </TutorialTooltip>
         </CSSTransition>

@@ -43,9 +43,9 @@ class PlayerArea extends Component {
         boxSizing: 'border-box'
       },
       icon: {
-        verticalAlign: 'middle', 
+        verticalAlign: 'middle',
         color: 'white'
-      }, 
+      },
       discard: {
         width: 'calc(100% - 10px)',
         marginTop: opponent ? 10 : 0,
@@ -74,16 +74,14 @@ class PlayerArea extends Component {
           opponent={opponent}
           name={color}
           selectedCard={gameProps.selectedCard}
-          hoveredCard={gameProps.hoveredCardIdx}
           targetableCards={gameProps.target.possibleCards}
           isActivePlayer={gameProps.player === color}
           cards={gameProps[`${color}Hand`]}
           status={gameProps.status}
           tutorialStep={gameProps.tutorialStep}
           onSelectCard={idx => gameProps.onSelectCard(idx, color)}
-          onHoverCard={gameProps.onHoverCard}
           onTutorialStep={gameProps.onTutorialStep} />
-        
+
         <div style={{
           display: 'flex',
           flexDirection: opponent ? 'column-reverse' : 'column'
@@ -92,7 +90,7 @@ class PlayerArea extends Component {
             secondary
             label="Discard Pile"
             onTouchTap={() => this.setState({ discardOpen: true })}
-            style={this.styles.discard} 
+            style={this.styles.discard}
             disabled={gameProps[`${color}DiscardPile`].length === 0}/>
           <Deck deck={gameProps[`${color}Deck`]} />
         </div>
@@ -104,7 +102,7 @@ class PlayerArea extends Component {
           contentStyle={{ width: 700 }}
           bodyStyle={{ overflow: 'auto' }}
           onRequestClose={() => this.setState({ discardOpen: false })}>
-          <DiscardPile 
+          <DiscardPile
             cards={gameProps[`${color}DiscardPile`]} />
         </Dialog>
       </div>

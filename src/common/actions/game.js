@@ -12,7 +12,6 @@ export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
-export const SET_HOVERED_CARD = 'SET_HOVERED_CARD';
 export const SET_HOVERED_TILE = 'SET_HOVERED_TILE';
 
 export function startPractice(deck) {
@@ -105,13 +104,6 @@ export function setSelectedTile(selectedTile, player) {
   return {
     type: SET_SELECTED_TILE,
     payload: { selectedTile, player }
-  };
-}
-
-export function setHoveredCard(hoveredCard) {
-  return {
-    type: SET_HOVERED_CARD,
-    payload: { hoveredCard }
   };
 }
 

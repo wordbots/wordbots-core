@@ -38,7 +38,8 @@ export default class Board extends Component {
 
     this.state = {
       grid,
-      config: boardConfig
+      config: boardConfig,
+      hoveredHexId: null
     };
   }
 
@@ -76,6 +77,7 @@ export default class Board extends Component {
       id: piece.id,
       type: piece.card.type,
       image: piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name},
+      card: piece.card,
       stats: {
         health: getAttribute(piece, 'health'),
         attack: getAttribute(piece, 'attack')
@@ -164,7 +166,9 @@ export default class Board extends Component {
   }
 
   onHexHover(hex, event) {
-    this.props.onHoverTile(HexUtils.getID(hex), event.type);
+    this.setState({
+      hoveredHexId: event.type === 'mouseleave' ? null : HexUtils.getID(hex)
+    });
   }
 
   render() {
@@ -180,6 +184,7 @@ export default class Board extends Component {
           hexagons={grid.hexagons}
           layout={grid.layout}
           selectedHexId={this.selectedHexId}
+          hoveredHexId={this.state.hoveredHexId}
           tutorialStep={this.props.tutorialStep}
           actions={{
             onClick: this.onHexClick.bind(this),

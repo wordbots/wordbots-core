@@ -17,7 +17,7 @@ const middlewareBuilder = () => {
 
   if (process.browser) {
     const socketMiddleware = createSocketMiddleware({
-      excludedActions: [ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED]
+      excludedActions: [ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED]
     });
 
     if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
@@ -31,7 +31,7 @@ const middlewareBuilder = () => {
       window.Perf = Perf;
 
       const logger = createLogger({
-        predicate: (getState, action) => ![ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE].includes(action.type)
+        predicate: (getState, action) => action.type !== ga.SET_HOVERED_TILE
       });
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);

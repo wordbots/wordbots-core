@@ -19,7 +19,9 @@ export const STARTING_PLAYER_HEALTH = 20;
 export const MAX_HAND_SIZE = 7;
 
 export const BLUE_CORE_HEX = '-3,0,3';
+export const BLUE_PLACEMENT_HEXES = ['0,-3,3', '-1,-2,3', '-2,-1,3', '-3,1,2', '-3,2,1', '-3,3,0'];
 export const ORANGE_CORE_HEX = '3,0,-3';
+export const ORANGE_PLACEMENT_HEXES = ['3,-3,0', '3,-2,-1', '3,-1,-2', '2,1,-3', '1,2,-3', '0,3,-3'];
 
 export const TYPE_ROBOT = 0;
 export const TYPE_EVENT = 1;

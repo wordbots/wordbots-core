@@ -118,9 +118,9 @@ describe('GameArea container', () => {
 
     // Place object.
     expect(
-      clickHex('2,0,-2')
+      clickHex('3,-1,-2')
     ).toEqual(
-      actions.placeCard('2,0,-2', 0)
+      actions.placeCard('3,-1,-2', 0)
     );
 
     dispatch(actions.passTurn('orange'));
@@ -128,16 +128,16 @@ describe('GameArea container', () => {
 
     // Set selected tile.
     expect(
-      clickHex('2,0,-2')
+      clickHex('3,-1,-2')
     ).toEqual(
-      actions.setSelectedTile('2,0,-2', 'orange')
+      actions.setSelectedTile('3,-1,-2', 'orange')
     );
 
     // Move.
     expect(
-      clickHex('1,0,-1')
+      clickHex('2,0,-2')
     ).toEqual(
-      actions.moveRobot('2,0,-2', '1,0,-1')
+      actions.moveRobot('3,-1,-2', '2,0,-2')
     );
 
     // TODO attack.

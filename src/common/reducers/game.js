@@ -8,9 +8,7 @@ import defaultState from '../store/defaultGameState';
 
 import g from './handlers/game';
 
-const PURELY_VISUAL_ACTIONS = [
-  actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE, actions.SET_HOVERED_TILE
-];
+const PURELY_VISUAL_ACTIONS = [actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE];
 
 export default function game(state = cloneDeep(defaultState), action, allowed = false) {
   if (isArray(action)) {
@@ -75,9 +73,6 @@ export function handleAction(oldState, action) {
 
     case actions.SET_SELECTED_TILE:
       return g.setSelectedTile(state, action.payload.player, action.payload.selectedTile);
-
-    case actions.SET_HOVERED_TILE:
-      return g.setHoveredTile(state, action.payload.hoveredCard);
 
     case socketActions.CONNECTING:
       return Object.assign(state, {started: false});

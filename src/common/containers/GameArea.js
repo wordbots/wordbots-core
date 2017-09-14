@@ -106,9 +106,6 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId, player) => {
       dispatch(gameActions.setSelectedTile(hexId, player));
     },
-    onHoverTile: (card) => {
-      dispatch(gameActions.setHoveredTile(card));
-    },
     onEndGame: () => {
       dispatch([
         gameActions.endGame(),

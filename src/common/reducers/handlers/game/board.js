@@ -15,10 +15,6 @@ function selectTile(state, tile) {
   return state;
 }
 
-export function setHoveredTile(state, card) {
-  return Object.assign({}, state, {hoveredCard: card});
-}
-
 export function setSelectedTile(state, playerName, tile) {
   const player = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);

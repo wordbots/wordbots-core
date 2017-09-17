@@ -4,7 +4,10 @@ import {
 } from 'lodash';
 import seededRNG from 'seed-random';
 
-import { MAX_HAND_SIZE, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType } from '../constants';
+import {
+  MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
+  TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
+} from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
 import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/hexgrid/GridGenerator';
@@ -170,9 +173,9 @@ export function validPlacementHexes(state, playerName, type) {
   let hexes;
   if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
-      hexes = ['-2,-1,3', '-2,0,2', '-3,1,2'].map(HexUtils.IDToHex);
+      hexes = BLUE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
     } else {
-      hexes = ['3,-1,-2', '2,0,-2', '2,1,-3'].map(HexUtils.IDToHex);
+      hexes = ORANGE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
     }
   } else if (type === TYPE_STRUCTURE) {
     const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
@@ -346,10 +349,12 @@ export function drawCards(state, player, count) {
 
   times(numCardsDiscarded, () => {
     const card = player.deck[0];
-    player.deck.splice(0, 1);
-    state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
-      [card.name]: card
-    });
+    if (card) {
+      player.deck.splice(0, 1);
+      state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
+        [card.name]: card
+      });
+    }
   });
 
 

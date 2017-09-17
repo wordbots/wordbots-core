@@ -1,7 +1,7 @@
 import { getDefaultState, combineState, setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers';
 import { getComponent } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
-import { TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
+import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';
 import { attackBotCard, shockCard } from '../../src/common/store/cards';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';
@@ -53,14 +53,17 @@ describe('Board component', () => {
       expect(hexGrid.props.hexColors).toEqual({
         '-3,0,3': 'blue',  // Blue core
         '3,0,-3': 'orange',  // Orange core
+        '3,-3,0': 'green',  // Valid orange placement hex
+        '3,-2,-1': 'green',  // Valid orange placement hex
         '3,-1,-2': 'green',  // Valid orange placement hex
-        '2,0,-2': 'green',  // Valid orange placement hex
-        '2,1,-3': 'green'  // Valid orange placement hex
+        '2,1,-3': 'green',  // Valid orange placement hex
+        '1,2,-3': 'green',  // Valid orange placement hex
+        '0,3,-3': 'green'  // Valid orange placement hex
       });
     });
 
     it('propagate PLACE_CARD actions', () => {
-      ['3,-1,-2', '2,0,-2', '2,1,-3'].forEach(hex => {
+      ORANGE_PLACEMENT_HEXES.forEach(hex => {
         hexGrid.props.actions.onClick(HexUtils.IDToHex(hex));
         expect(dispatchedAction.type).toEqual(actions.PLACE_CARD);
       });
@@ -136,7 +139,7 @@ describe('Board component', () => {
 
   it('Valid targetable hexes are colored green', () => {
     let state = getDefaultState();
-    state = playObject(state, 'orange', attackBotCard, '2,0,-2');
+    state = playObject(state, 'orange', attackBotCard, '3,-1,-2');
     state = playEvent(state, 'blue', shockCard);
 
     const hexGrid = getComponent('GameArea', HexGrid, combineState(state));
@@ -144,7 +147,7 @@ describe('Board component', () => {
     expect(hexGrid.props.hexColors).toEqual({
       '-3,0,3': 'blue',  // Blue core
       '3,0,-3': 'orange',  // Orange core
-      '2,0,-2': 'green'  // Valid target
+      '3,-1,-2': 'green'  // Valid target
     });
   });
 });

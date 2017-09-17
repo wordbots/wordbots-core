@@ -34,6 +34,13 @@ export default class AbilitiesTooltip extends Component {
             <div key={idx}>
               <RaisedButton
                 label={`Activate: ${ability.text}.`}
+                labelStyle={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  width: 300,
+                  overflow: 'hidden',
+                  display: 'block'
+                }}
                 onClick={() => { this.props.onActivateAbility(idx); }} />
             </div>
           )

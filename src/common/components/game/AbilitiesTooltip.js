@@ -31,9 +31,10 @@ export default class AbilitiesTooltip extends Component {
       <div style={this.styles.tooltip}>
         {
           this.props.activatedAbilities.map((ability, idx) =>
-            <div key={idx}>
+            <div key={idx} style={{marginBottom: idx === this.props.activatedAbilities.length - 1 ? 0 : 10}}>
               <RaisedButton
-                label={`Activate: ${ability.text}.`}
+                backgroundColor={'rgb(230, 230, 230)'}
+                label={<span><b>Activate</b>: {ability.text}.</span>}
                 labelStyle={{
                   whiteSpace: 'nowrap',
                   textOverflow: 'ellipsis',

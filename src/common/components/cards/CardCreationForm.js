@@ -270,7 +270,8 @@ export default class CardCreationForm extends Component {
             text={this.props.text}
             sentences={this.nonEmptySentences}
             error={this.textError}
-            onOpenDialog={this.props.onOpenDialog} />
+            onOpenDialog={this.props.onOpenDialog}
+            onUpdateText={text => { this.onUpdateText(text, this.props.type); }} />
 
           <div style={this.styles.section}>
             {this.renderAttributeField('attack', this.robot)}

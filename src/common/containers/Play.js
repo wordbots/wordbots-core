@@ -45,12 +45,6 @@ export function mapDispatchToProps(dispatch) {
     },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
-    },
-    onHoverCard: (index) => {
-      dispatch(gameActions.setHoveredCard(index));
-    },
-    onHoverTile: (card) => {
-      dispatch(gameActions.setHoveredTile(card));
     }
   };
 }
@@ -72,10 +66,7 @@ export class Play extends Component {
     onSpectateGame: func,
     onStartTutorial: func,
     onStartPractice: func,
-
-    onSendChatMessage: func,
-    onHoverCard: func,
-    onHoverTile: func
+    onSendChatMessage: func
   };
 
   componentDidMount() {

@@ -3,7 +3,7 @@ import { getComponent } from '../reactHelpers';
 import * as actions from '../../src/common/actions/game';
 import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';
-import { attackBotCard, shockCard } from '../../src/common/store/cards';
+import { blueCoreCard, orangeCoreCard, attackBotCard, shockCard } from '../../src/common/store/cards';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 
@@ -20,6 +20,7 @@ describe('Board component', () => {
     expect(gridProps.pieces).toEqual({
       '-3,0,3': {
         'id': 'blueCore',
+        'card': blueCoreCard,
         'image': {
           'img': 'core_blue'
         },
@@ -31,6 +32,7 @@ describe('Board component', () => {
       },
       '3,0,-3': {
         'id': 'orangeCore',
+        'card': orangeCoreCard,
         'image': {
           'img': 'core_orange'
         },

@@ -6,8 +6,7 @@ import { ALWAYS_ENABLE_DEV_TOOLS } from '../constants';
 import promiseMiddleware from '../middleware/promiseMiddleware';
 import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
-import * as ga from '../actions/game';
-import * as sa from '../actions/socket';
+import * as socketActions from '../actions/socket';
 
 const middlewareBuilder = () => {
   const universalMiddleware = [thunk, promiseMiddleware, multi];
@@ -17,7 +16,7 @@ const middlewareBuilder = () => {
 
   if (process.browser) {
     const socketMiddleware = createSocketMiddleware({
-      excludedActions: [ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE, sa.CONNECTING, sa.CONNECTED, sa.DISCONNECTED]
+      excludedActions: [socketActions.CONNECTING, socketActions.CONNECTED, socketActions.DISCONNECTED]
     });
 
     if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !ALWAYS_ENABLE_DEV_TOOLS) {
@@ -30,11 +29,7 @@ const middlewareBuilder = () => {
 
       window.Perf = Perf;
 
-      const logger = createLogger({
-        predicate: (getState, action) => ![ga.SET_HOVERED_CARD, ga.SET_HOVERED_TILE].includes(action.type)
-      });
-
-      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, logger);
+      middleware = applyMiddleware(...universalMiddleware, socketMiddleware, createLogger());
       allComposeElements = [
         middleware,
         DevTools.instrument()

@@ -334,7 +334,6 @@ function endTurn(state) {
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
   state.currentTurn = opponentName(state);
-  state.hoveredCardIdx = null;
 
   return state;
 }

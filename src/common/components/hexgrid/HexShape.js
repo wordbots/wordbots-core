@@ -2,6 +2,7 @@ import React from 'react';
 import { array, bool, object, string } from 'prop-types';
 
 import { DISPLAY_HEX_IDS } from '../../constants';
+import CardTooltip from '../card/CardTooltip';
 import AbilitiesTooltip from '../game/AbilitiesTooltip';
 import TutorialTooltip from '../game/TutorialTooltip';
 
@@ -13,10 +14,12 @@ export default class HexShape extends React.Component {
     hex: object.isRequired,
     layout: object.isRequired,
     actions: object.isRequired,
+    card: object,
     tutorialStep: object,
     activatedAbilities: array,
     fill: string,
-    selected: bool
+    selected: bool,
+    hovered: bool
   };
 
   get points() {
@@ -106,7 +109,11 @@ export default class HexShape extends React.Component {
         </AbilitiesTooltip>
       );
     } else {
-      return this.renderHex();
+     return (
+        <CardTooltip popover card={this.props.card} isOpen={this.props.hovered}>
+          {this.renderHex()}
+        </CardTooltip>
+      );
     }
   }
 }

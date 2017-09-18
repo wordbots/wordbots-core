@@ -1,6 +1,6 @@
 import {
-  capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, omit, pick, reduce, sample, shuffle, times, uniqBy
+  capitalize, compact, countBy, debounce, flatMap, fromPairs, isArray,
+  mapValues, omit, pick, pullAt, random, reduce, shuffle, times, uniqBy
 } from 'lodash';
 
 import {
@@ -159,7 +159,12 @@ export class CardTextExampleStore {
     object: []
   };
 
-  getExample = (mode) => `${sample(this.examples[mode])}.`
+  getExample = (mode) => {
+    const examples = this.examples[mode];
+    const idx = random(0, examples.length - 1);
+    const example = pullAt(examples, idx)[0];
+    return `${example}.`;
+  }
 
   loadExamples = (sentences, numToTry) => {
     const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);

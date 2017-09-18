@@ -97,6 +97,9 @@ export function mapDispatchToProps(dispatch) {
     onAttackComplete: () => {
       dispatch(gameActions.attackComplete());
     },
+    onActivateObject: (abilityIdx) => {
+      dispatch(gameActions.activateObject(abilityIdx));
+    },
     onPlaceRobot: (tileHexId, cardIdx) => {
       dispatch(gameActions.placeCard(tileHexId, cardIdx));
     },
@@ -166,6 +169,7 @@ export class GameArea extends Component {
     onMoveRobotAndAttack: func,
     onAttackRetract: func,
     onAttackComplete: func,
+    onActivateObject: func,
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
@@ -332,6 +336,7 @@ export class GameArea extends Component {
               tutorialStep={this.props.tutorialStep}
               attack={this.props.attack}
               onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
+              onActivateAbility={this.props.onActivateObject}
               onTutorialStep={this.props.onTutorialStep}
               onEndGame={() => {
                 this.props.onEndGame();

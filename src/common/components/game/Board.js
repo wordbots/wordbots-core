@@ -26,6 +26,7 @@ export default class Board extends Component {
 
     onSelectTile: func,
     onHoverTile: func,
+    onActivateAbility: func,
     onTutorialStep: func,
     onEndGame: func
   };
@@ -89,6 +90,14 @@ export default class Board extends Component {
   get selectedHexId() { return this.props.selectedTile; }
   get selectedHex() { return HexUtils.IDToHex(this.selectedHexId); }
   get selectedPiece() { return this.currentPlayerPieces[this.selectedHexId]; }
+
+  get selectedActivatedAbilities() {
+    if (this.isMyTurn && this.selectedPiece && this.selectedPiece.activatedAbilities && !this.selectedPiece.cantActivate) {
+      return this.selectedPiece.activatedAbilities;
+    } else {
+      return [];
+    }
+  }
 
   get placementHexes() {
     return validPlacementHexes(this.dummyGameState, this.props.currentTurn, this.props.playingCardType);
@@ -186,9 +195,11 @@ export default class Board extends Component {
           selectedHexId={this.selectedHexId}
           hoveredHexId={this.state.hoveredHexId}
           tutorialStep={this.props.tutorialStep}
+          activatedAbilities={this.selectedActivatedAbilities}
           actions={{
             onClick: this.onHexClick.bind(this),
             onHexHover: this.onHexHover.bind(this),
+            onActivateAbility: this.props.onActivateAbility,
             onTutorialStep: this.props.onTutorialStep,
             onEndGame: this.props.onEndGame
           }} />

@@ -1,7 +1,8 @@
 import React from 'react';
-import { bool, object, string } from 'prop-types';
+import { array, bool, object, string } from 'prop-types';
 
 import { DISPLAY_HEX_IDS } from '../../constants';
+import AbilitiesTooltip from '../game/AbilitiesTooltip';
 import TutorialTooltip from '../game/TutorialTooltip';
 
 import FillPattern from './FillPattern';
@@ -13,6 +14,7 @@ export default class HexShape extends React.Component {
     layout: object.isRequired,
     actions: object.isRequired,
     tutorialStep: object,
+    activatedAbilities: array,
     fill: string,
     selected: bool
   };
@@ -93,6 +95,15 @@ export default class HexShape extends React.Component {
         >
           {this.renderHex()}
         </TutorialTooltip>
+      );
+    } else if ((this.props.activatedAbilities || []).length > 0) {
+      return (
+        <AbilitiesTooltip
+          activatedAbilities={this.props.activatedAbilities}
+          onActivateAbility={this.props.actions.onActivateAbility}
+        >
+          {this.renderHex()}
+        </AbilitiesTooltip>
       );
     } else {
       return this.renderHex();

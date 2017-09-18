@@ -9,26 +9,21 @@ import FontIcon from 'material-ui/FontIcon';
 
 import { DISABLE_TURN_TIMER } from '../constants';
 import { isFlagSet, toggleFlag } from '../util/browser';
-import { allObjectsOnBoard, opponent, ownerOf, currentTutorialStep } from '../util/game';
+import { opponent, currentTutorialStep } from '../util/game';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import TutorialTooltip from '../components/game/TutorialTooltip';
 import Tooltip from '../components/Tooltip';
 
 export function mapStateToProps(state) {
-  const activePlayer = state.game.players[state.game.player];
-  const selectedPiece = allObjectsOnBoard(state.game)[activePlayer.selectedTile];
-
   return {
     player: state.game.player,
     currentTurn: state.game.currentTurn,
     gameOver: state.game.winner !== null,
     isTutorial: state.game.tutorial,
     isMyTurn: state.game.currentTurn === state.game.player,
-    isMyPiece: selectedPiece && ownerOf(state.game, selectedPiece).name === state.game.player,
     isSpectator: !['blue', 'orange'].includes(state.game.player),
     isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to,
-    selectedPiece: selectedPiece,
     tutorialStep: currentTutorialStep(state.game)
   };
 }
@@ -60,10 +55,8 @@ export class GameMenu extends Component {
     gameOver: bool,
     isTutorial: bool,
     isMyTurn: bool,
-    isMyPiece: bool,
     isSpectator: bool,
     isAttackHappening: bool,
-    selectedPiece: object,
     tutorialStep: object,
 
     history: object,
@@ -163,17 +156,6 @@ export class GameMenu extends Component {
     }
   }
 
-  renderTimer() {
-    if (!this.props.isTutorial) {
-      return (
-        <MenuItem
-          disabled
-          primaryText={this.state.timer}
-          style={this.state.timerStyle} />
-      );
-    }
-  }
-
   get styles() {
     return {
       icon: {
@@ -183,6 +165,15 @@ export class GameMenu extends Component {
         zIndex: 99999
       }
     };
+  }
+
+  renderTimer() {
+    return (
+      <MenuItem
+        disabled
+        primaryText={this.props.isTutorial ? '' : this.state.timer}
+        style={this.state.timerStyle} />
+    );
   }
 
   renderButtons() {
@@ -202,12 +193,12 @@ export class GameMenu extends Component {
 
     return (
       <div>
-      <Tooltip disable={this.isExpanded} text="End Turn" place="right" style={this.styles.tooltip}>
-        <MenuItem
-          primaryText={this.isExpanded ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
-          disabled={!this.props.isMyTurn || this.props.isAttackHappening || this.props.gameOver}
-          leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
-          onClick={() => { this.props.onPassTurn(this.props.player); }} />
+        <Tooltip disable={this.isExpanded} text="End Turn" place="right" style={this.styles.tooltip}>
+          <MenuItem
+            primaryText={this.isExpanded ? buttonTextWithTooltip('End Turn', 'endTurnButton') : ''}
+            disabled={!this.props.isMyTurn || this.props.isAttackHappening || this.props.gameOver}
+            leftIcon={<FontIcon className="material-icons" style={this.styles.icon}>timer</FontIcon>}
+            onClick={() => { this.props.onPassTurn(this.props.player); }} />
         </Tooltip>
         <Tooltip disable={this.isExpanded} text="Forfeit" place="right" style={this.styles.tooltip}>
           <MenuItem
@@ -224,44 +215,6 @@ export class GameMenu extends Component {
         </Tooltip>
       </div>
     );
-  }
-
-  renderActivatedAbilities() {
-    const abilities = (this.props.selectedPiece && this.props.selectedPiece.activatedAbilities) || [];
-
-    if (abilities.length > 0) {
-      const canActivateAbility = this.props.isMyTurn && this.props.isMyPiece && !this.props.selectedPiece.cantActivate;
-
-      return (
-        <div>
-          <MenuItem
-            disabled
-            primaryText="Activated Abilities"
-            style={{
-              textAlign: 'center',
-              cursor: 'auto',
-              color: '#333',
-              fontWeight: 'bold'
-            }} />
-          {abilities.map((ability, idx) =>
-            <MenuItem
-              style={{
-                whiteSpace: 'normal',
-                lineHeight: '24px',
-                padding: '12px',
-                minHeight: 0,
-                textAlign: 'center'
-              }}
-              key={idx}
-              disabled={!canActivateAbility}
-              primaryText={`${ability.text}.`}
-              onClick={() => { this.props.onActivate(idx); }} />
-          )}
-        </div>
-      );
-    } else {
-      return null;
-    }
   }
 
   renderSoundWidget() {
@@ -290,26 +243,13 @@ export class GameMenu extends Component {
         top: 64,
         width: this.isExpanded ? 256 : 64,
         transition: 'width 200ms ease-in-out',
-        height: 'calc(50% - 64px)',
-        overflow: 'visible'
+        height: 194
       }}>
         {this.renderTimer()}
         <Divider />
-
         {this.renderButtons()}
         <Divider />
-
-        {this.renderActivatedAbilities()}
-        <Divider />
-
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%'
-        }}>
-          <Divider />
-          {this.renderSoundWidget()}
-        </div>
+        {this.renderSoundWidget()}
       </Drawer>
     );
   }

@@ -19,6 +19,7 @@ export default class HexGrid extends Component {
     layout: object.isRequired,
     hexagons: array.isRequired,
     tutorialStep: object,
+    activatedAbilities: array,
     path: object,
     hexColors: object,
     pieces: object,
@@ -88,7 +89,8 @@ export default class HexGrid extends Component {
           selected
           hex={this.selectedHex}
           layout={this.props.layout}
-          actions={this.props.actions} />
+          actions={this.props.actions}
+          activatedAbilities={this.props.activatedAbilities} />
       );
     }
   }

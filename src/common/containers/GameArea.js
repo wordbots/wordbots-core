@@ -10,7 +10,13 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
 import { currentTutorialStep } from '../util/game';
+import screenfull from '../util/screenfull';
 import Board from '../components/game/Board';
+import Timer from '../components/game/Timer';
+import EndTurnButton from '../components/game/EndTurnButton';
+import ForfeitButton from '../components/game/ForfeitButton';
+import SoundToggle from '../components/game/SoundToggle';
+import FullscreenToggle from '../components/game/FullscreenToggle';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import Sfx from '../components/game/Sfx';
@@ -67,7 +73,12 @@ export function mapStateToProps(state) {
     tutorialStep: currentTutorialStep(state.game),
     isPractice: state.game.practice,
 
-    sidebarOpen: state.global.sidebarOpen || state.game.tutorial
+    sidebarOpen: state.global.sidebarOpen || state.game.tutorial,
+
+    gameOver: state.game.winner !== null,
+    isTutorial: state.game.tutorial,
+    isMyTurn: state.game.currentTurn === state.game.player,
+    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to
   };
 }
 
@@ -109,9 +120,18 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId, player) => {
       dispatch(gameActions.setSelectedTile(hexId, player));
     },
+    onPassTurn: (player) => {
+      dispatch(gameActions.passTurn(player));
+    },
     onEndGame: () => {
       dispatch([
         gameActions.endGame(),
+        socketActions.leave()
+      ]);
+    },
+    onForfeit: (winner) => {
+      dispatch([
+        socketActions.forfeit(winner),
         socketActions.leave()
       ]);
     },
@@ -164,6 +184,12 @@ export class GameArea extends Component {
 
     history: object,
 
+    gameOver: bool,
+    isTutorial: bool,
+    isMyTurn: bool,
+    isSpectator: bool,
+    isAttackHappening: bool,
+
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
@@ -173,7 +199,9 @@ export class GameArea extends Component {
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
+    onPassTurn: func,
     onEndGame: func,
+    onForfeit: func,
     onTutorialStep: func,
     onAIResponse: func
   };
@@ -297,7 +325,11 @@ export class GameArea extends Component {
 
   render() {
     return (
-      <div>
+      <div 
+        className="gameArea" 
+        style={
+          screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
+        }>
         <div>
           {this.renderNotification()}
           <Sfx queue={this.props.sfxQueue} />
@@ -306,9 +338,59 @@ export class GameArea extends Component {
         <Paper
           style={{
             position: 'relative',
-            height: this.state.areaHeight,
+            height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
             background: `url(${this.loadBackground()})`
         }}>
+          <div style={{
+            display: 'flex',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 20
+            }}>
+              <Timer 
+                player={this.props.player}
+                currentTurn={this.props.currentTurn}
+                gameOver={this.props.gameOver}
+                isTutorial={this.props.isTutorial}
+                isMyTurn={this.props.isMyTurn}
+                isAttackHappening={this.props.isAttackHappening}
+                onPassTurn={this.props.onPassTurn} />
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-around'
+              }}>
+                <SoundToggle />
+                <FullscreenToggle />
+              </div>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginRight: 20
+            }}>
+              <EndTurnButton 
+                player={this.props.player}
+                currentTurn={this.props.currentTurn}
+                gameOver={this.props.gameOver}
+                isMyTurn={this.props.isMyTurn}
+                isAttackHappening={this.props.isAttackHappening}
+                onPassTurn={this.props.onPassTurn} />
+              <ForfeitButton  
+                player={this.props.player}
+                history={this.props.history}
+                gameOver={this.props.gameOver}
+                isSpectator={this.props.isSpectator}
+                isTutorial={this.props.isTutorial}
+                onForfeit={this.props.onForfeit} />
+            </div>
+          </div>
           <PlayerArea opponent gameProps={this.props} />
           <div
             style={{

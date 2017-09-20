@@ -115,9 +115,9 @@ export default class Chat extends Component {
     const chatTitle = this.props.inGame ? 'Chat' : (this.props.roomName || 'Lobby');
 
     const containerStyle = {
-      paddingTop: this.props.inGame ? 0 : 64,
-      marginTop: this.props.inGame ? 256 : 0,
-      height: this.props.inGame ? 'calc(100% - 256px)' : '100%',
+      paddingTop: 64,
+      marginTop: 0,
+      height: '100%',
       overflow: 'visible',
       boxSizing: 'border-box'
     };

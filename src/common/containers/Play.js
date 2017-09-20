@@ -108,7 +108,6 @@ export class Play extends Component {
     if (this.props.started) {
       return (
         <div>
-          {<GameMenu />}
           <Chat
             inGame
             roomName={this.props.socket.hosting ? null : this.props.socket.gameName}

@@ -11,6 +11,7 @@ export default class SoundToggle extends Component {
       <IconButton
         style={{
           border: '2px solid #AAA',
+          background: '#000',
           borderRadius: '50%',
           padding: 0,
           height: 36,
@@ -23,7 +24,7 @@ export default class SoundToggle extends Component {
         }}>
         <FontIcon 
           className="material-icons" 
-          color="#AAA">
+          color="#FFF">
           {isFlagSet('sound') ? 'volume_up' : 'volume_off'}
         </FontIcon>
       </IconButton>

@@ -17,6 +17,7 @@ export default class FullscreenToggle extends Component {
       <IconButton          
         style={{
           border: '2px solid #AAA',
+          background: '#000',
           borderRadius: '50%',
           padding: 0,
           height: 36,
@@ -28,7 +29,7 @@ export default class FullscreenToggle extends Component {
         }}>
         <FontIcon 
           className="material-icons" 
-          color="#AAA"> 
+          color="#FFF"> 
           {!screenfull.isFullscreen ? 'fullscreen' : 'fullscreen_exit'}
         </FontIcon>
       </IconButton>

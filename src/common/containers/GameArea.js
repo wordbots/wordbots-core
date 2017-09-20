@@ -364,7 +364,8 @@ export class GameArea extends Component {
                 onPassTurn={this.props.onPassTurn} />
               <div style={{
                 display: 'flex',
-                justifyContent: 'space-around'
+                justifyContent: 'space-around',
+                marginTop: 10
               }}>
                 <SoundToggle />
                 <FullscreenToggle />

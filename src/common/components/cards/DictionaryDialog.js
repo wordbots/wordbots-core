@@ -35,7 +35,8 @@ export default class DictionaryDialog extends Component {
       dictionaryTerm: null,
       thesaurusTerm: null,
       keywordsTerm: null,
-      searchText: ''
+      searchText: '',
+      showDefinitions: false
     };
   }
 
@@ -111,7 +112,10 @@ export default class DictionaryDialog extends Component {
   )
 
   selectTerm = (term, callback = noop) => {
-    this.setState({ [`${this.currentTab}Term`]: term }, callback);
+    this.setState({
+      [`${this.currentTab}Term`]: term,
+      showDefinitions: false
+    }, callback);
   }
 
   checkHash = () => {
@@ -196,18 +200,28 @@ export default class DictionaryDialog extends Component {
 
   renderDictionaryDefinitions() {
     const definitions = this.dictionaryDefinitions[this.selectedTerm] || [];
-    return (
-      <div key="definitions">
-        <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
-        <ol>
-          {definitions.map(d =>
-            <li key={`${d.syntax}${d.semantics}`}>
-              <strong>{d.syntax}. </strong>{this.cleanupSemantics(d.semantics)}
-            </li>
-          )}
-        </ol>
-      </div>
-    );
+    if (this.state.showDefinitions) {
+      return (
+        <div key="definitions">
+          <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
+          <ol>
+            {definitions.map(d =>
+              <li key={`${d.syntax}${d.semantics}`}>
+                <strong>{d.syntax}. </strong>{this.cleanupSemantics(d.semantics)}
+              </li>
+            )}
+          </ol>
+        </div>
+      );
+    } else if (definitions) {
+      return (
+        <div key="definitions" style={{marginBottom: 20, textDecoration: 'underline', cursor: 'pointer'}}>
+          <a onClick={() => { this.setState({ showDefinitions: true }); }}>
+            [Show {definitions.length} definition(s) <i>(Advanced feature)</i>]
+          </a>
+        </div>
+      );
+    }
   }
 
   renderKeywordsDefinition() {

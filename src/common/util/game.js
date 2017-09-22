@@ -465,6 +465,11 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
     state = Object.assign({}, state, {itP: currentPlayer(state)});
     condition = (t => t.targets.map(p => p.name).includes(state.currentTurn) && defaultCondition(t));
   }
+  if (target.undergoer) {
+    // Also store the undergoer (as opposed to agent) of the event if present.
+    // (see https://en.wikipedia.org/wiki/Patient_(grammar) )
+    state = {...state, that: target.undergoer};
+  }
 
   // Look up any relevant triggers for this condition.
   const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
@@ -497,7 +502,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
     executeCmd(state, t.action, currentObject);
   });
 
-  return Object.assign({}, state, {it: null, itP: null});
+  return Object.assign({}, state, {it: null, itP: null, that: null});
 }
 
 export function applyAbilities(state) {

@@ -101,7 +101,8 @@ export function attackComplete(state) {
 
     state = triggerEvent(state, 'afterAttack', {
       object: attacker,
-      condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects')
+      condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
+      undergoer: defender
     }, () =>
       dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
     );

@@ -125,6 +125,17 @@ export default function targets(state, currentObject) {
       }
     },
 
+    // Currently salient object (prioritizing object over subject).
+    // e.g. contrast:
+    //     Whenever this robot attacks a robot, it gains two health.
+    //     ("it" is ambiguous, but we treat it as the subject)
+    // with:
+    //     Whenever this robot attacks a robot, destroy that robot.
+    //     ("that robot" clearly refers to the object)
+    that: function () {
+      return {type: 'objects', entries: compact([state.that || state.it])};
+    },
+
     thisRobot: function () {
       return {type: 'objects', entries: [currentObject]};
     }

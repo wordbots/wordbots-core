@@ -58,7 +58,7 @@ class Deck extends Component {
       sortCriteria: 3,
       sortOrder: 0,
       searchText: '',
-      selectedCardIds: props.deck ? props.deck.cardIds : [],
+      selectedCardIds: (props.deck && props.deck.cardIds) || [],
       layout: 0
     };
   }

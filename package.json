@@ -52,7 +52,7 @@
     "merge": "1.2.0",
     "prop-types": "^15.5.8",
     "rc-slider": "^8.0.0",
-    "react": "^15.6.1",
+    "react": "^16.0.0",
     "react-addons-perf": "^15.4.2",
     "react-bar-chart": "^0.1.2",
     "react-copy-to-clipboard": "^5.0.0",

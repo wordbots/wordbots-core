@@ -99,7 +99,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.2.0",
     "eslint-plugin-unicorn": "^2.1.1",
-    "expect": "21.1.0",
+    "expect": "21.2.0",
     "ignore-styles": "^5.0.1",
     "jest": "^21.0.0",
     "jsdom-no-contextify": "3.1.0",

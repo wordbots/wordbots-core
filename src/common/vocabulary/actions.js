@@ -7,6 +7,7 @@ import {
   passTurn, drawCards, removeCardsFromHand, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   executeCmd
 } from '../util/game';
+import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 
 export default function actions(state) {
   return {
@@ -111,6 +112,16 @@ export default function actions(state) {
       players.entries.forEach(player => {
         player.energy = applyFuncToField(player.energy, func, 'available');
       });
+    },
+
+    moveObjects: function (objects, hexes) {
+      // Unpack.
+      const object = objects.entries[0];
+      const hex = hexes.entries[0];
+
+      const source = getHex(state, object);
+
+      moveObjectUsingAbility(state, source, hex);
     },
 
     payEnergy: function (players, amount) {

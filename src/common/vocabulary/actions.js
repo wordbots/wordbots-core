@@ -1,4 +1,4 @@
-import { findKey, mapValues } from 'lodash';
+import { cloneDeep, findKey, mapValues } from 'lodash';
 
 import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
@@ -10,6 +10,22 @@ import {
 
 export default function actions(state) {
   return {
+    becomeACopy: function (sources, targets) {
+      const target = targets.entries[0]; // Unpack target.
+      sources.entries.forEach(source => {
+        Object.assign(source, {
+          card: cloneDeep(target.card),
+          stats: cloneDeep(target.stats),
+          triggers: cloneDeep(target.triggers),
+          abilities: cloneDeep(target.abilities),
+          movesMade: target.movesMade,
+          cantMove: target.cantMove,
+          cantAttack: target.cantAttack,
+          cantActivate: target.cantActivate
+        });
+      });
+    },
+
     canAttackAgain: function (objects) {
       objects.entries.forEach(object => {
         Object.assign(object, {cantAttack: false});
@@ -104,6 +120,19 @@ export default function actions(state) {
         } else {
           state.invalid = true;
         }
+      });
+    },
+
+    removeAllAbilities: function (objects) {
+      objects.entries.forEach(object => {
+        Object.assign(object, {
+          triggers: [],
+          abilities: object.abilities.map(ability => ({...ability, disabled: true})),
+
+          activatedAbilities: [],
+          effects: [],
+          temporaryStatAdjustments: []
+        });
       });
     },
 

@@ -60,6 +60,22 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   return state;
 }
 
+// "Move an object" abilities don't care if that object is able to move itself,
+// so the process for moving is simpler.
+export function moveObjectUsingAbility(state, fromHex, toHex) {
+  // Is the space unoccuplied?
+  if (!allObjectsOnBoard(state)[toHex]) {
+    const movingRobot = allObjectsOnBoard(state)[fromHex];
+
+    state = logAction(state, `|${movingRobot.card.name}| was moved`, {[movingRobot.card.name]: movingRobot.card});
+    state = transportObject(state, fromHex, toHex);
+    state = applyAbilities(state);
+    state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
+  }
+
+  return state;
+}
+
 export function attack(state, source, target) {
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.

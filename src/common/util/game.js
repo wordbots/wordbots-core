@@ -341,6 +341,7 @@ function endTurn(state) {
 export function drawCards(state, player, count) {
   // Allow 1 extra card if an event is played (because that card will be discarded).
   const maxHandSize = MAX_HAND_SIZE + (state.eventExecuting ? 1 : 0);
+
   const numCardsDrawn = Math.min(count, maxHandSize - player.hand.length);
   const numCardsDiscarded = count - numCardsDrawn;
 

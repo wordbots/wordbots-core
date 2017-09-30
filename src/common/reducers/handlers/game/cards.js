@@ -146,6 +146,7 @@ function playEvent(state, cardIdx) {
 
     tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+    tempState.eventExecuting = true;
 
     (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {
       const cmdText = splitSentences(card.text)[idx];
@@ -154,6 +155,8 @@ function playEvent(state, cardIdx) {
         executeCmd(tempState, cmd);
       }
     });
+
+    tempState.eventExecuting = false;
 
     if (player.target.choosing) {
       // Target still needs to be selected, so roll back playing the card (and return old state).

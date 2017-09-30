@@ -520,6 +520,14 @@ const empCard = {
   type: TYPE_EVENT
 };
 
+export const gustOfWindCard = {
+  name: 'Gust of Wind',
+  text: 'Move a robot up to 2 spaces.',
+  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['moveObject'](load('target'), targets['choose'](tilesMatchingConditions([conditions['withinDistanceOf'](2, load('target'))]))); })(); })",
+  cost: 2,
+  type: TYPE_EVENT
+};
+
 // IIIc. Structures
 
 export const fortificationCard = {

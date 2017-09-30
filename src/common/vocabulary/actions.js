@@ -114,14 +114,15 @@ export default function actions(state) {
       });
     },
 
-    moveObjects: function (objects, hexes) {
+    moveObject: function (objects, hexes) {
       // Unpack.
-      const object = objects.entries[0];
-      const hex = hexes.entries[0];
+      const [object, hex] = [objects, hexes].map(t => t.entries[0]);
 
-      const source = getHex(state, object);
-
-      moveObjectUsingAbility(state, source, hex);
+      if (object && hex) {
+        console.log([object, hex]);
+        const startHex = getHex(state, object);
+        moveObjectUsingAbility(state, startHex, hex);
+      }
     },
 
     payEnergy: function (players, amount) {

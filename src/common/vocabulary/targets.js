@@ -24,7 +24,7 @@ export default function targets(state, currentObject) {
       return {type: 'players', entries: [currentPlayer(state), opponentPlayer(state)]};
     },
 
-    // Note: Unlike other target functions, choose() can return an [hex]
+    // Note: Unlike other target functions, choose() can return a [hex]
     //       (if the chosen hex does not contain an object.)
     choose: function (collection) {
       const player = currentPlayer(state);

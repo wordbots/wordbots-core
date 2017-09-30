@@ -39,3 +39,12 @@ export function other(state, currentObject) {
     return {type: 'objects', entries: collection.entries.filter(obj => obj.id !== currentObject.id)};
   };
 }
+
+export function tilesMatchingConditions(state) {
+  return function (conditions) {
+    const hexes = allHexIds().filter(hex =>
+      conditions.every(cond => cond(hex, allObjectsOnBoard(state)[hex]))
+    );
+    return {type: 'hexes', entries: hexes};
+  };
+}

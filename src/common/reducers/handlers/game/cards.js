@@ -91,7 +91,7 @@ export function placeCard(state, cardIdx, tile) {
     tempState = triggerSound(tempState, 'spawn.wav');
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
 
-    if (card.abilities.length > 0) {
+    if (card.abilities && card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
         const cmdText = splitSentences(card.text)[idx];
         tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
@@ -118,7 +118,8 @@ export function placeCard(state, cardIdx, tile) {
       tempState = removeCardsFromHand(tempState, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
+        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects',
+        undergoer: playedObject
       });
       tempState = applyAbilities(tempState);
 

@@ -24,24 +24,28 @@ export default function targets(state, currentObject) {
       return {type: 'players', entries: [currentPlayer(state), opponentPlayer(state)]};
     },
 
-    // Note: Unlike other target functions, choose() can return an [hex]
+    // Note: Unlike other target functions, choose() can return a [hex]
     //       (if the chosen hex does not contain an object.)
     choose: function (collection) {
       const player = currentPlayer(state);
 
-      if (player.target.chosen) {
+      if (player.target.chosen && player.target.chosen.length > 0) {
         // Return and clear chosen target.
-        const chosenTargets = player.target.chosen;
-        state.it = chosenTargets[0];  // "it" stores most recently chosen salient object for lookup.
+
+        // If there's multiple targets, take the first (we treat target.chosen as a queue).
+        const [ target, ...otherTargets ] = player.target.chosen;
+        player.target.chosen = otherTargets;
+
+        state.it = target;  // "it" stores most recently chosen salient object for lookup.
 
         if (collection.type === 'cards') {
-          return {type: 'cards', entries: chosenTargets};
+          return {type: 'cards', entries: [target]};
         } else {
           // Return objects if possible or hexes if not.
-          if (chosenTargets.every(hex => allObjectsOnBoard(state)[hex])) {
-            return {type: 'objects', entries: chosenTargets.map(hex => allObjectsOnBoard(state)[hex])};
+          if (allObjectsOnBoard(state)[target]) {
+            return {type: 'objects', entries: [allObjectsOnBoard(state)[target]]};
           } else {
-            return {type: 'hexes', entries: chosenTargets};
+            return {type: 'hexes', entries: [target]};
           }
         }
       } else {
@@ -134,6 +138,16 @@ export default function targets(state, currentObject) {
     //     ("that robot" clearly refers to the object)
     that: function () {
       return {type: 'objects', entries: compact([state.that || state.it])};
+    },
+
+    // Prioritize current iteratee in a collection of objects.
+    // e.g. "Set the attack of all robots to *their* health."
+    they: function () {
+      // Wrap it as a function of state because this needs to be evaluated as late as possible.
+      return (currentState) => ({
+        type: 'objects',
+        entries: compact([currentState.currentObjectInCollection || currentState.it])
+      });
     },
 
     thisRobot: function () {

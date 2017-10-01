@@ -1,4 +1,4 @@
-import { cloneDeep, findIndex, forOwn, has, isObject, mapValues, pickBy } from 'lodash';
+import { cloneDeep, findIndex, forOwn, has, isArray, isObject, mapValues, pickBy } from 'lodash';
 
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
 import {
@@ -105,7 +105,11 @@ export function playObject(state, playerName, card, hex, target = null) {
   }
 }
 
-export function playEvent(state, playerName, card, target = null) {
+export function playEvent(state, playerName, card, targets = []) {
+  if (!isArray(targets)) {
+    targets = [targets];
+  }
+
   const player = state.players[playerName];
 
   // We don't care about testing card draw and energy here, so ensure that:
@@ -118,25 +122,21 @@ export function playEvent(state, playerName, card, target = null) {
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
-  if (target && target.hex) {
-    return game(state, [
-      gameActions.setSelectedCard(0, playerName),
-      gameActions.setSelectedCard(0, playerName),
-      gameActions.setSelectedTile(target.hex, playerName)
-    ]);
-  } else if (target && has(target, 'card')) {
-    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
-    return game(state, [
-      gameActions.setSelectedCard(0, playerName),
-      gameActions.setSelectedCard(0, playerName),
-      gameActions.setSelectedCard(cardIdx, playerName)
-    ]);
-  } else {
-    return game(state, [
-      gameActions.setSelectedCard(0, playerName),
-      gameActions.setSelectedCard(0, playerName)
-    ]);
-  }
+  state = game(state, [
+    gameActions.setSelectedCard(0, playerName),
+    gameActions.setSelectedCard(0, playerName)
+  ]);
+
+  targets.forEach(target => {
+    if (target.hex) {
+      state = game(state, gameActions.setSelectedTile(target.hex, playerName));
+    } else if (has(target, 'card')) {
+      const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
+      state = game(state, gameActions.setSelectedCard(cardIdx, playerName));
+    }
+  });
+
+  return state;
 }
 
 export function moveRobot(state, fromHex, toHex, asNewTurn = false) {

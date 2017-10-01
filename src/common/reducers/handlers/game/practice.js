@@ -1,6 +1,6 @@
 import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
+import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
 import { id, convertRange } from '../../../util/common';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
@@ -33,7 +33,7 @@ export function aiResponse(state) {
   const cards = availableCards(state, ai);
   const robots = availableRobots(state, ai);
 
-  if ((cards.length === 0 && robots.length === 0) || Math.random() < 0.05) {
+  if (DISABLE_AI || (cards.length === 0 && robots.length === 0) || Math.random() < 0.05) {
     // Pass if there's nothing left to do + pass randomly 5% of the time.
     return passTurn(state, state.currentTurn);
   } else if (robots.length === 0) {

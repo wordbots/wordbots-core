@@ -224,7 +224,7 @@ export class GameArea extends Component {
     this.state = {
       areaHeight: 1250,
       boardSize: 1000,
-      chatOpen: false
+      chatOpen: true
     };
 
     if (!props.started) {
@@ -398,12 +398,11 @@ export class GameArea extends Component {
                 tutorialStep={this.props.tutorialStep}
                 enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
                 top={0}
-                left={0}
                 place="left"
                 onNextStep={() => { this.props.onTutorialStep(); }}
                 onPrevStep={() => { this.props.onTutorialStep(true); }}
               >
-                <EndTurnButton 
+                <EndTurnButton
                   player={this.props.player}
                   currentTurn={this.props.currentTurn}
                   gameOver={this.props.gameOver}
@@ -411,7 +410,7 @@ export class GameArea extends Component {
                   isAttackHappening={this.props.isAttackHappening}
                   onPassTurn={this.props.onPassTurn} />
               </TutorialTooltip>
-              <ForfeitButton  
+              <ForfeitButton
                 player={this.props.player}
                 history={this.props.history}
                 gameOver={this.props.gameOver}

@@ -140,6 +140,16 @@ export default function targets(state, currentObject) {
       return {type: 'objects', entries: compact([state.that || state.it])};
     },
 
+    // Prioritize current iteratee in a collection of objects.
+    // e.g. "Set the attack of all robots to *their* health."
+    they: function () {
+      // Wrap it as a function of state because this needs to be evaluated as late as possible.
+      return (currentState) => ({
+        type: 'objects',
+        entries: compact([currentState.currentObjectInCollection || currentState.it])
+      });
+    },
+
     thisRobot: function () {
       return {type: 'objects', entries: [currentObject]};
     }

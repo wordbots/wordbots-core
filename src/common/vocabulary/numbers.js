@@ -1,15 +1,25 @@
-import { size, sum } from 'lodash';
+import { isFunction, size, sum } from 'lodash';
 
 import { getAttribute } from '../util/game';
 
 export function attributeSum(state) {
-  return function (collection, attribute) {
-    return sum(collection.entries.map(obj => getAttribute(obj, attribute)));
+  return function compute(targetObjects, attribute) {
+    // Handle wrapped targets (see targets.they).
+    if (isFunction(targetObjects)) {
+      return currentState => compute(targetObjects(currentState), attribute);
+    }
+
+    return sum(targetObjects.entries.map(obj => getAttribute(obj, attribute)));
   };
 }
 
 export function attributeValue(state) {
-  return function (targetObjects, attribute) {
+  return function compute(targetObjects, attribute) {
+    // Handle wrapped targets (see targets.they).
+    if (isFunction(targetObjects)) {
+      return currentState => compute(targetObjects(currentState), attribute);
+    }
+
     const object = targetObjects.entries[0]; // targetObjects is an array of objects, so unpack.
     return object ? getAttribute(object, attribute) : 0;
   };

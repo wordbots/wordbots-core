@@ -696,7 +696,8 @@ export const collection = [
   batteryBotCard,
   knowledgeBotCard,
   leapFrogBotCard,
-  friendlyRiotShieldCard
+  friendlyRiotShieldCard,
+  gustOfWindCard
 ].map(card =>
   Object.assign(card, {
     id: `builtin/${card.name}`,

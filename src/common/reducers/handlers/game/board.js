@@ -67,7 +67,7 @@ export function moveObjectUsingAbility(state, fromHex, toHex) {
   if (!allObjectsOnBoard(state)[toHex]) {
     const movingRobot = allObjectsOnBoard(state)[fromHex];
 
-    state = logAction(state, `|${movingRobot.card.name}| was moved`, {[movingRobot.card.name]: movingRobot.card});
+    state = logAction(state, null, `|${movingRobot.card.name}| was moved`, {[movingRobot.card.name]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);

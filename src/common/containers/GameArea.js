@@ -394,7 +394,6 @@ export class GameArea extends Component {
               justifyContent: 'center',
               marginRight: 20
             }}>
-<<<<<<< HEAD
               <TutorialTooltip
                 tutorialStep={this.props.tutorialStep}
                 enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
@@ -413,16 +412,6 @@ export class GameArea extends Component {
                   onPassTurn={this.props.onPassTurn} />
               </TutorialTooltip>
               <ForfeitButton  
-=======
-              <EndTurnButton
-                player={this.props.player}
-                currentTurn={this.props.currentTurn}
-                gameOver={this.props.gameOver}
-                isMyTurn={this.props.isMyTurn}
-                isAttackHappening={this.props.isAttackHappening}
-                onPassTurn={this.props.onPassTurn} />
-              <ForfeitButton
->>>>>>> 0ee7ba8f52e4e00ae5584d1899d4caa1363a5cc3
                 player={this.props.player}
                 history={this.props.history}
                 gameOver={this.props.gameOver}

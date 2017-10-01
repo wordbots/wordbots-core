@@ -4,7 +4,8 @@ import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import Toggle from 'material-ui/Toggle';
+import { Tabs, Tab } from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, noop, uniq } from 'lodash';
 
@@ -113,8 +114,7 @@ export default class DictionaryDialog extends Component {
 
   selectTerm = (term, callback = noop) => {
     this.setState({
-      [`${this.currentTab}Term`]: term,
-      showDefinitions: false
+      [`${this.currentTab}Term`]: term
     }, callback);
   }
 
@@ -141,6 +141,12 @@ export default class DictionaryDialog extends Component {
         <Toolbar>
           <ToolbarGroup>
             <ToolbarTitle text={this.selectedTerm} />
+          </ToolbarGroup>
+          <ToolbarGroup>
+            <Toggle 
+              label="Advanced" 
+              onToggle={() => this.setState({ showDefinitions: !this.state.showDefinitions })}
+              toggled={this.state.showDefinitions}/>
           </ToolbarGroup>
         </Toolbar>
       </div>

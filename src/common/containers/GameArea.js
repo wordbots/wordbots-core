@@ -22,6 +22,7 @@ import Status from '../components/game/Status';
 import Sfx from '../components/game/Sfx';
 import EventAnimation from '../components/game/EventAnimation';
 import VictoryScreen from '../components/game/VictoryScreen';
+import TutorialTooltip from '../components/game/TutorialTooltip';
 import Chat from '../components/multiplayer/Chat';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -393,13 +394,23 @@ export class GameArea extends Component {
               justifyContent: 'center',
               marginRight: 20
             }}>
-              <EndTurnButton 
-                player={this.props.player}
-                currentTurn={this.props.currentTurn}
-                gameOver={this.props.gameOver}
-                isMyTurn={this.props.isMyTurn}
-                isAttackHappening={this.props.isAttackHappening}
-                onPassTurn={this.props.onPassTurn} />
+              <TutorialTooltip
+                tutorialStep={this.props.tutorialStep}
+                enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
+                top={0}
+                left={0}
+                place="left"
+                onNextStep={() => { this.props.onTutorialStep(); }}
+                onPrevStep={() => { this.props.onTutorialStep(true); }}
+              >
+                <EndTurnButton 
+                  player={this.props.player}
+                  currentTurn={this.props.currentTurn}
+                  gameOver={this.props.gameOver}
+                  isMyTurn={this.props.isMyTurn}
+                  isAttackHappening={this.props.isAttackHappening}
+                  onPassTurn={this.props.onPassTurn} />
+              </TutorialTooltip>
               <ForfeitButton  
                 player={this.props.player}
                 history={this.props.history}

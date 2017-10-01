@@ -276,7 +276,7 @@ describe('Game reducer', () => {
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH + 4);
     });
 
-    fit('should be able to play events with multiple target selection', () => {
+    it('should be able to play events with multiple target selection', () => {
       let state = getDefaultState();
       state = playObject(state, 'orange', cards.attackBotCard, '3,-1,-2');
       // "Move a robot up to two spaces."

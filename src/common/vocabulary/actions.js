@@ -119,7 +119,6 @@ export default function actions(state) {
       const [object, hex] = [objects, hexes].map(t => t.entries[0]);
 
       if (object && hex) {
-        console.log([object, hex]);
         const startHex = getHex(state, object);
         moveObjectUsingAbility(state, startHex, hex);
       }

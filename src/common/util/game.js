@@ -420,23 +420,33 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
 export function setTargetAndExecuteQueuedAction(state, target) {
   const player = currentPlayer(state);
+  const targets = (player.target.chosen || []).concat([target]);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
-    chosen: [target],
+    chosen: targets,
     choosing: false,
     possibleHexes: [],
     possibleCards: []
   };
 
-  // Perform the trigger.
-  state = state.callbackAfterTargetSelected(state);
-  state.callbackAfterTargetSelected = null;
+  // Perform the trigger (in a temp state because we may need more targets yet).
+  const tempState = state.callbackAfterTargetSelected(state);
 
-  // Reset target.
-  state.players[player.name].target = arbitraryPlayerState().target;
+  if (tempState.players[player.name].target.choosing) {
+    // Still need more targets!
+    // So we revert to old state but use new target selection properties.
+    state.players[player.name].target = Object.assign({}, tempState.players[player.name].target, {chosen: targets});
 
-  return state;
+    return state;
+  } else {
+    // We have all the targets we need and we're good to go.
+    // Reset target and return new state.
+    tempState.callbackAfterTargetSelected = null;
+    tempState.players[player.name].target = arbitraryPlayerState().target;
+
+    return tempState;
+  }
 }
 
 //

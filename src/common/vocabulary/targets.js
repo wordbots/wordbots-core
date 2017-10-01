@@ -29,19 +29,23 @@ export default function targets(state, currentObject) {
     choose: function (collection) {
       const player = currentPlayer(state);
 
-      if (player.target.chosen) {
+      if (player.target.chosen && player.target.chosen.length > 0) {
         // Return and clear chosen target.
-        const chosenTargets = player.target.chosen;
-        state.it = chosenTargets[0];  // "it" stores most recently chosen salient object for lookup.
+
+        // If there's multiple targets, take the first (we treat target.chosen as a queue).
+        const [ target, ...otherTargets ] = player.target.chosen;
+        player.target.chosen = otherTargets;
+
+        state.it = target;  // "it" stores most recently chosen salient object for lookup.
 
         if (collection.type === 'cards') {
-          return {type: 'cards', entries: chosenTargets};
+          return {type: 'cards', entries: [target]};
         } else {
           // Return objects if possible or hexes if not.
-          if (chosenTargets.every(hex => allObjectsOnBoard(state)[hex])) {
-            return {type: 'objects', entries: chosenTargets.map(hex => allObjectsOnBoard(state)[hex])};
+          if (allObjectsOnBoard(state)[target]) {
+            return {type: 'objects', entries: [allObjectsOnBoard(state)[target]]};
           } else {
-            return {type: 'hexes', entries: chosenTargets};
+            return {type: 'hexes', entries: [target]};
           }
         }
       } else {

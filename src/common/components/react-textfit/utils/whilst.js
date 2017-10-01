@@ -9,7 +9,7 @@ import { noop } from 'lodash';
  */
 
 export default function whilst(test, iterator, callback = noop) {
-    if (test()) {
+    if (test()) {  // eslint-disable-line jest/no-disabled-tests
         iterator(function next(err, ...args) {
             if (err) {
                 callback(err);

@@ -21,12 +21,13 @@ describe('GameArea container', () => {
     const dom = renderElement(game);
 
     const paper = dom.props.children[1];
-    const mainDiv = paper.props.children[1];
+    const mainDiv = paper.props.children[2];
     const board = mainDiv.props.children[1];
-    const victoryScreen = paper.props.children[4];
+    const victoryScreen = paper.props.children[5];
 
     /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
+      paper.props.children[0],
       <PlayerArea opponent gameProps={game.props} />,
       <div
         ref={mainDiv.ref}

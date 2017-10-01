@@ -10,7 +10,6 @@ import * as socketActions from '../actions/socket';
 import * as gameActions from '../actions/game';
 
 import GameArea from './GameArea';
-import GameMenu from './GameMenu';
 
 export function mapStateToProps(state) {
   return {
@@ -105,18 +104,7 @@ export class Play extends Component {
   }
 
   get rightMenu() {
-    if (this.props.started) {
-      return (
-        <div>
-          {<GameMenu />}
-          <Chat
-            inGame
-            roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-            messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-            onSendMessage={this.props.onSendChatMessage} />
-        </div>
-      );
-    } else {
+    if (!this.props.started) {
       return (
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
@@ -128,7 +116,7 @@ export class Play extends Component {
 
   render() {
     return (
-      <div style={{paddingRight: 256}}>
+      <div>
         <Helmet title="Play"/>
 
         <Switch>

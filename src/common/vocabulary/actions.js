@@ -18,12 +18,9 @@ export default function actions(state) {
           card: cloneDeep(target.card),
           stats: cloneDeep(target.stats),
           triggers: cloneDeep(target.triggers),
-          abilities: cloneDeep(target.abilities),
-          movesMade: target.movesMade,
-          cantMove: target.cantMove,
-          cantAttack: target.cantAttack,
-          cantActivate: target.cantActivate
+          abilities: cloneDeep(target.abilities)
         });
+        updateOrDeleteObjectAtHex(state, source, getHex(state, source));
       });
     },
 
@@ -137,6 +134,8 @@ export default function actions(state) {
     removeAllAbilities: function (objects) {
       objects.entries.forEach(object => {
         Object.assign(object, {
+          card: Object.assign({}, object.card, {text: ''}),
+
           triggers: [],
           abilities: object.abilities.map(ability => ({...ability, disabled: true})),
 

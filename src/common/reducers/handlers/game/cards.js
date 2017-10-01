@@ -118,7 +118,8 @@ export function placeCard(state, cardIdx, tile) {
       tempState = removeCardsFromHand(tempState, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
+        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects',
+        undergoer: playedObject
       });
       tempState = applyAbilities(tempState);
 

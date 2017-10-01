@@ -22,6 +22,7 @@ import Status from '../components/game/Status';
 import Sfx from '../components/game/Sfx';
 import EventAnimation from '../components/game/EventAnimation';
 import VictoryScreen from '../components/game/VictoryScreen';
+import Chat from '../components/multiplayer/Chat';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
@@ -78,7 +79,10 @@ export function mapStateToProps(state) {
     gameOver: state.game.winner !== null,
     isTutorial: state.game.tutorial,
     isMyTurn: state.game.currentTurn === state.game.player,
-    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to
+    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to,
+
+    actionLog: state.game.actionLog,
+    socket: state.socket
   };
 }
 
@@ -140,6 +144,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onAIResponse: () => {
       dispatch(gameActions.aiResponse());
+    },
+    onSendChatMessage: (msg) => {
+      dispatch(socketActions.chat(msg));
     }
   };
 }
@@ -190,6 +197,9 @@ export class GameArea extends Component {
     isSpectator: bool,
     isAttackHappening: bool,
 
+    actionLog: array,
+    socket: object,
+
     onMoveRobot: func,
     onAttackRobot: func,
     onMoveRobotAndAttack: func,
@@ -203,7 +213,8 @@ export class GameArea extends Component {
     onEndGame: func,
     onForfeit: func,
     onTutorialStep: func,
-    onAIResponse: func
+    onAIResponse: func,
+    onSendChatMessage: func
   };
 
   constructor(props) {
@@ -211,7 +222,8 @@ export class GameArea extends Component {
 
     this.state = {
       areaHeight: 1250,
-      boardSize: 1000
+      boardSize: 1000,
+      chatOpen: false
     };
 
     if (!props.started) {
@@ -254,6 +266,10 @@ export class GameArea extends Component {
       areaHeight: window.innerHeight - 64,
       boardSize: Math.min(maxBoardWidth, maxBoardHeight)
     });
+  }
+
+  toggleChat() {
+    this.setState({ chatOpen: !this.state.chatOpen });
   }
 
   isMyTurn() {
@@ -338,6 +354,7 @@ export class GameArea extends Component {
         <Paper
           style={{
             position: 'relative',
+            marginRight: this.state.chatOpen ? 256 : 64,
             height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
             background: `url(${this.loadBackground()})`
         }}>
@@ -436,6 +453,15 @@ export class GameArea extends Component {
               this.props.history.push('/play');
             }} />
         </Paper>
+
+        <Chat
+          inGame
+          fullscreen={screenfull.isFullscreen}
+          open={this.state.chatOpen}
+          toggleChat={() => this.toggleChat()}
+          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
+          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
+          onSendMessage={this.props.onSendChatMessage} />
       </div>
     );
   }

@@ -253,15 +253,6 @@ function parseCard(card, callback) {
   });
 }
 
-// How many targets are there in each logical unit of the parsed JS?
-export function numTargetsPerLogicalUnit(parsedJS) {
-  // Activated abilities separate logical units:
-  //     BAD <- "Deal 2 damage. Destroy a structure."
-  //    GOOD <- "Activate: Deal 2 damage. Activate: Destroy a structure."
-  const units = compact(parsedJS.split('abilities[\'activated\']'));
-  return units.map(unit => (unit.match(/choose/g) || []).length);
-}
-
 //
 // 3.5. Keyword abilities.
 //

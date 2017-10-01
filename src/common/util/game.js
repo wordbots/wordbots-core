@@ -339,7 +339,10 @@ function endTurn(state) {
 }
 
 export function drawCards(state, player, count) {
-  const numCardsDrawn = Math.min(count, MAX_HAND_SIZE - player.hand.length);
+  // Allow 1 extra card if an event is played (because that card will be discarded).
+  const maxHandSize = MAX_HAND_SIZE + (state.eventExecuting ? 1 : 0);
+
+  const numCardsDrawn = Math.min(count, maxHandSize - player.hand.length);
   const numCardsDiscarded = count - numCardsDrawn;
 
   if (numCardsDrawn > 0) {
@@ -350,6 +353,7 @@ export function drawCards(state, player, count) {
     const card = player.deck[0];
     if (card) {
       player.deck.splice(0, 1);
+      player.discardPile = player.discardPile.concat([card]);
       state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
         [card.name]: card
       });

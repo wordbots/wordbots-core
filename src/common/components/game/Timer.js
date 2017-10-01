@@ -106,12 +106,16 @@ export default class Timer extends Component {
   }
 
   render() {
-    return (
-      <div style={this.styles.timer}>
-        <span style={this.state.timerStyle}>
-          {this.props.isTutorial ? '' : this.state.timer}
-        </span>
-      </div>
-    );
+    if (this.props.isTutorial) {
+      return null;
+    } else {
+      return (
+        <div style={this.styles.timer}>
+          <span style={this.state.timerStyle}>
+            {this.props.isTutorial ? '' : this.state.timer}
+          </span>
+        </div>
+      );
+    }
   }
 }

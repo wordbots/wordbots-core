@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
+import screenfull from 'screenfull';
 
 import Tooltip from '../Tooltip';
-import screenfull from '../../util/screenfull';
 
 export default class FullscreenToggle extends Component {
   toggleFullscreen() {
+    // TODO come up with a better approach ...
+    /* eslint-disable react/no-find-dom-node */
     const gameArea = ReactDOM.findDOMNode(this).parentNode.parentNode.parentNode.parentNode.parentNode;
+    /* eslint-enable react/no-find-dom-node */
 
     screenfull.toggle(gameArea);
   }

@@ -6,11 +6,11 @@ import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import screenfull from 'screenfull';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
 import { currentTutorialStep } from '../util/game';
-import screenfull from '../util/screenfull';
 import Board from '../components/game/Board';
 import Timer from '../components/game/Timer';
 import EndTurnButton from '../components/game/EndTurnButton';
@@ -342,8 +342,8 @@ export class GameArea extends Component {
 
   render() {
     return (
-      <div 
-        className="gameArea" 
+      <div
+        className="gameArea"
         style={
           screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
         }>
@@ -372,7 +372,7 @@ export class GameArea extends Component {
               alignItems: 'center',
               marginLeft: 20
             }}>
-              <Timer 
+              <Timer
                 player={this.props.player}
                 currentTurn={this.props.currentTurn}
                 gameOver={this.props.gameOver}
@@ -394,6 +394,7 @@ export class GameArea extends Component {
               justifyContent: 'center',
               marginRight: 20
             }}>
+<<<<<<< HEAD
               <TutorialTooltip
                 tutorialStep={this.props.tutorialStep}
                 enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
@@ -412,6 +413,16 @@ export class GameArea extends Component {
                   onPassTurn={this.props.onPassTurn} />
               </TutorialTooltip>
               <ForfeitButton  
+=======
+              <EndTurnButton
+                player={this.props.player}
+                currentTurn={this.props.currentTurn}
+                gameOver={this.props.gameOver}
+                isMyTurn={this.props.isMyTurn}
+                isAttackHappening={this.props.isAttackHappening}
+                onPassTurn={this.props.onPassTurn} />
+              <ForfeitButton
+>>>>>>> 0ee7ba8f52e4e00ae5584d1899d4caa1363a5cc3
                 player={this.props.player}
                 history={this.props.history}
                 gameOver={this.props.gameOver}

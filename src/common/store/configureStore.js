@@ -24,10 +24,9 @@ const middlewareBuilder = () => {
       allComposeElements = [middleware];
     } else {
       const createLogger = require('redux-logger').createLogger;
-      const Perf = require('react-addons-perf');
       const DevTools = require('../containers/DevTools').default;
-
-      window.Perf = Perf;
+      // const Perf = require('react-addons-perf');
+      // window.Perf = Perf;
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, createLogger());
       allComposeElements = [

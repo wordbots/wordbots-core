@@ -198,7 +198,7 @@ export class GameArea extends Component {
     isSpectator: bool,
     isAttackHappening: bool,
 
-    actionLog: array,
+    actionLog: arrayOf(object),
     socket: object,
 
     onMoveRobot: func,

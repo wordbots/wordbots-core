@@ -26,27 +26,6 @@ export default class RecentCardsCarousel extends Component {
     });
   }
 
-  renderButton = (title, onClick) => (
-    <PaperButton
-      onClick={onClick}
-      style={{
-        flexBasis: 'calc(50% - 60px)',
-        height: 80,
-        margin: '15px 30px'
-    }}>
-      <div style={{
-        textAlign: 'center',
-        fontSize: 32,
-        marginTop: 15,
-        fontFamily: 'Carter One',
-        color: '#f44336',
-        WebkitTextStroke: '1px black'
-      }}>
-        {title}
-      </div>
-    </PaperButton>
-  )
-
   render() {
     if (this.state.recentCards.length > 0) {
       return (

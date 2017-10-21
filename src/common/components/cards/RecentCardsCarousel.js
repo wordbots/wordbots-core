@@ -4,7 +4,6 @@ import { uniqBy } from 'lodash';
 
 import { listenToRecentCards } from '../../util/firebase';
 import { builtinCardNames } from '../../store/cards';
-import PaperButton from '../PaperButton';
 import Card from '../card/Card';
 
 export default class RecentCardsCarousel extends Component {

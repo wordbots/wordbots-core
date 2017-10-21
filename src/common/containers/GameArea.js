@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Notification from 'react-web-notification';
@@ -168,8 +168,8 @@ export class GameArea extends Component {
     target: object,
     attack: object,
 
-    blueHand: array,
-    orangeHand: array,
+    blueHand: arrayOf(object),
+    orangeHand: arrayOf(object),
 
     bluePieces: object,
     orangePieces: object,
@@ -177,14 +177,14 @@ export class GameArea extends Component {
     blueEnergy: object,
     orangeEnergy: object,
 
-    blueDeck: array,
-    orangeDeck: array,
+    blueDeck: arrayOf(object),
+    orangeDeck: arrayOf(object),
 
-    blueDiscardPile: array,
-    orangeDiscardPile: array,
+    blueDiscardPile: arrayOf(object),
+    orangeDiscardPile: arrayOf(object),
 
-    eventQueue: array,
-    sfxQueue: array,
+    eventQueue: arrayOf(object),
+    sfxQueue: arrayOf(string),
     tutorialStep: object,
     isPractice: bool,
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, object, oneOfType } from 'prop-types';
+import { arrayOf, bool, object, oneOfType } from 'prop-types';
 import { pick } from 'lodash';
 
 import Tooltip from '../Tooltip';
@@ -7,7 +7,7 @@ import Tooltip from '../Tooltip';
 export default class MustBeLoggedIn extends Component {
   static propTypes = {
     loggedIn: bool,
-    children: oneOfType([array, object])
+    children: oneOfType([arrayOf(object), object])
   };
 
   renderDisabledChild(child) {

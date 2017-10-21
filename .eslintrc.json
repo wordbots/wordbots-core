@@ -63,6 +63,7 @@
     "promise/avoid-new": 0,
     "promise/no-callback-in-promise": 0,
 
+    "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "react/jsx-boolean-value": 2,
     "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],

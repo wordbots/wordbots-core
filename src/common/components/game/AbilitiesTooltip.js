@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { array, func, object, oneOfType } from 'prop-types';
+import { arrayOf, func, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 
 export default class AbilitiesTooltip extends Component {
   static propTypes = {
-    children: oneOfType([array, object]),
-    activatedAbilities: array,
+    children: oneOfType([arrayOf(object), object]),
+    activatedAbilities: arrayOf(object),
 
     onActivateAbility: func
   };

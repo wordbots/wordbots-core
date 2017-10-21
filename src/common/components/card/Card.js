@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Divider from 'material-ui/Divider';
 import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
@@ -21,14 +21,14 @@ import Sentence from './Sentence';
 
 export default class Card extends Component {
   static propTypes = {
-    children: oneOfType([string, array]),
+    children: oneOfType([string, arrayOf(object)]),
 
     id: string,
     name: string,
     spriteID: string,
     spriteV: number,
     type: number,
-    text: oneOfType([string, array]),
+    text: oneOfType([string, arrayOf(object)]),
     rawText: string,
     parseResults: string,
     img: string,

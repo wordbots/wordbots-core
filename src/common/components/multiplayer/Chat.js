@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, string, bool } from 'prop-types';
+import { arrayOf, bool, func, object, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
@@ -15,7 +15,7 @@ import CardTooltip from '../card/CardTooltip';
 export default class Chat extends Component {
   static propTypes = {
     roomName: string,
-    messages: array,
+    messages: arrayOf(object),
     inGame: bool,
     open: bool,
     fullscreen: bool,

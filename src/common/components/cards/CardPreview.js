@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, number, string } from 'prop-types';
+import { arrayOf, func, number, object, string } from 'prop-types';
 
 import { SPRITE_VERSION } from '../../constants';
 import { inBrowser } from '../../util/browser';
@@ -11,7 +11,7 @@ export default class CardPreview extends Component {
     name: string,
     spriteID: string,
     type: number,
-    sentences: array,
+    sentences: arrayOf(object),
     attack: number,
     speed: number,
     health: number,

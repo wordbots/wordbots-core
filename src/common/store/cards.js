@@ -850,3 +850,5 @@ export const collection = [
     source: 'builtin'
   })
 );
+
+export const builtinCardNames = collection.map(card => card.name);

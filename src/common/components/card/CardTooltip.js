@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, object, oneOfType } from 'prop-types';
+import { arrayOf, bool, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
 import ReactTooltip from 'react-tooltip';
 
@@ -10,7 +10,7 @@ import Card from './Card';
 export default class CardTooltip extends Component {
   static propTypes = {
     card: object,
-    children: oneOfType([array, object]),
+    children: oneOfType([arrayOf(object), object]),
     popover: bool,
     isOpen: bool
   };

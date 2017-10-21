@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -26,7 +26,7 @@ export default class CardCreationForm extends Component {
     name: string,
     type: number,
     text: string,
-    sentences: array,
+    sentences: arrayOf(object),
     attack: number,
     speed: number,
     health: number,

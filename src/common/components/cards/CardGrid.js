@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func } from 'prop-types';
+import { arrayOf, bool, func, object, string } from 'prop-types';
 
 import { id } from '../../util/common';
 import { inBrowser } from '../../util/browser';
@@ -9,8 +9,8 @@ import Sentence from '../card/Sentence';
 
 export default class CardGrid extends Component {
   static propTypes = {
-    cards: array,
-    selectedCardIds: array,
+    cards: arrayOf(object),
+    selectedCardIds: arrayOf(string),
     selectable: bool,
 
     onCardClick: func

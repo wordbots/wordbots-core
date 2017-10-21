@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, string } from 'prop-types';
+import { arrayOf, bool, func, object, string } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -14,7 +14,7 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 export default class ActiveDeck extends Component {
   static propTypes = {
     id: string,
-    cards: array,
+    cards: arrayOf(object),
     name: string,
     loggedIn: bool,
 

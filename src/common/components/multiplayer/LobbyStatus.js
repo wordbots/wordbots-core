@@ -1,5 +1,5 @@
 import React from 'react';
-import { array, bool, func, object } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
 const LobbyStatus = (props) => {
@@ -40,7 +40,7 @@ const LobbyStatus = (props) => {
 LobbyStatus.propTypes = {
   connecting: bool,
   connected: bool,
-  playersOnline: array,
+  playersOnline: arrayOf(object),
   usernameMap: object,
   onConnect: func
 };

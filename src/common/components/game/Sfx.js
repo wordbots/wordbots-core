@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { arrayOf, string } from 'prop-types';
 
 import { inBrowser, isFlagSet } from '../../util/browser';
 
@@ -7,7 +7,7 @@ const Sound = inBrowser() ? require('react-sound').default : null;
 
 export default class Sfx extends Component {
   static propTypes = {
-    queue: array
+    queue: arrayOf(string)
   };
 
   constructor(props) {

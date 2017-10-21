@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { array, number } from 'prop-types';
+import { arrayOf, number, object } from 'prop-types';
 import BarChart from 'react-bar-chart';
 import { times } from 'lodash';
 
 // Widget to display the current energy curve for a set of cards
 export default class EnergyCurve extends Component {
   static propTypes = {
-    cards: array,
+    cards: arrayOf(object),
     height: number
   };
 

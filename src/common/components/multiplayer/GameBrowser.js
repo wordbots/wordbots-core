@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { array, bool, func, object } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 export default class GameBrowser extends Component {
   static propTypes = {
-    openGames: array,
-    inProgressGames: array,
+    openGames: arrayOf(object),
+    inProgressGames: arrayOf(object),
     usernameMap: object,
     cannotJoinGame: bool,
 

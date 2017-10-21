@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, object } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -42,8 +42,8 @@ function mapDispatchToProps(dispatch) {
 
 class Decks extends Component {
   static propTypes = {
-    cards: array,
-    decks: array,
+    cards: arrayOf(object),
+    decks: arrayOf(object),
     loggedIn: bool,
 
     history: object,

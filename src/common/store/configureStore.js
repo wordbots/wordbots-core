@@ -25,14 +25,16 @@ const middlewareBuilder = () => {
     } else {
       const createLogger = require('redux-logger').createLogger;
       const DevTools = require('../containers/DevTools').default;
-      // const Perf = require('react-addons-perf');
-      // window.Perf = Perf;
 
       middleware = applyMiddleware(...universalMiddleware, socketMiddleware, createLogger());
       allComposeElements = [
         middleware,
         DevTools.instrument()
       ];
+
+      // react-addons-perf unsupported as of React 16.0.0.
+      // const Perf = require('react-addons-perf');
+      // window.Perf = Perf;
     }
   } else {
     middleware = applyMiddleware(...universalMiddleware);

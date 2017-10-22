@@ -1,4 +1,10 @@
-export class CardTextExampleStore {
+import { capitalize, pullAt, random, shuffle, times } from 'lodash';
+
+import { parse } from './cards';
+
+const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
+
+export default class CardTextExampleStore {
   modes = ['event', 'object'];
   examples = {
     event: [],

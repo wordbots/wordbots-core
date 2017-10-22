@@ -56,8 +56,6 @@ function objToRegexes(obj) {
 const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
 const HINT_REGEXES = objToRegexes(HINTS);
 
-const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
-
 //
 // 1. Miscellaneous helper functions pertaining to cards.
 //
@@ -149,53 +147,6 @@ function sortCards(c1, c2, criteria, order) {
 }
 
 //
-// 2.5. Helper classes.
-//
-
-export class CardTextExampleStore {
-  modes = ['event', 'object'];
-  examples = {
-    event: [],
-    object: []
-  };
-
-  getExample = (mode) => {
-    const examples = this.examples[mode];
-    const idx = random(0, examples.length - 1);
-    const example = pullAt(examples, idx)[0];
-    return `${example}.`;
-  }
-
-  loadExamples = (sentences, numToTry) => {
-    const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);
-
-    let i = 0, interval = null;
-
-    const tryNext = () => {
-      if (i >= candidates.length) {
-        clearInterval(interval);
-      } else {
-        const candidate = candidates[i];
-        if (candidate && !candidate.startsWith('"')) {
-          ['event', 'object'].forEach(mode => {
-            parse([candidate], mode, (idx, s, json) => {
-              if (!json.error) {
-                this.examples[mode].push(candidate);
-              }
-            }, false);
-          });
-        }
-      }
-
-      i++;
-    };
-
-    times(5, tryNext);
-    interval = setInterval(tryNext, EXAMPLE_LOOKUP_INTERVAL_MS);
-  }
-}
-
-//
 // 3. Text parsing.
 //
 
@@ -218,7 +169,8 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-function parse(sentences, mode, callback, index = true) {
+// Parse without debounce. Only used by requestParse() below and CardTextExampleStore.
+export function parse(sentences, mode, callback, index = true) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;

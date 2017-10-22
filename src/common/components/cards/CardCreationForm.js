@@ -10,9 +10,10 @@ import { capitalize, compact } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { ensureInRange } from '../../util/common';
-import { getSentencesFromInput, requestParse, CardTextExampleStore } from '../../util/cards';
+import { getSentencesFromInput, requestParse } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 import { prepareBigramProbs } from '../../util/language';
+import CardTextExampleStore from '../../util/CardTextExampleStore';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 

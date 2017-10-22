@@ -67,6 +67,7 @@
     "react-slick": "^0.15.4",
     "react-sound": "^0.8.0",
     "react-tap-event-plugin": "^3.0.2",
+    "react-textfit": "^1.0.1",
     "react-tooltip": "^3.3.0",
     "react-transition-group": "^2.2.1",
     "react-web-notification": "^0.2.4",
@@ -122,7 +123,6 @@
       "/node_modules/",
       "/test",
       "src/common/components/hexgrid/",
-      "src/common/components/react-textfit/",
       "src/common/components/Sprite.js"
     ],
     "globals": {

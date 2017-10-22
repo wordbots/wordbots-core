@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
+import Textfit from 'react-textfit';
 import Divider from 'material-ui/Divider';
 import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
@@ -11,7 +12,6 @@ import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from 
 import { compareCertainKeys } from '../../util/common';
 import { splitSentences } from '../../util/cards';
 import { inBrowser } from '../../util/browser';
-import Textfit from '../react-textfit/Textfit';
 
 import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';

@@ -20,7 +20,7 @@ const store = configureStore(initialState);
 
 injectTapEventPlugin();
 
-if (window.localStorage['profileOnLoad']) {
+if (window.localStorage['profileOnLoad'] && window.Perf) {
   window.Perf.start();
 }
 
@@ -33,7 +33,7 @@ ReactDOM.render(
   rootElement
 );
 
-if (window.localStorage['profileOnLoad']) {
+if (window.localStorage['profileOnLoad'] && window.Perf) {
   window.Perf.start();
   window.Perf.printInclusive();
 }

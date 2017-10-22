@@ -436,14 +436,14 @@ export const bloodSwordmasterCard = {
   cost: 2,
   spriteID: "hnawh0i9rzb",
   spriteV: 2,
-  text: "Activate: Give a friendly robot 2 attack, then deal 3 damage to your kernel. ",
+  text: "Activate: Give a friendly robot +2 attack, then deal 3 damage to your kernel. ",
   stats: {
     health: 1,
     speed: 3,
     attack: 3
   },
   abilities: [
-    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['setAttribute'](targets['choose'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])), 'attack', 2); })(); (function () { actions['dealDamage'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })(); })\")); })"
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['modifyAttribute'](targets['choose'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])), 'attack', function (x) { return x + 2; }); })(); (function () { actions['dealDamage'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })(); })\")); })"
   ]
 };
 

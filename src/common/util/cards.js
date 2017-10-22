@@ -1,6 +1,6 @@
 import {
-  capitalize, compact, countBy, debounce, flatMap, fromPairs, isArray,
-  mapValues, omit, pick, pullAt, random, reduce, shuffle, times, uniqBy
+  capitalize, compact, countBy, debounce, flatMap, fromPairs,
+  isArray, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
 import {

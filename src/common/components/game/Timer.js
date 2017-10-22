@@ -3,6 +3,10 @@ import { string, bool, func } from 'prop-types';
 
 import { DISABLE_TURN_TIMER } from '../../constants';
 
+function padDigits(seconds) {
+  return (seconds < 10 ? '0' : '') + seconds;
+}
+
 export default class Timer extends Component {
   static propTypes = {
     player: string,
@@ -15,12 +19,27 @@ export default class Timer extends Component {
     onPassTurn: func
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    timer: '1:30'
+  };
 
-    this.state = {
-      timer: '1:30'
-    };
+  componentDidMount() {
+    this.resetTimer();
+    this.interval = setInterval(() => {
+      if (!this.props.gameOver && !this.props.isTutorial && !DISABLE_TURN_TIMER) {
+        this.tickTimer();
+      }
+    }, 1000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.currentTurn !== this.props.currentTurn) {
+      this.resetTimer();
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   get styles() {
@@ -39,31 +58,12 @@ export default class Timer extends Component {
     };
   }
 
-  componentDidMount() {
-    this.resetTimer();
-    setInterval(() => {
-      if (!this.props.gameOver && !this.props.isTutorial && !DISABLE_TURN_TIMER) {
-        this.tickTimer();
-      }
-    }, 1000);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.currentTurn !== this.props.currentTurn) {
-      this.resetTimer();
-    }
+  get isExpanded() {
+    return true; // !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
   }
 
   resetTimer() {
     this.setTimer(1, 30, 'white');
-  }
-
-  padDigits(seconds) {
-    return (seconds < 10 ? '0' : '') + seconds;
-  }
-
-  get isExpanded() {
-    return true; // !isFlagSet('sidebarCollapsed') || this.props.isTutorial;
   }
 
   setTimer(minutes, seconds, color) {
@@ -84,12 +84,12 @@ export default class Timer extends Component {
       if (seconds === 0) {
         this.setTimer(0, 59, 'white');
       } else {
-        this.setTimer(1, this.padDigits(seconds - 1), 'white');
+        this.setTimer(1, padDigits(seconds - 1), 'white');
       }
     } else if (seconds > 0 && seconds <= 6) {
-      this.setTimer(0, this.padDigits(seconds - 1), 'red');
+      this.setTimer(0, padDigits(seconds - 1), 'red');
     } else if (seconds > 0) {
-      this.setTimer(0, this.padDigits(seconds - 1), 'white');
+      this.setTimer(0, padDigits(seconds - 1), 'white');
     } else {
       this.timerEnd();
     }

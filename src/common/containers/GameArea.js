@@ -218,28 +218,18 @@ export class GameArea extends Component {
     onSendChatMessage: func
   };
 
+  state = {
+    areaHeight: 1250,
+    boardSize: 1000,
+    chatOpen: true
+  };
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      areaHeight: 1250,
-      boardSize: 1000,
-      chatOpen: true
-    };
 
     if (!props.started) {
       this.props.history.push('/play');
     }
-
-    setInterval(() => {
-      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
-        animate([
-          props.onAIResponse,
-          props.onAttackRetract,
-          props.onAttackComplete
-        ]);
-      }
-    }, AI_RESPONSE_TIME_MS);
   }
 
   // For testing.
@@ -251,12 +241,26 @@ export class GameArea extends Component {
   componentDidMount() {
     this.updateDimensions();
     window.onresize = () => { this.updateDimensions(); };
+
+    this.interval = setInterval(() => {
+      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
+        animate([
+          this.props.onAIResponse,
+          this.props.onAttackRetract,
+          this.props.onAttackComplete
+        ]);
+      }
+    }, AI_RESPONSE_TIME_MS);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.sidebarOpen !== this.props.sidebarOpen) {
       this.updateDimensions(nextProps);
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   updateDimensions(props = this.props) {

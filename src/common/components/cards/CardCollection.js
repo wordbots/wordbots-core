@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import { without } from 'lodash';
 
 import PageSwitcher from './PageSwitcher';
@@ -8,8 +8,8 @@ import CardTable from './CardTable';
 
 export default class CardCollection extends Component {
   static propTypes = {
-    cards: array,
-    selectedCardIds: array,
+    cards: arrayOf(object),
+    selectedCardIds: arrayOf(string),
     layout: number,
     allowMultipleSelection: bool,
     onlySelectCustomCards: bool,

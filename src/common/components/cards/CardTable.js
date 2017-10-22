@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
   from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
@@ -10,8 +10,8 @@ import CardStat from '../card/CardStat';
 
 export default class CardTable extends Component {
   static propTypes = {
-    cards: array,
-    selectedCardIds: array,
+    cards: arrayOf(object),
+    selectedCardIds: arrayOf(object),
     selectable: bool,
 
     onCardClick: func

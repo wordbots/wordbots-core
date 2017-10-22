@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, object } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -42,8 +42,8 @@ function mapDispatchToProps(dispatch) {
 
 class Decks extends Component {
   static propTypes = {
-    cards: array,
-    decks: array,
+    cards: arrayOf(object),
+    decks: arrayOf(object),
     loggedIn: bool,
 
     history: object,
@@ -153,23 +153,24 @@ class Decks extends Component {
         <div>
           <MustBeLoggedIn loggedIn={this.props.loggedIn}>
             <RaisedButton
-              label="Edit"
               primary
+              label="Edit"
+              disabled={deck.id.startsWith('[default-')}
               onClick={() => {
                 this.props.onEditDeck(deck.id);
                 this.props.history.push('/deck');
               }}
               style={{float: 'left', marginRight: 10, width: '31%'}} />
             <RaisedButton
-              label="Duplicate"
               primary
+              label="Duplicate"
               onClick={() => { this.props.onDuplicateDeck(deck.id); }}
               style={{float: 'left', marginRight: 10, width: '31%'}} />
             <RaisedButton
-              label="Delete"
-              disabled={deck.id === '[default]'}
-              onClick={e => { this.props.onDeleteDeck(deck.id); }}
               primary
+              label="Delete"
+              disabled={deck.id.startsWith('[default-')}
+              onClick={e => { this.props.onDeleteDeck(deck.id); }}
               style={{float: 'left', width: '31%'}}/>
           </MustBeLoggedIn>
         </div>

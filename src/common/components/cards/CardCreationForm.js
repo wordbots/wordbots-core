@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -10,9 +10,10 @@ import { capitalize, compact } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { ensureInRange } from '../../util/common';
-import { getSentencesFromInput, requestParse, numTargetsPerLogicalUnit, CardTextExampleStore } from '../../util/cards';
+import { getSentencesFromInput, requestParse } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 import { prepareBigramProbs } from '../../util/language';
+import CardTextExampleStore from '../../util/CardTextExampleStore';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -26,7 +27,7 @@ export default class CardCreationForm extends Component {
     name: string,
     type: number,
     text: string,
-    sentences: array,
+    sentences: arrayOf(object),
     attack: number,
     speed: number,
     health: number,
@@ -133,12 +134,6 @@ export default class CardCreationForm extends Component {
       return this.parseErrors.join(' ');
     } else if (this.nonEmptySentences.find(s => !s.result.js)) {
       return 'Sentences are still being parsed ...';
-    } else {
-      // Check for >1 target in each logical unit of the parsed JS.
-      const tooManyTargets = numTargetsPerLogicalUnit(this.fullParse).find(n => n > 1);
-      if (tooManyTargets) {
-        return `We do not yet support multiple target selection (expected 0 or 1 targets, got ${tooManyTargets}).`;
-      }
     }
   }
 

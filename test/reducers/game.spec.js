@@ -240,7 +240,7 @@ describe('Game reducer', () => {
       ).toEqual(getDefaultState().players.orange.hand.length + 2);
 
       // "Destroy all robots."
-      state = playObject(state, 'orange', cards.attackBotCard, '2,0,-2');
+      state = playObject(state, 'orange', cards.attackBotCard, '3,-1,-2');
       state = playEvent(state, 'orange', cards.wrathOfRobotGodCard);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
 
@@ -253,8 +253,8 @@ describe('Game reducer', () => {
       // Test ability to select a tile with an object:
       // "Deal 3 damage to a robot."
       let state = getDefaultState();
-      state = playObject(state, 'orange', cards.attackBotCard, '2,0,-2');
-      state = playEvent(state, 'blue', cards.shockCard, {hex: '2,0,-2'});
+      state = playObject(state, 'orange', cards.attackBotCard, '3,-1,-2');
+      state = playEvent(state, 'blue', cards.shockCard, {hex: '3,-1,-2'});
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
 
       // Test ability to select an empty tile:
@@ -274,6 +274,16 @@ describe('Game reducer', () => {
         state.players.blue.hand.length
       ).toEqual(getDefaultState().players.blue.hand.length);
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH + 4);
+    });
+
+    it('should be able to play events with multiple target selection', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.attackBotCard, '3,-1,-2');
+      // "Move a robot up to two spaces."
+      state = playEvent(state, 'orange', cards.gustOfWindCard, [{hex: '3,-1,-2'}, {hex: '1,-1,0'}]);
+      expect(
+        objectsOnBoardOfType(state, TYPE_ROBOT)
+      ).toEqual({'1,-1,0': 'Attack Bot'});
     });
   });
 

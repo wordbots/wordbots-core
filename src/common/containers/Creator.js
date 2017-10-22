@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -67,7 +67,7 @@ export class Creator extends Component {
     name: string,
     type: number,
     text: string,
-    sentences: array,
+    sentences: arrayOf(object),
     spriteID: string,
     attack: number,
     speed: number,
@@ -75,7 +75,7 @@ export class Creator extends Component {
     cost: number,
     loggedIn: bool,
 
-    history: oneOfType([array, object]),
+    history: oneOfType([arrayOf(object), object]),
 
     onSetName: func,
     onSetType: func,

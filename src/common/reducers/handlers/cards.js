@@ -41,8 +41,17 @@ const cardsHandlers = {
   },
 
   loadState: function (state, data) {
+    const defaultDecks = state.decks.filter(deck => deck.id.startsWith('[default-'));
+
     state = loadCardsFromFirebase(state, data);
     state = loadDecksFromFirebase(state, data);
+
+    defaultDecks.forEach(defaultDeck => {
+      if (!state.decks.find(deck => deck.id === defaultDeck.id)) {
+        state.decks.push(defaultDeck);
+      }
+    });
+
     return state;
   },
 

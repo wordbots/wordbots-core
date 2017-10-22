@@ -1,5 +1,5 @@
 import React from 'react';
-import { array, bool, object, string } from 'prop-types';
+import { arrayOf, bool, object, string } from 'prop-types';
 
 import { DISPLAY_HEX_IDS } from '../../constants';
 import CardTooltip from '../card/CardTooltip';
@@ -16,7 +16,7 @@ export default class HexShape extends React.Component {
     actions: object.isRequired,
     card: object,
     tutorialStep: object,
-    activatedAbilities: array,
+    activatedAbilities: arrayOf(object),
     fill: string,
     selected: bool,
     hovered: bool

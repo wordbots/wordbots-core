@@ -395,6 +395,143 @@ export const friendlyRiotShieldCard = {
   ]
 };
 
+export const speedyBotCard = {
+  name: "Speedy Bot",
+  type: TYPE_ROBOT,
+  cost: 1,
+  spriteID: "cjslwbmwgua",
+  spriteV: 2,
+  text: "Haste.\nStartup: Lose 2 life.",
+  stats: {
+    health: 1,
+    speed: 2,
+    attack: 3
+  },
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAndAttackAgain'](targets['thisRobot']()); })); })",
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['self'](), 2); })); })"
+  ]
+};
+
+export const mercenaryBlacksmithCard = {
+  name: "Mercenary Blacksmith",
+  type: TYPE_ROBOT,
+  cost: 2,
+  spriteID: "ns8lr4xvtbk",
+  spriteV: 2,
+  text: "At the start of your turn, a random friendly robot gains 1 attack and a random enemy robot gains 1 attack.",
+  stats: {
+    health: 1,
+    speed: 3,
+    attack: 3
+  },
+  abilities: [
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['self'](); }), (function () { (function () { actions['modifyAttribute'](targets['random'](1, objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])), 'attack', function (x) { return x + 1; }); })(); (function () { actions['modifyAttribute'](targets['random'](1, objectsMatchingConditions('robot', [conditions['controlledBy'](targets['opponent']())])), 'attack', function (x) { return x + 1; }); })(); })); })"
+  ]
+};
+
+export const bloodSwordmasterCard = {
+  name: "Blood Swordmaster",
+  type: TYPE_ROBOT,
+  cost: 2,
+  spriteID: "hnawh0i9rzb",
+  spriteV: 2,
+  text: "Activate: Give a friendly robot 2 attack, then deal 3 damage to your kernel. ",
+  stats: {
+    health: 1,
+    speed: 3,
+    attack: 3
+  },
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['setAttribute'](targets['choose'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])), 'attack', 2); })(); (function () { actions['dealDamage'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })(); })\")); })"
+  ]
+};
+
+export const recklessBerserkerCard = {
+  name: "Reckless Berserker",
+  type: TYPE_ROBOT,
+  cost: 3,
+  spriteID: "rnfdngv4gm",
+  spriteV: 2,
+  text: "Haste.",
+  stats: {
+    health: 1,
+    speed: 3,
+    attack: 3
+  },
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAndAttackAgain'](targets['thisRobot']()); })); })"
+  ]
+};
+
+export const roboSlugCard = {
+  name: "Robo Slug",
+  type: TYPE_ROBOT,
+  cost: 3,
+  spriteID: "2icq34datl7",
+  spriteV: 2,
+  text: "Startup: Deal 2 damage to your opponent.",
+  stats: {
+    health: 2,
+    speed: 1,
+    attack: 2
+  },
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['opponent'](), 2); })); })"
+  ]
+};
+
+export const kernelEaterCard = {
+  name: "Kernel Eater",
+  type: TYPE_ROBOT,
+  cost: 3,
+  spriteID: "lh57hglh3nl",
+  spriteV: 2,
+  text: "At the end of your turn, deal 1 damage to each player.",
+  stats: {
+    health: 3,
+    speed: 1,
+    attack: 1
+  },
+  abilities: [
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['self'](); }), (function () { actions['dealDamage'](targets['allPlayers'](), 1); })); })"
+  ]
+};
+
+export const hermesCard = {
+  name: "Hermes",
+  type: TYPE_ROBOT,
+  cost: 3,
+  spriteID: "kjj5rtqzcms",
+  spriteV: 2,
+  text: "All robots have +1 speed.",
+  stats: {
+    health: 2,
+    speed: 1,
+    attack: 1
+  },
+  abilities: [
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return objectsMatchingConditions('robot', []); }, 'speed', function (x) { return x + 1; })); })"
+  ]
+};
+
+export const energyHoarderCard = {
+  name: "Energy Hoarder",
+  type: TYPE_ROBOT,
+  cost: 4,
+  spriteID: "ctlljzk4jq",
+  spriteV: 2,
+  text: "Activate: Pay 3 energy and discard a card, then this robot gains 1 attack and 1 health.",
+  stats: {
+    health: 2,
+    speed: 3,
+    attack: 4
+  },
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['payEnergy'](targets['self'](), 3); })(); (function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard'))); })(); (function () { (function () { save('target', targets['thisRobot']()); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 1; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 1; }); })(); })(); })(); })\")); })"
+  ]
+};
+
 // IIIb. Events
 
 export const concentrationCard = {
@@ -517,6 +654,14 @@ const empCard = {
     "(function () { actions['giveAbility'](objectsMatchingConditions('robot', []), \"(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \\\"(function () { actions['destroy'](targets['thisRobot']()); })\\\")); })\"); })"
   ],
   cost: 7,
+  type: TYPE_EVENT
+};
+
+export const gustOfWindCard = {
+  name: 'Gust of Wind',
+  text: 'Move a robot up to 2 spaces.',
+  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['moveObject'](load('target'), targets['choose'](tilesMatchingConditions([conditions['withinDistanceOf'](2, load('target'))]))); })(); })",
+  cost: 2,
   type: TYPE_EVENT
 };
 
@@ -688,7 +833,16 @@ export const collection = [
   batteryBotCard,
   knowledgeBotCard,
   leapFrogBotCard,
-  friendlyRiotShieldCard
+  friendlyRiotShieldCard,
+  gustOfWindCard,
+  speedyBotCard,
+  mercenaryBlacksmithCard,
+  bloodSwordmasterCard,
+  recklessBerserkerCard,
+  roboSlugCard,
+  kernelEaterCard,
+  hermesCard,
+  energyHoarderCard
 ].map(card =>
   Object.assign(card, {
     id: `builtin/${card.name}`,
@@ -696,3 +850,5 @@ export const collection = [
     source: 'builtin'
   })
 );
+
+export const builtinCardNames = collection.map(card => card.name);

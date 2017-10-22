@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, number, func } from 'prop-types';
+import { arrayOf, func, number, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -9,8 +9,8 @@ import EnergyCurve from '../cards/EnergyCurve';
 
 export default class DeckPicker extends Component {
   static propTypes = {
-    cards: array,
-    availableDecks: array,
+    cards: arrayOf(object),
+    availableDecks: arrayOf(object),
     selectedDeckIdx: number,
     onChooseDeck: func
   };

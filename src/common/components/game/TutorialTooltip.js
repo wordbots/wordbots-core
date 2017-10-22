@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
@@ -10,7 +10,7 @@ import Tooltip from '../Tooltip';
 
 export default class TutorialTooltip extends Component {
   static propTypes = {
-    children: oneOfType([array, object]),
+    children: oneOfType([arrayOf(object), object]),
     tutorialStep: object,
     enabled: bool,
     top: number,

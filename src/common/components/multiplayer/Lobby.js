@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, object, string } from 'prop-types';
+import { arrayOf, func, object, string } from 'prop-types';
 import { shuffle } from 'lodash';
 
 import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
@@ -16,8 +16,8 @@ export default class Lobby extends Component {
   static propTypes = {
     socket: object,
     gameMode: string,
-    availableDecks: array,
-    cards: array,
+    availableDecks: arrayOf(object),
+    cards: arrayOf(object),
 
     onConnect: func,
     onJoinGame: func,
@@ -84,7 +84,7 @@ export default class Lobby extends Component {
     const skt = this.props.socket;
 
     return (
-      <div style={{padding: '48px 72px'}}>
+      <div style={{padding: '48px 328px 48px 72px'}}>
         <LobbyStatus
           connecting={skt.connecting}
           connected={skt.connected}

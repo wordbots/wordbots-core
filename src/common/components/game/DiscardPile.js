@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { arrayOf, object } from 'prop-types';
 
 import Card from '../card/Card';
 
 export default class DiscardPile extends Component {
   static propTypes = {
-    cards: array
+    cards: arrayOf(object)
   };
 
   renderCards(cards) {

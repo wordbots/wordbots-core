@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { arrayOf, object } from 'prop-types';
 
 import Tooltip from '../Tooltip';
 import CardBack from '../card/CardBack';
 
 export default class Deck extends Component {
   static propTypes = {
-    deck: array
+    deck: arrayOf(object)
   };
 
   render() {

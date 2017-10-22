@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, func, object, array } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router';
@@ -10,7 +10,6 @@ import * as socketActions from '../actions/socket';
 import * as gameActions from '../actions/game';
 
 import GameArea from './GameArea';
-import GameMenu from './GameMenu';
 
 export function mapStateToProps(state) {
   return {
@@ -52,11 +51,11 @@ export function mapDispatchToProps(dispatch) {
 export class Play extends Component {
   static propTypes = {
     started: bool,
-    actionLog: array,
+    actionLog: arrayOf(object),
 
     socket: object,
-    cards: array,
-    availableDecks: array,
+    cards: arrayOf(object),
+    availableDecks: arrayOf(object),
 
     history: object,
 
@@ -105,18 +104,7 @@ export class Play extends Component {
   }
 
   get rightMenu() {
-    if (this.props.started) {
-      return (
-        <div>
-          {<GameMenu />}
-          <Chat
-            inGame
-            roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-            messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-            onSendMessage={this.props.onSendChatMessage} />
-        </div>
-      );
-    } else {
+    if (!this.props.started) {
       return (
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
@@ -128,7 +116,7 @@ export class Play extends Component {
 
   render() {
     return (
-      <div style={{paddingRight: 256}}>
+      <div>
         <Helmet title="Play"/>
 
         <Switch>

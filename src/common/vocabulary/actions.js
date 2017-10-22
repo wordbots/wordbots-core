@@ -1,4 +1,4 @@
-import { findKey, mapValues } from 'lodash';
+import { cloneDeep, findKey, isFunction, mapValues } from 'lodash';
 
 import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
@@ -7,29 +7,51 @@ import {
   passTurn, drawCards, removeCardsFromHand, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
   executeCmd
 } from '../util/game';
+import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 
 export default function actions(state) {
+  const iterateOver = collection => fn => {
+    collection.entries.forEach(item => {
+      state.currentObjectInCollection = item;  // (Needed for tracking of targets.they)
+      fn(item);
+      state.currentObjectInCollection = undefined;
+    });
+  };
+
   return {
+    becomeACopy: function (sources, targets) {
+      const target = targets.entries[0]; // Unpack target.
+      iterateOver(sources)(source => {
+        Object.assign(source, {
+          card: cloneDeep(target.card),
+          stats: cloneDeep(target.stats),
+          triggers: cloneDeep(target.triggers),
+          abilities: cloneDeep(target.abilities)
+        });
+        updateOrDeleteObjectAtHex(state, source, getHex(state, source));
+      });
+    },
+
     canAttackAgain: function (objects) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         Object.assign(object, {cantAttack: false});
       });
     },
 
     canMoveAgain: function (objects) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         Object.assign(object, {movesMade: 0, cantMove: false});
       });
     },
 
     canMoveAndAttackAgain: function (objects) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         Object.assign(object, {movesMade: 0, cantMove: false, cantAttack: false});
       });
     },
 
     dealDamage: function (targets, amount) {
-      targets.entries.forEach(target => {
+      iterateOver(targets)(target => {
         let hex;
         if (target.robotsOnBoard) {
           // target is a player, so reassign damage to their core.
@@ -44,7 +66,7 @@ export default function actions(state) {
     },
 
     destroy: function (objects) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         object.isDestroyed = true;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object));
       });
@@ -63,7 +85,7 @@ export default function actions(state) {
     },
 
     giveAbility: function (objects, abilityCmd) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         executeCmd(state, abilityCmd, object);
       });
     },
@@ -71,7 +93,7 @@ export default function actions(state) {
     modifyAttribute: function (objects, attr, func) {
       if (state.memory['duration']) {
         // Temporary attribute adjustment.
-        objects.entries.forEach(object => {
+        iterateOver(objects)(object => {
           const targetFn = `() => objectsMatchingConditions('allobjects', [conditions['hasId']('${object.id}')])`;
           const abilityCmd = `() => { setAbility(abilities['attributeAdjustment']("${targetFn}", '${attr}', ${func})); }`;
 
@@ -79,7 +101,7 @@ export default function actions(state) {
         });
       } else {
         // Permanent attribute adjustment.
-        objects.entries.forEach(object => {
+        iterateOver(objects)(object => {
           if (attr === 'allattributes') {
             object.stats = mapValues(object.stats, clamp(func));
           } else if (attr === 'cost') {
@@ -97,6 +119,16 @@ export default function actions(state) {
       });
     },
 
+    moveObject: function (objects, hexes) {
+      // Unpack.
+      const [object, hex] = [objects, hexes].map(t => t.entries[0]);
+
+      if (object && hex) {
+        const startHex = getHex(state, object);
+        moveObjectUsingAbility(state, startHex, hex);
+      }
+    },
+
     payEnergy: function (players, amount) {
       players.entries.forEach(player => {
         if (player.energy.available >= amount) {
@@ -107,8 +139,23 @@ export default function actions(state) {
       });
     },
 
+    removeAllAbilities: function (objects) {
+      iterateOver(objects)(object => {
+        Object.assign(object, {
+          card: Object.assign({}, object.card, {text: ''}),
+
+          triggers: [],
+          abilities: object.abilities.map(ability => ({...ability, disabled: true})),
+
+          activatedAbilities: [],
+          effects: [],
+          temporaryStatAdjustments: []
+        });
+      });
+    },
+
     restoreHealth: function (objects, num) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         if (object.stats.health < object.card.stats.health) {
           if (num) {
             object.stats.health = Math.min(object.card.stats.health, object.stats.health + num);
@@ -125,12 +172,16 @@ export default function actions(state) {
         this.modifyAttribute(objects, attr, `(function () { return ${num}; })`);
       } else {
         // Permanent attribute adjustment.
-        this.modifyAttribute(objects, attr, () => num);
+        iterateOver(objects)(object => {
+          num = isFunction(num) ? num(state) : num;  // num could be wrapped as a function of state (see targets.they)
+          const target = {type: 'objects', entries: [object]};
+          this.modifyAttribute(target, attr, () => num);
+        });
       }
     },
 
     swapAttributes: function (objects, attr1, attr2) {
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         const [savedAttr1, savedAttr2] = [object.stats[attr1], object.stats[attr2]];
         object.stats[attr2] = savedAttr1;
         object.stats[attr1] = savedAttr2;
@@ -141,7 +192,7 @@ export default function actions(state) {
     takeControl: function (players, objects) {
       const newOwner = players.entries[0]; // Unpack player.
 
-      objects.entries.forEach(object => {
+      iterateOver(objects)(object => {
         const currentOwner = ownerOf(state, object);
         if (newOwner.name !== currentOwner.name) {
           const hex = getHex(state, object);

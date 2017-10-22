@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import ReactDOM from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { isEmpty, isNull } from 'lodash';
@@ -13,11 +13,11 @@ import TutorialTooltip from '../game/TutorialTooltip';
 export default class Hand extends Component {
   static propTypes = {
     name: string,
-    cards: array,
+    cards: arrayOf(object),
     isActivePlayer: bool,
     selectedCard: number,
     hoveredCard: number,
-    targetableCards: array,
+    targetableCards: arrayOf(object),
     status: object,
     curved: bool,
     opponent: bool,

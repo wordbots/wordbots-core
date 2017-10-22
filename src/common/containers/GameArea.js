@@ -1,21 +1,29 @@
 import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import screenfull from 'screenfull';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
 import { currentTutorialStep } from '../util/game';
 import Board from '../components/game/Board';
+import Timer from '../components/game/Timer';
+import EndTurnButton from '../components/game/EndTurnButton';
+import ForfeitButton from '../components/game/ForfeitButton';
+import SoundToggle from '../components/game/SoundToggle';
+import FullscreenToggle from '../components/game/FullscreenToggle';
 import PlayerArea from '../components/game/PlayerArea';
 import Status from '../components/game/Status';
 import Sfx from '../components/game/Sfx';
 import EventAnimation from '../components/game/EventAnimation';
 import VictoryScreen from '../components/game/VictoryScreen';
+import TutorialTooltip from '../components/game/TutorialTooltip';
+import Chat from '../components/multiplayer/Chat';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
@@ -67,7 +75,15 @@ export function mapStateToProps(state) {
     tutorialStep: currentTutorialStep(state.game),
     isPractice: state.game.practice,
 
-    sidebarOpen: state.global.sidebarOpen || state.game.tutorial
+    sidebarOpen: state.global.sidebarOpen || state.game.tutorial,
+
+    gameOver: state.game.winner !== null,
+    isTutorial: state.game.tutorial,
+    isMyTurn: state.game.currentTurn === state.game.player,
+    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to,
+
+    actionLog: state.game.actionLog,
+    socket: state.socket
   };
 }
 
@@ -109,9 +125,18 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId, player) => {
       dispatch(gameActions.setSelectedTile(hexId, player));
     },
+    onPassTurn: (player) => {
+      dispatch(gameActions.passTurn(player));
+    },
     onEndGame: () => {
       dispatch([
         gameActions.endGame(),
+        socketActions.leave()
+      ]);
+    },
+    onForfeit: (winner) => {
+      dispatch([
+        socketActions.forfeit(winner),
         socketActions.leave()
       ]);
     },
@@ -120,6 +145,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onAIResponse: () => {
       dispatch(gameActions.aiResponse());
+    },
+    onSendChatMessage: (msg) => {
+      dispatch(socketActions.chat(msg));
     }
   };
 }
@@ -140,8 +168,8 @@ export class GameArea extends Component {
     target: object,
     attack: object,
 
-    blueHand: array,
-    orangeHand: array,
+    blueHand: arrayOf(object),
+    orangeHand: arrayOf(object),
 
     bluePieces: object,
     orangePieces: object,
@@ -149,20 +177,29 @@ export class GameArea extends Component {
     blueEnergy: object,
     orangeEnergy: object,
 
-    blueDeck: array,
-    orangeDeck: array,
+    blueDeck: arrayOf(object),
+    orangeDeck: arrayOf(object),
 
-    blueDiscardPile: array,
-    orangeDiscardPile: array,
+    blueDiscardPile: arrayOf(object),
+    orangeDiscardPile: arrayOf(object),
 
-    eventQueue: array,
-    sfxQueue: array,
+    eventQueue: arrayOf(object),
+    sfxQueue: arrayOf(string),
     tutorialStep: object,
     isPractice: bool,
 
     sidebarOpen: bool,
 
     history: object,
+
+    gameOver: bool,
+    isTutorial: bool,
+    isMyTurn: bool,
+    isSpectator: bool,
+    isAttackHappening: bool,
+
+    actionLog: arrayOf(object),
+    socket: object,
 
     onMoveRobot: func,
     onAttackRobot: func,
@@ -173,32 +210,26 @@ export class GameArea extends Component {
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
+    onPassTurn: func,
     onEndGame: func,
+    onForfeit: func,
     onTutorialStep: func,
-    onAIResponse: func
+    onAIResponse: func,
+    onSendChatMessage: func
+  };
+
+  state = {
+    areaHeight: 1250,
+    boardSize: 1000,
+    chatOpen: true
   };
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      areaHeight: 1250,
-      boardSize: 1000
-    };
-
     if (!props.started) {
       this.props.history.push('/play');
     }
-
-    setInterval(() => {
-      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
-        animate([
-          props.onAIResponse,
-          props.onAttackRetract,
-          props.onAttackComplete
-        ]);
-      }
-    }, AI_RESPONSE_TIME_MS);
   }
 
   // For testing.
@@ -210,12 +241,26 @@ export class GameArea extends Component {
   componentDidMount() {
     this.updateDimensions();
     window.onresize = () => { this.updateDimensions(); };
+
+    this.interval = setInterval(() => {
+      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
+        animate([
+          this.props.onAIResponse,
+          this.props.onAttackRetract,
+          this.props.onAttackComplete
+        ]);
+      }
+    }, AI_RESPONSE_TIME_MS);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.sidebarOpen !== this.props.sidebarOpen) {
       this.updateDimensions(nextProps);
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   updateDimensions(props = this.props) {
@@ -226,6 +271,10 @@ export class GameArea extends Component {
       areaHeight: window.innerHeight - 64,
       boardSize: Math.min(maxBoardWidth, maxBoardHeight)
     });
+  }
+
+  toggleChat() {
+    this.setState({ chatOpen: !this.state.chatOpen });
   }
 
   isMyTurn() {
@@ -297,7 +346,11 @@ export class GameArea extends Component {
 
   render() {
     return (
-      <div>
+      <div
+        className="gameArea"
+        style={
+          screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
+        }>
         <div>
           {this.renderNotification()}
           <Sfx queue={this.props.sfxQueue} />
@@ -306,9 +359,70 @@ export class GameArea extends Component {
         <Paper
           style={{
             position: 'relative',
-            height: this.state.areaHeight,
+            marginRight: this.state.chatOpen ? 256 : 64,
+            height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
             background: `url(${this.loadBackground()})`
         }}>
+          <div style={{
+            display: 'flex',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft: 20
+            }}>
+              <Timer
+                player={this.props.player}
+                currentTurn={this.props.currentTurn}
+                gameOver={this.props.gameOver}
+                isTutorial={this.props.isTutorial}
+                isMyTurn={this.props.isMyTurn}
+                isAttackHappening={this.props.isAttackHappening}
+                onPassTurn={this.props.onPassTurn} />
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                marginTop: 10
+              }}>
+                <SoundToggle />
+                <FullscreenToggle />
+              </div>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginRight: 20
+            }}>
+              <TutorialTooltip
+                tutorialStep={this.props.tutorialStep}
+                enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
+                top={0}
+                place="left"
+                onNextStep={() => { this.props.onTutorialStep(); }}
+                onPrevStep={() => { this.props.onTutorialStep(true); }}
+              >
+                <EndTurnButton
+                  player={this.props.player}
+                  currentTurn={this.props.currentTurn}
+                  gameOver={this.props.gameOver}
+                  isMyTurn={this.props.isMyTurn}
+                  isAttackHappening={this.props.isAttackHappening}
+                  onPassTurn={this.props.onPassTurn} />
+              </TutorialTooltip>
+              <ForfeitButton
+                player={this.props.player}
+                history={this.props.history}
+                gameOver={this.props.gameOver}
+                isSpectator={this.props.isSpectator}
+                isTutorial={this.props.isTutorial}
+                onForfeit={this.props.onForfeit} />
+            </div>
+          </div>
           <PlayerArea opponent gameProps={this.props} />
           <div
             style={{
@@ -353,6 +467,15 @@ export class GameArea extends Component {
               this.props.history.push('/play');
             }} />
         </Paper>
+
+        <Chat
+          inGame
+          fullscreen={screenfull.isFullscreen}
+          open={this.state.chatOpen}
+          toggleChat={() => this.toggleChat()}
+          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
+          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
+          onSendMessage={this.props.onSendChatMessage} />
       </div>
     );
   }

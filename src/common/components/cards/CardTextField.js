@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, func, number, string } from 'prop-types';
+import { arrayOf, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { chain as _ } from 'lodash';
 
@@ -9,7 +9,7 @@ export default class CardTextField extends Component {
   static propTypes = {
     type: number,
     text: string,
-    sentences: array,
+    sentences: arrayOf(object),
     error: string,
 
     onUpdateText: func,

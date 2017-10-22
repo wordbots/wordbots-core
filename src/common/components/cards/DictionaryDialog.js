@@ -4,7 +4,8 @@ import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import Toggle from 'material-ui/Toggle';
+import { Tabs, Tab } from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, noop, uniq } from 'lodash';
 
@@ -35,7 +36,8 @@ export default class DictionaryDialog extends Component {
       dictionaryTerm: null,
       thesaurusTerm: null,
       keywordsTerm: null,
-      searchText: ''
+      searchText: '',
+      showDefinitions: false
     };
   }
 
@@ -111,7 +113,9 @@ export default class DictionaryDialog extends Component {
   )
 
   selectTerm = (term, callback = noop) => {
-    this.setState({ [`${this.currentTab}Term`]: term }, callback);
+    this.setState({
+      [`${this.currentTab}Term`]: term
+    }, callback);
   }
 
   checkHash = () => {
@@ -137,6 +141,12 @@ export default class DictionaryDialog extends Component {
         <Toolbar>
           <ToolbarGroup>
             <ToolbarTitle text={this.selectedTerm} />
+          </ToolbarGroup>
+          <ToolbarGroup>
+            <Toggle 
+              label="Advanced" 
+              onToggle={() => this.setState({ showDefinitions: !this.state.showDefinitions })}
+              toggled={this.state.showDefinitions}/>
           </ToolbarGroup>
         </Toolbar>
       </div>
@@ -196,18 +206,28 @@ export default class DictionaryDialog extends Component {
 
   renderDictionaryDefinitions() {
     const definitions = this.dictionaryDefinitions[this.selectedTerm] || [];
-    return (
-      <div key="definitions">
-        <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
-        <ol>
-          {definitions.map(d =>
-            <li key={`${d.syntax}${d.semantics}`}>
-              <strong>{d.syntax}. </strong>{this.cleanupSemantics(d.semantics)}
-            </li>
-          )}
-        </ol>
-      </div>
-    );
+    if (this.state.showDefinitions) {
+      return (
+        <div key="definitions">
+          <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
+          <ol>
+            {definitions.map(d =>
+              <li key={`${d.syntax}${d.semantics}`}>
+                <strong>{d.syntax}. </strong>{this.cleanupSemantics(d.semantics)}
+              </li>
+            )}
+          </ol>
+        </div>
+      );
+    } else if (definitions) {
+      return (
+        <div key="definitions" style={{marginBottom: 20, textDecoration: 'underline', cursor: 'pointer'}}>
+          <a onClick={() => { this.setState({ showDefinitions: true }); }}>
+            [Show {definitions.length} definition(s) <i>(Advanced feature)</i>]
+          </a>
+        </div>
+      );
+    }
   }
 
   renderKeywordsDefinition() {

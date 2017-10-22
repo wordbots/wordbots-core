@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, element, object, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
 import { Route } from 'react-router';
 import Dialog from 'material-ui/Dialog';
 
@@ -11,12 +11,12 @@ export default class RouterDialog extends Component {
     title: string,
     style: object,
     bodyStyle: object,
-    actions: array,
+    actions: arrayOf(element),
     modal: bool,
     scroll: bool,
     history: object,
 
-    children: oneOfType([array, element])
+    children: oneOfType([arrayOf(element), element])
   }
 
   static defaultProps = {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { number, string, object, array } from 'prop-types';
+import { arrayOf, number, string, object } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { chain as _ } from 'lodash';
 
@@ -17,9 +17,9 @@ export default class HexGrid extends Component {
     height: number.isRequired,
     actions: object.isRequired,
     layout: object.isRequired,
-    hexagons: array.isRequired,
+    hexagons: arrayOf(object).isRequired,
     tutorialStep: object,
-    activatedAbilities: array,
+    activatedAbilities: arrayOf(object),
     path: object,
     hexColors: object,
     pieces: object,

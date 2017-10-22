@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array, bool, object, oneOfType, string } from 'prop-types';
+import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
 import { id } from '../util/common';
@@ -9,7 +9,7 @@ export default class Tooltip extends Component {
     inline: bool,
     style: object,
     text: string.isRequired,
-    children: oneOfType([array, object]),
+    children: oneOfType([arrayOf(element), element]),
     disable: bool,
     place: string
   };

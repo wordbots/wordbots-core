@@ -1,12 +1,13 @@
 import { collection } from './cards';
+import * as decks from './decks';
 
 const defaultState = {
   cards: collection,
   decks: [
     {
-      id: '[default]',
-      name: 'Default',
-      cardIds: collection.slice(0, 30).map(c => c.id)
+      id: '[default-aggro]',
+      name: 'RoboRampage (Built-in)',
+      cardIds: decks.aggro.map(c => c.id)
     }
   ],
   currentDeck: null,

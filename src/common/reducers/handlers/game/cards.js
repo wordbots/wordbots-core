@@ -91,7 +91,7 @@ export function placeCard(state, cardIdx, tile) {
     tempState = triggerSound(tempState, 'spawn.wav');
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
 
-    if (card.abilities.length > 0) {
+    if (card.abilities && card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
         const cmdText = splitSentences(card.text)[idx];
         tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
@@ -118,7 +118,8 @@ export function placeCard(state, cardIdx, tile) {
       tempState = removeCardsFromHand(tempState, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects'
+        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects',
+        undergoer: playedObject
       });
       tempState = applyAbilities(tempState);
 
@@ -146,6 +147,7 @@ function playEvent(state, cardIdx) {
 
     tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+    tempState.eventExecuting = true;
 
     (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {
       const cmdText = splitSentences(card.text)[idx];
@@ -154,6 +156,8 @@ function playEvent(state, cardIdx) {
         executeCmd(tempState, cmd);
       }
     });
+
+    tempState.eventExecuting = false;
 
     if (player.target.choosing) {
       // Target still needs to be selected, so roll back playing the card (and return old state).

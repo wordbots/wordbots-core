@@ -98,18 +98,15 @@ export default class Chat extends Component {
     const card = (message.cards || [])[phrase];
     if (card) {
       return (
-        <CardTooltip
-          card={card}>
-          <span
-            key={id()}
-            style={{fontWeight: 'bold', cursor: 'pointer'}}>
-              {phrase}
+        <CardTooltip key={phrase} card={card}>
+          <span style={{fontWeight: 'bold', cursor: 'pointer'}}>
+            {phrase}
           </span>
         </CardTooltip>
       );
     } else {
       return (
-        <span key={id()}>
+        <span key={phrase}>
           {phrase}
         </span>
       );
@@ -142,7 +139,7 @@ export default class Chat extends Component {
           cursor: 'pointer'
         }} onClick={this.props.toggleChat}>
           <FontIcon className="material-icons" style={{
-            color: 'rgba(0, 0, 0, 0.4)', 
+            color: 'rgba(0, 0, 0, 0.4)',
             fontSize: 32
           }}>fast_rewind</FontIcon>
         </div>
@@ -266,9 +263,9 @@ export default class Chat extends Component {
     };
 
     return (
-      <Drawer 
-        openSecondary 
-        docked 
+      <Drawer
+        openSecondary
+        docked
         containerStyle={containerStyle}
         width={this.isClosed() ? 64 : 256}>
         {this.renderDrawerContents(chatTitle)}

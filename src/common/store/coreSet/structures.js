@@ -110,6 +110,19 @@ export const healingWellCard = {
   ]
 };
 
+export const mirrorCard = {
+  name: 'Mirror',
+  cost: 4,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 2
+  },
+  text: 'When you play a robot, this structure becomes a copy of it.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterCardPlay'](function () { return targets['self'](); }, 'robot'), (function () { actions['becomeACopy'](targets['thisRobot'](), targets['it']()); })); })"
+  ]
+};
+
 export const theBombCard = {
   name: 'The Bomb',
   cost: 6,

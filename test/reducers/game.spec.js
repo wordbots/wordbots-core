@@ -285,6 +285,12 @@ describe('Game reducer', () => {
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({'1,-1,0': 'Attack Bot'});
     });
+
+    it('should not be able to play an event if there are no valid targets', () => {
+      let state = getDefaultState();
+      state = playEvent(state, 'orange', cards.smashCard);
+      expect(state.players.orange.hand.map(c => c.name)).toContain(cards.smashCard.name);
+    });
   });
 
   describe('[Triggered abilities]', () => {

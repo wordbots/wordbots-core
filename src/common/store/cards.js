@@ -28,27 +28,9 @@ export const orangeCoreCard = {
   source: 'builtin'
 };
 
-// II. Tutorial-only cards.
+// II. Core set
 
-export const upgradeCard = {
-  name: 'Upgrade',
-  text: 'Give a robot +2 attack and +2 health.',
-  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
-  cost: 2,
-  type: TYPE_EVENT
-};
-
-export const rechargeCard = {
-  name: 'Recharge',
-  text: 'All of your robots can move and attack again.',
-  command: "(function () { actions['canMoveAndAttackAgain'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })",
-  cost: 2,
-  type: TYPE_EVENT
-};
-
-// III. Core set
-
-// IIIa. Robots
+// IIa. Robots
 
 export const oneBotCard = {
   name: 'One Bot',
@@ -465,7 +447,7 @@ export const energyHoarderCard = {
   ]
 };
 
-// IIIb. Events
+// IIb. Events
 
 export const concentrationCard = {
   name: 'Concentration',
@@ -598,7 +580,7 @@ export const gustOfWindCard = {
   type: TYPE_EVENT
 };
 
-// IIIc. Structures
+// IIc. Structures
 
 export const fortificationCard = {
   name: 'Fortification',

@@ -14,10 +14,15 @@ describe('Built-in cards', () => {
     };
 
     collection.forEach(card => {
-      const abilities = (card.abilities || []).concat(card.command || []);
-      abilities.forEach(ability => {
-        executeCmd(state, ability, dummyCurrentObj);
-      });
+      try {
+        const abilities = (card.abilities || []).concat(card.command || []);
+        abilities.forEach(ability => {
+          executeCmd(state, ability, dummyCurrentObj);
+        });
+      } catch (err) {
+        console.error(`Error executing ability for ${card.name} card!`);
+        throw err;
+      }
     });
   });
 });

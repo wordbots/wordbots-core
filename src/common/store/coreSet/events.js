@@ -149,7 +149,7 @@ export const earthquakeCard = {
 export const greatSimplificationCard = {
   name: 'Great Simplification',
   text: 'Remove all abilities from all robots',
-  command: "((function () { actions['removeAllAbilities'](objectsMatchingConditions('robot', [])); })",
+  command: "(function () { actions['removeAllAbilities'](objectsMatchingConditions('robot', [])); })",
   cost: 5,
   type: TYPE_EVENT
 };
@@ -169,7 +169,7 @@ export const explosiveBoostCard = {
   name: 'Explosive Boost',
   text: 'Give your robots +2 attack and +2 health. Deal 1 damage to each enemy object',
   command: [
-    "((function () { (function () { save('target', objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
+    "(function () { (function () { save('target', objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
     "(function () { actions['dealDamage'](objectsMatchingConditions('allobjects', [conditions['controlledBy'](targets['opponent']())]), 1); })"
   ],
   cost: 8,

@@ -71,7 +71,7 @@ export function abilities(state) {
           });
         },
         unapply: function (target) {
-          if (target.temporaryStatAdjustments) {
+          if (target.temporaryStatAdjustments && target.temporaryStatAdjustments[attr]) {
             target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].filter(adj =>
               adj.aid !== aid
             );

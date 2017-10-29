@@ -2,6 +2,7 @@ import { cloneDeep, isEqual } from 'lodash';
 import { applyPatch, compare } from 'fast-json-patch';
 
 import { handleAction } from '../../game';
+import { TYPE_EVENT } from '../../../constants';
 import { id } from '../../../util/common';
 import { currentTutorialStep, passTurn } from '../../../util/game';
 import * as actions from '../../../actions/game';
@@ -59,7 +60,11 @@ export function startTutorial(state) {
   });
 
   // Set up.
-  state.players.orange.deck = deck([cards.oneBotCard, cards.upgradeCard, cards.rechargeCard]);
+  state.players.orange.deck = deck([
+    cards.oneBotCard,
+    tutorialExclusiveCards.upgradeCard,
+    tutorialExclusiveCards.rechargeCard
+  ]);
   state.players.blue.deck = deck([cards.redBotCard]);
   state.players.orange.robotsOnBoard['3,0,-3'].stats.health = 5;
   state.players.blue.robotsOnBoard['-3,0,3'].stats.health = 3;
@@ -92,6 +97,23 @@ export function handleTutorialAction(state, action) {
 
   return state;
 }
+
+const tutorialExclusiveCards = {
+  upgradeCard: {
+    name: 'Upgrade',
+    text: 'Give a robot +2 attack and +2 health.',
+    command: '(function () { (function () { save("target", targets["choose"](objectsMatchingConditions("robot", []))); })(); (function () { actions["modifyAttribute"](load("target"), "attack", function (x) { return x + 2; }); })(); (function () { actions["modifyAttribute"](load("target"), "health", function (x) { return x + 2; }); })(); })',
+    cost: 2,
+    type: TYPE_EVENT
+  },
+  rechargeCard: {
+    name: 'Recharge',
+    text: 'All of your robots can move and attack again.',
+    command: '(function () { actions["canMoveAndAttackAgain"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])); })',
+    cost: 2,
+    type: TYPE_EVENT
+  }
+};
 
 const tutorialScript = [
   {

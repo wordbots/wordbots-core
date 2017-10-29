@@ -89,16 +89,17 @@ export default class Chat extends Component {
           marginBottom: 5,
           wordBreak: 'break-word'
         }}>
-        <b>{message.user}</b>: {message.text.split('|').map(phrase => this.renderPhrase(phrase, message))}
+        <b>{message.user}</b>: {message.text.split('|').map(phrase => this.renderPhrase(phrase, message, idx))}
       </div>
     );
   }
 
-  renderPhrase(phrase, message) {
+  renderPhrase(phrase, message, messageIdx) {
     const card = (message.cards || [])[phrase];
+    const key = `${messageIdx}_${phrase}`;
     if (card) {
       return (
-        <CardTooltip key={phrase} card={card}>
+        <CardTooltip key={key} card={card}>
           <span style={{fontWeight: 'bold', cursor: 'pointer'}}>
             {phrase}
           </span>
@@ -106,7 +107,7 @@ export default class Chat extends Component {
       );
     } else {
       return (
-        <span key={phrase}>
+        <span key={key}>
           {phrase}
         </span>
       );

@@ -80,7 +80,7 @@ export function mapStateToProps(state) {
     gameOver: state.game.winner !== null,
     isTutorial: state.game.tutorial,
     isMyTurn: state.game.currentTurn === state.game.player,
-    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to,
+    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to && true,
 
     actionLog: state.game.actionLog,
     socket: state.socket

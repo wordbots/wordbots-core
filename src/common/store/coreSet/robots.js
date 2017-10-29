@@ -93,6 +93,21 @@ export const bloodSwordmasterCard = {
   ]
 };
 
+export const medicBotCard = {
+  name: 'Medic Bot',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 2
+  },
+  text: 'Activate: Restore 1 health to all adjacent friendly robots',
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['restoreHealth'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['self']())]), 1); })\")); })"
+  ]
+};
+
 export const mercenaryBlacksmithCard = {
   name: "Mercenary Blacksmith",
   type: TYPE_ROBOT,
@@ -485,7 +500,7 @@ export const flametongueBotCard = {
 };
 
 export const effectiveTrollCard = {
-  name: 'EffectiveTroll',
+  name: 'Effective Troll',
   cost: 7,
   type: TYPE_ROBOT,
   stats: {

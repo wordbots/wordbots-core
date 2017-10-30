@@ -177,7 +177,7 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
 
       return state;
     } else if (tempState.invalid) {
-      // Temp state is invalid (e.g. player unable to pay an energy cost).
+      // Temp state is invalid (e.g. no valid target available or player unable to pay an energy cost).
       // So return the old state.
       return state;
     } else {

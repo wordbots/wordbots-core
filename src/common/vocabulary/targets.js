@@ -49,7 +49,10 @@ export default function targets(state, currentObject) {
           }
         }
       } else {
-        if (!isEmpty(collection.entries)) {
+        if (isEmpty(collection.entries)) {
+          // No valid target!
+          state.invalid = true;
+        } else {
           // Prepare target selection.
           player.target.choosing = true;
 

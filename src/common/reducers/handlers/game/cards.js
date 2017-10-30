@@ -167,6 +167,10 @@ function playEvent(state, cardIdx) {
       currentPlayer(state).status = {message: `Choose a target for ${card.name}.`, type: 'text'};
 
       return state;
+    } else if (tempState.invalid) {
+      // Temp state is invalid (e.g. no valid target available or player unable to pay an energy cost).
+      // So return the old state.
+      return state;
     } else {
       card.justPlayed = false;
 

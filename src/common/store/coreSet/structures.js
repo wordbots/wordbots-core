@@ -123,6 +123,7 @@ export const mirrorCard = {
   ]
 };
 
+
 export const theBombCard = {
   name: 'The Bomb',
   cost: 6,

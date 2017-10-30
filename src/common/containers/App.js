@@ -10,6 +10,7 @@ import 'whatwg-fetch';
 import { isFlagSet, logAnalytics } from '../util/browser';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
+import ErrorBoundary from '../components/ErrorBoundary';
 import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
 import HelpDialog from '../components/cards/HelpDialog';
@@ -127,17 +128,19 @@ class App extends Component {
           paddingLeft: paddingLeft,
           transition: 'padding-left 200ms ease-in-out'
         }}>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/home" component={Home} />
-            <Route path="/collection" component={Collection} />
-            <Route path="/creator" component={Creator} />
-            <Route path="/decks" component={Decks} />
-            <Route path="/deck" component={Deck} />
-            <Route path="/play" component={Play} />
-            <Route path="/about" component={About} />
-            <Route render={() => <Redirect to="/"/>} />
-          </Switch>
+          <ErrorBoundary>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/home" component={Home} />
+              <Route path="/collection" component={Collection} />
+              <Route path="/creator" component={Creator} />
+              <Route path="/decks" component={Decks} />
+              <Route path="/deck" component={Deck} />
+              <Route path="/play" component={Play} />
+              <Route path="/about" component={About} />
+              <Route render={() => <Redirect to="/"/>} />
+            </Switch>
+          </ErrorBoundary>
         </div>
       );
     }

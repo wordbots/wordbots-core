@@ -49,10 +49,12 @@ export default class Chat extends Component {
   }
 
   scrollToBottom() {
-    const scrollHeight = this.chat.scrollHeight;
-    const height = this.chat.clientHeight;
-    const maxScrollTop = scrollHeight - height;
-    this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    if (this.chat) {
+      const scrollHeight = this.chat.scrollHeight;
+      const height = this.chat.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
   }
 
   mergeMessagesById(messages) {

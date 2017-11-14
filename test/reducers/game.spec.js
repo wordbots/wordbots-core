@@ -261,9 +261,9 @@ describe('Game reducer', () => {
       // Test ability to select an empty tile:
       // "Deal 1 damage to everything adjacent to a tile."
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
-      state = playObject(state, 'orange', testCards.attackBotCard, '3,1,4');
+      state = playObject(state, 'orange', testCards.attackBotCard, '2,1,-3');
       state = playEvent(state, 'blue', cards.firestormCard, {hex: '2,0,-2'});
-      expect( objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
       expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 1);
 
       // Test ability to select a card in hand.
@@ -291,6 +291,15 @@ describe('Game reducer', () => {
       let state = getDefaultState();
       state = playEvent(state, 'orange', cards.smashCard);
       expect(state.players.orange.hand.map(c => c.name)).toContain(cards.smashCard.name);
+    });
+
+    it('should be able to handle commands with delayed execution for "they"', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
+      state = playObject(state, 'orange', cards.twoBotCard, '2,1,-3');
+      state = playEvent(state, 'orange', cards.equalizeCard); // "Set the attack of all robots equal to their health."
+      expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/2/2');
+      expect(queryRobotAttributes(state, '2,1,-3')).toEqual('4/4/1');
     });
   });
 

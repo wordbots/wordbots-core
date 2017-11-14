@@ -173,9 +173,9 @@ export default function actions(state) {
       } else {
         // Permanent attribute adjustment.
         iterateOver(objects)(object => {
-          num = isFunction(num) ? num(state) : num;  // num could be wrapped as a function of state (see targets.they)
+          const value = isFunction(num) ? num(state) : num;  // num could be wrapped as a function of state (see targets.they)
           const target = {type: 'objects', entries: [object]};
-          this.modifyAttribute(target, attr, () => num);
+          this.modifyAttribute(target, attr, () => value);
         });
       }
     },

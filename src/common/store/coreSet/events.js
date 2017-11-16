@@ -58,10 +58,34 @@ export const smashCard = {
   ]
 };
 
+export const vampirePotionCard = {
+  name: 'Vampire Potion',
+  text: 'Give a robot "When this robot attacks, restore 3 health to your kernel"',
+  command: "(function () { actions['giveAbility'](targets['choose'](objectsMatchingConditions('robot', [])), \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'allobjects'), (function () { actions['restoreHealth'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })); })\"); })",
+  cost: 2,
+  type: TYPE_EVENT
+};
+
+export const designatedSurvivorCard = {
+  name: 'Designated Survivor',
+  text: 'Double a robot\'s health',
+  command: "(function () { actions['modifyAttribute'](targets['choose'](objectsMatchingConditions('robot', [])), 'health', function (x) { return x * 2; }); })",
+  cost: 3,
+  type: TYPE_EVENT
+};
+
 export const discountCard = {
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
   command: "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 1; }); })",
+  cost: 3,
+  type: TYPE_EVENT
+};
+
+export const equalizeCard = {
+  name: 'Equalize',
+  text: 'Set the attack of all robots equal to their health',
+  command: "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'attack', attributeValue(targets['they'](), 'health')); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -122,6 +146,14 @@ export const earthquakeCard = {
   type: TYPE_EVENT
 };
 
+export const greatSimplificationCard = {
+  name: 'Great Simplification',
+  text: 'Remove all abilities from all robots',
+  command: "(function () { actions['removeAllAbilities'](objectsMatchingConditions('robot', [])); })",
+  cost: 5,
+  type: TYPE_EVENT
+};
+
 export const empCard = {
   name: 'EMP',
   text: 'Set the attack and speed of all robots to 0. \nGive all robots "Activate: Destroy this robot".',
@@ -132,3 +164,15 @@ export const empCard = {
   cost: 7,
   type: TYPE_EVENT
 };
+
+export const explosiveBoostCard = {
+  name: 'Explosive Boost',
+  text: 'Give your robots +2 attack and +2 health. Deal 1 damage to each enemy object',
+  command: [
+    "(function () { (function () { save('target', objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 2; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 2; }); })(); })",
+    "(function () { actions['dealDamage'](objectsMatchingConditions('allobjects', [conditions['controlledBy'](targets['opponent']())]), 1); })"
+  ],
+  cost: 8,
+  type: TYPE_EVENT
+};
+

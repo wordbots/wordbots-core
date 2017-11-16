@@ -2,6 +2,21 @@ import { TYPE_ROBOT } from '../../constants';
 
 /* eslint-disable quotes */
 
+export const crawlingWallCard = {
+  name: 'Crawling Wall',
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 0,
+    health: 3,
+    speed: 1
+  },
+  text: 'Taunt',
+  abilities: [
+    "(function () { setAbility(abilities['applyEffect'](function () { return objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['opponent']())]); }, 'canonlyattack', {target: targets['thisRobot']()})); })"
+  ]
+};
+
 export const dojoDiscipleCard = {
   name: 'Dojo Disciple',
   cost: 1,
@@ -50,7 +65,6 @@ export const speedyBotCard = {
   type: TYPE_ROBOT,
   cost: 1,
   spriteID: "cjslwbmwgua",
-  spriteV: 2,
   text: "Haste.\nStartup: Lose 2 life.",
   stats: {
     health: 1,
@@ -68,7 +82,6 @@ export const bloodSwordmasterCard = {
   type: TYPE_ROBOT,
   cost: 2,
   spriteID: "hnawh0i9rzb",
-  spriteV: 2,
   text: "Activate: Give a friendly robot +2 attack, then deal 3 damage to your kernel. ",
   stats: {
     health: 1,
@@ -80,12 +93,26 @@ export const bloodSwordmasterCard = {
   ]
 };
 
+export const medicBotCard = {
+  name: 'Medic Bot',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 2
+  },
+  text: 'Activate: Restore 1 health to all adjacent friendly robots',
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['restoreHealth'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['self']())]), 1); })\")); })"
+  ]
+};
+
 export const mercenaryBlacksmithCard = {
   name: "Mercenary Blacksmith",
   type: TYPE_ROBOT,
   cost: 2,
   spriteID: "ns8lr4xvtbk",
-  spriteV: 2,
   text: "At the start of your turn, a random friendly robot gains 1 attack and a random enemy robot gains 1 attack.",
   stats: {
     health: 1,
@@ -139,12 +166,26 @@ export const batteryBotCard = {
   ]
 };
 
+export const governmentResearcherCard = {
+  name: 'Government Researcher',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 4,
+    speed: 2
+  },
+  text: 'Activate: Pay 1 energy and each player draws a card',
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['payEnergy'](targets['self'](), 1); })(); (function () { actions['draw'](targets['allPlayers'](), 1); })(); })\")); })"
+  ]
+};
+
 export const hermesCard = {
   name: "Hermes",
   type: TYPE_ROBOT,
   cost: 3,
   spriteID: "kjj5rtqzcms",
-  spriteV: 2,
   text: "All robots have +1 speed.",
   stats: {
     health: 2,
@@ -161,7 +202,6 @@ export const kernelEaterCard = {
   type: TYPE_ROBOT,
   cost: 3,
   spriteID: "lh57hglh3nl",
-  spriteV: 2,
   text: "At the end of your turn, deal 1 damage to each player.",
   stats: {
     health: 3,
@@ -188,12 +228,26 @@ export const martyrBotCard = {
   ]
 };
 
+export const pacifistCard = {
+  name: 'Pacifist',
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 2,
+    health: 3,
+    speed: 1
+  },
+  text: 'At the end of each turn, each kernel gains 1 health',
+  abilities: [
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', []), 'health', function (x) { return x + 1; }); })); })"
+  ]
+};
+
 export const recklessBerserkerCard = {
   name: "Reckless Berserker",
   type: TYPE_ROBOT,
   cost: 3,
   spriteID: "rnfdngv4gm",
-  spriteV: 2,
   text: "Haste.",
   stats: {
     health: 1,
@@ -253,7 +307,6 @@ export const roboSlugCard = {
   type: TYPE_ROBOT,
   cost: 3,
   spriteID: "2icq34datl7",
-  spriteV: 2,
   text: "Startup: Deal 2 damage to your opponent.",
   stats: {
     health: 2,
@@ -262,6 +315,21 @@ export const roboSlugCard = {
   },
   abilities: [
     "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['opponent'](), 2); })); })"
+  ]
+};
+
+export const bloodDonorCard = {
+  name: 'Blood Donor',
+  cost: 4,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 2,
+    health: 5,
+    speed: 1
+  },
+  text: "Startup: Give adjacent robots 3 health",
+  abilities: [
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]), 'health', function (x) { return x + 3; }); })); })"
   ]
 };
 
@@ -298,7 +366,6 @@ export const energyHoarderCard = {
   type: TYPE_ROBOT,
   cost: 4,
   spriteID: "ctlljzk4jq",
-  spriteV: 2,
   text: "Activate: Pay 3 energy and discard a card, then this robot gains 1 attack and 1 health.",
   stats: {
     health: 2,
@@ -371,6 +438,37 @@ export const monkeyBotCard = {
   ]
 };
 
+export const calmMonkCard = {
+  name: 'Calm Monk',
+  cost: 5,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 5,
+    health: 4,
+    speed: 1
+  },
+  text: 'At the start of your turn, pay 1 energy and this robot gains 1 health.',
+  abilities: [
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['self'](); }), (function () { (function () { actions['payEnergy'](targets['self'](), 1); })(); (function () { actions['modifyAttribute'](targets['thisRobot'](), 'health', function (x) { return x + 1; }); })(); })); })"
+  ]
+};
+
+export const royalGuardCard = {
+  name: 'Royal Guard',
+  cost: 5,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 2,
+    health: 10,
+    speed: 1
+  },
+  text: 'Defender,. taunt',
+  abilities: [
+    "(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'cannotattack')); })",
+    "(function () { setAbility(abilities['applyEffect'](function () { return targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['opponent']())])); }, 'canonlyattack', {target: targets['thisRobot']()})); })"
+  ]
+};
+
 export const botOfPainCard = {
   name: 'Bot of Pain',
   cost: 6,
@@ -398,6 +496,19 @@ export const flametongueBotCard = {
   text: 'When this robot is played, deal 4 damage.',
   abilities: [
     "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['choose'](objectsInPlay('allobjects')), 4); })); })"
+  ]
+};
+
+export const effectiveTrollCard = {
+  name: 'Effective Troll',
+  cost: 7,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 7,
+    health: 7,
+    speed: 2
+  },
+  abilities: [
   ]
 };
 

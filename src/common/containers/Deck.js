@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Paper from 'material-ui/Paper';
-import { compact, find, noop, pick } from 'lodash';
+import { compact, find, noop } from 'lodash';
 
 import { getDisplayedCards } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
@@ -68,8 +68,8 @@ class Deck extends Component {
   }
 
   get displayedCards() {
-    const opts = pick(this.state, ['searchText', 'filters', 'costRange', 'sortCriteria', 'sortOrder']);
-    return getDisplayedCards(this.props.cards, opts);
+    const { searchText, filters, costRange, sortCriteria, sortOrder } = this.state;
+    return getDisplayedCards(this.props.cards, { searchText, filters, costRange, sortCriteria, sortOrder });
   }
 
   // this.set(key)(value) = this.setState({key: value})
@@ -81,6 +81,29 @@ class Deck extends Component {
     this.setState(state => ({
       filters: Object.assign({}, state.filters, {[filter]: toggled})
     }));
+  }
+
+  handleSelectCards = (selectedCardIds) => {
+    this.setState({ selectedCardIds });
+  }
+
+  handleClickSaveDeck = (id, name, cardIds) => {
+    this.props.onSaveDeck(id, name, cardIds);
+    this.props.history.push('/decks');
+  }
+
+  handleClickIncreaseCardCount = (id) => {
+    this.setState(state => {
+      state.selectedCardIds.push(id);
+      return state;
+    });
+  }
+
+  handleClickDecreaseCardCount = (id) => {
+    this.setState(state => {
+      state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);
+      return state;
+    });
   }
 
   renderSidebarControls() {
@@ -134,7 +157,7 @@ class Deck extends Component {
               layout={this.state.layout}
               cards={this.displayedCards}
               selectedCardIds={this.state.selectedCardIds}
-              onSelection={selectedCards => this.setState({selectedCardIds: selectedCards})} />
+              onSelection={this.handleSelectCards} />
           </div>
 
           <div style={{
@@ -148,22 +171,9 @@ class Deck extends Component {
                 name={this.props.deck ? this.props.deck.name : ''}
                 cards={this.selectedCards}
                 loggedIn={this.props.loggedIn}
-                onIncreaseCardCount={id => {
-                  this.setState(state => {
-                    state.selectedCardIds.push(id);
-                    return state;
-                  });
-                }}
-                onDecreaseCardCount={id => {
-                  this.setState(state => {
-                    state.selectedCardIds.splice(state.selectedCardIds.indexOf(id), 1);
-                    return state;
-                  });
-                }}
-                onSaveDeck={(id, name, cardIds) => {
-                  this.props.onSaveDeck(id, name, cardIds);
-                  this.props.history.push('/decks');
-                }} />
+                onIncreaseCardCount={this.handleClickIncreaseCardCount}
+                onDecreaseCardCount={this.handleClickDecreaseCardCount}
+                onSaveDeck={this.handleClickSaveDeck} />
             </Paper>
           </div>
         </div>

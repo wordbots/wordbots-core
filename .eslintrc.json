@@ -63,19 +63,24 @@
     "promise/avoid-new": 0,
     "promise/no-callback-in-promise": 0,
 
+    "react/boolean-prop-naming": 2,
     "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "react/jsx-boolean-value": 2,
+    "react/jsx-no-bind": 2,
     "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-did-mount-set-state": 2,
     "react/no-did-update-set-state": 2,
     "react/no-will-update-set-state": 2,
     "react/no-multi-comp": 2,
+    "react/no-unused-prop-types": 2,
+    "react/no-unused-state": 2,
+    "react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
     "react/self-closing-comp": 2,
 
-    "unicorn/no-process-exit": 0,
     "unicorn/filename-case": 0,
-    "unicorn/no-fn-reference-in-iterator": 0
+    "unicorn/no-fn-reference-in-iterator": 0,
+    "unicorn/no-process-exit": 0
   },
   "plugins": [
     "compat",

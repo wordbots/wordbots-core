@@ -34,6 +34,10 @@ export default class RouterDialog extends Component {
     transformHistory(history, path => path.replace(/\/\/\w*/, ''));
   }
 
+  handleCloseDialog = () => {
+    RouterDialog.closeDialog(this.props.history);
+  }
+
   renderDialog = () => (
     <Dialog
       open
@@ -44,9 +48,8 @@ export default class RouterDialog extends Component {
       title={this.props.title}
       contentStyle={this.props.style}
       actions={this.props.actions}
-      onRequestClose={() => {
-        RouterDialog.closeDialog(this.props.history);
-    }}>
+      onRequestClose={this.handleCloseDialog}
+    >
       {this.props.children}
     </Dialog>
   )

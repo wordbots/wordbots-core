@@ -307,7 +307,7 @@ export class GameArea extends Component {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
-  onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
+  onSelectTile = (hexId, action = null, intermediateMoveHexId = null) => {
     if (this.props.attack) {
       return;  // Can't move/attack while an attack is in progress.
     } if (action === 'move') {

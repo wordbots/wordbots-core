@@ -74,16 +74,6 @@ export class Play extends Component {
     }
   }
 
-  selectMode = (mode, deck) => {
-    if (mode === 'tutorial') {
-      this.props.onStartTutorial();
-    } else if (mode === 'practice') {
-      this.props.onStartPractice(deck);
-    }
-
-    this.props.history.push(`play/${mode}`);
-  }
-
   get rightMenu() {
     if (!this.props.started) {
       return (
@@ -95,7 +85,17 @@ export class Play extends Component {
     }
   }
 
-  renderLobby() {
+  selectMode = (mode, deck) => {
+    if (mode === 'tutorial') {
+      this.props.onStartTutorial();
+    } else if (mode === 'practice') {
+      this.props.onStartPractice(deck);
+    }
+
+    this.props.history.push(`play/${mode}`);
+  }
+
+  renderLobby = () => {
     if (this.props.started) {
       return <GameArea />;
     } else {

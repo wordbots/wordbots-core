@@ -20,7 +20,7 @@ describe('Built-in cards', () => {
           executeCmd(state, ability, dummyCurrentObj);
         });
       } catch (err) {
-        console.error(`Error executing ability for ${card.name} card!`);  // eslint-disable-line no-console
+        console.error(`Error executing ability for ${card.name} card!`);
         throw err;
       }
     });

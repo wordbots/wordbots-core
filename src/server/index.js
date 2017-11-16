@@ -3,7 +3,7 @@
 /* eslint-disable import/no-unassigned-import */
 
 var babel = require('babel-core/register')({
-	presets: ['es2015', 'stage-2', 'react']
+	presets: ['env', 'stage-2', 'react']
 });
 require('./server');
 

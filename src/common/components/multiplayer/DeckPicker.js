@@ -23,6 +23,10 @@ export default class DeckPicker extends Component {
     return this.noDecks ? [] : cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
   }
 
+  handleSelectDeck = (e, idx, v) => {
+    this.props.onChooseDeck(idx);
+  }
+
   render() {
     return (
       <Paper style={{display: 'flex', padding: 20, marginBottom: 20}}>
@@ -30,7 +34,7 @@ export default class DeckPicker extends Component {
           value={this.props.selectedDeckIdx}
           floatingLabelText="Choose a deck"
           style={{flex: 2, width: '80%', marginRight: 25}}
-          onChange={(e, idx, v) => { this.props.onChooseDeck(idx); }}
+          onChange={this.handleSelectDeck}
           disabled={this.noDecks}
           errorText={this.noDecks ? 'You don\'t have any complete (30-card) decks!' : null}
         >

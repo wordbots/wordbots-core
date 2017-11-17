@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+
+import GameRow from './GameRow';
 
 export default class GameBrowser extends Component {
   static propTypes = {
@@ -20,27 +21,18 @@ export default class GameBrowser extends Component {
   }
 
   renderTableRows() {
+    const { usernameMap, cannotJoinGame, onJoinGame, onSpectateGame } = this.props;
+
     if (this.games.length > 0) {
       return (
         this.games.map(game =>
-          <TableRow key={game.id}>
-            <TableRowColumn>{game.name}</TableRowColumn>
-            <TableRowColumn>{game.players.map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
-            <TableRowColumn>{(game.spectators || []).map(p => this.props.usernameMap[p]).join(', ')}</TableRowColumn>
-            <TableRowColumn style={{textAlign: 'right'}}>
-              { game.players.length === 1 ?
-                <RaisedButton
-                  secondary
-                  label="Join Game"
-                  disabled={this.props.cannotJoinGame}
-                  onTouchTap={() => { this.props.onJoinGame(game.id, game.name); }} /> :
-                <RaisedButton
-                  secondary
-                  label="Spectate Game"
-                  onTouchTap={() => { this.props.onSpectateGame(game.id, game.name); }} />
-              }
-            </TableRowColumn>
-          </TableRow>
+          <GameRow
+            key={game.id}
+            game={game}
+            usernameMap={usernameMap}
+            cannotJoinGame={cannotJoinGame}
+            onJoinGame={onJoinGame}
+            onSpectateGame={onSpectateGame} />
         )
       );
     } else {

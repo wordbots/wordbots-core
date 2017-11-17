@@ -10,31 +10,33 @@ export default class HostGame extends Component {
     onHostGame: func
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    gameName: ''
+  };
 
-    this.state = {
-      gameName: ''
-    };
-  }
+  handleSetGameName = (evt) => {
+    this.setState({gameName: evt.target.value});
+  };
 
-  render() {
-    return (
-      <Paper style={{padding: 20, marginBottom: 20, position: 'relative'}}>
-        <TextField
-          disabled={this.props.disabled}
-          value={this.state.gameName}
-          floatingLabelText="Game name"
-          style={{width: '50%'}}
-          onChange={e => { this.setState({gameName: e.target.value}); }} />
-        <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
-          <RaisedButton
-            secondary
-            disabled={this.props.disabled || this.state.gameName === ''}
-            label="Host New Game"
-            onTouchTap={() => { this.props.onHostGame(this.state.gameName); }} />
-        </div>
-      </Paper>
-    );
-  }
+  handleHostGame = () => {
+    this.props.onHostGame(this.state.gameName);
+  };
+
+  render = () => (
+    <Paper style={{padding: 20, marginBottom: 20, position: 'relative'}}>
+      <TextField
+        disabled={this.props.disabled}
+        value={this.state.gameName}
+        floatingLabelText="Game name"
+        style={{width: '50%'}}
+        onChange={this.handleSetGameName} />
+      <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto', color: 'white'}}>
+        <RaisedButton
+          secondary
+          disabled={this.props.disabled || this.state.gameName === ''}
+          label="Host New Game"
+          onTouchTap={this.handleHostGame} />
+      </div>
+    </Paper>
+  );
 }

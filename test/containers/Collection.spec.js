@@ -8,7 +8,6 @@ import CardGrid from '../../src/common/components/cards/CardGrid';
 import CardTable from '../../src/common/components/cards/CardTable';
 import FilterControls from '../../src/common/components/cards/FilterControls';
 import LayoutControls from '../../src/common/components/cards/LayoutControls';
-import PageSwitcher from '../../src/common/components/cards/PageSwitcher';
 import SearchControls from '../../src/common/components/cards/SearchControls';
 import collectionReducer from '../../src/common/reducers/collection';
 import creatorReducer from '../../src/common/reducers/creator';

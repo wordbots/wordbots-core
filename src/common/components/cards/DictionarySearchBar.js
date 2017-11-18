@@ -9,26 +9,25 @@ export default class DictionarySidebar extends Component {
     onChange: func
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      text: ''
-    };
-  }
+  state = {
+    text: ''
+  };
 
   setText = (text) => {
     this.setState({ text }, () => {
       this.props.onChange(text);
     });
-  }
+  };
+
+  handleChangeText = (evt) => { this.setText(evt.target.value); };
+  handleClickClear = () => { this.setText(''); };
 
   renderClearButton() {
     if (this.state.text !== '') {
       return (
         <IconButton
           style={{width: '20%'}}
-          onClick={() => { this.setText(''); }}
+          onClick={this.handleClickClear}
         >
           <FontIcon color="#eee" className="material-icons">backspace</FontIcon>
         </IconButton>
@@ -45,7 +44,7 @@ export default class DictionarySidebar extends Component {
           style={{width: '100%', margin: '0 10px'}}
           hintStyle={{color: '#AAA'}}
           inputStyle={{color: '#666'}}
-          onChange={(e) => { this.setText(e.target.value); }} />
+          onChange={this.handleChangeText} />
         {this.renderClearButton()}
       </div>
     );

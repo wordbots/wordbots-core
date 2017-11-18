@@ -11,13 +11,9 @@ export default class ImportDialog extends Component {
     onImport: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      importedJson: ''
-    };
-  }
+  state = {
+    importedJson: ''
+  };
 
   get actions() {
     return [
@@ -31,16 +27,22 @@ export default class ImportDialog extends Component {
         secondary
         label="Import"
         key="Import"
-        onTouchTap={() => {
-          this.props.onImport(this.state.importedJson);
-          this.close();
-        }} />
+        onTouchTap={this.handleImport} />
     ];
   }
 
   close = () => {
     RouterDialog.closeDialog(this.props.history);
   }
+
+  handleChangeText = (evt) => {
+    this.setState({importedJson: evt.target.value});
+  }
+
+  handleImport = () => {
+    this.props.onImport(this.state.importedJson);
+    this.close();
+  };
 
   render() {
     return (
@@ -55,7 +57,7 @@ export default class ImportDialog extends Component {
           multiLine
           floatingLabelText="Exported card JSON"
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
-          onChange={e => { this.setState({importedJson: e.target.value}); }}
+          onChange={this.handleChangeText}
         />
       </RouterDialog>
     );

@@ -1,43 +1,43 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { func, string } from 'prop-types';
 
-export default class VictoryScreen extends Component {
-  static propTypes = {
-    winnerColor: string,
-    winnerName: string,
-    onClick: func
+const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {
+  const colors = {
+    'orange': '#ffb85d',
+    'blue': '#badbff'
   };
 
-  render() {
-    const colors = {
-      'orange': '#ffb85d',
-      'blue': '#badbff'
-    };
-
-    return (
-      <div
-        onClick={this.props.onClick}
-        style={{
-          display: this.props.winnerColor === null ? 'none' : 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          textAlign: 'center',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          right: 0,
-          fontFamily: 'Carter One',
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          color: colors[this.props.winnerColor],
-          borderRadius: 2,
-          zIndex: 99999
-      }}>
-        <div>
-          <div style={{fontSize: 96}}>{`${this.props.winnerName} wins!`}</div>
-          <div>Click anywhere to return to the lobby.</div>
-        </div>
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        display: winnerColor === null ? 'none' : 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        textAlign: 'center',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
+        fontFamily: 'Carter One',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        color: colors[winnerColor],
+        borderRadius: 2,
+        zIndex: 99999
+    }}>
+      <div>
+        <div style={{fontSize: 96}}>{`${winnerName} wins!`}</div>
+        <div>Click anywhere to return to the lobby.</div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+VictoryScreen.propTypes = {
+  winnerColor: string,
+  winnerName: string,
+  onClick: func
+};
+
+export default VictoryScreen;

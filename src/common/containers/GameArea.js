@@ -422,7 +422,6 @@ export class GameArea extends Component {
               >
                 <EndTurnButton
                   player={this.props.player}
-                  currentTurn={this.props.currentTurn}
                   gameOver={this.props.gameOver}
                   isMyTurn={this.props.isMyTurn}
                   isAttackHappening={this.props.isAttackHappening}
@@ -449,9 +448,7 @@ export class GameArea extends Component {
               zIndex: 999,
               width: this.state.boardSize
           }}>
-            <Status
-              player={this.props.player}
-              status={this.isMyTurn() ? this.props.status : {}} />
+            <Status status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               size={this.state.boardSize}
               player={this.props.player}

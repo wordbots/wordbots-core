@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { arrayOf, func, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
-import RaisedButton from 'material-ui/RaisedButton';
+
+import ActivatedAbility from './ActivatedAbility';
 
 export default class AbilitiesTooltip extends Component {
   static propTypes = {
@@ -31,19 +32,12 @@ export default class AbilitiesTooltip extends Component {
       <div style={this.styles.tooltip}>
         {
           this.props.activatedAbilities.map((ability, idx) =>
-            <div key={idx} style={{marginBottom: idx === this.props.activatedAbilities.length - 1 ? 0 : 10}}>
-              <RaisedButton
-                backgroundColor={'rgb(230, 230, 230)'}
-                label={<span><b>Activate</b>: {ability.text}.</span>}
-                labelStyle={{
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  width: 300,
-                  overflow: 'hidden',
-                  display: 'block'
-                }}
-                onClick={() => { this.props.onActivateAbility(idx); }} />
-            </div>
+            <ActivatedAbility
+              key={idx}
+              idx={idx}
+              marginBottom={idx === this.props.activatedAbilities.length - 1 ? 0 : 10}
+              text={ability.text}
+              onActivateAbility={this.props.onActivateAbility} />
           )
         }
       </div>

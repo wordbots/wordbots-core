@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, object, string } from 'prop-types';
+import { object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import { times } from 'lodash';
 
@@ -8,8 +8,7 @@ import { id } from '../../util/common';
 class EnergyCount extends Component {
   static propTypes = {
     color: string,
-    energy: object,
-    isCurrentPlayer: bool
+    energy: object
   }
 
   renderEnergyTile(color, filled) {

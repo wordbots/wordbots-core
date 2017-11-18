@@ -6,13 +6,14 @@ import RaisedButton from 'material-ui/RaisedButton';
 export default class EndTurnButton extends Component {
   static propTypes = {
     player: string,
-    currentTurn: string,
     gameOver: bool,
     isMyTurn: bool,
     isAttackHappening: bool,
 
     onPassTurn: func
   };
+
+  handleClick = () => { this.props.onPassTurn(this.props.player); };
 
   render() {
     return (
@@ -35,14 +36,16 @@ export default class EndTurnButton extends Component {
         overlayStyle={{
           height: '64px'
         }}
-        onTouchTap={() => { this.props.onPassTurn(this.props.player); }}
+        onTouchTap={this.handleClick}
         icon={
-          <FontIcon 
+          <FontIcon
             className="material-icons"
             style={{
               lineHeight: '64px',
               verticalAlign: 'none'
-            }}>timer</FontIcon>
+          }}>
+            timer
+          </FontIcon>
         }
         disabled={!this.props.isMyTurn || this.props.isAttackHappening || this.props.gameOver} />
     );

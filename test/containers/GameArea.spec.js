@@ -38,9 +38,7 @@ describe('GameArea container', () => {
           width: 1000,
           zIndex: 999
       }}>
-        <Status
-          player={'orange'}
-          status={state.game.players.orange.status} />
+        <Status status={state.game.players.orange.status} />
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}

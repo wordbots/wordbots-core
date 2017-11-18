@@ -60,12 +60,6 @@ describe('Collection container', () => {
   });
 
   it('should be able to use the sidebar controls', () => {
-    // Pagination controls
-
-    component(PageSwitcher)[0].props.nextPage();
-    // TODO Test that the page has changed.
-    component(PageSwitcher)[0].props.prevPage();
-
     // Layout controls
 
     expect(component(CardGrid).props.cards.length).toEqual(CARDS_IN_PAGE);

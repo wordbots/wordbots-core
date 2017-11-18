@@ -261,11 +261,10 @@ export default class CardCreationForm extends Component {
           </div>
 
           <CardTextField
-            type={this.props.type}
             text={this.props.text}
             sentences={this.nonEmptySentences}
             error={this.textError}
-            onOpenDialog={this.props.onOpenDialog}
+            bigramProbs={this.state && this.state.bigramProbs}
             onUpdateText={text => { this.onUpdateText(text, this.props.type); }} />
 
           <div style={this.styles.section}>

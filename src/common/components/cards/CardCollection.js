@@ -17,13 +17,9 @@ export default class CardCollection extends Component {
     onSelection: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      page: 1
-    };
-  }
+  state = {
+    page: 1
+  };
 
   get numPages() {
     return Math.ceil(this.props.cards.length / 20);
@@ -52,13 +48,16 @@ export default class CardCollection extends Component {
     }
   }
 
+  handleClickPrevPage = () => this.setState({page: this.currentPage - 1});
+  handleClickNextPage = () => this.setState({page: this.currentPage + 1});
+
   renderPageControls() {
     return (
       <PageSwitcher
         page={this.currentPage}
         maxPages={this.numPages}
-        prevPage={() => this.setState({page: this.currentPage - 1})}
-        nextPage={() => this.setState({page: this.currentPage + 1})} />
+        prevPage={this.handleClickPrevPage}
+        nextPage={this.handleClickNextPage} />
     );
   }
 

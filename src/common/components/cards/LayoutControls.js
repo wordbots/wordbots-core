@@ -42,8 +42,6 @@ export default class LayoutControls extends Component {
   }
 
   render() {
-
-
     return (
       <div>
         <div style={{

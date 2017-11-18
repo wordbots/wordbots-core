@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, func, number, object, string } from 'prop-types';
+import { arrayOf, func, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { chain as _ } from 'lodash';
 
@@ -7,20 +7,19 @@ import { bigramNLL } from '../../util/language';
 
 export default class CardTextField extends Component {
   static propTypes = {
-    type: number,
     text: string,
     sentences: arrayOf(object),
     error: string,
+    bigramProbs: object,
 
-    onUpdateText: func,
-    onOpenDialog: func
+    onUpdateText: func
   };
 
   get textSuggestions() {
-    if (this.state && this.state.bigramProbs) {
+    if (this.props.bigramProbs) {
       return _(this.props.sentences)
               .flatMap(s => (s.result.suggestions || []).map(sugg => ({ original: s.sentence.trim(), new: sugg })))
-              .sortBy(suggestion => bigramNLL(suggestion.new, this.state.bigramProbs))
+              .sortBy(suggestion => bigramNLL(suggestion.new, this.props.bigramProbs))
               .slice(0, 5)
               .value();
     } else {

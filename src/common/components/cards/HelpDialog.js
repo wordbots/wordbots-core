@@ -10,26 +10,25 @@ export default class HelpDialog extends Component {
     history: object
   };
 
-  render() {
-    const history = this.props.history;
-    return (
-      <RouterDialog
-        scroll
-        path="help"
-        title="How to Write a Card"
-        history={history}
-        style={{width: 800}}
-        actions={[
-          <RaisedButton
-            primary
-            label="Close"
-            key="Close"
-            onTouchTap={() => { RouterDialog.closeDialog(history); }} />
-      ]}>
-        <MarkdownBlock source={helpText} />
-      </RouterDialog>
-    );
-  }
+  handleClose = () => { RouterDialog.closeDialog(this.props.history); };
+
+  render = () => (
+    <RouterDialog
+      scroll
+      path="help"
+      title="How to Write a Card"
+      history={this.props.history}
+      style={{width: 800}}
+      actions={[
+        <RaisedButton
+          primary
+          label="Close"
+          key="Close"
+          onTouchTap={this.handleClose} />
+    ]}>
+      <MarkdownBlock source={helpText} />
+    </RouterDialog>
+  );
 }
 
 const helpText = `

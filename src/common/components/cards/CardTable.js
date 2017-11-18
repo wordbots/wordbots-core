@@ -17,14 +17,6 @@ export default class CardTable extends Component {
     onCardClick: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      page: 1
-    };
-  }
-
   sourceToString(source) {
     if (source === 'user') {
       return 'You';
@@ -60,24 +52,22 @@ export default class CardTable extends Component {
     );
   }
 
-  renderCardRow(card, index) {
-    return (
-      <TableRow
-        key={card.id || id()}
-        selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
-        selectable={!this.props.selectable || card.source !== 'builtin'}
-      >
-        <TableRowColumn width={130}>{card.name}</TableRowColumn>
-        <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
-        <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
-        <TableRowColumn>{card.text}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('speed', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardCost(card.cost)}</TableRowColumn>
-      </TableRow>
-    );
-  }
+  renderCardRow = (card, index) => (
+    <TableRow
+      key={card.id || id()}
+      selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
+      selectable={!this.props.selectable || card.source !== 'builtin'}
+    >
+      <TableRowColumn width={130}>{card.name}</TableRowColumn>
+      <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
+      <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
+      <TableRowColumn>{card.text}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('speed', card.stats)}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardCost(card.cost)}</TableRowColumn>
+    </TableRow>
+  );
 
   render() {
     return (
@@ -114,7 +104,7 @@ export default class CardTable extends Component {
               displayRowCheckbox={false}
               deselectOnClickaway={false}
               showRowHover>
-                {this.props.cards.map(this.renderCardRow.bind(this))}
+                {this.props.cards.map(this.renderCardRow)}
             </TableBody>
           </Table>
         </div>

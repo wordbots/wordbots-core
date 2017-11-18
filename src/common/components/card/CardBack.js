@@ -9,15 +9,11 @@ export default class CardBack extends Component {
     hoverable: bool
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    hover: false
+  };
 
-    this.state = {
-      hover: false
-    };
-  }
-
-  toggleHover() {
+  toggleHover = () => {
     if (this.props.hoverable) {
       this.setState({hover: !this.state.hover});
     }
@@ -36,8 +32,8 @@ export default class CardBack extends Component {
     return (
       <Paper
         zDepth={2}
-        onMouseEnter={this.toggleHover.bind(this)}
-        onMouseLeave={this.toggleHover.bind(this)}
+        onMouseEnter={this.toggleHover}
+        onMouseLeave={this.toggleHover}
         style={Object.assign({
           width: 140,
           height: 210,

@@ -9,8 +9,10 @@ export default class SortControls extends Component {
     criteria: number,
     order: number,
 
+    /* eslint-disable react/no-unused-prop-types */
     onSetCriteria: func,
     onSetOrder: func
+    /* eslint-enable react/no-unused-prop-types */
   };
 
   shouldComponentUpdate(newProps) {

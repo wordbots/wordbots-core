@@ -98,13 +98,9 @@ export default class Card extends Component {
   };
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      shadow: 2
-    };
-  }
+  state = {
+    shadow: 2
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     const trackedProps = [
@@ -117,16 +113,18 @@ export default class Card extends Component {
     return !compareCertainKeys(nextProps, this.props, trackedProps) || !isEqual(nextState, this.state);
   }
 
-  onMouseEnter() {
-    this.setState({
-      shadow: 3
-    });
+  handleClick = () => {
+    this.props.onCardClick(this.props.id);
   }
 
-  onMouseLeave() {
-    this.setState({
-      shadow: 2
-    });
+  handleMouseEnter = () => {
+    this.setState({ shadow: 3 });
+    this.props.onCardHover(true);
+  }
+
+  handleMouseLeave = () => {
+    this.setState({ shadow: 2 });
+    this.props.onCardHover(false);
   }
 
   get numChars() {
@@ -290,9 +288,9 @@ export default class Card extends Component {
             transform={transform}
           >
             <div
-              onClick={() => { this.props.onCardClick(this.props.id); }}
-              onMouseEnter={e => { this.onMouseEnter(); this.props.onCardHover(true); }}
-              onMouseLeave={e => { this.onMouseLeave(); this.props.onCardHover(false); }}
+              onClick={this.handleClick}
+              onMouseEnter={this.handleMouseEnter}
+              onMouseLeave={this.handleMouseLeave}
             >
               <Paper
                 zDepth={this.state.shadow}

@@ -15,8 +15,8 @@
 ## Development installation
 
 ```
-$ npm install
-$ npm start
+$ yarn install
+$ yarn start
 ```
 
 Then visit `http://localhost:3000`.
@@ -27,8 +27,8 @@ Production has Devtools, logging and hot reloading middleware removed
 and the scripts/css compressed.
 
 ```
-$ npm run build
-$ npm run start-prod
+$ yarn run build
+$ yarn run start-prod
 ```
 
 Then visit `http://localhost:3000`.
@@ -36,7 +36,7 @@ Then visit `http://localhost:3000`.
 ## Lint and test
 
 ```
-$ node_modules/eslint/bin/eslint.js . --fix && npm test -- --coverage
+$ node_modules/eslint/bin/eslint.js . --fix && yarn test -- --coverage
 ```
 
 ## Acknowledgements

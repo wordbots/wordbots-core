@@ -74,7 +74,8 @@
     "react/self-closing-comp": 2,
 
     "unicorn/no-process-exit": 0,
-    "unicorn/filename-case": 0
+    "unicorn/filename-case": 0,
+    "unicorn/no-fn-reference-in-iterator": 0
   },
   "plugins": [
     "compat",
@@ -87,6 +88,6 @@
     "unicorn"
   ],
   "settings": {
-    "polyfills": ["fetch"]
+    "polyfills": ["fetch", "promises"]
   }
 }

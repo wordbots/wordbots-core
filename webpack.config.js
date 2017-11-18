@@ -7,7 +7,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 /* eslint-enable import/order */
 
 const BABEL_LOADER_DEV_OPTIONS = {
-  presets: ['es2015', 'stage-2', 'react'],
+  presets: ['env', 'stage-2', 'react'],
   plugins: [
     ['react-transform', {transforms: [
       {

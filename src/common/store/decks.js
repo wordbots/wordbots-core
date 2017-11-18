@@ -3,7 +3,7 @@ import * as cards from './cards';
 function createDeck(cardCounts) {
   const deck = [];
   cardCounts.forEach(([card, num]) => {
-    deck.push(...Array(num).fill(card));
+    deck.push(...new Array(num).fill(card));
   });
   return deck;
 }

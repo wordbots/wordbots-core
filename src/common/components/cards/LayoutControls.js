@@ -24,6 +24,10 @@ export default class LayoutControls extends Component {
     };
   }
 
+  handleSetLayout = (layout) => () => {
+    this.props.onSetLayout(layout);
+  }
+
   renderButton(layout, iconName) {
     const selected = (this.props.layout === layout);
     return (
@@ -34,7 +38,7 @@ export default class LayoutControls extends Component {
           color: selected ? 'white' : 'black',
           backgroundColor: selected ? '#F44336' : '#EEEEEE'
         }}
-        onClick={() => { this.props.onSetLayout(layout); }}
+        onClick={this.handleSetLayout(layout)}
       >
         {iconName}
       </FontIcon>

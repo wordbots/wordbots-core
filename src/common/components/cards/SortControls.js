@@ -19,13 +19,17 @@ export default class SortControls extends Component {
     return (newProps.criteria !== this.props.criteria) || (newProps.order !== this.props.order);
   }
 
+  handleSetField = (field) => (e, i, value) => {
+    this.props[`onSet${capitalize(field)}`](value);
+  }
+
   renderSelectField(field, items, margin) {
     return (
       <SelectField
         style={{width: '100%', marginRight: margin}}
         value={this.props[field]}
         floatingLabelText={capitalize(field)}
-        onChange={(e, i, value) => { this.props[`onSet${capitalize(field)}`](value); }}>
+        onChange={this.handleSetField(field)}>
         {items.map((item, idx) => (
           <MenuItem key={idx} value={idx} primaryText={item}/>
         ))}

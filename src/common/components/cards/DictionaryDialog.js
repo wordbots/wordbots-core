@@ -23,23 +23,19 @@ export default class DictionaryDialog extends Component {
     history: object
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dictionary: {
-        definitions: {},
-        examplesByToken: {},
-        examplesByNode: {}
-      },
-      tabIdx: 0,
-      dictionaryTerm: null,
-      thesaurusTerm: null,
-      keywordsTerm: null,
-      searchText: '',
-      showDefinitions: false
-    };
-  }
+  state = {
+    dictionary: {
+      definitions: {},
+      examplesByToken: {},
+      examplesByNode: {}
+    },
+    tabIdx: 0,
+    dictionaryTerm: null,
+    thesaurusTerm: null,
+    keywordsTerm: null,
+    searchText: '',
+    showDefinitions: false
+  };
 
   componentWillMount() {
     this.checkHash();
@@ -143,8 +139,8 @@ export default class DictionaryDialog extends Component {
             <ToolbarTitle text={this.selectedTerm} />
           </ToolbarGroup>
           <ToolbarGroup>
-            <Toggle 
-              label="Advanced" 
+            <Toggle
+              label="Advanced"
               onToggle={() => this.setState({ showDefinitions: !this.state.showDefinitions })}
               toggled={this.state.showDefinitions}/>
           </ToolbarGroup>

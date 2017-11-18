@@ -24,6 +24,10 @@ export default class CardTable extends Component {
     }
   }
 
+  handleCellClick = (row, col) => {
+    this.props.onCardClick(this.props.cards[row].id);
+  };
+
   renderCardRowStat(type, stats) {
     if (stats && stats[type]) {
       return (
@@ -80,9 +84,7 @@ export default class CardTable extends Component {
           <Table
             multiSelectable
             selectable={this.props.selectable}
-            onCellClick={(row, col) => {
-              this.props.onCardClick(this.props.cards[row].id);
-            }}>
+            onCellClick={this.handleCellClick}>
             <TableHeader
               adjustForCheckbox={false}
               displaySelectAll={false}

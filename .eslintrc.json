@@ -66,7 +66,7 @@
     "react/boolean-prop-naming": 2,
     "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "react/jsx-boolean-value": 2,
-    "react/jsx-no-bind": 2,
+    "react/jsx-no-bind": [2, { "ignoreRefs": true }],
     "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-did-mount-set-state": 2,

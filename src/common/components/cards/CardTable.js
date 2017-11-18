@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
-  from 'material-ui/Table';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
 
 import { typeToString } from '../../constants';

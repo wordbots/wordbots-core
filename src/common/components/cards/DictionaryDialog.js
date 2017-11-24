@@ -155,7 +155,7 @@ export default class DictionaryDialog extends Component {
 
   renderTabs() {
     const tabColor = 'rgb(0, 188, 212)';
-    const tabStyle = {backgroundColor: tabColor};
+    const tabStyle = {backgroundColor: tabColor, borderRadius: 0};
 
     return (
       <div style={{display: 'flex', backgroundColor: tabColor}}>

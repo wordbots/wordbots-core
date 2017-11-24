@@ -61,7 +61,7 @@ export default class LoginDialog extends Component {
 
   handleKeyPress = (t) => {
     if (t.charCode === 13 && !this.submitDisabled) {
-      this.submit();
+      this.handleSubmit();
     }
   }
 
@@ -85,16 +85,16 @@ export default class LoginDialog extends Component {
     this.setState({password: e.target.value});
   }
 
-  notEmpty(fields) {
-    return fields.reduce((base, field) => base && (field !== ''), true);
-  }
-
-  submit() {
+  handleSubmit = () => {
     if (this.state.register) {
       this.register(this.state.email, this.state.username, this.state.password);
     } else {
       this.login(this.state.email, this.state.password);
     }
+  }
+
+  notEmpty(fields) {
+    return fields.reduce((base, field) => base && (field !== ''), true);
   }
 
   renderLoginForm() {
@@ -176,7 +176,7 @@ export default class LoginDialog extends Component {
         key="Register/Login"
         primary
         disabled={this.submitDisabled}
-        onTouchTap={this.submit}
+        onTouchTap={this.handleSubmit}
       />
     ];
 

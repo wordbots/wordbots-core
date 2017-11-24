@@ -64,6 +64,21 @@ export default class CardCreationForm extends Component {
     });
   }
 
+  styles = {
+    container: {width: '60%', flex: 1, padding: 64},
+    paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
+
+    section: {display: 'flex', justifyContent: 'space-between'},
+
+    leftCol: {width: '70%', marginRight: 25},
+    rightColContainer: {display: 'flex', alignItems: 'center'},
+    rightCol: {width: 210},
+    attribute: {width: '100%', marginRight: 25},
+    saveButton: {marginTop: 20},
+
+    icon: {verticalAlign: 'middle', color: 'white'}
+  };
+
   get robot() { return this.props.type === TYPE_ROBOT; }
   get event() { return this.props.type === TYPE_EVENT; }
 
@@ -142,26 +157,9 @@ export default class CardCreationForm extends Component {
       !this.healthError && !this.speedError && !this.textError;
   }
 
-  get styles() {
-    return {
-      container: {width: '60%', flex: 1, padding: 64},
-      paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
-
-      section: {display: 'flex', justifyContent: 'space-between'},
-
-      leftCol: {width: '70%', marginRight: 25},
-      rightColContainer: {display: 'flex', alignItems: 'center'},
-      rightCol: {width: 210},
-      attribute: {width: '100%', marginRight: 25},
-      saveButton: {marginTop: 20},
-
-      icon: {verticalAlign: 'middle', color: 'white'}
-    };
-  }
-
   setAttribute = (key) => (value) => {
     this.props.onSetAttribute(key, value);
-  }
+  };
 
   handleSetName = (e) => { this.props.onSetName(e.target.value); };
 
@@ -169,15 +167,15 @@ export default class CardCreationForm extends Component {
     this.props.onSetType(value);
     // Re-parse card text because different card types now have different validations.
     this.onUpdateText(this.props.text, value);
-  }
+  };
 
-  onUpdateText(text, cardType = this.props.type, dontIndex = false) {
+  onUpdateText = (text, cardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
     this.props.onSetText(text);
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
-  }
+  };
 
   renderButton = (label, icon, onClick) => (
     <RaisedButton

@@ -91,6 +91,7 @@ class Decks extends Component {
                   key={idx}
                   deck={deck}
                   cards={cardsInDeck(deck, this.props.cards)}
+                  loggedIn={this.props.loggedIn}
                   onDelete={this.props.onDeleteDeck}
                   onDuplicate={this.props.onDuplicateDeck}
                   onEdit={this.handleEditDeck} />

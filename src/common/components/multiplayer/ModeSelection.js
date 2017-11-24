@@ -8,8 +8,20 @@ export default class ModeSelection extends Component {
     onSelectMode: func
   };
 
-  constructor(props) {
-    super(props);
+  handleClickTutorial = () => {
+    this.props.onSelectMode('tutorial');
+  }
+
+  handleClickPractice = () => {
+    this.props.onSelectMode('practice');
+  }
+
+  handleClickCasual = () => {
+    this.props.onSelectMode('casual');
+  }
+
+  handleClickMatchmaking = () => {
+    this.props.onSelectMode('matchmaking');
   }
 
   render() {
@@ -22,19 +34,19 @@ export default class ModeSelection extends Component {
         <GameMode
           name="Tutorial"
           imagePath="/static/tutorial.png"
-          onSelect={() => this.props.onSelectMode('tutorial')} />
+          onSelect={this.handleClickTutorial} />
         <GameMode
           name="Practice"
           imagePath="/static/practice.png"
-          onSelect={() => this.props.onSelectMode('practice')} />
+          onSelect={this.handleClickPractice} />
         <GameMode
           name="Casual Game"
           imagePath="/static/casual.png"
-          onSelect={() => this.props.onSelectMode('casual')} />
+          onSelect={this.handleClickCasual} />
         <GameMode
           disabled
           name="Matchmaking"
-          onSelect={() => this.props.onSelectMode('matchmaking')} />
+          onSelect={this.handleClickMatchmaking} />
       </div>
     );
   }

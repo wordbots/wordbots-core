@@ -12,13 +12,9 @@ export default class ExportDialog extends Component {
     text: string
   };
 
-  constructor() {
-    super();
-
-    this.state = {
-      status: ''
-    };
-  }
+  state = {
+    status: ''
+  };
 
   get actions() {
     return [
@@ -29,10 +25,8 @@ export default class ExportDialog extends Component {
       <CopyToClipboard
         text={this.props.text}
         key="copy"
-        onCopy={() => {
-          this.setState({status: 'Copied to clipboard.'});
-          this.selectText();
-      }}>
+        onCopy={this.handleCopyText}
+      >
         <RaisedButton
           secondary
           label="Copy to Clipboard"
@@ -53,6 +47,15 @@ export default class ExportDialog extends Component {
     });
   }
 
+  selectText = () => {
+    this.textField.select();
+  };
+
+  handleCopyText = () => {
+    this.setState({status: 'Copied to clipboard.'});
+    this.selectText();
+  }
+
   render() {
     return (
       <RouterDialog
@@ -68,7 +71,7 @@ export default class ExportDialog extends Component {
           rowsMax={10}
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           value={this.props.text}
-          onTouchTap={() => { this.textField.select(); }}
+          onTouchTap={this.selectText}
         />
       </RouterDialog>
     );

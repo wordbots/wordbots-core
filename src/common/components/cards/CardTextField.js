@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, func, number, object, string } from 'prop-types';
+import { arrayOf, func, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { chain as _ } from 'lodash';
 
@@ -7,20 +7,24 @@ import { bigramNLL } from '../../util/language';
 
 export default class CardTextField extends Component {
   static propTypes = {
-    type: number,
     text: string,
     sentences: arrayOf(object),
     error: string,
+    bigramProbs: object,
 
-    onUpdateText: func,
-    onOpenDialog: func
+    onUpdateText: func
   };
 
   get textSuggestions() {
-    if (this.state && this.state.bigramProbs) {
-      return _(this.props.sentences)
-              .flatMap(s => (s.result.suggestions || []).map(sugg => ({ original: s.sentence.trim(), new: sugg })))
-              .sortBy(suggestion => bigramNLL(suggestion.new, this.state.bigramProbs))
+    const { bigramProbs, sentences } = this.props;
+    if (bigramProbs) {
+      return _(sentences)
+              .flatMap(s =>
+                (s.result.suggestions || []).map(sugg =>
+                  ({ original: s.sentence.trim(), new: sugg })
+                )
+              )
+              .sortBy(suggestion => bigramNLL(suggestion.new, bigramProbs))
               .slice(0, 5)
               .value();
     } else {
@@ -28,22 +32,26 @@ export default class CardTextField extends Component {
     }
   }
 
-  useSuggestion = (suggestion) => {
-    this.props.onUpdateText(this.props.text.replace(suggestion.original, suggestion.new));
-  }
+  handleUpdateText = (e) => { this.props.onUpdateText(e.target.value); };
 
-  renderSuggestion = (suggestion) => (
-    <span key={suggestion.new}>
-      &nbsp;
-      <a
-        onClick={() => { this.useSuggestion(suggestion); }}
-        style={{cursor: 'pointer', textDecoration: 'underline'}}
-      >
-        {suggestion.new}
-      </a>
-      &nbsp;
-    </span>
-  )
+  renderSuggestion = (suggestion) => {
+    // TODO Should probably extract this into a separate component since
+    // I'm dynamically binding the click handler here?
+    const { onUpdateText, text } = this.props;
+    const handleClick = () => {
+      onUpdateText(text.replace(suggestion.original, suggestion.new));
+    };
+
+    return (
+      <span key={suggestion.new}>
+        &nbsp;
+        <a onClick={handleClick} style={{cursor: 'pointer', textDecoration: 'underline'}}>
+          {suggestion.new}
+        </a>
+        &nbsp;
+      </span>
+    );
+  }
 
   renderDidYouMean = () => {
     if (this.textSuggestions.length > 0) {
@@ -83,7 +91,7 @@ export default class CardTextField extends Component {
               floatingLabelText="Card Text"
               style={{width: '100%'}}
               rows={1}
-              onChange={e => { this.props.onUpdateText(e.target.value); }} />
+              onChange={this.handleUpdateText} />
           </div>
         </div>
 

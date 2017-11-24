@@ -20,7 +20,6 @@ export default class HexGrid extends Component {
     hexagons: arrayOf(object).isRequired,
     tutorialStep: object,
     activatedAbilities: arrayOf(object),
-    path: object,
     hexColors: object,
     pieces: object,
     selectedHexId: string,
@@ -29,8 +28,7 @@ export default class HexGrid extends Component {
 
   static defaultProps = {
     width: 800,
-    height: 600,
-    path: { start: null, end: null }
+    height: 600
   };
 
   static generate(config, content) {

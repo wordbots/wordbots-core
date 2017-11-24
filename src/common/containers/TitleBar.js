@@ -22,8 +22,7 @@ import Tooltip from '../components/Tooltip';
 
 function mapStateToProps(state) {
   return {
-    user: state.global.user,
-    sidebarOpen: state.global.sidebarOpen
+    user: state.global.user
   };
 }
 
@@ -38,7 +37,6 @@ function mapDispatchToProps(dispatch) {
 class TitleBar extends Component {
   static propTypes = {
     user: object,
-    sidebarOpen: bool,
     inGame: bool,
 
     history: object,
@@ -46,14 +44,10 @@ class TitleBar extends Component {
     onRerenderApp: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      userOpen: false,
-      anchorEl: null
-    };
-  }
+  state = {
+    userOpen: false,
+    anchorEl: null
+  };
 
   openLoginDialog = () => {
     RouterDialog.openDialog(this.props.history, 'login');
@@ -77,6 +71,11 @@ class TitleBar extends Component {
     this.props.onRerenderApp();
   }
 
+  handleClickLogout = () => {
+    logout();
+    this.closeUserMenu();
+  }
+
   get userMenu() {
     if (this.props.user) {
       return (
@@ -85,7 +84,7 @@ class TitleBar extends Component {
             style={{color: 'white'}}
             label={this.props.user.displayName}
             labelPosition="before"
-            onTouchTap={(e) => this.openUserMenu(e)}
+            onTouchTap={this.openUserMenu}
             icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
           <Popover
             open={this.state.userOpen}
@@ -96,7 +95,7 @@ class TitleBar extends Component {
             <Menu>
               <MenuItem
                 primaryText="Logout"
-                onClick={() => { logout(); this.closeUserMenu(); }}
+                onClick={this.handleClickLogout}
                 leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>} />
             </Menu>
           </Popover>
@@ -129,7 +128,7 @@ class TitleBar extends Component {
         >
           WORDBOTS
         </NavLink>
-      );     
+      );
     }
   }
 
@@ -142,7 +141,7 @@ class TitleBar extends Component {
             position: 'fixed',
             top: 0
           }}
-          iconElementLeft={      
+          iconElementLeft={
             <Tooltip
               text={isFlagSet('sidebarCollapsed') ? 'Expand Menu' : 'Collapse Menu' }
               place="right"

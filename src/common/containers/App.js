@@ -56,24 +56,18 @@ class App extends Component {
   static propTypes = {
     inGame: bool,
     inTutorial: bool,
-    renderId: number,
+    renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
 
     onLoggedIn: func,
     onLoggedOut: func,
-    onReceiveFirebaseData: func,
-    onToggleSidebar: func
+    onReceiveFirebaseData: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: true,
-      currentLocation: null
-    };
-  }
+  state = {
+    loading: true
+  };
 
   componentWillMount() {
     logAnalytics();
@@ -138,7 +132,7 @@ class App extends Component {
               <Route path="/deck" component={Deck} />
               <Route path="/play" component={Play} />
               <Route path="/about" component={About} />
-              <Route render={() => <Redirect to="/"/>} />
+              <Route render={this.redirectToRoot} />
             </Switch>
           </ErrorBoundary>
         </div>
@@ -158,6 +152,10 @@ class App extends Component {
       );
     }
   }
+
+  redirectToRoot = () => (
+    <Redirect to="/"/>
+  );
 
   render() {
     return (

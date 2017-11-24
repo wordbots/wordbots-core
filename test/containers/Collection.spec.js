@@ -8,7 +8,6 @@ import CardGrid from '../../src/common/components/cards/CardGrid';
 import CardTable from '../../src/common/components/cards/CardTable';
 import FilterControls from '../../src/common/components/cards/FilterControls';
 import LayoutControls from '../../src/common/components/cards/LayoutControls';
-import PageSwitcher from '../../src/common/components/cards/PageSwitcher';
 import SearchControls from '../../src/common/components/cards/SearchControls';
 import collectionReducer from '../../src/common/reducers/collection';
 import creatorReducer from '../../src/common/reducers/creator';
@@ -60,12 +59,6 @@ describe('Collection container', () => {
   });
 
   it('should be able to use the sidebar controls', () => {
-    // Pagination controls
-
-    component(PageSwitcher)[0].props.nextPage();
-    // TODO Test that the page has changed.
-    component(PageSwitcher)[0].props.prevPage();
-
     // Layout controls
 
     expect(component(CardGrid).props.cards.length).toEqual(CARDS_IN_PAGE);

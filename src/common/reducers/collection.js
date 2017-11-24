@@ -21,9 +21,6 @@ export default function collection(oldState = defaultState, action) {
       case creatorActions.ADD_TO_COLLECTION:
         return c.saveCard(state, action.payload);
 
-      case collectionActions.CLOSE_EXPORT_DIALOG:
-        return c.closeExportDialog(state);
-
       case collectionActions.DELETE_DECK:
         return c.deleteDeck(state, action.payload.deckId);
 

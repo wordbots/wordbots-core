@@ -54,14 +54,6 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class Creator extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      dictionaryOpen: false
-    };
-  }
-
   static propTypes = {
     id: string,
     name: string,

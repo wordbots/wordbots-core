@@ -25,24 +25,15 @@ export default class Board extends Component {
     attack: object,
 
     onSelectTile: func,
-    onHoverTile: func,
     onActivateAbility: func,
     onTutorialStep: func,
     onEndGame: func
   };
 
-  constructor(props) {
-    super(props);
-
-    const boardConfig = GRID_CONFIG;
-    const grid = HexGrid.generate(boardConfig);
-
-    this.state = {
-      grid,
-      config: boardConfig,
-      hoveredHexId: null
-    };
-  }
+  state = {
+    grid: HexGrid.generate(GRID_CONFIG),
+    hoveredHexId: null
+  };
 
   // Many util functions require a game state object, so we create a dummy one with minimal data.
   // TODO find a less gross approach?
@@ -144,7 +135,7 @@ export default class Board extends Component {
     return validActionHexes(this.dummyGameState, startHex).length > 0;
   }
 
-  onHexClick(hex) {
+  onHexClick = (hex) => {
     const hexId = HexUtils.getID(hex);
 
     if (this.isMyTurn) {
@@ -158,9 +149,9 @@ export default class Board extends Component {
     } else {
       this.props.onSelectTile(hexId);
     }
-  }
+  };
 
-  onMoveOrAttack(hex) {
+  onMoveOrAttack = (hex) => {
     const hexId = HexUtils.getID(hex);
     const movementHexIds = this.getValidMovementHexes(this.selectedHex).map(HexUtils.getID);
     const attackHexIds = this.getValidAttackHexes(this.selectedHex).map(HexUtils.getID);
@@ -172,36 +163,37 @@ export default class Board extends Component {
     } else {
       this.props.onSelectTile(hexId);
     }
-  }
+  };
 
-  onHexHover(hex, event) {
+  onHexHover = (hex, event) => {
     this.setState({
       hoveredHexId: event.type === 'mouseleave' ? null : HexUtils.getID(hex)
     });
-  }
+  };
 
   render() {
-    const { grid } = this.state;
+    const { size, tutorialStep, onActivateAbility, onEndGame, onTutorialStep } = this.props;
+    const { hexagons, layout } = this.state.grid;
 
     return (
       <div id="hexgrid">
         <HexGrid
           hexColors={this.hexColors}
           pieces={this.piecesOnGrid}
-          width={this.props.size}
-          height={this.props.size}
-          hexagons={grid.hexagons}
-          layout={grid.layout}
+          width={size}
+          height={size}
+          hexagons={hexagons}
+          layout={layout}
           selectedHexId={this.selectedHexId}
           hoveredHexId={this.state.hoveredHexId}
-          tutorialStep={this.props.tutorialStep}
+          tutorialStep={tutorialStep}
           activatedAbilities={this.selectedActivatedAbilities}
           actions={{
-            onClick: this.onHexClick.bind(this),
-            onHexHover: this.onHexHover.bind(this),
-            onActivateAbility: this.props.onActivateAbility,
-            onTutorialStep: this.props.onTutorialStep,
-            onEndGame: this.props.onEndGame
+            onClick: this.onHexClick,
+            onHexHover: this.onHexHover,
+            onActivateAbility: onActivateAbility,
+            onTutorialStep: onTutorialStep,
+            onEndGame: onEndGame
           }} />
       </div>
     );

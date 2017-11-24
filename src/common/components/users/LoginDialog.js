@@ -11,16 +11,20 @@ export default class LoginDialog extends Component {
     history: object
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    error: null,
+    register: false,
+    email: '',
+    username: '',
+    password: ''
+  }
 
-    this.state = {
-      error: null,
-      register: false,
-      email: '',
-      username: '',
-      password: ''
-    };
+  get submitDisabled() {
+    if (this.state.register) {
+      return !this.notEmpty([this.state.email, this.state.username, this.state.password]);
+    } else {
+      return !this.notEmpty([this.state.email, this.state.password]);
+    }
   }
 
   handleClose = () => {
@@ -55,30 +59,42 @@ export default class LoginDialog extends Component {
       .catch(() => { this.setState({error: 'Error: Email address not found.'}); });
   }
 
-  handleKeyPress(t) {
-    if (t.charCode === 13 && !this.submitDisabled()) {
-      this.submit();
+  handleKeyPress = (t) => {
+    if (t.charCode === 13 && !this.submitDisabled) {
+      this.handleSubmit();
     }
   }
 
-  notEmpty(fields) {
-    return fields.reduce((base, field) => base && (field !== ''), true);
+  handleClickSwitchMode = () => {
+    this.setState({register: !this.state.register});
   }
 
-  submitDisabled() {
-    if (this.state.register) {
-      return !this.notEmpty([this.state.email, this.state.username, this.state.password]);
-    } else {
-      return !this.notEmpty([this.state.email, this.state.password]);
-    }
+  handleClickForgotPassword = () => {
+    this.resetPassword(this.state.email);
   }
 
-  submit() {
+  handleChangeEmail = (e) => {
+    this.setState({email: e.target.value});
+  }
+
+  handleChangeUsername = (e) => {
+    this.setState({username: e.target.value});
+  }
+
+  handleChangePassword = (e) => {
+    this.setState({password: e.target.value});
+  }
+
+  handleSubmit = () => {
     if (this.state.register) {
       this.register(this.state.email, this.state.username, this.state.password);
     } else {
       this.login(this.state.email, this.state.password);
     }
+  }
+
+  notEmpty(fields) {
+    return fields.reduce((base, field) => base && (field !== ''), true);
   }
 
   renderLoginForm() {
@@ -89,8 +105,8 @@ export default class LoginDialog extends Component {
             value={this.state.email}
             style={{width: '100%'}}
             floatingLabelText="Email address"
-            onKeyPress={(t) => this.handleKeyPress(t)}
-            onChange={e => this.setState({email: e.target.value})} />
+            onKeyPress={this.handleKeyPress}
+            onChange={this.handleChangeEmail} />
         </div>
 
         {
@@ -100,8 +116,8 @@ export default class LoginDialog extends Component {
               value={this.state.username}
               style={{width: '100%'}}
               floatingLabelText="Username"
-              onKeyPress={(t) => this.handleKeyPress(t)}
-              onChange={e => { this.setState({username: e.target.value}); }} />
+              onKeyPress={this.handleKeyPress}
+              onChange={this.handleChangeUsername} />
           </div>
         }
 
@@ -111,8 +127,8 @@ export default class LoginDialog extends Component {
             style={{width: '100%'}}
             floatingLabelText="Password"
             type="password"
-            onKeyPress={(t) => this.handleKeyPress(t)}
-            onChange={e => this.setState({password: e.target.value})} />
+            onKeyPress={this.handleKeyPress}
+            onChange={this.handleChangePassword} />
         </div>
 
         {
@@ -132,7 +148,7 @@ export default class LoginDialog extends Component {
           {this.state.register ? 'Have an account?' : 'Don\'t have an account?'} &nbsp;
           <span
             style={{fontWeight: 'bold', cursor: 'pointer'}}
-            onClick={() => this.setState({register: !this.state.register})}>
+            onClick={this.handleClickSwitchMode}>
             {this.state.register ? 'Login' : 'Register'}
           </span>
         </span>
@@ -153,14 +169,14 @@ export default class LoginDialog extends Component {
         key="Forgot Password?"
         primary
         disabled={!this.notEmpty([this.state.email])}
-        onTouchTap={() => this.resetPassword(this.state.email)}
+        onTouchTap={this.handleClickForgotPassword}
       />,
       <FlatButton
         label={this.state.register ? 'Register' : 'Login'}
         key="Register/Login"
         primary
-        disabled={this.submitDisabled()}
-        onTouchTap={() => this.submit()}
+        disabled={this.submitDisabled}
+        onTouchTap={this.handleSubmit}
       />
     ];
 

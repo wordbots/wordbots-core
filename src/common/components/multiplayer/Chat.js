@@ -24,17 +24,13 @@ export default class Chat extends Component {
     toggleChat: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      chatFieldValue: '',
-      showServerMsgs: true,
-      showGameMsgs: true,
-      showChatMsgs: true,
-      togglesVisible: false
-    };
-  }
+  state = {
+    chatFieldValue: '',
+    optionsVisible: false,
+    showServerMsgs: true,
+    showGameMsgs: true,
+    showChatMsgs: true
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     return this.props.open !== nextProps.open
@@ -46,6 +42,10 @@ export default class Chat extends Component {
 
   componentDidUpdate() {
     this.scrollToBottom();
+  }
+
+  get isClosed() {
+    return this.props.inGame && !this.props.open;
   }
 
   scrollToBottom() {
@@ -82,6 +82,26 @@ export default class Chat extends Component {
     }
   }
 
+  handleChatChange = (evt) => {
+    this.setState({ chatFieldValue: evt.target.value });
+  };
+
+  handleChatKeypress = (evt) => {
+    if (evt.charCode === 13) {
+      this.props.onSendMessage(this.state.chatFieldValue);
+      this.scrollToBottom();
+      this.setState({ chatFieldValue: '' });
+    }
+  };
+
+  toggleOptionsVisibility = () => {
+    this.setState(state => ({ optionsVisible: !state.optionsVisible }));
+  };
+
+  toggleServerMessages = (e, value) => { this.setState({showServerMsgs: value}); };
+  toggleGameMessages = (e, value) => { this.setState({showGameMsgs: value}); };
+  togglePlayerChat = (e, value) => { this.setState({showChatMsgs: value}); };
+
   renderMessage(message, idx) {
     return (
       <div
@@ -114,20 +134,6 @@ export default class Chat extends Component {
         </span>
       );
     }
-  }
-
-  onChatChange(e) {
-    this.setState({
-      chatFieldValue: e.target.value
-    });
-  }
-
-  onChatEnter() {
-    this.props.onSendMessage(this.state.chatFieldValue);
-    this.scrollToBottom();
-    this.setState({
-      chatFieldValue: ''
-    });
   }
 
   renderClosedChat() {
@@ -171,7 +177,10 @@ export default class Chat extends Component {
     }
   }
 
-  renderOpenChat(chatTitle) {
+  renderOpenChat() {
+    const { inGame, messages, roomName, toggleChat } = this.props;
+    const chatTitle = inGame ? 'Chat' : (roomName || 'Lobby');
+
     return (
       <div style={{height: '100%'}}>
         <Toolbar>
@@ -179,35 +188,24 @@ export default class Chat extends Component {
             <ToolbarTitle text={chatTitle} />
           </ToolbarGroup>
           <ToolbarGroup>
-            <IconButton onClick={() => this.setState({
-              chatFieldValue: this.state.chatFieldValue,
-              showServerMsgs: this.state.showServerMsgs,
-              showGameMsgs: this.state.showGameMsgs,
-              showChatMsgs: this.state.showChatMsgs,
-              togglesVisible: !this.state.togglesVisible
-            })}>
+            <IconButton onClick={this.toggleOptionsVisibility}>
               <FontIcon color="#888" className="material-icons">settings_input_component</FontIcon>
             </IconButton>
-            {this.renderChatClose()}
+            {inGame && (
+              <IconButton onClick={toggleChat}>
+                <FontIcon color="#888" className="material-icons">fast_forward</FontIcon>
+              </IconButton>
+            )}
           </ToolbarGroup>
         </Toolbar>
 
         <div style={{
-          display: this.state.togglesVisible ? 'block' : 'none'
+          display: this.state.optionsVisible ? 'block' : 'none'
         }}>
           <div style={{padding: 10}}>
-            <Toggle
-              label="Show server messages"
-              defaultToggled
-              onToggle={(e, value) => { this.setState({showServerMsgs: value}); }} />
-            <Toggle
-              label="Show game messages"
-              defaultToggled
-              onToggle={(e, value) => { this.setState({showGameMsgs: value}); }} />
-            <Toggle
-              label="Show player chat"
-              defaultToggled
-              onToggle={(e, value) => { this.setState({showChatMsgs: value}); }} />
+            <Toggle label="Show server messages" defaultToggled onToggle={this.toggleServerMessages} />
+            <Toggle label="Show game messages" defaultToggled onToggle={this.toggleGameMessages} />
+            <Toggle label="Show player chat" defaultToggled onToggle={this.togglePlayerChat} />
           </div>
           <Divider />
         </div>
@@ -216,11 +214,11 @@ export default class Chat extends Component {
           ref={(el) => {this.chat = el;}}
           style={{
             padding: 10,
-            height: this.state.togglesVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
+            height: this.state.optionsVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
             overflowY: 'scroll'
           }}>
           {
-            this.mergeMessagesById(this.props.messages)
+            this.mergeMessagesById(messages)
               .filter(this.filterMessage.bind(this))
               .map(this.renderMessage.bind(this))
           }
@@ -234,29 +232,15 @@ export default class Chat extends Component {
             autoComplete="off"
             style={{margin: 10, width: 236}}
             value={this.state.chatFieldValue}
-            onChange={this.onChatChange.bind(this)}
-            onKeyPress={e => { if (e.charCode === 13) { this.onChatEnter(); }}}
+            onChange={this.handleChatChange}
+            onKeyPress={this.handleChatKeypress}
           />
         </div>
       </div>
     );
   }
 
-  renderDrawerContents(chatTitle) {
-    if (this.isClosed()) {
-      return this.renderClosedChat();
-    } else {
-      return this.renderOpenChat(chatTitle);
-    }
-  }
-
-  isClosed() {
-    return this.props.inGame && !this.props.open;
-  }
-
   render() {
-    const chatTitle = this.props.inGame ? 'Chat' : (this.props.roomName || 'Lobby');
-
     const containerStyle = {
       paddingTop: this.props.fullscreen ? 0: 64,
       marginTop: 0,
@@ -270,8 +254,8 @@ export default class Chat extends Component {
         openSecondary
         docked
         containerStyle={containerStyle}
-        width={this.isClosed() ? 64 : 256}>
-        {this.renderDrawerContents(chatTitle)}
+        width={this.isClosed ? 64 : 256}>
+        {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
       </Drawer>
     );
   }

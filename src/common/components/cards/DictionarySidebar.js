@@ -21,7 +21,7 @@ export default class DictionarySidebar extends Component {
       key={term}
       token={term}
       selected={term === this.props.selectedTerm}
-      onClick={() => this.props.onClick(term)} />
+      onClick={this.props.onClick} />
   );
 
   render() {

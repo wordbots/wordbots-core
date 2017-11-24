@@ -23,23 +23,19 @@ export default class DictionaryDialog extends Component {
     history: object
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dictionary: {
-        definitions: {},
-        examplesByToken: {},
-        examplesByNode: {}
-      },
-      tabIdx: 0,
-      dictionaryTerm: null,
-      thesaurusTerm: null,
-      keywordsTerm: null,
-      searchText: '',
-      showDefinitions: false
-    };
-  }
+  state = {
+    dictionary: {
+      definitions: {},
+      examplesByToken: {},
+      examplesByNode: {}
+    },
+    tabIdx: 0,
+    dictionaryTerm: null,
+    thesaurusTerm: null,
+    keywordsTerm: null,
+    searchText: '',
+    showDefinitions: false
+  };
 
   componentWillMount() {
     this.checkHash();
@@ -102,21 +98,21 @@ export default class DictionaryDialog extends Component {
 
   cleanupTerms = (obj) => (
     mapKeys(obj, (value, term) => term.replace(' \'', '\''))
-  )
+  );
   cleanupExample = (example) => (
     capitalize(contractKeywords(example).trim())
       .replace(/,$/, '')
       .replace('activate:', 'Activate:')
-  )
+  );
   cleanupSemantics = (semantics) => (
     semantics.replace(/=>/g, '→').replace(/scala\./g, '').replace(/,(\w)/g, ', $1')
-  )
+  );
 
   selectTerm = (term, callback = noop) => {
     this.setState({
       [`${this.currentTab}Term`]: term
     }, callback);
-  }
+  };
 
   checkHash = () => {
     const hash = getHash(this.props.history);
@@ -128,11 +124,18 @@ export default class DictionaryDialog extends Component {
         this.selectTerm(term);
       });
     }
-  }
+  };
 
   updateHash = () => {
     setHash(this.props.history, this.hash);
-  }
+  };
+
+  handleChangeTab = (tabIdx) => { this.setState({ tabIdx }, this.updateHash); };
+  handleCloseDialog = () => { RouterDialog.closeDialog(this.props.history); };
+  handleSelectTerm = (term) => { this.selectTerm(term, this.updateHash); };
+  handleSetSearchTerm = (searchText) => this.setState({ searchText });
+  handleShowDefinitions = () => { this.setState({ showDefinitions: true }); };
+  handleToggleDefinitions = () => this.setState(state => ({ showDefinitions: !state.showDefinitions }));
 
   renderTitle() {
     return (
@@ -143,10 +146,7 @@ export default class DictionaryDialog extends Component {
             <ToolbarTitle text={this.selectedTerm} />
           </ToolbarGroup>
           <ToolbarGroup>
-            <Toggle 
-              label="Advanced" 
-              onToggle={() => this.setState({ showDefinitions: !this.state.showDefinitions })}
-              toggled={this.state.showDefinitions}/>
+            <Toggle label="Advanced" onToggle={this.handleToggleDefinitions} toggled={this.state.showDefinitions}/>
           </ToolbarGroup>
         </Toolbar>
       </div>
@@ -155,13 +155,13 @@ export default class DictionaryDialog extends Component {
 
   renderTabs() {
     const tabColor = 'rgb(0, 188, 212)';
-    const tabStyle = {backgroundColor: tabColor};
+    const tabStyle = {backgroundColor: tabColor, borderRadius: 0};
 
     return (
       <div style={{display: 'flex', backgroundColor: tabColor}}>
         <Tabs
           value={this.state.tabIdx}
-          onChange={(tabIdx) => { this.setState({ tabIdx }, this.updateHash); }}
+          onChange={this.handleChangeTab}
           style={{width: '100%'}}
           inkBarStyle={{height: 7, marginTop: -7, zIndex: 10}}
         >
@@ -171,7 +171,7 @@ export default class DictionaryDialog extends Component {
         </Tabs>
 
         <IconButton
-          onTouchTap={() => { RouterDialog.closeDialog(this.props.history); }}>
+          onTouchTap={this.handleCloseDialog}>
           <FontIcon className="material-icons" color="white">close</FontIcon>
         </IconButton>
       </div>
@@ -222,7 +222,7 @@ export default class DictionaryDialog extends Component {
     } else if (definitions) {
       return (
         <div key="definitions" style={{marginBottom: 20, textDecoration: 'underline', cursor: 'pointer'}}>
-          <a onClick={() => { this.setState({ showDefinitions: true }); }}>
+          <a onClick={this.handleShowDefinitions}>
             [Show {definitions.length} definition(s) <i>(Advanced feature)</i>]
           </a>
         </div>
@@ -252,12 +252,11 @@ export default class DictionaryDialog extends Component {
 
         <div style={{display: 'flex', justifyContent: 'stretch'}}>
           <div style={{width: '20%'}}>
-            <DictionarySearchBar
-              onChange={(searchText) => this.setState({ searchText })} />
+            <DictionarySearchBar onChange={this.handleSetSearchTerm} />
             <DictionarySidebar
               terms={this.currentTabTerms}
               selectedTerm={this.selectedTerm}
-              onClick={(term) => { this.selectTerm(term, this.updateHash); }} />
+              onClick={this.handleSelectTerm} />
           </div>
 
           <div style={{width: '80%'}}>

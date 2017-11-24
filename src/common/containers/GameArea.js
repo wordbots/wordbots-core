@@ -153,6 +153,7 @@ export function mapDispatchToProps(dispatch) {
 }
 
 export class GameArea extends Component {
+  /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     started: bool,
     player: string,
@@ -217,6 +218,7 @@ export class GameArea extends Component {
     onAIResponse: func,
     onSendChatMessage: func
   };
+  /* eslint-enable react/no-unused-prop-types */
 
   state = {
     areaHeight: 1250,
@@ -305,7 +307,7 @@ export class GameArea extends Component {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
-  onSelectTile(hexId, action = null, intermediateMoveHexId = null) {
+  onSelectTile = (hexId, action = null, intermediateMoveHexId = null) => {
     if (this.props.attack) {
       return;  // Can't move/attack while an attack is in progress.
     } if (action === 'move') {
@@ -315,13 +317,25 @@ export class GameArea extends Component {
     } else if (action === 'place') {
       this.placePiece(hexId);
     } else {
-      this.setState({selectedHexId: hexId});
       this.props.onSelectTile(hexId, this.props.player);
     }
   }
 
   loadBackground() {
     return inBrowser() ? require('../components/img/black_bg_lodyas.png') : '';
+  }
+
+  handleClickEndGame = () => {
+    this.props.onEndGame();
+    this.props.history.push('/play');
+  }
+
+  handleNextTutorialStep = () => {
+    this.props.onTutorialStep();
+  }
+
+  handlePrevTutorialStep = () => {
+    this.props.onTutorialStep(true);
   }
 
   renderNotification() {
@@ -339,7 +353,7 @@ export class GameArea extends Component {
           timeout={2000}
           title="Wordbots."
           options={{...options, body: 'It\'s your turn!'}}
-          onClick={() => { window.focus(); }} />
+          onClick={window.focus} />
       );
     }
   }
@@ -403,12 +417,11 @@ export class GameArea extends Component {
                 enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
                 top={0}
                 place="left"
-                onNextStep={() => { this.props.onTutorialStep(); }}
-                onPrevStep={() => { this.props.onTutorialStep(true); }}
+                onNextStep={this.handleNextTutorialStep}
+                onPrevStep={this.handlePrevTutorialStep}
               >
                 <EndTurnButton
                   player={this.props.player}
-                  currentTurn={this.props.currentTurn}
                   gameOver={this.props.gameOver}
                   isMyTurn={this.props.isMyTurn}
                   isAttackHappening={this.props.isAttackHappening}
@@ -435,9 +448,7 @@ export class GameArea extends Component {
               zIndex: 999,
               width: this.state.boardSize
           }}>
-            <Status
-              player={this.props.player}
-              status={this.isMyTurn() ? this.props.status : {}} />
+            <Status status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               size={this.state.boardSize}
               player={this.props.player}
@@ -449,30 +460,24 @@ export class GameArea extends Component {
               playingCardType={this.props.playingCardType}
               tutorialStep={this.props.tutorialStep}
               attack={this.props.attack}
-              onSelectTile={(hexId, action, intmedMoveHexId) => this.onSelectTile(hexId, action, intmedMoveHexId)}
+              onSelectTile={this.onSelectTile}
               onActivateAbility={this.props.onActivateObject}
               onTutorialStep={this.props.onTutorialStep}
-              onEndGame={() => {
-                this.props.onEndGame();
-                this.props.history.push('/play');
-              }} />
+              onEndGame={this.handleClickEndGame} />
           </div>
           <PlayerArea gameProps={this.props} />
           <EventAnimation eventQueue={this.props.eventQueue} currentTurn={this.props.currentTurn} />
           <VictoryScreen
             winnerColor={this.props.winner}
             winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={() => {
-              this.props.onEndGame();
-              this.props.history.push('/play');
-            }} />
+            onClick={this.handleClickEndGame} />
         </Paper>
 
         <Chat
           inGame
           fullscreen={screenfull.isFullscreen}
           open={this.state.chatOpen}
-          toggleChat={() => this.toggleChat()}
+          toggleChat={this.toggleChat}
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
           onSendMessage={this.props.onSendChatMessage} />

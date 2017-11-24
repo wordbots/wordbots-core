@@ -23,17 +23,12 @@ export default class Lobby extends Component {
     onJoinGame: func,
     onSpectateGame: func,
     onHostGame: func,
-    onStartTutorial: func,
     onSelectMode: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedDeck: 0
-    };
-  }
+  state = {
+    selectedDeck: 0
+  };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.availableDecks.length !== this.props.availableDecks.length) {
@@ -51,6 +46,22 @@ export default class Lobby extends Component {
     return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
   }
 
+  handleChooseDeck = (idx) => {
+    this.setState({selectedDeck: idx});
+  };
+
+  handleSelectMode = (mode) => {
+    this.props.onSelectMode(mode, this.deck);
+  };
+
+  handleJoinGame = (gameId, gameName) => {
+    this.props.onJoinGame(gameId, gameName, this.deck);
+  };
+
+  handleHostGame = (gameName) => {
+    this.props.onHostGame(gameName, this.deck);
+  };
+
   renderLobbyContent(gameMode, socket) {
     if (gameMode === '/casual') {
       if (socket.hosting) {
@@ -63,20 +74,17 @@ export default class Lobby extends Component {
               openGames={socket.waitingPlayers}
               inProgressGames={socket.games}
               usernameMap={socket.clientIdToUsername}
-              onJoinGame={(gameId, gameName) => { this.props.onJoinGame(gameId, gameName, this.deck); }}
-              onSpectateGame={(gameId, gameName) => { this.props.onSpectateGame(gameId, gameName); }} />
+              onJoinGame={this.handleJoinGame}
+              onSpectateGame={this.props.onSpectateGame} />
 
             <HostGame
               disabled={this.hasNoDecks}
-              onHostGame={(gameName) => { this.props.onHostGame(gameName, this.deck); }} />
+              onHostGame={this.handleHostGame} />
           </div>
         );
       }
     } else {
-      return (
-        <ModeSelection
-          onSelectMode={(mode) => { this.props.onSelectMode(mode, this.deck); }}/>
-      );
+      return <ModeSelection onSelectMode={this.handleSelectMode}/>;
     }
   }
 
@@ -96,7 +104,7 @@ export default class Lobby extends Component {
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           selectedDeckIdx={this.state.selectedDeck}
-          onChooseDeck={idx => { this.setState({selectedDeck: idx}); }} />
+          onChooseDeck={this.handleChooseDeck} />
 
         {this.renderLobbyContent(this.props.gameMode, skt)}
       </div>

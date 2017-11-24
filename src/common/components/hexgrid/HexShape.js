@@ -53,6 +53,12 @@ export default class HexShape extends React.Component {
     return this.props.tutorialStep && (HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex);
   }
 
+  handleMouseEnter = evt => this.props.actions.onHexHover(this.props.hex, evt);
+  handleMouseLeave = evt => this.props.actions.onHexHover(this.props.hex, evt);
+  handleClickHex = evt => this.props.actions.onClick(this.props.hex, evt);
+  handleClickNextTutorialStep = () => { this.props.actions.onTutorialStep(false); };
+  handleClickPrevTutorialStep = () => { this.props.actions.onTutorialStep(true); };
+
   renderPattern() {
     if (!this.props.selected) {
       return (
@@ -76,9 +82,9 @@ export default class HexShape extends React.Component {
       <g
         draggable
         transform={this.translate}
-        onMouseEnter={e => this.props.actions.onHexHover(this.props.hex, e)}
-        onMouseLeave={e => this.props.actions.onHexHover(this.props.hex, e)}
-        onClick={e => this.props.actions.onClick(this.props.hex, e)}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        onClick={this.handleClickHex}
       >
         {this.renderPattern()}
         <polygon key="p1" points={this.points} style={this.hexStyles} />
@@ -92,8 +98,8 @@ export default class HexShape extends React.Component {
       return (
         <TutorialTooltip
           tutorialStep={this.props.tutorialStep}
-          onNextStep={() => { this.props.actions.onTutorialStep(false); }}
-          onPrevStep={() => { this.props.actions.onTutorialStep(true); }}
+          onNextStep={this.handleClickNextTutorialStep}
+          onPrevStep={this.handleClickPrevTutorialStep}
           onEndTutorial={this.props.actions.onEndGame}
         >
           {this.renderHex()}

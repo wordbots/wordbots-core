@@ -64,6 +64,21 @@ export default class CardCreationForm extends Component {
     });
   }
 
+  styles = {
+    container: {width: '60%', flex: 1, padding: 64},
+    paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
+
+    section: {display: 'flex', justifyContent: 'space-between'},
+
+    leftCol: {width: '70%', marginRight: 25},
+    rightColContainer: {display: 'flex', alignItems: 'center'},
+    rightCol: {width: 210},
+    attribute: {width: '100%', marginRight: 25},
+    saveButton: {marginTop: 20},
+
+    icon: {verticalAlign: 'middle', color: 'white'}
+  };
+
   get robot() { return this.props.type === TYPE_ROBOT; }
   get event() { return this.props.type === TYPE_EVENT; }
 
@@ -142,34 +157,25 @@ export default class CardCreationForm extends Component {
       !this.healthError && !this.speedError && !this.textError;
   }
 
-  get styles() {
-    return {
-      container: {width: '60%', flex: 1, padding: 64},
-      paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
-
-      section: {display: 'flex', justifyContent: 'space-between'},
-
-      leftCol: {width: '70%', marginRight: 25},
-      rightColContainer: {display: 'flex', alignItems: 'center'},
-      rightCol: {width: 210},
-      attribute: {width: '100%', marginRight: 25},
-      saveButton: {marginTop: 20},
-
-      icon: {verticalAlign: 'middle', color: 'white'}
-    };
-  }
-
   setAttribute = (key) => (value) => {
     this.props.onSetAttribute(key, value);
-  }
+  };
 
-  onUpdateText(text, cardType, dontIndex = false) {
+  handleSetName = (e) => { this.props.onSetName(e.target.value); };
+
+  handleSetType = (e, i, value) => {
+    this.props.onSetType(value);
+    // Re-parse card text because different card types now have different validations.
+    this.onUpdateText(this.props.text, value);
+  };
+
+  onUpdateText = (text, cardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
     this.props.onSetText(text);
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
-  }
+  };
 
   renderButton = (label, icon, onClick) => (
     <RaisedButton
@@ -221,7 +227,7 @@ export default class CardCreationForm extends Component {
               floatingLabelText="Card Name"
               style={this.styles.leftCol}
               errorText={this.nameError}
-              onChange={e => { this.props.onSetName(e.target.value); }} />
+              onChange={this.handleSetName} />
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
@@ -236,11 +242,8 @@ export default class CardCreationForm extends Component {
               value={this.props.type}
               floatingLabelText="Card Type"
               style={{width: 'calc(100% - 60px)'}}
-              onChange={(e, i, value) => {
-                this.props.onSetType(value);
-                // Re-parse card text because different card types now have different validations.
-                this.onUpdateText(this.props.text, value);
-              }}>
+              onChange={this.handleSetType}
+            >
               {
                 CREATABLE_TYPES.map(type =>
                   <MenuItem key={type} value={type} primaryText={typeToString(type)} />
@@ -253,7 +256,7 @@ export default class CardCreationForm extends Component {
                   secondary
                   style={{width: 40, minWidth: 40}}
                   labelPosition="after"
-                  onTouchTap={() => { this.props.onSpriteClick(); }}>
+                  onTouchTap={this.props.onSpriteClick}>
                   <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
                 </RaisedButton>
               </Tooltip>
@@ -261,12 +264,11 @@ export default class CardCreationForm extends Component {
           </div>
 
           <CardTextField
-            type={this.props.type}
             text={this.props.text}
             sentences={this.nonEmptySentences}
             error={this.textError}
-            onOpenDialog={this.props.onOpenDialog}
-            onUpdateText={text => { this.onUpdateText(text, this.props.type); }} />
+            bigramProbs={this.state && this.state.bigramProbs}
+            onUpdateText={this.onUpdateText} />
 
           <div style={this.styles.section}>
             {this.renderAttributeField('attack', this.robot)}
@@ -281,7 +283,7 @@ export default class CardCreationForm extends Component {
               label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
               disabled={!this.isValid}
               style={this.styles.saveButton}
-              onTouchTap={() => { this.props.onAddToCollection(); }} />
+              onTouchTap={this.props.onAddToCollection} />
           </MustBeLoggedIn>
         </Paper>
       </div>

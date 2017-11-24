@@ -17,6 +17,8 @@ export default class NumberField extends Component {
     maxValue: 10
   }
 
+  handleChange = (evt) => { this.props.onChange(parseInt(evt.target.value)); };
+
   render() {
     return (
       <TextField
@@ -28,7 +30,7 @@ export default class NumberField extends Component {
         max={this.props.maxValue}
         disabled={this.props.disabled}
         errorText={this.props.errorText}
-        onChange={e => { this.props.onChange(parseInt(e.target.value)); }} />
+        onChange={this.handleChange} />
     );
   }
 }

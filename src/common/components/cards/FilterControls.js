@@ -13,6 +13,8 @@ export default class FilterControls extends Component {
     return false;
   }
 
+  handleChangeCostRange = (values) => { this.props.onSetCostRange(values); }
+
   render() {
     const toggleStyle = { marginBottom: 10 };
 
@@ -63,7 +65,7 @@ export default class FilterControls extends Component {
                 20: 20
               }}
               defaultValue={[0, 20]}
-              onChange={values => { this.props.onSetCostRange(values); }}
+              onChange={this.handleChangeCostRange}
             />
           </div>
         </div>

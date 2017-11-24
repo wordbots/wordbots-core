@@ -1,38 +1,32 @@
-import React, { Component } from 'react';
-import { object, string } from 'prop-types';
+import React from 'react';
+import { object } from 'prop-types';
 
-export default class Status extends Component {
-  static propTypes = {
-    status: object,
-    player: string
-  };
+const Status = ({status}) => {
+  const color = {
+    error: '#F44336',
+    warning: '#FFEB3B'
+  }[status.type] || '#CCC';
 
-  get color() {
-    if (this.props.status.type === 'error') {
-      return '#F44336';
-    } else if (this.props.status.type === 'warning') {
-      return '#FFEB3B';
-    } else {
-      return '#CCCCCC';
-    }
-  }
+  return (
+    <div style={{
+      display: 'inline-block',
+      position: 'absolute',
+      top: 50,
+      margin: 'auto',
+      width: '100%',
+      height: 20,
+      textAlign: 'center',
+      fontFamily: 'Carter One',
+      fontSize: 20,
+      color: color
+    }}>
+      {status.message}
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <div style={{
-        display: 'inline-block',
-        position: 'absolute',
-        top: 50,
-        margin: 'auto',
-        width: '100%',
-        height: 20,
-        textAlign: 'center',
-        fontFamily: 'Carter One',
-        fontSize: 20,
-        color: this.color
-      }}>
-        {this.props.status.message}
-      </div>
-    );
-  }
-}
+Status.propTypes = {
+  status: object
+};
+
+export default Status;

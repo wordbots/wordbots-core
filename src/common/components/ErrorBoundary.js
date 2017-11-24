@@ -11,11 +11,6 @@ export default class ErrorBoundary extends Component {
     errorInfo: null
   }
 
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,

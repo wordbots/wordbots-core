@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
-  from 'material-ui/Table';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
 
 import { typeToString } from '../../constants';
@@ -17,14 +16,6 @@ export default class CardTable extends Component {
     onCardClick: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      page: 1
-    };
-  }
-
   sourceToString(source) {
     if (source === 'user') {
       return 'You';
@@ -32,6 +23,10 @@ export default class CardTable extends Component {
       return 'Built-In';
     }
   }
+
+  handleCellClick = (row, col) => {
+    this.props.onCardClick(this.props.cards[row].id);
+  };
 
   renderCardRowStat(type, stats) {
     if (stats && stats[type]) {
@@ -60,24 +55,22 @@ export default class CardTable extends Component {
     );
   }
 
-  renderCardRow(card, index) {
-    return (
-      <TableRow
-        key={card.id || id()}
-        selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
-        selectable={!this.props.selectable || card.source !== 'builtin'}
-      >
-        <TableRowColumn width={130}>{card.name}</TableRowColumn>
-        <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
-        <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
-        <TableRowColumn>{card.text}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('speed', card.stats)}</TableRowColumn>
-        <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardCost(card.cost)}</TableRowColumn>
-      </TableRow>
-    );
-  }
+  renderCardRow = (card, index) => (
+    <TableRow
+      key={card.id || id()}
+      selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
+      selectable={!this.props.selectable || card.source !== 'builtin'}
+    >
+      <TableRowColumn width={130}>{card.name}</TableRowColumn>
+      <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
+      <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
+      <TableRowColumn>{card.text}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('speed', card.stats)}</TableRowColumn>
+      <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardCost(card.cost)}</TableRowColumn>
+    </TableRow>
+  );
 
   render() {
     return (
@@ -91,9 +84,7 @@ export default class CardTable extends Component {
           <Table
             multiSelectable
             selectable={this.props.selectable}
-            onCellClick={(row, col) => {
-              this.props.onCardClick(this.props.cards[row].id);
-            }}>
+            onCellClick={this.handleCellClick}>
             <TableHeader
               adjustForCheckbox={false}
               displaySelectAll={false}
@@ -114,7 +105,7 @@ export default class CardTable extends Component {
               displayRowCheckbox={false}
               deselectOnClickaway={false}
               showRowHover>
-                {this.props.cards.map(this.renderCardRow.bind(this))}
+                {this.props.cards.map(this.renderCardRow)}
             </TableBody>
           </Table>
         </div>

@@ -6,10 +6,6 @@ import {
 } from '../../util/cards';
 
 const cardsHandlers = {
-  closeExportDialog: function (state) {
-    return Object.assign({}, state, {exportedJson: null});
-  },
-
   deleteCards: function (state, ids) {
     state.cards = state.cards.filter(c => !ids.includes(c.id));
     saveCardsToFirebase(state);

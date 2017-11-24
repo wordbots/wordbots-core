@@ -12,7 +12,6 @@ export default class HexPiece extends React.Component {
     hex: object.isRequired,
     layout: object.isRequired,
     actions: object.isRequired,
-    tutorialStep: object,
     piece: object
   };
 
@@ -56,6 +55,10 @@ export default class HexPiece extends React.Component {
       };
     }
   }
+
+  handleMouseEnter = evt => this.props.actions.onHexHover(this.props.hex, evt);
+  handleMouseLeave = evt => this.props.actions.onHexHover(this.props.hex, evt);
+  handleClick = evt => this.props.actions.onClick(this.props.hex, evt);
 
   renderPattern() {
     return (
@@ -108,9 +111,9 @@ export default class HexPiece extends React.Component {
       <g
         draggable
         transform={this.translate}
-        onMouseEnter={e => this.props.actions.onHexHover(this.props.hex, e)}
-        onMouseLeave={e => this.props.actions.onHexHover(this.props.hex, e)}
-        onClick={e => this.props.actions.onClick(this.props.hex, e)}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        onClick={this.handleClick}
         style={{
           transition: `transform ${ANIMATION_TIME_MS}ms ease-in-out, opacity ${ANIMATION_TIME_MS}ms ease-in-out`
       }}>

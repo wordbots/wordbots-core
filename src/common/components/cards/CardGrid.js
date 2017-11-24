@@ -16,41 +16,31 @@ export default class CardGrid extends Component {
     onCardClick: func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      page: 1
-    };
-  }
-
-  renderCard(card) {
-    return (
-      <div
-        key={card.id || id()}
-        style={{
-          marginRight: 15,
-          marginTop: -12
-      }}>
-        <Card
-          collection
-          id={card.id}
-          name={card.name}
-          spriteID={card.spriteID}
-          spriteV={card.spriteV}
-          type={card.type}
-          text={splitSentences(card.text).map(Sentence)}
-          rawText={card.text || ''}
-          stats={card.stats}
-          cardStats={card.stats}
-          cost={card.cost}
-          baseCost={card.cost}
-          source={card.source}
-          selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
-          onCardClick={this.props.onCardClick} />
-      </div>
-    );
-  }
+  renderCard = (card) => (
+    <div
+      key={card.id || id()}
+      style={{
+        marginRight: 15,
+        marginTop: -12
+    }}>
+      <Card
+        collection
+        id={card.id}
+        name={card.name}
+        spriteID={card.spriteID}
+        spriteV={card.spriteV}
+        type={card.type}
+        text={splitSentences(card.text).map(Sentence)}
+        rawText={card.text || ''}
+        stats={card.stats}
+        cardStats={card.stats}
+        cost={card.cost}
+        baseCost={card.cost}
+        source={card.source}
+        selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
+        onCardClick={this.props.onCardClick} />
+    </div>
+  );
 
   render() {
     return (
@@ -62,7 +52,7 @@ export default class CardGrid extends Component {
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'flex-start'
-        }}>{!inBrowser() ? null : this.props.cards.map(this.renderCard.bind(this))}</div>
+        }}>{!inBrowser() ? null : this.props.cards.map(this.renderCard)}</div>
       </div>
     );
   }

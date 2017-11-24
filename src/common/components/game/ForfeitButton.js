@@ -17,9 +17,17 @@ export default class ForfeitButton extends Component {
     onForfeit: func
   };
 
+  handleClick = () => {
+    this.props.onForfeit(opponent(this.props.player));
+
+    if (this.props.isTutorial) {
+      this.props.history.push('/play');
+    }
+  }
+
   render() {
     return (
-      <Tooltip text="Forfeit" place="top" style={{zIndex: 99999}}>     
+      <Tooltip text="Forfeit" place="top" style={{zIndex: 99999}}>
         <RaisedButton
           backgroundColor="#CCC"
           buttonStyle={{
@@ -35,20 +43,16 @@ export default class ForfeitButton extends Component {
           overlayStyle={{
             height: '64px'
           }}
-          onTouchTap={() => { 
-            this.props.onForfeit(opponent(this.props.player));
-
-            if (this.props.isTutorial) {
-              this.props.history.push('/play');
-            }
-          }}
+          onTouchTap={this.handleClick}
           icon={
-            <FontIcon 
+            <FontIcon
               className="material-icons"
               style={{
                 lineHeight: '64px',
                 verticalAlign: 'none'
-              }}>flag</FontIcon>
+            }}>
+              flag
+            </FontIcon>
           }
           disabled={this.props.isSpectator || this.props.gameOver} />
       </Tooltip>

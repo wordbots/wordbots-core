@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -13,41 +13,39 @@ export function mapStateToProps(state) {
   };
 }
 
-class Home extends Component {
-  static propTypes = {
-    version: string
-  };
+const About = function (props) {
+  const [version, sha] = props.version.split('+');
 
-  render() {
-    const [version, sha] = this.props.version.split('+');
+  return (
+    <div style={{margin: '48px 72px'}}>
+      <Helmet title="About"/>
 
-    return (
-      <div style={{margin: '48px 72px'}}>
-        <Helmet title="About"/>
+      <div style={{display: 'flex', justifyContent: 'stretch'}}>
+        <div style={{width: '50%', marginRight: 20}}>
+          <Paper style={{padding: '5px 20px'}}>
+            <MarkdownBlock source={whatIsWordbots(version, sha)} />
+          </Paper>
 
-        <div style={{display: 'flex', justifyContent: 'stretch'}}>
-          <div style={{width: '50%', marginRight: 20}}>
-            <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={whatIsWordbots(version, sha)} />
-            </Paper>
+          <Paper style={{padding: '5px 20px', marginTop: 20}}>
+            <MarkdownBlock source={getInvolved} />
+          </Paper>
+        </div>
 
-            <Paper style={{padding: '5px 20px', marginTop: 20}}>
-              <MarkdownBlock source={getInvolved} />
-            </Paper>
-          </div>
-
-          <div style={{width: '50%'}}>
-            <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={howToPlay} />
-            </Paper>
-          </div>
+        <div style={{width: '50%'}}>
+          <Paper style={{padding: '5px 20px'}}>
+            <MarkdownBlock source={howToPlay} />
+          </Paper>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default withRouter(connect(mapStateToProps)(Home));
+About.propTypes = {
+  version: string
+};
+
+export default withRouter(connect(mapStateToProps)(About));
 
 const whatIsWordbots = (version, sha) => (`
 # Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}

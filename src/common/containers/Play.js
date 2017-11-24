@@ -74,6 +74,17 @@ export class Play extends Component {
     }
   }
 
+  get rightMenu() {
+    if (!this.props.started) {
+      return (
+        <Chat
+          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
+          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
+          onSendMessage={this.props.onSendChatMessage} />
+      );
+    }
+  }
+
   selectMode = (mode, deck) => {
     if (mode === 'tutorial') {
       this.props.onStartTutorial();
@@ -84,7 +95,7 @@ export class Play extends Component {
     this.props.history.push(`play/${mode}`);
   }
 
-  get lobby() {
+  renderLobby = () => {
     if (this.props.started) {
       return <GameArea />;
     } else {
@@ -103,17 +114,6 @@ export class Play extends Component {
     }
   }
 
-  get rightMenu() {
-    if (!this.props.started) {
-      return (
-        <Chat
-          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />
-      );
-    }
-  }
-
   render() {
     return (
       <div>
@@ -122,8 +122,8 @@ export class Play extends Component {
         <Switch>
           <Route path="/play/tutorial" component={GameArea} />
           <Route path="/play/practice" component={GameArea} />
-          <Route path="/play/casual" render={() => this.lobby} />
-          <Route render={() => this.lobby} />
+          <Route path="/play/casual" render={this.renderLobby} />
+          <Route render={this.renderLobby} />
         </Switch>
 
         {this.rightMenu}

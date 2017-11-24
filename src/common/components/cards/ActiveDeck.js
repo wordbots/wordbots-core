@@ -7,8 +7,9 @@ import { sortBy } from 'lodash';
 
 import { groupCards, selectType } from '../../util/cards';
 import Tooltip from '../Tooltip';
-import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
+
+import ActiveDeckCard from './ActiveDeckCard';
 
 // Widget representing the deck currently being created or modified.
 export default class ActiveDeck extends Component {
@@ -23,66 +24,36 @@ export default class ActiveDeck extends Component {
     onSaveDeck: func
   }
 
-  constructor(props) {
-    super(props);
+  state = {
+    name: this.props.name,
+    grouping: 0
+  };
 
-    this.state = {
-      name: props.name,
-      grouping: 0
-    };
-  }
+  styles = {
+    baseIcon: {
+      fontSize: 36,
+      padding: 10,
+      borderRadius: 3,
+      boxShadow: '1px 1px 3px #CCC',
+      cursor: 'pointer',
+      width: '100%',
+      boxSizing: 'border-box',
+      textAlign: 'center'
+    }
+  };
 
-  get styles() {
-    return {
-      outerCard: {
-        display: 'flex',
-        alignItems: 'stretch',
-        cursor: 'pointer',
-        height: 30,
-        marginBottom: -2,
-        borderRadius: 5,
-        border: '2px solid #444'
-      },
-      cardCost: {
-        width: 30,
-        color: 'white',
-        fontFamily: 'Carter One',
-        backgroundColor: '#00bcd4',
-        justifyContent: 'center',
-        display: 'flex',
-        alignItems: 'center',
-        borderTopLeftRadius: 4,
-        borderBottomLeftRadius: 4,
-        borderRight: '2px solid #444'
-      },
-      cardName: {
-        width: 'calc(100% - 65px)',
-        marginLeft: 5,
-        display: 'flex',
-        alignItems: 'center'
-      },
-      cardCount: {
-        width: 65,
-        fontWeight: 'bold',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      },
-      baseIcon: {
-        fontSize: 36,
-        padding: 10,
-        borderRadius: 3,
-        boxShadow: '1px 1px 3px #CCC',
-        cursor: 'pointer',
-        width: '100%',
-        boxSizing: 'border-box',
-        textAlign: 'center'
-      }
-    };
+  handleChangeName = (e) => { this.setState({name: e.target.value}); };
+  handleGroupByCost = () => { this.setState({grouping: 0}); };
+  handleGroupByType = () => { this.setState({grouping: 1}); };
+
+  handleSaveDeck = () => {
+    const { id, cards, onSaveDeck } = this.props;
+    onSaveDeck(id, this.state.name, cards.map(c => c.id));
   }
 
   renderButton(grouping, iconName, tooltip) {
     const selected = (this.state.grouping === grouping);
+    const handleClick = [this.handleGroupByCost, this.handleGroupByType][grouping];
 
     return (
       <div style={{width: '47.5%'}}>
@@ -94,7 +65,7 @@ export default class ActiveDeck extends Component {
               color: selected ? 'white' : 'black',
               backgroundColor: selected ? '#F44336' : '#EEEEEE'
             }}
-            onClick={() => this.setState({grouping: grouping})}
+            onClick={handleClick}
           >
             {iconName}
           </FontIcon>
@@ -103,24 +74,13 @@ export default class ActiveDeck extends Component {
     );
   }
 
-  renderCard(card, idx, type) {
+  renderCard(card, idx) {
     return (
       <div key={idx}>
-        <CardTooltip card={card}>
-          <div style={this.styles.outerCard}>
-            <div style={this.styles.cardCost}>{card.cost}</div>
-            <div style={this.styles.cardName}>{card.name}</div>
-            <div style={this.styles.cardCount}>
-              <span onClick={() => this.props.onDecreaseCardCount(card.id)}>
-                &nbsp;&ndash;&nbsp;
-              </span>
-              {card.count}
-              <span onClick={() => this.props.onIncreaseCardCount(card.id)}>
-                &nbsp;+&nbsp;
-              </span>
-            </div>
-          </div>
-        </CardTooltip>
+        <ActiveDeckCard
+          card={card}
+          onIncreaseCardCount={this.props.onIncreaseCardCount}
+          onDecreaseCardCount={this.props.onDecreaseCardCount} />
       </div>
     );
   }
@@ -129,7 +89,7 @@ export default class ActiveDeck extends Component {
     return (
       <div>
         {sortBy(groupCards(selectType(this.props.cards, type)), ['cost', 'name']).map((card, idx) =>
-          this.renderCard(card, idx, type)
+          this.renderCard(card, idx)
         )}
       </div>
     );
@@ -195,7 +155,7 @@ export default class ActiveDeck extends Component {
           value={this.state.name}
           floatingLabelText="Deck Name"
           style={{width: '100%', marginBottom: 10}}
-          onChange={e => { this.setState({name: e.target.value}); }} />
+          onChange={this.handleChangeName} />
 
         <div>
           <div style={{
@@ -218,7 +178,7 @@ export default class ActiveDeck extends Component {
             disabled={!this.state.name}
             icon={<FontIcon className="material-icons">save</FontIcon>}
             style={{width: '100%', marginTop: 20}}
-            onClick={() => { this.props.onSaveDeck(this.props.id, this.state.name, this.props.cards.map(c => c.id)); }}
+            onClick={this.handleSaveDeck}
           />
         </MustBeLoggedIn>
       </div>

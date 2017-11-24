@@ -7,7 +7,9 @@ import screenfull from 'screenfull';
 import Tooltip from '../Tooltip';
 
 export default class FullscreenToggle extends Component {
-  toggleFullscreen() {
+  handleClick = () => {
+    this.forceUpdate();
+
     // TODO come up with a better approach ...
     /* eslint-disable react/no-find-dom-node */
     const gameArea = ReactDOM.findDOMNode(this).parentNode.parentNode.parentNode.parentNode.parentNode;
@@ -18,8 +20,8 @@ export default class FullscreenToggle extends Component {
 
   render() {
     return (
-      <Tooltip text="Fullscreen" place="bottom" style={{zIndex: 99999}}>  
-        <IconButton          
+      <Tooltip text="Fullscreen" place="bottom" style={{zIndex: 99999}}>
+        <IconButton
           style={{
             border: '2px solid #AAA',
             background: '#000',
@@ -28,13 +30,11 @@ export default class FullscreenToggle extends Component {
             height: 36,
             width: 36
           }}
-          onTouchTap={() => {
-            this.forceUpdate();
-            this.toggleFullscreen();
-          }}>
-          <FontIcon 
-            className="material-icons" 
-            color="#FFF"> 
+          onTouchTap={this.handleClick}
+        >
+          <FontIcon
+            className="material-icons"
+            color="#FFF">
             {!screenfull.isFullscreen ? 'fullscreen' : 'fullscreen_exit'}
           </FontIcon>
         </IconButton>

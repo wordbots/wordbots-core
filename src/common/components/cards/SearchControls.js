@@ -11,6 +11,8 @@ export default class SearchControls extends Component {
     return false;
   }
 
+  handleChangeText = (event, newValue) => { this.props.onChange(newValue); };
+
   render() {
     return (
       <div>
@@ -23,7 +25,7 @@ export default class SearchControls extends Component {
         <TextField
           hintText="Enter card name or text"
           style={{marginBottom: 10}}
-          onChange={(event, newValue) => { this.props.onChange(newValue); }}/>
+          onChange={this.handleChangeText}/>
       </div>
     );
   }

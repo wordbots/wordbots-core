@@ -7,6 +7,7 @@ export const KEEP_DECKS_UNSHUFFLED = false;
 export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
+export const ENABLE_REDUX_TIME_TRAVEL = false;
 
 export const PARSER_URL = 'http://parser.wordbots.io';  // 'http://localhost:8080';
 export const PARSE_DEBOUNCE_MS = 500;

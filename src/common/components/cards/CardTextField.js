@@ -27,24 +27,26 @@ export default class CardTextField extends Component {
     }
   }
 
-  useSuggestion = (suggestion) => {
-    this.props.onUpdateText(this.props.text.replace(suggestion.original, suggestion.new));
-  }
-
   handleUpdateText = (e) => { this.props.onUpdateText(e.target.value); };
 
-  renderSuggestion = (suggestion) => (
-    <span key={suggestion.new}>
-      &nbsp;
-      <a
-        onClick={() => { this.useSuggestion(suggestion); }}
-        style={{cursor: 'pointer', textDecoration: 'underline'}}
-      >
-        {suggestion.new}
-      </a>
-      &nbsp;
-    </span>
-  )
+  renderSuggestion = (suggestion) => {
+    // TODO Should probably extract this into a separate component since
+    // I'm dynamically binding the click handler here?
+    const { onUpdateText, text } = this.props;
+    const handleClick = () => {
+      onUpdateText(text.replace(suggestion.original, suggestion.new));
+    };
+
+    return (
+      <span key={suggestion.new}>
+        &nbsp;
+        <a onClick={handleClick} style={{cursor: 'pointer', textDecoration: 'underline'}}>
+          {suggestion.new}
+        </a>
+        &nbsp;
+      </span>
+    );
+  }
 
   renderDidYouMean = () => {
     if (this.textSuggestions.length > 0) {

@@ -16,10 +16,15 @@ export default class CardTextField extends Component {
   };
 
   get textSuggestions() {
-    if (this.props.bigramProbs) {
-      return _(this.props.sentences)
-              .flatMap(s => (s.result.suggestions || []).map(sugg => ({ original: s.sentence.trim(), new: sugg })))
-              .sortBy(suggestion => bigramNLL(suggestion.new, this.props.bigramProbs))
+    const { bigramProbs, sentences } = this.props;
+    if (bigramProbs) {
+      return _(sentences)
+              .flatMap(s =>
+                (s.result.suggestions || []).map(sugg =>
+                  ({ original: s.sentence.trim(), new: sugg })
+                )
+              )
+              .sortBy(suggestion => bigramNLL(suggestion.new, bigramProbs))
               .slice(0, 5)
               .value();
     } else {

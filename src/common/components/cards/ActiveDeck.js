@@ -23,14 +23,10 @@ export default class ActiveDeck extends Component {
     onSaveDeck: func
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      name: props.name,
-      grouping: 0
-    };
-  }
+  state = {
+    name: this.props.name,
+    grouping: 0
+  };
 
   get styles() {
     return {
@@ -80,6 +76,8 @@ export default class ActiveDeck extends Component {
       }
     };
   }
+
+  handleChangeName = (e) => { this.setState({name: e.target.value}); };
 
   renderButton(grouping, iconName, tooltip) {
     const selected = (this.state.grouping === grouping);
@@ -195,7 +193,7 @@ export default class ActiveDeck extends Component {
           value={this.state.name}
           floatingLabelText="Deck Name"
           style={{width: '100%', marginBottom: 10}}
-          onChange={e => { this.setState({name: e.target.value}); }} />
+          onChange={this.handleChangeName} />
 
         <div>
           <div style={{

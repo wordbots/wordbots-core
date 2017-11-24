@@ -163,7 +163,15 @@ export default class CardCreationForm extends Component {
     this.props.onSetAttribute(key, value);
   }
 
-  onUpdateText(text, cardType, dontIndex = false) {
+  handleSetName = (e) => { this.props.onSetName(e.target.value); };
+
+  handleSetType = (e, i, value) => {
+    this.props.onSetType(value);
+    // Re-parse card text because different card types now have different validations.
+    this.onUpdateText(this.props.text, value);
+  }
+
+  onUpdateText(text, cardType = this.props.type, dontIndex = false) {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
@@ -221,7 +229,7 @@ export default class CardCreationForm extends Component {
               floatingLabelText="Card Name"
               style={this.styles.leftCol}
               errorText={this.nameError}
-              onChange={e => { this.props.onSetName(e.target.value); }} />
+              onChange={this.handleSetName} />
             <NumberField
               label="Energy Cost"
               value={this.props.energy}
@@ -236,11 +244,8 @@ export default class CardCreationForm extends Component {
               value={this.props.type}
               floatingLabelText="Card Type"
               style={{width: 'calc(100% - 60px)'}}
-              onChange={(e, i, value) => {
-                this.props.onSetType(value);
-                // Re-parse card text because different card types now have different validations.
-                this.onUpdateText(this.props.text, value);
-              }}>
+              onChange={this.handleSetType}
+            >
               {
                 CREATABLE_TYPES.map(type =>
                   <MenuItem key={type} value={type} primaryText={typeToString(type)} />
@@ -253,7 +258,7 @@ export default class CardCreationForm extends Component {
                   secondary
                   style={{width: 40, minWidth: 40}}
                   labelPosition="after"
-                  onTouchTap={() => { this.props.onSpriteClick(); }}>
+                  onTouchTap={this.props.onSpriteClick}>
                   <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
                 </RaisedButton>
               </Tooltip>
@@ -265,7 +270,7 @@ export default class CardCreationForm extends Component {
             sentences={this.nonEmptySentences}
             error={this.textError}
             bigramProbs={this.state && this.state.bigramProbs}
-            onUpdateText={text => { this.onUpdateText(text, this.props.type); }} />
+            onUpdateText={this.onUpdateText} />
 
           <div style={this.styles.section}>
             {this.renderAttributeField('attack', this.robot)}
@@ -280,7 +285,7 @@ export default class CardCreationForm extends Component {
               label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
               disabled={!this.isValid}
               style={this.styles.saveButton}
-              onTouchTap={() => { this.props.onAddToCollection(); }} />
+              onTouchTap={this.props.onAddToCollection} />
           </MustBeLoggedIn>
         </Paper>
       </div>

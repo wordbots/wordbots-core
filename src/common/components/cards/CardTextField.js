@@ -31,6 +31,8 @@ export default class CardTextField extends Component {
     this.props.onUpdateText(this.props.text.replace(suggestion.original, suggestion.new));
   }
 
+  handleUpdateText = (e) => { this.props.onUpdateText(e.target.value); };
+
   renderSuggestion = (suggestion) => (
     <span key={suggestion.new}>
       &nbsp;
@@ -82,7 +84,7 @@ export default class CardTextField extends Component {
               floatingLabelText="Card Text"
               style={{width: '100%'}}
               rows={1}
-              onChange={e => { this.props.onUpdateText(e.target.value); }} />
+              onChange={this.handleUpdateText} />
           </div>
         </div>
 

@@ -11,8 +11,8 @@ import * as socketActions from '../actions/socket';
 
 const DEV_TOOLS_ENABLED = ALWAYS_ENABLE_DEV_TOOLS || !['production', 'test'].includes(process.env.NODE_ENV);
 
-const middlewareBuilder = () => {
-  const universalMiddleware = [thunk, promiseMiddleware, multi];
+const selectStoreEnhancers = () => {
+  const universalMiddleware = [thunk, promiseMiddleware, multi];  // Middleware that we use in every environment.
 
   if (process.browser) {
     const socketMiddleware = createSocketMiddleware({
@@ -43,10 +43,10 @@ const middlewareBuilder = () => {
   }
 };
 
-const finalCreateStore = compose(...compact(middlewareBuilder()))(createStore);
 
 export default function configureStore(initialState) {
-  const store = finalCreateStore(rootReducer, initialState);
+  const enhancers = compact(selectStoreEnhancers());
+  const store = createStore(rootReducer, initialState, compose(...enhancers));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers

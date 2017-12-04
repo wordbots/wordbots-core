@@ -1,24 +1,28 @@
 import React, { Component } from 'react';
-import { arrayOf, bool, func, object } from 'prop-types';
+import { arrayOf, bool, func, number, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
-import * as socketActions from '../actions/socket';
+import * as collectionActions from '../actions/collection';
 import * as gameActions from '../actions/game';
+import * as socketActions from '../actions/socket';
 
 import GameArea from './GameArea';
 
 export function mapStateToProps(state) {
+  const validDecks = state.collection.decks.filter(d => d.cardIds.length === 30);
+
   return {
     started: state.game.started,
     actionLog: state.game.actionLog,
 
     socket: state.socket,
     cards: state.collection.cards,
-    availableDecks: state.collection.decks.filter(d => d.cardIds.length === 30)
+    availableDecks: validDecks,
+    selectedDeckIdx: Math.min(state.collection.selectedDeckIdx || 0, validDecks.length)
   };
 }
 
@@ -44,6 +48,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
+    },
+    onSelectDeck: (deckIdx) => {
+      dispatch(collectionActions.selectDeck(deckIdx));
     }
   };
 }
@@ -56,6 +63,7 @@ export class Play extends Component {
     socket: object,
     cards: arrayOf(object),
     availableDecks: arrayOf(object),
+    selectedDeckIdx: number,
 
     history: object,
 
@@ -65,7 +73,8 @@ export class Play extends Component {
     onSpectateGame: func,
     onStartTutorial: func,
     onStartPractice: func,
-    onSendChatMessage: func
+    onSendChatMessage: func,
+    onSelectDeck: func
   };
 
   componentDidMount() {
@@ -105,10 +114,12 @@ export class Play extends Component {
           gameMode={this.props.history.location.pathname.split('/play')[1]}
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
+          selectedDeckIdx={this.props.selectedDeckIdx}
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
           onSpectateGame={this.props.onSpectateGame}
+          onSelectDeck={this.props.onSelectDeck}
           onSelectMode={this.selectMode} />
       );
     }

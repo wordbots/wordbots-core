@@ -67,7 +67,7 @@ const cardsHandlers = {
   },
 
   openDeckForEditing: function (state, deckId) {
-    state.currentDeck = deckId ? state.decks.find(d => d.id === deckId) : null;
+    state.deckBeingEdited = deckId ? state.decks.find(d => d.id === deckId) : null;
     return state;
   },
 

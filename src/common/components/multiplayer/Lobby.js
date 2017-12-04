@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, func, object, string } from 'prop-types';
+import { arrayOf, func, number, object, string } from 'prop-types';
 import { shuffle } from 'lodash';
 
 import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
@@ -18,37 +18,25 @@ export default class Lobby extends Component {
     gameMode: string,
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
+    selectedDeckIdx: number,
 
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
     onHostGame: func,
+    onSelectDeck: func,
     onSelectMode: func
   };
-
-  state = {
-    selectedDeck: 0
-  };
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.availableDecks.length !== this.props.availableDecks.length) {
-      this.setState({selectedDeck: nextProps.availableDecks.length - 1});
-    }
-  }
 
   get hasNoDecks() {
     return this.props.availableDecks.length === 0;
   }
 
   get deck() {
-    const deck = this.props.availableDecks[this.state.selectedDeck];
+    const deck = this.props.availableDecks[this.props.selectedDeckIdx];
     const cards = cardsInDeck(deck, this.props.cards).map(instantiateCard);
     return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
   }
-
-  handleChooseDeck = (idx) => {
-    this.setState({selectedDeck: idx});
-  };
 
   handleSelectMode = (mode) => {
     this.props.onSelectMode(mode, this.deck);
@@ -103,8 +91,8 @@ export default class Lobby extends Component {
         <DeckPicker
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
-          selectedDeckIdx={this.state.selectedDeck}
-          onChooseDeck={this.handleChooseDeck} />
+          selectedDeckIdx={this.props.selectedDeckIdx}
+          onChooseDeck={this.props.onSelectDeck} />
 
         {this.renderLobbyContent(this.props.gameMode, skt)}
       </div>

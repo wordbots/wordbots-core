@@ -15,8 +15,9 @@ const defaultState = {
       cardIds: decks.healing.map(c => c.id)
     }
   ],
-  currentDeck: null,
-  exportedJson: null
+  deckBeingEdited: null,
+  exportedJson: null,
+  selectedDeckIdx: 0
 };
 
 export default defaultState;

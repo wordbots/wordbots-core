@@ -18,9 +18,9 @@ import * as collectionActions from '../actions/collection';
 
 function mapStateToProps(state) {
   return {
-    id: state.collection.currentDeck ? state.collection.currentDeck.id : null,
+    id: state.collection.deckBeingEdited ? state.collection.deckBeingEdited.id : null,
     cards: state.collection.cards,
-    deck: state.collection.currentDeck,
+    deck: state.collection.deckBeingEdited,
     loggedIn: state.global.user !== null
   };
 }

@@ -43,9 +43,9 @@ export default class DictionaryDialog extends Component {
 
   componentDidMount() {
     listenToDictionaryData(data => {
-      this.setState({
-        dictionary: Object.assign({}, this.state.dictionary, data.dictionary)
-      });
+      this.setState(state => ({
+        dictionary: Object.assign({}, state.dictionary, data.dictionary)
+      }));
     });
   }
 

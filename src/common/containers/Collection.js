@@ -95,7 +95,7 @@ export class Collection extends Component {
   refreshSelection = () => {
     this.setState(state => ({
       selectedCardIds: state.selectedCardIds.filter(id =>
-        isCardVisible(find(this.props.cards, { id }), this.state.filters, this.state.costRange)
+        isCardVisible(find(this.props.cards, { id }), state.filters, state.costRange)
       )
     }));
   }

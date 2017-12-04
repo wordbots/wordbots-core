@@ -68,7 +68,6 @@ export default class Timer extends Component {
 
   setTimer(minutes, seconds, color) {
     this.setState({
-      selectedAbility: this.state.selectedAbility,
       timer: `${minutes}:${seconds}`,
       timerStyle: {
         color: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],

@@ -66,7 +66,7 @@ export default class LoginDialog extends Component {
   }
 
   handleClickSwitchMode = () => {
-    this.setState({register: !this.state.register});
+    this.setState(state => ({register: !state.register}));
   }
 
   handleClickForgotPassword = () => {

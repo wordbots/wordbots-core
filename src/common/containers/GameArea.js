@@ -288,7 +288,7 @@ export class GameArea extends Component {
   }
 
   toggleChat = () => {
-    this.setState({ chatOpen: !this.state.chatOpen });
+    this.setState(state => ({ chatOpen: !state.chatOpen }));
   }
 
   movePiece = (hexId, asPartOfAttack = false) => {

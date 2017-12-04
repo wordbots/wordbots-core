@@ -15,7 +15,7 @@ export default class CardBack extends Component {
 
   toggleHover = () => {
     if (this.props.hoverable) {
-      this.setState({hover: !this.state.hover});
+      this.setState(state => ({hover: !state.hover}));
     }
   }
 

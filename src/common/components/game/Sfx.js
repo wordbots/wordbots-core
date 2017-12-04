@@ -10,13 +10,9 @@ export default class Sfx extends Component {
     queue: arrayOf(string)
   };
 
-  constructor(props) {
-    super();
-
-    this.state = {
-      idx: 0
-    };
-  }
+  state = {
+    idx: 0
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.queue.length > this.props.queue.length || nextState.idx > this.state.idx;
@@ -31,7 +27,7 @@ export default class Sfx extends Component {
   }
 
   proceedToNextSound = () => {
-    this.setState({idx: this.state.idx + 1});
+    this.setState(state => ({idx: state.idx + 1}));
   }
 
   render() {

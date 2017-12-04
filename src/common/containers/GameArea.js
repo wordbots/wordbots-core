@@ -265,20 +265,6 @@ export class GameArea extends Component {
     clearInterval(this.interval);
   }
 
-  updateDimensions(props = this.props) {
-    const maxBoardHeight = window.innerHeight - 64 - 150;
-    const maxBoardWidth = window.innerWidth - (props.sidebarOpen ? 512 : 256);
-
-    this.setState({
-      areaHeight: window.innerHeight - 64,
-      boardSize: Math.min(maxBoardWidth, maxBoardHeight)
-    });
-  }
-
-  toggleChat() {
-    this.setState({ chatOpen: !this.state.chatOpen });
-  }
-
   isMyTurn() {
     return this.props.currentTurn === this.props.player;
   }
@@ -291,11 +277,25 @@ export class GameArea extends Component {
     return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  movePiece(hexId, asPartOfAttack = false) {
+  updateDimensions = (props = this.props) => {
+    const maxBoardHeight = window.innerHeight - 64 - 150;
+    const maxBoardWidth = window.innerWidth - (props.sidebarOpen ? 512 : 256);
+
+    this.setState({
+      areaHeight: window.innerHeight - 64,
+      boardSize: Math.min(maxBoardWidth, maxBoardHeight)
+    });
+  }
+
+  toggleChat = () => {
+    this.setState({ chatOpen: !this.state.chatOpen });
+  }
+
+  movePiece = (hexId, asPartOfAttack = false) => {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
   }
 
-  attackPiece(hexId, intermediateMoveHexId) {
+  attackPiece = (hexId, intermediateMoveHexId) => {
     if (intermediateMoveHexId) {
       this.props.onMoveRobotAndAttack(this.props.selectedTile, intermediateMoveHexId, hexId);
     } else {
@@ -303,7 +303,7 @@ export class GameArea extends Component {
     }
   }
 
-  placePiece(hexId) {
+  placePiece = (hexId) => {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 

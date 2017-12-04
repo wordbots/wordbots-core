@@ -64,7 +64,6 @@
     "promise/no-callback-in-promise": 0,
 
     "react/boolean-prop-naming": 2,
-    "react/button-has-type": 2,
     "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "react/jsx-boolean-value": 2,
     "react/jsx-no-bind": [2, { "ignoreRefs": true }],

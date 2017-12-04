@@ -5,6 +5,8 @@ import { chain as _ } from 'lodash';
 
 import { bigramNLL } from '../../util/language';
 
+import CardTextSuggestion from './CardTextSuggestion';
+
 export default class CardTextField extends Component {
   static propTypes = {
     text: string,
@@ -21,7 +23,7 @@ export default class CardTextField extends Component {
       return _(sentences)
               .flatMap(s =>
                 (s.result.suggestions || []).map(sugg =>
-                  ({ original: s.sentence.trim(), new: sugg })
+                  ({ original: s.sentence.trim(), suggestion: sugg })
                 )
               )
               .sortBy(suggestion => bigramNLL(suggestion.new, bigramProbs))
@@ -32,32 +34,27 @@ export default class CardTextField extends Component {
     }
   }
 
-  handleUpdateText = (e) => { this.props.onUpdateText(e.target.value); };
-
-  renderSuggestion = (suggestion) => {
-    // TODO Should probably extract this into a separate component since
-    // I'm dynamically binding the click handler here?
-    const { onUpdateText, text } = this.props;
-    const handleClick = () => {
-      onUpdateText(text.replace(suggestion.original, suggestion.new));
-    };
-
-    return (
-      <span key={suggestion.new}>
-        &nbsp;
-        <a onClick={handleClick} style={{cursor: 'pointer', textDecoration: 'underline'}}>
-          {suggestion.new}
-        </a>
-        &nbsp;
-      </span>
-    );
+  handleChooseSuggestion = (original, suggestion) => {
+    const { text, onUpdateText } = this.props;
+    onUpdateText(text.replace(original, suggestion));
   }
+
+  handleUpdateText = (e) => {
+    const { onUpdateText } = this.props;
+    onUpdateText(e.target.value);
+  };
 
   renderDidYouMean = () => {
     if (this.textSuggestions.length > 0) {
       return (
         <div style={{marginTop: 5}}>
-          Did you mean: {this.textSuggestions.map(this.renderSuggestion)} ?
+          Did you mean: {this.textSuggestions.map(({ original, suggestion }) => (
+            <CardTextSuggestion
+              key={original}
+              original={original}
+              suggestion={suggestion}
+              onChooseSuggestion={this.handleChooseSuggestion} />
+          ))} ?
         </div>
       );
     }

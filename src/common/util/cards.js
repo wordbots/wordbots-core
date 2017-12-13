@@ -169,7 +169,7 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-// Parse without debounce. Only used by requestParse().
+// Parse without debounce. Only used by requestParse() and parseCard() below.
 function parse(sentences, mode, callback, index = true) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
@@ -195,15 +195,10 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 // Parse a batch of sentences and call callback on each [sentence, result] pair.
 // TODO Use parseBatch() for all parsing?
 export function parseBatch(sentences, mode, callback) {
-  const requestBody = sentences.map(sentence => ({ input: sentence, mode }));
-
   fetch(`${PARSER_URL}/parse`, {
     method: 'POST',
-    mode: 'cors',
-    body: JSON.stringify(requestBody),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    body: JSON.stringify(sentences.map(input => ({ input, mode }))),
+    headers: { 'Content-Type': 'application/json' }
   })
     .then(response => response.json())
     .then(results => {

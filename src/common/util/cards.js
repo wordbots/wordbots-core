@@ -169,8 +169,8 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-// Parse without debounce. Only used by requestParse() below and CardTextExampleStore.
-export function parse(sentences, mode, callback, index = true) {
+// Parse without debounce. Only used by requestParse().
+function parse(sentences, mode, callback, index = true) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -191,6 +191,31 @@ export function parse(sentences, mode, callback, index = true) {
 }
 
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
+
+// Parse a batch of sentences and call callback on each [sentence, result] pair.
+// TODO Use parseBatch() for all parsing?
+export function parseBatch(sentences, mode, callback) {
+  const requestBody = sentences.map(sentence => ({ input: sentence, mode }));
+
+  fetch(`${PARSER_URL}/parse`, {
+    method: 'POST',
+    mode: 'cors',
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(results => {
+      Object.entries(results).forEach(([sentence, result]) => {
+        callback(sentence, result);
+      });
+    })
+    .catch(err => {
+      // TODO better error handling
+      throw(`Parser error: ${err}`);
+    });
+}
 
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.

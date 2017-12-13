@@ -9,7 +9,8 @@ export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
 
-export const PARSER_URL = 'http://parser.wordbots.io';  // 'http://localhost:8080';
+export const PARSER_URL = 'http://parser.wordbots.io';
+// export const PARSER_URL = 'http://localhost:8080';
 export const PARSE_DEBOUNCE_MS = 500;
 
 export const CARD_SCHEMA_VERSION = 1;

@@ -5,56 +5,13 @@ import {
 
 import {
   CARD_SCHEMA_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
-  TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString
+  TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString,
+  SYNONYMS, KEYWORDS, HINTS, KEYWORD_REGEXES, HINT_REGEXES
 } from '../constants';
 import defaultState from '../store/defaultCollectionState';
 
 import { id as generateId, compareCertainKeys } from './common';
 import { saveUserData, saveRecentCard, indexParsedSentence } from './firebase';
-
-//
-// 0. Card-related constants (used below).
-//
-
-const SYNONYMS = {
-  ' 0 ': ' zero ',
-  ' 1 ': ' one ',
-  ' 2 ': ' two ',
-  ' 3 ': ' three ',
-  ' 4 ': ' four ',
-  ' 5 ': ' five ',
-  ' 6 ': ' six ',
-  ' 7 ': ' seven ',
-  ' 8 ': ' eight ',
-  ' 9 ': ' nine ',
-  ' 10 ': ' ten ',
-
-  'can\'t': 'cannot',
-  'it is': 'it\'s',
-
-  'robot': ['creature', 'minion'],
-  'startup': ['start up', 'start-up'],
-  'shutdown': ['shut down', 'shut-down']
-};
-
-const KEYWORDS = {
-  'defender': 'This robot can\'t attack.',
-  'haste': 'This robot can move and attack immediately after it is played.',
-  'jump': 'This robot can move over other objects.',
-  'taunt': 'Your opponent\'s adjacent robots can only attack this object.',
-  'startup:': 'When this object is played,',
-  'shutdown:': 'When this object is destroyed,'
-};
-
-const HINTS = {
-  'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
-};
-
-function objToRegexes(obj) {
-  return fromPairs(Object.keys(obj).map(k => [k, new RegExp(`(${k}|${capitalize(k)})`)]));
-}
-const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
-const HINT_REGEXES = objToRegexes(HINTS);
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
@@ -169,8 +126,8 @@ export function getSentencesFromInput(text) {
   return sentences;
 }
 
-// Parse without debounce. Only used by requestParse() below and CardTextExampleStore.
-export function parse(sentences, mode, callback, index = true) {
+// Parse without debounce. Only used by requestParse() and parseCard() below.
+function parse(sentences, mode, callback, index = true) {
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
@@ -191,6 +148,26 @@ export function parse(sentences, mode, callback, index = true) {
 }
 
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
+
+// Parse a batch of sentences and call callback on each [sentence, result] pair.
+// TODO Use parseBatch() for all parsing?
+export function parseBatch(sentences, mode, callback) {
+  fetch(`${PARSER_URL}/parse`, {
+    method: 'POST',
+    body: JSON.stringify(sentences.map(input => ({ input, mode }))),
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(response => response.json())
+    .then(results => {
+      Object.entries(results).forEach(([sentence, result]) => {
+        callback(sentence, result);
+      });
+    })
+    .catch(err => {
+      // TODO better error handling
+      throw(`Parser error: ${err}`);
+    });
+}
 
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.

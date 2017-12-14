@@ -1,11 +1,8 @@
-import { capitalize, pullAt, random, shuffle, times } from 'lodash';
+import { capitalize, pullAt, random, shuffle } from 'lodash';
 
-import { parse } from './cards';
-
-const EXAMPLE_LOOKUP_INTERVAL_MS = 500;
+import { parseBatch } from './cards';
 
 export default class CardTextExampleStore {
-  modes = ['event', 'object'];
   examples = {
     event: [],
     object: []
@@ -20,29 +17,14 @@ export default class CardTextExampleStore {
 
   loadExamples = (sentences, numToTry) => {
     const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);
+    const modes = Object.keys(this.examples);
 
-    let i = 0, interval = null;
-
-    const tryNext = () => {
-      if (i >= candidates.length) {
-        clearInterval(interval);
-      } else {
-        const candidate = candidates[i];
-        if (candidate && !candidate.startsWith('"')) {
-          ['event', 'object'].forEach(mode => {
-            parse([candidate], mode, (idx, s, json) => {
-              if (!json.error) {
-                this.examples[mode].push(candidate);
-              }
-            }, false);
-          });
+    modes.forEach(mode => {
+      parseBatch(candidates, mode, (sentence, result) => {
+        if (!result.error) {
+          this.examples[mode].push(sentence);
         }
-      }
-
-      i++;
-    };
-
-    times(5, tryNext);
-    interval = setInterval(tryNext, EXAMPLE_LOOKUP_INTERVAL_MS);
+      });
+    });
   }
 }

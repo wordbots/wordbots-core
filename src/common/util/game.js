@@ -406,19 +406,27 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
-    discardCards(state, state.players[ownerName].name, [state.players[ownerName].robotsOnBoard[hex].card]);
-    delete state.players[ownerName].robotsOnBoard[hex];
-
-    // Unapply any abilities that this object had.
-    (object.abilities || [])
-      .filter(ability => ability.currentTargets)
-      .forEach(ability => { ability.currentTargets.entries.forEach(ability.unapply); });
-
-    state = checkVictoryConditions(state);
+    state = discardCards(state, state.players[ownerName].name, [state.players[ownerName].robotsOnBoard[hex].card]);
+    state = removeObjectFromBoard(state, object, hex);
   }
 
   state = applyAbilities(state);
 
+  return state;
+}
+
+export function removeObjectFromBoard(state, object, hex) {
+  const ownerName = ownerOf(state, object).name;
+
+  delete state.players[ownerName].robotsOnBoard[hex];
+
+  // Unapply any abilities that this object had.
+  (object.abilities || [])
+    .filter(ability => ability.currentTargets)
+    .forEach(ability => { ability.currentTargets.entries.forEach(ability.unapply); });
+
+  state = applyAbilities(state);
+  state = checkVictoryConditions(state);
   return state;
 }
 

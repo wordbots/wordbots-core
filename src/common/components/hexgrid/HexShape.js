@@ -1,7 +1,7 @@
 import React from 'react';
 import { arrayOf, bool, object, string } from 'prop-types';
 
-import { DISPLAY_HEX_IDS } from '../../constants';
+import { DISPLAY_HEX_IDS, SHOW_TOOLTIP_TIMEOUT_MS } from '../../constants';
 import CardTooltip from '../card/CardTooltip';
 import AbilitiesTooltip from '../game/AbilitiesTooltip';
 import TutorialTooltip from '../game/TutorialTooltip';
@@ -21,6 +21,25 @@ export default class HexShape extends React.Component {
     selected: bool,
     hovered: bool
   };
+
+  state = {
+    displayTooltip: false,
+    tooltipTimeout: null
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.hovered !== nextProps.hovered) {
+      if (nextProps.hovered) {
+        this.triggerTooltip();
+      } else {
+        this.untriggerTooltip();
+      }
+    }
+  }
+
+  componentWillUnmount = () => {
+    this.untriggerTooltip();
+  }
 
   get points() {
     const points = this.props.layout.getPolygonPoints(this.props.hex);
@@ -49,7 +68,7 @@ export default class HexShape extends React.Component {
     }
   }
 
-  get shouldRenderTooltip() {
+  get shouldRenderTutorialTooltip() {
     return this.props.tutorialStep && (HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex);
   }
 
@@ -58,6 +77,25 @@ export default class HexShape extends React.Component {
   handleClickHex = evt => this.props.actions.onClick(this.props.hex, evt);
   handleClickNextTutorialStep = () => { this.props.actions.onTutorialStep(false); };
   handleClickPrevTutorialStep = () => { this.props.actions.onTutorialStep(true); };
+
+  triggerTooltip = () => {
+    this.setState({
+      tooltipTimeout: setTimeout(() => {
+        this.setState({displayTooltip: true});
+      }, SHOW_TOOLTIP_TIMEOUT_MS)
+    });
+  };
+
+  untriggerTooltip = () => {
+    if (this.state.tooltipTimeout) {
+      clearTimeout(this.state.tooltipTimeout);
+    }
+
+    this.setState({
+      displayTooltip: false,
+      tooltipTimeout: null
+    });
+  }
 
   renderPattern() {
     if (!this.props.selected) {
@@ -94,7 +132,7 @@ export default class HexShape extends React.Component {
   }
 
   render() {
-    if (this.shouldRenderTooltip) {
+    if (this.shouldRenderTutorialTooltip) {
       return (
         <TutorialTooltip
           tutorialStep={this.props.tutorialStep}
@@ -116,7 +154,7 @@ export default class HexShape extends React.Component {
       );
     } else {
      return (
-        <CardTooltip popover card={this.props.card} isOpen={this.props.hovered}>
+        <CardTooltip popover card={this.props.card} isOpen={this.state.displayTooltip}>
           {this.renderHex()}
         </CardTooltip>
       );

@@ -7,7 +7,7 @@ import SmartLink from './SmartLink';
 const MarkdownBlock = (props) => (
   <ReactMarkdown
     source={props.source}
-    containerProps={{className: 'markdownBlock'}}
+    className="markdownBlock"
     renderers={{Link: SmartLink}} />
 );
 

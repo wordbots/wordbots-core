@@ -4,7 +4,8 @@ import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
   ownerOf, getHex,
-  passTurn, drawCards, removeCardsFromHand, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex,
+  passTurn, drawCards, removeCardsFromHand,
+  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, removeObjectFromBoard,
   executeCmd
 } from '../util/game';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
@@ -163,6 +164,16 @@ export default function actions(state) {
             object.stats.health = object.card.stats.health;
           }
         }
+      });
+    },
+
+    returnToHand: function (objects) {
+      iterateOver(objects)(object => {
+        const ownerName = ownerOf(state, object).name;
+        const owner = state.players[ownerName];
+
+        owner.hand = owner.hand.concat([object.card]);
+        removeObjectFromBoard(state, object, getHex(state, object));
       });
     },
 

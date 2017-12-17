@@ -37,9 +37,10 @@ export default class GameMode extends Component {
   }
 
   renderInner() {
+    const { name, disabled, imagePath } = this.props;
     return (
       <div style={{
-        filter: this.props.disabled ? 'blur(2px)' : null,
+        filter: disabled ? 'blur(2px)' : null,
         padding: 20,
         display: 'flex',
         flexDirection: 'column',
@@ -55,7 +56,7 @@ export default class GameMode extends Component {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <img src={this.props.imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />
+          {imagePath && <img src={imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />}
         </div>
         <div style={{
           textAlign: 'center',
@@ -63,7 +64,7 @@ export default class GameMode extends Component {
           fontFamily: 'Carter One',
           color: '#f44336',
           WebkitTextStroke: '1px black'
-        }}>{this.props.name}</div>
+        }}>{name}</div>
       </div>
     );
   }

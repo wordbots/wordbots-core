@@ -88,7 +88,7 @@
     "webpack": "^3.10.0",
     "whatwg-fetch": "^2.0.3",
     "word-ngrams": "^0.2.0",
-    "ws": "^3.3.3"
+    "ws": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "^4.13.1",

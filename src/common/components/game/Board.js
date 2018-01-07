@@ -83,7 +83,9 @@ export default class Board extends Component {
   get selectedPiece() { return this.currentPlayerPieces[this.selectedHexId]; }
 
   get selectedActivatedAbilities() {
-    if (this.isMyTurn && this.selectedPiece && this.selectedPiece.activatedAbilities && !this.selectedPiece.cantActivate) {
+    if (this.isMyTurn && this.selectedPiece
+          && this.selectedPiece.activatedAbilities && !this.selectedPiece.cantActivate
+          && !this.props.target.choosing) {  // Don't display activated abilities popup while choosing a target.
       return this.selectedPiece.activatedAbilities;
     } else {
       return [];

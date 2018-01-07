@@ -43,7 +43,7 @@ export const consumeCard = {
 export const gustOfWindCard = {
   name: 'Gust of Wind',
   text: 'Move a robot up to 2 spaces.',
-  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['moveObject'](load('target'), targets['choose'](tilesMatchingConditions([conditions['withinDistanceOf'](2, load('target'))]))); })(); })",
+  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['moveObject'](load('target'), targets['choose'](tilesMatchingConditions([conditions['withinDistanceOf'](2, load('target')), conditions['unoccupied']()]))); })(); })",
   cost: 2,
   type: TYPE_EVENT
 };

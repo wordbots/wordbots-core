@@ -167,7 +167,7 @@ export const batteryBotCard = {
 };
 
 export const governmentResearcherCard = {
-  name: 'Government Researcher',
+  name: 'Gov\'t Researcher',
   cost: 3,
   type: TYPE_ROBOT,
   stats: {

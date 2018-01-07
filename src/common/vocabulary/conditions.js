@@ -47,6 +47,10 @@ export function objectConditions(state) {
       return ((hexId, obj) => objectHasProperty(obj, property));
     },
 
+    unoccupied: function () {
+      return ((hexId, obj) => !obj);
+    },
+
     withinDistanceOf: function (distance, targets) {
       const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
       const nearbyHexIds = allHexIds().filter(h1 =>

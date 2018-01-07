@@ -122,11 +122,11 @@ export default function actions(state) {
 
     moveObject: function (objects, hexes) {
       // Unpack.
-      const [object, hex] = [objects, hexes].map(t => t.entries[0]);
+      const [object, destHex] = [objects, hexes].map(t => t.entries[0]);
 
-      if (object && hex) {
+      if (object && destHex) {
         const startHex = getHex(state, object);
-        moveObjectUsingAbility(state, startHex, hex);
+        moveObjectUsingAbility(state, startHex, destHex);
       }
     },
 

@@ -111,14 +111,14 @@ export default class Chat extends Component {
           marginBottom: 5,
           wordBreak: 'break-word'
         }}>
-        <b>{message.user}</b>: {message.text.split('|').map(phrase => this.renderPhrase(phrase, message, idx))}
+        <b>{message.user}</b>: {message.text.split('|').map((phrase, phraseIdx) => this.renderPhrase(phrase, message, idx, phraseIdx))}
       </div>
     );
   }
 
-  renderPhrase(phrase, message, messageIdx) {
+  renderPhrase(phrase, message, messageIdx, phraseIdx) {
     const card = (message.cards || [])[phrase];
-    const key = `${messageIdx}_${phrase}`;
+    const key = `${messageIdx}_${phrase}_${phraseIdx}`;
     if (card) {
       return (
         <CardTooltip key={key} card={card}>

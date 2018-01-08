@@ -32,7 +32,7 @@ export default class TutorialTooltip extends Component {
   get styles() {
     return {
       container: {
-        zIndex: 99999,
+        zIndex: 999999,
         marginTop: this.props.top,
         marginLeft: this.props.left
       },

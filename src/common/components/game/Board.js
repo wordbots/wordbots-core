@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, number, object, string } from 'prop-types';
+import { bool, func, number, object, string } from 'prop-types';
 import { forOwn, isString, mapValues } from 'lodash';
 
 import HexGrid from '../hexgrid/HexGrid';
@@ -23,6 +23,7 @@ export default class Board extends Component {
     size: number,
     tutorialStep: object,
     attack: object,
+    isGameOver: bool,
 
     onSelectTile: func,
     onActivateAbility: func,
@@ -174,7 +175,7 @@ export default class Board extends Component {
   };
 
   render() {
-    const { size, tutorialStep, onActivateAbility, onEndGame, onTutorialStep } = this.props;
+    const { size, tutorialStep, isGameOver, onActivateAbility, onEndGame, onTutorialStep } = this.props;
     const { hexagons, layout } = this.state.grid;
 
     return (
@@ -190,6 +191,7 @@ export default class Board extends Component {
           hoveredHexId={this.state.hoveredHexId}
           tutorialStep={tutorialStep}
           activatedAbilities={this.selectedActivatedAbilities}
+          isGameOver={isGameOver}
           actions={{
             onClick: this.onHexClick,
             onHexHover: this.onHexHover,

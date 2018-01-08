@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { arrayOf, number, string, object } from 'prop-types';
+import { arrayOf, bool, number, string, object } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { chain as _ } from 'lodash';
 
@@ -23,7 +23,8 @@ export default class HexGrid extends Component {
     hexColors: object,
     pieces: object,
     selectedHexId: string,
-    hoveredHexId: string
+    hoveredHexId: string,
+    isGameOver: bool
   };
 
   static defaultProps = {
@@ -53,7 +54,8 @@ export default class HexGrid extends Component {
         actions={this.props.actions}
         fill={this.props.hexColors[HexUtils.getID(hex)]}
         tutorialStep={this.props.tutorialStep}
-        hovered={this.props.hoveredHexId === HexUtils.getID(hex)} />
+        hovered={this.props.hoveredHexId === HexUtils.getID(hex)}
+        isGameOver={this.props.isGameOver} />
     ));
   }
 
@@ -84,16 +86,33 @@ export default class HexGrid extends Component {
   }
 
   renderSelectedHex() {
-    if (this.selectedHex) {
-      return (
+    const { actions, activatedAbilities, layout, tutorialStep } = this.props;
+    const selectedHexes = [];
+
+    if (tutorialStep && tutorialStep.highlight && tutorialStep.tooltip && tutorialStep.tooltip.hex) {
+      selectedHexes.push(
         <HexShape
+          key="tutorialStep"
           selected
-          hex={this.selectedHex}
-          layout={this.props.layout}
-          actions={this.props.actions}
-          activatedAbilities={this.props.activatedAbilities} />
+          hex={HexUtils.IDToHex(tutorialStep.tooltip.hex)}
+          layout={layout}
+          actions={actions} />
       );
     }
+
+    if (this.selectedHex) {
+      selectedHexes.push(
+        <HexShape
+          key="selectedByUser"
+          selected
+          hex={this.selectedHex}
+          layout={layout}
+          actions={actions}
+          activatedAbilities={activatedAbilities} />
+      );
+    }
+
+    return selectedHexes;
   }
 
   render() {

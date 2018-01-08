@@ -19,7 +19,8 @@ export default class HexShape extends React.Component {
     activatedAbilities: arrayOf(object),
     fill: string,
     selected: bool,
-    hovered: bool
+    hovered: bool,
+    isGameOver: bool
   };
 
   state = {
@@ -53,9 +54,9 @@ export default class HexShape extends React.Component {
   }
 
   get hexStyles() {
-    const hex = this.props.hex;
+    const { hex, selected } = this.props;
 
-    if (this.props.selected) {
+    if (selected) {
       return {
         stroke: '#666',
         strokeWidth: 0.6,
@@ -139,10 +140,13 @@ export default class HexShape extends React.Component {
           onNextStep={this.handleClickNextTutorialStep}
           onPrevStep={this.handleClickPrevTutorialStep}
           onEndTutorial={this.props.actions.onEndGame}
+          place={this.props.tutorialStep.tooltip.place || 'above'}
         >
           {this.renderHex()}
         </TutorialTooltip>
       );
+    } else if (this.props.isGameOver) {
+      return this.renderHex();
     } else if ((this.props.activatedAbilities || []).length > 0) {
       return (
         <AbilitiesTooltip

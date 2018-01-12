@@ -49,6 +49,7 @@ describe('GameArea container', () => {
           playingCardType={null}
           attack={null}
           size={1000}
+          isGameOver={false}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
           onActivateAbility={board.props.onActivateAbility}

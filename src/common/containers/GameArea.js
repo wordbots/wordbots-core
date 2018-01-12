@@ -460,6 +460,7 @@ export class GameArea extends Component {
               playingCardType={this.props.playingCardType}
               tutorialStep={this.props.tutorialStep}
               attack={this.props.attack}
+              isGameOver={!!this.props.winner}
               onSelectTile={this.onSelectTile}
               onActivateAbility={this.props.onActivateObject}
               onTutorialStep={this.props.onTutorialStep}

@@ -148,7 +148,8 @@ const tutorialScript = [
       hex: '2,1,-3',
       text: 'You can play robots anywhere on your kernel\'s edge of the board. This tile over here looks nice. Let\'s click on it.'
     },
-    action: actions.placeCard('2,1,-3', 0)
+    action: actions.placeCard('2,1,-3', 0),
+    highlight: true
   },
   {
     tooltip: {
@@ -180,9 +181,11 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '0,1,-1',
-      text: 'Over on the left you can see One Bot\'s stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here.'
+      text: 'Hover your cursor over One Bot to see its stats. It has a speed of 2, so it can move 2 tiles each turn. Click on this tile to send One Bot here.',
+      place: 'left'
     },
-    action: actions.moveRobot('2,1,-3', '0,1,-1')
+    action: actions.moveRobot('2,1,-3', '0,1,-1'),
+    highlight: true
   },
   {
     tooltip: {
@@ -205,7 +208,7 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '-3,1,2',
-      text: 'Let\'s take a closer look: 3 attack and 3 health? There\'s no way our little bot can win in a fair fight ...'
+      text: 'It\'s got 3 attack and 3 health! There\'s no way our little bot can win in a fair fight ...'
     }
   },
   {

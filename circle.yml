@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 7.0.0
+    version: 8.0.0
 
 dependencies:
   override:
@@ -10,7 +10,7 @@ dependencies:
 test:
   override:
     - node_modules/eslint/bin/eslint.js .
-    - yarn test . -- --coverage
+    - yarn test --coverage
 
     # Test webpack compilation and ability to start a server without failure.
     - NODE_ENV=test yarn start

@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import { noop } from 'lodash';
 
 import { id as generateID } from '../common/util/common';
 import { opponent as opponentOf } from '../common/util/game';
@@ -32,6 +33,7 @@ export default function launchWebsocketServer(server, path) {
       onDisconnect(clientID);
       delete state.connections[clientID];
     });
+    socket.on('error', noop); // Probably a disconnect (throws an error in ws 3.3.3+).
   });
 
   function onOpen() {

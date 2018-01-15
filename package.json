@@ -100,7 +100,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.4.0",
     "eslint-plugin-unicorn": "^3.0.1",
-    "expect": "22.0.6",
+    "expect": "22.1.0",
     "ignore-styles": "^5.0.1",
     "jest": "^22.0.6",
     "jsdom-no-contextify": "3.1.0",

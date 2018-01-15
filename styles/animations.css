@@ -6,21 +6,6 @@
   transition: transform 500ms ease-in-out;
 }
 
-.card-viewer-fade-enter {
-  opacity: 0;
-}
-.card-viewer-fade-enter-active {
-  opacity: 1;
-  transition: opacity 100ms ease-in-out;
-}
-.card-viewer-fade-exit {
-  opacity: 1;
-}
-.card-viewer-fade-exit-active {
-  opacity: 0;
-  transition: opacity 100ms ease-in-out;
-}
-
 .hex-piece-enter {
   opacity: 0;
 }

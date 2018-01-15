@@ -2227,7 +2227,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@15.x, create-react-class@^15.5.2:
+create-react-class@15.x, create-react-class@^15.5.2, create-react-class@^15.6.0:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.2.tgz#cf1ed15f12aad7f14ef5f2dfe05e6c42f91ef02a"
   dependencies:
@@ -7812,12 +7812,13 @@ react-slick@^0.16.0:
     object-assign "^4.1.0"
     slick-carousel "^1.6.0"
 
-react-sound@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-sound/-/react-sound-1.0.0.tgz#2ee8bc4279d4ab9d2ccf26bb5293fe2ee38d5fb6"
+react-sound@0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/react-sound/-/react-sound-0.10.0.tgz#ed6f53833b9735f0e5b3d0b2199d38536c09c87b"
   dependencies:
     prop-types "^15.5.7"
-    soundmanager2 "^2.97.20170602"
+    react ">=15.3.0 <16.0.0"
+    soundmanager2 "^2.97.20150601-a"
 
 react-tap-event-plugin@^3.0.2:
   version "3.0.2"
@@ -7890,6 +7891,16 @@ react@15.0.1:
     fbjs "^0.8.0"
     loose-envify "^1.1.0"
     object-assign "^4.0.1"
+
+"react@>=15.3.0 <16.0.0":
+  version "15.6.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
+  dependencies:
+    create-react-class "^15.6.0"
+    fbjs "^0.8.9"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
+    prop-types "^15.5.10"
 
 "react@^15.6.2 || ^16.0", react@^16.1.1, react@^16.2.0:
   version "16.2.0"
@@ -8719,7 +8730,7 @@ sort-keys@^1.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-soundmanager2@^2.97.20170602:
+soundmanager2@^2.97.20150601-a:
   version "2.97.20170602"
   resolved "https://registry.yarnpkg.com/soundmanager2/-/soundmanager2-2.97.20170602.tgz#fe3bc731bfc4d54c1364e71980263e6816981879"
 

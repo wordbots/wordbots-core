@@ -56,7 +56,13 @@ let webpackConfig = {
     new ExtractTextPlugin('app.css'),
     new CopyWebpackPlugin([{from: 'static'}]),
     new webpack.IgnorePlugin(/canvas/)
-  ]
+  ],
+  resolve: {
+    alias: {
+      // Disable soundmanager2 console output by using release build.
+      soundmanager2: 'soundmanager2/script/soundmanager2-nodebug-jsmin.js'
+    }
+  }
 };
 
 if (process.env.NODE_ENV === 'production') {

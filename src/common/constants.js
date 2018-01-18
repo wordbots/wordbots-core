@@ -19,7 +19,7 @@ export const MAX_HAND_SIZE = 7;
 /* Animations. */
 
 export const ANIMATION_TIME_MS = 400;
-export const AI_RESPONSE_TIME_MS = 1250;
+export const AI_RESPONSE_TIME_MS = 2200;
 export const EVENT_ANIMATION_TIME_MS = 2000;
 export const SHOW_TOOLTIP_TIMEOUT_MS = 500;
 

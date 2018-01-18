@@ -83,7 +83,7 @@ a.topLink:hover {
   transition: top 300ms ease-in-out;
 }
 
-#handBottom:hover, #handBottom.selected {
+#handBottom:hover {
   bottom: 0 !important;
   transition: bottom 300ms ease-in-out;
 }

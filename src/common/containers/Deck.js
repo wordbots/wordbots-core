@@ -106,6 +106,13 @@ class Deck extends Component {
     });
   }
 
+  handleRemoveCard = (id) => {
+    this.setState(state => {
+      state.selectedCardIds = state.selectedCardIds.filter(cardId => cardId !== id);
+      return state;
+    });
+  }
+
   renderSidebarControls() {
     return (
       <Paper style={{padding: 20, marginBottom: 10}}>
@@ -173,6 +180,7 @@ class Deck extends Component {
                 loggedIn={this.props.loggedIn}
                 onIncreaseCardCount={this.handleClickIncreaseCardCount}
                 onDecreaseCardCount={this.handleClickDecreaseCardCount}
+                onRemoveCard={this.handleRemoveCard}
                 onSaveDeck={this.handleClickSaveDeck} />
             </Paper>
           </div>

@@ -8,7 +8,8 @@ export default class ActiveDeckCard extends Component {
     card: object,
 
     onIncreaseCardCount: func,
-    onDecreaseCardCount: func
+    onDecreaseCardCount: func,
+    onRemoveCard: func
   }
 
   styles = {
@@ -45,16 +46,26 @@ export default class ActiveDeckCard extends Component {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center'
+    },
+    xButton: {
+      position: 'absolute',
+      cursor: 'pointer',
+      left: -12,
+      top: 8
     }
   };
 
   handleDecreaseCardCount = () => { this.props.onDecreaseCardCount(this.props.card.id); };
   handleIncreaseCardCount = () => { this.props.onIncreaseCardCount(this.props.card.id); };
+  handleRemoveCard = () => { this.props.onRemoveCard(this.props.card.id); };
 
   render = () => {
     const { card } = this.props;
     return (
       <CardTooltip card={card}>
+        <span style={this.styles.xButton} onClick={this.handleRemoveCard}>
+          x
+        </span>
         <div style={this.styles.outerCard}>
           <div style={this.styles.cardCost}>{card.cost}</div>
           <div style={this.styles.cardName}>{card.name}</div>

@@ -21,6 +21,7 @@ export default class ActiveDeck extends Component {
 
     onIncreaseCardCount: func,
     onDecreaseCardCount: func,
+    onRemoveCard: func,
     onSaveDeck: func
   }
 
@@ -76,11 +77,12 @@ export default class ActiveDeck extends Component {
 
   renderCard(card, idx) {
     return (
-      <div key={idx}>
+      <div key={idx} style={{position: 'relative'}}>
         <ActiveDeckCard
           card={card}
           onIncreaseCardCount={this.props.onIncreaseCardCount}
-          onDecreaseCardCount={this.props.onDecreaseCardCount} />
+          onDecreaseCardCount={this.props.onDecreaseCardCount}
+          onRemoveCard={this.props.onRemoveCard} />
       </div>
     );
   }

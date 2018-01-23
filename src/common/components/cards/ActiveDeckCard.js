@@ -20,7 +20,8 @@ export default class ActiveDeckCard extends Component {
       height: 30,
       marginBottom: -2,
       borderRadius: 5,
-      border: '2px solid #444'
+      border: '2px solid #444',
+      userSelect: 'none'
     },
     cardCost: {
       width: 30,

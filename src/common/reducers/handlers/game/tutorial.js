@@ -10,13 +10,14 @@ import * as socketActions from '../../../actions/socket';
 import * as cards from '../../../store/cards';
 import defaultState from '../../../store/defaultGameState';
 
-function nextStep(state) {
+function nextStep(state, action = null) {
   if (state.tutorialCurrentStepIdx < state.tutorialSteps.length) {
     const oldState = cloneDeep(state);
     const currentStep = currentTutorialStep(state);
+    action = action || currentStep.action;
 
-    if (currentStep.action) {
-      state = handleAction(state, currentStep.action);
+    if (action) {
+      state = handleAction(state, action);
     }
 
     (currentStep.responses || []).forEach(response => {
@@ -85,8 +86,9 @@ export function endTutorial(state) {
 }
 
 export function handleTutorialAction(state, action) {
-  if (isEqual(action, currentTutorialStep(state).action)) {
-    state = nextStep(state);
+  const expectedAction = currentTutorialStep(state).action;
+  if (isEqual(action, expectedAction) || (action.type === expectedAction)) {
+    state = nextStep(state, action);
   } else if (action.type === actions.TUTORIAL_STEP) {
     return action.payload.back ? prevStep(state) : nextStep(state);
   } else if (action.type === actions.END_GAME || action.type === socketActions.LEAVE) {
@@ -226,13 +228,6 @@ const tutorialScript = [
   },
   {
     tooltip: {
-      card: 'Upgrade',
-      text: 'And click on it again to confirm that we want to play it.'
-    },
-    action: actions.setSelectedCard(0, 'orange')
-  },
-  {
-    tooltip: {
       hex: '0,1,-1',
       text: 'Now click our One Bot to apply the Upgrade event to it. Let\'s see what happens!'
     },
@@ -299,9 +294,9 @@ const tutorialScript = [
   {
     tooltip: {
       card: 'Recharge',
-      text: 'And click it once more to confirm.'
+      text: 'This event affects the whole board, so click anywhere on the board to play it.'
     },
-    action: actions.setSelectedCard(0, 'orange')
+    action: actions.SET_SELECTED_TILE
   },
   {
     tooltip: {

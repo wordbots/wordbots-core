@@ -4,7 +4,8 @@ import { TYPE_EVENT, stringToType } from '../../../constants';
 import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions,
-  validPlacementHexes, triggerSound, discardCards,
+  allHexIds, validPlacementHexes,
+  triggerSound, discardCards,
   removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
@@ -27,16 +28,13 @@ export function setSelectedCard(state, playerName, cardIdx) {
     return setTargetAndExecuteQueuedAction(state, selectedCard);
   } else {
     // Toggle card selection.
-
-    if (player.selectedCard === cardIdx) {
-      // Clicked on already selected card => Deselect or play event
-
-      if (isCurrentPlayer && selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
-        return playEvent(state, cardIdx);
-      } else {
-        player.selectedCard = null;
-        player.status.message = '';
-      }
+    if (isCurrentPlayer && selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
+      // Clicked on playable event => Play the event
+      return playEvent(state, cardIdx);
+    } else if (player.selectedCard === cardIdx) {
+      // Clicked on already selected card => Deselect
+      player.selectedCard = null;
+      player.status.message = '';
     } else {
       // Clicked on unselected card => Select
 
@@ -163,6 +161,7 @@ function playEvent(state, cardIdx) {
       // Target still needs to be selected, so roll back playing the card (and return old state).
 
       state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
+      currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = player.target;
       currentPlayer(state).status = {message: `Choose a target for ${card.name}.`, type: 'text'};
 
@@ -170,6 +169,20 @@ function playEvent(state, cardIdx) {
     } else if (tempState.invalid) {
       // Temp state is invalid (e.g. no valid target available or player unable to pay an energy cost).
       // So return the old state.
+      // This must come after the `choosing` case to allow multiple target selection,
+      // but *before* the `!chosen` case to correctly handle the case where no target is availabl.e
+      currentPlayer(state).selectedCard = cardIdx;
+      currentPlayer(state).status = {message: `Unable to play ${card.name}!`, type: 'error'};
+      return state;
+    } else if (!player.target.chosen) {
+      // If there is no target selection, that means that this card is a global effect.
+      // In that case, the player needs to "target" the board to confirm that they want to play the event.
+
+      state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
+      currentPlayer(state).selectedCard = cardIdx;
+      currentPlayer(state).target = { choosing: true, chosen: null, possibleCards: [], possibleHexes: allHexIds() };
+      currentPlayer(state).status = {message: `Click anywhere on the board to play ${card.name}.`, type: 'text'};
+
       return state;
     } else {
       card.justPlayed = false;

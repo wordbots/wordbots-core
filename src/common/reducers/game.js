@@ -23,6 +23,8 @@ export default function game(state = cloneDeep(defaultState), action, allowed = 
 }
 
 export function handleAction(oldState, action) {
+  // console.log(action);
+
   let state = Object.assign({}, oldState);
 
   if (!PURELY_VISUAL_ACTIONS.includes(action.type)) {

@@ -43,7 +43,7 @@
     "fast-json-patch": "^2.0.5",
     "file-loader": "1.1.6",
     "firebase": "^4.8.2",
-    "image-webpack-loader": "^3.4.2",
+    "image-webpack-loader": "^4.0.0",
     "json-loader": "^0.5.7",
     "jsx-loader": "^0.13.2",
     "lodash": "^4.17.4",

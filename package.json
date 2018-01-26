@@ -81,7 +81,7 @@
     "screenfull": "^3.3.1",
     "seed-random": "^2.2.0",
     "shuffle-array": "^1.0.1",
-    "style-loader": "0.19.1",
+    "style-loader": "0.20.0",
     "substitute-loader": "^1.0.0",
     "trianglify": "^1.1.0",
     "url-loader": "^0.6.2",

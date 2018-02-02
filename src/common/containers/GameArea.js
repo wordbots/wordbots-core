@@ -125,6 +125,9 @@ export function mapDispatchToProps(dispatch) {
     onSelectTile: (hexId, player) => {
       dispatch(gameActions.setSelectedTile(hexId, player));
     },
+    onDeselect: (player) => {
+      dispatch(gameActions.deselect(player));
+    },
     onPassTurn: (player) => {
       dispatch(gameActions.passTurn(player));
     },
@@ -325,6 +328,13 @@ export class GameArea extends Component {
     return inBrowser() ? require('../components/img/black_bg_lodyas.png') : '';
   }
 
+  handleClickGameArea = evt => {
+    const { className } = evt.target;
+    if ((className.baseVal || className).includes('background')) {
+      this.props.onDeselect(this.props.player);
+    }
+  }
+
   handleClickEndGame = () => {
     this.props.onEndGame();
     this.props.history.push('/play');
@@ -364,32 +374,42 @@ export class GameArea extends Component {
         className="gameArea"
         style={
           screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
-        }>
+        }
+      >
         <div>
           {this.renderNotification()}
           <Sfx queue={this.props.sfxQueue} />
         </div>
 
         <Paper
+          className="background"
           style={{
             position: 'relative',
             marginRight: this.state.chatOpen ? 256 : 64,
             height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
             background: `url(${this.loadBackground()})`
-        }}>
-          <div style={{
-            display: 'flex',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div style={{
+          }}
+          onClick={this.handleClickGameArea}
+        >
+          <div
+            className="background"
+            style={{
               display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
+              height: '100%',
               alignItems: 'center',
-              marginLeft: 20
-            }}>
+              justifyContent: 'space-between'
+            }}
+          >
+            <div
+              className="background"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: 20
+              }}
+            >
               <Timer
                 player={this.props.player}
                 currentTurn={this.props.currentTurn}
@@ -407,11 +427,14 @@ export class GameArea extends Component {
                 <FullscreenToggle />
               </div>
             </div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginRight: 20
-            }}>
+            <div
+              className="background"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginRight: 20
+              }}
+            >
               <TutorialTooltip
                 tutorialStep={this.props.tutorialStep}
                 enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
@@ -438,6 +461,7 @@ export class GameArea extends Component {
           </div>
           <PlayerArea opponent gameProps={this.props} />
           <div
+            className="background"
             style={{
               position: 'absolute',
               left: 0,
@@ -447,7 +471,8 @@ export class GameArea extends Component {
               margin: '0 auto',
               zIndex: 999,
               width: this.state.boardSize
-          }}>
+            }}
+          >
             <Status status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               size={this.state.boardSize}

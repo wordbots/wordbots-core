@@ -66,7 +66,10 @@ export default class PlayerArea extends Component {
     const color = this.color;
 
     return (
-      <div style={this.styles.container}>
+      <div
+        className="background"
+        style={this.styles.container}
+      >
         <PlayerName
           opponent={opponent}
           color={color}
@@ -86,10 +89,13 @@ export default class PlayerArea extends Component {
           onSelectCard={this.handleSelectCard}
           onTutorialStep={gameProps.onTutorialStep} />
 
-        <div style={{
-          display: 'flex',
-          flexDirection: opponent ? 'column-reverse' : 'column'
-        }}>
+        <div
+          className="background"
+          style={{
+            display: 'flex',
+            flexDirection: opponent ? 'column-reverse' : 'column'
+          }}
+        >
           <RaisedButton
             secondary
             label="Discard Pile"

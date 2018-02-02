@@ -12,6 +12,7 @@ export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
+export const DESELECT = 'DESELECT';
 
 export function startPractice(deck) {
   return {
@@ -103,5 +104,12 @@ export function setSelectedTile(selectedTile, player) {
   return {
     type: SET_SELECTED_TILE,
     payload: { selectedTile, player }
+  };
+}
+
+export function deselect(player) {
+  return {
+    type: DESELECT,
+    payload: { player }
   };
 }

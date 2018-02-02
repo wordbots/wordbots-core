@@ -117,7 +117,14 @@ export default class HexGrid extends Component {
 
   render() {
     return (
-      <svg className="grid" width={this.props.width} height={this.props.height} viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        className="grid background"
+        width={this.props.width}
+        height={this.props.height}
+        viewBox="-50 -50 100 100"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         {this.renderHexes()}
         {this.renderPieces()}
         {this.renderSelectedHex()}

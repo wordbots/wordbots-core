@@ -1,7 +1,7 @@
 import { newGame, passTurn } from '../../util/game';
 
 import { setSelectedCard, placeCard } from './game/cards';
-import { setSelectedTile, moveRobot, attack, attackComplete, activateObject } from './game/board';
+import { deselect, setSelectedTile, moveRobot, attack, attackComplete, activateObject } from './game/board';
 import { startTutorial, handleTutorialAction } from './game/tutorial';
 import { startPractice, aiResponse } from './game/practice';
 
@@ -12,6 +12,7 @@ const gameHandlers = {
   setSelectedCard,
   placeCard,
 
+  deselect,
   setSelectedTile,
   moveRobot,
   attack,

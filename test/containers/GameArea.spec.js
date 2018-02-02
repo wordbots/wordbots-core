@@ -30,6 +30,7 @@ describe('GameArea container', () => {
       paper.props.children[0],
       <PlayerArea opponent gameProps={game.props} />,
       <div
+        className="background"
         ref={mainDiv.ref}
         style={{
           position: 'absolute',

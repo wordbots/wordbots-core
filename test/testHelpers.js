@@ -107,7 +107,9 @@ export function playObject(state, playerName, card, hex, target = null) {
   }
 }
 
-export function playEvent(state, playerName, card, targets = []) {
+export function playEvent(state, playerName, card, targets = [{hex: '0,0,0'}]) {
+  // (Target the center hex by default for global events.)
+
   if (!isArray(targets)) {
     targets = [targets];
   }
@@ -124,10 +126,7 @@ export function playEvent(state, playerName, card, targets = []) {
   player.hand = [card].concat(player.hand);
   player.energy.available += card.cost;
 
-  state = game(state, [
-    gameActions.setSelectedCard(0, playerName),
-    gameActions.setSelectedCard(0, playerName)
-  ]);
+  state = game(state, gameActions.setSelectedCard(0, playerName));
 
   targets.forEach(target => {
     if (target.hex) {

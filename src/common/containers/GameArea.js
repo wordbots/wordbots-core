@@ -214,6 +214,7 @@ export class GameArea extends Component {
     onPlaceRobot: func,
     onSelectCard: func,
     onSelectTile: func,
+    onDeselect: func,
     onPassTurn: func,
     onEndGame: func,
     onForfeit: func,

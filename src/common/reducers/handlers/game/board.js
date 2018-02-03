@@ -19,7 +19,7 @@ export function deselect(state, playerName) {
   const player = state.players[playerName];
   player.selectedTile = null;
   player.selectedCard = null;
-  player.message = '';
+  player.status = { message: '', type: '' };
   player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
   return state;
 }

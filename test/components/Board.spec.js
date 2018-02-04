@@ -143,7 +143,7 @@ describe('Board component', () => {
   it('Valid targetable hexes are colored green', () => {
     let state = getDefaultState();
     state = playObject(state, 'orange', attackBotCard, '3,-1,-2');
-    state = playEvent(state, 'blue', shockCard);
+    state = playEvent(state, 'blue', shockCard, []);
 
     const hexGrid = getComponent('GameArea', HexGrid, combineState(state));
 

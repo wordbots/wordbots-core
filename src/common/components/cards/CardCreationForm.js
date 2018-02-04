@@ -230,6 +230,8 @@ export default class CardCreationForm extends Component {
   }
 
   render() {
+    const examplesLoaded = this.state.examplesLoaded[this.parserMode];
+
     return (
       <div style={this.styles.container}>
         <div style={{display: 'flex', justifyContent: 'center'}}>
@@ -241,9 +243,13 @@ export default class CardCreationForm extends Component {
               'Check out all of the terms and actions that the parser supports.', () => {
                 this.props.onOpenDialog('dictionary');
             })}
-            {this.renderButton('Randomize', 'refresh', 'Generate random text for the card.', () => {
-              this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
-            }, !this.state.examplesLoaded[this.parserMode])}
+            {this.renderButton('Randomize', 'refresh',
+              `Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`, () => {
+              const example = exampleStore.getExample(this.parserMode);
+              if (example) {
+                this.onUpdateText(example, this.props.type, true);
+              }
+            }, !examplesLoaded)}
           </div>
         </div>
 

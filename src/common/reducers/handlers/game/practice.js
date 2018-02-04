@@ -10,7 +10,7 @@ import * as builtinCards from '../../../store/cards';
 import HU from '../../../components/hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
-import { moveRobot, attack } from './board';
+import { setSelectedTile, moveRobot, attack } from './board';
 
 export function startPractice(state, deck) {
   const decks = {
@@ -56,8 +56,9 @@ function playACard(state) {
     state = setSelectedCard(state, ai.name, idx);
 
     if (card.type === TYPE_EVENT) {
-      // Play event by "clicking twice".
+      // All events in the practice deck are global, so click anywhere on the board.
       state = setSelectedCard(state, ai.name, idx);
+      state = setSelectedTile(state, ai.name, '0,0,0');
     } else {
       const validHexes = validPlacementHexes(state, ai.name, card.type);
       if (validHexes.length > 0) {

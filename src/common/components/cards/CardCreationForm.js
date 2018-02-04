@@ -60,9 +60,21 @@ export default class CardCreationForm extends Component {
       this.setState({
         bigramProbs: prepareBigramProbs(corpus)
       });
-      exampleStore.loadExamples(examples, 100);
+      exampleStore.onLoadExamples =
+      exampleStore.loadExamples(examples, 100, (mode) => {
+        this.setState((state) => ({
+          examplesLoaded: {...state.examplesLoaded, [mode]: true}
+        }));
+      });
     });
   }
+
+  state = {
+    examplesLoaded: {
+      event: false,
+      object: false
+    }
+  };
 
   styles = {
     container: {width: '60%', flex: 1, padding: 64},
@@ -74,6 +86,15 @@ export default class CardCreationForm extends Component {
     rightColContainer: {display: 'flex', alignItems: 'center'},
     rightCol: {width: 210},
     attribute: {width: '100%', marginRight: 25},
+    buttonText: {
+      fontSize: 14,
+      textTransform: 'uppercase',
+      fontWeight: '500',
+      userSelect: 'none',
+      paddingLeft: 16,
+      paddingRight: 16,
+      color: 'white'
+    },
     saveButton: {marginTop: 20},
 
     icon: {verticalAlign: 'middle', color: 'white'}
@@ -177,17 +198,22 @@ export default class CardCreationForm extends Component {
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   };
 
-  renderButton = (label, icon, onClick) => (
-    <RaisedButton
-      label={label}
-      primary
-      style={{width: '31%', marginBottom: 8}}
-      onClick={onClick}
-    >
-      <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
-        {icon}
-      </FontIcon>
-    </RaisedButton>
+  renderButton = (label, icon, tooltip, onClick, disabled = false) => (
+      <RaisedButton
+        primary
+        style={{width: '31%', marginBottom: 8}}
+        onClick={onClick}
+        disabled={disabled}
+      >
+        <Tooltip inline text={tooltip}>
+          <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
+            {icon}
+          </FontIcon>
+          <span style={this.styles.buttonText}>
+            {label}
+          </span>
+        </Tooltip>
+      </RaisedButton>
   )
 
   renderAttributeField(attribute, enabled = true, opts = {}) {
@@ -204,19 +230,26 @@ export default class CardCreationForm extends Component {
   }
 
   render() {
+    const examplesLoaded = this.state.examplesLoaded[this.parserMode];
+
     return (
       <div style={this.styles.container}>
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12, width: '100%', maxWidth: 800}}>
-            {this.renderButton('Help', 'help_outline', () => {
+            {this.renderButton('Help', 'help_outline', 'Learn more about creating a card.', () => {
               this.props.onOpenDialog('help');
             })}
-            {this.renderButton('Dictionary', 'book', () => {
-              this.props.onOpenDialog('dictionary');
+            {this.renderButton('Dictionary', 'book',
+              'Check out all of the terms and actions that the parser supports.', () => {
+                this.props.onOpenDialog('dictionary');
             })}
-            {this.renderButton('Randomize', 'refresh', () => {
-              this.onUpdateText(exampleStore.getExample(this.parserMode), this.props.type, true);
-            })}
+            {this.renderButton('Randomize', 'refresh',
+              `Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`, () => {
+              const example = exampleStore.getExample(this.parserMode);
+              if (example) {
+                this.onUpdateText(example, this.props.type, true);
+              }
+            }, !examplesLoaded)}
           </div>
         </div>
 

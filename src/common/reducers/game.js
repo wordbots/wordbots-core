@@ -74,6 +74,9 @@ export function handleAction(oldState, action) {
     case actions.SET_SELECTED_TILE:
       return g.setSelectedTile(state, action.payload.player, action.payload.selectedTile);
 
+    case actions.DESELECT:
+      return g.deselect(state, action.payload.player);
+
     case socketActions.CONNECTING:
       return Object.assign(state, {started: false});
 

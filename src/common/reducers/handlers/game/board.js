@@ -15,6 +15,15 @@ function selectTile(state, tile) {
   return state;
 }
 
+export function deselect(state, playerName) {
+  const player = state.players[playerName];
+  player.selectedTile = null;
+  player.selectedCard = null;
+  player.status = { message: '', type: '' };
+  player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
+  return state;
+}
+
 export function setSelectedTile(state, playerName, tile) {
   const player = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);

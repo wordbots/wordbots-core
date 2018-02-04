@@ -49,6 +49,10 @@ export default class PlayerArea extends Component {
         verticalAlign: 'middle',
         color: 'white'
       },
+      discardContainer: {
+        display: 'flex',
+        flexDirection: opponent ? 'column-reverse' : 'column'
+      },
       discard: {
         width: 'calc(100% - 10px)',
         marginTop: opponent ? 10 : 0,
@@ -66,7 +70,10 @@ export default class PlayerArea extends Component {
     const color = this.color;
 
     return (
-      <div style={this.styles.container}>
+      <div
+        className="background"
+        style={this.styles.container}
+      >
         <PlayerName
           opponent={opponent}
           color={color}
@@ -86,10 +93,10 @@ export default class PlayerArea extends Component {
           onSelectCard={this.handleSelectCard}
           onTutorialStep={gameProps.onTutorialStep} />
 
-        <div style={{
-          display: 'flex',
-          flexDirection: opponent ? 'column-reverse' : 'column'
-        }}>
+        <div
+          className="background"
+          style={this.styles.discardContainer}
+        >
           <RaisedButton
             secondary
             label="Discard Pile"

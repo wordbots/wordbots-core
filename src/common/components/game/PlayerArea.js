@@ -49,7 +49,7 @@ export default class PlayerArea extends Component {
         verticalAlign: 'middle',
         color: 'white'
       },
-      diccardContainer: {
+      discardContainer: {
         display: 'flex',
         flexDirection: opponent ? 'column-reverse' : 'column'
       },

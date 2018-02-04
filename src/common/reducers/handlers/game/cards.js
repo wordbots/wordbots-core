@@ -26,32 +26,27 @@ export function setSelectedCard(state, playerName, cardIdx) {
       (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, selectedCard);
-  } else {
-    // Toggle card selection.
-    if (isCurrentPlayer && selectedCard.type === TYPE_EVENT && getCost(selectedCard) <= energy.available) {
-      // Clicked on playable event => Play the event
-      return playEvent(state, cardIdx);
-    } else if (player.selectedCard === cardIdx) {
-      // Clicked on already selected card => Deselect
-      player.selectedCard = null;
-      player.status.message = '';
-    } else {
-      // Clicked on unselected card => Select
-
-      player.selectedCard = cardIdx;
-      player.target.choosing = false; // Reset targeting state.
-
-      if (getCost(selectedCard) <= energy.available) {
-        player.status.message = (selectedCard.type === TYPE_EVENT) ? 'Click this event again to play it.' : 'Select an available tile to play this card.';
-        player.status.type = 'text';
+  } else if (player.selectedCard === cardIdx) {
+    // Clicked on already selected card => Deselect.
+    player.selectedCard = null;
+    player.status.message = '';
+    player.target.choosing = false;
+  } else if (isCurrentPlayer) {
+    // Try to play the chosen card.
+    if (getCost(selectedCard) <= energy.available) {
+      if (selectedCard.type === TYPE_EVENT) {
+        return playEvent(state, cardIdx);
       } else {
-        player.status.message = 'You do not have enough energy to play this card.';
-        player.status.type = 'error';
+        player.selectedCard = cardIdx;
+        player.target.choosing = false; // Reset targeting state.
+        player.status = { type: 'text', message: 'Select an available tile to play this card.' };
       }
+    } else {
+      player.status = { type: 'error', message: 'You do not have enough energy to play this card.' };
     }
-
-    return state;
   }
+
+  return state;
 }
 
 export function placeCard(state, cardIdx, tile) {

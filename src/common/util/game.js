@@ -456,6 +456,7 @@ export function setTargetAndExecuteQueuedAction(state, target) {
     // Reset target and return new state.
     tempState.callbackAfterTargetSelected = null;
     tempState.players[player.name].target = arbitraryPlayerState().target;
+    tempState.players[player.name].status.message = '';
 
     return tempState;
   }

@@ -15,12 +15,16 @@ function selectTile(state, tile) {
   return state;
 }
 
+function resetTargetAndStatus(player) {
+  player.status = { message: '', type: '' };
+  player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
+}
+
 export function deselect(state, playerName) {
   const player = state.players[playerName];
   player.selectedTile = null;
   player.selectedCard = null;
-  player.status = { message: '', type: '' };
-  player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
+  resetTargetAndStatus(player);
   return state;
 }
 
@@ -38,7 +42,7 @@ export function setSelectedTile(state, playerName, tile) {
     // Toggle tile selection.
     player.selectedTile = (player.selectedTile === tile) ? null : tile;
     player.selectedCard = null;
-    player.status.message = '';
+    resetTargetAndStatus(player);
     return state;
   }
 }
@@ -46,6 +50,12 @@ export function setSelectedTile(state, playerName, tile) {
 export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
   const player = state.players[state.currentTurn];
   const movingRobot = player.robotsOnBoard[fromHex];
+
+  if (player.target.choosing) {
+    // If the player is in target-selection mode, just get out of that mode instead.
+    resetTargetAndStatus(player);
+    return state;
+  }
 
   // Is the move valid?
   const validHexes = validMovementHexes(state, HexUtils.IDToHex(fromHex));
@@ -94,6 +104,12 @@ export function attack(state, source, target) {
 
   const attacker = player.robotsOnBoard[source];
   const defender = opponent.robotsOnBoard[target];
+
+  if (player.target.choosing) {
+    // If the player is in target-selection mode, just get out of that mode instead.
+    resetTargetAndStatus(player);
+    return state;
+  }
 
   if (attacker) {
     // Is the attack valid?
@@ -155,6 +171,12 @@ export function attackComplete(state) {
 }
 
 export function activateObject(state, abilityIdx, selectedHexId = null) {
+  if (currentPlayer(state).target.choosing) {
+    // If the player is in target-selection mode, just get out of that mode instead.
+    resetTargetAndStatus(currentPlayer(state));
+    return state;
+  }
+
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState = cloneDeep(state);

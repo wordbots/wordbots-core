@@ -49,6 +49,10 @@ export default class PlayerArea extends Component {
         verticalAlign: 'middle',
         color: 'white'
       },
+      diccardContainer: {
+        display: 'flex',
+        flexDirection: opponent ? 'column-reverse' : 'column'
+      },
       discard: {
         width: 'calc(100% - 10px)',
         marginTop: opponent ? 10 : 0,
@@ -91,10 +95,7 @@ export default class PlayerArea extends Component {
 
         <div
           className="background"
-          style={{
-            display: 'flex',
-            flexDirection: opponent ? 'column-reverse' : 'column'
-          }}
+          style={this.styles.discardContainer}
         >
           <RaisedButton
             secondary

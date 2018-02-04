@@ -62,7 +62,7 @@ export default class CardCreationForm extends Component {
       });
       exampleStore.onLoadExamples =
       exampleStore.loadExamples(examples, 100, (mode) => {
-        this.setState(state => ({
+        this.setState((state) => ({
           examplesLoaded: {...state.examplesLoaded, [mode]: true}
         }));
       });

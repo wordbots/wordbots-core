@@ -20,8 +20,8 @@ export default class EventAnimation extends Component {
   };
 
   componentDidUpdate(nextProps) {
-    if (nextProps.eventQueue.length > this.props.eventQueue.length) {
-      setTimeout(this.proceedToNextEvent, EVENT_ANIMATION_TIME_MS);
+    if (nextProps.eventQueue.length !== this.props.eventQueue.length) {
+      this.resetTimeout();
     }
   }
 
@@ -29,12 +29,19 @@ export default class EventAnimation extends Component {
     return this.props.eventQueue[this.state.idx];
   }
 
+  resetTimeout = () => {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(this.proceedToNextEvent, EVENT_ANIMATION_TIME_MS);
+  }
+
   proceedToNextEvent = () => {
-    this.setState({idx: this.props.eventQueue.length});
+    this.setState((state) => ({idx: state.idx + 1}));
+    if (this.currentEvent) {
+      this.resetTimeout();
+    }
   }
 
   renderEvent() {
-    setTimeout(() => this.proceedToNextEvent(), EVENT_ANIMATION_TIME_MS);
     return Card.fromObj(this.currentEvent, {scale: 1.3});
   }
 

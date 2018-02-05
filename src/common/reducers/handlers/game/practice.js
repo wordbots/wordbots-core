@@ -57,7 +57,6 @@ function playACard(state) {
 
     if (card.type === TYPE_EVENT) {
       // All events in the practice deck are global, so click anywhere on the board.
-      state = setSelectedCard(state, ai.name, idx);
       state = setSelectedTile(state, ai.name, '0,0,0');
     } else {
       const validHexes = validPlacementHexes(state, ai.name, card.type);

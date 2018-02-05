@@ -331,7 +331,8 @@ export class GameArea extends Component {
 
   handleClickGameArea = evt => {
     const { className } = evt.target;
-    if ((className.baseVal || className).includes('background')) {
+    const { baseVal } = className;
+    if ((baseVal !== undefined ? baseVal : className).includes('background')) {
       this.props.onDeselect(this.props.player);
     }
   }

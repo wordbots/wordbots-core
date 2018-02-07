@@ -492,7 +492,7 @@ export class GameArea extends Component {
               width: this.state.boardSize
             }}
           >
-            <Status status={this.isMyTurn() ? this.props.status : {}} />
+            <Status status={(this.isMyTurn() || this.props.isSandbox) ? this.props.status : {}} />
             <Board
               size={this.state.boardSize}
               player={this.props.isSandbox ? this.props.currentTurn : this.props.player}

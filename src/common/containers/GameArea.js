@@ -338,7 +338,7 @@ export class GameArea extends Component {
     } else if (action === 'place') {
       this.placePiece(hexId);
     } else {
-      this.props.onSelectTile(hexId, this.props.player);
+      this.props.onSelectTile(hexId, this.props.isSandbox ? this.props.currentTurn : this.props.player);
     }
   }
 

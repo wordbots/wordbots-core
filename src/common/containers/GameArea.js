@@ -143,6 +143,9 @@ export function mapDispatchToProps(dispatch) {
         socketActions.leave()
       ]);
     },
+    onStartTutorial: () => {
+      dispatch(gameActions.startTutorial());
+    },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
     },
@@ -218,6 +221,7 @@ export class GameArea extends Component {
     onPassTurn: func,
     onEndGame: func,
     onForfeit: func,
+    onStartTutorial: func,
     onTutorialStep: func,
     onAIResponse: func,
     onSendChatMessage: func
@@ -234,7 +238,10 @@ export class GameArea extends Component {
     super(props);
 
     if (!props.started) {
-      this.props.history.push('/play');
+      if (props.history.location.pathname.includes('/tutorial')) {
+        props.onStartTutorial();
+      }
+      props.history.push('/play');
     }
   }
 

@@ -86,8 +86,9 @@ export default class PlayerArea extends Component {
           opponent={opponent}
           selectedCard={gameProps.selectedCard}
           targetableCards={gameProps.target.possibleCards}
-          isActivePlayer={gameProps.player === color}
+          isActivePlayer={gameProps.player === color || gameProps.isSandbox}
           cards={gameProps[`${color}Hand`]}
+          sandbox={gameProps.isSandbox}
           status={gameProps.status}
           tutorialStep={gameProps.tutorialStep}
           onSelectCard={this.handleSelectCard}

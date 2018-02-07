@@ -15,6 +15,7 @@ export default class Hand extends Component {
     status: object,
     curved: bool,
     opponent: bool,
+    sandbox: bool,
     tutorialStep: object,
 
     onSelectCard: func,
@@ -65,12 +66,12 @@ export default class Hand extends Component {
             card={card}
             idx={idx}
             margin={idx < numCards - 1 ? cardMargin : 0}
-            rotation={this.props.curved ? rotationDegs : 0}
+            rotation={(this.props.sandbox && this.props.opponent) ? 180 : (this.props.curved ? rotationDegs : 0)}
             selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
             status={this.props.status}
             targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
             tutorialStep={this.props.tutorialStep}
-            visible={this.props.isActivePlayer}
+            visible={this.props.isActivePlayer || this.props.sandbox}
             yTranslation={this.props.curved ? translationPx : 0}
             zIndex={isNull(this.state.hoveredCardIdx) ? 0 : (1000 - Math.abs(this.state.hoveredCardIdx - idx) * 10)}
             onSelectCard={this.props.onSelectCard}

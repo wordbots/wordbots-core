@@ -166,7 +166,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <TitleBar inGame={this.props.inGame}/>
+        <TitleBar />
         <div>
           {this.sidebar}
           {this.content}

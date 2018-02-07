@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { bool, object } from 'prop-types';
+import { object } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import FontIcon from 'material-ui/FontIcon';
 import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-/* eslint-disable import/no-unassigned-import */
-import 'whatwg-fetch';
-/* eslint-enable import/no-unassigned-import */
 
 import { logout } from '../util/firebase';
 import RouterDialog from '../components/RouterDialog';
@@ -25,8 +21,6 @@ function mapStateToProps(state) {
 class TitleBar extends Component {
   static propTypes = {
     user: object,
-    inGame: bool,
-
     history: object
   };
 
@@ -108,7 +102,6 @@ class TitleBar extends Component {
           }}
           iconElementLeft={<span />}
           iconElementRight={this.userMenu}
-          showMenuIconButton={!this.props.inGame}
         />
       </div>
     );

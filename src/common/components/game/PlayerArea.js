@@ -77,7 +77,7 @@ export default class PlayerArea extends Component {
         <PlayerName
           opponent={opponent}
           color={color}
-          playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]} />
+          playerName={(gameProps.player === color && !gameProps.isSandbox) ? 'You' : gameProps.usernames[color]} />
         <EnergyCount
           color={color}
           energy={gameProps[`${color}Energy`]} />

@@ -463,14 +463,14 @@ export class GameArea extends Component {
                 onPrevStep={this.handlePrevTutorialStep}
               >
                 <EndTurnButton
-                  player={this.props.player}
+                  player={this.props.isSandbox ? this.props.currentTurn : this.props.player}
                   gameOver={this.props.gameOver}
-                  isMyTurn={this.props.isMyTurn}
+                  isMyTurn={this.props.isMyTurn || this.props.isSandbox}
                   isAttackHappening={this.props.isAttackHappening}
                   onPassTurn={this.props.onPassTurn} />
               </TutorialTooltip>
               <ForfeitButton
-                player={this.props.player}
+                player={this.props.isSandbox ? this.props.currentTurn : this.props.player}
                 history={this.props.history}
                 gameOver={this.props.gameOver}
                 isSpectator={this.props.isSpectator}
@@ -495,7 +495,7 @@ export class GameArea extends Component {
             <Status status={this.isMyTurn() ? this.props.status : {}} />
             <Board
               size={this.state.boardSize}
-              player={this.props.player}
+              player={this.props.isSandbox ? this.props.currentTurn : this.props.player}
               currentTurn={this.props.currentTurn}
               selectedTile={this.props.selectedTile}
               target={this.props.target}

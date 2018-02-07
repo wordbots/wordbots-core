@@ -240,8 +240,9 @@ export class GameArea extends Component {
     if (!props.started) {
       if (props.history.location.pathname.includes('/tutorial')) {
         props.onStartTutorial();
+      } else {
+        props.history.push('/play');
       }
-      props.history.push('/play');
     }
   }
 

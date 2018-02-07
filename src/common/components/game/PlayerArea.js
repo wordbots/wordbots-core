@@ -61,7 +61,12 @@ export default class PlayerArea extends Component {
     };
   }
 
-  handleSelectCard = (idx) => this.props.gameProps.onSelectCard(idx, this.color);
+  handleSelectCard = (idx) => {
+    const { gameProps: { currentTurn, isSandbox, onSelectCard }} = this.props;
+    const player = isSandbox ? currentTurn : this.color;
+    onSelectCard(idx, player);
+  }
+
   handleOpenDiscardPile = () => this.setState({ discardOpen: true });
   handleCloseDiscardPile = () => this.setState({ discardOpen: false });
 

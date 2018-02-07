@@ -37,15 +37,16 @@ function animate(fns) {
 }
 
 export function mapStateToProps(state) {
-  const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
-  const currentPlayer = state.game.players[state.game.currentTurn];
+  const { game } = state;
+  const currentPlayer = game.players[game.currentTurn];
+  const activePlayer = game.sandbox ? currentPlayer : game.players[game.player] || arbitraryPlayerState();
 
   return {
-    started: state.game.started,
-    player: state.game.player,
-    currentTurn: state.game.currentTurn,
-    usernames: state.game.usernames,
-    winner: state.game.winner,
+    started: game.started,
+    player: game.player,
+    currentTurn: game.currentTurn,
+    usernames: game.usernames,
+    winner: game.winner,
 
     selectedTile: activePlayer.selectedTile,
     selectedCard: activePlayer.selectedCard,
@@ -53,37 +54,37 @@ export function mapStateToProps(state) {
 
     status: activePlayer.status,
     target: activePlayer.target,
-    attack: state.game.attack,
+    attack: game.attack,
 
-    blueHand: state.game.players.blue.hand,
-    orangeHand: state.game.players.orange.hand,
+    blueHand: game.players.blue.hand,
+    orangeHand: game.players.orange.hand,
 
-    bluePieces: state.game.players.blue.robotsOnBoard,
-    orangePieces: state.game.players.orange.robotsOnBoard,
+    bluePieces: game.players.blue.robotsOnBoard,
+    orangePieces: game.players.orange.robotsOnBoard,
 
-    blueEnergy: state.game.players.blue.energy,
-    orangeEnergy: state.game.players.orange.energy,
+    blueEnergy: game.players.blue.energy,
+    orangeEnergy: game.players.orange.energy,
 
-    blueDeck: state.game.players.blue.deck,
-    orangeDeck: state.game.players.orange.deck,
+    blueDeck: game.players.blue.deck,
+    orangeDeck: game.players.orange.deck,
 
-    blueDiscardPile: state.game.players.blue.discardPile,
-    orangeDiscardPile: state.game.players.orange.discardPile,
+    blueDiscardPile: game.players.blue.discardPile,
+    orangeDiscardPile: game.players.orange.discardPile,
 
-    eventQueue: state.game.eventQueue,
-    sfxQueue: state.game.sfxQueue,
-    tutorialStep: currentTutorialStep(state.game),
-    isPractice: state.game.practice,
+    eventQueue: game.eventQueue,
+    sfxQueue: game.sfxQueue,
+    tutorialStep: currentTutorialStep(game),
+    isPractice: game.practice,
 
-    sidebarOpen: state.global.sidebarOpen || state.game.tutorial,
+    sidebarOpen: state.global.sidebarOpen || game.tutorial,
 
-    gameOver: state.game.winner !== null,
-    isTutorial: state.game.tutorial,
-    isSandbox: state.game.sandbox,
-    isMyTurn: state.game.currentTurn === state.game.player,
-    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to && true,
+    gameOver: game.winner !== null,
+    isTutorial: game.tutorial,
+    isSandbox: game.sandbox,
+    isMyTurn: game.currentTurn === game.player,
+    isAttackHappening: game.attack && game.attack.from && game.attack.to && true,
 
-    actionLog: state.game.actionLog,
+    actionLog: game.actionLog,
     socket: state.socket
   };
 }

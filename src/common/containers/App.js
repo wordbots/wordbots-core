@@ -45,6 +45,9 @@ function mapDispatchToProps(dispatch) {
     },
     onReceiveFirebaseData(data) {
       dispatch(actions.firebaseData(data));
+    },
+    onRerender() {
+      dispatch(actions.rerender());
     }
   };
 }
@@ -63,7 +66,8 @@ class App extends Component {
 
     onLoggedIn: func,
     onLoggedOut: func,
-    onReceiveFirebaseData: func
+    onReceiveFirebaseData: func,
+    onRerender: func
   };
 
   state = {
@@ -108,12 +112,12 @@ class App extends Component {
     } else if (this.props.inGame) {
       return null;
     } else {
-      return <NavMenu />;
+      return <NavMenu onRerender={this.props.onRerender} />;
     }
   }
 
   get content() {
-    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? 256 : 64);
+    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? 224 : 64);
 
     if (this.state.loading) {
       return null;

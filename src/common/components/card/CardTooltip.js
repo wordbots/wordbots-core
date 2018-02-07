@@ -4,6 +4,7 @@ import Popover from 'react-popover';
 import ReactTooltip from 'react-tooltip';
 
 import { id } from '../../util/common';
+import { getGameAreaNode } from '../../util/browser';
 
 import Card from './Card';
 
@@ -29,6 +30,7 @@ export default class CardTooltip extends Component {
           body={Card.fromObj(this.props.card)}
           refreshIntervalMs={50}
           place="above"
+          appendTarget={getGameAreaNode()}
         >
           {this.props.children}
         </Popover>

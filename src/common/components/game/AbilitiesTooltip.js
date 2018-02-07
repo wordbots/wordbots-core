@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { arrayOf, func, object, oneOfType } from 'prop-types';
 import Popover from 'react-popover';
 
+import { getGameAreaNode } from '../../util/browser';
+
 import ActivatedAbility from './ActivatedAbility';
 
 export default class AbilitiesTooltip extends Component {
@@ -53,6 +55,7 @@ export default class AbilitiesTooltip extends Component {
         body={this.tooltipBody}
         refreshIntervalMs={50}
         preferPlace="right"
+        appendTarget={getGameAreaNode()}
       >
         {this.props.children}
       </Popover>

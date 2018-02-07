@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { noop } from 'lodash';
 
+import { getGameAreaNode } from '../../util/browser';
 import Tooltip from '../Tooltip';
 
 export default class TutorialTooltip extends Component {
@@ -131,6 +132,7 @@ export default class TutorialTooltip extends Component {
           body={this.tooltipBody}
           refreshIntervalMs={50}
           place={this.props.place}
+          appendTarget={getGameAreaNode()}
         >
           {this.props.children}
         </Popover>

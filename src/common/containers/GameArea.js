@@ -374,6 +374,7 @@ export class GameArea extends Component {
     return (
       <div
         className="gameArea"
+        ref={(gameArea) => { this.gameArea = gameArea; }}
         style={
           screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
         }
@@ -426,7 +427,7 @@ export class GameArea extends Component {
                 marginTop: 10
               }}>
                 <SoundToggle />
-                <FullscreenToggle />
+                <FullscreenToggle gameArea={this.gameArea} />
               </div>
             </div>
             <div

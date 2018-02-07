@@ -2,6 +2,7 @@ export const START_PRACTICE = 'START_PRACTICE';
 export const AI_RESPONSE = 'AI_RESPONSE';
 export const START_TUTORIAL = 'START_TUTORIAL';
 export const TUTORIAL_STEP = 'TUTORIAL_STEP';
+export const START_SANDBOX = 'START_SANDBOX';
 export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
@@ -37,6 +38,12 @@ export function tutorialStep(back = false) {
   return {
     type: TUTORIAL_STEP,
     payload: { back }
+  };
+}
+
+export function startSandbox() {
+  return {
+    type: START_SANDBOX
   };
 }
 

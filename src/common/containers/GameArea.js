@@ -79,6 +79,7 @@ export function mapStateToProps(state) {
 
     gameOver: state.game.winner !== null,
     isTutorial: state.game.tutorial,
+    isSandbox: state.game.sandbox,
     isMyTurn: state.game.currentTurn === state.game.player,
     isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to && true,
 
@@ -143,8 +144,14 @@ export function mapDispatchToProps(dispatch) {
         socketActions.leave()
       ]);
     },
+    onStartTutorial: () => {
+      dispatch(gameActions.startTutorial());
+    },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
+    },
+    onStartSandbox: () => {
+      dispatch(gameActions.startSandbox());
     },
     onAIResponse: () => {
       dispatch(gameActions.aiResponse());
@@ -198,6 +205,7 @@ export class GameArea extends Component {
 
     gameOver: bool,
     isTutorial: bool,
+    isSandbox: bool,
     isMyTurn: bool,
     isSpectator: bool,
     isAttackHappening: bool,
@@ -218,7 +226,9 @@ export class GameArea extends Component {
     onPassTurn: func,
     onEndGame: func,
     onForfeit: func,
+    onStartTutorial: func,
     onTutorialStep: func,
+    onStartSandbox: func,
     onAIResponse: func,
     onSendChatMessage: func
   };
@@ -234,7 +244,13 @@ export class GameArea extends Component {
     super(props);
 
     if (!props.started) {
-      this.props.history.push('/play');
+      if (props.history.location.pathname.includes('/tutorial')) {
+        props.onStartTutorial();
+      } else if (props.history.location.pathname.includes('/sandbox')) {
+        props.onStartSandbox();
+      }  else {
+        props.history.push('/play');
+      }
     }
   }
 
@@ -387,7 +403,7 @@ export class GameArea extends Component {
           className="background"
           style={{
             position: 'relative',
-            marginRight: this.state.chatOpen ? 256 : 64,
+            marginRight: this.props.isSandbox ? 0 : (this.state.chatOpen ? 256 : 64),
             height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
             background: `url(${this.loadBackground()})`
           }}
@@ -416,7 +432,7 @@ export class GameArea extends Component {
                 player={this.props.player}
                 currentTurn={this.props.currentTurn}
                 gameOver={this.props.gameOver}
-                isTutorial={this.props.isTutorial}
+                isTutorial={this.props.isTutorial || this.props.isSandbox}
                 isMyTurn={this.props.isMyTurn}
                 isAttackHappening={this.props.isAttackHappening}
                 onPassTurn={this.props.onPassTurn} />
@@ -501,14 +517,14 @@ export class GameArea extends Component {
             onClick={this.handleClickEndGame} />
         </Paper>
 
-        <Chat
+        {!this.props.isSandbox && <Chat
           inGame
           fullscreen={screenfull.isFullscreen}
           open={this.state.chatOpen}
           toggleChat={this.toggleChat}
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
           messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />
+          onSendMessage={this.props.onSendChatMessage} />}
       </div>
     );
   }

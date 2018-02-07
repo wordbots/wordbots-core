@@ -41,6 +41,9 @@ export function handleAction(oldState, action) {
     case actions.START_PRACTICE:
       return g.startPractice(state, action.payload.deck);
 
+    case actions.START_SANDBOX:
+      return Object.assign(state, {sandbox: true, started: true});
+
     case actions.AI_RESPONSE:
       return g.aiResponse(state);
 

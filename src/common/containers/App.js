@@ -24,6 +24,7 @@ import Deck from './Deck';
 import Decks from './Decks';
 import Home from './Home';
 import Play from './Play';
+import GameArea from './GameArea';
 import About from './About';
 
 function mapStateToProps(state) {
@@ -131,6 +132,7 @@ class App extends Component {
               <Route path="/decks" component={Decks} />
               <Route path="/deck" component={Deck} />
               <Route path="/play" component={Play} />
+              <Route path="/sandbox" component={GameArea} />
               <Route path="/about" component={About} />
               <Route render={this.redirectToRoot} />
             </Switch>

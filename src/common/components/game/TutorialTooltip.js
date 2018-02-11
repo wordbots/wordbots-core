@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
-import Popover from 'react-popover';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { noop } from 'lodash';
 
-import { getGameAreaNode } from '../../util/browser';
+import Popover from '../Popover';
 import Tooltip from '../Tooltip';
 
 export default class TutorialTooltip extends Component {
@@ -126,13 +125,9 @@ export default class TutorialTooltip extends Component {
     if (this.step && this.props.enabled) {
       return (
         <Popover
-          isOpen
-          style={this.styles.container}
-          tipSize={15}
           body={this.tooltipBody}
-          refreshIntervalMs={50}
+          style={this.styles.container}
           place={this.props.place}
-          appendTarget={getGameAreaNode()}
         >
           {this.props.children}
         </Popover>

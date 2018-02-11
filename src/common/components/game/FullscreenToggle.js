@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { object } from 'prop-types';
+import { func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import screenfull from 'screenfull';
@@ -8,12 +8,12 @@ import Tooltip from '../Tooltip';
 
 export default class FullscreenToggle extends Component {
   static propTypes = {
-    gameArea: object
+    onClick: func
   }
 
   handleClick = () => {
+    this.props.onClick();
     this.forceUpdate();
-    screenfull.toggle(this.props.gameArea);
   }
 
   render() {

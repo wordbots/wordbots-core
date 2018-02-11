@@ -49,5 +49,5 @@ export function logIfFlagSet(flag, msg) {
 }
 
 export function getGameAreaNode() {
-  return document.getElementsByClassName('gameArea')[0] || document.body;
+  return document.getElementById('gameArea') || document.body;
 }

@@ -350,6 +350,10 @@ export class GameArea extends Component {
     this.props.onTutorialStep(true);
   }
 
+  handleToggleFullScreen = () => {
+    screenfull.toggle(this.gameArea);
+  }
+
   renderNotification() {
     const options = {
       tag: 'wordbots',
@@ -373,6 +377,7 @@ export class GameArea extends Component {
   render() {
     return (
       <div
+        id="gameArea"
         className="gameArea"
         ref={(gameArea) => { this.gameArea = gameArea; }}
         style={
@@ -410,7 +415,8 @@ export class GameArea extends Component {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginLeft: 20
+                marginLeft: 20,
+                zIndex: 9999
               }}
             >
               <Timer
@@ -427,7 +433,7 @@ export class GameArea extends Component {
                 marginTop: 10
               }}>
                 <SoundToggle />
-                <FullscreenToggle gameArea={this.gameArea} />
+                <FullscreenToggle onClick={this.handleToggleFullScreen} />
               </div>
             </div>
             <div
@@ -435,7 +441,8 @@ export class GameArea extends Component {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                marginRight: 20
+                marginRight: 20,
+                zIndex: 9999
               }}
             >
               <TutorialTooltip

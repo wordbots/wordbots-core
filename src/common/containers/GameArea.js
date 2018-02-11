@@ -28,6 +28,8 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
+import Play from './Play';
+
 function animate(fns) {
   if (fns.length > 0) {
     const [first, ...rest] = fns;
@@ -198,6 +200,7 @@ export class GameArea extends Component {
     sidebarOpen: bool,
 
     history: object,
+    location: object,
 
     gameOver: bool,
     isTutorial: bool,
@@ -237,11 +240,17 @@ export class GameArea extends Component {
   constructor(props) {
     super(props);
 
-    if (!props.started) {
-      if (props.history.location.pathname.includes('/tutorial')) {
-        props.onStartTutorial();
+    const { started, history, location, onStartTutorial } = props;
+
+    // If the game hasn't started yet, that means that the player got here
+    // by messing with the URL (rather than by clicking a button in the lobby).
+    // If the URL is '/play/tutorial', just start the tutorial.
+    // Otherwise, return to the lobby because we can't do anything else.
+    if (!started) {
+      if (location.pathname.startsWith(Play.urlForGameMode('tutorial'))) {
+        onStartTutorial();
       } else {
-        props.history.push('/play');
+        history.push(Play.urlForGameMode(null));
       }
     }
   }

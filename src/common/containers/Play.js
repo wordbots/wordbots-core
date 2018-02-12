@@ -77,6 +77,9 @@ export class Play extends Component {
     onSelectDeck: func
   };
 
+  static baseUrl = '/play';
+  static urlForGameMode = (mode) => `/${Play.baseUrl}/${mode}`;
+
   componentDidMount() {
     if (!this.props.socket.connected) {
       this.props.onConnect();
@@ -101,7 +104,7 @@ export class Play extends Component {
       this.props.onStartPractice(deck);
     }
 
-    this.props.history.push(`play/${mode}`);
+    this.props.history.push(Play.urlForGameMode(mode));
   }
 
   renderLobby = () => {
@@ -131,9 +134,9 @@ export class Play extends Component {
         <Helmet title="Play"/>
 
         <Switch>
-          <Route path="/play/tutorial" component={GameArea} />
-          <Route path="/play/practice" component={GameArea} />
-          <Route path="/play/casual" render={this.renderLobby} />
+          <Route path={Play.urlForGameMode('tutorial')} component={GameArea} />
+          <Route path={Play.urlForGameMode('practice')} component={GameArea} />
+          <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
           <Route render={this.renderLobby} />
         </Switch>
 

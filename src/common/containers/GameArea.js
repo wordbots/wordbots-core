@@ -28,6 +28,8 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
+import Play from './Play';
+
 function animate(fns) {
   if (fns.length > 0) {
     const [first, ...rest] = fns;
@@ -143,6 +145,9 @@ export function mapDispatchToProps(dispatch) {
         socketActions.leave()
       ]);
     },
+    onStartTutorial: () => {
+      dispatch(gameActions.startTutorial());
+    },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
     },
@@ -195,6 +200,7 @@ export class GameArea extends Component {
     sidebarOpen: bool,
 
     history: object,
+    location: object,
 
     gameOver: bool,
     isTutorial: bool,
@@ -218,6 +224,7 @@ export class GameArea extends Component {
     onPassTurn: func,
     onEndGame: func,
     onForfeit: func,
+    onStartTutorial: func,
     onTutorialStep: func,
     onAIResponse: func,
     onSendChatMessage: func
@@ -233,8 +240,18 @@ export class GameArea extends Component {
   constructor(props) {
     super(props);
 
-    if (!props.started) {
-      this.props.history.push('/play');
+    const { started, history, location, onStartTutorial } = props;
+
+    // If the game hasn't started yet, that means that the player got here
+    // by messing with the URL (rather than by clicking a button in the lobby).
+    // If the URL is '/play/tutorial', just start the tutorial.
+    // Otherwise, return to the lobby because we can't do anything else.
+    if (!started) {
+      if (location.pathname.startsWith(Play.urlForGameMode('tutorial'))) {
+        onStartTutorial();
+      } else {
+        history.push(Play.baseUrl);
+      }
     }
   }
 

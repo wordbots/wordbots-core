@@ -250,7 +250,7 @@ export class GameArea extends Component {
       if (location.pathname.startsWith(Play.urlForGameMode('tutorial'))) {
         onStartTutorial();
       } else {
-        history.push(Play.urlForGameMode(null));
+        history.push(Play.baseUrl);
       }
     }
   }

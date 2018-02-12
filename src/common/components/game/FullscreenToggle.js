@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import screenfull from 'screenfull';
@@ -7,15 +7,13 @@ import screenfull from 'screenfull';
 import Tooltip from '../Tooltip';
 
 export default class FullscreenToggle extends Component {
+  static propTypes = {
+    onClick: func
+  }
+
   handleClick = () => {
+    this.props.onClick();
     this.forceUpdate();
-
-    // TODO come up with a better approach ...
-    /* eslint-disable react/no-find-dom-node */
-    const gameArea = ReactDOM.findDOMNode(this).parentNode.parentNode.parentNode.parentNode.parentNode;
-    /* eslint-enable react/no-find-dom-node */
-
-    screenfull.toggle(gameArea);
   }
 
   render() {

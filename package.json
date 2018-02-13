@@ -99,7 +99,7 @@
     "eslint-plugin-no-loops": "^0.3.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.4.0",
-    "eslint-plugin-unicorn": "^3.0.1",
+    "eslint-plugin-unicorn": "^4.0.0",
     "expect": "22.0.6",
     "ignore-styles": "^5.0.1",
     "jest": "^22.0.6",

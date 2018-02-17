@@ -28,6 +28,8 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
+import Play from './Play';
+
 function animate(fns) {
   if (fns.length > 0) {
     const [first, ...rest] = fns;
@@ -203,6 +205,7 @@ export class GameArea extends Component {
     sidebarOpen: bool,
 
     history: object,
+    location: object,
 
     gameOver: bool,
     isTutorial: bool,
@@ -244,13 +247,19 @@ export class GameArea extends Component {
   constructor(props) {
     super(props);
 
-    if (!props.started) {
-      if (props.history.location.pathname.includes('/tutorial')) {
-        props.onStartTutorial();
-      } else if (props.history.location.pathname.includes('/sandbox')) {
-        props.onStartSandbox();
-      }  else {
-        props.history.push('/play');
+    const { started, history, location, onStartTutorial, onStartSandbox } = props;
+
+    // If the game hasn't started yet, that means that the player got here
+    // by messing with the URL (rather than by clicking a button in the lobby).
+    // If the URL is '/play/tutorial', just start the tutorial.
+    // Otherwise, return to the lobby because we can't do anything else.
+    if (!started) {
+      if (location.pathname.startsWith(Play.urlForGameMode('tutorial'))) {
+        onStartTutorial();
+      } else if (location.pathname.startsWith('/sandbox')) {
+        onStartSandbox();
+      } else {
+        history.push(Play.baseUrl);
       }
     }
   }
@@ -367,6 +376,10 @@ export class GameArea extends Component {
     this.props.onTutorialStep(true);
   }
 
+  handleToggleFullScreen = () => {
+    screenfull.toggle(this.gameArea);
+  }
+
   renderNotification() {
     const options = {
       tag: 'wordbots',
@@ -390,7 +403,9 @@ export class GameArea extends Component {
   render() {
     return (
       <div
+        id="gameArea"
         className="gameArea"
+        ref={(gameArea) => { this.gameArea = gameArea; }}
         style={
           screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
         }
@@ -426,7 +441,8 @@ export class GameArea extends Component {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginLeft: 20
+                marginLeft: 20,
+                zIndex: 9999
               }}
             >
               <Timer
@@ -443,7 +459,7 @@ export class GameArea extends Component {
                 marginTop: 10
               }}>
                 <SoundToggle />
-                <FullscreenToggle />
+                <FullscreenToggle onClick={this.handleToggleFullScreen} />
               </div>
             </div>
             <div
@@ -451,7 +467,8 @@ export class GameArea extends Component {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                marginRight: 20
+                marginRight: 20,
+                zIndex: 9999
               }}
             >
               <TutorialTooltip

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, object, oneOfType } from 'prop-types';
-import Popover from 'react-popover';
 import ReactTooltip from 'react-tooltip';
 
 import { id } from '../../util/common';
+import Popover from '../Popover';
 
 import Card from './Card';
 
@@ -24,11 +24,10 @@ export default class CardTooltip extends Component {
       return (
         <Popover
           isOpen={this.props.isOpen}
-          style={{zIndex: 99999}}
-          tipSize={0.01}
           body={Card.fromObj(this.props.card)}
-          refreshIntervalMs={50}
+          style={{zIndex: 99999}}
           place="above"
+          showTip={false}
         >
           {this.props.children}
         </Popover>

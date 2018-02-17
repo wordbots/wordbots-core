@@ -47,3 +47,7 @@ export function logIfFlagSet(flag, msg) {
     /* eslint-enable no-console */
   }
 }
+
+export function getGameAreaNode() {
+  return document.getElementById('gameArea') || document.body;
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { arrayOf, func, object, oneOfType } from 'prop-types';
-import Popover from 'react-popover';
+
+import Popover from '../Popover';
 
 import ActivatedAbility from './ActivatedAbility';
 
@@ -47,11 +48,8 @@ export default class AbilitiesTooltip extends Component {
   render() {
     return (
       <Popover
-        isOpen
         style={this.styles.container}
-        tipSize={15}
         body={this.tooltipBody}
-        refreshIntervalMs={50}
         preferPlace="right"
       >
         {this.props.children}

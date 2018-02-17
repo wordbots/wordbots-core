@@ -14,6 +14,7 @@ export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
+export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
 
 export function startPractice(deck) {
   return {
@@ -120,3 +121,12 @@ export function deselect(player) {
     payload: { player }
   };
 }
+
+export function addCardToTopOfDeck(player, card) {
+  return {
+    type: ADD_CARD_TO_TOP_OF_DECK,
+    payload: { player, card }
+  };
+}
+
+

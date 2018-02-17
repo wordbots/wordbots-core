@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router';
+import { Redirect, Route, Switch, withRouter } from 'react-router';
 
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
@@ -77,7 +77,7 @@ export class Play extends Component {
     onSelectDeck: func
   };
 
-  static baseUrl = 'play';
+  static baseUrl = '/play';
   static urlForGameMode = (mode) => `${Play.baseUrl}/${mode}`;
 
   componentDidMount() {
@@ -137,7 +137,8 @@ export class Play extends Component {
           <Route path={Play.urlForGameMode('tutorial')} component={GameArea} />
           <Route path={Play.urlForGameMode('practice')} component={GameArea} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
-          <Route render={this.renderLobby} />
+          <Route path={Play.baseUrl} render={this.renderLobby} />
+          <Redirect to={Play.baseUrl} />
         </Switch>
 
         {this.rightMenu}

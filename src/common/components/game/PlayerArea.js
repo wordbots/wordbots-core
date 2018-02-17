@@ -104,7 +104,7 @@ export default class PlayerArea extends Component {
             onTouchTap={this.handleOpenDiscardPile}
             style={this.styles.discard}
             disabled={gameProps[`${color}DiscardPile`].length === 0}/>
-          <Deck deck={gameProps[`${color}Deck`]} />
+          <Deck deck={gameProps[`${color}Deck`]} reveal={gameProps.isSandbox} />
         </div>
 
         <Dialog

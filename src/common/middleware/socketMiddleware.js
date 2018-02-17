@@ -3,6 +3,8 @@ import { logIfFlagSet } from '../util/browser';
 import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
 
+/* eslint-disable unicorn/prefer-add-event-listener */
+
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
 function createSocketMiddleware({excludedActions = []}) {

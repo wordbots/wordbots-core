@@ -77,8 +77,8 @@ export class Play extends Component {
     onSelectDeck: func
   };
 
-  static baseUrl = '/play';
-  static urlForGameMode = (mode) => `/${Play.baseUrl}/${mode}`;
+  static baseUrl = 'play';
+  static urlForGameMode = (mode) => `${Play.baseUrl}/${mode}`;
 
   componentDidMount() {
     if (!this.props.socket.connected) {

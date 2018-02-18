@@ -1,5 +1,6 @@
 ---
-engines:
+version: "2"
+plugins:
   csslint:
     enabled: true
   duplication:
@@ -14,13 +15,7 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
-ratings:
-  paths:
-  - "**.css"
-  - "**.js"
-  - "**.jsx"
-  - "**.md"
-exclude_paths:
+exclude_patterns:
   - test/
   - src/common/components/img/
   # The following are by-and-large not our own code, so it's not worth analyzing them:

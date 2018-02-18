@@ -1,5 +1,12 @@
 ---
 version: "2"
+checks:
+  similar-code:
+    config:
+      threshold: 50
+  identical-code:
+    config:
+      threshold: 50
 plugins:
   csslint:
     enabled: true

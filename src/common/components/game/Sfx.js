@@ -4,6 +4,7 @@ import { arrayOf, string } from 'prop-types';
 import { inBrowser, isFlagSet } from '../../util/browser';
 
 const Sound = inBrowser() ? require('react-sound').default : null;
+const soundManager = inBrowser() ? require('soundmanager2').soundManager : null;
 
 export default class Sfx extends Component {
   static propTypes = {
@@ -26,11 +27,19 @@ export default class Sfx extends Component {
     return this.props.queue[this.state.idx];
   }
 
+  disableDebugMode = () => {
+    if (soundManager && soundManager.debugMode) {
+      soundManager.setup({ debugMode: false });
+    }
+  };
+
   proceedToNextSound = () => {
-    this.setState(state => ({idx: state.idx + 1}));
-  }
+    this.setState(state => ({ idx: state.idx + 1 }));
+  };
 
   render() {
+    this.disableDebugMode();
+
     if (this.enabled && this.currentSound) {
       return (
         <Sound

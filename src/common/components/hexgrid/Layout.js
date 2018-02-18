@@ -34,6 +34,7 @@ class Layout {
     const corners = [];
     const center = new Point(0, 0);
 
+    // eslint-disable-next-line unicorn/prefer-spread
     Array.from(new Array(6), (x, i) => {
       const offset = this.getPointOffset(i);
       const point = new Point(center.x + offset.x, center.y + offset.y);

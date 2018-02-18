@@ -272,7 +272,7 @@ export class GameArea extends Component {
 
   componentDidMount() {
     this.updateDimensions();
-    window.onresize = () => { this.updateDimensions(); };
+    window.addEventListener('resize', () => { this.updateDimensions(); });
 
     this.interval = setInterval(() => {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {

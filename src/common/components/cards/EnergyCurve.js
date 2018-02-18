@@ -14,20 +14,16 @@ export default class EnergyCurve extends Component {
     height: 130
   }
 
-	constructor(props) {
-    super(props);
-
-    this.state = {
-      width: 200
-    };
-  }
+  state = {
+    width: 200
+  };
 
   componentDidMount() {
     this.updateWidth();
 
-    window.onresize = () => {
+    window.addEventListener('resize', () => {
       this.updateWidth();
-    };
+    });
   }
 
   updateWidth() {

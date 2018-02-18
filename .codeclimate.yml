@@ -3,14 +3,6 @@ version: "2"
 plugins:
   csslint:
     enabled: true
-  duplication:
-    enabled: true
-    config:
-      languages:
-        javascript:
-          mass_threshold: 50
-    exclude_paths:
-      - "src/common/store/cards.js"  # We don't care about duplicates in store/cards.js.
   fixme:
     enabled: true
   markdownlint:
@@ -18,6 +10,7 @@ plugins:
 exclude_patterns:
   - test/
   - src/common/components/img/
+  - src/common/store/coreSet/
   # The following are by-and-large not our own code, so it's not worth analyzing them:
   - src/common/components/Sprite.js
   - styles/lib.css

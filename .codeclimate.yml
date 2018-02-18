@@ -1,6 +1,9 @@
 ---
 version: "2"
 checks:
+  method-complexity:
+    config:
+      threshold: 20
   similar-code:
     config:
       threshold: 50

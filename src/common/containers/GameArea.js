@@ -288,17 +288,7 @@ export class GameArea extends Component {
   }
 
   tryToStartGame(props = this.props) {
-    const {
-      collection: { cards, decks, firebaseLoaded },
-      started,
-
-      onStartTutorial,
-      onStartPractice,
-
-      history,
-      location: { pathname },
-      match
-    } = props;
+    const { collection, started, onStartTutorial, onStartPractice } = props;
 
     // If the game hasn't started yet, that means that the player got here
     // by messing with the URL (rather than by clicking a button in the lobby).
@@ -306,9 +296,12 @@ export class GameArea extends Component {
     // start the corresponding game mode.
     // Otherwise, just return to the lobby.
     if (!started) {
+      const { history, location: { pathname }, match } = props;
+
       if (pathname.startsWith(Play.urlForGameMode('tutorial'))) {
         onStartTutorial();
       } else if (pathname.startsWith(Play.urlForGameMode('practice'))) {
+        const { cards, decks, firebaseLoaded } = collection;
         // Decks are stored in Firebase, so we have to wait until
         // we receive data from Firebase before we can start a practice game.
         if (firebaseLoaded) {

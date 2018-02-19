@@ -12,6 +12,7 @@ import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 import * as actions from '../../src/common/actions/game';
 import gameReducer from '../../src/common/reducers/game';
+import * as cards from '../../src/common/store/cards';
 
 describe('GameArea container', () => {
   it('renders the default game state', () => {
@@ -121,5 +122,63 @@ describe('GameArea container', () => {
     );
 
     // TODO attack.
+  });
+
+  it('should start tutorial mode on page load if the URL is /play/tutorial', () => {
+    const dispatchedActions = [];
+    const state = combineState({...getDefaultState(), started: false});
+
+    function dispatch(action) {
+      dispatchedActions.push(action);
+    }
+
+    const game = createGameArea(state, dispatch, { location: { pathname: '/play/tutorial' }});
+    renderElement(game, true);
+
+    expect(dispatchedActions.pop()).toEqual(
+      actions.startTutorial()
+    );
+  });
+
+  it('should start practice mode on page load if the URL is /play/practice/[deckId]', () => {
+    const dispatchedActions = [];
+    const state = combineState({...getDefaultState(), started: false});
+    const historyParams = {
+      location: { pathname: '/play/practice/deckId' },
+      match: { params: { deck: 'deckId' } },
+      history: { push: (url) => dispatchedActions.push({ type: 'HISTORY.PUSH', payload: { url } }) }
+    };
+
+    function dispatch(action) {
+      dispatchedActions.push(action);
+    }
+
+    // If collection.firebaseLoaded = false, do nothing.
+    let game = createGameArea(state, dispatch, {...historyParams, collection: {
+      firebaseLoaded: false
+    }});
+    renderElement(game, true);
+    expect(dispatchedActions.length).toEqual(0);
+
+    // If collection.firebaseLoaded = true but the deck doesn't exist, redirect to /play.
+    game = createGameArea(state, dispatch, {...historyParams, collection: {
+      firebaseLoaded: true,
+      decks: []
+    }});
+    renderElement(game, true);
+    expect(dispatchedActions.pop()).toEqual(
+      { type: 'HISTORY.PUSH', payload: { url: '/play' } }
+    );
+
+    // If collection.firebaseLoaded = true and the deck exists, start a practice game with that deck.
+    game = createGameArea(state, dispatch, {...historyParams, collection: {
+      firebaseLoaded: true,
+      cards: state.collection.cards,
+      decks: [{ id: 'deckId', cardIds: ['builtin/One Bot', 'builtin/Two Bot'] }]
+    }});
+    renderElement(game, true);
+    const action = dispatchedActions.pop();
+    expect(action.type).toEqual(actions.START_PRACTICE);
+    expect(action.payload.deck.map(c => c.name).sort()).toEqual(['One Bot', 'Two Bot']);
   });
 });

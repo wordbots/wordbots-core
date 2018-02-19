@@ -22,8 +22,8 @@ export function renderElement(elt, deep = false) {
 
 /* eslint-disable react/no-multi-comp */
 
-export function createGameArea(state, dispatch = noop) {
-  return React.createElement(gameArea.GameArea, Object.assign(gameArea.mapStateToProps(state), gameArea.mapDispatchToProps(dispatch)));
+export function createGameArea(state, dispatch = noop, props = {}) {
+  return React.createElement(gameArea.GameArea, {...gameArea.mapStateToProps(state), ...gameArea.mapDispatchToProps(dispatch), ...props});
 }
 
 function createCreator(state, dispatch = noop) {

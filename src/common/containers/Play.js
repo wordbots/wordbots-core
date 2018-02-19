@@ -7,7 +7,6 @@ import { Redirect, Route, Switch, withRouter } from 'react-router';
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
 import * as collectionActions from '../actions/collection';
-import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 
 import GameArea from './GameArea';
@@ -40,12 +39,6 @@ export function mapDispatchToProps(dispatch) {
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
-    onStartPractice: (deck) => {
-      dispatch(gameActions.startPractice(deck));
-    },
-    onStartTutorial: () => {
-      dispatch(gameActions.startTutorial());
-    },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
     },
@@ -71,14 +64,13 @@ export class Play extends Component {
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onStartTutorial: func,
-    onStartPractice: func,
     onSendChatMessage: func,
     onSelectDeck: func
   };
 
   static baseUrl = '/play';
-  static urlForGameMode = (mode) => `${Play.baseUrl}/${mode}`;
+  static urlForGameMode = (mode, deck = null) =>
+    deck ? `${Play.baseUrl}/${mode}/${deck.id}` : `${Play.baseUrl}/${mode}`;
 
   componentDidMount() {
     if (!this.props.socket.connected) {
@@ -98,13 +90,7 @@ export class Play extends Component {
   }
 
   selectMode = (mode, deck) => {
-    if (mode === 'tutorial') {
-      this.props.onStartTutorial();
-    } else if (mode === 'practice') {
-      this.props.onStartPractice(deck);
-    }
-
-    this.props.history.push(Play.urlForGameMode(mode));
+    this.props.history.push(Play.urlForGameMode(mode, deck));
   }
 
   renderLobby = () => {
@@ -135,7 +121,7 @@ export class Play extends Component {
 
         <Switch>
           <Route path={Play.urlForGameMode('tutorial')} component={GameArea} />
-          <Route path={Play.urlForGameMode('practice')} component={GameArea} />
+          <Route path={`${Play.urlForGameMode('practice')}/:deck`} component={GameArea} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
           <Route path={Play.baseUrl} render={this.renderLobby} />
           <Redirect to={Play.baseUrl} />

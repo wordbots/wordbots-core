@@ -287,8 +287,11 @@ export class GameArea extends Component {
     return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  tryToStartGame(props = this.props) {
-    const { collection, started, onStartTutorial, onStartPractice } = props;
+  urlMatchesGameMode = mode => this.props.location.pathname.startsWith(Play.urlForGameMode(mode));
+
+  /* Try to start a game (based on the URL) if it hasn't started yet. */
+  tryToStartGame = (props = this.props) => {
+    const { collection, started, onStartTutorial, history, match } = props;
 
     // If the game hasn't started yet, that means that the player got here
     // by messing with the URL (rather than by clicking a button in the lobby).
@@ -296,31 +299,35 @@ export class GameArea extends Component {
     // start the corresponding game mode.
     // Otherwise, just return to the lobby.
     if (!started) {
-      const { history, location: { pathname }, match } = props;
-
-      if (pathname.startsWith(Play.urlForGameMode('tutorial'))) {
+      if (this.urlMatchesGameMode('tutorial')) {
         onStartTutorial();
-      } else if (pathname.startsWith(Play.urlForGameMode('practice'))) {
-        const { cards, decks, firebaseLoaded } = collection;
-        // Decks are stored in Firebase, so we have to wait until
-        // we receive data from Firebase before we can start a practice game.
-        if (firebaseLoaded) {
-          this.setState({ message: null }, () => {
-            const deck = decks.find(d => d.id === match.params.deck);
-            if (deck) {
-              onStartPractice(shuffleCardsInDeck(deck, cards));
-            } else {
-              history.push(Play.baseUrl);
-            }
-          });
-        } else {
-          this.setState({ message: 'Connecting ...' });
-        }
+      } else if (this.urlMatchesGameMode('practice')) {
+        this.tryToStartPracticeGame(match.params.deck, collection);
       } else {
         history.push(Play.baseUrl);
       }
     }
-  }
+  };
+
+  /* Try to start a practice game from the URL, pending Firebase loading. */
+  tryToStartPracticeGame = (deckId, collection) => {
+    const { history, onStartPractice } = this.props;
+    const { cards, decks, firebaseLoaded } = collection;
+
+    // Decks are stored in Firebase, so we have to wait until
+    // we receive data from Firebase before we can try to start a practice game.
+    if (firebaseLoaded) {
+      const deck = decks.find(d => d.id === deckId);
+      if (deck) {
+        onStartPractice(shuffleCardsInDeck(deck, cards));
+      } else {
+        history.push(Play.baseUrl);
+      }
+    }
+
+    // If we're still waiting on Firebase, render a message.
+    this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
+  };
 
   updateDimensions = (props = this.props) => {
     const maxBoardHeight = window.innerHeight - 64 - 150;

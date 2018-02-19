@@ -265,9 +265,9 @@ export class GameArea extends Component {
     }, AI_RESPONSE_TIME_MS);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.collection.firebaseLoaded !== this.props.collection.firebaseLoaded) {
-      this.tryToStartGame(nextProps);
+  componentDidUpdate(prevProps) {
+    if (this.props.collection.firebaseLoaded !== prevProps.collection.firebaseLoaded) {
+      this.tryToStartGame();
     }
   }
 
@@ -290,8 +290,8 @@ export class GameArea extends Component {
   urlMatchesGameMode = mode => this.props.location.pathname.startsWith(Play.urlForGameMode(mode));
 
   /* Try to start a game (based on the URL) if it hasn't started yet. */
-  tryToStartGame = (props = this.props) => {
-    const { collection, started, onStartTutorial, history, match } = props;
+  tryToStartGame = () => {
+    const { started, onStartTutorial, history, match } = this.props;
 
     // If the game hasn't started yet, that means that the player got here
     // by messing with the URL (rather than by clicking a button in the lobby).
@@ -302,7 +302,7 @@ export class GameArea extends Component {
       if (this.urlMatchesGameMode('tutorial')) {
         onStartTutorial();
       } else if (this.urlMatchesGameMode('practice')) {
-        this.tryToStartPracticeGame(match.params.deck, collection);
+        this.tryToStartPracticeGame(match.params.deck);
       } else {
         history.push(Play.baseUrl);
       }
@@ -310,9 +310,8 @@ export class GameArea extends Component {
   };
 
   /* Try to start a practice game from the URL, pending Firebase loading. */
-  tryToStartPracticeGame = (deckId, collection) => {
-    const { history, onStartPractice } = this.props;
-    const { cards, decks, firebaseLoaded } = collection;
+  tryToStartPracticeGame = (deckId) => {
+    const { history, onStartPractice, collection: { cards, decks, firebaseLoaded } } = this.props;
 
     // Decks are stored in Firebase, so we have to wait until
     // we receive data from Firebase before we can try to start a practice game.
@@ -329,7 +328,7 @@ export class GameArea extends Component {
     this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
   };
 
-  updateDimensions = (props = this.props) => {
+  updateDimensions = () => {
     const maxBoardHeight = window.innerHeight - 64 - 150;
     const maxBoardWidth = window.innerWidth - 256;
 

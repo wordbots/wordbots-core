@@ -249,10 +249,10 @@ export class GameArea extends Component {
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
   componentDidMount() {
+    this.tryToStartGame();
+
     this.updateDimensions();
     window.addEventListener('resize', () => { this.updateDimensions(); });
-
-    this.tryToStartGame();
 
     this.interval = setInterval(() => {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {

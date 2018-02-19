@@ -123,7 +123,7 @@ export class Play extends Component {
           <Route path={Play.urlForGameMode('tutorial')} component={GameArea} />
           <Route path={`${Play.urlForGameMode('practice')}/:deck`} component={GameArea} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
-          <Route path={Play.baseUrl} render={this.renderLobby} />
+          <Route exact path={Play.baseUrl} render={this.renderLobby} />
           <Redirect to={Play.baseUrl} />
         </Switch>
 

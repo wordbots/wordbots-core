@@ -147,6 +147,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
+/* GameAreaContainer handles all dispatch and routing logic for the GameArea component. */
 export class GameAreaContainer extends Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {

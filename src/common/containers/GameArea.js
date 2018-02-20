@@ -1,30 +1,14 @@
 import React, { Component } from 'react';
-import { arrayOf, bool, func, number, object, string } from 'prop-types';
+import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Notification from 'react-web-notification';
-import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import screenfull from 'screenfull';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
-import { inBrowser } from '../util/browser';
 import { shuffleCardsInDeck } from '../util/cards';
 import { currentTutorialStep } from '../util/game';
-import Board from '../components/game/Board';
-import Timer from '../components/game/Timer';
-import EndTurnButton from '../components/game/EndTurnButton';
-import ForfeitButton from '../components/game/ForfeitButton';
-import SoundToggle from '../components/game/SoundToggle';
-import FullscreenToggle from '../components/game/FullscreenToggle';
-import PlayerArea from '../components/game/PlayerArea';
-import Status from '../components/game/Status';
-import Sfx from '../components/game/Sfx';
-import EventAnimation from '../components/game/EventAnimation';
-import VictoryScreen from '../components/game/VictoryScreen';
-import TutorialTooltip from '../components/game/TutorialTooltip';
-import Chat from '../components/multiplayer/Chat';
+import GameArea, { gameProps } from '../components/game/GameArea';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
@@ -163,56 +147,10 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class GameArea extends Component {
+export class GameAreaContainer extends Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
-    started: bool,
-    player: string,
-    currentTurn: string,
-    usernames: object,
-    winner: string,
-
-    selectedTile: string,
-    selectedCard: number,
-    playingCardType: number,
-
-    status: object,
-    target: object,
-    attack: object,
-
-    blueHand: arrayOf(object),
-    orangeHand: arrayOf(object),
-
-    bluePieces: object,
-    orangePieces: object,
-
-    blueEnergy: object,
-    orangeEnergy: object,
-
-    blueDeck: arrayOf(object),
-    orangeDeck: arrayOf(object),
-
-    blueDiscardPile: arrayOf(object),
-    orangeDiscardPile: arrayOf(object),
-
-    eventQueue: arrayOf(object),
-    sfxQueue: arrayOf(string),
-    tutorialStep: object,
-    isPractice: bool,
-
-    history: object,
-    location: object,
-    match: object,
-
-    gameOver: bool,
-    isTutorial: bool,
-    isMyTurn: bool,
-    isSpectator: bool,
-    isAttackHappening: bool,
-
-    actionLog: arrayOf(object),
-    collection: object,
-    socket: object,
+    ...gameProps,
 
     onMoveRobot: func,
     onAttackRobot: func,
@@ -236,8 +174,6 @@ export class GameArea extends Component {
   /* eslint-enable react/no-unused-prop-types */
 
   state = {
-    areaHeight: 1250,
-    boardSize: 1000,
     chatOpen: true,
     message: null
   };
@@ -250,9 +186,6 @@ export class GameArea extends Component {
 
   componentDidMount() {
     this.tryToStartGame();
-
-    this.updateDimensions();
-    window.addEventListener('resize', () => { this.updateDimensions(); });
 
     this.interval = setInterval(() => {
       if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
@@ -328,16 +261,6 @@ export class GameArea extends Component {
     this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
   };
 
-  updateDimensions = () => {
-    const maxBoardHeight = window.innerHeight - 64 - 150;
-    const maxBoardWidth = window.innerWidth - 256;
-
-    this.setState({
-      areaHeight: window.innerHeight - 64,
-      boardSize: Math.min(maxBoardWidth, maxBoardHeight)
-    });
-  }
-
   toggleChat = () => {
     this.setState(state => ({ chatOpen: !state.chatOpen }));
   }
@@ -372,10 +295,6 @@ export class GameArea extends Component {
     }
   }
 
-  loadBackground() {
-    return inBrowser() ? require('../components/img/black_bg_lodyas.png') : '';
-  }
-
   handleClickGameArea = evt => {
     const { className } = evt.target;
     const { baseVal } = className;
@@ -397,197 +316,21 @@ export class GameArea extends Component {
     this.props.onTutorialStep(true);
   }
 
-  handleToggleFullScreen = () => {
-    screenfull.toggle(this.gameArea);
-  }
+  render = () =>
+    <GameArea
+      {...this.props}
+      {...this.state}
 
-  renderNotification() {
-    const options = {
-      tag: 'wordbots',
-      icon: '/static/icons/android-icon-144x144.png',
-      lang: 'en',
-      dir: 'ltr',
-      timestamp: Math.floor(Date.now())
-    };
-
-    if (this.props.currentTurn === this.props.player) {
-      return (
-        <Notification
-          timeout={2000}
-          title="Wordbots."
-          options={{...options, body: 'It\'s your turn!'}}
-          onClick={window.focus} />
-      );
-    }
-  }
-
-  render() {
-    if (this.state.message) {
-      return (
-        <div style={{
-          position: 'absolute',
-          left: 0,
-          width: '100%',
-          height: this.state.areaHeight,
-          zIndex: 9999,
-          background: `url(${this.loadBackground()})`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'Carter One',
-          fontSize: 26,
-          color: 'white'
-        }}>
-          {this.state.message}
-        </div>
-      );
-    }
-
-    return (
-      <div
-        id="gameArea"
-        className="gameArea"
-        ref={(gameArea) => { this.gameArea = gameArea; }}
-        style={
-          screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
-        }
-      >
-        <div>
-          {this.renderNotification()}
-          <Sfx queue={this.props.sfxQueue} />
-        </div>
-
-        <Paper
-          className="background"
-          style={{
-            position: 'relative',
-            marginRight: this.state.chatOpen ? 256 : 64,
-            height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
-            background: `url(${this.loadBackground()})`
-          }}
-          onClick={this.handleClickGameArea}
-        >
-          <div
-            className="background"
-            style={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <div
-              className="background"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 20,
-                zIndex: 9999
-              }}
-            >
-              <Timer
-                player={this.props.player}
-                currentTurn={this.props.currentTurn}
-                gameOver={this.props.gameOver}
-                isTutorial={this.props.isTutorial}
-                isMyTurn={this.props.isMyTurn}
-                isAttackHappening={this.props.isAttackHappening}
-                onPassTurn={this.props.onPassTurn} />
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                marginTop: 10
-              }}>
-                <SoundToggle />
-                <FullscreenToggle onClick={this.handleToggleFullScreen} />
-              </div>
-            </div>
-            <div
-              className="background"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginRight: 20,
-                zIndex: 9999
-              }}
-            >
-              <TutorialTooltip
-                tutorialStep={this.props.tutorialStep}
-                enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
-                top={0}
-                place="left"
-                onNextStep={this.handleNextTutorialStep}
-                onPrevStep={this.handlePrevTutorialStep}
-              >
-                <EndTurnButton
-                  player={this.props.player}
-                  gameOver={this.props.gameOver}
-                  isMyTurn={this.props.isMyTurn}
-                  isAttackHappening={this.props.isAttackHappening}
-                  onPassTurn={this.props.onPassTurn} />
-              </TutorialTooltip>
-              <ForfeitButton
-                player={this.props.player}
-                history={this.props.history}
-                gameOver={this.props.gameOver}
-                isSpectator={this.props.isSpectator}
-                isTutorial={this.props.isTutorial}
-                onForfeit={this.props.onForfeit} />
-            </div>
-          </div>
-          <PlayerArea opponent gameProps={this.props} />
-          <div
-            className="background"
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 75,
-              bottom: 75,
-              right: 0,
-              margin: '0 auto',
-              zIndex: 999,
-              width: this.state.boardSize
-            }}
-          >
-            <Status status={this.isMyTurn() ? this.props.status : {}} />
-            <Board
-              size={this.state.boardSize}
-              player={this.props.player}
-              currentTurn={this.props.currentTurn}
-              selectedTile={this.props.selectedTile}
-              target={this.props.target}
-              bluePieces={this.props.bluePieces}
-              orangePieces={this.props.orangePieces}
-              playingCardType={this.props.playingCardType}
-              tutorialStep={this.props.tutorialStep}
-              attack={this.props.attack}
-              isGameOver={!!this.props.winner}
-              onSelectTile={this.onSelectTile}
-              onActivateAbility={this.props.onActivateObject}
-              onTutorialStep={this.props.onTutorialStep}
-              onEndGame={this.handleClickEndGame} />
-          </div>
-          <PlayerArea gameProps={this.props} />
-          <EventAnimation eventQueue={this.props.eventQueue} currentTurn={this.props.currentTurn} />
-          <VictoryScreen
-            winnerColor={this.props.winner}
-            winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.handleClickEndGame} />
-        </Paper>
-
-        <Chat
-          inGame
-          fullscreen={screenfull.isFullscreen}
-          open={this.state.chatOpen}
-          toggleChat={this.toggleChat}
-          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />
-      </div>
-    );
-  }
+      onPassTurn={this.props.onPassTurn}
+      onForfeit={this.props.onForfeit}
+      onTutorialStep={this.props.onTutorialStep}
+      onSendChatMessage={this.props.onSendChatMessage}
+      onActivateObject={this.handleActivateObject}
+      onClickGameArea={this.handleClickGameArea}
+      onClickEndGame={this.handleClickEndGame}
+      onNextTutorialStep={this.handleNextTutorialStep}
+      onPrevTutorialStep={this.handlePrevTutorialStep}
+      onSelectTile={this.onSelectTile} />;
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GameArea));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GameAreaContainer));

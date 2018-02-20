@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
-import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
 import screenfull from 'screenfull';
 
@@ -8,17 +7,19 @@ import Chat from '../multiplayer/Chat';
 import { inBrowser } from '../../util/browser';
 
 import Board from './Board';
-import Timer from './Timer';
 import EndTurnButton from './EndTurnButton';
-import ForfeitButton from './ForfeitButton';
-import SoundToggle from './SoundToggle';
-import FullscreenToggle from './FullscreenToggle';
-import PlayerArea from './PlayerArea';
-import Status from './Status';
-import Sfx from './Sfx';
 import EventAnimation from './EventAnimation';
-import VictoryScreen from './VictoryScreen';
+import ForfeitButton from './ForfeitButton';
+import FullscreenMessage from './FullscreenMessage';
+import FullscreenToggle from './FullscreenToggle';
+import GameNotification from './GameNotification';
+import PlayerArea from './PlayerArea';
+import Sfx from './Sfx';
+import SoundToggle from './SoundToggle';
+import Status from './Status';
+import Timer from './Timer';
 import TutorialTooltip from './TutorialTooltip';
+import VictoryScreen from './VictoryScreen';
 
 /* Props shared by GameArea and GameAreaContainer. */
 export const gameProps = {
@@ -118,46 +119,9 @@ export default class GameArea extends Component {
     });
   };
 
-  renderNotification() {
-    const options = {
-      tag: 'wordbots',
-      icon: '/static/icons/android-icon-144x144.png',
-      lang: 'en',
-      dir: 'ltr',
-      timestamp: Math.floor(Date.now())
-    };
-
-    if (this.props.currentTurn === this.props.player) {
-      return (
-        <Notification
-          timeout={2000}
-          title="Wordbots."
-          options={{...options, body: 'It\'s your turn!'}}
-          onClick={window.focus} />
-      );
-    }
-  }
-
   render() {
     if (this.props.message) {
-      return (
-        <div style={{
-          position: 'absolute',
-          left: 0,
-          width: '100%',
-          height: this.state.areaHeight,
-          zIndex: 9999,
-          background: `url(${this.loadBackground()})`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'Carter One',
-          fontSize: 26,
-          color: 'white'
-        }}>
-          {this.props.message}
-        </div>
-      );
+      return <FullscreenMessage message={this.props.message} height={this.state.areaHeight} />;
     }
 
     return (
@@ -170,7 +134,7 @@ export default class GameArea extends Component {
         }
       >
         <div>
-          {this.renderNotification()}
+          <GameNotification text="It's your turn!" enabled={this.props.currentTurn === this.props.player} />
           <Sfx queue={this.props.sfxQueue} />
         </div>
 

@@ -120,8 +120,17 @@ export default class GameArea extends Component {
   };
 
   render() {
-    if (this.props.message) {
-      return <FullscreenMessage message={this.props.message} height={this.state.areaHeight} />;
+    const {
+      actionLog, attack, bluePieces, chatOpen, currentTurn, eventQueue, gameOver, isAttackHappening,
+      isMyTurn, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
+      selectedTile, sfxQueue, socket, target, tutorialStep, usernames, winner,
+      onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
+      onPassTurn, onPrevTutorialStep, onSelectTile, onSendChatMessage, onTutorialStep
+    } = this.props;
+    const { areaHeight, boardSize } = this.state;
+
+    if (message) {
+      return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
     }
 
     return (
@@ -134,19 +143,19 @@ export default class GameArea extends Component {
         }
       >
         <div>
-          <GameNotification text="It's your turn!" enabled={this.props.currentTurn === this.props.player} />
-          <Sfx queue={this.props.sfxQueue} />
+          <GameNotification text="It's your turn!" enabled={currentTurn === player} />
+          <Sfx queue={sfxQueue} />
         </div>
 
         <Paper
           className="background"
           style={{
             position: 'relative',
-            marginRight: this.props.chatOpen ? 256 : 64,
-            height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
+            marginRight: chatOpen ? 256 : 64,
+            height: screenfull.isFullscreen ? areaHeight + 64 : areaHeight,
             background: `url(${this.loadBackground()})`
           }}
-          onClick={this.props.onClickGameArea}
+          onClick={onClickGameArea}
         >
           <div
             className="background"
@@ -169,13 +178,13 @@ export default class GameArea extends Component {
               }}
             >
               <Timer
-                player={this.props.player}
-                currentTurn={this.props.currentTurn}
-                gameOver={this.props.gameOver}
-                isTutorial={this.props.isTutorial}
-                isMyTurn={this.props.isMyTurn}
-                isAttackHappening={this.props.isAttackHappening}
-                onPassTurn={this.props.onPassTurn} />
+                player={player}
+                currentTurn={currentTurn}
+                gameOver={gameOver}
+                isTutorial={isTutorial}
+                isMyTurn={isMyTurn}
+                isAttackHappening={isAttackHappening}
+                onPassTurn={onPassTurn} />
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-around',
@@ -195,27 +204,27 @@ export default class GameArea extends Component {
               }}
             >
               <TutorialTooltip
-                tutorialStep={this.props.tutorialStep}
-                enabled={this.props.tutorialStep && this.props.tutorialStep.tooltip.location === 'endTurnButton'}
+                tutorialStep={tutorialStep}
+                enabled={tutorialStep && tutorialStep.tooltip.location === 'endTurnButton'}
                 top={0}
                 place="left"
-                onNextStep={this.props.onNextTutorialStep}
-                onPrevStep={this.props.onPrevTutorialStep}
+                onNextStep={onNextTutorialStep}
+                onPrevStep={onPrevTutorialStep}
               >
                 <EndTurnButton
-                  player={this.props.player}
-                  gameOver={this.props.gameOver}
-                  isMyTurn={this.props.isMyTurn}
-                  isAttackHappening={this.props.isAttackHappening}
-                  onPassTurn={this.props.onPassTurn} />
+                  player={player}
+                  gameOver={gameOver}
+                  isMyTurn={isMyTurn}
+                  isAttackHappening={isAttackHappening}
+                  onPassTurn={onPassTurn} />
               </TutorialTooltip>
               <ForfeitButton
-                player={this.props.player}
-                history={this.props.history}
-                gameOver={this.props.gameOver}
-                isSpectator={this.props.isSpectator}
-                isTutorial={this.props.isTutorial}
-                onForfeit={this.props.onForfeit} />
+                player={player}
+                history={history}
+                gameOver={gameOver}
+                isSpectator={isSpectator}
+                isTutorial={isTutorial}
+                onForfeit={onForfeit} />
             </div>
           </div>
           <PlayerArea opponent gameProps={this.props} />
@@ -229,43 +238,43 @@ export default class GameArea extends Component {
               right: 0,
               margin: '0 auto',
               zIndex: 999,
-              width: this.state.boardSize
+              width: boardSize
             }}
           >
-            <Status status={this.isMyTurn ? this.props.status : {}} />
+            <Status status={this.isMyTurn ? status : {}} />
             <Board
               size={this.state.boardSize}
-              player={this.props.player}
-              currentTurn={this.props.currentTurn}
-              selectedTile={this.props.selectedTile}
-              target={this.props.target}
-              bluePieces={this.props.bluePieces}
-              orangePieces={this.props.orangePieces}
-              playingCardType={this.props.playingCardType}
-              tutorialStep={this.props.tutorialStep}
-              attack={this.props.attack}
-              isGameOver={!!this.props.winner}
-              onSelectTile={this.props.onSelectTile}
-              onActivateAbility={this.props.onActivateObject}
-              onTutorialStep={this.props.onTutorialStep}
-              onEndGame={this.props.onClickEndGame} />
+              player={player}
+              currentTurn={currentTurn}
+              selectedTile={selectedTile}
+              target={target}
+              bluePieces={bluePieces}
+              orangePieces={orangePieces}
+              playingCardType={playingCardType}
+              tutorialStep={tutorialStep}
+              attack={attack}
+              isGameOver={!!winner}
+              onSelectTile={onSelectTile}
+              onActivateAbility={onActivateObject}
+              onTutorialStep={onTutorialStep}
+              onEndGame={onClickEndGame} />
           </div>
           <PlayerArea gameProps={this.props} />
-          <EventAnimation eventQueue={this.props.eventQueue} currentTurn={this.props.currentTurn} />
+          <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
           <VictoryScreen
-            winnerColor={this.props.winner}
-            winnerName={this.props.winner ? this.props.usernames[this.props.winner] : null}
-            onClick={this.props.onClickEndGame} />
+            winnerColor={winner}
+            winnerName={winner ? usernames[winner] : null}
+            onClick={onClickEndGame} />
         </Paper>
 
         <Chat
           inGame
           fullscreen={screenfull.isFullscreen}
-          open={this.props.chatOpen}
+          open={chatOpen}
           toggleChat={this.toggleChat}
-          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />
+          roomName={socket.hosting ? null : socket.gameName}
+          messages={socket.chatMessages.concat(actionLog)}
+          onSendMessage={onSendChatMessage} />
       </div>
     );
   }

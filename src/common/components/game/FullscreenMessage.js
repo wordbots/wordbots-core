@@ -1,19 +1,19 @@
 import React from 'react';
 import { number, string } from 'prop-types';
 
-const FullscreenMessage = ({ message, height }) =>
+const FullscreenMessage = ({ message, height, background }) =>
   <div style={{
     position: 'absolute',
     left: 0,
     width: '100%',
     height: height,
     zIndex: 9999,
-    background: `url(${this.loadBackground()})`,
+    background: `url(${background})`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontFamily: 'Carter One',
-    fontSize: 26,
+    fontSize: 32,
     color: 'white'
   }}>
     {message}
@@ -21,7 +21,8 @@ const FullscreenMessage = ({ message, height }) =>
 
 FullscreenMessage.propTypes = {
   message: string,
-  height: number
+  height: number,
+  background: string
 };
 
 export default FullscreenMessage;

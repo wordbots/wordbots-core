@@ -175,7 +175,6 @@ export class GameAreaContainer extends Component {
   /* eslint-enable react/no-unused-prop-types */
 
   state = {
-    chatOpen: true,
     message: null
   };
 
@@ -249,10 +248,6 @@ export class GameAreaContainer extends Component {
     // If we're still waiting on Firebase, render a message.
     this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
   };
-
-  toggleChat = () => {
-    this.setState(state => ({ chatOpen: !state.chatOpen }));
-  }
 
   movePiece = (hexId, asPartOfAttack = false) => {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);

@@ -91,7 +91,8 @@ export default class GameArea extends Component {
 
   state = {
     areaHeight: 1250,
-    boardSize: 1000
+    boardSize: 1000,
+    chatOpen: true
   };
 
   componentDidMount() {
@@ -99,12 +100,12 @@ export default class GameArea extends Component {
     window.addEventListener('resize', () => { this.updateDimensions(); });
   }
 
-  get isMyTurn() {
-    return this.props.currentTurn === this.props.player;
-  }
-
   handleToggleFullScreen = () => {
     screenfull.toggle(this.gameArea);
+  };
+
+  handleToggleChat = () => {
+    this.setState(state => ({ chatOpen: !state.chatOpen }));
   };
 
   loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
@@ -121,13 +122,13 @@ export default class GameArea extends Component {
 
   render() {
     const {
-      actionLog, attack, bluePieces, chatOpen, currentTurn, eventQueue, gameOver, isAttackHappening,
+      actionLog, attack, bluePieces, currentTurn, eventQueue, gameOver, isAttackHappening,
       isMyTurn, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
       selectedTile, sfxQueue, socket, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onSendChatMessage, onTutorialStep
     } = this.props;
-    const { areaHeight, boardSize } = this.state;
+    const { areaHeight, boardSize, chatOpen } = this.state;
 
     if (message) {
       return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
@@ -241,7 +242,7 @@ export default class GameArea extends Component {
               width: boardSize
             }}
           >
-            <Status status={this.isMyTurn ? status : {}} />
+            <Status status={isMyTurn ? status : {}} />
             <Board
               size={this.state.boardSize}
               player={player}
@@ -271,7 +272,7 @@ export default class GameArea extends Component {
           inGame
           fullscreen={screenfull.isFullscreen}
           open={chatOpen}
-          toggleChat={this.toggleChat}
+          toggleChat={this.handleToggleChat}
           roomName={socket.hosting ? null : socket.gameName}
           messages={socket.chatMessages.concat(actionLog)}
           onSendMessage={onSendChatMessage} />

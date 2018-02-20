@@ -209,18 +209,6 @@ export class GameAreaContainer extends Component {
     clearInterval(this.interval);
   }
 
-  isMyTurn() {
-    return this.props.currentTurn === this.props.player;
-  }
-
-  allPieces() {
-    return Object.assign({}, this.props.bluePieces, this.props.orangePieces);
-  }
-
-  myPieces() {
-    return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
-  }
-
   urlMatchesGameMode = mode => this.props.location.pathname.startsWith(Play.urlForGameMode(mode));
 
   /* Try to start a game (based on the URL) if it hasn't started yet. */

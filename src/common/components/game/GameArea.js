@@ -124,7 +124,7 @@ export default class GameArea extends Component {
     const {
       actionLog, attack, bluePieces, currentTurn, eventQueue, gameOver, isAttackHappening,
       isMyTurn, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
-      selectedTile, sfxQueue, socket, target, tutorialStep, usernames, winner,
+      selectedTile, sfxQueue, socket, status, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onSendChatMessage, onTutorialStep
     } = this.props;

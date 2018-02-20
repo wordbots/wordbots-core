@@ -16,7 +16,7 @@ export default function collection(oldState = defaultState, action) {
   } else {
     switch (action.type) {
       case globalActions.FIREBASE_DATA:
-        return c.loadState(state, action.payload.data);
+        return c.loadState({...state, firebaseLoaded: true}, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:
         return c.saveCard(state, action.payload);

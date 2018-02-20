@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
-import { shuffle } from 'lodash';
 
-import { KEEP_DECKS_UNSHUFFLED } from '../../constants';
-import { instantiateCard, cardsInDeck } from '../../util/cards';
+import { shuffleCardsInDeck } from '../../util/cards';
 
 import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';
@@ -33,9 +31,12 @@ export default class Lobby extends Component {
   }
 
   get deck() {
-    const deck = this.props.availableDecks[this.props.selectedDeckIdx];
-    const cards = cardsInDeck(deck, this.props.cards).map(instantiateCard);
-    return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(cards);
+    const { availableDecks, cards, selectedDeckIdx } = this.props;
+    const deck = availableDecks[selectedDeckIdx];
+    return {
+      id: deck.id,
+      cards: shuffleCardsInDeck(deck, cards)
+    };
   }
 
   handleSelectMode = (mode) => {
@@ -43,11 +44,11 @@ export default class Lobby extends Component {
   };
 
   handleJoinGame = (gameId, gameName) => {
-    this.props.onJoinGame(gameId, gameName, this.deck);
+    this.props.onJoinGame(gameId, gameName, this.deck.cards);
   };
 
   handleHostGame = (gameName) => {
-    this.props.onHostGame(gameName, this.deck);
+    this.props.onHostGame(gameName, this.deck.cards);
   };
 
   renderLobbyContent(gameMode, socket) {

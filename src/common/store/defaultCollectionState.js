@@ -17,6 +17,7 @@ const defaultState = {
   ],
   deckBeingEdited: null,
   exportedJson: null,
+  firebaseLoaded: false,
   selectedDeckIdx: 0
 };
 

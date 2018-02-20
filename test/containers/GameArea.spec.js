@@ -122,4 +122,68 @@ describe('GameArea container', () => {
 
     // TODO attack.
   });
+
+  it('should start tutorial mode on page load if the URL is /play/tutorial', () => {
+    const dispatchedActions = [];
+    const state = combineState({...getDefaultState(), started: false});
+
+    function dispatch(action) {
+      dispatchedActions.push(action);
+    }
+
+    const game = createGameArea(state, dispatch, { location: { pathname: '/play/tutorial' }});
+    renderElement(game, true);
+
+    expect(dispatchedActions.pop()).toEqual(
+      actions.startTutorial()
+    );
+  });
+
+  describe('should start practice mode on page load if the URL is /play/practice/[deckId]', () => {
+    const dispatchedActions = [];
+    const state = combineState({...getDefaultState(), started: false});
+    const historyParams = {
+      location: { pathname: '/play/practice/deckId' },
+      match: { params: { deck: 'deckId' } },
+      history: { push: (url) => dispatchedActions.push({ type: 'HISTORY.PUSH', payload: { url } }) }
+    };
+
+    function dispatch(action) {
+      dispatchedActions.push(action);
+    }
+
+    it('should do nothing if collection.firebaseLoaded = false', () => {
+      const game = createGameArea(state, dispatch, {...historyParams, collection: {
+        firebaseLoaded: false
+      }});
+      renderElement(game, true);
+
+      expect(dispatchedActions.length).toEqual(0);
+    });
+
+    it('should redirect to /play if collection.firebaseLoaded = true but the deck doesn\'t exist', () => {
+      const game = createGameArea(state, dispatch, {...historyParams, collection: {
+        firebaseLoaded: true,
+        decks: []
+      }});
+      renderElement(game, true);
+
+      expect(dispatchedActions.pop()).toEqual(
+        { type: 'HISTORY.PUSH', payload: { url: '/play' } }
+      );
+    });
+
+    it('should start a practice game if collection.firebaseLoaded = true and the deck exists', () => {
+      const game = createGameArea(state, dispatch, {...historyParams, collection: {
+        firebaseLoaded: true,
+        cards: state.collection.cards,
+        decks: [{ id: 'deckId', cardIds: ['builtin/One Bot', 'builtin/Two Bot'] }]
+      }});
+      renderElement(game, true);
+
+      const action = dispatchedActions.pop();
+      expect(action.type).toEqual(actions.START_PRACTICE);
+      expect(action.payload.deck.map(c => c.name).sort()).toEqual(['One Bot', 'Two Bot']);
+    });
+  });
 });

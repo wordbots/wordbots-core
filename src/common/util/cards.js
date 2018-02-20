@@ -1,9 +1,10 @@
 import {
   capitalize, compact, countBy, debounce, flatMap, fromPairs,
-  isArray, mapValues, omit, pick, reduce, uniqBy
+  isArray, mapValues, omit, pick, reduce, shuffle, uniqBy
 } from 'lodash';
 
 import {
+  KEEP_DECKS_UNSHUFFLED,
   CARD_SCHEMA_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
   TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString,
   SYNONYMS, KEYWORDS, HINTS, KEYWORD_REGEXES, HINT_REGEXES
@@ -24,6 +25,11 @@ export function areIdenticalCards(card1, card2) {
 
 export function cardsInDeck(deck, cards) {
   return compact((deck.cardIds || []).map(id => cards.find(c => c.id === id)));
+}
+
+export function shuffleCardsInDeck(deck, cards) {
+  const unshuffledCards = cardsInDeck(deck, cards).map(instantiateCard);
+  return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(unshuffledCards);
 }
 
 export function instantiateCard(card) {

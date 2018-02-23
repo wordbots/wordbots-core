@@ -24,6 +24,7 @@ import EventAnimation from '../components/game/EventAnimation';
 import VictoryScreen from '../components/game/VictoryScreen';
 import TutorialTooltip from '../components/game/TutorialTooltip';
 import Chat from '../components/multiplayer/Chat';
+import CardSelector from '../components/game/CardSelector';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
@@ -87,7 +88,8 @@ export function mapStateToProps(state) {
     isAttackHappening: game.attack && game.attack.from && game.attack.to && true,
 
     actionLog: game.actionLog,
-    socket: state.socket
+    socket: state.socket,
+    cardCollection: state.collection.cards
   };
 }
 
@@ -161,6 +163,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
+    },
+    onAddCardToTopOfDeck: (player, card) => {
+      dispatch(gameActions.addCardToTopOfDeck(player, card));
     }
   };
 }
@@ -216,6 +221,7 @@ export class GameArea extends Component {
 
     actionLog: arrayOf(object),
     socket: object,
+    cardCollection: arrayOf(object),
 
     onMoveRobot: func,
     onAttackRobot: func,
@@ -234,7 +240,8 @@ export class GameArea extends Component {
     onTutorialStep: func,
     onStartSandbox: func,
     onAIResponse: func,
-    onSendChatMessage: func
+    onSendChatMessage: func,
+    onAddCardToTopOfDeck: func
   };
   /* eslint-enable react/no-unused-prop-types */
 
@@ -406,9 +413,11 @@ export class GameArea extends Component {
         id="gameArea"
         className="gameArea"
         ref={(gameArea) => { this.gameArea = gameArea; }}
-        style={
-          screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
-        }
+        style={{
+          width: screenfull.isFullscreen ? '100%' : 'auto', 
+          height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
+          display: this.props.isSandbox ? 'flex' : 'block'
+        }}
       >
         <div>
           {this.renderNotification()}
@@ -420,6 +429,7 @@ export class GameArea extends Component {
           style={{
             position: 'relative',
             marginRight: this.props.isSandbox ? 0 : (this.state.chatOpen ? 256 : 64),
+            width: this.props.isSandbox ? 'calc(100% - 256px)' : 'auto',
             height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
             background: `url(${this.loadBackground()})`
           }}
@@ -535,14 +545,20 @@ export class GameArea extends Component {
             onClick={this.handleClickEndGame} />
         </Paper>
 
-        {!this.props.isSandbox && <Chat
-          inGame
-          fullscreen={screenfull.isFullscreen}
-          open={this.state.chatOpen}
-          toggleChat={this.toggleChat}
-          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />}
+        {
+          this.props.isSandbox ?
+          <CardSelector 
+            cardCollection={this.props.cardCollection}
+            onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck} /> :
+          <Chat
+            inGame
+            fullscreen={screenfull.isFullscreen}
+            open={this.state.chatOpen}
+            toggleChat={this.toggleChat}
+            roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
+            messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
+            onSendMessage={this.props.onSendChatMessage} />
+        }
       </div>
     );
   }

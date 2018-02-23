@@ -48,7 +48,7 @@ export default class NavMenu extends Component {
     </NavLink>
   )
 
-  renderUserArea = () =>
+  renderExpandCollapseButton = () =>
     <div
       onClick={this.toggleExpanded}
       style={{
@@ -90,6 +90,6 @@ export default class NavMenu extends Component {
       {this.renderLink('/play', 'Play', 'videogame_asset')}
       {this.renderLink('/sandbox', 'Sandbox', 'brush')}
       {this.renderLink('/about', 'About', 'info_outline')}
-      {this.renderUserArea()}
+      {this.renderExpandCollapseButton()}
     </Drawer>;
 }

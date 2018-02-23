@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Helmet from 'react-helmet';
 import Notification from 'react-web-notification';
 import Paper from 'material-ui/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -470,6 +471,7 @@ export class GameArea extends Component {
         }}
       >
         <div>
+          <Helmet title="Play" />
           {this.renderNotification()}
           <Sfx queue={this.props.sfxQueue} />
         </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, number, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
+import Helmet from 'react-helmet';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
@@ -160,6 +161,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Helmet title="Wordbots"/>
         <TitleBar />
         <div>
           {this.sidebar}

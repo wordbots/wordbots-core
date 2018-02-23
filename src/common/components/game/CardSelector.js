@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { arrayOf, func, object } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
+import { sortBy } from 'lodash';
 
+import Tooltip from '../Tooltip';
 import CardTooltip from '../card/CardTooltip';
 
 import CardSelectorCard from './CardSelectorCard';
@@ -17,7 +19,18 @@ export default class CardSelector extends Component {
     cardCollection: arrayOf(object)
   }
 
-  onCardSelect = (card) => {
+  buttons = {
+    blue: {
+      color: 'rgb(186, 219, 255)',
+      icon: 'fast_rewind'
+    },
+    orange: {
+      color: 'rgb(255, 184, 93)',
+      icon: 'fast_forward'
+    }
+  }
+
+  handleSelectCard = (card) => {
     const selectedCard = this.state.selectedCard;
 
     if (card === selectedCard) {
@@ -31,86 +44,71 @@ export default class CardSelector extends Component {
     this.setState({ selectedCard: null });
   }
 
-  onGiveToBlue = () => {
-    const selectedCard = this.state.selectedCard;
-    this.props.onAddCardToTopOfDeck('blue', selectedCard);
-    this.deselectCard();
-  }
-
-  onGiveToOrange = () => {
-    const selectedCard = this.state.selectedCard;
-    this.props.onAddCardToTopOfDeck('orange', selectedCard);
-    this.deselectCard();
+  handleGiveCard = (player) => () => {
+    const { selectedCard } = this.state;
+    if (selectedCard) {
+      this.props.onAddCardToTopOfDeck(player, selectedCard);
+      this.deselectCard();
+    }
   }
 
   get cardsList() {
-    const cards = this.props.cardCollection.map((card, index) => 
+    const { cardCollection } = this.props;
+
+    return sortBy(cardCollection, card => card.cost).map((card, index) =>
       <CardTooltip card={card} key={index}>
-        <CardSelectorCard 
+        <CardSelectorCard
           card={card}
           selectedCard={this.state.selectedCard}
-          onCardSelect={this.onCardSelect} />
+          onCardSelect={this.handleSelectCard} />
       </CardTooltip>
     );
-
-    return (
-      <div>{cards}</div>
-    );
   }
 
-  renderAddCardToDeckButton = (color, addCardFunction, icon) => (
-    <RaisedButton
-      style={{ width: '50%' }}
-      backgroundColor={color}
-      buttonStyle={{
-        height: '64px',
-        lineHeight: '64px'
-      }}
-      overlayStyle={{ height: '64px' }}
-      onTouchTap={addCardFunction}
-      icon={
-        <FontIcon
-          className="material-icons"
-          style={{
-            lineHeight: '64px',
-            verticalAlign: 'none'
-        }}>
-          {icon}
-        </FontIcon>
-      }
-      disabled={!this.state.selectedCard} />
-  );
+  renderAddCardToDeckButton = (player) =>
+    <Tooltip
+      text={`Place card on top of ${player} deck.`}
+      place="left"
+    >
+      <RaisedButton
+        style={{ width: 128 }}
+        backgroundColor={this.buttons[player].color}
+        buttonStyle={{
+          height: '64px',
+          lineHeight: '64px'
+        }}
+        overlayStyle={{ height: '64px' }}
+        onTouchTap={this.handleGiveCard(player)}
+        icon={
+            <FontIcon
+              className="material-icons"
+              style={{
+                lineHeight: '64px',
+                verticalAlign: 'none'
+            }}>
+              {this.buttons[player].icon}
+            </FontIcon>
+        }
+        disabled={!this.state.selectedCard} />
+    </Tooltip>;
 
-  render() {
-    const blue = {
-      color: 'rgb(186, 219, 255)',
-      icon: 'fast_rewind'
-    };
-
-    const orange = {
-      color: 'rgb(255, 184, 93)',
-      icon: 'fast_forward'
-    };
-
-    return (
+  render = () =>
+    <div style={{
+      height: '100%',
+      width: 256
+    }}>
       <div style={{
-        height: '100%',
-        width: 256
+        height: 'calc(100% - 64px)',
+        overflowY: 'scroll',
+        width: '100%'
+      }}>{this.cardsList}</div>
+      <div style={{
+        height: 64,
+        display: 'flex',
+        width: '100%'
       }}>
-        <div style={{
-          height: 'calc(100% - 64px)',
-          overflowY: 'scroll',
-          width: '100%'
-        }}>{this.cardsList}</div>
-        <div style={{
-          height: 64,
-          display: 'flex',
-          width: '100%'
-        }}>
-          {this.renderAddCardToDeckButton(blue.color, this.onGiveToBlue, blue.icon)}
-          {this.renderAddCardToDeckButton(orange.color, this.onGiveToOrange, orange.icon)}
-        </div>
+        {this.renderAddCardToDeckButton('blue')}
+        {this.renderAddCardToDeckButton('orange')}
       </div>
-    );
-  }
+    </div>;
 }

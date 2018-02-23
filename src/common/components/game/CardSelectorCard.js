@@ -15,21 +15,21 @@ export default class CardSelectorCard extends Component {
 
   render() {
     const { card, selectedCard } = this.props;
-    const backgroundColor = isEqual(selectedCard, card) ? '#BBB' : 
-      (card.source === 'builtin' ? 'white' : '#FFB4B3'); 
+    const color = card.source === 'builtin' ? '#666' : 'black';
+    const backgroundColor = isEqual(selectedCard, card) ? '#BBB' : 'white';
 
     return (
-      <div 
+      <div
         onClick={this.onCardSelect}
         style={{
         display: 'flex',
         borderBottom: '2px solid black',
         borderRight: '2px solid black',
         borderLeft: '2px solid black',
-        backgroundColor: backgroundColor,
         cursor: 'pointer',
         height: 30,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor
       }}>
         <div style={{
           backgroundColor: 'rgb(0, 188, 212)',
@@ -44,7 +44,8 @@ export default class CardSelectorCard extends Component {
         }}>{card.cost}</div>
         <div style={{
           width: 'calc(100% - 30px)',
-          paddingLeft: 5
+          paddingLeft: 5,
+          color
         }}>{card.name}</div>
       </div>
     );

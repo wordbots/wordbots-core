@@ -8,9 +8,7 @@ export * from './coreSet/robots';
 export * from './coreSet/events';
 export * from './coreSet/structures';
 
-export const blueCoreCard = {
-  name: 'Blue Kernel',
-  img: 'core_blue',
+const coreCard = {
   cost: 0,
   type: TYPE_CORE,
   stats: {
@@ -20,16 +18,16 @@ export const blueCoreCard = {
   source: 'builtin'
 };
 
+export const blueCoreCard = {
+  ...coreCard,
+  name: 'Blue Kernel',
+  img: 'core_blue'
+};
+
 export const orangeCoreCard = {
+  ...coreCard,
   name: 'Orange Kernel',
-  img: 'core_orange',
-  cost: 0,
-  type: TYPE_CORE,
-  stats: {
-    health: STARTING_PLAYER_HEALTH
-  },
-  abilities: [],
-  source: 'builtin'
+  img: 'core_orange'
 };
 
 export const collection = [

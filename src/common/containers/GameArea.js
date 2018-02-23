@@ -10,6 +10,7 @@ import screenfull from 'screenfull';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
 import { inBrowser } from '../util/browser';
+import { shuffleCardsInDeck } from '../util/cards';
 import { currentTutorialStep } from '../util/game';
 import Board from '../components/game/Board';
 import Timer from '../components/game/Timer';
@@ -79,8 +80,6 @@ export function mapStateToProps(state) {
     tutorialStep: currentTutorialStep(game),
     isPractice: game.practice,
 
-    sidebarOpen: state.global.sidebarOpen || game.tutorial,
-
     gameOver: game.winner !== null,
     isTutorial: game.tutorial,
     isSandbox: game.sandbox,
@@ -88,8 +87,8 @@ export function mapStateToProps(state) {
     isAttackHappening: game.attack && game.attack.from && game.attack.to && true,
 
     actionLog: game.actionLog,
-    socket: state.socket,
-    cardCollection: state.collection.cards
+    collection: state.collection,
+    socket: state.socket
   };
 }
 
@@ -155,6 +154,9 @@ export function mapDispatchToProps(dispatch) {
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
     },
+    onStartPractice: (deck) => {
+      dispatch(gameActions.startPractice(deck));
+    },
     onStartSandbox: () => {
       dispatch(gameActions.startSandbox());
     },
@@ -207,10 +209,9 @@ export class GameArea extends Component {
     tutorialStep: object,
     isPractice: bool,
 
-    sidebarOpen: bool,
-
     history: object,
     location: object,
+    match: object,
 
     gameOver: bool,
     isTutorial: bool,
@@ -220,6 +221,7 @@ export class GameArea extends Component {
     isAttackHappening: bool,
 
     actionLog: arrayOf(object),
+    collection: object,
     socket: object,
     cardCollection: arrayOf(object),
 
@@ -239,6 +241,7 @@ export class GameArea extends Component {
     onStartTutorial: func,
     onTutorialStep: func,
     onStartSandbox: func,
+    onStartPractice: func,
     onAIResponse: func,
     onSendChatMessage: func,
     onAddCardToTopOfDeck: func
@@ -248,28 +251,9 @@ export class GameArea extends Component {
   state = {
     areaHeight: 1250,
     boardSize: 1000,
-    chatOpen: true
+    chatOpen: true,
+    message: null
   };
-
-  constructor(props) {
-    super(props);
-
-    const { started, history, location, onStartTutorial, onStartSandbox } = props;
-
-    // If the game hasn't started yet, that means that the player got here
-    // by messing with the URL (rather than by clicking a button in the lobby).
-    // If the URL is '/play/tutorial', just start the tutorial.
-    // Otherwise, return to the lobby because we can't do anything else.
-    if (!started) {
-      if (location.pathname.startsWith(Play.urlForGameMode('tutorial'))) {
-        onStartTutorial();
-      } else if (location.pathname.startsWith('/sandbox')) {
-        onStartSandbox();
-      } else {
-        history.push(Play.baseUrl);
-      }
-    }
-  }
 
   // For testing.
   static childContextTypes = {
@@ -278,6 +262,8 @@ export class GameArea extends Component {
   getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
 
   componentDidMount() {
+    this.tryToStartGame();
+
     this.updateDimensions();
     window.addEventListener('resize', () => { this.updateDimensions(); });
 
@@ -292,9 +278,9 @@ export class GameArea extends Component {
     }, AI_RESPONSE_TIME_MS);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.sidebarOpen !== this.props.sidebarOpen) {
-      this.updateDimensions(nextProps);
+  componentDidUpdate(prevProps) {
+    if (this.props.collection.firebaseLoaded !== prevProps.collection.firebaseLoaded) {
+      this.tryToStartGame();
     }
   }
 
@@ -314,9 +300,52 @@ export class GameArea extends Component {
     return this.props.player === 'blue' ? this.props.bluePieces : this.props.orangePieces;
   }
 
-  updateDimensions = (props = this.props) => {
+  urlMatchesGameMode = mode => this.props.location.pathname.startsWith(Play.urlForGameMode(mode));
+
+  /* Try to start a game (based on the URL) if it hasn't started yet. */
+  tryToStartGame = () => {
+    const { started, onStartTutorial, onStartSandbox, history, match } = this.props;
+
+    // If the game hasn't started yet, that means that the player got here
+    // by messing with the URL (rather than by clicking a button in the lobby).
+    // If the URL is '/play/tutorial' or `/play/practice/:deck`,
+    // start the corresponding game mode.
+    // Otherwise, just return to the lobby.
+    if (!started) {
+      if (this.urlMatchesGameMode('tutorial')) {
+        onStartTutorial();
+      } else if (this.urlMatchesGameMode('practice')) {
+        this.tryToStartPracticeGame(match.params.deck);
+      } else if (location.pathname.startsWith('/sandbox')) {
+        onStartSandbox();
+      } else {
+        history.push(Play.baseUrl);
+      }
+    }
+  };
+
+  /* Try to start a practice game from the URL, pending Firebase loading. */
+  tryToStartPracticeGame = (deckId) => {
+    const { history, onStartPractice, collection: { cards, decks, firebaseLoaded } } = this.props;
+
+    // Decks are stored in Firebase, so we have to wait until
+    // we receive data from Firebase before we can try to start a practice game.
+    if (firebaseLoaded) {
+      const deck = decks.find(d => d.id === deckId);
+      if (deck) {
+        onStartPractice(shuffleCardsInDeck(deck, cards));
+      } else {
+        history.push(Play.baseUrl);
+      }
+    }
+
+    // If we're still waiting on Firebase, render a message.
+    this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
+  };
+
+  updateDimensions = () => {
     const maxBoardHeight = window.innerHeight - 64 - 150;
-    const maxBoardWidth = window.innerWidth - (props.sidebarOpen ? 512 : 256);
+    const maxBoardWidth = window.innerWidth - 256;
 
     this.setState({
       areaHeight: window.innerHeight - 64,
@@ -408,6 +437,27 @@ export class GameArea extends Component {
   }
 
   render() {
+    if (this.state.message) {
+      return (
+        <div style={{
+          position: 'absolute',
+          left: 0,
+          width: '100%',
+          height: this.state.areaHeight,
+          zIndex: 9999,
+          background: `url(${this.loadBackground()})`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'Carter One',
+          fontSize: 26,
+          color: 'white'
+        }}>
+          {this.state.message}
+        </div>
+      );
+    }
+
     return (
       <div
         id="gameArea"

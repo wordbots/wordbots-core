@@ -8,8 +8,8 @@
     "chrome >= 48"
   ],
   "scripts": {
-    "slate": "rm -rf node_modules && npm install",
-    "clean": "rm -rf dist",
+    "slate": "node bin/clean.js node_modules && npm install",
+    "clean": "node bin/clean.js dist",
     "start": "set NODE_ENV=development && node src/server/index.js --colors --profile",
     "start-prod": "set NODE_ENV=production && node src/server/index.js --progress --colors --profile",
     "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",

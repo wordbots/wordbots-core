@@ -117,33 +117,27 @@ class App extends Component {
   }
 
   get content() {
-    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? 224 : 64);
-
-    if (this.state.loading) {
-      return null;
-    } else {
-      return (
-        <div style={{
-          paddingLeft: paddingLeft,
-          transition: 'padding-left 200ms ease-in-out'
-        }}>
-          <ErrorBoundary>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/home" component={Home} />
-              <Route path="/collection" component={Collection} />
-              <Route path="/creator" component={Creator} />
-              <Route path="/decks" component={Decks} />
-              <Route path="/deck" component={Deck} />
-              <Route path="/play" component={Play} />
-              <Route path="/sandbox" component={GameArea} />
-              <Route path="/about" component={About} />
-              <Route render={this.redirectToRoot} />
-            </Switch>
-          </ErrorBoundary>
-        </div>
-      );
-    }
+    return (
+      <div style={{
+        paddingLeft: this.props.inGame ? 0 : (this.isSidebarExpanded ? 224 : 64),
+        transition: 'padding-left 200ms ease-in-out'
+      }}>
+        <ErrorBoundary>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/home" component={Home} />
+            <Route path="/collection" component={Collection} />
+            <Route path="/creator" component={Creator} />
+            <Route path="/decks" component={Decks} />
+            <Route path="/deck" component={Deck} />
+            <Route path="/play" component={Play} />
+            <Route path="/sandbox" component={GameArea} />
+            <Route path="/about" component={About} />
+            <Route render={this.redirectToRoot} />
+          </Switch>
+        </ErrorBoundary>
+      </div>
+    );
   }
 
   get dialogs() {
@@ -169,7 +163,7 @@ class App extends Component {
         <TitleBar />
         <div>
           {this.sidebar}
-          {this.content}
+          {this.state.loading ? null : this.content}
         </div>
         {this.dialogs}
       </div>

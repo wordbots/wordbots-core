@@ -464,7 +464,7 @@ export class GameArea extends Component {
         className="gameArea"
         ref={(gameArea) => { this.gameArea = gameArea; }}
         style={{
-          width: screenfull.isFullscreen ? '100%' : 'auto', 
+          width: screenfull.isFullscreen ? '100%' : 'auto',
           height: screenfull.isFullscreen ? this.state.areaHeight + 64 : this.state.areaHeight,
           display: this.props.isSandbox ? 'flex' : 'block'
         }}
@@ -597,8 +597,8 @@ export class GameArea extends Component {
 
         {
           this.props.isSandbox ?
-          <CardSelector 
-            cardCollection={this.props.cardCollection}
+          <CardSelector
+            cardCollection={this.props.collection.cards}
             onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck} /> :
           <Chat
             inGame

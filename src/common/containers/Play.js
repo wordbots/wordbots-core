@@ -9,7 +9,7 @@ import Lobby from '../components/multiplayer/Lobby';
 import * as collectionActions from '../actions/collection';
 import * as socketActions from '../actions/socket';
 
-import GameArea from './GameArea';
+import GameAreaContainer from './GameAreaContainer';
 
 export function mapStateToProps(state) {
   const validDecks = state.collection.decks.filter(d => d.cardIds.length === 30);
@@ -95,7 +95,7 @@ export class Play extends Component {
 
   renderLobby = () => {
     if (this.props.started) {
-      return <GameArea />;
+      return <GameAreaContainer />;
     } else {
       return (
         <Lobby
@@ -120,8 +120,8 @@ export class Play extends Component {
         <Helmet title="Play"/>
 
         <Switch>
-          <Route path={Play.urlForGameMode('tutorial')} component={GameArea} />
-          <Route path={`${Play.urlForGameMode('practice')}/:deck`} component={GameArea} />
+          <Route path={Play.urlForGameMode('tutorial')} component={GameAreaContainer} />
+          <Route path={`${Play.urlForGameMode('practice')}/:deck`} component={GameAreaContainer} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
           <Route exact path={Play.baseUrl} render={this.renderLobby} />
           <Redirect to={Play.baseUrl} />

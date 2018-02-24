@@ -1,13 +1,15 @@
 import React from 'react';
 import { number, string } from 'prop-types';
 
+import { BACKGROUND_Z_INDEX } from '../../constants';
+
 const FullscreenMessage = ({ message, height, background }) =>
   <div style={{
     position: 'absolute',
     left: 0,
     width: '100%',
     height: height,
-    zIndex: 9999,
+    zIndex: BACKGROUND_Z_INDEX,
     background: `url(${background})`,
     display: 'flex',
     alignItems: 'center',

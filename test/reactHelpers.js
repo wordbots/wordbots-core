@@ -6,7 +6,7 @@ import { noop } from 'lodash';
 
 import * as coll from '../src/common/containers/Collection';
 import * as creator from '../src/common/containers/Creator';
-import * as gameArea from '../src/common/containers/GameArea';
+import * as gameArea from '../src/common/containers/GameAreaContainer';
 
 injectTapEventPlugin();
 

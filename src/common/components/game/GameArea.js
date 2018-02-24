@@ -3,8 +3,11 @@ import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import screenfull from 'screenfull';
 
-import Chat from '../multiplayer/Chat';
+import {
+  HEADER_HEIGHT, SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX
+} from '../../constants';
 import { inBrowser } from '../../util/browser';
+import Chat from '../multiplayer/Chat';
 
 import Board from './Board';
 import EndTurnButton from './EndTurnButton';
@@ -18,7 +21,6 @@ import Sfx from './Sfx';
 import SoundToggle from './SoundToggle';
 import Status from './Status';
 import Timer from './Timer';
-import TutorialTooltip from './TutorialTooltip';
 import VictoryScreen from './VictoryScreen';
 
 /* Props shared by GameArea and GameAreaContainer. */
@@ -111,11 +113,11 @@ export default class GameArea extends Component {
   loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
 
   updateDimensions = () => {
-    const maxBoardHeight = window.innerHeight - 64 - 150;
-    const maxBoardWidth = window.innerWidth - 256;
+    const maxBoardHeight = window.innerHeight - HEADER_HEIGHT - 150;
+    const maxBoardWidth = window.innerWidth - SIDEBAR_WIDTH;
 
     this.setState({
-      areaHeight: window.innerHeight - 64,
+      areaHeight: window.innerHeight - HEADER_HEIGHT,
       boardSize: Math.min(maxBoardWidth, maxBoardHeight)
     });
   };
@@ -137,7 +139,6 @@ export default class GameArea extends Component {
     return (
       <div
         id="gameArea"
-        className="gameArea"
         ref={(gameArea) => { this.gameArea = gameArea; }}
         style={
           screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
@@ -152,8 +153,8 @@ export default class GameArea extends Component {
           className="background"
           style={{
             position: 'relative',
-            marginRight: chatOpen ? 256 : 64,
-            height: screenfull.isFullscreen ? areaHeight + 64 : areaHeight,
+            marginRight: chatOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+            height: screenfull.isFullscreen ? areaHeight + HEADER_HEIGHT : areaHeight,
             background: `url(${this.loadBackground()})`
           }}
           onClick={onClickGameArea}
@@ -175,7 +176,7 @@ export default class GameArea extends Component {
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginLeft: 20,
-                zIndex: 9999
+                zIndex: BACKGROUND_Z_INDEX
               }}
             >
               <Timer
@@ -201,24 +202,18 @@ export default class GameArea extends Component {
                 display: 'flex',
                 justifyContent: 'center',
                 marginRight: 20,
-                zIndex: 9999
+                zIndex: BACKGROUND_Z_INDEX
               }}
             >
-              <TutorialTooltip
+              <EndTurnButton
+                player={player}
+                gameOver={gameOver}
+                isMyTurn={isMyTurn}
+                isAttackHappening={isAttackHappening}
                 tutorialStep={tutorialStep}
-                enabled={tutorialStep && tutorialStep.tooltip.location === 'endTurnButton'}
-                top={0}
-                place="left"
-                onNextStep={onNextTutorialStep}
-                onPrevStep={onPrevTutorialStep}
-              >
-                <EndTurnButton
-                  player={player}
-                  gameOver={gameOver}
-                  isMyTurn={isMyTurn}
-                  isAttackHappening={isAttackHappening}
-                  onPassTurn={onPassTurn} />
-              </TutorialTooltip>
+                onPassTurn={onPassTurn}
+                onNextTutorialStep={onNextTutorialStep}
+                onPrevTutorialStep={onPrevTutorialStep} />
               <ForfeitButton
                 player={player}
                 history={history}
@@ -238,7 +233,7 @@ export default class GameArea extends Component {
               bottom: 75,
               right: 0,
               margin: '0 auto',
-              zIndex: 999,
+              zIndex: BOARD_Z_INDEX,
               width: boardSize
             }}
           >

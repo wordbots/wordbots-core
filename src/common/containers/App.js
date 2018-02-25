@@ -8,6 +8,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
+import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';
 import { isFlagSet, logAnalytics } from '../util/browser';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
@@ -118,27 +119,31 @@ class App extends Component {
   }
 
   get content() {
-    return (
-      <div style={{
-        paddingLeft: this.props.inGame ? 0 : (this.isSidebarExpanded ? 224 : 64),
-        transition: 'padding-left 200ms ease-in-out'
-      }}>
-        <ErrorBoundary>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/home" component={Home} />
-            <Route path="/collection" component={Collection} />
-            <Route path="/creator" component={Creator} />
-            <Route path="/decks" component={Decks} />
-            <Route path="/deck" component={Deck} />
-            <Route path="/play" component={Play} />
-            <Route path="/sandbox" component={GameArea} />
-            <Route path="/about" component={About} />
-            <Route render={this.redirectToRoot} />
-          </Switch>
-        </ErrorBoundary>
-      </div>
-    );
+    if (this.state.loading) {
+      return null;
+    } else {
+      return (
+        <div style={{
+          paddingLeft: this.props.inGame ? 0 : (this.isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH),
+          transition: 'padding-left 200ms ease-in-out'
+        }}>
+          <ErrorBoundary>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/home" component={Home} />
+              <Route path="/collection" component={Collection} />
+              <Route path="/creator" component={Creator} />
+              <Route path="/decks" component={Decks} />
+              <Route path="/deck" component={Deck} />
+              <Route path="/play" component={Play} />
+              <Route path="/sandbox" component={GameArea} />
+              <Route path="/about" component={About} />
+              <Route render={this.redirectToRoot} />
+            </Switch>
+          </ErrorBoundary>
+        </div>
+      );
+    }
   }
 
   get dialogs() {

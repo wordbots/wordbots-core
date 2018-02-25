@@ -6,7 +6,7 @@ import { noop } from 'lodash';
 
 import * as coll from '../src/common/containers/Collection';
 import * as creator from '../src/common/containers/Creator';
-import * as gameArea from '../src/common/containers/GameArea';
+import * as gameArea from '../src/common/containers/GameAreaContainer';
 
 injectTapEventPlugin();
 
@@ -23,7 +23,7 @@ export function renderElement(elt, deep = false) {
 /* eslint-disable react/no-multi-comp */
 
 export function createGameArea(state, dispatch = noop, props = {}) {
-  return React.createElement(gameArea.GameArea, {...gameArea.mapStateToProps(state), ...gameArea.mapDispatchToProps(dispatch), ...props});
+  return React.createElement(gameArea.GameAreaContainer, {...gameArea.mapStateToProps(state), ...gameArea.mapDispatchToProps(dispatch), ...props});
 }
 
 function createCreator(state, dispatch = noop) {

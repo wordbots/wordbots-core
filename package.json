@@ -15,6 +15,7 @@
     "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "test": "jest",
     "test:watch": "npm test -- --watch",
+    "lint": "node_modules/eslint/bin/eslint.js src test",
     "heroku-postbuild": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile"
   },
   "repository": {
@@ -41,7 +42,7 @@
     "express": "^4.16.1",
     "extract-text-webpack-plugin": "^3.0.0",
     "fast-json-patch": "^2.0.5",
-    "file-loader": "1.1.6",
+    "file-loader": "^1.1.9",
     "firebase": "^4.8.2",
     "image-webpack-loader": "^4.0.0",
     "json-loader": "^0.5.7",

@@ -36,7 +36,7 @@ Then visit `http://localhost:3000`.
 ## Lint and test
 
 ```
-$ node_modules/eslint/bin/eslint.js . --fix && yarn test -- --coverage
+$ yarn lint --fix && yarn test --coverage
 ```
 
 ## Acknowledgements

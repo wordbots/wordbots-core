@@ -18,7 +18,10 @@ describe('GameArea container', () => {
     const state = combineState(getDefaultState());
 
     const game = createGameArea(state);
-    const dom = renderElement(game);
+
+    // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
+    const gameInner = renderElement(game);
+    const dom = renderElement(gameInner);
 
     const paper = dom.props.children[1];
     const mainDiv = paper.props.children[2];
@@ -28,7 +31,7 @@ describe('GameArea container', () => {
     /* eslint-disable react/jsx-key */
     expect(paper.props.children).toEqual([
       paper.props.children[0],
-      <PlayerArea opponent gameProps={game.props} />,
+      <PlayerArea opponent gameProps={gameInner.props} />,
       <div
         className="background"
         ref={mainDiv.ref}
@@ -58,7 +61,7 @@ describe('GameArea container', () => {
           onEndGame={board.props.onEndGame}
           />
       </div>,
-      <PlayerArea gameProps={game.props} />,
+      <PlayerArea gameProps={gameInner.props} />,
       <EventAnimation eventQueue={[]} currentTurn="orange" />,
       <VictoryScreen
         winnerColor={null}

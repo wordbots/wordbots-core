@@ -23,6 +23,14 @@ export const AI_RESPONSE_TIME_MS = 2200;
 export const EVENT_ANIMATION_TIME_MS = 2000;
 export const SHOW_TOOLTIP_TIMEOUT_MS = 500;
 
+/* Layout. */
+
+export const HEADER_HEIGHT = 64;
+export const SIDEBAR_WIDTH = 256;
+export const SIDEBAR_COLLAPSED_WIDTH = 64;
+export const BOARD_Z_INDEX = 999;
+export const BACKGROUND_Z_INDEX = 9999;
+
 /* Board. */
 
 export const GRID_CONFIG = {

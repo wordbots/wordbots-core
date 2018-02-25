@@ -15,6 +15,7 @@
     "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "test": "jest",
     "test:watch": "npm test -- --watch",
+    "lint": "node_modules/eslint/bin/eslint.js src test",
     "heroku-postbuild": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile"
   },
   "repository": {

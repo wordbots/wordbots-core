@@ -6,6 +6,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
+import { animate } from '../util/common';
 import { shuffleCardsInDeck } from '../util/cards';
 import { currentTutorialStep } from '../util/game';
 import GameArea, { gameProps } from '../components/game/GameArea';
@@ -14,14 +15,6 @@ import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
 import Play from './Play';
-
-function animate(fns) {
-  if (fns.length > 0) {
-    const [first, ...rest] = fns;
-    first();
-    setTimeout(() => animate(rest), ANIMATION_TIME_MS);
-  }
-}
 
 export function mapStateToProps(state) {
   const { game } = state;
@@ -85,7 +78,7 @@ export function mapDispatchToProps(dispatch) {
         () => dispatch(gameActions.attack(sourceHexId, targetHexId)),
         () => dispatch(gameActions.attackRetract()),
         () => dispatch(gameActions.attackComplete())
-      ]);
+      ], ANIMATION_TIME_MS);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       animate([
@@ -93,7 +86,7 @@ export function mapDispatchToProps(dispatch) {
         () => dispatch(gameActions.attack(toHexId, targetHexId)),
         () => dispatch(gameActions.attackRetract()),
         () => dispatch(gameActions.attackComplete())
-      ]);
+      ], ANIMATION_TIME_MS);
     },
     onAttackRetract: () => {
       dispatch(gameActions.attackRetract());
@@ -192,20 +185,11 @@ export class GameAreaContainer extends Component {
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   componentDidMount() {
     this.tryToStartGame();
-
-    this.interval = setInterval(() => {
-      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
-        animate([
-          this.props.onAIResponse,
-          this.props.onAttackRetract,
-          this.props.onAttackComplete
-        ]);
-      }
-    }, AI_RESPONSE_TIME_MS);
+    this.interval = setInterval(this.performAIResponse, AI_RESPONSE_TIME_MS);
   }
 
   componentDidUpdate(prevProps) {
@@ -261,9 +245,20 @@ export class GameAreaContainer extends Component {
     this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
   };
 
+  performAIResponse = () => {
+    const { currentTurn, isPractice, winner, onAIResponse, onAttackRetract, onAttackComplete } = this.props;
+    if (isPractice && !winner && currentTurn === 'blue') {
+      animate([
+        onAIResponse,
+        onAttackRetract,
+        onAttackComplete
+      ], ANIMATION_TIME_MS);
+    }
+  }
+
   movePiece = (hexId, asPartOfAttack = false) => {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
-  }
+  };
 
   attackPiece = (hexId, intermediateMoveHexId) => {
     if (intermediateMoveHexId) {
@@ -271,11 +266,11 @@ export class GameAreaContainer extends Component {
     } else {
       this.props.onAttackRobot(this.props.selectedTile, hexId);
     }
-  }
+  };
 
   placePiece = (hexId) => {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
-  }
+  };
 
   onSelectTile = (hexId, action = null, intermediateMoveHexId = null) => {
     if (this.props.attack) {
@@ -289,7 +284,7 @@ export class GameAreaContainer extends Component {
     } else {
       this.props.onSelectTile(hexId, this.props.isSandbox ? this.props.currentTurn : this.props.player);
     }
-  }
+  };
 
   handleClickGameArea = evt => {
     const { className } = evt.target;
@@ -297,20 +292,20 @@ export class GameAreaContainer extends Component {
     if ((baseVal !== undefined ? baseVal : className).includes('background')) {
       this.props.onDeselect(this.props.player);
     }
-  }
+  };
 
   handleClickEndGame = () => {
     this.props.onEndGame();
     this.props.history.push('/play');
-  }
+  };
 
   handleNextTutorialStep = () => {
     this.props.onTutorialStep();
-  }
+  };
 
   handlePrevTutorialStep = () => {
     this.props.onTutorialStep(true);
-  }
+  };
 
   render = () =>
     <GameArea
@@ -327,7 +322,7 @@ export class GameAreaContainer extends Component {
       onNextTutorialStep={this.handleNextTutorialStep}
       onPrevTutorialStep={this.handlePrevTutorialStep}
       onSelectTile={this.onSelectTile}
-      onAddCardToTopOfDeck={this.onAddCardToTopOfDeck} />;
+      onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck} />;
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GameAreaContainer));

@@ -26,13 +26,12 @@ import Deck from './Deck';
 import Decks from './Decks';
 import Home from './Home';
 import Play from './Play';
-import GameArea from './GameArea';
+import GameArea from './GameAreaContainer';
 import About from './About';
 
 function mapStateToProps(state) {
   return {
     inGame: state.game.started,
-    inTutorial: state.game.tutorial,
     renderId: state.global.renderId
   };
 }
@@ -61,7 +60,6 @@ class App extends Component {
 
   static propTypes = {
     inGame: bool,
-    inTutorial: bool,
     renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
@@ -104,14 +102,8 @@ class App extends Component {
     };
   }
 
-  get isSidebarExpanded() {
-    return !isFlagSet('sidebarCollapsed') || this.props.inTutorial;
-  }
-
   get sidebar() {
-    if (this.state.loading) {
-      return null;
-    } else if (this.props.inGame) {
+    if (this.state.loading || this.props.inGame) {
       return null;
     } else {
       return <NavMenu onRerender={this.props.onRerender} />;
@@ -119,31 +111,30 @@ class App extends Component {
   }
 
   get content() {
-    if (this.state.loading) {
-      return null;
-    } else {
-      return (
-        <div style={{
-          paddingLeft: this.props.inGame ? 0 : (this.isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH),
-          transition: 'padding-left 200ms ease-in-out'
-        }}>
-          <ErrorBoundary>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/home" component={Home} />
-              <Route path="/collection" component={Collection} />
-              <Route path="/creator" component={Creator} />
-              <Route path="/decks" component={Decks} />
-              <Route path="/deck" component={Deck} />
-              <Route path="/play" component={Play} />
-              <Route path="/sandbox" component={GameArea} />
-              <Route path="/about" component={About} />
-              <Route render={this.redirectToRoot} />
-            </Switch>
-          </ErrorBoundary>
-        </div>
-      );
-    }
+    const { inGame } = this.props;
+    const sidebarWidth = inGame ? 0 : (isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH);
+
+    return (
+      <div style={{
+        paddingLeft: sidebarWidth,
+        transition: 'padding-left 200ms ease-in-out'
+      }}>
+        <ErrorBoundary>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/home" component={Home} />
+            <Route path="/collection" component={Collection} />
+            <Route path="/creator" component={Creator} />
+            <Route path="/decks" component={Decks} />
+            <Route path="/deck" component={Deck} />
+            <Route path="/play" component={Play} />
+            <Route path="/sandbox" component={GameArea} />
+            <Route path="/about" component={About} />
+            <Route render={this.redirectToRoot} />
+          </Switch>
+        </ErrorBoundary>
+      </div>
+    );
   }
 
   get dialogs() {

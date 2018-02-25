@@ -90,7 +90,8 @@ export default class GameArea extends Component {
     onClickEndGame: func,
     onNextTutorialStep: func,
     onPrevTutorialStep: func,
-    onSelectTile: func
+    onSelectTile: func,
+    onAddCardToTopOfDeck: func
   };
   /* eslint-enable react/no-unused-prop-types */
 

@@ -51,3 +51,12 @@ export function ensureInRange(name, value, min, max) {
     return `Not between ${min} and ${max}.`;
   }
 }
+
+// Execute the given functions one-by-one, with the given delay (in ms) in between.
+export function animate(fns, delay) {
+  if (fns.length > 0) {
+    const [first, ...rest] = fns;
+    first();
+    setTimeout(() => animate(rest, delay), delay);
+  }
+}

@@ -1,3 +1,5 @@
+import React from 'react';
+
 let ReactGA, currentLocation;
 if (inBrowser()) {
   ReactGA = require('react-ga');
@@ -50,4 +52,8 @@ export function logIfFlagSet(flag, msg) {
 
 export function getGameAreaNode() {
   return document.getElementById('gameArea') || document.body;
+}
+
+export function zeroWidthJoin(...items) {
+  return items.reduce((a, b) => <span>{a}&zwnj;{b}</span>);
 }

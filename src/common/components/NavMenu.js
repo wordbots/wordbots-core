@@ -5,7 +5,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { isFlagSet, toggleFlag } from '../util/browser';
+import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
 import Tooltip from '../components/Tooltip';
 
 export default class NavMenu extends Component {
@@ -67,7 +67,9 @@ export default class NavMenu extends Component {
             color: '#666'
           }}
         >
-          {this.isExpanded ? <span>arrow_forward&zwnj;arrow_back</span> : <span>arrow_back&zwnj;arrow_forward</span>}
+          <span>
+            {this.isExpanded ? zeroWidthJoin('arrow_forward', 'arrow_back') : zeroWidthJoin('arrow_back', 'arrow_forward')}
+          </span>
         </FontIcon>
       </Tooltip>
     </div>;

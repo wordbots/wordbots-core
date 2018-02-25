@@ -80,10 +80,13 @@ export function handleAction(oldState, action) {
     case actions.DESELECT:
       return g.deselect(state, action.payload.player);
 
-    case actions.ADD_CARD_TO_TOP_OF_DECK:
+    case actions.ADD_CARD_TO_TOP_OF_DECK: {
       // Only to be used in sandbox mode.
-      state.players[action.payload.player].deck.unshift({...action.payload.card, id: id()});
+      const { player } = action.payload;
+      const card = { ...action.payload.card, id: id() };
+      state.players[player].deck.unshift(card);
       return state;
+    }
 
     case socketActions.CONNECTING:
       return Object.assign(state, {started: false});

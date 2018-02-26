@@ -92,15 +92,9 @@ export function createCardFromProps(props) {
   } else {
     card.abilities = command;
     if (props.type === TYPE_ROBOT) {
-      card.stats = {
-        health: props.health,
-        speed: props.speed,
-        attack: props.attack
-      };
+      card.stats = pick(props, ['health', 'speed', 'attack']);
     } else {
-      card.stats = {
-        health: props.health
-      };
+      card.stats = pick(props, ['health']);
     }
   }
 

@@ -42,9 +42,10 @@ export function tutorialStep(back = false) {
   };
 }
 
-export function startSandbox() {
+export function startSandbox(card = null) {
   return {
-    type: START_SANDBOX
+    type: START_SANDBOX,
+    payload: { card }
   };
 }
 

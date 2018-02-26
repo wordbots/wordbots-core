@@ -43,6 +43,7 @@ export default class CardCreationForm extends Component {
     onParseComplete: func,
     onSpriteClick: func,
     onAddToCollection: func,
+    onTestCard: func,
     onOpenDialog: func
   };
 
@@ -238,21 +239,28 @@ export default class CardCreationForm extends Component {
               label="Help"
               icon="help_outline"
               tooltip="Learn more about creating a card."
-              width="32%"
+              width="24%"
               onClick={this.handleClickHelp} />
             <ButtonInRow
               label="Dictionary"
               icon="book"
               tooltip="Check out all of the terms and actions that the parser supports."
-              width="32%"
+              width="24%"
               onClick={this.handleClickDictionary} />
             <ButtonInRow
               label="Randomize"
               icon="refresh"
               tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
               onClick={this.handleClickRandomize}
-              width="32%"
+              width="24%"
               disabled={!examplesLoaded} />
+            <ButtonInRow
+              label="Test"
+              icon="videogame_asset"
+              tooltip="Test out this card in a practice game."
+              onClick={this.props.onTestCard}
+              width="24%"
+              disabled={!this.isValid} />
           </div>
         </div>
 

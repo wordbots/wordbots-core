@@ -24,11 +24,17 @@ export function startPractice(state, deck) {
   return state;
 }
 
-export function startSandbox(state) {
+export function startSandbox(state, cardToTest = null) {
   const decks = {
     orange: shuffle(aiDeck).map(card => ({ ...card, id: id() })),
     blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
   };
+
+  if (cardToTest) {
+    // If we're entering sandbox mode to test a card, add two copies of it to the top of the orange deck.
+    decks.orange.unshift(cardToTest);
+    decks.orange.unshift(cardToTest);
+  }
 
   state = newGame(state, 'orange', {orange: 'Orange', blue: 'Blue'}, decks);
   state.sandbox = true;

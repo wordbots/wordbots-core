@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
 import Badge from 'material-ui/Badge';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants';
 import { groupCards } from '../../util/cards';
+import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -19,7 +19,8 @@ export default class DeckSummary extends Component {
 
     onDelete: func,
     onDuplicate: func,
-    onEdit: func
+    onEdit: func,
+    onTry: func
   };
 
   get styles() {
@@ -53,16 +54,24 @@ export default class DeckSummary extends Component {
     };
   }
 
+  get isDefaultDeck() {
+    return this.props.deck.id.startsWith('[default-');
+  }
+
   handleClickDelete = () => {
     this.props.onDelete(this.props.deck.id);
-  }
+  };
 
   handleClickDuplicate = () => {
     this.props.onDuplicate(this.props.deck.id);
-  }
+  };
 
   handleClickEdit = () => {
     this.props.onEdit(this.props.deck.id);
+  };
+
+  handleClickTry = () => {
+    this.props.onTry(this.props.deck);
   }
 
   renderCard(card, idx) {
@@ -126,27 +135,34 @@ export default class DeckSummary extends Component {
           </div>
         </div>
 
-        <div>
-          <MustBeLoggedIn loggedIn={this.props.loggedIn}>
-            <RaisedButton
-              primary
-              label="Edit"
-              disabled={deck.id.startsWith('[default-')}
-              onClick={this.handleClickEdit}
-              style={{float: 'left', marginRight: 10, width: '31%'}} />
-            <RaisedButton
-              primary
-              label="Duplicate"
-              onClick={this.handleClickDuplicate}
-              style={{float: 'left', marginRight: 10, width: '31%'}} />
-            <RaisedButton
-              primary
-              label="Delete"
-              disabled={deck.id.startsWith('[default-')}
-              onClick={this.handleClickDelete}
-              style={{float: 'left', width: '31%'}}/>
-          </MustBeLoggedIn>
-        </div>
+        <MustBeLoggedIn loggedIn={this.props.loggedIn} style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%'
+        }}>
+          <ButtonInRow
+            label="Edit"
+            icon="edit"
+            tooltip="Edit the cards in this deck."
+            onClick={this.handleClickEdit}
+            disabled={this.isDefaultDeck} />
+          <ButtonInRow
+            label="Duplicate"
+            icon="add_circle"
+            tooltip="Create a copy of this deck."
+            onClick={this.handleClickDuplicate} />
+          <ButtonInRow
+            label="Delete"
+            icon="delete"
+            tooltip="Delete this deck. This operation cannot be undone!"
+            onClick={this.handleClickDuplicate}
+            disabled={this.isDefaultDeck} />
+          <ButtonInRow
+            label="Try"
+            icon="videogame_asset"
+            tooltip="Try this deck in a practice game."
+            onClick={this.handleClickTry} />
+        </MustBeLoggedIn>
 
         <div style={{padding: '0 10px 10px 10px'}}>
           <div style={{float: 'left', marginRight: 30}}>

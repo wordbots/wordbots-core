@@ -77,8 +77,6 @@ export default class GameArea extends Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     ...gameProps,
-
-    chatOpen: bool,
     message: string,
 
     onPassTurn: func,

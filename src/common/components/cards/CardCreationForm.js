@@ -14,6 +14,7 @@ import { getSentencesFromInput, requestParse } from '../../util/cards';
 import { getCardTextCorpus } from '../../util/firebase';
 import { prepareBigramProbs } from '../../util/language';
 import CardTextExampleStore from '../../util/CardTextExampleStore';
+import ButtonInRow from '../ButtonInRow';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -190,6 +191,21 @@ export default class CardCreationForm extends Component {
     this.onUpdateText(this.props.text, value);
   };
 
+  handleClickHelp = () => {
+    this.props.onOpenDialog('help');
+  };
+
+  handleClickDictionary = () => {
+    this.props.onOpenDialog('dictionary');
+  };
+
+  handleClickRandomize = () => {
+    const example = exampleStore.getExample(this.parserMode);
+    if (example) {
+      this.onUpdateText(example, this.props.type, true);
+    }
+  };
+
   onUpdateText = (text, cardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
@@ -197,24 +213,6 @@ export default class CardCreationForm extends Component {
     this.props.onSetText(text);
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   };
-
-  renderButton = (label, icon, tooltip, onClick, disabled = false) => (
-      <RaisedButton
-        primary
-        style={{width: '31%', marginBottom: 8}}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        <Tooltip inline text={tooltip}>
-          <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
-            {icon}
-          </FontIcon>
-          <span style={this.styles.buttonText}>
-            {label}
-          </span>
-        </Tooltip>
-      </RaisedButton>
-  )
 
   renderAttributeField(attribute, enabled = true, opts = {}) {
     return (
@@ -236,20 +234,25 @@ export default class CardCreationForm extends Component {
       <div style={this.styles.container}>
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12, width: '100%', maxWidth: 800}}>
-            {this.renderButton('Help', 'help_outline', 'Learn more about creating a card.', () => {
-              this.props.onOpenDialog('help');
-            })}
-            {this.renderButton('Dictionary', 'book',
-              'Check out all of the terms and actions that the parser supports.', () => {
-                this.props.onOpenDialog('dictionary');
-            })}
-            {this.renderButton('Randomize', 'refresh',
-              `Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`, () => {
-              const example = exampleStore.getExample(this.parserMode);
-              if (example) {
-                this.onUpdateText(example, this.props.type, true);
-              }
-            }, !examplesLoaded)}
+            <ButtonInRow
+              label="Help"
+              icon="help_outline"
+              tooltip="Learn more about creating a card."
+              width="32%"
+              onClick={this.handleClickHelp} />
+            <ButtonInRow
+              label="Dictionary"
+              icon="book"
+              tooltip="Check out all of the terms and actions that the parser supports."
+              width="32%"
+              onClick={this.handleClickDictionary} />
+            <ButtonInRow
+              label="Randomize"
+              icon="refresh"
+              tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
+              onClick={this.handleClickRandomize}
+              width="32%"
+              disabled={!examplesLoaded} />
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { bool, func, number, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
+import Helmet from 'react-helmet';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
@@ -25,12 +26,12 @@ import Deck from './Deck';
 import Decks from './Decks';
 import Home from './Home';
 import Play from './Play';
+import GameArea from './GameAreaContainer';
 import About from './About';
 
 function mapStateToProps(state) {
   return {
     inGame: state.game.started,
-    inTutorial: state.game.tutorial,
     renderId: state.global.renderId
   };
 }
@@ -45,6 +46,9 @@ function mapDispatchToProps(dispatch) {
     },
     onReceiveFirebaseData(data) {
       dispatch(actions.firebaseData(data));
+    },
+    onRerender() {
+      dispatch(actions.rerender());
     }
   };
 }
@@ -56,14 +60,14 @@ class App extends Component {
 
   static propTypes = {
     inGame: bool,
-    inTutorial: bool,
     renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
 
     onLoggedIn: func,
     onLoggedOut: func,
-    onReceiveFirebaseData: func
+    onReceiveFirebaseData: func,
+    onRerender: func
   };
 
   state = {
@@ -98,47 +102,39 @@ class App extends Component {
     };
   }
 
-  get isSidebarExpanded() {
-    return !isFlagSet('sidebarCollapsed') || this.props.inTutorial;
-  }
-
   get sidebar() {
-    if (this.state.loading) {
-      return null;
-    } else if (this.props.inGame) {
+    if (this.state.loading || this.props.inGame) {
       return null;
     } else {
-      return <NavMenu />;
+      return <NavMenu onRerender={this.props.onRerender} />;
     }
   }
 
   get content() {
-    const paddingLeft = this.props.inGame ? 0 : (this.isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH);
+    const { inGame } = this.props;
+    const sidebarWidth = inGame ? 0 : (isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH);
 
-    if (this.state.loading) {
-      return null;
-    } else {
-      return (
-        <div style={{
-          paddingLeft: paddingLeft,
-          transition: 'padding-left 200ms ease-in-out'
-        }}>
-          <ErrorBoundary>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/home" component={Home} />
-              <Route path="/collection" component={Collection} />
-              <Route path="/creator" component={Creator} />
-              <Route path="/decks" component={Decks} />
-              <Route path="/deck" component={Deck} />
-              <Route path="/play" component={Play} />
-              <Route path="/about" component={About} />
-              <Route render={this.redirectToRoot} />
-            </Switch>
-          </ErrorBoundary>
-        </div>
-      );
-    }
+    return (
+      <div style={{
+        paddingLeft: sidebarWidth,
+        transition: 'padding-left 200ms ease-in-out'
+      }}>
+        <ErrorBoundary>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/home" component={Home} />
+            <Route path="/collection" component={Collection} />
+            <Route path="/creator" component={Creator} />
+            <Route path="/decks" component={Decks} />
+            <Route path="/deck" component={Deck} />
+            <Route path="/play" component={Play} />
+            <Route path="/sandbox" component={GameArea} />
+            <Route path="/about" component={About} />
+            <Route render={this.redirectToRoot} />
+          </Switch>
+        </ErrorBoundary>
+      </div>
+    );
   }
 
   get dialogs() {
@@ -161,10 +157,11 @@ class App extends Component {
   render() {
     return (
       <div>
-        <TitleBar inGame={this.props.inGame}/>
+        <Helmet title="Wordbots"/>
+        <TitleBar />
         <div>
           {this.sidebar}
-          {this.content}
+          {this.state.loading ? null : this.content}
         </div>
         {this.dialogs}
       </div>

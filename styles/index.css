@@ -79,7 +79,7 @@ a.topLink:hover {
 /* Hand hover animation */
 
 #handTop:hover {
-  top: -80px !important;
+  top: 0 !important;
   transition: top 300ms ease-in-out;
 }
 

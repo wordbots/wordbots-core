@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
+import Helmet from 'react-helmet';
 import screenfull from 'screenfull';
 
 import {
@@ -10,6 +11,7 @@ import { inBrowser } from '../../util/browser';
 import Chat from '../multiplayer/Chat';
 
 import Board from './Board';
+import CardSelector from './CardSelector';
 import EndTurnButton from './EndTurnButton';
 import EventAnimation from './EventAnimation';
 import ForfeitButton from './ForfeitButton';
@@ -62,6 +64,7 @@ export const gameProps = {
 
   gameOver: bool,
   isTutorial: bool,
+  isSandbox: bool,
   isMyTurn: bool,
   isSpectator: bool,
   isAttackHappening: bool,
@@ -87,7 +90,8 @@ export default class GameArea extends Component {
     onClickEndGame: func,
     onNextTutorialStep: func,
     onPrevTutorialStep: func,
-    onSelectTile: func
+    onSelectTile: func,
+    onAddCardToTopOfDeck: func
   };
   /* eslint-enable react/no-unused-prop-types */
 
@@ -100,6 +104,13 @@ export default class GameArea extends Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener('resize', () => { this.updateDimensions(); });
+  }
+
+  get actualPlayer() {
+    // In sandbox mode, the "actual player" is whoever's turn it is,
+    // because the "player" can move either side's pieces.
+    const { currentTurn, isSandbox, player } = this.props;
+    return isSandbox ? currentTurn : player;
   }
 
   handleToggleFullScreen = () => {
@@ -122,15 +133,39 @@ export default class GameArea extends Component {
     });
   };
 
+  renderSidebar = () => {
+    const { actionLog, collection, isSandbox, socket, onAddCardToTopOfDeck, onSendChatMessage } = this.props;
+    const { chatOpen } = this.state;
+
+    if (isSandbox) {
+      return (
+        <CardSelector
+          cardCollection={collection.cards}
+          onAddCardToTopOfDeck={onAddCardToTopOfDeck} />
+      );
+    } else {
+      return (
+        <Chat
+          inGame
+          fullscreen={screenfull.isFullscreen}
+          open={chatOpen}
+          toggleChat={this.handleToggleChat}
+          roomName={socket.hosting ? null : socket.gameName}
+          messages={socket.chatMessages.concat(actionLog)}
+          onSendMessage={onSendChatMessage} />
+      );
+    }
+  }
+
   render() {
     const {
-      actionLog, attack, bluePieces, currentTurn, eventQueue, gameOver, isAttackHappening,
-      isMyTurn, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
-      selectedTile, sfxQueue, socket, status, target, tutorialStep, usernames, winner,
+      attack, bluePieces, currentTurn, eventQueue, gameOver, isAttackHappening,
+      isMyTurn, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
+      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
-      onPassTurn, onPrevTutorialStep, onSelectTile, onSendChatMessage, onTutorialStep
+      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep
     } = this.props;
-    const { areaHeight, boardSize, chatOpen } = this.state;
+    const { areaHeight, boardSize } = this.state;
 
     if (message) {
       return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
@@ -140,11 +175,14 @@ export default class GameArea extends Component {
       <div
         id="gameArea"
         ref={(gameArea) => { this.gameArea = gameArea; }}
-        style={
-          screenfull.isFullscreen ? {width: '100%', height: '100%'} : {}
-        }
+        style={{
+          width: screenfull.isFullscreen ? '100%' : 'auto',
+          height: screenfull.isFullscreen ? this.state.areaHeight + HEADER_HEIGHT : this.state.areaHeight,
+          display: this.props.isSandbox ? 'flex' : 'block'
+        }}
       >
         <div>
+          <Helmet title="Play" />
           <GameNotification text="It's your turn!" enabled={currentTurn === player} />
           <Sfx queue={sfxQueue} />
         </div>
@@ -153,7 +191,8 @@ export default class GameArea extends Component {
           className="background"
           style={{
             position: 'relative',
-            marginRight: chatOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+            marginRight: this.props.isSandbox ? 0 : (this.state.chatOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH),
+            width: this.props.isSandbox ? `calc(100% - ${SIDEBAR_WIDTH}px)` : 'auto',
             height: screenfull.isFullscreen ? areaHeight + HEADER_HEIGHT : areaHeight,
             background: `url(${this.loadBackground()})`
           }}
@@ -183,7 +222,7 @@ export default class GameArea extends Component {
                 player={player}
                 currentTurn={currentTurn}
                 gameOver={gameOver}
-                isTutorial={isTutorial}
+                isTutorial={isTutorial || isSandbox}
                 isMyTurn={isMyTurn}
                 isAttackHappening={isAttackHappening}
                 onPassTurn={onPassTurn} />
@@ -206,16 +245,16 @@ export default class GameArea extends Component {
               }}
             >
               <EndTurnButton
-                player={player}
+                player={this.actualPlayer}
                 gameOver={gameOver}
-                isMyTurn={isMyTurn}
+                isMyTurn={isMyTurn || isSandbox}
                 isAttackHappening={isAttackHappening}
                 tutorialStep={tutorialStep}
                 onPassTurn={onPassTurn}
                 onNextTutorialStep={onNextTutorialStep}
                 onPrevTutorialStep={onPrevTutorialStep} />
               <ForfeitButton
-                player={player}
+                player={this.actualPlayer}
                 history={history}
                 gameOver={gameOver}
                 isSpectator={isSpectator}
@@ -237,10 +276,10 @@ export default class GameArea extends Component {
               width: boardSize
             }}
           >
-            <Status status={isMyTurn ? status : {}} />
+            <Status status={(isMyTurn || isSandbox) ? status : {}} />
             <Board
               size={this.state.boardSize}
-              player={player}
+              player={this.actualPlayer}
               currentTurn={currentTurn}
               selectedTile={selectedTile}
               target={target}
@@ -263,14 +302,7 @@ export default class GameArea extends Component {
             onClick={onClickEndGame} />
         </Paper>
 
-        <Chat
-          inGame
-          fullscreen={screenfull.isFullscreen}
-          open={chatOpen}
-          toggleChat={this.handleToggleChat}
-          roomName={socket.hosting ? null : socket.gameName}
-          messages={socket.chatMessages.concat(actionLog)}
-          onSendMessage={onSendChatMessage} />
+        {this.renderSidebar()}
       </div>
     );
   }

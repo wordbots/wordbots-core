@@ -15,6 +15,7 @@ export default class Hand extends Component {
     status: object,
     curved: bool,
     opponent: bool,
+    sandbox: bool,
     tutorialStep: object,
 
     onSelectCard: func,
@@ -46,15 +47,23 @@ export default class Hand extends Component {
   handleHoverCard = (hoveredCardIdx) => { this.setState({ hoveredCardIdx }); }
 
   renderCards() {
+    const {
+      cards, isActivePlayer, targetableCards, status, curved, opponent, sandbox, selectedCard, tutorialStep,
+      onSelectCard, onTutorialStep
+    } = this.props;
+    const { availableWidth, hoveredCardIdx } = this.state;
+
     const widthPerCard = 151;
     const defaultMargin = 24;
-    const maxWidth = this.state.availableWidth - 20;
-    const numCards = this.props.cards.length;
+
+    const isUpsideDown = sandbox && opponent;
+    const maxWidth = availableWidth - 20;
+    const numCards = cards.length;
     const baseWidth = numCards * widthPerCard;
     const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
-    return this.props.cards.map((card, idx) => {
+    return cards.map((card, idx) => {
       // TODO this isn't quite right ...
       const rotationDegs = (idx - (numCards - 1)/2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
@@ -65,17 +74,17 @@ export default class Hand extends Component {
             card={card}
             idx={idx}
             margin={idx < numCards - 1 ? cardMargin : 0}
-            rotation={this.props.curved ? rotationDegs : 0}
-            selected={this.props.selectedCard === idx && (isEmpty(this.props.targetableCards) || !this.props.isActivePlayer)}
-            status={this.props.status}
-            targetable={this.props.isActivePlayer && this.props.targetableCards.includes(card.id)}
-            tutorialStep={this.props.tutorialStep}
-            visible={this.props.isActivePlayer}
-            yTranslation={this.props.curved ? translationPx : 0}
-            zIndex={isNull(this.state.hoveredCardIdx) ? 0 : (1000 - Math.abs(this.state.hoveredCardIdx - idx) * 10)}
-            onSelectCard={this.props.onSelectCard}
+            rotation={isUpsideDown ? 180 : (curved ? rotationDegs : 0)}
+            selected={selectedCard === idx && (isEmpty(targetableCards) || !isActivePlayer)}
+            status={status}
+            targetable={isActivePlayer && targetableCards.includes(card.id)}
+            tutorialStep={tutorialStep}
+            visible={isActivePlayer || sandbox}
+            yTranslation={curved ? translationPx : 0}
+            zIndex={isNull(hoveredCardIdx) ? 0 : (1000 - Math.abs(hoveredCardIdx - idx) * 10)}
+            onSelectCard={onSelectCard}
             onHoverCard={this.handleHoverCard}
-            onTutorialStep={this.props.onTutorialStep} />
+            onTutorialStep={onTutorialStep} />
        </CSSTransition>
       );
     });

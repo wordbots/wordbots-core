@@ -6,6 +6,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
+import { animate } from '../util/common';
 import { shuffleCardsInDeck } from '../util/cards';
 import { currentTutorialStep } from '../util/game';
 import GameArea, { gameProps } from '../components/game/GameArea';
@@ -15,24 +16,17 @@ import { arbitraryPlayerState } from '../store/defaultGameState';
 
 import Play from './Play';
 
-function animate(fns) {
-  if (fns.length > 0) {
-    const [first, ...rest] = fns;
-    first();
-    setTimeout(() => animate(rest), ANIMATION_TIME_MS);
-  }
-}
-
 export function mapStateToProps(state) {
-  const activePlayer = state.game.players[state.game.player] || arbitraryPlayerState();
-  const currentPlayer = state.game.players[state.game.currentTurn];
+  const { game } = state;
+  const currentPlayer = game.players[game.currentTurn];
+  const activePlayer = game.sandbox ? currentPlayer : game.players[game.player] || arbitraryPlayerState();
 
   return {
-    started: state.game.started,
-    player: state.game.player,
-    currentTurn: state.game.currentTurn,
-    usernames: state.game.usernames,
-    winner: state.game.winner,
+    started: game.started,
+    player: game.player,
+    currentTurn: game.currentTurn,
+    usernames: game.usernames,
+    winner: game.winner,
 
     selectedTile: activePlayer.selectedTile,
     selectedCard: activePlayer.selectedCard,
@@ -40,34 +34,35 @@ export function mapStateToProps(state) {
 
     status: activePlayer.status,
     target: activePlayer.target,
-    attack: state.game.attack,
+    attack: game.attack,
 
-    blueHand: state.game.players.blue.hand,
-    orangeHand: state.game.players.orange.hand,
+    blueHand: game.players.blue.hand,
+    orangeHand: game.players.orange.hand,
 
-    bluePieces: state.game.players.blue.robotsOnBoard,
-    orangePieces: state.game.players.orange.robotsOnBoard,
+    bluePieces: game.players.blue.robotsOnBoard,
+    orangePieces: game.players.orange.robotsOnBoard,
 
-    blueEnergy: state.game.players.blue.energy,
-    orangeEnergy: state.game.players.orange.energy,
+    blueEnergy: game.players.blue.energy,
+    orangeEnergy: game.players.orange.energy,
 
-    blueDeck: state.game.players.blue.deck,
-    orangeDeck: state.game.players.orange.deck,
+    blueDeck: game.players.blue.deck,
+    orangeDeck: game.players.orange.deck,
 
-    blueDiscardPile: state.game.players.blue.discardPile,
-    orangeDiscardPile: state.game.players.orange.discardPile,
+    blueDiscardPile: game.players.blue.discardPile,
+    orangeDiscardPile: game.players.orange.discardPile,
 
-    eventQueue: state.game.eventQueue,
-    sfxQueue: state.game.sfxQueue,
-    tutorialStep: currentTutorialStep(state.game),
-    isPractice: state.game.practice,
+    eventQueue: game.eventQueue,
+    sfxQueue: game.sfxQueue,
+    tutorialStep: currentTutorialStep(game),
+    isPractice: game.practice,
 
-    gameOver: state.game.winner !== null,
-    isTutorial: state.game.tutorial,
-    isMyTurn: state.game.currentTurn === state.game.player,
-    isAttackHappening: state.game.attack && state.game.attack.from && state.game.attack.to && true,
+    gameOver: game.winner !== null,
+    isTutorial: game.tutorial,
+    isSandbox: game.sandbox,
+    isMyTurn: game.currentTurn === game.player,
+    isAttackHappening: game.attack && game.attack.from && game.attack.to && true,
 
-    actionLog: state.game.actionLog,
+    actionLog: game.actionLog,
     collection: state.collection,
     socket: state.socket
   };
@@ -83,7 +78,7 @@ export function mapDispatchToProps(dispatch) {
         () => dispatch(gameActions.attack(sourceHexId, targetHexId)),
         () => dispatch(gameActions.attackRetract()),
         () => dispatch(gameActions.attackComplete())
-      ]);
+      ], ANIMATION_TIME_MS);
     },
     onMoveRobotAndAttack: (fromHexId, toHexId, targetHexId) => {
       animate([
@@ -91,7 +86,7 @@ export function mapDispatchToProps(dispatch) {
         () => dispatch(gameActions.attack(toHexId, targetHexId)),
         () => dispatch(gameActions.attackRetract()),
         () => dispatch(gameActions.attackComplete())
-      ]);
+      ], ANIMATION_TIME_MS);
     },
     onAttackRetract: () => {
       dispatch(gameActions.attackRetract());
@@ -132,6 +127,9 @@ export function mapDispatchToProps(dispatch) {
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
     },
+    onStartSandbox: () => {
+      dispatch(gameActions.startSandbox());
+    },
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
     },
@@ -143,6 +141,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
+    },
+    onAddCardToTopOfDeck: (player, card) => {
+      dispatch(gameActions.addCardToTopOfDeck(player, card));
     }
   };
 }
@@ -169,8 +170,10 @@ export class GameAreaContainer extends Component {
     onStartTutorial: func,
     onTutorialStep: func,
     onStartPractice: func,
+    onStartSandbox: func,
     onAIResponse: func,
-    onSendChatMessage: func
+    onSendChatMessage: func,
+    onAddCardToTopOfDeck: func
   };
   /* eslint-enable react/no-unused-prop-types */
 
@@ -182,20 +185,11 @@ export class GameAreaContainer extends Component {
   static childContextTypes = {
     muiTheme: object.isRequired
   };
-  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)})
+  getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   componentDidMount() {
     this.tryToStartGame();
-
-    this.interval = setInterval(() => {
-      if (this.props.isPractice && !this.props.winner && this.props.currentTurn === 'blue') {
-        animate([
-          this.props.onAIResponse,
-          this.props.onAttackRetract,
-          this.props.onAttackComplete
-        ]);
-      }
-    }, AI_RESPONSE_TIME_MS);
+    this.interval = setInterval(this.performAIResponse, AI_RESPONSE_TIME_MS);
   }
 
   componentDidUpdate(prevProps) {
@@ -212,7 +206,7 @@ export class GameAreaContainer extends Component {
 
   /* Try to start a game (based on the URL) if it hasn't started yet. */
   tryToStartGame = () => {
-    const { started, onStartTutorial, history, match } = this.props;
+    const { started, onStartTutorial, onStartSandbox, history, match } = this.props;
 
     // If the game hasn't started yet, that means that the player got here
     // by messing with the URL (rather than by clicking a button in the lobby).
@@ -224,7 +218,9 @@ export class GameAreaContainer extends Component {
         onStartTutorial();
       } else if (this.urlMatchesGameMode('practice')) {
         this.tryToStartPracticeGame(match.params.deck);
-      } else {
+      } else if (location.pathname.startsWith('/sandbox')) {
+        onStartSandbox();
+      }else {
         history.push(Play.baseUrl);
       }
     }
@@ -249,9 +245,20 @@ export class GameAreaContainer extends Component {
     this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
   };
 
+  performAIResponse = () => {
+    const { currentTurn, isPractice, winner, onAIResponse, onAttackRetract, onAttackComplete } = this.props;
+    if (isPractice && !winner && currentTurn === 'blue') {
+      animate([
+        onAIResponse,
+        onAttackRetract,
+        onAttackComplete
+      ], ANIMATION_TIME_MS);
+    }
+  }
+
   movePiece = (hexId, asPartOfAttack = false) => {
     this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
-  }
+  };
 
   attackPiece = (hexId, intermediateMoveHexId) => {
     if (intermediateMoveHexId) {
@@ -259,11 +266,11 @@ export class GameAreaContainer extends Component {
     } else {
       this.props.onAttackRobot(this.props.selectedTile, hexId);
     }
-  }
+  };
 
   placePiece = (hexId) => {
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
-  }
+  };
 
   onSelectTile = (hexId, action = null, intermediateMoveHexId = null) => {
     if (this.props.attack) {
@@ -275,9 +282,9 @@ export class GameAreaContainer extends Component {
     } else if (action === 'place') {
       this.placePiece(hexId);
     } else {
-      this.props.onSelectTile(hexId, this.props.player);
+      this.props.onSelectTile(hexId, this.props.isSandbox ? this.props.currentTurn : this.props.player);
     }
-  }
+  };
 
   handleClickGameArea = evt => {
     const { className } = evt.target;
@@ -285,20 +292,20 @@ export class GameAreaContainer extends Component {
     if ((baseVal !== undefined ? baseVal : className).includes('background')) {
       this.props.onDeselect(this.props.player);
     }
-  }
+  };
 
   handleClickEndGame = () => {
     this.props.onEndGame();
     this.props.history.push('/play');
-  }
+  };
 
   handleNextTutorialStep = () => {
     this.props.onTutorialStep();
-  }
+  };
 
   handlePrevTutorialStep = () => {
     this.props.onTutorialStep(true);
-  }
+  };
 
   render = () =>
     <GameArea
@@ -314,7 +321,8 @@ export class GameAreaContainer extends Component {
       onClickEndGame={this.handleClickEndGame}
       onNextTutorialStep={this.handleNextTutorialStep}
       onPrevTutorialStep={this.handlePrevTutorialStep}
-      onSelectTile={this.onSelectTile} />;
+      onSelectTile={this.onSelectTile}
+      onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck} />;
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GameAreaContainer));

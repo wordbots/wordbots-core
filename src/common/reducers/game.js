@@ -41,6 +41,9 @@ export function handleAction(oldState, action) {
     case actions.START_PRACTICE:
       return g.startPractice(state, action.payload.deck);
 
+    case actions.START_SANDBOX:
+      return g.startSandbox(state);
+
     case actions.AI_RESPONSE:
       return g.aiResponse(state);
 
@@ -76,6 +79,14 @@ export function handleAction(oldState, action) {
 
     case actions.DESELECT:
       return g.deselect(state, action.payload.player);
+
+    case actions.ADD_CARD_TO_TOP_OF_DECK: {
+      // Only to be used in sandbox mode.
+      const { player } = action.payload;
+      const card = { ...action.payload.card, id: id() };
+      state.players[player].deck.unshift(card);
+      return state;
+    }
 
     case socketActions.CONNECTING:
       return Object.assign(state, {started: false});

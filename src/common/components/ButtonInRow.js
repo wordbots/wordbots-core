@@ -46,6 +46,6 @@ ButtonInRow.propTypes = {
 
 ButtonInRow.defaultProps = {
   disabled: false
-}
+};
 
 export default ButtonInRow;

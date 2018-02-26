@@ -24,7 +24,7 @@ if (window.localStorage['profileOnLoad'] && window.Perf) {
   window.Perf.start();
 }
 
-ReactDOM.render(
+ReactDOM.hydrate(
   <Provider store={store}>
     <BrowserRouter>
       <App />

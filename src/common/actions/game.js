@@ -2,6 +2,7 @@ export const START_PRACTICE = 'START_PRACTICE';
 export const AI_RESPONSE = 'AI_RESPONSE';
 export const START_TUTORIAL = 'START_TUTORIAL';
 export const TUTORIAL_STEP = 'TUTORIAL_STEP';
+export const START_SANDBOX = 'START_SANDBOX';
 export const END_GAME = 'END_GAME';
 export const MOVE_ROBOT = 'MOVE_ROBOT';
 export const ATTACK = 'ATTACK';
@@ -13,6 +14,7 @@ export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
+export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
 
 export function startPractice(deck) {
   return {
@@ -37,6 +39,12 @@ export function tutorialStep(back = false) {
   return {
     type: TUTORIAL_STEP,
     payload: { back }
+  };
+}
+
+export function startSandbox() {
+  return {
+    type: START_SANDBOX
   };
 }
 
@@ -113,3 +121,12 @@ export function deselect(player) {
     payload: { player }
   };
 }
+
+export function addCardToTopOfDeck(player, card) {
+  return {
+    type: ADD_CARD_TO_TOP_OF_DECK,
+    payload: { player, card }
+  };
+}
+
+

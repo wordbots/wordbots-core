@@ -33,7 +33,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
     player.target.choosing = false;
   } else if (isCurrentPlayer) {
     // Try to play the chosen card.
-    if (getCost(selectedCard) <= energy.available) {
+    if (getCost(selectedCard) <= energy.available || state.sandbox) {
       if (selectedCard.type === TYPE_EVENT) {
         return playEvent(state, cardIdx);
       } else {
@@ -58,7 +58,7 @@ export function placeCard(state, cardIdx, tile) {
   const card = player.hand[cardIdx];
   const timestamp = Date.now();
 
-  if (player.energy.available >= getCost(card) &&
+  if ((player.energy.available >= getCost(card) || state.sandbox) &&
       validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
     const playedObject = {
       id: id(),
@@ -76,7 +76,9 @@ export function placeCard(state, cardIdx, tile) {
     const target = player.target.chosen ? player.target.chosen[0] : null;
 
     player.robotsOnBoard[tile] = playedObject;
-    player.energy.available -= getCost(card);
+    if (!state.sandbox) {
+      player.energy.available -= getCost(card);
+    }
     player.selectedCard = null;
     player.status.message = '';
     player.selectedTile = tile;
@@ -132,7 +134,7 @@ function playEvent(state, cardIdx) {
   const card = player.hand[cardIdx];
   const timestamp = Date.now();
 
-  if (player.energy.available >= getCost(card)) {
+  if (player.energy.available >= getCost(card) || state.sandbox) {
     // Cards cannot target themselves, so temporarily set justPlayed = true before executing the command.
     card.justPlayed = true;
 
@@ -186,7 +188,9 @@ function playEvent(state, cardIdx) {
 
       player.status.message = '';
       player.selectedCard = null;
-      player.energy.available -= getCost(card);
+      if (!state.sandbox) {
+        player.energy.available -= getCost(card);
+      }
 
       tempState.eventQueue = [...tempState.eventQueue, card];
 

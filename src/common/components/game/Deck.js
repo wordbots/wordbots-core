@@ -1,17 +1,18 @@
 import React from 'react';
-import { arrayOf, object } from 'prop-types';
+import { arrayOf, bool, object } from 'prop-types';
 
 import Tooltip from '../Tooltip';
+import Card from '../card/Card';
 import CardBack from '../card/CardBack';
 
-const Deck = ({ deck }) => {
+const Deck = ({ deck, reveal = false }) => {
   if (deck.length > 0) {
     return (
       <Tooltip
-        text={`${deck.length  } Cards`}
+        text={`${deck.length} Cards`}
         style={{fontFamily: 'Carter One'}}
       >
-        <CardBack deckLength={deck.length} />
+        {reveal ? Card.fromObj(deck[0]) : <CardBack deckLength={deck.length} />}
       </Tooltip>
     );
   } else {
@@ -38,7 +39,8 @@ const Deck = ({ deck }) => {
 };
 
 Deck.propTypes = {
-  deck: arrayOf(object)
+  deck: arrayOf(object),
+  reveal: bool
 };
 
 export default Deck;

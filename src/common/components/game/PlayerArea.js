@@ -77,7 +77,7 @@ export default class PlayerArea extends Component {
         <PlayerName
           opponent={opponent}
           color={color}
-          playerName={gameProps.player === color ? 'You' : gameProps.usernames[color]} />
+          playerName={(gameProps.player === color && !gameProps.isSandbox) ? 'You' : gameProps.usernames[color]} />
         <EnergyCount
           color={color}
           energy={gameProps[`${color}Energy`]} />
@@ -86,8 +86,9 @@ export default class PlayerArea extends Component {
           opponent={opponent}
           selectedCard={gameProps.selectedCard}
           targetableCards={gameProps.target.possibleCards}
-          isActivePlayer={gameProps.player === color}
+          isActivePlayer={gameProps.player === color || gameProps.isSandbox}
           cards={gameProps[`${color}Hand`]}
+          sandbox={gameProps.isSandbox}
           status={gameProps.status}
           tutorialStep={gameProps.tutorialStep}
           onSelectCard={this.handleSelectCard}
@@ -103,7 +104,7 @@ export default class PlayerArea extends Component {
             onTouchTap={this.handleOpenDiscardPile}
             style={this.styles.discard}
             disabled={gameProps[`${color}DiscardPile`].length === 0}/>
-          <Deck deck={gameProps[`${color}Deck`]} />
+          <Deck deck={gameProps[`${color}Deck`]} reveal={gameProps.isSandbox} />
         </div>
 
         <Dialog

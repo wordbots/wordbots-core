@@ -24,6 +24,18 @@ export function startPractice(state, deck) {
   return state;
 }
 
+export function startSandbox(state) {
+  const decks = {
+    orange: shuffle(aiDeck).map(card => ({ ...card, id: id() })),
+    blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
+  };
+
+  state = newGame(state, 'orange', {orange: 'Orange', blue: 'Blue'}, decks);
+  state.sandbox = true;
+
+  return state;
+}
+
 export function aiResponse(state) {
   if (state.usernames[state.currentTurn] !== 'Computer') {
     return state;

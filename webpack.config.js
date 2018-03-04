@@ -1,7 +1,6 @@
 /* eslint-disable import/order */
 const path = require('path');
 const webpack = require('webpack');
-const merge = require('merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 /* eslint-enable import/order */
@@ -60,8 +59,10 @@ let webpackConfig = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  webpackConfig = merge(webpackConfig, {
+  webpackConfig = {
+    ...webpackConfig,
     devtool: 'source-map',
+    mode: 'production',
     plugins: [
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: JSON.stringify('production') }
@@ -70,20 +71,21 @@ if (process.env.NODE_ENV === 'production') {
       ...webpackConfig.plugins
     ],
     stats: { warnings: false }
-  });
+  };
 } else {
-  webpackConfig = merge(webpackConfig, {
+  webpackConfig = {
+    ...webpackConfig,
     devtool: 'inline-source-map',
     entry: [
       'webpack-hot-middleware/client',
       ...webpackConfig.entry
     ],
+    mode: 'development',
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       ...webpackConfig.plugins
     ]
-  });
-
+  };
 }
 
 module.exports = webpackConfig;

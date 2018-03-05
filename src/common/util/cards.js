@@ -5,7 +5,7 @@ import {
 
 import {
   KEEP_DECKS_UNSHUFFLED,
-  CARD_SCHEMA_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
+  CARD_SCHEMA_VERSION, SPRITE_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
   TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString,
   SYNONYMS, KEYWORDS, HINTS, KEYWORD_REGEXES, HINT_REGEXES
 } from '../constants';
@@ -68,6 +68,37 @@ export function isCardVisible(card, filters = {}, costRange = [0, 0]) {
   } else {
     return true;
   }
+}
+
+// Converts card from cardCreator store format -> format for collection and game stores.
+export function createCardFromProps(props) {
+  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
+  const command = sentences.map(s => s.result.js);
+
+  const card = {
+    id: props.id || generateId(),
+    name: props.name,
+    type: props.type,
+    spriteID: props.spriteID,
+    spriteV: SPRITE_VERSION,
+    text: sentences.map(s => `${s.sentence}. `).join(''),
+    cost: props.cost,
+    source: 'user',  // In the future, this will specify *which* user created the card.
+    timestamp: Date.now()
+  };
+
+  if (props.type === TYPE_EVENT) {
+    card.command = command;
+  } else {
+    card.abilities = command;
+    if (props.type === TYPE_ROBOT) {
+      card.stats = pick(props, ['health', 'speed', 'attack']);
+    } else {
+      card.stats = pick(props, ['health']);
+    }
+  }
+
+  return card;
 }
 
 function searchCards(card, query = '') {

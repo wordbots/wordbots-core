@@ -28,7 +28,7 @@ const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {
     }}>
       <div>
         <div style={{fontSize: 96}}>{`${winnerName} wins!`}</div>
-        <div>Click anywhere to return to the lobby.</div>
+        <div>Click anywhere to leave the game.</div>
       </div>
     </div>
   );

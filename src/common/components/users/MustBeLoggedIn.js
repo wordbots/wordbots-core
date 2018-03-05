@@ -7,7 +7,12 @@ import Tooltip from '../Tooltip';
 export default class MustBeLoggedIn extends Component {
   static propTypes = {
     loggedIn: bool,
-    children: oneOfType([arrayOf(object), object])
+    children: oneOfType([arrayOf(object), object]),
+    style: object
+  };
+
+  static defaultProps = {
+    style: {}
   };
 
   renderDisabledChild(child) {
@@ -33,13 +38,13 @@ export default class MustBeLoggedIn extends Component {
   render() {
     if (this.props.loggedIn) {
       return (
-        <div>
+        <div style={this.props.style}>
           {this.props.children}
         </div>
       );
     } else {
       return (
-        <div className="notAllowed">
+        <div className="notAllowed" style={this.props.style}>
           {React.Children.map(this.props.children, this.renderDisabledChild)}
         </div>
       );

@@ -10,6 +10,8 @@ import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
+import Play from './Play';
+
 function mapStateToProps(state) {
   return {
     cards: state.collection.cards,
@@ -52,11 +54,15 @@ class Decks extends Component {
   handleCreateDeck = () => {
     this.props.onCreateDeck();
     this.props.history.push('/deck');
-  }
+  };
 
   handleEditDeck = (deckId) => {
     this.props.onEditDeck(deckId);
     this.props.history.push('/deck');
+  };
+
+  handleTryDeck = (deck) => {
+    this.props.history.push(Play.urlForGameMode('practice', deck));
   }
 
   render = () => (
@@ -94,7 +100,8 @@ class Decks extends Component {
                   loggedIn={this.props.loggedIn}
                   onDelete={this.props.onDeleteDeck}
                   onDuplicate={this.props.onDuplicateDeck}
-                  onEdit={this.handleEditDeck} />
+                  onEdit={this.handleEditDeck}
+                  onTry={this.handleTryDeck} />
               )
             }
           </div>

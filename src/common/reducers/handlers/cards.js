@@ -1,7 +1,6 @@
-import { SPRITE_VERSION, TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import { id } from '../../util/common';
 import {
-  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences,
+  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, createCardFromProps,
   loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase
 } from '../../util/cards';
 
@@ -95,43 +94,6 @@ const cardsHandlers = {
     return state;
   }
 };
-
-// Converts card from cardCreator store format -> format for collection and game stores.
-function createCardFromProps(props) {
-  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
-  const command = sentences.map(s => s.result.js);
-
-  const card = {
-    id: props.id || id(),
-    name: props.name,
-    type: props.type,
-    spriteID: props.spriteID,
-    spriteV: SPRITE_VERSION,
-    text: sentences.map(s => `${s.sentence}. `).join(''),
-    cost: props.cost,
-    source: 'user',  // In the future, this will specify *which* user created the card.
-    timestamp: Date.now()
-  };
-
-  if (props.type === TYPE_EVENT) {
-    card.command = command;
-  } else {
-    card.abilities = command;
-    if (props.type === TYPE_ROBOT) {
-      card.stats = {
-        health: props.health,
-        speed: props.speed,
-        attack: props.attack
-      };
-    } else {
-      card.stats = {
-        health: props.health
-      };
-    }
-  }
-
-  return card;
-}
 
 // Saves a card, either as a new card or replacing an existing card.
 function saveCard(state, card) {

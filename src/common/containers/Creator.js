@@ -6,10 +6,12 @@ import { withRouter } from 'react-router';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
+import { createCardFromProps } from '../util/cards';
 import RouterDialog from '../components/RouterDialog';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator';
+import * as gameActions from '../actions/game';
 
 export function mapStateToProps(state) {
   return {
@@ -49,6 +51,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onAddToCollection: (props) => {
       dispatch(creatorActions.addToCollection(props));
+    },
+    onStartSandbox: (card) => {
+      dispatch(gameActions.startSandbox(card));
     }
   };
 }
@@ -75,7 +80,8 @@ export class Creator extends Component {
     onSetAttribute: func,
     onParseComplete: func,
     onSpriteClick: func,
-    onAddToCollection: func
+    onAddToCollection: func,
+    onStartSandbox: func
   };
 
   static defaultProps = {
@@ -90,6 +96,12 @@ export class Creator extends Component {
 
   openDialog = (dialogPath) => {
     RouterDialog.openDialog(this.props.history, dialogPath);
+  }
+
+  testCard = () => {
+    const card = createCardFromProps(this.props);
+    this.props.onStartSandbox(card);
+    this.props.history.push('/sandbox');
   }
 
   addToCollection = () => {
@@ -121,6 +133,7 @@ export class Creator extends Component {
             onParseComplete={this.props.onParseComplete}
             onSpriteClick={this.props.onSpriteClick}
             onOpenDialog={this.openDialog}
+            onTestCard={this.testCard}
             onAddToCollection={this.addToCollection} />
           <CardPreview
             name={this.props.name}

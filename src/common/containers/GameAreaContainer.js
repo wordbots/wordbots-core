@@ -296,7 +296,7 @@ export class GameAreaContainer extends Component {
 
   handleClickEndGame = () => {
     this.props.onEndGame();
-    this.props.history.push('/play');
+    this.props.history.goBack();
   };
 
   handleNextTutorialStep = () => {
@@ -310,8 +310,7 @@ export class GameAreaContainer extends Component {
   render = () =>
     <GameArea
       {...this.props}
-      {...this.state}
-
+      message={this.state.message}
       onPassTurn={this.props.onPassTurn}
       onForfeit={this.props.onForfeit}
       onTutorialStep={this.props.onTutorialStep}

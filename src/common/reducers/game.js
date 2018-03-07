@@ -42,7 +42,7 @@ export function handleAction(oldState, action) {
       return g.startPractice(state, action.payload.deck);
 
     case actions.START_SANDBOX:
-      return g.startSandbox(state);
+      return g.startSandbox(state, action.payload.card);
 
     case actions.AI_RESPONSE:
       return g.aiResponse(state);

@@ -105,6 +105,7 @@ export default class Chat extends Component {
   renderMessage(message, idx) {
     return (
       <div
+        name="chat-message"
         key={idx}
         style={{
           color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',

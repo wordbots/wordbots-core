@@ -30,6 +30,7 @@ let webpackConfig = {
     'whatwg-fetch',
     './src/client/index.js'
   ],
+  mode: process.env.NODE_ENV,
   module: {
     rules: [
       {
@@ -54,7 +55,10 @@ let webpackConfig = {
   plugins: [
     new ExtractTextPlugin('app.css'),
     new CopyWebpackPlugin([{from: 'static'}]),
-    new webpack.IgnorePlugin(/canvas/)
+    new webpack.IgnorePlugin(/canvas/),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
+    })
   ]
 };
 
@@ -63,24 +67,16 @@ if (process.env.NODE_ENV === 'production') {
     ...webpackConfig,
     devtool: 'source-map',
     mode: 'production',
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env': { NODE_ENV: JSON.stringify('production') }
-      }),
-      new webpack.optimize.UglifyJsPlugin({sourceMap: true}),
-      ...webpackConfig.plugins
-    ],
     stats: { warnings: false }
   };
 } else {
   webpackConfig = {
     ...webpackConfig,
-    devtool: 'inline-source-map',
+    devtool: 'cheap-module-eval-source-map',
     entry: [
       'webpack-hot-middleware/client',
       ...webpackConfig.entry
     ],
-    mode: 'development',
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       ...webpackConfig.plugins

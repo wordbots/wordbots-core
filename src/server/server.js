@@ -22,6 +22,7 @@ function userAgentMiddleware(req, res, next) {
 if (process.env.NODE_ENV !== 'production') {
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
+  const { publicPath } = webpackConfig.output;
 
   const compiler = webpack(webpackConfig);
   compiler.plugin('done', () => {
@@ -31,7 +32,7 @@ if (process.env.NODE_ENV !== 'production') {
     }
   });
 
-  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
+  app.use(webpackDevMiddleware(compiler, { publicPath, stats: 'minimal' }));
   app.use(webpackHotMiddleware(compiler));
 } else {
   app.use('/static', express.static(`${__dirname  }/../../dist`));

@@ -35,7 +35,7 @@ const webpackConfig = {
     'whatwg-fetch',
     './src/client/index.js'
   ]),
-  mode: isProduction ? 'production' : 'development',
+  // mode: isProduction ? 'production' : 'development',  // Webpack 4.0+
   module: {
     rules: [
       {

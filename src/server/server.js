@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'production') {
     }
   });
 
-  app.use(webpackDevMiddleware(compiler, { publicPath, stats: 'minimal' }));
+  app.use(webpackDevMiddleware(compiler, { publicPath, logLevel: 'warn' }));
   app.use(webpackHotMiddleware(compiler));
 } else {
   app.use('/static', express.static(`${__dirname  }/../../dist`));

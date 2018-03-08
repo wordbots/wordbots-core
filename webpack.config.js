@@ -30,7 +30,7 @@ let webpackConfig = {
     'whatwg-fetch',
     './src/client/index.js'
   ],
-  mode: process.env.NODE_ENV,
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   module: {
     rules: [
       {

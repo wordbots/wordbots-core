@@ -29,12 +29,12 @@ const isProduction = NODE_ENV === 'production';
 
 const webpackConfig = {
   devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
-  entry: [
+  entry: compact([
     !isProduction && 'webpack-hot-middleware/client',
     'babel-polyfill',
     'whatwg-fetch',
     './src/client/index.js'
-  ],
+  ]),
   mode: isProduction ? 'production' : 'development',
   module: {
     rules: [

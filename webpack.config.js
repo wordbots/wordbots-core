@@ -28,7 +28,7 @@ const { NODE_ENV } = process.env;
 const isProduction = NODE_ENV === 'production';
 
 const webpackConfig = {
-  devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: isProduction ? 'source-map' : 'inline-source-map',
   entry: compact([
     !isProduction && 'webpack-hot-middleware/client',
     'babel-polyfill',

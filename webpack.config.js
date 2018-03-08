@@ -1,9 +1,9 @@
-/* eslint-disable import/order */
 const path = require('path');
+
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-/* eslint-enable import/order */
+const { compact } = require('lodash');
 
 const BABEL_LOADER_DEV_OPTIONS = {
   presets: ['env', 'stage-2', 'react'],
@@ -24,13 +24,18 @@ const BABEL_LOADER_DEV_OPTIONS = {
   ]
 };
 
-let webpackConfig = {
-  entry: [
+const { NODE_ENV } = process.env;
+const isProduction = NODE_ENV === 'production';
+
+const webpackConfig = {
+  devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
+  entry: compact([
+    !isProduction && 'webpack-hot-middleware/client',
     'babel-polyfill',
     'whatwg-fetch',
     './src/client/index.js'
-  ],
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  ]),
+  // mode: isProduction ? 'production' : 'development',  // Webpack 4.0+
   module: {
     rules: [
       {
@@ -39,7 +44,7 @@ let webpackConfig = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: process.env.NODE_ENV === 'production' ? {} : BABEL_LOADER_DEV_OPTIONS
+          options: isProduction ? {} : BABEL_LOADER_DEV_OPTIONS
         }
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
@@ -52,36 +57,16 @@ let webpackConfig = {
     filename: 'bundle.js',
     publicPath: '/static/'
   },
-  plugins: [
+  plugins: compact([
+    !isProduction && new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('app.css'),
     new CopyWebpackPlugin([{from: 'static'}]),
     new webpack.IgnorePlugin(/canvas/),
     new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
+      'process.env': { NODE_ENV: JSON.stringify(NODE_ENV) }
     })
-  ]
+  ]),
+  'stats': isProduction ? 'minimal' : 'normal'
 };
-
-if (process.env.NODE_ENV === 'production') {
-  webpackConfig = {
-    ...webpackConfig,
-    devtool: 'source-map',
-    mode: 'production',
-    stats: { warnings: false }
-  };
-} else {
-  webpackConfig = {
-    ...webpackConfig,
-    devtool: 'cheap-module-eval-source-map',
-    entry: [
-      'webpack-hot-middleware/client',
-      ...webpackConfig.entry
-    ],
-    plugins: [
-      new webpack.HotModuleReplacementPlugin(),
-      ...webpackConfig.plugins
-    ]
-  };
-}
 
 module.exports = webpackConfig;

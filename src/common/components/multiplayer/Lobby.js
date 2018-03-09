@@ -40,7 +40,9 @@ export default class Lobby extends Component {
   }
 
   handleSelectMode = (mode) => {
-    this.props.onSelectMode(mode, this.deck);
+    // If selecting practice mode, pass a deck into the URL.
+    const deck = (mode === 'practice') ? this.deck : null;
+    this.props.onSelectMode(mode, deck);
   };
 
   handleJoinGame = (gameId, gameName) => {

@@ -4,6 +4,8 @@ import { defaults, noop } from 'lodash';
 
 import Chat from '../../../src/common/components/multiplayer/Chat';
 
+import { makeMessage, makeChatMessage, makeGameMessage, makeServerMessage } from './chatTestHelpers';
+
 const getWrapper = (props) => {
   const defaultProps = {
     open: true,
@@ -27,43 +29,16 @@ const getWrapper = (props) => {
   />);
 };
 
-const makeMessage = (msg = {}) => {
-  const defaultMessage = {
-    user: 'some-player',
-    text: 'test-text',
-    cards: undefined
-  };
-
-  defaults(msg, defaultMessage);
-  return msg;
-};
-
-const makeChatMessage = makeMessage;
-const makeGameMessage = () => makeMessage({
-  user: '[Game]'
-});
-const makeServerMessage = () => makeMessage({
-  user: '[Server]'
-});
-
 const updateWrapper = (wrapper) => {
   // Both are needed https://github.com/airbnb/enzyme/issues/1229
   wrapper.instance().forceUpdate();
   wrapper.update();
 };
 
-const findMessage = (wrapper) => wrapper.find('div[name="chat-message"]');
+const findMessage = (wrapper) => wrapper.find('ChatMessage');
 
 const checkRenderedMessageLength = (wrapper, length) => {
   expect(findMessage(wrapper)).toHaveLength(length);
-};
-
-const checkRenderedMessageColor = (wrapper, color) => {
-  expect(findMessage(wrapper).prop('style').color).toEqual(color);
-};
-
-const checkRenderedCardTooltipLength = (wrapper, length) => {
-  expect(findMessage(wrapper).find('CardTooltip')).toHaveLength(length);
 };
 
 describe('Chat tests', () => {
@@ -204,130 +179,6 @@ describe('Chat tests', () => {
       updateWrapper(wrapper);
 
       checkRenderedMessageLength(wrapper, 0);
-    });
-
-    it('should be colored #888 for [Game] messages', () => {
-      const messages = [makeGameMessage()];
-      const wrapper = getWrapper({
-        messages
-      });
-
-      checkRenderedMessageColor(wrapper, '#888');
-    });
-
-    it('should be colored #888 for [Server] messages', () => {
-      const messages = [makeServerMessage()];
-      const wrapper = getWrapper({
-        messages
-      });
-
-      checkRenderedMessageColor(wrapper, '#888');
-    });
-
-    it('should be colored #000 for other messages', () => {
-      const messages = [makeChatMessage()];
-      const wrapper = getWrapper({
-        messages
-      });
-
-      checkRenderedMessageColor(wrapper, '#000');
-    });
-
-    it('should prepend the message.user', () => {
-      const message = makeChatMessage();
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      const renderedMessage = findMessage(wrapper);
-      expect(renderedMessage.find('b').text()).toEqual(message.user);
-    });
-
-    it('should ignore the | character', () => {
-      const firstMessage = 'gg';
-      const secondMessage = 'ez';
-      const message = makeMessage({
-        text: `${firstMessage}|${secondMessage}`
-      });
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      const renderedMessage = findMessage(wrapper).find('span');
-      expect(renderedMessage.at(0).text()).toEqual(firstMessage);
-      expect(renderedMessage.at(1).text()).toEqual(secondMessage);
-    });
-
-    it('should render CardTooltip if message contains card for phrase', () => {
-      const messageText = 'this is a message';
-      const cards = {};
-      cards[messageText] = {};
-      const message = makeMessage({
-        text: messageText,
-        cards
-      });
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      checkRenderedCardTooltipLength(wrapper, 1);
-    });
-
-    it('should render N CardTooltip if message has N phrases', () => {
-      const firstMessage = 'gg';
-      const secondMessage = 'ez';
-      const cards = {};
-      cards[firstMessage] = {};
-      cards[secondMessage] = {};
-      const message = makeMessage({
-        text: `${firstMessage}|${secondMessage}`,
-        cards
-      });
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      checkRenderedCardTooltipLength(wrapper, 2);
-    });
-
-    it('should not render CardTooltip if message does not contain card for phrase', () => {
-      const messageText = 'this is a message';
-      const cards = {};
-      cards['foo'] = {};
-      const message = makeMessage({
-        text: messageText,
-        cards
-      });
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      checkRenderedCardTooltipLength(wrapper, 0);
-    });
-
-    it('should not render CardTooltip if message cards is undefined', () => {
-      const messageText = 'this is a message';
-      const message = makeMessage({
-        text: messageText,
-        cards: undefined
-      });
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      checkRenderedCardTooltipLength(wrapper, 0);
-    });
-    it('should not render CardTooltip if message cards is null', () => {
-      const messageText = 'this is a message';
-      const message = makeMessage({
-        text: messageText,
-        cards: null
-      });
-      const wrapper = getWrapper({
-        messages: [message]
-      });
-
-      checkRenderedCardTooltipLength(wrapper, 0);
     });
   });
 });

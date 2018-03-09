@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { defaults, noop } from 'lodash';
 
-import Chat from "../../../src/common/components/multiplayer/Chat";
+import Chat from '../../../src/common/components/multiplayer/Chat';
 
 const getWrapper = (props) => {
   const defaultProps = {
@@ -11,8 +11,8 @@ const getWrapper = (props) => {
     toggleChat: noop,
     onSendMessage: noop,
     inGame: false,
-    roomName: "dummy name",
-    messages: [],
+    roomName: 'dummy name',
+    messages: []
   };
 
   defaults(props, defaultProps);
@@ -27,12 +27,11 @@ const getWrapper = (props) => {
   />);
 };
 
-const makeMessage = (msg) => {
-  msg = msg || {};
+const makeMessage = (msg = {}) => {
   const defaultMessage = {
     user: 'some-player',
     text: 'test-text',
-    cards: undefined,
+    cards: undefined
   };
 
   defaults(msg, defaultMessage);
@@ -234,7 +233,7 @@ describe('Chat tests', () => {
       checkRenderedMessageColor(wrapper, '#000');
     });
 
-    it('should prepend the user off the message', () => {
+    it('should prepend the message.user', () => {
       const message = makeChatMessage();
       const wrapper = getWrapper({
         messages: [message]
@@ -245,8 +244,8 @@ describe('Chat tests', () => {
     });
 
     it('should ignore the | character', () => {
-      const firstMessage = "gg";
-      const secondMessage = "ez";
+      const firstMessage = 'gg';
+      const secondMessage = 'ez';
       const message = makeMessage({
         text: `${firstMessage}|${secondMessage}`
       });
@@ -260,72 +259,72 @@ describe('Chat tests', () => {
     });
 
     it('should render CardTooltip if message contains card for phrase', () => {
-      const messageText = "this is a message";
+      const messageText = 'this is a message';
       const cards = {};
       cards[messageText] = {};
       const message = makeMessage({
         text: messageText,
-        cards,
+        cards
       });
       const wrapper = getWrapper({
-        messages: [message],
+        messages: [message]
       });
 
       checkRenderedCardTooltipLength(wrapper, 1);
     });
 
     it('should render N CardTooltip if message has N phrases', () => {
-      const firstMessage = "gg";
-      const secondMessage = "ez";
+      const firstMessage = 'gg';
+      const secondMessage = 'ez';
       const cards = {};
       cards[firstMessage] = {};
       cards[secondMessage] = {};
       const message = makeMessage({
         text: `${firstMessage}|${secondMessage}`,
-        cards,
+        cards
       });
       const wrapper = getWrapper({
-        messages: [message],
+        messages: [message]
       });
 
       checkRenderedCardTooltipLength(wrapper, 2);
     });
 
     it('should not render CardTooltip if message does not contain card for phrase', () => {
-      const messageText = "this is a message";
+      const messageText = 'this is a message';
       const cards = {};
-      cards["foo"] = {};
+      cards['foo'] = {};
       const message = makeMessage({
         text: messageText,
-        cards,
+        cards
       });
       const wrapper = getWrapper({
-        messages: [message],
+        messages: [message]
       });
 
       checkRenderedCardTooltipLength(wrapper, 0);
     });
 
     it('should not render CardTooltip if message cards is undefined', () => {
-      const messageText = "this is a message";
+      const messageText = 'this is a message';
       const message = makeMessage({
         text: messageText,
-        cards: undefined,
+        cards: undefined
       });
       const wrapper = getWrapper({
-        messages: [message],
+        messages: [message]
       });
 
       checkRenderedCardTooltipLength(wrapper, 0);
     });
     it('should not render CardTooltip if message cards is null', () => {
-      const messageText = "this is a message";
+      const messageText = 'this is a message';
       const message = makeMessage({
         text: messageText,
-        cards: null,
+        cards: null
       });
       const wrapper = getWrapper({
-        messages: [message],
+        messages: [message]
       });
 
       checkRenderedCardTooltipLength(wrapper, 0);

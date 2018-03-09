@@ -118,7 +118,7 @@ export default class Chat extends Component {
   }
 
   renderPhrase(phrase, message, messageIdx, phraseIdx) {
-    const card = (message.cards || [])[phrase];
+    const card = (message.cards || {})[phrase];
     const key = `${messageIdx}_${phrase}_${phraseIdx}`;
     if (card) {
       return (

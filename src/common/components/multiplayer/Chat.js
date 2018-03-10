@@ -105,6 +105,7 @@ export default class Chat extends Component {
   renderMessage(message, idx) {
     return (
       <div
+        name="chat-message"
         key={idx}
         style={{
           color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
@@ -117,7 +118,7 @@ export default class Chat extends Component {
   }
 
   renderPhrase(phrase, message, messageIdx, phraseIdx) {
-    const card = (message.cards || [])[phrase];
+    const card = (message.cards || {})[phrase];
     const key = `${messageIdx}_${phrase}_${phraseIdx}`;
     if (card) {
       return (

@@ -10,7 +10,8 @@ import FontIcon from 'material-ui/FontIcon';
 import { chain as _, isEqual } from 'lodash';
 
 import { id } from '../../util/common';
-import CardTooltip from '../card/CardTooltip';
+
+import ChatMessage from './ChatMessage';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -102,41 +103,6 @@ export default class Chat extends Component {
   toggleGameMessages = (e, value) => { this.setState({showGameMsgs: value}); };
   togglePlayerChat = (e, value) => { this.setState({showChatMsgs: value}); };
 
-  renderMessage(message, idx) {
-    return (
-      <div
-        name="chat-message"
-        key={idx}
-        style={{
-          color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
-          marginBottom: 5,
-          wordBreak: 'break-word'
-        }}>
-        <b>{message.user}</b>: {message.text.split('|').map((phrase, phraseIdx) => this.renderPhrase(phrase, message, idx, phraseIdx))}
-      </div>
-    );
-  }
-
-  renderPhrase(phrase, message, messageIdx, phraseIdx) {
-    const card = (message.cards || {})[phrase];
-    const key = `${messageIdx}_${phrase}_${phraseIdx}`;
-    if (card) {
-      return (
-        <CardTooltip key={key} card={card}>
-          <span style={{fontWeight: 'bold', cursor: 'pointer'}}>
-            {phrase}
-          </span>
-        </CardTooltip>
-      );
-    } else {
-      return (
-        <span key={key}>
-          {phrase}
-        </span>
-      );
-    }
-  }
-
   renderClosedChat() {
     return (
       <div>
@@ -221,7 +187,7 @@ export default class Chat extends Component {
           {
             this.mergeMessagesById(messages)
               .filter(this.filterMessage.bind(this))
-              .map(this.renderMessage.bind(this))
+              .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
           }
         </div>
 

@@ -16,8 +16,6 @@ export default class MustBeLoggedIn extends Component {
   };
 
   renderDisabledChild(child) {
-    console.log(child);
-
     const propagatedStyleKeys = ['float', 'width', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'];
 
     const childStyle = child.props.style || {};

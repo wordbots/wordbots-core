@@ -16,20 +16,23 @@ export default class MustBeLoggedIn extends Component {
   };
 
   renderDisabledChild(child) {
+    console.log(child);
+
     const propagatedStyleKeys = ['float', 'width', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'];
 
-    const parentStyle = pick(child.props.style, propagatedStyleKeys);
-    const childStyle = {
-      ...child.props.style,
+    const childStyle = child.props.style || {};
+    const parentStyle = pick(childStyle, propagatedStyleKeys);
+    const disabledChildstyle = {
+      ...childStyle,
       float: 'none',
-      width: child.props.style.width ? '100%' : null,
+      width: childStyle.width ? '100%' : null,
       margin: 0
     };
 
     return (
       <Tooltip text="You must be logged in to perform this action.">
         <div style={parentStyle}>
-          {React.cloneElement(child, { disabled: true, style: childStyle })}
+          {React.cloneElement(child, { disabled: true, style: disabledChildstyle })}
         </div>
       </Tooltip>
     );

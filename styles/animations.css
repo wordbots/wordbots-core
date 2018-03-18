@@ -6,6 +6,25 @@
   transition: transform 500ms ease-in-out;
 }
 
+.chat-message-enter {
+  opacity: 0.01;
+}
+
+.chat-message-enter-active {
+  opacity: 1;
+  transition: opacity 1000ms ease-in;
+}
+
+.chat-message-exit {
+  opacity: 1;
+}
+
+.chat-message-exit-active {
+  opacity: 0.01;
+  transition: opacity 800ms ease-in;
+}
+
+
 .hex-piece-enter {
   opacity: 0;
 }

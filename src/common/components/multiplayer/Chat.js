@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
@@ -184,11 +185,13 @@ export default class Chat extends Component {
             height: this.state.optionsVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
             overflowY: 'scroll'
           }}>
-          {
-            this.mergeMessagesById(messages)
-              .filter(this.filterMessage.bind(this))
-              .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
-          }
+          <TransitionGroup>
+            {
+              this.mergeMessagesById(messages)
+                .filter(this.filterMessage.bind(this))
+                .map(this.renderFadedMessage.bind(this))
+            }
+          </TransitionGroup>
         </div>
 
         <div style={{backgroundColor: '#fff'}}>
@@ -204,6 +207,20 @@ export default class Chat extends Component {
           />
         </div>
       </div>
+    );
+  }
+
+
+  renderFadedMessage(message, idx) {
+    const fadeTimeMs = 500;
+    return (
+      <CSSTransition
+        key={idx}
+        timeout={fadeTimeMs}
+        classNames="chat-message"
+      >
+        <ChatMessage key={idx} message={message} idx={idx} />
+      </CSSTransition>
     );
   }
 

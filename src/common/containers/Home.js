@@ -4,6 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
+import * as collectionActions from '../actions/collection';
 import * as gameActions from '../actions/game';
 import PaperButton from '../components/PaperButton';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
@@ -16,6 +17,9 @@ export function mapStateToProps(state) {
 
 export function mapDispatchToProps(dispatch) {
   return {
+    onOpenForEditing: (card) => {
+      dispatch(collectionActions.openForEditing(card));
+    },
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
     }
@@ -28,6 +32,7 @@ class Home extends Component {
 
     history: object,
 
+    onOpenForEditing: func,
     onStartTutorial: func
   };
 
@@ -84,7 +89,9 @@ class Home extends Component {
           {this.renderButton('Card Creator', () => { this.props.history.push('creator'); })}
         </div>
 
-        <RecentCardsCarousel />
+        <RecentCardsCarousel
+          history={this.props.history}
+          onOpenForEditing={this.props.onOpenForEditing} />
 
         <div style={{
           position: 'fixed',

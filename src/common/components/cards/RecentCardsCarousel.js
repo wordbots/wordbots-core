@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { func, object } from 'prop-types';
 import Carousel from 'react-slick';
 import { uniqBy } from 'lodash';
 
@@ -7,13 +8,14 @@ import { builtinCardNames } from '../../store/cards';
 import Card from '../card/Card';
 
 export default class RecentCardsCarousel extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      recentCards: []
-    };
+  static propTypes = {
+    history: object,
+    onOpenForEditing: func
   }
+
+  state = {
+    recentCards: []
+  };
 
   componentDidMount() {
     listenToRecentCards(data => {
@@ -23,6 +25,11 @@ export default class RecentCardsCarousel extends Component {
                             .slice(0, 10);
       this.setState({ recentCards });
     });
+  }
+
+  onClickCard = card => () => {
+    this.props.onOpenForEditing(card);
+    this.props.history.push('/creator');
   }
 
   render() {
@@ -46,10 +53,14 @@ export default class RecentCardsCarousel extends Component {
           >
             {
               this.state.recentCards.map(card =>
-                <div key={card.id} style={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
+                <div
+                  key={card.id}
+                  onClick={this.onClickCard(card)}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
                   {Card.fromObj(card)}
                 </div>
               )

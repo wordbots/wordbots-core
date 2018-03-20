@@ -13,7 +13,6 @@ import {
 //    {type: 'players', entries: <array of players>}
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
-
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
@@ -154,7 +153,41 @@ export default function targets(state, currentObject) {
     },
 
     thisRobot: function () {
+      //console.log("thisRobot called: dump:");
+      //console.log(currentObject);
+      //console.log(state);
       return {type: 'objects', entries: [currentObject]};
+    },
+
+    //a generic 1/1/1 robot.
+    token: function(){
+      
+      return {type: 'objects',entries: [{triggers:[],abilities:[],baseCost:0,cost:0,id: "builtin/token",name:"Token",source:"builtin",stats:{attack:1,health:1,speed:1},type:0}]}
     }
+    //example from in hand:
+    /*
+    that/it:
+    abilities:[]
+    cantActivate:true
+    cantAttack:true
+    cantMove:true
+    card:{
+      abilities:[],
+      baseCost:0,
+      cost:0,
+      id:"2zyqm8p35j5",
+      name:"One Bot",
+      source:"builtin",
+      stats:{attack:1,health:2,speed:2},
+      type:0
+    }
+    id:"zwyw4xfoyl"
+    justPlayed:false
+    movesMade:0
+    stats:{attack:1,health:2,speed:2}
+    triggers:[]
+
+    */
+
   };
 }

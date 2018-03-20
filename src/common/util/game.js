@@ -396,9 +396,14 @@ export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
 
 export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
   const ownerName = ownerOf(state, object).name;
-
+  console.log("updatingAtHex:");
+  console.log(ownerName);
+  console.log(state);
+  console.log(object);
   if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
+    console.log(state.players[ownerName].robotsOnBoard[hex].id);
+    console.log(object.id);
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
@@ -467,7 +472,6 @@ export function setTargetAndExecuteQueuedAction(state, target) {
 //
 
 export function executeCmd(state, cmd, currentObject = null, source = null) {
-  // console.log(cmd);
 
   const vocabulary = buildVocabulary(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];

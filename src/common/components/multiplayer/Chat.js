@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { TransitionGroup } from 'react-transition-group';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
@@ -189,7 +189,7 @@ export default class Chat extends Component {
             {
               this.mergeMessagesById(messages)
                 .filter(this.filterMessage.bind(this))
-                .map(this.renderFadedMessage.bind(this))
+                .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
             }
           </TransitionGroup>
         </div>
@@ -207,20 +207,6 @@ export default class Chat extends Component {
           />
         </div>
       </div>
-    );
-  }
-
-
-  renderFadedMessage(message, idx) {
-    const fadeTimeMs = 500;
-    return (
-      <CSSTransition
-        key={idx}
-        timeout={fadeTimeMs}
-        classNames="chat-message"
-      >
-        <ChatMessage key={idx} message={message} idx={idx} />
-      </CSSTransition>
     );
   }
 

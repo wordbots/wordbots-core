@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { TransitionGroup } from 'react-transition-group';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
@@ -74,7 +73,7 @@ export default class Chat extends Component {
             .value();
   }
 
-  filterMessage(message) {
+  filterMessage = (message) => {
     if (message.user === '[Server]') {
       return this.state.showServerMsgs;
     } else if (message.user === '[Game]') {
@@ -185,13 +184,11 @@ export default class Chat extends Component {
             height: this.state.optionsVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
             overflowY: 'scroll'
           }}>
-          <TransitionGroup>
-            {
-              this.mergeMessagesById(messages)
-                .filter(this.filterMessage.bind(this))
-                .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
-            }
-          </TransitionGroup>
+          {
+            this.mergeMessagesById(messages)
+              .filter(this.filterMessage)
+              .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
+          }
         </div>
 
         <div style={{backgroundColor: '#fff'}}>

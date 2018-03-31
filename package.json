@@ -135,5 +135,11 @@
     "setupFiles": [
       "./test/beforeTest.js"
     ]
+  },
+  "greenkeeper": {
+    "ignore": [
+      "webpack",
+      "webpack-dev-middleware"
+    ]
   }
 }

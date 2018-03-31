@@ -8611,6 +8611,10 @@ react-helmet@^5.2.0:
     prop-types "^15.5.4"
     react-side-effect "^1.1.0"
 
+react-iframe@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-iframe/-/react-iframe-1.1.0.tgz#fe0ac2eee934750ddd3fce1993fc97a967711d69"
+
 react-json-tree@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-json-tree/-/react-json-tree-0.11.0.tgz#f5b17e83329a9c76ae38be5c04fda3a7fd684a35"
@@ -8700,8 +8704,8 @@ react-side-effect@^1.1.0:
     shallowequal "^1.0.1"
 
 react-slick@^0.22.2:
-  version "0.22.2"
-  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.22.2.tgz#8c2183bf88bb0ab316984e14b85b05e8d446ee27"
+  version "0.22.3"
+  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.22.3.tgz#667991b2496e6b10bcca2a2e676ffadf34e7d56c"
   dependencies:
     can-use-dom "^0.1.0"
     classnames "^2.2.5"

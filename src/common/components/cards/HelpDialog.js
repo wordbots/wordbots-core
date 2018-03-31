@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
+import IFrame from 'react-iframe';
 
 import MarkdownBlock from '../MarkdownBlock';
 import RouterDialog from '../RouterDialog';
@@ -26,6 +27,16 @@ export default class HelpDialog extends Component {
           key="Close"
           onTouchTap={this.handleClose} />
     ]}>
+      <div className="markdownBlock">
+        <h2>Video Tutorial</h2>
+        <IFrame
+          url="https://www.youtube.com/embed/GeZwKIOKc1c?rel=0"
+          width="708"
+          height="444"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowFullScreen />
+      </div>
       <MarkdownBlock source={helpText} />
     </RouterDialog>
   );

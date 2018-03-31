@@ -3,7 +3,7 @@ import { cloneDeep, isArray } from 'lodash';
 import { TYPE_EVENT, stringToType } from '../../../constants';
 import { id } from '../../../util/common';
 import {
-  currentPlayer, getCost, checkVictoryConditions,
+  currentPlayer, getCost, checkVictoryConditions, matchesType,
   allHexIds, validPlacementHexes,
   triggerSound, discardCards,
   removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
@@ -113,7 +113,7 @@ export function placeCard(state, cardIdx, tile) {
       tempState = removeCardsFromHand(tempState, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => stringToType(t.cardType) === card.type || t.cardType === 'allobjects',
+        condition: t => matchesType(card, t.cardType),
         undergoer: playedObject
       });
       tempState = applyAbilities(tempState);
@@ -181,7 +181,7 @@ function playEvent(state, cardIdx) {
       tempState = discardCards(tempState, currentPlayer(state).name, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => stringToType(t.cardType) === TYPE_EVENT || t.cardType === 'allobjects'
+        condition: t => matchesType(card, t.cardType)
       });
       tempState = applyAbilities(tempState);
       tempState = checkVictoryConditions(tempState);

@@ -1,6 +1,6 @@
 import { cloneDeep, isArray } from 'lodash';
 
-import { TYPE_EVENT, stringToType } from '../../../constants';
+import { TYPE_EVENT } from '../../../constants';
 import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions, matchesType,

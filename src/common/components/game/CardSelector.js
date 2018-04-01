@@ -22,11 +22,11 @@ export default class CardSelector extends Component {
   buttons = {
     blue: {
       color: 'rgb(186, 219, 255)',
-      icon: 'fast_rewind'
+      icon: 'fast_forward'
     },
     orange: {
       color: 'rgb(255, 184, 93)',
-      icon: 'fast_forward'
+      icon: 'fast_rewind'
     }
   }
 
@@ -48,7 +48,6 @@ export default class CardSelector extends Component {
     const { selectedCard } = this.state;
     if (selectedCard) {
       this.props.onAddCardToTopOfDeck(player, selectedCard);
-      this.deselectCard();
     }
   }
 
@@ -107,8 +106,8 @@ export default class CardSelector extends Component {
         display: 'flex',
         width: '100%'
       }}>
-        {this.renderAddCardToDeckButton('blue')}
         {this.renderAddCardToDeckButton('orange')}
+        {this.renderAddCardToDeckButton('blue')}
       </div>
     </div>;
 }

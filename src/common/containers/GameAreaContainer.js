@@ -220,7 +220,7 @@ export class GameAreaContainer extends Component {
         this.tryToStartPracticeGame(match.params.deck);
       } else if (location.pathname.startsWith('/sandbox')) {
         onStartSandbox();
-      }else {
+      } else {
         history.push(Play.baseUrl);
       }
     }
@@ -315,7 +315,7 @@ export class GameAreaContainer extends Component {
       onForfeit={this.props.onForfeit}
       onTutorialStep={this.props.onTutorialStep}
       onSendChatMessage={this.props.onSendChatMessage}
-      onActivateObject={this.handleActivateObject}
+      onActivateObject={this.props.onActivateObject}
       onClickGameArea={this.handleClickGameArea}
       onClickEndGame={this.handleClickEndGame}
       onNextTutorialStep={this.handleNextTutorialStep}

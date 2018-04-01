@@ -10,7 +10,7 @@ export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
 const USE_LOCAL_PARSER = true;
-const LOCAL_PARSER_PORT = 34197;
+const LOCAL_PARSER_PORT = 8080;
 
 /* Game rules. */
 

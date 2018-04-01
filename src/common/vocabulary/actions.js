@@ -58,7 +58,6 @@ export default function actions(state) {
           abilities: cloneDeep(target.abilities)
         });
         //updateOrDeleteObjectAtHex(state, source, getHex(state, source));
-        console.log("copied!")
       });
       console.log(sources);
     },

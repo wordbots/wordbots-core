@@ -153,9 +153,6 @@ export default function targets(state, currentObject) {
     },
 
     thisRobot: function () {
-      //console.log("thisRobot called: dump:");
-      //console.log(currentObject);
-      //console.log(state);
       return {type: 'objects', entries: [currentObject]};
     },
 
@@ -164,30 +161,6 @@ export default function targets(state, currentObject) {
       
       return {abilities:[],baseCost:0,cost:0,id: "builtin/token",name:"Token",source:"builtin",stats:{attack:1,health:1,speed:1},type:0};
     }
-    //example from in hand:
-    /*
-    that/it:
-    abilities:[]
-    cantActivate:true
-    cantAttack:true
-    cantMove:true
-    card:{
-      abilities:[],
-      baseCost:0,
-      cost:0,
-      id:"2zyqm8p35j5",
-      name:"One Bot",
-      source:"builtin",
-      stats:{attack:1,health:2,speed:2},
-      type:0
-    }
-    id:"zwyw4xfoyl"
-    justPlayed:false
-    movesMade:0
-    stats:{attack:1,health:2,speed:2}
-    triggers:[]
-
-    */
 
   };
 }

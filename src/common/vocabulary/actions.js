@@ -59,7 +59,6 @@ export default function actions(state) {
         });
         //updateOrDeleteObjectAtHex(state, source, getHex(state, source));
       });
-      console.log(sources);
     },
 
     canAttackAgain: function (objects) {

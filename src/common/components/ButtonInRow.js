@@ -14,7 +14,7 @@ const ButtonInRow = function ({ label, icon, tooltip, onClick, disabled, width }
       disabled={disabled}
     >
       <div style={{padding: width ? 0 : '0 10px'}}>
-        <Tooltip inline text={tooltip}>
+        <Tooltip inline text={tooltip} disable={disabled}>
           <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
             {icon}
           </FontIcon>

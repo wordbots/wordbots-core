@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { object, number } from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import CardTooltip from '../card/CardTooltip';
 
@@ -11,22 +12,31 @@ export default class ChatMessage extends Component {
 
   render() {
     const { message, idx } = this.props;
-    const renderPhrase = this.renderPhrase.bind(this);
+
     return (
-      <div
-        name="chat-message"
-        key={idx}
-        style={{
-          color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
-          marginBottom: 5,
-          wordBreak: 'break-word'
-        }}>
-        <b>{message.user}</b>: {message.text.split('|').map((phrase, phraseIdx) => renderPhrase(phrase, message, idx, phraseIdx))}
-      </div>
+      <TransitionGroup key={idx}>
+        <CSSTransition
+          appear
+          timeout={1000}
+          classNames="chat-message"
+        >
+          <div
+            name="chat-message"
+            key={idx}
+            style={{
+              color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
+              marginBottom: 5,
+              wordBreak: 'break-word'
+            }}>
+            <b>{message.user}</b>:&nbsp;
+            {message.text.split('|').map((phrase, phraseIdx) => this.renderPhrase(phrase, message, idx, phraseIdx))}
+          </div>
+        </CSSTransition>
+      </TransitionGroup>
     );
   }
 
-  renderPhrase(phrase, message, messageIdx, phraseIdx) {
+  renderPhrase = (phrase, message, messageIdx, phraseIdx) => {
     const card = (message.cards || {})[phrase];
     const key = `${messageIdx}_${phrase}_${phraseIdx}`;
     if (card) {

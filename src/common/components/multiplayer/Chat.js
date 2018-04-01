@@ -73,7 +73,7 @@ export default class Chat extends Component {
             .value();
   }
 
-  filterMessage(message) {
+  filterMessage = (message) => {
     if (message.user === '[Server]') {
       return this.state.showServerMsgs;
     } else if (message.user === '[Game]') {
@@ -186,7 +186,7 @@ export default class Chat extends Component {
           }}>
           {
             this.mergeMessagesById(messages)
-              .filter(this.filterMessage.bind(this))
+              .filter(this.filterMessage)
               .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
           }
         </div>

@@ -1,0 +1,200 @@
+1
+00:00:00,000 --> 00:00:03,055
+Hi! I'm John. I'm a developer on Wordbots.
+
+2
+00:00:03,060 --> 00:00:08,340
+Today I'm going to show you how to use Wordbots's powerful card creator tools.
+
+3
+00:00:08,700 --> 00:00:11,880
+To get an idea of how we represent cards in
+
+4
+00:00:11,880 --> 00:00:16,139
+the cart creator, we can hit the Randomize
+button to generate a new random card
+
+5
+00:00:16,139 --> 00:00:18,000
+with all the details filled in.
+
+6
+00:00:18,000 --> 00:00:20,680
+Notice we are only generating robots.
+
+7
+00:00:20,680 --> 00:00:26,620
+To generate other types of cards, we can modify the card type drop-down.
+
+8
+00:00:27,160 --> 00:00:29,760
+Let's go back to generating robots.
+
+9
+00:00:30,720 --> 00:00:32,660
+If you get stuck and can't think of the
+
+10
+00:00:32,660 --> 00:00:36,290
+word you want, we've included a
+dictionary, thesaurus, and a list of
+
+11
+00:00:36,290 --> 00:00:40,090
+keywords to help you make the card of
+your dreams.
+
+12
+00:00:40,090 --> 00:00:45,400
+Let's look at the tools the thesaurus
+gives us. Here we can see examples of
+
+13
+00:00:45,400 --> 00:00:50,250
+sentences that generate the "destroy"
+action on a card.
+
+14
+00:00:52,210 --> 00:00:53,330
+Let's try it out.
+
+15
+00:00:56,980 --> 00:01:03,040
+Hmm, the parser didn't understand that,
+but it gave us some suggestions.
+
+16
+00:01:03,700 --> 00:01:08,760
+Looks like "destroyed" can't be used as a
+passive ability on a robot. One thing we
+
+17
+00:01:08,760 --> 00:01:14,200
+could do is change this card to an Event
+type. Let's accept the recommended fix instead.
+
+18
+00:01:16,080 --> 00:01:20,920
+If we hover over this word on the card
+we can see what effect the "Startup"
+
+19
+00:01:20,920 --> 00:01:26,740
+keyword has. We can also check the
+keyword reference. We can see "Startup"
+
+20
+00:01:26,740 --> 00:01:32,229
+means "when our card is played". Let's make
+this card a little less powerful.
+
+21
+00:01:32,229 --> 00:01:36,459
+We'll only make this destroy adjacent
+structures. To get an idea of how we can
+
+22
+00:01:36,459 --> 00:01:39,780
+do this, check the dictionary.
+
+23
+00:01:41,210 --> 00:01:45,860
+There are also other action life cycles
+that we can use with this card. Let's
+
+24
+00:01:45,860 --> 00:01:49,690
+make it trigger every time we move.
+
+25
+00:01:53,720 --> 00:01:57,500
+If you're feeling curious, you can take a
+look at what this card looks like to the
+
+26
+00:01:57,500 --> 00:02:01,820
+card parser. Here we see an internal
+representation of what the parser sees
+
+27
+00:02:01,820 --> 00:02:04,160
+when it reads your card.
+
+28
+00:02:04,160 --> 00:02:06,110
+Let's go ahead and give this card a name
+
+29
+00:02:06,110 --> 00:02:12,450
+How about Structure Smasher?
+To complete our card, we need to assign
+
+30
+00:02:12,450 --> 00:02:20,580
+stats like attack, health, speed, and
+finally, a card cost. Time to test out our card!
+
+31
+00:02:23,080 --> 00:02:27,580
+In this mode, we can alter the decks of
+both players with any card in our
+
+32
+00:02:27,590 --> 00:02:31,940
+collection. We'll use this to give both
+players a lot of structures our Smasher
+
+33
+00:02:31,940 --> 00:02:34,450
+can smash.
+
+34
+00:02:39,180 --> 00:02:43,290
+We have to play a couple of structures
+on the board to get a good feel for our
+
+35
+00:02:43,290 --> 00:02:46,220
+card's ability.
+
+36
+00:02:52,650 --> 00:02:58,250
+Now let's play our Structure Smasher and
+try moving it around.
+
+37
+00:02:59,360 --> 00:03:04,560
+Would you look at that? When we move our
+robot around, the adjacent structures are
+
+38
+00:03:04,560 --> 00:03:09,660
+getting destroyed. Unfortunately it looks
+like a destroys our structures – that's
+
+39
+00:03:09,660 --> 00:03:15,210
+no good. Hit the Forfeit button to leave
+test mode. Let's try to make it a little
+
+40
+00:03:15,210 --> 00:03:21,120
+better. Let's see if we can make it only
+destroy enemy structures. First let's
+
+41
+00:03:21,120 --> 00:03:25,910
+check the dictionary to see how the word
+"enemy" is used.
+
+42
+00:03:29,129 --> 00:03:34,370
+Looks like this card is ready to use.
+Let's add it to our collection.
+
+43
+00:03:34,599 --> 00:03:40,230
+Now you can use this card to make your
+own decks in the deck creator.
+

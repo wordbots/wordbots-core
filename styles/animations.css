@@ -6,6 +6,14 @@
   transition: transform 500ms ease-in-out;
 }
 
+.chat-message-appear {
+  background-color: #ffe366;
+}
+.chat-message-appear-active {
+  background-color: transparent;
+  transition: background-color 500ms ease-in-out;
+}
+
 .hex-piece-enter {
   opacity: 0;
 }

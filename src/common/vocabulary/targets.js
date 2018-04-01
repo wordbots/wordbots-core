@@ -13,7 +13,6 @@ import {
 //    {type: 'players', entries: <array of players>}
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
-
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
@@ -155,6 +154,12 @@ export default function targets(state, currentObject) {
 
     thisRobot: function () {
       return {type: 'objects', entries: [currentObject]};
+    },
+
+    //a generic 1/1/1 robot.
+    token: function (){
+      return {abilities:[],baseCost:0,cost:0,id: 'builtin/token',name:'Token',source:'builtin',stats:{attack:1,health:1,speed:1},type:0};
     }
+
   };
 }

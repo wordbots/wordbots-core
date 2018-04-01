@@ -1,7 +1,6 @@
 import { TYPE_ROBOT } from '../../constants';
 
 /* eslint-disable quotes */
-
 export const crawlingWallCard = {
   name: 'Crawling Wall',
   cost: 1,

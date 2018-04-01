@@ -78,7 +78,7 @@ export function stringToType(str) {
 
 /* Parsing. */
 
-export const PARSER_URL = USE_LOCAL_PARSER ? 'http://localhost:'+LOCAL_PARSER_PORT : 'http://parser.wordbots.io';
+export const PARSER_URL = USE_LOCAL_PARSER ? `http://localhost:${LOCAL_PARSER_PORT}` : 'http://parser.wordbots.io';
 export const PARSE_DEBOUNCE_MS = 500;
 
 export const SYNONYMS = {

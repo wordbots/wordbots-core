@@ -8,7 +8,7 @@ import {
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, removeObjectFromBoard,
   executeCmd
 } from '../util/game';
-import { splitSentences } from '../util/cards'
+import { splitSentences } from '../util/cards';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 
 export default function actions(state) {
@@ -23,17 +23,15 @@ export default function actions(state) {
   return {
     //become a card(becomeACopy takes a playedObject, this takes a card)
     become: function (sources, card) {
-      console.log("become called!");
       //console.log(card);
-
       iterateOver(sources)(source=>{
         Object.assign(source,{
           card: cloneDeep(card),
           stats: cloneDeep(card.stats),
           abilities: [],
           triggers: []
-        })
-      })
+        });
+      });
 
       //set triggers
       if (card.abilities && card.abilities.length > 0) {
@@ -41,7 +39,7 @@ export default function actions(state) {
           const cmdText = splitSentences(card.text)[idx];
           state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
 
-          iterateOver(sources)(source=>{executeCmd(state, cmd, source)});//works for multitarget? who knows!
+          iterateOver(sources)(source=>{executeCmd(state, cmd, source);});//works for multitarget? who knows!
         });
       }
       

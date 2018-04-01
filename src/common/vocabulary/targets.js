@@ -157,9 +157,8 @@ export default function targets(state, currentObject) {
     },
 
     //a generic 1/1/1 robot.
-    token: function(){
-      
-      return {abilities:[],baseCost:0,cost:0,id: "builtin/token",name:"Token",source:"builtin",stats:{attack:1,health:1,speed:1},type:0};
+    token: function (){
+      return {abilities:[],baseCost:0,cost:0,id: 'builtin/token',name:'Token',source:'builtin',stats:{attack:1,health:1,speed:1},type:0};
     }
 
   };

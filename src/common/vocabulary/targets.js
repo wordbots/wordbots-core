@@ -87,8 +87,8 @@ export default function targets(state, currentObject) {
       // Assume that exactly one object is ever passed in here.
       // currently only allow picking from objects on field.
       // allow picking from hand in future.
-      if (collection.type == 'objects') {
-        return {type: 'cards', entries:[collection.entries[0].card]}
+      if (collection.type === 'objects') {
+        return {type: 'cards', entries:[collection.entries[0].card]};
       }
       return {type: 'cards', entries:[]};
     },

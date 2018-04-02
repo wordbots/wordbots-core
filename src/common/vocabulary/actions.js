@@ -23,7 +23,7 @@ export default function actions(state) {
   return {
     // become a card (becomeACopy takes a playedObject, this takes a card)
     become: function (sources, cards) {
-      let card = cards.entries[0];
+      const card = cards.entries[0];
       iterateOver(sources)(source=>{
         Object.assign(source,{
           card: cloneDeep(card),
@@ -39,7 +39,7 @@ export default function actions(state) {
           const cmdText = splitSentences(card.text)[idx];
           state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
 
-          iterateOver(sources)(source=>{executeCmd(state, cmd, source)}); // seems to work
+          iterateOver(sources)(source=>{executeCmd(state, cmd, source);}); // seems to work
         });
       }
       

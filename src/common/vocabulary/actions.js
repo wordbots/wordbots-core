@@ -39,7 +39,7 @@ export default function actions(state) {
           const cmdText = splitSentences(card.text)[idx];
           state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
 
-          iterateOver(sources)(source=>{executeCmd(state, cmd, source)});//no idea if this works
+          iterateOver(sources)(source=>{executeCmd(state, cmd, source)}); // seems to work
         });
       }
       

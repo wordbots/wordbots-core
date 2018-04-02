@@ -55,7 +55,7 @@ export default function actions(state) {
           triggers: cloneDeep(target.triggers),
           abilities: cloneDeep(target.abilities)
         });
-        //updateOrDeleteObjectAtHex(state, source, getHex(state, source)); // is this needed? it seems to work without it...
+        updateOrDeleteObjectAtHex(state, source, getHex(state, source));
       });
     },
 

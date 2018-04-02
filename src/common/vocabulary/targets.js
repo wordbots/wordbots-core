@@ -83,6 +83,16 @@ export default function targets(state, currentObject) {
       return {type: 'players', entries: (objects.entries.length === 1) ? [ownerOf(state, objects.entries[0])] : []};
     },
 
+    copyOf: function (collection) {
+      // Assume that exactly one object is ever passed in here.
+      // currently only allow picking from objects on field.
+      // allow picking from hand in future.
+      if (collection.type == 'objects') {
+        return {type: 'cards', entries:[collection.entries[0].card]}
+      }
+      return {type: 'cards', entries:[]};
+    },
+
     // Currently salient object.
     it: function () {
       /* console.log({
@@ -154,12 +164,6 @@ export default function targets(state, currentObject) {
 
     thisRobot: function () {
       return {type: 'objects', entries: [currentObject]};
-    },
-
-    //a generic 1/1/1 robot.
-    token: function (){
-      return {abilities:[],baseCost:0,cost:0,id: 'builtin/token',name:'Token',source:'builtin',stats:{attack:1,health:1,speed:1},type:0};
     }
-
   };
 }

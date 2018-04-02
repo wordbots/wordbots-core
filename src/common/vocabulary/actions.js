@@ -21,9 +21,9 @@ export default function actions(state) {
   };
 
   return {
-    //become a card(becomeACopy takes a playedObject, this takes a card)
-    become: function (sources, card) {
-      //console.log(card);
+    // become a card (becomeACopy takes a playedObject, this takes a card)
+    become: function (sources, cards) {
+      let card = cards.entries[0];
       iterateOver(sources)(source=>{
         Object.assign(source,{
           card: cloneDeep(card),
@@ -39,13 +39,13 @@ export default function actions(state) {
           const cmdText = splitSentences(card.text)[idx];
           state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
 
-          iterateOver(sources)(source=>{executeCmd(state, cmd, source);});//works for multitarget? who knows!
+          iterateOver(sources)(source=>{executeCmd(state, cmd, source)});//no idea if this works
         });
       }
       
     },
 
-    //SOURCES become TARGET.
+    // SOURCES become TARGET. keep for reference until become() really works well
     becomeACopy: function (sources, targets) {
       const target = targets.entries[0]; // Unpack target.
       iterateOver(sources)(source => {
@@ -55,7 +55,7 @@ export default function actions(state) {
           triggers: cloneDeep(target.triggers),
           abilities: cloneDeep(target.abilities)
         });
-        //updateOrDeleteObjectAtHex(state, source, getHex(state, source));
+        //updateOrDeleteObjectAtHex(state, source, getHex(state, source)); // is this needed? it seems to work without it...
       });
     },
 

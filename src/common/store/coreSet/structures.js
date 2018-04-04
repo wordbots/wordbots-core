@@ -119,7 +119,7 @@ export const mirrorCard = {
   },
   text: 'When you play a robot, this structure becomes a copy of that robot.',
   abilities: [
-    "(function () { setTrigger(triggers['afterCardPlay'](function () { return targets['self'](); }, 'robot'), (function () { actions['becomeACopy'](targets['thisRobot'](), targets['that']()); })); })"
+    "(function () { setTrigger(triggers['afterCardPlay'](function () { return targets['self'](); }, 'robot'), (function () { actions['become'](targets['thisRobot'](), targets['copyOf'](targets['that']())); })); })"
   ]
 };
 

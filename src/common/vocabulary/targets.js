@@ -13,7 +13,6 @@ import {
 //    {type: 'players', entries: <array of players>}
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
-
 export default function targets(state, currentObject) {
   return {
     all: function (collection) {
@@ -82,6 +81,16 @@ export default function targets(state, currentObject) {
     controllerOf: function (objects) {
       // Assume that only one object is ever passed in here.
       return {type: 'players', entries: (objects.entries.length === 1) ? [ownerOf(state, objects.entries[0])] : []};
+    },
+
+    copyOf: function (collection) {
+      // Assume that exactly one object is ever passed in here.
+      // currently only allow picking from objects on field.
+      // allow picking from hand in future.
+      if (collection.type === 'objects') {
+        return {type: 'cards', entries:[collection.entries[0].card]};
+      }
+      return {type: 'cards', entries:[]};
     },
 
     // Currently salient object.

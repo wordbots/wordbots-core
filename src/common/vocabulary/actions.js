@@ -8,6 +8,7 @@ import {
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, removeObjectFromBoard,
   executeCmd
 } from '../util/game';
+import { splitSentences } from '../util/cards';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 
 export default function actions(state) {
@@ -20,6 +21,31 @@ export default function actions(state) {
   };
 
   return {
+    // become a card (becomeACopy takes a playedObject, this takes a card)
+    become: function (sources, cards) {
+      const card = cards.entries[0];
+      iterateOver(sources)(source=>{
+        Object.assign(source,{
+          card: cloneDeep(card),
+          stats: cloneDeep(card.stats),
+          abilities: [],
+          triggers: []
+        });
+      });
+
+      //set triggers
+      if (card.abilities && card.abilities.length > 0) {
+        card.abilities.forEach((cmd, idx) => {
+          const cmdText = splitSentences(card.text)[idx];
+          state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+
+          iterateOver(sources)(source=>{executeCmd(state, cmd, source);}); // seems to work
+        });
+      }
+      
+    },
+
+    // SOURCES become TARGET. keep for reference until become() really works well
     becomeACopy: function (sources, targets) {
       const target = targets.entries[0]; // Unpack target.
       iterateOver(sources)(source => {

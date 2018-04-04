@@ -41,7 +41,7 @@ export function abilities(state) {
           target.activatedAbilities = (target.activatedAbilities || []);
 
           if (!target.activatedAbilities.find(a => a.aid === aid)) {
-            target.activatedAbilities = (target.activatedAbilities).concat({
+            target.activatedAbilities = target.activatedAbilities.concat({
               aid: aid,
               text: cmdText.replace('Activate: ', ''),
               cmd: action

@@ -42,11 +42,12 @@ export default function actions(state) {
           iterateOver(sources)(source=>{executeCmd(state, cmd, source);}); // seems to work
         });
       }
-      
+
     },
 
     // SOURCES become TARGET. keep for reference until become() really works well
     becomeACopy: function (sources, targets) {
+      console.warn('actions.becomeACopy is deprecated as of wordbots-core 0.9.2');
       const target = targets.entries[0]; // Unpack target.
       iterateOver(sources)(source => {
         Object.assign(source, {

@@ -38,7 +38,6 @@ export function abilities(state) {
         aid: aid,
         targets: `(${targetFunc.toString()})`,
         apply: function (target) {
-
           target.activatedAbilities = (target.activatedAbilities || []);
 
           if (!target.activatedAbilities.find(a => a.aid === aid)) {

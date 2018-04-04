@@ -14,6 +14,7 @@
   "parser": "babel-eslint",
   "rules": {
     "arrow-body-style": 2,
+    "arrow-spacing": 2,
     "comma-dangle": 2,
     "eol-last": 2,
     "eqeqeq": 2,

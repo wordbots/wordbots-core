@@ -21,10 +21,10 @@ export default function actions(state) {
   };
 
   return {
-    // become a card (becomeACopy takes a playedObject, this takes a card)
+    // Become a card. (becomeACopy takes a playedObject, this takes a card)
     become: function (sources, cards) {
       const card = cards.entries[0];
-      iterateOver(sources)(source=>{
+      iterateOver(sources)(source => {
         Object.assign(source,{
           card: cloneDeep(card),
           stats: cloneDeep(card.stats),
@@ -33,21 +33,22 @@ export default function actions(state) {
         });
       });
 
-      //set triggers
+      // Set triggers one-by-one.
       if (card.abilities && card.abilities.length > 0) {
         card.abilities.forEach((cmd, idx) => {
           const cmdText = splitSentences(card.text)[idx];
           state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
 
-          iterateOver(sources)(source=>{executeCmd(state, cmd, source);}); // seems to work
+          iterateOver(sources)(source => {
+            executeCmd(state, cmd, source);
+          });
         });
       }
-
     },
 
     // SOURCES become TARGET. keep for reference until become() really works well
     becomeACopy: function (sources, targets) {
-      console.warn('actions.becomeACopy is deprecated as of wordbots-core 0.9.2');
+      console.warn('actions.becomeACopy is deprecated as of wordbots-core 0.9.2');  // eslint-disable-line no-console
       const target = targets.entries[0]; // Unpack target.
       iterateOver(sources)(source => {
         Object.assign(source, {

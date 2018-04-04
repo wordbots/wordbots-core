@@ -215,6 +215,9 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
       object.cantActivate = true;
       object.cantAttack = true;
 
+      tempState = applyAbilities(tempState);
+      tempState = updateOrDeleteObjectAtHex(tempState, object, hexId);
+
       return tempState;
     }
   } else {

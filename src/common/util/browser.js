@@ -1,13 +1,16 @@
 import React from 'react';
 
 let ReactGA, currentLocation;
+
 if (inBrowser()) {
   ReactGA = require('react-ga');
   ReactGA.initialize('UA-345959-18');
 }
 
 export function inBrowser() {
-  return !(typeof document === 'undefined' || (window.process && window.process.title.includes('node')));
+  return !(typeof document === 'undefined' || 
+    (window.process && window.process.title.includes('node')) ||
+    (window.process && window.process.title.includes('test')));
 }
 
 export function logAnalytics() {

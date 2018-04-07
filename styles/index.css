@@ -154,3 +154,10 @@ a.topLink:hover {
   border-radius: 3px;
   box-shadow: 0 0 6px rgba(0,0,0,0.3);
 }
+
+/* End Turn Button */
+
+#end-turn-button:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  background-color: rgb(30, 30, 30) !important;
+}

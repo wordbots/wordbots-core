@@ -71,6 +71,7 @@ export default class EndTurnButton extends Component {
               timer
             </FontIcon>
           }
+          id="end-turn-button"
           disabled={!this.buttonEnabled} />
         </TutorialTooltip>
     );

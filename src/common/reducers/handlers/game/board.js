@@ -20,7 +20,7 @@ function resetTargetAndStatus(player) {
   player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
 }
 
-export function deselect(state, playerName) {
+export function deselect(state, playerName = state.currentTurn) {
   const player = state.players[playerName];
   player.selectedTile = null;
   player.selectedCard = null;
@@ -70,10 +70,7 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
-
-    if (!asPartOfAttack) {
-      state = selectTile(state, toHex);
-    }
+    state = deselect(state);
   }
 
   return state;
@@ -127,6 +124,8 @@ export function attack(state, source, target) {
       });
       state.attack = {from: source, to: target};
     }
+
+    state = deselect(state);
   }
 
   return state;
@@ -212,8 +211,13 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
       // So return the old state.
       return state;
     } else {
+      // The activated ability has succeeded.
       object.cantActivate = true;
       object.cantAttack = true;
+
+      tempState = applyAbilities(tempState);
+      tempState = updateOrDeleteObjectAtHex(tempState, object, hexId);
+      tempState = deselect(tempState);
 
       return tempState;
     }

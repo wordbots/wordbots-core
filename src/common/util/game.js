@@ -340,8 +340,8 @@ function endTurn(state) {
     })
   ));
 
-
   state = triggerEvent(state, 'endOfTurn', {player: true});
+  state = checkVictoryConditions(state);
   state.currentTurn = opponentName(state);
 
   return state;

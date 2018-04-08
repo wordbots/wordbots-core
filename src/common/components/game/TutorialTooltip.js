@@ -100,7 +100,7 @@ export default class TutorialTooltip extends Component {
     if (!this.step.action) {
       return (
         <RaisedButton
-          label={this.isOnlyStep ? 'CLOSE' : (this.isComplete ? 'FINISH' : 'NEXT')}
+          label={this.isComplete ? 'FINISH' : 'NEXT'}
           style={this.styles.nextButton}
           onClick={this.isComplete ? this.props.onEndTutorial : this.props.onNextStep}
         />

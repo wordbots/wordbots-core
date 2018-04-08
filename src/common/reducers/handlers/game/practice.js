@@ -44,7 +44,7 @@ export function startSandbox(state, cardToTest = null) {
 
   state.tutorialSteps = isFlagSet('skipTooltip:sandbox') ? null : [{
     tooltip: {
-      hex: '0,0,0',
+      hex: '-1,2,-1',
       text: [
         'Welcome to the sandbox!',
         'In this mode, you can control both players and play any card regardless of energy cost.',

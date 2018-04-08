@@ -315,12 +315,12 @@ function endTurn(state) {
     }
   }
 
-  const player = currentPlayer(state);
-  player.selectedCard = null;
-  player.selectedTile = null;
-  player.status.message = '';
-  player.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, (obj =>
+  const previousTurnPlayer = currentPlayer(state);
+  previousTurnPlayer.selectedCard = null;
+  previousTurnPlayer.selectedTile = null;
+  previousTurnPlayer.status.message = '';
+  previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+  previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, (obj =>
     Object.assign({}, obj, {
       attackedThisTurn: false,
       movedThisTurn: false,
@@ -331,6 +331,15 @@ function endTurn(state) {
       triggers: compact(obj.triggers.map(decrementDuration))
     })
   ));
+
+  const nextTurnPlayer = opponentPlayer(state);
+  nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, (obj =>
+    Object.assign({}, obj, {
+      abilities: compact(obj.abilities.map(decrementDuration)),
+      triggers: compact(obj.triggers.map(decrementDuration))
+    })
+  ));
+
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
   state.currentTurn = opponentName(state);

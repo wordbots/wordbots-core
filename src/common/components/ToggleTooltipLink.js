@@ -23,7 +23,7 @@ export default class ToggleTooltipLink extends Component {
         <a
           onClick={this.toggleDisplaySandboxTooltip}
           style={{cursor: 'pointer', textDecoration: 'underline'}}
-        >{this.state.tooltipShouldDisplay ? 'Keep showing this message' : 'Don\'t show this message again'}</a>
+        >{this.state.tooltipShouldDisplay ? 'Don\'t show this message again' : 'Keep showing this message'}</a>
       </span>
     );
   }

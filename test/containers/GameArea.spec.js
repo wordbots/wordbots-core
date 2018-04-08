@@ -40,7 +40,7 @@ describe('GameArea container', () => {
           left: 0, top: 75, bottom: 75, right: 0,
           margin: '0 auto',
           width: 1000,
-          zIndex: 999
+          zIndex: 1000
       }}>
         <Status status={state.game.players.orange.status} />
         <Board

@@ -29,8 +29,8 @@ export const SHOW_TOOLTIP_TIMEOUT_MS = 500;
 export const HEADER_HEIGHT = 64;
 export const SIDEBAR_WIDTH = 256;
 export const SIDEBAR_COLLAPSED_WIDTH = 64;
-export const BOARD_Z_INDEX = 999;
-export const BACKGROUND_Z_INDEX = 9999;
+export const BOARD_Z_INDEX = 1000;
+export const BACKGROUND_Z_INDEX = 900;
 
 /* Board. */
 

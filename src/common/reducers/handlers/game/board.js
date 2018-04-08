@@ -20,17 +20,17 @@ function resetTargetAndStatus(player) {
   player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
 }
 
-export function deselect(state, playerName = state.currentTurn) {
-  const player = state.players[playerName];
+export function deselect(state, playerColor = state.currentTurn) {
+  const player = state.players[playerColor];
   player.selectedTile = null;
   player.selectedCard = null;
   resetTargetAndStatus(player);
   return state;
 }
 
-export function setSelectedTile(state, playerName, tile) {
-  const player = state.players[playerName];
-  const isCurrentPlayer = (playerName === state.currentTurn);
+export function setSelectedTile(state, playerColor, tile) {
+  const player = state.players[playerColor];
+  const isCurrentPlayer = (playerColor === state.currentTurn);
 
   if (isCurrentPlayer &&
       player.target.choosing &&
@@ -123,9 +123,8 @@ export function attack(state, source, target) {
         [attacker.card.name]: attacker.card
       });
       state.attack = {from: source, to: target};
+      state = deselect(state);
     }
-
-    state = deselect(state);
   }
 
   return state;

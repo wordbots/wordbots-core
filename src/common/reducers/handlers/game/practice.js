@@ -1,12 +1,15 @@
+import React from 'react';
 import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 
 import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
 import { id, convertRange } from '../../../util/common';
+import { isFlagSet } from '../../../util/browser';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
   newGame, passTurn
 } from '../../../util/game';
 import * as builtinCards from '../../../store/cards';
+import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
 import HU from '../../../components/hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
@@ -38,6 +41,18 @@ export function startSandbox(state, cardToTest = null) {
 
   state = newGame(state, 'orange', {orange: 'Orange', blue: 'Blue'}, decks);
   state.sandbox = true;
+
+  state.tutorialSteps = isFlagSet('skipTooltip:sandbox') ? null : [{
+    tooltip: {
+      hex: '0,0,0',
+      text: [
+        'Welcome to the sandbox!',
+        'In this mode, you can control both players and play any card regardless of energy cost.',
+        'You can also use the card selector sidebar to add any card in your collection to the top of either player\'s deck.'
+      ].join('\n'),
+      backButton: <ToggleTooltipLink tooltipName="sandbox" />
+    }
+  }];
 
   return state;
 }

@@ -41,10 +41,11 @@ export function opponentPlayer(state) {
 }
 
 export function currentTutorialStep(state) {
-  if (state.tutorial && state.tutorialSteps) {
-    const step = state.tutorialSteps[state.tutorialCurrentStepIdx];
+  if ((state.tutorial || state.sandbox) && state.tutorialSteps) {
+    const idx = state.tutorialCurrentStepIdx || 0;
+    const step = state.tutorialSteps[idx];
     return Object.assign({}, step, {
-      idx: state.tutorialCurrentStepIdx,
+      idx,
       numSteps: state.tutorialSteps.length
     });
   }

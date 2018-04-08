@@ -50,10 +50,6 @@ export default class TutorialTooltip extends Component {
         fontSize: 10,
         color: '#666'
       },
-      text: {
-        marginTop: 20,
-        marginBottom: 10
-      },
       backButton: {
         width: 32,
         height: 32,
@@ -70,6 +66,10 @@ export default class TutorialTooltip extends Component {
     return this.props.tutorialStep;
   }
 
+  get isOnlyStep() {
+    return this.step.numSteps === 1;
+  }
+
   get pctComplete() {
     return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
   }
@@ -79,7 +79,7 @@ export default class TutorialTooltip extends Component {
   }
 
   get backButton() {
-    return (
+    return this.step.tooltip.backButton || (
       <Tooltip inline text="Go back a step">
         <IconButton
           onClick={this.props.onPrevStep}
@@ -96,7 +96,7 @@ export default class TutorialTooltip extends Component {
     if (!this.step.action) {
       return (
         <RaisedButton
-          label={this.isComplete ? 'FINISH' : 'NEXT'}
+          label={this.isOnlyStep ? 'CLOSE' : (this.isComplete ? 'FINISH' : 'NEXT')}
           style={this.styles.nextButton}
           onClick={this.isComplete ? this.props.onEndTutorial : this.props.onNextStep}
         />
@@ -107,12 +107,12 @@ export default class TutorialTooltip extends Component {
   get tooltipBody() {
     return (
       <div style={this.styles.tooltip}>
-        <div style={this.styles.percent}>
+        {!this.isOnlyStep && <div style={this.styles.percent}>
           {this.pctComplete}% complete
-        </div>
+        </div>}
 
-        <div style={this.styles.text}>
-          {this.step.tooltip.text}
+        <div>
+          {this.step.tooltip.text.split('\n').map((text, i) => <p key={i}>{text}</p>)}
         </div>
 
         {this.backButton}

@@ -122,14 +122,11 @@ export function matchesType(objectOrCard, cardTypeQuery) {
 }
 
 export function checkVictoryConditions(state) {
-  console.log("checkVictoryConditions");
   if (!some(state.players.blue.robotsOnBoard, {card: {type: TYPE_CORE}})) {
     state.winner = 'orange';
   } else if (!some(state.players.orange.robotsOnBoard, {card: {type: TYPE_CORE}})) {
     state.winner = 'blue';
   }
-
-  console.log(state);
 
   if (state.winner) {
     state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');

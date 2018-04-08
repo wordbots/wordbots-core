@@ -30,6 +30,7 @@ export default class HelpDialog extends Component {
       <div className="markdownBlock">
         <h2>Video Tutorial</h2>
         <IFrame
+          position="relative"
           url="https://www.youtube.com/embed/GeZwKIOKc1c?rel=0"
           width="708"
           height="444"

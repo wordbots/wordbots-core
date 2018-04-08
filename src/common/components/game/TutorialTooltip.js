@@ -83,7 +83,7 @@ export default class TutorialTooltip extends Component {
   }
 
   get backButton() {
-    return this.step.tooltip.backButton || (
+    return (
       <Tooltip inline text="Go back a step">
         <IconButton
           onClick={this.props.onPrevStep}
@@ -129,7 +129,7 @@ export default class TutorialTooltip extends Component {
           {this.step.tooltip.text.split('\n').map((text, i) => <p key={i}>{text}</p>)}
         </div>
 
-        {this.backButton}
+        {this.step.tooltip.backButton || this.backButton}
         {this.isOnlyStep ? this.hideButton : this.nextButton}
       </div>
     );

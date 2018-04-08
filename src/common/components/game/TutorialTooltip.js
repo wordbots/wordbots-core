@@ -29,6 +29,10 @@ export default class TutorialTooltip extends Component {
     onEndTutorial: noop
   };
 
+  state = {
+    hidden: false
+  };
+
   get styles() {
     return {
       container: {
@@ -104,6 +108,16 @@ export default class TutorialTooltip extends Component {
     }
   }
 
+  get hideButton() {
+    return (
+      <RaisedButton
+        label="CLOSE"
+        style={this.styles.nextButton}
+        onClick={this.hide}
+      />
+    );
+  }
+
   get tooltipBody() {
     return (
       <div style={this.styles.tooltip}>
@@ -116,13 +130,17 @@ export default class TutorialTooltip extends Component {
         </div>
 
         {this.backButton}
-        {this.nextButton}
+        {this.isOnlyStep ? this.hideButton : this.nextButton}
       </div>
     );
   }
 
+  hide = () => {
+    this.setState({ hidden: true });
+  };
+
   render() {
-    if (this.step && this.props.enabled) {
+    if (this.step && this.props.enabled && !this.state.hidden) {
       return (
         <Popover
           body={this.tooltipBody}

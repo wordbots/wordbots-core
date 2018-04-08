@@ -48,7 +48,8 @@ export function startSandbox(state, cardToTest = null) {
       text: [
         'Welcome to the sandbox!',
         'In this mode, you can control both players and play any card regardless of energy cost.',
-        'You can also use the card selector sidebar to add any card in your collection to the top of either player\'s deck.'
+        'You can also use the card selector sidebar to add any card in your collection to the top of either player\'s deck.',
+        'To leave sandbox mode, click the Forfeit flag button to the right.' // TODO better UX for leaving sandbox mode
       ].join('\n'),
       backButton: <ToggleTooltipLink tooltipName="sandbox" />
     }

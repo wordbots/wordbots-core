@@ -5,14 +5,18 @@ import Tooltip from '../Tooltip';
 import Card from '../card/Card';
 import CardBack from '../card/CardBack';
 
-const Deck = ({ deck, reveal = false }) => {
+const Deck = ({ deck, opponent, reveal = false }) => {
   if (deck.length > 0) {
     return (
       <Tooltip
         text={`${deck.length} Cards`}
         style={{fontFamily: 'Carter One'}}
       >
-        {reveal ? Card.fromObj(deck[0]) : <CardBack deckLength={deck.length} />}
+        {
+          reveal ?
+            Card.fromObj(deck[0], {rotation: opponent ? 180 : 0}) :
+            <CardBack deckLength={deck.length} />
+        }
       </Tooltip>
     );
   } else {
@@ -40,6 +44,7 @@ const Deck = ({ deck, reveal = false }) => {
 
 Deck.propTypes = {
   deck: arrayOf(object),
+  isUpsideDown: bool,
   reveal: bool
 };
 

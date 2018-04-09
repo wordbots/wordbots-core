@@ -29,6 +29,10 @@ export default class TutorialTooltip extends Component {
     onEndTutorial: noop
   };
 
+  state = {
+    hidden: false
+  };
+
   get styles() {
     return {
       container: {
@@ -50,10 +54,6 @@ export default class TutorialTooltip extends Component {
         fontSize: 10,
         color: '#666'
       },
-      text: {
-        marginTop: 20,
-        marginBottom: 10
-      },
       backButton: {
         width: 32,
         height: 32,
@@ -68,6 +68,10 @@ export default class TutorialTooltip extends Component {
 
   get step() {
     return this.props.tutorialStep;
+  }
+
+  get isOnlyStep() {
+    return this.step.numSteps === 1;
   }
 
   get pctComplete() {
@@ -104,25 +108,39 @@ export default class TutorialTooltip extends Component {
     }
   }
 
+  get hideButton() {
+    return (
+      <RaisedButton
+        label="CLOSE"
+        style={this.styles.nextButton}
+        onClick={this.hide}
+      />
+    );
+  }
+
   get tooltipBody() {
     return (
       <div style={this.styles.tooltip}>
-        <div style={this.styles.percent}>
+        {!this.isOnlyStep && <div style={this.styles.percent}>
           {this.pctComplete}% complete
+        </div>}
+
+        <div>
+          {this.step.tooltip.text.split('\n').map((text, i) => <p key={i}>{text}</p>)}
         </div>
 
-        <div style={this.styles.text}>
-          {this.step.tooltip.text}
-        </div>
-
-        {this.backButton}
-        {this.nextButton}
+        {this.step.tooltip.backButton || this.backButton}
+        {this.isOnlyStep ? this.hideButton : this.nextButton}
       </div>
     );
   }
 
+  hide = () => {
+    this.setState({ hidden: true });
+  };
+
   render() {
-    if (this.step && this.props.enabled) {
+    if (this.step && this.props.enabled && !this.state.hidden) {
       return (
         <Popover
           body={this.tooltipBody}

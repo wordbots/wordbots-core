@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { isEmpty, isNull } from 'lodash';
 
+import { HAND_Z_INDEX } from '../../constants.js';
+
 import CardInHand from './CardInHand';
 
 export default class Hand extends Component {
@@ -102,7 +104,8 @@ export default class Hand extends Component {
           position: 'absolute',
           left: 0,
           right: 0,
-          margin: '0 auto'
+          margin: '0 auto',
+          zIndex: HAND_Z_INDEX
         }}>
         {this.renderCards()}
       </TransitionGroup>

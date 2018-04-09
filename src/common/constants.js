@@ -31,6 +31,7 @@ export const SIDEBAR_WIDTH = 256;
 export const SIDEBAR_COLLAPSED_WIDTH = 64;
 export const BOARD_Z_INDEX = 1000;
 export const BACKGROUND_Z_INDEX = 900;
+export const HAND_Z_INDEX = 1100;
 
 /* Board. */
 

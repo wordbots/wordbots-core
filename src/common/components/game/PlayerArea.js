@@ -102,7 +102,7 @@ export default class PlayerArea extends Component {
         >
           <RaisedButton
             secondary
-            label="Discard Pile"
+            label={`Discard Pile (${gameProps[`${color}DiscardPile`].length})`}
             onTouchTap={this.handleOpenDiscardPile}
             style={this.styles.discard}
             disabled={gameProps[`${color}DiscardPile`].length === 0}/>

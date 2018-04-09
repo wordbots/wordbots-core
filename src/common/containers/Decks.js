@@ -62,7 +62,8 @@ class Decks extends Component {
   };
 
   handleTryDeck = (deck) => {
-    this.props.history.push(Play.urlForGameMode('practice', deck));
+    const { history } = this.props;
+    history.push(Play.urlForGameMode('practice', deck), { previous: history.location });
   }
 
   render = () => (

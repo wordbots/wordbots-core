@@ -157,7 +157,7 @@ export default class GameArea extends Component {
 
   render() {
     const {
-      attack, bluePieces, currentTurn, eventQueue, gameOver, isAttackHappening,
+      attack, bluePieces, currentTurn, eventQueue, gameOver, history, isAttackHappening,
       isMyTurn, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
       selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,

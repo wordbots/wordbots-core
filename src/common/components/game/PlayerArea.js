@@ -50,13 +50,15 @@ export default class PlayerArea extends Component {
         color: 'white'
       },
       discardContainer: {
-        display: 'flex',
-        flexDirection: opponent ? 'column-reverse' : 'column'
+        display: 'flex'
       },
       discard: {
-        width: 'calc(100% - 10px)',
-        marginTop: opponent ? 10 : 0,
-        marginBottom: opponent ? 0 : 10
+        marginRight: 8,
+        marginTop: -11,
+        transform: 'rotate(-90deg)',
+        transformOrigin: '100% 100%',
+        height: 36,
+        width: 210
       }
     };
   }

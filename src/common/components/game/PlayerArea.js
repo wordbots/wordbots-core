@@ -30,7 +30,7 @@ export default class PlayerArea extends Component {
   }
 
   get styles() {
-    const opponent = this.props.opponent;
+    const { opponent, gameProps } = this.props;
 
     return {
       container: {
@@ -54,7 +54,7 @@ export default class PlayerArea extends Component {
       },
       discard: {
         marginRight: 8,
-        marginTop: -11,
+        marginTop: gameProps.isSandbox ? -11 : -36,
         transform: 'rotate(-90deg)',
         transformOrigin: '100% 100%',
         height: 36,

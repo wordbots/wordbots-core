@@ -350,7 +350,7 @@ export default class CardCreationForm extends Component {
               </Tooltip>
               <Snackbar
                 open={submittedParseIssueConfirmationOpen}
-                message={`Reported issue parsing '${submittedParseIssue}'`}
+                message={`Reported issue parsing '${submittedParseIssue}'. Thanks for the feedback!`}
                 autoHideDuration={4000}
                 onRequestClose={this.handleCloseReportParseIssueSnackbar}
               />

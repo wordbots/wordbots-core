@@ -12,6 +12,8 @@ const config = {
   messagingSenderId: '913868073872'
 };
 
+let currentUser = null;
+
 if (fb.apps.length === 0) {
   fb.initializeApp(config);
 }
@@ -30,6 +32,7 @@ function saveUser(user) {
 function getLoggedInUser() {
   return new Promise((resolve, reject) => {
     fb.auth().onAuthStateChanged(user => {
+      currentUser = user;
       if (user) {
         resolve(user);
       } else {
@@ -150,7 +153,11 @@ export function saveRecentCard(card) {
 export function saveReportedParseIssue(text) {
   fb.database()
     .ref('reportedParseIssues')
-    .push(text);
+    .push({
+      text,
+      date: fb.database.ServerValue.TIMESTAMP,
+      user: currentUser && currentUser.email
+    });
 }
 
 export function indexParsedSentence(sentence, tokens, js) {

@@ -147,6 +147,12 @@ export function saveRecentCard(card) {
     .push(card);
 }
 
+export function saveReportedParseIssue(text) {
+  fb.database()
+    .ref('reportedParseIssues')
+    .push(text);
+}
+
 export function indexParsedSentence(sentence, tokens, js) {
   getLoggedInUser()
     .then(() => {

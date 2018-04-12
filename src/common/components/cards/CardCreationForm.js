@@ -6,12 +6,13 @@ import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { capitalize, compact } from 'lodash';
+import Snackbar from 'material-ui/Snackbar';
+import { capitalize, compact, isEmpty } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { ensureInRange } from '../../util/common';
 import { getSentencesFromInput, requestParse } from '../../util/cards';
-import { getCardTextCorpus } from '../../util/firebase';
+import { getCardTextCorpus, saveReportedParseIssue } from '../../util/firebase';
 import { prepareBigramProbs } from '../../util/language';
 import CardTextExampleStore from '../../util/CardTextExampleStore';
 import ButtonInRow from '../ButtonInRow';
@@ -75,7 +76,9 @@ export default class CardCreationForm extends Component {
     examplesLoaded: {
       event: false,
       object: false
-    }
+    },
+    submittedParseIssue: null,
+    submittedParseIssueConfirmationOpen: false
   };
 
   styles = {
@@ -175,6 +178,10 @@ export default class CardCreationForm extends Component {
     }
   }
 
+  get hasTextError() {
+    return this.parseErrors.length > 0;
+  }
+
   get isValid() {
     return !this.nameError && !this.typeError && !this.costError && !this.attackError &&
       !this.healthError && !this.speedError && !this.textError;
@@ -207,11 +214,26 @@ export default class CardCreationForm extends Component {
     }
   };
 
+  handleClickReportParseIssue = () => {
+    if (this.hasTextError) {
+      saveReportedParseIssue(this.props.text);
+      this.setState({
+        submittedParseIssue: this.props.text,
+        submittedParseIssueConfirmationOpen: true
+      });
+    }
+  };
+
+  handleCloseReportParseIssueSnackbar = () => {
+    this.setState({ submittedParseIssueConfirmationOpen: false });
+  };
+
   onUpdateText = (text, cardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
     this.props.onSetText(text);
+    this.setState({ submittedParseIssue: null });
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   };
 
@@ -229,6 +251,7 @@ export default class CardCreationForm extends Component {
   }
 
   render() {
+    const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
     const examplesLoaded = this.state.examplesLoaded[this.parserMode];
 
     return (
@@ -297,9 +320,8 @@ export default class CardCreationForm extends Component {
             <div style={this.styles.rightColContainer}>
               <Tooltip text="Generate a new image">
                 <RaisedButton
-                  secondary
+                  primary
                   style={{width: 40, minWidth: 40}}
-                  labelPosition="after"
                   onTouchTap={this.props.onSpriteClick}>
                   <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
                 </RaisedButton>
@@ -307,12 +329,33 @@ export default class CardCreationForm extends Component {
             </div>
           </div>
 
-          <CardTextField
-            text={this.props.text}
-            sentences={this.nonEmptySentences}
-            error={this.textError}
-            bigramProbs={this.state && this.state.bigramProbs}
-            onUpdateText={this.onUpdateText} />
+          <div style={this.styles.section}>
+            <div style={{flex: 1, marginRight: 20}}>
+              <CardTextField
+                text={this.props.text}
+                sentences={this.nonEmptySentences}
+                error={this.textError}
+                bigramProbs={this.state && this.state.bigramProbs}
+                onUpdateText={this.onUpdateText} />
+            </div>
+            <div style={this.styles.rightColContainer}>
+              <Tooltip text="Having issues getting your card to work? Click here to submit it to us.">
+                <RaisedButton
+                  secondary
+                  style={{width: 40, minWidth: 40}}
+                  disabled={!this.hasTextError || !isEmpty(submittedParseIssue)}
+                  onTouchTap={this.handleClickReportParseIssue}>
+                  <FontIcon className="material-icons" style={this.styles.icon}>report_problem</FontIcon>
+                </RaisedButton>
+              </Tooltip>
+              <Snackbar
+                open={submittedParseIssueConfirmationOpen}
+                message={`Reported issue parsing '${submittedParseIssue}'`}
+                autoHideDuration={4000}
+                onRequestClose={this.handleCloseReportParseIssueSnackbar}
+              />
+            </div>
+          </div>
 
           <div style={this.styles.section}>
             {this.renderAttributeField('attack', this.robot)}

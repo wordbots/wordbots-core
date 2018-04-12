@@ -54,7 +54,7 @@ export default class PlayerArea extends Component {
       },
       discard: {
         marginRight: 8,
-        marginTop: gameProps.isSandbox ? -11 : -36,
+        marginTop: gameProps.isSandbox ? -24 : -36,
         transform: 'rotate(-90deg)',
         transformOrigin: '100% 100%',
         height: 36,

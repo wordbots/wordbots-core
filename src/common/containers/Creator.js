@@ -101,7 +101,7 @@ export class Creator extends Component {
   testCard = () => {
     const card = createCardFromProps(this.props);
     this.props.onStartSandbox(card);
-    this.props.history.push('/sandbox');
+    this.props.history.push('/sandbox', { previous: this.props.history.location });
   }
 
   addToCollection = () => {

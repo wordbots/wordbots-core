@@ -30,7 +30,7 @@ export default class PlayerArea extends Component {
   }
 
   get styles() {
-    const opponent = this.props.opponent;
+    const { opponent, gameProps } = this.props;
 
     return {
       container: {
@@ -50,19 +50,27 @@ export default class PlayerArea extends Component {
         color: 'white'
       },
       discardContainer: {
-        display: 'flex',
-        flexDirection: opponent ? 'column-reverse' : 'column'
+        display: 'flex'
       },
       discard: {
-        width: 'calc(100% - 10px)',
-        marginTop: opponent ? 10 : 0,
-        marginBottom: opponent ? 0 : 10
+        marginRight: 8,
+        marginTop: gameProps.isSandbox ? -11 : -36,
+        transform: 'rotate(-90deg)',
+        transformOrigin: '100% 100%',
+        height: 36,
+        width: 210
       }
     };
   }
 
   handleSelectCard = (idx) => this.props.gameProps.onSelectCard(idx, this.color);
-  handleOpenDiscardPile = () => this.setState({ discardOpen: true });
+
+  handleOpenDiscardPile = () => {
+    if (this.props.gameProps[`${this.color}DiscardPile`].length > 0) {
+      this.setState({ discardOpen: true });
+    }
+  };
+
   handleCloseDiscardPile = () => this.setState({ discardOpen: false });
 
   render() {
@@ -100,7 +108,7 @@ export default class PlayerArea extends Component {
         >
           <RaisedButton
             secondary
-            label="Discard Pile"
+            label={`Discard Pile (${gameProps[`${color}DiscardPile`].length})`}
             onTouchTap={this.handleOpenDiscardPile}
             style={this.styles.discard}
             disabled={gameProps[`${color}DiscardPile`].length === 0}/>

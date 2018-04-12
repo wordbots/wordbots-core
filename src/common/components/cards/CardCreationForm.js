@@ -6,7 +6,8 @@ import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import { capitalize, compact } from 'lodash';
+import Snackbar from 'material-ui/Snackbar';
+import { capitalize, compact, isEmpty } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
 import { ensureInRange } from '../../util/common';
@@ -76,7 +77,8 @@ export default class CardCreationForm extends Component {
       event: false,
       object: false
     },
-    submittedParseIssue: false
+    submittedParseIssue: null,
+    submittedParseIssueConfirmationOpen: false
   };
 
   styles = {
@@ -215,16 +217,23 @@ export default class CardCreationForm extends Component {
   handleClickReportParseIssue = () => {
     if (this.hasTextError) {
       saveReportedParseIssue(this.props.text);
-      this.setState({ submittedParseIssue: true });
+      this.setState({
+        submittedParseIssue: this.props.text,
+        submittedParseIssueConfirmationOpen: true
+      });
     }
-  }
+  };
+
+  handleCloseReportParseIssueSnackbar = () => {
+    this.setState({ submittedParseIssueConfirmationOpen: false });
+  };
 
   onUpdateText = (text, cardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
     this.props.onSetText(text);
-    this.setState({ submittedParseIssue: false });
+    this.setState({ submittedParseIssue: null });
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   };
 
@@ -242,7 +251,7 @@ export default class CardCreationForm extends Component {
   }
 
   render() {
-    const { submittedParseIssue } = this.state;
+    const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
     const examplesLoaded = this.state.examplesLoaded[this.parserMode];
 
     return (
@@ -311,7 +320,7 @@ export default class CardCreationForm extends Component {
             <div style={this.styles.rightColContainer}>
               <Tooltip text="Generate a new image">
                 <RaisedButton
-                  secondary
+                  primary
                   style={{width: 40, minWidth: 40}}
                   onTouchTap={this.props.onSpriteClick}>
                   <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
@@ -334,12 +343,17 @@ export default class CardCreationForm extends Component {
                 <RaisedButton
                   secondary
                   style={{width: 40, minWidth: 40}}
-                  buttonStyle={submittedParseIssue ? {backgroundColor: 'limegreen'} : {}}
-                  disabled={!this.hasTextError}
+                  disabled={!this.hasTextError || !isEmpty(submittedParseIssue)}
                   onTouchTap={this.handleClickReportParseIssue}>
                   <FontIcon className="material-icons" style={this.styles.icon}>report_problem</FontIcon>
                 </RaisedButton>
               </Tooltip>
+              <Snackbar
+                open={submittedParseIssueConfirmationOpen}
+                message={`Reported issue parsing '${submittedParseIssue}'`}
+                autoHideDuration={4000}
+                onRequestClose={this.handleCloseReportParseIssueSnackbar}
+              />
             </div>
           </div>
 

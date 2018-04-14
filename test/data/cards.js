@@ -1,5 +1,14 @@
 import { TYPE_ROBOT, TYPE_EVENT } from '../../src/common/constants';
 
+/**
+ * Returns basic stats for a robot that can move and attack.
+ */
+const getBasicStats = () => ({
+  attack: 1,
+  health: 1,
+  speed: 2
+});
+
 export const attackBotCard = {
   name: 'Attack Bot',
   cost: 1,
@@ -63,4 +72,15 @@ export const wrathOfRobotGodCard = {
   command: '(function () { actions["destroy"](objectsInPlay("robot")); })',
   cost: 10,
   type: TYPE_EVENT
+};
+
+export const instantKernelKillerAbilityCard = {
+  name: 'Remove Enemy Kernel',
+  text: 'At the end of the turn, deal 21 damage to your opponent\'s kernel.',
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: getBasicStats(),
+  abilities: [
+    '(function () { setTrigger(triggers["endOfTurn"](function () { return targets["self"](); }), (function () { actions["dealDamage"](objectsMatchingConditions("kernel", [conditions["controlledBy"](targets["opponent"]())]), 21); })); })'
+  ]
 };

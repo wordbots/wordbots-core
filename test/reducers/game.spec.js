@@ -228,6 +228,13 @@ describe('Game reducer', () => {
       });
       expect(state.winner).toEqual('blue');
     });
+
+    it('should enforce victory conditions at turn end', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'blue', testCards.instantKernelKillerAbilityCard, '-3,1,2');
+      state = newTurn(state, 'blue');
+      expect(state.winner).toEqual('blue');
+    });
   });
 
   describe('[Events]', () => {

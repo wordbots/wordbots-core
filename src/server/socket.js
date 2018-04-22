@@ -102,7 +102,7 @@ export default function launchWebsocketServer(server, path) {
   }
 
   function setUsername(clientID, newUsername) {
-    const oldUsername = state.getClientUsername(clientID);
+    const oldUsername = state.getClientUsername(clientID, false);
     state.setClientUsername(clientID, newUsername);
     if (!oldUsername) {
       sendChat(`${newUsername || clientID} has entered the lobby.`);
@@ -141,7 +141,7 @@ export default function launchWebsocketServer(server, path) {
       sendMessage('ws:GAME_START', { player: 'neither', decks, usernames, seed: startingSeed }, [clientID]);
       sendMessage('ws:CURRENT_STATE', {'actions': actions}, [clientID]);
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
-      sendChat(`${state.usernames[clientID]} has joined as a spectator.`, state.getAllOpponents(clientID));
+      sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
       broadcastInfo();
     }
   }

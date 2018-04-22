@@ -74,7 +74,7 @@ export default class MultiplayerServerState {
   connectClient = (clientID, socket) => {
     this.state.connections[clientID] = socket;
     this.state.playersOnline.push(clientID);
-    console.log(`${clientID} joined the room.`);
+    console.log(`${this.getClientUsername(clientID)} joined the room.`);
   }
 
   // Disconnect a player from the server.
@@ -115,7 +115,7 @@ export default class MultiplayerServerState {
       name,
       deck
     });
-    console.log(`${clientID} started game ${name}.`);
+    console.log(`${this.getClientUsername(clientID)} started game ${name}.`);
   }
 
   // Make a player join the given opponent's hosted game with the given deck.
@@ -142,7 +142,7 @@ export default class MultiplayerServerState {
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: opponentID });
     this.state.games.push(game);
 
-    console.log(`${clientID} joined game ${game.name} against ${opponentID}.`);
+    console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
     return game;
   }
 
@@ -152,13 +152,13 @@ export default class MultiplayerServerState {
     const game = find(this.state.games, { id: gameID });
     if (game) {
       game.spectators.push(clientID);
-      console.log(`${clientID} joined game ${game.name} as a spectator.`);
+      console.log(`${this.getClientUsername(clientID)} joined game ${game.name} as a spectator.`);
       return game;
     }
   }
 
   // Remove a player from any game that they are currently in.
   leaveGame = (clientID) => {
-    this.state.games = compact(this.state.games.map(withoutClient));
+    this.state.games = compact(this.state.games.map(game => withoutClient(game, clientID)));
   }
 }

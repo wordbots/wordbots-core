@@ -273,7 +273,8 @@ export function newGame(state, player, usernames, decks, seed = 0, gameMode = DE
     state.players.orange = orangePlayerState(decks.orange);
   } else if (gameMode === 'sharedDeck') {
     const deck = shuffle([...decks.blue, ...decks.orange]);
-    // Give blue the top two cards, orange the next two, and both players the rest of the deck.
+    // Give blue the top two cards, orange the next two (to form their starting hands),
+    // and both players the rest of the deck.
     const [topTwo, nextTwo, restOfDeck] = [deck.slice(0, 2), deck.slice(2, 4), deck.slice(4)];
     state.players.blue = bluePlayerState([...topTwo, ...restOfDeck]);
     state.players.orange = orangePlayerState([...nextTwo, ...restOfDeck]);

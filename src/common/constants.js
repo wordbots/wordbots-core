@@ -5,7 +5,7 @@ import { capitalize, fromPairs, invert } from 'lodash';
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;
 export const KEEP_DECKS_UNSHUFFLED = false;
-export const DISABLE_TURN_TIMER = false;
+export const DISABLE_TURN_TIMER = true;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
@@ -14,6 +14,7 @@ const LOCAL_PARSER_PORT = 8080;
 
 /* Game rules. */
 
+export const DEFAULT_GAME_MODE = 'normal';  // 'normal' or 'sharedDeck'
 export const STARTING_PLAYER_HEALTH = 20;
 export const MAX_HAND_SIZE = 7;
 

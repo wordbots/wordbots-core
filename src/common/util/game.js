@@ -1,11 +1,11 @@
 import {
   chain as _, cloneDeep, compact, filter, findKey, flatMap,
-  intersection, isArray, mapValues, some, times, uniqBy
+  intersection, isArray, mapValues, shuffle, some, times, uniqBy
 } from 'lodash';
 import seededRNG from 'seed-random';
 
 import {
-  MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
+  DEFAULT_GAME_MODE, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
 } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState, arbitraryPlayerState } from '../store/defaultGameState';
@@ -257,12 +257,30 @@ export function logAction(state, player, action, cards, timestamp, target = null
   return state;
 }
 
-export function newGame(state, player, usernames, decks, seed = 0) {
-  state = Object.assign(state, cloneDeep(defaultState), {player: player, rng: seededRNG(seed)}); // Reset game state.
-  state.usernames = usernames;
-  state.players.blue = bluePlayerState(decks.blue);
-  state.players.orange = orangePlayerState(decks.orange);
-  state.started = true;
+// gameMode can be 'normal' or 'sharedDeck'
+export function newGame(state, player, usernames, decks, seed = 0, gameMode = DEFAULT_GAME_MODE) {
+  // Reset game state.
+  state = Object.assign(state, cloneDeep(defaultState), {
+    gameMode,
+    player: player,
+    rng: seededRNG(seed),
+    started: true,
+    usernames
+  });
+
+  if (gameMode === 'normal') {
+    state.players.blue = bluePlayerState(decks.blue);
+    state.players.orange = orangePlayerState(decks.orange);
+  } else if (gameMode === 'sharedDeck') {
+    const deck = shuffle([...decks.blue, ...decks.orange]);
+    // Give blue the top two cards, orange the next two, and both players the rest of the deck.
+    const [topTwo, nextTwo, restOfDeck] = [deck.slice(0, 2), deck.slice(2, 4), deck.slice(4)];
+    state.players.blue = bluePlayerState([...topTwo, ...restOfDeck]);
+    state.players.orange = orangePlayerState([...nextTwo, ...restOfDeck]);
+  } else {
+    throw `Unknown game mode: ${gameMode}`;
+  }
+
   state = triggerSound(state, 'yourmove.wav');
   return state;
 }
@@ -349,6 +367,7 @@ function endTurn(state) {
 }
 
 export function drawCards(state, player, count) {
+  const otherPlayer = state.players[opponent(player.name)];
   // Allow 1 extra card if an event is played (because that card will be discarded).
   const maxHandSize = MAX_HAND_SIZE + (state.eventExecuting ? 1 : 0);
 
@@ -357,12 +376,20 @@ export function drawCards(state, player, count) {
 
   if (numCardsDrawn > 0) {
     player.hand = player.hand.concat(player.deck.splice(0, numCardsDrawn));
+    if (state.gameMode === 'sharedDeck') {
+      // In sharedDeck mode, drawing a card (or discarding the top card of the deck)
+      // affects both players' decks.
+      otherPlayer.deck.splice(0, numCardsDrawn);
+    }
   }
 
   times(numCardsDiscarded, () => {
     const card = player.deck[0];
     if (card) {
       player.deck.splice(0, 1);
+      if (state.gameMode === 'sharedDeck') {
+        otherPlayer.deck.splice(0, 1);
+      }
       player.discardPile = player.discardPile.concat([card]);
       state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
         [card.name]: card

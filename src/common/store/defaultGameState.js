@@ -58,6 +58,7 @@ const defaultState = {
     blue: bluePlayerState([]),
     orange: orangePlayerState([])
   },
+  gameMode: 'normal',
   started: false,
   tutorial: false,
   practice: false,

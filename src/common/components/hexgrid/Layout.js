@@ -1,3 +1,5 @@
+import { BOARD_SIZE_MULTIPLIER } from '../../constants';
+
 import Point from './Point';
 
 class Orientation {
@@ -27,7 +29,7 @@ class Layout {
 
   getPointOffset(corner) {
     const angle = 2.0 * Math.PI * (corner + this.orientation.startAngle) / 6;
-    return new Point(this.size.x * Math.cos(angle), this.size.y * Math.sin(angle));
+    return new Point((this.size.x * BOARD_SIZE_MULTIPLIER) * Math.cos(angle), (this.size.y * BOARD_SIZE_MULTIPLIER) * Math.sin(angle));
   }
 
   getPolygonPoints(hex) {

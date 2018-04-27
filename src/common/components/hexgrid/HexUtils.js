@@ -1,4 +1,5 @@
 import { compareCertainKeys } from '../../util/common';
+import { BOARD_SIZE_MULTIPLIER } from '../../constants';
 
 import Hex from './Hex';
 import Point from './Point';
@@ -68,7 +69,7 @@ class HexUtils {
     // Apply spacing
     x = x * s;
     y = y * s;
-    return new Point(x + layout.origin.x, y + layout.origin.y);
+    return new Point((x + layout.origin.x) * BOARD_SIZE_MULTIPLIER, (y + layout.origin.y) * BOARD_SIZE_MULTIPLIER);
   }
 
   static pixelToHex(point, layout) {

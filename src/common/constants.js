@@ -32,6 +32,7 @@ export const SIDEBAR_COLLAPSED_WIDTH = 64;
 export const BOARD_Z_INDEX = 1000;
 export const BACKGROUND_Z_INDEX = 900;
 export const HAND_Z_INDEX = 1100;
+export const MAX_BOARD_SIZE = 700;
 
 /* Board. */
 
@@ -43,6 +44,7 @@ export const GRID_CONFIG = {
   mapProps: [ 3 ]
 };
 
+export const BOARD_SIZE_MULTIPLIER = 1.35;
 export const BLUE_CORE_HEX = '-3,0,3';
 export const BLUE_PLACEMENT_HEXES = ['0,-3,3', '-1,-2,3', '-2,-1,3', '-3,1,2', '-3,2,1', '-3,3,0'];
 export const ORANGE_CORE_HEX = '3,0,-3';

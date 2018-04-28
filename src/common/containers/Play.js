@@ -36,6 +36,9 @@ export function mapDispatchToProps(dispatch) {
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
     },
+    onJoinQueue: (deck) => {
+      dispatch(socketActions.join(deck));
+    },
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
@@ -61,6 +64,7 @@ export class Play extends Component {
     history: object,
 
     onConnect: func,
+    onJoinQueue: func,
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
@@ -107,6 +111,7 @@ export class Play extends Component {
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
+          onJoinQueue={this.props.onJoinQueue}
           onSpectateGame={this.props.onSpectateGame}
           onSelectDeck={this.props.onSelectDeck}
           onSelectMode={this.selectMode} />
@@ -124,6 +129,7 @@ export class Play extends Component {
           <Route path={`${Play.urlForGameMode('practice')}/:deck`} component={GameAreaContainer} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
           <Route exact path={Play.baseUrl} render={this.renderLobby} />
+          <Route path={Play.urlForGameMode('ranked')} render={this.renderLobby} />
           <Redirect to={Play.baseUrl} />
         </Switch>
 

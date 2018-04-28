@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { object } from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter, Route } from 'react-router';
 import AppBar from 'material-ui/AppBar';
 import FontIcon from 'material-ui/FontIcon';
 import FlatButton from 'material-ui/FlatButton';
@@ -11,6 +11,11 @@ import MenuItem from 'material-ui/MenuItem';
 
 import { logout } from '../util/firebase';
 import RouterDialog from '../components/RouterDialog';
+
+import Profile from './Profile';
+import GameAreaContainer from "./GameAreaContainer";
+import {Play} from "./Play";
+import About from "./About";
 
 function mapStateToProps(state) {
   return {
@@ -68,6 +73,11 @@ class TitleBar extends Component {
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
             onRequestClose={this.closeUserMenu}>
             <Menu>
+                <MenuItem
+                    primaryText="Profile"
+                    leftIcon={<FontIcon className="material-icons">account_circle</FontIcon>}>
+                          <Route path="/profile" component={Profile} />
+                </MenuItem>
               <MenuItem
                 primaryText="Logout"
                 onClick={this.handleClickLogout}

@@ -20,15 +20,18 @@ export default class MultiplayerServerState {
     games: [],  // array of { id, name, players, playerColors, spectators, actions, decks, usernames, startingSeed }
     waitingPlayers: [],  // array of { id, name, deck, players }
     playersOnline: [],  // array of clientIDs
-    usernames: {}  // map of { clientID: username }
+    usernames: {} , // map of { clientID: username }
+
+    matchmakingQueue: {}, // map of { clientID: queue info }
+    inQueue: 0 // summary of how many people are waiting for match in matchmaking
   };
 
   /* Getters */
 
   // Returns a serializable subset of the state for broadcast as an INFO message.
   serialize = () => {
-    const { games, waitingPlayers, playersOnline, usernames } = this.state;
-    return { games, waitingPlayers, playersOnline, usernames };
+    const { games, waitingPlayers, playersOnline, usernames, inQueue } = this.state;
+    return { games, waitingPlayers, playersOnline, usernames, inQueue };
   }
 
   // Returns the socket corresponding to a given player.

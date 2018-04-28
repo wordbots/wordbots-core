@@ -21,7 +21,7 @@ export default class ModeSelection extends Component {
   }
 
   handleClickMatchmaking = () => {
-    this.props.onSelectMode('matchmaking');
+    this.props.onSelectMode('ranked');
   }
 
   render() {
@@ -44,8 +44,7 @@ export default class ModeSelection extends Component {
           imagePath="/static/casual.png"
           onSelect={this.handleClickCasual} />
         <GameMode
-          disabled
-          name="Matchmaking"
+          name="Ranked Matchmaking"
           onSelect={this.handleClickMatchmaking} />
       </div>
     );

@@ -5,6 +5,7 @@ import { shuffleCardsInDeck } from '../../util/cards';
 
 import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';
+import RankedQueue from './RankedQueue'
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
 import ModeSelection from './ModeSelection';
@@ -21,6 +22,7 @@ export default class Lobby extends Component {
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
+    onRankedQueue: func,
     onHostGame: func,
     onSelectDeck: func,
     onSelectMode: func
@@ -43,6 +45,10 @@ export default class Lobby extends Component {
     // If selecting practice mode, pass a deck into the URL.
     const deck = (mode === 'practice') ? this.deck : null;
     this.props.onSelectMode(mode, deck);
+  };
+
+  handleRankedQueue = () => {
+    this.props.onRankedQueue(this.deck.cards);
   };
 
   handleJoinGame = (gameId, gameName) => {
@@ -74,7 +80,24 @@ export default class Lobby extends Component {
           </div>
         );
       }
-    } else {
+    }
+    else if (gameMode === '/ranked') {
+        if (socket.hosting) {
+            return <Waiting />;
+        } else {
+            return (
+                <div>
+                    <RankedQueue
+                        disabled={this.hasNoDecks}
+                        inQueue={socket.inQueue}
+                        onJoinQueue={this.handleRankedQueue}
+                    />
+                </div>
+            );
+        }
+    }
+
+    else {
       return <ModeSelection onSelectMode={this.handleSelectMode}/>;
     }
   }

@@ -37,7 +37,7 @@ export function mapDispatchToProps(dispatch) {
       dispatch(socketActions.join(id, name, deck));
     },
     onJoinQueue: (deck) => {
-      dispatch(socketActions.join(deck));
+      dispatch(socketActions.joinQueue(deck));
     },
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));

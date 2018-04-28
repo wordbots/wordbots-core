@@ -22,7 +22,7 @@ export default class Lobby extends Component {
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onRankedQueue: func,
+    onJoinQueue: func,
     onHostGame: func,
     onSelectDeck: func,
     onSelectMode: func
@@ -48,7 +48,7 @@ export default class Lobby extends Component {
   };
 
   handleRankedQueue = () => {
-    this.props.onRankedQueue(this.deck.cards);
+    this.props.onJoinQueue(this.deck.cards);
   };
 
   handleJoinGame = (gameId, gameName) => {

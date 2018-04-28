@@ -5,6 +5,8 @@ const defaultState = {
 
   hosting: false,
   gameName: null,
+  queueing: false,
+  inQueue: 0,
 
   games: [],
   playersOnline: [],

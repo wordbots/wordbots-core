@@ -45,6 +45,8 @@ export default function launchWebsocketServer(server, path) {
       hostGame(clientID, payload.name, payload.deck);
     } else if (type === 'ws:JOIN') {
       joinGame(clientID, payload.id, payload.deck);
+    } else if (type === 'ws:JOIN_QUEUE') {
+      joinQueue(clientID, payload.deck);
     } else if (type === 'ws:SPECTATE') {
       spectateGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:LEAVE') {
@@ -130,6 +132,12 @@ export default function launchWebsocketServer(server, path) {
     sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [clientID]);
     sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [opponentID]);
     sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
+    broadcastInfo();
+  }
+
+  function joinQueue(clientID, deck) {
+    state.joinQueue(clientID, deck);
+
     broadcastInfo();
   }
 

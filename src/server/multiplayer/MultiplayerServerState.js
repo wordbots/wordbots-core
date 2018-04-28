@@ -127,7 +127,7 @@ export default class MultiplayerServerState {
     const opponent = find(this.state.waitingPlayers, { id: opponentID });
     const game = {
       id: opponentID,
-      name: opponent.name,
+      name: this.getClientUsername(opponentID),
 
       players: [clientID, opponentID],
       playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
@@ -147,6 +147,12 @@ export default class MultiplayerServerState {
 
     console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
     return game;
+  }
+
+  // Add a player to the matchmaking queue.
+  joinQueue = (clientID, deck) => {
+    this.state.inQueue++;
+    this.state.matchmakingQueue[clientID] = deck;
   }
 
   // Make a player join the given game as a spectator.

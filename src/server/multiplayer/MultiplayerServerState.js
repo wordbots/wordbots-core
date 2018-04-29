@@ -151,8 +151,18 @@ export default class MultiplayerServerState {
 
   // Add a player to the matchmaking queue.
   joinQueue = (clientID, deck) => {
-    this.state.inQueue++;
-    this.state.matchmakingQueue[clientID] = deck;
+    if (!(clientID in this.state.matchmakingQueue)){
+      this.state.inQueue++;
+      this.state.matchmakingQueue[clientID] = deck;
+    }
+  }
+
+  // Remove player from the matchmaking queue.
+  leaveQueue = (clientID) => {
+    if (clientID in this.state.matchmakingQueue){
+      this.state.inQueue--;
+      delete this.state.matchmakingQueue[clientID];
+    }
   }
 
   // Make a player join the given game as a spectator.

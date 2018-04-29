@@ -47,6 +47,8 @@ export default function launchWebsocketServer(server, path) {
       joinGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:JOIN_QUEUE') {
       joinQueue(clientID, payload.deck);
+    } else if (type === 'ws:LEAVE_QUEUE') {
+      leaveQueue(clientID);
     } else if (type === 'ws:SPECTATE') {
       spectateGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:LEAVE') {
@@ -137,6 +139,12 @@ export default function launchWebsocketServer(server, path) {
 
   function joinQueue(clientID, deck) {
     state.joinQueue(clientID, deck);
+
+    broadcastInfo();
+  }
+
+  function leaveQueue(clientID) {
+    state.leaveQueue(clientID);
 
     broadcastInfo();
   }

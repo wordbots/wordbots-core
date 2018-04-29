@@ -5,7 +5,7 @@ import { shuffleCardsInDeck } from '../../util/cards';
 
 import DeckPicker from './DeckPicker';
 import GameBrowser from './GameBrowser';
-import RankedQueue from './RankedQueue'
+import RankedQueue from './RankedQueue';
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
 import ModeSelection from './ModeSelection';
@@ -23,6 +23,7 @@ export default class Lobby extends Component {
     onJoinGame: func,
     onSpectateGame: func,
     onJoinQueue: func,
+    onLeaveQueue: func,
     onHostGame: func,
     onSelectDeck: func,
     onSelectMode: func
@@ -47,8 +48,12 @@ export default class Lobby extends Component {
     this.props.onSelectMode(mode, deck);
   };
 
-  handleRankedQueue = () => {
+  handleJoinQueue = () => {
     this.props.onJoinQueue(this.deck.cards);
+  };
+
+  handleLeaveQueue = () => {
+    this.props.onLeaveQueue();
   };
 
   handleJoinGame = (gameId, gameName) => {
@@ -89,8 +94,10 @@ export default class Lobby extends Component {
                 <div>
                     <RankedQueue
                         disabled={this.hasNoDecks}
+                        queuing={socket.queuing}
                         inQueue={socket.inQueue}
-                        onJoinQueue={this.handleRankedQueue}
+                        onJoinQueue={this.handleJoinQueue}
+                        onLeaveQueue={this.handleLeaveQueue}
                     />
                 </div>
             );

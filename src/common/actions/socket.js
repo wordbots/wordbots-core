@@ -36,7 +36,8 @@ export function disconnected() {
 
 export const HOST = 'ws:HOST';
 export const JOIN = 'ws:JOIN';
-export const JOIN_QUEUE = 'ws:JOIN_QUEUE'
+export const JOIN_QUEUE = 'ws:JOIN_QUEUE';
+export const LEAVE_QUEUE = 'ws:LEAVE_QUEUE';
 export const SPECTATE = 'ws:SPECTATE';
 export const LEAVE = 'ws:LEAVE';
 export const SET_USERNAME = 'ws:SET_USERNAME';
@@ -60,6 +61,12 @@ export function joinQueue(deck) {
   return {
     type: JOIN_QUEUE,
     payload: {deck}
+  };
+}
+
+export function leaveQueue() {
+  return {
+    type: LEAVE_QUEUE
   };
 }
 

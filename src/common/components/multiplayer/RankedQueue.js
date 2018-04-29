@@ -6,12 +6,18 @@ import RaisedButton from 'material-ui/RaisedButton';
 export default class RankedQueue extends Component {
     static propTypes = {
         disabled: bool,
+        queuing: bool,
         inQueue: number,
-        onJoinQueue: func
+        onJoinQueue: func,
+        onLeaveQueue: func
     };
 
     handleJoinQueue = () => {
         this.props.onJoinQueue();
+    };
+
+    handleLeaveQueue = () => {
+        this.props.onLeaveQueue();
     };
 
     render = () => (
@@ -22,10 +28,18 @@ export default class RankedQueue extends Component {
                     </span>
             </div>
             <div style={{position: 'absolute', top: 0, bottom: 0, right: 20, height: 36, margin: 'auto'}}>
-                <RaisedButton
-                    secondary
-                    label="Join Ranked Queue"
-                    onTouchTap={this.handleJoinQueue} />
+                {
+                    this.props.queuing ?
+                    < RaisedButton
+                        secondary
+                        label ="Leave Ranked Queue"
+                        onTouchTap={this.handleLeaveQueue} />
+                    :
+                    <RaisedButton
+                        secondary
+                        label="Join Ranked Queue"
+                        onTouchTap={this.handleJoinQueue}/>
+                }
             </div>
         </Paper>
     );

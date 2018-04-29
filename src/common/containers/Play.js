@@ -39,6 +39,9 @@ export function mapDispatchToProps(dispatch) {
     onJoinQueue: (deck) => {
       dispatch(socketActions.joinQueue(deck));
     },
+    onLeaveQueue: () => {
+      dispatch(socketActions.leaveQueue());
+    },
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
@@ -65,6 +68,7 @@ export class Play extends Component {
 
     onConnect: func,
     onJoinQueue: func,
+    onLeaveQueue: func,
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
@@ -112,6 +116,7 @@ export class Play extends Component {
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
           onJoinQueue={this.props.onJoinQueue}
+          onLeaveQueue={this.props.onLeaveQueue}
           onSpectateGame={this.props.onSpectateGame}
           onSelectDeck={this.props.onSelectDeck}
           onSelectMode={this.selectMode} />

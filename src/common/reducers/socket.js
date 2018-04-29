@@ -47,7 +47,10 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       return Object.assign(state, {gameName: action.payload.name});
 
     case socketActions.JOIN_QUEUE:
-      return Object.assign(state, {queueing: true})
+      return Object.assign(state, {queuing: true});
+
+    case socketActions.LEAVE_QUEUE:
+      return Object.assign(state, {queuing: false});
 
     case socketActions.SPECTATE:
       return Object.assign(state, {gameName: action.payload.name});

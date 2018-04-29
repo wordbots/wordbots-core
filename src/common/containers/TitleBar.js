@@ -13,9 +13,9 @@ import { logout } from '../util/firebase';
 import RouterDialog from '../components/RouterDialog';
 
 import Profile from './Profile';
-import GameAreaContainer from "./GameAreaContainer";
-import {Play} from "./Play";
-import About from "./About";
+import GameAreaContainer from './GameAreaContainer';
+import {Play} from './Play';
+import About from './About';
 
 function mapStateToProps(state) {
   return {

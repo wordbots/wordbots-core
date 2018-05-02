@@ -4,6 +4,7 @@ import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
 import { id, convertRange } from '../../../util/common';
 import { isFlagSet } from '../../../util/browser';
+import { lookupUsername } from '../../../util/firebase';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
   newGame, passTurn
@@ -21,7 +22,7 @@ export function startPractice(state, deck) {
     blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
   };
 
-  state = newGame(state, 'orange', {orange: 'Human', blue: 'Computer'}, decks);
+  state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks);
   state.practice = true;
 
   return state;
@@ -39,7 +40,7 @@ export function startSandbox(state, cardToTest = null) {
     decks.orange.unshift(cardToTest);
   }
 
-  state = newGame(state, 'orange', {orange: 'Orange', blue: 'Blue'}, decks);
+  state = newGame(state, 'orange', {orange: lookupUsername('Orange'), blue: lookupUsername('Blue')}, decks);
   state.sandbox = true;
 
   state.tutorialSteps = isFlagSet('skipTooltip:sandbox') ? null : [{

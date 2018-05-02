@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { bool, func, number, object } from 'prop-types';
+import { func, number, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
 import Helmet from 'react-helmet';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { compact } from 'lodash';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
@@ -31,7 +32,6 @@ import About from './About';
 
 function mapStateToProps(state) {
   return {
-    inGame: state.game.started,
     renderId: state.global.renderId
   };
 }
@@ -59,10 +59,10 @@ class App extends Component {
   };
 
   static propTypes = {
-    inGame: bool,
     renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
+    location: object,
 
     onLoggedIn: func,
     onLoggedOut: func,
@@ -102,8 +102,12 @@ class App extends Component {
     };
   }
 
+  get inGame() {
+    return Play.isInGameUrl(this.props.location.pathname);
+  }
+
   get sidebar() {
-    if (this.state.loading || this.props.inGame) {
+    if (this.state.loading || this.inGame) {
       return null;
     } else {
       return <NavMenu onRerender={this.props.onRerender} />;
@@ -111,8 +115,7 @@ class App extends Component {
   }
 
   get content() {
-    const { inGame } = this.props;
-    const sidebarWidth = inGame ? 0 : (isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH);
+    const sidebarWidth = this.inGame ? 0 : (isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH);
 
     return (
       <div style={{

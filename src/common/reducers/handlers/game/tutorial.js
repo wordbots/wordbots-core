@@ -4,6 +4,7 @@ import { applyPatch, compare } from 'fast-json-patch';
 import { handleAction } from '../../game';
 import { TYPE_EVENT } from '../../../constants';
 import { id } from '../../../util/common';
+import { lookupUsername } from '../../../util/firebase';
 import { currentTutorialStep, passTurn } from '../../../util/game';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
@@ -53,7 +54,7 @@ export function startTutorial(state) {
   // Reset game state and enable tutorial mode.
   state = Object.assign(state, cloneDeep(defaultState), {
     started: true,
-    usernames: {orange: 'Human', blue: 'Computer'},
+    usernames: {orange: lookupUsername(), blue: 'Computer'},
     tutorial: true,
     tutorialCurrentStepIdx: 0,
     tutorialSteps: tutorialScript,

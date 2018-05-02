@@ -1,6 +1,6 @@
 import { cloneDeep, findIndex, forOwn, has, isArray, isObject, mapValues, pickBy } from 'lodash';
 
-import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
+import { DECK_SIZE, BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
 import {
   opponent, allObjectsOnBoard, ownerOf, getAttribute, validPlacementHexes,
   drawCards, applyAbilities
@@ -19,10 +19,16 @@ import HexUtils from '../src/common/components/hexgrid/HexUtils';
 
 import { attackBotCard } from './data/cards';
 
-export function getDefaultState() {
+export function getDefaultState(gameMode = null) {
   const state = cloneDeep(defaultGameState);
-  const deck = [instantiateCard(attackBotCard)].concat(collection);
-  const simulatedGameStartAction = {type: socketActions.GAME_START, payload: {decks: {orange: deck, blue: deck}}};
+  const deck = [instantiateCard(attackBotCard)].concat(collection.slice(1, DECK_SIZE));
+  const simulatedGameStartAction = {
+    type: socketActions.GAME_START,
+    payload: {
+      decks: {orange: deck, blue: deck},
+      gameMode
+    }
+  };
   return game(state, simulatedGameStartAction);
 }
 

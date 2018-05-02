@@ -11,8 +11,7 @@ export default class Timer extends Component {
   static propTypes = {
     player: string,
     currentTurn: string,
-    gameOver: bool,
-    isTutorial: bool,
+    enabled: bool,
     isMyTurn: bool,
     isAttackHappening: bool,
 
@@ -26,7 +25,7 @@ export default class Timer extends Component {
   componentDidMount() {
     this.resetTimer();
     this.interval = setInterval(() => {
-      if (!this.props.gameOver && !this.props.isTutorial && !DISABLE_TURN_TIMER) {
+      if (this.props.enabled && !DISABLE_TURN_TIMER) {
         this.tickTimer();
       }
     }, 1000);
@@ -105,13 +104,13 @@ export default class Timer extends Component {
   }
 
   render() {
-    if (this.props.isTutorial) {
+    if (!this.props.enabled) {
       return null;
     } else {
       return (
         <div style={this.styles.timer}>
           <span style={this.state.timerStyle}>
-            {this.props.isTutorial ? '' : this.state.timer}
+            {this.state.timer}
           </span>
         </div>
       );

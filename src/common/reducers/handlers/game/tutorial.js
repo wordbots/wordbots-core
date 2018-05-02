@@ -128,7 +128,7 @@ const tutorialScript = [
   {
     tooltip: {
       hex: '3,0,-3',
-      text: 'This blocky guy here is your kernel. When its health goes to zero, you lose the game. Sad!'
+      text: 'This blocky guy here is your kernel. When its health goes to zero, you lose the game.'
     },
     responses: [actions.setSelectedTile('-3,0,3', 'orange')]
   },

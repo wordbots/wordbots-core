@@ -4,15 +4,11 @@ import { noop } from 'lodash';
 import { id as generateID } from '../common/util/common';
 import { opponent as opponentOf } from '../common/util/game';
 
+import MultiplayerServerState from './multiplayer/MultiplayerServerState';
+
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {
-  const state = {
-    connections: {},
-    games: [],
-    waitingPlayers: [],
-    playersOnline: [],
-    usernames: {}
-  };
+  const state = new MultiplayerServerState();
 
   const wss = new WebSocket.Server({
     server: server,
@@ -21,30 +17,25 @@ export default function launchWebsocketServer(server, path) {
   });
 
   wss.on('listening', onOpen);
-  wss.on('connection', socket => {
-    const clientID = generateID();
-    state.connections[clientID] = socket;
-
-    onConnect(clientID);
-    socket.on('message', msg => {
-      onMessage(clientID, msg);
-    });
-    socket.on('close', () => {
-      onDisconnect(clientID);
-      delete state.connections[clientID];
-    });
-    socket.on('error', noop); // Probably a disconnect (throws an error in ws 3.3.3+).
-  });
+  wss.on('connection', onConnect);
 
   function onOpen() {
     const addr = wss.options.server.address();
     console.log(`WebSocket listening at http://${addr.address}:${addr.port}${path}`);
   }
 
-  function onConnect(clientID) {
-    console.log(`${clientID} joined the room.`);
-    state.playersOnline.push(clientID);
+  function onConnect(socket) {
+    const clientID = generateID();
+    state.connectClient(clientID, socket);
     broadcastInfo();
+
+    socket.on('message', msg => {
+      onMessage(clientID, msg);
+    });
+    socket.on('close', () => {
+      onDisconnect(clientID);
+    });
+    socket.on('error', noop); // Probably a disconnect (throws an error in ws 3.3.3+).
   }
 
   function onMessage(clientID, data) {
@@ -59,58 +50,28 @@ export default function launchWebsocketServer(server, path) {
     } else if (type === 'ws:LEAVE') {
       leaveGame(clientID);
     } else if (type === 'ws:SET_USERNAME') {
-      const oldUsername = state.usernames[clientID];
-      state.usernames[clientID] = payload.username;
-      if (!oldUsername) {
-        sendChat(`${payload.username || clientID} has entered the lobby.`);
-      } else if (oldUsername !== payload.username) {
-        if (oldUsername === 'Guest') {
-          sendChat(`${payload.username} has logged in.`);
-        } else if (payload.username === 'Guest') {
-          sendChat(`${oldUsername} has logged out.`);
-        } else {
-          sendChat(`${oldUsername} has changed their name to ${payload.username}.`);
-        }
-      }
-      broadcastInfo();
+      setUsername(clientID, payload.username);
     } else if (type === 'ws:CHAT') {
-      const inGame = findOpponents(clientID);
+      const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
       (inGame ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE') {
-      handleGameAction(clientID, {type, payload});
+      state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
     }
   }
 
   function onDisconnect(clientID) {
-    const game = state.games.find(m => m.players.includes(clientID));
-
-    state.playersOnline = state.playersOnline.filter(p => p !== clientID);
-    state.waitingPlayers = state.waitingPlayers.filter(p => p.id !== clientID);
-
-    console.log(`${clientID} left the room.`);
-    sendChat(`${state.usernames[clientID] || clientID} has left.`);
+    const game = state.disconnectClient(clientID);
+    sendChat(`${state.getClientUsername(clientID)} has left.`);
     if (game) {
       sendMessageInGame(clientID, 'ws:FORFEIT', {'winner': opponentOf(game.playerColors[clientID])});
-    }
-    leaveGame(clientID);
-  }
-
-  function findOpponents(clientID) {
-    const game = state.games.find(m => m.players.includes(clientID) || m.spectators.includes(clientID));
-    if (game) {
-      return game.players
-               .concat(game.spectators)
-               .filter(id => id !== clientID);
     }
   }
 
   function sendMessage(type, payload = {}, recipientIDs = null) {
-    const sockets = recipientIDs ? recipientIDs.map(id => state.connections[id]) : Object.values(state.connections);
     const message = JSON.stringify({type, payload});
-
-    sockets.forEach(socket => {
+    state.getClientSockets(recipientIDs).forEach(socket => {
       try {
         socket.send(message);
       } catch (err) {
@@ -120,15 +81,12 @@ export default function launchWebsocketServer(server, path) {
   }
 
   function sendMessageInLobby(clientID, type, payload = {}) {
-    const inGamePlayerIds = state.games.reduce((acc, game) => acc.concat(game.players), []);
-    const playersInLobby = state.playersOnline.filter(id => id !== clientID && !inGamePlayerIds.includes(id));
-
     console.log(`${clientID} broadcast a message to the lobby: ${type} ${JSON.stringify(payload)}`);
-    sendMessage(type, payload, playersInLobby);
+    sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
   function sendMessageInGame(clientID, type, payload = {}) {
-    const opponentIds = findOpponents(clientID);
+    const opponentIds = state.getAllOpponents(clientID);
     if (opponentIds) {
       console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${JSON.stringify(payload)}`);
       sendMessage(type, payload, opponentIds);
@@ -140,92 +98,56 @@ export default function launchWebsocketServer(server, path) {
   }
 
   function broadcastInfo() {
-    sendMessage('ws:INFO', {
-      games: state.games,
-      waitingPlayers: state.waitingPlayers,
-      playersOnline: state.playersOnline,
-      usernames: state.usernames
-    });
+    sendMessage('ws:INFO', state.serialize());
   }
 
-  function handleGameAction(clientID, action) {
-    const game = state.games.find(g => g.players.includes(clientID));
-    if (game) {
-      game.actions.push(action);
+  function setUsername(clientID, newUsername) {
+    const oldUsername = state.getClientUsername(clientID, false);
+    state.setClientUsername(clientID, newUsername);
+    if (!oldUsername) {
+      sendChat(`${newUsername || clientID} has entered the lobby.`);
+    } else if (oldUsername !== newUsername) {
+      if (oldUsername === 'Guest') {
+        sendChat(`${newUsername} has logged in.`);
+      } else if (newUsername === 'Guest') {
+        sendChat(`${oldUsername} has logged out.`);
+      } else {
+        sendChat(`${oldUsername} has changed their name to ${newUsername}.`);
+      }
     }
+    broadcastInfo();
   }
 
   function hostGame(clientID, name, deck) {
-    state.waitingPlayers.push({
-      id: clientID,
-      name: name,
-      deck: deck,
-      players: [clientID]
-    });
-
-    console.log(`${clientID} started game ${name}.`);
+    state.hostGame(clientID, name, deck);
     broadcastInfo();
   }
 
   function joinGame(clientID, opponentID, deck) {
-    const opponent = state.waitingPlayers.find(p => p.id === opponentID);
-    const usernames = {'orange': state.usernames[opponentID], 'blue': state.usernames[clientID]};
-    const decks = {'orange': opponent.deck, 'blue': deck};
-    const gameName = opponent.name;
-    const seed = generateID();
+    const game = state.joinGame(clientID, opponentID, deck);
+    const { decks, name, startingSeed, usernames } = game;
 
-    state.waitingPlayers = state.waitingPlayers.filter(p => p.id !== opponentID);
-    state.games.push({
-      id: opponentID,
-      name: gameName,
-
-      players: [clientID, opponentID],
-      playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
-      spectators: [],
-
-      actions: [],
-      decks: decks,
-      usernames: usernames,
-      startingSeed: seed
-    });
-
-    console.log(`${clientID} joined game ${gameName} against ${opponentID}.`);
-    sendMessage('ws:GAME_START', {'player': 'blue', 'decks': decks, 'usernames': usernames, 'seed': seed}, [clientID]);
-    sendMessage('ws:GAME_START', {'player': 'orange', 'decks': decks, 'usernames': usernames, 'seed': seed}, [opponentID]);
-    sendChat(`Entering game ${gameName} ...`, [clientID, opponent.id]);
+    sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [clientID]);
+    sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [opponentID]);
+    sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
     broadcastInfo();
   }
 
   function spectateGame(clientID, gameID) {
-    const game = state.games.find(g => g.id === gameID);
-
+    const game = state.spectateGame(clientID, gameID);
     if (game) {
-      game.spectators.push(clientID);
+      const { actions, decks, name, startingSeed, usernames } = game;
 
-      console.log(`${clientID} joined game ${game.name} as a spectator.`);
-      sendMessage('ws:GAME_START', {
-        'player': 'neither',
-        'decks': game.decks,
-        'usernames': game.usernames,
-        'seed': game.startingSeed
-      }, [clientID]);
-      sendMessage('ws:CURRENT_STATE', {'actions': game.actions}, [clientID]);
-      sendChat(`Entering game ${game.name} as a spectator ...`, [clientID]);
-      sendChat(`${state.usernames[clientID]} has joined as a spectator.`, findOpponents(clientID));
+      sendMessage('ws:GAME_START', { player: 'neither', decks, usernames, seed: startingSeed }, [clientID]);
+      sendMessage('ws:CURRENT_STATE', {'actions': actions}, [clientID]);
+      sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
+      sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
       broadcastInfo();
     }
   }
 
   function leaveGame(clientID) {
-    function withoutClient(game) {
-      return Object.assign(game, {
-        players: game.players.filter(p => p !== clientID),
-        spectator: game.players.filter(p => p !== clientID)
-      });
-    }
-
-    state.games = state.games.map(withoutClient).filter(game => game.players.length >= 2);
-
+    state.leaveGame(clientID);
     sendChat('Entering the lobby ...', [clientID]);
     broadcastInfo();
   }

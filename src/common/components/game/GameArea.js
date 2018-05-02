@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 import screenfull from 'screenfull';
 
 import {
-  HEADER_HEIGHT, SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX
+  HEADER_HEIGHT, SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
 } from '../../constants';
 import { inBrowser } from '../../util/browser';
 import Chat from '../multiplayer/Chat';
@@ -127,7 +127,7 @@ export default class GameArea extends Component {
 
     this.setState({
       areaHeight: window.innerHeight - HEADER_HEIGHT,
-      boardSize: Math.min(maxBoardWidth, maxBoardHeight)
+      boardSize: Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE)
     });
   };
 

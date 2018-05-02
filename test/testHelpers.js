@@ -22,7 +22,13 @@ import { attackBotCard } from './data/cards';
 export function getDefaultState(gameMode = null) {
   const state = cloneDeep(defaultGameState);
   const deck = [instantiateCard(attackBotCard)].concat(collection.slice(1, DECK_SIZE));
-  const simulatedGameStartAction = {type: socketActions.GAME_START, payload: {decks: {orange: deck, blue: deck}, gameMode}};
+  const simulatedGameStartAction = {
+    type: socketActions.GAME_START,
+    payload: {
+      decks: {orange: deck, blue: deck},
+      gameMode
+    }
+  };
   return game(state, simulatedGameStartAction);
 }
 

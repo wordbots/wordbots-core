@@ -173,7 +173,7 @@ export default function launchWebsocketServer(server, path) {
 
   function handleMatching() {
     const new_matches = state.handleMatching();
-    new_matches.forEach(function (new_match){
+    new_matches.forEach((new_match) => {
       const { decks, name, startingSeed, usernames } = new_match;
 
       sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [new_match.ids.blue]);

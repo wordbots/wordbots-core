@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, number, object } from 'prop-types';
+import { bool, func, number, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
 import Helmet from 'react-helmet';
@@ -31,6 +31,7 @@ import About from './About';
 
 function mapStateToProps(state) {
   return {
+    inGame: state.game.started,
     renderId: state.global.renderId
   };
 }
@@ -58,6 +59,7 @@ class App extends Component {
   };
 
   static propTypes = {
+    inGame: bool,
     renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
@@ -102,7 +104,7 @@ class App extends Component {
   }
 
   get inGame() {
-    return Play.isInGameUrl(this.props.location.pathname);
+    return this.props.inGame || Play.isInGameUrl(this.props.location.pathname);
   }
 
   get sidebar() {

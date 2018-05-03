@@ -76,8 +76,7 @@ export class Play extends Component {
     deck ? `${Play.baseUrl}/${mode}/${deck.id}` : `${Play.baseUrl}/${mode}`;
 
   static isInGameUrl = (url) =>
-    (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 1) ||
-      url.startsWith('/sandbox');
+    (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 1);
 
   componentDidMount() {
     if (!this.props.socket.connected) {

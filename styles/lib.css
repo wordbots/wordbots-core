@@ -2,8 +2,13 @@
 
 /* Hexgrid */
 
+#hexgrid {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 #hexgrid svg {
-  margin: 0 auto;
   display: block;
   filter: drop-shadow(0px 12px 0px #444) drop-shadow(5px 7px 5px #222);
   -webkit-filter: drop-shadow(0px 12px 0px #444) drop-shadow(5px 7px 5px #222);

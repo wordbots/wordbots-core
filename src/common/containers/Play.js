@@ -4,6 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 
+import { DECK_SIZE } from '../constants';
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
 import * as collectionActions from '../actions/collection';
@@ -12,7 +13,7 @@ import * as socketActions from '../actions/socket';
 import GameAreaContainer from './GameAreaContainer';
 
 export function mapStateToProps(state) {
-  const validDecks = state.collection.decks.filter(d => d.cardIds.length === 30);
+  const validDecks = state.collection.decks.filter(d => d.cardIds.length === DECK_SIZE);
 
   return {
     started: state.game.started,

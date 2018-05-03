@@ -1,18 +1,9 @@
 /* eslint-disable no-console */
-import { compact, find, pull, reject, without } from 'lodash';
+import { compact, find, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 
-// Returns a copy of a game with the given client
-// removed from both the players and spectators lists (if present),
-// or null if this results in the game no longer having >=2 active players.
-function withoutClient(game, clientID) {
-  const updatedGame = Object.assign({}, game, {
-    players: without(game.players, clientID),
-    spectators: without(game.spectators, clientID)
-  });
-  return updatedGame.players.length >= 2 ? updatedGame : null;
-}
+import { getPeopleInGame, withoutClient } from './util';
 
 export default class MultiplayerServerState {
   state = {
@@ -60,9 +51,7 @@ export default class MultiplayerServerState {
   // Returns all *other* players in the game that the given player is in, if any.
   getAllOpponents = (clientID) => {
     const game = this.state.games.find(g => [...g.players, ...g.spectators].includes(clientID));
-    if (game) {
-      return [...game.players, ...game.spectators].filter(id => id !== clientID);
-    }
+    return game ? getPeopleInGame(game).filter(id => id !== clientID) : [];
   }
 
   // Returns all *other* players currently in the lobby.

@@ -5,7 +5,8 @@ import * as actions from '../../src/common/actions/game';
 import defaultState from '../../src/common/store/defaultGameState';
 import * as cards from '../../src/common/store/cards';
 import {
-  BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, TYPE_ROBOT, TYPE_STRUCTURE
+  BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, DECK_SIZE,
+  TYPE_ROBOT, TYPE_STRUCTURE
 } from '../../src/common/constants';
 import { getCost } from '../../src/common/util/game';
 import {
@@ -722,6 +723,20 @@ describe('Game reducer', () => {
       currentHand = hand();
       state = activate(state, '2,1,-3', 0, {card: 0});
       expect(hand()).toEqual(currentHand);
+    });
+  });
+
+  describe('[Shared deck mode]', () => {
+    it('should share decks', () => {
+      let state = getDefaultState('sharedDeck');
+      expect(state.players.blue.deck).toEqual(state.players.orange.deck);
+      expect(state.players.blue.deck.length + state.players.blue.hand.length + state.players.orange.hand.length).toEqual(DECK_SIZE * 2);
+
+      state = newTurn(state, 'orange');
+      expect(state.players.blue.deck).toEqual(state.players.orange.deck);
+
+      state = newTurn(state, 'blue');
+      expect(state.players.blue.deck).toEqual(state.players.orange.deck);
     });
   });
 });

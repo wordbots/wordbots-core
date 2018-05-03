@@ -31,7 +31,7 @@ import About from './About';
 
 function mapStateToProps(state) {
   return {
-    inGame: state.game.started,
+    inGame: state.game.started && !state.game.sandbox,
     renderId: state.global.renderId
   };
 }

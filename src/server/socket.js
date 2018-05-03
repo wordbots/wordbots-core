@@ -6,6 +6,9 @@ import { opponent as opponentOf } from '../common/util/game';
 
 import MultiplayerServerState from './multiplayer/MultiplayerServerState';
 
+const QUEUE_INTERVAL_MSECS = 500;  // (Heroku kills connection after 55 idle sec.)
+
+
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {
   const state = new MultiplayerServerState();
@@ -167,4 +170,12 @@ export default function launchWebsocketServer(server, path) {
     sendChat('Entering the lobby ...', [clientID]);
     broadcastInfo();
   }
+
+  function handleMatching() {
+    state.handleMatching();
+    broadcastInfo();
+  }
+
+  setInterval(handleMatching, QUEUE_INTERVAL_MSECS);
+
 }

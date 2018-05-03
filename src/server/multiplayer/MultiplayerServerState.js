@@ -153,7 +153,7 @@ export default class MultiplayerServerState {
   joinQueue = (clientID, deck) => {
     if (!(clientID in this.state.matchmakingQueue)){
       this.state.inQueue++;
-      this.state.matchmakingQueue[clientID] = deck;
+      this.state.matchmakingQueue[clientID] = {deck: deck};
     }
   }
 
@@ -179,5 +179,35 @@ export default class MultiplayerServerState {
   // Remove a player from any game that they are currently in.
   leaveGame = (clientID) => {
     this.state.games = compact(this.state.games.map(game => withoutClient(game, clientID)));
+  }
+
+  // Start a ranked match with two player IDs
+  startMatch = (player1, player2) => {
+      this.hostGame(player1, 'Ranked Game', this.state.matchmakingQueue[player1].deck);
+      this.joinGame(player2, player1, this.state.matchmakingQueue[player2].deck);
+
+      this.state.inQueue -= 2;
+      delete this.state.matchmakingQueue[player1];
+      delete this.state.matchmakingQueue[player2];
+  }
+
+  // Find viable player id match pairs
+  // Todo: Fix this based on MMR
+  findAvailableMatches = () => {
+      const playerIds = Object.keys(this.state.matchmakingQueue);
+      const player1 = playerIds.pop();
+      const player2 = playerIds.pop();
+      return [[player1, player2]];
+  }
+
+  // Pair players if there are at least two people waiting for a ranked game.
+  handleMatching = () => {
+    if (this.state.inQueue >= 2){
+      const match_pairs = this.findAvailableMatches();
+      const match_func = this.startMatch;
+      match_pairs.forEach((player_pair) => {
+        match_func(player_pair[0], player_pair[1]);
+      });
+    }
   }
 }

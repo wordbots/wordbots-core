@@ -83,7 +83,7 @@ export default class Lobby extends Component {
     const skt = this.props.socket;
 
     return (
-      <div style={{padding: '48px 328px 48px 72px'}}>
+      <div style={{padding: '48px 328px 0 72px'}}>
         <LobbyStatus
           connecting={skt.connecting}
           connected={skt.connected}

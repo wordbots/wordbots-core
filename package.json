@@ -79,7 +79,7 @@
     "redux-logger": "3.0.6",
     "redux-multi": "0.1.12",
     "redux-thunk": "2.2.0",
-    "repng": "^1.0.1",
+    "repng": "^3.0.0",
     "screenfull": "^3.3.1",
     "seed-random": "^2.2.0",
     "shuffle-array": "^1.0.1",

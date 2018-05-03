@@ -38,6 +38,7 @@ export default class RecentCardsCarousel extends Component {
         <div>
           <Carousel dots infinite autoplay pauseOnHover
             arrows={false}
+            draggable={false}
             speed={500}
             autoplaySpeed={1500}
             slidesToScroll={1}

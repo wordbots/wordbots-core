@@ -6,7 +6,7 @@ import { opponent as opponentOf } from '../common/util/game';
 
 import MultiplayerServerState from './multiplayer/MultiplayerServerState';
 
-const QUEUE_INTERVAL_MSECS = 500;  // (Heroku kills connection after 55 idle sec.)
+const QUEUE_INTERVAL_MSECS = 500;
 
 
 /* eslint-disable no-console */
@@ -172,7 +172,14 @@ export default function launchWebsocketServer(server, path) {
   }
 
   function handleMatching() {
-    state.handleMatching();
+    const new_matches = state.handleMatching();
+    new_matches.forEach(function (new_match){
+      const { decks, name, startingSeed, usernames } = new_match;
+
+      sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [new_match.ids.blue]);
+      sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [new_match.ids.orange]);
+      sendChat(`Entering game ${name} ...`, [new_match.players]);
+    });
     broadcastInfo();
   }
 

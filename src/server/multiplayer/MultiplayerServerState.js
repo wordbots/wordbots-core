@@ -183,12 +183,38 @@ export default class MultiplayerServerState {
 
   // Start a ranked match with two player IDs
   startMatch = (player1, player2) => {
-      this.hostGame(player1, 'Ranked Game', this.state.matchmakingQueue[player1].deck);
+      const game_name = 'Ranked Game';
+      const new_match = {
+          id: player1,
+          players: [player1, player2],
+          playerColors: {[player2]: 'blue', [player1]: 'orange'},
+          spectators: [],
+          actions: [],
+
+          usernames : {
+            orange: this.getClientUsername(player1),
+            blue: this.getClientUsername(player2)
+          },
+          decks : {
+            orange: this.state.matchmakingQueue[player1].deck,
+            blue: this.state.matchmakingQueue[player2].deck
+          },
+          ids : {
+            orange: player1,
+            blue: player2
+          },
+          name : game_name,
+          startingSeed: generateID()
+      };
+
+      this.hostGame(player1, game_name, this.state.matchmakingQueue[player1].deck);
       this.joinGame(player2, player1, this.state.matchmakingQueue[player2].deck);
 
       this.state.inQueue -= 2;
       delete this.state.matchmakingQueue[player1];
       delete this.state.matchmakingQueue[player2];
+
+      return new_match;
   }
 
   // Find viable player id match pairs
@@ -202,12 +228,17 @@ export default class MultiplayerServerState {
 
   // Pair players if there are at least two people waiting for a ranked game.
   handleMatching = () => {
+    const new_matches = [];
     if (this.state.inQueue >= 2){
       const match_pairs = this.findAvailableMatches();
       const match_func = this.startMatch;
       match_pairs.forEach((player_pair) => {
-        match_func(player_pair[0], player_pair[1]);
+        const new_match = match_func(player_pair[0], player_pair[1]);
+        if (new_match){
+          new_matches.push(new_match);
+        }
       });
     }
+    return new_matches;
   }
 }

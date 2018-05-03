@@ -55,7 +55,8 @@ export default function launchWebsocketServer(server, path) {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
       (inGame ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
-    } else if (type !== 'ws:KEEPALIVE') {
+    } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
+      // Broadcast in-game actions if the client is a player in a game.
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
     }

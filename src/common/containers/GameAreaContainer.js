@@ -60,6 +60,7 @@ export function mapStateToProps(state) {
     isTutorial: game.tutorial,
     isSandbox: game.sandbox,
     isMyTurn: game.currentTurn === game.player,
+    isSpectator: game.player === 'neither',
     isAttackHappening: game.attack && game.attack.from && game.attack.to && true,
 
     actionLog: game.actionLog,

@@ -70,9 +70,8 @@ a.topLink:hover {
   color: #eee;
 }
 
-.slick-slider div {
+.slick-slider div:focus {
   outline: none;
-  user-select: none;
 }
 
 /* moz Sprite Fix */

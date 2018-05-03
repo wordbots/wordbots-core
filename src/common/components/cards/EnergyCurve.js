@@ -27,9 +27,11 @@ export default class EnergyCurve extends Component {
   }
 
   updateWidth() {
-    this.setState({
-      width: this.node.offsetWidth
-    });
+    if (this.node) {
+      this.setState({
+        width: this.node.offsetWidth
+      });
+    }
   }
 
   parseCards(cards) {

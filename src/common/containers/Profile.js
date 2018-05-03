@@ -1,5 +1,4 @@
 import React from 'react';
-import { string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -29,7 +28,7 @@ const About = function (props) {
 };
 
 About.propTypes = {
-    version: string
+    //version: string
 };
 
 export default withRouter(connect(mapStateToProps)(About));

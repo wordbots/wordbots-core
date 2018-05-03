@@ -37,6 +37,7 @@ export default class RankedQueue extends Component {
                     :
                     <RaisedButton
                         secondary
+                        disabled={this.props.disabled}
                         label="Join Ranked Queue"
                         onTouchTap={this.handleJoinQueue}/>
                 }

@@ -39,7 +39,6 @@ export default function creator(oldState = defaultState, action) {
     }
 
     case creatorActions.PARSE_COMPLETE:
-      console.log(action.payload);
       state.parserVersion = action.payload.result.version;
       state.sentences = state.sentences.map((s, idx) => {
         if (idx === action.payload.idx) {

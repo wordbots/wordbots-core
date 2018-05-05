@@ -10,7 +10,8 @@ const defaultState = {
   attack: 1,
   speed: 1,
   health: 1,
-  energy: 1
+  energy: 1,
+  parserVersion: null
 };
 
 export default defaultState;

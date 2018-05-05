@@ -4,11 +4,11 @@ import {
 } from 'lodash';
 
 import {
-  DEFAULT_GAME_MODE, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
+  DEFAULT_GAME_FORMAT, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
 } from '../constants';
 import { arbitraryPlayerState } from '../store/defaultGameState';
-import { GameMode, SharedDeckGameMode } from '../store/gameModes';
+import { GameFormat, SharedDeckGameFormat } from '../store/gameFormats';
 import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/hexgrid/GridGenerator';
 import Hex from '../components/hexgrid/Hex';
@@ -257,8 +257,8 @@ export function logAction(state, player, action, cards, timestamp, target = null
   return state;
 }
 
-export function newGame(state, player, usernames, decks, seed = 0, gameMode = DEFAULT_GAME_MODE) {
-  return GameMode.fromString(gameMode)
+export function newGame(state, player, usernames, decks, seed = 0, gameFormat = DEFAULT_GAME_FORMAT) {
+  return GameFormat.fromString(gameFormat)
                  .startGame(state, player, usernames, decks, seed);
 }
 
@@ -353,7 +353,7 @@ export function drawCards(state, player, count) {
 
   if (numCardsDrawn > 0) {
     player.hand = player.hand.concat(player.deck.splice(0, numCardsDrawn));
-    if (SharedDeckGameMode.isActive(state)) {
+    if (SharedDeckGameFormat.isActive(state)) {
       // In sharedDeck mode, drawing a card (or discarding the top card of the deck)
       // affects both players' decks.
       otherPlayer.deck.splice(0, numCardsDrawn);
@@ -364,7 +364,7 @@ export function drawCards(state, player, count) {
     const card = player.deck[0];
     if (card) {
       player.deck.splice(0, 1);
-      if (SharedDeckGameMode.isActive(state)) {
+      if (SharedDeckGameFormat.isActive(state)) {
         otherPlayer.deck.splice(0, 1);
       }
       player.discardPile = player.discardPile.concat([card]);

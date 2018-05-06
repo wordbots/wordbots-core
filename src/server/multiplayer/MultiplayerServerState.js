@@ -126,7 +126,7 @@ export default class MultiplayerServerState {
     const opponent = find(this.state.waitingPlayers, { id: opponentID });
     const game_id = generateID();
     const game = {
-      id: opponentID,
+      id: game_id,
       players: [clientID, opponentID],
       playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
       spectators: [],

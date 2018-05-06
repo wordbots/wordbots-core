@@ -62,6 +62,8 @@ export default function launchWebsocketServer(server, path) {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
       (inGame ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
+    } else if (type === 'ws:FORFEIT') {
+      endGame(clientID, payload.winner);
     } else if (type !== 'ws:KEEPALIVE') {
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
@@ -161,6 +163,9 @@ export default function launchWebsocketServer(server, path) {
       sendMessage('ws:CURRENT_STATE', {'actions': actions}, [clientID]);
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
       sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
+
+      state.storeGame(game);
+
       broadcastInfo();
     }
   }
@@ -181,6 +186,28 @@ export default function launchWebsocketServer(server, path) {
       sendChat(`Entering game ${name} ...`, [new_match.players]);
     });
     broadcastInfo();
+  }
+
+  function endGame(clientID, winner) {
+    const game = state.lookupGameByClient(clientID);
+    // update result and save
+    if (game.ids.blue === winner){
+      game.result = 'BLUE_WIN';
+    }
+    else if (game.ids.orange === winner){
+      game.result = 'ORANGE_WIN';
+    }
+    state.storeGame(game);
+    // calculate rating changes and save
+      if (game.ids.blue in this.state.userInfo && !('rating' in this.state.userInfo[game.ids.blue])){
+        this.state.userInfo[game.ids.blue].rating = 1200;
+      }
+      if (game.ids.orange in this.state.userInfo && !('rating' in this.state.userInfo[game.ids.orange])){
+          this.state.userInfo[game.ids.orange].rating = 1200;
+      }
+      // @TODO: Calculate ratings changes
+      this.state.storeRating(game.ids.blue);
+      this.state.storeRating(game.ids.orange);
   }
 
   setInterval(handleMatching, QUEUE_INTERVAL_MSECS);

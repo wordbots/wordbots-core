@@ -2,16 +2,20 @@
 import { compact, find, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
+import { listenToUserDataById, saveRating, saveGame } from '../../common/util/firebase';
 
 import { getPeopleInGame, withoutClient } from './util';
+
 
 export default class MultiplayerServerState {
   state = {
     connections: {},  // map of { clientID: websocket }
     games: [],  // array of { id, name, players, playerColors, spectators, actions, decks, usernames, startingSeed }
+    gameObjects: {}, // map of { gameID: game }
     waitingPlayers: [],  // array of { id, name, deck, players }
     playersOnline: [],  // array of clientIDs
     usernames: {} , // map of { clientID: username }
+    userInfo: {}, // map of { clientID: user object }
 
     matchmakingQueue: {}, // map of { clientID: queue info }
     inQueue: 0 // summary of how many people are waiting for match in matchmaking
@@ -62,11 +66,17 @@ export default class MultiplayerServerState {
 
   /* Mutations */
 
+  // Helper for client connect
+  fbDataLoadCallback = (user) => {
+    this.state.userInfo[user.uid] = user;
+  }
+
   // Connect a player at the specified websocket to the server.
   connectClient = (clientID, socket) => {
     this.state.connections[clientID] = socket;
     this.state.playersOnline.push(clientID);
     console.log(`${this.getClientUsername(clientID)} joined the room.`);
+    listenToUserDataById(clientID, this.fbDataLoadCallback);
   }
 
   // Disconnect a player from the server.
@@ -114,21 +124,27 @@ export default class MultiplayerServerState {
   // Returns the game joined.
   joinGame = (clientID, opponentID, deck) => {
     const opponent = find(this.state.waitingPlayers, { id: opponentID });
+    const game_id = generateID();
     const game = {
       id: opponentID,
-      name: this.getClientUsername(opponentID),
-
       players: [clientID, opponentID],
       playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
       spectators: [],
 
       actions: [],
+      type: 'CASUAL',
       decks: {orange: opponent.deck, blue: deck},
       usernames: {
         orange: this.getClientUsername(opponentID),
         blue: this.getClientUsername(clientID)
       },
-      startingSeed: generateID()
+      ids : {
+        blue: clientID,
+        orange: opponentID
+      },
+      startingSeed: generateID(),
+      name: `Casual#${game_id}`,
+      result: 'IN_PROGRESS'
     };
 
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: opponentID });
@@ -170,15 +186,27 @@ export default class MultiplayerServerState {
     this.state.games = compact(this.state.games.map(game => withoutClient(game, clientID)));
   }
 
+  storeGame = (game) => {
+    saveGame(game);
+  }
+
+  storeRating = (player) => {
+    if (player in this.state.userInfo){
+      saveRating(this.state.userInfo[player]);
+    }
+  }
+
   // Start a ranked match with two player IDs
   startMatch = (player1, player2) => {
-      const game_name = 'Ranked Game';
+      const game_id = generateID();
+      const game_name = `Ranked#${game_id}`;
       const new_match = {
-          id: player1,
+          id: game_id,
           players: [player1, player2],
           playerColors: {[player2]: 'blue', [player1]: 'orange'},
           spectators: [],
           actions: [],
+          type: 'RANKED',
 
           usernames : {
             orange: this.getClientUsername(player1),
@@ -193,7 +221,8 @@ export default class MultiplayerServerState {
             blue: player2
           },
           name : game_name,
-          startingSeed: generateID()
+          startingSeed: generateID(),
+          result: 'IN_PROGRESS'
       };
 
       this.hostGame(player1, game_name, this.state.matchmakingQueue[player1].deck);
@@ -203,6 +232,7 @@ export default class MultiplayerServerState {
       delete this.state.matchmakingQueue[player1];
       delete this.state.matchmakingQueue[player2];
 
+      this.state.games.push(new_match);
       return new_match;
   }
 

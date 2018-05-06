@@ -29,7 +29,26 @@ function saveUser(user) {
     .then(() => user);
 }
 
-function getLoggedInUser() {
+export function saveRating(user) {
+    return fb.database().ref()
+        .child(`users/${user.uid}/stats`)
+        .set({
+            uid: user.uid,
+            rating: user.rating
+            })
+        .then(() => user);
+}
+
+export function saveGame(game) {
+    return fb.database().ref()
+        .child(`games/${game.id}/info`)
+        .set({
+            game: game
+        })
+        .then(() => game);
+}
+
+export function getLoggedInUser() {
   return new Promise((resolve, reject) => {
     fb.auth().onAuthStateChanged(user => {
       currentUser = user;
@@ -80,6 +99,12 @@ export function listenToUserData(callback) {
       .ref(`users/${user.uid}`)
       .on('value', (snapshot) => { callback(snapshot.val()); });
   });
+}
+
+export function listenToUserDataById(uid, callback) {
+    return fb.database()
+        .ref(`users/${uid}`)
+        .on('value', (snapshot) => { callback(snapshot.val()); });
 }
 
 export function listenToRecentCards(callback) {

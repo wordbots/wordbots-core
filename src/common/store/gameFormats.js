@@ -5,25 +5,25 @@ import { triggerSound } from '../util/game';
 
 import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameState';
 
-export class GameMode {
+export class GameFormat {
   name = undefined;
 
-  static fromString(gameModeStr) {
-    const modes = [ NormalGameMode, SharedDeckGameMode ];
-    const mode = modes.find(m => m.name === gameModeStr);
+  static fromString(gameFormatStr) {
+    const modes = [ NormalGameFormat, SharedDeckGameFormat ];
+    const mode = modes.find(m => m.name === gameFormatStr);
     if (!mode) {
-      throw `Unknown game mode: ${gameModeStr}`;
+      throw `Unknown game mode: ${gameFormatStr}`;
     }
     return mode;
   }
 
   isActive(state) {
-    return state.gameMode === this.name;
+    return state.gameFormat === this.name;
   }
 
   startGame(state, player, usernames, decks, seed) {
     state = Object.assign(state, cloneDeep(defaultState), {
-      gameMode: this.name,
+      gameFormat: this.name,
       player: player,
       rng: seededRNG(seed),
       started: true,
@@ -35,7 +35,7 @@ export class GameMode {
   }
 }
 
-export const NormalGameMode = new (class extends GameMode {
+export const NormalGameFormat = new (class extends GameFormat {
   name = 'normal';
 
   startGame(state, player, usernames, decks, seed) {
@@ -48,7 +48,7 @@ export const NormalGameMode = new (class extends GameMode {
   }
 });
 
-export const SharedDeckGameMode = new (class extends GameMode {
+export const SharedDeckGameFormat = new (class extends GameFormat {
   name = 'sharedDeck';
 
   startGame(state, player, usernames, decks, seed) {

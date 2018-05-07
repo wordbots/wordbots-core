@@ -116,11 +116,11 @@ class App extends Component {
   }
 
   get content() {
-    const sidebarWidth = this.inGame ? 0 : (isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH);
+    const sidebarWidth = isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
 
     return (
       <div style={{
-        paddingLeft: sidebarWidth,
+        paddingLeft: this.inGame ? 0 : sidebarWidth,
         transition: 'padding-left 200ms ease-in-out'
       }}>
         <ErrorBoundary>

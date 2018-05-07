@@ -241,7 +241,7 @@ export class GameAreaContainer extends Component {
     }
   };
 
-  /* Try to start a practice game from the URL, pending Firebase loading. */
+  /* Try to start a practice game from the URL. */
   tryToStartPracticeGame = (deckId) => {
     const { history, onStartPractice, collection: { cards, decks } } = this.props;
     const deck = decks.find(d => d.id === deckId);

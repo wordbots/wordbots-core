@@ -25,6 +25,7 @@ export function mapStateToProps(state) {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
+    parserVersion: state.creator.parserVersion,
     loggedIn: state.global.user !== null
   };
 }
@@ -71,6 +72,7 @@ export class Creator extends Component {
     health: number,
     cost: number,
     loggedIn: bool,
+    parserVersion: string,  // eslint-disable-line react/no-unused-prop-types
 
     history: oneOfType([arrayOf(object), object]),
 

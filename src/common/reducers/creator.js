@@ -39,6 +39,7 @@ export default function creator(oldState = defaultState, action) {
     }
 
     case creatorActions.PARSE_COMPLETE:
+      state.parserVersion = action.payload.result.version;
       state.sentences = state.sentences.map((s, idx) => {
         if (idx === action.payload.idx) {
           return Object.assign({}, s, {result: action.payload.result});

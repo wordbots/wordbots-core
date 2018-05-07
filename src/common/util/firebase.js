@@ -42,6 +42,10 @@ function getLoggedInUser() {
   });
 }
 
+export function lookupUsername(fallback = 'You') {
+  return (currentUser && currentUser.displayName) || fallback;
+}
+
 export function onLogin(callback) {
   return fb.auth().onAuthStateChanged(user => user && callback(user));
 }

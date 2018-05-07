@@ -3,6 +3,7 @@ import { arrayOf, bool, func, number, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
+import { compact } from 'lodash';
 
 import { DECK_SIZE } from '../constants';
 import Chat from '../components/multiplayer/Chat';
@@ -70,8 +71,12 @@ export class Play extends Component {
   };
 
   static baseUrl = '/play';
+
   static urlForGameMode = (mode, deck = null) =>
     deck ? `${Play.baseUrl}/${mode}/${deck.id}` : `${Play.baseUrl}/${mode}`;
+
+  static isInGameUrl = (url) =>
+    (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 1);
 
   componentDidMount() {
     if (!this.props.socket.connected) {

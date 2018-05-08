@@ -1,7 +1,6 @@
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
 
 import * as cards from './cards';
-import { NormalGameFormat } from './gameFormats';
 
 const STARTING_PLAYER = 'orange';
 
@@ -59,7 +58,7 @@ const defaultState = {
     blue: bluePlayerState([]),
     orange: orangePlayerState([])
   },
-  gameFormat: NormalGameFormat.name,
+  gameFormat: 'normal',
   started: false,
   tutorial: false,
   practice: false,

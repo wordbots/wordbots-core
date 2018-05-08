@@ -29,7 +29,7 @@ export default class DeckPicker extends Component {
 
   render() {
     return (
-      <Paper style={{display: 'flex', padding: 20, marginBottom: 20}}>
+      <Paper style={{display: 'flex', flex: 3, padding: 20, marginBottom: 20, marginRight: 20}}>
         <SelectField
           value={this.props.selectedDeckIdx}
           floatingLabelText="Choose a deck"
@@ -50,4 +50,3 @@ export default class DeckPicker extends Component {
     );
   }
 }
-

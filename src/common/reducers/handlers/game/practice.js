@@ -16,13 +16,14 @@ import HU from '../../../components/hexgrid/HexUtils';
 import { setSelectedCard, placeCard } from './cards';
 import { setSelectedTile, moveRobot, attack } from './board';
 
-export function startPractice(state, deck) {
+export function startPractice(state, format, deck) {
   const decks = {
     orange: deck,
     blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
   };
 
-  state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks);
+  console.log(format);
+  state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks, 0, format);
   state.practice = true;
 
   return state;

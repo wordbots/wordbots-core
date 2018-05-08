@@ -8,8 +8,8 @@ import { getPeopleInGame, withoutClient } from './util';
 export default class MultiplayerServerState {
   state = {
     connections: {},  // map of { clientID: websocket }
-    games: [],  // array of { id, name, players, playerColors, spectators, actions, decks, usernames, startingSeed }
-    waitingPlayers: [],  // array of { id, name, deck, players }
+    games: [],  // array of { id, name, format, players, playerColors, spectators, actions, decks, usernames, startingSeed }
+    waitingPlayers: [],  // array of { id, name, format, deck, players }
     playersOnline: [],  // array of clientIDs
     usernames: {}  // map of { clientID: username }
   };
@@ -97,11 +97,12 @@ export default class MultiplayerServerState {
   }
 
   // Make a player host a game with the given name and using the given deck.
-  hostGame = (clientID, name, deck) => {
+  hostGame = (clientID, name, format, deck) => {
     this.state.waitingPlayers.push({
       id: clientID,
       players: [clientID],
       name,
+      format,
       deck
     });
     console.log(`${this.getClientUsername(clientID)} started game ${name}.`);
@@ -110,17 +111,18 @@ export default class MultiplayerServerState {
   // Make a player join the given opponent's hosted game with the given deck.
   // Returns the game joined.
   joinGame = (clientID, opponentID, deck) => {
-    const opponent = find(this.state.waitingPlayers, { id: opponentID });
+    const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
     const game = {
       id: opponentID,
-      name: opponent.name,
+      name: waitingPlayer.name,
+      format: waitingPlayer.format,
 
       players: [clientID, opponentID],
       playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
       spectators: [],
 
       actions: [],
-      decks: {orange: opponent.deck, blue: deck},
+      decks: {orange: waitingPlayer.deck, blue: deck},
       usernames: {
         orange: this.getClientUsername(opponentID),
         blue: this.getClientUsername(clientID)

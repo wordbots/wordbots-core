@@ -3,6 +3,8 @@ import { bool, func, object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 
+import { GameFormat } from '../../store/gameFormats';
+
 export default class GameRow extends Component {
   static propTypes = {
     game: object,
@@ -28,6 +30,7 @@ export default class GameRow extends Component {
     return (
       <TableRow key={game.id}>
         <TableRowColumn>{game.name}</TableRowColumn>
+        <TableRowColumn>{GameFormat.fromString(game.format).displayName}</TableRowColumn>
         <TableRowColumn>{game.players.map(p => usernameMap[p]).join(', ')}</TableRowColumn>
         <TableRowColumn>{(game.spectators || []).map(p => usernameMap[p]).join(', ')}</TableRowColumn>
         <TableRowColumn style={{textAlign: 'right'}}>

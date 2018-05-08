@@ -41,10 +41,10 @@ export const LEAVE = 'ws:LEAVE';
 export const SET_USERNAME = 'ws:SET_USERNAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
-export function host(name, deck) {
+export function host(name, format, deck) {
   return {
     type: HOST,
-    payload: { name, deck }
+    payload: { name, format, deck }
   };
 }
 

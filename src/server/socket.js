@@ -42,7 +42,7 @@ export default function launchWebsocketServer(server, path) {
     const {type, payload} = JSON.parse(data);
 
     if (type === 'ws:HOST') {
-      hostGame(clientID, payload.name, payload.deck);
+      hostGame(clientID, payload.name, payload.format, payload.deck);
     } else if (type === 'ws:JOIN') {
       joinGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:SPECTATE') {
@@ -87,7 +87,7 @@ export default function launchWebsocketServer(server, path) {
 
   function sendMessageInGame(clientID, type, payload = {}) {
     const opponentIds = state.getAllOpponents(clientID);
-    if (opponentIds) {
+    if (opponentIds.length > 0) {
       console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${JSON.stringify(payload)}`);
       sendMessage(type, payload, opponentIds);
     }
@@ -118,17 +118,17 @@ export default function launchWebsocketServer(server, path) {
     broadcastInfo();
   }
 
-  function hostGame(clientID, name, deck) {
-    state.hostGame(clientID, name, deck);
+  function hostGame(clientID, name, format, deck) {
+    state.hostGame(clientID, name, format, deck);
     broadcastInfo();
   }
 
   function joinGame(clientID, opponentID, deck) {
     const game = state.joinGame(clientID, opponentID, deck);
-    const { decks, name, startingSeed, usernames } = game;
+    const { decks, format, name, startingSeed, usernames } = game;
 
-    sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [clientID]);
-    sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [opponentID]);
+    sendMessage('ws:GAME_START', {'player': 'blue', format, decks, usernames, seed: startingSeed }, [clientID]);
+    sendMessage('ws:GAME_START', {'player': 'orange', format, decks, usernames, seed: startingSeed }, [opponentID]);
     sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
     broadcastInfo();
   }

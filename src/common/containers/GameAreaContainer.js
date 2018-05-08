@@ -228,7 +228,6 @@ export class GameAreaContainer extends Component {
         // username and deck list.
         this.setState({ message: null });
         if (this.urlMatchesGameMode('practice')) {
-          console.log(match.params);
           this.tryToStartPracticeGame(match.params.format, match.params.deck);
         } else if (location.pathname.startsWith('/sandbox')) {
           onStartSandbox();

@@ -26,7 +26,8 @@ export function mapStateToProps(state) {
     sentences: state.creator.sentences,
     text: state.creator.text,
     parserVersion: state.creator.parserVersion,
-    loggedIn: state.global.user !== null
+    loggedIn: state.global.user !== null,
+    cards: state.collection.cards
   };
 }
 
@@ -73,6 +74,7 @@ export class Creator extends Component {
     cost: number,
     loggedIn: bool,
     parserVersion: string,  // eslint-disable-line react/no-unused-prop-types
+    cards: arrayOf(object),
 
     history: oneOfType([arrayOf(object), object]),
 
@@ -119,6 +121,7 @@ export class Creator extends Component {
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
             loggedIn={this.props.loggedIn}
+            id={this.props.id}
             name={this.props.name}
             type={this.props.type}
             attack={this.props.attack}
@@ -127,7 +130,7 @@ export class Creator extends Component {
             energy={this.props.cost}
             text={this.props.text}
             sentences={this.props.sentences}
-            isNewCard={this.props.id ? true : false}
+            isNewCard={!(this.props.id && this.props.cards.find(card => card.id === this.props.id))}
             onSetName={this.props.onSetName}
             onSetType={this.props.onSetType}
             onSetText={this.props.onSetText}

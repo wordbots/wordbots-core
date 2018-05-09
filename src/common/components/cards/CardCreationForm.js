@@ -26,6 +26,7 @@ const exampleStore = new CardTextExampleStore();
 
 export default class CardCreationForm extends Component {
   static propTypes = {
+    id: string,
     name: string,
     type: number,
     text: string,
@@ -50,7 +51,7 @@ export default class CardCreationForm extends Component {
 
   componentDidMount() {
     // Generate new spriteID on reload.
-    if (!this.props.isNewCard) {
+    if (!this.props.id) {
       this.props.onSpriteClick();
     }
 
@@ -367,7 +368,7 @@ export default class CardCreationForm extends Component {
             <RaisedButton
               primary
               fullWidth
-              label={this.props.isNewCard ? 'Save Edits' : 'Add to Collection'}
+              label={this.props.isNewCard ? 'Add to Collection' : 'Save Edits'}
               disabled={!this.isValid}
               style={this.styles.saveButton}
               onTouchTap={this.props.onAddToCollection} />

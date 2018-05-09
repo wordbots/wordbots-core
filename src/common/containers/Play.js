@@ -78,8 +78,11 @@ export class Play extends Component {
 
   static baseUrl = '/play';
 
-  static urlForGameMode = (mode, format = null, deck = null) =>
-    `${Play.baseUrl}/${mode}${format ? `/${format}` : ''}${deck ? `/${deck.id}` : ''}`;
+  static urlForGameMode = (mode, format = null, deck = null) => {
+    const maybeFormatParam = format ? `/${format}` : '';
+    const maybeDeckParam = deck ? `/${deck.id}` : '';
+    return `${Play.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
+  }
 
   static isInGameUrl = (url) =>
     (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 1);

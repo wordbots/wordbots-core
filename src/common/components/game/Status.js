@@ -1,32 +1,42 @@
-import React from 'react';
-import { object } from 'prop-types';
+import React, { Component } from 'react';
+import { string } from 'prop-types';
+import Snackbar from 'material-ui/Snackbar';
 
-const Status = ({status}) => {
-  const color = {
-    error: '#F44336',
-    warning: '#FFEB3B'
-  }[status.type] || '#CCC';
+export default class Status extends Component {
+  static propTypes = {
+    type: string,
+    message: string
+  };
 
-  return (
-    <div style={{
-      display: 'inline-block',
-      position: 'absolute',
-      top: 50,
-      margin: 'auto',
-      width: '100%',
-      height: 20,
-      textAlign: 'center',
-      fontFamily: 'Carter One',
-      fontSize: 20,
-      color: color
-    }}>
-      {status.message}
-    </div>
-  );
-};
+  get color() {
+    return {
+      error: '#F44336',
+      warning: '#FFEB3B'
+    }[this.props.type] || '#CCC';
+  }
 
-Status.propTypes = {
-  status: object
-};
-
-export default Status;
+  render() {
+    // TODO When we switch over to material-ui@next, there will be actual support
+    // for top-center placement of snackbars.
+    // For now we do this ugly hack: https://github.com/mui-org/material-ui/issues/4641
+    return (
+      <Snackbar
+        open
+        message={this.props.message}
+        style={{
+          top: 0,
+          bottom: 'auto',
+          left: (window.innerWidth - 350) / 2,
+          transform: this.props.message ? 'translate3d(0, 0, 0)' : 'translate3d(0, -50px, 0)'
+        }}
+        bodyStyle={{
+          minWidth: 320
+        }}
+        contentStyle={{
+          color: this.color,
+          textAlign: 'center'
+        }}
+      />
+    );
+  }
+}

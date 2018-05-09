@@ -184,6 +184,7 @@ export default class GameArea extends Component {
           <Helmet title="Play" />
           <GameNotification text="It's your turn!" enabled={currentTurn === player} />
           <Sfx queue={sfxQueue} />
+          {(isMyTurn || isSandbox) && <Status type={status.type} message={status.message} />}
         </div>
 
         <Paper
@@ -274,7 +275,6 @@ export default class GameArea extends Component {
               width: boardSize
             }}
           >
-            <Status status={(isMyTurn || isSandbox) ? status : {}} />
             <Board
               size={this.state.boardSize}
               player={this.actualPlayer}

@@ -541,6 +541,13 @@ describe('Game reducer', () => {
       // Note that the blue Fortification at 3,-2,-1 shouldn't affect the orange Attack Bot.
       state = moveRobot(state, '2,1,-3', '3,-1,-2', true);
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/1/2');
+
+      // Health Aura: "All robots 2 spaces away have +2 health."
+      // The Health Aura at 1,0,-1 should affect the Attack Bot two spaces away at 3,1,-2,
+      // but NOT the Attack Bot one space away at 2,-1,-1.
+      state = playObject(state, 'orange', testCards.healthAuraCard, '1,0,-1');
+      expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/3/2');
+      expect(queryRobotAttributes(state, '2,-1,-1')).toEqual('1/1/2');
     });
 
     it('should let objects apply passive abilities to cards in hand', () => {

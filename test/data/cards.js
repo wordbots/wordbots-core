@@ -1,4 +1,4 @@
-import { TYPE_ROBOT, TYPE_EVENT } from '../../src/common/constants';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../src/common/constants';
 
 /**
  * Returns basic stats for a robot that can move and attack.
@@ -72,6 +72,19 @@ export const wrathOfRobotGodCard = {
   command: '(function () { actions["destroy"](objectsInPlay("robot")); })',
   cost: 10,
   type: TYPE_EVENT
+};
+
+export const healthAuraCard = {
+  name: 'Health Aura',
+  cost: 3,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 5
+  },
+  text: 'All robots 2 spaces away have +2 health.',
+  abilities: [
+    '(function () { setAbility(abilities["attributeAdjustment"](function () { return objectsMatchingConditions("robot", [conditions["exactDistanceFrom"](2, targets["thisRobot"]())]); }, "health", function (x) { return x + 2; })); })'
+  ]
 };
 
 export const instantKernelKillerAbilityCard = {

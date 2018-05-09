@@ -34,7 +34,8 @@ export default class Status extends Component {
         }}
         contentStyle={{
           color: this.color,
-          textAlign: 'center'
+          textAlign: 'center',
+          transition: 'none'
         }}
       />
     );

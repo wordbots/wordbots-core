@@ -72,30 +72,31 @@ export function isCardVisible(card, filters = {}, costRange = [0, 0]) {
 
 // Converts card from cardCreator store format -> format for collection and game stores.
 export function createCardFromProps(props) {
-  const sentences = props.sentences.filter(s => /\S/.test(s.sentence));
+  const {
+    attack, cost, health, id, name, parserVersion,
+    sentences: rawSentences, speed, spriteID, type
+  } = props;
+  const sentences = rawSentences.filter(s => /\S/.test(s.sentence));
   const command = sentences.map(s => s.result.js);
 
   const card = {
-    id: props.id || generateId(),
-    name: props.name,
-    type: props.type,
-    spriteID: props.spriteID,
+    id: id || generateId(),
+    name,
+    type,
+    spriteID,
     spriteV: SPRITE_VERSION,
+    parserV: parserVersion,
     text: sentences.map(s => `${s.sentence}. `).join(''),
-    cost: props.cost,
+    cost: cost,
     source: 'user',  // In the future, this will specify *which* user created the card.
     timestamp: Date.now()
   };
 
-  if (props.type === TYPE_EVENT) {
+  if (type === TYPE_EVENT) {
     card.command = command;
   } else {
     card.abilities = command;
-    if (props.type === TYPE_ROBOT) {
-      card.stats = pick(props, ['health', 'speed', 'attack']);
-    } else {
-      card.stats = pick(props, ['health']);
-    }
+    card.stats = type === TYPE_ROBOT ? { attack, health, speed } : { health };
   }
 
   return card;

@@ -90,7 +90,7 @@ export default class TutorialTooltip extends Component {
           disabled={this.step.idx === 0}
           style={this.styles.backButton}
         >
-          <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>replay</FontIcon>
+          <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>arrow_back</FontIcon>
         </IconButton>
       </Tooltip>
     );

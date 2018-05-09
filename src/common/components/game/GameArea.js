@@ -64,6 +64,7 @@ export const gameProps = {
 
   gameOver: bool,
   isTutorial: bool,
+  isPractice: bool,
   isSandbox: bool,
   isMyTurn: bool,
   isSpectator: bool,
@@ -158,7 +159,7 @@ export default class GameArea extends Component {
   render() {
     const {
       attack, bluePieces, currentTurn, eventQueue, gameOver, history, isAttackHappening,
-      isMyTurn, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
+      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
       selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep
@@ -219,8 +220,7 @@ export default class GameArea extends Component {
               <Timer
                 player={player}
                 currentTurn={currentTurn}
-                gameOver={gameOver}
-                isTutorial={isTutorial || isSandbox}
+                enabled={!gameOver && !isTutorial && !isPractice && !isSandbox}
                 isMyTurn={isMyTurn}
                 isAttackHappening={isAttackHappening}
                 onPassTurn={onPassTurn} />

@@ -14,7 +14,7 @@ const LOCAL_PARSER_PORT = 8080;
 
 /* Game rules. */
 
-export const DEFAULT_GAME_MODE = 'normal';  // See store/gameModes
+export const DEFAULT_GAME_FORMAT = 'normal';  // See store/gameModes
 export const STARTING_PLAYER_HEALTH = 20;
 export const DECK_SIZE = 30;
 export const MAX_HAND_SIZE = 7;

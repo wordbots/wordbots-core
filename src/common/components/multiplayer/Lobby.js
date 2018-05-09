@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
 
 import { shuffleCardsInDeck } from '../../util/cards';
+import { FORMATS } from '../../store/gameFormats';
 
 import DeckPicker from './DeckPicker';
+import FormatPicker from './FormatPicker';
 import GameBrowser from './GameBrowser';
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
@@ -17,12 +19,14 @@ export default class Lobby extends Component {
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
     selectedDeckIdx: number,
+    selectedFormatIdx: number,
 
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
     onHostGame: func,
     onSelectDeck: func,
+    onSelectFormat: func,
     onSelectMode: func
   };
 
@@ -39,10 +43,17 @@ export default class Lobby extends Component {
     };
   }
 
+  get format() {
+    return FORMATS[this.props.selectedFormatIdx].name;
+  }
+
   handleSelectMode = (mode) => {
-    // If selecting practice mode, pass a deck into the URL.
-    const deck = (mode === 'practice') ? this.deck : null;
-    this.props.onSelectMode(mode, deck);
+    if (mode === 'practice') {
+      // If selecting practice mode, pass the deck and format into the URL.
+      this.props.onSelectMode(mode, this.format, this.deck);
+    } else {
+      this.props.onSelectMode(mode);
+    }
   };
 
   handleJoinGame = (gameId, gameName) => {
@@ -50,7 +61,7 @@ export default class Lobby extends Component {
   };
 
   handleHostGame = (gameName) => {
-    this.props.onHostGame(gameName, this.deck.cards);
+    this.props.onHostGame(gameName, this.format, this.deck.cards);
   };
 
   renderLobbyContent(gameMode, socket) {
@@ -80,24 +91,33 @@ export default class Lobby extends Component {
   }
 
   render() {
-    const skt = this.props.socket;
+    const {
+      availableDecks, cards, gameMode, selectedDeckIdx, selectedFormatIdx, socket,
+      onConnect, onSelectDeck, onSelectFormat
+    } = this.props;
+    const { clientIdToUsername, connected, connecting, playersOnline } = socket;
 
     return (
       <div style={{padding: '48px 328px 0 72px'}}>
         <LobbyStatus
-          connecting={skt.connecting}
-          connected={skt.connected}
-          playersOnline={skt.playersOnline}
-          usernameMap={skt.clientIdToUsername}
-          onConnect={this.props.onConnect} />
+          connecting={connecting}
+          connected={connected}
+          playersOnline={playersOnline}
+          usernameMap={clientIdToUsername}
+          onConnect={onConnect} />
 
-        <DeckPicker
-          cards={this.props.cards}
-          availableDecks={this.props.availableDecks}
-          selectedDeckIdx={this.props.selectedDeckIdx}
-          onChooseDeck={this.props.onSelectDeck} />
+        <div style={{display: 'flex'}}>
+          <DeckPicker
+            cards={cards}
+            availableDecks={availableDecks}
+            selectedDeckIdx={selectedDeckIdx}
+            onChooseDeck={onSelectDeck} />
+          <FormatPicker
+            selectedFormatIdx={selectedFormatIdx}
+            onChooseFormat={onSelectFormat} />
+        </div>
 
-        {this.renderLobbyContent(this.props.gameMode, skt)}
+        {this.renderLobbyContent(gameMode, socket)}
       </div>
     );
   }

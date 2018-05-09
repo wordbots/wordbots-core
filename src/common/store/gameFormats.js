@@ -7,14 +7,14 @@ import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameS
 
 export class GameFormat {
   name = undefined;
+  displayName = undefined;
 
   static fromString(gameFormatStr) {
-    const modes = [ NormalGameFormat, SharedDeckGameFormat ];
-    const mode = modes.find(m => m.name === gameFormatStr);
-    if (!mode) {
-      throw `Unknown game mode: ${gameFormatStr}`;
+    const format = FORMATS.find(m => m.name === gameFormatStr);
+    if (!format) {
+      throw `Unknown game format: ${gameFormatStr}`;
     }
-    return mode;
+    return format;
   }
 
   isActive(state) {
@@ -37,6 +37,7 @@ export class GameFormat {
 
 export const NormalGameFormat = new (class extends GameFormat {
   name = 'normal';
+  displayName = 'Normal';
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -50,6 +51,7 @@ export const NormalGameFormat = new (class extends GameFormat {
 
 export const SharedDeckGameFormat = new (class extends GameFormat {
   name = 'sharedDeck';
+  displayName = 'Shared Deck';
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -65,3 +67,5 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
     return state;
   }
 });
+
+export const FORMATS = [NormalGameFormat, SharedDeckGameFormat];

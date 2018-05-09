@@ -134,8 +134,8 @@ export function mapDispatchToProps(dispatch) {
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
     },
-    onStartPractice: (deck) => {
-      dispatch(gameActions.startPractice(deck));
+    onStartPractice: (format, deck) => {
+      dispatch(gameActions.startPractice(format, deck));
     },
     onAIResponse: () => {
       dispatch(gameActions.aiResponse());
@@ -229,7 +229,7 @@ export class GameAreaContainer extends Component {
         // username and deck list.
         this.setState({ message: null });
         if (this.urlMatchesGameMode('practice')) {
-          this.tryToStartPracticeGame(match.params.deck);
+          this.tryToStartPracticeGame(match.params.format, match.params.deck);
         } else if (location.pathname.startsWith('/sandbox')) {
           onStartSandbox();
         } else {
@@ -243,12 +243,12 @@ export class GameAreaContainer extends Component {
   };
 
   /* Try to start a practice game from the URL. */
-  tryToStartPracticeGame = (deckId) => {
+  tryToStartPracticeGame = (formatName, deckId) => {
     const { history, onStartPractice, collection: { cards, decks } } = this.props;
     const deck = decks.find(d => d.id === deckId);
 
     if (deck) {
-      onStartPractice(shuffleCardsInDeck(deck, cards));
+      onStartPractice(formatName, shuffleCardsInDeck(deck, cards));
     } else {
       history.push(Play.baseUrl);
     }

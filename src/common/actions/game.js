@@ -16,10 +16,10 @@ export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
 
-export function startPractice(deck) {
+export function startPractice(format, deck) {
   return {
     type: START_PRACTICE,
-    payload: { deck }
+    payload: { format, deck }
   };
 }
 
@@ -129,5 +129,3 @@ export function addCardToTopOfDeck(player, card) {
     payload: { player, card }
   };
 }
-
-

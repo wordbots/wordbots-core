@@ -40,14 +40,14 @@ export function handleAction(oldState, { type, payload }) {
         payload.usernames || {},
         payload.decks,
         payload.seed,
-        payload.gameFormat || DEFAULT_GAME_FORMAT  // TODO Actually send the gameFormat field from the server.
+        payload.format || DEFAULT_GAME_FORMAT
       );
 
     case actions.START_TUTORIAL:
       return g.startTutorial(state);
 
     case actions.START_PRACTICE:
-      return g.startPractice(state, payload.deck);
+      return g.startPractice(state, payload.format, payload.deck);
 
     case actions.START_SANDBOX:
       return g.startSandbox(state, payload.card);

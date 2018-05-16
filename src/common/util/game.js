@@ -419,8 +419,13 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
 
-    state = discardCards(state, state.players[ownerName].name, [state.players[ownerName].robotsOnBoard[hex].card]);
-    state = removeObjectFromBoard(state, object, hex);
+    // Check if the object is still there, because the afterDestroyed trigger may have,
+    // e.g., returned it to its owner's hand.
+    if (allObjectsOnBoard(state)[hex]) {
+      const card = state.players[ownerName].robotsOnBoard[hex].card;
+      state = removeObjectFromBoard(state, object, hex);
+      state = discardCards(state, state.players[ownerName].name, [card]);
+    }
   }
 
   state = applyAbilities(state);

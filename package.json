@@ -23,6 +23,7 @@
     "url": "git+https://github.com/wordbots/wordbots-core.git"
   },
   "dependencies": {
+    "@material-ui/core": "^1.0.0-rc.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
     "babel-jest": "^22.4.1",

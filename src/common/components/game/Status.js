@@ -41,7 +41,7 @@ class Status extends Component {
         classes={{
           root: classes.root
         }}
-        open={message}
+        open={!!message}
         message={<span style={{ color: this.color }} className={classes.message}>{message}</span>}
       />
     );

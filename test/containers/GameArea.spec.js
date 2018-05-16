@@ -25,7 +25,7 @@ describe('GameArea container', () => {
 
     const paper = dom.props.children[1];
     const mainDiv = paper.props.children[2];
-    const board = mainDiv.props.children[1];
+    const board = mainDiv.props.children;
     const victoryScreen = paper.props.children[5];
 
     /* eslint-disable react/jsx-key */
@@ -42,7 +42,6 @@ describe('GameArea container', () => {
           width: 1000,
           zIndex: 1000
       }}>
-        <Status status={state.game.players.orange.status} />
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}

@@ -6,7 +6,6 @@ import Card from '../../src/common/components/card/Card';
 import Board from '../../src/common/components/game/Board';
 import EventAnimation from '../../src/common/components/game/EventAnimation';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
-import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';

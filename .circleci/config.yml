@@ -27,27 +27,29 @@ jobs:
           key: v1-dep-{{ .Branch }}-{{ epoch }}
           paths:
           - ./node_modules
-      # Print useful information for debugging CI issues.
-      - run: |
-          node --version
-          npm --version
-          yarn --version
-          env
-      - run: yarn list
+      - run:
+        name: Setup Code Climate test-reporter
+        command: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+      - run:
+          name: Print useful debugging information
+          command: |
+            node --version
+            npm --version
+            yarn --version
+            env
 
       # Test
+      - run: ./cc-test-reporter before-build
       - run: node_modules/eslint/bin/eslint.js .
       - run: yarn test --coverage
       - run: NODE_ENV=test yarn start
       - run: cp -R coverage $CIRCLE_ARTIFACTS
-      - run: |
-          yarn global add codeclimate-test-reporter
-          codeclimate-test-reporter < coverage/lcov.info
+      - run: ./cc-test-reporter after-build --exit-code $? < coverage/lcov.info
 
       # Teardown
       - store_test_results:
           path: /tmp/circleci-test-results
       - store_artifacts:
           path: /tmp/circleci-artifacts
-      - store_artifacts:
-          path: /tmp/circleci-test-results

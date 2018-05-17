@@ -31,18 +31,18 @@ jobs:
         - v1-dep-master-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
         - v1-dep-
-    - run: npm install -g yarn
     - run: yarn install --no-optional
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
         paths:
         - ./node_modules
     # Print useful information for debugging CI issues.
-    - run: node --version
-    - run: npm --version
-    - run: yarn --version
-    - run: env
-    - run: yarn list
+    - run: |
+      node --version
+      npm --version
+      yarn --version
+      env
+      yarn list
     # Test
     - run: node_modules/eslint/bin/eslint.js .
     - run: yarn test --coverage

@@ -1,11 +1,18 @@
 machine:
   node:
-    version: 8.0.0
+    version: 8.9.1
 
 dependencies:
   override:
     - npm install -g yarn
     - yarn install --no-optional
+  post:
+    # Print useful information for debugging CI issues.
+    - node --version
+    - npm --version
+    - yarn --version
+    - env
+    - yarn list
 
 test:
   override:

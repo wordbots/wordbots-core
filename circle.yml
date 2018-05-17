@@ -4,7 +4,7 @@ machine:
 
 dependencies:
   override:
-    - npm install -g yarn
+    - npm install -g yarn@1.3.2
     - yarn install --no-optional
   post:
     # Print useful information for debugging CI issues.

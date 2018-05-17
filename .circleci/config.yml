@@ -8,7 +8,7 @@
 # cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
-  build:
+  test:
     working_directory: ~/wordbots/wordbots-core
     parallelism: 1
     shell: /bin/bash --login
@@ -42,7 +42,7 @@ jobs:
         npm --version
         yarn --version
         env
-        yarn list
+    - run: yarn list
     # Test
     - run: node_modules/eslint/bin/eslint.js .
     - run: yarn test --coverage

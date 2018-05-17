@@ -38,11 +38,11 @@ jobs:
         - ./node_modules
     # Print useful information for debugging CI issues.
     - run: |
-      node --version
-      npm --version
-      yarn --version
-      env
-      yarn list
+        node --version
+        npm --version
+        yarn --version
+        env
+        yarn list
     # Test
     - run: node_modules/eslint/bin/eslint.js .
     - run: yarn test --coverage

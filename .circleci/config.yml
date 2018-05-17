@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test:
+  build:
     working_directory: ~/wordbots/wordbots-core
     parallelism: 1
     shell: /bin/bash --login

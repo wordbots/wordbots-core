@@ -22,7 +22,6 @@ export function startPractice(state, format, deck) {
     blue: shuffle(aiDeck).map(card => ({ ...card, id: id() }))
   };
 
-  console.log(format);
   state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks, 0, format);
   state.practice = true;
 

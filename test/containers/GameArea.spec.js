@@ -6,7 +6,6 @@ import Card from '../../src/common/components/card/Card';
 import Board from '../../src/common/components/game/Board';
 import EventAnimation from '../../src/common/components/game/EventAnimation';
 import PlayerArea from '../../src/common/components/game/PlayerArea';
-import Status from '../../src/common/components/game/Status';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';
@@ -25,7 +24,7 @@ describe('GameArea container', () => {
 
     const paper = dom.props.children[1];
     const mainDiv = paper.props.children[2];
-    const board = mainDiv.props.children[1];
+    const board = mainDiv.props.children;
     const victoryScreen = paper.props.children[5];
 
     /* eslint-disable react/jsx-key */
@@ -42,7 +41,6 @@ describe('GameArea container', () => {
           width: 1000,
           zIndex: 1000
       }}>
-        <Status status={state.game.players.orange.status} />
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}

@@ -3,8 +3,10 @@ import { func, number } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import FontIcon from 'material-ui/FontIcon';
 
 import { FORMATS } from '../../store/gameFormats';
+import Tooltip from '../Tooltip';
 
 export default class FormatPicker extends Component {
   static propTypes = {
@@ -29,6 +31,14 @@ export default class FormatPicker extends Component {
             <MenuItem key={idx} value={idx} primaryText={`${format.displayName}`}/>
           )}
         </SelectField>
+        <Tooltip
+          html
+          place="left"
+          className="formats-tooltip"
+          text={FORMATS.map(f => `<b>${f.displayName}:</b> ${f.description}`).join('<br><br>')}
+        >
+          <FontIcon className="material-icons">help</FontIcon>
+        </Tooltip>
       </Paper>
     );
   }

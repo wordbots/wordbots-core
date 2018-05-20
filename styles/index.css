@@ -57,10 +57,6 @@ th {
   cursor: not-allowed !important;
 }
 
-.Popover-tipShape {
-  fill: white;
-}
-
 a.topLink {
   color: #fff;
   transition: color 300ms ease-in-out;
@@ -72,6 +68,16 @@ a.topLink:hover {
 
 .slick-slider div:focus {
   outline: none;
+}
+
+/* Custom tooltip styling */
+
+.Popover-tipShape {
+  fill: white;
+}
+
+.formats-tooltip {
+  max-width: 300px;
 }
 
 /* moz Sprite Fix */

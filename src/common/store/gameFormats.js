@@ -8,6 +8,7 @@ import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameS
 export class GameFormat {
   name = undefined;
   displayName = undefined;
+  description = undefined;
 
   static fromString(gameFormatStr) {
     const format = FORMATS.find(m => m.name === gameFormatStr);
@@ -38,6 +39,7 @@ export class GameFormat {
 export const NormalGameFormat = new (class extends GameFormat {
   name = 'normal';
   displayName = 'Normal';
+  description = 'Each player has a 30-card deck. No restrictions on cards.';
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -52,6 +54,7 @@ export const NormalGameFormat = new (class extends GameFormat {
 export const SharedDeckGameFormat = new (class extends GameFormat {
   name = 'sharedDeck';
   displayName = 'Shared Deck';
+  description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);

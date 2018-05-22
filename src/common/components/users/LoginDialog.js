@@ -224,7 +224,7 @@ export default class LoginDialog extends Component {
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'right',
+            horizontal: 'right'
           }}
           open={this.state.snackbarOpen}
           message={this.state.snackbarText}

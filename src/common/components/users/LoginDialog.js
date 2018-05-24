@@ -46,7 +46,7 @@ export default class LoginDialog extends Component {
         this.setState({
           error: null,
           snackbarOpen: true,
-          snackbarText: `You have successfully registered in as ${email}`
+          snackbarText: `You have successfully registered as ${email}`
         });
         this.handleClose();
       })

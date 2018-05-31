@@ -1,7 +1,8 @@
 import { compact, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
-import { arrayToSentence } from '../util/common';
+import { stringToType } from '../constants';
+import { arrayToSentence, id } from '../util/common';
 import {
   opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf,
   logAction
@@ -91,6 +92,20 @@ export default function targets(state, currentObject) {
         return {type: 'cards', entries:[collection.entries[0].card]};
       }
       return {type: 'cards', entries:[]};
+    },
+
+    generateCard: function (objectType, attributes) {
+      const object = {
+        abilities: [],
+        baseCost: 0,
+        cost: 0,
+        id: `token/${id()}`,
+        name: 'Token',
+        source: 'generated',
+        stats: attributes,
+        type: stringToType(objectType)
+      };
+      return {type: 'objects', entries: [object]};
     },
 
     // Currently salient object.

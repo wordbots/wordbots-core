@@ -19,14 +19,14 @@ import HexUtils from '../src/common/components/hexgrid/HexUtils';
 
 import { attackBotCard } from './data/cards';
 
-export function getDefaultState(gameMode = null) {
+export function getDefaultState(format = null) {
   const state = cloneDeep(defaultGameState);
   const deck = [instantiateCard(attackBotCard)].concat(collection.slice(1, DECK_SIZE));
   const simulatedGameStartAction = {
     type: socketActions.GAME_START,
     payload: {
       decks: {orange: deck, blue: deck},
-      gameMode
+      format
     }
   };
   return game(state, simulatedGameStartAction);

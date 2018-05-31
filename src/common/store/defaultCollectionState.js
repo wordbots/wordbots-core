@@ -18,7 +18,8 @@ const defaultState = {
   deckBeingEdited: null,
   exportedJson: null,
   firebaseLoaded: false,
-  selectedDeckIdx: 0
+  selectedDeckIdx: 0,
+  selectedFormatIdx: 0
 };
 
 export default defaultState;

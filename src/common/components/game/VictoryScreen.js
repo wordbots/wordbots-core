@@ -27,7 +27,9 @@ const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {
         zIndex: 99999
     }}>
       <div>
-        <div style={{fontSize: 96}}>{`${winnerName} wins!`}</div>
+        <div style={{fontSize: 96}}>
+          {`${winnerName} ${winnerName === 'You' ? 'win' : 'wins'}!`}
+        </div>
         <div>Click anywhere to leave the game.</div>
       </div>
     </div>

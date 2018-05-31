@@ -42,6 +42,7 @@ export function setSelectedCard(state, playerName, cardIdx) {
         player.status = { type: 'text', message: 'Select an available tile to play this card.' };
       }
     } else {
+      player.selectedCard = cardIdx;
       player.status = { type: 'error', message: 'You do not have enough energy to play this card.' };
     }
   }

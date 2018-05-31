@@ -57,10 +57,6 @@ th {
   cursor: not-allowed !important;
 }
 
-.Popover-tipShape {
-  fill: white;
-}
-
 a.topLink {
   color: #fff;
   transition: color 300ms ease-in-out;
@@ -68,6 +64,20 @@ a.topLink {
 
 a.topLink:hover {
   color: #eee;
+}
+
+.slick-slider div:focus {
+  outline: none;
+}
+
+/* Custom tooltip styling */
+
+.Popover-tipShape {
+  fill: white;
+}
+
+.formats-tooltip {
+  max-width: 300px;
 }
 
 /* moz Sprite Fix */
@@ -133,31 +143,9 @@ a.topLink:hover {
   display: none;
 }
 
-/* Scroll Bar Style */
-
-::-webkit-scrollbar-track
-{
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #F5F5F5;
-}
-
-::-webkit-scrollbar
-{
-  width: 12px;
-  background-color: #F5F5F5;
-}
-
-::-webkit-scrollbar-thumb
-{
-  background-color: #f44336;
-  border-radius: 3px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.3);
-}
-
 /* End Turn Button */
 
-#end-turn-button:hover {
+#end-turn-button:enabled:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
   background-color: rgb(30, 30, 30) !important;
 }

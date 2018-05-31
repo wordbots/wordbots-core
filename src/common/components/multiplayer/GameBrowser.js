@@ -61,6 +61,7 @@ export default class GameBrowser extends Component {
           <TableHeader displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn>Game Name</TableHeaderColumn>
+              <TableHeaderColumn>Format</TableHeaderColumn>
               <TableHeaderColumn>Players</TableHeaderColumn>
               <TableHeaderColumn>Spectators</TableHeaderColumn>
               <TableHeaderColumn />

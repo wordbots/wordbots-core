@@ -1,6 +1,6 @@
 {
   "name": "wordbots",
-  "version": "0.9.3-alpha",
+  "version": "0.10.0-alpha",
   "description": "A card-and-board game that showcases card game semantic parsing",
   "license": "MIT",
   "browserslist": [
@@ -23,6 +23,7 @@
     "url": "git+https://github.com/wordbots/wordbots-core.git"
   },
   "dependencies": {
+    "@material-ui/core": "^1.0.0-rc.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
     "babel-jest": "^22.4.1",
@@ -43,7 +44,7 @@
     "extract-text-webpack-plugin": "3.0.0",
     "fast-json-patch": "^2.0.5",
     "file-loader": "^1.1.11",
-    "firebase": "^4.10.1",
+    "firebase": "^5.0.2",
     "image-webpack-loader": "^4.0.0",
     "json-loader": "^0.5.7",
     "jsx-loader": "^0.13.2",
@@ -52,11 +53,11 @@
     "merge": "1.2.0",
     "prop-types": "^15.6.1",
     "rc-slider": "^8.6.1",
-    "react": "^16.1.1",
+    "react": "^16.3.0",
     "react-addons-perf": "^15.4.2",
     "react-bar-chart": "^0.1.2",
     "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "^16.1.1",
+    "react-dom": "^16.3.0",
     "react-ga": "^2.4.1",
     "react-helmet": "^5.2.0",
     "react-iframe": "^1.1.0",
@@ -66,7 +67,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.23.0",
-    "react-sound": "1.1.0",
+    "react-sound": "1.2.0",
     "react-tap-event-plugin": "^3.0.2",
     "react-textfit": "^1.0.1",
     "react-tooltip": "^3.3.0",

@@ -1,6 +1,6 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
-import { DEFAULT_GAME_MODE } from '../constants';
+import { DEFAULT_GAME_FORMAT } from '../constants';
 import { id } from '../util/common';
 import { triggerSound } from '../util/game';
 import * as actions from '../actions/game';
@@ -40,14 +40,14 @@ export function handleAction(oldState, { type, payload }) {
         payload.usernames || {},
         payload.decks,
         payload.seed,
-        payload.gameMode || DEFAULT_GAME_MODE  // TODO Actually send the gameMode field from the server.
+        payload.format || DEFAULT_GAME_FORMAT
       );
 
     case actions.START_TUTORIAL:
       return g.startTutorial(state);
 
     case actions.START_PRACTICE:
-      return g.startPractice(state, payload.deck);
+      return g.startPractice(state, payload.format, payload.deck);
 
     case actions.START_SANDBOX:
       return g.startSandbox(state, payload.card);

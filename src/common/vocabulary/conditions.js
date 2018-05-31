@@ -38,6 +38,15 @@ export function objectConditions(state) {
       return ((hexId, obj) => has(player.robotsOnBoard, hexId));
     },
 
+    exactDistanceFrom: function (distance, targets) {
+      const targetHexIds = targets.type === 'objects' ? targets.entries.map(o => getHex(state, o)) : targets.entries;
+      const nearbyHexIds = allHexIds().filter(h1 =>
+        some(targetHexIds, h2 => HU.distance(HU.IDToHex(h1), HU.IDToHex(h2)) === distance)
+      );
+
+      return ((hexId, obj) => nearbyHexIds.includes(hexId));
+    },
+
     // Only used interally, not exposed by parser.
     hasId: function (id) {
       return ((hexId, obj) => obj.id === id);

@@ -32,7 +32,7 @@ import Profile from './Profile';
 
 function mapStateToProps(state) {
   return {
-    inGame: state.game.started,
+    inGame: state.game.started && !state.game.sandbox,
     renderId: state.global.renderId
   };
 }
@@ -64,6 +64,7 @@ class App extends Component {
     renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
+    location: object,
 
     onLoggedIn: func,
     onLoggedOut: func,
@@ -103,8 +104,12 @@ class App extends Component {
     };
   }
 
+  get inGame() {
+    return this.props.inGame || Play.isInGameUrl(this.props.location.pathname);
+  }
+
   get sidebar() {
-    if (this.state.loading || this.props.inGame) {
+    if (this.state.loading || this.inGame) {
       return null;
     } else {
       return <NavMenu onRerender={this.props.onRerender} />;
@@ -112,12 +117,11 @@ class App extends Component {
   }
 
   get content() {
-    const { inGame } = this.props;
-    const sidebarWidth = inGame ? 0 : (isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH);
+    const sidebarWidth = isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
 
     return (
       <div style={{
-        paddingLeft: sidebarWidth,
+        paddingLeft: this.inGame ? 0 : sidebarWidth,
         transition: 'padding-left 200ms ease-in-out'
       }}>
         <ErrorBoundary>

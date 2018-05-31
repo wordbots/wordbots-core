@@ -64,6 +64,7 @@ export const gameProps = {
 
   gameOver: bool,
   isTutorial: bool,
+  isPractice: bool,
   isSandbox: bool,
   isMyTurn: bool,
   isSpectator: bool,
@@ -158,7 +159,7 @@ export default class GameArea extends Component {
   render() {
     const {
       attack, bluePieces, currentTurn, eventQueue, gameOver, history, isAttackHappening,
-      isMyTurn, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
+      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
       selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep
@@ -183,6 +184,7 @@ export default class GameArea extends Component {
           <Helmet title="Play" />
           <GameNotification text="It's your turn!" enabled={currentTurn === player} />
           <Sfx queue={sfxQueue} />
+          {(isMyTurn || isSandbox) && <Status type={status.type} message={status.message} />}
         </div>
 
         <Paper
@@ -219,8 +221,7 @@ export default class GameArea extends Component {
               <Timer
                 player={player}
                 currentTurn={currentTurn}
-                gameOver={gameOver}
-                isTutorial={isTutorial || isSandbox}
+                enabled={!gameOver && !isTutorial && !isPractice && !isSandbox}
                 isMyTurn={isMyTurn}
                 isAttackHappening={isAttackHappening}
                 onPassTurn={onPassTurn} />
@@ -274,7 +275,6 @@ export default class GameArea extends Component {
               width: boardSize
             }}
           >
-            <Status status={(isMyTurn || isSandbox) ? status : {}} />
             <Board
               size={this.state.boardSize}
               player={this.actualPlayer}

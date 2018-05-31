@@ -10,32 +10,34 @@ export default class Tooltip extends Component {
     style: object,
     text: string.isRequired,
     children: oneOfType([arrayOf(element), element]),
+    className: string,
     disable: bool,
+    html: bool,
     place: string
   };
 
   static defaultProps = {
     inline: false,
     style: {},
+    className: '',
     disable: false,
+    html: false,
     place: 'top'
   }
 
   tooltipId = id()
 
   render() {
-    const SpanOrDiv = this.props.inline ? 'span' : 'div';
+    const { inline, style, text, children, disable, place, html, className} = this.props;
+    const SpanOrDiv = inline ? 'span' : 'div';
 
     return (
       <SpanOrDiv>
-        <SpanOrDiv data-tip={this.props.text} data-for={this.tooltipId}>
-          {this.props.children}
+        <SpanOrDiv data-tip={text} data-for={this.tooltipId}>
+          {children}
         </SpanOrDiv>
-        <SpanOrDiv style={this.props.style}>
-          <ReactTooltip
-            id={this.tooltipId}
-            disable={this.props.disable}
-            place={this.props.place} />
+        <SpanOrDiv style={style}>
+          <ReactTooltip id={this.tooltipId} {...{className, disable, html, place}} />
         </SpanOrDiv>
       </SpanOrDiv>
     );

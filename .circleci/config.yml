@@ -1,0 +1,55 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/wordbots/wordbots-core
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    docker:
+      - image: circleci/node:8.11-browsers
+        command: /sbin/init
+    steps:
+      # Machine Setup
+      - checkout
+      - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+
+      # Dependencies
+      - restore_cache:
+          keys:
+          # This branch if available
+          - v1-dep-{{ .Branch }}-
+          # Default branch if not
+          - v1-dep-master-
+      - run: yarn install --no-optional
+      - save_cache:
+          key: v1-dep-{{ .Branch }}-{{ epoch }}
+          paths:
+          - ./node_modules
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Print useful debugging information
+          command: |
+            node --version
+            npm --version
+            yarn --version
+            env
+
+      # Test
+      - run: ./cc-test-reporter before-build
+      - run: node_modules/eslint/bin/eslint.js .
+      - run: yarn test --coverage
+      - run: ./cc-test-reporter after-build --exit-code $? < coverage/lcov.info
+      - run: cp -R coverage $CIRCLE_ARTIFACTS
+      - run: NODE_ENV=test yarn start
+
+      # Teardown
+      - store_test_results:
+          path: /tmp/circleci-test-results
+      - store_artifacts:
+          path: /tmp/circleci-artifacts

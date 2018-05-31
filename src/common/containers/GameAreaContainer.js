@@ -60,6 +60,7 @@ export function mapStateToProps(state) {
     isTutorial: game.tutorial,
     isSandbox: game.sandbox,
     isMyTurn: game.currentTurn === game.player,
+    isSpectator: game.player === 'neither',
     isAttackHappening: game.attack && game.attack.from && game.attack.to && true,
 
     actionLog: game.actionLog,
@@ -133,8 +134,8 @@ export function mapDispatchToProps(dispatch) {
     onTutorialStep: (back) => {
       dispatch(gameActions.tutorialStep(back));
     },
-    onStartPractice: (deck) => {
-      dispatch(gameActions.startPractice(deck));
+    onStartPractice: (format, deck) => {
+      dispatch(gameActions.startPractice(format, deck));
     },
     onAIResponse: () => {
       dispatch(gameActions.aiResponse());
@@ -206,7 +207,14 @@ export class GameAreaContainer extends Component {
 
   /* Try to start a game (based on the URL) if it hasn't started yet. */
   tryToStartGame = () => {
-    const { started, onStartTutorial, onStartSandbox, history, match } = this.props;
+    const {
+      started,
+      collection: { firebaseLoaded },
+      onStartTutorial,
+      onStartSandbox,
+      history,
+      match
+    } = this.props;
 
     // If the game hasn't started yet, that means that the player got here
     // by messing with the URL (rather than by clicking a button in the lobby).
@@ -216,33 +224,34 @@ export class GameAreaContainer extends Component {
     if (!started) {
       if (this.urlMatchesGameMode('tutorial')) {
         onStartTutorial();
-      } else if (this.urlMatchesGameMode('practice')) {
-        this.tryToStartPracticeGame(match.params.deck);
-      } else if (location.pathname.startsWith('/sandbox')) {
-        onStartSandbox();
+      } else if (firebaseLoaded) {
+        // Wait until we retrieve data from Firebase so we can get
+        // username and deck list.
+        this.setState({ message: null });
+        if (this.urlMatchesGameMode('practice')) {
+          this.tryToStartPracticeGame(match.params.format, match.params.deck);
+        } else if (location.pathname.startsWith('/sandbox')) {
+          onStartSandbox();
+        } else {
+          history.push(Play.baseUrl);
+        }
       } else {
-        history.push(Play.baseUrl);
+        // If we're still waiting on Firebase, render a message.
+        this.setState({ message: 'Connecting...' });
       }
     }
   };
 
-  /* Try to start a practice game from the URL, pending Firebase loading. */
-  tryToStartPracticeGame = (deckId) => {
-    const { history, onStartPractice, collection: { cards, decks, firebaseLoaded } } = this.props;
+  /* Try to start a practice game from the URL. */
+  tryToStartPracticeGame = (formatName, deckId) => {
+    const { history, onStartPractice, collection: { cards, decks } } = this.props;
+    const deck = decks.find(d => d.id === deckId);
 
-    // Decks are stored in Firebase, so we have to wait until
-    // we receive data from Firebase before we can try to start a practice game.
-    if (firebaseLoaded) {
-      const deck = decks.find(d => d.id === deckId);
-      if (deck) {
-        onStartPractice(shuffleCardsInDeck(deck, cards));
-      } else {
-        history.push(Play.baseUrl);
-      }
+    if (deck) {
+      onStartPractice(formatName, shuffleCardsInDeck(deck, cards));
+    } else {
+      history.push(Play.baseUrl);
     }
-
-    // If we're still waiting on Firebase, render a message.
-    this.setState({ message : firebaseLoaded ? null : 'Connecting...' });
   };
 
   performAIResponse = () => {

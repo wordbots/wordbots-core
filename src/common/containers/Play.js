@@ -3,6 +3,7 @@ import { arrayOf, bool, func, number, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
+import { compact } from 'lodash';
 
 import { DECK_SIZE } from '../constants';
 import Chat from '../components/multiplayer/Chat';
@@ -22,7 +23,8 @@ export function mapStateToProps(state) {
     socket: state.socket,
     cards: state.collection.cards,
     availableDecks: validDecks,
-    selectedDeckIdx: Math.min(state.collection.selectedDeckIdx || 0, validDecks.length)
+    selectedDeckIdx: Math.min(state.collection.selectedDeckIdx || 0, validDecks.length),
+    selectedFormatIdx: state.collection.selectedFormatIdx || 0
   };
 }
 
@@ -31,8 +33,8 @@ export function mapDispatchToProps(dispatch) {
     onConnect: () => {
       dispatch(socketActions.connect());
     },
-    onHostGame: (name, deck) => {
-      dispatch(socketActions.host(name, deck));
+    onHostGame: (name, format, deck) => {
+      dispatch(socketActions.host(name, format, deck));
     },
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
@@ -51,6 +53,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onSelectDeck: (deckIdx) => {
       dispatch(collectionActions.selectDeck(deckIdx));
+    },
+    onSelectFormat: (formatIdx) => {
+      dispatch(collectionActions.selectFormat(formatIdx));
     }
   };
 }
@@ -64,6 +69,7 @@ export class Play extends Component {
     cards: arrayOf(object),
     availableDecks: arrayOf(object),
     selectedDeckIdx: number,
+    selectedFormatIdx: number,
 
     history: object,
 
@@ -74,12 +80,20 @@ export class Play extends Component {
     onJoinGame: func,
     onSpectateGame: func,
     onSendChatMessage: func,
-    onSelectDeck: func
+    onSelectDeck: func,
+    onSelectFormat: func
   };
 
   static baseUrl = '/play';
-  static urlForGameMode = (mode, deck = null) =>
-    deck ? `${Play.baseUrl}/${mode}/${deck.id}` : `${Play.baseUrl}/${mode}`;
+
+  static urlForGameMode = (mode, format = null, deck = null) => {
+    const maybeFormatParam = format ? `/${format}` : '';
+    const maybeDeckParam = deck ? `/${deck.id}` : '';
+    return `${Play.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
+  }
+
+  static isInGameUrl = (url) =>
+    (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 1);
 
   componentDidMount() {
     if (!this.props.socket.connected) {
@@ -98,8 +112,8 @@ export class Play extends Component {
     }
   }
 
-  selectMode = (mode, deck) => {
-    this.props.history.push(Play.urlForGameMode(mode, deck));
+  selectMode = (mode, format = null, deck = null) => {
+    this.props.history.push(Play.urlForGameMode(mode, format, deck));
   }
 
   renderLobby = () => {
@@ -113,6 +127,7 @@ export class Play extends Component {
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           selectedDeckIdx={this.props.selectedDeckIdx}
+          selectedFormatIdx={this.props.selectedFormatIdx}
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
@@ -120,6 +135,7 @@ export class Play extends Component {
           onLeaveQueue={this.props.onLeaveQueue}
           onSpectateGame={this.props.onSpectateGame}
           onSelectDeck={this.props.onSelectDeck}
+          onSelectFormat={this.props.onSelectFormat}
           onSelectMode={this.selectMode} />
       );
     }
@@ -132,7 +148,7 @@ export class Play extends Component {
 
         <Switch>
           <Route path={Play.urlForGameMode('tutorial')} component={GameAreaContainer} />
-          <Route path={`${Play.urlForGameMode('practice')}/:deck`} component={GameAreaContainer} />
+          <Route path={`${Play.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
           <Route exact path={Play.baseUrl} render={this.renderLobby} />
           <Route path={Play.urlForGameMode('ranked')} render={this.renderLobby} />

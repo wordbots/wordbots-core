@@ -5,25 +5,26 @@ import { triggerSound } from '../util/game';
 
 import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameState';
 
-export class GameMode {
+export class GameFormat {
   name = undefined;
+  displayName = undefined;
+  description = undefined;
 
-  static fromString(gameModeStr) {
-    const modes = [ NormalGameMode, SharedDeckGameMode ];
-    const mode = modes.find(m => m.name === gameModeStr);
-    if (!mode) {
-      throw `Unknown game mode: ${gameModeStr}`;
+  static fromString(gameFormatStr) {
+    const format = FORMATS.find(m => m.name === gameFormatStr);
+    if (!format) {
+      throw `Unknown game format: ${gameFormatStr}`;
     }
-    return mode;
+    return format;
   }
 
   isActive(state) {
-    return state.gameMode === this.name;
+    return state.gameFormat === this.name;
   }
 
   startGame(state, player, usernames, decks, seed) {
     state = Object.assign(state, cloneDeep(defaultState), {
-      gameMode: this.name,
+      gameFormat: this.name,
       player: player,
       rng: seededRNG(seed),
       started: true,
@@ -35,8 +36,10 @@ export class GameMode {
   }
 }
 
-export const NormalGameMode = new (class extends GameMode {
+export const NormalGameFormat = new (class extends GameFormat {
   name = 'normal';
+  displayName = 'Normal';
+  description = 'Each player has a 30-card deck. No restrictions on cards.';
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -48,8 +51,10 @@ export const NormalGameMode = new (class extends GameMode {
   }
 });
 
-export const SharedDeckGameMode = new (class extends GameMode {
+export const SharedDeckGameFormat = new (class extends GameFormat {
   name = 'sharedDeck';
+  displayName = 'Shared Deck';
+  description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -65,3 +70,5 @@ export const SharedDeckGameMode = new (class extends GameMode {
     return state;
   }
 });
+
+export const FORMATS = [NormalGameFormat, SharedDeckGameFormat];

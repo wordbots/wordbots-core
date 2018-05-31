@@ -96,26 +96,23 @@ export default class Lobby extends Component {
           </div>
         );
       }
-    }
-    else if (gameMode === '/ranked') {
-        if (socket.hosting) {
-            return <Waiting />;
-        } else {
-            return (
-                <div>
-                    <RankedQueue
-                        disabled={this.hasNoDecks}
-                        queuing={socket.queuing}
-                        inQueue={socket.inQueue}
-                        onJoinQueue={this.handleJoinQueue}
-                        onLeaveQueue={this.handleLeaveQueue}
-                    />
-                </div>
-            );
-        }
-    }
-
-    else {
+    } else if (gameMode === '/ranked') {
+      if (socket.hosting) {
+        return <Waiting />;
+      } else {
+        return (
+          <div>
+            <RankedQueue
+              disabled={this.hasNoDecks}
+              queuing={socket.queuing}
+              queueSize={socket.queueSize}
+              onJoinQueue={this.handleJoinQueue}
+              onLeaveQueue={this.handleLeaveQueue}
+            />
+          </div>
+        );
+      }
+    } else {
       return <ModeSelection onSelectMode={this.handleSelectMode}/>;
     }
   }

@@ -34,7 +34,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
         waitingPlayers: action.payload.waitingPlayers,
         clientIdToUsername: action.payload.usernames,
         playersOnline: action.payload.playersOnline,
-        inQueue: action.payload.inQueue
+        queueSize: action.payload.queueSize
       });
 
     case socketActions.GAME_START:

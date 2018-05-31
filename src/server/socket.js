@@ -25,6 +25,8 @@ export default function launchWebsocketServer(server, path) {
   function onOpen() {
     const addr = wss.options.server.address();
     console.log(`WebSocket listening at http://${addr.address}:${addr.port}${path}`);
+
+    setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);
   }
 
   function onConnect(socket) {
@@ -43,6 +45,9 @@ export default function launchWebsocketServer(server, path) {
 
   function onMessage(clientID, data) {
     const {type, payload} = JSON.parse(data);
+    if (type !== 'ws:KEEPALIVE') {
+      console.log(`< ${data}`);
+    }
 
     if (type === 'ws:HOST') {
       hostGame(clientID, payload.name, payload.format, payload.deck);
@@ -56,14 +61,12 @@ export default function launchWebsocketServer(server, path) {
       spectateGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:LEAVE') {
       leaveGame(clientID);
-    } else if (type === 'ws:SET_USERNAME') {
-      setUsername(clientID, payload.username);
+    } else if (type === 'ws:SEND_USER_DATA') {
+      setUserData(clientID, payload.userData);
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
       (inGame ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
-    } else if (type === 'ws:FORFEIT') {
-      endGame(clientID, payload.winner);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       state.appendGameAction(clientID, {type, payload});
@@ -84,6 +87,7 @@ export default function launchWebsocketServer(server, path) {
     state.getClientSockets(recipientIDs).forEach(socket => {
       try {
         socket.send(message);
+        console.log(`> ${message}`);
       } catch (err) {
         console.warn(`Failed to send message ${message} to ${recipientIDs}: ${err.message}`);
       }
@@ -111,19 +115,13 @@ export default function launchWebsocketServer(server, path) {
     sendMessage('ws:INFO', state.serialize());
   }
 
-  function setUsername(clientID, newUsername) {
-    const oldUsername = state.getClientUsername(clientID, false);
-    state.setClientUsername(clientID, newUsername);
-    if (!oldUsername) {
-      sendChat(`${newUsername || clientID} has entered the lobby.`);
-    } else if (oldUsername !== newUsername) {
-      if (oldUsername === 'Guest') {
-        sendChat(`${newUsername} has logged in.`);
-      } else if (newUsername === 'Guest') {
-        sendChat(`${oldUsername} has logged out.`);
-      } else {
-        sendChat(`${oldUsername} has changed their name to ${newUsername}.`);
-      }
+  function setUserData(clientID, userData) {
+    const oldUserData = state.getClientUserData(clientID, false);
+    state.setClientUserData(clientID, userData);
+    if (!oldUserData) {
+      sendChat(`${userData.displayName} has entered the lobby.`);
+    } else if (!userData && oldUserData) {
+      sendChat(`${oldUserData.displayName} has logged out.`);
     }
     broadcastInfo();
   }
@@ -145,13 +143,11 @@ export default function launchWebsocketServer(server, path) {
 
   function joinQueue(clientID, deck) {
     state.joinQueue(clientID, deck);
-
     broadcastInfo();
   }
 
   function leaveQueue(clientID) {
     state.leaveQueue(clientID);
-
     broadcastInfo();
   }
 
@@ -165,8 +161,6 @@ export default function launchWebsocketServer(server, path) {
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
       sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
 
-      state.storeGame(game);
-
       broadcastInfo();
     }
   }
@@ -177,40 +171,16 @@ export default function launchWebsocketServer(server, path) {
     broadcastInfo();
   }
 
-  function handleMatching() {
-    const new_matches = state.handleMatching();
-    new_matches.forEach((new_match) => {
-      const { decks, name, startingSeed, usernames } = new_match;
+  function performMatchmaking() {
+    const newGames = state.matchPlayersIfPossible();
+    newGames.forEach(game => {
+      const { decks, name, startingSeed, usernames } = game;
 
-      sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [new_match.ids.blue]);
-      sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [new_match.ids.orange]);
-      sendChat(`Entering game ${name} ...`, [new_match.players]);
+      sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
+      sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
+      sendChat(`Entering game ${name} ...`, [game.players]);
+
+      broadcastInfo();
     });
-    broadcastInfo();
   }
-
-  function endGame(clientID, winner) {
-    const game = state.lookupGameByClient(clientID);
-    // update result and save
-    if (game.ids.blue === winner){
-      game.result = 'BLUE_WIN';
-    }
-    else if (game.ids.orange === winner){
-      game.result = 'ORANGE_WIN';
-    }
-    state.storeGame(game);
-    // calculate rating changes and save
-      if (game.ids.blue in this.state.userInfo && !('rating' in this.state.userInfo[game.ids.blue])){
-        this.state.userInfo[game.ids.blue].rating = 1200;
-      }
-      if (game.ids.orange in this.state.userInfo && !('rating' in this.state.userInfo[game.ids.orange])){
-          this.state.userInfo[game.ids.orange].rating = 1200;
-      }
-      // @TODO: Calculate ratings changes
-      this.state.storeRating(game.ids.blue);
-      this.state.storeRating(game.ids.orange);
-  }
-
-  setInterval(handleMatching, QUEUE_INTERVAL_MSECS);
-
 }

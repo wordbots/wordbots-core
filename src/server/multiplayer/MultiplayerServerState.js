@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
-import { compact, find, pull, reject } from 'lodash';
+import { chunk, compact, find, mapValues, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
-import { listenToUserDataById, saveRating, saveGame } from '../../common/util/firebase';
+import { saveGame } from '../../common/util/firebase';
+import defaultGameState from '../../common/store/defaultGameState';
+import gameReducer from '../../common/reducers/game';
 
 import { getPeopleInGame, withoutClient } from './util';
-
 
 export default class MultiplayerServerState {
   state = {
@@ -13,20 +14,23 @@ export default class MultiplayerServerState {
     games: [],  // array of { id, name, format, players, playerColors, spectators, actions, decks, usernames, startingSeed }
     gameObjects: {}, // map of { gameID: game }
     waitingPlayers: [],  // array of { id, name, format, deck, players }
+    matchmakingQueue: [], // array of { clientID, deck }
     playersOnline: [],  // array of clientIDs
-    usernames: {} , // map of { clientID: username }
-    userInfo: {}, // map of { clientID: user object }
-
-    matchmakingQueue: {}, // map of { clientID: queue info }
-    inQueue: 0 // summary of how many people are waiting for match in matchmaking
+    userData: {} // map of { clientID: { uid, displayName, ... } }
   };
 
   /* Getters */
 
   // Returns a serializable subset of the state for broadcast as an INFO message.
   serialize = () => {
-    const { games, waitingPlayers, playersOnline, usernames, inQueue } = this.state;
-    return { games, waitingPlayers, playersOnline, usernames, inQueue };
+    const { games, waitingPlayers, playersOnline, userData, matchmakingQueue } = this.state;
+    return {
+      games,
+      waitingPlayers,
+      playersOnline,
+      usernames: mapValues(userData, 'displayName'),
+      queueSize: matchmakingQueue.length
+    };
   }
 
   // Returns the socket corresponding to a given player.
@@ -40,11 +44,18 @@ export default class MultiplayerServerState {
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
+  // Returns the user data for the given player, if it exists.
+  getClientUserData = (clientID) => (
+    this.state.userData[clientID]
+  )
+
   // Returns the username to use for the given player.
   // If fallbackToClientID is true, falls back to the client ID if there is no
   // username set, otherwise returns null.
   getClientUsername = (clientID, fallbackToClientID = true) => (
-    this.state.usernames[clientID] || (fallbackToClientID && clientID)
+    this.getClientUserData(clientID)
+      ? this.getClientUserData(clientID).displayName
+      : (fallbackToClientID && clientID)
   )
 
   // Returns the game that the given player is in, if any.
@@ -66,17 +77,11 @@ export default class MultiplayerServerState {
 
   /* Mutations */
 
-  // Helper for client connect
-  fbDataLoadCallback = (user) => {
-    this.state.userInfo[user.uid] = user;
-  }
-
   // Connect a player at the specified websocket to the server.
   connectClient = (clientID, socket) => {
     this.state.connections[clientID] = socket;
     this.state.playersOnline.push(clientID);
     console.log(`${this.getClientUsername(clientID)} joined the room.`);
-    listenToUserDataById(clientID, this.fbDataLoadCallback);
   }
 
   // Disconnect a player from the server.
@@ -97,15 +102,20 @@ export default class MultiplayerServerState {
   }
 
   // Set a player's username.
-  setClientUsername = (clientID, newUsername) => {
-    this.state.usernames[clientID] = newUsername;
+  setClientUserData = (clientID, userData) => {
+    this.state.userData[clientID] = userData;
   }
 
   // Add an player action to the game that player is in.
+  // Also, updates the game state and checks if the game has been won.
   appendGameAction = (clientID, action) => {
     const game = this.state.games.find(g => g.players.includes(clientID));
     if (game) {
       game.actions.push(action);
+      game.state = gameReducer(game.state, action);
+      if (game.state.winner) {
+        this.endGame(game);
+      }
     }
   }
 
@@ -123,20 +133,19 @@ export default class MultiplayerServerState {
 
   // Make a player join the given opponent's hosted game with the given deck.
   // Returns the game joined.
-  joinGame = (clientID, opponentID, deck) => {
+  joinGame = (clientID, opponentID, deck, gameProps = {}) => {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
     const gameId = generateID();
 
     const game = {
       id: gameId,
-      name: `Casual#${gameId}`,
+      name: `Casual#${waitingPlayer.name}`,
       format: waitingPlayer.format,
 
       players: [clientID, opponentID],
       playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
       spectators: [],
 
-      actions: [],
       type: 'CASUAL',
       decks: {orange: waitingPlayer.deck, blue: deck},
       usernames: {
@@ -148,7 +157,11 @@ export default class MultiplayerServerState {
         orange: opponentID
       },
       startingSeed: generateID(),
-      result: 'IN_PROGRESS'
+
+      actions: [],
+      state: defaultGameState,
+
+      ...gameProps
     };
 
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: opponentID });
@@ -156,22 +169,6 @@ export default class MultiplayerServerState {
 
     console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
     return game;
-  }
-
-  // Add a player to the matchmaking queue.
-  joinQueue = (clientID, deck) => {
-    if (!(clientID in this.state.matchmakingQueue)){
-      this.state.inQueue++;
-      this.state.matchmakingQueue[clientID] = {deck: deck};
-    }
-  }
-
-  // Remove player from the matchmaking queue.
-  leaveQueue = (clientID) => {
-    if (clientID in this.state.matchmakingQueue){
-      this.state.inQueue--;
-      delete this.state.matchmakingQueue[clientID];
-    }
   }
 
   // Make a player join the given game as a spectator.
@@ -190,78 +187,59 @@ export default class MultiplayerServerState {
     this.state.games = compact(this.state.games.map(game => withoutClient(game, clientID)));
   }
 
-  storeGame = (game) => {
-    saveGame(game);
-  }
-
-  storeRating = (player) => {
-    if (player in this.state.userInfo){
-      saveRating(this.state.userInfo[player]);
+  // Handle end-of-game actions.
+  endGame = (game) => {
+    if (game.state.winner) {
+      this.storeGameResult(game);
+      // TODO Alter player ratings accordingly.
     }
   }
 
-  // Start a ranked match with two player IDs
-  startMatch = (player1, player2) => {
-      const game_id = generateID();
-      const game_name = `Ranked#${game_id}`;
-      const new_match = {
-          id: game_id,
-          players: [player1, player2],
-          playerColors: {[player2]: 'blue', [player1]: 'orange'},
-          spectators: [],
-          actions: [],
-          type: 'RANKED',
-
-          usernames : {
-            orange: this.getClientUsername(player1),
-            blue: this.getClientUsername(player2)
-          },
-          decks : {
-            orange: this.state.matchmakingQueue[player1].deck,
-            blue: this.state.matchmakingQueue[player2].deck
-          },
-          ids : {
-            orange: player1,
-            blue: player2
-          },
-          name : game_name,
-          startingSeed: generateID(),
-          result: 'IN_PROGRESS'
-      };
-
-      this.hostGame(player1, game_name, this.state.matchmakingQueue[player1].deck);
-      this.joinGame(player2, player1, this.state.matchmakingQueue[player2].deck);
-
-      this.state.inQueue -= 2;
-      delete this.state.matchmakingQueue[player1];
-      delete this.state.matchmakingQueue[player2];
-
-      this.state.games.push(new_match);
-      return new_match;
+  // Store the result of a game in Firebase.
+  storeGameResult = (game) => {
+    const { ids, format, type, state: { winner } } = game;
+    saveGame({
+      players: mapValues(ids, clientID => this.getClientUserData(clientID).uid),
+      format,
+      type,
+      winner
+    });
   }
 
-  // Find viable player id match pairs
-  // Todo: Fix this based on MMR
+  // Add a player to the matchmaking queue.
+  joinQueue = (clientID, deck) => {
+    this.state.matchmakingQueue.push({ clientID, deck });
+  }
+
+  // Remove a player from the matchmaking queue.
+  leaveQueue = (clientID) => {
+    this.state.matchmakingQueue = reject(this.state.matchmakingQueue, { clientID });
+  }
+
+  // Return pairs of player IDs to match into games.
+  // TODO: Fix this, using MMR.
   findAvailableMatches = () => {
-      const playerIds = Object.keys(this.state.matchmakingQueue);
-      const player1 = playerIds.pop();
-      const player2 = playerIds.pop();
-      return [[player1, player2]];
+    const playerIds = this.state.matchmakingQueue.map(m => m.clientID);
+    return chunk(playerIds, 2).filter(m => m.length === 2);
   }
 
   // Pair players if there are at least two people waiting for a ranked game.
-  handleMatching = () => {
-    const new_matches = [];
-    if (this.state.inQueue >= 2){
-      const match_pairs = this.findAvailableMatches();
-      const match_func = this.startMatch;
-      match_pairs.forEach((player_pair) => {
-        const new_match = match_func(player_pair[0], player_pair[1]);
-        if (new_match){
-          new_matches.push(new_match);
-        }
-      });
-    }
-    return new_matches;
+  // Return all games created.
+  matchPlayersIfPossible = () => {
+    const { matchmakingQueue } = this.state;
+    const playerPairs = this.findAvailableMatches();
+
+    return playerPairs.map(([pid1, pid2]) => {
+      const gameName = `Ranked#${this.getClientUsername(pid1)}-vs-${this.getClientUsername(pid2)}`;
+      const deck1 = find(matchmakingQueue, {clientID: pid1}).deck;
+      const deck2 = find(matchmakingQueue, {clientID: pid2}).deck;
+
+      this.hostGame(pid1, gameName, 'normal', deck1);
+      const game = this.joinGame(pid2, pid1, deck2, { type: 'RANKED' });
+
+      this.state.matchmakingQueue = reject(matchmakingQueue, m => [pid1, pid2].includes(m.clientID));
+      this.state.games.push(game);
+      return game;
+    });
   }
 }

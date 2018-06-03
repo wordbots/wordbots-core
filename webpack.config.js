@@ -27,7 +27,30 @@ const BABEL_LOADER_DEV_OPTIONS = {
 const { NODE_ENV } = process.env;
 const isProduction = NODE_ENV === 'production';
 
-const webpackConfig = {
+const serverConfig = {
+  target: 'node',
+  entry: './src/server/index.js',
+  module: {
+    rules: [
+      {
+        test: /.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
+    ],
+    resolve: {
+      extensions: [ '.tsx', '.ts', '.js' ]
+    },
+    output: {
+      filename: 'bundle.node.js',
+      path: path.resolve(__dirname, 'dist')
+    }
+  }
+
+}
+
+const clientConfig = {
+  'target': 'web',
   devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
   entry: compact([
     !isProduction && 'webpack-hot-middleware/client',
@@ -69,4 +92,4 @@ const webpackConfig = {
   'stats': isProduction ? 'minimal' : 'normal'
 };
 
-module.exports = webpackConfig;
+module.exports = [ clientConfig, serverConfig ];

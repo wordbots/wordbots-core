@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "rootDir": "./src/",
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "module": "es6",
+    "target": "es5"
+  },
+  "include": [
+    "./src/server/"
+  ],
+  "exclude": [
+    "./node_modules/"
+  ]
+}

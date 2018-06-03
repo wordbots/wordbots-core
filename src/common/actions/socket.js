@@ -36,9 +36,11 @@ export function disconnected() {
 
 export const HOST = 'ws:HOST';
 export const JOIN = 'ws:JOIN';
+export const JOIN_QUEUE = 'ws:JOIN_QUEUE';
+export const LEAVE_QUEUE = 'ws:LEAVE_QUEUE';
 export const SPECTATE = 'ws:SPECTATE';
 export const LEAVE = 'ws:LEAVE';
-export const SET_USERNAME = 'ws:SET_USERNAME';
+export const SEND_USER_DATA = 'ws:SEND_USER_DATA';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
 export function host(name, format, deck) {
@@ -55,6 +57,19 @@ export function join(id, name, deck) {
   };
 }
 
+export function joinQueue(deck) {
+  return {
+    type: JOIN_QUEUE,
+    payload: {deck}
+  };
+}
+
+export function leaveQueue() {
+  return {
+    type: LEAVE_QUEUE
+  };
+}
+
 export function spectate(id, name) {
   return {
     type: SPECTATE,
@@ -68,11 +83,10 @@ export function leave() {
   };
 }
 
-
-export function setUsername(username) {
+export function sendUserData(userData) {
   return {
-    type: SET_USERNAME,
-    payload: { username }
+    type: SEND_USER_DATA,
+    payload: { userData }
   };
 }
 

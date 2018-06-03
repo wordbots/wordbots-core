@@ -6,6 +6,9 @@ import { opponent as opponentOf } from '../common/util/game';
 
 import MultiplayerServerState from './multiplayer/MultiplayerServerState';
 
+const QUEUE_INTERVAL_MSECS = 500;
+
+
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {
   const state = new MultiplayerServerState();
@@ -22,6 +25,8 @@ export default function launchWebsocketServer(server, path) {
   function onOpen() {
     const addr = wss.options.server.address();
     console.log(`WebSocket listening at http://${addr.address}:${addr.port}${path}`);
+
+    setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);
   }
 
   function onConnect(socket) {
@@ -40,17 +45,24 @@ export default function launchWebsocketServer(server, path) {
 
   function onMessage(clientID, data) {
     const {type, payload} = JSON.parse(data);
+    if (type !== 'ws:KEEPALIVE') {
+      console.log(`< ${data}`);
+    }
 
     if (type === 'ws:HOST') {
       hostGame(clientID, payload.name, payload.format, payload.deck);
     } else if (type === 'ws:JOIN') {
       joinGame(clientID, payload.id, payload.deck);
+    } else if (type === 'ws:JOIN_QUEUE') {
+      joinQueue(clientID, payload.deck);
+    } else if (type === 'ws:LEAVE_QUEUE') {
+      leaveQueue(clientID);
     } else if (type === 'ws:SPECTATE') {
       spectateGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:LEAVE') {
       leaveGame(clientID);
-    } else if (type === 'ws:SET_USERNAME') {
-      setUsername(clientID, payload.username);
+    } else if (type === 'ws:SEND_USER_DATA') {
+      setUserData(clientID, payload.userData);
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
@@ -75,6 +87,7 @@ export default function launchWebsocketServer(server, path) {
     state.getClientSockets(recipientIDs).forEach(socket => {
       try {
         socket.send(message);
+        console.log(`> ${message}`);
       } catch (err) {
         console.warn(`Failed to send message ${message} to ${recipientIDs}: ${err.message}`);
       }
@@ -102,19 +115,13 @@ export default function launchWebsocketServer(server, path) {
     sendMessage('ws:INFO', state.serialize());
   }
 
-  function setUsername(clientID, newUsername) {
-    const oldUsername = state.getClientUsername(clientID, false);
-    state.setClientUsername(clientID, newUsername);
-    if (!oldUsername) {
-      sendChat(`${newUsername || clientID} has entered the lobby.`);
-    } else if (oldUsername !== newUsername) {
-      if (oldUsername === 'Guest') {
-        sendChat(`${newUsername} has logged in.`);
-      } else if (newUsername === 'Guest') {
-        sendChat(`${oldUsername} has logged out.`);
-      } else {
-        sendChat(`${oldUsername} has changed their name to ${newUsername}.`);
-      }
+  function setUserData(clientID, userData) {
+    const oldUserData = state.getClientUserData(clientID, false);
+    state.setClientUserData(clientID, userData);
+    if (!oldUserData) {
+      sendChat(`${userData.displayName} has entered the lobby.`);
+    } else if (!userData && oldUserData) {
+      sendChat(`${oldUserData.displayName} has logged out.`);
     }
     broadcastInfo();
   }
@@ -134,6 +141,16 @@ export default function launchWebsocketServer(server, path) {
     broadcastInfo();
   }
 
+  function joinQueue(clientID, deck) {
+    state.joinQueue(clientID, deck);
+    broadcastInfo();
+  }
+
+  function leaveQueue(clientID) {
+    state.leaveQueue(clientID);
+    broadcastInfo();
+  }
+
   function spectateGame(clientID, gameID) {
     const game = state.spectateGame(clientID, gameID);
     if (game) {
@@ -143,6 +160,7 @@ export default function launchWebsocketServer(server, path) {
       sendMessage('ws:CURRENT_STATE', {'actions': actions}, [clientID]);
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
       sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
+
       broadcastInfo();
     }
   }
@@ -151,5 +169,18 @@ export default function launchWebsocketServer(server, path) {
     state.leaveGame(clientID);
     sendChat('Entering the lobby ...', [clientID]);
     broadcastInfo();
+  }
+
+  function performMatchmaking() {
+    const newGames = state.matchPlayersIfPossible();
+    newGames.forEach(game => {
+      const { decks, name, startingSeed, usernames } = game;
+
+      sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
+      sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
+      sendChat(`Entering game ${name} ...`, [game.players]);
+
+      broadcastInfo();
+    });
   }
 }

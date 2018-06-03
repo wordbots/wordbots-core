@@ -46,6 +46,11 @@ class TitleBar extends Component {
     this.setState({userOpen: false});
   }
 
+  handleClickProfile = () => {
+    this.props.history.push('/profile');
+    this.closeUserMenu();
+  }
+
   handleClickLogout = () => {
     logout();
     this.closeUserMenu();
@@ -68,6 +73,10 @@ class TitleBar extends Component {
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
             onRequestClose={this.closeUserMenu}>
             <Menu>
+              <MenuItem
+                primaryText="Profile"
+                onClick={this.handleClickProfile}
+                leftIcon={<FontIcon className="material-icons">account_circle</FontIcon>} />
               <MenuItem
                 primaryText="Logout"
                 onClick={this.handleClickLogout}

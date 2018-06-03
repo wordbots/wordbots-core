@@ -9,8 +9,7 @@ const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle se
 
 function createSocketMiddleware({excludedActions = []}) {
   return store => {
-    let socket, keepaliveNeeded;
-    let username = 'Guest';
+    let socket, keepaliveNeeded, user;
     let sendQueue = [];
 
     function handleAction(action, nextMiddleware) {
@@ -18,11 +17,11 @@ function createSocketMiddleware({excludedActions = []}) {
         connect();
       } else {
         if (action.type === ga.LOGGED_IN) {
-          username = action.payload.user.displayName || username;
-          send(sa.setUsername(username));
+          user = action.payload.user;
+          send(sa.sendUserData(action.payload.user));
         } else if (action.type === ga.LOGGED_OUT) {
-          username = 'Guest';
-          send(sa.setUsername(username));
+          user = undefined;
+          send(sa.sendUserData(undefined));
         } else {
           send(action);
         }
@@ -42,7 +41,7 @@ function createSocketMiddleware({excludedActions = []}) {
 
     function connected() {
       store.dispatch(sa.connected());
-      send(sa.setUsername(username));
+      send(sa.sendUserData(user));
 
       sendQueue.forEach(send);
       sendQueue = [];

@@ -8,7 +8,6 @@ const { NODE_ENV } = process.env;
 const isProduction = NODE_ENV === 'production';
 
 const webpackConfig = {
-  'target': 'web',
   devtool: isProduction ? 'source-map' : 'cheap-module-eval-source-map',
   entry: compact([
     !isProduction && 'webpack-hot-middleware/client',
@@ -30,7 +29,7 @@ const webpackConfig = {
         enforce: 'pre'
       },
       { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.css$/, loader: ['style-loader','css-loader'] },
+      { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
       { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=public/fonts/[name].[ext]' }
     ]
   },
@@ -50,7 +49,8 @@ const webpackConfig = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
-  stats: isProduction ? 'minimal' : 'normal'
+  stats: isProduction ? 'minimal' : 'normal',
+  target: 'web'
 };
 
 export default webpackConfig;

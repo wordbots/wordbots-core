@@ -11,7 +11,7 @@
     "slate": "node bin/clean.js node_modules && npm install",
     "clean": "node bin/clean.js dist",
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --colors --profile",
-    "start-prod": "set NODE_ENV=production && ts-node src/server/index.js --progress --colors --profile",
+    "start-prod": "set NODE_ENV=production && ts-node src/server/index.ts --progress --colors --profile",
     "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "test": "jest",
     "test:watch": "npm test -- --watch",

@@ -28,7 +28,7 @@ export interface WaitingPlayer {
   name: string,
   format: string,
   deck: Deck,
-  players: any[]
+  players: ClientID[]
 }
 
 export interface PlayerInQueue {
@@ -43,5 +43,5 @@ interface ServerStateType {
   waitingPlayers: WaitingPlayer[],
   matchmakingQueue: PlayerInQueue[]
   playersOnline: ClientID[],
-  userData: { [clientID: string]: any; }
+  userData: { [clientID: string]: UserData; }
 }

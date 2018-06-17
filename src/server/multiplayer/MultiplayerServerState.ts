@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+
 import { chunk, compact, find, mapValues, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
@@ -6,10 +7,11 @@ import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
 import gameReducer from '../../common/reducers/game';
 
+import * as m from './multiplayer';
 import { getPeopleInGame, withoutClient } from './util';
 
 export default class MultiplayerServerState {
-  state = {
+  state: m.ServerStateType = {
     connections: {},  // map of { clientID: websocket }
     games: [],  // array of { id, name, format, players, playerColors, spectators, actions, decks, usernames, startingSeed }
     gameObjects: {}, // map of { gameID: game }
@@ -34,43 +36,43 @@ export default class MultiplayerServerState {
   }
 
   // Returns the socket corresponding to a given player.
-  getClientSocket = (clientID) => (
+  getClientSocket = (clientID: m.ClientID): m.Connection => (
     this.state.connections[clientID]
   )
 
   // Returns all websocket connections corresponding to the given clientIDs,
   // or ALL connections if no clientIDs are specified.
-  getClientSockets = (clientIDs = null) => (
+  getClientSockets = (clientIDs: m.ClientID[] = null): m.Connection[] => (
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
   // Returns the user data for the given player, if it exists.
-  getClientUserData = (clientID) => (
+  getClientUserData = (clientID: m.ClientID): m.UserData => (
     this.state.userData[clientID]
   )
 
   // Returns the username to use for the given player.
   // If fallbackToClientID is true, falls back to the client ID if there is no
   // username set, otherwise returns null.
-  getClientUsername = (clientID, fallbackToClientID = true) => (
+  getClientUsername = (clientID: m.ClientID, fallbackToClientID = true): string => (
     this.getClientUserData(clientID)
       ? this.getClientUserData(clientID).displayName
       : (fallbackToClientID && clientID)
   )
 
   // Returns the game that the given player is in, if any.
-  lookupGameByClient = (clientID) => (
+  lookupGameByClient = (clientID: m.ClientID): m.Game => (
     this.state.games.find(game => game.players.includes(clientID))
   )
 
   // Returns all *other* players in the game that the given player is in, if any.
-  getAllOpponents = (clientID) => {
+  getAllOpponents = (clientID: m.ClientID): m.ClientID[] => {
     const game = this.state.games.find(g => [...g.players, ...g.spectators].includes(clientID));
     return game ? getPeopleInGame(game).filter(id => id !== clientID) : [];
   }
 
   // Returns all *other* players currently in the lobby.
-  getAllOtherPlayersInLobby = (clientID) => {
+  getAllOtherPlayersInLobby = (clientID: m.ClientID): m.ClientID[] => {
     const inGamePlayerIds = this.state.games.reduce((acc, game) => acc.concat(game.players), []);
     return this.state.playersOnline.filter(id => id !== clientID && !inGamePlayerIds.includes(id));
   }
@@ -78,7 +80,7 @@ export default class MultiplayerServerState {
   /* Mutations */
 
   // Connect a player at the specified websocket to the server.
-  connectClient = (clientID, socket) => {
+  connectClient = (clientID: m.ClientID, socket: m.Connection): void => {
     this.state.connections[clientID] = socket;
     this.state.playersOnline.push(clientID);
     console.log(`${this.getClientUsername(clientID)} joined the room.`);
@@ -86,7 +88,7 @@ export default class MultiplayerServerState {
 
   // Disconnect a player from the server.
   // Return the game that the player was in (if any).
-  disconnectClient = (clientID) => {
+  disconnectClient = (clientID: m.ClientID): m.Game => {
     pull(this.state.playersOnline, clientID);
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: clientID });
 
@@ -102,13 +104,13 @@ export default class MultiplayerServerState {
   }
 
   // Set a player's username.
-  setClientUserData = (clientID, userData) => {
+  setClientUserData = (clientID: m.ClientID, userData: m.UserData): void => {
     this.state.userData[clientID] = userData;
   }
 
   // Add an player action to the game that player is in.
   // Also, updates the game state and checks if the game has been won.
-  appendGameAction = (clientID, action) => {
+  appendGameAction = (clientID: m.ClientID, action: m.Action): void => {
     const game = this.state.games.find(g => g.players.includes(clientID));
     if (game) {
       game.actions.push(action);
@@ -120,7 +122,7 @@ export default class MultiplayerServerState {
   }
 
   // Make a player host a game with the given name and using the given deck.
-  hostGame = (clientID, name, format, deck) => {
+  hostGame = (clientID: m.ClientID, name: string, format: string, deck: m.Deck): void => {
     this.state.waitingPlayers.push({
       id: clientID,
       players: [clientID],
@@ -133,11 +135,11 @@ export default class MultiplayerServerState {
 
   // Make a player join the given opponent's hosted game with the given deck.
   // Returns the game joined.
-  joinGame = (clientID, opponentID, deck, gameProps = {}) => {
+  joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game => {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
     const gameId = generateID();
 
-    const game = {
+    const game: m.Game = {
       id: gameId,
       name: `Casual#${waitingPlayer.name}`,
       format: waitingPlayer.format,
@@ -172,8 +174,8 @@ export default class MultiplayerServerState {
   }
 
   // Make a player join the given game as a spectator.
-  // Returns the game joined, or null if the game wasn't found.
-  spectateGame = (clientID, gameID) => {
+  // Returns the game joined, or undefined if the game wasn't found.
+  spectateGame = (clientID: m.ClientID, gameID: string): m.Game | undefined => {
     const game = find(this.state.games, { id: gameID });
     if (game) {
       game.spectators.push(clientID);
@@ -183,12 +185,12 @@ export default class MultiplayerServerState {
   }
 
   // Remove a player from any game that they are currently in.
-  leaveGame = (clientID) => {
+  leaveGame = (clientID: m.ClientID): void => {
     this.state.games = compact(this.state.games.map(game => withoutClient(game, clientID)));
   }
 
   // Handle end-of-game actions.
-  endGame = (game) => {
+  endGame = (game: m.Game): void => {
     if (game.state.winner) {
       this.storeGameResult(game);
       // TODO Alter player ratings accordingly.
@@ -196,7 +198,7 @@ export default class MultiplayerServerState {
   }
 
   // Store the result of a game in Firebase.
-  storeGameResult = (game) => {
+  storeGameResult = (game: m.Game): void => {
     const { ids, format, type, state: { winner } } = game;
     saveGame({
       players: mapValues(ids, clientID => this.getClientUserData(clientID).uid),
@@ -207,25 +209,25 @@ export default class MultiplayerServerState {
   }
 
   // Add a player to the matchmaking queue.
-  joinQueue = (clientID, deck) => {
+  joinQueue = (clientID: m.ClientID, deck: m.Deck): void => {
     this.state.matchmakingQueue.push({ clientID, deck });
   }
 
   // Remove a player from the matchmaking queue.
-  leaveQueue = (clientID) => {
+  leaveQueue = (clientID: m.ClientID): void => {
     this.state.matchmakingQueue = reject(this.state.matchmakingQueue, { clientID });
   }
 
   // Return pairs of player IDs to match into games.
   // TODO: Fix this, using MMR.
-  findAvailableMatches = () => {
+  findAvailableMatches = (): m.ClientID[][] => {
     const playerIds = this.state.matchmakingQueue.map(m => m.clientID);
     return chunk(playerIds, 2).filter(m => m.length === 2);
   }
 
   // Pair players if there are at least two people waiting for a ranked game.
   // Return all games created.
-  matchPlayersIfPossible = () => {
+  matchPlayersIfPossible = (): m.Game[] => {
     const { matchmakingQueue } = this.state;
     const playerPairs = this.findAvailableMatches();
 

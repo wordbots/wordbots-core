@@ -13,7 +13,7 @@
     "target": "es5",
 
     "strict": false,
-    "noImplicitAny": false
+    "noImplicitAny": true
   },
   "exclude": [
     "./node_modules/"

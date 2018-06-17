@@ -7,6 +7,7 @@ import { FORMATS } from '../../store/gameFormats';
 import DeckPicker from './DeckPicker';
 import FormatPicker from './FormatPicker';
 import GameBrowser from './GameBrowser';
+import RankedQueue from './RankedQueue';
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
 import ModeSelection from './ModeSelection';
@@ -24,6 +25,8 @@ export default class Lobby extends React.Component {
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
+    onJoinQueue: func,
+    onLeaveQueue: func,
     onHostGame: func,
     onSelectDeck: func,
     onSelectFormat: func,
@@ -56,6 +59,14 @@ export default class Lobby extends React.Component {
     }
   };
 
+  handleJoinQueue = () => {
+    this.props.onJoinQueue(this.deck.cards);
+  };
+
+  handleLeaveQueue = () => {
+    this.props.onLeaveQueue();
+  };
+
   handleJoinGame = (gameId, gameName) => {
     this.props.onJoinGame(gameId, gameName, this.deck.cards);
   };
@@ -82,6 +93,22 @@ export default class Lobby extends React.Component {
             <HostGame
               disabled={this.hasNoDecks}
               onHostGame={this.handleHostGame} />
+          </div>
+        );
+      }
+    } else if (gameMode === '/ranked') {
+      if (socket.hosting) {
+        return <Waiting />;
+      } else {
+        return (
+          <div>
+            <RankedQueue
+              disabled={this.hasNoDecks}
+              queuing={socket.queuing}
+              queueSize={socket.queueSize}
+              onJoinQueue={this.handleJoinQueue}
+              onLeaveQueue={this.handleLeaveQueue}
+            />
           </div>
         );
       }

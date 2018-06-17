@@ -39,6 +39,12 @@ export function mapDispatchToProps(dispatch) {
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
     },
+    onJoinQueue: (deck) => {
+      dispatch(socketActions.joinQueue(deck));
+    },
+    onLeaveQueue: () => {
+      dispatch(socketActions.leaveQueue());
+    },
     onSpectateGame: (id) => {
       dispatch(socketActions.spectate(id));
     },
@@ -68,6 +74,8 @@ export class Play extends React.Component {
     history: object,
 
     onConnect: func,
+    onJoinQueue: func,
+    onLeaveQueue: func,
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
@@ -123,6 +131,8 @@ export class Play extends React.Component {
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
+          onJoinQueue={this.props.onJoinQueue}
+          onLeaveQueue={this.props.onLeaveQueue}
           onSpectateGame={this.props.onSpectateGame}
           onSelectDeck={this.props.onSelectDeck}
           onSelectFormat={this.props.onSelectFormat}
@@ -141,6 +151,7 @@ export class Play extends React.Component {
           <Route path={`${Play.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
           <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
           <Route exact path={Play.baseUrl} render={this.renderLobby} />
+          <Route path={Play.urlForGameMode('ranked')} render={this.renderLobby} />
           <Redirect to={Play.baseUrl} />
         </Switch>
 

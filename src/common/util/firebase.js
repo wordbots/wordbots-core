@@ -18,6 +18,8 @@ if (fb.apps.length === 0) {
   fb.initializeApp(config);
 }
 
+// Users
+
 function saveUser(user) {
   return fb.database().ref()
     .child(`users/${user.uid}/info`)
@@ -29,7 +31,7 @@ function saveUser(user) {
     .then(() => user);
 }
 
-function getLoggedInUser() {
+export function getLoggedInUser() {
   return new Promise((resolve, reject) => {
     fb.auth().onAuthStateChanged(user => {
       currentUser = user;
@@ -86,6 +88,31 @@ export function listenToUserData(callback) {
   });
 }
 
+export function listenToUserDataById(uid, callback) {
+  return fb.database()
+    .ref(`users/${uid}`)
+    .on('value', (snapshot) => { callback(snapshot.val()); });
+}
+
+export function saveUserData(key, value) {
+  getLoggedInUser()
+    .then(user => {
+      fb.database()
+        .ref(`users/${user.uid}/${key}`)
+        .set(value);
+    })
+    .catch(noop);
+}
+
+// Game results
+
+export function saveGame(game) {
+  console.log(game);
+  return fb.database().ref('games').push(game);
+}
+
+// Cards and text
+
 export function listenToRecentCards(callback) {
   return fb.database()
            .ref('recentCards')
@@ -136,16 +163,6 @@ export function listenToDictionaryData(callback) {
         }
       });
     });
-}
-
-export function saveUserData(key, value) {
-  getLoggedInUser()
-    .then(user => {
-      fb.database()
-        .ref(`users/${user.uid}/${key}`)
-        .set(value);
-    })
-    .catch(noop);
 }
 
 export function saveRecentCard(card) {

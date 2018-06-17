@@ -2,6 +2,7 @@ import * as React from 'react';
 import { object } from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import { login, register, resetPassword } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
@@ -16,7 +17,10 @@ export default class LoginDialog extends React.Component {
     register: false,
     email: '',
     username: '',
-    password: ''
+    password: '',
+    confirmPassword: '',
+    snackbarText: '',
+    snackbarOpen: false
   }
 
   get submitDisabled() {
@@ -31,10 +35,19 @@ export default class LoginDialog extends React.Component {
     RouterDialog.closeDialog(this.props.history);
   }
 
+  handleSnackbarClose = () => {
+    this.setState({ snackbarOpen: false });
+  }
+
   register = (email, username, password) => {
     register(email, username, password)
       .then(() => {
         this.setState({error: null});
+        this.setState({
+          error: null,
+          snackbarOpen: true,
+          snackbarText: `You have successfully registered as ${email}`
+        });
         this.handleClose();
       })
       .catch(err => {
@@ -45,7 +58,11 @@ export default class LoginDialog extends React.Component {
   login = (email, password) => {
     login(email, password)
       .then(() => {
-        this.setState({error: null});
+        this.setState({
+          error: null,
+          snackbarOpen: true,
+          snackbarText: `You have successfully logged in as ${email}`
+        });
         this.handleClose();
       })
       .catch(() => {
@@ -85,9 +102,17 @@ export default class LoginDialog extends React.Component {
     this.setState({password: e.target.value});
   }
 
+  handleChangeConfirmPassword = (e) => {
+    this.setState({confirmPassword: e.target.value});
+  }
+
   handleSubmit = () => {
     if (this.state.register) {
-      this.register(this.state.email, this.state.username, this.state.password);
+      if (this.state.password === this.state.confirmPassword) {
+        this.register(this.state.email, this.state.username, this.state.password);
+      } else {
+        this.setState({error: 'Error: Your passwords must match.'});
+      }
     } else {
       this.login(this.state.email, this.state.password);
     }
@@ -129,6 +154,16 @@ export default class LoginDialog extends React.Component {
             type="password"
             onKeyPress={this.handleKeyPress}
             onChange={this.handleChangePassword} />
+          {
+            this.state.register &&
+            <TextField
+              value={this.state.confirmPassword}
+              style={{width: '100%'}}
+              floatingLabelText="Confirm Password"
+              type="password"
+              onKeyPress={this.handleKeyPress}
+              onChange={this.handleChangeConfirmPassword} />
+          }
         </div>
 
         {
@@ -185,18 +220,29 @@ export default class LoginDialog extends React.Component {
     }
 
     return (
-      <RouterDialog
-        modal
-        path="login"
-        title={this.state.register ? 'Register' : 'Login'}
-        history={history}
-        actions={actions}
-        style={{width: 400, position: 'relative'}}
-      >
-        {this.renderLoginForm()}
+      <React.Fragment>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          open={this.state.snackbarOpen}
+          message={this.state.snackbarText}
+          autoHideDuration={4000}
+          onClose={this.handleSnackbarClose} />
+        <RouterDialog
+          modal
+          path="login"
+          title={this.state.register ? 'Register' : 'Login'}
+          history={history}
+          actions={actions}
+          style={{width: 400, position: 'relative'}}
+        >
+          {this.renderLoginForm()}
 
-        {this.renderFormSwitcher()}
-      </RouterDialog>
+          {this.renderFormSwitcher()}
+        </RouterDialog>
+      </React.Fragment>
     );
   }
 }

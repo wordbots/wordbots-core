@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, func, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import { List } from 'material-ui/List';
 
 import DictionaryTerm from './DictionaryTerm';
 
-export default class DictionarySidebar extends Component {
+export default class DictionarySidebar extends React.Component {
   static propTypes = {
     terms: arrayOf(string),
     selectedTerm: string,

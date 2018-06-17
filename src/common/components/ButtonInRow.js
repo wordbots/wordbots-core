@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { bool, func, string } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';

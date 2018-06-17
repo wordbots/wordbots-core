@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { string, bool, object, func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { opponent } from '../../util/game';
 import Tooltip from '../Tooltip';
 
-export default class ForfeitButton extends Component {
+export default class ForfeitButton extends React.Component {
   static propTypes = {
     player: string,
     gameOver: bool,

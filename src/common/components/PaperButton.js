@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, element, func, object, oneOfType } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
-export default class PaperButton extends Component {
+export default class PaperButton extends React.Component {
   static propTypes = {
     disabled: bool,
     onClick: func,

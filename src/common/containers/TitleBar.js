@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -18,7 +18,7 @@ function mapStateToProps(state) {
   };
 }
 
-class TitleBar extends Component {
+class TitleBar extends React.Component {
   static propTypes = {
     user: object,
     history: object

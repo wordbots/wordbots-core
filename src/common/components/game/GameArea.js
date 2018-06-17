@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Helmet from 'react-helmet';
-import screenfull from 'screenfull';
+import * as screenfull from 'screenfull';
 
 import {
   HEADER_HEIGHT, SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
@@ -74,7 +74,7 @@ export const gameProps = {
   socket: object
 };
 
-export default class GameArea extends Component {
+export default class GameArea extends React.Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     ...gameProps,

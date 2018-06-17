@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "rootDir": "./src/",
+
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react",
+    "lib": ["es2015", "es2017", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": ".",
     "sourceMap": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true,
-    "module": "es6",
-    "target": "es5"
+    "target": "es5",
+
+    "strict": false,
+    "noImplicitAny": false
   },
-  "include": [
-    "./src/server/"
-  ],
   "exclude": [
     "./node_modules/"
   ]

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -150,7 +150,7 @@ export function mapDispatchToProps(dispatch) {
 }
 
 /* GameAreaContainer handles all dispatch and routing logic for the GameArea component. */
-export class GameAreaContainer extends Component {
+export class GameAreaContainer extends React.Component {
   /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
     ...gameProps,

@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
-import screenfull from 'screenfull';
+import * as screenfull from 'screenfull';
 
 import Tooltip from '../Tooltip';
 
-export default class FullscreenToggle extends Component {
+export default class FullscreenToggle extends React.Component {
   static propTypes = {
     onClick: func
   }

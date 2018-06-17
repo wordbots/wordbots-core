@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 
-export default class CardBack extends Component {
+export default class CardBack extends React.Component {
   static propTypes = {
     deckLength: number,
     customText: string,

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 // Exported from redux-devtools
 import { createDevTools } from 'redux-devtools';
 // Monitors are separate packages, and you can make a custom one

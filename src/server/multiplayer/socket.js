@@ -1,10 +1,10 @@
 import WebSocket from 'ws';
 import { noop } from 'lodash';
 
-import { id as generateID } from '../common/util/common';
-import { opponent as opponentOf } from '../common/util/game';
+import { id as generateID } from '../../common/util/common';
+import { opponent as opponentOf } from '../../common/util/game';
 
-import MultiplayerServerState from './multiplayer/MultiplayerServerState';
+import MultiplayerServerState from './MultiplayerServerState.ts';
 
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {

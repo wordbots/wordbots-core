@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { id } from '../../util/common';
 import { inBrowser } from '../../util/browser';

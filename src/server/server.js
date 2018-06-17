@@ -1,14 +1,11 @@
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import webpack from 'webpack';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
+import * as webpack from 'webpack';
 
 import webpackConfig from '../../webpack.config';
 
 import handleRequest from './handleRequest';
-import launchWebsocketServer from './socket';
-
-injectTapEventPlugin();
+import launchWebsocketServer from './multiplayer/socket';
 
 const app = express();
 const { NODE_ENV, PORT } = process.env;
@@ -50,4 +47,3 @@ const server = app.listen(PORT || 3000, () => {
   /* eslint-enable no-console */
 });
 launchWebsocketServer(server, '/socket');
-

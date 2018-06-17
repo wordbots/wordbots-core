@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func, string } from 'prop-types';
 import { ListItem } from 'material-ui/List';
 
-export default class DictionaryTerm extends Component {
+export default class DictionaryTerm extends React.Component {
   static propTypes = {
     token: string,
     selected: bool,

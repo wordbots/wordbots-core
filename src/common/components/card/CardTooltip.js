@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, object, oneOfType } from 'prop-types';
-import ReactTooltip from 'react-tooltip';
+import * as ReactTooltip from 'react-tooltip';
 
 import { id } from '../../util/common';
 import Popover from '../Popover';
 
 import Card from './Card';
 
-export default class CardTooltip extends Component {
+export default class CardTooltip extends React.Component {
   static propTypes = {
     card: object,
     children: oneOfType([arrayOf(object), object]),

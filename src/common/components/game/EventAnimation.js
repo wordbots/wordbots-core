@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, object, string } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { EVENT_ANIMATION_TIME_MS } from '../../constants';
 import Card from '../card/Card';
 
-export default class EventAnimation extends Component {
+export default class EventAnimation extends React.Component {
   static propTypes = {
     currentTurn: string.isRequired,
     eventQueue: arrayOf(object)

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func } from 'prop-types';
 
 import GameMode from './GameMode';
 
-export default class ModeSelection extends Component {
+export default class ModeSelection extends React.Component {
   static propTypes = {
     onSelectMode: func
   };

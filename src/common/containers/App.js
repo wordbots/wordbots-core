@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func, number, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
@@ -53,7 +53,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class App extends Component {
+class App extends React.Component {
   static childContextTypes = {
     muiTheme: object
   };

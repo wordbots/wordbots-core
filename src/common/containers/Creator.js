@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -60,7 +60,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class Creator extends Component {
+export class Creator extends React.Component {
   static propTypes = {
     id: string,
     name: string,

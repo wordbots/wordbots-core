@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object } from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import { login, register, resetPassword } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 
-export default class LoginDialog extends Component {
+export default class LoginDialog extends React.Component {
   static propTypes = {
     history: object
   };

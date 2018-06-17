@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 
 import { isFlagSet, toggleFlag } from '../../util/browser';
 import Tooltip from '../Tooltip';
 
-export default class SoundToggle extends Component {
+export default class SoundToggle extends React.Component {
   handleClick = () => {
     toggleFlag('sound');
     this.forceUpdate();

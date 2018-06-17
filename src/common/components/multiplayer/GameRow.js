@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func, object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 
 import { GameFormat } from '../../store/gameFormats';
 
-export default class GameRow extends Component {
+export default class GameRow extends React.Component {
   static propTypes = {
     game: object,
     usernameMap: object,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class Deck extends Component {
+class Deck extends React.Component {
   static propTypes = {
     id: string,
     cards: arrayOf(object),

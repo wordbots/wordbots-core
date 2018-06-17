@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { string, object } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -15,7 +15,7 @@ const styles = {
   }
 };
 
-class Status extends Component {
+class Status extends React.Component {
   static propTypes = {
     type: string,
     message: string,

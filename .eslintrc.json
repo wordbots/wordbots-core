@@ -95,6 +95,7 @@
     "unicorn"
   ],
   "settings": {
+    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
     "polyfills": ["fetch", "promises"]
   }
 }

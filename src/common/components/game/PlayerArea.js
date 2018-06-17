@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object, bool } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
@@ -9,7 +9,7 @@ import EnergyCount from './EnergyCount';
 import Deck from './Deck';
 import DiscardPile from './DiscardPile';
 
-export default class PlayerArea extends Component {
+export default class PlayerArea extends React.Component {
   static propTypes = {
     gameProps: object,
     opponent: bool

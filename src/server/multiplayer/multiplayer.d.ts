@@ -12,7 +12,7 @@ export interface Game {
   name: string,
   format: string,
   type: string,
-  players: any[],
+  players: ClientID[],
   playerColors: { [clientID: string]: string; },
   ids: { blue: ClientID, orange: ClientID }, // TODO is this field necessary?
   spectators: ClientID[],

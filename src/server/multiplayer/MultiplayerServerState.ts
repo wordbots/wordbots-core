@@ -42,7 +42,7 @@ export default class MultiplayerServerState {
 
   // Returns all websocket connections corresponding to the given clientIDs,
   // or ALL connections if no clientIDs are specified.
-  getClientSockets = (clientIDs: m.ClientID[] = null): m.Connection[] => (
+  getClientSockets = (clientIDs: m.ClientID[] | null = null): m.Connection[] => (
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
@@ -61,7 +61,7 @@ export default class MultiplayerServerState {
   )
 
   // Returns the game that the given player is in, if any.
-  lookupGameByClient = (clientID: m.ClientID): m.Game => (
+  lookupGameByClient = (clientID: m.ClientID): m.Game | undefined => (
     this.state.games.find(game => game.players.includes(clientID))
   )
 
@@ -73,7 +73,9 @@ export default class MultiplayerServerState {
 
   // Returns all *other* players currently in the lobby.
   getAllOtherPlayersInLobby = (clientID: m.ClientID): m.ClientID[] => {
-    const inGamePlayerIds = this.state.games.reduce((acc, game) => acc.concat(game.players), []);
+    const inGamePlayerIds = this.state.games.reduce((acc: m.ClientID[], game: m.Game) => (
+      acc.concat(game.players)
+    ), []);
     return this.state.playersOnline.filter(id => id !== clientID && !inGamePlayerIds.includes(id));
   }
 
@@ -88,7 +90,7 @@ export default class MultiplayerServerState {
 
   // Disconnect a player from the server.
   // Return the game that the player was in (if any).
-  disconnectClient = (clientID: m.ClientID): m.Game => {
+  disconnectClient = (clientID: m.ClientID): m.Game | undefined => {
     pull(this.state.playersOnline, clientID);
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: clientID });
 
@@ -136,7 +138,7 @@ export default class MultiplayerServerState {
   // Make a player join the given opponent's hosted game with the given deck.
   // Returns the game joined.
   joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game => {
-    const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
+    const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID }) as m.WaitingPlayer;
     const gameId = generateID();
 
     const game: m.Game = {
@@ -233,8 +235,8 @@ export default class MultiplayerServerState {
 
     return playerPairs.map(([playerId1, playerId2]) => {
       const gameName = `Ranked#${this.getClientUsername(playerId1)}-vs-${this.getClientUsername(playerId2)}`;
-      const deck1 = find(matchmakingQueue, {clientID: playerId1}).deck;
-      const deck2 = find(matchmakingQueue, {clientID: playerId2}).deck;
+      const deck1 = (find(matchmakingQueue, {clientID: playerId1}) as m.PlayerInQueue).deck;
+      const deck2 = (find(matchmakingQueue, {clientID: playerId2}) as m.PlayerInQueue).deck;
 
       this.hostGame(playerId1, gameName, 'normal', deck1);
       const game = this.joinGame(playerId2, playerId1, deck2, { type: 'RANKED' });

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { bool, string } from 'prop-types';
 
 const PlayerName = ({ color, opponent, playerName }) => (

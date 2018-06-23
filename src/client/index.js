@@ -1,10 +1,9 @@
 /*eslint-disable import/no-unassigned-import */
-import 'babel-core/register';
-import ReactDOM from 'react-dom';
-import React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
@@ -34,6 +33,6 @@ ReactDOM.hydrate(
 );
 
 if (window.localStorage['profileOnLoad'] && window.Perf) {
-  window.Perf.start();
+  window.Perf.stop();
   window.Perf.printInclusive();
 }

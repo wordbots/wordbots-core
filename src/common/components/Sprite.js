@@ -2,14 +2,14 @@
 
 /* eslint-disable no-loops/no-loops */
 
-import React, { PureComponent } from 'react';
+import * as React from 'react';
 import { number, string } from 'prop-types';
 import { isUndefined } from 'lodash';
 
 import { hashCode } from '../util/common';
 import { inBrowser } from '../util/browser';
 
-export default class Sprite extends PureComponent {
+export default class Sprite extends React.PureComponent {
   static propTypes = {
     id: string,
     size: number,

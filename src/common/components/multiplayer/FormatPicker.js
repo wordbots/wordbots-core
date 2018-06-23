@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, number } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
@@ -8,7 +8,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { FORMATS } from '../../store/gameFormats';
 import Tooltip from '../Tooltip';
 
-export default class FormatPicker extends Component {
+export default class FormatPicker extends React.Component {
   static propTypes = {
     selectedFormatIdx: number,
     onChooseFormat: func

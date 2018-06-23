@@ -1,14 +1,14 @@
 import { execSync } from 'child_process';
 
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import * as React from 'react';
+import * as ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
 
 import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
-import packagejson from '../../package.json';
+import * as packagejson from '../../package.json';
 
 import produceApiResponse from './api';
 

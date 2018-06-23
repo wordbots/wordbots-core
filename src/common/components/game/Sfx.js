@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, string } from 'prop-types';
 
 import { inBrowser, isFlagSet } from '../../util/browser';
@@ -6,7 +6,7 @@ import { inBrowser, isFlagSet } from '../../util/browser';
 const Sound = inBrowser() ? require('react-sound').default : null;
 const soundManager = inBrowser() ? require('soundmanager2').soundManager : null;
 
-export default class Sfx extends Component {
+export default class Sfx extends React.Component {
   static propTypes = {
     queue: arrayOf(string)
   };

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { string, bool, func } from 'prop-types';
 
 import { DISABLE_TURN_TIMER } from '../../constants';
@@ -7,7 +7,7 @@ function padDigits(seconds) {
   return (seconds < 10 ? '0' : '') + seconds;
 }
 
-export default class Timer extends Component {
+export default class Timer extends React.Component {
   static propTypes = {
     player: string,
     currentTurn: string,

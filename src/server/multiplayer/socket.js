@@ -1,13 +1,12 @@
 import WebSocket from 'ws';
 import { noop } from 'lodash';
 
-import { id as generateID } from '../common/util/common';
-import { opponent as opponentOf } from '../common/util/game';
+import { id as generateID } from '../../common/util/common';
+import { opponent as opponentOf } from '../../common/util/game';
 
-import MultiplayerServerState from './multiplayer/MultiplayerServerState';
+import MultiplayerServerState from './MultiplayerServerState.ts';
 
 const QUEUE_INTERVAL_MSECS = 500;
-
 
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {
@@ -35,10 +34,18 @@ export default function launchWebsocketServer(server, path) {
     broadcastInfo();
 
     socket.on('message', msg => {
-      onMessage(clientID, msg);
+      try {
+        onMessage(clientID, msg);
+      } catch (ex) {
+        console.error(ex);
+      }
     });
     socket.on('close', () => {
-      onDisconnect(clientID);
+      try {
+        onDisconnect(clientID);
+      } catch (ex) {
+        console.error(ex);
+      }
     });
     socket.on('error', noop); // Probably a disconnect (throws an error in ws 3.3.3+).
   }
@@ -118,7 +125,7 @@ export default function launchWebsocketServer(server, path) {
   function setUserData(clientID, userData) {
     const oldUserData = state.getClientUserData(clientID, false);
     state.setClientUserData(clientID, userData);
-    if (!oldUserData) {
+    if (!oldUserData && userData) {
       sendChat(`${userData.displayName} has entered the lobby.`);
     } else if (!userData && oldUserData) {
       sendChat(`${oldUserData.displayName} has logged out.`);

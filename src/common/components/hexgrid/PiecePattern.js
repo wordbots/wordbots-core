@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object } from 'prop-types';
 
 import { TYPE_STRUCTURE } from '../../constants';
@@ -6,7 +6,7 @@ import Sprite from '../Sprite';
 
 import loadImages from './HexGridImages';
 
-export default class PiecePattern extends Component {
+export default class PiecePattern extends React.Component {
   static propTypes = {
     piece: object.isRequired
   };

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 
 import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';

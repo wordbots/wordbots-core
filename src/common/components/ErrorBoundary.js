@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, element, oneOfType } from 'prop-types';
 
-export default class ErrorBoundary extends Component {
+export default class ErrorBoundary extends React.Component {
   static propTypes = {
     children: oneOfType([element, arrayOf(element)])
   }

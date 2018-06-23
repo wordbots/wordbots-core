@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { arrayOf, element, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 

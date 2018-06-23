@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func } from 'prop-types';
 import TextField from 'material-ui/TextField';
 
-export default class SearchControls extends Component {
+export default class SearchControls extends React.Component {
   static propTypes = {
     onChange: func
   };

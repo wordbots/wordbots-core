@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 
-export default class DictionarySidebar extends Component {
+export default class DictionarySidebar extends React.Component {
   static propTypes = {
     onChange: func
   }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
@@ -7,7 +7,7 @@ import { typeToString } from '../../constants';
 import { id } from '../../util/common';
 import CardStat from '../card/CardStat';
 
-export default class CardTable extends Component {
+export default class CardTable extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     selectedCardIds: arrayOf(object),

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
@@ -13,7 +13,7 @@ import { id } from '../../util/common';
 
 import ChatMessage from './ChatMessage';
 
-export default class Chat extends Component {
+export default class Chat extends React.Component {
   static propTypes = {
     roomName: string,
     messages: arrayOf(object),

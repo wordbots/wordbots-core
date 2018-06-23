@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import { isObject } from 'lodash';
 

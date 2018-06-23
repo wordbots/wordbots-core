@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
@@ -12,7 +12,7 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import ActiveDeckCard from './ActiveDeckCard';
 
 // Widget representing the deck currently being created or modified.
-export default class ActiveDeck extends Component {
+export default class ActiveDeck extends React.Component {
   static propTypes = {
     id: string,
     cards: arrayOf(object),

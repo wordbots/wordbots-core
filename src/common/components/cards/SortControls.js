@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, number } from 'prop-types';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import { capitalize } from 'lodash';
 
-export default class SortControls extends Component {
+export default class SortControls extends React.Component {
   static propTypes = {
     criteria: number,
     order: number,

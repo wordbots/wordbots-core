@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
 import Badge from 'material-ui/Badge';
 import Paper from 'material-ui/Paper';
@@ -11,7 +11,7 @@ import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
-export default class DeckSummary extends Component {
+export default class DeckSummary extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     deck: object,

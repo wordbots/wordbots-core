@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, number, object } from 'prop-types';
 import BarChart from 'react-bar-chart';
 import { times } from 'lodash';
 
 // Widget to display the current energy curve for a set of cards
-export default class EnergyCurve extends Component {
+export default class EnergyCurve extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     height: number

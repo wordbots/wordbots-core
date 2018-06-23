@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, func, object } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -9,7 +9,7 @@ import CardTooltip from '../card/CardTooltip';
 
 import CardSelectorCard from './CardSelectorCard';
 
-export default class CardSelector extends Component {
+export default class CardSelector extends React.Component {
   state = {
     selectedCard: null
   }

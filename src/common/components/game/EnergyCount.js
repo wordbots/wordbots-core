@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import { times } from 'lodash';
 
 import { id } from '../../util/common';
 
-class EnergyCount extends Component {
+class EnergyCount extends React.Component {
   static propTypes = {
     color: string,
     energy: object

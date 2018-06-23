@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { string, bool, func, object } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import TutorialTooltip from './TutorialTooltip';
 
-export default class EndTurnButton extends Component {
+export default class EndTurnButton extends React.Component {
   static propTypes = {
     player: string,
     gameOver: bool,

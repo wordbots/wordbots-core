@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { arrayOf, bool, object } from 'prop-types';
 
 import Tooltip from '../Tooltip';

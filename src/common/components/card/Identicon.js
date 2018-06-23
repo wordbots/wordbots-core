@@ -7,13 +7,13 @@
 
 /* eslint-disable no-loops/no-loops */
 
-import React, { Component } from 'react';
+import * as React from 'react';
 import { number, string } from 'prop-types';
 import { noop } from 'lodash';
 
 import { hashCode } from '../../util/common';
 
-export default class Identicon extends Component {
+export default class Identicon extends React.Component {
   static propTypes = {
     id: string,
     width: number,

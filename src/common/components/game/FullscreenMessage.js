@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { number, string } from 'prop-types';
 
 import { BACKGROUND_Z_INDEX } from '../../constants';

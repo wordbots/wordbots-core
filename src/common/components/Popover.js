@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
-import ReactPopover from 'react-popover';
+import * as ReactPopover from 'react-popover';
 
 import { getGameAreaNode } from '../util/browser';
 

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, string } from 'prop-types';
 
-export default class CardTextSuggestion extends Component {
+export default class CardTextSuggestion extends React.Component {
   static propTypes = {
     original: string,
     suggestion: string,

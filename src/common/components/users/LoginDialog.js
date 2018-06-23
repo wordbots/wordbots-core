@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import * as React from 'react';
 import { object } from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -7,7 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { login, register, resetPassword } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 
-export default class LoginDialog extends Component {
+export default class LoginDialog extends React.Component {
   static propTypes = {
     history: object
   };
@@ -220,7 +220,7 @@ export default class LoginDialog extends Component {
     }
 
     return (
-      <Fragment>
+      <React.Fragment>
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -242,7 +242,7 @@ export default class LoginDialog extends Component {
 
           {this.renderFormSwitcher()}
         </RouterDialog>
-      </Fragment>
+      </React.Fragment>
     );
   }
 }

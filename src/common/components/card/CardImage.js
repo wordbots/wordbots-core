@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { func, number, string } from 'prop-types';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT } from '../../constants';

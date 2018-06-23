@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 import GameRow from './GameRow';
 
-export default class GameBrowser extends Component {
+export default class GameBrowser extends React.Component {
   static propTypes = {
     openGames: arrayOf(object),
     inProgressGames: arrayOf(object),

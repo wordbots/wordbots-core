@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import { without } from 'lodash';
 
@@ -6,7 +6,7 @@ import PageSwitcher from './PageSwitcher';
 import CardGrid from './CardGrid';
 import CardTable from './CardTable';
 
-export default class CardCollection extends Component {
+export default class CardCollection extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     selectedCardIds: arrayOf(string),

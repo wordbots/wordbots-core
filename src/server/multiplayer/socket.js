@@ -8,7 +8,6 @@ import MultiplayerServerState from './MultiplayerServerState.ts';
 
 const QUEUE_INTERVAL_MSECS = 500;
 
-
 /* eslint-disable no-console */
 export default function launchWebsocketServer(server, path) {
   const state = new MultiplayerServerState();

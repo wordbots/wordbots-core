@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bool, func, number, object } from 'prop-types';
-import { hot } from 'react-hot-loader'
+import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
 import Helmet from 'react-helmet';

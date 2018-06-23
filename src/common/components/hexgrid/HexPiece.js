@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { object } from 'prop-types';
 import { isUndefined } from 'lodash';
 

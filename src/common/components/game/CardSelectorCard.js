@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object, func } from 'prop-types';
 import { isEqual } from 'lodash';
 
-export default class CardSelectorCard extends Component {
+export default class CardSelectorCard extends React.Component {
   static propTypes = {
     card: object,
     selectedCard: object,

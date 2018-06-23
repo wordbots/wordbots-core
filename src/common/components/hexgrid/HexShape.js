@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { arrayOf, bool, object, string } from 'prop-types';
 
 import { DISPLAY_HEX_IDS, SHOW_TOOLTIP_TIMEOUT_MS } from '../../constants';

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { getDefaultState, combineState } from '../testHelpers';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';

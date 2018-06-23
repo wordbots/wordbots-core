@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -60,7 +60,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class Play extends Component {
+export class Play extends React.Component {
   static propTypes = {
     started: bool,
     actionLog: arrayOf(object),

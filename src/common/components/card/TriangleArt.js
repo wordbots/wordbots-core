@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
+import * as React from 'react';
 import { number, string } from 'prop-types';
 import trianglify from 'trianglify';
 
 import { inBrowser } from '../../util/browser';
 
-export default class TriangleArt extends PureComponent {
+export default class TriangleArt extends React.PureComponent {
   static propTypes = {
     id: string,
     width: number,

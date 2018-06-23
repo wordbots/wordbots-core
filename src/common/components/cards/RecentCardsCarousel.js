@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, object } from 'prop-types';
 import Carousel from 'react-slick';
 import { uniqBy } from 'lodash';
@@ -7,7 +7,7 @@ import { listenToRecentCards } from '../../util/firebase';
 import { builtinCardNames } from '../../store/cards';
 import Card from '../card/Card';
 
-export default class RecentCardsCarousel extends Component {
+export default class RecentCardsCarousel extends React.Component {
   static propTypes = {
     history: object,
     onOpenForEditing: func

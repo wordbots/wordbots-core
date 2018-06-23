@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-export default class HostGame extends Component {
+export default class HostGame extends React.Component {
   static propTypes = {
     disabled: bool,
     onHostGame: func

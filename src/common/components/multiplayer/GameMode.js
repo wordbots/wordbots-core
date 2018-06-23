@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { string, func, bool } from 'prop-types';
 
 import PaperButton from '../PaperButton';
 
-export default class GameMode extends Component {
+export default class GameMode extends React.Component {
   static propTypes = {
     name: string,
     imagePath: string,

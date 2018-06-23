@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 import { string } from 'prop-types';
-import ReactMarkdown from 'react-markdown';
+import * as ReactMarkdown from 'react-markdown';
 
 import SmartLink from './SmartLink';
 

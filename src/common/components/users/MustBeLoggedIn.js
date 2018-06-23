@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, object, oneOfType } from 'prop-types';
 import { pick } from 'lodash';
 
 import Tooltip from '../Tooltip';
 
-export default class MustBeLoggedIn extends Component {
+export default class MustBeLoggedIn extends React.Component {
   static propTypes = {
     loggedIn: bool,
     children: oneOfType([arrayOf(object), object]),

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, func, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { chain as _ } from 'lodash';
@@ -7,7 +7,7 @@ import { bigramNLL } from '../../util/language';
 
 import CardTextSuggestion from './CardTextSuggestion';
 
-export default class CardTextField extends Component {
+export default class CardTextField extends React.Component {
   static propTypes = {
     text: string,
     sentences: arrayOf(object),

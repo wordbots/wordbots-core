@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, func, number, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
@@ -7,7 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import { cardsInDeck } from '../../util/cards';
 import EnergyCurve from '../cards/EnergyCurve';
 
-export default class DeckPicker extends Component {
+export default class DeckPicker extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     availableDecks: arrayOf(object),

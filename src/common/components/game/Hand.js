@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object } from 'prop-types';
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { isEmpty, isNull } from 'lodash';
 
@@ -8,7 +8,7 @@ import { HAND_Z_INDEX } from '../../constants.js';
 
 import CardInHand from './CardInHand';
 
-export default class Hand extends Component {
+export default class Hand extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     isActivePlayer: bool,

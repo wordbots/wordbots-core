@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Paper from 'material-ui/Paper';
 
 const Waiting = () => (

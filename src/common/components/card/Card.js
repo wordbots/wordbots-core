@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 import Textfit from 'react-textfit';
 import Divider from 'material-ui/Divider';
@@ -19,7 +19,7 @@ import CardImage from './CardImage';
 import CardStat from './CardStat';
 import Sentence from './Sentence';
 
-export default class Card extends Component {
+export default class Card extends React.Component {
   static propTypes = {
     children: oneOfType([string, arrayOf(object)]),
 

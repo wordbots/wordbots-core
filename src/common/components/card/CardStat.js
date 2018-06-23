@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, number, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
@@ -7,7 +7,7 @@ import { capitalize } from 'lodash';
 import { inBrowser } from '../../util/browser';
 import Tooltip from '../Tooltip';
 
-export default class CardStat extends Component {
+export default class CardStat extends React.Component {
   static propTypes = {
     type: string,
     base: number,

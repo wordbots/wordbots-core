@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func, number, object, string } from 'prop-types';
 import { forOwn, isString, mapValues } from 'lodash';
 
@@ -10,7 +10,7 @@ import {
   validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId
 } from '../../util/game';
 
-export default class Board extends Component {
+export default class Board extends React.Component {
   static propTypes = {
     bluePieces: object,
     orangePieces: object,

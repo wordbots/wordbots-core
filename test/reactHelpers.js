@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
 import { createRenderer } from 'react-test-renderer/shallow';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { noop } from 'lodash';
 
 import * as coll from '../src/common/containers/Collection';

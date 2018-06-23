@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
@@ -24,7 +24,7 @@ import NumberField from './NumberField';
 
 const exampleStore = new CardTextExampleStore();
 
-export default class CardCreationForm extends Component {
+export default class CardCreationForm extends React.Component {
   static propTypes = {
     id: string,
     name: string,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func } from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
@@ -8,7 +8,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
 import Tooltip from '../components/Tooltip';
 
-export default class NavMenu extends Component {
+export default class NavMenu extends React.Component {
   static propTypes = {
     onRerender: func
   }

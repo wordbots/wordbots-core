@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { func, string } from 'prop-types';
 
 const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {

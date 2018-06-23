@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { element, number, string } from 'prop-types';
 import Badge from 'material-ui/Badge';
 
 import { inBrowser } from '../../util/browser';
 
-export default class CardCostBadge extends Component {
+export default class CardCostBadge extends React.Component {
   static propTypes = {
     children: element,
     cost: number,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func, number, object } from 'prop-types';
 
 import { splitSentences } from '../../util/cards';
@@ -7,7 +7,7 @@ import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 import TutorialTooltip from '../game/TutorialTooltip';
 
-export default class CardInHand extends Component {
+export default class CardInHand extends React.Component {
   static propTypes = {
     card: object,
     idx: number,

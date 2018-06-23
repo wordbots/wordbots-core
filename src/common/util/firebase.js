@@ -107,7 +107,6 @@ export function saveUserData(key, value) {
 // Game results
 
 export function saveGame(game) {
-  console.log(game);
   return fb.database().ref('games').push(game);
 }
 

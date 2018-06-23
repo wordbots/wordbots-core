@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bool, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 
-export default class NumberField extends Component {
+export default class NumberField extends React.Component {
   static propTypes = {
     label: string,
     value: number,

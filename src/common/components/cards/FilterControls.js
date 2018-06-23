@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func } from 'prop-types';
 import Toggle from 'material-ui/Toggle';
 import { Range } from 'rc-slider';
 
-export default class FilterControls extends Component {
+export default class FilterControls extends React.Component {
   static propTypes = {
     onToggleFilter: func,
     onSetCostRange: func

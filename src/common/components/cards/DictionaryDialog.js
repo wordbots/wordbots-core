@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object } from 'prop-types';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
@@ -18,7 +18,7 @@ import StatusIcon from '../card/StatusIcon';
 import DictionarySearchBar from './DictionarySearchBar';
 import DictionarySidebar from './DictionarySidebar';
 
-export default class DictionaryDialog extends Component {
+export default class DictionaryDialog extends React.Component {
   static propTypes = {
     history: object
   }

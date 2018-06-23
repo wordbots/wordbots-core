@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
-import ReactTooltip from 'react-tooltip';
+import * as ReactTooltip from 'react-tooltip';
 
 import { id } from '../util/common';
 
-export default class Tooltip extends Component {
+export default class Tooltip extends React.Component {
   static propTypes = {
     inline: bool,
     style: object,

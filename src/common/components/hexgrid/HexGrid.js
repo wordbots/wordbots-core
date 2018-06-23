@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, number, string, object } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { chain as _ } from 'lodash';
@@ -11,7 +11,7 @@ import HexShape from './HexShape';
 import HexUtils from './HexUtils';
 import Layout from './Layout';
 
-export default class HexGrid extends Component {
+export default class HexGrid extends React.Component {
   static propTypes = {
     width: number.isRequired,
     height: number.isRequired,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -48,7 +48,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class Collection extends Component {
+export class Collection extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     exportedJson: string,

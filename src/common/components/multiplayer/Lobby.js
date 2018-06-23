@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
 
 import { shuffleCardsInDeck } from '../../util/cards';
@@ -13,7 +13,7 @@ import LobbyStatus from './LobbyStatus';
 import ModeSelection from './ModeSelection';
 import Waiting from './Waiting';
 
-export default class Lobby extends Component {
+export default class Lobby extends React.Component {
   static propTypes = {
     socket: object,
     gameMode: string,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -26,7 +26,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-class Home extends Component {
+class Home extends React.Component {
   static propTypes = {
     version: string,
 

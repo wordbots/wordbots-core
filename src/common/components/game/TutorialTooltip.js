@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
@@ -8,7 +8,7 @@ import { noop } from 'lodash';
 import Popover from '../Popover';
 import Tooltip from '../Tooltip';
 
-export default class TutorialTooltip extends Component {
+export default class TutorialTooltip extends React.Component {
   static propTypes = {
     children: oneOfType([arrayOf(object), object]),
     tutorialStep: object,

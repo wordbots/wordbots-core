@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object, string } from 'prop-types';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 import RouterDialog from '../RouterDialog';
 
-export default class ExportDialog extends Component {
+export default class ExportDialog extends React.Component {
   static propTypes = {
     history: object,
     text: string

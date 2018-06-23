@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, func, object, oneOfType } from 'prop-types';
 
 import Popover from '../Popover';
 
 import ActivatedAbility from './ActivatedAbility';
 
-export default class AbilitiesTooltip extends Component {
+export default class AbilitiesTooltip extends React.Component {
   static propTypes = {
     children: oneOfType([arrayOf(object), object]),
     activatedAbilities: arrayOf(object),

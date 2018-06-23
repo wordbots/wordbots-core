@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 
 import { id } from '../../util/common';
@@ -7,7 +7,7 @@ import { splitSentences } from '../../util/cards';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 
-export default class CardGrid extends Component {
+export default class CardGrid extends React.Component {
   static propTypes = {
     cards: arrayOf(object),
     selectedCardIds: arrayOf(string),

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
 import { Route } from 'react-router';
 import Dialog from 'material-ui/Dialog';
 
 import { transformHistory } from '../util/browser';
 
-export default class RouterDialog extends Component {
+export default class RouterDialog extends React.Component {
   static propTypes = {
     path: string,
     title: string,

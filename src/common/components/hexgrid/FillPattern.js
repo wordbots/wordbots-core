@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { object, string } from 'prop-types';
 
 import HexUtils from './HexUtils';
 import loadImages from './HexGridImages';
 
-export default class FillPattern extends Component {
+export default class FillPattern extends React.Component {
   static propTypes = {
     hex: object.isRequired,
     fill: string

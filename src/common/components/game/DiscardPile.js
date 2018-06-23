@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { arrayOf, object } from 'prop-types';
 
 import Card from '../card/Card';
 
-export default class DiscardPile extends Component {
+export default class DiscardPile extends React.Component {
   static propTypes = {
     cards: arrayOf(object)
   };

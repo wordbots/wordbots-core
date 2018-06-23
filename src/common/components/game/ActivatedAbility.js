@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, number, string } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 
-export default class ActivatedAbility extends Component {
+export default class ActivatedAbility extends React.Component {
   static propTypes = {
     idx: number,
     marginBottom: number,

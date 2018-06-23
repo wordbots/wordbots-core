@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { func, number } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 
-export default class LayoutControls extends Component {
+export default class LayoutControls extends React.Component {
   static propTypes = {
     layout: number,
     onSetLayout: func

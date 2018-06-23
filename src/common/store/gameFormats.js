@@ -1,5 +1,5 @@
 import { cloneDeep, shuffle } from 'lodash';
-import seededRNG from 'seed-random';
+import * as seededRNG from 'seed-random';
 
 import { triggerSound } from '../util/game';
 

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { string } from 'prop-types';
 
 import { toggleFlag } from '../util/browser';
 
-export default class ToggleTooltipLink extends Component {
+export default class ToggleTooltipLink extends React.Component {
   static propTypes = {
     tooltipName: string
   };

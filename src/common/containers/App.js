@@ -144,8 +144,10 @@ class App extends React.Component {
   }
 
   get dialogs() {
-    if (!this.state.loading) {
-      const history = this.props.history;
+    if (this.state.loading) {
+      return null;
+    } else {
+      const { history } = this.props;
       return (
         <div>
           <LoginDialog history={history} />

@@ -21,13 +21,16 @@ export default class CardStat extends React.Component {
   };
 
   get iconClass() {
-    switch (this.props.type) {
+    const { type } = this.props;
+    switch (type) {
       case 'attack':
         return 'crossed-swords';
       case 'speed':
         return 'shoe-prints';
       case 'health':
         return 'health';
+      default:
+        throw `Unexpected icon type: ${type}`;
     }
   }
 

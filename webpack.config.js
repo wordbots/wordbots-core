@@ -21,7 +21,16 @@ const webpackConfig = {
         test: /\.(t|j)sx?$/,
         include: /src/,
         exclude: /node_modules/,
-        loader: ['awesome-typescript-loader?module=es6']
+        loader: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              plugins: ['react-hot-loader/babel']
+            }
+          },
+          'awesome-typescript-loader?module=es6'
+        ]
       },
       {
         test: /\.js$/,

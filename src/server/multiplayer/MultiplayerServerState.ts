@@ -244,7 +244,7 @@ export default class MultiplayerServerState {
     const { matchmakingQueue } = this.state;
     const playerPairs = this.findAvailableMatches();
 
-    return playerPairs.map(([playerId1, playerId2]) => {
+    return compact(playerPairs.map(([playerId1, playerId2]) => {
       const gameName = `Ranked#${this.getClientUsername(playerId1)}-vs-${this.getClientUsername(playerId2)}`;
       const deck1 = (find(matchmakingQueue, {clientID: playerId1}) as m.PlayerInQueue).deck;
       const deck2 = (find(matchmakingQueue, {clientID: playerId2}) as m.PlayerInQueue).deck;
@@ -252,9 +252,11 @@ export default class MultiplayerServerState {
       this.hostGame(playerId1, gameName, 'normal', deck1);
       const game = this.joinGame(playerId2, playerId1, deck2, { type: 'RANKED' });
 
-      this.state.matchmakingQueue = reject(matchmakingQueue, m => [playerId1, playerId2].includes(m.clientID));
-      this.state.games.push(game);
-      return game;
-    });
+      if (game) {
+        this.state.matchmakingQueue = reject(matchmakingQueue, m => [playerId1, playerId2].includes(m.clientID));
+        this.state.games.push(game);
+        return game;
+      }
+    }));
   }
 }

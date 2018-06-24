@@ -15,7 +15,7 @@ import GameAreaContainer from './GameAreaContainer';
 
 export function mapStateToProps(state) {
   const selectedFormatIdx = state.collection.selectedFormatIdx || 0;
-  const selectedFormat = FORMATS[selectedFormatIdx]
+  const selectedFormat = FORMATS[selectedFormatIdx];
   const availableDecks = state.collection.decks.filter(selectedFormat.isDeckValid);
 
   return {

@@ -1,4 +1,4 @@
-import { cloneDeep, constant, shuffle } from 'lodash';
+import { cloneDeep, shuffle } from 'lodash';
 import * as seededRNG from 'seed-random';
 
 import { DECK_SIZE } from '../constants';

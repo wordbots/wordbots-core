@@ -5,7 +5,7 @@ import * as webpack from 'webpack';
 import webpackConfig from '../../webpack.config';
 
 import handleRequest from './handleRequest';
-import launchWebsocketServer from './multiplayer/socket';
+import launchWebsocketServer from './multiplayer/socket.ts';
 
 const app = express();
 const { NODE_ENV, PORT } = process.env;

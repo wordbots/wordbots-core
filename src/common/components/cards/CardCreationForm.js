@@ -137,12 +137,14 @@ export default class CardCreationForm extends React.Component {
     if (!this.props.name || this.props.name === '[Unnamed]') {
       return 'This card needs a name!';
     }
+    return null;
   }
 
   get typeError() {
     if (!CREATABLE_TYPES.includes(this.props.type)) {
       return 'Invalid type.';
     }
+    return null;
   }
 
   get costError() {
@@ -153,29 +155,32 @@ export default class CardCreationForm extends React.Component {
     if (this.robot) {
       return ensureInRange('attack', this.props.attack, 0, 10);
     }
+    return null;
   }
 
   get healthError() {
     if (!this.event) {
       return ensureInRange('health', this.props.health, 1, 10);
     }
+    return null;
   }
 
   get speedError() {
     if (this.robot) {
       return ensureInRange('speed', this.props.speed, 0, 3);
     }
+    return null;
   }
 
   get textError() {
     if (this.event && !this.hasCardText) {
       return 'Events must have card text.';
-    }
-
-    if (this.parseErrors.length > 0) {
+    } else if (this.parseErrors.length > 0) {
       return this.parseErrors.join(' ');
     } else if (this.nonEmptySentences.find(s => !s.result.js)) {
       return 'Sentences are still being parsed ...';
+    } else {
+      return null;
     }
   }
 

@@ -97,7 +97,9 @@ export default class TutorialTooltip extends React.Component {
   }
 
   get nextButton() {
-    if (!this.step.action) {
+    if (this.step.action) {
+      return null;  // Only display the Next button if there is no other action to perform.
+    } else {
       return (
         <RaisedButton
           label={this.isComplete ? 'FINISH' : 'NEXT'}

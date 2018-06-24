@@ -102,7 +102,9 @@ export class Play extends React.Component {
   }
 
   get rightMenu() {
-    if (!this.props.started) {
+    if (this.props.started) {
+      return null;  // If a game is in progress, it will render its own <Chat>.
+    } else {
       return (
         <Chat
           roomName={this.props.socket.hosting ? null : this.props.socket.gameName}

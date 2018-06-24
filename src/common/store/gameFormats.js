@@ -1,9 +1,18 @@
-import { cloneDeep, shuffle } from 'lodash';
+import { cloneDeep, constant, shuffle } from 'lodash';
 import * as seededRNG from 'seed-random';
 
+import { DECK_SIZE } from '../constants';
 import { triggerSound } from '../util/game';
 
 import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameState';
+
+function deckHasNCards(deck, num) {
+  return deck.cardIds.length === num;
+}
+
+function deckHasOnlyBuiltinCards(deck) {
+  return deck.cardIds.every(cardId => cardId.startsWith('builtin/'));
+}
 
 export class GameFormat {
   name = undefined;
@@ -41,6 +50,8 @@ export const NormalGameFormat = new (class extends GameFormat {
   displayName = 'Normal';
   description = 'Each player has a 30-card deck. No restrictions on cards.';
 
+  isDeckValid = deck => deckHasNCards(deck, DECK_SIZE);
+
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
 
@@ -51,10 +62,24 @@ export const NormalGameFormat = new (class extends GameFormat {
   }
 });
 
+export const BuiltinOnlyGameFormat = new (class extends GameFormat {
+  name = 'builtinOnly';
+  displayName = 'Builtin Only';
+  description = 'Normal game with only built-in cards allowed.';
+
+  isDeckValid = deck => (
+    deckHasNCards(deck, DECK_SIZE) && deckHasOnlyBuiltinCards(deck)
+  );
+
+  startGame = NormalGameFormat.startGame;
+});
+
 export const SharedDeckGameFormat = new (class extends GameFormat {
   name = 'sharedDeck';
   displayName = 'Shared Deck';
   description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
+
+  isDeckValid = deck => deckHasNCards(deck, DECK_SIZE);
 
   startGame(state, player, usernames, decks, seed) {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -71,4 +96,8 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   }
 });
 
-export const FORMATS = [NormalGameFormat, SharedDeckGameFormat];
+export const FORMATS = [
+  NormalGameFormat,
+  BuiltinOnlyGameFormat,
+  SharedDeckGameFormat
+];

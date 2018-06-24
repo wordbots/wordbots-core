@@ -140,12 +140,14 @@ export default function launchWebsocketServer(server, path) {
 
   function joinGame(clientID, opponentID, deck) {
     const game = state.joinGame(clientID, opponentID, deck);
-    const { decks, format, name, startingSeed, usernames } = game;
+    if (game) {
+      const { decks, format, name, startingSeed, usernames } = game;
 
-    sendMessage('ws:GAME_START', {'player': 'blue', format, decks, usernames, seed: startingSeed }, [clientID]);
-    sendMessage('ws:GAME_START', {'player': 'orange', format, decks, usernames, seed: startingSeed }, [opponentID]);
-    sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
-    broadcastInfo();
+      sendMessage('ws:GAME_START', {'player': 'blue', format, decks, usernames, seed: startingSeed }, [clientID]);
+      sendMessage('ws:GAME_START', {'player': 'orange', format, decks, usernames, seed: startingSeed }, [opponentID]);
+      sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
+      broadcastInfo();
+    }
   }
 
   function joinQueue(clientID, deck) {

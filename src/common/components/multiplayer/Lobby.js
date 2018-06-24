@@ -37,30 +37,39 @@ export default class Lobby extends React.Component {
     return this.props.availableDecks.length === 0;
   }
 
+  /* The currently selected deck, in its raw form. */
   get deck() {
-    const { availableDecks, cards, selectedDeckIdx } = this.props;
-    const deck = availableDecks[selectedDeckIdx];
-    return {
-      id: deck.id,
-      cards: shuffleCardsInDeck(deck, cards)
-    };
+    const { availableDecks, selectedDeckIdx } = this.props;
+    return availableDecks[selectedDeckIdx];
+  }
+
+  /* The currently selected deck, in a form ready to start a game with. */
+  get deckForGame() {
+    const { cards } = this.props;
+    const deck = this.deck;
+    return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
   }
 
   get format() {
     return FORMATS[this.props.selectedFormatIdx].name;
   }
 
+  handleSelectFormat = (formatIdx) => {
+    this.props.onSelectFormat(formatIdx);
+    this.props.onSelectDeck(0);
+  }
+
   handleSelectMode = (mode) => {
     if (mode === 'practice') {
       // If selecting practice mode, pass the deck and format into the URL.
-      this.props.onSelectMode(mode, this.format, this.deck);
+      this.props.onSelectMode(mode, this.format, this.deckForGame);
     } else {
       this.props.onSelectMode(mode);
     }
   };
 
   handleJoinQueue = () => {
-    this.props.onJoinQueue(this.deck.cards);
+    this.props.onJoinQueue(this.deckForGame.cards);
   };
 
   handleLeaveQueue = () => {
@@ -68,11 +77,11 @@ export default class Lobby extends React.Component {
   };
 
   handleJoinGame = (gameId, gameName) => {
-    this.props.onJoinGame(gameId, gameName, this.deck.cards);
+    this.props.onJoinGame(gameId, gameName, this.deckForGame.cards);
   };
 
   handleHostGame = (gameName) => {
-    this.props.onHostGame(gameName, this.format, this.deck.cards);
+    this.props.onHostGame(gameName, this.format, this.deckForGame.cards);
   };
 
   renderLobbyContent(gameMode, socket) {
@@ -83,7 +92,7 @@ export default class Lobby extends React.Component {
         return (
           <div>
             <GameBrowser
-              cannotJoinGame={this.hasNoDecks}
+              currentDeck={this.deck}
               openGames={socket.waitingPlayers}
               inProgressGames={socket.games}
               usernameMap={socket.clientIdToUsername}
@@ -120,7 +129,7 @@ export default class Lobby extends React.Component {
   render() {
     const {
       availableDecks, cards, gameMode, selectedDeckIdx, selectedFormatIdx, socket,
-      onConnect, onSelectDeck, onSelectFormat
+      onConnect, onSelectDeck
     } = this.props;
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
 
@@ -134,14 +143,14 @@ export default class Lobby extends React.Component {
           onConnect={onConnect} />
 
         <div style={{display: 'flex'}}>
+          <FormatPicker
+            selectedFormatIdx={selectedFormatIdx}
+            onChooseFormat={this.handleSelectFormat} />
           <DeckPicker
             cards={cards}
             availableDecks={availableDecks}
             selectedDeckIdx={selectedDeckIdx}
             onChooseDeck={onSelectDeck} />
-          <FormatPicker
-            selectedFormatIdx={selectedFormatIdx}
-            onChooseFormat={onSelectFormat} />
         </div>
 
         {this.renderLobbyContent(gameMode, socket)}

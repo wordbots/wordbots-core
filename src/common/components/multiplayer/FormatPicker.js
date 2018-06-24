@@ -33,7 +33,7 @@ export default class FormatPicker extends React.Component {
         </SelectField>
         <Tooltip
           html
-          place="left"
+          place="right"
           className="formats-tooltip"
           text={FORMATS.map(f => `<b>${f.displayName}:</b> ${f.description}`).join('<br><br>')}
         >

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
-import { DECK_SIZE } from '../constants';
+import { FORMATS } from '../store/gameFormats';
 import Chat from '../components/multiplayer/Chat';
 import Lobby from '../components/multiplayer/Lobby';
 import * as collectionActions from '../actions/collection';
@@ -14,7 +14,9 @@ import * as socketActions from '../actions/socket';
 import GameAreaContainer from './GameAreaContainer';
 
 export function mapStateToProps(state) {
-  const validDecks = state.collection.decks.filter(d => d.cardIds.length === DECK_SIZE);
+  const selectedFormatIdx = state.collection.selectedFormatIdx || 0;
+  const selectedFormat = FORMATS[selectedFormatIdx]
+  const availableDecks = state.collection.decks.filter(selectedFormat.isDeckValid);
 
   return {
     started: state.game.started,
@@ -22,9 +24,9 @@ export function mapStateToProps(state) {
 
     socket: state.socket,
     cards: state.collection.cards,
-    availableDecks: validDecks,
-    selectedDeckIdx: Math.min(state.collection.selectedDeckIdx || 0, validDecks.length),
-    selectedFormatIdx: state.collection.selectedFormatIdx || 0
+    availableDecks,
+    selectedDeckIdx: Math.min(state.collection.selectedDeckIdx || 0, availableDecks.length),
+    selectedFormatIdx
   };
 }
 

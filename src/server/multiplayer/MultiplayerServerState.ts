@@ -5,6 +5,7 @@ import { chunk, compact, find, mapValues, pull, reject } from 'lodash';
 import { id as generateID } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
+import { GameFormat } from '../../common/store/gameFormats';
 import gameReducer from '../../common/reducers/game';
 
 import * as m from './multiplayer';
@@ -125,54 +126,64 @@ export default class MultiplayerServerState {
 
   // Make a player host a game with the given name and using the given deck.
   hostGame = (clientID: m.ClientID, name: string, format: string, deck: m.Deck): void => {
-    this.state.waitingPlayers.push({
-      id: clientID,
-      players: [clientID],
-      name,
-      format,
-      deck
-    });
-    console.log(`${this.getClientUsername(clientID)} started game ${name}.`);
+    const username = this.getClientUsername(clientID);
+
+    if (GameFormat.fromString(format).isDeckValid(deck)) {
+      this.state.waitingPlayers.push({
+        id: clientID,
+        players: [clientID],
+        name,
+        format,
+        deck
+      });
+      console.log(`${username} started game ${name}.`);
+    } else {
+      console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
+    }
   }
 
   // Make a player join the given opponent's hosted game with the given deck.
-  // Returns the game joined.
-  joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game => {
-    const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID }) as m.WaitingPlayer;
+  // Returns the game joined (if any).
+  joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game | undefined => {
+    const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
     const gameId = generateID();
 
-    const game: m.Game = {
-      id: gameId,
-      name: `Casual#${waitingPlayer.name}`,
-      format: waitingPlayer.format,
+    if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
+      const game: m.Game = {
+        id: gameId,
+        name: `Casual#${waitingPlayer.name}`,
+        format: waitingPlayer.format,
 
-      players: [clientID, opponentID],
-      playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
-      spectators: [],
+        players: [clientID, opponentID],
+        playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
+        spectators: [],
 
-      type: 'CASUAL',
-      decks: {orange: waitingPlayer.deck, blue: deck},
-      usernames: {
-        orange: this.getClientUsername(opponentID),
-        blue: this.getClientUsername(clientID)
-      },
-      ids : {
-        blue: clientID,
-        orange: opponentID
-      },
-      startingSeed: generateID(),
+        type: 'CASUAL',
+        decks: {orange: waitingPlayer.deck, blue: deck},
+        usernames: {
+          orange: this.getClientUsername(opponentID),
+          blue: this.getClientUsername(clientID)
+        },
+        ids : {
+          blue: clientID,
+          orange: opponentID
+        },
+        startingSeed: generateID(),
 
-      actions: [],
-      state: defaultGameState,
+        actions: [],
+        state: defaultGameState,
 
-      ...gameProps
-    };
+        ...gameProps
+      };
 
-    this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: opponentID });
-    this.state.games.push(game);
+      this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: opponentID });
+      this.state.games.push(game);
 
-    console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
-    return game;
+      console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
+      return game;
+    } else {
+      console.warn(`${this.getClientUsername(clientID)} was unable to join ${this.getClientUsername(opponentID)}'s game'.`);
+    }
   }
 
   // Make a player join the given game as a spectator.

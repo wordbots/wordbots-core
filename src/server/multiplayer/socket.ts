@@ -1,15 +1,17 @@
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
+import { Server } from 'http';
 import { noop } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
 
-import MultiplayerServerState from './MultiplayerServerState.ts';
+import * as m from './multiplayer';
+import MultiplayerServerState from './MultiplayerServerState';
 
 const QUEUE_INTERVAL_MSECS = 500;
 
 /* eslint-disable no-console */
-export default function launchWebsocketServer(server, path) {
+export default function launchWebsocketServer(server: Server, path: string): void {
   const state = new MultiplayerServerState();
 
   const wss = new WebSocket.Server({
@@ -22,18 +24,23 @@ export default function launchWebsocketServer(server, path) {
   wss.on('connection', onConnect);
 
   function onOpen() {
-    const addr = wss.options.server.address();
-    console.log(`WebSocket listening at http://${addr.address}:${addr.port}${path}`);
+    const { server } = wss.options;
+    if (server) {
+      const { address, port } = server.address();
+      console.log(`WebSocket listening at http://${address}:${port}${path}`);
 
-    setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);
+      setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);
+    } else {
+      console.error("WebSocket server failed to start")
+    }
   }
 
-  function onConnect(socket) {
+  function onConnect(socket: WebSocket): void {
     const clientID = generateID();
     state.connectClient(clientID, socket);
     broadcastInfo();
 
-    socket.on('message', msg => {
+    socket.on('message', (msg: string) => {
       try {
         onMessage(clientID, msg);
       } catch (ex) {
@@ -50,8 +57,9 @@ export default function launchWebsocketServer(server, path) {
     socket.on('error', noop); // Probably a disconnect (throws an error in ws 3.3.3+).
   }
 
-  function onMessage(clientID, data) {
-    const {type, payload} = JSON.parse(data);
+  function onMessage(clientID: m.ClientID, data: string): void {
+    const { type, payload }: m.Action = JSON.parse(data);
+
     if (type !== 'ws:KEEPALIVE') {
       console.log(`< ${data}`);
     }
@@ -65,7 +73,7 @@ export default function launchWebsocketServer(server, path) {
     } else if (type === 'ws:LEAVE_QUEUE') {
       leaveQueue(clientID);
     } else if (type === 'ws:SPECTATE') {
-      spectateGame(clientID, payload.id, payload.deck);
+      spectateGame(clientID, payload.id);
     } else if (type === 'ws:LEAVE') {
       leaveGame(clientID);
     } else if (type === 'ws:SEND_USER_DATA') {
@@ -81,7 +89,7 @@ export default function launchWebsocketServer(server, path) {
     }
   }
 
-  function onDisconnect(clientID) {
+  function onDisconnect(clientID: m.ClientID): void {
     const game = state.disconnectClient(clientID);
     sendChat(`${state.getClientUsername(clientID)} has left.`);
     if (game) {
@@ -89,7 +97,7 @@ export default function launchWebsocketServer(server, path) {
     }
   }
 
-  function sendMessage(type, payload = {}, recipientIDs = null) {
+  function sendMessage(type: string, payload: object = {}, recipientIDs: m.ClientID[] | null = null): void {
     const message = JSON.stringify({type, payload});
     state.getClientSockets(recipientIDs).forEach(socket => {
       try {
@@ -101,12 +109,12 @@ export default function launchWebsocketServer(server, path) {
     });
   }
 
-  function sendMessageInLobby(clientID, type, payload = {}) {
+  function sendMessageInLobby(clientID: m.ClientID, type: string, payload: object = {}): void {
     console.log(`${clientID} broadcast a message to the lobby: ${type} ${JSON.stringify(payload)}`);
     sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
-  function sendMessageInGame(clientID, type, payload = {}) {
+  function sendMessageInGame(clientID: m.ClientID, type: string, payload: object = {}): void {
     const opponentIds = state.getAllOpponents(clientID);
     if (opponentIds.length > 0) {
       console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${JSON.stringify(payload)}`);
@@ -114,16 +122,16 @@ export default function launchWebsocketServer(server, path) {
     }
   }
 
-  function sendChat(msg, recipientIDs = null) {
+  function sendChat(msg: string, recipientIDs: m.ClientID[] | null = null): void {
     sendMessage('ws:CHAT', {msg: msg, sender: '[Server]'}, recipientIDs);
   }
 
-  function broadcastInfo() {
+  function broadcastInfo(): void {
     sendMessage('ws:INFO', state.serialize());
   }
 
-  function setUserData(clientID, userData) {
-    const oldUserData = state.getClientUserData(clientID, false);
+  function setUserData(clientID: m.ClientID, userData: m.UserData): void {
+    const oldUserData = state.getClientUserData(clientID);
     state.setClientUserData(clientID, userData);
     if (!oldUserData && userData) {
       sendChat(`${userData.displayName} has entered the lobby.`);
@@ -133,12 +141,12 @@ export default function launchWebsocketServer(server, path) {
     broadcastInfo();
   }
 
-  function hostGame(clientID, name, format, deck) {
+  function hostGame(clientID: m.ClientID, name: string, format: string, deck: m.Deck): void {
     state.hostGame(clientID, name, format, deck);
     broadcastInfo();
   }
 
-  function joinGame(clientID, opponentID, deck) {
+  function joinGame(clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck): void {
     const game = state.joinGame(clientID, opponentID, deck);
     if (game) {
       const { decks, format, name, startingSeed, usernames } = game;
@@ -150,17 +158,17 @@ export default function launchWebsocketServer(server, path) {
     }
   }
 
-  function joinQueue(clientID, deck) {
+  function joinQueue(clientID: m.ClientID, deck: m.Deck): void {
     state.joinQueue(clientID, deck);
     broadcastInfo();
   }
 
-  function leaveQueue(clientID) {
+  function leaveQueue(clientID: m.ClientID): void {
     state.leaveQueue(clientID);
     broadcastInfo();
   }
 
-  function spectateGame(clientID, gameID) {
+  function spectateGame(clientID: m.ClientID, gameID: m.ClientID): void {
     const game = state.spectateGame(clientID, gameID);
     if (game) {
       const { actions, decks, name, startingSeed, usernames } = game;
@@ -174,20 +182,20 @@ export default function launchWebsocketServer(server, path) {
     }
   }
 
-  function leaveGame(clientID) {
+  function leaveGame(clientID: m.ClientID): void {
     state.leaveGame(clientID);
     sendChat('Entering the lobby ...', [clientID]);
     broadcastInfo();
   }
 
-  function performMatchmaking() {
+  function performMatchmaking(): void {
     const newGames = state.matchPlayersIfPossible();
     newGames.forEach(game => {
       const { decks, name, startingSeed, usernames } = game;
 
       sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
       sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
-      sendChat(`Entering game ${name} ...`, [game.players]);
+      sendChat(`Entering game ${name} ...`, game.players);
 
       broadcastInfo();
     });

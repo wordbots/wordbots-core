@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-
+import * as WebSocket from 'ws';
 import { chunk, compact, find, mapValues, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
@@ -37,13 +37,13 @@ export default class MultiplayerServerState {
   }
 
   // Returns the socket corresponding to a given player.
-  getClientSocket = (clientID: m.ClientID): m.Connection => (
+  getClientSocket = (clientID: m.ClientID): WebSocket => (
     this.state.connections[clientID]
   )
 
   // Returns all websocket connections corresponding to the given clientIDs,
   // or ALL connections if no clientIDs are specified.
-  getClientSockets = (clientIDs: m.ClientID[] | null = null): m.Connection[] => (
+  getClientSockets = (clientIDs: m.ClientID[] | null = null): WebSocket[] => (
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
@@ -52,13 +52,12 @@ export default class MultiplayerServerState {
     this.state.userData[clientID]
   )
 
-  // Returns the username to use for the given player.
-  // If fallbackToClientID is true, falls back to the client ID if there is no
-  // username set, otherwise returns null.
-  getClientUsername = (clientID: m.ClientID, fallbackToClientID = true): string => (
+  // Returns the username to use for the given player,
+  // or falls back to the client ID if there is no username set.
+  getClientUsername = (clientID: m.ClientID): string => (
     this.getClientUserData(clientID)
       ? this.getClientUserData(clientID).displayName
-      : (fallbackToClientID && clientID)
+      : clientID
   )
 
   // Returns the game that the given player is in, if any.
@@ -83,7 +82,7 @@ export default class MultiplayerServerState {
   /* Mutations */
 
   // Connect a player at the specified websocket to the server.
-  connectClient = (clientID: m.ClientID, socket: m.Connection): void => {
+  connectClient = (clientID: m.ClientID, socket: WebSocket): void => {
     this.state.connections[clientID] = socket;
     this.state.playersOnline.push(clientID);
     console.log(`${this.getClientUsername(clientID)} joined the room.`);

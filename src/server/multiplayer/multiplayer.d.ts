@@ -1,11 +1,22 @@
+import * as WebSocket from 'ws';
+
 export type ClientID = string;
+export type ActionType = string;
+export type ActionPayload = any;
 
 // TODO Figure these types out
-export type Connection = any; // TODO websocket connection type
-export type UserData = any;
 export type Deck = any;
-export type Action = any;
 export type GameState = any;
+
+export interface Action {
+  type: ActionType,
+  payload: ActionPayload
+}
+
+export interface UserData {
+  uid: string,
+  displayName: string
+}
 
 export interface Game {
   id: ClientID,
@@ -37,7 +48,7 @@ export interface PlayerInQueue {
 }
 
 interface ServerStateType {
-  connections: { [clientID: string]: Connection; },
+  connections: { [clientID: string]: WebSocket; },
   games: Game[],
   gameObjects: { [gameID: string]: Game; }
   waitingPlayers: WaitingPlayer[],

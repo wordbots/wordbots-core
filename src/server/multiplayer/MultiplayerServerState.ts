@@ -51,13 +51,12 @@ export default class MultiplayerServerState {
     this.state.userData[clientID]
   )
 
-  // Returns the username to use for the given player.
-  // If fallbackToClientID is true, falls back to the client ID if there is no
-  // username set, otherwise returns null.
-  getClientUsername = (clientID: m.ClientID, fallbackToClientID = true): string | null => (
+  // Returns the username to use for the given player,
+  // or falls back to the client ID if there is no username set.
+  getClientUsername = (clientID: m.ClientID): string => (
     this.getClientUserData(clientID)
       ? this.getClientUserData(clientID).displayName
-      : (fallbackToClientID ? clientID : null)
+      : clientID
   )
 
   // Returns the game that the given player is in, if any.
@@ -153,8 +152,8 @@ export default class MultiplayerServerState {
       type: 'CASUAL',
       decks: {orange: waitingPlayer.deck, blue: deck},
       usernames: {
-        orange: this.getClientUsername(opponentID) || '',
-        blue: this.getClientUsername(clientID) || ''
+        orange: this.getClientUsername(opponentID),
+        blue: this.getClientUsername(clientID)
       },
       ids : {
         blue: clientID,

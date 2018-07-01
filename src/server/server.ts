@@ -10,7 +10,15 @@ import launchWebsocketServer from './multiplayer/socket';
 const app = express();
 const { NODE_ENV, PORT } = process.env;
 
-function userAgentMiddleware(req, res, next) {
+interface Global {
+  navigator: any
+}
+declare const global: Global;
+
+// This resolves the following warning:
+//   Warning: Material-UI: userAgent should be supplied in the muiTheme context
+//        for server-side rendering.
+function userAgentMiddleware(req: express.Request, _res: express.Response, next: express.NextFunction) {
   global.navigator = {
     userAgent: req.headers['user-agent']
   };
@@ -22,8 +30,8 @@ if (NODE_ENV !== 'production') {
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const { publicPath } = webpackConfig.output;
 
-  const compiler = webpack(webpackConfig);
-  compiler.plugin('done', () => {
+  const compiler = webpack(webpackConfig as webpack.Configuration);
+  compiler.plugin('done', (): void => {
     // During tests, we just want to see that we're able to compile the app.
     if (NODE_ENV === 'test') {
       process.exit();
@@ -33,7 +41,7 @@ if (NODE_ENV !== 'production') {
   app.use(webpackDevMiddleware(compiler, { logLevel: 'warn', publicPath }));
   app.use(webpackHotMiddleware(compiler));
 } else {
-  app.use('/static', express.static(`${__dirname  }/../../dist`));
+  app.use('/static', express.static(`${__dirname}/../../dist`));
 }
 
 app.use(cookieParser());
@@ -41,7 +49,7 @@ app.use(userAgentMiddleware);
 
 app.get('/*', handleRequest);
 
-const server = app.listen(PORT || 3000, () => {
+const server = app.listen(PORT || 3000, (): void => {
   /* eslint-disable no-console */
   console.log(`App listening at http://${server.address().address}:${server.address().port}`);
   /* eslint-enable no-console */

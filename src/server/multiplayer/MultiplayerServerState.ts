@@ -230,16 +230,13 @@ export default class MultiplayerServerState {
     this.state.matchmakingQueue = reject(this.state.matchmakingQueue, { clientID });
   }
 
-  // Return pairs of player IDs to match into games.
+  // Return pairs of queued players to match into games.
   // TODO: Fix this, using MMR.
-  findAvailableMatches = (): m.ClientID[][] => {
+  findAvailableMatches = (): m.PlayerInQueue[][] => {
     const { matchmakingQueue } = this.state;
     const queuesPerFormat: m.PlayerInQueue[][] = Object.values(groupBy(matchmakingQueue, 'format'));
 
-    return flatMap(queuesPerFormat, queue => {
-      const playerIds = queue.map(m => m.clientID);
-      return chunk(playerIds, 2).filter(m => m.length === 2);
-    });
+    return flatMap(queuesPerFormat, queue => chunk(queue, 2).filter(p => p.length === 2));
   }
 
   // Pair players if there are at least two people waiting for a ranked game.
@@ -248,13 +245,12 @@ export default class MultiplayerServerState {
     const { matchmakingQueue } = this.state;
     const playerPairs = this.findAvailableMatches();
 
-    return compact(playerPairs.map(([playerId1, playerId2]) => {
+    return compact(playerPairs.map(([player1, player2]) => {
+      const [ playerId1, playerId2 ] = [ player1.clientID, player2.clientID ];
       const gameName = `Ranked#${this.getClientUsername(playerId1)}-vs-${this.getClientUsername(playerId2)}`;
-      const deck1 = (find(matchmakingQueue, {clientID: playerId1}) as m.PlayerInQueue).deck;
-      const deck2 = (find(matchmakingQueue, {clientID: playerId2}) as m.PlayerInQueue).deck;
 
-      this.hostGame(playerId1, gameName, 'normal', deck1);
-      const game = this.joinGame(playerId2, playerId1, deck2, { type: 'RANKED' });
+      this.hostGame(playerId1, gameName, 'normal', player1.deck);
+      const game = this.joinGame(playerId2, playerId1, player2.deck, { type: 'RANKED' });
 
       if (game) {
         this.state.matchmakingQueue = reject(matchmakingQueue, m => [playerId1, playerId2].includes(m.clientID));

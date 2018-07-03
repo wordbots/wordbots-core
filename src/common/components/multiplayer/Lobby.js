@@ -69,7 +69,7 @@ export default class Lobby extends React.Component {
   };
 
   handleJoinQueue = () => {
-    this.props.onJoinQueue(this.deckForGame.cards);
+    this.props.onJoinQueue(this.format, this.deckForGame.cards);
   };
 
   handleLeaveQueue = () => {

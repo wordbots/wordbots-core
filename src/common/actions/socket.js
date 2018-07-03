@@ -57,10 +57,10 @@ export function join(id, name, deck) {
   };
 }
 
-export function joinQueue(deck) {
+export function joinQueue(format, deck) {
   return {
     type: JOIN_QUEUE,
-    payload: {deck}
+    payload: { format, deck }
   };
 }
 

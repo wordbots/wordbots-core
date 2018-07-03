@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import * as WebSocket from 'ws';
-import { chunk, compact, find, mapValues, pull, reject } from 'lodash';
+import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
@@ -124,7 +124,7 @@ export default class MultiplayerServerState {
   }
 
   // Make a player host a game with the given name and using the given deck.
-  hostGame = (clientID: m.ClientID, name: string, format: string, deck: m.Deck): void => {
+  hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void => {
     const username = this.getClientUsername(clientID);
 
     if (GameFormat.fromString(format).isDeckValid(deck)) {
@@ -221,8 +221,8 @@ export default class MultiplayerServerState {
   }
 
   // Add a player to the matchmaking queue.
-  joinQueue = (clientID: m.ClientID, deck: m.Deck): void => {
-    this.state.matchmakingQueue.push({ clientID, deck });
+  joinQueue = (clientID: m.ClientID, format: m.Format, deck: m.Deck): void => {
+    this.state.matchmakingQueue.push({ clientID, format, deck });
   }
 
   // Remove a player from the matchmaking queue.
@@ -233,8 +233,13 @@ export default class MultiplayerServerState {
   // Return pairs of player IDs to match into games.
   // TODO: Fix this, using MMR.
   findAvailableMatches = (): m.ClientID[][] => {
-    const playerIds = this.state.matchmakingQueue.map(m => m.clientID);
-    return chunk(playerIds, 2).filter(m => m.length === 2);
+    const { matchmakingQueue } = this.state;
+    const queuesPerFormat: m.PlayerInQueue[][] = Object.values(groupBy(matchmakingQueue, 'format'));
+
+    return flatMap(queuesPerFormat, queue => {
+      const playerIds = queue.map(m => m.clientID);
+      return chunk(playerIds, 2).filter(m => m.length === 2);
+    });
   }
 
   // Pair players if there are at least two people waiting for a ranked game.

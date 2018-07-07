@@ -13,7 +13,8 @@ export default class GameMode extends React.Component {
   };
 
   static defaultProps = {
-    imagePath: ''
+    imagePath: '',
+    modesPerRow: 2
   }
 
   renderOverlay() {
@@ -86,7 +87,8 @@ export default class GameMode extends React.Component {
         style={{
           width: `calc(${widthPercent} - ${widthPadding}px)`,
           height: 300,
-          position: 'relative'
+          position: 'relative',
+          marginBottom: 20
         }}
       >
         {this.renderOverlay()}

@@ -6,10 +6,8 @@ import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
 import { FORMATS } from '../store/gameFormats';
-import Chat from '../components/multiplayer/Chat';
-import Lobby from '../components/multiplayer/Lobby';
+import SingleplayerLobby from '../components/multiplayer/SingleplayerLobby';
 import * as collectionActions from '../actions/collection';
-import * as socketActions from '../actions/socket';
 
 import GameAreaContainer from './GameAreaContainer';
 
@@ -20,7 +18,6 @@ export function mapStateToProps(state) {
 
   return {
     started: state.game.started,
-    actionLog: state.game.actionLog,
 
     socket: state.socket,
     cards: state.collection.cards,
@@ -32,27 +29,6 @@ export function mapStateToProps(state) {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onConnect: () => {
-      dispatch(socketActions.connect());
-    },
-    onHostGame: (name, format, deck) => {
-      dispatch(socketActions.host(name, format, deck));
-    },
-    onJoinGame: (id, name, deck) => {
-      dispatch(socketActions.join(id, name, deck));
-    },
-    onJoinQueue: (deck) => {
-      dispatch(socketActions.joinQueue(deck));
-    },
-    onLeaveQueue: () => {
-      dispatch(socketActions.leaveQueue());
-    },
-    onSpectateGame: (id) => {
-      dispatch(socketActions.spectate(id));
-    },
-    onSendChatMessage: (msg) => {
-      dispatch(socketActions.chat(msg));
-    },
     onSelectDeck: (deckIdx) => {
       dispatch(collectionActions.selectDeck(deckIdx));
     },
@@ -65,7 +41,6 @@ export function mapDispatchToProps(dispatch) {
 export class Singleplayer extends React.Component {
   static propTypes = {
     started: bool,
-    actionLog: arrayOf(object),
 
     socket: object,
     cards: arrayOf(object),
@@ -75,13 +50,6 @@ export class Singleplayer extends React.Component {
 
     history: object,
 
-    onConnect: func,
-    onJoinQueue: func,
-    onLeaveQueue: func,
-    onHostGame: func,
-    onJoinGame: func,
-    onSpectateGame: func,
-    onSendChatMessage: func,
     onSelectDeck: func,
     onSelectFormat: func
   };
@@ -97,25 +65,6 @@ export class Singleplayer extends React.Component {
   static isInGameUrl = (url) =>
     (url.startsWith(Singleplayer.baseUrl) && compact(url.split('/')).length > 1);
 
-  componentDidMount() {
-    if (!this.props.socket.connected) {
-      this.props.onConnect();
-    }
-  }
-
-  get rightMenu() {
-    if (this.props.started) {
-      return null;  // If a game is in progress, it will render its own <Chat>.
-    } else {
-      return (
-        <Chat
-          roomName={this.props.socket.hosting ? null : this.props.socket.gameName}
-          messages={this.props.socket.chatMessages.concat(this.props.actionLog)}
-          onSendMessage={this.props.onSendChatMessage} />
-      );
-    }
-  }
-
   selectMode = (mode, format = null, deck = null) => {
     this.props.history.push(Singleplayer.urlForGameMode(mode, format, deck));
   }
@@ -125,19 +74,13 @@ export class Singleplayer extends React.Component {
       return <GameAreaContainer />;
     } else {
       return (
-        <Lobby
+        <SingleplayerLobby
           socket={this.props.socket}
           gameMode={this.props.history.location.pathname.split('/singleplayer')[1]}
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           selectedDeckIdx={this.props.selectedDeckIdx}
           selectedFormatIdx={this.props.selectedFormatIdx}
-          onConnect={this.props.onConnect}
-          onHostGame={this.props.onHostGame}
-          onJoinGame={this.props.onJoinGame}
-          onJoinQueue={this.props.onJoinQueue}
-          onLeaveQueue={this.props.onLeaveQueue}
-          onSpectateGame={this.props.onSpectateGame}
           onSelectDeck={this.props.onSelectDeck}
           onSelectFormat={this.props.onSelectFormat}
           onSelectMode={this.selectMode} />
@@ -153,13 +96,10 @@ export class Singleplayer extends React.Component {
         <Switch>
           <Route path={Singleplayer.urlForGameMode('tutorial')} component={GameAreaContainer} />
           <Route path={`${Singleplayer.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
-          <Route path={Singleplayer.urlForGameMode('casual')} render={this.renderLobby} />
+          <Route path={Singleplayer.urlForGameMode('sandbox')} render={GameAreaContainer} />
           <Route exact path={Singleplayer.baseUrl} render={this.renderLobby} />
-          <Route path={Singleplayer.urlForGameMode('ranked')} render={this.renderLobby} />
           <Redirect to={Singleplayer.baseUrl} />
         </Switch>
-
-        {this.rightMenu}
       </div>
     );
   }

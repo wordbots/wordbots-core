@@ -6,7 +6,7 @@ import { FORMATS } from '../../store/gameFormats';
 
 import DeckPicker from './DeckPicker';
 import FormatPicker from './FormatPicker';
-import GameMode from './GameMode';
+import SinglePlayerModeSelection from './SinglePlayerModeSelection';
 
 export default class SingleplayerLobby extends React.Component {
   static propTypes = {
@@ -46,18 +46,14 @@ export default class SingleplayerLobby extends React.Component {
     this.props.onSelectDeck(0);
   }
 
-  handleClickTutorial = () => {
-    this.props.onSelectMode('tutorial');
-  }
-
-  handleClickPractice = () => {
-    // If selecting practice mode, pass the deck and format into the URL.
-    this.props.onSelectMode('practice', this.format, this.deckForGame);
-  }
-
-  handleClickSandbox = () => {
-    this.props.onSelectMode('sandbox');
-  }
+  handleSelectMode = (mode) => {
+    if (mode === 'practice') {
+      // If selecting practice mode, pass the deck and format into the URL.
+      this.props.onSelectMode(mode, this.format, this.deckForGame);
+    } else {
+      this.props.onSelectMode(mode);
+    }
+  };
 
   render() {
     const {
@@ -77,27 +73,7 @@ export default class SingleplayerLobby extends React.Component {
             onChooseDeck={onSelectDeck} />
         </div>
 
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          flexDirection: 'row'
-        }}>
-          <GameMode
-            name="Tutorial"
-            imagePath="/static/tutorial.png"
-            onSelect={this.handleClickTutorial} />
-          <GameMode
-            name="Practice"
-            imagePath="/static/practice.png"
-            onSelect={this.handleClickPractice} />
-          <GameMode
-            name="Sandbox"
-            imagePath="/static/practice.png"
-            onSelect={this.handleClickSandbox} />
-          <GameMode
-            name="Puzzle"
-            disabled />
-        </div>
+        <SinglePlayerModeSelection />
       </div>
     );
   }

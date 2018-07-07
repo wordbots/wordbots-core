@@ -60,12 +60,7 @@ export default class Lobby extends React.Component {
   }
 
   handleSelectMode = (mode) => {
-    if (mode === 'practice') {
-      // If selecting practice mode, pass the deck and format into the URL.
-      this.props.onSelectMode(mode, this.format, this.deckForGame);
-    } else {
-      this.props.onSelectMode(mode);
-    }
+    this.props.onSelectMode(mode);
   };
 
   handleJoinQueue = () => {

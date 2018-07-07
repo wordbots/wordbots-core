@@ -35,7 +35,6 @@ export default class MultiplayerModeSelection extends React.Component {
         <GameMode
           disabled
           name="Unranked Matchmaking"
-          imagePath="/static/casual.png"
           modesPerRow={3}
           onSelect={this.handleClickUnrankedMatchmaking} />
         <GameMode

@@ -29,12 +29,12 @@ import Home from './Home';
 import Singleplayer from './Singleplayer';
 import Multiplayer from './Multiplayer';
 import About from './About';
-import GameArea from './GameAreaContainer';
 import Profile from './Profile';
 
 function mapStateToProps(state) {
   return {
-    inGame: state.game.started && !state.game.sandbox,
+    inGame: state.game.started,
+    inSandbox: state.game.sandbox,
     renderId: state.global.renderId
   };
 }
@@ -63,6 +63,7 @@ class App extends React.Component {
 
   static propTypes = {
     inGame: bool,
+    inSandbox: bool,
     renderId: number,  // eslint-disable-line react/no-unused-prop-types
 
     history: object,
@@ -107,7 +108,8 @@ class App extends React.Component {
   }
 
   get inGame() {
-    return this.props.inGame || Singleplayer.isInGameUrl(this.props.location.pathname);
+    const { location, inGame, inSandbox } = this.props;
+    return (inGame || Singleplayer.isInGameUrl(location.pathname)) && !inSandbox;
   }
 
   get sidebar() {
@@ -136,7 +138,6 @@ class App extends React.Component {
             <Route path="/deck" component={Deck} />
             <Route path="/singleplayer" component={Singleplayer} />
             <Route path="/multiplayer" component={Multiplayer} />
-            <Route path="/sandbox" component={GameArea} />
             <Route path="/about" component={About} />
             <Route path="/profile" component={Profile} />
             <Route render={this.redirectToRoot} />

@@ -230,7 +230,7 @@ export class GameAreaContainer extends React.Component {
         this.setState({ message: null });
         if (this.urlMatchesGameMode('practice')) {
           this.tryToStartPracticeGame(match.params.format, match.params.deck);
-        } else if (location.pathname.startsWith('/sandbox')) {
+        } else if (this.urlMatchesGameMode('sandbox')) {
           onStartSandbox();
         } else {
           history.push(Singleplayer.baseUrl);

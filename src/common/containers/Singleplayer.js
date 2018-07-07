@@ -62,7 +62,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class Play extends React.Component {
+export class Singleplayer extends React.Component {
   static propTypes = {
     started: bool,
     actionLog: arrayOf(object),
@@ -86,16 +86,16 @@ export class Play extends React.Component {
     onSelectFormat: func
   };
 
-  static baseUrl = '/play';
+  static baseUrl = '/singleplayer';
 
   static urlForGameMode = (mode, format = null, deck = null) => {
     const maybeFormatParam = format ? `/${format}` : '';
     const maybeDeckParam = deck ? `/${deck.id}` : '';
-    return `${Play.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
+    return `${Singleplayer.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
   }
 
   static isInGameUrl = (url) =>
-    (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 1);
+    (url.startsWith(Singleplayer.baseUrl) && compact(url.split('/')).length > 1);
 
   componentDidMount() {
     if (!this.props.socket.connected) {
@@ -117,7 +117,7 @@ export class Play extends React.Component {
   }
 
   selectMode = (mode, format = null, deck = null) => {
-    this.props.history.push(Play.urlForGameMode(mode, format, deck));
+    this.props.history.push(Singleplayer.urlForGameMode(mode, format, deck));
   }
 
   renderLobby = () => {
@@ -127,7 +127,7 @@ export class Play extends React.Component {
       return (
         <Lobby
           socket={this.props.socket}
-          gameMode={this.props.history.location.pathname.split('/play')[1]}
+          gameMode={this.props.history.location.pathname.split('/singleplayer')[1]}
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           selectedDeckIdx={this.props.selectedDeckIdx}
@@ -148,15 +148,15 @@ export class Play extends React.Component {
   render() {
     return (
       <div>
-        <Helmet title="Play"/>
+        <Helmet title="Singleplayer"/>
 
         <Switch>
-          <Route path={Play.urlForGameMode('tutorial')} component={GameAreaContainer} />
-          <Route path={`${Play.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
-          <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
-          <Route exact path={Play.baseUrl} render={this.renderLobby} />
-          <Route path={Play.urlForGameMode('ranked')} render={this.renderLobby} />
-          <Redirect to={Play.baseUrl} />
+          <Route path={Singleplayer.urlForGameMode('tutorial')} component={GameAreaContainer} />
+          <Route path={`${Singleplayer.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
+          <Route path={Singleplayer.urlForGameMode('casual')} render={this.renderLobby} />
+          <Route exact path={Singleplayer.baseUrl} render={this.renderLobby} />
+          <Route path={Singleplayer.urlForGameMode('ranked')} render={this.renderLobby} />
+          <Redirect to={Singleplayer.baseUrl} />
         </Switch>
 
         {this.rightMenu}
@@ -165,4 +165,4 @@ export class Play extends React.Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Play));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Singleplayer));

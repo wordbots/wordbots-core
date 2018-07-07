@@ -89,7 +89,8 @@ export default class NavMenu extends React.Component {
       {this.renderLink('/collection', 'Collection', 'view_module')}
       {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
       {this.renderLink('/decks', 'Decks', 'view_list')}
-      {this.renderLink('/play', 'Play', 'videogame_asset')}
+      {this.renderLink('/singleplayer', 'Singleplayer', 'videogame_asset')}
+      {this.renderLink('/multiplayer', 'Multiplayer', 'videogame_asset')}
       {this.renderLink('/sandbox', 'Sandbox', 'brush')}
       {this.renderLink('/about', 'About', 'info_outline')}
       {this.renderExpandCollapseButton()}

@@ -26,9 +26,10 @@ import Creator from './Creator';
 import Deck from './Deck';
 import Decks from './Decks';
 import Home from './Home';
-import Play from './Play';
-import GameArea from './GameAreaContainer';
+import Singleplayer from './Singleplayer';
+import Multiplayer from './Multiplayer';
 import About from './About';
+import GameArea from './GameAreaContainer';
 import Profile from './Profile';
 
 function mapStateToProps(state) {
@@ -106,7 +107,7 @@ class App extends React.Component {
   }
 
   get inGame() {
-    return this.props.inGame || Play.isInGameUrl(this.props.location.pathname);
+    return this.props.inGame || Singleplayer.isInGameUrl(this.props.location.pathname);
   }
 
   get sidebar() {
@@ -133,7 +134,8 @@ class App extends React.Component {
             <Route path="/creator" component={Creator} />
             <Route path="/decks" component={Decks} />
             <Route path="/deck" component={Deck} />
-            <Route path="/play" component={Play} />
+            <Route path="/singleplayer" component={Singleplayer} />
+            <Route path="/multiplayer" component={Multiplayer} />
             <Route path="/sandbox" component={GameArea} />
             <Route path="/about" component={About} />
             <Route path="/profile" component={Profile} />

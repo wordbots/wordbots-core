@@ -7,7 +7,7 @@ import { compact } from 'lodash';
 
 import { FORMATS } from '../store/gameFormats';
 import Chat from '../components/multiplayer/Chat';
-import Lobby from '../components/multiplayer/Lobby';
+import MultiplayerLobby from '../components/multiplayer/MultiplayerLobby';
 import * as collectionActions from '../actions/collection';
 import * as socketActions from '../actions/socket';
 
@@ -125,7 +125,7 @@ export class Multiplayer extends React.Component {
       return <GameAreaContainer />;
     } else {
       return (
-        <Lobby
+        <MultiplayerLobby
           socket={this.props.socket}
           gameMode={this.props.history.location.pathname.split('/multiplayer')[1]}
           cards={this.props.cards}

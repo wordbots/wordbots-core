@@ -49,7 +49,7 @@ app.use(userAgentMiddleware);
 
 app.get('/*', handleRequest);
 
-const server = app.listen(PORT || 3000, (): void => {
+const server = app.listen(PORT || 5000, (): void => {
   /* eslint-disable no-console */
   console.log(`App listening at http://${server.address().address}:${server.address().port}`);
   /* eslint-enable no-console */

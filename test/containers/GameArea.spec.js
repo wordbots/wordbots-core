@@ -124,7 +124,7 @@ describe('GameArea container', () => {
     // TODO attack.
   });
 
-  it('should start tutorial mode on page load if the URL is /play/tutorial', () => {
+  it('should start tutorial mode on page load if the URL is /singleplayer/tutorial', () => {
     const dispatchedActions = [];
     const state = combineState({...getDefaultState(), started: false});
 
@@ -132,7 +132,7 @@ describe('GameArea container', () => {
       dispatchedActions.push(action);
     }
 
-    const game = createGameArea(state, dispatch, { location: { pathname: '/play/tutorial' }});
+    const game = createGameArea(state, dispatch, { location: { pathname: '/singleplayer/tutorial' }});
     renderElement(game, true);
 
     expect(dispatchedActions.pop()).toEqual(
@@ -140,11 +140,11 @@ describe('GameArea container', () => {
     );
   });
 
-  describe('should start practice mode on page load if the URL is /play/practice/[deckId]', () => {
+  describe('should start practice mode on page load if the URL is /singleplayer/practice/[deckId]', () => {
     const dispatchedActions = [];
     const state = combineState({...getDefaultState(), started: false});
     const historyParams = {
-      location: { pathname: '/play/practice/deckId' },
+      location: { pathname: '/singleplayer/practice/deckId' },
       match: { params: { deck: 'deckId' } },
       history: { push: (url) => dispatchedActions.push({ type: 'HISTORY.PUSH', payload: { url } }) }
     };
@@ -162,7 +162,7 @@ describe('GameArea container', () => {
       expect(dispatchedActions.length).toEqual(0);
     });
 
-    it('should redirect to /play if collection.firebaseLoaded = true but the deck doesn\'t exist', () => {
+    it('should redirect to /singleplayer if collection.firebaseLoaded = true but the deck doesn\'t exist', () => {
       const game = createGameArea(state, dispatch, {...historyParams, collection: {
         firebaseLoaded: true,
         decks: []
@@ -170,7 +170,7 @@ describe('GameArea container', () => {
       renderElement(game, true);
 
       expect(dispatchedActions.pop()).toEqual(
-        { type: 'HISTORY.PUSH', payload: { url: '/play' } }
+        { type: 'HISTORY.PUSH', payload: { url: '/singleplayer' } }
       );
     });
 

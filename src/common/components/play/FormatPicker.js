@@ -13,17 +13,34 @@ export default class FormatPicker extends React.Component {
     onChooseFormat: func
   };
 
+  get styles() {
+    return {
+      body: {
+        position: 'relative', 
+        margin: 10
+      },
+      select: {
+        width: '100%'
+      },
+      helpIcon: {
+        position: 'absolute',
+        top: 0,
+        right: 0
+      }
+    };
+  }
+
   handleSelectFormat = (e, idx, v) => {
     this.props.onChooseFormat(idx);
   }
 
   render() {
     return (
-      <div style={{position: 'relative', margin: 10}}>
+      <div style={this.styles.body}>
         <SelectField
           value={this.props.selectedFormatIdx}
           floatingLabelText="Choose a format"
-          style={{width: '100%'}}
+          style={this.styles.select}
           onChange={this.handleSelectFormat}
         >
           {FORMATS.map((format, idx) =>
@@ -36,11 +53,7 @@ export default class FormatPicker extends React.Component {
           className="formats-tooltip"
           text={FORMATS.map(f => `<b>${f.displayName}:</b> ${f.description}`).join('<br><br>')}
         >
-          <FontIcon className="material-icons" style={{
-            position: 'absolute',
-            top: 0,
-            right: 0
-          }}>help</FontIcon>
+          <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
         </Tooltip>
       </div>
     );

@@ -26,7 +26,7 @@ export default class FormatPicker extends React.Component {
       },
       helpIcon: {
         position: 'absolute',
-        top: 10,
+        top: -5,
         right: 0
       }
     };

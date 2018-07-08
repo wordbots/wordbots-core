@@ -27,7 +27,7 @@ export default class PaperButton extends React.Component {
 
   onMouseOver = () => {
     if (!this.props.disabled) {
-      this.setState({shadow: 3});
+      this.setState({shadow: 10});
     }
   }
 
@@ -38,7 +38,7 @@ export default class PaperButton extends React.Component {
   render() {
     return (
       <Paper
-        zDepth={this.state.shadow}
+        elevation={this.state.shadow}
         onClick={this.onClick}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut}

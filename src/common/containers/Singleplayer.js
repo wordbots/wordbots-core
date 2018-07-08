@@ -6,7 +6,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
 import { FORMATS } from '../store/gameFormats';
-import SingleplayerLobby from '../components/multiplayer/SingleplayerLobby';
+import SingleplayerLobby from '../components/play/singleplayer/SingleplayerLobby';
 import * as collectionActions from '../actions/collection';
 
 import GameAreaContainer from './GameAreaContainer';

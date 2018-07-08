@@ -6,8 +6,8 @@ import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
 import { FORMATS } from '../store/gameFormats';
-import Chat from '../components/multiplayer/Chat';
-import MultiplayerLobby from '../components/multiplayer/MultiplayerLobby';
+import Chat from '../components/play/multiplayer/Chat';
+import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
 import * as collectionActions from '../actions/collection';
 import * as socketActions from '../actions/socket';
 

@@ -3,7 +3,7 @@ import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-typ
 import Textfit from 'react-textfit';
 import Divider from 'material-ui/Divider';
 import { CardHeader, CardText } from 'material-ui/Card';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isEqual, noop } from 'lodash';
@@ -293,7 +293,7 @@ export default class Card extends React.Component {
               onMouseLeave={this.handleMouseLeave}
             >
               <Paper
-                zDepth={this.state.shadow}
+                elevation={this.state.shadow}
                 style={Object.assign({
                   width: 140 * this.props.scale,
                   height: 211 * this.props.scale,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bool, number, string } from 'prop-types';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { capitalize } from 'lodash';
 
@@ -129,8 +129,8 @@ export default class CardStat extends React.Component {
 
     return (
       <div style={{float: 'left', width: '33%'}}>
-        <Paper circle
-          zDepth={1}
+        <Paper
+          elevation={1}
           style={{
             width: 32,
             height: 32,

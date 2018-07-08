@@ -3,7 +3,7 @@ import { string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 
 import Title from '../components/Title';
 import MarkdownBlock from '../components/MarkdownBlock';

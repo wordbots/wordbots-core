@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayOf, bool, element, func, object, oneOfType } from 'prop-types';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 
 export default class PaperButton extends React.Component {
   static propTypes = {

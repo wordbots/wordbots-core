@@ -2,7 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 
 export function mapStateToProps(state) {
   return {

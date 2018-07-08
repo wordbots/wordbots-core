@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { object } from 'prop-types';
 import Helmet from 'react-helmet';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import Toggle from 'material-ui/Toggle';

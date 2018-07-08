@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayOf, bool, func, number, object, string } from 'prop-types';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import Helmet from 'react-helmet';
 import * as screenfull from 'screenfull';
 

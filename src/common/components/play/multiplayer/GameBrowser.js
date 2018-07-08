@@ -3,8 +3,6 @@ import { arrayOf, func, object } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
-import { GameFormat } from '../../../store/gameFormats';
-
 import GameRow from './GameRow';
 
 export default class GameBrowser extends React.Component {
@@ -12,7 +10,6 @@ export default class GameBrowser extends React.Component {
     openGames: arrayOf(object),
     inProgressGames: arrayOf(object),
     usernameMap: object,
-    currentDeck: object,
 
     onJoinGame: func,
     onSpectateGame: func
@@ -20,12 +17,6 @@ export default class GameBrowser extends React.Component {
 
   get games() {
     return this.props.openGames.concat(this.props.inProgressGames);
-  }
-
-  canPlayerJoinGame = (game) => {
-    const { currentDeck } = this.props;
-    const format = GameFormat.fromString(game.format);
-    return format.isDeckValid(currentDeck);
   }
 
   renderTableRows() {
@@ -38,7 +29,6 @@ export default class GameBrowser extends React.Component {
             key={game.id}
             game={game}
             usernameMap={usernameMap}
-            cannotJoinGame={!this.canPlayerJoinGame(game)}
             onJoinGame={onJoinGame}
             onSpectateGame={onSpectateGame} />
         )

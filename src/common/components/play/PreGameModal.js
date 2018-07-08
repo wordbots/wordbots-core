@@ -51,6 +51,25 @@ export default class PreGameModal extends React.Component {
     return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
   }
 
+  get actions() {
+    return [
+      <Button
+        variant="outlined"
+        key="Cancel"
+        onTouchTap={this.close}
+        style={{ marginRight: 10 }}>
+        Cancel
+      </Button>,
+      <Button
+        variant="raised"
+        color="secondary"
+        key="Start Game"
+        onTouchTap={this.handleStartGame}>
+        Start Game
+      </Button>
+    ];
+  }
+
   close = () => {
     RouterDialog.closeDialog(this.props.history);
   }
@@ -81,22 +100,7 @@ export default class PreGameModal extends React.Component {
         style={{
           width: 450
         }}
-        actions={[
-          <Button
-            variant="outlined"
-            key="Cancel"
-            onTouchTap={this.close}
-            style={{ marginRight: 10 }}>
-            Cancel
-          </Button>,
-          <Button
-            variant="raised"
-            color="secondary"
-            key="Start Game"
-            onTouchTap={this.handleStartGame}>
-            Start Game
-          </Button>
-        ]}
+        actions={this.actions}
       >
         {!format && <FormatPicker
           selectedFormatIdx={selectedFormatIdx}

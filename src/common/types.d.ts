@@ -25,7 +25,7 @@ export interface GameState {
   started: boolean
   storeKey: 'game'
   tutorial: boolean
-  usernames: PerPlayer<string>
+  usernames: PerPlayer<string> | {}
   winner: PlayerColor | null
   [x: string]: any  // TODO Expose more field types as we need them
 }

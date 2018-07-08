@@ -73,7 +73,8 @@ const defaultState: w.GameState = {
   attack: null,
   memory: {},
   sfxQueue: [],
-  eventQueue: []
+  eventQueue: [],
+  rng: Math.random
 };
 
 export default defaultState;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { arrayOf, func, object, string } from 'prop-types';
+import { arrayOf, element, func, object, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 
 import { shuffleCardsInDeck } from '../../util/cards';
@@ -18,13 +18,14 @@ export default class PreGameModal extends React.Component {
     startButtonText: string,
     title: string,
 
+    children: element,
     history: object.isRequired,
 
     onStartGame: func.isRequired
   };
 
   static defaultProps = {
-    startButtonText: "Start Game"
+    startButtonText: 'Start Game'
   }
 
   state = {
@@ -107,6 +108,7 @@ export default class PreGameModal extends React.Component {
         }}
         actions={this.actions}
       >
+        {this.props.children}
         {!format && <FormatPicker
           selectedFormatIdx={selectedFormatIdx}
           onChooseFormat={this.handleChooseFormat}

@@ -7,6 +7,7 @@ import Title from '../../Title';
 import PreGameModal from '../PreGameModal';
 
 import GameBrowser from './GameBrowser';
+import GameCreationModal from './GameCreationModal';
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
 import MultiplayerModeSelection from './MultiplayerModeSelection';
@@ -49,8 +50,8 @@ export default class Lobby extends React.Component {
     this.props.onJoinGame(gameId, gameName, this.deckForGame.cards);
   };
 
-  handleHostGame = (gameName) => {
-    this.props.onHostGame(gameName, this.format, this.deckForGame.cards);
+  handleHostGame = (gameName, formatName, deck) => {
+    this.props.onHostGame(gameName, formatName, deck.cards);
   };
 
   renderWaiting(socket) {
@@ -76,6 +77,13 @@ export default class Lobby extends React.Component {
             cards={cards}
             history={history}
             onStartGame={this.handleJoinQueue} />
+          <GameCreationModal
+            path="host"
+            title="Create Casual Game"
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onCreateGame={this.handleHostGame} />
         </div>
 
         <Title text="Multiplayer" />
@@ -89,7 +97,7 @@ export default class Lobby extends React.Component {
 
           {this.renderWaiting(socket)}
 
-          <MultiplayerModeSelection onSelectMode={this.handleSelectMode}/>
+          <MultiplayerModeSelection onSelectMode={this.handleSelectMode} />
 
           <HostGame
             disabled={this.hasNoDecks}

@@ -87,8 +87,8 @@ export default class MultiplayerLobby extends React.Component {
             history={history}
             onStartGame={this.handleJoinGame} />}
           <PreGameModal
-            mode="ranked"
-            title="Join Ranked Queue"
+            mode="matchmaking"
+            title="Join Matchmaking Queue"
             startButtonText="Join"
             availableDecks={availableDecks}
             cards={cards}

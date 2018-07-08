@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { arrayOf, bool, func, object } from 'prop-types';
 import Badge from 'material-ui/Badge';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bool, number, string } from 'prop-types';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 
 export default class CardBack extends React.Component {
   static propTypes = {
@@ -31,7 +31,7 @@ export default class CardBack extends React.Component {
 
     return (
       <Paper
-        zDepth={2}
+        elevation={2}
         onMouseEnter={this.toggleHover}
         onMouseLeave={this.toggleHover}
         style={Object.assign({

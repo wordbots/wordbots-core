@@ -1,151 +1,128 @@
 import * as React from 'react';
-import { arrayOf, func, number, object, string } from 'prop-types';
+import { arrayOf, func, object } from 'prop-types';
 
 import { CHAT_WIDTH } from '../../../constants';
-import { shuffleCardsInDeck } from '../../../util/cards';
-import { FORMATS } from '../../../store/gameFormats';
-import DeckPicker from '../DeckPicker';
-import FormatPicker from '../FormatPicker';
+import RouterDialog from '../../RouterDialog';
+import Title from '../../Title';
+import PreGameModal from '../PreGameModal';
 
 import GameBrowser from './GameBrowser';
-import RankedQueue from './RankedQueue';
-import HostGame from './HostGame';
+import GameCreationModal from './GameCreationModal';
 import LobbyStatus from './LobbyStatus';
 import MultiplayerModeSelection from './MultiplayerModeSelection';
 import Waiting from './Waiting';
 
-export default class Lobby extends React.Component {
+export default class MultiplayerLobby extends React.Component {
   static propTypes = {
     socket: object,
-    gameMode: string,
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
-    selectedDeckIdx: number,
-    selectedFormatIdx: number,
+
+    history: object,
 
     onConnect: func,
     onJoinGame: func,
     onSpectateGame: func,
     onJoinQueue: func,
     onLeaveQueue: func,
-    onHostGame: func,
-    onSelectDeck: func,
-    onSelectFormat: func,
-    onSelectMode: func
+    onHostGame: func
   };
 
-  get hasNoDecks() {
-    return this.props.availableDecks.length === 0;
-  }
-
-  /* The currently selected deck, in its raw form. */
-  get deck() {
-    const { availableDecks, selectedDeckIdx } = this.props;
-    return availableDecks[selectedDeckIdx];
-  }
-
-  /* The currently selected deck, in a form ready to start a game with. */
-  get deckForGame() {
-    const { cards } = this.props;
-    const deck = this.deck;
-    return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
-  }
-
-  get format() {
-    return FORMATS[this.props.selectedFormatIdx].name;
-  }
-
-  handleSelectFormat = (formatIdx) => {
-    this.props.onSelectFormat(formatIdx);
-    this.props.onSelectDeck(0);
-  }
+  state = {
+    casualGameBeingJoined: null
+  };
 
   handleSelectMode = (mode) => {
-    this.props.onSelectMode(mode);
+    RouterDialog.openDialog(this.props.history, mode);
   };
 
-  handleJoinQueue = () => {
-    this.props.onJoinQueue(this.format, this.deckForGame.cards);
+  handleJoinQueue = (formatName, deck) => {
+    this.props.onJoinQueue(formatName, deck.cards);
   };
 
   handleLeaveQueue = () => {
     this.props.onLeaveQueue();
   };
 
-  handleJoinGame = (gameId, gameName) => {
-    this.props.onJoinGame(gameId, gameName, this.deckForGame.cards);
+  handleClickJoinCasualGame = (id, name, format) => {
+    this.setState({
+      casualGameBeingJoined: { id, name, format }
+    }, () => {
+      this.handleSelectMode('casual');
+    });
+  }
+
+  handleJoinGame = (formatName, deck) => {
+    const { id, name } = this.state.casualGameBeingJoined;
+    this.props.onJoinGame(id, name, deck.cards);
   };
 
-  handleHostGame = (gameName) => {
-    this.props.onHostGame(gameName, this.format, this.deckForGame.cards);
+  handleHostGame = (gameName, formatName, deck) => {
+    this.props.onHostGame(gameName, formatName, deck.cards);
   };
 
   renderWaiting(socket) {
     if (socket.hosting) {
       return <Waiting />;
-    }
-  }
-
-  renderLobbyContent(gameMode, socket) {
-    if (gameMode === '/ranked') {
-      return (
-        <div>
-          <RankedQueue
-            disabled={this.hasNoDecks}
-            queuing={socket.queuing}
-            queueSize={socket.queueSize}
-            onJoinQueue={this.handleJoinQueue}
-            onLeaveQueue={this.handleLeaveQueue}
-          />
-        </div>
-      );
-    } else {
-      return <MultiplayerModeSelection onSelectMode={this.handleSelectMode}/>;
+    } else if (socket.queuing) {
+      return <Waiting inQueue queueSize={socket.queueSize} />;
     }
   }
 
   render() {
-    const {
-      availableDecks, cards, gameMode, selectedDeckIdx, selectedFormatIdx, socket,
-      onConnect, onSelectDeck
-    } = this.props;
+    const { availableDecks, cards, history, socket, onConnect } = this.props;
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
+    const { casualGameBeingJoined } = this.state;
 
     return (
-      <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
-        <LobbyStatus
-          connecting={connecting}
-          connected={connected}
-          playersOnline={playersOnline}
-          usernameMap={clientIdToUsername}
-          onConnect={onConnect} />
-
-        <div style={{display: 'flex'}}>
-          <FormatPicker
-            selectedFormatIdx={selectedFormatIdx}
-            onChooseFormat={this.handleSelectFormat} />
-          <DeckPicker
-            cards={cards}
+      <div>
+        <div>
+          {casualGameBeingJoined && <PreGameModal
+            mode="casual"
+            title={`Join Casual Game: ${casualGameBeingJoined.name}`}
+            startButtonText="Join"
+            format={casualGameBeingJoined.format}
             availableDecks={availableDecks}
-            selectedDeckIdx={selectedDeckIdx}
-            onChooseDeck={onSelectDeck} />
+            cards={cards}
+            history={history}
+            onStartGame={this.handleJoinGame} />}
+          <PreGameModal
+            mode="ranked"
+            title="Join Ranked Queue"
+            startButtonText="Join"
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onStartGame={this.handleJoinQueue} />
+          <GameCreationModal
+            path="host"
+            title="Create Casual Game"
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onCreateGame={this.handleHostGame} />
         </div>
 
-        {this.renderWaiting(socket)}
+        <Title text="Multiplayer" />
+        <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
+          <LobbyStatus
+            connecting={connecting}
+            connected={connected}
+            playersOnline={playersOnline}
+            usernameMap={clientIdToUsername}
+            onConnect={onConnect} />
 
-        {this.renderLobbyContent(gameMode, socket)}
+          {this.renderWaiting(socket)}
 
-        <HostGame
-          disabled={this.hasNoDecks}
-          onHostGame={this.handleHostGame} />
+          <MultiplayerModeSelection onSelectMode={this.handleSelectMode} />
 
-        <GameBrowser
-          currentDeck={this.deck}
-          openGames={socket.waitingPlayers}
-          inProgressGames={socket.games}
-          usernameMap={socket.clientIdToUsername}
-          onJoinGame={this.handleJoinGame}
-          onSpectateGame={this.props.onSpectateGame} />
+          <GameBrowser
+            openGames={socket.waitingPlayers}
+            inProgressGames={socket.games}
+            usernameMap={socket.clientIdToUsername}
+            onJoinGame={this.handleClickJoinCasualGame}
+            onSpectateGame={this.props.onSpectateGame} />
+        </div>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { arrayOf, func, object, string } from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
+import { arrayOf, element, func, object, string } from 'prop-types';
+import Button from '@material-ui/core/Button';
 
 import { shuffleCardsInDeck } from '../../util/cards';
 import { FORMATS } from '../../store/gameFormats';
@@ -15,12 +15,19 @@ export default class PreGameModal extends React.Component {
     cards: arrayOf(object).isRequired,
     format: object,
     mode: string.isRequired,
+    startButtonText: string,
     title: string,
+    gameName: string,
 
+    children: element,
     history: object.isRequired,
 
     onStartGame: func.isRequired
   };
+
+  static defaultProps = {
+    startButtonText: 'Start Game'
+  }
 
   state = {
     selectedDeckIdx: 0,
@@ -51,6 +58,27 @@ export default class PreGameModal extends React.Component {
     return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
   }
 
+  get actions() {
+    const { mode, gameName } = this.props;
+    return [
+      <Button
+        key="cancel"
+        variant="outlined"
+        onTouchTap={this.close}
+        style={{ marginRight: 10 }}>
+        Cancel
+      </Button>,
+      <Button
+        key="start"
+        variant="raised"
+        color="secondary"
+        disabled={gameName === '' && mode === 'host'}
+        onTouchTap={this.handleStartGame}>
+        {this.props.startButtonText}
+      </Button>
+    ];
+  }
+
   close = () => {
     RouterDialog.closeDialog(this.props.history);
   }
@@ -64,12 +92,12 @@ export default class PreGameModal extends React.Component {
   }
 
   handleStartGame = () => {
-    this.props.onStartGame(this.format.name, this.deck);
+    this.props.onStartGame(this.format.name, this.deckForGame);
     this.close();
   };
 
   render() {
-    const { cards, format, history, mode, title } = this.props;
+    const { cards, children, format, history, mode, title } = this.props;
     const { selectedDeckIdx, selectedFormatIdx } = this.state;
 
     return (
@@ -78,20 +106,13 @@ export default class PreGameModal extends React.Component {
         path={mode}
         title={title}
         history={history}
-        actions={[
-          <RaisedButton
-            label="Cancel"
-            key="Cancel"
-            onTouchTap={this.close}
-            style={{ marginRight: 10 }} />,
-          <RaisedButton
-            secondary
-            label="Start Game"
-            key="Start Game"
-            onTouchTap={this.handleStartGame} />
-        ]}
+        style={{
+          width: 450
+        }}
+        actions={this.actions}
       >
-        {!format && <FormatPicker
+        {children}
+        {format ? null : <FormatPicker
           selectedFormatIdx={selectedFormatIdx}
           onChooseFormat={this.handleChooseFormat}
         />}

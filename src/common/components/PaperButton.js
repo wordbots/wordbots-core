@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayOf, bool, element, func, object, oneOfType } from 'prop-types';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 
 export default class PaperButton extends React.Component {
   static propTypes = {
@@ -27,7 +27,7 @@ export default class PaperButton extends React.Component {
 
   onMouseOver = () => {
     if (!this.props.disabled) {
-      this.setState({shadow: 3});
+      this.setState({shadow: 10});
     }
   }
 
@@ -38,7 +38,7 @@ export default class PaperButton extends React.Component {
   render() {
     return (
       <Paper
-        zDepth={this.state.shadow}
+        elevation={this.state.shadow}
         onClick={this.onClick}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut}

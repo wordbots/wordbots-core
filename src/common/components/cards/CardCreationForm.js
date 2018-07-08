@@ -3,7 +3,7 @@ import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import Snackbar from 'material-ui/Snackbar';
@@ -260,35 +260,42 @@ export default class CardCreationForm extends React.Component {
     const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
     const examplesLoaded = this.state.examplesLoaded[this.parserMode];
 
+    const FULL_WIDTH_PERCENT = 100;
+    const NUMBER_OF_BUTTONS = 4;
+    const MARGIN_PX = 20;
+
+    const buttonMaxWidth = FULL_WIDTH_PERCENT / NUMBER_OF_BUTTONS;
+    const buttonPadding = (MARGIN_PX * (NUMBER_OF_BUTTONS - 1)) / NUMBER_OF_BUTTONS;
+
     return (
       <div style={this.styles.container}>
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 12, width: '100%', maxWidth: 800}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: MARGIN_PX, width: '100%', maxWidth: 800}}>
             <ButtonInRow
               label="Help"
               icon="help_outline"
               tooltip="Learn more about creating a card."
-              width="24%"
+              width={`calc(${buttonMaxWidth}% - ${buttonPadding}px)`}
               onClick={this.handleClickHelp} />
             <ButtonInRow
               label="Dictionary"
               icon="book"
               tooltip="Check out all of the terms and actions that the parser supports."
-              width="24%"
+              width={`calc(${buttonMaxWidth}% - ${buttonPadding}px)`}
               onClick={this.handleClickDictionary} />
             <ButtonInRow
               label="Randomize"
               icon="refresh"
               tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
               onClick={this.handleClickRandomize}
-              width="24%"
+              width={`calc(${buttonMaxWidth}% - ${buttonPadding}px)`}
               disabled={!examplesLoaded} />
             <ButtonInRow
               label="Test"
               icon="videogame_asset"
               tooltip="Test out this card in a practice game."
               onClick={this.props.onTestCard}
-              width="24%"
+              width={`calc(${buttonMaxWidth}% - ${buttonPadding}px)`}
               disabled={!this.isValid} />
           </div>
         </div>

@@ -8,7 +8,7 @@ if (inBrowser()) {
 }
 
 export function inBrowser() {
-  return !(typeof document === 'undefined' || 
+  return !(typeof document === 'undefined' ||
     (window.process && window.process.title.includes('node')) ||
     (window.process && window.process.title.includes('test')));
 }

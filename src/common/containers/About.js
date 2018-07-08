@@ -3,8 +3,9 @@ import { string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 
+import Title from '../components/Title';
 import MarkdownBlock from '../components/MarkdownBlock';
 
 export function mapStateToProps(state) {
@@ -17,10 +18,11 @@ const About = function (props) {
   const [version, sha] = props.version.split('+');
 
   return (
-    <div style={{margin: '48px 72px'}}>
+    <div>
       <Helmet title="About"/>
+      <Title text="About" />
 
-      <div style={{display: 'flex', justifyContent: 'stretch'}}>
+      <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
         <div style={{width: '50%', marginRight: 20}}>
           <Paper style={{padding: '5px 20px'}}>
             <MarkdownBlock source={whatIsWordbots(version, sha)} />

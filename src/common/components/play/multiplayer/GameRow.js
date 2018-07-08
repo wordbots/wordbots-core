@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { bool, func, object } from 'prop-types';
+import { func, object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 
@@ -9,15 +9,14 @@ export default class GameRow extends React.Component {
   static propTypes = {
     game: object,
     usernameMap: object,
-    cannotJoinGame: bool,
 
     onJoinGame: func,
     onSpectateGame: func
   };
 
   handleJoinGame = () => {
-    const { game, onJoinGame } = this.props;
-    onJoinGame(game.id, game.name);
+    const { game: { id, name, format }, onJoinGame } = this.props;
+    onJoinGame(id, name, GameFormat.fromString(format));
   };
 
   handleSpectateGame = () => {
@@ -26,7 +25,7 @@ export default class GameRow extends React.Component {
   };
 
   render() {
-    const { cannotJoinGame, game, usernameMap } = this.props;
+    const { game, usernameMap } = this.props;
     return (
       <TableRow key={game.id}>
         <TableRowColumn>{game.name}</TableRowColumn>
@@ -38,7 +37,6 @@ export default class GameRow extends React.Component {
             <RaisedButton
               secondary
               label="Join Game"
-              disabled={cannotJoinGame}
               onTouchTap={this.handleJoinGame} /> :
             <RaisedButton
               secondary

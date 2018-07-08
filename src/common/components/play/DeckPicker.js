@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { arrayOf, func, number, object } from 'prop-types';
-import Paper from 'material-ui/Paper';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { cardsInDeck } from '../../util/cards';
 import EnergyCurve from '../cards/EnergyCurve';
@@ -23,30 +25,35 @@ export default class DeckPicker extends React.Component {
     return this.noDecks ? [] : cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
   }
 
-  handleSelectDeck = (e, idx, v) => {
-    this.props.onChooseDeck(idx);
+  handleSelectDeck = (event) => {
+    this.props.onChooseDeck(event.target.value);
   }
 
   render() {
     return (
-      <Paper style={{display: 'flex', flex: 3, padding: 20, margin: 10 }}>
-        <SelectField
-          value={this.props.selectedDeckIdx}
-          floatingLabelText="Choose a deck"
-          style={{flex: 2, width: '80%', marginRight: 25}}
-          onChange={this.handleSelectDeck}
-          disabled={this.noDecks}
-          errorText={this.noDecks ? 'You don\'t have any complete (30-card) decks!' : null}
-        >
-          {this.props.availableDecks.map((deck, idx) =>
-            <MenuItem key={idx} value={idx} primaryText={`${deck.name}`}/>
-          )}
-        </SelectField>
-
-        <div style={{flex: 1}}>
-          <EnergyCurve cards={this.cardsInDeck} height={80} />
-        </div>
-      </Paper>
+      <React.Fragment>
+        <FormControl style={{ width: '100%', marginBottom: 15 }} error={this.noDecks}>
+          <InputLabel>Choose a deck</InputLabel>
+          <Select
+            style={{
+              width: '100%', 
+              marginRight: 25
+            }}
+            name="decks"
+            value={this.props.selectedDeckIdx}
+            onChange={this.handleSelectDeck}
+            disabled={this.noDecks}
+          >
+            {this.props.availableDecks.map((deck, idx) =>
+              <MenuItem key={idx} value={idx}>{deck.name}</MenuItem>
+            )}
+          </Select>
+          <FormHelperText style={{
+            display: this.noDecks ? 'none' : 'none'
+          }}>You don&#39;t have any complete (30-card) decks</FormHelperText>
+        </FormControl>
+        <EnergyCurve cards={this.cardsInDeck} height={80} />
+      </React.Fragment>
     );
   }
 }

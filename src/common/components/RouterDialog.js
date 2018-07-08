@@ -43,12 +43,14 @@ export default class RouterDialog extends React.Component {
       open
       repositionOnUpdate={false}
       modal={this.props.modal}
-      bodyStyle={this.props.bodyStyle}
+      bodyStyle={Object.assign({ zIndex: 970 }, this.props.bodyStyle)}
+      style={{ zIndex: 960 }}
       autoScrollBodyContent={this.props.scroll}
       title={this.props.title}
       contentStyle={this.props.style}
       actions={this.props.actions}
       onRequestClose={this.handleCloseDialog}
+      overlayStyle={{ zIndex: 950 }}
     >
       {this.props.children}
     </Dialog>

@@ -3,7 +3,7 @@ import { arrayOf, bool, func, object, string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import { compact, find, noop } from 'lodash';
 
 import { getDisplayedCards } from '../util/cards';

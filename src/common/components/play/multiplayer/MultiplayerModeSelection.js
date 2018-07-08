@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { func } from 'prop-types';
-import { noop } from 'lodash';
 
 import GameMode from '../GameMode';
 
@@ -10,8 +9,7 @@ export default class MultiplayerModeSelection extends React.Component {
   };
 
   handleClickCreateCasual = () => {
-    // TO-DO: make this button pop-up the casual game creation modal
-    noop();
+    this.props.onSelectMode('host');
   }
 
   handleClickUnrankedMatchmaking = () => {
@@ -33,7 +31,7 @@ export default class MultiplayerModeSelection extends React.Component {
           name="Create Casual Game"
           imagePath="/static/casual.png"
           modesPerRow={3}
-          onSelect={noop} />
+          onSelect={this.handleClickCreateCasual} />
         <GameMode
           disabled
           name="Unranked Matchmaking"

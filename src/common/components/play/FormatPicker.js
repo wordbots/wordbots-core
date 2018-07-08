@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { func, number } from 'prop-types';
-import Paper from 'material-ui/Paper';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
 import { FORMATS } from '../../store/gameFormats';
@@ -14,32 +15,52 @@ export default class FormatPicker extends React.Component {
     onChooseFormat: func
   };
 
-  handleSelectFormat = (e, idx, v) => {
-    this.props.onChooseFormat(idx);
+  get styles() {
+    return {
+      body: {
+        position: 'relative'
+      },
+      select: {
+        width: '100%', 
+        marginRight: 25
+      },
+      helpIcon: {
+        position: 'absolute',
+        top: -5,
+        right: 0
+      }
+    };
+  }
+
+  handleSelectFormat = (event) => {
+    this.props.onChooseFormat(event.target.value);
   }
 
   render() {
     return (
-      <Paper style={{display: 'flex', flex: 1, padding: 20, margin: 10}}>
-        <SelectField
-          value={this.props.selectedFormatIdx}
-          floatingLabelText="Choose a format"
-          style={{width: '100%'}}
-          onChange={this.handleSelectFormat}
-        >
-          {FORMATS.map((format, idx) =>
-            <MenuItem key={idx} value={idx} primaryText={`${format.displayName}`}/>
-          )}
-        </SelectField>
+      <div style={this.styles.body}>
+        <FormControl style={{ width: '100%', marginBottom: 15 }} error={this.noDecks}>
+          <InputLabel>Choose a format</InputLabel>
+          <Select
+            style={this.styles.select}
+            name="formats"
+            value={this.props.selectedFormatIdx}
+            onChange={this.handleSelectFormat}
+          >
+            {FORMATS.map((format, idx) =>
+              <MenuItem key={idx} value={idx}>{format.displayName}</MenuItem>
+            )}
+          </Select>
+        </FormControl>
         <Tooltip
           html
-          place="right"
+          place="left"
           className="formats-tooltip"
           text={FORMATS.map(f => `<b>${f.displayName}:</b> ${f.description}`).join('<br><br>')}
         >
-          <FontIcon className="material-icons">help</FontIcon>
+          <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
         </Tooltip>
-      </Paper>
+      </div>
     );
   }
 }

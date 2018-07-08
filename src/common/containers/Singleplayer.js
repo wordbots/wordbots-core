@@ -42,7 +42,6 @@ export class Singleplayer extends React.Component {
     (url.startsWith(Singleplayer.baseUrl) && compact(url.split('//')[0].split('/')).length > 1);
 
   selectMode = (mode, format = null, deck = null) => {
-    console.log(Singleplayer.urlForGameMode(mode, format, deck));
     this.props.history.push(Singleplayer.urlForGameMode(mode, format, deck));
   }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayOf, func, string } from 'prop-types';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import { List } from 'material-ui/List';
 
 import DictionaryTerm from './DictionaryTerm';

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { arrayOf, func, object } from 'prop-types';
 
+import Title from '../../Title';
 import RouterDialog from '../../RouterDialog';
 import PreGameModal from '../PreGameModal';
 
@@ -33,15 +34,18 @@ export default class SingleplayerLobby extends React.Component {
     const { availableDecks, cards, history } = this.props;
 
     return (
-      <div style={{padding: '48px 72px 0'}}>
-        <SingleplayerModeSelection onSelectMode={this.handleSelectMode} />
-        <PreGameModal
-          mode="practice"
-          title="Start Practice Game"
-          availableDecks={availableDecks}
-          cards={cards}
-          history={history}
-          onStartGame={this.handleStartPracticeGame} />
+      <div >
+        <Title text="Singleplayer" />
+        <div style={{ padding: 20 }}>
+          <SingleplayerModeSelection onSelectMode={this.handleSelectMode} />
+          <PreGameModal
+            mode="practice"
+            title="Start Practice Game"
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onStartGame={this.handleStartPracticeGame} />
+        </div>
       </div>
     );
   }

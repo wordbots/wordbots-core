@@ -10,7 +10,7 @@ import game from '../src/common/reducers/game';
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
 import { collection } from '../src/common/store/cards';
-import defaultGameState from '../src/common/store/defaultGameState';
+import defaultGameState from '../src/common/store/defaultGameState.ts';
 import defaultCreatorState from '../src/common/store/defaultCreatorState';
 import defaultCollectionState from '../src/common/store/defaultCollectionState';
 import defaultSocketState from '../src/common/store/defaultSocketState';

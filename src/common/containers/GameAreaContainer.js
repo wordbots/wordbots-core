@@ -12,7 +12,7 @@ import { currentTutorialStep } from '../util/game';
 import GameArea, { gameProps } from '../components/game/GameArea';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
-import { arbitraryPlayerState } from '../store/defaultGameState';
+import { arbitraryPlayerState } from '../store/defaultGameState.ts';
 
 import Singleplayer from './Singleplayer';
 

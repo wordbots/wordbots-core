@@ -6,7 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { FORMATS } from '../../store/gameFormats';
+import { FORMATS } from '../../store/gameFormats.ts';
 import Tooltip from '../Tooltip';
 
 export default class FormatPicker extends React.Component {

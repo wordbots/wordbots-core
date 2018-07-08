@@ -1,22 +1,23 @@
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
 
+import * as w from '../types';
 import * as cards from './cards';
 
 const STARTING_PLAYER = 'orange';
 
-export function bluePlayerState(collection) {
+export function bluePlayerState(collection: w.Card[]): w.PlayerState {
   return playerState('blue', collection, cards.blueCoreCard, BLUE_CORE_HEX);
 }
 
-export function orangePlayerState(collection) {
+export function orangePlayerState(collection: w.Card[]): w.PlayerState {
   return playerState('orange', collection, cards.orangeCoreCard, ORANGE_CORE_HEX);
 }
 
-export function arbitraryPlayerState() {
+export function arbitraryPlayerState(): w.PlayerState {
   return bluePlayerState([]);
 }
 
-function playerState(color, collection, coreCard, coreHexId) {
+function playerState(color: w.PlayerColor, collection: w.Card[], coreCard: w.Card, coreHexId: string): w.PlayerState {
   return {
     name: color,
     energy: {
@@ -52,7 +53,7 @@ function playerState(color, collection, coreCard, coreHexId) {
   };
 }
 
-const defaultState = {
+const defaultState: w.GameState = {
   storeKey: 'game',
   players: {
     blue: bluePlayerState([]),

@@ -9,7 +9,7 @@ import { currentTutorialStep, passTurn } from '../../../util/game';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
 import * as cards from '../../../store/cards';
-import defaultState from '../../../store/defaultGameState';
+import defaultState from '../../../store/defaultGameState.ts';
 
 function nextStep(state, action = null) {
   if (state.tutorialCurrentStepIdx < state.tutorialSteps.length) {

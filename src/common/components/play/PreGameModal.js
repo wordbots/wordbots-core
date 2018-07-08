@@ -2,8 +2,8 @@ import * as React from 'react';
 import { arrayOf, element, func, object, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 
-import { shuffleCardsInDeck } from '../../util/cards';
-import { FORMATS } from '../../store/gameFormats';
+import { unpackDeck } from '../../util/cards';
+import { FORMATS } from '../../store/gameFormats.ts';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -41,8 +41,8 @@ export default class PreGameModal extends React.Component {
   }
 
   get validDecks() {
-    const { availableDecks } = this.props;
-    return availableDecks.filter(this.format.isDeckValid);
+    const { availableDecks, cards } = this.props;
+    return availableDecks.map(deck => unpackDeck(deck, cards)).filter(this.format.isDeckValid);
   }
 
   /* The currently selected deck, in its raw form. */
@@ -53,9 +53,7 @@ export default class PreGameModal extends React.Component {
 
   /* The currently selected deck, in a form ready to start a game with. */
   get deckForGame() {
-    const { cards } = this.props;
-    const deck = this.deck;
-    return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
+    return unpackDeck(this.deck, this.props.cards);
   }
 
   get actions() {

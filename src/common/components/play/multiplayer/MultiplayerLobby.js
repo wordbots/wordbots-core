@@ -135,6 +135,10 @@ export default class Lobby extends React.Component {
 
         {this.renderLobbyContent(gameMode, socket)}
 
+        <HostGame
+          disabled={this.hasNoDecks}
+          onHostGame={this.handleHostGame} />
+
         <GameBrowser
           currentDeck={this.deck}
           openGames={socket.waitingPlayers}
@@ -142,10 +146,6 @@ export default class Lobby extends React.Component {
           usernameMap={socket.clientIdToUsername}
           onJoinGame={this.handleJoinGame}
           onSpectateGame={this.props.onSpectateGame} />
-
-        <HostGame
-          disabled={this.hasNoDecks}
-          onHostGame={this.handleHostGame} />
       </div>
     );
   }

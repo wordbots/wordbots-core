@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
+import Spinner from 'react-spinkit';
 
 const Waiting = () => (
   <Paper style={{
@@ -10,7 +9,7 @@ const Waiting = () => (
     padding: 20,
     marginBottom: 20
   }}>
-    <CircularProgress style={{ marginRight: 10 }}/>
+    <Spinner name="ball-clip-rotate" style={{ marginRight: 15 }}/>
     <div>Waiting for an opponent ...</div>
   </Paper>
 );

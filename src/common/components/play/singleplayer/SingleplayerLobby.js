@@ -61,7 +61,7 @@ export default class SingleplayerLobby extends React.Component {
     } = this.props;
 
     return (
-      <div style={{padding: '48px 72px 0'}}>
+      <div style={{padding: '20px'}}>
         <div style={{display: 'flex'}}>
           <FormatPicker
             selectedFormatIdx={selectedFormatIdx}

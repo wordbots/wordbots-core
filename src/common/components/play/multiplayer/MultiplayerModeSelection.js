@@ -12,12 +12,8 @@ export default class MultiplayerModeSelection extends React.Component {
     this.props.onSelectMode('host');
   }
 
-  handleClickUnrankedMatchmaking = () => {
-    this.props.onSelectMode('unranked');
-  }
-
-  handleClickRankedMatchmaking = () => {
-    this.props.onSelectMode('ranked');
+  handleClickMatchmaking = () => {
+    this.props.onSelectMode('matchmaking');
   }
 
   render() {
@@ -30,18 +26,11 @@ export default class MultiplayerModeSelection extends React.Component {
         <GameMode
           name="Create Casual Game"
           imagePath="/static/casual.png"
-          modesPerRow={3}
           onSelect={this.handleClickCreateCasual} />
         <GameMode
-          disabled
-          name="Unranked Matchmaking"
-          modesPerRow={3}
-          onSelect={this.handleClickUnrankedMatchmaking} />
-        <GameMode
-          name="Ranked Matchmaking"
+          name="Matchmaking"
           imagePath="/static/casual.png"
-          modesPerRow={3}
-          onSelect={this.handleClickRankedMatchmaking} />
+          onSelect={this.handleClickMatchmaking} />
       </div>
     );
   }

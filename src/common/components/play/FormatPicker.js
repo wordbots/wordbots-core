@@ -21,12 +21,12 @@ export default class FormatPicker extends React.Component {
         position: 'relative'
       },
       select: {
-        width: '100%', 
+        width: '100%',
         marginRight: 25
       },
       helpIcon: {
         position: 'absolute',
-        top: -5,
+        top: -2,
         right: 0
       }
     };

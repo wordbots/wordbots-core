@@ -127,9 +127,7 @@ export default class MultiplayerServerState {
   hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void => {
     const username = this.getClientUsername(clientID);
 
-    // TODO Re-enable server-side deck validation once we can give the server the same deck format as the client
-    // if (GameFormat.fromString(format).isDeckValid(deck)) {
-    if (GameFormat.fromString(format)) {
+    if (GameFormat.fromString(format).isDeckValid(deck)) {
       this.state.waitingPlayers.push({
         id: clientID,
         players: [clientID],
@@ -149,9 +147,7 @@ export default class MultiplayerServerState {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
     const gameId = generateID();
 
-    // TODO Re-enable server-side deck validation once we can give the server the same deck format as the client
-    // if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
-    if (waitingPlayer) {
+    if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
       const game: m.Game = {
         id: gameId,
         name: `Casual#${waitingPlayer.name}`,

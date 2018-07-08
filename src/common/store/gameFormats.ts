@@ -1,25 +1,26 @@
 import { cloneDeep, shuffle } from 'lodash';
 import * as seededRNG from 'seed-random';
 
+import * as w from '../types';
 import { DECK_SIZE } from '../constants';
 import { triggerSound } from '../util/game';
 
 import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameState';
 
-function deckHasNCards(deck, num) {
-  return deck.cardIds.length === num;
+function deckHasNCards(deck: w.Deck, num: number): boolean {
+  return deck.cards.length === num;
 }
 
-function deckHasOnlyBuiltinCards(deck) {
-  return deck.cardIds.every(cardId => cardId.startsWith('builtin/'));
+function deckHasOnlyBuiltinCards(deck: w.Deck): boolean {
+  return deck.cards.every(card => card.source == 'builtin');
 }
 
 export class GameFormat {
-  name = undefined;
-  displayName = undefined;
-  description = undefined;
+  name: string | undefined = undefined;
+  displayName: string | undefined = undefined;
+  description: string | undefined = undefined;
 
-  static fromString(gameFormatStr) {
+  static fromString(gameFormatStr: String): GameFormat {
     const format = FORMATS.find(m => m.name === gameFormatStr);
     if (!format) {
       throw `Unknown game format: ${gameFormatStr}`;
@@ -27,11 +28,15 @@ export class GameFormat {
     return format;
   }
 
-  isActive(state) {
+  isDeckValid = (_deck: w.Deck): boolean => false
+
+  isActive(state: w.GameState): boolean {
     return state.gameFormat === this.name;
   }
 
-  startGame(state, player, usernames, decks, seed) {
+  startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, _decks: w.PerPlayer<w.Card[]>, seed: string
+  ): w.GameState {
     state = Object.assign(state, cloneDeep(defaultState), {
       gameFormat: this.name,
       player: player,
@@ -50,9 +55,11 @@ export const NormalGameFormat = new (class extends GameFormat {
   displayName = 'Normal';
   description = 'Each player has a 30-card deck. No restrictions on cards.';
 
-  isDeckValid = deck => deckHasNCards(deck, DECK_SIZE);
+  isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
 
-  startGame(state, player, usernames, decks, seed) {
+  startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
+  ): w.GameState {
     state = super.startGame(state, player, usernames, decks, seed);
 
     state.players.blue = bluePlayerState(decks.blue);
@@ -67,11 +74,15 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
   displayName = 'Builtin Only';
   description = 'Normal game with only built-in cards allowed.';
 
-  isDeckValid = deck => (
+  isDeckValid = (deck: w.Deck): boolean => (
     deckHasNCards(deck, DECK_SIZE) && deckHasOnlyBuiltinCards(deck)
   );
 
-  startGame = NormalGameFormat.startGame;
+  startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
+  ): w.GameState {
+    return NormalGameFormat.startGame(state, player, usernames, decks, seed);
+  }
 });
 
 export const SharedDeckGameFormat = new (class extends GameFormat {
@@ -79,9 +90,11 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   displayName = 'Shared Deck';
   description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
 
-  isDeckValid = deck => deckHasNCards(deck, DECK_SIZE);
+  isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
 
-  startGame(state, player, usernames, decks, seed) {
+  startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
+  ): w.GameState {
     state = super.startGame(state, player, usernames, decks, seed);
 
     const deck = shuffle([...decks.blue, ...decks.orange]);

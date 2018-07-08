@@ -1,14 +1,14 @@
 import * as WebSocket from 'ws';
 
+import * as w from '../../common/types';
+
+export type GameState = w.GameState;
+export type Deck = w.Deck;
+export type Format = w.Format;
+
 export type ClientID = string;
 export type ActionType = string;
 export type ActionPayload = any;
-
-export type Format = 'normal' | 'builtinOnly' | 'sharedDeck'; // TODO harmonize with gameFormats.js
-
-// TODO Figure these types out
-export type Deck = any;
-export type GameState = any;
 
 export interface Action {
   type: ActionType,

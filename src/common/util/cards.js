@@ -32,6 +32,12 @@ export function shuffleCardsInDeck(deck, cards) {
   return KEEP_DECKS_UNSHUFFLED ? cards : shuffle(unshuffledCards);
 }
 
+// "Unpacks" a deck so that it can be used in a game.
+// { cardIds } => { cardIds, cards }
+export function unpackDeck(deck, cards) {
+  return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
+}
+
 export function instantiateCard(card) {
   return Object.assign({}, card, {
     id: generateId(),

@@ -5,7 +5,7 @@ import { id } from '../util/common';
 import { triggerSound } from '../util/game';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
-import defaultState from '../store/defaultGameState';
+import defaultState from '../store/defaultGameState.ts';
 
 import g from './handlers/game';
 

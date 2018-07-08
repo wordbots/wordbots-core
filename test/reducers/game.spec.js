@@ -2,7 +2,7 @@ import { cloneDeep, find, findIndex, size, times } from 'lodash';
 
 import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
-import defaultState from '../../src/common/store/defaultGameState';
+import defaultState from '../../src/common/store/defaultGameState.ts';
 import * as cards from '../../src/common/store/cards';
 import {
   BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, DECK_SIZE,

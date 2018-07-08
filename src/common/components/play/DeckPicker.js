@@ -29,7 +29,7 @@ export default class DeckPicker extends React.Component {
 
   render() {
     return (
-      <Paper style={{display: 'flex', flex: 3, padding: 20, marginBottom: 20, marginLeft: 20}}>
+      <Paper style={{display: 'flex', flex: 3, padding: 20, margin: 10 }}>
         <SelectField
           value={this.props.selectedDeckIdx}
           floatingLabelText="Choose a deck"

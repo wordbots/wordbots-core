@@ -20,7 +20,7 @@ export default class FormatPicker extends React.Component {
 
   render() {
     return (
-      <Paper style={{display: 'flex', flex: 1, padding: 20, marginBottom: 20}}>
+      <Paper style={{display: 'flex', flex: 1, padding: 20, margin: 10}}>
         <SelectField
           value={this.props.selectedFormatIdx}
           floatingLabelText="Choose a format"

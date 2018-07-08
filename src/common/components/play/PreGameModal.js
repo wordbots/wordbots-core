@@ -15,12 +15,17 @@ export default class PreGameModal extends React.Component {
     cards: arrayOf(object).isRequired,
     format: object,
     mode: string.isRequired,
+    startButtonText: string,
     title: string,
 
     history: object.isRequired,
 
     onStartGame: func.isRequired
   };
+
+  static defaultProps = {
+    startButtonText: "Start Game"
+  }
 
   state = {
     selectedDeckIdx: 0,
@@ -54,18 +59,18 @@ export default class PreGameModal extends React.Component {
   get actions() {
     return [
       <Button
+        key="cancel"
         variant="outlined"
-        key="Cancel"
         onTouchTap={this.close}
         style={{ marginRight: 10 }}>
         Cancel
       </Button>,
       <Button
+        key="start"
         variant="raised"
         color="secondary"
-        key="Start Game"
         onTouchTap={this.handleStartGame}>
-        Start Game
+        {this.props.startButtonText}
       </Button>
     ];
   }
@@ -83,7 +88,7 @@ export default class PreGameModal extends React.Component {
   }
 
   handleStartGame = () => {
-    this.props.onStartGame(this.format.name, this.deck);
+    this.props.onStartGame(this.format.name, this.deckForGame);
     this.close();
   };
 

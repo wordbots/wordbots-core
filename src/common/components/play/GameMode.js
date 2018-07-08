@@ -56,7 +56,8 @@ export default class GameMode extends React.Component {
           color: 'grey',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          overflow: 'hidden'
         }}>
           {imagePath && <img src={imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />}
         </div>

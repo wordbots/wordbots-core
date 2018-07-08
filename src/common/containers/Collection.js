@@ -11,6 +11,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { find, noop } from 'lodash';
 
 import { getDisplayedCards, isCardVisible } from '../util/cards';
+import Title from '../components/Title';
 import RouterDialog from '../components/RouterDialog';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
@@ -220,7 +221,8 @@ export class Collection extends React.Component {
   render() {
     return (
       <div>
-        <Helmet title="Collection"/>
+        <Helmet title="Collection" />
+        <Title text="Collection" />
 
         <div style={{
           display: 'flex',
@@ -235,19 +237,15 @@ export class Collection extends React.Component {
             history={this.props.history}
             onImport={this.props.onImportCards} />
 
-          <div style={{marginTop: 10, marginLeft: 40, width: '100%'}}>
-            <div>
-              <CardCollection
-                onlySelectCustomCards
-                layout={this.state.layout}
-                cards={this.displayedCards}
-                selectedCardIds={this.state.selectedCardIds}
-                onSelection={this.handleSelectCards} />
-            </div>
-          </div>
+          <CardCollection
+            onlySelectCustomCards
+            layout={this.state.layout}
+            cards={this.displayedCards}
+            selectedCardIds={this.state.selectedCardIds}
+            onSelection={this.handleSelectCards} />
 
           <div style={{
-            margin: '30px 50px 50px 0',
+            margin: '20px 20px 20px 0',
             width: 300,
             minWidth: 300
           }}>

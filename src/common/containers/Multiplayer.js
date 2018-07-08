@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { arrayOf, bool, func, number, object } from 'prop-types';
+import { arrayOf, bool, func, object } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
@@ -7,7 +7,6 @@ import { compact } from 'lodash';
 
 import Chat from '../components/play/multiplayer/Chat';
 import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
-import * as collectionActions from '../actions/collection';
 import * as socketActions from '../actions/socket';
 
 import GameAreaContainer from './GameAreaContainer';
@@ -110,7 +109,6 @@ export class Multiplayer extends React.Component {
       return (
         <MultiplayerLobby
           socket={this.props.socket}
-          gameMode={this.props.history.location.pathname.split('/multiplayer')[1]}
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           history={this.props.history}

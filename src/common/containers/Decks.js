@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { cardsInDeck } from '../util/cards';
+import Title from '../components/Title';
 import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
@@ -69,43 +70,37 @@ class Decks extends React.Component {
   render = () => (
     <div>
       <Helmet title="Decks" />
+      <Title text="Decks" />
 
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
-      }}>
-        <div style={{margin: 20}}>
-          <MustBeLoggedIn loggedIn={this.props.loggedIn}>
-            <RaisedButton
-              label="New Deck"
-              secondary
-              style={{margin: 10}}
-              labelStyle={{fontFamily: 'Carter One'}}
-              onClick={this.handleCreateDeck} />
-          </MustBeLoggedIn>
+      <div style={{margin: 20}}>
+        <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+          <RaisedButton
+            label="New Deck"
+            secondary
+            style={{marginBottom: 20}}
+            labelStyle={{fontFamily: 'Carter One'}}
+            onClick={this.handleCreateDeck} />
+        </MustBeLoggedIn>
 
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start',
-            width: '100%',
-            margin: 10
-          }}>
-            {
-              this.props.decks.map((deck, idx) =>
-                <DeckSummary
-                  key={idx}
-                  deck={deck}
-                  cards={cardsInDeck(deck, this.props.cards)}
-                  loggedIn={this.props.loggedIn}
-                  onDelete={this.props.onDeleteDeck}
-                  onDuplicate={this.props.onDuplicateDeck}
-                  onEdit={this.handleEditDeck}
-                  onTry={this.handleTryDeck} />
-              )
-            }
-          </div>
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+          width: '100%'
+        }}>
+          {
+            this.props.decks.map((deck, idx) =>
+              <DeckSummary
+                key={idx}
+                deck={deck}
+                cards={cardsInDeck(deck, this.props.cards)}
+                loggedIn={this.props.loggedIn}
+                onDelete={this.props.onDeleteDeck}
+                onDuplicate={this.props.onDuplicateDeck}
+                onEdit={this.handleEditDeck}
+                onTry={this.handleTryDeck} />
+            )
+          }
         </div>
       </div>
     </div>

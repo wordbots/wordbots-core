@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 import * as screenfull from 'screenfull';
 
 import {
-  HEADER_HEIGHT, SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
+  HEADER_HEIGHT, CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
 } from '../../constants';
 import { inBrowser } from '../../util/browser';
 import Chat from '../play/multiplayer/Chat';
@@ -124,7 +124,7 @@ export default class GameArea extends React.Component {
 
   updateDimensions = () => {
     const maxBoardHeight = window.innerHeight - HEADER_HEIGHT - 150;
-    const maxBoardWidth = window.innerWidth - SIDEBAR_WIDTH;
+    const maxBoardWidth = window.innerWidth - CHAT_WIDTH;
 
     this.setState({
       areaHeight: window.innerHeight - HEADER_HEIGHT,
@@ -191,8 +191,8 @@ export default class GameArea extends React.Component {
           className="background"
           style={{
             position: 'relative',
-            marginRight: this.props.isSandbox ? 0 : (this.state.chatOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH),
-            width: this.props.isSandbox ? `calc(100% - ${SIDEBAR_WIDTH}px)` : 'auto',
+            marginRight: this.props.isSandbox ? 0 : (this.state.chatOpen ? CHAT_WIDTH : CHAT_COLLAPSED_WIDTH),
+            width: this.props.isSandbox ? `calc(100% - ${CHAT_WIDTH}px)` : 'auto',
             height: screenfull.isFullscreen ? areaHeight + HEADER_HEIGHT : areaHeight,
             background: `url(${this.loadBackground()})`
           }}

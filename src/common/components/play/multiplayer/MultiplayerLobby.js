@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { arrayOf, func, object, string } from 'prop-types';
+import { arrayOf, func, object } from 'prop-types';
 
 import { CHAT_WIDTH } from '../../../constants';
 import RouterDialog from '../../RouterDialog';
@@ -8,12 +8,11 @@ import PreGameModal from '../PreGameModal';
 
 import GameBrowser from './GameBrowser';
 import GameCreationModal from './GameCreationModal';
-import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
 import MultiplayerModeSelection from './MultiplayerModeSelection';
 import Waiting from './Waiting';
 
-export default class Lobby extends React.Component {
+export default class MultiplayerLobby extends React.Component {
   static propTypes = {
     socket: object,
     availableDecks: arrayOf(object),
@@ -26,12 +25,11 @@ export default class Lobby extends React.Component {
     onSpectateGame: func,
     onJoinQueue: func,
     onLeaveQueue: func,
-    onHostGame: func,
-    onSelectMode: func
+    onHostGame: func
   };
 
   state = {
-    casualGameIdBeingJoined: null
+    casualGameBeingJoined: null
   };
 
   handleSelectMode = (mode) => {
@@ -46,8 +44,17 @@ export default class Lobby extends React.Component {
     this.props.onLeaveQueue();
   };
 
-  handleJoinGame = (gameId, gameName) => {
-    this.props.onJoinGame(gameId, gameName, this.deckForGame.cards);
+  handleClickJoinCasualGame = (id, name, format) => {
+    this.setState({
+      casualGameBeingJoined: { id, name, format }
+    }, () => {
+      this.handleSelectMode('casual');
+    });
+  }
+
+  handleJoinGame = (formatName, deck) => {
+    const { id, name } = this.state.casualGameBeingJoined;
+    this.props.onJoinGame(id, name, deck.cards);
   };
 
   handleHostGame = (gameName, formatName, deck) => {
@@ -65,10 +72,20 @@ export default class Lobby extends React.Component {
   render() {
     const { availableDecks, cards, history, socket, onConnect } = this.props;
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
+    const { casualGameBeingJoined } = this.state;
 
     return (
       <div>
         <div>
+          {casualGameBeingJoined && <PreGameModal
+            mode="casual"
+            title={`Join Casual Game: ${casualGameBeingJoined.name}`}
+            startButtonText="Join"
+            format={casualGameBeingJoined.format}
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onStartGame={this.handleJoinGame} />}
           <PreGameModal
             mode="ranked"
             title="Join Ranked Queue"
@@ -99,16 +116,11 @@ export default class Lobby extends React.Component {
 
           <MultiplayerModeSelection onSelectMode={this.handleSelectMode} />
 
-          <HostGame
-            disabled={this.hasNoDecks}
-            onHostGame={this.handleHostGame} />
-
           <GameBrowser
-            currentDeck={this.deck}
             openGames={socket.waitingPlayers}
             inProgressGames={socket.games}
             usernameMap={socket.clientIdToUsername}
-            onJoinGame={this.handleJoinGame}
+            onJoinGame={this.handleClickJoinCasualGame}
             onSpectateGame={this.props.onSpectateGame} />
         </div>
       </div>

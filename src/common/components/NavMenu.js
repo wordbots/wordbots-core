@@ -5,7 +5,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';
+import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_Z_INDEX } from '../constants';
 import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
 import Tooltip from '../components/Tooltip';
 
@@ -84,7 +84,8 @@ export default class NavMenu extends React.Component {
         width: this.isExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
         transition: 'width 200ms ease-in-out',
         height: 'calc(100% - 54px)',
-        overflow: 'visible'
+        overflow: 'visible',
+        zIndex: SIDEBAR_Z_INDEX
     }}>
       {this.renderLink('/', 'Home', 'home')}
       {this.renderLink('/collection', 'Collection', 'view_module')}

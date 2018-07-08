@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { chain as _, isEqual } from 'lodash';
 
-import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH } from '../../../constants';
+import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, CHAT_Z_INDEX } from '../../../constants';
 import { id } from '../../../util/common';
 
 import ChatMessage from './ChatMessage';
@@ -214,7 +214,8 @@ export default class Chat extends React.Component {
       marginTop: 0,
       height: '100%',
       overflow: 'visible',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      zIndex: CHAT_Z_INDEX
     };
 
     return (

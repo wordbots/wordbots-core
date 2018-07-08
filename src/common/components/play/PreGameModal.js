@@ -17,6 +17,7 @@ export default class PreGameModal extends React.Component {
     mode: string.isRequired,
     startButtonText: string,
     title: string,
+    gameName: string,
 
     children: element,
     history: object.isRequired,
@@ -58,6 +59,7 @@ export default class PreGameModal extends React.Component {
   }
 
   get actions() {
+    const { mode, gameName } = this.props;
     return [
       <Button
         key="cancel"
@@ -70,6 +72,7 @@ export default class PreGameModal extends React.Component {
         key="start"
         variant="raised"
         color="secondary"
+        disabled={gameName === '' && mode === 'host'}
         onTouchTap={this.handleStartGame}>
         {this.props.startButtonText}
       </Button>

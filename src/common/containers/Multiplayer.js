@@ -98,10 +98,6 @@ export class Multiplayer extends React.Component {
     }
   }
 
-  selectMode = (mode, format = null, deck = null) => {
-    this.props.history.push(Multiplayer.urlForGameMode(mode, format, deck));
-  }
-
   renderLobby = () => {
     if (this.props.started) {
       return <GameAreaContainer />;
@@ -117,8 +113,7 @@ export class Multiplayer extends React.Component {
           onJoinGame={this.props.onJoinGame}
           onJoinQueue={this.props.onJoinQueue}
           onLeaveQueue={this.props.onLeaveQueue}
-          onSpectateGame={this.props.onSpectateGame}
-          onSelectMode={this.selectMode} />
+          onSpectateGame={this.props.onSpectateGame} />
       );
     }
   }

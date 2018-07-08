@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayOf, func, object, string } from 'prop-types';
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 
 import PreGameModal from '../PreGameModal';
 
@@ -30,6 +30,7 @@ export default class GameCreationModal extends React.Component {
 
   render() {
     const { availableDecks, cards, history, path, title } = this.props;
+    const isGameNameEmpty = this.state.gameName === '';
 
     return (
       <PreGameModal
@@ -39,10 +40,14 @@ export default class GameCreationModal extends React.Component {
         cards={cards}
         history={history}
         onStartGame={this.handleCreateGame}
+        gameName={this.state.gameName}
       >
         <TextField
+          error={isGameNameEmpty}
+          helperText={isGameNameEmpty ? 'The game name cannot be empty!' : ''}
+          style={{ width: '100%', marginBottom: 15 }}
           value={this.state.gameName}
-          floatingLabelText="Game Name"
+          label="Game Name"
           onChange={this.handleSetGameName} />
       </PreGameModal>
     );

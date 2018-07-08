@@ -4,6 +4,7 @@ import { arrayOf, func, number, object, string } from 'prop-types';
 import { CHAT_WIDTH } from '../../../constants';
 import { shuffleCardsInDeck } from '../../../util/cards';
 import { FORMATS } from '../../../store/gameFormats';
+import Title from '../../Title';
 import DeckPicker from '../DeckPicker';
 import FormatPicker from '../FormatPicker';
 
@@ -112,40 +113,43 @@ export default class Lobby extends React.Component {
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
 
     return (
-      <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
-        <LobbyStatus
-          connecting={connecting}
-          connected={connected}
-          playersOnline={playersOnline}
-          usernameMap={clientIdToUsername}
-          onConnect={onConnect} />
+      <div>
+        <Title text="Multiplayer" />
+        <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
+          <LobbyStatus
+            connecting={connecting}
+            connected={connected}
+            playersOnline={playersOnline}
+            usernameMap={clientIdToUsername}
+            onConnect={onConnect} />
 
-        <div style={{display: 'flex'}}>
-          <FormatPicker
-            selectedFormatIdx={selectedFormatIdx}
-            onChooseFormat={this.handleSelectFormat} />
-          <DeckPicker
-            cards={cards}
-            availableDecks={availableDecks}
-            selectedDeckIdx={selectedDeckIdx}
-            onChooseDeck={onSelectDeck} />
+          <div style={{display: 'flex'}}>
+            <FormatPicker
+              selectedFormatIdx={selectedFormatIdx}
+              onChooseFormat={this.handleSelectFormat} />
+            <DeckPicker
+              cards={cards}
+              availableDecks={availableDecks}
+              selectedDeckIdx={selectedDeckIdx}
+              onChooseDeck={onSelectDeck} />
+          </div>
+
+          {this.renderWaiting(socket)}
+
+          {this.renderLobbyContent(gameMode, socket)}
+
+          <HostGame
+            disabled={this.hasNoDecks}
+            onHostGame={this.handleHostGame} />
+
+          <GameBrowser
+            currentDeck={this.deck}
+            openGames={socket.waitingPlayers}
+            inProgressGames={socket.games}
+            usernameMap={socket.clientIdToUsername}
+            onJoinGame={this.handleJoinGame}
+            onSpectateGame={this.props.onSpectateGame} />
         </div>
-
-        {this.renderWaiting(socket)}
-
-        {this.renderLobbyContent(gameMode, socket)}
-
-        <HostGame
-          disabled={this.hasNoDecks}
-          onHostGame={this.handleHostGame} />
-
-        <GameBrowser
-          currentDeck={this.deck}
-          openGames={socket.waitingPlayers}
-          inProgressGames={socket.games}
-          usernameMap={socket.clientIdToUsername}
-          onJoinGame={this.handleJoinGame}
-          onSpectateGame={this.props.onSpectateGame} />
       </div>
     );
   }

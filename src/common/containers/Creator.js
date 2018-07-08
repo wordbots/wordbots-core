@@ -7,6 +7,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { createCardFromProps } from '../util/cards';
+import Title from '../components/Title';
 import RouterDialog from '../components/RouterDialog';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
@@ -116,7 +117,8 @@ export class Creator extends React.Component {
   render() {
     return (
       <div style={{position: 'relative'}}>
-        <Helmet title="Creator"/>
+        <Helmet title="Creator" />
+        <Title text="Creator" />
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm

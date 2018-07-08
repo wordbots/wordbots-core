@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayOf, func, object, string } from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 
 import { shuffleCardsInDeck } from '../../util/cards';
 import { FORMATS } from '../../store/gameFormats';
@@ -78,17 +78,24 @@ export default class PreGameModal extends React.Component {
         path={mode}
         title={title}
         history={history}
+        style={{
+          width: 450
+        }}
         actions={[
-          <RaisedButton
-            label="Cancel"
+          <Button
+            variant="outlined"
             key="Cancel"
             onTouchTap={this.close}
-            style={{ marginRight: 10 }} />,
-          <RaisedButton
-            secondary
-            label="Start Game"
+            style={{ marginRight: 10 }}>
+            Cancel
+          </Button>,
+          <Button
+            variant="raised"
+            color="secondary"
             key="Start Game"
-            onTouchTap={this.handleStartGame} />
+            onTouchTap={this.handleStartGame}>
+            Start Game
+          </Button>
         ]}
       >
         {!format && <FormatPicker

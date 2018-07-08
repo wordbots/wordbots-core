@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { arrayOf, func, number, object } from 'prop-types';
-import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
@@ -29,11 +28,11 @@ export default class DeckPicker extends React.Component {
 
   render() {
     return (
-      <Paper style={{display: 'flex', flex: 3, padding: 20, margin: 10 }}>
+      <div style={{margin: 10 }}>
         <SelectField
           value={this.props.selectedDeckIdx}
           floatingLabelText="Choose a deck"
-          style={{flex: 2, width: '80%', marginRight: 25}}
+          style={{flex: 2, width: '100%', marginRight: 25}}
           onChange={this.handleSelectDeck}
           disabled={this.noDecks}
           errorText={this.noDecks ? 'You don\'t have any complete (30-card) decks!' : null}
@@ -42,11 +41,8 @@ export default class DeckPicker extends React.Component {
             <MenuItem key={idx} value={idx} primaryText={`${deck.name}`}/>
           )}
         </SelectField>
-
-        <div style={{flex: 1}}>
-          <EnergyCurve cards={this.cardsInDeck} height={80} />
-        </div>
-      </Paper>
+        <EnergyCurve cards={this.cardsInDeck} height={80} />
+      </div>
     );
   }
 }

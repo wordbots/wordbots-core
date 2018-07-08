@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { func, number } from 'prop-types';
-import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
@@ -20,7 +19,7 @@ export default class FormatPicker extends React.Component {
 
   render() {
     return (
-      <Paper style={{display: 'flex', flex: 1, padding: 20, margin: 10}}>
+      <div style={{position: 'relative', margin: 10}}>
         <SelectField
           value={this.props.selectedFormatIdx}
           floatingLabelText="Choose a format"
@@ -37,9 +36,13 @@ export default class FormatPicker extends React.Component {
           className="formats-tooltip"
           text={FORMATS.map(f => `<b>${f.displayName}:</b> ${f.description}`).join('<br><br>')}
         >
-          <FontIcon className="material-icons">help</FontIcon>
+          <FontIcon className="material-icons" style={{
+            position: 'absolute',
+            top: 0,
+            right: 0
+          }}>help</FontIcon>
         </Tooltip>
-      </Paper>
+      </div>
     );
   }
 }

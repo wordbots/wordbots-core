@@ -20,10 +20,12 @@ export interface GameState {
   player: PlayerColor,
   players: PerPlayer<PlayerState>
   practice: boolean
+  rng: () => number,
   sandbox: boolean
   started: boolean
   storeKey: 'game'
   tutorial: boolean
+  usernames: PerPlayer<string>
   winner: PlayerColor | null
   [x: string]: any  // TODO Expose more field types as we need them
 }

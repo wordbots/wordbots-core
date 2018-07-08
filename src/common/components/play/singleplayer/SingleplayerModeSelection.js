@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { func } from 'prop-types';
 
-import GameMode from './GameMode';
+import GameMode from '../GameMode';
 
-export default class ModeSelection extends React.Component {
+export default class SinglePlayerModeSelection extends React.Component {
   static propTypes = {
     onSelectMode: func
   };
@@ -16,20 +16,17 @@ export default class ModeSelection extends React.Component {
     this.props.onSelectMode('practice');
   }
 
-  handleClickCasual = () => {
-    this.props.onSelectMode('casual');
-  }
-
-  handleClickMatchmaking = () => {
-    this.props.onSelectMode('ranked');
+  handleClickSandbox = () => {
+    this.props.onSelectMode('sandbox');
   }
 
   render() {
     return (
       <div style={{
         display: 'flex',
+        flexDirection: 'row',
         flexWrap: 'wrap',
-        flexDirection: 'row'
+        justifyContent: 'space-between'
       }}>
         <GameMode
           name="Tutorial"
@@ -40,12 +37,12 @@ export default class ModeSelection extends React.Component {
           imagePath="/static/practice.png"
           onSelect={this.handleClickPractice} />
         <GameMode
-          name="Casual Game"
-          imagePath="/static/casual.png"
-          onSelect={this.handleClickCasual} />
+          name="Sandbox"
+          imagePath="/static/practice.png"
+          onSelect={this.handleClickSandbox} />
         <GameMode
-          name="Ranked Matchmaking"
-          onSelect={this.handleClickMatchmaking} />
+          name="Puzzle"
+          disabled />
       </div>
     );
   }

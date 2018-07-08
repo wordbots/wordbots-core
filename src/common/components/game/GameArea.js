@@ -8,7 +8,7 @@ import {
   HEADER_HEIGHT, SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
 } from '../../constants';
 import { inBrowser } from '../../util/browser';
-import Chat from '../multiplayer/Chat';
+import Chat from '../play/multiplayer/Chat';
 
 import Board from './Board';
 import CardSelector from './CardSelector';

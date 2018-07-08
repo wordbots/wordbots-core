@@ -2,7 +2,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import { defaults, noop } from 'lodash';
 
-import Chat from '../../../src/common/components/multiplayer/Chat';
+import Chat from '../../../../src/common/components/play/multiplayer/Chat';
 
 import { makeMessage, makeChatMessage, makeGameMessage, makeServerMessage } from './chatTestHelpers';
 
@@ -156,7 +156,7 @@ describe('Chat tests', () => {
 
       checkRenderedMessageLength(wrapper, 0);
     });
-    
+
     it('should show chat messages if showChatMsgs enabled', () => {
       const messages = [makeChatMessage()];
       const wrapper = getWrapper({

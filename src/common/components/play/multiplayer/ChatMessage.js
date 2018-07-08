@@ -2,7 +2,7 @@ import * as React from 'react';
 import { object, number } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import CardTooltip from '../card/CardTooltip';
+import CardTooltip from '../../card/CardTooltip';
 
 export default class ChatMessage extends React.Component {
   static propTypes = {

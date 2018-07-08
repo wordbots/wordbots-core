@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
-import { Pulse } from 'better-react-spinkit'
+import { Pulse } from 'better-react-spinkit';
 
 const Waiting = () => (
   <Paper style={{

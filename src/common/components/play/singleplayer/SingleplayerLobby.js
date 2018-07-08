@@ -33,7 +33,7 @@ export default class SingleplayerLobby extends React.Component {
     const { availableDecks, cards, history } = this.props;
 
     return (
-      <div style={{padding: '48px 72px 0'}}>
+      <div style={{ padding: 20 }}>
         <SingleplayerModeSelection onSelectMode={this.handleSelectMode} />
         <PreGameModal
           mode="practice"

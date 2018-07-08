@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
 
+import { CHAT_WIDTH } from '../../../constants';
 import { shuffleCardsInDeck } from '../../../util/cards';
 import { FORMATS } from '../../../store/gameFormats';
 import DeckPicker from '../DeckPicker';
@@ -79,43 +80,25 @@ export default class Lobby extends React.Component {
     this.props.onHostGame(gameName, this.format, this.deckForGame.cards);
   };
 
-  renderLobbyContent(gameMode, socket) {
-    if (gameMode === '/casual') {
-      if (socket.hosting) {
-        return <Waiting />;
-      } else {
-        return (
-          <div>
-            <GameBrowser
-              currentDeck={this.deck}
-              openGames={socket.waitingPlayers}
-              inProgressGames={socket.games}
-              usernameMap={socket.clientIdToUsername}
-              onJoinGame={this.handleJoinGame}
-              onSpectateGame={this.props.onSpectateGame} />
+  renderWaiting(socket) {
+    if (socket.hosting) {
+      return <Waiting />;
+    }
+  }
 
-            <HostGame
-              disabled={this.hasNoDecks}
-              onHostGame={this.handleHostGame} />
-          </div>
-        );
-      }
-    } else if (gameMode === '/ranked') {
-      if (socket.hosting) {
-        return <Waiting />;
-      } else {
-        return (
-          <div>
-            <RankedQueue
-              disabled={this.hasNoDecks}
-              queuing={socket.queuing}
-              queueSize={socket.queueSize}
-              onJoinQueue={this.handleJoinQueue}
-              onLeaveQueue={this.handleLeaveQueue}
-            />
-          </div>
-        );
-      }
+  renderLobbyContent(gameMode, socket) {
+    if (gameMode === '/ranked') {
+      return (
+        <div>
+          <RankedQueue
+            disabled={this.hasNoDecks}
+            queuing={socket.queuing}
+            queueSize={socket.queueSize}
+            onJoinQueue={this.handleJoinQueue}
+            onLeaveQueue={this.handleLeaveQueue}
+          />
+        </div>
+      );
     } else {
       return <MultiplayerModeSelection onSelectMode={this.handleSelectMode}/>;
     }
@@ -129,7 +112,7 @@ export default class Lobby extends React.Component {
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
 
     return (
-      <div style={{padding: '20px 276px 0 20px'}}>
+      <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
         <LobbyStatus
           connecting={connecting}
           connected={connected}
@@ -148,7 +131,21 @@ export default class Lobby extends React.Component {
             onChooseDeck={onSelectDeck} />
         </div>
 
+        {this.renderWaiting(socket)}
+
         {this.renderLobbyContent(gameMode, socket)}
+
+        <GameBrowser
+          currentDeck={this.deck}
+          openGames={socket.waitingPlayers}
+          inProgressGames={socket.games}
+          usernameMap={socket.clientIdToUsername}
+          onJoinGame={this.handleJoinGame}
+          onSpectateGame={this.props.onSpectateGame} />
+
+        <HostGame
+          disabled={this.hasNoDecks}
+          onHostGame={this.handleHostGame} />
       </div>
     );
   }

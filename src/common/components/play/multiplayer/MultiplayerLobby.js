@@ -48,7 +48,7 @@ export default class MultiplayerLobby extends React.Component {
     this.setState({
       casualGameBeingJoined: { id, name, format }
     }, () => {
-      this.handleSelectMode('casual')
+      this.handleSelectMode('casual');
     });
   }
 

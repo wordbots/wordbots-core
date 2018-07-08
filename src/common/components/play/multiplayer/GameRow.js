@@ -3,7 +3,7 @@ import { bool, func, object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 
-import { GameFormat } from '../../store/gameFormats';
+import { GameFormat } from '../../../store/gameFormats';
 
 export default class GameRow extends React.Component {
   static propTypes = {

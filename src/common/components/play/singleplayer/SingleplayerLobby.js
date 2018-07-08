@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { arrayOf, func, number, object } from 'prop-types';
 
-import { shuffleCardsInDeck } from '../../util/cards';
-import { FORMATS } from '../../store/gameFormats';
+import { shuffleCardsInDeck } from '../../../util/cards';
+import { FORMATS } from '../../../store/gameFormats';
+import DeckPicker from '../DeckPicker';
+import FormatPicker from '../FormatPicker';
 
-import DeckPicker from './DeckPicker';
-import FormatPicker from './FormatPicker';
-import SinglePlayerModeSelection from './SinglePlayerModeSelection';
+import SingleplayerModeSelection from './SingleplayerModeSelection';
 
 export default class SingleplayerLobby extends React.Component {
   static propTypes = {
@@ -73,7 +73,7 @@ export default class SingleplayerLobby extends React.Component {
             onChooseDeck={onSelectDeck} />
         </div>
 
-        <SinglePlayerModeSelection />
+        <SingleplayerModeSelection />
       </div>
     );
   }

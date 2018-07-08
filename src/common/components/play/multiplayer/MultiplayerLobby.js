@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
 
-import { shuffleCardsInDeck } from '../../util/cards';
-import { FORMATS } from '../../store/gameFormats';
+import { shuffleCardsInDeck } from '../../../util/cards';
+import { FORMATS } from '../../../store/gameFormats';
+import DeckPicker from '../DeckPicker';
+import FormatPicker from '../FormatPicker';
 
-import DeckPicker from './DeckPicker';
-import FormatPicker from './FormatPicker';
 import GameBrowser from './GameBrowser';
 import RankedQueue from './RankedQueue';
 import HostGame from './HostGame';

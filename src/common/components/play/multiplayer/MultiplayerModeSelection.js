@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { func } from 'prop-types';
 
-import GameMode from './GameMode';
+import GameMode from '../GameMode';
 
 export default class MultiplayerModeSelection extends React.Component {
   static propTypes = {

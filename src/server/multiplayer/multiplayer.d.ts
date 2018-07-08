@@ -4,6 +4,8 @@ export type ClientID = string;
 export type ActionType = string;
 export type ActionPayload = any;
 
+export type Format = 'normal' | 'builtinOnly' | 'sharedDeck'; // TODO harmonize with gameFormats.js
+
 // TODO Figure these types out
 export type Deck = any;
 export type GameState = any;
@@ -21,7 +23,7 @@ export interface UserData {
 export interface Game {
   id: ClientID,
   name: string,
-  format: string,
+  format: Format,
   type: string,
   players: ClientID[],
   playerColors: { [clientID: string]: string; },
@@ -37,14 +39,15 @@ export interface Game {
 export interface WaitingPlayer {
   id: string,
   name: string,
-  format: string,
+  format: Format,
   deck: Deck,
   players: ClientID[]
 }
 
 export interface PlayerInQueue {
   clientID: ClientID,
-  deck: Deck
+  deck: Deck,
+  format: Format
 }
 
 interface ServerStateType {

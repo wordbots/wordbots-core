@@ -69,7 +69,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'ws:JOIN') {
       joinGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:JOIN_QUEUE') {
-      joinQueue(clientID, payload.deck);
+      joinQueue(clientID, payload.format, payload.deck);
     } else if (type === 'ws:LEAVE_QUEUE') {
       leaveQueue(clientID);
     } else if (type === 'ws:SPECTATE') {
@@ -141,7 +141,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     broadcastInfo();
   }
 
-  function hostGame(clientID: m.ClientID, name: string, format: string, deck: m.Deck): void {
+  function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void {
     state.hostGame(clientID, name, format, deck);
     broadcastInfo();
   }
@@ -158,8 +158,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
-  function joinQueue(clientID: m.ClientID, deck: m.Deck): void {
-    state.joinQueue(clientID, deck);
+  function joinQueue(clientID: m.ClientID, format: m.Format, deck: m.Deck): void {
+    state.joinQueue(clientID, format, deck);
     broadcastInfo();
   }
 

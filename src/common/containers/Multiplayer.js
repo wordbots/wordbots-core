@@ -41,8 +41,8 @@ export function mapDispatchToProps(dispatch) {
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
     },
-    onJoinQueue: (deck) => {
-      dispatch(socketActions.joinQueue(deck));
+    onJoinQueue: (format, deck) => {
+      dispatch(socketActions.joinQueue(format, deck));
     },
     onLeaveQueue: () => {
       dispatch(socketActions.leaveQueue());
@@ -95,7 +95,7 @@ export class Multiplayer extends React.Component {
   }
 
   static isInGameUrl = (url) =>
-    (url.startsWith(Multiplayer.baseUrl) && compact(url.split('/')).length > 1);
+    (url.startsWith(Multiplayer.baseUrl) && compact(url.split('/')).length > 2);
 
   componentDidMount() {
     if (!this.props.socket.connected) {

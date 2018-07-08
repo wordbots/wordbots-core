@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import * as WebSocket from 'ws';
-import { chunk, compact, find, mapValues, pull, reject } from 'lodash';
+import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
@@ -124,10 +124,12 @@ export default class MultiplayerServerState {
   }
 
   // Make a player host a game with the given name and using the given deck.
-  hostGame = (clientID: m.ClientID, name: string, format: string, deck: m.Deck): void => {
+  hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void => {
     const username = this.getClientUsername(clientID);
 
-    if (GameFormat.fromString(format).isDeckValid(deck)) {
+    // TODO Re-enable server-side deck validation once we can give the server the same deck format as the client
+    // if (GameFormat.fromString(format).isDeckValid(deck)) {
+    if (GameFormat.fromString(format)) {
       this.state.waitingPlayers.push({
         id: clientID,
         players: [clientID],
@@ -147,7 +149,9 @@ export default class MultiplayerServerState {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
     const gameId = generateID();
 
-    if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
+    // TODO Re-enable server-side deck validation once we can give the server the same deck format as the client
+    // if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
+    if (waitingPlayer) {
       const game: m.Game = {
         id: gameId,
         name: `Casual#${waitingPlayer.name}`,
@@ -221,8 +225,8 @@ export default class MultiplayerServerState {
   }
 
   // Add a player to the matchmaking queue.
-  joinQueue = (clientID: m.ClientID, deck: m.Deck): void => {
-    this.state.matchmakingQueue.push({ clientID, deck });
+  joinQueue = (clientID: m.ClientID, format: m.Format, deck: m.Deck): void => {
+    this.state.matchmakingQueue.push({ clientID, format, deck });
   }
 
   // Remove a player from the matchmaking queue.
@@ -230,11 +234,13 @@ export default class MultiplayerServerState {
     this.state.matchmakingQueue = reject(this.state.matchmakingQueue, { clientID });
   }
 
-  // Return pairs of player IDs to match into games.
+  // Return pairs of queued players to match into games.
   // TODO: Fix this, using MMR.
-  findAvailableMatches = (): m.ClientID[][] => {
-    const playerIds = this.state.matchmakingQueue.map(m => m.clientID);
-    return chunk(playerIds, 2).filter(m => m.length === 2);
+  findAvailableMatches = (): m.PlayerInQueue[][] => {
+    const { matchmakingQueue } = this.state;
+    const queuesPerFormat: m.PlayerInQueue[][] = Object.values(groupBy(matchmakingQueue, 'format'));
+
+    return flatMap(queuesPerFormat, queue => chunk(queue, 2).filter(p => p.length === 2));
   }
 
   // Pair players if there are at least two people waiting for a ranked game.
@@ -243,13 +249,12 @@ export default class MultiplayerServerState {
     const { matchmakingQueue } = this.state;
     const playerPairs = this.findAvailableMatches();
 
-    return compact(playerPairs.map(([playerId1, playerId2]) => {
+    return compact(playerPairs.map(([player1, player2]) => {
+      const [ playerId1, playerId2 ] = [ player1.clientID, player2.clientID ];
       const gameName = `Ranked#${this.getClientUsername(playerId1)}-vs-${this.getClientUsername(playerId2)}`;
-      const deck1 = (find(matchmakingQueue, {clientID: playerId1}) as m.PlayerInQueue).deck;
-      const deck2 = (find(matchmakingQueue, {clientID: playerId2}) as m.PlayerInQueue).deck;
 
-      this.hostGame(playerId1, gameName, 'normal', deck1);
-      const game = this.joinGame(playerId2, playerId1, deck2, { type: 'RANKED' });
+      this.hostGame(playerId1, gameName, 'normal', player1.deck);
+      const game = this.joinGame(playerId2, playerId1, player2.deck, { type: 'RANKED' });
 
       if (game) {
         this.state.matchmakingQueue = reject(matchmakingQueue, m => [playerId1, playerId2].includes(m.clientID));

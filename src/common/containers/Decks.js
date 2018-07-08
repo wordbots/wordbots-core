@@ -71,11 +71,11 @@ class Decks extends React.Component {
       <Helmet title="Decks" />
 
       <div style={{
-        disSingleplayer: 'flex',
+        display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'flex-start'
       }}>
-        <div style={{marginTop: 50, marginLeft: 40}}>
+        <div style={{margin: 20}}>
           <MustBeLoggedIn loggedIn={this.props.loggedIn}>
             <RaisedButton
               label="New Deck"
@@ -86,7 +86,7 @@ class Decks extends React.Component {
           </MustBeLoggedIn>
 
           <div style={{
-            disSingleplayer: 'flex',
+            display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'flex-start',
             width: '100%',

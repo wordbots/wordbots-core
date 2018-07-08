@@ -4,8 +4,8 @@ import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject } from 
 
 import { id as generateID } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
-import defaultGameState from '../../common/store/defaultGameState.ts';
-import { GameFormat } from '../../common/store/gameFormats.ts';
+import defaultGameState from '../../common/store/defaultGameState';
+import { GameFormat } from '../../common/store/gameFormats';
 import gameReducer from '../../common/reducers/game';
 
 import * as m from './multiplayer';

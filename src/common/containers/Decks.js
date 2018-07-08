@@ -10,7 +10,7 @@ import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
-import Play from './Play';
+import Singleplayer from './Singleplayer';
 
 function mapStateToProps(state) {
   return {
@@ -63,7 +63,7 @@ class Decks extends React.Component {
 
   handleTryDeck = (deck) => {
     const { history } = this.props;
-    history.push(Play.urlForGameMode('practice', deck), { previous: history.location });
+    history.push(Singleplayer.urlForGameMode('practice', deck), { previous: history.location });
   }
 
   render = () => (
@@ -71,7 +71,7 @@ class Decks extends React.Component {
       <Helmet title="Decks" />
 
       <div style={{
-        display: 'flex',
+        disSingleplayer: 'flex',
         justifyContent: 'space-between',
         alignItems: 'flex-start'
       }}>
@@ -86,7 +86,7 @@ class Decks extends React.Component {
           </MustBeLoggedIn>
 
           <div style={{
-            display: 'flex',
+            disSingleplayer: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'flex-start',
             width: '100%',

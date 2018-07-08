@@ -14,7 +14,7 @@ import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { arbitraryPlayerState } from '../store/defaultGameState';
 
-import Play from './Play';
+import Singleplayer from './Singleplayer';
 
 export function mapStateToProps(state) {
   const { game } = state;
@@ -203,7 +203,7 @@ export class GameAreaContainer extends React.Component {
     clearInterval(this.interval);
   }
 
-  urlMatchesGameMode = mode => this.props.location.pathname.startsWith(Play.urlForGameMode(mode));
+  urlMatchesGameMode = mode => this.props.location.pathname.startsWith(Singleplayer.urlForGameMode(mode));
 
   /* Try to start a game (based on the URL) if it hasn't started yet. */
   tryToStartGame = () => {
@@ -230,10 +230,10 @@ export class GameAreaContainer extends React.Component {
         this.setState({ message: null });
         if (this.urlMatchesGameMode('practice')) {
           this.tryToStartPracticeGame(match.params.format, match.params.deck);
-        } else if (location.pathname.startsWith('/sandbox')) {
+        } else if (this.urlMatchesGameMode('sandbox')) {
           onStartSandbox();
         } else {
-          history.push(Play.baseUrl);
+          history.push(Singleplayer.baseUrl);
         }
       } else {
         // If we're still waiting on Firebase, render a message.
@@ -250,7 +250,7 @@ export class GameAreaContainer extends React.Component {
     if (deck) {
       onStartPractice(formatName, shuffleCardsInDeck(deck, cards));
     } else {
-      history.push(Play.baseUrl);
+      history.push(Singleplayer.baseUrl);
     }
   };
 

@@ -6,8 +6,8 @@ import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
 import { FORMATS } from '../store/gameFormats';
-import Chat from '../components/multiplayer/Chat';
-import Lobby from '../components/multiplayer/Lobby';
+import Chat from '../components/play/multiplayer/Chat';
+import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
 import * as collectionActions from '../actions/collection';
 import * as socketActions from '../actions/socket';
 
@@ -62,7 +62,7 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
-export class Play extends React.Component {
+export class Multiplayer extends React.Component {
   static propTypes = {
     started: bool,
     actionLog: arrayOf(object),
@@ -86,16 +86,16 @@ export class Play extends React.Component {
     onSelectFormat: func
   };
 
-  static baseUrl = '/play';
+  static baseUrl = '/multiplayer';
 
   static urlForGameMode = (mode, format = null, deck = null) => {
     const maybeFormatParam = format ? `/${format}` : '';
     const maybeDeckParam = deck ? `/${deck.id}` : '';
-    return `${Play.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
+    return `${Multiplayer.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
   }
 
   static isInGameUrl = (url) =>
-    (url.startsWith(Play.baseUrl) && compact(url.split('/')).length > 2);
+    (url.startsWith(Multiplayer.baseUrl) && compact(url.split('/')).length > 2);
 
   componentDidMount() {
     if (!this.props.socket.connected) {
@@ -117,7 +117,7 @@ export class Play extends React.Component {
   }
 
   selectMode = (mode, format = null, deck = null) => {
-    this.props.history.push(Play.urlForGameMode(mode, format, deck));
+    this.props.history.push(Multiplayer.urlForGameMode(mode, format, deck));
   }
 
   renderLobby = () => {
@@ -125,9 +125,9 @@ export class Play extends React.Component {
       return <GameAreaContainer />;
     } else {
       return (
-        <Lobby
+        <MultiplayerLobby
           socket={this.props.socket}
-          gameMode={this.props.history.location.pathname.split('/play')[1]}
+          gameMode={this.props.history.location.pathname.split('/multiplayer')[1]}
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           selectedDeckIdx={this.props.selectedDeckIdx}
@@ -148,15 +148,15 @@ export class Play extends React.Component {
   render() {
     return (
       <div>
-        <Helmet title="Play"/>
+        <Helmet title="Multiplayer"/>
 
         <Switch>
-          <Route path={Play.urlForGameMode('tutorial')} component={GameAreaContainer} />
-          <Route path={`${Play.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
-          <Route path={Play.urlForGameMode('casual')} render={this.renderLobby} />
-          <Route exact path={Play.baseUrl} render={this.renderLobby} />
-          <Route path={Play.urlForGameMode('ranked')} render={this.renderLobby} />
-          <Redirect to={Play.baseUrl} />
+          <Route path={Multiplayer.urlForGameMode('tutorial')} component={GameAreaContainer} />
+          <Route path={`${Multiplayer.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
+          <Route path={Multiplayer.urlForGameMode('casual')} render={this.renderLobby} />
+          <Route exact path={Multiplayer.baseUrl} render={this.renderLobby} />
+          <Route path={Multiplayer.urlForGameMode('ranked')} render={this.renderLobby} />
+          <Redirect to={Multiplayer.baseUrl} />
         </Switch>
 
         {this.rightMenu}
@@ -165,4 +165,4 @@ export class Play extends React.Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Play));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Multiplayer));

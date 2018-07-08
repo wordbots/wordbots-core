@@ -9,7 +9,8 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { chain as _, isEqual } from 'lodash';
 
-import { id } from '../../util/common';
+import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH } from '../../../constants';
+import { id } from '../../../util/common';
 
 import ChatMessage from './ChatMessage';
 
@@ -221,7 +222,7 @@ export default class Chat extends React.Component {
         openSecondary
         docked
         containerStyle={containerStyle}
-        width={this.isClosed ? 64 : 256}>
+        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : CHAT_WIDTH}>
         {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
       </Drawer>
     );

@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
 
-import { shuffleCardsInDeck } from '../../util/cards';
-import { FORMATS } from '../../store/gameFormats';
+import { shuffleCardsInDeck } from '../../../util/cards';
+import { FORMATS } from '../../../store/gameFormats';
+import DeckPicker from '../DeckPicker';
+import FormatPicker from '../FormatPicker';
 
-import DeckPicker from './DeckPicker';
-import FormatPicker from './FormatPicker';
 import GameBrowser from './GameBrowser';
 import RankedQueue from './RankedQueue';
 import HostGame from './HostGame';
 import LobbyStatus from './LobbyStatus';
-import ModeSelection from './ModeSelection';
+import MultiplayerModeSelection from './MultiplayerModeSelection';
 import Waiting from './Waiting';
 
 export default class Lobby extends React.Component {
@@ -60,12 +60,7 @@ export default class Lobby extends React.Component {
   }
 
   handleSelectMode = (mode) => {
-    if (mode === 'practice') {
-      // If selecting practice mode, pass the deck and format into the URL.
-      this.props.onSelectMode(mode, this.format, this.deckForGame);
-    } else {
-      this.props.onSelectMode(mode);
-    }
+    this.props.onSelectMode(mode);
   };
 
   handleJoinQueue = () => {
@@ -122,7 +117,7 @@ export default class Lobby extends React.Component {
         );
       }
     } else {
-      return <ModeSelection onSelectMode={this.handleSelectMode}/>;
+      return <MultiplayerModeSelection onSelectMode={this.handleSelectMode}/>;
     }
   }
 
@@ -134,7 +129,7 @@ export default class Lobby extends React.Component {
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
 
     return (
-      <div style={{padding: '48px 328px 0 72px'}}>
+      <div style={{padding: '20px 276px 0 20px'}}>
         <LobbyStatus
           connecting={connecting}
           connected={connected}

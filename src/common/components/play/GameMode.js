@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { string, func, bool } from 'prop-types';
+import { string, func, bool, number } from 'prop-types';
 
 import PaperButton from '../PaperButton';
 
@@ -7,12 +7,14 @@ export default class GameMode extends React.Component {
   static propTypes = {
     name: string,
     imagePath: string,
+    modesPerRow: number,
     onSelect: func,
     disabled: bool
   };
 
   static defaultProps = {
-    imagePath: ''
+    imagePath: '',
+    modesPerRow: 2
   }
 
   renderOverlay() {
@@ -59,8 +61,12 @@ export default class GameMode extends React.Component {
           {imagePath && <img src={imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />}
         </div>
         <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 100,
           textAlign: 'center',
-          fontSize: 32,
+          fontSize: 24,
           fontFamily: 'Carter One',
           color: '#f44336',
           WebkitTextStroke: '1px black'
@@ -70,15 +76,19 @@ export default class GameMode extends React.Component {
   }
 
   render() {
+    const { modesPerRow, disabled, onSelect } = this.props;
+    const widthPercent = `${100 / modesPerRow}%`;
+    const widthPadding = ((modesPerRow - 1) * 20) / modesPerRow;
+
     return (
       <PaperButton
-        disabled={this.props.disabled}
-        onClick={this.props.onSelect}
+        disabled={disabled}
+        onClick={onSelect}
         style={{
-          flexBasis: 'calc(50% - 60px)',
-          height: 250,
-          margin: 30,
-          position: 'relative'
+          width: `calc(${widthPercent} - ${widthPadding}px)`,
+          height: 300,
+          position: 'relative',
+          marginBottom: 20
         }}
       >
         {this.renderOverlay()}

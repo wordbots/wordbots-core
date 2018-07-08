@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
-import { FORMATS } from '../store/gameFormats';
 import Chat from '../components/play/multiplayer/Chat';
 import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
 import * as collectionActions from '../actions/collection';
@@ -14,19 +13,13 @@ import * as socketActions from '../actions/socket';
 import GameAreaContainer from './GameAreaContainer';
 
 export function mapStateToProps(state) {
-  const selectedFormatIdx = state.collection.selectedFormatIdx || 0;
-  const selectedFormat = FORMATS[selectedFormatIdx];
-  const availableDecks = state.collection.decks.filter(selectedFormat.isDeckValid);
-
   return {
     started: state.game.started,
     actionLog: state.game.actionLog,
 
     socket: state.socket,
     cards: state.collection.cards,
-    availableDecks,
-    selectedDeckIdx: Math.min(state.collection.selectedDeckIdx || 0, availableDecks.length),
-    selectedFormatIdx
+    availableDecks: state.collection.decks
   };
 }
 
@@ -52,12 +45,6 @@ export function mapDispatchToProps(dispatch) {
     },
     onSendChatMessage: (msg) => {
       dispatch(socketActions.chat(msg));
-    },
-    onSelectDeck: (deckIdx) => {
-      dispatch(collectionActions.selectDeck(deckIdx));
-    },
-    onSelectFormat: (formatIdx) => {
-      dispatch(collectionActions.selectFormat(formatIdx));
     }
   };
 }
@@ -70,8 +57,6 @@ export class Multiplayer extends React.Component {
     socket: object,
     cards: arrayOf(object),
     availableDecks: arrayOf(object),
-    selectedDeckIdx: number,
-    selectedFormatIdx: number,
 
     history: object,
 
@@ -81,9 +66,7 @@ export class Multiplayer extends React.Component {
     onHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
-    onSendChatMessage: func,
-    onSelectDeck: func,
-    onSelectFormat: func
+    onSendChatMessage: func
   };
 
   static baseUrl = '/multiplayer';
@@ -130,16 +113,13 @@ export class Multiplayer extends React.Component {
           gameMode={this.props.history.location.pathname.split('/multiplayer')[1]}
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
-          selectedDeckIdx={this.props.selectedDeckIdx}
-          selectedFormatIdx={this.props.selectedFormatIdx}
+          history={this.props.history}
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
           onJoinGame={this.props.onJoinGame}
           onJoinQueue={this.props.onJoinQueue}
           onLeaveQueue={this.props.onLeaveQueue}
           onSpectateGame={this.props.onSpectateGame}
-          onSelectDeck={this.props.onSelectDeck}
-          onSelectFormat={this.props.onSelectFormat}
           onSelectMode={this.selectMode} />
       );
     }
@@ -153,9 +133,8 @@ export class Multiplayer extends React.Component {
         <Switch>
           <Route path={Multiplayer.urlForGameMode('tutorial')} component={GameAreaContainer} />
           <Route path={`${Multiplayer.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
-          <Route path={Multiplayer.urlForGameMode('casual')} render={this.renderLobby} />
           <Route exact path={Multiplayer.baseUrl} render={this.renderLobby} />
-          <Route path={Multiplayer.urlForGameMode('ranked')} render={this.renderLobby} />
+          <Route path={`${Multiplayer.baseUrl}//:dialog`} render={this.renderLobby} />
           <Redirect to={Multiplayer.baseUrl} />
         </Switch>
 

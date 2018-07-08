@@ -65,17 +65,3 @@ export function saveDeck(id, name, cardIds) {
     payload: { id, name, cardIds }
   };
 }
-
-export function selectDeck(deckIdx) {
-  return {
-    type: SELECT_DECK,
-    payload: { deckIdx }
-  };
-}
-
-export function selectFormat(formatIdx) {
-  return {
-    type: SELECT_FORMAT,
-    payload: { formatIdx }
-  };
-}

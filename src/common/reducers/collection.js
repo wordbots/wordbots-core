@@ -42,12 +42,6 @@ export default function collection(oldState = defaultState, action) {
       case collectionActions.SAVE_DECK:
         return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds);
 
-      case collectionActions.SELECT_DECK:
-        return {...state, selectedDeckIdx: action.payload.deckIdx};
-
-      case collectionActions.SELECT_FORMAT:
-        return {...state, selectedFormatIdx: action.payload.formatIdx};
-
       default:
         return state;
     }

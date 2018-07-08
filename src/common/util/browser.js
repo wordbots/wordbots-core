@@ -8,7 +8,7 @@ if (inBrowser()) {
 }
 
 export function inBrowser() {
-  return !(typeof document === 'undefined' || 
+  return !(typeof document === 'undefined' ||
     (window.process && window.process.title.includes('node')) ||
     (window.process && window.process.title.includes('test')));
 }
@@ -25,6 +25,7 @@ export function transformHistory(history, func) {
   if (history && history.location) {
     const currentPath = history.location.pathname;
     const newPath = func(currentPath === '/' ? '/home' : currentPath);
+    console.log(newPath);
     history.push(newPath);
   }
 }

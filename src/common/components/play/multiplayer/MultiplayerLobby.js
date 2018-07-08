@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { arrayOf, func, number, object, string } from 'prop-types';
+import { arrayOf, func, object, string } from 'prop-types';
 
 import { CHAT_WIDTH } from '../../../constants';
-import { shuffleCardsInDeck } from '../../../util/cards';
-import { FORMATS } from '../../../store/gameFormats';
-import DeckPicker from '../DeckPicker';
-import FormatPicker from '../FormatPicker';
+import RouterDialog from '../../RouterDialog';
+import PreGameModal from '../PreGameModal';
 
 import GameBrowser from './GameBrowser';
 import RankedQueue from './RankedQueue';
@@ -20,8 +18,8 @@ export default class Lobby extends React.Component {
     gameMode: string,
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
-    selectedDeckIdx: number,
-    selectedFormatIdx: number,
+
+    history: object,
 
     onConnect: func,
     onJoinGame: func,
@@ -29,43 +27,19 @@ export default class Lobby extends React.Component {
     onJoinQueue: func,
     onLeaveQueue: func,
     onHostGame: func,
-    onSelectDeck: func,
-    onSelectFormat: func,
     onSelectMode: func
   };
 
-  get hasNoDecks() {
-    return this.props.availableDecks.length === 0;
-  }
-
-  /* The currently selected deck, in its raw form. */
-  get deck() {
-    const { availableDecks, selectedDeckIdx } = this.props;
-    return availableDecks[selectedDeckIdx];
-  }
-
-  /* The currently selected deck, in a form ready to start a game with. */
-  get deckForGame() {
-    const { cards } = this.props;
-    const deck = this.deck;
-    return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
-  }
-
-  get format() {
-    return FORMATS[this.props.selectedFormatIdx].name;
-  }
-
-  handleSelectFormat = (formatIdx) => {
-    this.props.onSelectFormat(formatIdx);
-    this.props.onSelectDeck(0);
-  }
-
-  handleSelectMode = (mode) => {
-    this.props.onSelectMode(mode);
+  state = {
+    casualGameIdBeingJoined: null
   };
 
-  handleJoinQueue = () => {
-    this.props.onJoinQueue(this.format, this.deckForGame.cards);
+  handleSelectMode = (mode) => {
+    RouterDialog.openDialog(this.props.history, mode);
+  };
+
+  handleJoinQueue = (formatName, deck) => {
+    this.props.onJoinQueue(this.formatName, deck.cards);
   };
 
   handleLeaveQueue = () => {
@@ -105,14 +79,21 @@ export default class Lobby extends React.Component {
   }
 
   render() {
-    const {
-      availableDecks, cards, gameMode, selectedDeckIdx, selectedFormatIdx, socket,
-      onConnect, onSelectDeck
-    } = this.props;
+    const { availableDecks, cards, gameMode, socket, onConnect} = this.props;
     const { clientIdToUsername, connected, connecting, playersOnline } = socket;
 
     return (
       <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
+        <div>
+          <PreGameModal
+            mode="ranked"
+            title="Join Ranked Queue"
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onStartGame={this.handleJoinQueue} />
+        </div>
+
         <LobbyStatus
           connecting={connecting}
           connected={connected}
@@ -120,19 +101,7 @@ export default class Lobby extends React.Component {
           usernameMap={clientIdToUsername}
           onConnect={onConnect} />
 
-        <div style={{display: 'flex'}}>
-          <FormatPicker
-            selectedFormatIdx={selectedFormatIdx}
-            onChooseFormat={this.handleSelectFormat} />
-          <DeckPicker
-            cards={cards}
-            availableDecks={availableDecks}
-            selectedDeckIdx={selectedDeckIdx}
-            onChooseDeck={onSelectDeck} />
-        </div>
-
         {this.renderWaiting(socket)}
-
         {this.renderLobbyContent(gameMode, socket)}
 
         <HostGame

@@ -97,7 +97,7 @@ export default class PreGameModal extends React.Component {
   };
 
   render() {
-    const { cards, format, history, mode, title } = this.props;
+    const { cards, children, format, history, mode, title } = this.props;
     const { selectedDeckIdx, selectedFormatIdx } = this.state;
 
     return (
@@ -111,8 +111,8 @@ export default class PreGameModal extends React.Component {
         }}
         actions={this.actions}
       >
-        {this.props.children}
-        {!format && <FormatPicker
+        {children}
+        {format ? null : <FormatPicker
           selectedFormatIdx={selectedFormatIdx}
           onChooseFormat={this.handleChooseFormat}
         />}

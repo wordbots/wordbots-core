@@ -18,7 +18,7 @@ declare const global: Global;
 // This resolves the following warning:
 //   Warning: Material-UI: userAgent should be supplied in the muiTheme context
 //        for server-side rendering.
-function userAgentMiddleware(req: express.Request, _res: express.Response, next: express.NextFunction) {
+function userAgentMiddleware(req: express.Request, _res: express.Response, next: express.NextFunction): void {
   global.navigator = {
     userAgent: req.headers['user-agent']
   };
@@ -50,8 +50,8 @@ app.use(userAgentMiddleware);
 app.get('/*', handleRequest);
 
 const server = app.listen(PORT || 3000, (): void => {
-  /* eslint-disable no-console */
+  /* tslint:disable:no-console */
   console.log(`App listening at http://${server.address().address}:${server.address().port}`);
-  /* eslint-enable no-console */
+  /* tslint:enable:no-console */
 });
 launchWebsocketServer(server, '/socket');

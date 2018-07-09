@@ -4,7 +4,7 @@ import { attackBotCard } from '../data/cards';
 import * as actions from '../../src/common/actions/game';
 import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game';
-import { blueCoreCard, orangeCoreCard, shockCard } from '../../src/common/store/cards';
+import { blueCoreCard, orangeCoreCard, shockCard } from '../../src/common/store/cards.ts';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 

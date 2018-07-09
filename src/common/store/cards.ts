@@ -1,3 +1,4 @@
+import * as w from '../types';
 import { STARTING_PLAYER_HEALTH, TYPE_CORE } from '../constants';
 
 import * as robots from './coreSet/robots';
@@ -18,23 +19,25 @@ const coreCard = {
   source: 'builtin'
 };
 
-export const blueCoreCard = {
+export const blueCoreCard: w.Card = {
   ...coreCard,
+  id: 'blueKernel',
   name: 'Blue Kernel',
   img: 'core_blue'
 };
 
-export const orangeCoreCard = {
+export const orangeCoreCard: w.Card = {
   ...coreCard,
+  id: 'orangeKernel',
   name: 'Orange Kernel',
   img: 'core_orange'
 };
 
-export const collection = [
+export const collection: w.Card[] = [
   ...Object.values(robots),
   ...Object.values(events),
   ...Object.values(structures)
-].map(card =>
+].map((card) =>
   Object.assign(card, {
     id: `builtin/${card.name}`,
     baseCost: card.cost,
@@ -42,4 +45,4 @@ export const collection = [
   })
 );
 
-export const builtinCardNames = collection.map(card => card.name);
+export const builtinCardNames = collection.map((card) => card.name);

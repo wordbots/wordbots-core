@@ -1,6 +1,6 @@
 import { isArray, reduce } from 'lodash';
 
-import defaultState from '../store/defaultCollectionState';
+import defaultState from '../store/defaultCollectionState.ts';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as globalActions from '../actions/global';

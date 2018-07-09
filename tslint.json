@@ -1,0 +1,21 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "max-line-length": false,
+    "new-parens": false,
+    "no-var-requires": false,
+    "object-literal-sort-keys": false,
+    "ordered-imports": false,
+    "quotemark": false,
+    "semicolon": [true, "ignore-interfaces"],
+    "trailing-comma": false,
+    "typedef": [
+      true,
+      "call-signature",
+      "property-declaration"
+    ],
+    "variable-name": false
+  }
+}

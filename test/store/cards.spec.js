@@ -1,4 +1,4 @@
-import { collection } from '../../src/common/store/cards';
+import { collection } from '../../src/common/store/cards.ts';
 import { executeCmd } from '../../src/common/util/game';
 import { getDefaultState } from '../testHelpers';
 

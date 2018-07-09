@@ -1,3 +1,7 @@
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
+import * as fb from 'firebase';
+
+import * as w from '../types';
 import { LOG_SOCKET_IO } from '../constants';
 import { logIfFlagSet } from '../util/browser';
 import * as ga from '../actions/global';
@@ -7,12 +11,18 @@ import * as sa from '../actions/socket';
 
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
-function createSocketMiddleware({excludedActions = []}) {
-  return store => {
-    let socket, keepaliveNeeded, user;
-    let sendQueue = [];
+interface SocketMiddlewareOpts {
+  excludedActions: w.ActionType[]
+}
 
-    function handleAction(action, nextMiddleware) {
+function createSocketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware {
+  return (store: MiddlewareAPI<any>) => {
+    let socket: WebSocket;
+    let keepaliveNeeded: boolean = false;
+    let user: fb.User | undefined;
+    let sendQueue: AnyAction[] = [];
+
+    function handleAction(action: AnyAction, next: Dispatch<AnyAction>): AnyAction {
       if (action.type === sa.CONNECT) {
         connect();
       } else {
@@ -25,12 +35,12 @@ function createSocketMiddleware({excludedActions = []}) {
         } else {
           send(action);
         }
-
-        return nextMiddleware(action);
       }
+
+      return next(action);
     }
 
-    function connect() {
+    function connect(): void {
       store.dispatch(sa.connecting());
 
       socket = new WebSocket(`ws://${window.location.host}/socket`);
@@ -39,7 +49,7 @@ function createSocketMiddleware({excludedActions = []}) {
       socket.onmessage = receive;
     }
 
-    function connected() {
+    function connected(): void {
       store.dispatch(sa.connected());
       send(sa.sendUserData(user));
 
@@ -47,11 +57,11 @@ function createSocketMiddleware({excludedActions = []}) {
       sendQueue = [];
     }
 
-    function disconnected() {
+    function disconnected(): void {
       store.dispatch(sa.disconnected());
     }
 
-    function send(action) {
+    function send(action: AnyAction): void {
       if (socket && !action.fromServer && !excludedActions.includes(action.type)) {
         // Either send the action or queue it to send later.
         if (socket.readyState === WebSocket.OPEN) {
@@ -64,7 +74,7 @@ function createSocketMiddleware({excludedActions = []}) {
       }
     }
 
-    function receive(event) {
+    function receive(event: { data: string }): void {
       const msg = event.data;
       const action = JSON.parse(msg);
 
@@ -72,7 +82,7 @@ function createSocketMiddleware({excludedActions = []}) {
       store.dispatch(Object.assign({}, action, {fromServer: true}));
     }
 
-    function keepalive() {
+    function keepalive(): void {
       if (socket) {
         // If the socket is open, keepalive if necessary. If the socket is closed, try to re-open it.
         if (socket.readyState === WebSocket.CLOSED) {
@@ -86,7 +96,7 @@ function createSocketMiddleware({excludedActions = []}) {
 
     setInterval(keepalive, KEEPALIVE_INTERVAL_SECS * 1000);
 
-    return next => action => handleAction(action, next);
+    return (next: Dispatch<AnyAction>) => (action: AnyAction) => handleAction(action, next);
   };
 }
 

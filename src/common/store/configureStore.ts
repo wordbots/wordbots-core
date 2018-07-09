@@ -1,26 +1,25 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import multi from 'redux-multi';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, compose, AnyAction, Middleware, Store, StoreEnhancer } from 'redux';
 import { compact } from 'lodash';
 
+import * as w from '../types';
 import { ALWAYS_ENABLE_DEV_TOOLS, ENABLE_REDUX_TIME_TRAVEL } from '../constants';
-import promiseMiddleware from '../middleware/promiseMiddleware';
 import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
 import * as socketActions from '../actions/socket';
 
+declare const module: { dev: any, hot: any };
+declare const process: { browser: any, env: { NODE_ENV: string } };
+
 const DEV_TOOLS_ENABLED = ALWAYS_ENABLE_DEV_TOOLS || !['production', 'test'].includes(process.env.NODE_ENV);
 
-const selectStoreEnhancers = () => {
-  const universalMiddleware = [thunk, promiseMiddleware, multi];  // Middleware that we use in every environment.
-
+const selectStoreEnhancers = (): StoreEnhancer[] => {
   if (process.browser) {
-    const socketMiddleware = createSocketMiddleware({
+    const socketMiddleware: Middleware = createSocketMiddleware({
       excludedActions: [socketActions.CONNECTING, socketActions.CONNECTED, socketActions.DISCONNECTED]
     });
 
     if (DEV_TOOLS_ENABLED) {
-      const createLogger = require('redux-logger').createLogger;
+      const createLogger: () => Middleware = require('redux-logger').createLogger;
       const DevTools = require('../containers/DevTools').default;
 
       // react-addons-perf unsupported as of React 16.0.0.
@@ -28,23 +27,21 @@ const selectStoreEnhancers = () => {
       // window.Perf = Perf;
 
       return [
-        applyMiddleware(...universalMiddleware, socketMiddleware, createLogger()),
-        ENABLE_REDUX_TIME_TRAVEL && DevTools.instrument()
+        applyMiddleware(socketMiddleware, createLogger()),
+        ENABLE_REDUX_TIME_TRAVEL ? DevTools.instrument() : null
       ];
     } else {
       return [
-        applyMiddleware(...universalMiddleware, socketMiddleware)
+        applyMiddleware(socketMiddleware)
       ];
     }
   } else {
-    return [
-      applyMiddleware(...universalMiddleware)
-    ];
+    return [];
   }
 };
 
-
-export default function configureStore(initialState) {
+// TODO type initialState
+export default function configureStore(initialState: any): Store<w.State, AnyAction> {
   const enhancers = compact(selectStoreEnhancers());
   const store = createStore(rootReducer, initialState, compose(...enhancers));
 

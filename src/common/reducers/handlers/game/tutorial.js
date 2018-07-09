@@ -8,7 +8,7 @@ import { lookupUsername } from '../../../util/firebase';
 import { currentTutorialStep, passTurn } from '../../../util/game';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
-import * as cards from '../../../store/cards';
+import * as cards from '../../../store/cards.ts';
 import defaultState from '../../../store/defaultGameState.ts';
 
 function nextStep(state, action = null) {

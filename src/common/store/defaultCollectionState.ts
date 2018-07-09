@@ -1,18 +1,20 @@
+import * as w from '../types';
+
 import { collection } from './cards';
 import * as decks from './decks';
 
-const defaultState = {
+const defaultState: w.CollectionState = {
   cards: collection,
   decks: [
     {
       id: '[default-aggro]',
       name: 'RoboRampage (Built-in)',
-      cardIds: decks.aggro.map(c => c.id)
+      cardIds: decks.aggro.map((c) => c.id)
     },
     {
       id: '[default-healing]',
       name: 'Deft Defense (Built-in)',
-      cardIds: decks.healing.map(c => c.id)
+      cardIds: decks.healing.map((c) => c.id)
     }
   ],
   deckBeingEdited: null,

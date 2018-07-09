@@ -1,7 +1,7 @@
 import { cloneDeep, concat } from 'lodash';
 
 import * as socketActions from '../actions/socket';
-import defaultState from '../store/defaultSocketState';
+import defaultState from '../store/defaultSocketState.ts';
 
 export default function socket(oldState = cloneDeep(defaultState), action) {
   const state = Object.assign({}, oldState);

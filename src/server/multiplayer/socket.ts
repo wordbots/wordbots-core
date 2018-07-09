@@ -10,28 +10,27 @@ import MultiplayerServerState from './MultiplayerServerState';
 
 const QUEUE_INTERVAL_MSECS = 500;
 
-/* eslint-disable no-console */
+/* tslint:disable:no-console */
 export default function launchWebsocketServer(server: Server, path: string): void {
   const state = new MultiplayerServerState();
 
   const wss = new WebSocket.Server({
-    server: server,
     path: '/socket',
-    perMessageDeflate: false
+    perMessageDeflate: false,
+    server
   });
 
   wss.on('listening', onOpen);
   wss.on('connection', onConnect);
 
-  function onOpen() {
-    const { server } = wss.options;
-    if (server) {
-      const { address, port } = server.address();
+  function onOpen(): void {
+    if (wss.options.server) {
+      const { address, port } = wss.options.server.address();
       console.log(`WebSocket listening at http://${address}:${port}${path}`);
 
       setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);
     } else {
-      console.error("WebSocket server failed to start")
+      console.error("WebSocket server failed to start");
     }
   }
 
@@ -93,13 +92,13 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const game = state.disconnectClient(clientID);
     sendChat(`${state.getClientUsername(clientID)} has left.`);
     if (game) {
-      sendMessageInGame(clientID, 'ws:FORFEIT', {'winner': opponentOf(game.playerColors[clientID])});
+      sendMessageInGame(clientID, 'ws:FORFEIT', {winner: opponentOf(game.playerColors[clientID])});
     }
   }
 
   function sendMessage(type: string, payload: object = {}, recipientIDs: m.ClientID[] | null = null): void {
     const message = JSON.stringify({type, payload});
-    state.getClientSockets(recipientIDs).forEach(socket => {
+    state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
         console.log(`> ${message}`);
@@ -123,7 +122,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function sendChat(msg: string, recipientIDs: m.ClientID[] | null = null): void {
-    sendMessage('ws:CHAT', {msg: msg, sender: '[Server]'}, recipientIDs);
+    sendMessage('ws:CHAT', {msg, sender: '[Server]'}, recipientIDs);
   }
 
   function broadcastInfo(): void {
@@ -151,8 +150,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     if (game) {
       const { decks, format, name, startingSeed, usernames } = game;
 
-      sendMessage('ws:GAME_START', {'player': 'blue', format, decks, usernames, seed: startingSeed }, [clientID]);
-      sendMessage('ws:GAME_START', {'player': 'orange', format, decks, usernames, seed: startingSeed }, [opponentID]);
+      sendMessage('ws:GAME_START', {player: 'blue', format, decks, usernames, seed: startingSeed }, [clientID]);
+      sendMessage('ws:GAME_START', {player: 'orange', format, decks, usernames, seed: startingSeed }, [opponentID]);
       sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
       broadcastInfo();
     }
@@ -174,7 +173,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       const { actions, decks, name, startingSeed, usernames } = game;
 
       sendMessage('ws:GAME_START', { player: 'neither', decks, usernames, seed: startingSeed }, [clientID]);
-      sendMessage('ws:CURRENT_STATE', {'actions': actions}, [clientID]);
+      sendMessage('ws:CURRENT_STATE', {actions}, [clientID]);
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
       sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
 
@@ -190,11 +189,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
   function performMatchmaking(): void {
     const newGames = state.matchPlayersIfPossible();
-    newGames.forEach(game => {
+    newGames.forEach((game) => {
       const { decks, name, startingSeed, usernames } = game;
 
-      sendMessage('ws:GAME_START', {'player': 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
-      sendMessage('ws:GAME_START', {'player': 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
+      sendMessage('ws:GAME_START', {player: 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
+      sendMessage('ws:GAME_START', {player: 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
       sendChat(`Entering game ${name} ...`, game.players);
 
       broadcastInfo();

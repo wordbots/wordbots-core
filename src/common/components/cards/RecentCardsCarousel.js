@@ -4,7 +4,7 @@ import Carousel from 'react-slick';
 import { uniqBy } from 'lodash';
 
 import { listenToRecentCards } from '../../util/firebase';
-import { builtinCardNames } from '../../store/cards';
+import { builtinCardNames } from '../../store/cards.ts';
 import Card from '../card/Card';
 
 export default class RecentCardsCarousel extends React.Component {

@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from '../common/containers/App';
-import configureStore from '../common/store/configureStore';
+import configureStore from '../common/store/configureStore.ts';
 import '../../styles/index.css';
 import '../../styles/lib.css';
 import '../../styles/animations.css';

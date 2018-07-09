@@ -3,6 +3,7 @@ import {
   intersection, isArray, mapValues, some, times, uniqBy
 } from 'lodash';
 
+import * as w from '../types';
 import {
   DEFAULT_GAME_FORMAT, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
@@ -20,27 +21,27 @@ import { clamp } from './common';
 // I. Queries for game state.
 //
 
-export function opponent(playerName) {
+export function opponent(playerName: w.PlayerColor): w.PlayerColor {
   return (playerName === 'blue') ? 'orange' : 'blue';
 }
 
-export function opponentName(state) {
+export function opponentName(state: w.GameState): w.PlayerColor {
   return opponent(state.currentTurn);
 }
 
-export function activePlayer(state) {
+export function activePlayer(state: w.GameState): w.PlayerInGameState {
   return state.players[state.player];
 }
 
-export function currentPlayer(state) {
+export function currentPlayer(state: w.GameState): w.PlayerInGameState {
   return state.players[state.currentTurn];
 }
 
-export function opponentPlayer(state) {
+export function opponentPlayer(state: w.GameState): w.PlayerInGameState {
   return state.players[opponentName(state)];
 }
 
-export function currentTutorialStep(state) {
+export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefined {
   if ((state.tutorial || state.sandbox) && state.tutorialSteps) {
     const idx = state.tutorialCurrentStepIdx || 0;
     const step = state.tutorialSteps[idx];
@@ -51,11 +52,11 @@ export function currentTutorialStep(state) {
   }
 }
 
-export function allObjectsOnBoard(state) {
+export function allObjectsOnBoard(state: w.GameState): w.Object[] {
   return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
 }
 
-export function ownerOf(state, object) {
+export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameState {
   if (some(state.players.blue.robotsOnBoard, ['id', object.id])) {
     return state.players.blue;
   } else if (some(state.players.orange.robotsOnBoard, ['id', object.id])) {
@@ -63,34 +64,41 @@ export function ownerOf(state, object) {
   }
 }
 
-export function getAttribute(object, attr) {
+export function getAttribute(object: w.Object, attr: w.Attribute): number | undefined {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
-    return object.temporaryStatAdjustments[attr].reduce((val, adj) => clamp(adj.func)(val), object.stats[attr]);
+    return (object.temporaryStatAdjustments[attr] as w.StatAdjustment[])
+      .reduce((val: number | undefined, adj: { func: (a: number) => number}) =>
+        clamp(adj.func)(val), object.stats[attr]
+      );
   } else {
     return (object.stats[attr] === undefined) ? undefined : object.stats[attr];
   }
 }
 
-export function getCost(card) {
+export function getCost(card: w.CardInGame): number {
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.
-    return card.temporaryStatAdjustments.cost.reduce((val, adj) => clamp(adj.func)(val), card.cost);
+    return card.temporaryStatAdjustments.cost.reduce((val: number, adj: { func: (a: number) => number}) =>
+      clamp(adj.func)(val), card.cost
+    );
   } else {
     return card.cost;
   }
 }
 
-function movesLeft(robot) {
-  return robot.cantMove ? 0 : getAttribute(robot, 'speed') - robot.movesMade;
+function movesLeft(robot: w.Robot): number {
+  return robot.cantMove ? 0 : (getAttribute(robot, 'speed') as number) - robot.movesMade;
 }
 
-export function hasEffect(object, effect) {
+export function hasEffect(object: w.Object, effect: string): boolean {
   return some((object.effects || []), ['effect', effect]);
 }
 
-function getEffect(object, effect) {
-  return (object.effects || []).filter((eff) => eff.effect === effect).map((eff) => eff.props);
+function getEffect(object: w.Object, effect: string): any {
+  return (object.effects || Array<w.Effect>())
+            .filter((eff: w.Effect) => eff.effect === effect)
+            .map((eff: w.Effect) => eff.props);
 }
 
 function allowedToAttack(state, attacker, targetHex) {

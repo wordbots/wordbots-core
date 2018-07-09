@@ -29,7 +29,8 @@ export interface Game {
   state: GameState,
   decks: { blue: Deck, orange: Deck },
   usernames: { blue: string, orange: string },
-  startingSeed: string
+  startingSeed: string,
+  winner: w.PlayerColor | null
 }
 
 export interface WaitingPlayer {

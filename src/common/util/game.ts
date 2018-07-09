@@ -90,7 +90,7 @@ export function hasEffect(object, effect) {
 }
 
 function getEffect(object, effect) {
-  return (object.effects || []).filter(eff => eff.effect === effect).map(eff => eff.props);
+  return (object.effects || []).filter((eff) => eff.effect === effect).map((eff) => eff.props);
 }
 
 function allowedToAttack(state, attacker, targetHex) {
@@ -104,7 +104,7 @@ function allowedToAttack(state, attacker, targetHex) {
       getAttribute(attacker, 'attack') <= 0) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
-    const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), e => e.target.entries.map(t => t.id));
+    const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), (e) => e.target.entries.map((t) => t.id));
     return validTargetIds.includes(defender.id);
   } else {
     return true;
@@ -164,7 +164,7 @@ export function getAdjacentHexes(hex) {
     new Hex(hex.q + 1, hex.r - 1, hex.s),
     new Hex(hex.q - 1, hex.r, hex.s + 1),
     new Hex(hex.q + 1, hex.r, hex.s - 1)
-  ].filter(adjacentHex =>
+  ].filter((adjacentHex) =>
     // Filter out hexes that are not on the 3-radius hex grid.
     allHexIds().includes(HexUtils.getID(adjacentHex))
   );
@@ -183,7 +183,7 @@ export function validPlacementHexes(state, playerName, type) {
     hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }
 
-  return hexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
+  return hexes.filter((hex) => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
 export function validMovementHexes(state, startHex) {
@@ -192,14 +192,14 @@ export function validMovementHexes(state, startHex) {
   let potentialMovementHexes = [startHex];
 
   times(movesLeft(object), () => {
-    const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter(hex =>
+    const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter((hex) =>
       hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
     );
 
     potentialMovementHexes = uniqBy(potentialMovementHexes.concat(newHexes), HexUtils.getID);
   });
 
-  return potentialMovementHexes.filter(hex => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
+  return potentialMovementHexes.filter((hex) => !allObjectsOnBoard(state)[HexUtils.getID(hex)]);
 }
 
 export function validAttackHexes(state, startHex) {
@@ -207,7 +207,7 @@ export function validAttackHexes(state, startHex) {
   const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex));
   const potentialAttackHexes = _(validMoveHexes).flatMap(getAdjacentHexes).uniqBy(HexUtils.getID).value();
 
-  return potentialAttackHexes.filter(hex => allowedToAttack(state, object, hex));
+  return potentialAttackHexes.filter((hex) => allowedToAttack(state, object, hex));
 }
 
 export function validActionHexes(state, startHex) {
@@ -275,7 +275,7 @@ function startTurn(state) {
   player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, (robot =>
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((robot) =>
     Object.assign({}, robot, {
       movesMade: 0,
       cantActivate: false,
@@ -316,7 +316,7 @@ function endTurn(state) {
   previousTurnPlayer.selectedTile = null;
   previousTurnPlayer.status.message = '';
   previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-  previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, (obj =>
+  previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, ((obj) =>
     Object.assign({}, obj, {
       attackedThisTurn: false,
       movedThisTurn: false,
@@ -329,7 +329,7 @@ function endTurn(state) {
   ));
 
   const nextTurnPlayer = opponentPlayer(state);
-  nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, (obj =>
+  nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) =>
     Object.assign({}, obj, {
       abilities: compact(obj.abilities.map(decrementDuration)),
       triggers: compact(obj.triggers.map(decrementDuration))
@@ -374,7 +374,6 @@ export function drawCards(state, player, count) {
     }
   });
 
-
   state = applyAbilities(state);
   return state;
 }
@@ -391,8 +390,8 @@ export function discardCards(state, color, cards) {
 export function removeCardsFromHand(state, cards) {
   // At the moment, only the currently active player can ever play or discard a card.
   const player = currentPlayer(state);
-  const cardIds = cards.map(c => c.id);
-  player.hand = filter(player.hand, c => !cardIds.includes(c.id));
+  const cardIds = cards.map((c) => c.id);
+  player.hand = filter(player.hand, (c) => !cardIds.includes(c.id));
   return state;
 }
 
@@ -402,7 +401,7 @@ export function dealDamageToObjectAtHex(state, amount, hex, cause = null) {
   if (!object.beingDestroyed) {
     object.stats.health -= amount;
     state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
-    state = triggerEvent(state, 'afterDamageReceived', {object: object});
+    state = triggerEvent(state, 'afterDamageReceived', {object});
   }
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
@@ -417,7 +416,7 @@ export function updateOrDeleteObjectAtHex(state, object, hex, cause = null) {
 
     state = triggerSound(state, 'destroyed.wav');
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
-    state = triggerEvent(state, 'afterDestroyed', {object: object, condition: (t => (t.cause === cause || t.cause === 'anyevent'))});
+    state = triggerEvent(state, 'afterDestroyed', {object, condition: ((t) => (t.cause === cause || t.cause === 'anyevent'))});
 
     // Check if the object is still there, because the afterDestroyed trigger may have,
     // e.g., returned it to its owner's hand.
@@ -440,8 +439,8 @@ export function removeObjectFromBoard(state, object, hex) {
 
   // Unapply any abilities that this object had.
   (object.abilities || [])
-    .filter(ability => ability.currentTargets)
-    .forEach(ability => { ability.currentTargets.entries.forEach(ability.unapply); });
+    .filter((ability) => ability.currentTargets)
+    .forEach((ability) => { ability.currentTargets.entries.forEach(ability.unapply); });
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);
@@ -495,14 +494,14 @@ export function executeCmd(state, cmd, currentObject = null, source = null) {
 
 export function triggerEvent(state, triggerType, target = {}, defaultBehavior = null) {
   // Formulate the trigger condition.
-  const defaultCondition = (t => (target.condition ? target.condition(t) : true));
+  const defaultCondition = ((t) => (target.condition ? target.condition(t) : true));
   let condition = defaultCondition;
   if (target.object) {
     state = Object.assign({}, state, {it: target.object});
-    condition = (t => t.targets.map(o => o.id).includes(target.object.id) && defaultCondition(t));
+    condition = ((t) => t.targets.map((o) => o.id).includes(target.object.id) && defaultCondition(t));
   } else if (target.player) {
     state = Object.assign({}, state, {itP: currentPlayer(state)});
-    condition = (t => t.targets.map(p => p.name).includes(state.currentTurn) && defaultCondition(t));
+    condition = ((t) => t.targets.map((p) => p.name).includes(state.currentTurn) && defaultCondition(t));
   }
   if (target.undergoer) {
     // Also store the undergoer (as opposed to agent) of the event if present.
@@ -511,14 +510,14 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
   }
 
   // Look up any relevant triggers for this condition.
-  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), (object =>
+  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), ((object) =>
     object.triggers
-      .map(t => {
+      .map((t) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
-        return Object.assign({}, t, {object: object});
+        return Object.assign({}, t, {object});
       })
-      .filter(t => t.trigger.type === triggerType && condition(t.trigger))
+      .filter((t) => t.trigger.type === triggerType && condition(t.trigger))
   ));
 
   // Execute the defaultBehavior of the event (if any), unless any of the triggers overrides it.
@@ -528,7 +527,7 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
   }
 
   // Now execute each trigger.
-  triggers.forEach(t => {
+  triggers.forEach((t) => {
     // Ordinarily, currentObject has higher salience than state.it
     //     (see it() in vocabulary/targets.js)
     // but we actually want the opposite behavior when processing a trigger!
@@ -545,8 +544,8 @@ export function triggerEvent(state, triggerType, target = {}, defaultBehavior = 
 }
 
 export function applyAbilities(state) {
-  Object.values(allObjectsOnBoard(state)).forEach(obj => {
-    obj.abilities.forEach(ability => {
+  Object.values(allObjectsOnBoard(state)).forEach((obj) => {
+    obj.abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {
         ability.currentTargets.entries.forEach(ability.unapply);
@@ -560,7 +559,7 @@ export function applyAbilities(state) {
       }
     });
 
-    obj.abilities = obj.abilities.filter(ability => !ability.disabled);
+    obj.abilities = obj.abilities.filter((ability) => !ability.disabled);
   });
 
   return state;

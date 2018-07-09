@@ -24,7 +24,7 @@ export function areIdenticalCards(card1, card2) {
 }
 
 export function cardsInDeck(deck, cards) {
-  return compact((deck.cardIds || []).map(id => cards.find(c => c.id === id)));
+  return compact((deck.cardIds || []).map((id) => cards.find((c) => c.id === id)));
 }
 
 export function shuffleCardsInDeck(deck, cards) {
@@ -50,7 +50,7 @@ export function instantiateCard(card) {
 //
 
 export function groupCards(cards) {
-  return uniqBy(cards, 'id').map(card =>
+  return uniqBy(cards, 'id').map((card) =>
     Object.assign({}, card, {count: countBy(cards, 'name')[card.name]})
   );
 }
@@ -61,7 +61,7 @@ export function selectType(cards, type) {
 
 export function getDisplayedCards(cards, opts = {}) {
   return cards
-    .filter(card => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
+    .filter((card) => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
     .sort((c1, c2) => sortCards(c1, c2, opts.sortCriteria, opts.sortOrder));
 }
 
@@ -82,8 +82,8 @@ export function createCardFromProps(props) {
     attack, cost, health, id, name, parserVersion,
     sentences: rawSentences, speed, spriteID, type
   } = props;
-  const sentences = rawSentences.filter(s => /\S/.test(s.sentence));
-  const command = sentences.map(s => s.result.js);
+  const sentences = rawSentences.filter((s) => /\S/.test(s.sentence));
+  const command = sentences.map((s) => s.result.js);
 
   const card = {
     id: id || generateId(),
@@ -92,8 +92,8 @@ export function createCardFromProps(props) {
     spriteID,
     spriteV: SPRITE_VERSION,
     parserV: parserVersion,
-    text: sentences.map(s => `${s.sentence}. `).join(''),
-    cost: cost,
+    text: sentences.map((s) => `${s.sentence}. `).join(''),
+    cost,
     source: 'user',  // In the future, this will specify *which* user created the card.
     timestamp: Date.now()
   };
@@ -117,25 +117,25 @@ function sortCards(c1, c2, criteria, order) {
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const [cost, name, type, source, attack, health, speed] = [
-    c => c.cost.toString(36),
-    c => c.name.toLowerCase(),
-    c => typeToString(c.type),
-    c => c.source === 'builtin',
-    c => (c.stats && c.stats.attack || 0).toString(36),
-    c => (c.stats && c.stats.health || 0).toString(36),
-    c => (c.stats && c.stats.speed || 0).toString(36)
+    (c) => c.cost.toString(36),
+    (c) => c.name.toLowerCase(),
+    (c) => typeToString(c.type),
+    (c) => c.source === 'builtin',
+    (c) => (c.stats && c.stats.attack || 0).toString(36),
+    (c) => (c.stats && c.stats.health || 0).toString(36),
+    (c) => (c.stats && c.stats.speed || 0).toString(36)
   ];
 
   // Sorting functions for card collections:
   // 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
   const f = [
-    c => [cost(c), name(c)],
-    c => [name(c), cost(c)],
-    c => [type(c), cost(c), name(c)],
-    c => [source(c), cost(c), name(c)],
-    c => [attack(c), cost(c), name(c)],
-    c => [health(c), cost(c), name(c)],
-    c => [speed(c), cost(c), name(c)]
+    (c) => [cost(c), name(c)],
+    (c) => [name(c), cost(c)],
+    (c) => [type(c), cost(c), name(c)],
+    (c) => [source(c), cost(c), name(c)],
+    (c) => [attack(c), cost(c), name(c)],
+    (c) => [health(c), cost(c), name(c)],
+    (c) => [speed(c), cost(c), name(c)]
   ][criteria];
 
   if (f(c1) < f(c2)) {
@@ -160,12 +160,12 @@ export function replaceSynonyms(text) {
 }
 
 export function splitSentences(str) {
-  return (str || '').split(/[\\.!?]/).filter(s => /\S/.test(s));
+  return (str || '').split(/[\\.!?]/).filter((s) => /\S/.test(s));
 }
 
 export function getSentencesFromInput(text) {
   let sentences = splitSentences(replaceSynonyms(text));
-  sentences = flatMap(sentences, s => isKeywordExpression(s) ? s.replace(/,/g, ',|').split('|') : s);
+  sentences = flatMap(sentences, (s) => isKeywordExpression(s) ? s.replace(/,/g, ',|').split('|') : s);
 
   return sentences;
 }
@@ -177,16 +177,16 @@ function parse(sentences, mode, callback, index = true) {
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
 
     fetch(parseUrl)
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         callback(idx, sentence, json);
         if (index && json.tokens && json.js) {
           indexParsedSentence(sentence, json.tokens, json.js);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         // TODO better error handling
-        throw(`Parser error: ${err}`);
+        thrownew; Error((`Parser error: ${err}`));
       });
   });
 }
@@ -198,18 +198,18 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 export function parseBatch(sentences, mode, callback) {
   fetch(`${PARSER_URL}/parse`, {
     method: 'POST',
-    body: JSON.stringify(sentences.map(input => ({ input, mode }))),
+    body: JSON.stringify(sentences.map((input) => ({ input, mode }))),
     headers: { 'Content-Type': 'application/json' }
   })
-    .then(response => response.json())
-    .then(results => {
+    .then((response) => response.json())
+    .then((results) => {
       Object.entries(results).forEach(([sentence, result]) => {
         callback(sentence, result);
       });
     })
-    .catch(err => {
+    .catch((err) => {
       // TODO better error handling
-      throw(`Parser error: ${err}`);
+      thrownew; Error((`Parser error: ${err}`));
     });
 }
 
@@ -237,8 +237,8 @@ function parseCard(card, callback) {
 
 function phrases(sentence) {
   return sentence.split(',')
-                 .filter(s => /\S/.test(s))
-                 .map(s => s.trim());
+                 .filter((s) => /\S/.test(s))
+                 .map((s) => s.trim());
 }
 
 export function allKeywords() {
@@ -246,7 +246,7 @@ export function allKeywords() {
 }
 
 export function isKeywordExpression(sentence, hintsToo = false) {
-  return phrases(sentence).every(p => KEYWORDS[p.toLowerCase()]);
+  return phrases(sentence).every((p) => KEYWORDS[p.toLowerCase()]);
 }
 
 export function keywordsInSentence(sentence, hintsToo = false) {
@@ -254,13 +254,13 @@ export function keywordsInSentence(sentence, hintsToo = false) {
   const regexes = hintsToo ? Object.assign({}, KEYWORD_REGEXES, HINT_REGEXES) : KEYWORD_REGEXES;
 
   if (isKeywordExpression(sentence)) {
-    return fromPairs(phrases(sentence).map(p => [p, keywords[p.toLowerCase()]]));
+    return fromPairs(phrases(sentence).map((p) => [p, keywords[p.toLowerCase()]]));
   } else {
-    const keywordsList = compact(Object.keys(keywords).map(keyword => {
+    const keywordsList = compact(Object.keys(keywords).map((keyword) => {
       const match = sentence.match(regexes[keyword]);
       return match ? match[1] : null;
     }));
-    return fromPairs(keywordsList.map(k => [k, keywords[k.toLowerCase()]]));
+    return fromPairs(keywordsList.map((k) => [k, keywords[k.toLowerCase()]]));
   }
 }
 
@@ -270,7 +270,7 @@ export function expandKeywords(sentence) {
 }
 
 export function contractKeywords(sentence) {
-  const keywords = mapValues(KEYWORDS, k => k.split(/(,|\.)/)[0]);
+  const keywords = mapValues(KEYWORDS, (k) => k.split(/(,|\.)/)[0]);
   return reduce(keywords, ((str, def, keyword) =>
     str.replace(`"${def}"`, capitalize(keyword))
        .replace(def, capitalize(keyword))
@@ -283,7 +283,7 @@ export function contractKeywords(sentence) {
 
 export function cardsToJson(cards) {
   const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats'];
-  const cardsToExport = cards.map(card =>
+  const cardsToExport = cards.map((card) =>
     Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION})
   );
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
@@ -293,14 +293,14 @@ export function cardsFromJson(json, callback) {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
-    .map(card =>
+    .map((card) =>
       Object.assign({}, omit(card, ['schema']), {
         id: generateId(),
         source: 'user',
         timestamp: Date.now()
       })
     )
-    .forEach(card => { parseCard(card, callback); });
+    .forEach((card) => { parseCard(card, callback); });
 }
 
 export function loadCardsFromFirebase(state, data) {
@@ -332,7 +332,7 @@ export function saveCardToFirebase(card) {
 }
 
 export function saveCardsToFirebase(state) {
-  saveUserData('cards', state.cards.filter(c => c.source !== 'builtin'));
+  saveUserData('cards', state.cards.filter((c) => c.source !== 'builtin'));
 }
 
 export function saveDecksToFirebase(state) {
@@ -341,10 +341,10 @@ export function saveDecksToFirebase(state) {
 
 export function loadParserLexicon(callback) {
   fetch(`${PARSER_URL}/lexicon?format=json`)
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(callback)
-    .catch(err => {
+    .catch((err) => {
       // TODO better error handling
-      throw(`Error retrieving lexicon: ${err}`);
+      thrownew; Error((`Error retrieving lexicon: ${err}`));
     });
 }

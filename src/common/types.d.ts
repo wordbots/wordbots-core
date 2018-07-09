@@ -64,6 +64,12 @@ export interface PlayerInGameState {
   [x: string]: any  // TODO Expose more field types as we need them
 }
 
+export interface Dictionary {
+  definitions?: { [token: string]: any } // TODO
+  examplesByToken?: { [token: string]: string[] }
+  examplesByNode?: { [token: string]: string[] }
+}
+
 /* Redux store types */
 
 export interface State {

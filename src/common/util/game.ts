@@ -7,8 +7,8 @@ import {
   DEFAULT_GAME_FORMAT, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
 } from '../constants';
-import { arbitraryPlayerState } from '../store/defaultGameState.ts';
-import { GameFormat, SharedDeckGameFormat } from '../store/gameFormats.ts';
+import { arbitraryPlayerState } from '../store/defaultGameState';
+import { GameFormat, SharedDeckGameFormat } from '../store/gameFormats';
 import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/hexgrid/GridGenerator';
 import Hex from '../components/hexgrid/Hex';

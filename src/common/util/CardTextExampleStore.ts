@@ -21,7 +21,7 @@ export default class CardTextExampleStore {
     const modes = Object.keys(this.examples);
 
     modes.forEach((mode) => {
-      parseBatch(candidates, mode, (sentence: string, result: w.ParseResult) => {
+      parseBatch(candidates, mode as w.ParserMode, (sentence: string, result: w.ParseResult) => {
         if (!result.error) {
           this.examples[mode].push(sentence);
           onLoad(mode);

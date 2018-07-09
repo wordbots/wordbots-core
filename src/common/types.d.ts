@@ -32,7 +32,7 @@ export interface Action {
 /* General types */
 
 export interface Deck extends DeckInStore {
-  cards: Card[]
+  cards: CardInStore[]
 }
 
 export interface DeckInStore {
@@ -41,12 +41,19 @@ export interface DeckInStore {
   cardIds: string[]
 }
 
-export interface Card {
+export type Card = CardInGame | CardInStore;
+
+export interface CardInGame extends CardInStore {
   id: string
+  baseCost: number
+}
+
+export interface CardInStore {
+  id?: string
   name: string
   img?: string  // Only kernels have images
+  spriteID?: string
   cost: number
-  baseCost?: number
   type: CardType
   stats?: {
     attack?: number
@@ -57,6 +64,9 @@ export interface Card {
   abilities?: string[]
   command?: string | string[]
   source?: string
+  spriteV?: number
+  parserV?: number
+  timestamp?: number
 }
 
 export interface PlayerInGameState {
@@ -82,7 +92,7 @@ export interface State {
 }
 
 export interface CollectionState {
-  cards: Card[]
+  cards: CardInStore[]
   decks: DeckInStore[]
   deckBeingEdited: DeckId | null
   exportedJson: string | null

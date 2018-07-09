@@ -44,12 +44,11 @@ export interface DeckInStore {
 export type Card = CardInGame | CardInStore;
 
 export interface CardInGame extends CardInStore {
-  id: string
   baseCost: number
 }
 
 export interface CardInStore {
-  id?: string
+  id: string
   name: string
   img?: string  // Only kernels have images
   spriteID?: string

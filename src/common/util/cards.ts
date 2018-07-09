@@ -349,7 +349,7 @@ export function saveDecksToFirebase(state: w.CollectionState): void {
   saveUserData('decks', state.decks);
 }
 
-export function loadParserLexicon(callback: () => any): void {
+export function loadParserLexicon(callback: (json: { [token: string]: any }) => any): void {
   fetch(`${PARSER_URL}/lexicon?format=json`)
     .then((response) => response.json())
     .then(callback)

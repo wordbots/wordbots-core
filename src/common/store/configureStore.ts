@@ -1,8 +1,12 @@
-import { createStore, applyMiddleware, compose, AnyAction, Middleware, Store, StoreEnhancer } from 'redux';
+import {
+  createStore, applyMiddleware, compose,
+  AnyAction, Middleware, Store, StoreEnhancer
+} from 'redux';
 import { compact } from 'lodash';
 
 import * as w from '../types';
 import { ALWAYS_ENABLE_DEV_TOOLS, ENABLE_REDUX_TIME_TRAVEL } from '../constants';
+import multipleDispatchMiddleware from '../middleware/multipleDispatchMiddleware';
 import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
 import * as socketActions from '../actions/socket';
@@ -27,23 +31,20 @@ const selectStoreEnhancers = (): StoreEnhancer[] => {
       // window.Perf = Perf;
 
       return [
-        applyMiddleware(socketMiddleware, createLogger()),
+        applyMiddleware(multipleDispatchMiddleware, socketMiddleware, createLogger()),
         ENABLE_REDUX_TIME_TRAVEL ? DevTools.instrument() : null
       ];
     } else {
-      return [
-        applyMiddleware(socketMiddleware)
-      ];
+      return [applyMiddleware(multipleDispatchMiddleware, socketMiddleware)];
     }
   } else {
-    return [];
+    return [applyMiddleware(multipleDispatchMiddleware)];
   }
 };
 
-// TODO type initialState
-export default function configureStore(initialState: any): Store<w.State, AnyAction> {
+export default function configureStore(initialState: w.State): Store<w.State, AnyAction> {
   const enhancers = compact(selectStoreEnhancers());
-  const store = createStore(rootReducer, initialState, compose(...enhancers));
+  const store: Store<w.State> = createStore(rootReducer, initialState, compose(...enhancers));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers

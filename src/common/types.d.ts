@@ -67,7 +67,8 @@ export interface State {
   creator: CreatorState
   game: GameState
   global: GlobalState
-  socket: SocketState
+  socket: SocketState,
+  version: number
 }
 
 export interface CollectionState {

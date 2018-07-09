@@ -1,16 +1,16 @@
-import {mapValues, sum} from 'lodash';
-import {buildNGrams, listAllNGrams} from 'word-ngrams';
+import { mapValues, sum } from 'lodash';
+import { buildNGrams, listAllNGrams, BigramProbs, UnigramProbs } from 'word-ngrams';
 
 const DISALLOWED_PHRASES = ['all a'];
 
-export function prepareBigramProbs(corpus) {
+export function prepareBigramProbs(corpus: string): BigramProbs {
   // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
-  function normalizeValues(obj) {
+  function normalizeValues(obj: UnigramProbs): UnigramProbs {
     const total = sum(Object.values(obj));
-    return mapValues(obj, val => val / total);
+    return mapValues(obj, (val) => val / total);
   }
 
-  const bigrams = mapValues(buildNGrams(corpus, 2), normalizeValues);
+  const bigrams: BigramProbs = mapValues(buildNGrams(corpus, 2) as BigramProbs, normalizeValues);
 
   // Manually set the probability to zero for certain phrases that
   // (while technically valid) aren't the best way of wording something.
@@ -22,8 +22,8 @@ export function prepareBigramProbs(corpus) {
   return bigrams;
 }
 
-export function bigramNLL(phrase, bigramProbs) {
-  const phraseBigrams = listAllNGrams(buildNGrams(`${phrase} .`, 2)).map(b => b.split(' '));
+export function bigramNLL(phrase: string, bigramProbs: BigramProbs): number {
+  const phraseBigrams = listAllNGrams(buildNGrams(`${phrase} .`, 2)).map((b) => b.split(' '));
 
   let logLikelihood = 0;
   phraseBigrams.forEach(([first, second]) => {

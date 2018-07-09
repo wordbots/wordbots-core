@@ -1,8 +1,12 @@
 import * as fb from 'firebase';
 
+/* Simple types */
+
 export type CardType = number;
 export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
+export type ParseResult = any; // TODO
+export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
 
 /* High-level types */

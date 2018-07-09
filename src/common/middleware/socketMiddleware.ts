@@ -16,7 +16,7 @@ interface SocketMiddlewareOpts {
 }
 
 function createSocketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware {
-  return (store: MiddlewareAPI<any>) => {
+  return (store: MiddlewareAPI<Dispatch<AnyAction>, w.State>) => {
     let socket: WebSocket;
     let keepaliveNeeded: boolean = false;
     let user: fb.User | undefined;

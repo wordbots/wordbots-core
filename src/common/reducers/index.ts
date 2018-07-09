@@ -9,20 +9,13 @@ import collection from './collection';
 import socket from './socket';
 import version from './version';
 
-const globalReducer: Reducer<w.GlobalState, any> = global;
-const gameReducer: Reducer<w.GameState, any> = game;
-const creatorReducer: Reducer<w.CreatorState, any> = creator;
-const collectionReducer: Reducer<w.CollectionState, any> = collection;
-const socketReducer: Reducer<w.SocketState, any> = socket;
-const versionReducer: Reducer<number, any> = version;
-
 const rootReducer: Reducer<w.State, any> = combineReducers({
-  global: globalReducer,
-  game: gameReducer,
-  creator: creatorReducer,
-  collection: collectionReducer,
-  socket: socketReducer,
-  version: versionReducer
+  global,
+  game,
+  creator,
+  collection,
+  socket,
+  version
 });
 
 export default rootReducer;

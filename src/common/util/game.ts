@@ -328,7 +328,7 @@ function startTurn(state: w.GameState): w.GameState {
 }
 
 function endTurn(state: w.GameState): w.GameState {
-  function decrementDuration(abilityOrTrigger: w.Ability | w.TriggeredAbility): w.Ability | w.TriggeredAbility {
+  function decrementDuration(abilityOrTrigger: w.Ability): w.Ability {
     const duration = abilityOrTrigger.duration;
     if (duration) {
       if (duration === 1) {
@@ -366,7 +366,7 @@ function endTurn(state: w.GameState): w.GameState {
   nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) =>
     Object.assign({}, obj, {
       abilities: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration)),
-      triggers: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration))
+      triggers: compact((obj.triggers || Array<w.Ability>()).map(decrementDuration))
     })
   ));
 
@@ -557,7 +557,6 @@ export function triggerEvent(
   const triggers = flatMap(Object.values(allObjectsOnBoard(state)), ((object: w.Object) =>
     (object.triggers || Array<w.TriggeredAbility>())
       .map((t: w.TriggeredAbility) => {
-        console.log(t);
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
         return Object.assign({}, t, {object});

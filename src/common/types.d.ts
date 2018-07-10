@@ -2,6 +2,8 @@ import * as fb from 'firebase';
 
 /* Simple types */
 
+export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
+export type ActivatedAbility = any; // TODO
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardType = number;
 export type Cause = string;
@@ -10,9 +12,12 @@ export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
 export type ParseResult = any; // TODO
 export type ParserMode = 'event' | 'object';
+export type PassiveAbility = any; // TODO
 export type PlayerColor = 'blue' | 'orange';
 export type Target = any; // TODO
 export type Targetable = CardInGame | _Object | HexId;
+export type Trigger = any; // TODO
+export type TriggeredAbility = any; // TODO
 
 /* High-level types */
 
@@ -172,7 +177,7 @@ interface _Object { // tslint:disable-line:class-name
   }
   movesMade: number
   triggers: TriggeredAbility[]
-  abilities: Ability[]
+  abilities: PassiveAbility[]
   activatedAbilities?: ActivatedAbility[]
   effects?: Effect[]
   cantActivate?: boolean
@@ -204,8 +209,3 @@ export interface Effect {
   effect: string
   props: any
 }
-
-export type Ability = any; // TODO
-export type ActivatedAbility = any; // TODO
-export type TriggeredAbility = any; // TODO
-export type Trigger = any; // TODO

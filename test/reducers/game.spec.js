@@ -689,7 +689,7 @@ describe('Game reducer', () => {
   });
 
   describe('[Activated abilities]', () => {
-    fit('should let objects activate activated abilities when able', () => {
+    it('should let objects activate activated abilities when able', () => {
       function hand() {
         return state.players.orange.hand.map(c => c.name).join(',');
       }

@@ -12,7 +12,7 @@ import SearchControls from '../../src/common/components/cards/SearchControls';
 import collectionReducer from '../../src/common/reducers/collection';
 import creatorReducer from '../../src/common/reducers/creator';
 import gameReducer from '../../src/common/reducers/game';
-import { collection as cards } from '../../src/common/store/cards';
+import { collection as cards } from '../../src/common/store/cards.ts';
 
 describe('Collection container', () => {
   const CARDS_IN_PAGE = 20;

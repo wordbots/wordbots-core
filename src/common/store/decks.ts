@@ -1,14 +1,16 @@
+import * as w from '../types';
+
 import * as cards from './cards';
 
-function createDeck(cardCounts) {
-  const deck = [];
+function createDeck(cardCounts: Array<[w.Partial<w.Card>, number]>): w.Card[] {
+  const deck: w.Card[] = [];
   cardCounts.forEach(([card, num]) => {
     deck.push(...new Array(num).fill(card));
   });
   return deck;
 }
 
-export const aggro = createDeck([
+export const aggro: w.Card[] = createDeck([
   // Robots (22)
   [cards.speedyBotCard, 2],
   [cards.dojoDiscipleCard, 2],
@@ -31,7 +33,7 @@ export const aggro = createDeck([
   [cards.shockCard, 2]
 ]);
 
-export const healing = createDeck([
+export const healing: w.Card[] = createDeck([
   // Robots (17)
   [cards.crawlingWallCard, 1],
   [cards.thornyBushCard, 2],

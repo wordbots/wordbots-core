@@ -9,11 +9,11 @@ import { instantiateCard } from '../src/common/util/cards';
 import game from '../src/common/reducers/game';
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
-import { collection } from '../src/common/store/cards';
+import { collection } from '../src/common/store/cards.ts';
 import defaultGameState from '../src/common/store/defaultGameState.ts';
-import defaultCreatorState from '../src/common/store/defaultCreatorState';
-import defaultCollectionState from '../src/common/store/defaultCollectionState';
-import defaultSocketState from '../src/common/store/defaultSocketState';
+import defaultCreatorState from '../src/common/store/defaultCreatorState.ts';
+import defaultCollectionState from '../src/common/store/defaultCollectionState.ts';
+import defaultSocketState from '../src/common/store/defaultSocketState.ts';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 import HexUtils from '../src/common/components/hexgrid/HexUtils';
 

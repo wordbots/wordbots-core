@@ -1,5 +1,5 @@
 import * as ga from '../actions/global';
-import defaultState from '../store/defaultGlobalState';
+import defaultState from '../store/defaultGlobalState.ts';
 
 export default function global(state = defaultState, action) {
   switch (action.type) {

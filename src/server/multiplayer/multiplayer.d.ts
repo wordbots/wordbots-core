@@ -2,18 +2,14 @@ import * as WebSocket from 'ws';
 
 import * as w from '../../common/types';
 
-export type GameState = w.GameState;
+export type Action = w.Action;
+export type ActionPayload = w.ActionPayload;
+export type ActionType = w.ActionType;
 export type Deck = w.Deck;
 export type Format = w.Format;
+export type GameState = w.GameState;
 
 export type ClientID = string;
-export type ActionType = string;
-export type ActionPayload = any;
-
-export interface Action {
-  type: ActionType,
-  payload: ActionPayload
-}
 
 export interface UserData {
   uid: string,
@@ -32,7 +28,7 @@ export interface Game {
   actions: Action[],
   state: GameState,
   decks: { blue: Deck, orange: Deck },
-  usernames: { blue: string, orange: String },
+  usernames: { blue: string, orange: string },
   startingSeed: string
 }
 

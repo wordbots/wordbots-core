@@ -12,34 +12,34 @@ function deckHasNCards(deck: w.Deck, num: number): boolean {
 }
 
 function deckHasOnlyBuiltinCards(deck: w.Deck): boolean {
-  return deck.cards.every(card => card.source == 'builtin');
+  return deck.cards.every((card) => card.source === 'builtin');
 }
 
 export class GameFormat {
-  name: string | undefined = undefined;
-  displayName: string | undefined = undefined;
-  description: string | undefined = undefined;
-
-  static fromString(gameFormatStr: String): GameFormat {
-    const format = FORMATS.find(m => m.name === gameFormatStr);
+  public static fromString(gameFormatStr: string): GameFormat {
+    const format = FORMATS.find((m) => m.name === gameFormatStr);
     if (!format) {
-      throw `Unknown game format: ${gameFormatStr}`;
+      throw new Error(`Unknown game format: ${gameFormatStr}`);
     }
     return format;
   }
 
-  isDeckValid = (_deck: w.Deck): boolean => false
+  public name: string | undefined = undefined;
+  public displayName: string | undefined = undefined;
+  public description: string | undefined = undefined;
 
-  isActive(state: w.GameState): boolean {
+  public isDeckValid = (_deck: w.Deck): boolean => false;
+
+  public isActive(state: w.GameState): boolean {
     return state.gameFormat === this.name;
   }
 
-  startGame(
+  public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, _decks: w.PerPlayer<w.Card[]>, seed: string
   ): w.GameState {
     state = Object.assign(state, cloneDeep(defaultState), {
       gameFormat: this.name,
-      player: player,
+      player,
       rng: seededRNG(seed),
       started: true,
       usernames
@@ -51,13 +51,13 @@ export class GameFormat {
 }
 
 export const NormalGameFormat = new (class extends GameFormat {
-  name = 'normal';
-  displayName = 'Normal';
-  description = 'Each player has a 30-card deck. No restrictions on cards.';
+  public name = 'normal';
+  public displayName = 'Normal';
+  public description = 'Each player has a 30-card deck. No restrictions on cards.';
 
-  isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
+  public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
 
-  startGame(
+  public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, seed);
@@ -70,15 +70,15 @@ export const NormalGameFormat = new (class extends GameFormat {
 });
 
 export const BuiltinOnlyGameFormat = new (class extends GameFormat {
-  name = 'builtinOnly';
-  displayName = 'Builtin Only';
-  description = 'Normal game with only built-in cards allowed.';
+  public name = 'builtinOnly';
+  public displayName = 'Builtin Only';
+  public description = 'Normal game with only built-in cards allowed.';
 
-  isDeckValid = (deck: w.Deck): boolean => (
+  public isDeckValid = (deck: w.Deck): boolean => (
     deckHasNCards(deck, DECK_SIZE) && deckHasOnlyBuiltinCards(deck)
-  );
+  )
 
-  startGame(
+  public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
   ): w.GameState {
     return NormalGameFormat.startGame(state, player, usernames, decks, seed);
@@ -86,13 +86,13 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
 });
 
 export const SharedDeckGameFormat = new (class extends GameFormat {
-  name = 'sharedDeck';
-  displayName = 'Shared Deck';
-  description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
+  public name = 'sharedDeck';
+  public displayName = 'Shared Deck';
+  public description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
 
-  isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
+  public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
 
-  startGame(
+  public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, seed);

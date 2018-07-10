@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
 
 import App from '../common/containers/App';
-import configureStore from '../common/store/configureStore';
+import configureStore from '../common/store/configureStore.ts';
 import * as packagejson from '../../package.json';
 
 import produceApiResponse from './api';

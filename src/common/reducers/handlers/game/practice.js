@@ -9,7 +9,7 @@ import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
   newGame, passTurn
 } from '../../../util/game';
-import * as builtinCards from '../../../store/cards';
+import * as builtinCards from '../../../store/cards.ts';
 import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
 import HU from '../../../components/hexgrid/HexUtils';
 

@@ -1,4 +1,6 @@
-const defaultState = {
+import * as w from '../types';
+
+const defaultState: w.SocketState = {
   connecting: false,
   connected: false,
   clientId: null,

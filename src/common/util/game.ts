@@ -306,20 +306,16 @@ function startTurn(state: w.GameState): w.GameState {
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => {
-    if (obj.type === TYPE_ROBOT) {
-      return Object.assign({}, obj, {
-        movesMade: 0,
-        cantActivate: false,
-        cantAttack: false,
-        cantMove: false,
-        attackedThisTurn: false,
-        movedThisTurn: false,
-        attackedLastTurn: (obj as w.Robot).attackedThisTurn,
-        movedLastTurn: (obj as w.Robot).movedThisTurn
-      });
-    } else {
-      return obj;
-    }
+    return Object.assign({}, obj, {
+      movesMade: 0,
+      cantActivate: false,
+      cantAttack: false,
+      cantMove: false,
+      attackedThisTurn: false,
+      movedThisTurn: false,
+      attackedLastTurn: (obj as w.Robot).attackedThisTurn,
+      movedLastTurn: (obj as w.Robot).movedThisTurn
+    });
   }));
 
   state = drawCards(state, player, 1);
@@ -332,7 +328,7 @@ function startTurn(state: w.GameState): w.GameState {
 }
 
 function endTurn(state: w.GameState): w.GameState {
-  function decrementDuration(abilityOrTrigger: w.Ability | w.Trigger): w.Ability | w.Trigger {
+  function decrementDuration(abilityOrTrigger: w.Ability | w.TriggeredAbility): w.Ability | w.TriggeredAbility {
     const duration = abilityOrTrigger.duration;
     if (duration) {
       if (duration === 1) {
@@ -558,9 +554,10 @@ export function triggerEvent(
   }
 
   // Look up any relevant triggers for this condition.
-  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), ((object) =>
-    (object.triggers || Array<w.Trigger>())
-      .map((t) => {
+  const triggers = flatMap(Object.values(allObjectsOnBoard(state)), ((object: w.Object) =>
+    (object.triggers || Array<w.TriggeredAbility>())
+      .map((t: w.TriggeredAbility) => {
+        console.log(t);
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
         return Object.assign({}, t, {object});

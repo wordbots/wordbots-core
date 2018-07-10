@@ -254,7 +254,7 @@ export function logAction(
   state: w.GameState,
   player: w.PlayerInGameState | null,
   action: string,
-  cards: w.CardInGame[] = [],
+  cards: { [cardName: string]: w.CardInGame} = {},
   timestamp: number | null = null,
   target: w.Targetable | null = null
 ): w.GameState {
@@ -305,18 +305,22 @@ function startTurn(state: w.GameState): w.GameState {
   player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((robot) =>
-    Object.assign({}, robot, {
-      movesMade: 0,
-      cantActivate: false,
-      cantAttack: false,
-      cantMove: false,
-      attackedThisTurn: false,
-      movedThisTurn: false,
-      attackedLastTurn: robot.attackedThisTurn,
-      movedLastTurn: robot.movedThisTurn
-    })
-  ));
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => {
+    if (obj.type === TYPE_ROBOT) {
+      return Object.assign({}, obj, {
+        movesMade: 0,
+        cantActivate: false,
+        cantAttack: false,
+        cantMove: false,
+        attackedThisTurn: false,
+        movedThisTurn: false,
+        attackedLastTurn: (obj as w.Robot).attackedThisTurn,
+        movedLastTurn: (obj as w.Robot).movedThisTurn
+      });
+    } else {
+      return obj;
+    }
+  }));
 
   state = drawCards(state, player, 1);
   state = triggerEvent(state, 'beginningOfTurn', {player: true});
@@ -328,16 +332,20 @@ function startTurn(state: w.GameState): w.GameState {
 }
 
 function endTurn(state: w.GameState): w.GameState {
-  function decrementDuration(abilityOrTrigger) {
+  function decrementDuration(abilityOrTrigger: w.Ability | w.Trigger): w.Ability | w.Trigger {
     const duration = abilityOrTrigger.duration;
-    if (duration === 1) {
-      // Time's up: Unapply the ability and remove it.
-      if (abilityOrTrigger.unapply) {
-        abilityOrTrigger.currentTargets.entries.forEach(abilityOrTrigger.unapply);
+    if (duration) {
+      if (duration === 1) {
+        // Time's up: Unapply the ability and remove it.
+        if (abilityOrTrigger.unapply) {
+          abilityOrTrigger.currentTargets.entries.forEach(abilityOrTrigger.unapply);
+        }
+        return null;
+      } else {
+        return Object.assign({}, abilityOrTrigger, {duration: duration ? duration - 1 : null});
       }
-      return null;
     } else {
-      return Object.assign({}, abilityOrTrigger, {duration: duration ? duration - 1 : null});
+      return abilityOrTrigger;
     }
   }
 
@@ -350,19 +358,19 @@ function endTurn(state: w.GameState): w.GameState {
     Object.assign({}, obj, {
       attackedThisTurn: false,
       movedThisTurn: false,
-      attackedLastTurn: obj.attackedThisTurn,
-      movedLastTurn: obj.movedThisTurn,
+      attackedLastTurn: ('attackedThisTurn' in obj) ? obj.attackedThisTurn : undefined,
+      movedLastTurn: ('movedThisTurn' in obj) ? obj.movedThisTurn : undefined,
 
-      abilities: compact(obj.abilities.map(decrementDuration)),
-      triggers: compact(obj.triggers.map(decrementDuration))
+      abilities: obj.abilities ? compact(obj.abilities.map(decrementDuration)) : undefined,
+      triggers: obj.triggers ? compact(obj.triggers.map(decrementDuration)) : undefined
     })
   ));
 
   const nextTurnPlayer = opponentPlayer(state);
   nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) =>
     Object.assign({}, obj, {
-      abilities: compact(obj.abilities.map(decrementDuration)),
-      triggers: compact(obj.triggers.map(decrementDuration))
+      abilities: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration)),
+      triggers: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration))
     })
   ));
 
@@ -409,7 +417,7 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
 }
 
 // Note: This is used to either play or discard a set of cards.
-export function discardCards(state: w.GameState, color: w.PlayerColor, cards: number): w.GameState {
+export function discardCards(state: w.GameState, color: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
   // At the moment, only the currently active player can ever play or discard a card.
   const player = state.players[color];
   player.discardPile = player.discardPile.concat(cards);
@@ -438,15 +446,15 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
 }
 
 export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
-  const ownerName = ownerOf(state, object).name;
-  if (getAttribute(object, 'health') > 0 && !object.isDestroyed) {
+  const ownerName = (ownerOf(state, object) as w.PlayerInGameState).name;
+  if ((getAttribute(object, 'health') as number) > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
     state = triggerSound(state, 'destroyed.wav');
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
-    state = triggerEvent(state, 'afterDestroyed', {object, condition: ((t) => (t.cause === cause || t.cause === 'anyevent'))});
+    state = triggerEvent(state, 'afterDestroyed', {object, condition: ((t: w.Trigger) => (t.cause === cause || t.cause === 'anyevent'))});
 
     // Check if the object is still there, because the afterDestroyed trigger may have,
     // e.g., returned it to its owner's hand.
@@ -463,12 +471,12 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
 }
 
 export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex: w.HexId): w.GameState {
-  const ownerName = ownerOf(state, object).name;
+  const ownerName = (ownerOf(state, object) as w.PlayerInGameState).name;
 
   delete state.players[ownerName].robotsOnBoard[hex];
 
   // Unapply any abilities that this object had.
-  (object.abilities || [])
+  (object.abilities || Array<w.Ability>())
     .filter((ability) => ability.currentTargets)
     .forEach((ability) => { ability.currentTargets.entries.forEach(ability.unapply); });
 
@@ -529,19 +537,19 @@ export function executeCmd(
 
 export function triggerEvent(
   state: w.GameState,
-  triggerType: w.string,
+  triggerType: string,
   target: w.Target | {} = {},
   defaultBehavior: null | ((state: w.GameState) => w.GameState) = null
 ): w.GameState {
   // Formulate the trigger condition.
-  const defaultCondition = ((t) => (target.condition ? target.condition(t) : true));
+  const defaultCondition = ((t: w.Target) => (target.condition ? target.condition(t) : true));
   let condition = defaultCondition;
   if (target.object) {
     state = Object.assign({}, state, {it: target.object});
-    condition = ((t) => t.targets.map((o) => o.id).includes(target.object.id) && defaultCondition(t));
+    condition = ((t) => t.targets.map((o: w.Object) => o.id).includes(target.object.id) && defaultCondition(t));
   } else if (target.player) {
     state = Object.assign({}, state, {itP: currentPlayer(state)});
-    condition = ((t) => t.targets.map((p) => p.name).includes(state.currentTurn) && defaultCondition(t));
+    condition = ((t) => t.targets.map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t));
   }
   if (target.undergoer) {
     // Also store the undergoer (as opposed to agent) of the event if present.
@@ -551,7 +559,7 @@ export function triggerEvent(
 
   // Look up any relevant triggers for this condition.
   const triggers = flatMap(Object.values(allObjectsOnBoard(state)), ((object) =>
-    object.triggers
+    (object.triggers || Array<w.Trigger>())
       .map((t) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
@@ -583,9 +591,11 @@ export function triggerEvent(
   return Object.assign({}, state, {it: null, itP: null, that: null});
 }
 
-export function applyAbilities(state: GameState): GameState {
+export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    obj.abilities.forEach((ability) => {
+    const abilities = obj.abilities || Array<w.Ability>();
+
+    abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {
         ability.currentTargets.entries.forEach(ability.unapply);
@@ -599,7 +609,7 @@ export function applyAbilities(state: GameState): GameState {
       }
     });
 
-    obj.abilities = obj.abilities.filter((ability) => !ability.disabled);
+    obj.abilities = abilities.filter((ability) => !ability.disabled);
   });
 
   return state;

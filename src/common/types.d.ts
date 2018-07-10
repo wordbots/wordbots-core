@@ -11,6 +11,7 @@ export type HexId = string;
 export type ParseResult = any; // TODO
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
+export type Target = any; // TODO
 export type Targetable = CardInGame | _Object | HexId;
 
 /* High-level types */
@@ -50,10 +51,10 @@ export type Card = CardInGame | CardInStore;
 export interface CardInGame extends CardInStore {
   baseCost: number
   temporaryStatAdjustments?: {
-    cost?: [StatAdjustment]
-    attack?: [StatAdjustment]
-    health?: [StatAdjustment]
-    speed?: [StatAdjustment]
+    cost?: StatAdjustment[]
+    attack?: StatAdjustment[]
+    health?: StatAdjustment[]
+    speed?: StatAdjustment[]
   }
 }
 
@@ -150,6 +151,7 @@ export interface PlayerInGameState {
 
 interface _Object { // tslint:disable-line:class-name
   id: string
+  type: CardType,
   card: CardInGame,
   stats: {
     attack?: number
@@ -157,13 +159,21 @@ interface _Object { // tslint:disable-line:class-name
     speed?: number
   }
   temporaryStatAdjustments?: {
-    attack?: [StatAdjustment]
-    health?: [StatAdjustment]
-    speed?: [StatAdjustment]
+    attack?: StatAdjustment[]
+    health?: StatAdjustment[]
+    speed?: StatAdjustment[]
   }
-  activatedAbilities?: [ActivatedAbility]
-  effects?: [Effect]
+  triggers?: TriggeredAbility[]
+  abilities?: Ability[]
+  activatedAbilities?: ActivatedAbility[]
+  effects?: Effect[]
   cantActivate?: boolean
+  attackedThisTurn?: boolean
+  attackedLastTurn?: boolean
+  movedThisTurn?: boolean
+  movedLastTurn?: boolean
+  beingDestroyed?: boolean
+  isDestroyed?: boolean
   // TODO
 }
 type Object = _Object;
@@ -173,6 +183,10 @@ export interface Robot extends _Object {
   cantAttack?: boolean
   cantMove?: boolean
   movesMade: number
+  attackedThisTurn: boolean
+  attackedLastTurn: boolean
+  movedThisTurn: boolean
+  movedLastTurn: boolean
 }
 
 export interface StatAdjustment {
@@ -184,4 +198,7 @@ export interface Effect {
   props: any
 }
 
+export type Ability = any; // TODO
 export type ActivatedAbility = any; // TODO
+export type TriggeredAbility = any; // TODO
+export type Trigger = any; // TODO

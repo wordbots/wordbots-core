@@ -1,21 +1,22 @@
 import * as fb from 'firebase';
 
-import { TYPE_ROBOT } from 'constants';
-
 /* Simple types */
 
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardType = number;
+export type Cause = string;
 export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
+export type HexId = string;
 export type ParseResult = any; // TODO
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
+export type Targetable = CardInGame | _Object | HexId;
 
 /* High-level types */
 
 type Partial<T> = {
-    [P in keyof T]?: T[P];
+  [P in keyof T]?: T[P];
 };
 
 export type PerPlayer<T> = {
@@ -77,36 +78,6 @@ export interface CardInStore {
   timestamp?: number
 }
 
-interface Object {
-  id: string
-  stats: {
-    attack?: number
-    health: number
-    speed?: number
-  }
-  temporaryStatAdjustments?: {
-    attack?: [StatAdjustment]
-    health?: [StatAdjustment]
-    speed?: [StatAdjustment]
-  }
-  effects?: [{
-    effect: string
-  }]
-  // TODO
-}
-
-export type StatAdjustment = { func: (attr: number) => number }
-
-export interface Robot extends Object {
-  type: TYPE_ROBOT
-  cantMove?: boolean
-  movesMade: number
-}
-
-export interface PlayerInGameState {
-  [x: string]: any  // TODO Expose more field types as we need them
-}
-
 export interface Dictionary {
   definitions?: { [token: string]: any } // TODO
   examplesByToken?: { [token: string]: string[] }
@@ -166,3 +137,51 @@ export interface GlobalState {
 export interface SocketState {
   [x: string]: any  // TODO Expose more field types as we need them
 }
+
+/* Game state subcomponents */
+
+export interface PlayerInGameState {
+  name: PlayerColor
+  robotsOnBoard: {
+    [hexId: string]: _Object
+  }
+  [x: string]: any  // TODO Expose more field types as we need them
+}
+
+interface _Object { // tslint:disable-line:class-name
+  id: string
+  card: CardInGame,
+  stats: {
+    attack?: number
+    health: number
+    speed?: number
+  }
+  temporaryStatAdjustments?: {
+    attack?: [StatAdjustment]
+    health?: [StatAdjustment]
+    speed?: [StatAdjustment]
+  }
+  activatedAbilities?: [ActivatedAbility]
+  effects?: [Effect]
+  cantActivate?: boolean
+  // TODO
+}
+type Object = _Object;
+
+export interface Robot extends _Object {
+  type: 0
+  cantAttack?: boolean
+  cantMove?: boolean
+  movesMade: number
+}
+
+export interface StatAdjustment {
+  func: (attr: number) => number
+}
+
+export interface Effect {
+  effect: string
+  props: any
+}
+
+export type ActivatedAbility = any; // TODO

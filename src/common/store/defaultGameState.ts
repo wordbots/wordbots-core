@@ -1,5 +1,5 @@
 import * as w from '../types';
-import { BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../constants';
+import { BLUE_CORE_HEX, ORANGE_CORE_HEX, TYPE_CORE } from '../constants';
 
 import * as cards from './cards';
 
@@ -17,7 +17,7 @@ export function arbitraryPlayerState(): w.PlayerInGameState {
   return bluePlayerState([]);
 }
 
-function playerState(color: w.PlayerColor, collection: w.Card[], coreCard: w.Card, coreHexId: string): w.PlayerInGameState {
+function playerState(color: w.PlayerColor, collection: w.Card[], coreCard: w.CardInGame, coreHexId: string): w.PlayerInGameState {
   return {
     name: color,
     energy: {
@@ -31,6 +31,7 @@ function playerState(color: w.PlayerColor, collection: w.Card[], coreCard: w.Car
     robotsOnBoard: {
       [coreHexId]: {
         id: `${color}Core`,
+        type: TYPE_CORE,
         card: coreCard,
         stats: Object.assign({}, coreCard.stats),
         movesMade: 0,

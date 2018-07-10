@@ -169,6 +169,7 @@ export default class MultiplayerServerState {
           orange: opponentID
         },
         startingSeed: generateID(),
+        winner: null,
 
         actions: [],
         state: defaultGameState,

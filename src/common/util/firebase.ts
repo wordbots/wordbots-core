@@ -2,7 +2,6 @@ import * as fb from 'firebase';
 import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
 import * as w from '../types';
-import * as m from '../../server/multiplayer/multiplayer';
 
 import { expandKeywords, loadParserLexicon } from './cards';
 
@@ -117,7 +116,7 @@ export function saveUserData(key: string, value: any): void {
 
 // Game results
 
-export function saveGame(game: m.Game): fb.database.ThenableReference {
+export function saveGame(game: w.SavedGame): fb.database.ThenableReference {
   return fb.database().ref('games').push(game);
 }
 

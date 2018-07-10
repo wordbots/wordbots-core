@@ -80,7 +80,7 @@ export interface CardInStore {
 }
 
 export interface Dictionary {
-  definitions?: { [token: string]: any } // TODO
+  definitions?: { [token: string]: any } // TODO more precise
   examplesByToken?: { [token: string]: string[] }
   examplesByNode?: { [token: string]: string[] }
 }
@@ -89,6 +89,13 @@ export interface TutorialStep {
   idx: number
   numSteps: number
   [x: string]: any  // TODO Expose more field types as we need them
+}
+
+export interface SavedGame { // Interface for games stored in Firebase.
+  players: { [ color: string ]: any } // TODO more precise
+  format: Format,
+  type: string, // TODO more precise
+  winner: PlayerColor | null
 }
 
 /* Redux store types */
@@ -163,8 +170,9 @@ interface _Object { // tslint:disable-line:class-name
     health?: StatAdjustment[]
     speed?: StatAdjustment[]
   }
-  triggers?: TriggeredAbility[]
-  abilities?: Ability[]
+  movesMade: number
+  triggers: TriggeredAbility[]
+  abilities: Ability[]
   activatedAbilities?: ActivatedAbility[]
   effects?: Effect[]
   cantActivate?: boolean
@@ -182,7 +190,6 @@ export interface Robot extends _Object {
   type: 0
   cantAttack?: boolean
   cantMove?: boolean
-  movesMade: number
   attackedThisTurn: boolean
   attackedLastTurn: boolean
   movedThisTurn: boolean

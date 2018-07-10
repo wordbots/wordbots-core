@@ -22,7 +22,7 @@ export interface Game {
   format: Format,
   type: string,
   players: ClientID[],
-  playerColors: { [clientID: string]: string; },
+  playerColors: { [clientID: string]: w.PlayerColor; },
   ids: { blue: ClientID, orange: ClientID }, // TODO is this field necessary?
   spectators: ClientID[],
   actions: Action[],

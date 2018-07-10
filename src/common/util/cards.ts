@@ -256,14 +256,15 @@ export function allKeywords(): { [keyword: string]: string } {
 }
 
 export function isKeywordExpression(sentence: string, hintsToo = false): boolean {
-  return phrases(sentence).every((p) => KEYWORDS[p.toLowerCase()]);
+  const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
+  return phrases(sentence).every((p) => keywords[p.toLowerCase()]);
 }
 
 export function keywordsInSentence(sentence: string, hintsToo = false): { [keyword: string]: string } {
   const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
   const regexes = hintsToo ? Object.assign({}, KEYWORD_REGEXES, HINT_REGEXES) : KEYWORD_REGEXES;
 
-  if (isKeywordExpression(sentence)) {
+  if (isKeywordExpression(sentence, hintsToo)) {
     return fromPairs(phrases(sentence).map((p) => [p, keywords[p.toLowerCase()]]));
   } else {
     const keywordsList = compact(Object.keys(keywords).map((keyword) => {

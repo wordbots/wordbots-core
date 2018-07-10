@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { bool, func, number, object } from 'prop-types';
 
-import { splitSentences } from '../../util/cards';
-import { getCost } from '../../util/game';
+import { splitSentences } from '../../util/cards.ts';
+import { getCost } from '../../util/game.ts';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 import TutorialTooltip from '../game/TutorialTooltip';

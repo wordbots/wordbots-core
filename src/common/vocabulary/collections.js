@@ -1,4 +1,4 @@
-import { allObjectsOnBoard, allHexIds, getHex, matchesType } from '../util/game';
+import { allObjectsOnBoard, allHexIds, getHex, matchesType } from '../util/game.ts';
 
 // A collection is a function that returns one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}

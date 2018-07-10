@@ -2,8 +2,8 @@
 import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject } from 'lodash';
 
-import { id as generateID } from '../../common/util/common';
-import { saveGame } from '../../common/util/firebase';
+import { id as generateID } from '../../common/util/common.ts';
+import { saveGame } from '../../common/util/firebase.ts';
 import defaultGameState from '../../common/store/defaultGameState';
 import { GameFormat } from '../../common/store/gameFormats';
 import gameReducer from '../../common/reducers/game';

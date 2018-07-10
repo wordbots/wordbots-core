@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
-import { groupCards, selectType } from '../../util/cards';
+import { groupCards, selectType } from '../../util/cards.ts';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 

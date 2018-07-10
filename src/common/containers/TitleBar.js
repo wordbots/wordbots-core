@@ -9,7 +9,7 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 
-import { logout } from '../util/firebase';
+import { logout } from '../util/firebase.ts';
 import RouterDialog from '../components/RouterDialog';
 
 function mapStateToProps(state) {

@@ -1,5 +1,5 @@
 import * as w from '../types';
-import { id } from '../util/common';
+import { id } from '../util/common.ts';
 
 const defaultState: w.CreatorState = {
   id: null,  // Only exists for existing cards that are being edited (not new cards).

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
 import * as ReactTooltip from 'react-tooltip';
 
-import { id } from '../util/common';
+import { id } from '../util/common.ts';
 
 export default class Tooltip extends React.Component {
   static propTypes = {

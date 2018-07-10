@@ -3,7 +3,7 @@ import { object, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import { times } from 'lodash';
 
-import { id } from '../../util/common';
+import { id } from '../../util/common.ts';
 
 class EnergyCount extends React.Component {
   static propTypes = {

@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { capitalize } from 'lodash';
 
-import { inBrowser } from '../../util/browser';
+import { inBrowser } from '../../util/browser.tsx';
 import Tooltip from '../Tooltip';
 
 export default class CardStat extends React.Component {

@@ -1,14 +1,14 @@
 import { cloneDeep, findKey, isFunction, mapValues } from 'lodash';
 
 import { TYPE_CORE } from '../constants';
-import { clamp, applyFuncToField } from '../util/common';
+import { clamp, applyFuncToField } from '../util/common.ts';
 import {
   ownerOf, getHex,
   passTurn, drawCards, removeCardsFromHand,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, removeObjectFromBoard,
   executeCmd
-} from '../util/game';
-import { splitSentences } from '../util/cards';
+} from '../util/game.ts';
+import { splitSentences } from '../util/cards.ts';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 
 export default function actions(state) {

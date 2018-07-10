@@ -2,13 +2,13 @@ import * as React from 'react';
 import { filter, findIndex, findKey, sample, shuffle, times } from 'lodash';
 
 import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
-import { id, convertRange } from '../../../util/common';
-import { isFlagSet } from '../../../util/browser';
-import { lookupUsername } from '../../../util/firebase';
+import { id, convertRange } from '../../../util/common.ts';
+import { isFlagSet } from '../../../util/browser.tsx';
+import { lookupUsername } from '../../../util/firebase.ts';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
   newGame, passTurn
-} from '../../../util/game';
+} from '../../../util/game.ts';
 import * as builtinCards from '../../../store/cards.ts';
 import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
 import HU from '../../../components/hexgrid/HexUtils';

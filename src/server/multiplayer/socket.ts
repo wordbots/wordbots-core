@@ -2,8 +2,8 @@ import * as WebSocket from 'ws';
 import { Server } from 'http';
 import { noop } from 'lodash';
 
-import { id as generateID } from '../../common/util/common';
-import { opponent as opponentOf } from '../../common/util/game';
+import { id as generateID } from '../../common/util/common.ts';
+import { opponent as opponentOf } from '../../common/util/game.ts';
 
 import * as m from './multiplayer';
 import MultiplayerServerState from './MultiplayerServerState';

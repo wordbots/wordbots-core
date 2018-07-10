@@ -1,5 +1,5 @@
 import { collection } from '../../src/common/store/cards.ts';
-import { executeCmd } from '../../src/common/util/game';
+import { executeCmd } from '../../src/common/util/game.ts';
 import { getDefaultState } from '../testHelpers';
 
 /* eslint-disable no-console */

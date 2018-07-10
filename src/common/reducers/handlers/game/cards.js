@@ -1,15 +1,15 @@
 import { cloneDeep, isArray } from 'lodash';
 
 import { TYPE_EVENT } from '../../../constants';
-import { id } from '../../../util/common';
+import { id } from '../../../util/common.ts';
 import {
   currentPlayer, getCost, checkVictoryConditions, matchesType,
   allHexIds, validPlacementHexes,
   triggerSound, discardCards,
   removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
-} from '../../../util/game';
-import { splitSentences } from '../../../util/cards';
+} from '../../../util/game.ts';
+import { splitSentences } from '../../../util/cards.ts';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
 export function setSelectedCard(state, playerName, cardIdx) {

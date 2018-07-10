@@ -3,7 +3,7 @@ import * as seededRNG from 'seed-random';
 
 import * as w from '../types';
 import { DECK_SIZE } from '../constants';
-import { triggerSound } from '../util/game';
+import { triggerSound } from '../util/game.ts';
 
 import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameState';
 

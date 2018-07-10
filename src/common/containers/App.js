@@ -10,8 +10,8 @@ import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
 import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';
-import { isFlagSet, logAnalytics } from '../util/browser';
-import { listenToUserData, onLogin, onLogout } from '../util/firebase';
+import { isFlagSet, logAnalytics } from '../util/browser.tsx';
+import { listenToUserData, onLogin, onLogout } from '../util/firebase.ts';
 import * as actions from '../actions/global';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavMenu from '../components/NavMenu';

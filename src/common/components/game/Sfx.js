@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { arrayOf, string } from 'prop-types';
 
-import { inBrowser, isFlagSet } from '../../util/browser';
+import { inBrowser, isFlagSet } from '../../util/browser.tsx';
 
 const Sound = inBrowser() ? require('react-sound').default : null;
 const soundManager = inBrowser() ? require('soundmanager2').soundManager : null;

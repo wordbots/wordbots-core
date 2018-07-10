@@ -1,8 +1,8 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
 import { DEFAULT_GAME_FORMAT } from '../constants';
-import { id } from '../util/common';
-import { triggerSound } from '../util/game';
+import { id } from '../util/common.ts';
+import { triggerSound } from '../util/game.ts';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState.ts';

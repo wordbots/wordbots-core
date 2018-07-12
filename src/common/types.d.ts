@@ -161,6 +161,8 @@ export interface PlayerInGameState {
   [x: string]: any  // TODO Expose more field types as we need them
 }
 
+// Object is not a valid type name, but we want to export `types.Object`,
+// so define it with the name `_Object` here and export it as `Object`.
 interface _Object { // tslint:disable-line:class-name
   id: string
   type: CardType,
@@ -189,7 +191,7 @@ interface _Object { // tslint:disable-line:class-name
   isDestroyed?: boolean
   // TODO
 }
-type Object = _Object;
+export type Object = _Object;
 
 export interface Robot extends _Object {
   type: 0

@@ -159,7 +159,7 @@ export default class MultiplayerServerState {
         spectators: [],
 
         type: 'CASUAL',
-        decks: {orange: waitingPlayer.deck, blue: deck},
+        decks: {orange: waitingPlayer.deck.cards, blue: deck.cards},
         usernames: {
           orange: this.getClientUsername(opponentID),
           blue: this.getClientUsername(clientID)

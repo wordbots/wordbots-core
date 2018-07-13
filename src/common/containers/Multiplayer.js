@@ -18,7 +18,8 @@ export function mapStateToProps(state) {
 
     socket: state.socket,
     cards: state.collection.cards,
-    availableDecks: state.collection.decks
+    availableDecks: state.collection.decks,
+    user: state.global.user
   };
 }
 
@@ -29,6 +30,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onHostGame: (name, format, deck) => {
       dispatch(socketActions.host(name, format, deck));
+    },
+    onCancelHostGame: () => {
+      dispatch(socketActions.cancelHost());
     },
     onJoinGame: (id, name, deck) => {
       dispatch(socketActions.join(id, name, deck));
@@ -56,6 +60,7 @@ export class Multiplayer extends React.Component {
     socket: object,
     cards: arrayOf(object),
     availableDecks: arrayOf(object),
+    user: object,
 
     history: object,
 
@@ -63,6 +68,7 @@ export class Multiplayer extends React.Component {
     onJoinQueue: func,
     onLeaveQueue: func,
     onHostGame: func,
+    onCancelHostGame: func,
     onJoinGame: func,
     onSpectateGame: func,
     onSendChatMessage: func
@@ -108,8 +114,10 @@ export class Multiplayer extends React.Component {
           cards={this.props.cards}
           availableDecks={this.props.availableDecks}
           history={this.props.history}
+          user={this.props.user}
           onConnect={this.props.onConnect}
           onHostGame={this.props.onHostGame}
+          onCancelHostGame={this.props.onCancelHostGame}
           onJoinGame={this.props.onJoinGame}
           onJoinQueue={this.props.onJoinQueue}
           onLeaveQueue={this.props.onLeaveQueue}

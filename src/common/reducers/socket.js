@@ -18,7 +18,11 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
     case socketActions.CHAT: {
       const message = {
-        user: action.payload.sender ? (state.clientIdToUsername[action.payload.sender] || action.payload.sender) : 'You',
+        user: action.payload.sender ?
+          (state.userDataByClientId[action.payload.sender] ?
+            state.userDataByClientId[action.payload.sender].displayName :
+            action.payload.sender) :
+          'You',
         text: action.payload.msg,
         timestamp: Date.now()
       };
@@ -32,7 +36,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       return Object.assign(state, {
         games: action.payload.games,
         waitingPlayers: action.payload.waitingPlayers,
-        clientIdToUsername: action.payload.usernames,
+        userDataByClientId: action.payload.userData,
         playersOnline: action.payload.playersOnline,
         queueSize: action.payload.queueSize
       });
@@ -42,6 +46,9 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
 
     case socketActions.HOST:
       return Object.assign(state, {gameName: action.payload.name, hosting: true});
+
+    case socketActions.CANCEL_HOSTING:
+      return Object.assign(state, {gameName: null, hosting: false});
 
     case socketActions.JOIN:
       return Object.assign(state, {gameName: action.payload.name});

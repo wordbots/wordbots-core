@@ -17,6 +17,7 @@ export default class MultiplayerLobby extends React.Component {
     socket: object,
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
+    user: object,
 
     history: object,
 
@@ -25,7 +26,8 @@ export default class MultiplayerLobby extends React.Component {
     onSpectateGame: func,
     onJoinQueue: func,
     onLeaveQueue: func,
-    onHostGame: func
+    onHostGame: func,
+    onCancelHostGame: func
   };
 
   state = {
@@ -70,8 +72,11 @@ export default class MultiplayerLobby extends React.Component {
   }
 
   render() {
-    const { availableDecks, cards, history, socket, onConnect } = this.props;
-    const { clientIdToUsername, connected, connecting, playersOnline } = socket;
+    const {
+      availableDecks, cards, history, socket, user,
+      onConnect, onCancelHostGame, onSpectateGame
+    } = this.props;
+    const { userDataByClientId, connected, connecting, playersOnline } = socket;
     const { casualGameBeingJoined } = this.state;
 
     return (
@@ -109,7 +114,7 @@ export default class MultiplayerLobby extends React.Component {
             connecting={connecting}
             connected={connected}
             playersOnline={playersOnline}
-            usernameMap={clientIdToUsername}
+            userDataByClientId={userDataByClientId}
             onConnect={onConnect} />
 
           {this.renderWaiting(socket)}
@@ -119,9 +124,11 @@ export default class MultiplayerLobby extends React.Component {
           <GameBrowser
             openGames={socket.waitingPlayers}
             inProgressGames={socket.games}
-            usernameMap={socket.clientIdToUsername}
+            user={user}
+            userDataByClientId={socket.userDataByClientId}
+            onCancelHostGame={onCancelHostGame}
             onJoinGame={this.handleClickJoinCasualGame}
-            onSpectateGame={this.props.onSpectateGame} />
+            onSpectateGame={onSpectateGame} />
         </div>
       </div>
     );

@@ -9,8 +9,10 @@ export default class GameBrowser extends React.Component {
   static propTypes = {
     openGames: arrayOf(object),
     inProgressGames: arrayOf(object),
-    usernameMap: object,
+    user: object,
+    userDataByClientId: object,
 
+    onCancelHostGame: func,
     onJoinGame: func,
     onSpectateGame: func
   };
@@ -20,7 +22,7 @@ export default class GameBrowser extends React.Component {
   }
 
   renderTableRows() {
-    const { usernameMap, onJoinGame, onSpectateGame } = this.props;
+    const { user, userDataByClientId, onCancelHostGame, onJoinGame, onSpectateGame } = this.props;
 
     if (this.games.length > 0) {
       return (
@@ -28,7 +30,9 @@ export default class GameBrowser extends React.Component {
           <GameRow
             key={game.id}
             game={game}
-            usernameMap={usernameMap}
+            user={user}
+            userDataByClientId={userDataByClientId}
+            onCancelHostGame={onCancelHostGame}
             onJoinGame={onJoinGame}
             onSpectateGame={onSpectateGame} />
         )

@@ -65,6 +65,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
     if (type === 'ws:HOST') {
       hostGame(clientID, payload.name, payload.format, payload.deck);
+    } else if (type === 'ws:CANCEL_HOSTING') {
+      cancelHostingGame(clientID);
     } else if (type === 'ws:JOIN') {
       joinGame(clientID, payload.id, payload.deck);
     } else if (type === 'ws:JOIN_QUEUE') {
@@ -142,6 +144,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
   function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void {
     state.hostGame(clientID, name, format, deck);
+    broadcastInfo();
+  }
+
+  function cancelHostingGame(clientID: m.ClientID): void {
+    state.cancelHostingGame(clientID);
     broadcastInfo();
   }
 

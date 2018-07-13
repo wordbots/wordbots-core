@@ -13,7 +13,7 @@ const defaultState: w.SocketState = {
   games: [],
   playersOnline: [],
   waitingPlayers: [],
-  clientIdToUsername: {},
+  userDataByClientId: {},
 
   chatMessages: []
 };

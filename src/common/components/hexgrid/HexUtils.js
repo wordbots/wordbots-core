@@ -1,4 +1,4 @@
-import { compareCertainKeys } from '../../util/common';
+import { compareCertainKeys } from '../../util/common.ts';
 import { BOARD_SIZE_MULTIPLIER } from '../../constants';
 
 import Hex from './Hex';

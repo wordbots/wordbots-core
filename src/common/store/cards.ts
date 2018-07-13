@@ -11,6 +11,7 @@ export * from './coreSet/structures';
 
 const coreCard = {
   cost: 0,
+  baseCost: 0,
   type: TYPE_CORE,
   stats: {
     health: STARTING_PLAYER_HEALTH
@@ -19,28 +20,27 @@ const coreCard = {
   source: 'builtin'
 };
 
-export const blueCoreCard: w.Card = {
+export const blueCoreCard: w.CardInGame = {
   ...coreCard,
   id: 'blueKernel',
   name: 'Blue Kernel',
   img: 'core_blue'
 };
 
-export const orangeCoreCard: w.Card = {
+export const orangeCoreCard: w.CardInGame = {
   ...coreCard,
   id: 'orangeKernel',
   name: 'Orange Kernel',
   img: 'core_orange'
 };
 
-export const collection: w.Card[] = [
+export const collection: w.CardInStore[] = [
   ...Object.values(robots),
   ...Object.values(events),
   ...Object.values(structures)
 ].map((card) =>
   Object.assign(card, {
     id: `builtin/${card.name}`,
-    baseCost: card.cost,
     source: 'builtin'
   })
 );

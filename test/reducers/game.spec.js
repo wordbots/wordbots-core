@@ -8,7 +8,7 @@ import {
   BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, DECK_SIZE,
   TYPE_ROBOT, TYPE_STRUCTURE
 } from '../../src/common/constants';
-import { getCost } from '../../src/common/util/game';
+import { getCost } from '../../src/common/util/game.ts';
 import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
   newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack, activate,

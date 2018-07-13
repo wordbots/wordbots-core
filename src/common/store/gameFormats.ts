@@ -71,7 +71,7 @@ export const NormalGameFormat = new (class extends GameFormat {
 
 export const BuiltinOnlyGameFormat = new (class extends GameFormat {
   public name = 'builtinOnly';
-  public displayName = 'Builtin Only';
+  public displayName = 'Built-in Only';
   public description = 'Normal game with only built-in cards allowed.';
 
   public isDeckValid = (deck: w.Deck): boolean => (

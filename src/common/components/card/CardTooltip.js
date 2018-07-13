@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, bool, object, oneOfType } from 'prop-types';
 import * as ReactTooltip from 'react-tooltip';
 
-import { id } from '../../util/common';
+import { id } from '../../util/common.ts';
 import Popover from '../Popover';
 
 import Card from './Card';

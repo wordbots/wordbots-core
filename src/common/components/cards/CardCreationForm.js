@@ -10,11 +10,11 @@ import Snackbar from 'material-ui/Snackbar';
 import { capitalize, compact, isEmpty } from 'lodash';
 
 import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
-import { ensureInRange } from '../../util/common';
-import { getSentencesFromInput, requestParse } from '../../util/cards';
-import { getCardTextCorpus, saveReportedParseIssue } from '../../util/firebase';
-import { prepareBigramProbs } from '../../util/language';
-import CardTextExampleStore from '../../util/CardTextExampleStore';
+import { ensureInRange } from '../../util/common.ts';
+import { getSentencesFromInput, requestParse } from '../../util/cards.ts';
+import { getCardTextCorpus, saveReportedParseIssue } from '../../util/firebase.ts';
+import { prepareBigramProbs } from '../../util/language.ts';
+import CardTextExampleStore from '../../util/CardTextExampleStore.ts';
 import ButtonInRow from '../ButtonInRow';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';

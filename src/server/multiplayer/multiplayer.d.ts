@@ -5,6 +5,7 @@ import * as w from '../../common/types';
 export type Action = w.Action;
 export type ActionPayload = w.ActionPayload;
 export type ActionType = w.ActionType;
+export type Card = w.Card;
 export type Deck = w.Deck;
 export type Format = w.Format;
 export type GameState = w.GameState;
@@ -22,14 +23,15 @@ export interface Game {
   format: Format,
   type: string,
   players: ClientID[],
-  playerColors: { [clientID: string]: string; },
+  playerColors: { [clientID: string]: w.PlayerColor; },
   ids: { blue: ClientID, orange: ClientID }, // TODO is this field necessary?
   spectators: ClientID[],
   actions: Action[],
   state: GameState,
-  decks: { blue: Deck, orange: Deck },
+  decks: { blue: Card[], orange: Card[] },
   usernames: { blue: string, orange: string },
-  startingSeed: string
+  startingSeed: string,
+  winner: w.PlayerColor | null
 }
 
 export interface GameWaitingForPlayers {

@@ -9,9 +9,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isEqual, noop } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
-import { compareCertainKeys } from '../../util/common';
-import { splitSentences } from '../../util/cards';
-import { inBrowser } from '../../util/browser';
+import { compareCertainKeys } from '../../util/common.ts';
+import { splitSentences } from '../../util/cards.ts';
+import { inBrowser } from '../../util/browser.tsx';
 
 import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';

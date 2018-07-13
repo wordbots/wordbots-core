@@ -6,7 +6,7 @@ import {
   validMovementHexes, validAttackHexes,
   triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
-} from '../../../util/game';
+} from '../../../util/game.ts';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
 function selectTile(state, tile) {

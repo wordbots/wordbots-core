@@ -7,7 +7,7 @@ import * as screenfull from 'screenfull';
 import {
   HEADER_HEIGHT, CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
 } from '../../constants';
-import { inBrowser } from '../../util/browser';
+import { inBrowser } from '../../util/browser.tsx';
 import Chat from '../play/multiplayer/Chat';
 
 import Board from './Board';

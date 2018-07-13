@@ -9,9 +9,9 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, noop, uniq } from 'lodash';
 
-import { getHash, setHash } from '../../util/browser';
-import { allKeywords, contractKeywords } from '../../util/cards';
-import { listenToDictionaryData } from '../../util/firebase';
+import { getHash, setHash } from '../../util/browser.tsx';
+import { allKeywords, contractKeywords } from '../../util/cards.ts';
+import { listenToDictionaryData } from '../../util/firebase.ts';
 import RouterDialog from '../RouterDialog';
 import StatusIcon from '../card/StatusIcon';
 

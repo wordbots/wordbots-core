@@ -6,7 +6,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { cardsInDeck } from '../../util/cards';
+import { cardsInDeck } from '../../util/cards.ts';
 import EnergyCurve from '../cards/EnergyCurve';
 
 export default class DeckPicker extends React.Component {

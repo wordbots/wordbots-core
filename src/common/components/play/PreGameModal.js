@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, element, func, object, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 
-import { unpackDeck } from '../../util/cards';
+import { unpackDeck } from '../../util/cards.ts';
 import { FORMATS } from '../../store/gameFormats.ts';
 import RouterDialog from '../RouterDialog';
 

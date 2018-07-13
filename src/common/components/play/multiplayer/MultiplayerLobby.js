@@ -39,7 +39,7 @@ export default class MultiplayerLobby extends React.Component {
   };
 
   handleJoinQueue = (formatName, deck) => {
-    this.props.onJoinQueue(formatName, deck.cards);
+    this.props.onJoinQueue(formatName, deck);
   };
 
   handleLeaveQueue = () => {
@@ -56,11 +56,11 @@ export default class MultiplayerLobby extends React.Component {
 
   handleJoinGame = (formatName, deck) => {
     const { id, name } = this.state.casualGameBeingJoined;
-    this.props.onJoinGame(id, name, deck.cards);
+    this.props.onJoinGame(id, name, deck);
   };
 
   handleHostGame = (gameName, formatName, deck) => {
-    this.props.onHostGame(gameName, formatName, deck.cards);
+    this.props.onHostGame(gameName, formatName, deck);
   };
 
   renderWaiting(socket) {

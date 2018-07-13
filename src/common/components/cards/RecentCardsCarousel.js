@@ -3,7 +3,7 @@ import { func, object } from 'prop-types';
 import Carousel from 'react-slick';
 import { uniqBy } from 'lodash';
 
-import { listenToRecentCards } from '../../util/firebase';
+import { listenToRecentCards } from '../../util/firebase.ts';
 import { builtinCardNames } from '../../store/cards.ts';
 import Card from '../card/Card';
 

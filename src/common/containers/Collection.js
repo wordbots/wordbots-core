@@ -10,7 +10,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { find, noop } from 'lodash';
 
-import { getDisplayedCards, isCardVisible } from '../util/cards';
+import { getDisplayedCards, isCardVisible } from '../util/cards.ts';
 import Title from '../components/Title';
 import RouterDialog from '../components/RouterDialog';
 import CardCollection from '../components/cards/CardCollection';

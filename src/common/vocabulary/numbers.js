@@ -1,6 +1,6 @@
 import { isFunction, size, sum } from 'lodash';
 
-import { getAttribute } from '../util/game';
+import { getAttribute } from '../util/game.ts';
 
 export function attributeSum(state) {
   return function compute(targetObjects, attribute) {

@@ -11,7 +11,7 @@ import * as React from 'react';
 import { number, string } from 'prop-types';
 import { noop } from 'lodash';
 
-import { hashCode } from '../../util/common';
+import { hashCode } from '../../util/common.ts';
 
 export default class Identicon extends React.Component {
   static propTypes = {

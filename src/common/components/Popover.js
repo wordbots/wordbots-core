@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
 import * as ReactPopover from 'react-popover';
 
-import { getGameAreaNode } from '../util/browser';
+import { getGameAreaNode } from '../util/browser.tsx';
 
 const Popover = (props) => (
   <ReactPopover

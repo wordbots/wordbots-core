@@ -3,7 +3,7 @@ import { arrayOf, bool, element, object, oneOfType, string } from 'prop-types';
 import { Route } from 'react-router';
 import Dialog from 'material-ui/Dialog';
 
-import { transformHistory } from '../util/browser';
+import { transformHistory } from '../util/browser.tsx';
 
 export default class RouterDialog extends React.Component {
   static propTypes = {

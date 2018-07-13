@@ -1,6 +1,6 @@
 import { some } from 'lodash';
 
-import { compareCertainKeys } from '../../util/common';
+import { compareCertainKeys } from '../../util/common.ts';
 
 class Hex {
   constructor(q, r, s, props = {}) {

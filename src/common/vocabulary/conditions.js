@@ -1,6 +1,6 @@
 import { flatMap, has, some } from 'lodash';
 
-import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
+import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game.ts';
 import HU from '../components/hexgrid/HexUtils';
 
 function objectHasProperty(obj, property) {

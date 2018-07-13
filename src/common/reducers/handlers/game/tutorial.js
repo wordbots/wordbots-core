@@ -3,9 +3,9 @@ import { applyPatch, compare } from 'fast-json-patch';
 
 import { handleAction } from '../../game';
 import { TYPE_EVENT } from '../../../constants';
-import { id } from '../../../util/common';
-import { lookupUsername } from '../../../util/firebase';
-import { currentTutorialStep, passTurn } from '../../../util/game';
+import { id } from '../../../util/common.ts';
+import { lookupUsername } from '../../../util/firebase.ts';
+import { currentTutorialStep, passTurn } from '../../../util/game.ts';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
 import * as cards from '../../../store/cards.ts';

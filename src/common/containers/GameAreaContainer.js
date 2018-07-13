@@ -6,9 +6,9 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
-import { animate } from '../util/common';
-import { shuffleCardsInDeck } from '../util/cards';
-import { currentTutorialStep } from '../util/game';
+import { animate } from '../util/common.ts';
+import { shuffleCardsInDeck } from '../util/cards.ts';
+import { currentTutorialStep } from '../util/game.ts';
 import GameArea, { gameProps } from '../components/game/GameArea';
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';

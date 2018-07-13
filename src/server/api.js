@@ -3,8 +3,8 @@ import url from 'url';
 
 import repng from 'repng';
 
-import { id } from '../common/util/common';
-import { splitSentences } from '../common/util/cards';
+import { id } from '../common/util/common.ts';
+import { splitSentences } from '../common/util/cards.ts';
 import Card from '../common/components/card/Card';
 import Sentence from '../common/components/card/Sentence';
 

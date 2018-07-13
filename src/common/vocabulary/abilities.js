@@ -1,5 +1,5 @@
-import { id } from '../util/common';
-import { reversedCmd, executeCmd } from '../util/game';
+import { id } from '../util/common.ts';
+import { reversedCmd, executeCmd } from '../util/game.ts';
 
 export function setAbility(state, currentObject, source) {
   return function (ability) {

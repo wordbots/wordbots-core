@@ -1,7 +1,7 @@
 import { fromPairs } from 'lodash';
 
-import { id } from '../util/common';
-import { getSentencesFromInput, replaceSynonyms } from '../util/cards';
+import { id } from '../util/common.ts';
+import { getSentencesFromInput, replaceSynonyms } from '../util/cards.ts';
 import defaultState from '../store/defaultCreatorState.ts';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';

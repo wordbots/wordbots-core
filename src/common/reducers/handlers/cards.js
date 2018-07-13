@@ -1,8 +1,8 @@
-import { id } from '../../util/common';
+import { id } from '../../util/common.ts';
 import {
   areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, createCardFromProps,
   loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase
-} from '../../util/cards';
+} from '../../util/cards.ts';
 
 const cardsHandlers = {
   deleteCards: function (state, ids) {

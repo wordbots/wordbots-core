@@ -6,7 +6,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants';
-import { groupCards } from '../../util/cards';
+import { groupCards } from '../../util/cards.ts';
 import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';

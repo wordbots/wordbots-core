@@ -4,8 +4,8 @@ import { DECK_SIZE, BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constan
 import {
   opponent, allObjectsOnBoard, ownerOf, getAttribute, validPlacementHexes,
   drawCards, applyAbilities
-} from '../src/common/util/game';
-import { instantiateCard } from '../src/common/util/cards';
+} from '../src/common/util/game.ts';
+import { instantiateCard } from '../src/common/util/cards.ts';
 import game from '../src/common/reducers/game';
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';

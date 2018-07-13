@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
 import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_Z_INDEX } from '../constants';
-import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
+import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser.tsx';
 import Tooltip from '../components/Tooltip';
 
 export default class NavMenu extends React.Component {

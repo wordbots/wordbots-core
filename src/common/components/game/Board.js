@@ -8,7 +8,7 @@ import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
 import {
   getAttribute, ownerOf,
   validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId
-} from '../../util/game';
+} from '../../util/game.ts';
 
 export default class Board extends React.Component {
   static propTypes = {

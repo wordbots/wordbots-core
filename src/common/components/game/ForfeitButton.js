@@ -3,7 +3,7 @@ import { string, bool, object, func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { opponent } from '../../util/game';
+import { opponent } from '../../util/game.ts';
 import Tooltip from '../Tooltip';
 
 export default class ForfeitButton extends React.Component {

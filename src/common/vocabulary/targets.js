@@ -2,11 +2,11 @@ import { compact, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
 import { stringToType } from '../constants';
-import { arrayToSentence, id } from '../util/common';
+import { arrayToSentence, id } from '../util/common.ts';
 import {
   opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf,
   logAction
-} from '../util/game';
+} from '../util/game.ts';
 
 // Targets are all functions that return one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}

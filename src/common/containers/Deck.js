@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import Paper from '@material-ui/core/Paper';
 import { compact, find, noop } from 'lodash';
 
-import { getDisplayedCards } from '../util/cards';
+import { getDisplayedCards } from '../util/cards.ts';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import EnergyCurve from '../components/cards/EnergyCurve';

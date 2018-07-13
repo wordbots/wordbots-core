@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { id } from '../../util/common';
-import { inBrowser } from '../../util/browser';
+import { id } from '../../util/common.ts';
+import { inBrowser } from '../../util/browser.tsx';
 import Tooltip from '../Tooltip';
 
 function Word(word, keywords, result) {

@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-import { createCardFromProps } from '../util/cards';
+import { createCardFromProps } from '../util/cards.ts';
 import Title from '../components/Title';
 import RouterDialog from '../components/RouterDialog';
 import CardCreationForm from '../components/cards/CardCreationForm';

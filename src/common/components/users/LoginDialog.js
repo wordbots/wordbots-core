@@ -4,7 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 
-import { login, register, resetPassword } from '../../util/firebase';
+import { login, register, resetPassword } from '../../util/firebase.ts';
 import RouterDialog from '../RouterDialog';
 
 export default class LoginDialog extends React.Component {

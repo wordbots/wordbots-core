@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { cardsInDeck } from '../util/cards';
+import { cardsInDeck } from '../util/cards.ts';
 import Title from '../components/Title';
 import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';

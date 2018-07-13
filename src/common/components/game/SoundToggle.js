@@ -2,7 +2,7 @@ import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 
-import { isFlagSet, toggleFlag } from '../../util/browser';
+import { isFlagSet, toggleFlag } from '../../util/browser.tsx';
 import Tooltip from '../Tooltip';
 
 export default class SoundToggle extends React.Component {

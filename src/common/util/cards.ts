@@ -10,7 +10,7 @@ import {
   TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString,
   SYNONYMS, KEYWORDS, HINTS, KEYWORD_REGEXES, HINT_REGEXES
 } from '../constants';
-import defaultState from '../store/defaultCollectionState';
+import defaultState from '../store/defaultCollectionState.ts';
 
 import { id as generateId, compareCertainKeys } from './common';
 import { saveUserData, saveRecentCard, indexParsedSentence } from './firebase';

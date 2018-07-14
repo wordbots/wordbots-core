@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { func, object } from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 
 import { GameFormat } from '../../../store/gameFormats.ts';
@@ -47,20 +47,29 @@ export default class GameRow extends React.Component {
     const { game } = this.props;
     if (!this.isMyGame) {
       return (game.players.length === 1) ?
-        <RaisedButton
-          secondary
-          label="Join Game"
-          onTouchTap={this.handleJoinGame} /> :
-        <RaisedButton
-          secondary
-          label="Spectate Game"
-          onTouchTap={this.handleSpectateGame} />;
+        <Button
+          variant="raised"
+          color="secondary"
+          onTouchTap={this.handleJoinGame}
+        >
+          Join Game
+        </Button> :
+        <Button
+          variant="raised"
+          color="secondary"
+          onTouchTap={this.handleSpectateGame}
+        >
+          Spectate Game
+        </Button>;
     } else {
       return (
-        <RaisedButton
-          secondary
-          label="Cancel Game"
-          onTouchTap={this.props.onCancelHostGame} />
+        <Button
+          variant="outlined"
+          color="secondary"
+          onTouchTap={this.props.onCancelHostGame}
+        >
+          Cancel Game
+        </Button>
       );
     }
   }

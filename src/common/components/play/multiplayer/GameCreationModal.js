@@ -26,6 +26,7 @@ export default class GameCreationModal extends React.Component {
 
   handleCreateGame = (formatName, deck) => {
     this.props.onCreateGame(this.state.gameName, formatName, deck);
+    this.setState({ gameName: '' });
   }
 
   render() {

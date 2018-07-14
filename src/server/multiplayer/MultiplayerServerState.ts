@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import * as WebSocket from 'ws';
-import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject } from 'lodash';
+import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
@@ -13,7 +13,7 @@ import { getPeopleInGame, withoutClient } from './util';
 
 /* tslint:disable:no-console */
 export default class MultiplayerServerState {
-  private state: m.ServerStateType = {
+  private state: m.ServerState = {
     connections: {},  // map of { clientID: websocket }
     gameObjects: {}, // map of { gameID: game }
     games: [],  // array of { id, name, format, players, playerColors, spectators, actions, decks, usernames, startingSeed }
@@ -26,13 +26,13 @@ export default class MultiplayerServerState {
   /* Getters */
 
   // Returns a serializable subset of the state for broadcast as an INFO message.
-  public serialize = () => {
+  public serialize = (): m.SerializedServerState => {
     const { games, waitingPlayers, playersOnline, userData, matchmakingQueue } = this.state;
     return {
       games,
       waitingPlayers,
       playersOnline,
-      usernames: mapValues(userData, 'displayName'),
+      userData: mapValues(userData, ({ uid, displayName }) => ({ uid, displayName })),  // strip other fields
       queueSize: matchmakingQueue.length
     };
   }
@@ -140,6 +140,11 @@ export default class MultiplayerServerState {
     } else {
       console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
     }
+  }
+
+  // Cancel a game that is being hosted.
+  public cancelHostingGame = (clientID: m.ClientID): void => {
+    remove(this.state.waitingPlayers, ((w) => w.players.includes(clientID)));
   }
 
   // Make a player join the given opponent's hosted game with the given deck.

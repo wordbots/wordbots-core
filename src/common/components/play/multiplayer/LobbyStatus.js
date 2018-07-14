@@ -3,34 +3,37 @@ import { arrayOf, bool, func, object, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
 const LobbyStatus = (props) => {
-  const connected = (
+  const { connecting, connected, playersOnline, userDataByClientId, onConnect } = props;
+
+  const connectedSpan = (
     <span style={{color: 'green'}}>
       Connected
     </span>
   );
-  const notConnected = (
-    <a style={{color: 'red', cursor: 'pointer'}}
-       onClick={props.onConnect}>
+  const notConnectedSpan = (
+    <a style={{color: 'red', cursor: 'pointer'}} onClick={onConnect}>
       Not connected
     </a>
   );
-  const connecting = (
+  const connectingSpan = (
     <span>Connecting ...</span>
   );
 
   return (
     <Paper style={{padding: 20, marginBottom: 20}}>
       <div style={{position: 'relative'}}>
-        { props.connected ? <span>
-            <b>{props.playersOnline.length} player(s) online: </b>
-            {props.playersOnline.map(p => props.usernameMap[p] || p).join(', ')}
+        { connected ? <span>
+            <b>{playersOnline.length} player(s) online: </b>
+            {playersOnline.map(clientId =>
+              userDataByClientId[clientId] ? userDataByClientId[clientId].displayName : clientId
+            ).join(', ')}
           </span> : <span>
             <b>0 player(s) online: </b>
           </span>
         }
 
         <span style={{position: 'absolute', right: 0}}>
-          {props.connected ? connected : (props.connecting ? connecting : notConnected)}
+          {connected ? connectedSpan : (connecting ? connectingSpan : notConnectedSpan)}
         </span>
       </div>
     </Paper>
@@ -41,7 +44,7 @@ LobbyStatus.propTypes = {
   connecting: bool,
   connected: bool,
   playersOnline: arrayOf(string),
-  usernameMap: object,
+  userDataByClientId: object,
   onConnect: func
 };
 

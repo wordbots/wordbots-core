@@ -34,7 +34,7 @@ export interface Game {
   winner: w.PlayerColor | null
 }
 
-export interface WaitingPlayer {
+export interface GameWaitingForPlayers {
   id: string,
   name: string,
   format: Format,
@@ -48,12 +48,20 @@ export interface PlayerInQueue {
   format: Format
 }
 
-interface ServerStateType {
+export interface ServerState {
   connections: { [clientID: string]: WebSocket; },
   games: Game[],
   gameObjects: { [gameID: string]: Game; }
-  waitingPlayers: WaitingPlayer[],
+  waitingPlayers: GameWaitingForPlayers[],
   matchmakingQueue: PlayerInQueue[]
   playersOnline: ClientID[],
   userData: { [clientID: string]: UserData; }
+}
+
+export interface SerializedServerState {
+  games: Game[],
+  waitingPlayers: GameWaitingForPlayers[],
+  playersOnline: ClientID[],
+  userData: { [clientID: string]: UserData; }
+  queueSize: number
 }

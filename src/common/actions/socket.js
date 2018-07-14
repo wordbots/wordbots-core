@@ -35,6 +35,7 @@ export function disconnected() {
 // Client => server
 
 export const HOST = 'ws:HOST';
+export const CANCEL_HOSTING = 'ws:CANCEL_HOSTING';
 export const JOIN = 'ws:JOIN';
 export const JOIN_QUEUE = 'ws:JOIN_QUEUE';
 export const LEAVE_QUEUE = 'ws:LEAVE_QUEUE';
@@ -47,6 +48,12 @@ export function host(name, format, deck) {
   return {
     type: HOST,
     payload: { name, format, deck }
+  };
+}
+
+export function cancelHost() {
+  return {
+    type: CANCEL_HOSTING
   };
 }
 

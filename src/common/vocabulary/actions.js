@@ -1,4 +1,4 @@
-import { cloneDeep, findKey, isFunction, mapValues } from 'lodash';
+import { cloneDeep, isFunction, mapValues } from 'lodash';
 
 import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common.ts';
@@ -14,10 +14,20 @@ import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 export default function actions(state) {
   const iterateOver = collection => fn => {
     collection.entries.forEach(item => {
+      item = reassignToKernelIfPlayer(item);  // always try to reassign targeting from player => kernel
       state.currentObjectInCollection = item;  // (Needed for tracking of targets.they)
       fn(item);
       state.currentObjectInCollection = undefined;
     });
+  };
+
+  const reassignToKernelIfPlayer = objectOrPlayer => {
+    if (objectOrPlayer.robotsOnBoard) {
+      // target is actually a player, so reassign target to be their kernel.
+      return Object.values(objectOrPlayer.robotsOnBoard).find((obj) => obj.type === TYPE_CORE);
+    } else {
+      return objectOrPlayer;
+    }
   };
 
   return {
@@ -81,15 +91,7 @@ export default function actions(state) {
 
     dealDamage: function (targets, amount) {
       iterateOver(targets)(target => {
-        let hex;
-        if (target.robotsOnBoard) {
-          // target is a player, so reassign damage to their core.
-          hex = findKey(target.robotsOnBoard, {card: {type: TYPE_CORE}});
-        } else {
-          // target is an object, so find its hex.
-          hex = getHex(state, target);
-        }
-
+        const hex = getHex(state, target);
         dealDamageToObjectAtHex(state, amount, hex);
       });
     },

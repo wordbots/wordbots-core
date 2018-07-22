@@ -1,5 +1,5 @@
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
-import * as fb from 'firebase/app';
+import * as fb from 'firebase';
 
 import * as w from '../types';
 import { LOG_SOCKET_IO } from '../constants';

@@ -1,4 +1,4 @@
-import * as fb from 'firebase';
+import * as fb from 'firebase/app';
 
 /* Simple types */
 

@@ -1,9 +1,6 @@
 const fb = require('firebase/app').default;
 import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
-import 'firebase/auth';
-import 'firebase/database';
-
 import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon } from './cards';

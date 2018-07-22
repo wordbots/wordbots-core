@@ -8,15 +8,16 @@
     "chrome >= 48"
   ],
   "scripts": {
-    "slate": "node bin/clean.js node_modules && npm install",
+    "analyze": "yarn run webpack -p --progress --devtool source-map --display minimal && source-map-explorer dist/bundle.js",
+    "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "clean": "node bin/clean.js dist",
+    "heroku-postbuild": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
+    "lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
+    "slate": "node bin/clean.js node_modules && npm install",
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --colors --profile",
     "start-prod": "set NODE_ENV=production && ts-node src/server/index.ts --progress --colors --profile",
-    "build": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "test": "jest",
-    "test:watch": "npm test -- --watch",
-    "lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
-    "heroku-postbuild": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile"
+    "test:watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",

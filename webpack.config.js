@@ -29,7 +29,13 @@ const webpackConfig = {
               plugins: ['react-hot-loader/babel']
             }
           },
-          'awesome-typescript-loader?module=es6'
+          {
+            loader: 'awesome-typescript-loader',
+            options: {
+              module: 'es6',
+              transpileOnly: true
+            }
+          }
         ]
       },
       {
@@ -62,4 +68,4 @@ const webpackConfig = {
   target: 'web'
 };
 
-export default webpackConfig;
+module.exports = webpackConfig;

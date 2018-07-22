@@ -68,4 +68,4 @@ const webpackConfig = {
   target: 'web'
 };
 
-module.exports = webpackConfig;
+export default webpackConfig;

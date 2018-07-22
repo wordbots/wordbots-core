@@ -33,6 +33,7 @@ const webpackConfig = {
             loader: 'awesome-typescript-loader',
             options: {
               module: 'es6',
+              silent: true,
               transpileOnly: true
             }
           }

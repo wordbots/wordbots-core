@@ -10,6 +10,7 @@
   "scripts": {
     "analyze": "npm run prebuild && yarn run webpack -p --config webpack.build.config.js --progress --devtool source-map --display minimal && source-map-explorer dist/bundle.js",
     "build": "npm run clean && npm run prebuild && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
+    "build:stats": "npm run prebuild && node_modules/.bin/webpack -p --config webpack.build.config.js --json > stats.json",
     "clean": "node bin/clean.js dist",
     "heroku-postbuild": "npm run clean && set NODE_ENV=production && webpack -p --progress --colors --profile",
     "lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
@@ -125,6 +126,7 @@
     "ts-loader": "^4.3.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-dev-middleware": "2.0.4",
     "webpack-dev-server": "^3.1.0",
     "webpack-hot-middleware": "^2.21.2"

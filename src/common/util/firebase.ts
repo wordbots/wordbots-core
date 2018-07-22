@@ -1,4 +1,4 @@
-import fb = require('firebase/app');
+const fb = require('firebase/app').default;
 import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
 
 import 'firebase/auth';
@@ -18,6 +18,8 @@ const config = {
 };
 
 let currentUser: fb.User | null = null;
+
+console.log(fb);
 
 if (fb.apps.length === 0) {
   fb.initializeApp(config);

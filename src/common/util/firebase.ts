@@ -19,8 +19,6 @@ const config = {
 
 let currentUser: fb.User | null = null;
 
-console.log(fb);
-
 if (fb.apps.length === 0) {
   fb.initializeApp(config);
 }

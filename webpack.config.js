@@ -29,7 +29,14 @@ const webpackConfig = {
               plugins: ['react-hot-loader/babel']
             }
           },
-          'awesome-typescript-loader?module=es6'
+          {
+            loader: 'awesome-typescript-loader',
+            options: {
+              module: 'es6',
+              silent: true,
+              transpileOnly: true
+            }
+          }
         ]
       },
       {

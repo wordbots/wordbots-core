@@ -1,5 +1,9 @@
-import * as fb from 'firebase';
+import * as firebase from 'firebase/app';
 import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
+
+const fb = require('firebase/app').default;
+import 'firebase/auth';
+import 'firebase/database';
 
 import * as w from '../types';
 
@@ -14,7 +18,7 @@ const config = {
   messagingSenderId: '913868073872'
 };
 
-let currentUser: fb.User | null = null;
+let currentUser: firebase.User | null = null;
 
 if (fb.apps.length === 0) {
   fb.initializeApp(config);
@@ -22,7 +26,7 @@ if (fb.apps.length === 0) {
 
 // Users
 
-function saveUser(user: fb.User): Promise<fb.User> {
+function saveUser(user: firebase.User): Promise<firebase.User> {
   return fb.database().ref()
     .child(`users/${user.uid}/info`)
     .set({
@@ -33,9 +37,9 @@ function saveUser(user: fb.User): Promise<fb.User> {
     .then(() => user);
 }
 
-export function getLoggedInUser(): Promise<fb.User> {
+export function getLoggedInUser(): Promise<firebase.User> {
   return new Promise((resolve, reject) => {
-    fb.auth().onAuthStateChanged((user) => {
+    fb.auth().onAuthStateChanged((user: firebase.User) => {
       currentUser = user;
       if (user) {
         resolve(user);
@@ -50,16 +54,16 @@ export function lookupUsername(fallback = 'You'): string {
   return (currentUser && currentUser.displayName) || fallback;
 }
 
-export function onLogin(callback: (user: fb.User) => any): fb.Unsubscribe {
-  return fb.auth().onAuthStateChanged((user) => user && callback(user));
+export function onLogin(callback: (user: firebase.User) => any): firebase.Unsubscribe {
+  return fb.auth().onAuthStateChanged((user: firebase.User) => user && callback(user));
 }
 
-export function onLogout(callback: () => any): fb.Unsubscribe {
-  return fb.auth().onAuthStateChanged((user) => !user && callback());
+export function onLogout(callback: () => any): firebase.Unsubscribe {
+  return fb.auth().onAuthStateChanged((user: firebase.User) => !user && callback());
 }
 
 export function register(email: string, username: string, password: string): Promise<void> {
-  function postRegister(user: fb.User): Promise<void> {
+  function postRegister(user: firebase.User): Promise<void> {
     return user.updateProfile({ displayName: username, photoURL: null })
                .then(() => { saveUser(user); })
                .catch(noop);
@@ -70,7 +74,7 @@ export function register(email: string, username: string, password: string): Pro
     .catch(noop);
 }
 
-export function login(email: string, password: string): Promise<fb.User> {
+export function login(email: string, password: string): Promise<firebase.User> {
   return fb.auth().signInWithEmailAndPassword(email, password);
 }
 
@@ -86,7 +90,7 @@ export function listenToUserData(callback: (data: any) => any): Promise<void> {
   return getLoggedInUser().then((user) => {
     fb.database()
       .ref(`users/${user.uid}`)
-      .on('value', (snapshot) => {
+      .on('value', (snapshot: firebase.database.DataSnapshot) => {
         if (snapshot) {
           callback(snapshot.val());
         }
@@ -97,7 +101,7 @@ export function listenToUserData(callback: (data: any) => any): Promise<void> {
 export function listenToUserDataById(uid: string, callback: (data: any) => any): void {
   fb.database()
     .ref(`users/${uid}`)
-    .on('value', (snapshot) => {
+    .on('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
         callback(snapshot.val());
       }
@@ -116,7 +120,7 @@ export function saveUserData(key: string, value: any): void {
 
 // Game results
 
-export function saveGame(game: w.SavedGame): fb.database.ThenableReference {
+export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {
   return fb.database().ref('games').push(game);
 }
 
@@ -127,7 +131,7 @@ export function listenToRecentCards(callback: (data: any) => any): void {
     .ref('recentCards')
     .orderByChild('timestamp')
     .limitToLast(50)
-    .on('value', (snapshot) => {
+    .on('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
         callback(snapshot.val());
       }
@@ -143,7 +147,7 @@ function cleanupExamples(examples: string[]): string[] {
 export function getCardTextCorpus(callback: (corpus: string, examples: string[]) => any): void {
   fb.database()
     .ref('cardText/all')
-    .once('value', (snapshot) => {
+    .once('value', (snapshot: firebase.database.DataSnapshot) => {
       const examples = cleanupExamples(snapshot.val());
       const corpus = examples.map((ex) => `${expandKeywords(ex).toLowerCase()} . `).join();
       callback(corpus, examples);
@@ -161,7 +165,7 @@ export function listenToDictionaryData(callback: (data: { dictionary: w.Dictiona
 
   fb.database()
     .ref('cardText')
-    .on('value', (snapshot) => {
+    .on('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
         const val = snapshot.val();
 

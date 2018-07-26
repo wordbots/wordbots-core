@@ -42,7 +42,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       });
 
     case socketActions.GAME_START:
-      return Object.assign(state, {hosting: false});
+      return Object.assign(state, {hosting: false, queuing: false});
 
     case socketActions.HOST:
       return Object.assign(state, {gameName: action.payload.name, hosting: true});

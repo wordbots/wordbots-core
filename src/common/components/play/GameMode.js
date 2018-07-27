@@ -17,27 +17,6 @@ export default class GameMode extends React.Component {
     modesPerRow: 2
   }
 
-  renderOverlay() {
-    if (this.props.disabled) {
-      return (
-        <div style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#EEEEEE',
-          color: '#000000',
-          fontSize: 30,
-          opacity: 0.8,
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          fontWeight: 100
-        }}>UNDER CONSTRUCTION</div>
-      );
-    }
-  }
-
   renderInner() {
     const { name, disabled, imagePath } = this.props;
     return (
@@ -92,7 +71,6 @@ export default class GameMode extends React.Component {
           marginBottom: 20
         }}
       >
-        {this.renderOverlay()}
         {this.renderInner()}
       </PaperButton>
     );

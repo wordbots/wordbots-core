@@ -31,15 +31,23 @@ export default class MultiplayerLobby extends React.Component {
   };
 
   state = {
-    casualGameBeingJoined: null
+    casualGameBeingJoined: null,
+    queueFormatName: null
   };
+
+  get isWaiting() {
+    const { hosting, queuing } = this.props.socket;
+    return hosting || queuing;
+  }
 
   handleSelectMode = (mode) => {
     RouterDialog.openDialog(this.props.history, mode);
   };
 
   handleJoinQueue = (formatName, deck) => {
-    this.props.onJoinQueue(formatName, deck);
+    this.setState({ queueFormatName: formatName }, () => {
+      this.props.onJoinQueue(formatName, deck);
+    });
   };
 
   handleLeaveQueue = () => {
@@ -63,11 +71,16 @@ export default class MultiplayerLobby extends React.Component {
     this.props.onHostGame(gameName, formatName, deck);
   };
 
-  renderWaiting(socket) {
-    if (socket.hosting) {
-      return <Waiting />;
-    } else if (socket.queuing) {
-      return <Waiting inQueue queueSize={socket.queueSize} />;
+  renderWaiting() {
+    const { hosting, queuing, queueSize } = this.props.socket;
+    if (hosting || queuing) {
+      return (
+        <Waiting
+          inQueue={queuing}
+          queueFormat={this.state.queueFormatName}
+          queueSize={queueSize}
+          onLeaveQueue={this.handleLeaveQueue} />
+      );
     }
   }
 
@@ -117,9 +130,9 @@ export default class MultiplayerLobby extends React.Component {
             userDataByClientId={userDataByClientId}
             onConnect={onConnect} />
 
-          {this.renderWaiting(socket)}
+          {this.renderWaiting()}
 
-          <MultiplayerModeSelection onSelectMode={this.handleSelectMode} />
+          <MultiplayerModeSelection disabled={this.isWaiting} onSelectMode={this.handleSelectMode} />
 
           <GameBrowser
             openGames={socket.waitingPlayers}

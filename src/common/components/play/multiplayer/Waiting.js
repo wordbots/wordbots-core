@@ -5,10 +5,6 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { Pulse } from 'better-react-spinkit';
 
-// https://github.com/moment/momentjs.com/blob/master/docs/moment/07-customization/13-relative-time-threshold.md
-moment.relativeTimeThreshold('s', 60);
-moment.relativeTimeThreshold('ss', 3);
-
 export default class Waiting extends React.Component {
   static propTypes = {
     inQueue: bool.isRequired,
@@ -26,6 +22,10 @@ export default class Waiting extends React.Component {
   }
 
   componentDidMount() {
+    // https://github.com/moment/momentjs.com/blob/master/docs/moment/07-customization/13-relative-time-threshold.md
+    moment.relativeTimeThreshold('s', 60);
+    moment.relativeTimeThreshold('ss', 3);
+    
     setTimeout(this.tick, 1000);
   }
 

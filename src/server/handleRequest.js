@@ -100,7 +100,7 @@ function renderFullPage(html, initialState, head) {
         <meta name="msapplication-TileImage" content="/static/icons/ms-icon-144x144.png" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body>
+      <body style="margin: 0;">
           <div id="root">${html}</div>
           <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};

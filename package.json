@@ -98,7 +98,7 @@
     "@types/lodash": "^4.14.109",
     "@types/seed-random": "^2.2.0",
     "@types/webpack": "^4.0.0",
-    "@types/ws": "^5.1.2",
+    "@types/ws": "^6.0.0",
     "babel-eslint": "^8.2.3",
     "csstype": "^2.5.2",
     "enzyme": "^3.3.0",

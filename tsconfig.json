@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "baseUrl": ".",
     "checkJs": false,
     "jsx": "react",
     "lib": ["es2015", "es2017", "dom"],
@@ -10,6 +11,10 @@
     "rootDir": ".",
     "sourceMap": true,
     "target": "es5",
+
+    "paths": {
+      "word-ngrams": ["types/word-ngrams"]
+    },
 
     "strict": true,
     "noUnusedLocals": true,

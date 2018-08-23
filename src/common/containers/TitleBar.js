@@ -88,7 +88,7 @@ class TitleBar extends React.Component {
     } else {
       return (
         <FlatButton
-          label="Login"
+          label="Login / Register"
           labelPosition="before"
           onTouchTap={this.openLoginDialog}
           icon={<FontIcon className="material-icons">person</FontIcon>} />

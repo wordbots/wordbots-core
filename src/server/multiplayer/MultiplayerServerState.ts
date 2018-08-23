@@ -156,7 +156,7 @@ export default class MultiplayerServerState {
     if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
       const game: m.Game = {
         id: gameId,
-        name: `Casual#${waitingPlayer.name}`,
+        name: waitingPlayer.name,
         format: waitingPlayer.format,
 
         players: [clientID, opponentID],
@@ -254,7 +254,7 @@ export default class MultiplayerServerState {
 
     return compact(playerPairs.map(([player1, player2]) => {
       const [ playerId1, playerId2 ] = [ player1.clientID, player2.clientID ];
-      const gameName = `Ranked#${this.getClientUsername(playerId1)}-vs-${this.getClientUsername(playerId2)}`;
+      const gameName = `${this.getClientUsername(playerId1)} vs ${this.getClientUsername(playerId2)}`;
 
       this.hostGame(playerId1, gameName, 'normal', player1.deck);
       const game = this.joinGame(playerId2, playerId1, player2.deck, { type: 'RANKED' });

@@ -35,14 +35,16 @@ export class GameFormat {
   }
 
   public startGame(
-    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, _decks: w.PerPlayer<w.Card[]>, seed: string
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    _decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
   ): w.GameState {
     state = Object.assign(state, cloneDeep(defaultState), {
       gameFormat: this.name,
       player,
       rng: seededRNG(seed),
       started: true,
-      usernames
+      usernames,
+      options
     });
     state = triggerSound(state, 'yourmove.wav');
 
@@ -58,9 +60,10 @@ export const NormalGameFormat = new (class extends GameFormat {
   public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
 
   public startGame(
-    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
   ): w.GameState {
-    state = super.startGame(state, player, usernames, decks, seed);
+    state = super.startGame(state, player, usernames, decks, options, seed);
 
     state.players.blue = bluePlayerState(decks.blue);
     state.players.orange = orangePlayerState(decks.orange);
@@ -79,9 +82,10 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
   )
 
   public startGame(
-    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
   ): w.GameState {
-    return NormalGameFormat.startGame(state, player, usernames, decks, seed);
+    return NormalGameFormat.startGame(state, player, usernames, decks, options, seed);
   }
 });
 
@@ -93,9 +97,10 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
 
   public startGame(
-    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>, decks: w.PerPlayer<w.Card[]>, seed: string
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
   ): w.GameState {
-    state = super.startGame(state, player, usernames, decks, seed);
+    state = super.startGame(state, player, usernames, decks, options, seed);
 
     const deck = shuffle([...decks.blue, ...decks.orange]);
     // Give blue the top two cards, orange the next two (to form their starting hands),

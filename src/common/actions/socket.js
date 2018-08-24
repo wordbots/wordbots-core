@@ -44,10 +44,10 @@ export const LEAVE = 'ws:LEAVE';
 export const SEND_USER_DATA = 'ws:SEND_USER_DATA';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
-export function host(name, format, deck) {
+export function host(name, format, deck, options) {
   return {
     type: HOST,
-    payload: { name, format, deck }
+    payload: { name, format, deck, options }
   };
 }
 

@@ -129,6 +129,7 @@ export interface CreatorState {
 export interface GameState {
   currentTurn: PlayerColor,
   gameFormat: Format
+  options: GameOptions
   player: PlayerColor,
   players: PerPlayer<PlayerInGameState>
   practice: boolean
@@ -152,6 +153,11 @@ export interface SocketState {
 }
 
 /* Game state subcomponents */
+
+export interface GameOptions {
+  disableTurnTimer?: boolean
+  passwordToJoin?: string
+}
 
 export interface PlayerInGameState {
   name: PlayerColor

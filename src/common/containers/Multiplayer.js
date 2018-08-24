@@ -28,8 +28,8 @@ export function mapDispatchToProps(dispatch) {
     onConnect: () => {
       dispatch(socketActions.connect());
     },
-    onHostGame: (name, format, deck) => {
-      dispatch(socketActions.host(name, format, deck));
+    onHostGame: (name, format, deck, options) => {
+      dispatch(socketActions.host(name, format, deck, options));
     },
     onCancelHostGame: () => {
       dispatch(socketActions.cancelHost());

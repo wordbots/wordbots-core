@@ -27,6 +27,7 @@ export function mapStateToProps(state) {
     currentTurn: game.currentTurn,
     usernames: game.usernames,
     winner: game.winner,
+    gameOptions: game.options,
 
     selectedTile: activePlayer.selectedTile,
     selectedCard: activePlayer.selectedCard,

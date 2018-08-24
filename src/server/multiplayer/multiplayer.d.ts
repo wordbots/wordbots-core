@@ -9,6 +9,7 @@ export type Card = w.Card;
 export type Deck = w.Deck;
 export type Format = w.Format;
 export type GameState = w.GameState;
+export type GameOptions = w.GameOptions;
 
 export type ClientID = string;
 
@@ -31,7 +32,8 @@ export interface Game {
   decks: { blue: Card[], orange: Card[] },
   usernames: { blue: string, orange: string },
   startingSeed: string,
-  winner: w.PlayerColor | null
+  winner: w.PlayerColor | null,
+  options: GameOptions
 }
 
 export interface GameWaitingForPlayers {
@@ -39,7 +41,8 @@ export interface GameWaitingForPlayers {
   name: string,
   format: Format,
   deck: Deck,
-  players: ClientID[]
+  players: ClientID[],
+  options: GameOptions
 }
 
 export interface PlayerInQueue {
@@ -55,13 +58,13 @@ export interface ServerState {
   waitingPlayers: GameWaitingForPlayers[],
   matchmakingQueue: PlayerInQueue[]
   playersOnline: ClientID[],
-  userData: { [clientID: string]: UserData; }
+  userData: { [clientID: string]: UserData | null; }
 }
 
 export interface SerializedServerState {
   games: Game[],
   waitingPlayers: GameWaitingForPlayers[],
   playersOnline: ClientID[],
-  userData: { [clientID: string]: UserData; }
+  userData: { [clientID: string]: UserData | null; }
   queueSize: number
 }

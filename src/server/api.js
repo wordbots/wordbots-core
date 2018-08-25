@@ -42,9 +42,9 @@ function renderCard(response, query) {
     filename: filename
   }).then(() => {
     response.sendFile(resolve(`./temp/${filename}.png`));
-  }).catch(err => {
+  }).catch(error => {
     response
       .status(500)
-      .end(err);
+      .end(error);
   });
 }

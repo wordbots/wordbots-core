@@ -36,9 +36,9 @@ describe('Built-in cards', () => {
           dummyCurrentObj.abilities = [];
           dummyCurrentObj.triggers = [];
         });
-      } catch (err) {
+      } catch (error) {
         console.error(`Error executing ability for ${card.name} card!`);
-        throw err;
+        throw error;
       }
     });
   });

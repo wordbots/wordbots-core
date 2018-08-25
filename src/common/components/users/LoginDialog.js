@@ -50,8 +50,8 @@ export default class LoginDialog extends React.Component {
         });
         this.handleClose();
       })
-      .catch(err => {
-        this.setState({error: `Error: ${err.message}`});
+      .catch(error => {
+        this.setState({error: `Error: ${error.message}`});
       });
   }
 

@@ -62,7 +62,7 @@ export default class Sprite extends React.PureComponent {
       try {
         const Canvas = require('canvas');
         return new Canvas();
-      } catch (err) {
+      } catch (error) {
         return null;
       }
     }
@@ -101,8 +101,8 @@ export default class Sprite extends React.PureComponent {
       reseed: function (seed) { this.seed = (seed ? seed : Date.now()) % this.m; }
     };
 
-    const lcg0 = new LinearCongruentialGenerator(2147483629, 2147483587, Math.pow(2, 31) - 1);
-    const lcg1 = new LinearCongruentialGenerator(25214903917, 11, Math.pow(2, 48));
+    const lcg0 = new LinearCongruentialGenerator(2147483629, 2147483587, 2 ** 31 - 1);
+    const lcg1 = new LinearCongruentialGenerator(25214903917, 11, 2 ** 48);
 
     function random() { return (lcg0.random() + lcg1.random()) % 1; }
     function randomReseed(seed) { lcg0.reseed(seed); lcg1.reseed(lcg0.random()); }
@@ -311,7 +311,7 @@ export default class Sprite extends React.PureComponent {
 
     function bias(b, value) {
       // y(x) = x^(log(B)/log(0.5))
-      return Math.pow(value, Math.log(b) / Math.log(0.5));
+      return value ** (Math.log(b) / Math.log(0.5));
     }
 
     function gain(g, value) {

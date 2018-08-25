@@ -50,9 +50,39 @@ export default class GameCreationModal extends React.Component {
     this.setState({ gameName: '' });
   }
 
+  renderForm = () => {
+    const { gameName, options: { disableTurnTimer, passwordToJoin } } = this.state;
+    return [
+      <TextField
+        key="gameName"
+        error={gameName === ''}
+        helperText={gameName === '' ? 'The game name cannot be empty!' : ''}
+        style={{ width: '100%' }}
+        value={gameName}
+        label="Game Name"
+        onChange={this.handleSetGameName} />,
+      <TextField
+        key="passwordToJoin"
+        style={{ width: '100%', marginBottom: 10 }}
+        value={passwordToJoin || ''}
+        label="Password to join (empty = no password)"
+        onChange={this.handleSetPassword} />,
+      <FormControlLabel
+        key="disableTurnTimer"
+        control={
+          <Checkbox
+            checked={disableTurnTimer}
+            onChange={this.handleSetDisableTurnTimer}
+          />
+        }
+        label="Disable Turn Timer?"
+      />
+    ];
+  }
+
   render() {
     const { availableDecks, cards, history, path, title } = this.props;
-    const { gameName, options: { disableTurnTimer, passwordToJoin } } = this.state;
+    const { gameName } = this.state;
 
     return (
       <PreGameModal
@@ -64,27 +94,7 @@ export default class GameCreationModal extends React.Component {
         onStartGame={this.handleCreateGame}
         gameName={gameName}
       >
-        <TextField
-          error={gameName === ''}
-          helperText={gameName === '' ? 'The game name cannot be empty!' : ''}
-          style={{ width: '100%' }}
-          value={gameName}
-          label="Game Name"
-          onChange={this.handleSetGameName} />
-        <TextField
-          style={{ width: '100%', marginBottom: 10 }}
-          value={passwordToJoin}
-          label="Password to join (empty = no password)"
-          onChange={this.handleSetPassword} />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={disableTurnTimer}
-              onChange={this.handleSetDisableTurnTimer}
-            />
-          }
-          label="Disable Turn Timer?"
-        />
+        {this.renderForm()}
       </PreGameModal>
     );
   }

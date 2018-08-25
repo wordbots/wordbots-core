@@ -1,9 +1,21 @@
 import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
+const styles = {
+  playersOnline: {
+    '& span::after': {
+      content: '", "'
+    },
+    '& span:last-of-type::after': {
+      content: '""'
+    }
+  }
+};
+
 const LobbyStatus = (props) => {
-  const { connecting, connected, playersOnline, myClientId, userDataByClientId, onConnect } = props;
+  const { connecting, connected, playersOnline, myClientId, userDataByClientId, classes, onConnect } = props;
 
   const connectedSpan = (
     <span style={{color: 'green'}}>
@@ -22,7 +34,7 @@ const LobbyStatus = (props) => {
   return (
     <Paper style={{padding: 20, marginBottom: 20}}>
       <div style={{position: 'relative'}}>
-        { connected ? <span className="players-online">
+        { connected ? <span className={classes.playersOnline}>
             <b>{playersOnline.length} player(s) online: </b>
             {playersOnline.map(clientId =>
               <span key={clientId} style={{ fontStyle: clientId === myClientId ? 'italic' : 'normal' }}>
@@ -48,7 +60,8 @@ LobbyStatus.propTypes = {
   myClientId: string,
   playersOnline: arrayOf(string),
   userDataByClientId: object,
+  classes: object,
   onConnect: func
 };
 
-export default LobbyStatus;
+export default withStyles(styles)(LobbyStatus);

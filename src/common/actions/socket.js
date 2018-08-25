@@ -124,6 +124,7 @@ export function forfeit(winner) {
 
 // Server => client
 
+export const CLIENT_ID = 'ws:CLIENT_ID';
 export const INFO = 'ws:INFO';
 export const GAME_START = 'ws:GAME_START';
 export const CURRENT_STATE = 'ws:CURRENT_STATE';

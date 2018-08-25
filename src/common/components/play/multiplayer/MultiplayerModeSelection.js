@@ -6,6 +6,7 @@ import GameMode from '../GameMode';
 export default class MultiplayerModeSelection extends React.Component {
   static propTypes = {
     disabled: bool,
+    isGuest: bool,
     onSelectMode: func
   };
 
@@ -22,6 +23,7 @@ export default class MultiplayerModeSelection extends React.Component {
   }
 
   render() {
+    const { disabled, isGuest } = this.props;
     return (
       <div style={{
         display: 'flex',
@@ -30,12 +32,12 @@ export default class MultiplayerModeSelection extends React.Component {
       }}>
         <GameMode
           name="Create Casual Game"
-          disabled={this.props.disabled}
+          disabled={disabled}
           imagePath="/static/casual.png"
           onSelect={this.handleClickCreateCasual} />
         <GameMode
           name="Matchmaking"
-          disabled={this.props.disabled}
+          disabled={disabled || isGuest}
           imagePath="/static/casual.png"
           onSelect={this.handleClickMatchmaking} />
       </div>

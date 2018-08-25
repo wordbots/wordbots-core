@@ -16,6 +16,7 @@ export type ClientID = string;
 export interface UserData {
   uid: string,
   displayName: string
+  // Other fields are present in Firebase but we ignore them
 }
 
 export interface Game {

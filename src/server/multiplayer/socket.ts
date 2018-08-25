@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { noop } from 'lodash';
+import { noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
@@ -8,6 +8,7 @@ import { opponent as opponentOf } from '../../common/util/game';
 import * as m from './multiplayer';
 import MultiplayerServerState from './MultiplayerServerState';
 
+const MAX_DEBUG_MSG_LENGTH = 500;
 const QUEUE_INTERVAL_MSECS = 500;
 
 /* tslint:disable:no-console */
@@ -37,6 +38,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   function onConnect(socket: WebSocket): void {
     const clientID = generateID();
     state.connectClient(clientID, socket);
+    sendMessage('ws:CLIENT_ID', { clientID }, [clientID]);
     broadcastInfo();
 
     socket.on('message', (msg: string) => {
@@ -60,7 +62,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const { type, payload }: m.Action = JSON.parse(data);
 
     if (type !== 'ws:KEEPALIVE') {
-      console.log(`< ${data}`);
+      console.log(`< ${truncate(data, {length: MAX_DEBUG_MSG_LENGTH})}`);
     }
 
     if (type === 'ws:HOST') {
@@ -82,7 +84,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
-      (inGame ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
+      (inGame.length ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       state.appendGameAction(clientID, {type, payload});
@@ -103,9 +105,9 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
-        console.log(`> ${message}`);
+        console.log(`> ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})}`);
       } catch (err) {
-        console.warn(`Failed to send message ${message} to ${recipientIDs}: ${err.message}`);
+        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${err.message}`);
       }
     });
   }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { arrayOf, func, object } from 'prop-types';
+import { arrayOf, func, object, string } from 'prop-types';
 import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
@@ -10,6 +10,7 @@ export default class GameBrowser extends React.Component {
     openGames: arrayOf(object),
     inProgressGames: arrayOf(object),
     user: object,
+    clientId: string,
     userDataByClientId: object,
 
     onCancelHostGame: func,
@@ -22,7 +23,7 @@ export default class GameBrowser extends React.Component {
   }
 
   renderTableRows() {
-    const { user, userDataByClientId, onCancelHostGame, onJoinGame, onSpectateGame } = this.props;
+    const { user, clientId, userDataByClientId, onCancelHostGame, onJoinGame, onSpectateGame } = this.props;
 
     if (this.games.length > 0) {
       return (
@@ -31,6 +32,7 @@ export default class GameBrowser extends React.Component {
             key={game.id}
             game={game}
             user={user}
+            clientId={clientId}
             userDataByClientId={userDataByClientId}
             onCancelHostGame={onCancelHostGame}
             onJoinGame={onJoinGame}

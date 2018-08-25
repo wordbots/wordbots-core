@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 import * as WebSocket from 'ws';
-import { chunk, compact, find, flatMap, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
+import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
+import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
 import { GameFormat } from '../../common/store/gameFormats';
@@ -32,7 +33,9 @@ export default class MultiplayerServerState {
       games,
       waitingPlayers,
       playersOnline,
-      userData: mapValues(userData, (u) => u && pick(u, ['uid', 'displayName'])),
+      userData: fromPairs(Object.keys(userData).map((id) =>
+        [id, pick(this.getClientUserData(id), ['uid', 'displayName'])]
+      )),
       queueSize: matchmakingQueue.length
     };
   }
@@ -48,17 +51,19 @@ export default class MultiplayerServerState {
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
-  // Returns the user data for the given player, if it exists.
-  public getClientUserData = (clientID: m.ClientID): m.UserData | null => (
-    this.state.userData[clientID]
+  // Returns the user data for the given player.
+  // If the player is a guest, returns something reasonable.
+  public getClientUserData = (clientID: m.ClientID): m.UserData => (
+    this.state.userData[clientID] || {
+      uid: guestUID(clientID),
+      displayName: guestUsername(clientID)
+    }
   )
 
-  // Returns the username to use for the given player,
-  // or falls back to the client ID if there is no username set.
+  // Returns the username to use for the given player.
+  // If the player is a guest, return something reasonable.
   public getClientUsername = (clientID: m.ClientID): string => (
-    this.getClientUserData(clientID)
-      ? (this.getClientUserData(clientID) as m.UserData).displayName
-      : clientID
+    this.getClientUserData(clientID).displayName
   )
 
   // Returns the game that the given player is in, if any.

@@ -17,20 +17,24 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       return Object.assign(state, {connected: false, connecting: false});
 
     case socketActions.CHAT: {
+      const { chatMessages, userDataByClientId: userDataMap } = state;
+      const { sender, msg } = action.payload;
+
       const message = {
-        user: action.payload.sender ?
-          (state.userDataByClientId[action.payload.sender] ?
-            state.userDataByClientId[action.payload.sender].displayName :
-            action.payload.sender) :
-          'You',
-        text: action.payload.msg,
+        user: sender ?
+                (userDataMap[sender] ? userDataMap[sender].displayName : sender) :
+                'You',
+        text: msg,
         timestamp: Date.now()
       };
 
       return Object.assign(state, {
-        chatMessages: concat(state.chatMessages, [message])
+        chatMessages: concat(chatMessages, [message])
       });
     }
+
+    case socketActions.CLIENT_ID:
+      return Object.assign(state, {clientId: action.payload.clientID});
 
     case socketActions.INFO:
       return Object.assign(state, {

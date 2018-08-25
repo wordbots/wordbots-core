@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { func, object } from 'prop-types';
+import { func, object, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 
+import { guestUID } from '../../../util/multiplayer.ts';
 import { GameFormat } from '../../../store/gameFormats.ts';
 
 export default class GameRow extends React.Component {
   static propTypes = {
     game: object,
     user: object,
+    clientId: string,
     userDataByClientId: object,
 
     onCancelHostGame: func,
@@ -16,10 +18,19 @@ export default class GameRow extends React.Component {
     onSpectateGame: func
   };
 
+  get myUID() {
+    const { clientId, user } = this.props;
+    if (user) {
+      return user.uid;
+    } else {
+      return guestUID(clientId);
+    }
+  }
+
   get isMyGame() {
-    const { game, user, userDataByClientId } = this.props;
+    const { game, userDataByClientId } = this.props;
     return game.players.some(clientId =>
-      userDataByClientId[clientId] && user && userDataByClientId[clientId].uid === user.uid
+      userDataByClientId[clientId] && userDataByClientId[clientId].uid === this.myUID
     );
   }
 
@@ -34,10 +45,10 @@ export default class GameRow extends React.Component {
   };
 
   renderPlayerName = (clientId) => {
-    const { user, userDataByClientId } = this.props;
+    const { userDataByClientId } = this.props;
     const userData = userDataByClientId[clientId];
     if (userData) {
-      return (user && userData.uid === user.uid) ? 'Me' : userData.displayName;
+      return (userData.uid === this.myUID) ? 'Me' : userData.displayName;
     } else {
       return clientId;
     }

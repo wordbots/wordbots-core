@@ -3,7 +3,7 @@ import { arrayOf, bool, func, object, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
 const LobbyStatus = (props) => {
-  const { connecting, connected, playersOnline, userDataByClientId, onConnect } = props;
+  const { connecting, connected, playersOnline, myClientId, userDataByClientId, onConnect } = props;
 
   const connectedSpan = (
     <span style={{color: 'green'}}>
@@ -22,11 +22,13 @@ const LobbyStatus = (props) => {
   return (
     <Paper style={{padding: 20, marginBottom: 20}}>
       <div style={{position: 'relative'}}>
-        { connected ? <span>
+        { connected ? <span className="players-online">
             <b>{playersOnline.length} player(s) online: </b>
             {playersOnline.map(clientId =>
-              userDataByClientId[clientId] ? userDataByClientId[clientId].displayName : clientId
-            ).join(', ')}
+              <span key={clientId} style={{ fontStyle: clientId === myClientId ? 'italic' : 'normal' }}>
+                {userDataByClientId[clientId] ? userDataByClientId[clientId].displayName : clientId}
+              </span>
+            )}
           </span> : <span>
             <b>0 player(s) online: </b>
           </span>
@@ -43,6 +45,7 @@ const LobbyStatus = (props) => {
 LobbyStatus.propTypes = {
   connecting: bool,
   connected: bool,
+  myClientId: string,
   playersOnline: arrayOf(string),
   userDataByClientId: object,
   onConnect: func

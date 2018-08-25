@@ -286,10 +286,11 @@ export function newGame(
   usernames: w.PerPlayer<string>,
   decks: w.PerPlayer<w.Card[]>,
   seed: string = '0',
-  gameFormat = DEFAULT_GAME_FORMAT
+  gameFormat = DEFAULT_GAME_FORMAT,
+  gameOptions: w.GameOptions = {}
 ): w.GameState {
   return GameFormat.fromString(gameFormat)
-                 .startGame(state, player, usernames, decks, seed);
+                 .startGame(state, player, usernames, decks, gameOptions, seed);
 }
 
 export function passTurn(state: w.GameState, player: w.PlayerColor): w.GameState {

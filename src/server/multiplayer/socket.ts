@@ -64,7 +64,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
 
     if (type === 'ws:HOST') {
-      hostGame(clientID, payload.name, payload.format, payload.deck);
+      hostGame(clientID, payload.name, payload.format, payload.deck, payload.options);
     } else if (type === 'ws:CANCEL_HOSTING') {
       cancelHostingGame(clientID);
     } else if (type === 'ws:JOIN') {
@@ -131,7 +131,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     sendMessage('ws:INFO', state.serialize());
   }
 
-  function setUserData(clientID: m.ClientID, userData: m.UserData): void {
+  function setUserData(clientID: m.ClientID, userData: m.UserData | null): void {
     const oldUserData = state.getClientUserData(clientID);
     state.setClientUserData(clientID, userData);
     if (!oldUserData && userData) {
@@ -142,8 +142,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     broadcastInfo();
   }
 
-  function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void {
-    state.hostGame(clientID, name, format, deck);
+  function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions): void {
+    state.hostGame(clientID, name, format, deck, options);
     broadcastInfo();
   }
 
@@ -155,10 +155,10 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   function joinGame(clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck): void {
     const game = state.joinGame(clientID, opponentID, deck);
     if (game) {
-      const { decks, format, name, startingSeed, usernames } = game;
+      const { decks, format, name, startingSeed, usernames, options } = game;
 
-      sendMessage('ws:GAME_START', {player: 'blue', format, decks, usernames, seed: startingSeed }, [clientID]);
-      sendMessage('ws:GAME_START', {player: 'orange', format, decks, usernames, seed: startingSeed }, [opponentID]);
+      sendMessage('ws:GAME_START', {player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
+      sendMessage('ws:GAME_START', {player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
       sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
       broadcastInfo();
     }

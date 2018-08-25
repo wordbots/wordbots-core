@@ -67,8 +67,8 @@ export default class MultiplayerLobby extends React.Component {
     this.props.onJoinGame(id, name, deck);
   };
 
-  handleHostGame = (gameName, formatName, deck) => {
-    this.props.onHostGame(gameName, formatName, deck);
+  handleHostGame = (gameName, formatName, deck, options) => {
+    this.props.onHostGame(gameName, formatName, deck, options);
   };
 
   renderWaiting() {

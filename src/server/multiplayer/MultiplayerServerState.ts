@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import * as WebSocket from 'ws';
-import { chunk, compact, find, flatMap, groupBy, mapValues, pull, reject, remove } from 'lodash';
+import { chunk, compact, find, flatMap, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
@@ -32,7 +32,7 @@ export default class MultiplayerServerState {
       games,
       waitingPlayers,
       playersOnline,
-      userData: mapValues(userData, ({ uid, displayName }) => ({ uid, displayName })),  // strip other fields
+      userData: mapValues(userData, (u) => u && pick(u, ['uid', 'displayName'])),
       queueSize: matchmakingQueue.length
     };
   }
@@ -49,7 +49,7 @@ export default class MultiplayerServerState {
   )
 
   // Returns the user data for the given player, if it exists.
-  public getClientUserData = (clientID: m.ClientID): m.UserData => (
+  public getClientUserData = (clientID: m.ClientID): m.UserData | null => (
     this.state.userData[clientID]
   )
 
@@ -57,7 +57,7 @@ export default class MultiplayerServerState {
   // or falls back to the client ID if there is no username set.
   public getClientUsername = (clientID: m.ClientID): string => (
     this.getClientUserData(clientID)
-      ? this.getClientUserData(clientID).displayName
+      ? (this.getClientUserData(clientID) as m.UserData).displayName
       : clientID
   )
 
@@ -107,7 +107,7 @@ export default class MultiplayerServerState {
   }
 
   // Set a player's username.
-  public setClientUserData = (clientID: m.ClientID, userData: m.UserData): void => {
+  public setClientUserData = (clientID: m.ClientID, userData: m.UserData | null): void => {
     this.state.userData[clientID] = userData;
   }
 
@@ -125,7 +125,7 @@ export default class MultiplayerServerState {
   }
 
   // Make a player host a game with the given name and using the given deck.
-  public hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck): void => {
+  public hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions = {}): void => {
     const username = this.getClientUsername(clientID);
 
     if (GameFormat.fromString(format).isDeckValid(deck)) {
@@ -134,7 +134,8 @@ export default class MultiplayerServerState {
         players: [clientID],
         name,
         format,
-        deck
+        deck,
+        options
       });
       console.log(`${username} started game ${name}.`);
     } else {
@@ -175,6 +176,7 @@ export default class MultiplayerServerState {
         },
         startingSeed: generateID(),
         winner: null,
+        options: waitingPlayer.options,
 
         actions: [],
         state: defaultGameState,
@@ -220,7 +222,9 @@ export default class MultiplayerServerState {
   public storeGameResult = (game: m.Game): void => {
     const { ids, format, type, state: { winner } } = game;
     saveGame({
-      players: mapValues(ids, (clientID) => this.getClientUserData(clientID).uid),
+      players: mapValues(ids, (clientID) =>
+        this.getClientUserData(clientID) ? (this.getClientUserData(clientID) as m.UserData).uid : null
+      ),
       format,
       type,
       winner

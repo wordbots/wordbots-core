@@ -19,7 +19,7 @@ export default class GameRow extends React.Component {
   get isMyGame() {
     const { game, user, userDataByClientId } = this.props;
     return game.players.some(clientId =>
-      userDataByClientId[clientId] && userDataByClientId[clientId].uid === user.uid
+      userDataByClientId[clientId] && user && userDataByClientId[clientId].uid === user.uid
     );
   }
 
@@ -37,7 +37,7 @@ export default class GameRow extends React.Component {
     const { user, userDataByClientId } = this.props;
     const userData = userDataByClientId[clientId];
     if (userData) {
-      return userData.uid === user.uid ? 'Me' : userData.displayName;
+      return (user && userData.uid === user.uid) ? 'Me' : userData.displayName;
     } else {
       return clientId;
     }

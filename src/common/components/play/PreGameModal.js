@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { arrayOf, element, func, object, string } from 'prop-types';
+import { arrayOf, element, func, object, oneOfType, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 
 import { unpackDeck } from '../../util/cards.ts';
@@ -19,7 +19,7 @@ export default class PreGameModal extends React.Component {
     title: string,
     gameName: string,
 
-    children: element,
+    children: oneOfType([element, arrayOf(element)]),
     history: object.isRequired,
 
     onStartGame: func.isRequired

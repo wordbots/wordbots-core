@@ -66,6 +66,7 @@ const defaultState: w.GameState = {
   practice: false,
   sandbox: false,
   winner: null,
+  options: {},
   currentTurn: STARTING_PLAYER,
   player: STARTING_PLAYER,
   usernames: {},

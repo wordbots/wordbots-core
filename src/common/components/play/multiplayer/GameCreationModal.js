@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { arrayOf, func, object, string } from 'prop-types';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 
 import PreGameModal from '../PreGameModal';
@@ -17,21 +19,70 @@ export default class GameCreationModal extends React.Component {
   };
 
   state = {
-    gameName: ''
+    gameName: '',
+    options: {
+      disableTurnTimer: false,
+      passwordToJoin: null
+    }
   };
 
   handleSetGameName = (e) => {
     this.setState({ gameName: e.target.value });
   }
 
+  handleSetPassword = (e) => {
+    const passwordToJoin = e.target.value || null;
+    this.setState(state => ({
+      options: { ...state.options, passwordToJoin }
+    }));
+  }
+
+  handleSetDisableTurnTimer = (e) => {
+    const disableTurnTimer = e.target.checked;
+    this.setState(state => ({
+      options: { ...state.options, disableTurnTimer }
+    }));
+  }
+
   handleCreateGame = (formatName, deck) => {
-    this.props.onCreateGame(this.state.gameName, formatName, deck);
+    const { gameName, options } = this.state;
+    this.props.onCreateGame(gameName, formatName, deck, options);
     this.setState({ gameName: '' });
+  }
+
+  renderForm = () => {
+    const { gameName, options: { disableTurnTimer, passwordToJoin } } = this.state;
+    return [
+      <TextField
+        key="gameName"
+        error={gameName === ''}
+        helperText={gameName === '' ? 'The game name cannot be empty!' : ''}
+        style={{ width: '100%' }}
+        value={gameName}
+        label="Game Name"
+        onChange={this.handleSetGameName} />,
+      <TextField
+        key="passwordToJoin"
+        style={{ width: '100%', marginBottom: 10 }}
+        value={passwordToJoin || ''}
+        label="Password to join (empty = no password)"
+        onChange={this.handleSetPassword} />,
+      <FormControlLabel
+        key="disableTurnTimer"
+        control={
+          <Checkbox
+            checked={disableTurnTimer}
+            onChange={this.handleSetDisableTurnTimer}
+          />
+        }
+        label="Disable Turn Timer?"
+      />
+    ];
   }
 
   render() {
     const { availableDecks, cards, history, path, title } = this.props;
-    const isGameNameEmpty = this.state.gameName === '';
+    const { gameName } = this.state;
 
     return (
       <PreGameModal
@@ -41,15 +92,9 @@ export default class GameCreationModal extends React.Component {
         cards={cards}
         history={history}
         onStartGame={this.handleCreateGame}
-        gameName={this.state.gameName}
+        gameName={gameName}
       >
-        <TextField
-          error={isGameNameEmpty}
-          helperText={isGameNameEmpty ? 'The game name cannot be empty!' : ''}
-          style={{ width: '100%', marginBottom: 15 }}
-          value={this.state.gameName}
-          label="Game Name"
-          onChange={this.handleSetGameName} />
+        {this.renderForm()}
       </PreGameModal>
     );
   }

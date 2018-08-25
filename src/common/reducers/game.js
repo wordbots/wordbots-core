@@ -40,7 +40,8 @@ export function handleAction(oldState, { type, payload }) {
         payload.usernames || {},
         payload.decks,
         payload.seed,
-        payload.format || DEFAULT_GAME_FORMAT
+        payload.format || DEFAULT_GAME_FORMAT,
+        payload.options || {}
       );
 
     case actions.START_TUTORIAL:

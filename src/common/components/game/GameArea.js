@@ -31,6 +31,7 @@ export const gameProps = {
   currentTurn: string,
   usernames: object,
   winner: string,
+  gameOptions: object,
 
   selectedTile: string,
   playingCardType: number,
@@ -158,7 +159,7 @@ export default class GameArea extends React.Component {
 
   render() {
     const {
-      attack, bluePieces, currentTurn, eventQueue, gameOver, history, isAttackHappening,
+      attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
       isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
       selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
@@ -221,7 +222,7 @@ export default class GameArea extends React.Component {
               <Timer
                 player={player}
                 currentTurn={currentTurn}
-                enabled={!gameOver && !isTutorial && !isPractice && !isSandbox}
+                enabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
                 isMyTurn={isMyTurn}
                 isAttackHappening={isAttackHappening}
                 onPassTurn={onPassTurn} />

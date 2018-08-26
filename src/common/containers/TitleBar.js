@@ -47,7 +47,8 @@ class TitleBar extends React.Component {
   }
 
   handleClickProfile = () => {
-    this.props.history.push('/profile');
+    const { user } = this.props;
+    this.props.history.push(`/profile/${user.uid}`);
     this.closeUserMenu();
   }
 

@@ -139,7 +139,7 @@ class App extends React.Component {
             <Route path="/singleplayer" component={Singleplayer} />
             <Route path="/multiplayer" component={Multiplayer} />
             <Route path="/about" component={About} />
-            <Route path="/profile" component={Profile} />
+            <Route path="/profile/:userId" component={Profile} />
             <Route render={this.redirectToRoot} />
           </Switch>
         </ErrorBoundary>

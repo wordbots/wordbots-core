@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -126,9 +126,9 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 
 // Cards and text
 
-export function listenToRecentCards(callback: (data: any) => any): void {
+export function listenToRecentCards(callback: (data: any) => any, uid?: string): void {
   fb.database()
-    .ref('recentCards')
+    .ref(isNil(uid) ? 'recentCards' : `users/${uid}/cards`)
     .orderByChild('timestamp')
     .limitToLast(50)
     .on('value', (snapshot: firebase.database.DataSnapshot) => {

@@ -38,15 +38,7 @@ export default class GameRow extends React.Component {
   handleJoinGame = () => {
     const { game: { id, name, format, options }, onJoinGame } = this.props;
 
-    if (options.passwordToJoin) {
-      const enteredPassword = prompt(`Please enter a password to join '${name}'.`);
-      if (enteredPassword !== options.passwordToJoin) {
-        alert('Incorrect password!');
-        return;
-      }
-    }
-
-    onJoinGame(id, name, GameFormat.fromString(format));
+    onJoinGame(id, name, GameFormat.fromString(format), options);
   };
 
   handleSpectateGame = () => {

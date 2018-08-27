@@ -54,9 +54,9 @@ export default class MultiplayerLobby extends React.Component {
     this.props.onLeaveQueue();
   };
 
-  handleClickJoinCasualGame = (id, name, format) => {
+  handleClickJoinCasualGame = (id, name, format, options) => {
     this.setState({
-      casualGameBeingJoined: { id, name, format }
+      casualGameBeingJoined: { id, name, format, options }
     }, () => {
       this.handleSelectMode('casual');
     });
@@ -103,6 +103,7 @@ export default class MultiplayerLobby extends React.Component {
             title={`Join Casual Game: ${casualGameBeingJoined.name}`}
             startButtonText="Join"
             format={casualGameBeingJoined.format}
+            options={casualGameBeingJoined.options}
             availableDecks={availableDecks}
             cards={cards}
             history={history}
@@ -138,7 +139,7 @@ export default class MultiplayerLobby extends React.Component {
 
           <MultiplayerModeSelection
             disabled={this.isWaiting}
-            isGuest={!user} 
+            isGuest={!user}
             onSelectMode={this.handleSelectMode} />
 
           <GameBrowser

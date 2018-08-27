@@ -2,6 +2,7 @@ import * as React from 'react';
 import { func, object, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
+import FontIcon from 'material-ui/FontIcon';
 
 import { guestUID } from '../../../util/multiplayer.ts';
 import { GameFormat } from '../../../store/gameFormats.ts';
@@ -35,8 +36,9 @@ export default class GameRow extends React.Component {
   }
 
   handleJoinGame = () => {
-    const { game: { id, name, format }, onJoinGame } = this.props;
-    onJoinGame(id, name, GameFormat.fromString(format));
+    const { game: { id, name, format, options }, onJoinGame } = this.props;
+
+    onJoinGame(id, name, GameFormat.fromString(format), options);
   };
 
   handleSpectateGame = () => {
@@ -62,8 +64,18 @@ export default class GameRow extends React.Component {
           variant="raised"
           color="secondary"
           onTouchTap={this.handleJoinGame}
+          title={game.options.passwordToJoin ? 'This game requires a password to join.' : ''}
         >
           Join Game
+          {game.options.passwordToJoin &&
+            <FontIcon
+              className="material-icons"
+              color="white"
+              style={{ marginLeft: 5 }}
+            >
+              vpn_key
+            </FontIcon>
+          }
         </Button> :
         <Button
           variant="raised"

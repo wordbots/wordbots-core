@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { arrayOf, element, func, object, oneOfType, string } from 'prop-types';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 import { unpackDeck } from '../../util/cards.ts';
 import { FORMATS } from '../../store/gameFormats.ts';
@@ -14,6 +15,7 @@ export default class PreGameModal extends React.Component {
     availableDecks: arrayOf(object).isRequired,
     cards: arrayOf(object).isRequired,
     format: object,
+    options: object,
     mode: string.isRequired,
     startButtonText: string,
     title: string,
@@ -26,12 +28,15 @@ export default class PreGameModal extends React.Component {
   };
 
   static defaultProps = {
+    options: {},
     startButtonText: 'Start Game'
   }
 
   state = {
     selectedDeckIdx: 0,
-    selectedFormatIdx: 0
+    selectedFormatIdx: 0,
+    enteredPassword: '',
+    isPasswordInvalid: false
   };
 
   get format() {
@@ -89,14 +94,29 @@ export default class PreGameModal extends React.Component {
     this.setState({ selectedDeckIdx });
   }
 
+  handleSetPassword = (e) => {
+    this.setState({
+      enteredPassword: e.target.value,
+      isPasswordInvalid: false
+    });
+  }
+
   handleStartGame = () => {
-    this.props.onStartGame(this.format.name, this.deckForGame);
+    const { options, onStartGame } = this.props;
+    const { enteredPassword } = this.state;
+
+    if (options.passwordToJoin && enteredPassword !== options.passwordToJoin) {
+      this.setState({ isPasswordInvalid: true });
+      return;
+    }
+
+    onStartGame(this.format.name, this.deckForGame);
     this.close();
   };
 
   render() {
-    const { cards, children, format, history, mode, title } = this.props;
-    const { selectedDeckIdx, selectedFormatIdx } = this.state;
+    const { cards, children, format, options, history, mode, title } = this.props;
+    const { enteredPassword, isPasswordInvalid, selectedDeckIdx, selectedFormatIdx } = this.state;
 
     return (
       <RouterDialog
@@ -114,6 +134,18 @@ export default class PreGameModal extends React.Component {
           selectedFormatIdx={selectedFormatIdx}
           onChooseFormat={this.handleChooseFormat}
         />}
+        {options.passwordToJoin && <TextField
+          key="passwordToJoin"
+          error={!enteredPassword || isPasswordInvalid}
+          helperText={
+            enteredPassword === ''
+              ? 'This game requires a password to join!'
+              : (isPasswordInvalid ? 'Invalid password!' : '')
+          }
+          style={{ width: '100%', marginBottom: 10 }}
+          value={enteredPassword}
+          label="Game password"
+          onChange={this.handleSetPassword} />}
         <DeckPicker
           cards={cards}
           availableDecks={this.validDecks}

@@ -35,7 +35,8 @@ export default class PreGameModal extends React.Component {
   state = {
     selectedDeckIdx: 0,
     selectedFormatIdx: 0,
-    enteredPassword: ''
+    enteredPassword: '',
+    isPasswordInvalid: false
   };
 
   get format() {
@@ -94,7 +95,10 @@ export default class PreGameModal extends React.Component {
   }
 
   handleSetPassword = (e) => {
-    this.setState({ enteredPassword: e.target.value });
+    this.setState({
+      enteredPassword: e.target.value,
+      isPasswordInvalid: false
+    });
   }
 
   handleStartGame = () => {
@@ -102,7 +106,7 @@ export default class PreGameModal extends React.Component {
     const { enteredPassword } = this.state;
 
     if (options.passwordToJoin && enteredPassword !== options.passwordToJoin) {
-      alert('Incorrect password!');
+      this.setState({ isPasswordInvalid: true });
       return;
     }
 
@@ -112,7 +116,7 @@ export default class PreGameModal extends React.Component {
 
   render() {
     const { cards, children, format, options, history, mode, title } = this.props;
-    const { enteredPassword, selectedDeckIdx, selectedFormatIdx } = this.state;
+    const { enteredPassword, isPasswordInvalid, selectedDeckIdx, selectedFormatIdx } = this.state;
 
     return (
       <RouterDialog
@@ -132,8 +136,12 @@ export default class PreGameModal extends React.Component {
         />}
         {options.passwordToJoin && <TextField
           key="passwordToJoin"
-          error={enteredPassword === ''}
-          helperText={enteredPassword === '' ? 'This game requires a password to join!' : ''}
+          error={!enteredPassword || isPasswordInvalid}
+          helperText={
+            enteredPassword === ''
+              ? 'This game requires a password to join!'
+              : (isPasswordInvalid ? 'Invalid password!' : '')
+          }
           style={{ width: '100%', marginBottom: 10 }}
           value={enteredPassword}
           label="Game password"

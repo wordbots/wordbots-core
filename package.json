@@ -28,7 +28,7 @@
   "dependencies": {
     "@material-ui/core": "^1.0.0-rc.1",
     "awesome-typescript-loader": "^5.0.0",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^8.0.0",
     "better-react-spinkit": "^2.0.4",
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.5.0",

@@ -26,7 +26,7 @@
     "url": "git+https://github.com/wordbots/wordbots-core.git"
   },
   "dependencies": {
-    "@material-ui/core": "^1.0.0-rc.1",
+    "@material-ui/core": "^3.0.0",
     "awesome-typescript-loader": "^5.0.0",
     "babel-loader": "^8.0.1",
     "better-react-spinkit": "^2.0.4",

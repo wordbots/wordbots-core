@@ -1,6 +1,7 @@
 import { WebSocket as MockSocket } from 'mock-socket';
 import { noop } from 'lodash';
 
+import * as w from '../../src/common/types';
 import { unpackDeck } from '../../src/common/util/cards';
 import defaultCollectionState from '../../src/common/store/defaultCollectionState';
 import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
@@ -16,12 +17,17 @@ const initialState: m.SerializedServerState = {
   userData: {},
   queueSize: 0
 };
-const defaultDeck: m.Deck = unpackDeck(defaultCollectionState.decks[0], defaultCollectionState.cards);
+const defaultDecks: m.Deck[] = defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards));
 
 function expectState(fn: (state: MSS) => void, expectedSerializedState: m.SerializedServerState): void {
   const state = new MultiplayerServerState();
   fn(state);
   expect(state.serialize()).toEqual(expectedSerializedState);
+}
+function expectStateFn(fn: (state: MSS) => void, expectedSerializedStateFn: (state: MSS) => m.SerializedServerState): void {
+  const state = new MultiplayerServerState();
+  fn(state);
+  expect(state.serialize()).toEqual(expectedSerializedStateFn(state));
 }
 
 describe('MultiplayerServerState', () => {
@@ -76,14 +82,14 @@ describe('MultiplayerServerState', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
-        state.hostGame('host', 'My Game', 'normal', defaultDeck);
+        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
         playersOnline: ['host'],
         userData: { host: {uid: 'hostId', displayName: 'hostName'} },
         waitingPlayers: [
           {
-            deck: defaultDeck,
+            deck: defaultDecks[0],
             format: 'normal',
             id: 'host',
             name: 'My Game',
@@ -97,7 +103,7 @@ describe('MultiplayerServerState', () => {
     it('should NOT be able to host a game as a guest', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
-        state.hostGame('host', 'My Game', 'normal', defaultDeck);
+        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
         playersOnline: ['host']
@@ -122,7 +128,7 @@ describe('MultiplayerServerState', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
-        state.hostGame('host', 'My Game', 'normal', defaultDeck);
+        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.cancelHostingGame('host');
       }, {
         ...initialState,
@@ -130,9 +136,55 @@ describe('MultiplayerServerState', () => {
         userData: { host: {uid: 'hostId', displayName: 'hostName'} }
       });
     });
+
+    it('should be able to join a hosted game (even as a guest)', () => {
+      expectStateFn((state: MSS) => {
+        state.connectClient('host', dummyWebSocket);
+        state.connectClient('guest', dummyWebSocket);
+        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        state.joinGame('guest', 'host', defaultDecks[1]);
+      }, (state: MSS) => ({
+        ...initialState,
+        games: [
+          state.lookupGameByClient('guest') as m.Game
+        ],
+        playersOnline: ['host', 'guest'],
+        userData: { host: {uid: 'hostId', displayName: 'hostName'} }
+      }));
+    });
+
+    it('should NOT be able to join a game with an invalid deck', () => {
+      expectState((state: MSS) => {
+        state.connectClient('host', dummyWebSocket);
+        state.connectClient('guest', dummyWebSocket);
+        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        state.joinGame('guest', 'host', {id: '', name: '', cardIds: [], cards: []});
+      }, {
+        ...initialState,
+        playersOnline: ['host', 'guest'],
+        userData: { host: {uid: 'hostId', displayName: 'hostName'} },
+        waitingPlayers: [
+          {
+            deck: defaultDecks[0],
+            format: 'normal',
+            id: 'host',
+            name: 'My Game',
+            options: {},
+            players: ['host']
+          }
+        ]
+      });
+      expect(warning).toEqual('Guest_guest was unable to join hostName\'s game.');
+    });
   });
 
   /*describe('[Queuing]', () => {
+
+  });*/
+
+  /*describe('[Gameplay and game end]', () => {
 
   });*/
 });

@@ -203,7 +203,7 @@ export default class MultiplayerServerState {
       console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
       return game;
     } else {
-      console.warn(`${this.getClientUsername(clientID)} was unable to join ${this.getClientUsername(opponentID)}'s game'.`);
+      console.warn(`${this.getClientUsername(clientID)} was unable to join ${this.getClientUsername(opponentID)}'s game.`);
     }
   }
 

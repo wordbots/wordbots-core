@@ -147,7 +147,10 @@ describe('MultiplayerServerState', () => {
       }, (state: MSS) => ({
         ...initialState,
         games: [
-          state.lookupGameByClient('guest') as m.Game
+          {
+            ...state.lookupGameByClient('guest') as m.Game,
+            players: ['guest', 'host']
+          }
         ],
         playersOnline: ['host', 'guest'],
         userData: { host: {uid: 'hostId', displayName: 'hostName'} }
@@ -178,13 +181,42 @@ describe('MultiplayerServerState', () => {
       });
       expect(warning).toEqual('Guest_guest was unable to join hostName\'s game.');
     });
+
+    it('should be able to join an active game as a spectator', () => {
+      expectStateFn((state: MSS) => {
+        state.connectClient('host', dummyWebSocket);
+        state.connectClient('guest', dummyWebSocket);
+        state.connectClient('spectator', dummyWebSocket);
+        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        state.joinGame('guest', 'host', defaultDecks[1]);
+        state.spectateGame('spectator', (state.lookupGameByClient('guest') as m.Game).id);
+      }, (state: MSS) => ({
+        ...initialState,
+        games: [
+          {
+            ...state.lookupGameByClient('guest') as m.Game,
+            spectators: ['spectator']
+          }
+        ],
+        playersOnline: ['host', 'guest', 'spectator'],
+        userData: { host: {uid: 'hostId', displayName: 'hostName'} }
+      }));
+    });
   });
 
-  /*describe('[Queuing]', () => {
+  describe('[Queuing]', () => {
+    xit('should be able to join the unranked queue', noop);
+    xit('should NOT be able to join the unranked queue as a guest', noop);
+    xit('should NOT be able to join the unranked queue with an invalid deck', noop);
+    xit('should be able to leave the unranked queue', noop);
+    xit('should be matched as soon as there is more than one player in the unranked queue for a given format', noop);  // TODO this behavior will change once there is "real" matchmaking
+    xit('should NOT be matched against a player in a different format', noop);
+  });
 
-  });*/
-
-  /*describe('[Gameplay and game end]', () => {
-
-  });*/
+  describe('[Gameplay and game end]', () => {
+    xit('should store game actions', noop);
+    xit('should handle the end of the game', noop);
+    xit('should be able to leave the game', noop);
+  });
 });

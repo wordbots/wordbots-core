@@ -51,6 +51,12 @@ export default class MultiplayerServerState {
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
+  // Returns true iff the client is logged-in, that is, not a guest,
+  // that is, has user data.
+  public isClientLoggedIn = (clientID: m.ClientID): boolean => (
+    Object.keys(this.state.userData).includes(clientID)
+  )
+
   // Returns the user data for the given player.
   // If the player is a guest, returns something reasonable.
   public getClientUserData = (clientID: m.ClientID): m.UserData => (
@@ -133,7 +139,11 @@ export default class MultiplayerServerState {
   public hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions = {}): void => {
     const username = this.getClientUsername(clientID);
 
-    if (GameFormat.fromString(format).isDeckValid(deck)) {
+    if (!this.isClientLoggedIn(clientID)) {
+      console.warn(`${username} tried to start game ${name} but they weren't logged in.`);
+    } else if (!GameFormat.fromString(format).isDeckValid(deck)) {
+      console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
+    } else {
       this.state.waitingPlayers.push({
         id: clientID,
         players: [clientID],
@@ -143,8 +153,6 @@ export default class MultiplayerServerState {
         options
       });
       console.log(`${username} started game ${name}.`);
-    } else {
-      console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
     }
   }
 

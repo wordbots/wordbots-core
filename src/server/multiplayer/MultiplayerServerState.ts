@@ -246,7 +246,9 @@ export default class MultiplayerServerState {
 
   // Add a player to the matchmaking queue.
   public joinQueue = (clientID: m.ClientID, format: m.Format, deck: m.Deck): void => {
-    this.state.matchmakingQueue.push({ clientID, format, deck });
+    if (this.isClientLoggedIn(clientID) && GameFormat.fromString(format).isDeckValid(deck)) {
+      this.state.matchmakingQueue.push({ clientID, format, deck });
+    }
   }
 
   // Remove a player from the matchmaking queue.
@@ -278,7 +280,6 @@ export default class MultiplayerServerState {
 
       if (game) {
         this.state.matchmakingQueue = reject(matchmakingQueue, (p) => [playerId1, playerId2].includes(p.clientID));
-        this.state.games.push(game);
         return game;
       }
     }));

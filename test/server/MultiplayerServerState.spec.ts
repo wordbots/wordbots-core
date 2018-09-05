@@ -18,6 +18,7 @@ const initialState: m.SerializedServerState = {
   queueSize: 0
 };
 const defaultDecks: m.Deck[] = defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards));
+const emptyDeck: m.Deck = {id: '', name: '', cardIds: [], cards: []};
 
 function expectState(fn: (state: MSS) => void, expectedSerializedState: m.SerializedServerState): void {
   const state = new MultiplayerServerState();
@@ -115,7 +116,7 @@ describe('MultiplayerServerState', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
-        state.hostGame('host', 'My Game', 'normal', {id: '', name: '', cardIds: [], cards: []});
+        state.hostGame('host', 'My Game', 'normal', emptyDeck);
       }, {
         ...initialState,
         playersOnline: ['host'],
@@ -163,7 +164,7 @@ describe('MultiplayerServerState', () => {
         state.connectClient('guest', dummyWebSocket);
         state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
-        state.joinGame('guest', 'host', {id: '', name: '', cardIds: [], cards: []});
+        state.joinGame('guest', 'host', emptyDeck);
       }, {
         ...initialState,
         playersOnline: ['host', 'guest'],
@@ -206,12 +207,99 @@ describe('MultiplayerServerState', () => {
   });
 
   describe('[Queuing]', () => {
-    xit('should be able to join the unranked queue', noop);
-    xit('should NOT be able to join the unranked queue as a guest', noop);
-    xit('should NOT be able to join the unranked queue with an invalid deck', noop);
-    xit('should be able to leave the unranked queue', noop);
-    xit('should be matched as soon as there is more than one player in the unranked queue for a given format', noop);  // TODO this behavior will change once there is "real" matchmaking
-    xit('should NOT be matched against a player in a different format', noop);
+    it('should be able to join the unranked queue', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player', dummyWebSocket);
+        state.setClientUserData('player', {uid: 'playerId', displayName: 'playerName'});
+        state.joinQueue('player', 'normal', defaultDecks[0]);
+      }, {
+        ...initialState,
+        playersOnline: ['player'],
+        queueSize: 1,
+        userData: { player: {uid: 'playerId', displayName: 'playerName'} }
+      });
+    });
+
+    it('should NOT be able to join the unranked queue as a guest', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player', dummyWebSocket);
+        state.joinQueue('player', 'normal', defaultDecks[0]);
+      }, {
+        ...initialState,
+        playersOnline: ['player']
+      });
+    });
+
+    it('should NOT be able to join the unranked queue with an invalid deck', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player', dummyWebSocket);
+        state.joinQueue('player', 'normal', emptyDeck);
+      }, {
+        ...initialState,
+        playersOnline: ['player']
+      });
+    });
+
+    it('should be able to leave the unranked queue', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player', dummyWebSocket);
+        state.setClientUserData('player', {uid: 'playerId', displayName: 'playerName'});
+        state.joinQueue('player', 'normal', defaultDecks[0]);
+        state.leaveQueue('player');
+      }, {
+        ...initialState,
+        playersOnline: ['player'],
+        queueSize: 0,
+        userData: { player: {uid: 'playerId', displayName: 'playerName'} }
+      });
+    });
+
+    it('should be matched as soon as there is more than one player in the unranked queue for a given format', () => {
+      // TODO this behavior will change once there is "real" matchmaking.
+      expectStateFn((state: MSS) => {
+        state.connectClient('player1', dummyWebSocket);
+        state.setClientUserData('player1', {uid: 'playerId1', displayName: 'playerName1'});
+        state.joinQueue('player1', 'normal', defaultDecks[0]);
+        state.connectClient('player2', dummyWebSocket);
+        state.setClientUserData('player2', {uid: 'playerId2', displayName: 'playerName2'});
+        state.joinQueue('player2', 'normal', defaultDecks[1]);
+        state.matchPlayersIfPossible();
+      }, (state: MSS) => ({
+        ...initialState,
+        games: [
+          {
+            ...state.lookupGameByClient('player1') as m.Game,
+            players: ['player2', 'player1']
+          }
+        ],
+        playersOnline: ['player1', 'player2'],
+        queueSize: 0,
+        userData: {
+          player1: {uid: 'playerId1', displayName: 'playerName1'},
+          player2: {uid: 'playerId2', displayName: 'playerName2'}
+        }
+      }));
+    });
+
+    it('should NOT be matched against a player in a different format', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player1', dummyWebSocket);
+        state.setClientUserData('player1', {uid: 'playerId1', displayName: 'playerName1'});
+        state.joinQueue('player1', 'normal', defaultDecks[0]);
+        state.connectClient('player2', dummyWebSocket);
+        state.setClientUserData('player2', {uid: 'playerId2', displayName: 'playerName2'});
+        state.joinQueue('player2', 'sharedDeck', defaultDecks[1]);
+        state.matchPlayersIfPossible();
+      }, {
+        ...initialState,
+        playersOnline: ['player1', 'player2'],
+        queueSize: 2,
+        userData: {
+          player1: {uid: 'playerId1', displayName: 'playerName1'},
+          player2: {uid: 'playerId2', displayName: 'playerName2'}
+        }
+      });
+    });
   });
 
   describe('[Gameplay and game end]', () => {

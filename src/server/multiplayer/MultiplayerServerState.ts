@@ -165,11 +165,17 @@ export default class MultiplayerServerState {
   // Returns the game joined (if any).
   public joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game | undefined => {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
-    const gameId = generateID();
+    const format = waitingPlayer ? GameFormat.fromString(waitingPlayer.format) : undefined;
 
-    if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
+    if (waitingPlayer && format!.isDeckValid(deck)) {
+      const decks = {orange: waitingPlayer.deck.cards, blue: deck.cards};
+      const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
+      const seed = generateID();
+
+      const initialGameState: m.GameState = format!.startGame(defaultGameState, 'orange', usernames, decks, waitingPlayer.options, seed);
+
       const game: m.Game = {
-        id: gameId,
+        id: generateID(),
         name: waitingPlayer.name,
         format: waitingPlayer.format,
 
@@ -178,21 +184,18 @@ export default class MultiplayerServerState {
         spectators: [],
 
         type: 'CASUAL',
-        decks: {orange: waitingPlayer.deck.cards, blue: deck.cards},
-        usernames: {
-          orange: this.getClientUsername(opponentID),
-          blue: this.getClientUsername(clientID)
-        },
+        decks,
+        usernames,
         ids : {
           blue: clientID,
           orange: opponentID
         },
-        startingSeed: generateID(),
+        startingSeed: seed,
         winner: null,
         options: waitingPlayer.options,
 
         actions: [],
-        state: defaultGameState,
+        state: initialGameState,
 
         ...gameProps
       };

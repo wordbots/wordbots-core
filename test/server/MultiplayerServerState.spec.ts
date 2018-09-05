@@ -1,9 +1,9 @@
 import { WebSocket as MockSocket } from 'mock-socket';
 import { noop } from 'lodash';
 
+import { defaultDecks, emptyDeck, kernelKillerDeck } from '../data/decks';
 import * as w from '../../src/common/types';
-import { unpackDeck } from '../../src/common/util/cards';
-import defaultCollectionState from '../../src/common/store/defaultCollectionState';
+import * as gameActions from '../../src/common/actions/game';
 import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
 import * as m from '../../src/server/multiplayer/multiplayer';
 
@@ -17,8 +17,6 @@ const initialState: m.SerializedServerState = {
   userData: {},
   queueSize: 0
 };
-const defaultDecks: m.Deck[] = defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards));
-const emptyDeck: m.Deck = {id: '', name: '', cardIds: [], cards: []};
 
 function expectState(fn: (state: MSS) => void, expectedSerializedState: m.SerializedServerState): void {
   const state = new MultiplayerServerState();
@@ -196,7 +194,7 @@ describe('MultiplayerServerState', () => {
         ...initialState,
         games: [
           {
-            ...state.lookupGameByClient('guest') as m.Game,
+            ...state.lookupGameByClient('guest')!,
             spectators: ['spectator']
           }
         ],
@@ -303,8 +301,73 @@ describe('MultiplayerServerState', () => {
   });
 
   describe('[Gameplay and game end]', () => {
-    xit('should store game actions', noop);
-    xit('should handle the end of the game', noop);
-    xit('should be able to leave the game', noop);
+    it('should store game actions and maintain a copy of game state', () => {
+      const state = new MultiplayerServerState();
+      state.connectClient('player1', dummyWebSocket);
+      state.connectClient('player2', dummyWebSocket);
+      state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+      state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
+      state.joinGame('player2', 'player1', defaultDecks[1]);
+
+      let game: m.Game = state.lookupGameByClient('player1')!;
+      expect(game.actions).toEqual([]);
+      expect([game.state.players.orange.hand.length, game.state.players.blue.hand.length]).toEqual([2, 2]);
+
+      state.appendGameAction('player1', gameActions.passTurn('orange'));
+      state.appendGameAction('player2', gameActions.passTurn('blue'));
+
+      game = state.lookupGameByClient('player1')!;
+      expect(game.actions).toEqual([
+        {type: gameActions.PASS_TURN, payload: {player: 'orange'}},
+        {type: gameActions.PASS_TURN, payload: {player: 'blue'}}
+      ]);
+      expect([game.state.players.orange.hand.length, game.state.players.blue.hand.length]).toEqual([3, 3]);
+    });
+
+    it('should detect endgame conditions', () => {
+      const state = new MultiplayerServerState();
+      const storeGameResultFn: jest.Mock = jest.fn();
+      state.storeGameResult = storeGameResultFn;
+
+      state.connectClient('player1', dummyWebSocket);
+      state.connectClient('player2', dummyWebSocket);
+      state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+      state.hostGame('player1', 'My Game', 'normal', kernelKillerDeck);
+      state.joinGame('player2', 'player1', defaultDecks[1]);
+      state.appendGameAction('player1', gameActions.placeCard('3,-1,-2', 0));
+      expect(storeGameResultFn.mock.calls.length).toBe(0);
+      state.appendGameAction('player1', gameActions.passTurn('orange')); // Orange wins on this turn.
+      expect(storeGameResultFn.mock.calls.length).toBe(1);
+    });
+
+    it('should end the game if a player leaves the game', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player1', dummyWebSocket);
+        state.connectClient('player2', dummyWebSocket);
+        state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+        state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
+        state.joinGame('player2', 'player1', defaultDecks[1]);
+        state.leaveGame('player2');
+      }, {
+        ...initialState,
+        playersOnline: ['player1', 'player2'],
+        userData: { player1: {uid: 'hostId', displayName: 'hostName'} }
+      });
+    });
+
+    it('should end the game if a player disconnects', () => {
+      expectState((state: MSS) => {
+        state.connectClient('player1', dummyWebSocket);
+        state.connectClient('player2', dummyWebSocket);
+        state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+        state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
+        state.joinGame('player2', 'player1', defaultDecks[1]);
+        state.disconnectClient('player2');
+      }, {
+        ...initialState,
+        playersOnline: ['player1'],
+        userData: { player1: {uid: 'hostId', displayName: 'hostName'} }
+      });
+    });
   });
 });

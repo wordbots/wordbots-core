@@ -88,6 +88,7 @@ export const healthAuraCard = {
 };
 
 export const instantKernelKillerAbilityCard = {
+  id: 'kernelKiller',
   name: 'Remove Enemy Kernel',
   text: 'At the end of the turn, deal 21 damage to your opponent\'s kernel.',
   cost: 1,

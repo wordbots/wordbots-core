@@ -51,6 +51,12 @@ export default class MultiplayerServerState {
     clientIDs ? clientIDs.map(this.getClientSocket) : Object.values(this.state.connections)
   )
 
+  // Returns true iff the client is logged-in, that is, not a guest,
+  // that is, has user data.
+  public isClientLoggedIn = (clientID: m.ClientID): boolean => (
+    Object.keys(this.state.userData).includes(clientID)
+  )
+
   // Returns the user data for the given player.
   // If the player is a guest, returns something reasonable.
   public getClientUserData = (clientID: m.ClientID): m.UserData => (
@@ -133,7 +139,11 @@ export default class MultiplayerServerState {
   public hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions = {}): void => {
     const username = this.getClientUsername(clientID);
 
-    if (GameFormat.fromString(format).isDeckValid(deck)) {
+    if (!this.isClientLoggedIn(clientID)) {
+      console.warn(`${username} tried to start game ${name} but they weren't logged in.`);
+    } else if (!GameFormat.fromString(format).isDeckValid(deck)) {
+      console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
+    } else {
       this.state.waitingPlayers.push({
         id: clientID,
         players: [clientID],
@@ -143,8 +153,6 @@ export default class MultiplayerServerState {
         options
       });
       console.log(`${username} started game ${name}.`);
-    } else {
-      console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
     }
   }
 
@@ -157,11 +165,17 @@ export default class MultiplayerServerState {
   // Returns the game joined (if any).
   public joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game | undefined => {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
-    const gameId = generateID();
+    const format = waitingPlayer ? GameFormat.fromString(waitingPlayer.format) : undefined;
 
-    if (waitingPlayer && GameFormat.fromString(waitingPlayer.format).isDeckValid(deck)) {
+    if (waitingPlayer && format!.isDeckValid(deck)) {
+      const decks = {orange: waitingPlayer.deck.cards, blue: deck.cards};
+      const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
+      const seed = generateID();
+
+      const initialGameState: m.GameState = format!.startGame(defaultGameState, 'orange', usernames, decks, waitingPlayer.options, seed);
+
       const game: m.Game = {
-        id: gameId,
+        id: generateID(),
         name: waitingPlayer.name,
         format: waitingPlayer.format,
 
@@ -170,21 +184,18 @@ export default class MultiplayerServerState {
         spectators: [],
 
         type: 'CASUAL',
-        decks: {orange: waitingPlayer.deck.cards, blue: deck.cards},
-        usernames: {
-          orange: this.getClientUsername(opponentID),
-          blue: this.getClientUsername(clientID)
-        },
+        decks,
+        usernames,
         ids : {
           blue: clientID,
           orange: opponentID
         },
-        startingSeed: generateID(),
+        startingSeed: seed,
         winner: null,
         options: waitingPlayer.options,
 
         actions: [],
-        state: defaultGameState,
+        state: initialGameState,
 
         ...gameProps
       };
@@ -195,7 +206,7 @@ export default class MultiplayerServerState {
       console.log(`${this.getClientUsername(clientID)} joined game ${game.name} against ${this.getClientUsername(opponentID)}.`);
       return game;
     } else {
-      console.warn(`${this.getClientUsername(clientID)} was unable to join ${this.getClientUsername(opponentID)}'s game'.`);
+      console.warn(`${this.getClientUsername(clientID)} was unable to join ${this.getClientUsername(opponentID)}'s game.`);
     }
   }
 
@@ -238,7 +249,9 @@ export default class MultiplayerServerState {
 
   // Add a player to the matchmaking queue.
   public joinQueue = (clientID: m.ClientID, format: m.Format, deck: m.Deck): void => {
-    this.state.matchmakingQueue.push({ clientID, format, deck });
+    if (this.isClientLoggedIn(clientID) && GameFormat.fromString(format).isDeckValid(deck)) {
+      this.state.matchmakingQueue.push({ clientID, format, deck });
+    }
   }
 
   // Remove a player from the matchmaking queue.
@@ -270,7 +283,6 @@ export default class MultiplayerServerState {
 
       if (game) {
         this.state.matchmakingQueue = reject(matchmakingQueue, (p) => [playerId1, playerId2].includes(p.clientID));
-        this.state.games.push(game);
         return game;
       }
     }));

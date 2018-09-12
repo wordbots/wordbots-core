@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { noop, truncate } from 'lodash';
+import { invert, noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
@@ -89,6 +89,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       // Broadcast in-game actions if the client is a player in a game.
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
+
+      const game: m.Game = state.lookupGameByClient(clientID)!;
+      const players = invert(game.playerColors);
+      sendMessage('ws:REVEAL_CARDS', { blue: {hand: game.state.players.blue.hand }}, [players.blue]);
+      sendMessage('ws:REVEAL_CARDS', { orange: {hand: game.state.players.orange.hand }}, [players.orange]);
     }
   }
 

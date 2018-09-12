@@ -51,7 +51,7 @@ export interface DeckInStore {
   cardIds: string[]
 }
 
-export type Card = CardInGame | CardInStore;
+export type Card = CardInGame | CardInStore | EncryptedCardInDeck;
 
 export interface CardInGame extends CardInStore {
   baseCost: number
@@ -82,6 +82,10 @@ export interface CardInStore {
   spriteV?: number
   parserV?: number
   timestamp?: number
+}
+
+export interface EncryptedCardInDeck {
+  id: string
 }
 
 export interface Dictionary {
@@ -161,6 +165,7 @@ export interface GameOptions {
 
 export interface PlayerInGameState {
   name: PlayerColor
+  deck: Card[],
   robotsOnBoard: {
     [hexId: string]: _Object
   }

@@ -3,6 +3,7 @@ import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
+import { instantiateCard } from '../../common/util/cards';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
@@ -10,7 +11,7 @@ import { GameFormat } from '../../common/store/gameFormats';
 import gameReducer from '../../common/reducers/game';
 
 import * as m from './multiplayer';
-import { getPeopleInGame, withoutClient } from './util';
+import { encryptCard, getPeopleInGame, withoutClient } from './util';
 
 /* tslint:disable:no-console */
 export default class MultiplayerServerState {
@@ -165,26 +166,31 @@ export default class MultiplayerServerState {
   // Returns the game joined (if any).
   public joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game | undefined => {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
-    const format = waitingPlayer ? GameFormat.fromString(waitingPlayer.format) : undefined;
+    const formatObj = waitingPlayer ? GameFormat.fromString(waitingPlayer.format) : undefined;
 
-    if (waitingPlayer && format!.isDeckValid(deck)) {
-      const decks = {orange: waitingPlayer.deck.cards, blue: deck.cards};
+    if (waitingPlayer && formatObj!.isDeckValid(deck)) {
+      const { name, format, options } = waitingPlayer;
+      const decks = { orange: waitingPlayer.deck.cards, blue: deck.cards };
+      const encryptedDecks = {
+        orange: decks.orange.map((card: m.CardInStore) => encryptCard(instantiateCard(card))),
+        blue: decks.blue.map((card: m.CardInStore) => encryptCard(instantiateCard(card)))
+      };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
       const seed = generateID();
 
-      const initialGameState: m.GameState = format!.startGame(defaultGameState, 'orange', usernames, decks, waitingPlayer.options, seed);
+      const initialGameState: m.GameState = formatObj!.startGame(defaultGameState, 'orange', usernames, decks, options, seed);
 
       const game: m.Game = {
         id: generateID(),
-        name: waitingPlayer.name,
-        format: waitingPlayer.format,
+        name,
+        format,
 
         players: [clientID, opponentID],
         playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
         spectators: [],
 
         type: 'CASUAL',
-        decks,
+        decks: encryptedDecks,
         usernames,
         ids : {
           blue: clientID,
@@ -192,7 +198,7 @@ export default class MultiplayerServerState {
         },
         startingSeed: seed,
         winner: null,
-        options: waitingPlayer.options,
+        options,
 
         actions: [],
         state: initialGameState,

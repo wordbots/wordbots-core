@@ -403,9 +403,7 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
         otherPlayer.deck.splice(0, 1);
       }
       player.discardPile = player.discardPile.concat([card]);
-      state = logAction(state, player, `had to discard |${card.name}| due to having a full hand of ${MAX_HAND_SIZE} cards`, {
-        [card.name]: card
-      });
+      state = logAction(state, player, `had to discard a card due to having a full hand of ${MAX_HAND_SIZE} cards`);
     }
   });
 

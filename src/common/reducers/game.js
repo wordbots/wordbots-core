@@ -104,6 +104,23 @@ export function handleAction(oldState, { type, payload }) {
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
       return reduce(payload.actions, game, state);
 
+    case socketActions.REVEAL_CARDS: {
+      const { blue, orange } = payload;
+      state.players = {
+        blue: {
+          ...state.players.blue,
+          hand: (blue && blue.hand) || state.players.blue.hand,
+          discardPile: (blue && blue.discardPile) || state.players.blue.discardPile
+        },
+        orange: {
+          ...state.players.orange,
+          hand: (orange && orange.hand) || state.players.orange.hand,
+          discardPile: (orange && orange.discardPile) || state.players.orange.discardPile
+        }
+      };
+      return state;
+    }
+
     case socketActions.FORFEIT: {
       state = Object.assign(state, {winner: payload.winner});
       state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');

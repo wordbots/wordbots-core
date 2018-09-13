@@ -89,11 +89,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       // Broadcast in-game actions if the client is a player in a game.
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
-
-      const game: m.Game = state.lookupGameByClient(clientID)!;
-      const players = invert(game.playerColors);
-      sendMessage('ws:REVEAL_CARDS', { blue: {hand: game.state.players.blue.hand }}, [players.blue]);
-      sendMessage('ws:REVEAL_CARDS', { orange: {hand: game.state.players.orange.hand }}, [players.orange]);
+      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!);
     }
   }
 
@@ -166,6 +162,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       sendMessage('ws:GAME_START', {player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
       sendMessage('ws:GAME_START', {player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
+      revealVisibleCardsInGame(game);
       sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
       broadcastInfo();
     }
@@ -193,6 +190,20 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       broadcastInfo();
     }
+  }
+
+  function revealVisibleCardsInGame(game: m.Game): void {
+    const { blue, orange } = game.state.players;
+    const { blue: bluePlayerId, orange: orangePlayerId } = invert(game.playerColors);
+
+    sendMessage('ws:REVEAL_CARDS', {
+      blue: {hand: blue.hand, discardPile: blue.discardPile},
+      orange: {discardPile: orange.discardPile}
+    }, [bluePlayerId]);
+    sendMessage('ws:REVEAL_CARDS', {
+      blue: {discardPile: blue.discardPile},
+      orange: {hand: orange.hand, discardPile: orange.discardPile}
+    }, [orangePlayerId]);
   }
 
   function leaveGame(clientID: m.ClientID): void {

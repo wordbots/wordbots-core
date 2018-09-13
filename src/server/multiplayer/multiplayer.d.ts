@@ -8,7 +8,7 @@ export type ActionType = w.ActionType;
 export type Card = w.Card;
 export type CardInGame = w.CardInGame;
 export type CardInStore = w.CardInStore;
-export type EncryptedCardInDeck = w.EncryptedCardInDeck;
+export type ObfuscatedCard = w.ObfuscatedCard;
 export type Deck = w.Deck;
 export type Format = w.Format;
 export type GameState = w.GameState;
@@ -33,7 +33,7 @@ export interface Game {
   spectators: ClientID[],
   actions: Action[],
   state: GameState,
-  decks: { blue: EncryptedCardInDeck[], orange: EncryptedCardInDeck[] },
+  decks: { blue: ObfuscatedCard[], orange: ObfuscatedCard[] },
   usernames: { blue: string, orange: string },
   startingSeed: string,
   winner: w.PlayerColor | null,

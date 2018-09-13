@@ -33,7 +33,6 @@
     "better-react-spinkit": "^2.0.4",
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.5.0",
-    "crypto-js": "^3.1.9-1",
     "css-loader": "^1.0.0",
     "express": "^4.16.1",
     "fast-json-patch": "^2.0.5",
@@ -94,7 +93,6 @@
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.1",
-    "@types/crypto-js": "^3.1.43",
     "@types/express": "^4.16.0",
     "@types/history": "^4.6.2",
     "@types/jest": "^23.1.0",

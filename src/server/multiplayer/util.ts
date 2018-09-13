@@ -1,12 +1,7 @@
 // Utility methods related to the multiplayer server go here.
-import { AES, enc } from 'crypto-js';
 import { without } from 'lodash';
 
-import { id as generateID } from '../../common/util/common';
-
 import * as m from './multiplayer';
-
-const CARD_ENCRYPTION_KEY = generateID();
 
 // Returns a copy of a game with the given client
 // removed from both the players and spectators lists (if present),
@@ -22,14 +17,4 @@ export function withoutClient(game: m.Game, clientID: m.ClientID): m.Game | null
 // Returns all people (players, spectators) connected to a game.
 export function getPeopleInGame(game: m.Game): m.ClientID[] {
   return [...game.players, ...game.spectators];
-}
-
-export function encryptCard(card: m.CardInGame): m.EncryptedCardInDeck {
-  return {
-    id: AES.encrypt(JSON.stringify(card), CARD_ENCRYPTION_KEY).toString()
-  };
-}
-
-export function decryptCard(card: m.EncryptedCardInDeck): m.CardInGame {
-  return JSON.parse(AES.decrypt(card.id, CARD_ENCRYPTION_KEY).toString(enc.Utf8));
 }

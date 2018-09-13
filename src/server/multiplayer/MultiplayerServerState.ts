@@ -3,7 +3,6 @@ import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
-import { instantiateCard } from '../../common/util/cards';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
@@ -11,7 +10,7 @@ import { GameFormat } from '../../common/store/gameFormats';
 import gameReducer from '../../common/reducers/game';
 
 import * as m from './multiplayer';
-import { encryptCard, getPeopleInGame, withoutClient } from './util';
+import { getPeopleInGame, withoutClient } from './util';
 
 /* tslint:disable:no-console */
 export default class MultiplayerServerState {
@@ -171,9 +170,9 @@ export default class MultiplayerServerState {
     if (waitingPlayer && formatObj!.isDeckValid(deck)) {
       const { name, format, options } = waitingPlayer;
       const decks = { orange: waitingPlayer.deck.cards, blue: deck.cards };
-      const encryptedDecks = {
-        orange: decks.orange.map((card: m.CardInStore) => encryptCard(instantiateCard(card))),
-        blue: decks.blue.map((card: m.CardInStore) => encryptCard(instantiateCard(card)))
+      const obfuscatedDecks = {
+        orange: decks.orange.map((_) => ({id: ''})),
+        blue: decks.blue.map((_) => ({id: ''}))
       };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
       const seed = generateID();
@@ -190,7 +189,7 @@ export default class MultiplayerServerState {
         spectators: [],
 
         type: 'CASUAL',
-        decks: encryptedDecks,
+        decks: obfuscatedDecks,
         usernames,
         ids : {
           blue: clientID,

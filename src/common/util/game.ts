@@ -120,7 +120,7 @@ function allowedToAttack(state: w.GameState, attacker: w.Robot, targetHex: Hex):
 }
 
 export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery: string | string[]): boolean {
-  const card: w.Card = ('card' in objectOrCard) ? objectOrCard.card : objectOrCard;
+  const card: w.CardInGame = ('card' in objectOrCard) ? objectOrCard.card : objectOrCard;
   const cardType = card.type;
   if (isArray(cardTypeQuery)) {
     return cardTypeQuery.map(stringToType).includes(cardType);

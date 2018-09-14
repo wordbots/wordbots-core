@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { isEmpty, noop, truncate } from 'lodash';
+import { noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
@@ -80,7 +80,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'ws:LEAVE') {
       leaveGame(clientID);
     } else if (type === 'ws:SEND_USER_DATA') {
-      setUserData(clientID, isEmpty(payload.userData) ? null : payload.userData);
+      setUserData(clientID, payload.userData);
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
@@ -93,11 +93,13 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onDisconnect(clientID: m.ClientID): void {
-    const game = state.disconnectClient(clientID);
-    sendChat(`${state.getClientUsername(clientID)} has left.`);
+    const game = state.lookupGameByClient(clientID);
     if (game) {
       sendMessageInGame(clientID, 'ws:FORFEIT', {winner: opponentOf(game.playerColors[clientID])});
     }
+
+    sendChat(`${state.getClientUsername(clientID)} has left.`);
+    state.disconnectClient(clientID);
   }
 
   function sendMessage(type: string, payload: object = {}, recipientIDs: m.ClientID[] | null = null): void {

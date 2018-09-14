@@ -3,6 +3,7 @@ import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
+import { opponent as opponentOf } from '../../common/util/game';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
@@ -101,20 +102,12 @@ export default class MultiplayerServerState {
   }
 
   // Disconnect a player from the server.
-  // Return the game that the player was in (if any).
-  public disconnectClient = (clientID: m.ClientID): m.Game | undefined => {
+  public disconnectClient = (clientID: m.ClientID): void => {
+    this.leaveGame(clientID);
     pull(this.state.playersOnline, clientID);
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: clientID });
-
-    const game = this.lookupGameByClient(clientID);
-    if (game) {
-      this.leaveGame(clientID);
-    }
-
     delete this.state.connections[clientID];
     console.log(`${this.getClientUsername(clientID)} left the game.`);
-
-    return game;
   }
 
   // Set a player's username.
@@ -223,7 +216,13 @@ export default class MultiplayerServerState {
 
   // Remove a player from any game that they are currently in.
   public leaveGame = (clientID: m.ClientID): void => {
-    this.state.games = compact(this.state.games.map((game) => withoutClient(game, clientID)));
+    const game = this.lookupGameByClient(clientID);
+    if (game) {
+      const forfeitAction = {type: 'ws:FORFEIT', payload: {winner: opponentOf(game.playerColors[clientID])}};
+      this.appendGameAction(clientID, forfeitAction);  // this will call state.endGame().
+    }
+
+    this.state.games = compact(this.state.games.map((g) => withoutClient(g, clientID)));
   }
 
   // Handle end-of-game actions.

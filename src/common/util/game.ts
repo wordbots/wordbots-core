@@ -68,8 +68,8 @@ export function getAttribute(object: w.Object, attr: w.Attribute): number | unde
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
     return (object.temporaryStatAdjustments[attr] as w.StatAdjustment[])
-      .reduce((val: number | undefined, adj: { func: (a: number) => number}) =>
-        clamp(adj.func)(val), object.stats[attr]
+      .reduce((val: number | undefined, adj: { func: string }) =>
+        clamp(eval(adj.func) as (x: number) => number)(val), object.stats[attr]  // tslint:disable-line:no-eval
       );
   } else {
     return (object.stats[attr] === undefined) ? undefined : object.stats[attr];
@@ -79,8 +79,8 @@ export function getAttribute(object: w.Object, attr: w.Attribute): number | unde
 export function getCost(card: w.CardInGame): number {
   if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
     // Apply all temporary adjustments, one at a time, in order.
-    return card.temporaryStatAdjustments.cost.reduce((val: number, adj: { func: (a: number) => number}) =>
-      clamp(adj.func)(val), card.cost
+    return card.temporaryStatAdjustments.cost.reduce((val: number, adj: { func: string }) =>
+      clamp(eval(adj.func) as (x: number) => number)(val), card.cost  // tslint:disable-line:no-eval
     );
   } else {
     return card.cost;

@@ -171,8 +171,8 @@ export default class MultiplayerServerState {
       const { name, format, options } = waitingPlayer;
       const decks = { orange: waitingPlayer.deck.cards, blue: deck.cards };
       const obfuscatedDecks = {
-        orange: decks.orange.map((_) => ({id: generateID()})),
-        blue: decks.blue.map((_) => ({id: generateID()}))
+        orange: decks.orange.map((_) => ({id: 'obfuscated'})),
+        blue: decks.blue.map((_) => ({id: 'obfuscated'}))
       };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
       const seed = generateID();

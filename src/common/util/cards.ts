@@ -46,6 +46,18 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
   });
 }
 
+export function mergeCards(
+  playerState: w.PlayerInGameState,
+  newCards: {deck?: w.Card[], hand?: w.Card[], discardPile?: w.Card[]} = {}
+): w.PlayerInGameState {
+  return {
+    ...playerState,
+    deck: newCards.deck || playerState.deck,
+    hand: newCards.hand || playerState.hand,
+    discardPile: newCards.discardPile || playerState.discardPile
+  };
+}
+
 //
 // 2. Helper functions for card-related components.
 //

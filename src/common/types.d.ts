@@ -217,7 +217,7 @@ export interface Robot extends _Object {
 }
 
 export interface StatAdjustment {
-  func: (attr: number) => number
+  func: string
 }
 
 export interface Effect {

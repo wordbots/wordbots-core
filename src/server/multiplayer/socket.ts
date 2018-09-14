@@ -87,6 +87,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       (inGame.length ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
+      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, {type, payload}, clientID);
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!);
@@ -192,18 +193,41 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
-  function revealVisibleCardsInGame(game: m.Game): void {
-    const { blue, orange } = game.state.players;
-    const { blue: bluePlayerId, orange: orangePlayerId } = invert(game.playerColors);
+  function revealVisibleCardsInGame(game: m.Game, action?: m.Action, clientID?: m.ClientID): void {
+    const players = game.state.players;
+    const playerIDs = invert(game.playerColors);
+    const cardPlayedIdx: { blue?: number, orange?: number } = {};
 
-    sendMessage('ws:REVEAL_CARDS', {
-      blue: {hand: blue.hand, discardPile: blue.discardPile},
-      orange: {discardPile: orange.discardPile}
-    }, [bluePlayerId]);
-    sendMessage('ws:REVEAL_CARDS', {
-      blue: {discardPile: blue.discardPile},
-      orange: {hand: orange.hand, discardPile: orange.discardPile}
-    }, [orangePlayerId]);
+    if (action && clientID) {
+      const { type, payload } = action;
+      if (type === 'PLACE_CARD') {
+        cardPlayedIdx[game.playerColors[clientID]] = payload.cardIdx;
+      } else if (type === 'SET_SELECTED_CARD') {
+        cardPlayedIdx[payload.player as m.PlayerColor] = payload.selectedCard;
+      }
+    }
+
+    // Reveal cards to each player if:
+    //   (1) the card is in the player's hand, or
+    //   (2) the card is in a discard pile, or
+    //   (3) the card is about to be played
+    (['blue', 'orange'] as m.PlayerColor[]).forEach((playerColor: m.PlayerColor) => {
+      const opponentColor: m.PlayerColor = opponentOf(playerColor);
+      sendMessage('ws:REVEAL_CARDS', {
+        [playerColor]: {
+          hand: players[playerColor].hand,
+          discardPile: players[playerColor].discardPile
+        },
+        [opponentColor]: {
+          hand: players[opponentColor].hand.map((card, idx) =>
+            idx === cardPlayedIdx[opponentColor]
+              ? card  // Unobfuscated card
+              : {id: 'obfuscated'}  // Obfuscated card
+          ),
+          discardPile: players[opponentColor].discardPile
+        }
+      }, [playerIDs[playerColor]]);
+    });
   }
 
   function leaveGame(clientID: m.ClientID): void {

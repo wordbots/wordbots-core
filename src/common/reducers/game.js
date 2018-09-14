@@ -3,6 +3,7 @@ import { cloneDeep, isArray, reduce } from 'lodash';
 import { DEFAULT_GAME_FORMAT } from '../constants';
 import { id } from '../util/common.ts';
 import { triggerSound } from '../util/game.ts';
+import { mergeCards } from '../util/cards.ts';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState.ts';
@@ -107,16 +108,8 @@ export function handleAction(oldState, { type, payload }) {
     case socketActions.REVEAL_CARDS: {
       const { blue, orange } = payload;
       state.players = {
-        blue: {
-          ...state.players.blue,
-          hand: (blue && blue.hand) || state.players.blue.hand,
-          discardPile: (blue && blue.discardPile) || state.players.blue.discardPile
-        },
-        orange: {
-          ...state.players.orange,
-          hand: (orange && orange.hand) || state.players.orange.hand,
-          discardPile: (orange && orange.discardPile) || state.players.orange.discardPile
-        }
+        blue: mergeCards(state.players.blue, blue),
+        orange: mergeCards(state.players.orange, orange)
       };
       return state;
     }

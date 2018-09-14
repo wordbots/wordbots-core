@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { noop, truncate } from 'lodash';
+import { isEmpty, noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
@@ -80,7 +80,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'ws:LEAVE') {
       leaveGame(clientID);
     } else if (type === 'ws:SEND_USER_DATA') {
-      setUserData(clientID, payload.userData);
+      setUserData(clientID, isEmpty(payload.userData) ? null : payload.userData);
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = Object.assign({}, payload, {sender: clientID});
@@ -138,6 +138,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.setClientUserData(clientID, userData);
     if (!oldUserData && userData) {
       sendChat(`${userData.displayName} has entered the lobby.`);
+    } else if (!state.isClientLoggedIn(clientID)) {
+      sendChat(`${state.getClientUsername(clientID)} has entered the lobby.`);
     } else if (!userData && oldUserData) {
       sendChat(`${oldUserData.displayName} has logged out.`);
     }

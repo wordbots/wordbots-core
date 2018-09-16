@@ -46,7 +46,9 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
   });
 }
 
-export function mergeCards(
+// Replace a player's deck, hand, and/or discard pile.
+// Used in handling REVEAL_CARDS actions.
+export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
   newCards: {deck?: w.Card[], hand?: w.Card[], discardPile?: w.Card[]} = {}
 ): w.PlayerInGameState {

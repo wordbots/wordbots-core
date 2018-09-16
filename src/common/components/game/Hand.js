@@ -65,7 +65,7 @@ export default class Hand extends React.Component {
     const cardMargin = maxWidth ? Math.min((maxWidth - baseWidth) / (numCards - 1), defaultMargin) : defaultMargin;
     const adjustedWidth = numCards * (widthPerCard + cardMargin) - cardMargin;
 
-    return cards.map((card, idx) => {      
+    return cards.map((card, idx) => {
       // TODO this isn't quite right ...
       const rotationDegs = (idx - (numCards - 1)/2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;

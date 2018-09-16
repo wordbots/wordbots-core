@@ -1,12 +1,12 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { findKey, mapValues, noop, truncate } from 'lodash';
+import { noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
-import { obfuscateCards } from '../../common/util/cards';
 import { opponent as opponentOf } from '../../common/util/game';
 
 import * as m from './multiplayer';
+import { getPeopleInGame } from './util';
 import MultiplayerServerState from './MultiplayerServerState';
 
 const MAX_DEBUG_MSG_LENGTH = 500;
@@ -88,7 +88,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       (inGame.length ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
-      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, {type, payload}, clientID);
+      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{type, payload}, clientID]);
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!);
@@ -194,35 +194,9 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
-  // Reveal currently-visible cards to all players in a game.
-  // If action and clientID are passed in, reveal any cards about to be played by the given client.
-  // TODO How does this work for spectators?
-  function revealVisibleCardsInGame(game: m.Game, action?: m.Action, clientID?: m.ClientID): void {
-    const { players } = game.state;
-
-    // Is there a card about to be played that needs to be revealed?
-    const cardPlayedIdx: { blue?: number, orange?: number } = {};
-    if (action && clientID) {
-      const { type, payload } = action;
-      if (type === 'PLACE_CARD') {
-        cardPlayedIdx[game.playerColors[clientID]] = payload.cardIdx;
-      } else if (type === 'SET_SELECTED_CARD') {
-        cardPlayedIdx[payload.player as m.PlayerColor] = payload.selectedCard;
-      }
-    }
-
-    (['blue', 'orange'] as m.PlayerColor[]).forEach((playerColor: m.PlayerColor) => {
-      // Reveal cards to each player if:
-      //   (1) the card is in the given player's hand, or
-      //   (2) the card is in a discard pile, or
-      //   (3) the card is about to be played
-      const playerID: m.ClientID = findKey(game.playerColors, (color: m.PlayerColor) => color === playerColor)!;
-      const opponentColor: m.PlayerColor = opponentOf(playerColor);
-
-      const cards = mapValues(players, (({ hand, discardPile }: m.PlayerInGameState) => ({ hand, discardPile })));
-      cards[opponentColor].hand = obfuscateCards(players[opponentColor].hand, cardPlayedIdx[opponentColor]);
-
-      sendMessage('ws:REVEAL_CARDS', cards, [playerID]);
+  function revealVisibleCardsInGame(game: m.Game, pendingAction?: [m.Action, m.ClientID]): void {
+    getPeopleInGame(game).forEach((clientID: m.ClientID) => {
+      sendMessage('ws:REVEAL_CARDS', state.getCardsToReveal(clientID, pendingAction), [clientID]);
     });
   }
 

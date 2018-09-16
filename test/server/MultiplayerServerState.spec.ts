@@ -1,8 +1,7 @@
 import { WebSocket as MockSocket } from 'mock-socket';
 import { noop } from 'lodash';
 
-import { defaultDecks, emptyDeck, kernelKillerDeck } from '../data/decks';
-import * as w from '../../src/common/types';
+import { defaultDecks, emptyDeck, eventsOnlyDeck, botsOnlyDeck, kernelKillerDeck } from '../data/decks';
 import * as gameActions from '../../src/common/actions/game';
 import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
 import * as m from '../../src/server/multiplayer/multiplayer';
@@ -367,6 +366,76 @@ describe('MultiplayerServerState', () => {
         ...initialState,
         playersOnline: ['player1'],
         userData: { player1: {uid: 'hostId', displayName: 'hostName'} }
+      });
+    });
+  });
+
+  describe('getCardsToReveal()', () => {
+    function startGame(player1Deck: m.Deck = defaultDecks[0], player2Deck: m.Deck = defaultDecks[0]): MSS {
+      const state = new MultiplayerServerState();
+
+      state.connectClient('player1', dummyWebSocket);
+      state.connectClient('player2', dummyWebSocket);
+      state.connectClient('spectator', dummyWebSocket);
+      state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+
+      state.hostGame('player1', 'My Game', 'normal', player1Deck);
+      state.joinGame('player2', 'player1', player2Deck);
+      state.spectateGame('spectator', (state.lookupGameByClient('player1') as m.Game).id);
+
+      return state;
+    }
+
+    it('should only reveal cards in a player\'s hand to that player', () => {
+      const state = startGame();
+      // player1 is orange.
+      expect(state.getCardsToReveal('player1').blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('player1').orange.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
+      // player2 is blue.
+      expect(state.getCardsToReveal('player2').blue.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('player2').orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
+    });
+
+    it('should not reveal any cards in hand to spectators', () => {
+      const state = startGame();
+      expect(state.getCardsToReveal('spectator').blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('spectator').orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
+    });
+
+    it('should reveal robot cards when they are about to be played', () => {
+      const state = startGame(botsOnlyDeck, botsOnlyDeck);
+      const action: [m.Action, m.ClientID] = [gameActions.placeCard('3,-1,-2', 0), 'player1'];
+
+      // player1 is orange.
+      expect(state.getCardsToReveal('player1', action).blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('player1', action).orange.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
+      // player2 is blue. Orange is playing a card, so that one card should be revealed.
+      expect(state.getCardsToReveal('player2', action).blue.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('player2', action).orange.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(1);
+      expect(state.getCardsToReveal('player2', action).orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(1);
+    });
+
+    it('should reveal event cards when they are about to be played', () => {
+      const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
+      state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange'));
+      const action: [m.Action, m.ClientID] = [gameActions.setSelectedTile('3,-1,-2', 0), 'player1'];
+
+      // player1 is orange.
+      expect(state.getCardsToReveal('player1', action).blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('player1', action).orange.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
+      // player2 is blue. Orange is playing a card, so that one card should be revealed.
+      expect(state.getCardsToReveal('player2', action).blue.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
+      expect(state.getCardsToReveal('player2', action).orange.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(1);
+      expect(state.getCardsToReveal('player2', action).orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(1);
+    });
+
+    it('should reveal cards in the discard pile to all clients', () => {
+      const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
+      state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange'));
+      state.appendGameAction('player1', gameActions.setSelectedTile('3,-1,-2', 'orange'));
+
+      ['player1', 'player2', 'spectator'].forEach((clientID: m.ClientID) => {
+        expect(state.getCardsToReveal(clientID).orange.discardPile.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(1);
       });
     });
   });

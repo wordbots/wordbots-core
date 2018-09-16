@@ -13,6 +13,7 @@ export type Deck = w.Deck;
 export type Format = w.Format;
 export type GameState = w.GameState;
 export type GameOptions = w.GameOptions;
+export type PerPlayer<T> = w.PerPlayer<T>;
 export type PlayerColor = w.PlayerColor;
 export type PlayerInGameState = w.PlayerInGameState;
 

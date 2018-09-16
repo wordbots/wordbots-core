@@ -3,9 +3,9 @@ import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
-import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import { obfuscateCards } from '../../common/util/cards';
 import { saveGame } from '../../common/util/firebase';
+import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import defaultGameState from '../../common/store/defaultGameState';
 import { GameFormat } from '../../common/store/gameFormats';
 import gameReducer from '../../common/reducers/game';
@@ -75,7 +75,7 @@ export default class MultiplayerServerState {
 
   // Returns the game that the given player is in, if any.
   public lookupGameByClient = (clientID: m.ClientID): m.Game | undefined => (
-    this.state.games.find((game) => game.players.includes(clientID))
+    this.state.games.find((game) => getPeopleInGame(game).includes(clientID))
   )
 
   // Returns all *other* players in the game that the given player is in, if any.
@@ -90,6 +90,39 @@ export default class MultiplayerServerState {
       acc.concat(game.players)
     ), []);
     return this.state.playersOnline.filter((id) => id !== clientID && !inGamePlayerIds.includes(id));
+  }
+
+  // Returns all cards currently visible to a given client in a game.
+  // If pendingAction is passed in, reveal any cards about to be played with the given client action.
+  public getCardsToReveal = (clientID: m.ClientID, pendingAction?: [m.Action, m.ClientID]): {[playerColor: string]: { hand: m.Card[], discardPile: m.Card[] }}  => {
+    const game: m.Game = this.lookupGameByClient(clientID)!;
+    const { players } = game.state;
+    const playerColor: m.PlayerColor | null = game.playerColors[clientID] || null;
+
+    // Is there a card about to be played that needs to be revealed?
+    const cardPlayedIdx: { blue?: number, orange?: number } = {};
+    if (pendingAction) {
+      const [action, actionPerformerID] = pendingAction;
+      const { type, payload } = action;
+      const actionPerformerColor = game.playerColors[actionPerformerID];
+
+      if (type === 'PLACE_CARD') {
+        cardPlayedIdx[actionPerformerColor] = payload.cardIdx;
+      } else if (players[actionPerformerColor].selectedCard !== null) {
+        cardPlayedIdx[actionPerformerColor] = players[actionPerformerColor].selectedCard;
+      }
+    }
+
+    // Reveal cards to each player if:
+    //   (1) the card is in the given player's hand, or
+    //   (2) the card is in a discard pile, or
+    //   (3) the card is about to be played
+    return mapValues(players, (({ hand, discardPile }: m.PlayerInGameState, color: string) => {
+      if (color !== playerColor) {
+        hand = obfuscateCards(hand, cardPlayedIdx[color as m.PlayerColor]);
+      }
+      return { hand, discardPile };
+    }));
   }
 
   /* Mutations */

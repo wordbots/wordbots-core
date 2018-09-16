@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import * as WebSocket from 'ws';
-import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pull, reject, remove } from 'lodash';
+import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
@@ -54,7 +54,7 @@ export default class MultiplayerServerState {
   // Returns true iff the client is logged-in, that is, not a guest,
   // that is, has user data.
   public isClientLoggedIn = (clientID: m.ClientID): boolean => (
-    Object.keys(this.state.userData).includes(clientID)
+    !isNil(this.state.userData[clientID])
   )
 
   // Returns the user data for the given player.

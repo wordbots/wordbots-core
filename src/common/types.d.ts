@@ -29,6 +29,9 @@ export type PerPlayer<T> = {
   [P in PlayerColor]: T
 };
 
+// Not actually typechecked but can be useful documentation for stringified functions.
+type StringRepresentationOf<T> = string;
+
 /* Library types */
 
 export type ActionType = string;
@@ -217,7 +220,7 @@ export interface Robot extends _Object {
 }
 
 export interface StatAdjustment {
-  func: string
+  func: StringRepresentationOf<(attr: number) => number>
 }
 
 export interface Effect {

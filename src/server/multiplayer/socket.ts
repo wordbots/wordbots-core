@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { findKey, invert, mapValues, noop, truncate } from 'lodash';
+import { findKey, mapValues, noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { obfuscateCards } from '../../common/util/cards';

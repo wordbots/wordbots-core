@@ -14,6 +14,7 @@ export type Format = w.Format;
 export type GameState = w.GameState;
 export type GameOptions = w.GameOptions;
 export type PlayerColor = w.PlayerColor;
+export type PlayerInGameState = w.PlayerInGameState;
 
 export type ClientID = string;
 

@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws';
 import { Server } from 'http';
-import { invert, noop, truncate } from 'lodash';
+import { findKey, invert, mapValues, noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
 import { obfuscateCards } from '../../common/util/cards';
@@ -194,11 +194,14 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
+  // Reveal currently-visible cards to all players in a game.
+  // If action and clientID are passed in, reveal any cards about to be played by the given client.
+  // TODO How does this work for spectators?
   function revealVisibleCardsInGame(game: m.Game, action?: m.Action, clientID?: m.ClientID): void {
-    const players = game.state.players;
-    const playerIDs = invert(game.playerColors);
-    const cardPlayedIdx: { blue?: number, orange?: number } = {};
+    const { players } = game.state;
 
+    // Is there a card about to be played that needs to be revealed?
+    const cardPlayedIdx: { blue?: number, orange?: number } = {};
     if (action && clientID) {
       const { type, payload } = action;
       if (type === 'PLACE_CARD') {
@@ -208,22 +211,18 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       }
     }
 
-    // Reveal cards to each player if:
-    //   (1) the card is in the player's hand, or
-    //   (2) the card is in a discard pile, or
-    //   (3) the card is about to be played
     (['blue', 'orange'] as m.PlayerColor[]).forEach((playerColor: m.PlayerColor) => {
+      // Reveal cards to each player if:
+      //   (1) the card is in the given player's hand, or
+      //   (2) the card is in a discard pile, or
+      //   (3) the card is about to be played
+      const playerID: m.ClientID = findKey(game.playerColors, (color: m.PlayerColor) => color === playerColor)!;
       const opponentColor: m.PlayerColor = opponentOf(playerColor);
-      sendMessage('ws:REVEAL_CARDS', {
-        [playerColor]: {
-          hand: players[playerColor].hand,
-          discardPile: players[playerColor].discardPile
-        },
-        [opponentColor]: {
-          hand: obfuscateCards(players[opponentColor].hand, cardPlayedIdx[opponentColor]),
-          discardPile: players[opponentColor].discardPile
-        }
-      }, [playerIDs[playerColor]]);
+
+      const cards = mapValues(players, (({ hand, discardPile }: m.PlayerInGameState) => ({ hand, discardPile })));
+      cards[opponentColor].hand = obfuscateCards(players[opponentColor].hand, cardPlayedIdx[opponentColor]);
+
+      sendMessage('ws:REVEAL_CARDS', cards, [playerID]);
     });
   }
 

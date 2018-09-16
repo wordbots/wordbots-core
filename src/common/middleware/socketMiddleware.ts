@@ -30,8 +30,10 @@ function createSocketMiddleware({ excludedActions }: SocketMiddlewareOpts): Midd
           user = action.payload.user;
           send(sa.sendUserData(action.payload.user));
         } else if (action.type === ga.LOGGED_OUT) {
-          user = undefined;
-          send(sa.sendUserData(undefined));
+          if (user) {
+            user = undefined;
+            send(sa.sendUserData(undefined));
+          }
         } else {
           send(action);
         }

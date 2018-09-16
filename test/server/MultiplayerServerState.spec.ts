@@ -341,12 +341,17 @@ describe('MultiplayerServerState', () => {
 
     it('should end the game if a player leaves the game', () => {
       expectState((state: MSS) => {
+        const storeGameResultFn: jest.Mock = jest.fn();
+        state.storeGameResult = storeGameResultFn;
+
         state.connectClient('player1', dummyWebSocket);
         state.connectClient('player2', dummyWebSocket);
         state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
         state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('player2', 'player1', defaultDecks[1]);
+        expect(storeGameResultFn.mock.calls.length).toBe(0);
         state.leaveGame('player2');
+        expect(storeGameResultFn.mock.calls.length).toBe(1);
       }, {
         ...initialState,
         playersOnline: ['player1', 'player2'],
@@ -356,12 +361,17 @@ describe('MultiplayerServerState', () => {
 
     it('should end the game if a player disconnects', () => {
       expectState((state: MSS) => {
+        const storeGameResultFn: jest.Mock = jest.fn();
+        state.storeGameResult = storeGameResultFn;
+
         state.connectClient('player1', dummyWebSocket);
         state.connectClient('player2', dummyWebSocket);
         state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
         state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('player2', 'player1', defaultDecks[1]);
+        expect(storeGameResultFn.mock.calls.length).toBe(0);
         state.disconnectClient('player2');
+        expect(storeGameResultFn.mock.calls.length).toBe(1);
       }, {
         ...initialState,
         playersOnline: ['player1'],

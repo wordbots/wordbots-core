@@ -96,11 +96,13 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onDisconnect(clientID: m.ClientID): void {
-    const game = state.disconnectClient(clientID);
-    sendChat(`${state.getClientUsername(clientID)} has left.`);
+    const game = state.lookupGameByClient(clientID);
     if (game) {
       sendMessageInGame(clientID, 'ws:FORFEIT', {winner: opponentOf(game.playerColors[clientID])});
     }
+
+    sendChat(`${state.getClientUsername(clientID)} has left.`);
+    state.disconnectClient(clientID);
   }
 
   function sendMessage(type: string, payload: object = {}, recipientIDs: m.ClientID[] | null = null): void {
@@ -141,6 +143,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.setClientUserData(clientID, userData);
     if (!oldUserData && userData) {
       sendChat(`${userData.displayName} has entered the lobby.`);
+    } else if (!state.isClientLoggedIn(clientID)) {
+      sendChat(`${state.getClientUsername(clientID)} has entered the lobby.`);
     } else if (!userData && oldUserData) {
       sendChat(`${oldUserData.displayName} has logged out.`);
     }

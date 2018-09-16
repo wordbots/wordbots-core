@@ -3,6 +3,7 @@ import { Server } from 'http';
 import { invert, noop, truncate } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
+import { obfuscateCards } from '../../common/util/cards';
 import { opponent as opponentOf } from '../../common/util/game';
 
 import * as m from './multiplayer';
@@ -219,11 +220,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
           discardPile: players[playerColor].discardPile
         },
         [opponentColor]: {
-          hand: players[opponentColor].hand.map((card, idx) =>
-            idx === cardPlayedIdx[opponentColor]
-              ? card  // Unobfuscated card
-              : {id: 'obfuscated'}  // Obfuscated card
-          ),
+          hand: obfuscateCards(players[opponentColor].hand, cardPlayedIdx[opponentColor]),
           discardPile: players[opponentColor].discardPile
         }
       }, [playerIDs[playerColor]]);

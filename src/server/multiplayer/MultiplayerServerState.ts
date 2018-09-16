@@ -4,6 +4,7 @@ import { chunk, compact, find, flatMap, fromPairs, groupBy, mapValues, pick, pul
 
 import { id as generateID } from '../../common/util/common';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
+import { obfuscateCards } from '../../common/util/cards';
 import { saveGame } from '../../common/util/firebase';
 import defaultGameState from '../../common/store/defaultGameState';
 import { GameFormat } from '../../common/store/gameFormats';
@@ -170,10 +171,7 @@ export default class MultiplayerServerState {
     if (waitingPlayer && formatObj!.isDeckValid(deck)) {
       const { name, format, options } = waitingPlayer;
       const decks = { orange: waitingPlayer.deck.cards, blue: deck.cards };
-      const obfuscatedDecks = {
-        orange: decks.orange.map((_) => ({id: 'obfuscated'})),
-        blue: decks.blue.map((_) => ({id: 'obfuscated'}))
-      };
+      const obfuscatedDecks = { orange: obfuscateCards(decks.orange), blue: obfuscateCards(decks.blue) };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
       const seed = generateID();
 

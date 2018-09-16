@@ -46,6 +46,13 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
   });
 }
 
+// Obfuscate all cards in an array, optionally leaving one card unobfuscated.
+export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = null): w.ObfuscatedCard[] {
+  return cards.map((card, idx) =>
+    idx === revealCardIdx ? card : {id: 'obfuscated'}
+  );
+}
+
 // Replace a player's deck, hand, and/or discard pile.
 // Used in handling REVEAL_CARDS actions.
 export function replaceCardsInPlayerState(

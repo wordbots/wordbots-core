@@ -9,9 +9,9 @@ import CardTable from '../../src/common/components/cards/CardTable';
 import FilterControls from '../../src/common/components/cards/FilterControls';
 import LayoutControls from '../../src/common/components/cards/LayoutControls';
 import SearchControls from '../../src/common/components/cards/SearchControls';
-import collectionReducer from '../../src/common/reducers/collection';
-import creatorReducer from '../../src/common/reducers/creator';
-import gameReducer from '../../src/common/reducers/game';
+import collectionReducer from '../../src/common/reducers/collection.ts';
+import creatorReducer from '../../src/common/reducers/creator.ts';
+import gameReducer from '../../src/common/reducers/game.ts';
 import { collection as cards } from '../../src/common/store/cards.ts';
 
 describe('Collection container', () => {

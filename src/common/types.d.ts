@@ -156,12 +156,15 @@ export interface GameState {
 }
 
 export interface GlobalState {
+  dictionary?: Dictionary
   renderId: number
   user: fb.User | null
 }
 
 export interface SocketState {
-  [x: string]: any  // TODO Expose more field types as we need them
+  chatMessages: ChatMessage[]
+  userDataByClientId: Record<string, fb.User>
+  // TODO
 }
 
 /* Game state subcomponents */
@@ -240,4 +243,12 @@ export interface Sentence {
 export interface ParseResult {
   js?: StringRepresentationOf<() => void>
   // TODO
+}
+
+/* Socket state subcomponents */
+
+export interface ChatMessage {
+  text: string
+  timestamp: number
+  user: string
 }

@@ -1,7 +1,8 @@
+import * as w from '../types';
 import * as ga from '../actions/global';
-import defaultState from '../store/defaultGlobalState.ts';
+import defaultState from '../store/defaultGlobalState';
 
-export default function global(state = defaultState, action) {
+export default function global(state: w.GlobalState = defaultState, action: w.Action): w.GlobalState {
   switch (action.type) {
     case ga.FIREBASE_DATA:
       if (action.payload.data && action.payload.data.dictionary) {

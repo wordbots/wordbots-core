@@ -1,6 +1,6 @@
 import { cloneDeep, find, findIndex, size, times } from 'lodash';
 
-import game from '../../src/common/reducers/game';
+import game from '../../src/common/reducers/game.ts';
 import * as actions from '../../src/common/actions/game';
 import defaultState from '../../src/common/store/defaultGameState.ts';
 import * as cards from '../../src/common/store/cards.ts';

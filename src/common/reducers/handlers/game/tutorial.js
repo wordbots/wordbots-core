@@ -1,7 +1,7 @@
 import { cloneDeep, isEqual } from 'lodash';
 import { applyPatch, compare } from 'fast-json-patch';
 
-import { handleAction } from '../../game';
+import { handleAction } from '../../game.ts';
 import { TYPE_EVENT } from '../../../constants';
 import { id } from '../../../util/common.ts';
 import { lookupUsername } from '../../../util/firebase.ts';

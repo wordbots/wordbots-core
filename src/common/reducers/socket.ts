@@ -1,10 +1,13 @@
 import { cloneDeep, concat } from 'lodash';
 
+import * as w from '../types';
 import * as socketActions from '../actions/socket';
-import defaultState from '../store/defaultSocketState.ts';
+import defaultState from '../store/defaultSocketState';
 
-export default function socket(oldState = cloneDeep(defaultState), action) {
-  const state = Object.assign({}, oldState);
+type State = w.SocketState;
+
+export default function socket(oldState: State = cloneDeep(defaultState), action: w.Action): State {
+  const state: State = Object.assign({}, oldState);
 
   switch (action.type) {
     case socketActions.CONNECTING:
@@ -20,7 +23,7 @@ export default function socket(oldState = cloneDeep(defaultState), action) {
       const { chatMessages, userDataByClientId: userDataMap } = state;
       const { sender, msg } = action.payload;
 
-      const message = {
+      const message: w.ChatMessage = {
         user: sender ?
                 (userDataMap[sender] ? userDataMap[sender].displayName : sender) :
                 'You',

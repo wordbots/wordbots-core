@@ -13,7 +13,7 @@ type State = w.CreatorState;
 type AttributeOrEnergy = w.Attribute | 'energy';
 
 export default function creator(oldState: State = defaultState, action: w.Action): State {
-  const state = Object.assign({}, oldState);
+  const state: State = Object.assign({}, oldState);
 
   switch (action.type) {
     case creatorActions.SET_NAME:

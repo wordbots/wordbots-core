@@ -169,7 +169,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Helmet title="Wordbots"/>
+        <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
         <TitleBar />
         <div>
           {this.sidebar}

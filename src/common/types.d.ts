@@ -10,7 +10,6 @@ export type Cause = string;
 export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
-export type ParseResult = any; // TODO
 export type ParserMode = 'event' | 'object';
 export type PassiveAbility = any; // TODO
 export type PlayerColor = 'blue' | 'orange';
@@ -28,6 +27,9 @@ type Partial<T> = {
 export type PerPlayer<T> = {
   [P in PlayerColor]: T
 };
+
+// Not actually typechecked but can be useful documentation for stringified functions.
+type StringRepresentationOf<T> = string;
 
 /* Library types */
 
@@ -123,7 +125,17 @@ export interface CollectionState {
 }
 
 export interface CreatorState {
-  [x: string]: any  // TODO Expose more field types as we need them
+  attack: number
+  energy: number
+  health: number
+  id: string | null
+  name: string
+  parserVersion: number | null
+  sentences: Sentence[]
+  speed: number
+  spriteID: string
+  text: string
+  type: CardType
 }
 
 export interface GameState {
@@ -216,4 +228,16 @@ export interface StatAdjustment {
 export interface Effect {
   effect: string
   props: any
+}
+
+/* Creator state subcomponents */
+
+export interface Sentence {
+  sentence: string
+  result: ParseResult
+}
+
+export interface ParseResult {
+  js?: StringRepresentationOf<() => void>
+  // TODO
 }

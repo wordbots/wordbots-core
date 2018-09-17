@@ -62,7 +62,7 @@ export default class CardTable extends React.Component {
       selectable={!this.props.selectable || card.source !== 'builtin'}
     >
       <TableRowColumn width={130}>{card.name}</TableRowColumn>
-      <TableRowColumn width={70}>{typeToString(card.type)}</TableRowColumn>
+      <TableRowColumn width={50}>{typeToString(card.type)}</TableRowColumn>
       <TableRowColumn width={50}>{this.sourceToString(card.source)}</TableRowColumn>
       <TableRowColumn>{card.text}</TableRowColumn>
       <TableRowColumn width={30} style={{textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
@@ -82,9 +82,12 @@ export default class CardTable extends React.Component {
           boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px'
         }}>
           <Table
+            className="cardTable"
             multiSelectable
             selectable={this.props.selectable}
-            onCellClick={this.handleCellClick}>
+            onCellClick={this.handleCellClick}
+            style={{minWidth: 650}}
+          >
             <TableHeader
               adjustForCheckbox={false}
               displaySelectAll={false}
@@ -92,7 +95,7 @@ export default class CardTable extends React.Component {
             >
               <TableRow>
                 <TableHeaderColumn width={130}>Name</TableHeaderColumn>
-                <TableHeaderColumn width={70}>Type</TableHeaderColumn>
+                <TableHeaderColumn width={50}>Type</TableHeaderColumn>
                 <TableHeaderColumn width={50}>Creator</TableHeaderColumn>
                 <TableHeaderColumn>Text</TableHeaderColumn>
                 <TableHeaderColumn width={30}>Attack</TableHeaderColumn>
@@ -113,4 +116,3 @@ export default class CardTable extends React.Component {
     );
   }
 }
-

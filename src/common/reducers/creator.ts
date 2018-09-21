@@ -10,33 +10,32 @@ import * as creatorActions from '../actions/creator';
 import c from './handlers/cards';
 
 type State = w.CreatorState;
-type AttributeOrEnergy = w.Attribute | 'energy';
 
-export default function creator(oldState: State = defaultState, action: w.Action): State {
+export default function creator(oldState: State = defaultState, { type, payload }: w.Action): State {
   const state: State = Object.assign({}, oldState);
 
-  switch (action.type) {
+  switch (type) {
     case creatorActions.SET_NAME:
-      state.name = action.payload.name;
+      state.name = payload.name;
       return state;
 
     case creatorActions.SET_TYPE:
-      state.type = action.payload.type;
+      state.type = payload.type;
       // Clear parsed state because we're triggering a re-parse.
       state.sentences = state.sentences.map((s: w.Sentence) => ({...s, result: {}}));
       return state;
 
     case creatorActions.SET_ATTRIBUTE:
-      state[action.payload.attr as AttributeOrEnergy] = isNaN(action.payload.value) ? null : action.payload.value;
+      state[payload.attr as w.Attribute | 'cost'] = isNaN(payload.value) ? null : payload.value;
       return state;
 
     case creatorActions.SET_TEXT: {
-      const sentences: string[] = getSentencesFromInput(action.payload.text);
+      const sentences: string[] = getSentencesFromInput(payload.text);
       const validCurrentParses: Record<string, string> = fromPairs(state.sentences.map((s: w.Sentence) =>
         [s.sentence, s.result.js]
       ));
 
-      state.text = replaceSynonyms(action.payload.text);
+      state.text = replaceSynonyms(payload.text);
       state.sentences = sentences.map((sentence: string) => ({
         sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}
@@ -45,10 +44,10 @@ export default function creator(oldState: State = defaultState, action: w.Action
     }
 
     case creatorActions.PARSE_COMPLETE:
-      state.parserVersion = action.payload.result.version;
+      state.parserVersion = payload.result.version;
       state.sentences = state.sentences.map((s, idx) => {
-        if (idx === action.payload.idx) {
-          return Object.assign({}, s, {result: action.payload.result});
+        if (idx === payload.idx) {
+          return Object.assign({}, s, {result: payload.result});
         } else {
           return s;
         }
@@ -64,7 +63,7 @@ export default function creator(oldState: State = defaultState, action: w.Action
       return Object.assign(state, defaultState, { spriteID: id() });
 
     case collectionActions.OPEN_CARD_FOR_EDITING:
-      return c.openCardForEditing(state, action.payload.card);
+      return c.openCardForEditing(state, payload.card);
 
     default:
       return state;

@@ -84,7 +84,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     sentences: rawSentences, speed, spriteID, type
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
-  const command = sentences.map((s: { result: { js: string }}) => s.result.js);
+  const command = sentences.map((s: { result: { js?: string }}) => s.result.js!);
 
   const card: w.Card = {
     id: id || generateId(),
@@ -231,7 +231,7 @@ function parseCard(card: w.Card, callback: (card: w.Card) => any): void {
   const parseResults: string[] = [];
 
   parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
-    parseResults[idx] = response.js;
+    parseResults[idx] = response.js!;
 
     // Are we done parsing?
     if (compact(parseResults).length === sentences.length) {

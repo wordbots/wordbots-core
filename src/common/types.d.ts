@@ -1,5 +1,7 @@
 import * as fb from 'firebase';
 
+import * as m from '../server/multiplayer/multiplayer';
+
 /* Simple types */
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
@@ -126,11 +128,11 @@ export interface CollectionState {
 
 export interface CreatorState {
   attack: number
-  energy: number
+  cost: number
   health: number
   id: string | null
   name: string
-  parserVersion: number | null
+  parserVersion?: number
   sentences: Sentence[]
   speed: number
   spriteID: string
@@ -163,8 +165,17 @@ export interface GlobalState {
 
 export interface SocketState {
   chatMessages: ChatMessage[]
-  userDataByClientId: Record<string, fb.User>
-  // TODO
+  clientId: m.ClientID | null
+  connected: boolean
+  connecting: boolean
+  gameName: string | null
+  games: m.Game[]
+  hosting: boolean
+  inQueue: number
+  playersOnline: m.ClientID[]
+  queuing: boolean
+  userDataByClientId: Record<m.ClientID, m.UserData>
+  waitingPlayers: m.GameWaitingForPlayers[]
 }
 
 /* Game state subcomponents */
@@ -241,6 +252,7 @@ export interface Sentence {
 }
 
 export interface ParseResult {
+  error?: string
   js?: StringRepresentationOf<() => void>
   // TODO
 }

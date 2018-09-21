@@ -12,7 +12,7 @@ const defaultState: w.CreatorState = {
   speed: 1,
   health: 1,
   cost: 1,
-  parserVersion: undefined
+  parserVersion: null
 };
 
 export default defaultState;

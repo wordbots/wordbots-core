@@ -84,7 +84,7 @@ export interface CardInStore {
   command?: string | string[]
   source?: string
   spriteV?: number
-  parserV?: number
+  parserV?: number | null
   timestamp?: number
 }
 
@@ -132,7 +132,7 @@ export interface CreatorState {
   health: number
   id: string | null
   name: string
-  parserVersion?: number
+  parserVersion: number | null
   sentences: Sentence[]
   speed: number
   spriteID: string

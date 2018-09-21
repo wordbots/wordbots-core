@@ -34,7 +34,7 @@ export default class CardCreationForm extends React.Component {
     attack: number,
     speed: number,
     health: number,
-    energy: number,
+    cost: number,
     isNewCard: bool,
     loggedIn: bool,
 
@@ -148,7 +148,7 @@ export default class CardCreationForm extends React.Component {
   }
 
   get costError() {
-    return ensureInRange('cost', this.props.energy, 0, 20);
+    return ensureInRange('cost', this.props.cost, 0, 20);
   }
 
   get attackError() {
@@ -310,11 +310,11 @@ export default class CardCreationForm extends React.Component {
               onChange={this.handleSetName} />
             <NumberField
               label="Energy Cost"
-              value={this.props.energy}
+              value={this.props.cost}
               maxValue={20}
               style={this.styles.rightCol}
               errorText={this.costError}
-              onChange={this.setAttribute('energy')} />
+              onChange={this.setAttribute('cost')} />
           </div>
 
           <div style={this.styles.section}>

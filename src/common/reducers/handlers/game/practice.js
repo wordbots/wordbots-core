@@ -13,7 +13,7 @@ import * as builtinCards from '../../../store/cards.ts';
 import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
 import HU from '../../../components/hexgrid/HexUtils';
 
-import { setSelectedCard, placeCard } from './cards';
+import { setSelectedCard, placeCard } from './cards.ts';
 import { setSelectedTile, moveRobot, attack } from './board.ts';
 
 export function startPractice(state, format, deck) {

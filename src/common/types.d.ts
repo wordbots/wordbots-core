@@ -57,6 +57,7 @@ export type Card = CardInGame | CardInStore;
 
 export interface CardInGame extends CardInStore {
   baseCost: number
+  justPlayed?: boolean
   temporaryStatAdjustments?: {
     cost?: StatAdjustment[]
     attack?: StatAdjustment[]
@@ -151,6 +152,7 @@ export interface CreatorState {
 }
 
 export interface GameState {
+  callbackAfterTargetSelected?: (state: GameState) => GameState
   currentTurn: PlayerColor,
   gameFormat: Format
   options: GameOptions
@@ -196,11 +198,18 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
+  deck: CardInGame[]
+  discardPile: CardInGame[]
+  energy: {
+    available: number
+    total: number
+  }
+  hand: CardInGame[]
   name: PlayerColor
   robotsOnBoard: {
     [hexId: string]: _Object
   }
-  selectedCard: CardInGame | null
+  selectedCard: number | null
   selectedTile: HexId | null
   target: {
     choosing: boolean
@@ -241,6 +250,7 @@ interface _Object { // tslint:disable-line:class-name
   movedLastTurn?: boolean
   beingDestroyed?: boolean
   isDestroyed?: boolean
+  justPlayed?: boolean
   // TODO
 }
 export type Object = _Object;
@@ -275,6 +285,7 @@ export interface Trigger {
   targetFunc: (state: GameState) => Target[]
   targets?: Targetable[]
 
+  cardType?: string
   cause?: string
   defenderType?: string
 }

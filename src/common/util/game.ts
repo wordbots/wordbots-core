@@ -153,7 +153,7 @@ function determineTargetCard(state: w.GameState, target: w.Targetable | null): w
   }
 
   const targetObj = (isString(target) ? allObjectsOnBoard(state)[target] : target) as w.Object | w.CardInGame;
-  return ('card' in targetObj) ? targetObj.card : targetObj;
+  return (targetObj && 'card' in targetObj) ? targetObj.card : targetObj;
 }
 
 //
@@ -499,7 +499,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
   };
 
   // Perform the trigger (in a temp state because we may need more targets yet).
-  const tempState = state.callbackAfterTargetSelected(state);
+  const tempState = state.callbackAfterTargetSelected!(state);
 
   if (tempState.players[player.name].target.choosing) {
     // Still need more targets!
@@ -510,7 +510,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
   } else {
     // We have all the targets we need and we're good to go.
     // Reset target and return new state.
-    tempState.callbackAfterTargetSelected = null;
+    tempState.callbackAfterTargetSelected = undefined;
     tempState.players[player.name].target = arbitraryPlayerState().target;
     tempState.players[player.name].status.message = '';
 
@@ -524,7 +524,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
 
 export function executeCmd(
   state: w.GameState,
-  cmd: string | ((state: w.GameState) => any),
+  cmd: ((state: w.GameState) => any) | w.StringRepresentationOf<(state: w.GameState) => any>,
   currentObject: w.Object | null = null,
   source: w.Object | null = null
 ): w.GameState | w.Target {

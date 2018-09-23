@@ -46,7 +46,7 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
   });
 }
 
-// Obfuscate all cards in an array, optionally leaving one card unobfuscated.
+// Obfuscate all cards in an array, optionally leaving one card unobfuscated (e.g. if that card is about to be played).
 export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = null): w.ObfuscatedCard[] {
   return cards.map((card, idx) =>
     idx === revealCardIdx ? card : {id: 'obfuscated'}

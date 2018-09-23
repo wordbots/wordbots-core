@@ -29,6 +29,9 @@ export type PerPlayer<T> = {
   [P in PlayerColor]: T
 };
 
+// Not actually typechecked but can be useful documentation for stringified functions.
+type StringRepresentationOf<T> = string;
+
 /* Library types */
 
 export type ActionType = string;
@@ -51,7 +54,7 @@ export interface DeckInStore {
   cardIds: string[]
 }
 
-export type Card = CardInGame | CardInStore;
+export type Card = CardInGame | CardInStore | ObfuscatedCard;
 
 export interface CardInGame extends CardInStore {
   baseCost: number
@@ -82,6 +85,10 @@ export interface CardInStore {
   spriteV?: number
   parserV?: number
   timestamp?: number
+}
+
+export interface ObfuscatedCard {
+  id: string
 }
 
 export interface Dictionary {
@@ -161,6 +168,9 @@ export interface GameOptions {
 
 export interface PlayerInGameState {
   name: PlayerColor
+  deck: Card[]
+  discardPile: Card[]
+  hand: Card[]
   robotsOnBoard: {
     [hexId: string]: _Object
   }
@@ -210,7 +220,7 @@ export interface Robot extends _Object {
 }
 
 export interface StatAdjustment {
-  func: (attr: number) => number
+  func: StringRepresentationOf<(attr: number) => number>
 }
 
 export interface Effect {

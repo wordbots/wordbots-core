@@ -28,7 +28,7 @@ export function cardsInDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.Card
   return compact((deck.cardIds || []).map((id) => cards.find((c) => c.id === id)));
 }
 
-export function shuffleCardsInDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.Card[] {
+export function shuffleCardsInDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.CardInGame[] {
   const unshuffledCards = cardsInDeck(deck, cards);
   return (KEEP_DECKS_UNSHUFFLED ? unshuffledCards : shuffle(unshuffledCards)).map(instantiateCard);
 }
@@ -39,34 +39,55 @@ export function unpackDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.Deck 
   return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
 }
 
-export function instantiateCard(card: w.CardInStore): w.Card {
+export function instantiateCard(card: w.CardInStore): w.CardInGame {
   return Object.assign({}, card, {
     id: generateId(),
     baseCost: card.cost
   });
 }
 
+// Obfuscate all cards in an array, optionally leaving one card unobfuscated.
+export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = null): w.ObfuscatedCard[] {
+  return cards.map((card, idx) =>
+    idx === revealCardIdx ? card : {id: 'obfuscated'}
+  );
+}
+
+// Replace a player's deck, hand, and/or discard pile.
+// Used in handling REVEAL_CARDS actions.
+export function replaceCardsInPlayerState(
+  playerState: w.PlayerInGameState,
+  newCards: {deck?: w.Card[], hand?: w.Card[], discardPile?: w.Card[]} = {}
+): w.PlayerInGameState {
+  return {
+    ...playerState,
+    deck: newCards.deck || playerState.deck,
+    hand: newCards.hand || playerState.hand,
+    discardPile: newCards.discardPile || playerState.discardPile
+  };
+}
+
 //
 // 2. Helper functions for card-related components.
 //
 
-export function groupCards(cards: w.Card[]): Array<w.Card & { count: number }> {
+export function groupCards(cards: w.CardInStore[]): Array<w.CardInStore & { count: number }> {
   return uniqBy(cards, 'id').map((card) =>
     Object.assign({}, card, {count: countBy(cards, 'name')[card.name]})
   );
 }
 
-export function selectType(cards: w.Card[], type: w.CardType): w.Card[] {
+export function selectType(cards: w.CardInStore[], type: w.CardType): w.Card[] {
   return cards.filter((card) => card.type === type);
 }
 
-export function getDisplayedCards(cards: w.Card[], opts: any = {}): w.Card[] {
+export function getDisplayedCards(cards: w.CardInStore[], opts: any = {}): w.Card[] {
   return cards
     .filter((card) => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
     .sort((c1, c2) => sortCards(c1, c2, opts.sortCriteria, opts.sortOrder));
 }
 
-export function isCardVisible(card: w.Card, filters: any = {}, costRange = [0, 0]): boolean {
+export function isCardVisible(card: w.CardInStore, filters: any = {}, costRange = [0, 0]): boolean {
   if ((!filters.robots && card.type === TYPE_ROBOT) ||
       (!filters.events && card.type === TYPE_EVENT) ||
       (!filters.structures && card.type === TYPE_STRUCTURE) ||
@@ -109,34 +130,34 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   return card;
 }
 
-function searchCards(card: w.Card, query = ''): boolean {
+function searchCards(card: w.CardInStore, query = ''): boolean {
   query = query.toLowerCase();
   return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
 }
 
-function sortCards(c1: w.Card, c2: w.Card, criteria: 0 | 1 | 2 | 3 | 4 | 5 | 6, order: 1 | -1): 1 | 0 | -1 {
+function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 | 2 | 3 | 4 | 5 | 6, order: 1 | -1): 1 | 0 | -1 {
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const [cost, name, type, source, attack, health, speed] = [
-    (c: w.Card) => c.cost.toString(36),
-    (c: w.Card) => c.name.toLowerCase(),
-    (c: w.Card) => typeToString(c.type),
-    (c: w.Card) => c.source === 'builtin',
-    (c: w.Card) => (c.stats && c.stats.attack || 0).toString(36),
-    (c: w.Card) => (c.stats && c.stats.health || 0).toString(36),
-    (c: w.Card) => (c.stats && c.stats.speed || 0).toString(36)
+    (c: w.CardInStore) => c.cost.toString(36),
+    (c: w.CardInStore) => c.name.toLowerCase(),
+    (c: w.CardInStore) => typeToString(c.type),
+    (c: w.CardInStore) => c.source === 'builtin',
+    (c: w.CardInStore) => (c.stats && c.stats.attack || 0).toString(36),
+    (c: w.CardInStore) => (c.stats && c.stats.health || 0).toString(36),
+    (c: w.CardInStore) => (c.stats && c.stats.speed || 0).toString(36)
   ];
 
   // Sorting functions for card collections:
   // 0 = cost, 1 = name, 2 = type, 3 = source, 4 = attack, 5 = health, 6 = speed.
   const f = [
-    (c: w.Card) => [cost(c), name(c)],
-    (c: w.Card) => [name(c), cost(c)],
-    (c: w.Card) => [type(c), cost(c), name(c)],
-    (c: w.Card) => [source(c), cost(c), name(c)],
-    (c: w.Card) => [attack(c), cost(c), name(c)],
-    (c: w.Card) => [health(c), cost(c), name(c)],
-    (c: w.Card) => [speed(c), cost(c), name(c)]
+    (c: w.CardInStore) => [cost(c), name(c)],
+    (c: w.CardInStore) => [name(c), cost(c)],
+    (c: w.CardInStore) => [type(c), cost(c), name(c)],
+    (c: w.CardInStore) => [source(c), cost(c), name(c)],
+    (c: w.CardInStore) => [attack(c), cost(c), name(c)],
+    (c: w.CardInStore) => [health(c), cost(c), name(c)],
+    (c: w.CardInStore) => [speed(c), cost(c), name(c)]
   ][criteria];
 
   if (f(c1) < f(c2)) {
@@ -225,7 +246,7 @@ export function parseBatch(
 
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.
-function parseCard(card: w.Card, callback: (card: w.Card) => any): void {
+function parseCard(card: w.CardInStore, callback: (card: w.CardInStore) => any): void {
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text || '');
   const parseResults: string[] = [];
@@ -300,7 +321,7 @@ export function cardsToJson(cards: w.Card[]): string {
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
 
-export function cardsFromJson(json: string, callback: (card: w.Card) => any): void {
+export function cardsFromJson(json: string, callback: (card: w.CardInStore) => any): void {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
@@ -311,7 +332,7 @@ export function cardsFromJson(json: string, callback: (card: w.Card) => any): vo
         timestamp: Date.now()
       })
     )
-    .forEach((card: w.Card) => { parseCard(card, callback); });
+    .forEach((card: w.CardInStore) => { parseCard(card, callback); });
 }
 
 export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {

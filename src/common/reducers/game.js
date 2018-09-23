@@ -3,6 +3,7 @@ import { cloneDeep, isArray, reduce } from 'lodash';
 import { DEFAULT_GAME_FORMAT } from '../constants';
 import { id } from '../util/common.ts';
 import { triggerSound } from '../util/game.ts';
+import { replaceCardsInPlayerState } from '../util/cards.ts';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState.ts';
@@ -103,6 +104,15 @@ export function handleAction(oldState, { type, payload }) {
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
       return reduce(payload.actions, game, state);
+
+    case socketActions.REVEAL_CARDS: {
+      const { blue, orange } = payload;
+      state.players = {
+        blue: replaceCardsInPlayerState(state.players.blue, blue),
+        orange: replaceCardsInPlayerState(state.players.orange, orange)
+      };
+      return state;
+    }
 
     case socketActions.FORFEIT: {
       state = Object.assign(state, {winner: payload.winner});

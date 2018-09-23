@@ -1,5 +1,4 @@
 // Utility methods related to the multiplayer server go here.
-
 import { without } from 'lodash';
 
 import * as m from './multiplayer';

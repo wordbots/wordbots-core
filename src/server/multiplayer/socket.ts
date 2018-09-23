@@ -6,6 +6,7 @@ import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
 
 import * as m from './multiplayer';
+import { getPeopleInGame } from './util';
 import MultiplayerServerState from './MultiplayerServerState';
 
 const MAX_DEBUG_MSG_LENGTH = 500;
@@ -87,8 +88,10 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       (inGame.length ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
+      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{type, payload}, clientID]);
       state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
+      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!);
     }
   }
 
@@ -165,6 +168,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       sendMessage('ws:GAME_START', {player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
       sendMessage('ws:GAME_START', {player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
+      revealVisibleCardsInGame(game);
       sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
       broadcastInfo();
     }
@@ -192,6 +196,12 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       broadcastInfo();
     }
+  }
+
+  function revealVisibleCardsInGame(game: m.Game, pendingAction?: [m.Action, m.ClientID]): void {
+    getPeopleInGame(game).forEach((clientID: m.ClientID) => {
+      sendMessage('ws:REVEAL_CARDS', state.getCardsToReveal(clientID, pendingAction), [clientID]);
+    });
   }
 
   function leaveGame(clientID: m.ClientID): void {

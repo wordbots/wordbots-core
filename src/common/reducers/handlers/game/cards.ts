@@ -10,7 +10,7 @@ import {
   removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
 } from '../../../util/game';
-import { splitSentences } from '../../../util/cards';
+import { assertCardVisible, splitSentences } from '../../../util/cards';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
 type State = w.GameState;
@@ -19,7 +19,7 @@ type PlayerState = w.PlayerInGameState;
 export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx: number): State {
   const player: PlayerState = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);
-  const selectedCard: w.CardInGame | undefined = player.hand[cardIdx];
+  const selectedCard: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
   const energy = player.energy;
 
   player.selectedTile = null;
@@ -57,10 +57,10 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
 export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = cloneDeep(state);
+  let tempState: State = cloneDeep(state);
 
-  const player = currentPlayer(tempState);
-  const card = player.hand[cardIdx];
+  const player: PlayerState = currentPlayer(tempState);
+  const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
   const timestamp = Date.now();
 
   if ((player.energy.available >= getCost(card) || state.sandbox) &&
@@ -134,10 +134,10 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
 function playEvent(state: State, cardIdx: number): State {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = cloneDeep(state);
+  let tempState: State = cloneDeep(state);
 
-  const player = currentPlayer(tempState);
-  const card = player.hand[cardIdx];
+  const player: PlayerState = currentPlayer(tempState);
+  const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
   const timestamp = Date.now();
 
   if (player.energy.available >= getCost(card) || state.sandbox) {

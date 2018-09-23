@@ -53,6 +53,14 @@ export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = n
   );
 }
 
+export function assertCardVisible(card: w.CardInGame | w.ObfuscatedCard): w.CardInGame {
+  if (!card.name) {
+    throw Exception('Expected a visible card but received an obfuscated card!');
+  } else {
+    return card;
+  }
+}
+
 // Replace a player's deck, hand, and/or discard pile.
 // Used in handling REVEAL_CARDS actions.
 export function replaceCardsInPlayerState(

@@ -9,7 +9,17 @@ const getBasicStats = () => ({
   speed: 2
 });
 
+export const cantripCard = {
+  id: 'cantrip',
+  name: 'Cantrip',
+  text: 'Draw a card.',
+  command: '(function () { actions["draw"](targets["self"](), 1); })',
+  cost: 0,
+  type: TYPE_EVENT
+};
+
 export const attackBotCard = {
+  id: 'attackBot',
   name: 'Attack Bot',
   cost: 1,
   type: TYPE_ROBOT,

@@ -4,6 +4,7 @@ import * as w from '../types';
 import { DEFAULT_GAME_FORMAT } from '../constants';
 import { id } from '../util/common';
 import { triggerSound } from '../util/game';
+import { replaceCardsInPlayerState } from '../util/cards';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultGameState';
@@ -106,6 +107,15 @@ export function handleAction(oldState: State, { type, payload }: w.Action): Stat
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
       return reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state);
+
+    case socketActions.REVEAL_CARDS: {
+      const { blue, orange } = payload;
+      state.players = {
+        blue: replaceCardsInPlayerState(state.players.blue, blue),
+        orange: replaceCardsInPlayerState(state.players.orange, orange)
+      };
+      return state;
+    }
 
     case socketActions.FORFEIT: {
       state = Object.assign(state, {winner: payload.winner});

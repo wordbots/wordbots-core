@@ -1,48 +1,51 @@
-import { id } from '../../util/common.ts';
+import * as w from '../../types';
+import { id } from '../../util/common';
 import {
   areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, createCardFromProps,
   loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase
-} from '../../util/cards.ts';
+} from '../../util/cards';
+
+type State = w.CollectionState;
 
 const cardsHandlers = {
-  deleteCards: function (state, ids) {
-    state.cards = state.cards.filter(c => !ids.includes(c.id));
+  deleteCards: (state: State, ids: string[]): State => {
+    state.cards = state.cards.filter((c: w.CardInStore) => !ids.includes(c.id));
     saveCardsToFirebase(state);
     return state;
   },
 
-  deleteDeck: function (state, deckId) {
-    state.decks = state.decks.filter(deck => deck.id !== deckId);
+  deleteDeck: (state: State, deckId: string): State => {
+    state.decks = state.decks.filter((deck: w.DeckInStore) => deck.id !== deckId);
     saveDecksToFirebase(state);
     return state;
   },
 
-  duplicateDeck: function (state, deckId) {
-    const deck = state.decks.find(d => d.id === deckId);
-    const copy = Object.assign({}, deck, {id: id(), name: `${deck.name} Copy`});
+  duplicateDeck: (state: State, deckId: string): State => {
+    const deck: w.DeckInStore = state.decks.find((d) => d.id === deckId)!;
+    const copy: w.DeckInStore = Object.assign({}, deck, {id: id(), name: `${deck.name} Copy`});
 
     state.decks.push(copy);
     saveDecksToFirebase(state);
     return state;
   },
 
-  exportCards: function (state, cards) {
+  exportCards: (state: State, cards: w.Card[]): State => {
     return Object.assign({}, state, {exportedJson: cardsToJson(cards)});
   },
 
-  importCards: function (state, json) {
-    cardsFromJson(json, card => { saveCard(state, card); });
+  importCards: (state: State, json: string): State => {
+    cardsFromJson(json, (card) => { saveCard(state, card); });
     return state;
   },
 
-  loadState: function (state, data) {
-    const defaultDecks = state.decks.filter(deck => deck.id.startsWith('[default-'));
+  loadState: (state: State, data: any): State => {
+    const defaultDecks: w.DeckInStore[] = state.decks.filter((deck) => deck.id.startsWith('[default-'));
 
     state = loadCardsFromFirebase(state, data);
     state = loadDecksFromFirebase(state, data);
 
-    defaultDecks.forEach(defaultDeck => {
-      if (!state.decks.find(deck => deck.id === defaultDeck.id)) {
+    defaultDecks.forEach((defaultDeck) => {
+      if (!state.decks.find((deck) => deck.id === defaultDeck.id)) {
         state.decks.push(defaultDeck);
       }
     });
@@ -50,35 +53,35 @@ const cardsHandlers = {
     return state;
   },
 
-  openCardForEditing: function (state, card) {
+  openCardForEditing: (state: State, card: w.CardInStore): State => {
     return Object.assign(state, {
       id: card.id,
       name: card.name,
       type: card.type,
       spriteID: card.spriteID,
-      sentences: splitSentences(card.text).map(s => ({sentence: s, result: {}})),
+      sentences: splitSentences(card.text || '').map((s) => ({sentence: s, result: {}})),
       energy: card.cost,
-      health: (card.stats || {}).health,
-      speed: (card.stats || {}).speed,
-      attack: (card.stats || {}).attack,
+      health: card.stats ? card.stats.health : undefined,
+      speed: card.stats ? card.stats.speed : undefined,
+      attack: card.stats ? card.stats.attack : undefined,
       text: card.text
     });
   },
 
-  openDeckForEditing: function (state, deckId) {
-    state.deckBeingEdited = deckId ? state.decks.find(d => d.id === deckId) : null;
+  openDeckForEditing: (state: State, deckId: string): State => {
+    state.deckBeingEdited = deckId ? state.decks.find((d) => d.id === deckId)! : null;
     return state;
   },
 
-  saveCard: function (state, cardProps) {
+  saveCard: (state: State, cardProps: w.CreatorState): State => {
     const card = createCardFromProps(cardProps);
     return saveCard(state, card);
   },
 
-  saveDeck: function (state, deckId, name, cardIds = []) {
+  saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = []): State => {
     if (deckId) {
       // Existing deck.
-      const deck = state.decks.find(d => d.id === deckId);
+      const deck = state.decks.find((d) => d.id === deckId);
       Object.assign(deck, { name, cardIds });
     } else {
       // New deck.
@@ -96,10 +99,10 @@ const cardsHandlers = {
 };
 
 // Saves a card, either as a new card or replacing an existing card.
-function saveCard(state, card) {
+function saveCard(state: State, card: w.Card): State {
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
-  const existingCard = state.cards.find(c => c.id === card.id || areIdenticalCards(c, card));
+  const existingCard = state.cards.find((c) => c.id === card.id || areIdenticalCards(c, card));
 
   if (existingCard) {
     // Editing an existing card.

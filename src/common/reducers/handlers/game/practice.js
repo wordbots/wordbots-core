@@ -14,7 +14,7 @@ import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
 import HU from '../../../components/hexgrid/HexUtils';
 
 import { setSelectedCard, placeCard } from './cards';
-import { setSelectedTile, moveRobot, attack } from './board';
+import { setSelectedTile, moveRobot, attack } from './board.ts';
 
 export function startPractice(state, format, deck) {
   const decks = {

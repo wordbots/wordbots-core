@@ -14,7 +14,7 @@ import defaultGameState from '../src/common/store/defaultGameState.ts';
 import defaultCreatorState from '../src/common/store/defaultCreatorState.ts';
 import defaultCollectionState from '../src/common/store/defaultCollectionState.ts';
 import defaultSocketState from '../src/common/store/defaultSocketState.ts';
-import { transportObject } from '../src/common/reducers/handlers/game/board';
+import { transportObject } from '../src/common/reducers/handlers/game/board.ts';
 import HexUtils from '../src/common/components/hexgrid/HexUtils';
 
 import { attackBotCard } from './data/cards';

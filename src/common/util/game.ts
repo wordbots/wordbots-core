@@ -148,8 +148,12 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
 
 // Given a target that may be a card, object, or hex, return the appropriate card if possible.
 function determineTargetCard(state: w.GameState, target: w.Targetable | null): w.CardInGame | null {
-  const targetObj = isString(target) ? allObjectsOnBoard(state)[target] : target;
-  return (targetObj && 'card' in targetObj) ? targetObj.card : targetObj;
+  if (!target || target.hasOwnProperty('')) {
+    return null; // Return null if target is a player or null.
+  }
+
+  const targetObj = (isString(target) ? allObjectsOnBoard(state)[target] : target) as w.Object | w.CardInGame;
+  return ('card' in targetObj) ? targetObj.card : targetObj;
 }
 
 //
@@ -482,7 +486,7 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
   return state;
 }
 
-export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Target): w.GameState {
+export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Targetable): w.GameState {
   const player = currentPlayer(state);
   const targets = (player.target.chosen || []).concat([target]);
 
@@ -520,10 +524,10 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
 
 export function executeCmd(
   state: w.GameState,
-  cmd: string,
+  cmd: string | ((state: w.GameState) => any),
   currentObject: w.Object | null = null,
   source: w.Object | null = null
-): w.GameState {
+): w.GameState | w.Target {
   type BuildVocabulary = (state: w.GameState, currentObject: w.Object | null, source: w.Object | null) => any;
   const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
@@ -535,18 +539,22 @@ export function executeCmd(
 export function triggerEvent(
   state: w.GameState,
   triggerType: string,
-  target: w.Target | {} = {},
+  target: w.EventTarget,
   defaultBehavior: null | ((state: w.GameState) => w.GameState) = null
 ): w.GameState {
   // Formulate the trigger condition.
-  const defaultCondition = ((t: w.Target) => (target.condition ? target.condition(t) : true));
+  const defaultCondition = ((t: w.Trigger) => (target.condition ? target.condition(t) : true));
   let condition = defaultCondition;
   if (target.object) {
     state = Object.assign({}, state, {it: target.object});
-    condition = ((t) => t.targets.map((o: w.Object) => o.id).includes(target.object.id) && defaultCondition(t));
+    condition = ((t: w.Trigger) =>
+      (t.targets as w.Object[]).map((o: w.Object) => o.id).includes(target.object!.id) && defaultCondition(t)
+    );
   } else if (target.player) {
     state = Object.assign({}, state, {itP: currentPlayer(state)});
-    condition = ((t) => t.targets.map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t));
+    condition = ((t: w.Trigger) =>
+      (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t)
+    );
   }
   if (target.undergoer) {
     // Also store the undergoer (as opposed to agent) of the event if present.
@@ -559,7 +567,7 @@ export function triggerEvent(
     (object.triggers || Array<w.TriggeredAbility>())
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
-        t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
+        t.trigger.targets = (executeCmd(state, t.trigger.targetFunc, object) as w.Target).entries;
         return Object.assign({}, t, {object});
       })
       .filter((t) => t.trigger.type === triggerType && condition(t.trigger))

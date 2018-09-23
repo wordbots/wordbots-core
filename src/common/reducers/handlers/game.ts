@@ -1,4 +1,4 @@
-import { newGame, passTurn } from '../../util/game.ts';
+import { newGame, passTurn } from '../../util/game';
 
 import { setSelectedCard, placeCard } from './game/cards';
 import { deselect, setSelectedTile, moveRobot, attack, attackComplete, activateObject } from './game/board';

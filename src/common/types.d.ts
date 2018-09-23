@@ -7,6 +7,7 @@ import * as m from '../server/multiplayer/multiplayer';
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type ActivatedAbility = any; // TODO
 export type Attribute = 'attack' | 'health' | 'speed';
+export type CardId = string;
 export type CardType = number;
 export type Cause = string;
 export type DeckId = string;
@@ -15,10 +16,7 @@ export type HexId = string;
 export type ParserMode = 'event' | 'object';
 export type PassiveAbility = any; // TODO
 export type PlayerColor = 'blue' | 'orange';
-export type Target = any; // TODO
-export type Targetable = CardInGame | _Object | HexId;
-export type Trigger = any; // TODO
-export type TriggeredAbility = any; // TODO
+export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
 /* High-level types */
 
@@ -68,7 +66,7 @@ export interface CardInGame extends CardInStore {
 }
 
 export interface CardInStore {
-  id: string
+  id: CardId
   name: string
   img?: string  // Only kernels have images
   spriteID?: string
@@ -107,6 +105,18 @@ export interface SavedGame { // Interface for games stored in Firebase.
   winner: PlayerColor | null
 }
 
+export interface Target {
+  type: string
+  entries: Targetable[]
+}
+
+export interface EventTarget {
+  condition?: (trigger: Trigger) => boolean
+  object?: _Object
+  player?: boolean
+  undergoer?: _Object
+}
+
 /* Redux store types */
 
 export interface State {
@@ -121,7 +131,7 @@ export interface State {
 export interface CollectionState {
   cards: CardInStore[]
   decks: DeckInStore[]
-  deckBeingEdited: DeckId | null
+  deckBeingEdited: DeckInStore | null
   exportedJson: string | null
   firebaseLoaded: boolean
 }
@@ -190,6 +200,14 @@ export interface PlayerInGameState {
   robotsOnBoard: {
     [hexId: string]: _Object
   }
+  selectedCard: CardInGame | null
+  selectedTile: HexId | null
+  target: {
+    choosing: boolean
+    chosen: Targetable[] | null
+    possibleCards: CardId[]
+    possibleHexes: HexId[]
+  }
   [x: string]: any  // TODO Expose more field types as we need them
 }
 
@@ -215,6 +233,8 @@ interface _Object { // tslint:disable-line:class-name
   activatedAbilities?: ActivatedAbility[]
   effects?: Effect[]
   cantActivate?: boolean
+  cantAttack?: boolean
+  cantMove?: boolean
   attackedThisTurn?: boolean
   attackedLastTurn?: boolean
   movedThisTurn?: boolean
@@ -242,6 +262,21 @@ export interface StatAdjustment {
 export interface Effect {
   effect: string
   props: any
+}
+
+export interface TriggeredAbility {
+  action: (state: GameState) => any
+  object?: _Object
+  trigger: Trigger
+}
+
+export interface Trigger {
+  type: string
+  targetFunc: (state: GameState) => Target[]
+  targets?: Targetable[]
+
+  cause?: string
+  defenderType?: string
 }
 
 /* Creator state subcomponents */

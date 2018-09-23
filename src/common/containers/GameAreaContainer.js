@@ -266,8 +266,8 @@ export class GameAreaContainer extends React.Component {
     }
   }
 
-  movePiece = (hexId, asPartOfAttack = false) => {
-    this.props.onMoveRobot(this.props.selectedTile, hexId, asPartOfAttack);
+  movePiece = (hexId) => {
+    this.props.onMoveRobot(this.props.selectedTile, hexId);
   };
 
   attackPiece = (hexId, intermediateMoveHexId) => {

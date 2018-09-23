@@ -291,7 +291,6 @@ export interface Effect {
   props: any
 }
 
-<<<<<<< HEAD
 export interface ActivatedAbility {
   aid: AbilityId
   cmd: StringRepresentationOf<(state: GameState) => any>
@@ -325,8 +324,6 @@ export interface Trigger {
   defenderType?: string
 }
 
-=======
->>>>>>> fb5268675ab5e5147c94fce75033f614ae1b7791
 /* Creator state subcomponents */
 
 export interface Sentence {

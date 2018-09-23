@@ -71,7 +71,12 @@ export default class Hand extends React.Component {
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
       return (
-        <CSSTransition key={card.id} classNames="hand" exit={false} timeout={500}>
+        <CSSTransition
+          key={card.id === 'obfuscated' ? `obfuscated-${idx}` : card.id}
+          classNames="hand"
+          exit={false}
+          timeout={500}
+        >
           <CardInHand
             card={card}
             idx={idx}

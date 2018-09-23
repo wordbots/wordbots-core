@@ -6,10 +6,16 @@ export type Action = w.Action;
 export type ActionPayload = w.ActionPayload;
 export type ActionType = w.ActionType;
 export type Card = w.Card;
+export type CardInGame = w.CardInGame;
+export type CardInStore = w.CardInStore;
+export type ObfuscatedCard = w.ObfuscatedCard;
 export type Deck = w.Deck;
 export type Format = w.Format;
 export type GameState = w.GameState;
 export type GameOptions = w.GameOptions;
+export type PerPlayer<T> = w.PerPlayer<T>;
+export type PlayerColor = w.PlayerColor;
+export type PlayerInGameState = w.PlayerInGameState;
 
 export type ClientID = string;
 
@@ -30,7 +36,7 @@ export interface Game {
   spectators: ClientID[],
   actions: Action[],
   state: GameState,
-  decks: { blue: Card[], orange: Card[] },
+  decks: { blue: ObfuscatedCard[], orange: ObfuscatedCard[] },
   usernames: { blue: string, orange: string },
   startingSeed: string,
   winner: w.PlayerColor | null,

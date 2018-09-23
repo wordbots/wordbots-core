@@ -55,7 +55,7 @@ export interface DeckInStore {
   cardIds: string[]
 }
 
-export type Card = CardInGame | CardInStore;
+export type Card = CardInGame | CardInStore | ObfuscatedCard;
 
 export interface CardInGame extends CardInStore {
   baseCost: number
@@ -86,6 +86,10 @@ export interface CardInStore {
   spriteV?: number
   parserV?: number | null
   timestamp?: number
+}
+
+export interface ObfuscatedCard {
+  id: string
 }
 
 export interface Dictionary {
@@ -187,6 +191,9 @@ export interface GameOptions {
 
 export interface PlayerInGameState {
   name: PlayerColor
+  deck: Card[]
+  discardPile: Card[]
+  hand: Card[]
   robotsOnBoard: {
     [hexId: string]: _Object
   }
@@ -236,7 +243,7 @@ export interface Robot extends _Object {
 }
 
 export interface StatAdjustment {
-  func: (attr: number) => number
+  func: StringRepresentationOf<(attr: number) => number>
 }
 
 export interface Effect {

@@ -117,8 +117,8 @@ export default class Chat extends React.Component {
         }} onClick={this.props.toggleChat}>
           <FontIcon className="material-icons" style={{
             color: 'rgba(0, 0, 0, 0.4)',
-            fontSize: 32
-          }}>fast_rewind</FontIcon>
+            fontSize: 24
+          }}>chevron_left</FontIcon>
         </div>
         <div style={{
           writingMode: 'vertical-rl',
@@ -151,17 +151,17 @@ export default class Chat extends React.Component {
 
     return (
       <div style={{height: '100%'}}>
-        <Toolbar>
+        <Toolbar noGutter>
           <ToolbarGroup>
-            <ToolbarTitle text={chatTitle} />
+            <ToolbarTitle text={chatTitle} style={{ marginLeft: '0.75em' }} />
           </ToolbarGroup>
           <ToolbarGroup>
-            <IconButton onClick={this.toggleOptionsVisibility}>
-              <FontIcon color="#888" className="material-icons">settings_input_component</FontIcon>
+            <IconButton onClick={this.toggleOptionsVisibility} title="Toggle settings panel">
+              <FontIcon color="#888" className="material-icons">settings</FontIcon>
             </IconButton>
             {inGame && (
-              <IconButton onClick={toggleChat}>
-                <FontIcon color="#888" className="material-icons">fast_forward</FontIcon>
+              <IconButton onClick={toggleChat} title="Hide chat">
+                <FontIcon color="#888" className="material-icons">chevron_right</FontIcon>
               </IconButton>
             )}
           </ToolbarGroup>

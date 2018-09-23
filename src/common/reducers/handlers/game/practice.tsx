@@ -5,6 +5,7 @@ import * as w from '../../../types';
 import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
 import { id, convertRange } from '../../../util/common';
 import { isFlagSet } from '../../../util/browser';
+import { instantiateCard } from '../../../util/cards';
 import { lookupUsername } from '../../../util/firebase';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
@@ -19,10 +20,10 @@ import { setSelectedTile, moveRobot, attack } from './board';
 
 type State = w.GameState;
 
-export function startPractice(state: State, format: string, deck: w.Card[]): State {
-  const decks: w.PerPlayer<w.Card[]> = {
+export function startPractice(state: State, format: string, deck: w.CardInGame[]): State {
+  const decks: w.PerPlayer<w.CardInGame[]> = {
     orange: deck,
-    blue: shuffle(aiDeck).map((card) => ({ ...card, id: id() }))
+    blue: shuffle(aiDeck)
   };
 
   state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks, '0', format);
@@ -31,16 +32,16 @@ export function startPractice(state: State, format: string, deck: w.Card[]): Sta
   return state;
 }
 
-export function startSandbox(state: State, cardToTest: w.Card | null = null): State {
-  const decks: w.PerPlayer<w.Card[]> = {
+export function startSandbox(state: State, cardToTest: w.CardInStore | null = null): State {
+  const decks: w.PerPlayer<w.CardInGame[]> = {
     orange: shuffle(aiDeck).map((card) => ({ ...card, id: id() })),
     blue: shuffle(aiDeck).map((card) => ({ ...card, id: id() }))
   };
 
   if (cardToTest) {
     // If we're entering sandbox mode to test a card, add two copies of it to the top of the orange deck.
-    decks.orange.unshift(cardToTest);
-    decks.orange.unshift(cardToTest);
+    decks.orange.unshift(instantiateCard(cardToTest));
+    decks.orange.unshift(instantiateCard(cardToTest));
   }
 
   state = newGame(state, 'orange', {orange: lookupUsername('Orange'), blue: lookupUsername('Blue')}, decks);
@@ -177,7 +178,7 @@ function availableRobots(state: State, ai: w.PlayerInGameState): w.Object[] {
   );
 }
 
-const aiDeck: Array<Partial<w.CardInStore>> = [
+const aiDeck: w.CardInGame[] = [
   builtinCards.oneBotCard,
   builtinCards.oneBotCard,
   builtinCards.twoBotCard,
@@ -208,4 +209,4 @@ const aiDeck: Array<Partial<w.CardInStore>> = [
   builtinCards.thornyBushCard,
   builtinCards.thornyBushCard,
   builtinCards.leapFrogBotCard
-];
+].map((card) => instantiateCard({ ...card, id: id() }));

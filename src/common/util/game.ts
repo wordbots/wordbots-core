@@ -288,13 +288,13 @@ export function newGame(
   state: w.GameState,
   player: w.PlayerColor,
   usernames: w.PerPlayer<string>,
-  decks: w.PerPlayer<w.Card[]>,
+  decks: w.PerPlayer<w.CardInGame[]>,
   seed: string = '0',
   gameFormat = DEFAULT_GAME_FORMAT,
   gameOptions: w.GameOptions = {}
 ): w.GameState {
-  return GameFormat.fromString(gameFormat)
-                 .startGame(state, player, usernames, decks, gameOptions, seed);
+  const format: GameFormat = GameFormat.fromString(gameFormat);
+  return format.startGame(state, player, usernames, decks, gameOptions, seed);
 }
 
 export function passTurn(state: w.GameState, player: w.PlayerColor): w.GameState {

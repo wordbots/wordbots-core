@@ -273,7 +273,7 @@ export function logAction(
   const targetCards = target ? {[target.name]: target} : {};
 
   const message = {
-    id: state.actionId,
+    id: state.actionId!,
     user: '[Game]',
     text: `${playerStr}${action}${targetStr}.`,
     timestamp: timestamp || Date.now(),

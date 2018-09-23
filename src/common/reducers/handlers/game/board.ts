@@ -137,7 +137,7 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
 export function attackComplete(state: State): State {
   if (state.attack && state.attack.from && state.attack.to) {
-    const [source, target] = [state.attack.from, state.attack.to];
+    const [source, target]: w.HexId[] = [state.attack.from, state.attack.to];
 
     const attacker: w.Object = currentPlayer(state).robotsOnBoard[source];
     const defender: w.Object = opponentPlayer(state).robotsOnBoard[target];

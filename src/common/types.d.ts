@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as fb from 'firebase';
+import * as fjp from 'fast-json-patch';
 
 import * as m from '../server/multiplayer/multiplayer';
 
@@ -160,24 +161,35 @@ export interface CreatorState {
 }
 
 export interface GameState {
-  callbackAfterTargetSelected?: (state: GameState) => GameState
+  actionLog: LoggedAction[]
+  attack: Attack | null
   currentTurn: PlayerColor,
+  eventQueue: CardInGame[]
   gameFormat: Format
-  it?: _Object
+  memory: Record<string, any>
   options: GameOptions
   player: PlayerColor,
   players: PerPlayer<PlayerInGameState>
   practice: boolean
   rng: () => number,
   sandbox: boolean
+  sfxQueue: string[]
   started: boolean
   storeKey: 'game'
-  that?: _Object
   tutorial: boolean
-  tutorialCurrentStepIdx?: number
-  tutorialSteps?: TutorialStepInScript[]
   usernames: PerPlayer<string>
   winner: PlayerColor | null
+
+  actionId?: string
+  callbackAfterTargetSelected?: (state: GameState) => GameState
+  currentCmdText?: string
+  eventExecuting?: boolean
+  invalid?: boolean
+  it?: _Object
+  that?: _Object
+  tutorialCurrentStepIdx?: number
+  tutorialSteps?: TutorialStepInScript[]
+  undoStack?: fjp.Operation[][]
 }
 
 export interface GlobalState {
@@ -209,13 +221,13 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
-  deck: Array<CardInGame | ObfuscatedCard>
-  discardPile: Array<CardInGame | ObfuscatedCard>
+  deck: PossiblyObfuscatedCard[]
+  discardPile: PossiblyObfuscatedCard[]
   energy: {
     available: number
     total: number
   }
-  hand: Array<CardInGame | ObfuscatedCard>
+  hand: PossiblyObfuscatedCard[]
   name: PlayerColor
   robotsOnBoard: {
     [hexId: string]: _Object
@@ -314,6 +326,19 @@ export interface Trigger {
   cardType?: string
   cause?: Cause
   defenderType?: string
+}
+
+export interface Attack {
+  from: HexId
+  to: HexId
+}
+
+export interface LoggedAction {
+  id: string
+  user: string
+  text: string
+  timestamp: number
+  cards: Record<string, CardInGame>
 }
 
 /* Creator state subcomponents */

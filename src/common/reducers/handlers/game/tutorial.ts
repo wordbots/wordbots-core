@@ -36,15 +36,15 @@ function nextStep(state: State, action: w.Action | null = null): State {
       state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx! + 1;
     }
 
-    state.undoStack.push(compare(state, oldState));
+    state.undoStack!.push(compare(state, oldState));
   }
 
   return state;
 }
 
 function prevStep(state: State): State {
-  if (state.undoStack.length > 0) {
-    applyPatch(state, state.undoStack.pop());
+  if (state.undoStack!.length > 0) {
+    applyPatch(state, state.undoStack!.pop()!);
   }
 
   return state;

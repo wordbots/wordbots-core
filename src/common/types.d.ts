@@ -221,6 +221,7 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
+  collection: PossiblyObfuscatedCard[]
   deck: PossiblyObfuscatedCard[]
   discardPile: PossiblyObfuscatedCard[]
   energy: {
@@ -234,13 +235,16 @@ export interface PlayerInGameState {
   }
   selectedCard: number | null
   selectedTile: HexId | null
+  status: {
+    message: string
+    type: 'text' | 'error' | ''
+  }
   target: {
     choosing: boolean
     chosen: Targetable[] | null
     possibleCards: CardId[]
     possibleHexes: HexId[]
   }
-  [x: string]: any  // TODO Expose more field types as we need them
 }
 
 // Object is not a valid type name, but we want to export `types.Object`,

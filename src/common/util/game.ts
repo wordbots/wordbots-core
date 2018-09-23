@@ -471,7 +471,7 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
 }
 
 export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex: w.HexId): w.GameState {
-  const ownerName = (ownerOf(state, object) as w.PlayerInGameState).name;
+  const ownerName: w.PlayerColor = (ownerOf(state, object) as w.PlayerInGameState).name;
 
   delete state.players[ownerName].robotsOnBoard[hex];
 
@@ -486,8 +486,8 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
 }
 
 export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Targetable): w.GameState {
-  const player = currentPlayer(state);
-  const targets = (player.target.chosen || []).concat([target]);
+  const player: w.PlayerInGameState = currentPlayer(state);
+  const targets: w.Targetable[] = (player.target.chosen || []).concat([target]);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
@@ -498,7 +498,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
   };
 
   // Perform the trigger (in a temp state because we may need more targets yet).
-  const tempState = state.callbackAfterTargetSelected!(state);
+  const tempState: w.GameState = state.callbackAfterTargetSelected!(state);
 
   if (tempState.players[player.name].target.choosing) {
     // Still need more targets!
@@ -543,7 +543,8 @@ export function triggerEvent(
 ): w.GameState {
   // Formulate the trigger condition.
   const defaultCondition = ((t: w.Trigger) => (target.condition ? target.condition(t) : true));
-  let condition = defaultCondition;
+  let condition: ((t: w.Trigger) => boolean) = defaultCondition;
+
   if (target.object) {
     state = Object.assign({}, state, {it: target.object});
     condition = ((t: w.Trigger) =>
@@ -588,7 +589,7 @@ export function triggerEvent(
     //         state.it = (destroyed robot)
     //         t.object = Arena
     //         "its controller" should = (destroyed robot)
-    const currentObject = state.it || t.object;
+    const currentObject: w.Object = state.it || t.object;
     executeCmd(state, t.action, currentObject);
   });
 

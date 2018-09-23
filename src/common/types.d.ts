@@ -163,6 +163,7 @@ export interface GameState {
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentTurn: PlayerColor,
   gameFormat: Format
+  it?: _Object
   options: GameOptions
   player: PlayerColor,
   players: PerPlayer<PlayerInGameState>
@@ -171,12 +172,12 @@ export interface GameState {
   sandbox: boolean
   started: boolean
   storeKey: 'game'
+  that?: _Object
   tutorial: boolean
   tutorialCurrentStepIdx?: number
   tutorialSteps?: TutorialStepInScript[]
   usernames: PerPlayer<string>
   winner: PlayerColor | null
-  [x: string]: any  // TODO Expose more field types as we need them
 }
 
 export interface GlobalState {

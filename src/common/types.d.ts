@@ -207,13 +207,13 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
-  deck: CardInGame[]
-  discardPile: CardInGame[]
+  deck: Array<CardInGame | ObfuscatedCard>
+  discardPile: Array<CardInGame | ObfuscatedCard>
   energy: {
     available: number
     total: number
   }
-  hand: CardInGame[]
+  hand: Array<CardInGame | ObfuscatedCard>
   name: PlayerColor
   robotsOnBoard: {
     [hexId: string]: _Object

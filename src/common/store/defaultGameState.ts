@@ -5,11 +5,11 @@ import * as cards from './cards';
 
 const STARTING_PLAYER = 'orange';
 
-export function bluePlayerState(collection: w.CardInGame[]): w.PlayerInGameState {
+export function bluePlayerState(collection: Array<w.CardInGame | w.ObfuscatedCard>): w.PlayerInGameState {
   return playerState('blue', collection, cards.blueCoreCard, BLUE_CORE_HEX);
 }
 
-export function orangePlayerState(collection: w.CardInGame[]): w.PlayerInGameState {
+export function orangePlayerState(collection: Array<w.CardInGame | w.ObfuscatedCard>): w.PlayerInGameState {
   return playerState('orange', collection, cards.orangeCoreCard, ORANGE_CORE_HEX);
 }
 
@@ -17,7 +17,12 @@ export function arbitraryPlayerState(): w.PlayerInGameState {
   return bluePlayerState([]);
 }
 
-function playerState(color: w.PlayerColor, collection: w.CardInGame[], coreCard: w.CardInGame, coreHexId: string): w.PlayerInGameState {
+function playerState(
+  color: w.PlayerColor,
+  collection: Array<w.CardInGame | w.ObfuscatedCard>,
+  coreCard: w.CardInGame,
+  coreHexId: string
+): w.PlayerInGameState {
   return {
     name: color,
     energy: {

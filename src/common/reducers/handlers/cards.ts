@@ -53,7 +53,7 @@ const cardsHandlers = {
     return state;
   },
 
-  openCardForEditing: (state: State, card: w.CardInStore): State => {
+  openCardForEditing: (state: w.CreatorState, card: w.CardInStore): w.CreatorState => {
     return Object.assign(state, {
       id: card.id,
       name: card.name,

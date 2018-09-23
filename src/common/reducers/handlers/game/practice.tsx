@@ -5,7 +5,7 @@ import * as w from '../../../types';
 import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
 import { id, convertRange } from '../../../util/common';
 import { isFlagSet } from '../../../util/browser';
-import { instantiateCard } from '../../../util/cards';
+import { assertCardVisible, instantiateCard } from '../../../util/cards';
 import { lookupUsername } from '../../../util/firebase';
 import {
   validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
@@ -165,7 +165,8 @@ function priority(hexId: w.HexId): number {
 }
 
 function availableCards(state: State, ai: w.PlayerInGameState): w.CardInGame[] {
-  return ai.hand.filter((card) =>
+  const cards: w.CardInGame[] = ai.hand.map(assertCardVisible);
+  return cards.filter((card) =>
     card.cost <= ai.energy.available &&
       (card.type === TYPE_EVENT || validPlacementHexes(state, ai.name, card.type).length > 0)
   );

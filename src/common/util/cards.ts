@@ -54,10 +54,10 @@ export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = n
 }
 
 export function assertCardVisible(card: w.CardInGame | w.ObfuscatedCard): w.CardInGame {
-  if (!card.name) {
-    throw Exception('Expected a visible card but received an obfuscated card!');
+  if (card.hasOwnProperty('name')) {
+    return card as w.CardInGame;
   } else {
-    return card;
+    throw new Error('Expected a visible card but received an obfuscated card!');
   }
 }
 

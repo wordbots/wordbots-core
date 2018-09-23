@@ -11,7 +11,7 @@ const defaultState: w.CreatorState = {
   attack: 1,
   speed: 1,
   health: 1,
-  energy: 1,
+  cost: 1,
   parserVersion: null
 };
 

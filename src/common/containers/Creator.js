@@ -22,7 +22,7 @@ export function mapStateToProps(state) {
     attack: state.creator.attack,
     speed: state.creator.speed,
     health: state.creator.health,
-    cost: state.creator.energy,
+    cost: state.creator.cost,
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
@@ -129,7 +129,7 @@ export class Creator extends React.Component {
             attack={this.props.attack}
             speed={this.props.speed}
             health={this.props.health}
-            energy={this.props.cost}
+            cost={this.props.cost}
             text={this.props.text}
             sentences={this.props.sentences}
             isNewCard={!(this.props.id && this.props.cards.find(card => card.id === this.props.id))}

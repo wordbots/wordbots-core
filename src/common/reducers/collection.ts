@@ -1,13 +1,16 @@
 import { isArray, reduce } from 'lodash';
 
-import defaultState from '../store/defaultCollectionState.ts';
+import * as w from '../types';
+import defaultState from '../store/defaultCollectionState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as globalActions from '../actions/global';
 
 import c from './handlers/cards';
 
-export default function collection(oldState = defaultState, action) {
+type State = w.CollectionState;
+
+export default function collection(oldState: State = defaultState, action: w.Action): State {
   const state = Object.assign({}, oldState);
 
   if (isArray(action)) {

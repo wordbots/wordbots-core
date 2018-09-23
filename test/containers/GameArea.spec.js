@@ -10,7 +10,7 @@ import VictoryScreen from '../../src/common/components/game/VictoryScreen';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 import * as actions from '../../src/common/actions/game';
-import gameReducer from '../../src/common/reducers/game';
+import gameReducer from '../../src/common/reducers/game.ts';
 
 describe('GameArea container', () => {
   it('renders the default game state', () => {

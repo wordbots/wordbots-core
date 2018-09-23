@@ -1,21 +1,24 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
+import * as w from '../types';
 import { DEFAULT_GAME_FORMAT } from '../constants';
-import { id } from '../util/common.ts';
-import { triggerSound } from '../util/game.ts';
-import { replaceCardsInPlayerState } from '../util/cards.ts';
+import { id } from '../util/common';
+import { triggerSound } from '../util/game';
+import { replaceCardsInPlayerState } from '../util/cards';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
-import defaultState from '../store/defaultGameState.ts';
+import defaultState from '../store/defaultGameState';
 
 import g from './handlers/game';
 
-const PURELY_VISUAL_ACTIONS = [actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE];
+type State = w.GameState;
 
-export default function game(state = cloneDeep(defaultState), action, allowed = false) {
+const PURELY_VISUAL_ACTIONS: w.ActionType[] = [actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE];
+
+export default function game(state: State = cloneDeep(defaultState), action: w.Action, allowed?: boolean): State {
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
-    return reduce(action, game, state);
+    return reduce(action, (s: State, a: w.Action) => game(s, a), state);
   } else if (state.tutorial && !allowed) {
     // In tutorial mode, only one specific action is allowed at any given time.
     return g.handleTutorialAction(state, action);
@@ -24,8 +27,8 @@ export default function game(state = cloneDeep(defaultState), action, allowed = 
   }
 }
 
-export function handleAction(oldState, { type, payload }) {
-  let state = Object.assign({}, oldState);
+export function handleAction(oldState: State, { type, payload }: w.Action): State {
+  let state: State = Object.assign({}, oldState);
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
     state = Object.assign(state, {
@@ -93,8 +96,8 @@ export function handleAction(oldState, { type, payload }) {
     case actions.ADD_CARD_TO_TOP_OF_DECK: {
       // Only to be used in sandbox mode.
       const { player } = payload;
-      const card = { ...payload.card, id: id() };
-      state.players[player].deck.unshift(card);
+      const card: w.CardInGame = { ...payload.card, id: id() };
+      state.players[player as w.PlayerColor].deck.unshift(card);
       return state;
     }
 
@@ -103,7 +106,7 @@ export function handleAction(oldState, { type, payload }) {
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
-      return reduce(payload.actions, game, state);
+      return reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state);
 
     case socketActions.REVEAL_CARDS: {
       const { blue, orange } = payload;

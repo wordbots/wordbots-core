@@ -1,5 +1,7 @@
 import * as fb from 'firebase';
 
+import * as m from '../server/multiplayer/multiplayer';
+
 /* Simple types */
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
@@ -10,7 +12,6 @@ export type Cause = string;
 export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
-export type ParseResult = any; // TODO
 export type ParserMode = 'event' | 'object';
 export type PassiveAbility = any; // TODO
 export type PlayerColor = 'blue' | 'orange';
@@ -83,7 +84,7 @@ export interface CardInStore {
   command?: string | string[]
   source?: string
   spriteV?: number
-  parserV?: number
+  parserV?: number | null
   timestamp?: number
 }
 
@@ -130,7 +131,17 @@ export interface CollectionState {
 }
 
 export interface CreatorState {
-  [x: string]: any  // TODO Expose more field types as we need them
+  attack: number
+  cost: number
+  health: number
+  id: string | null
+  name: string
+  parserVersion: number | null
+  sentences: Sentence[]
+  speed: number
+  spriteID: string
+  text: string
+  type: CardType
 }
 
 export interface GameState {
@@ -151,12 +162,24 @@ export interface GameState {
 }
 
 export interface GlobalState {
+  dictionary?: Dictionary
   renderId: number
   user: fb.User | null
 }
 
 export interface SocketState {
-  [x: string]: any  // TODO Expose more field types as we need them
+  chatMessages: ChatMessage[]
+  clientId: m.ClientID | null
+  connected: boolean
+  connecting: boolean
+  gameName: string | null
+  games: m.Game[]
+  hosting: boolean
+  inQueue: number
+  playersOnline: m.ClientID[]
+  queuing: boolean
+  userDataByClientId: Record<m.ClientID, m.UserData>
+  waitingPlayers: m.GameWaitingForPlayers[]
 }
 
 /* Game state subcomponents */
@@ -226,4 +249,25 @@ export interface StatAdjustment {
 export interface Effect {
   effect: string
   props: any
+}
+
+/* Creator state subcomponents */
+
+export interface Sentence {
+  sentence: string
+  result: ParseResult
+}
+
+export interface ParseResult {
+  error?: string
+  js?: StringRepresentationOf<() => void>
+  // TODO
+}
+
+/* Socket state subcomponents */
+
+export interface ChatMessage {
+  text: string
+  timestamp: number
+  user: string
 }

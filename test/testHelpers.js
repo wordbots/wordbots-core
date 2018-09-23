@@ -6,7 +6,7 @@ import {
   drawCards, applyAbilities
 } from '../src/common/util/game.ts';
 import { instantiateCard } from '../src/common/util/cards.ts';
-import game from '../src/common/reducers/game';
+import game from '../src/common/reducers/game.ts';
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
 import { collection } from '../src/common/store/cards.ts';

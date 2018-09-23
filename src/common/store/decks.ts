@@ -2,7 +2,7 @@ import * as w from '../types';
 
 import * as cards from './cards';
 
-function createDeck(cardCounts: Array<[w.Partial<w.CardInStore>, number]>): w.CardInStore[] {
+function createDeck(cardCounts: Array<[Partial<w.CardInStore>, number]>): w.CardInStore[] {
   const deck: w.CardInStore[] = [];
   cardCounts.forEach(([card, num]) => {
     deck.push(...new Array(num).fill(card));

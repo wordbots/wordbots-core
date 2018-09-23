@@ -5,7 +5,6 @@ import * as m from '../server/multiplayer/multiplayer';
 
 /* Simple types */
 
-export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardId = string;
@@ -16,20 +15,13 @@ export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
+
+export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
+export type Card = CardInGame | CardInStore | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
-/* High-level types */
-
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
-
-export type PerPlayer<T> = {
-  [P in PlayerColor]: T
-};
-
-// Not actually typechecked but can be useful documentation for stringified functions.
-type StringRepresentationOf<T> = string;
+export type PerPlayer<T> = Record<PlayerColor, T>;
+export type StringRepresentationOf<T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
 /* Library types */
 
@@ -52,8 +44,6 @@ export interface DeckInStore {
   name: string
   cardIds: string[]
 }
-
-export type Card = CardInGame | CardInStore | ObfuscatedCard;
 
 export interface CardInGame extends CardInStore {
   baseCost: number
@@ -320,7 +310,7 @@ export interface Trigger {
   targets?: Targetable[]
 
   cardType?: string
-  cause?: string
+  cause?: Cause
   defenderType?: string
 }
 

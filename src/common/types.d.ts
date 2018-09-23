@@ -1,3 +1,4 @@
+import * as React from 'react';
 import * as fb from 'firebase';
 
 import * as m from '../server/multiplayer/multiplayer';
@@ -5,7 +6,6 @@ import * as m from '../server/multiplayer/multiplayer';
 /* Simple types */
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
-export type ActivatedAbility = any; // TODO
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardId = string;
 export type CardType = number;
@@ -14,7 +14,6 @@ export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
 export type ParserMode = 'event' | 'object';
-export type PassiveAbility = any; // TODO
 export type PlayerColor = 'blue' | 'orange';
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
@@ -97,10 +96,22 @@ export interface Dictionary {
   examplesByNode?: { [token: string]: string[] }
 }
 
-export interface TutorialStep {
+export interface TutorialStep extends TutorialStepInScript {
   idx: number
   numSteps: number
-  [x: string]: any  // TODO Expose more field types as we need them
+}
+
+export interface TutorialStepInScript {
+  action?: Action | string
+  responses?: Action[]
+  tooltip: {
+    backButton?: React.ReactElement<any>,
+    card?: string
+    hex?: HexId
+    location?: string
+    place?: string
+    text: string
+  }
 }
 
 export interface SavedGame { // Interface for games stored in Firebase.
@@ -168,7 +179,9 @@ export interface GameState {
   started: boolean
   storeKey: 'game'
   tutorial: boolean
-  usernames: PerPlayer<string> | {}
+  tutorialCurrentStepIdx?: number
+  tutorialSteps?: TutorialStepInScript[]
+  usernames: PerPlayer<string>
   winner: PlayerColor | null
   [x: string]: any  // TODO Expose more field types as we need them
 }
@@ -210,9 +223,6 @@ export interface PlayerInGameState {
   }
   hand: CardInGame[]
   name: PlayerColor
-  deck: Card[]
-  discardPile: Card[]
-  hand: Card[]
   robotsOnBoard: {
     [hexId: string]: _Object
   }
@@ -248,6 +258,7 @@ interface _Object { // tslint:disable-line:class-name
   abilities: PassiveAbility[]
   activatedAbilities?: ActivatedAbility[]
   effects?: Effect[]
+
   cantActivate?: boolean
   cantAttack?: boolean
   cantMove?: boolean
@@ -258,14 +269,11 @@ interface _Object { // tslint:disable-line:class-name
   beingDestroyed?: boolean
   isDestroyed?: boolean
   justPlayed?: boolean
-  // TODO
 }
 export type Object = _Object;
 
 export interface Robot extends _Object {
   type: 0
-  cantAttack?: boolean
-  cantMove?: boolean
   attackedThisTurn: boolean
   attackedLastTurn: boolean
   movedThisTurn: boolean
@@ -281,8 +289,23 @@ export interface Effect {
   props: any
 }
 
+export interface ActivatedAbility {
+  id?: string
+}
+
+export interface PassiveAbility {
+  aid: string
+  apply: (target: Targetable) => Targetable
+  currentTargets?: Target
+  disabled?: boolean
+  duration?: number
+  targets: StringRepresentationOf<(state: GameState) => Target>
+  unapply: (target: Targetable) => Targetable
+}
+
 export interface TriggeredAbility {
   action: (state: GameState) => any
+  duration?: number
   object?: _Object
   trigger: Trigger
 }

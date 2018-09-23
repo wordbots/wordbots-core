@@ -333,13 +333,14 @@ function startTurn(state: w.GameState): w.GameState {
 }
 
 function endTurn(state: w.GameState): w.GameState {
-  function decrementDuration(abilityOrTrigger: w.Ability): w.Ability {
-    const duration = abilityOrTrigger.duration;
+  function decrementDuration(abilityOrTrigger: w.PassiveAbility | w.TriggeredAbility): w.PassiveAbility | w.TriggeredAbility | null {
+    const duration: number | undefined = abilityOrTrigger.duration;
     if (duration) {
       if (duration === 1) {
         // Time's up: Unapply the ability and remove it.
-        if (abilityOrTrigger.unapply) {
-          abilityOrTrigger.currentTargets.entries.forEach(abilityOrTrigger.unapply);
+        if (abilityOrTrigger.hasOwnProperty('unapply')) {
+          const ability: w.PassiveAbility = abilityOrTrigger as w.PassiveAbility;
+          ability.currentTargets!.entries.forEach(ability.unapply);
         }
         return null;
       } else {
@@ -477,7 +478,7 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
   // Unapply any abilities that this object had.
   (object.abilities || Array<w.Ability>())
     .filter((ability) => ability.currentTargets)
-    .forEach((ability) => { ability.currentTargets.entries.forEach(ability.unapply); });
+    .forEach((ability) => { ability.currentTargets!.entries.forEach(ability.unapply); });
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);
@@ -596,7 +597,7 @@ export function triggerEvent(
 
 export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    const abilities = obj.abilities || Array<w.Ability>();
+    const abilities: w.PassiveAbility[] = obj.abilities || Array<w.PassiveAbility>();
 
     abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
@@ -607,7 +608,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
       if (!ability.disabled) {
         // Apply this ability to all targeted objects.
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
-        ability.currentTargets = executeCmd(state, ability.targets, obj);
+        ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
         ability.currentTargets.entries.forEach(ability.apply);
       }
     });

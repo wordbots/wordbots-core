@@ -288,7 +288,7 @@ export function newGame(
   state: w.GameState,
   player: w.PlayerColor,
   usernames: w.PerPlayer<string>,
-  decks: w.PerPlayer<Array<w.CardInGame | w.ObfuscatedCard>>,
+  decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>,
   seed: string = '0',
   gameFormat = DEFAULT_GAME_FORMAT,
   gameOptions: w.GameOptions = {}

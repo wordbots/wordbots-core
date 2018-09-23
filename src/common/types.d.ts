@@ -18,6 +18,7 @@ export type PlayerColor = 'blue' | 'orange';
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type Card = CardInGame | CardInStore | ObfuscatedCard;
+export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
 export type PerPlayer<T> = Record<PlayerColor, T>;

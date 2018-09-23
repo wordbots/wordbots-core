@@ -54,7 +54,7 @@ export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = n
 }
 
 // Given a card that may be obfuscated, assert that it is unobfuscated.
-export function assertCardVisible(card: w.CardInGame | w.ObfuscatedCard): w.CardInGame {
+export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame {
   if (card.hasOwnProperty('name')) {
     return card as w.CardInGame;
   } else {
@@ -66,7 +66,11 @@ export function assertCardVisible(card: w.CardInGame | w.ObfuscatedCard): w.Card
 // Used in handling REVEAL_CARDS actions.
 export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
-  newCards: {deck?: w.CardInGame[], hand?: w.CardInGame[], discardPile?: w.CardInGame[]} = {}
+  newCards: {
+    deck?: w.PossiblyObfuscatedCard[],
+    hand?: w.PossiblyObfuscatedCard[],
+    discardPile?: w.PossiblyObfuscatedCard[]
+  } = {}
 ): w.PlayerInGameState {
   return {
     ...playerState,

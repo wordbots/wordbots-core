@@ -16,11 +16,14 @@ import defaultState from '../../../store/defaultGameState';
 type State = w.GameState;
 
 function nextStep(state: State, action: w.Action | null = null): State {
+  function isAction(a: w.Action | string | undefined): a is w.Action {
+    return (a as w.Action).type !== undefined;
+  }
+
   if (state.tutorialCurrentStepIdx! < state.tutorialSteps!.length) {
     const oldState: State = cloneDeep(state);
     const currentStep: w.TutorialStep = currentTutorialStep(state)!;
-    const currentStepAction: w.Action | null = ((currentStep.action && currentStep.action.hasOwnProperty('type')) ? (currentStep.action as w.Action) : null);
-    action = action || currentStepAction;
+    action = action || (isAction(currentStep.action) ? currentStep.action : null);
 
     if (action) {
       state = handleAction(state, action);

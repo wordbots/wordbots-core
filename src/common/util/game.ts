@@ -4,6 +4,7 @@ import {
 } from 'lodash';
 
 import * as w from '../types';
+import * as g from '../guards';
 import {
   DEFAULT_GAME_FORMAT, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
@@ -148,12 +149,12 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
 
 // Given a target that may be a card, object, or hex, return the appropriate card if possible.
 function determineTargetCard(state: w.GameState, target: w.Targetable | null): w.CardInGame | null {
-  if (!target || target.hasOwnProperty('')) {
-    return null; // Return null if target is a player or null.
+  if (!target || g.isPlayerState(target)) {
+    return null;
+  } else {
+    const targetObj = (isString(target) ? allObjectsOnBoard(state)[target] : target);
+    return g.isObject(targetObj) ? targetObj.card : targetObj;
   }
-
-  const targetObj = (isString(target) ? allObjectsOnBoard(state)[target] : target) as w.Object | w.CardInGame;
-  return (targetObj && 'card' in targetObj) ? targetObj.card : targetObj;
 }
 
 //
@@ -333,21 +334,20 @@ function startTurn(state: w.GameState): w.GameState {
 }
 
 function endTurn(state: w.GameState): w.GameState {
-  function decrementDuration(abilityOrTrigger: w.PassiveAbility | w.TriggeredAbility): w.PassiveAbility | w.TriggeredAbility | null {
-    const duration: number | undefined = abilityOrTrigger.duration;
+  function decrementDuration(ability: w.PassiveAbility | w.TriggeredAbility): w.PassiveAbility | w.TriggeredAbility | null {
+    const duration: number | undefined = ability.duration;
     if (duration) {
       if (duration === 1) {
         // Time's up: Unapply the ability and remove it.
-        if (abilityOrTrigger.hasOwnProperty('unapply')) {
-          const ability: w.PassiveAbility = abilityOrTrigger as w.PassiveAbility;
+        if (g.isPassiveAbility(ability)) {
           ability.currentTargets!.entries.forEach(ability.unapply);
         }
         return null;
       } else {
-        return Object.assign({}, abilityOrTrigger, {duration: duration ? duration - 1 : null});
+        return Object.assign({}, ability, {duration: duration ? duration - 1 : null});
       }
     } else {
-      return abilityOrTrigger;
+      return ability;
     }
   }
 

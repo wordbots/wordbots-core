@@ -4,6 +4,7 @@ import {
 } from 'lodash';
 
 import * as w from '../types';
+import * as g from '../guards';
 import {
   KEEP_DECKS_UNSHUFFLED,
   CARD_SCHEMA_VERSION, SPRITE_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
@@ -55,10 +56,10 @@ export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = n
 
 // Given a card that may be obfuscated, assert that it is unobfuscated.
 export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame {
-  if (card.hasOwnProperty('name')) {
-    return card as w.CardInGame;
-  } else {
+  if (g.isCardObfuscated(card)) {
     throw new Error('Expected a visible card but received an obfuscated card!');
+  } else {
+    return card;
   }
 }
 

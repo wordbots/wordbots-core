@@ -6,6 +6,7 @@ import * as m from '../server/multiplayer/multiplayer';
 /* Simple types */
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
+export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardId = string;
 export type CardType = number;
@@ -79,7 +80,7 @@ export interface CardInStore {
   }
   text?: string
   abilities?: string[]
-  command?: string | string[]
+  command?: StringRepresentationOf<(state: GameState) => any> | Array<StringRepresentationOf<(state: GameState) => any>>
   source?: string
   spriteV?: number
   parserV?: number | null
@@ -290,11 +291,13 @@ export interface Effect {
 }
 
 export interface ActivatedAbility {
-  id?: string
+  aid: AbilityId
+  cmd: StringRepresentationOf<(state: GameState) => any>
+  text: string
 }
 
 export interface PassiveAbility {
-  aid: string
+  aid: AbilityId
   apply: (target: Targetable) => Targetable
   currentTargets?: Target
   disabled?: boolean

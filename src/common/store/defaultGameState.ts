@@ -69,7 +69,7 @@ const defaultState: w.GameState = {
   options: {},
   currentTurn: STARTING_PLAYER,
   player: STARTING_PLAYER,
-  usernames: {},
+  usernames: { blue: '', orange: '' },
   hoveredCard: null,
   actionLog: [],
   attack: null,

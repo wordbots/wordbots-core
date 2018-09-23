@@ -57,7 +57,7 @@ export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = n
 // Used in handling REVEAL_CARDS actions.
 export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
-  newCards: {deck?: w.Card[], hand?: w.Card[], discardPile?: w.Card[]} = {}
+  newCards: {deck?: w.CardInGame[], hand?: w.CardInGame[], discardPile?: w.CardInGame[]} = {}
 ): w.PlayerInGameState {
   return {
     ...playerState,

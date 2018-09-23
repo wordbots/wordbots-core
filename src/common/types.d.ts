@@ -104,6 +104,7 @@ export interface TutorialStep extends TutorialStepInScript {
 
 export interface TutorialStepInScript {
   action?: Action | string
+  highlight?: boolean
   responses?: Action[]
   tooltip: {
     backButton?: React.ReactElement<any>,

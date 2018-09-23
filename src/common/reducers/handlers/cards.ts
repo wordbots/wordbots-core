@@ -99,7 +99,7 @@ const cardsHandlers = {
 };
 
 // Saves a card, either as a new card or replacing an existing card.
-function saveCard(state: State, card: w.Card): State {
+function saveCard(state: State, card: w.CardInStore): State {
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
   const existingCard = state.cards.find((c) => c.id === card.id || areIdenticalCards(c, card));

@@ -53,6 +53,7 @@ export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = n
   );
 }
 
+// Given a card that may be obfuscated, assert that it is unobfuscated.
 export function assertCardVisible(card: w.CardInGame | w.ObfuscatedCard): w.CardInGame {
   if (card.hasOwnProperty('name')) {
     return card as w.CardInGame;

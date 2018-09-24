@@ -47,7 +47,9 @@ class RecentGames extends Component {
 
   renderRecentGame = (recentGame, index) => {
     const { userId, playerNames, classes } = this.props;
-    const opponent = playerNames[Object.values(recentGame.players).find((player) => player !== userId)] || playerNames[userId];
+
+    const opponentId = Object.values(recentGame.players).find((player) => player !== userId);
+    const opponent = isNil(opponentId) ? 'Guest' : playerNames[opponentId] || playerNames[userId];
     const wasVictory = recentGame.players[recentGame.winner] === userId;
 
     const formatIcons = {

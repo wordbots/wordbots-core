@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bool, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
-const Title = ({ text, small }) => (
+const Title = ({ text, small = false }) => (
   <Paper style={{
     display: 'inline-block',
     padding: '5px 15px',

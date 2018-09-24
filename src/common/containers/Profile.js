@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { object, func } from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { zipObject, uniq } from 'lodash';
+import { zipObject, uniq, flatten } from 'lodash';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -86,7 +86,7 @@ class Profile extends Component {
   }
 
   async loadRecentGamesData(userId, recentGames) {
-    const playerIds = uniq(recentGames.map((recentGame) => Object.values(recentGame.players)).flat());
+    const playerIds = uniq(flatten(recentGames.map((recentGame) => Object.values(recentGame.players)))).filter((playerId) => !playerId.startsWith('guest'));
     const playerNamesList = await getUserNamesByIds(playerIds);
     const playerNames = zipObject(playerIds, playerNamesList);
 

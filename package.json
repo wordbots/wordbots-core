@@ -125,7 +125,7 @@
     "react-transform-catch-errors": "^1.0.2",
     "react-transform-hmr": "^1.0.4",
     "redbox-react": "^1.5.0",
-    "ts-jest": "^23.0.0",
+    "ts-jest": "^23.10.2",
     "ts-loader": "^4.3.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3",

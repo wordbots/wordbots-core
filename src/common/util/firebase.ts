@@ -118,6 +118,12 @@ export function saveUserData(key: string, value: any): void {
     .catch(noop);
 }
 
+export async function getUserNamesByIds(userIds: Array<string>): Promise<string[]> {
+  const userLookupRefs = userIds.map((userId) => fb.database().ref(`users/${userId}`).once('value'));
+  const users = await Promise.all(userLookupRefs);
+  return users.map((user) => user.val().info.displayName);
+}
+
 // Game results
 
 export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {
@@ -218,4 +224,33 @@ export function indexParsedSentence(sentence: string, tokens: string[], js: stri
       });
     })
     .catch(noop);
+}
+
+export async function getRecentGamesByUserId(userId: string): Promise<w.SavedGame[]> {
+  const blueGames = await getRecentGamesForColorByUserId(userId, 'blue');
+  const orangeGames = await getRecentGamesForColorByUserId(userId, 'orange');
+  return Object.values({...blueGames, ...orangeGames});
+}
+
+async function getRecentGamesForColorByUserId(userId: string, color: string): Promise<Record<string, w.SavedGame>> {
+  const snapshot = await fb.database()
+    .ref('games')
+    .orderByChild(`players/${color}`)
+    .equalTo(userId)
+    .once('value');
+  return snapshot.val();
+}
+
+export async function getCardsCreatedCountByUserId(userId: string): Promise<number> {
+  const snapshot = await fb.database()
+    .ref(`users/${userId}/cards`)
+    .once('value');
+  return snapshot.numChildren();
+}
+
+export async function getDecksCreatedCountByUserId(userId: string): Promise<number> {
+  const snapshot = await fb.database()
+    .ref(`users/${userId}/decks`)
+    .once('value');
+  return snapshot.numChildren();
 }

@@ -1,56 +1,64 @@
 import { cloneDeep, isEqual } from 'lodash';
 import { applyPatch, compare } from 'fast-json-patch';
 
-import { handleAction } from '../../game.ts';
+import * as w from '../../../types';
+import { handleAction } from '../../game';
 import { TYPE_EVENT } from '../../../constants';
-import { id } from '../../../util/common.ts';
-import { lookupUsername } from '../../../util/firebase.ts';
-import { currentTutorialStep, passTurn } from '../../../util/game.ts';
+import { id } from '../../../util/common';
+import { instantiateCard } from '../../../util/cards';
+import { lookupUsername } from '../../../util/firebase';
+import { currentTutorialStep, passTurn } from '../../../util/game';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
-import * as cards from '../../../store/cards.ts';
-import defaultState from '../../../store/defaultGameState.ts';
+import * as cards from '../../../store/cards';
+import defaultState from '../../../store/defaultGameState';
 
-function nextStep(state, action = null) {
-  if (state.tutorialCurrentStepIdx < state.tutorialSteps.length) {
-    const oldState = cloneDeep(state);
-    const currentStep = currentTutorialStep(state);
-    action = action || currentStep.action;
+type State = w.GameState;
+
+function nextStep(state: State, action: w.Action | null = null): State {
+  function isAction(a: w.Action | string | undefined): a is w.Action {
+    return (a as w.Action).type !== undefined;
+  }
+
+  if (state.tutorialCurrentStepIdx! < state.tutorialSteps!.length) {
+    const oldState: State = cloneDeep(state);
+    const currentStep: w.TutorialStep = currentTutorialStep(state)!;
+    action = action || (isAction(currentStep.action) ? currentStep.action : null);
 
     if (action) {
       state = handleAction(state, action);
     }
 
-    (currentStep.responses || []).forEach(response => {
+    (currentStep.responses || []).forEach((response) => {
       state = handleAction(state, response);
     });
 
-    if (state.tutorialCurrentStepIdx === state.tutorialSteps.length) {
+    if (state.tutorialCurrentStepIdx === state.tutorialSteps!.length) {
       state = endTutorial(state);
     } else {
-      state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx + 1;
+      state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx! + 1;
     }
 
-    state.undoStack.push(compare(state, oldState));
+    state.undoStack!.push(compare(state, oldState));
   }
 
   return state;
 }
 
-function prevStep(state) {
-  if (state.undoStack.length > 0) {
-    applyPatch(state, state.undoStack.pop());
+function prevStep(state: State): State {
+  if (state.undoStack!.length > 0) {
+    applyPatch(state, state.undoStack!.pop()!);
   }
 
   return state;
 }
 
-function deck(cardList) {
-  const filler = [cards.oneBotCard, cards.oneBotCard, cards.oneBotCard, cards.oneBotCard];
-  return cardList.concat(filler).map(card => ({...card, source: 'builtin', id: id()}));
+function deck(cardList: w.CardInGame[]): w.CardInGame[] {
+  const filler: w.CardInGame[] = Array(4).fill(cards.oneBotCard).map((card) => instantiateCard({...card, id: id()}));
+  return cardList.concat(filler);
 }
 
-export function startTutorial(state) {
+export function startTutorial(state: State): State {
   // Reset game state and enable tutorial mode.
   state = Object.assign(state, cloneDeep(defaultState), {
     started: true,
@@ -66,8 +74,10 @@ export function startTutorial(state) {
     cards.oneBotCard,
     tutorialExclusiveCards.upgradeCard,
     tutorialExclusiveCards.rechargeCard
-  ]);
-  state.players.blue.deck = deck([cards.redBotCard]);
+  ].map((card) => instantiateCard({...card, id: id()})));
+  state.players.blue.deck = deck([
+    cards.redBotCard
+  ].map((card) => instantiateCard({...card, id: id()})));
   state.players.orange.robotsOnBoard['3,0,-3'].stats.health = 5;
   state.players.blue.robotsOnBoard['-3,0,3'].stats.health = 3;
   state = passTurn(state, 'orange');
@@ -76,7 +86,7 @@ export function startTutorial(state) {
   return state;
 }
 
-export function endTutorial(state) {
+export function endTutorial(state: State): State {
   return Object.assign(state, cloneDeep(defaultState), {
     started: false,
     tutorial: false,
@@ -86,8 +96,8 @@ export function endTutorial(state) {
   });
 }
 
-export function handleTutorialAction(state, action) {
-  const expectedAction = currentTutorialStep(state).action;
+export function handleTutorialAction(state: State, action: w.Action): State {
+  const expectedAction: w.Action | string | undefined = currentTutorialStep(state)!.action;
   if (isEqual(action, expectedAction) || (action.type === expectedAction)) {
     state = nextStep(state, action);
   } else if (action.type === actions.TUTORIAL_STEP) {
@@ -101,8 +111,9 @@ export function handleTutorialAction(state, action) {
   return state;
 }
 
-const tutorialExclusiveCards = {
+const tutorialExclusiveCards: Record<string, w.CardInStore> = {
   upgradeCard: {
+    id: 'upgrade',
     name: 'Upgrade',
     text: 'Give a robot +2 attack and +2 health.',
     command: '(function () { (function () { save("target", targets["choose"](objectsMatchingConditions("robot", []))); })(); (function () { actions["modifyAttribute"](load("target"), "attack", function (x) { return x + 2; }); })(); (function () { actions["modifyAttribute"](load("target"), "health", function (x) { return x + 2; }); })(); })',
@@ -110,6 +121,7 @@ const tutorialExclusiveCards = {
     type: TYPE_EVENT
   },
   rechargeCard: {
+    id: 'recharge',
     name: 'Recharge',
     text: 'All of your robots can move and attack again.',
     command: '(function () { actions["canMoveAndAttackAgain"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])); })',
@@ -118,7 +130,7 @@ const tutorialExclusiveCards = {
   }
 };
 
-const tutorialScript = [
+const tutorialScript: w.TutorialStepInScript[] = [
   {
     tooltip: {
       hex: '0,0,0',
@@ -252,7 +264,7 @@ const tutorialScript = [
       hex: '-3,1,2',
       text: 'Attack the enemy robot!'
     },
-    action: actions.moveRobot('0,1,-1', '-2,1,1', true)
+    action: actions.moveRobot('0,1,-1', '-2,1,1')
   },
   {
     tooltip: {

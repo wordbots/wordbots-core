@@ -1,21 +1,25 @@
-import { cloneDeep, isArray } from 'lodash';
+import { cloneDeep, compact, isArray } from 'lodash';
 
+import * as w from '../../../types';
 import { TYPE_EVENT } from '../../../constants';
-import { id } from '../../../util/common.ts';
+import { id } from '../../../util/common';
 import {
   currentPlayer, getCost, checkVictoryConditions, matchesType,
   allHexIds, validPlacementHexes,
   triggerSound, discardCards,
   removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
-} from '../../../util/game.ts';
-import { splitSentences } from '../../../util/cards.ts';
+} from '../../../util/game';
+import { assertCardVisible, splitSentences } from '../../../util/cards';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-export function setSelectedCard(state, playerName, cardIdx) {
-  const player = state.players[playerName];
+type State = w.GameState;
+type PlayerState = w.PlayerInGameState;
+
+export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx: number): State {
+  const player: PlayerState = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);
-  const selectedCard = player.hand[cardIdx];
+  const selectedCard: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
   const energy = player.energy;
 
   player.selectedTile = null;
@@ -50,20 +54,21 @@ export function setSelectedCard(state, playerName, cardIdx) {
   return state;
 }
 
-export function placeCard(state, cardIdx, tile) {
+export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = cloneDeep(state);
+  let tempState: State = cloneDeep(state);
 
-  const player = currentPlayer(tempState);
-  const card = player.hand[cardIdx];
+  const player: PlayerState = currentPlayer(tempState);
+  const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
   const timestamp = Date.now();
 
   if ((player.energy.available >= getCost(card) || state.sandbox) &&
       validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
-    const playedObject = {
+    const playedObject: w.Object = {
       id: id(),
-      card: card,
+      card,
+      type: card.type,
       stats: Object.assign({}, card.stats),
       triggers: [],
       abilities: [],
@@ -89,7 +94,7 @@ export function placeCard(state, cardIdx, tile) {
 
     if (card.abilities && card.abilities.length > 0) {
       card.abilities.forEach((cmd, idx) => {
-        const cmdText = splitSentences(card.text)[idx];
+        const cmdText = splitSentences(card.text || '')[idx];
         tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
         executeCmd(tempState, cmd, playedObject);
       });
@@ -108,13 +113,13 @@ export function placeCard(state, cardIdx, tile) {
         type: 'text'
       };
 
-      state.callbackAfterTargetSelected = (newState => placeCard(newState, cardIdx, tile));
+      state.callbackAfterTargetSelected = ((newState: State) => placeCard(newState, cardIdx, tile));
       return state;
     } else {
       tempState = removeCardsFromHand(tempState, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => matchesType(card, t.cardType),
+        condition: (t: w.Trigger) => matchesType(card, t.cardType!),
         undergoer: playedObject
       });
       tempState = applyAbilities(tempState);
@@ -126,13 +131,13 @@ export function placeCard(state, cardIdx, tile) {
   }
 }
 
-function playEvent(state, cardIdx) {
+function playEvent(state: State, cardIdx: number): State {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = cloneDeep(state);
+  let tempState: State = cloneDeep(state);
 
-  const player = currentPlayer(tempState);
-  const card = player.hand[cardIdx];
+  const player: PlayerState = currentPlayer(tempState);
+  const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
   const timestamp = Date.now();
 
   if (player.energy.available >= getCost(card) || state.sandbox) {
@@ -145,8 +150,9 @@ function playEvent(state, cardIdx) {
     tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
     tempState.eventExecuting = true;
 
-    (isArray(card.command) ? card.command : [card.command]).forEach((cmd, idx) => {
-      const cmdText = splitSentences(card.text)[idx];
+    const commands: string[] = compact(isArray(card.command) ? card.command : [card.command]);
+    commands.forEach((cmd, idx) => {
+      const cmdText = splitSentences(card.text || '')[idx];
       if (!player.target.choosing) {
         tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
         executeCmd(tempState, cmd);
@@ -157,7 +163,7 @@ function playEvent(state, cardIdx) {
 
     if (player.target.choosing) {
       // Target still needs to be selected, so roll back playing the card (and return old state).
-      state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
+      state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = player.target;
       currentPlayer(state).status = {message: `Choose a target for ${card.name}.`, type: 'text'};
@@ -171,7 +177,7 @@ function playEvent(state, cardIdx) {
     } else if (!player.target.chosen) {
       // If there is no target selection, that means that this card is a global effect.
       // In that case, the player needs to "target" the board to confirm that they want to play the event.
-      state.callbackAfterTargetSelected = (newState => playEvent(newState, cardIdx));
+      state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = { choosing: true, chosen: null, possibleCards: [], possibleHexes: allHexIds() };
       currentPlayer(state).status = {message: `Click anywhere on the board to play ${card.name}.`, type: 'text'};
@@ -182,7 +188,7 @@ function playEvent(state, cardIdx) {
       tempState = discardCards(tempState, currentPlayer(state).name, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
-        condition: t => matchesType(card, t.cardType)
+        condition: (t: w.Trigger) => matchesType(card, t.cardType!)
       });
       tempState = applyAbilities(tempState);
       tempState = checkVictoryConditions(tempState);

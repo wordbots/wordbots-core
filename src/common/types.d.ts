@@ -1,37 +1,29 @@
+import * as React from 'react';
 import * as fb from 'firebase';
+import * as fjp from 'fast-json-patch';
 
 import * as m from '../server/multiplayer/multiplayer';
 
 /* Simple types */
 
-export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
-export type ActivatedAbility = any; // TODO
+export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
+export type CardId = string;
 export type CardType = number;
 export type Cause = string;
 export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
 export type ParserMode = 'event' | 'object';
-export type PassiveAbility = any; // TODO
 export type PlayerColor = 'blue' | 'orange';
-export type Target = any; // TODO
-export type Targetable = CardInGame | _Object | HexId;
-export type Trigger = any; // TODO
-export type TriggeredAbility = any; // TODO
 
-/* High-level types */
+export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
+export type Card = CardInGame | CardInStore | ObfuscatedCard;
+export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
+export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
-
-export type PerPlayer<T> = {
-  [P in PlayerColor]: T
-};
-
-// Not actually typechecked but can be useful documentation for stringified functions.
-type StringRepresentationOf<T> = string;
+export type PerPlayer<T> = Record<PlayerColor, T>;
+export type StringRepresentationOf<T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
 /* Library types */
 
@@ -55,10 +47,9 @@ export interface DeckInStore {
   cardIds: string[]
 }
 
-export type Card = CardInGame | CardInStore | ObfuscatedCard;
-
 export interface CardInGame extends CardInStore {
   baseCost: number
+  justPlayed?: boolean
   temporaryStatAdjustments?: {
     cost?: StatAdjustment[]
     attack?: StatAdjustment[]
@@ -68,7 +59,7 @@ export interface CardInGame extends CardInStore {
 }
 
 export interface CardInStore {
-  id: string
+  id: CardId
   name: string
   img?: string  // Only kernels have images
   spriteID?: string
@@ -81,7 +72,7 @@ export interface CardInStore {
   }
   text?: string
   abilities?: string[]
-  command?: string | string[]
+  command?: StringRepresentationOf<(state: GameState) => any> | Array<StringRepresentationOf<(state: GameState) => any>>
   source?: string
   spriteV?: number
   parserV?: number | null
@@ -98,10 +89,23 @@ export interface Dictionary {
   examplesByNode?: { [token: string]: string[] }
 }
 
-export interface TutorialStep {
+export interface TutorialStep extends TutorialStepInScript {
   idx: number
   numSteps: number
-  [x: string]: any  // TODO Expose more field types as we need them
+}
+
+export interface TutorialStepInScript {
+  action?: Action | string
+  highlight?: boolean
+  responses?: Action[]
+  tooltip: {
+    backButton?: React.ReactElement<any>,
+    card?: string
+    hex?: HexId
+    location?: string
+    place?: string
+    text: string
+  }
 }
 
 export interface SavedGame { // Interface for games stored in Firebase.
@@ -109,6 +113,18 @@ export interface SavedGame { // Interface for games stored in Firebase.
   format: Format,
   type: string, // TODO more precise
   winner: PlayerColor | null
+}
+
+export interface Target {
+  type: string
+  entries: Targetable[]
+}
+
+export interface EventTarget {
+  condition?: (trigger: Trigger) => boolean
+  object?: _Object
+  player?: boolean
+  undergoer?: _Object
 }
 
 /* Redux store types */
@@ -125,7 +141,7 @@ export interface State {
 export interface CollectionState {
   cards: CardInStore[]
   decks: DeckInStore[]
-  deckBeingEdited: DeckId | null
+  deckBeingEdited: DeckInStore | null
   exportedJson: string | null
   firebaseLoaded: boolean
 }
@@ -145,20 +161,35 @@ export interface CreatorState {
 }
 
 export interface GameState {
+  actionLog: LoggedAction[]
+  attack: Attack | null
   currentTurn: PlayerColor,
+  eventQueue: CardInGame[]
   gameFormat: Format
+  memory: Record<string, any>
   options: GameOptions
   player: PlayerColor,
   players: PerPlayer<PlayerInGameState>
   practice: boolean
   rng: () => number,
   sandbox: boolean
+  sfxQueue: string[]
   started: boolean
   storeKey: 'game'
   tutorial: boolean
-  usernames: PerPlayer<string> | {}
+  usernames: PerPlayer<string>
   winner: PlayerColor | null
-  [x: string]: any  // TODO Expose more field types as we need them
+
+  actionId?: string
+  callbackAfterTargetSelected?: (state: GameState) => GameState
+  currentCmdText?: string
+  eventExecuting?: boolean
+  invalid?: boolean
+  it?: _Object
+  that?: _Object
+  tutorialCurrentStepIdx?: number
+  tutorialSteps?: TutorialStepInScript[]
+  undoStack?: fjp.Operation[][]
 }
 
 export interface GlobalState {
@@ -190,14 +221,30 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
+  collection: PossiblyObfuscatedCard[]
+  deck: PossiblyObfuscatedCard[]
+  discardPile: PossiblyObfuscatedCard[]
+  energy: {
+    available: number
+    total: number
+  }
+  hand: PossiblyObfuscatedCard[]
   name: PlayerColor
-  deck: Card[]
-  discardPile: Card[]
-  hand: Card[]
   robotsOnBoard: {
     [hexId: string]: _Object
   }
-  [x: string]: any  // TODO Expose more field types as we need them
+  selectedCard: number | null
+  selectedTile: HexId | null
+  status: {
+    message: string
+    type: 'text' | 'error' | ''
+  }
+  target: {
+    choosing: boolean
+    chosen: Targetable[] | null
+    possibleCards: CardId[]
+    possibleHexes: HexId[]
+  }
 }
 
 // Object is not a valid type name, but we want to export `types.Object`,
@@ -221,21 +268,22 @@ interface _Object { // tslint:disable-line:class-name
   abilities: PassiveAbility[]
   activatedAbilities?: ActivatedAbility[]
   effects?: Effect[]
+
   cantActivate?: boolean
+  cantAttack?: boolean
+  cantMove?: boolean
   attackedThisTurn?: boolean
   attackedLastTurn?: boolean
   movedThisTurn?: boolean
   movedLastTurn?: boolean
   beingDestroyed?: boolean
   isDestroyed?: boolean
-  // TODO
+  justPlayed?: boolean
 }
 export type Object = _Object;
 
 export interface Robot extends _Object {
   type: 0
-  cantAttack?: boolean
-  cantMove?: boolean
   attackedThisTurn: boolean
   attackedLastTurn: boolean
   movedThisTurn: boolean
@@ -249,6 +297,52 @@ export interface StatAdjustment {
 export interface Effect {
   effect: string
   props: any
+}
+
+export interface ActivatedAbility {
+  aid: AbilityId
+  cmd: StringRepresentationOf<(state: GameState) => any>
+  text: string
+}
+
+export interface PassiveAbility {
+  aid: AbilityId
+  apply: (target: Targetable) => Targetable
+  currentTargets?: Target
+  disabled?: boolean
+  duration?: number
+  targets: StringRepresentationOf<(state: GameState) => Target>
+  unapply: (target: Targetable) => Targetable
+}
+
+export interface TriggeredAbility {
+  action: (state: GameState) => any
+  duration?: number
+  object?: _Object
+  trigger: Trigger
+}
+
+export interface Trigger {
+  type: string
+  targetFunc: (state: GameState) => Target[]
+  targets?: Targetable[]
+
+  cardType?: string
+  cause?: Cause
+  defenderType?: string
+}
+
+export interface Attack {
+  from: HexId
+  to: HexId
+}
+
+export interface LoggedAction {
+  id: string
+  user: string
+  text: string
+  timestamp: number
+  cards: Record<string, CardInGame>
 }
 
 /* Creator state subcomponents */

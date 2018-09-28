@@ -36,7 +36,7 @@ export class GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    _decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
+    _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
   ): w.GameState {
     state = Object.assign(state, cloneDeep(defaultState), {
       gameFormat: this.name,
@@ -61,7 +61,7 @@ export const NormalGameFormat = new (class extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, options, seed);
 
@@ -83,7 +83,7 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
   ): w.GameState {
     return NormalGameFormat.startGame(state, player, usernames, decks, options, seed);
   }
@@ -98,7 +98,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.Card[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, options, seed);
 

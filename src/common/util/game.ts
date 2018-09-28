@@ -4,6 +4,7 @@ import {
 } from 'lodash';
 
 import * as w from '../types';
+import * as g from '../guards';
 import {
   DEFAULT_GAME_FORMAT, MAX_HAND_SIZE, BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES,
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
@@ -148,8 +149,12 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
 
 // Given a target that may be a card, object, or hex, return the appropriate card if possible.
 function determineTargetCard(state: w.GameState, target: w.Targetable | null): w.CardInGame | null {
-  const targetObj = isString(target) ? allObjectsOnBoard(state)[target] : target;
-  return (targetObj && 'card' in targetObj) ? targetObj.card : targetObj;
+  if (!target || g.isPlayerState(target)) {
+    return null;
+  } else {
+    const targetObj = (isString(target) ? allObjectsOnBoard(state)[target] : target);
+    return g.isObject(targetObj) ? targetObj.card : targetObj;
+  }
 }
 
 //
@@ -269,7 +274,7 @@ export function logAction(
   const targetCards = target ? {[target.name]: target} : {};
 
   const message = {
-    id: state.actionId,
+    id: state.actionId!,
     user: '[Game]',
     text: `${playerStr}${action}${targetStr}.`,
     timestamp: timestamp || Date.now(),
@@ -284,13 +289,13 @@ export function newGame(
   state: w.GameState,
   player: w.PlayerColor,
   usernames: w.PerPlayer<string>,
-  decks: w.PerPlayer<w.Card[]>,
+  decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>,
   seed: string = '0',
   gameFormat = DEFAULT_GAME_FORMAT,
   gameOptions: w.GameOptions = {}
 ): w.GameState {
-  return GameFormat.fromString(gameFormat)
-                 .startGame(state, player, usernames, decks, gameOptions, seed);
+  const format: GameFormat = GameFormat.fromString(gameFormat);
+  return format.startGame(state, player, usernames, decks, gameOptions, seed);
 }
 
 export function passTurn(state: w.GameState, player: w.PlayerColor): w.GameState {
@@ -329,20 +334,20 @@ function startTurn(state: w.GameState): w.GameState {
 }
 
 function endTurn(state: w.GameState): w.GameState {
-  function decrementDuration(abilityOrTrigger: w.Ability): w.Ability {
-    const duration = abilityOrTrigger.duration;
+  function decrementDuration(ability: w.PassiveAbility | w.TriggeredAbility): w.PassiveAbility | w.TriggeredAbility | null {
+    const duration: number | undefined = ability.duration;
     if (duration) {
       if (duration === 1) {
         // Time's up: Unapply the ability and remove it.
-        if (abilityOrTrigger.unapply) {
-          abilityOrTrigger.currentTargets.entries.forEach(abilityOrTrigger.unapply);
+        if (g.isPassiveAbility(ability)) {
+          ability.currentTargets!.entries.forEach(ability.unapply);
         }
         return null;
       } else {
-        return Object.assign({}, abilityOrTrigger, {duration: duration ? duration - 1 : null});
+        return Object.assign({}, ability, {duration: duration ? duration - 1 : null});
       }
     } else {
-      return abilityOrTrigger;
+      return ability;
     }
   }
 
@@ -466,23 +471,23 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
 }
 
 export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex: w.HexId): w.GameState {
-  const ownerName = (ownerOf(state, object) as w.PlayerInGameState).name;
+  const ownerName: w.PlayerColor = (ownerOf(state, object) as w.PlayerInGameState).name;
 
   delete state.players[ownerName].robotsOnBoard[hex];
 
   // Unapply any abilities that this object had.
   (object.abilities || Array<w.Ability>())
     .filter((ability) => ability.currentTargets)
-    .forEach((ability) => { ability.currentTargets.entries.forEach(ability.unapply); });
+    .forEach((ability) => { ability.currentTargets!.entries.forEach(ability.unapply); });
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);
   return state;
 }
 
-export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Target): w.GameState {
-  const player = currentPlayer(state);
-  const targets = (player.target.chosen || []).concat([target]);
+export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Targetable): w.GameState {
+  const player: w.PlayerInGameState = currentPlayer(state);
+  const targets: w.Targetable[] = (player.target.chosen || []).concat([target]);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
@@ -493,7 +498,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
   };
 
   // Perform the trigger (in a temp state because we may need more targets yet).
-  const tempState = state.callbackAfterTargetSelected(state);
+  const tempState: w.GameState = state.callbackAfterTargetSelected!(state);
 
   if (tempState.players[player.name].target.choosing) {
     // Still need more targets!
@@ -504,7 +509,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
   } else {
     // We have all the targets we need and we're good to go.
     // Reset target and return new state.
-    tempState.callbackAfterTargetSelected = null;
+    tempState.callbackAfterTargetSelected = undefined;
     tempState.players[player.name].target = arbitraryPlayerState().target;
     tempState.players[player.name].status.message = '';
 
@@ -518,10 +523,10 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ta
 
 export function executeCmd(
   state: w.GameState,
-  cmd: string,
+  cmd: ((state: w.GameState) => any) | w.StringRepresentationOf<(state: w.GameState) => any>,
   currentObject: w.Object | null = null,
   source: w.Object | null = null
-): w.GameState {
+): w.GameState | w.Target {
   type BuildVocabulary = (state: w.GameState, currentObject: w.Object | null, source: w.Object | null) => any;
   const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
@@ -533,18 +538,23 @@ export function executeCmd(
 export function triggerEvent(
   state: w.GameState,
   triggerType: string,
-  target: w.Target | {} = {},
+  target: w.EventTarget,
   defaultBehavior: null | ((state: w.GameState) => w.GameState) = null
 ): w.GameState {
   // Formulate the trigger condition.
-  const defaultCondition = ((t: w.Target) => (target.condition ? target.condition(t) : true));
-  let condition = defaultCondition;
+  const defaultCondition = ((t: w.Trigger) => (target.condition ? target.condition(t) : true));
+  let condition: ((t: w.Trigger) => boolean) = defaultCondition;
+
   if (target.object) {
     state = Object.assign({}, state, {it: target.object});
-    condition = ((t) => t.targets.map((o: w.Object) => o.id).includes(target.object.id) && defaultCondition(t));
+    condition = ((t: w.Trigger) =>
+      (t.targets as w.Object[]).map((o: w.Object) => o.id).includes(target.object!.id) && defaultCondition(t)
+    );
   } else if (target.player) {
     state = Object.assign({}, state, {itP: currentPlayer(state)});
-    condition = ((t) => t.targets.map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t));
+    condition = ((t: w.Trigger) =>
+      (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t)
+    );
   }
   if (target.undergoer) {
     // Also store the undergoer (as opposed to agent) of the event if present.
@@ -557,7 +567,7 @@ export function triggerEvent(
     (object.triggers || Array<w.TriggeredAbility>())
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
-        t.trigger.targets = executeCmd(state, t.trigger.targetFunc, object).entries;
+        t.trigger.targets = (executeCmd(state, t.trigger.targetFunc, object) as w.Target).entries;
         return Object.assign({}, t, {object});
       })
       .filter((t) => t.trigger.type === triggerType && condition(t.trigger))
@@ -579,7 +589,7 @@ export function triggerEvent(
     //         state.it = (destroyed robot)
     //         t.object = Arena
     //         "its controller" should = (destroyed robot)
-    const currentObject = state.it || t.object;
+    const currentObject: w.Object = state.it || t.object;
     executeCmd(state, t.action, currentObject);
   });
 
@@ -588,7 +598,7 @@ export function triggerEvent(
 
 export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    const abilities = obj.abilities || Array<w.Ability>();
+    const abilities: w.PassiveAbility[] = obj.abilities || Array<w.PassiveAbility>();
 
     abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
@@ -599,7 +609,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
       if (!ability.disabled) {
         // Apply this ability to all targeted objects.
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
-        ability.currentTargets = executeCmd(state, ability.targets, obj);
+        ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
         ability.currentTargets.entries.forEach(ability.apply);
       }
     });

@@ -3,7 +3,7 @@ import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove } from 'lodash';
 
 import { id as generateID } from '../../common/util/common';
-import { obfuscateCards } from '../../common/util/cards';
+import { instantiateCard, obfuscateCards } from '../../common/util/cards';
 import { opponent as opponentOf } from '../../common/util/game';
 import { saveGame } from '../../common/util/firebase';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
@@ -110,7 +110,7 @@ export default class MultiplayerServerState {
       if (type === 'PLACE_CARD') {
         cardPlayedIdx[actionPerformerColor] = payload.cardIdx;
       } else if (players[actionPerformerColor].selectedCard !== null) {
-        cardPlayedIdx[actionPerformerColor] = players[actionPerformerColor].selectedCard;
+        cardPlayedIdx[actionPerformerColor] = players[actionPerformerColor].selectedCard!;
       }
     }
 
@@ -196,7 +196,7 @@ export default class MultiplayerServerState {
 
     if (waitingPlayer && formatObj!.isDeckValid(deck)) {
       const { name, format, options } = waitingPlayer;
-      const decks = { orange: waitingPlayer.deck.cards, blue: deck.cards };
+      const decks = { orange: waitingPlayer.deck.cards.map(instantiateCard), blue: deck.cards.map(instantiateCard) };
       const obfuscatedDecks = { orange: obfuscateCards(decks.orange), blue: obfuscateCards(decks.blue) };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
       const seed = generateID();

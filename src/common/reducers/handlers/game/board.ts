@@ -1,26 +1,30 @@
 import { cloneDeep } from 'lodash';
 
+import * as w from '../../../types';
 import { stringToType } from '../../../constants';
 import {
   currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
   validMovementHexes, validAttackHexes,
   triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
   executeCmd, triggerEvent, applyAbilities
-} from '../../../util/game.ts';
+} from '../../../util/game';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 
-function selectTile(state, tile) {
+type State = w.GameState;
+type PlayerState = w.PlayerInGameState;
+
+function selectTile(state: State, tile: w.HexId | null): State {
   currentPlayer(state).selectedTile = tile;
   currentPlayer(state).selectedCard = null;
   return state;
 }
 
-function resetTargetAndStatus(player) {
+function resetTargetAndStatus(player: PlayerState): void {
   player.status = { message: '', type: '' };
   player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
 }
 
-export function deselect(state, playerColor = state.currentTurn) {
+export function deselect(state: State, playerColor: w.PlayerColor = state.currentTurn): State {
   const player = state.players[playerColor];
   player.selectedTile = null;
   player.selectedCard = null;
@@ -28,7 +32,7 @@ export function deselect(state, playerColor = state.currentTurn) {
   return state;
 }
 
-export function setSelectedTile(state, playerColor, tile) {
+export function setSelectedTile(state: State, playerColor: w.PlayerColor, tile: w.HexId): State {
   const player = state.players[playerColor];
   const isCurrentPlayer = (playerColor === state.currentTurn);
 
@@ -47,9 +51,9 @@ export function setSelectedTile(state, playerColor, tile) {
   }
 }
 
-export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
-  const player = state.players[state.currentTurn];
-  const movingRobot = player.robotsOnBoard[fromHex];
+export function moveRobot(state: State, fromHex: w.HexId, toHex: w.HexId): State {
+  const player: PlayerState = state.players[state.currentTurn];
+  const movingRobot: w.Object = player.robotsOnBoard[fromHex];
 
   if (player.target.choosing) {
     // If the player is in target-selection mode, just get out of that mode instead.
@@ -78,10 +82,10 @@ export function moveRobot(state, fromHex, toHex, asPartOfAttack = false) {
 
 // "Move an object" abilities don't care if that object is able to move itself,
 // so the process for moving is simpler.
-export function moveObjectUsingAbility(state, fromHex, toHex) {
+export function moveObjectUsingAbility(state: State, fromHex: w.HexId, toHex: w.HexId): State {
   // Is the space unoccuplied?
   if (!allObjectsOnBoard(state)[toHex]) {
-    const movingRobot = allObjectsOnBoard(state)[fromHex];
+    const movingRobot: w.Object = allObjectsOnBoard(state)[fromHex];
 
     state = logAction(state, null, `|${movingRobot.card.name}| was moved`, {[movingRobot.card.name]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
@@ -92,15 +96,15 @@ export function moveObjectUsingAbility(state, fromHex, toHex) {
   return state;
 }
 
-export function attack(state, source, target) {
+export function attack(state: State, source: w.HexId, target: w.HexId): State {
   // TODO: All attacks are "melee" for now.
   // In the future, there will be ranged attacks that work differently.
 
-  const player = currentPlayer(state);
-  const opponent = opponentPlayer(state);
+  const player: PlayerState = currentPlayer(state);
+  const opponent: PlayerState = opponentPlayer(state);
 
-  const attacker = player.robotsOnBoard[source];
-  const defender = opponent.robotsOnBoard[target];
+  const attacker: w.Object = player.robotsOnBoard[source];
+  const defender: w.Object = opponent.robotsOnBoard[target];
 
   if (player.target.choosing) {
     // If the player is in target-selection mode, just get out of that mode instead.
@@ -131,27 +135,27 @@ export function attack(state, source, target) {
 }
 
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
-export function attackComplete(state) {
+export function attackComplete(state: State): State {
   if (state.attack && state.attack.from && state.attack.to) {
-    const [source, target] = [state.attack.from, state.attack.to];
+    const [source, target]: w.HexId[] = [state.attack.from, state.attack.to];
 
-    const attacker = currentPlayer(state).robotsOnBoard[source];
-    const defender = opponentPlayer(state).robotsOnBoard[target];
+    const attacker: w.Object = currentPlayer(state).robotsOnBoard[source];
+    const defender: w.Object = opponentPlayer(state).robotsOnBoard[target];
 
     state = triggerEvent(state, 'afterAttack', {
       object: attacker,
-      condition: (t => !t.defenderType ||  stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
+      condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
       undergoer: defender
     }, () =>
       dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
     );
 
-    if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack') > 0) {
+    if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack')! > 0) {
       state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
     }
 
     // Move attacker to defender's space (if possible).
-    if (getAttribute(defender, 'health') <= 0 && getAttribute(attacker, 'health') > 0) {
+    if (getAttribute(defender, 'health')! <= 0 && getAttribute(attacker, 'health')! > 0) {
       state = transportObject(state, source, target);
 
       // (This is mostly to make sure that the attacker doesn't die as a result of this move.)
@@ -168,7 +172,7 @@ export function attackComplete(state) {
   return state;
 }
 
-export function activateObject(state, abilityIdx, selectedHexId = null) {
+export function activateObject(state: State, abilityIdx: number, selectedHexId: w.HexId | null = null): State {
   if (currentPlayer(state).target.choosing) {
     // If the player is in target-selection mode, just get out of that mode instead.
     resetTargetAndStatus(currentPlayer(state));
@@ -177,17 +181,21 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
 
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
-  let tempState = cloneDeep(state);
+  let tempState: State = cloneDeep(state);
 
   const hexId = selectedHexId || currentPlayer(tempState).selectedTile;
+  if (!hexId) {
+    return state;
+  }
+
   const object = allObjectsOnBoard(tempState)[hexId];
 
   if (object && !object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
-    const player = currentPlayer(tempState);
-    const ability = object.activatedAbilities[abilityIdx];
+    const player: PlayerState = currentPlayer(tempState);
+    const ability: w.ActivatedAbility = object.activatedAbilities[abilityIdx];
 
     const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
-    const target = player.target.chosen ? player.target.chosen[0] : null;
+    const target: w.Targetable | null = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
@@ -202,7 +210,7 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
         type: 'text'
       };
 
-      state.callbackAfterTargetSelected = (newState => activateObject(newState, abilityIdx, hexId));
+      state.callbackAfterTargetSelected = ((newState: State) => activateObject(newState, abilityIdx, hexId));
 
       return state;
     } else if (tempState.invalid) {
@@ -227,12 +235,14 @@ export function activateObject(state, abilityIdx, selectedHexId = null) {
 
 // Low-level "move" of an object.
 // Used by moveRobot(), attack(), and in tests.
-export function transportObject(state, fromHex, toHex) {
-  const robot = allObjectsOnBoard(state)[fromHex];
-  const owner = ownerOf(state, robot);
+export function transportObject(state: State, fromHex: w.HexId, toHex: w.HexId): State {
+  const object = allObjectsOnBoard(state)[fromHex];
+  const owner = ownerOf(state, object);
 
-  owner.robotsOnBoard[toHex] = robot;
-  delete owner.robotsOnBoard[fromHex];
+  if (object && owner) {
+    owner.robotsOnBoard[toHex] = object;
+    delete owner.robotsOnBoard[fromHex];
+  }
 
   return state;
 }

@@ -9,7 +9,7 @@ import {
   executeCmd
 } from '../util/game.ts';
 import { splitSentences } from '../util/cards.ts';
-import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
+import { moveObjectUsingAbility } from '../reducers/handlers/game/board.ts';
 
 export default function actions(state) {
   const iterateOver = collection => fn => {

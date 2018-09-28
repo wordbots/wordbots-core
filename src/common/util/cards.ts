@@ -4,6 +4,7 @@ import {
 } from 'lodash';
 
 import * as w from '../types';
+import * as g from '../guards';
 import {
   KEEP_DECKS_UNSHUFFLED,
   CARD_SCHEMA_VERSION, SPRITE_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
@@ -46,18 +47,31 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
   });
 }
 
-// Obfuscate all cards in an array, optionally leaving one card unobfuscated.
+// Obfuscate all cards in an array, optionally leaving one card unobfuscated (e.g. if that card is about to be played).
 export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = null): w.ObfuscatedCard[] {
   return cards.map((card, idx) =>
     idx === revealCardIdx ? card : {id: 'obfuscated'}
   );
 }
 
+// Given a card that may be obfuscated, assert that it is unobfuscated.
+export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame {
+  if (g.isCardObfuscated(card)) {
+    throw new Error('Expected a visible card but received an obfuscated card!');
+  } else {
+    return card;
+  }
+}
+
 // Replace a player's deck, hand, and/or discard pile.
 // Used in handling REVEAL_CARDS actions.
 export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
-  newCards: {deck?: w.Card[], hand?: w.Card[], discardPile?: w.Card[]} = {}
+  newCards: {
+    deck?: w.PossiblyObfuscatedCard[],
+    hand?: w.PossiblyObfuscatedCard[],
+    discardPile?: w.PossiblyObfuscatedCard[]
+  } = {}
 ): w.PlayerInGameState {
   return {
     ...playerState,

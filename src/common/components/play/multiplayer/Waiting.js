@@ -66,7 +66,7 @@ export default class Waiting extends React.Component {
               <Button
                 variant="outlined"
                 color="secondary"
-                onTouchTap={onLeaveQueue}
+                onClick={onLeaveQueue}
               >
                 Leave Queue
               </Button>

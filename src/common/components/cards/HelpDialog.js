@@ -25,7 +25,7 @@ export default class HelpDialog extends React.Component {
           primary
           label="Close"
           key="Close"
-          onTouchTap={this.handleClose} />
+          onClick={this.handleClose} />
     ]}>
       <div className="markdownBlock">
         <h2>Video Tutorial</h2>

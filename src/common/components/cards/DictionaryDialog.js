@@ -171,7 +171,7 @@ export default class DictionaryDialog extends React.Component {
         </Tabs>
 
         <IconButton
-          onTouchTap={this.handleCloseDialog}>
+          onClick={this.handleCloseDialog}>
           <FontIcon className="material-icons" color="white">close</FontIcon>
         </IconButton>
       </div>

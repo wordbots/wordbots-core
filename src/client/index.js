@@ -3,7 +3,6 @@ import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import * as injectTapEventPlugin from 'react-tap-event-plugin';
 
 import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore.ts';
@@ -16,8 +15,6 @@ const rootElement = document.getElementById('root');
 const initialState = window.__INITIAL_STATE__;
 
 const store = configureStore(initialState);
-
-injectTapEventPlugin();
 
 if (window.localStorage['profileOnLoad'] && window.Perf) {
   window.Perf.start();

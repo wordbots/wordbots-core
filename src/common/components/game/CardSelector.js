@@ -77,7 +77,7 @@ export default class CardSelector extends React.Component {
           lineHeight: '64px'
         }}
         overlayStyle={{ height: '64px' }}
-        onTouchTap={this.handleGiveCard(player)}
+        onClick={this.handleGiveCard(player)}
         icon={
             <FontIcon
               className="material-icons"

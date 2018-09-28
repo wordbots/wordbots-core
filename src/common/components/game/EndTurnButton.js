@@ -60,7 +60,7 @@ export default class EndTurnButton extends React.Component {
           overlayStyle={{
             height: '64px'
           }}
-          onTouchTap={this.handleClick}
+          onClick={this.handleClick}
           icon={
             <FontIcon
               className="material-icons"

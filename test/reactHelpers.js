@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
 import { createRenderer } from 'react-test-renderer/shallow';
-import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { noop } from 'lodash';
 
 import * as coll from '../src/common/containers/Collection';
 import * as creator from '../src/common/containers/Creator';
 import * as gameArea from '../src/common/containers/GameAreaContainer';
-
-injectTapEventPlugin();
 
 export function renderElement(elt, deep = false) {
   if (deep) {

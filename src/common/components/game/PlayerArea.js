@@ -109,7 +109,7 @@ export default class PlayerArea extends React.Component {
           <RaisedButton
             secondary
             label={`Discard Pile (${gameProps[`${color}DiscardPile`].length})`}
-            onTouchTap={this.handleOpenDiscardPile}
+            onClick={this.handleOpenDiscardPile}
             style={this.styles.discard}
             disabled={gameProps[`${color}DiscardPile`].length === 0}/>
           <Deck deck={gameProps[`${color}Deck`]} reveal={gameProps.isSandbox} opponent={opponent} />

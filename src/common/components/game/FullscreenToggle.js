@@ -28,7 +28,7 @@ export default class FullscreenToggle extends React.Component {
             height: 36,
             width: 36
           }}
-          onTouchTap={this.handleClick}
+          onClick={this.handleClick}
         >
           <FontIcon
             className="material-icons"

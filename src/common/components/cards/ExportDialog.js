@@ -37,7 +37,7 @@ export default class ExportDialog extends React.Component {
         primary
         label="Close"
         key="close"
-        onTouchTap={this.close} />
+        onClick={this.close} />
     ];
   }
 
@@ -71,7 +71,7 @@ export default class ExportDialog extends React.Component {
           rowsMax={10}
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           value={this.props.text}
-          onTouchTap={this.selectText}
+          onClick={this.selectText}
         />
       </RouterDialog>
     );

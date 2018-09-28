@@ -41,7 +41,7 @@ export default class SinglePlayerModeSelection extends React.Component {
           imagePath="/static/practice.png"
           onSelect={this.handleClickSandbox} />
         <GameMode
-          name="Puzzle"
+          name="Puzzle (Coming Soon)"
           disabled />
       </div>
     );

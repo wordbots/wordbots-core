@@ -9,6 +9,7 @@ export default class GameMode extends React.Component {
     imagePath: string,
     modesPerRow: number,
     onSelect: func,
+    compact: bool,
     disabled: bool
   };
 
@@ -18,7 +19,7 @@ export default class GameMode extends React.Component {
   }
 
   renderInner() {
-    const { name, disabled, imagePath } = this.props;
+    const { name, compact, disabled, imagePath } = this.props;
     return (
       <div style={{
         filter: disabled ? 'blur(2px)' : null,
@@ -28,7 +29,7 @@ export default class GameMode extends React.Component {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <div style={{
+        {imagePath && <div style={{
           height: 150,
           width: '100%',
           marginBottom: 10,
@@ -38,13 +39,13 @@ export default class GameMode extends React.Component {
           justifyContent: 'center',
           overflow: 'hidden'
         }}>
-          {imagePath && <img src={imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />}
-        </div>
+          <img src={imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />
+        </div>}
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: 100,
+          height: compact ? 'auto' : (imagePath ? 100 : 250),
           textAlign: 'center',
           fontSize: 24,
           fontFamily: 'Carter One',
@@ -56,7 +57,7 @@ export default class GameMode extends React.Component {
   }
 
   render() {
-    const { modesPerRow, disabled, onSelect } = this.props;
+    const { modesPerRow, compact, disabled, onSelect } = this.props;
     const widthPercent = `${100 / modesPerRow}%`;
     const widthPadding = ((modesPerRow - 1) * 20) / modesPerRow;
 
@@ -66,7 +67,7 @@ export default class GameMode extends React.Component {
         onClick={onSelect}
         style={{
           width: `calc(${widthPercent} - ${widthPadding}px)`,
-          height: 300,
+          height: compact ? 'auto' : 300,
           position: 'relative',
           marginBottom: 20
         }}

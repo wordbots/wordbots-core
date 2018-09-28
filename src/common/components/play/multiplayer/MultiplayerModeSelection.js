@@ -31,14 +31,14 @@ export default class MultiplayerModeSelection extends React.Component {
         justifyContent: 'space-between'
       }}>
         <GameMode
+          compact
           name="Create Casual Game"
           disabled={disabled}
-          imagePath="/static/casual.png"
           onSelect={this.handleClickCreateCasual} />
         <GameMode
+          compact
           name="Matchmaking"
           disabled={disabled || isGuest}
-          imagePath="/static/casual.png"
           onSelect={this.handleClickMatchmaking} />
       </div>
     );

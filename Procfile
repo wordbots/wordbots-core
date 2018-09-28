@@ -1,1 +1,1 @@
-web: set NODE_ENV=production && ts-node src/server/index.ts --progress --colors --profile
+web: set NODE_ENV=production && ts-node src/server/server.ts --progress --colors --profile

@@ -12,7 +12,7 @@
     "build": "npm run clean && npm run prebuild && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
     "build:stats": "npm run prebuild && node_modules/.bin/webpack -p --config webpack.build.config.js --json > stats.json",
     "clean": "node bin/clean.js dist",
-    "heroku-postbuild": "npm run clean && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
+    "heroku-postbuild": "npm run clean && npm run prebuild && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
     "lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
     "prebuild": "sed 's/export default webpackConfig;/module.exports = webpackConfig;/' <webpack.config.js >webpack.build.config.js",
     "slate": "node bin/clean.js node_modules",

@@ -21,7 +21,7 @@ export default class DictionaryTerm extends React.Component {
     return (
       <ListItem
         primaryText={this.props.token}
-        onTouchTap={this.handleClick}
+        onClick={this.handleClick}
         style={{
           cursor: 'pointer',
           backgroundColor: this.props.selected ? '#ddd' : '#fff'

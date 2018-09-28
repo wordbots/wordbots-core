@@ -63,7 +63,7 @@ export default class GameRow extends React.Component {
         <Button
           variant="raised"
           color="secondary"
-          onTouchTap={this.handleJoinGame}
+          onClick={this.handleJoinGame}
           title={game.options.passwordToJoin ? 'This game requires a password to join.' : ''}
         >
           Join Game
@@ -80,7 +80,7 @@ export default class GameRow extends React.Component {
         <Button
           variant="raised"
           color="secondary"
-          onTouchTap={this.handleSpectateGame}
+          onClick={this.handleSpectateGame}
         >
           Spectate Game
         </Button>;
@@ -89,7 +89,7 @@ export default class GameRow extends React.Component {
         <Button
           variant="outlined"
           color="secondary"
-          onTouchTap={this.props.onCancelHostGame}
+          onClick={this.props.onCancelHostGame}
         >
           Cancel Game
         </Button>

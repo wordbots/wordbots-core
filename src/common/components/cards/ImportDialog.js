@@ -21,13 +21,13 @@ export default class ImportDialog extends React.Component {
         primary
         label="Close"
         key="Close"
-        onTouchTap={this.close}
+        onClick={this.close}
         style={{marginRight: 10}} />,
       <RaisedButton
         secondary
         label="Import"
         key="Import"
-        onTouchTap={this.handleImport} />
+        onClick={this.handleImport} />
     ];
   }
 

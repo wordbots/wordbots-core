@@ -24,7 +24,7 @@ export default class SoundToggle extends React.Component {
             width: 36,
             marginRight: 10
           }}
-          onTouchTap={this.handleClick}
+          onClick={this.handleClick}
         >
           <FontIcon
             className="material-icons"

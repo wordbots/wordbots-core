@@ -335,7 +335,7 @@ export default class CardCreationForm extends React.Component {
                 <RaisedButton
                   primary
                   style={{width: 40, minWidth: 40}}
-                  onTouchTap={this.props.onSpriteClick}>
+                  onClick={this.props.onSpriteClick}>
                   <FontIcon className="material-icons" style={this.styles.icon}>refresh</FontIcon>
                 </RaisedButton>
               </Tooltip>
@@ -357,7 +357,7 @@ export default class CardCreationForm extends React.Component {
                   secondary
                   style={{width: 40, minWidth: 40}}
                   disabled={!this.hasTextError || !isEmpty(submittedParseIssue)}
-                  onTouchTap={this.handleClickReportParseIssue}>
+                  onClick={this.handleClickReportParseIssue}>
                   <FontIcon className="material-icons" style={this.styles.icon}>report_problem</FontIcon>
                 </RaisedButton>
               </Tooltip>
@@ -383,7 +383,7 @@ export default class CardCreationForm extends React.Component {
               label={this.props.isNewCard ? 'Add to Collection' : 'Save Edits'}
               disabled={!this.isValid}
               style={this.styles.saveButton}
-              onTouchTap={this.props.onAddToCollection} />
+              onClick={this.props.onAddToCollection} />
           </MustBeLoggedIn>
         </Paper>
       </div>

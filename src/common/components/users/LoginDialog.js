@@ -197,21 +197,21 @@ export default class LoginDialog extends React.Component {
         label="Cancel"
         key="Cancel"
         primary
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
       <FlatButton
         label="Forgot Password?"
         key="Forgot Password?"
         primary
         disabled={!this.notEmpty([this.state.email])}
-        onTouchTap={this.handleClickForgotPassword}
+        onClick={this.handleClickForgotPassword}
       />,
       <FlatButton
         label={this.state.register ? 'Register' : 'Login'}
         key="Register/Login"
         primary
         disabled={this.submitDisabled}
-        onTouchTap={this.handleSubmit}
+        onClick={this.handleSubmit}
       />
     ];
 

@@ -65,7 +65,7 @@ class TitleBar extends React.Component {
             style={{color: 'white'}}
             label={this.props.user.displayName}
             labelPosition="before"
-            onTouchTap={this.openUserMenu}
+            onClick={this.openUserMenu}
             icon={<FontIcon className="material-icons">account_circle</FontIcon>} />
           <Popover
             open={this.state.userOpen}
@@ -91,7 +91,7 @@ class TitleBar extends React.Component {
         <FlatButton
           label="Login / Register"
           labelPosition="before"
-          onTouchTap={this.openLoginDialog}
+          onClick={this.openLoginDialog}
           icon={<FontIcon className="material-icons">person</FontIcon>} />
       );
     }

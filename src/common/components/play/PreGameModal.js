@@ -67,7 +67,7 @@ export default class PreGameModal extends React.Component {
       <Button
         key="cancel"
         variant="outlined"
-        onTouchTap={this.close}
+        onClick={this.close}
         style={{ marginRight: 10 }}>
         Cancel
       </Button>,
@@ -76,7 +76,7 @@ export default class PreGameModal extends React.Component {
         variant="raised"
         color="secondary"
         disabled={gameName === '' && mode === 'host'}
-        onTouchTap={this.handleStartGame}>
+        onClick={this.handleStartGame}>
         {this.props.startButtonText}
       </Button>
     ];

@@ -1,0 +1,5 @@
+#!/bin/sh
+git checkout master
+git pull origin master
+git push origin master:staging
+heroku config:set HEAD_HASH=$(git rev-parse HEAD) --app wordbots-game-staging

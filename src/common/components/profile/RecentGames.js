@@ -15,7 +15,8 @@ import Title from '../Title';
 const styles = {
   root: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    overflowY: 'scroll'
   },
   progressContainer: {
     height: 'calc(100% - 35px)',
@@ -35,7 +36,7 @@ const styles = {
     fontSize: 14,
     textAlign: 'right'
   }
-}; 
+};
 
 class RecentGames extends Component {
   static propTypes = {

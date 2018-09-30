@@ -58,6 +58,7 @@ const webpackConfig = {
     !isProduction && new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin([{from: 'static'}]),
     new webpack.IgnorePlugin(/canvas/),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),  // Ignore all locale files of moment.js
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(NODE_ENV) }
     })

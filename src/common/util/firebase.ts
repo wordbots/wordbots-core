@@ -1,9 +1,13 @@
-import * as firebase from 'firebase/app';
+import { Unsubscribe, User } from 'firebase/app';
 import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil } from 'lodash';
 
-const fb = require('firebase/app').default;
-import 'firebase/auth';
-import 'firebase/database';
+const firebase = import(/* webpackChunkName: 'firebase' */ 'firebase').then((_fb) => {
+  if (_fb.apps.length === 0) {
+    _fb.initializeApp(config);
+  }
+
+  return _fb;
+});
 
 import * as w from '../types';
 
@@ -18,35 +22,40 @@ const config = {
   messagingSenderId: '913868073872'
 };
 
-let currentUser: firebase.User | null = null;
+let currentUser: User | null = null;
 
-if (fb.apps.length === 0) {
-  fb.initializeApp(config);
+async function importFirebase(): Promise<any> {
+  await firebase;
+  return firebase;
 }
 
 // Users
 
-function saveUser(user: firebase.User): Promise<firebase.User> {
-  return fb.database().ref()
+function saveUser(user: User): Promise<User> {
+  return importFirebase().then((fb) => (
+    fb.database().ref()
     .child(`users/${user.uid}/info`)
     .set({
       uid: user.uid,
       email: user.email,
       displayName: user.displayName
     })
-    .then(() => user);
+    .then(() => user)
+  ));
 }
 
-export function getLoggedInUser(): Promise<firebase.User> {
+export function getLoggedInUser(): Promise<User> {
   return new Promise((resolve, reject) => {
-    fb.auth().onAuthStateChanged((user: firebase.User) => {
-      currentUser = user;
-      if (user) {
-        resolve(user);
-      } else {
-        reject('Not logged in');
-      }
-    });
+    importFirebase().then((fb) => (
+      fb.auth().onAuthStateChanged((user: User) => {
+        currentUser = user;
+        if (user) {
+          resolve(user);
+        } else {
+          reject('Not logged in');
+        }
+      })
+    ));
   });
 }
 
@@ -54,36 +63,48 @@ export function lookupUsername(fallback = 'You'): string {
   return (currentUser && currentUser.displayName) || fallback;
 }
 
-export function onLogin(callback: (user: firebase.User) => any): firebase.Unsubscribe {
-  return fb.auth().onAuthStateChanged((user: firebase.User) => user && callback(user));
+export function onLogin(callback: (user: User) => any): Promise<Unsubscribe> {
+  return importFirebase().then((fb) => (
+    fb.auth().onAuthStateChanged((user: User) => user && callback(user))
+  ));
 }
 
-export function onLogout(callback: () => any): firebase.Unsubscribe {
-  return fb.auth().onAuthStateChanged((user: firebase.User) => !user && callback());
+export function onLogout(callback: () => any): Promise<Unsubscribe> {
+  return importFirebase().then((fb) => (
+    fb.auth().onAuthStateChanged((user: User) => !user && callback())
+  ));
 }
 
 export function register(email: string, username: string, password: string): Promise<void> {
-  function postRegister(user: firebase.User): Promise<void> {
+  function postRegister(user: User): Promise<void> {
     return user.updateProfile({ displayName: username, photoURL: null })
                .then(() => { saveUser(user); })
                .catch(noop);
   }
 
-  return fb.auth().createUserWithEmailAndPassword(email, password)
-    .then(postRegister)
-    .catch(noop);
+  return importFirebase().then((fb) => (
+    fb.auth().createUserWithEmailAndPassword(email, password)
+      .then(postRegister)
+      .catch(noop)
+  ));
 }
 
-export function login(email: string, password: string): Promise<firebase.User> {
-  return fb.auth().signInWithEmailAndPassword(email, password);
+export function login(email: string, password: string): Promise<User> {
+  return importFirebase().then((fb) => (
+    fb.auth().signInWithEmailAndPassword(email, password)
+  ));
 }
 
 export function logout(): Promise<void> {
-  return fb.auth().signOut();
+  return importFirebase().then((fb) => (
+    fb.auth().signOut()
+  ));
 }
 
 export function resetPassword(email: string): Promise<void> {
-  return fb.auth().sendPasswordResetEmail(email);
+  return importFirebase().then((fb) => (
+    fb.auth().sendPasswordResetEmail(email)
+  ));
 }
 
 export function listenToUserData(callback: (data: any) => any): Promise<void> {
@@ -109,6 +130,7 @@ export function listenToUserDataById(uid: string, callback: (data: any) => any):
 }
 
 export function saveUserData(key: string, value: any): void {
+  return importFirebase().then((fb) => (
   getLoggedInUser()
     .then((user) => {
       fb.database()

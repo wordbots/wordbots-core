@@ -42,7 +42,7 @@ const selectStoreEnhancers = (): StoreEnhancer[] => {
   }
 };
 
-export default function configureStore(initialState: w.State): Store<w.State, AnyAction> {
+export default function configureStore(initialState: Partial<w.State>): Store<w.State, AnyAction> {
   const enhancers = compact(selectStoreEnhancers());
   const store: Store<w.State> = createStore(rootReducer, initialState, compose(...enhancers));
 

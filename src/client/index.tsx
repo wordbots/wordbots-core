@@ -1,22 +1,29 @@
 /*eslint-disable import/no-unassigned-import */
-import * as ReactDOM from 'react-dom';
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { Store } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from '../common/containers/App';
-import configureStore from '../common/store/configureStore.ts';
+import configureStore from '../common/store/configureStore';
 import '../../styles/index.css';
 import '../../styles/lib.css';
 import '../../styles/animations.css';
 /* eslint-enable import/no-unassigned-import */
 
-const rootElement = document.getElementById('root');
-const initialState = window.__INITIAL_STATE__;
+declare const window: {
+  localStorage: Record<string, string>
+  VERSION: string
+  Perf?: any
+};
 
-const store = configureStore(initialState);
+const rootElement: HTMLElement | null = document.getElementById('root');
+const store: Store<any, any> = configureStore({
+  version: window.VERSION
+});
 
-if (window.localStorage['profileOnLoad'] && window.Perf) {
+if (window.localStorage.profileOnLoad && window.Perf) {
   window.Perf.start();
 }
 
@@ -29,7 +36,7 @@ ReactDOM.hydrate(
   rootElement
 );
 
-if (window.localStorage['profileOnLoad'] && window.Perf) {
+if (window.localStorage.profileOnLoad && window.Perf) {
   window.Perf.stop();
   window.Perf.printInclusive();
 }

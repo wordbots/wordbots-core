@@ -13,8 +13,7 @@ import * as packagejson from '../../package.json';
 import produceApiResponse from './api';
 
 export default function handleRequest(request, response) {
-  const store = getStore(request);
-  produceResponse(response, store, request.url);
+  produceResponse(response, request.url);
 }
 
 function getVersionWithSha() {
@@ -23,19 +22,13 @@ function getVersionWithSha() {
   return `${packagejson.version}+${sha}`;
 }
 
-function getStore(request) {
-  return configureStore({
-    version: getVersionWithSha()
-  });
-}
-
-function produceResponse(response, store, location) {
+function produceResponse(response, location) {
   if (location.startsWith('/api')) {
     return produceApiResponse(response, location);
   } else {
     const context = {};
     const html = ReactDOMServer.renderToString(
-      <Provider store={store}>
+      <Provider store={configureStore()}>
         <StaticRouter location={location} context={context}>
           <App />
         </StaticRouter>
@@ -48,16 +41,14 @@ function produceResponse(response, store, location) {
         .end();
     } else {
       const head = Helmet.rewind();
-      const initialState = Object.assign(store.getState());
-
       response
         .status(200)
-        .end(renderFullPage(html, initialState, head));
+        .end(renderFullPage(html, head));
     }
   }
 }
 
-function renderFullPage(html, initialState, head) {
+function renderFullPage(html, head) {
   return `
     <!doctype html>
     <html>
@@ -103,7 +94,7 @@ function renderFullPage(html, initialState, head) {
       <body style="margin: 0;">
           <div id="root">${html}</div>
           <script>
-            window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+            window.VERSION = '${getVersionWithSha()}';
           </script>
           <script src="/static/bundle.js"></script>
       </body>

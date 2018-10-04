@@ -1,6 +1,6 @@
-import { getDefaultState, combineState, setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers';
+import { getDefaultState, combineState, setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers.ts';
 import { getComponent } from '../reactHelpers';
-import { attackBotCard } from '../data/cards';
+import { attackBotCard } from '../data/cards.ts';
 import * as actions from '../../src/common/actions/game';
 import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
 import gameReducer from '../../src/common/reducers/game.ts';

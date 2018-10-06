@@ -41,12 +41,12 @@ export function objectsMatchingConditions(state: w.GameState): w.Returns<w.Objec
   };
 }
 
-export function other(_: w.GameState, currentObject: w.Object): w.Returns<w.ObjectCollection> {
+export function other(_: w.GameState, currentObject: w.Object | null): w.Returns<w.ObjectCollection> {
   return (collection) => {
     return {
       type: 'objects',
       entries: collection.entries.filter((obj: w.Object) =>
-        obj.id !== currentObject.id
+        obj.id !== currentObject!.id
       )
     };
   };

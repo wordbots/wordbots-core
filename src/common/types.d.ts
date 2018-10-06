@@ -32,7 +32,7 @@ export type ActionPayload = any;
 
 export interface Action {
   type: ActionType,
-  payload: ActionPayload
+  payload?: ActionPayload
 }
 
 /* General types */

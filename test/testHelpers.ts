@@ -1,27 +1,33 @@
 import { cloneDeep, findIndex, forOwn, has, isArray, isObject, mapValues, pickBy } from 'lodash';
 
+import * as w from '../src/common/types';
 import { DECK_SIZE, BLUE_CORE_HEX, ORANGE_CORE_HEX } from '../src/common/constants';
 import {
   opponent, allObjectsOnBoard, ownerOf, getAttribute, validPlacementHexes,
   drawCards, applyAbilities
-} from '../src/common/util/game.ts';
-import { instantiateCard } from '../src/common/util/cards.ts';
-import game from '../src/common/reducers/game.ts';
+} from '../src/common/util/game';
+import { instantiateCard } from '../src/common/util/cards';
+import game from '../src/common/reducers/game';
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
-import { collection } from '../src/common/store/cards.ts';
-import defaultGameState from '../src/common/store/defaultGameState.ts';
-import defaultCreatorState from '../src/common/store/defaultCreatorState.ts';
-import defaultCollectionState from '../src/common/store/defaultCollectionState.ts';
-import defaultSocketState from '../src/common/store/defaultSocketState.ts';
-import { transportObject } from '../src/common/reducers/handlers/game/board.ts';
+import { collection } from '../src/common/store/cards';
+import defaultGameState from '../src/common/store/defaultGameState';
+import defaultCreatorState from '../src/common/store/defaultCreatorState';
+import defaultCollectionState from '../src/common/store/defaultCollectionState';
+import defaultSocketState from '../src/common/store/defaultSocketState';
+import { transportObject } from '../src/common/reducers/handlers/game/board';
 import HexUtils from '../src/common/components/hexgrid/HexUtils';
 
 import { attackBotCard } from './data/cards';
 
-export function getDefaultState(format = null) {
+interface Target {
+  hex?: w.HexId,
+  card?: w.CardInStore | number
+}
+
+export function getDefaultState(format: string | null = null): w.GameState {
   const state = cloneDeep(defaultGameState);
-  const deck = [instantiateCard(attackBotCard)].concat(collection.slice(1, DECK_SIZE));
+  const deck: w.CardInGame[] = [attackBotCard].concat(collection.slice(1, DECK_SIZE)).map(instantiateCard);
   const simulatedGameStartAction = {
     type: socketActions.GAME_START,
     payload: {
@@ -32,44 +38,51 @@ export function getDefaultState(format = null) {
   return game(state, simulatedGameStartAction);
 }
 
-export function combineState(gameState = defaultGameState) {
+export function combineState(gameState: w.GameState = defaultGameState): w.State {
   return {
-    global: {},
     game: gameState,
     creator: defaultCreatorState,
     collection: defaultCollectionState,
-    socket: defaultSocketState
+    socket: defaultSocketState,
+
+    global: {
+      renderId: 0,
+      user: null
+    },
+    version: 0
   };
 }
 
-export function objectsOnBoardOfType(state, objectType) {
+export function objectsOnBoardOfType(state: w.GameState, objectType: w.CardType): Record<w.HexId, string> {
   const objects = pickBy(allObjectsOnBoard(state), {card: {type: objectType}});
   return mapValues(objects, 'card.name');
 }
 
-export function queryObjectAttribute(state, hex, attr) {
+export function queryObjectAttribute(state: w.GameState, hex: w.HexId, attr: w.Attribute): number | undefined {
   return getAttribute(allObjectsOnBoard(state)[hex], attr);
 }
 
-export function queryRobotAttributes(state, hex) {
-  return [
-    getAttribute(allObjectsOnBoard(state)[hex], 'attack'),
-    getAttribute(allObjectsOnBoard(state)[hex], 'health'),
-    getAttribute(allObjectsOnBoard(state)[hex], 'speed')
-  ].join('/');
+export function queryRobotAttributes(state: w.GameState, hex: w.HexId): string | undefined {
+  if (allObjectsOnBoard(state)[hex]) {
+    return [
+      getAttribute(allObjectsOnBoard(state)[hex], 'attack'),
+      getAttribute(allObjectsOnBoard(state)[hex], 'health'),
+      getAttribute(allObjectsOnBoard(state)[hex], 'speed')
+    ].join('/');
+  }
 }
 
-export function queryPlayerHealth(state, playerName) {
-  return queryObjectAttribute(state, {'blue': BLUE_CORE_HEX, 'orange': ORANGE_CORE_HEX}[playerName], 'health');
+export function queryPlayerHealth(state: w.GameState, playerName: w.PlayerColor): number {
+  return queryObjectAttribute(state, {blue: BLUE_CORE_HEX, orange: ORANGE_CORE_HEX}[playerName], 'health')!;
 }
 
-export function drawCardToHand(state, playerName, card) {
+export function drawCardToHand(state: w.GameState, playerName: w.PlayerColor, card: w.CardInStore): w.GameState {
   const player = state.players[playerName];
-  player.deck = [instantiateCard(card)].concat(player.deck);
+  player.deck = [instantiateCard(card as w.CardInStore)].concat(player.deck as w.CardInGame[]);
   return drawCards(state, player, 1);
 }
 
-export function newTurn(state, playerName) {
+export function newTurn(state: w.GameState, playerName: w.PlayerColor): w.GameState {
   if (state.currentTurn === playerName) {
     // Pass twice.
     return game(state, [gameActions.passTurn(playerName), gameActions.passTurn(opponent(playerName))]);
@@ -79,7 +92,13 @@ export function newTurn(state, playerName) {
   }
 }
 
-export function playObject(state, playerName, card, hex, target = null) {
+export function playObject(
+  state: w.GameState,
+  playerName: w.PlayerColor,
+  card: w.CardInStore,
+  hex: w.HexId,
+  target: Target | null = null
+): w.GameState {
   const player = state.players[playerName];
 
   // We don't care about testing card draw and energy here, so ensure that:
@@ -89,7 +108,7 @@ export function playObject(state, playerName, card, hex, target = null) {
   card = instantiateCard(card);
   state.currentTurn = playerName;
   state.player = playerName;
-  player.hand = [card].concat(player.hand);
+  player.hand = [card].concat(player.hand as w.CardInStore[]);
   player.energy.available += card.cost;
 
   if (target && target.hex) {
@@ -99,7 +118,7 @@ export function playObject(state, playerName, card, hex, target = null) {
       gameActions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && target.card) {
-    const cardIdx = findIndex(player.hand, ['name', target.card.name]);
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name]) : target.card;
     return game(state, [
       gameActions.setSelectedCard(0, playerName),
       gameActions.placeCard(hex, 0),
@@ -113,7 +132,12 @@ export function playObject(state, playerName, card, hex, target = null) {
   }
 }
 
-export function playEvent(state, playerName, card, targets = [{hex: '0,0,0'}]) {
+export function playEvent(
+  state: w.GameState,
+  playerName: w.PlayerColor,
+  card: w.CardInStore,
+  targets: Target | Target[] = [{hex: '0,0,0'}]
+): w.GameState {
   // (Target the center hex by default for global events.)
 
   if (!isArray(targets)) {
@@ -129,16 +153,16 @@ export function playEvent(state, playerName, card, targets = [{hex: '0,0,0'}]) {
   card = instantiateCard(card);
   state.currentTurn = playerName;
   state.player = playerName;
-  player.hand = [card].concat(player.hand);
+  player.hand = [card].concat(player.hand as w.CardInStore[]);
   player.energy.available += card.cost;
 
   state = game(state, gameActions.setSelectedCard(0, playerName));
 
-  targets.forEach(target => {
+  targets.forEach((target) => {
     if (target.hex) {
       state = game(state, gameActions.setSelectedTile(target.hex, playerName));
     } else if (has(target, 'card')) {
-      const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
+      const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name]) : target.card;
       state = game(state, gameActions.setSelectedCard(cardIdx, playerName));
     }
   });
@@ -146,14 +170,14 @@ export function playEvent(state, playerName, card, targets = [{hex: '0,0,0'}]) {
   return state;
 }
 
-export function moveRobot(state, fromHex, toHex, asNewTurn = false) {
+export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, asNewTurn: boolean = false): w.GameState {
   if (asNewTurn) {
-    const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex]).name;
+    const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex])!.name;
     state = newTurn(state, owner);
   }
 
   if (!state.players[state.currentTurn].robotsOnBoard[fromHex]) {
-    throw `No ${state.currentTurn} robot on ${fromHex}!`;
+    throw new Error(`No ${state.currentTurn} robot on ${fromHex}!`);
   }
 
   return game(state, [
@@ -162,14 +186,14 @@ export function moveRobot(state, fromHex, toHex, asNewTurn = false) {
   ]);
 }
 
-export function attack(state, source, target, asNewTurn = false) {
+export function attack(state: w.GameState, source: w.HexId, target: w.HexId, asNewTurn = false): w.GameState {
   if (asNewTurn) {
-    const owner = ownerOf(state, allObjectsOnBoard(state)[source]).name;
+    const owner = ownerOf(state, allObjectsOnBoard(state)[source])!.name;
     state = newTurn(state, owner);
   }
 
   if (!state.players[state.currentTurn].robotsOnBoard[source]) {
-    throw `No ${state.currentTurn} robot on ${source}!`;
+    throw new Error(`No ${state.currentTurn} robot on ${source}!`);
   }
 
   return game(state, [
@@ -179,8 +203,8 @@ export function attack(state, source, target, asNewTurn = false) {
   ]);
 }
 
-export function activate(state, hex, abilityIdx, target = null, asNewTurn = false) {
-  const player = ownerOf(state, allObjectsOnBoard(state)[hex]);
+export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, target: Target | null = null, asNewTurn: boolean = false): w.GameState {
+  const player = ownerOf(state, allObjectsOnBoard(state)[hex])!;
 
   if (asNewTurn) {
     state = newTurn(state, player.name);
@@ -193,7 +217,7 @@ export function activate(state, hex, abilityIdx, target = null, asNewTurn = fals
       gameActions.setSelectedTile(target.hex, player.name)
     ]);
   } else if (target && has(target, 'card')) {
-    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', target.card.name]) : target.card;
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name]) : target.card;
     return game(state, [
       gameActions.setSelectedTile(hex, player.name),
       gameActions.activateObject(abilityIdx),
@@ -207,14 +231,15 @@ export function activate(state, hex, abilityIdx, target = null, asNewTurn = fals
   }
 }
 
-export function setUpBoardState(players) {
+export function setUpBoardState(players: Record<string, Record<w.HexId, w.CardInStore>>): w.GameState {
   let state = getDefaultState();
 
-  ['blue', 'orange'].forEach(playerName => {
-    if (players[playerName]) {
-      forOwn(players[playerName], (card, hex) => {
-        const placementHex = HexUtils.getID(validPlacementHexes(state, playerName, card.type)[0]);
-        state = playObject(state, playerName, card, placementHex);
+  ['blue', 'orange'].forEach((playerName) => {
+    const player: Record<w.HexId, w.CardInStore> = players[playerName as w.PlayerColor];
+    if (player) {
+      forOwn(player, (card, hex) => {
+        const placementHex = HexUtils.getID(validPlacementHexes(state, playerName as w.PlayerColor, card.type)[0]);
+        state = playObject(state, playerName as w.PlayerColor, card, placementHex);
         state = transportObject(state, placementHex, hex);
       });
     }

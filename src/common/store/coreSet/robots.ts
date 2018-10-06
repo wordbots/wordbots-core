@@ -1,7 +1,9 @@
+import * as w from '../../types';
 import { TYPE_ROBOT } from '../../constants';
 
 /* eslint-disable quotes */
-export const crawlingWallCard = {
+export const crawlingWallCard: w.CardInStore = {
+  id: 'Crawling Wall',
   name: 'Crawling Wall',
   cost: 1,
   type: TYPE_ROBOT,
@@ -16,7 +18,8 @@ export const crawlingWallCard = {
   ]
 };
 
-export const dojoDiscipleCard = {
+export const dojoDiscipleCard: w.CardInStore = {
+  id: 'Dojo Disciple',
   name: 'Dojo Disciple',
   cost: 1,
   type: TYPE_ROBOT,
@@ -31,7 +34,8 @@ export const dojoDiscipleCard = {
   ]
 };
 
-export const oneBotCard = {
+export const oneBotCard: w.CardInStore = {
+  id: 'One Bot',
   name: 'One Bot',
   cost: 1,
   type: TYPE_ROBOT,
@@ -43,7 +47,8 @@ export const oneBotCard = {
   abilities: []
 };
 
-export const madGamblerCard = {
+export const madGamblerCard: w.CardInStore = {
+  id: 'Mad Gambler',
   name: 'Mad Gambler',
   cost: 1,
   type: TYPE_ROBOT,
@@ -59,7 +64,8 @@ export const madGamblerCard = {
   ]
 };
 
-export const speedyBotCard = {
+export const speedyBotCard: w.CardInStore = {
+  id: "Speedy Bot",
   name: "Speedy Bot",
   type: TYPE_ROBOT,
   cost: 1,
@@ -76,7 +82,8 @@ export const speedyBotCard = {
   ]
 };
 
-export const bloodSwordmasterCard = {
+export const bloodSwordmasterCard: w.CardInStore = {
+  id: "Blood Swordmaster",
   name: "Blood Swordmaster",
   type: TYPE_ROBOT,
   cost: 2,
@@ -92,7 +99,8 @@ export const bloodSwordmasterCard = {
   ]
 };
 
-export const medicBotCard = {
+export const medicBotCard: w.CardInStore = {
+  id: 'Medic Bot',
   name: 'Medic Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -107,7 +115,8 @@ export const medicBotCard = {
   ]
 };
 
-export const mercenaryBlacksmithCard = {
+export const mercenaryBlacksmithCard: w.CardInStore = {
+  id: "Mercenary Blacksmith",
   name: "Mercenary Blacksmith",
   type: TYPE_ROBOT,
   cost: 2,
@@ -123,7 +132,8 @@ export const mercenaryBlacksmithCard = {
   ]
 };
 
-export const thornyBushCard = {
+export const thornyBushCard: w.CardInStore = {
+  id: 'Thorny Bush',
   name: 'Thorny Bush',
   cost: 2,
   type: TYPE_ROBOT,
@@ -138,7 +148,8 @@ export const thornyBushCard = {
   ]
 };
 
-export const twoBotCard = {
+export const twoBotCard: w.CardInStore = {
+  id: 'Two Bot',
   name: 'Two Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -150,7 +161,8 @@ export const twoBotCard = {
   abilities: []
 };
 
-export const batteryBotCard = {
+export const batteryBotCard: w.CardInStore = {
+  id: 'Battery Bot',
   name: 'Battery Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -165,7 +177,8 @@ export const batteryBotCard = {
   ]
 };
 
-export const governmentResearcherCard = {
+export const governmentResearcherCard: w.CardInStore = {
+  id: 'Gov\'t Researcher',
   name: 'Gov\'t Researcher',
   cost: 3,
   type: TYPE_ROBOT,
@@ -180,7 +193,8 @@ export const governmentResearcherCard = {
   ]
 };
 
-export const hermesCard = {
+export const hermesCard: w.CardInStore = {
+  id: "Hermes",
   name: "Hermes",
   type: TYPE_ROBOT,
   cost: 3,
@@ -196,7 +210,8 @@ export const hermesCard = {
   ]
 };
 
-export const kernelEaterCard = {
+export const kernelEaterCard: w.CardInStore = {
+  id: "Kernel Eater",
   name: "Kernel Eater",
   type: TYPE_ROBOT,
   cost: 3,
@@ -212,7 +227,8 @@ export const kernelEaterCard = {
   ]
 };
 
-export const martyrBotCard = {
+export const martyrBotCard: w.CardInStore = {
+  id: 'Martyr Bot',
   name: 'Martyr Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -227,7 +243,8 @@ export const martyrBotCard = {
   ]
 };
 
-export const pacifistCard = {
+export const pacifistCard: w.CardInStore = {
+  id: 'Pacifist',
   name: 'Pacifist',
   cost: 3,
   type: TYPE_ROBOT,
@@ -242,7 +259,8 @@ export const pacifistCard = {
   ]
 };
 
-export const recklessBerserkerCard = {
+export const recklessBerserkerCard: w.CardInStore = {
+  id: "Reckless Berserker",
   name: "Reckless Berserker",
   type: TYPE_ROBOT,
   cost: 3,
@@ -258,7 +276,8 @@ export const recklessBerserkerCard = {
   ]
 };
 
-export const recruiterBotCard = {
+export const recruiterBotCard: w.CardInStore = {
+  id: 'Recruiter Bot',
   name: 'Recruiter Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -273,7 +292,8 @@ export const recruiterBotCard = {
   ]
 };
 
-export const recyclerCard = {
+export const recyclerCard: w.CardInStore = {
+  id: "Recycler",
   name: "Recycler",
   type: TYPE_ROBOT,
   spriteID: "rtom5g6o8yf",
@@ -289,7 +309,8 @@ export const recyclerCard = {
   }
 };
 
-export const redBotCard = {
+export const redBotCard: w.CardInStore = {
+  id: 'Red Bot',
   name: 'Red Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -301,7 +322,8 @@ export const redBotCard = {
   abilities: []
 };
 
-export const roboSlugCard = {
+export const roboSlugCard: w.CardInStore = {
+  id: "Robo Slug",
   name: "Robo Slug",
   type: TYPE_ROBOT,
   cost: 3,
@@ -317,7 +339,8 @@ export const roboSlugCard = {
   ]
 };
 
-export const bloodDonorCard = {
+export const bloodDonorCard: w.CardInStore = {
+  id: 'Blood Donor',
   name: 'Blood Donor',
   cost: 4,
   type: TYPE_ROBOT,
@@ -332,7 +355,8 @@ export const bloodDonorCard = {
   ]
 };
 
-export const blueBotCard = {
+export const blueBotCard: w.CardInStore = {
+  id: 'Blue Bot',
   name: 'Blue Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -344,7 +368,8 @@ export const blueBotCard = {
   abilities: []
 };
 
-export const defenderBotCard = {
+export const defenderBotCard: w.CardInStore = {
+  id: 'Defender Bot',
   name: 'Defender Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -360,7 +385,8 @@ export const defenderBotCard = {
   ]
 };
 
-export const energyHoarderCard = {
+export const energyHoarderCard: w.CardInStore = {
+  id: "Energy Hoarder",
   name: "Energy Hoarder",
   type: TYPE_ROBOT,
   cost: 4,
@@ -376,7 +402,8 @@ export const energyHoarderCard = {
   ]
 };
 
-export const friendlyRiotShieldCard = {
+export const friendlyRiotShieldCard: w.CardInStore = {
+  id: 'Friendly Riot Shield',
   name: 'Friendly Riot Shield',
   cost: 4,
   type: TYPE_ROBOT,
@@ -392,7 +419,8 @@ export const friendlyRiotShieldCard = {
   ]
 };
 
-export const knowledgeBotCard = {
+export const knowledgeBotCard: w.CardInStore = {
+  id: 'Knowledge Bot',
   name: 'Knowledge Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -407,7 +435,8 @@ export const knowledgeBotCard = {
   ]
 };
 
-export const leapFrogBotCard = {
+export const leapFrogBotCard: w.CardInStore = {
+  id: 'Leap Frog Bot',
   name: 'Leap Frog Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -422,7 +451,8 @@ export const leapFrogBotCard = {
   ]
 };
 
-export const monkeyBotCard = {
+export const monkeyBotCard: w.CardInStore = {
+  id: 'Monkey Bot',
   name: 'Monkey Bot',
   cost: 4,
   type: TYPE_ROBOT,
@@ -437,7 +467,8 @@ export const monkeyBotCard = {
   ]
 };
 
-export const calmMonkCard = {
+export const calmMonkCard: w.CardInStore = {
+  id: 'Calm Monk',
   name: 'Calm Monk',
   cost: 5,
   type: TYPE_ROBOT,
@@ -452,7 +483,8 @@ export const calmMonkCard = {
   ]
 };
 
-export const royalGuardCard = {
+export const royalGuardCard: w.CardInStore = {
+  id: 'Royal Guard',
   name: 'Royal Guard',
   cost: 5,
   type: TYPE_ROBOT,
@@ -468,7 +500,8 @@ export const royalGuardCard = {
   ]
 };
 
-export const botOfPainCard = {
+export const botOfPainCard: w.CardInStore = {
+  id: 'Bot of Pain',
   name: 'Bot of Pain',
   cost: 6,
   type: TYPE_ROBOT,
@@ -483,7 +516,8 @@ export const botOfPainCard = {
   ]
 };
 
-export const flametongueBotCard = {
+export const flametongueBotCard: w.CardInStore = {
+  id: 'Flametongue Bot',
   name: 'Flametongue Bot',
   cost: 6,
   type: TYPE_ROBOT,
@@ -498,7 +532,8 @@ export const flametongueBotCard = {
   ]
 };
 
-export const effectiveTrollCard = {
+export const effectiveTrollCard: w.CardInStore = {
+  id: 'Effective Troll',
   name: 'Effective Troll',
   cost: 7,
   type: TYPE_ROBOT,
@@ -511,7 +546,8 @@ export const effectiveTrollCard = {
   ]
 };
 
-export const generalBotCard = {
+export const generalBotCard: w.CardInStore = {
+  id: 'General Bot',
   name: 'General Bot',
   cost: 7,
   type: TYPE_ROBOT,

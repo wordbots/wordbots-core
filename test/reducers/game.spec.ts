@@ -1,15 +1,16 @@
 import { cloneDeep, find, findIndex, size, times } from 'lodash';
 
-import game from '../../src/common/reducers/game.ts';
+import * as w from '../../src/common/types';
+import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
-import defaultState from '../../src/common/store/defaultGameState.ts';
-import * as cards from '../../src/common/store/cards.ts';
+import defaultState from '../../src/common/store/defaultGameState';
+import * as cards from '../../src/common/store/cards';
 import {
   BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, DECK_SIZE,
   TYPE_ROBOT, TYPE_STRUCTURE
 } from '../../src/common/constants';
-import { instantiateCard } from '../../src/common/util/cards.ts';
-import { getCost } from '../../src/common/util/game.ts';
+import { instantiateCard } from '../../src/common/util/cards';
+import { getCost } from '../../src/common/util/game';
 import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
   newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack, activate,
@@ -19,7 +20,7 @@ import * as testCards from '../data/cards';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {
-    const gameState = game(undefined, {});
+    const gameState = game();
     const expectedGameState = Object.assign({}, cloneDeep(defaultState), {actionId: gameState.actionId});
     expect(gameState).toEqual(expectedGameState);
   });
@@ -130,11 +131,11 @@ describe('Game reducer', () => {
       const blueAttackBotPos = '-1,1,0';
 
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           [orangeTwoBotPos]: cards.twoBotCard,
           [orangeAttackBotPos]: testCards.attackBotCard
         },
-        'blue': {
+        blue: {
           [blueTwoBotPos]: cards.twoBotCard,
           [blueAttackBotPos]: testCards.attackBotCard
         }
@@ -164,13 +165,11 @@ describe('Game reducer', () => {
       ).toEqual([orangeTwoBotPos, blueTwoBotPos, orangeAttackBotPos, blueAttackBotPos].sort());
 
       // Combat when attacker dies.
-      // Also, let's test moveAndAttack while we're at it, by moving the blue attack bot out of range and
-      // and then (next turn) moving+attacking the orange tank bot as a single action.
       state = moveRobot(state, blueAttackBotPos, '-2,1,1');
       state = newTurn(state, 'blue');
       state = game(state, [
         actions.setSelectedTile('-2,1,1', 'blue'),
-        actions.moveRobot('-2,1,1', blueAttackBotPos, true),
+        actions.moveRobot('-2,1,1', blueAttackBotPos),
         actions.attack(blueAttackBotPos, orangeTwoBotPos),
         actions.attackComplete()
       ]);
@@ -299,7 +298,7 @@ describe('Game reducer', () => {
     it('should not be able to play an event if there are no valid targets', () => {
       let state = getDefaultState();
       state = playEvent(state, 'orange', cards.smashCard);
-      expect(state.players.orange.hand.map(c => c.name)).toContain(cards.smashCard.name);
+      expect(state.players.orange.hand.map((c) => (c as w.CardInGame).name)).toContain(cards.smashCard.name);
     });
 
     it('should be able to handle commands with delayed execution for "they"', () => {
@@ -316,11 +315,11 @@ describe('Game reducer', () => {
     it('should be able to activate afterAttack triggered abilities', () => {
       // Monkey Bot: "When this robot attacks, it deals damage to all adjacent robots instead.""
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '0,0,0': cards.monkeyBotCard, // 2/2
           '1,0,-1': testCards.attackBotCard // 1/1
         },
-        'blue': {
+        blue: {
           '-1,0,1': cards.twoBotCard, // 2/4
           '0,-1,1': cards.twoBotCard, // 2/4
           '-1,1,0': testCards.attackBotCard // 1/1
@@ -342,10 +341,10 @@ describe('Game reducer', () => {
     it('should be able to activate afterDamageReceived triggered abilities', () => {
       // Wisdom Bot: "Whenever this robot takes damage, draw a card."
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '0,0,0': testCards.wisdomBotCard // 1/3
         },
-        'blue': {
+        blue: {
           '-1,0,1': testCards.attackBotCard, // 1/1
           '0,-1,1': testCards.attackBotCard, // 1/1
           '-1,1,0': testCards.attackBotCard // 1/1
@@ -365,11 +364,11 @@ describe('Game reducer', () => {
     it('should be able to activate afterDestroyed triggered abilities', () => {
       // Arena: "Whenever a robot is destroyed in combat, deal 1 damage to its controller."
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '1,0,-1': cards.arenaCard,
           '0,0,0': testCards.attackBotCard
         },
-        'blue': {
+        blue: {
           '-1,0,1': cards.twoBotCard,
           '0,-1,1': testCards.attackBotCard,
           '-2,0,2': cards.arenaCard
@@ -383,11 +382,11 @@ describe('Game reducer', () => {
 
       // Martyr Bot: "When this robot is destroyed, take control of all adjacent robots."
       state = setUpBoardState({
-        'orange': {
+        orange: {
           '0,0,0': cards.martyrBotCard,
           '1,0,-1': cards.defenderBotCard  // adjacent to Martyr Bot (but already controlled by orange)
         },
-        'blue': {
+        blue: {
           '-1,0,1': cards.twoBotCard,  // will attack
           '-1,1,0': testCards.attackBotCard,  // adjacent to Martyr Bot
           '-2,0,2': cards.monkeyBotCard  // not adjacent to Martyr Bot
@@ -431,11 +430,11 @@ describe('Game reducer', () => {
     it('should be able to activate endOfTurn triggered abilities', () => {
       // Bot of Pain: "At the end of each turn, each robot takes 1 damage."
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '0,0,0': cards.botOfPainCard, // 2/3
           '1,-2,1': testCards.attackBotCard // 1/1
         },
-        'blue': {
+        blue: {
           '2,0,-2': cards.twoBotCard, // 2/4
           '-2,0,2': testCards.wisdomBotCard, // 1/3
           '0,-1,1': cards.monkeyBotCard // 2/2
@@ -459,7 +458,7 @@ describe('Game reducer', () => {
       state = drawCardToHand(state, 'orange', cards.flametongueBotCard);
       state = playObject(state, 'orange', testCards.investorBotCard, '2,1,-3', {card: cards.flametongueBotCard});
       expect(
-        find(state.players.orange.hand, {name: 'Flametongue Bot'}).cost
+        (find(state.players.orange.hand, {name: 'Flametongue Bot'})! as w.CardInGame).cost
       ).toEqual(cards.flametongueBotCard.cost - 2);
 
       // Test ability to select an object on the board.
@@ -473,11 +472,11 @@ describe('Game reducer', () => {
     it('should let objects apply keyword effects to themselves', () => {
       // Defender Bot: "Defender, taunt."
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '0,0,0': cards.defenderBotCard,  // 3/3
           '0,-2,2': testCards.attackBotCard  // 3/3
         },
-        'blue': {
+        blue: {
           '0,-1,1': testCards.attackBotCard  // 1/1
         }
       });
@@ -508,12 +507,12 @@ describe('Game reducer', () => {
       // General Bot: "Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again."
       // Fortification: "Your adjacent robots have +1 health."
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '1,0,-1': testCards.attackBotCard,  // 1/1
           '1,-1,0': cards.generalBotCard,  // +1/0
           '1,1,-2': cards.fortificationCard  // +0/1
         },
-        'blue': {
+        blue: {
           '3,-2,-1': cards.fortificationCard
         }
       });
@@ -552,8 +551,8 @@ describe('Game reducer', () => {
     });
 
     it('should let objects apply passive abilities to cards in hand', () => {
-      function costOf(player, card) {
-        return getCost(player.hand.find(c => c.name === card.name));
+      function costOf(player: w.PlayerInGameState, card: w.CardInStore): number {
+        return getCost((player.hand as w.CardInGame[]).find((c) => c.name === card.name)!);
       }
 
       // Recruiter Bot: "Robots you play cost 1 less energy."
@@ -607,12 +606,12 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '2,1,-3')).toEqual('4/6/3');
       const energy = state.players.orange.energy.available;
       state = playEvent(state, 'orange', cards.incinerateCard);  // "Gain energy equal to the total power of robots you control. Destroy all robots you control."
-      expect(state.players.orange.energy.available).toEqual(energy + (3+1+2) + (2+2));
+      expect(state.players.orange.energy.available).toEqual(energy + (3 + 1 + 2) + (2 + 2));
     });
 
     it('should let objects assign keywords to other objects', () => {
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '0,0,0': testCards.attackBotCard,
           '1,0,-1': testCards.attackBotCard
         }
@@ -652,12 +651,12 @@ describe('Game reducer', () => {
 
     it('should let objects assign triggered abilities to other objects', () => {
       let state = setUpBoardState({
-        'orange': {
+        orange: {
           '-3,1,2': testCards.attackBotCard
         }
       });
 
-      function handSize() {
+      function handSize(): number {
         return state.players.orange.hand.length;
       }
 
@@ -673,7 +672,7 @@ describe('Game reducer', () => {
       // Card draw.
       state = newTurn(state, 'orange');
       currentHandSize = handSize();
-      //console.log(state.players.orange.robotsOnBoard['-3,1,2']);
+      // console.log(state.players.orange.robotsOnBoard['-3,1,2']);
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize + 1);
 
@@ -691,12 +690,12 @@ describe('Game reducer', () => {
 
   describe('[Activated abilities]', () => {
     it('should let objects activate activated abilities when able', () => {
-      function hand() {
-        return state.players.orange.hand.map(c => c.name).join(',');
+      function hand(): string {
+        return (state.players.orange.hand as w.CardInGame[]).map((c) => c.name).join(',');
       }
 
       let state = setUpBoardState({
-        'blue': {
+        blue: {
           '1,1,-2': cards.fortificationCard
         }
       });
@@ -722,12 +721,12 @@ describe('Game reducer', () => {
 
       // Can't activate then attack on the same turn.
       state = attack(state, '2,1,-3', '1,1,-2');
-      expect(queryObjectAttribute(state, '1,1,-2', 'health')).toEqual(cards.fortificationCard.stats.health);
+      expect(queryObjectAttribute(state, '1,1,-2', 'health')).toEqual(cards.fortificationCard.stats!.health);
 
       // Can't attack then activate on the same turn.
       state = newTurn(state, 'orange');
       state = attack(state, '2,1,-3', '1,1,-2');
-      expect(queryObjectAttribute(state, '1,1,-2', 'health')).toEqual(cards.fortificationCard.stats.health - 1);
+      expect(queryObjectAttribute(state, '1,1,-2', 'health')).toEqual(cards.fortificationCard.stats!.health - 1);
       currentHand = hand();
       state = activate(state, '2,1,-3', 0, {card: 0});
       expect(hand()).toEqual(currentHand);
@@ -786,7 +785,7 @@ describe('Game reducer', () => {
 
       // Can we query getCost() on this card?
       // Or does it break because the temporaryStatAdjustment got messed up in serialization?
-      expect(getCost(state.players.orange.hand[0])).toEqual(0);
+      expect(getCost(state.players.orange.hand[0] as w.CardInGame)).toEqual(0);
     });
   });
 });

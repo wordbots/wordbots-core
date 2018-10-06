@@ -1,4 +1,4 @@
-import { combineState } from '../testHelpers';
+import { combineState } from '../testHelpers.ts';
 import { getComponent } from '../reactHelpers';
 import CardCreationForm from '../../src/common/components/cards/CardCreationForm';
 import collectionReducer from '../../src/common/reducers/collection.ts';

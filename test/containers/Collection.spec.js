@@ -2,7 +2,7 @@ import { scryRenderedComponentsWithType } from 'react-dom/test-utils';
 import RaisedButton from 'material-ui/RaisedButton';
 import { cloneDeep } from 'lodash';
 
-import { combineState } from '../testHelpers';
+import { combineState } from '../testHelpers.ts';
 import { createCollection, renderElement } from '../reactHelpers';
 import CardGrid from '../../src/common/components/cards/CardGrid';
 import CardTable from '../../src/common/components/cards/CardTable';

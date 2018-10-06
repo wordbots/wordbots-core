@@ -1,8 +1,10 @@
+import * as w from '../../types';
 import { TYPE_STRUCTURE } from '../../constants';
 
 /* eslint-disable quotes */
 
-export const fortificationCard = {
+export const fortificationCard: w.CardInStore = {
+  id: 'Fortification',
   name: 'Fortification',
   cost: 2,
   type: TYPE_STRUCTURE,
@@ -15,7 +17,8 @@ export const fortificationCard = {
   ]
 };
 
-export const energyWellCard = {
+export const energyWellCard: w.CardInStore = {
+  id: 'Energy Well',
   name: 'Energy Well',
   cost: 2,
   type: TYPE_STRUCTURE,
@@ -28,7 +31,8 @@ export const energyWellCard = {
   ]
 };
 
-export const antiGravityFieldCard = {
+export const antiGravityFieldCard: w.CardInStore = {
+  id: "Anti-Gravity Field",
   name: "Anti-Gravity Field",
   type: TYPE_STRUCTURE,
   spriteID: "jjax9vh3xh",
@@ -42,7 +46,8 @@ export const antiGravityFieldCard = {
   }
 };
 
-export const acceleratorCard = {
+export const acceleratorCard: w.CardInStore = {
+  id: 'Accelerator',
   name: 'Accelerator',
   cost: 3,
   type: TYPE_STRUCTURE,
@@ -55,7 +60,8 @@ export const acceleratorCard = {
   ]
 };
 
-export const magpieMachineCard = {
+export const magpieMachineCard: w.CardInStore = {
+  id: "Magpie Machine",
   name: "Magpie Machine",
   type: TYPE_STRUCTURE,
   spriteID: "vw3x59ovn0q",
@@ -69,7 +75,8 @@ export const magpieMachineCard = {
   }
 };
 
-export const arenaCard = {
+export const arenaCard: w.CardInStore = {
+  id: 'Arena',
   name: 'Arena',
   cost: 3,
   type: TYPE_STRUCTURE,
@@ -82,7 +89,8 @@ export const arenaCard = {
   ]
 };
 
-export const killingBeamCard = {
+export const killingBeamCard: w.CardInStore = {
+  id: 'Killing Beam',
   name: 'Killing Beam',
   cost: 4,
   type: TYPE_STRUCTURE,
@@ -96,7 +104,8 @@ export const killingBeamCard = {
   ]
 };
 
-export const healingWellCard = {
+export const healingWellCard: w.CardInStore = {
+  id: 'Healing Well',
   name: 'Healing Well',
   cost: 4,
   type: TYPE_STRUCTURE,
@@ -110,7 +119,8 @@ export const healingWellCard = {
   ]
 };
 
-export const mirrorCard = {
+export const mirrorCard: w.CardInStore = {
+  id: 'Mirror',
   name: 'Mirror',
   cost: 4,
   type: TYPE_STRUCTURE,
@@ -123,8 +133,8 @@ export const mirrorCard = {
   ]
 };
 
-
-export const theBombCard = {
+export const theBombCard: w.CardInStore = {
+  id: 'The Bomb',
   name: 'The Bomb',
   cost: 6,
   type: TYPE_STRUCTURE,

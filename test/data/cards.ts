@@ -1,3 +1,4 @@
+import * as w from '../../src/common/types';
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../src/common/constants';
 
 /**
@@ -9,8 +10,8 @@ const getBasicStats = () => ({
   speed: 2
 });
 
-export const cantripCard = {
-  id: 'cantrip',
+export const cantripCard: w.CardInStore = {
+  id: 'Cantrip',
   name: 'Cantrip',
   text: 'Draw a card.',
   command: '(function () { actions["draw"](targets["self"](), 1); })',
@@ -18,8 +19,8 @@ export const cantripCard = {
   type: TYPE_EVENT
 };
 
-export const attackBotCard = {
-  id: 'attackBot',
+export const attackBotCard: w.CardInStore = {
+  id: 'Attack Bot',
   name: 'Attack Bot',
   cost: 1,
   type: TYPE_ROBOT,
@@ -31,7 +32,8 @@ export const attackBotCard = {
   abilities: []
 };
 
-export const wisdomBotCard = {
+export const wisdomBotCard: w.CardInStore = {
+  id: 'Wisdom Bot',
   name: 'Wisdom Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -46,7 +48,8 @@ export const wisdomBotCard = {
   ]
 };
 
-export const hasteBotCard = {
+export const hasteBotCard: w.CardInStore = {
+  id: 'Haste Bot',
   name: 'Haste Bot',
   cost: 2,
   type: TYPE_ROBOT,
@@ -61,7 +64,8 @@ export const hasteBotCard = {
   ]
 };
 
-export const investorBotCard = {
+export const investorBotCard: w.CardInStore = {
+  id: 'Investor Bot',
   name: 'Investor Bot',
   cost: 3,
   type: TYPE_ROBOT,
@@ -76,7 +80,8 @@ export const investorBotCard = {
   ]
 };
 
-export const wrathOfRobotGodCard = {
+export const wrathOfRobotGodCard: w.CardInStore = {
+  id: 'Wrath of RoboGod',
   name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
   command: '(function () { actions["destroy"](objectsInPlay("robot")); })',
@@ -84,7 +89,8 @@ export const wrathOfRobotGodCard = {
   type: TYPE_EVENT
 };
 
-export const healthAuraCard = {
+export const healthAuraCard: w.CardInStore = {
+  id: 'Health Aura',
   name: 'Health Aura',
   cost: 3,
   type: TYPE_STRUCTURE,
@@ -97,8 +103,8 @@ export const healthAuraCard = {
   ]
 };
 
-export const instantKernelKillerAbilityCard = {
-  id: 'kernelKiller',
+export const instantKernelKillerAbilityCard: w.CardInStore = {
+  id: 'Remove Enemy Kernel',
   name: 'Remove Enemy Kernel',
   text: 'At the end of the turn, deal 21 damage to your opponent\'s kernel.',
   cost: 1,

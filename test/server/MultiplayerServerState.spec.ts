@@ -428,7 +428,7 @@ describe('MultiplayerServerState', () => {
     it('should reveal event cards when they are about to be played', () => {
       const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
       state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange'));
-      const action: [m.Action, m.ClientID] = [gameActions.setSelectedTile('3,-1,-2', 0), 'player1'];
+      const action: [m.Action, m.ClientID] = [gameActions.setSelectedTile('3,-1,-2', 'orange'), 'player1'];
 
       // player1 is orange.
       expect(state.getCardsToReveal('player1', action).blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);

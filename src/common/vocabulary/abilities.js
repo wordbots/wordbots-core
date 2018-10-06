@@ -66,7 +66,9 @@ export function abilities(state) {
 
           target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr].concat({
             aid: aid,
-            func: func
+            // Convert func to string so that we can serialize this temporaryStatAdjustment if necessary
+            // (e.g. to reveal a card from the server).
+            func: `(${func.toString()})`
           });
         },
         unapply: function (target) {

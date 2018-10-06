@@ -63,26 +63,28 @@ export const SPRITE_VERSION = 2;
 // Sprite changes:
 // * 1->2: trianglify instead of identicons for events
 
+type CardType = 0 | 1 | 2 | 3;
+
 export const TYPE_ROBOT = 0;
 export const TYPE_EVENT = 1;
 export const TYPE_CORE = 2;
 export const TYPE_STRUCTURE = 3;
 
-export const CREATABLE_TYPES = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
+export const CREATABLE_TYPES: CardType[] = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
 
-const typeToStringMapping = {
+const typeToStringMapping: Record<string, string> = {
   [TYPE_ROBOT]: 'robot',
   [TYPE_EVENT]: 'event',
   [TYPE_CORE]: 'kernel',
   [TYPE_STRUCTURE]: 'structure'
 };
 
-export function typeToString(type) {
-  return capitalize(typeToStringMapping[type]);
+export function typeToString(type: CardType): string {
+  return capitalize(typeToStringMapping[type.toString()]);
 }
 
-export function stringToType(str) {
-  return parseInt(invert(typeToStringMapping)[str.toLowerCase()]);
+export function stringToType(str: string): CardType {
+  return parseInt(invert(typeToStringMapping)[str.toLowerCase()], 10) as CardType;
 }
 
 /* Parsing. */
@@ -124,8 +126,8 @@ export const HINTS = {
   'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
 };
 
-function objToRegexes(obj) {
-  return fromPairs(Object.keys(obj).map(k => [k, new RegExp(`(${k}|${capitalize(k)})`)]));
+function objToRegexes(obj: Record<string, string>): Record<string, RegExp> {
+  return fromPairs(Object.keys(obj).map((k) => [k, new RegExp(`(${k}|${capitalize(k)})`)]));
 }
 
 export const KEYWORD_REGEXES = objToRegexes(KEYWORDS);

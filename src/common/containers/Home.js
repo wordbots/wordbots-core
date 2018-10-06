@@ -4,8 +4,8 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import * as collectionActions from '../actions/collection';
-import * as gameActions from '../actions/game';
+import * as collectionActions from '../actions/collection.ts';
+import * as gameActions from '../actions/game.ts';
 import PaperButton from '../components/PaperButton';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 

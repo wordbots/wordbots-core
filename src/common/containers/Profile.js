@@ -12,7 +12,7 @@ import MatchmakingInfo from '../components/profile/MatchmakingInfo';
 import RecentGames from '../components/profile/RecentGames';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import Title from '../components/Title';
-import * as collectionActions from '../actions/collection';
+import * as collectionActions from '../actions/collection.ts';
 import { getRecentGamesByUserId, getUserNamesByIds, getCardsCreatedCountByUserId,
          getDecksCreatedCountByUserId } from '../util/firebase.ts';
 

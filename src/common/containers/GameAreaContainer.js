@@ -5,13 +5,13 @@ import { withRouter } from 'react-router';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants';
+import { ANIMATION_TIME_MS, AI_RESPONSE_TIME_MS } from '../constants.ts';
 import { animate } from '../util/common.ts';
 import { shuffleCardsInDeck } from '../util/cards.ts';
 import { currentTutorialStep } from '../util/game.ts';
 import GameArea, { gameProps } from '../components/game/GameArea';
-import * as gameActions from '../actions/game';
-import * as socketActions from '../actions/socket';
+import * as gameActions from '../actions/game.ts';
+import * as socketActions from '../actions/socket.ts';
 import { arbitraryPlayerState } from '../store/defaultGameState.ts';
 
 import Singleplayer from './Singleplayer';

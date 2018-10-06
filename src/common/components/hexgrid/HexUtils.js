@@ -1,5 +1,5 @@
 import { compareCertainKeys } from '../../util/common.ts';
-import { BOARD_SIZE_MULTIPLIER } from '../../constants';
+import { BOARD_SIZE_MULTIPLIER } from '../../constants.ts';
 
 import Hex from './Hex';
 import Point from './Point';

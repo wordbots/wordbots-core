@@ -7,7 +7,7 @@ import { compact } from 'lodash';
 
 import Chat from '../components/play/multiplayer/Chat';
 import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
-import * as socketActions from '../actions/socket';
+import * as socketActions from '../actions/socket.ts';
 
 import GameAreaContainer from './GameAreaContainer';
 

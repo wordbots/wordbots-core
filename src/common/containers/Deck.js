@@ -14,7 +14,7 @@ import FilterControls from '../components/cards/FilterControls';
 import LayoutControls from '../components/cards/LayoutControls';
 import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
-import * as collectionActions from '../actions/collection';
+import * as collectionActions from '../actions/collection.ts';
 
 function mapStateToProps(state) {
   return {

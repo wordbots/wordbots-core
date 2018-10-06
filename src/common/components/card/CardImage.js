@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { func, number, string } from 'prop-types';
 
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT } from '../../constants.ts';
 import loadImages from '../hexgrid/HexGridImages';
 import Sprite from '../Sprite';
 

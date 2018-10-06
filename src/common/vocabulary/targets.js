@@ -1,7 +1,7 @@
 import { compact, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
-import { stringToType } from '../constants';
+import { stringToType } from '../constants.ts';
 import { arrayToSentence, id } from '../util/common.ts';
 import {
   opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf,

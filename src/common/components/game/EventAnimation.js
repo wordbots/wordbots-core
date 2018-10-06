@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, object, string } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { EVENT_ANIMATION_TIME_MS } from '../../constants';
+import { EVENT_ANIMATION_TIME_MS } from '../../constants.ts';
 import Card from '../card/Card';
 
 export default class EventAnimation extends React.Component {

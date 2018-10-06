@@ -8,7 +8,7 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { isEqual, noop } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
+import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants.ts';
 import { compareCertainKeys } from '../../util/common.ts';
 import { splitSentences } from '../../util/cards.ts';
 import { inBrowser } from '../../util/browser.tsx';

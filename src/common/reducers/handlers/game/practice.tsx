@@ -20,7 +20,7 @@ import { setSelectedTile, moveRobot, attack } from './board';
 
 type State = w.GameState;
 
-export function startPractice(state: State, format: string, deck: w.CardInGame[]): State {
+export function startPractice(state: State, format: w.Format, deck: w.CardInGame[]): State {
   const decks: w.PerPlayer<w.CardInGame[]> = {
     orange: deck,
     blue: shuffle(aiDeck)

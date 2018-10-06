@@ -1,8 +1,8 @@
 import { getDefaultState, combineState, setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers.ts';
 import { getComponent } from '../reactHelpers';
 import { attackBotCard } from '../data/cards.ts';
-import * as actions from '../../src/common/actions/game';
-import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants';
+import * as actions from '../../src/common/actions/game.ts';
+import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants.ts';
 import gameReducer from '../../src/common/reducers/game.ts';
 import { blueCoreCard, orangeCoreCard, shockCard } from '../../src/common/store/cards.ts';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid';

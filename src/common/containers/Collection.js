@@ -21,7 +21,7 @@ import LayoutControls from '../components/cards/LayoutControls';
 import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
-import * as collectionActions from '../actions/collection';
+import * as collectionActions from '../actions/collection.ts';
 
 export function mapStateToProps(state) {
   return {

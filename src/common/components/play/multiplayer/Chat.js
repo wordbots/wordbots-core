@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { chain as _, isEqual } from 'lodash';
 
-import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, CHAT_Z_INDEX } from '../../../constants';
+import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, CHAT_Z_INDEX } from '../../../constants.ts';
 import { id } from '../../../util/common.ts';
 
 import ChatMessage from './ChatMessage';

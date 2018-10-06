@@ -9,7 +9,7 @@ import * as m from '../server/multiplayer/multiplayer';
 export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardId = string;
-export type CardType = number;
+export type CardType = 0 | 1 | 2 | 3;
 export type Cause = string;
 export type DeckId = string;
 export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';

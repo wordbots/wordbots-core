@@ -1,3 +1,5 @@
+import * as w from '../types';
+
 export const START_PRACTICE = 'START_PRACTICE';
 export const AI_RESPONSE = 'AI_RESPONSE';
 export const START_TUTORIAL = 'START_TUTORIAL';
@@ -16,114 +18,115 @@ export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
 
-export function startPractice(format, deck) {
+export function startPractice(format: w.Format, deck: w.Deck): w.Action {
   return {
     type: START_PRACTICE,
     payload: { format, deck }
   };
 }
 
-export function aiResponse() {
+export function aiResponse(): w.Action {
   return {
     type: AI_RESPONSE
   };
 }
 
-export function startTutorial() {
+export function startTutorial(): w.Action {
   return {
     type: START_TUTORIAL
   };
 }
 
-export function tutorialStep(back = false) {
+export function tutorialStep(back = false): w.Action {
   return {
     type: TUTORIAL_STEP,
     payload: { back }
   };
 }
 
-export function startSandbox(card = null) {
+export function startSandbox(card: w.CardInStore | null = null): w.Action {
   return {
     type: START_SANDBOX,
     payload: { card }
   };
 }
 
-export function endGame() {
+export function endGame(): w.Action {
   return {
     type: END_GAME
   };
 }
 
-export function moveRobot(from, to) {
+export function moveRobot(from: w.HexId, to: w.HexId): w.Action {
   return {
     type: MOVE_ROBOT,
     payload: { from, to }
   };
 }
 
-export function attack(source, target) {
+export function attack(source: w.HexId, target: w.HexId): w.Action {
   return {
     type: ATTACK,
     payload: { source, target }
   };
 }
 
-export function attackRetract() {
+export function attackRetract(): w.Action {
   return {
     type: ATTACK_RETRACT
   };
 }
 
-export function attackComplete() {
+export function attackComplete(): w.Action {
   return {
     type: ATTACK_COMPLETE
   };
 }
 
-export function activateObject(abilityIdx) {
+export function activateObject(abilityIdx: number): w.Action {
   return {
     type: ACTIVATE_OBJECT,
     payload: { abilityIdx }
   };
 }
 
-export function placeCard(tile, cardIdx) {
+export function placeCard(tile: w.HexId, cardIdx: number): w.Action {
   return {
     type: PLACE_CARD,
     payload: { tile, cardIdx }
   };
 }
 
-export function passTurn(player) {
+export function passTurn(player: w.PlayerColor): w.Action {
   return {
     type: PASS_TURN,
     payload: { player }
   };
 }
 
-export function setSelectedCard(selectedCard, player) {
+export function setSelectedCard(selectedCard: number, player: w.PlayerColor): w.Action {
   return {
     type: SET_SELECTED_CARD,
     payload: { selectedCard, player }
   };
 }
 
-export function setSelectedTile(selectedTile, player) {
+export function setSelectedTile(selectedTile: w.HexId, player: w.PlayerColor): w.Action {
   return {
     type: SET_SELECTED_TILE,
     payload: { selectedTile, player }
   };
 }
 
-export function deselect(player) {
+export function deselect(player: w.PlayerColor): w.Action {
   return {
     type: DESELECT,
     payload: { player }
   };
 }
 
-export function addCardToTopOfDeck(player, card) {
+// (only used on sandbox mode)
+export function addCardToTopOfDeck(player: w.PlayerColor, card: w.Card): w.Action {
   return {
     type: ADD_CARD_TO_TOP_OF_DECK,
     payload: { player, card }

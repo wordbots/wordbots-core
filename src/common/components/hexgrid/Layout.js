@@ -1,4 +1,4 @@
-import { BOARD_SIZE_MULTIPLIER } from '../../constants';
+import { BOARD_SIZE_MULTIPLIER } from '../../constants.ts';
 
 import Point from './Point';
 

@@ -3,7 +3,7 @@ import { arrayOf, bool, func, object } from 'prop-types';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
 
-import { typeToString } from '../../constants';
+import { typeToString } from '../../constants.ts';
 import { id } from '../../util/common.ts';
 import CardStat from '../card/CardStat';
 

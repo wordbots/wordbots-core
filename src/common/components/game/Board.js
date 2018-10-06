@@ -4,7 +4,7 @@ import { forOwn, isString, mapValues } from 'lodash';
 
 import HexGrid from '../hexgrid/HexGrid';
 import HexUtils from '../hexgrid/HexUtils';
-import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants';
+import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants.ts';
 import {
   getAttribute, ownerOf,
   validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId

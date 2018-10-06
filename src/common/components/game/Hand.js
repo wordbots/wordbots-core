@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { isEmpty, isNull } from 'lodash';
 
-import { HAND_Z_INDEX } from '../../constants.js';
+import { HAND_Z_INDEX } from '../../constants.ts';
 
 import CardInHand from './CardInHand';
 

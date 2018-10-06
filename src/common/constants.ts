@@ -1,5 +1,7 @@
 import { capitalize, fromPairs, invert } from 'lodash';
 
+import { CardType, Format, HexId } from './types';
+
 /* Debug flags. */
 
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
@@ -14,7 +16,7 @@ const LOCAL_PARSER_PORT = 8080;
 
 /* Game rules. */
 
-export const DEFAULT_GAME_FORMAT = 'normal';  // See store/gameModes
+export const DEFAULT_GAME_FORMAT: Format = 'normal';
 export const STARTING_PLAYER_HEALTH = 20;
 export const DECK_SIZE = 30;
 export const MAX_HAND_SIZE = 7;
@@ -51,10 +53,10 @@ export const GRID_CONFIG = {
 };
 
 export const BOARD_SIZE_MULTIPLIER = 1.35;
-export const BLUE_CORE_HEX = '-3,0,3';
-export const BLUE_PLACEMENT_HEXES = ['0,-3,3', '-1,-2,3', '-2,-1,3', '-3,1,2', '-3,2,1', '-3,3,0'];
-export const ORANGE_CORE_HEX = '3,0,-3';
-export const ORANGE_PLACEMENT_HEXES = ['3,-3,0', '3,-2,-1', '3,-1,-2', '2,1,-3', '1,2,-3', '0,3,-3'];
+export const BLUE_CORE_HEX: HexId = '-3,0,3';
+export const BLUE_PLACEMENT_HEXES: HexId[] = ['0,-3,3', '-1,-2,3', '-2,-1,3', '-3,1,2', '-3,2,1', '-3,3,0'];
+export const ORANGE_CORE_HEX: HexId = '3,0,-3';
+export const ORANGE_PLACEMENT_HEXES: HexId[] = ['3,-3,0', '3,-2,-1', '3,-1,-2', '2,1,-3', '1,2,-3', '0,3,-3'];
 
 /* Cards. */
 
@@ -63,26 +65,26 @@ export const SPRITE_VERSION = 2;
 // Sprite changes:
 // * 1->2: trianglify instead of identicons for events
 
-export const TYPE_ROBOT = 0;
-export const TYPE_EVENT = 1;
-export const TYPE_CORE = 2;
-export const TYPE_STRUCTURE = 3;
+export const TYPE_ROBOT: CardType = 0;
+export const TYPE_EVENT: CardType = 1;
+export const TYPE_CORE: CardType = 2;
+export const TYPE_STRUCTURE: CardType = 3;
 
-export const CREATABLE_TYPES = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
+export const CREATABLE_TYPES: CardType[] = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE];
 
-const typeToStringMapping = {
+const typeToStringMapping: Record<string, string> = {
   [TYPE_ROBOT]: 'robot',
   [TYPE_EVENT]: 'event',
   [TYPE_CORE]: 'kernel',
   [TYPE_STRUCTURE]: 'structure'
 };
 
-export function typeToString(type) {
-  return capitalize(typeToStringMapping[type]);
+export function typeToString(type: CardType): string {
+  return capitalize(typeToStringMapping[type.toString()]);
 }
 
-export function stringToType(str) {
-  return parseInt(invert(typeToStringMapping)[str.toLowerCase()]);
+export function stringToType(str: string): CardType {
+  return parseInt(invert(typeToStringMapping)[str.toLowerCase()], 10) as CardType;
 }
 
 /* Parsing. */
@@ -111,7 +113,7 @@ export const SYNONYMS = {
   'shutdown': ['shut down', 'shut-down']
 };
 
-export const KEYWORDS = {
+export const KEYWORDS: Record<string, string> = {
   'defender': 'This robot can\'t attack.',
   'haste': 'This robot can move and attack immediately after it is played.',
   'jump': 'This robot can move over other objects.',
@@ -120,12 +122,12 @@ export const KEYWORDS = {
   'shutdown:': 'When this object is destroyed,'
 };
 
-export const HINTS = {
+export const HINTS: Record<string, string> = {
   'activate:': 'Objects can Activate once per turn. (Robots can\'t activate and attack in the same turn)'
 };
 
-function objToRegexes(obj) {
-  return fromPairs(Object.keys(obj).map(k => [k, new RegExp(`(${k}|${capitalize(k)})`)]));
+function objToRegexes(obj: Record<string, string>): Record<string, RegExp> {
+  return fromPairs(Object.keys(obj).map((k) => [k, new RegExp(`(${k}|${capitalize(k)})`)]));
 }
 
 export const KEYWORD_REGEXES = objToRegexes(KEYWORDS);

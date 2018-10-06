@@ -9,10 +9,10 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';
+import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants.ts';
 import { isFlagSet, logAnalytics } from '../util/browser.tsx';
 import { listenToUserData, onLogin, onLogout } from '../util/firebase.ts';
-import * as actions from '../actions/global';
+import * as actions from '../actions/global.ts';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';

@@ -11,8 +11,8 @@ import Title from '../components/Title';
 import RouterDialog from '../components/RouterDialog';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
-import * as creatorActions from '../actions/creator';
-import * as gameActions from '../actions/game';
+import * as creatorActions from '../actions/creator.ts';
+import * as gameActions from '../actions/game.ts';
 
 export function mapStateToProps(state) {
   return {

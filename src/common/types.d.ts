@@ -32,7 +32,7 @@ export type ActionPayload = any;
 
 export interface Action {
   type: ActionType,
-  payload: ActionPayload
+  payload?: ActionPayload
 }
 
 /* General types */
@@ -135,7 +135,7 @@ export interface State {
   game: GameState
   global: GlobalState
   socket: SocketState,
-  version: number
+  version: string
 }
 
 export interface CollectionState {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { getDefaultState, combineState } from '../testHelpers';
+import { getDefaultState, combineState } from '../testHelpers.ts';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card';
 import Board from '../../src/common/components/game/Board';

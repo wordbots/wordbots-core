@@ -1,6 +1,11 @@
 import * as Enzyme from 'enzyme';
 import * as EnzymeAdapter from 'enzyme-adapter-react-16';
 
+interface Global {
+  requestAnimationFrame: (callback: () => void) => void
+}
+declare const global: Global;
+
 // See https://reactjs.org/docs/javascript-environment-requirements.html
 global.requestAnimationFrame = (callback) => {
   setTimeout(callback, 0);

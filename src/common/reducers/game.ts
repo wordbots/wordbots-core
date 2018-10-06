@@ -15,11 +15,15 @@ type State = w.GameState;
 
 const PURELY_VISUAL_ACTIONS: w.ActionType[] = [actions.ATTACK_RETRACT, actions.ATTACK_COMPLETE];
 
-export default function game(state: State = cloneDeep(defaultState), action: w.Action, allowed?: boolean): State {
+export default function game(
+  state: State = cloneDeep(defaultState),
+  action?: w.Action | w.Action[],
+  allowed?: boolean
+): State {
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
     return reduce(action, (s: State, a: w.Action) => game(s, a), state);
-  } else if (state.tutorial && !allowed) {
+  } else if (state.tutorial && action && !allowed) {
     // In tutorial mode, only one specific action is allowed at any given time.
     return g.handleTutorialAction(state, action);
   } else {
@@ -27,7 +31,10 @@ export default function game(state: State = cloneDeep(defaultState), action: w.A
   }
 }
 
-export function handleAction(oldState: State, { type, payload }: w.Action): State {
+export function handleAction(
+  oldState: State,
+  { type, payload }: w.Action = { type: '' }
+): State {
   let state: State = Object.assign({}, oldState);
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {

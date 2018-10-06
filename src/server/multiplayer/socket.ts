@@ -27,7 +27,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
   function onOpen(): void {
     if (wss.options.server) {
-      const { address, port } = wss.options.server.address();
+      const { address, port } = wss.options.server.address() as { address: string, port: number };
       console.log(`WebSocket listening at http://${address}:${port}${path}`);
 
       setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);

@@ -12,7 +12,7 @@ const webpackConfig = {
   entry: compact([
     !isProduction && 'webpack-hot-middleware/client',
     'whatwg-fetch',
-    './src/client/index.js'
+    './src/client/index.tsx'
   ]),
   mode: isProduction ? 'production' : 'development',
   module: {

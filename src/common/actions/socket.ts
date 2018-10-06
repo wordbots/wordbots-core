@@ -1,3 +1,5 @@
+import * as fb from 'firebase';
+
 import * as w from '../types';
 import * as m from '../../server/multiplayer/multiplayer';
 
@@ -93,7 +95,7 @@ export function leave(): w.Action {
   };
 }
 
-export function sendUserData(userData: m.UserData): w.Action {
+export function sendUserData(userData?: fb.User): w.Action {
   return {
     type: SEND_USER_DATA,
     payload: { userData }

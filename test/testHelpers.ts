@@ -49,7 +49,7 @@ export function combineState(gameState: w.GameState = defaultGameState): w.State
       renderId: 0,
       user: null
     },
-    version: 0
+    version: '0'
   };
 }
 

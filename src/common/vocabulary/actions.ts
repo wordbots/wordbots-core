@@ -14,7 +14,7 @@ import {
 import { splitSentences } from '../util/cards';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 
-export default function actions(state: w.GameState): Record<string, (...args: any[]) => void> {
+export default function actions(state: w.GameState): Record<string, w.Returns<void>> {
   const iterateOver = <T extends w.Targetable>(collection: w.Collection) => (fn: (item: T) => void) => {
     const items: T[] = (collection.entries as w.Targetable[]).map(reassignToKernelIfPlayer) as T[];
     items.forEach((item: T) => {

@@ -6,7 +6,7 @@ import { setAbility, unsetAbility, abilities } from './abilities';
 import {
   allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions,
   other, tilesMatchingConditions
-} from './collections';
+} from './collections.ts';
 import { attributeSum, attributeValue, count, energyAmount } from './numbers';
 
 export default function vocabulary(state, currentObject = null, source = null) {

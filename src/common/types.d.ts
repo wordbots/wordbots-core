@@ -135,7 +135,7 @@ export interface State {
   game: GameState
   global: GlobalState
   socket: SocketState,
-  version: number
+  version: string
 }
 
 export interface CollectionState {

@@ -26,7 +26,7 @@ const webpackConfig = {
             loader: 'babel-loader',
             options: {
               babelrc: false,
-              plugins: ['react-hot-loader/babel']
+              plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import']
             }
           },
           {
@@ -58,7 +58,7 @@ const webpackConfig = {
     !isProduction && new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin([{from: 'static'}]),
     new webpack.IgnorePlugin(/canvas/),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),  // Ignore all locale files of moment.js
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(NODE_ENV) }
     })

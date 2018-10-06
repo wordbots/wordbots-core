@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { arrayOf, number, object } from 'prop-types';
-import BarChart from 'react-bar-chart';
 import { times } from 'lodash';
+
+import asyncComponent from '../AsyncComponent';
+
+const BarChart = asyncComponent(() => import(/* webpackChunkName: 'react-bar-chart' */ 'react-bar-chart'));
 
 // Widget to display the current energy curve for a set of cards
 export default class EnergyCurve extends React.Component {

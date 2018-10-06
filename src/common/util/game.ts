@@ -259,7 +259,7 @@ export function logAction(
   state: w.GameState,
   player: w.PlayerInGameState | null,
   action: string,
-  cards: { [cardName: string]: w.CardInGame} = {},
+  cards: Record<string, w.CardInGame> = {},
   timestamp: number | null = null,
   target: w.Targetable | null = null
 ): w.GameState {
@@ -340,7 +340,8 @@ function endTurn(state: w.GameState): w.GameState {
       if (duration === 1) {
         // Time's up: Unapply the ability and remove it.
         if (g.isPassiveAbility(ability)) {
-          ability.currentTargets!.entries.forEach(ability.unapply);
+          const targets: w.Targetable[] = ability.currentTargets!.entries;
+          targets.forEach(ability.unapply);
         }
         return null;
       } else {
@@ -478,16 +479,19 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
   // Unapply any abilities that this object had.
   (object.abilities || Array<w.Ability>())
     .filter((ability) => ability.currentTargets)
-    .forEach((ability) => { ability.currentTargets!.entries.forEach(ability.unapply); });
+    .forEach((ability) => {
+      const targets: w.Targetable[] = ability.currentTargets!.entries;
+      targets.forEach(ability.unapply);
+    });
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);
   return state;
 }
 
-export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Targetable): w.GameState {
+export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.CardInGame | w.HexId): w.GameState {
   const player: w.PlayerInGameState = currentPlayer(state);
-  const targets: w.Targetable[] = (player.target.chosen || []).concat([target]);
+  const targets: Array<w.CardInGame | w.HexId> = (player.target.chosen || []).concat([target]);
 
   // Select target tile for event or afterPlayed trigger.
   player.target = {
@@ -580,7 +584,7 @@ export function triggerEvent(
   }
 
   // Now execute each trigger.
-  triggers.forEach((t) => {
+  triggers.forEach((t: w.TriggeredAbility & { object: w.Object }) => {
     // Ordinarily, currentObject has higher salience than state.it
     //     (see it() in vocabulary/targets.js)
     // but we actually want the opposite behavior when processing a trigger!
@@ -589,7 +593,8 @@ export function triggerEvent(
     //         state.it = (destroyed robot)
     //         t.object = Arena
     //         "its controller" should = (destroyed robot)
-    const currentObject: w.Object = state.it || t.object;
+    const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it as w.Object) : null);
+    const currentObject: w.Object = it || t.object;
     executeCmd(state, t.action, currentObject);
   });
 
@@ -603,14 +608,16 @@ export function applyAbilities(state: w.GameState): w.GameState {
     abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {
-        ability.currentTargets.entries.forEach(ability.unapply);
+        const targets: w.Targetable[] = ability.currentTargets.entries;
+        targets.forEach(ability.unapply);
       }
 
       if (!ability.disabled) {
         // Apply this ability to all targeted objects.
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
         ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
-        ability.currentTargets.entries.forEach(ability.apply);
+        const targets: w.Targetable[] = ability.currentTargets.entries;
+        targets.forEach(ability.apply);
       }
     });
 

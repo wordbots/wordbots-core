@@ -9,6 +9,10 @@ export function isObject(target: w.Targetable): target is w.Object {
   return !isNil(target) && (target as w.Object).card !== undefined;
 }
 
+export function isCardInGame(target: w.Targetable): target is w.CardInGame {
+  return !isNil(target) && (target as w.CardInGame).baseCost !== undefined;
+}
+
 export function isPlayerState(target: w.Targetable): target is w.PlayerInGameState {
   return !isNil(target) && (target as w.PlayerInGameState).robotsOnBoard !== undefined;
 }

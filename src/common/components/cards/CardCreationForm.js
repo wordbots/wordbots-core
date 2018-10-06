@@ -9,7 +9,7 @@ import FontIcon from 'material-ui/FontIcon';
 import Snackbar from 'material-ui/Snackbar';
 import { capitalize, compact, isEmpty } from 'lodash';
 
-import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants';
+import { CREATABLE_TYPES, TYPE_ROBOT, TYPE_EVENT, typeToString } from '../../constants.ts';
 import { ensureInRange } from '../../util/common.ts';
 import { getSentencesFromInput, requestParse } from '../../util/cards.ts';
 import { getCardTextCorpus, saveReportedParseIssue } from '../../util/firebase.ts';

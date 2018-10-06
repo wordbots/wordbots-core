@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { number, string } from 'prop-types';
 
-import { BACKGROUND_Z_INDEX } from '../../constants';
+import { BACKGROUND_Z_INDEX } from '../../constants.ts';
 
 const FullscreenMessage = ({ message, height, background }) =>
   <div style={{

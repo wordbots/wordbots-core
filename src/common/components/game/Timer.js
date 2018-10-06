@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { string, bool, func } from 'prop-types';
 
-import { DISABLE_TURN_TIMER } from '../../constants';
+import { DISABLE_TURN_TIMER } from '../../constants.ts';
 
 function padDigits(seconds) {
   return (seconds < 10 ? '0' : '') + seconds;

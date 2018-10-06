@@ -1,6 +1,6 @@
 import { cloneDeep, isFunction, mapValues } from 'lodash';
 
-import { TYPE_CORE } from '../constants';
+import { TYPE_CORE } from '../constants.ts';
 import { clamp, applyFuncToField } from '../util/common.ts';
 import {
   ownerOf, getHex,

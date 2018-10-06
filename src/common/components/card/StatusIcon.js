@@ -2,7 +2,7 @@ import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import { isObject } from 'lodash';
 
-import { PARSER_URL } from '../../constants';
+import { PARSER_URL } from '../../constants.ts';
 import { expandKeywords } from '../../util/cards.ts';
 import Tooltip from '../Tooltip';
 

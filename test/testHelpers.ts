@@ -118,7 +118,7 @@ export function playObject(
       gameActions.setSelectedTile(target.hex, playerName)
     ]);
   } else if (target && target.card) {
-    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name]) : target.card;
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name])! : (target.card as number);
     return game(state, [
       gameActions.setSelectedCard(0, playerName),
       gameActions.placeCard(hex, 0),
@@ -162,7 +162,7 @@ export function playEvent(
     if (target.hex) {
       state = game(state, gameActions.setSelectedTile(target.hex, playerName));
     } else if (has(target, 'card')) {
-      const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name]) : target.card;
+      const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name])! : (target.card as number);
       state = game(state, gameActions.setSelectedCard(cardIdx, playerName));
     }
   });
@@ -217,7 +217,7 @@ export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, t
       gameActions.setSelectedTile(target.hex, player.name)
     ]);
   } else if (target && has(target, 'card')) {
-    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name]) : target.card;
+    const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name])! : (target.card as number);
     return game(state, [
       gameActions.setSelectedTile(hex, player.name),
       gameActions.activateObject(abilityIdx),

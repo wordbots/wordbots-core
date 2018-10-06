@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { arrayOf, func, number, object, string } from 'prop-types';
 
-import { SPRITE_VERSION } from '../../constants';
+import { SPRITE_VERSION } from '../../constants.ts';
 import { inBrowser } from '../../util/browser.tsx';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';

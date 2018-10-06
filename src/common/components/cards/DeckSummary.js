@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants.ts';
 import { groupCards } from '../../util/cards.ts';
 import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';

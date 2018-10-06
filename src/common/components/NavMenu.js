@@ -5,7 +5,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_Z_INDEX } from '../constants';
+import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_Z_INDEX } from '../constants.ts';
 import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser.tsx';
 import Tooltip from '../components/Tooltip';
 

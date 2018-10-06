@@ -3,7 +3,7 @@ import { arrayOf, bool, number, string, object } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { chain as _ } from 'lodash';
 
-import { ANIMATION_TIME_MS } from '../../constants';
+import { ANIMATION_TIME_MS } from '../../constants.ts';
 
 import GridGenerator from './GridGenerator';
 import HexPiece from './HexPiece';

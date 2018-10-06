@@ -1,8 +1,11 @@
+import * as w from '../types';
+import * as m from '../../server/multiplayer/multiplayer';
+
 // Client => middleware
 
 export const CONNECT = 'ws:CONNECT';
 
-export function connect() {
+export function connect(): w.Action {
   return {
     type: CONNECT
   };
@@ -14,19 +17,19 @@ export const CONNECTING = 'ws:CONNECTING';
 export const CONNECTED = 'ws:CONNECTED';
 export const DISCONNECTED = 'ws:DISCONNECTED';
 
-export function connecting() {
+export function connecting(): w.Action {
   return {
     type: CONNECTING
   };
 }
 
-export function connected() {
+export function connected(): w.Action {
   return {
     type: CONNECTED
   };
 }
 
-export function disconnected() {
+export function disconnected(): w.Action {
   return {
     type: DISCONNECTED
   };
@@ -44,60 +47,60 @@ export const LEAVE = 'ws:LEAVE';
 export const SEND_USER_DATA = 'ws:SEND_USER_DATA';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
-export function host(name, format, deck, options) {
+export function host(name: string, format: w.Format, deck: w.Deck, options: w.GameOptions): w.Action {
   return {
     type: HOST,
     payload: { name, format, deck, options }
   };
 }
 
-export function cancelHost() {
+export function cancelHost(): w.Action {
   return {
     type: CANCEL_HOSTING
   };
 }
 
-export function join(id, name, deck) {
+export function join(id: m.ClientID, name: string, deck: w.Deck): w.Action {
   return {
     type: JOIN,
     payload: { id, name, deck }
   };
 }
 
-export function joinQueue(format, deck) {
+export function joinQueue(format: w.Format, deck: w.Deck): w.Action {
   return {
     type: JOIN_QUEUE,
     payload: { format, deck }
   };
 }
 
-export function leaveQueue() {
+export function leaveQueue(): w.Action {
   return {
     type: LEAVE_QUEUE
   };
 }
 
-export function spectate(id, name) {
+export function spectate(id: m.ClientID, name: string): w.Action {
   return {
     type: SPECTATE,
     payload: { id, name }
   };
 }
 
-export function leave() {
+export function leave(): w.Action {
   return {
     type: LEAVE
   };
 }
 
-export function sendUserData(userData) {
+export function sendUserData(userData: m.UserData): w.Action {
   return {
     type: SEND_USER_DATA,
     payload: { userData }
   };
 }
 
-export function keepalive() {
+export function keepalive(): w.Action {
   return {
     type: KEEPALIVE
   };
@@ -108,14 +111,14 @@ export function keepalive() {
 export const CHAT = 'ws:CHAT';
 export const FORFEIT = 'ws:FORFEIT';
 
-export function chat(msg) {
+export function chat(msg: string): w.Action {
   return {
     type: CHAT,
     payload: { msg }
   };
 }
 
-export function forfeit(winner) {
+export function forfeit(winner: w.PlayerColor): w.Action {
   return {
     type: FORFEIT,
     payload: { winner }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { arrayOf, bool, object, string } from 'prop-types';
 
-import { DISPLAY_HEX_IDS, SHOW_TOOLTIP_TIMEOUT_MS } from '../../constants';
+import { DISPLAY_HEX_IDS, SHOW_TOOLTIP_TIMEOUT_MS } from '../../constants.ts';
 import CardTooltip from '../card/CardTooltip';
 import AbilitiesTooltip from '../game/AbilitiesTooltip';
 import TutorialTooltip from '../game/TutorialTooltip';

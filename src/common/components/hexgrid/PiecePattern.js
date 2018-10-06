@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { object } from 'prop-types';
 
-import { TYPE_STRUCTURE } from '../../constants';
+import { TYPE_STRUCTURE } from '../../constants.ts';
 import Sprite from '../Sprite';
 
 import loadImages from './HexGridImages';

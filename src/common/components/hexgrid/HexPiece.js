@@ -2,7 +2,7 @@ import * as React from 'react';
 import { object } from 'prop-types';
 import { isUndefined } from 'lodash';
 
-import { ANIMATION_TIME_MS } from '../../constants';
+import { ANIMATION_TIME_MS } from '../../constants.ts';
 
 import PiecePattern from './PiecePattern';
 import HexUtils from './HexUtils';

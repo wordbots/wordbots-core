@@ -183,6 +183,7 @@ export interface GameState {
   actionId?: string
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentCmdText?: string
+  currentObjectInCollection?: Targetable
   eventExecuting?: boolean
   invalid?: boolean
   it?: _Object
@@ -364,4 +365,25 @@ export interface ChatMessage {
   text: string
   timestamp: number
   user: string
+}
+
+/* Vocabulary types */
+
+export type Collection = CardCollection | ObjectOrPlayerCollection | HexCollection;
+export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
+export interface CardCollection {
+  type: 'cards'
+  entries: CardInGame[]
+}
+export interface ObjectCollection {
+  type: 'objects'
+  entries: _Object[]
+}
+export interface PlayerCollection {
+  type: 'objects'
+  entries: PlayerInGameState[]
+}
+export interface HexCollection {
+  type: 'hexes'
+  entries: HexId[]
 }

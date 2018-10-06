@@ -1,4 +1,6 @@
-import {clamp as _clamp, isEqual, isNaN, some} from 'lodash';
+import {clamp as _clamp, isEqual, isNaN, isString, some} from 'lodash';
+
+import * as w from '../types';
 
 type Range = [number, number];
 
@@ -31,11 +33,11 @@ export function compareCertainKeys(obj1: any, obj2: any, keys: string[]): boolea
   return !some(keys, (key) => !isEqual(obj1[key], obj2[key]));
 }
 
-export function clamp(func: (x: any) => number): (x: any) => number {
-  return ((x) => _clamp(func(x), 0, 99));
+export function clamp(func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>): (x: any) => number {
+  return ((x) => _clamp((isString(func) ? eval(func) : func)(x), 0, 99));  // tslint:disable-line no-eval
 }
 
-export function applyFuncToField(obj: any, func: (x: any) => any, field: string): any {
+export function applyFuncToField(obj: any, func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>, field: string): any {
   return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
 }
 

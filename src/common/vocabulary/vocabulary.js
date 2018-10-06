@@ -1,4 +1,4 @@
-import actions from './actions';
+import actions from './actions.ts';
 import targets from './targets';
 import { objectConditions, globalConditions } from './conditions';
 import { setTrigger, unsetTrigger, triggers } from './triggers';

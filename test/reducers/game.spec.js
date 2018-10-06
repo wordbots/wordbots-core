@@ -8,6 +8,7 @@ import {
   BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, DECK_SIZE,
   TYPE_ROBOT, TYPE_STRUCTURE
 } from '../../src/common/constants';
+import { instantiateCard } from '../../src/common/util/cards.ts';
 import { getCost } from '../../src/common/util/game.ts';
 import {
   getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
@@ -744,6 +745,48 @@ describe('Game reducer', () => {
 
       state = newTurn(state, 'blue');
       expect(state.players.blue.deck).toEqual(state.players.orange.deck);
+    });
+  });
+
+  describe('[Obfuscated cards]', () => {
+    it('should be able to handle revealed cards that have been affected by abilities in play', () => {
+      let state = game(getDefaultState(), [
+        // Pass a few times so orange has enough energy (3) to play Recruiter Bot.
+        actions.passTurn('orange'),
+        actions.passTurn('blue'),
+        actions.passTurn('orange'),
+        actions.passTurn('blue')
+      ]);
+
+      // Reveal and play a Recruiter Bot card, that will affect the cost of the Attack Bot in hand.
+      let revealCardsAction = JSON.parse(JSON.stringify({
+        type: 'ws:REVEAL_CARDS',
+        payload: {
+          orange: {
+            hand: [cards.recruiterBotCard, testCards.attackBotCard].map(instantiateCard)
+          }
+        }
+      }));
+      state = game(state, [
+        revealCardsAction,
+        actions.setSelectedCard(0, 'orange'),
+        actions.placeCard('3,-2,-1', 0)
+      ]);
+
+      // Now reveal the Attack Bot ... with the temporaryStatAdjustment from the Recruiter Bot!
+      revealCardsAction = JSON.parse(JSON.stringify({
+        type: 'ws:REVEAL_CARDS',
+        payload: {
+          orange: {
+            hand: [state.players.orange.hand[0]]
+          }
+        }
+      }));
+      state = game(state, revealCardsAction);
+
+      // Can we query getCost() on this card?
+      // Or does it break because the temporaryStatAdjustment got messed up in serialization?
+      expect(getCost(state.players.orange.hand[0])).toEqual(0);
     });
   });
 });

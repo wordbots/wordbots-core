@@ -1,4 +1,4 @@
-import { capitalize, fromPairs, invert } from 'lodash';
+import { capitalize, fromPairs, invert, isNil } from 'lodash';
 
 import { CardType, Format, HexId } from './types';
 
@@ -79,8 +79,8 @@ const typeToStringMapping: Record<string, string> = {
   [TYPE_STRUCTURE]: 'structure'
 };
 
-export function typeToString(type: CardType): string {
-  return capitalize(typeToStringMapping[type.toString()]);
+export function typeToString(type: CardType | undefined): string {
+  return isNil(type) ? '' : capitalize(typeToStringMapping[type.toString()]);
 }
 
 export function stringToType(str: string): CardType {

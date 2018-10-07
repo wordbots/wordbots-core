@@ -83,8 +83,8 @@ class Home extends React.Component {
           flexWrap: 'wrap',
           flexDirection: 'row'
         }}>
-          {this.renderButton('Tutorial', () => { this.props.history.push('play/tutorial'); this.props.onStartTutorial(); })}
-          {this.renderButton('Play', () => { this.props.history.push('play'); })}
+          {this.renderButton('Tutorial', () => { this.props.history.push('singleplayer/tutorial'); this.props.onStartTutorial(); })}
+          {this.renderButton('Play', () => { this.props.history.push('multiplayer'); })}
           {this.renderButton('Your Cards', () => { this.props.history.push('collection'); })}
           {this.renderButton('Card Creator', () => { this.props.history.push('creator'); })}
         </div>

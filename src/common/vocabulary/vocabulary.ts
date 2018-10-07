@@ -14,7 +14,7 @@ import { attributeSum, attributeValue, count, energyAmount } from './numbers';
 export default function vocabulary(
   state: w.GameState,
   currentObject: w.Object | null = null,
-  source: w.Object | null = null
+  source: w.AbilityId | null = null
 ): Record<string, w.Returns<void> | Record<string, w.Returns<void>>> {
   return {
     actions: actions(state),

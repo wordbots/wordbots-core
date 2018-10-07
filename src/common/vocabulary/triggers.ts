@@ -2,7 +2,7 @@ import { isEqual, omit } from 'lodash';
 
 import * as w from '../types';
 
-export function setTrigger(state: w.GameState, currentObject: w.Object | null, source: w.Object | null): w.Returns<void> {
+export function setTrigger(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   function areTriggersEqual(t1: w.TriggeredAbility, t2: w.TriggeredAbility): boolean {
     return isEqual(omit(t1, ['trigger']), omit(t2, ['trigger'])) &&
       isEqual(omit(t1.trigger, ['targets']), omit(t2.trigger, ['targets']));
@@ -23,7 +23,7 @@ export function setTrigger(state: w.GameState, currentObject: w.Object | null, s
   };
 }
 
-export function unsetTrigger(_state: w.GameState, currentObject: w.Object | null, source: w.Object | null): w.Returns<void> {
+export function unsetTrigger(_state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (_trigger: w.Trigger, _action: w.Returns<void>, _props = {}): void => {
     if (currentObject) {
       currentObject.triggers = currentObject.triggers.filter((t) => t.source !== source);

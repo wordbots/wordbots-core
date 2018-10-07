@@ -260,6 +260,7 @@ interface _Object { // tslint:disable-line:class-name
     attack?: StatAdjustment[]
     health?: StatAdjustment[]
     speed?: StatAdjustment[]
+    cost?: StatAdjustment[]  // cost is not really needed here, but kept to match CardInGame.temporaryStatAdjustments
   }
   movesMade: number
   triggers: TriggeredAbility[]
@@ -289,10 +290,12 @@ export interface Robot extends _Object {
 }
 
 export interface StatAdjustment {
+  aid?: AbilityId
   func: StringRepresentationOf<(attr: number) => number>
 }
 
 export interface Effect {
+  aid: AbilityId
   effect: string
   props: any
 }
@@ -309,6 +312,7 @@ export interface PassiveAbility {
   currentTargets?: Target
   disabled?: boolean
   duration?: number
+  source?: AbilityId
   targets: StringRepresentationOf<(state: GameState) => Target>
   unapply: (target: Targetable) => Targetable
 }
@@ -317,7 +321,7 @@ export interface TriggeredAbility {
   action: (state: GameState) => any
   duration?: number
   object?: _Object
-  source?: _Object
+  source?: AbilityId
   trigger: Trigger
 }
 

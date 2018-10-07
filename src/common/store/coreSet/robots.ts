@@ -178,7 +178,7 @@ export const batteryBotCard: w.CardInStore = {
 };
 
 export const governmentResearcherCard: w.CardInStore = {
-  id: 'Gov\'t Researcher',
+  id: 'Government Researcher',
   name: 'Gov\'t Researcher',
   cost: 3,
   type: TYPE_ROBOT,

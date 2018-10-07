@@ -14,6 +14,10 @@ export const ENABLE_REDUX_TIME_TRAVEL = false;
 const USE_LOCAL_PARSER = false;
 const LOCAL_PARSER_PORT = 8080;
 
+/* Server settings */
+
+export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to try until all the bugs are worked out!
+
 /* Game rules. */
 
 export const DEFAULT_GAME_FORMAT: Format = 'normal';

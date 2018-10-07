@@ -1,3 +1,5 @@
+import * as w from '../types';
+
 import actions from './actions';
 import targets from './targets';
 import { objectConditions, globalConditions } from './conditions';
@@ -9,7 +11,11 @@ import {
 } from './collections';
 import { attributeSum, attributeValue, count, energyAmount } from './numbers';
 
-export default function vocabulary(state, currentObject = null, source = null) {
+export default function vocabulary(
+  state: w.GameState,
+  currentObject: w.Object | null = null,
+  source: w.AbilityId | null = null
+): Record<string, w.Returns<void> | Record<string, w.Returns<void>>> {
   return {
     actions: actions(state),
     targets: targets(state, currentObject),

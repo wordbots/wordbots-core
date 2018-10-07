@@ -23,6 +23,7 @@ export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
 export type PerPlayer<T> = Record<PlayerColor, T>;
+export type Returns<T> = (...args: any[]) => T;
 export type StringRepresentationOf<T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
 /* Library types */
@@ -115,11 +116,6 @@ export interface SavedGame { // Interface for games stored in Firebase.
   winner: PlayerColor | null
 }
 
-export interface Target {
-  type: string
-  entries: Targetable[]
-}
-
 export interface EventTarget {
   condition?: (trigger: Trigger) => boolean
   object?: _Object
@@ -183,9 +179,11 @@ export interface GameState {
   actionId?: string
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentCmdText?: string
+  currentObjectInCollection?: Targetable
   eventExecuting?: boolean
   invalid?: boolean
-  it?: _Object
+  it?: _Object | CardInGame
+  itP?: PlayerInGameState
   that?: _Object
   tutorialCurrentStepIdx?: number
   tutorialSteps?: TutorialStepInScript[]
@@ -241,7 +239,7 @@ export interface PlayerInGameState {
   }
   target: {
     choosing: boolean
-    chosen: Targetable[] | null
+    chosen: Array<CardInGame | HexId> | null
     possibleCards: CardId[]
     possibleHexes: HexId[]
   }
@@ -262,6 +260,7 @@ interface _Object { // tslint:disable-line:class-name
     attack?: StatAdjustment[]
     health?: StatAdjustment[]
     speed?: StatAdjustment[]
+    cost?: StatAdjustment[]  // cost is not really needed here, but kept to match CardInGame.temporaryStatAdjustments
   }
   movesMade: number
   triggers: TriggeredAbility[]
@@ -291,10 +290,12 @@ export interface Robot extends _Object {
 }
 
 export interface StatAdjustment {
+  aid?: AbilityId
   func: StringRepresentationOf<(attr: number) => number>
 }
 
 export interface Effect {
+  aid: AbilityId
   effect: string
   props: any
 }
@@ -311,6 +312,7 @@ export interface PassiveAbility {
   currentTargets?: Target
   disabled?: boolean
   duration?: number
+  source?: AbilityId
   targets: StringRepresentationOf<(state: GameState) => Target>
   unapply: (target: Targetable) => Targetable
 }
@@ -319,12 +321,13 @@ export interface TriggeredAbility {
   action: (state: GameState) => any
   duration?: number
   object?: _Object
+  source?: AbilityId
   trigger: Trigger
 }
 
 export interface Trigger {
   type: string
-  targetFunc: (state: GameState) => Target[]
+  targetFunc: ((state: GameState) => Target[]) | StringRepresentationOf<(state: GameState) => Target[]>
   targets?: Targetable[]
 
   cardType?: string
@@ -364,4 +367,26 @@ export interface ChatMessage {
   text: string
   timestamp: number
   user: string
+}
+
+/* Vocabulary types */
+
+export type Collection = CardCollection | ObjectOrPlayerCollection | HexCollection;
+export type Target = Collection;
+export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
+export interface CardCollection {
+  type: 'cards'
+  entries: CardInGame[]
+}
+export interface ObjectCollection {
+  type: 'objects'
+  entries: _Object[]
+}
+export interface PlayerCollection {
+  type: 'players'
+  entries: PlayerInGameState[]
+}
+export interface HexCollection {
+  type: 'hexes'
+  entries: HexId[]
 }

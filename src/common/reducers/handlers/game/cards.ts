@@ -1,6 +1,7 @@
 import { cloneDeep, compact, isArray } from 'lodash';
 
 import * as w from '../../../types';
+import * as g from '../../../guards';
 import { TYPE_EVENT } from '../../../constants';
 import { id } from '../../../util/common';
 import {
@@ -19,7 +20,7 @@ type PlayerState = w.PlayerInGameState;
 export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx: number): State {
   const player: PlayerState = state.players[playerName];
   const isCurrentPlayer = (playerName === state.currentTurn);
-  const selectedCard: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
+  const selectedCard: w.PossiblyObfuscatedCard = player.hand[cardIdx];
   const energy = player.energy;
 
   player.selectedTile = null;
@@ -29,7 +30,7 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
       player.target.possibleCards.includes(selectedCard.id) &&
       (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
-    return setTargetAndExecuteQueuedAction(state, selectedCard);
+    return setTargetAndExecuteQueuedAction(state, assertCardVisible(selectedCard));
   } else if (player.selectedCard === cardIdx) {
     // Clicked on already selected card => Deselect.
     player.selectedCard = null;
@@ -37,7 +38,7 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
     player.target.choosing = false;
   } else if (isCurrentPlayer) {
     // Try to play the chosen card.
-    if (getCost(selectedCard) <= energy.available || state.sandbox) {
+    if (g.isCardVisible(selectedCard) && (getCost(selectedCard) <= energy.available || state.sandbox)) {
       if (selectedCard.type === TYPE_EVENT) {
         return playEvent(state, cardIdx);
       } else {

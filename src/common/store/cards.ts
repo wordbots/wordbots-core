@@ -40,7 +40,7 @@ export const collection: w.CardInStore[] = [
   ...Object.values(structures)
 ].map((card) =>
   Object.assign(card, {
-    id: `builtin/${card.name}`,
+    id: `builtin/${card.id}`,
     source: 'builtin'
   })
 );

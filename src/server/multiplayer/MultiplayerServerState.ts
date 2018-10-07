@@ -2,6 +2,7 @@
 import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove } from 'lodash';
 
+import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
 import { instantiateCard, obfuscateCards } from '../../common/util/cards';
 import { opponent as opponentOf } from '../../common/util/game';
@@ -197,7 +198,6 @@ export default class MultiplayerServerState {
     if (waitingPlayer && formatObj!.isDeckValid(deck)) {
       const { name, format, options } = waitingPlayer;
       const decks = { orange: waitingPlayer.deck.cards.map(instantiateCard), blue: deck.cards.map(instantiateCard) };
-      const obfuscatedDecks = { orange: obfuscateCards(decks.orange), blue: obfuscateCards(decks.blue) };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
       const seed = generateID();
 
@@ -213,7 +213,7 @@ export default class MultiplayerServerState {
         spectators: [],
 
         type: 'CASUAL',
-        decks: obfuscatedDecks,
+        decks: ENABLE_OBFUSCATION_ON_SERVER ? { orange: obfuscateCards(decks.orange), blue: obfuscateCards(decks.blue) } : decks,
         usernames,
         ids : {
           blue: clientID,

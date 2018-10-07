@@ -317,12 +317,13 @@ export interface TriggeredAbility {
   action: (state: GameState) => any
   duration?: number
   object?: _Object
+  source?: _Object
   trigger: Trigger
 }
 
 export interface Trigger {
   type: string
-  targetFunc: (state: GameState) => Target[]
+  targetFunc: ((state: GameState) => Target[]) | StringRepresentationOf<(state: GameState) => Target[]>
   targets?: Targetable[]
 
   cardType?: string

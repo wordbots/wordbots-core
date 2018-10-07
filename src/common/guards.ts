@@ -26,6 +26,10 @@ export function isCardObfuscated(target: w.PossiblyObfuscatedCard): target is w.
   return (target as w.CardInGame).name === undefined;
 }
 
+export function isCardVisible(target: w.PossiblyObfuscatedCard): target is w.CardInGame {
+  return (target as w.CardInGame).name !== undefined;
+}
+
 export function isPassiveAbility(ability: w.Ability): ability is w.PassiveAbility {
   return (ability as w.PassiveAbility).unapply !== undefined;
 }

@@ -2,6 +2,7 @@ import * as WebSocket from 'ws';
 import { Server } from 'http';
 import { noop, truncate } from 'lodash';
 
+import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
 
@@ -199,9 +200,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function revealVisibleCardsInGame(game: m.Game, pendingAction?: [m.Action, m.ClientID]): void {
-    getPeopleInGame(game).forEach((clientID: m.ClientID) => {
-      sendMessage('ws:REVEAL_CARDS', state.getCardsToReveal(clientID, pendingAction), [clientID]);
-    });
+    if (ENABLE_OBFUSCATION_ON_SERVER) {
+      getPeopleInGame(game).forEach((clientID: m.ClientID) => {
+        sendMessage('ws:REVEAL_CARDS', state.getCardsToReveal(clientID, pendingAction), [clientID]);
+      });
+    }
   }
 
   function leaveGame(clientID: m.ClientID): void {

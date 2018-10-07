@@ -36,7 +36,7 @@ const CardImage = (props) => {
         </div>
       );
     } else {
-      const [width, height] = [140 * props.scale - 6, 52 * props.scale];
+      const [width, height] = [140 * props.scale, 52 * props.scale];
       return (
         <div
           onClick={props.onSpriteClick}

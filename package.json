@@ -80,7 +80,7 @@
     "shuffle-array": "^1.0.1",
     "soundmanager2": "^2.97.20170602",
     "source-map-loader": "^0.2.3",
-    "style-loader": "0.23.0",
+    "style-loader": "0.23.1",
     "substitute-loader": "^1.0.0",
     "trianglify": "^1.1.0",
     "ts-node": "^7.0.1",

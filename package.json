@@ -68,7 +68,7 @@
     "react-textfit": "^1.0.1",
     "react-tooltip": "^3.3.0",
     "react-transition-group": "^2.2.1",
-    "react-web-notification": "^0.3.1",
+    "react-web-notification": "^0.4.0",
     "redux": "^4.0.0",
     "redux-devtools": "^3.4.0",
     "redux-devtools-dock-monitor": "^1.1.3",

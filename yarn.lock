@@ -8892,9 +8892,9 @@ react-transition-group@^2.2.1:
     prop-types "^15.5.8"
     warning "^3.0.0"
 
-react-web-notification@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.3.1.tgz#f4fa8557a79548ccda7d831ab84c0ff9ba2597cf"
+react-web-notification@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.4.0.tgz#079b93f9041013c19bf9bb405cc59267372d148a"
 
 react@15.0.1:
   version "15.0.1"

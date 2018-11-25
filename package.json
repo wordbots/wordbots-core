@@ -44,7 +44,7 @@
     "jsx-loader": "^0.13.2",
     "lodash": "^4.17.5",
     "material-ui": "^0.20.0",
-    "merge": "1.2.0",
+    "merge": "1.2.1",
     "moment": "^2.22.2",
     "prop-types": "^15.6.1",
     "rc-slider": "^8.6.1",

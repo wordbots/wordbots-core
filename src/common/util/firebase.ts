@@ -8,6 +8,7 @@ import 'firebase/database';
 import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon } from './cards';
+import { decodeFirebaseKey } from './common';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -229,7 +230,12 @@ export function indexParsedSentence(sentence: string, tokens: string[], js: stri
 export async function getRecentGamesByUserId(userId: string): Promise<w.SavedGame[]> {
   const blueGames = await getRecentGamesForColorByUserId(userId, 'blue');
   const orangeGames = await getRecentGamesForColorByUserId(userId, 'orange');
-  return Object.values({...blueGames, ...orangeGames});
+  const games = {...blueGames, ...orangeGames};
+
+  return Object.keys(games).map((firebaseKey: string) => ({
+    ...games[firebaseKey],
+    timestamp: decodeFirebaseKey(firebaseKey)
+  })).sort((gameA, gameB) => gameB.timestamp - gameA.timestamp);
 }
 
 async function getRecentGamesForColorByUserId(userId: string, color: string): Promise<Record<string, w.SavedGame>> {

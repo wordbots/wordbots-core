@@ -52,6 +52,8 @@ class RecentGames extends Component {
     const opponentId = Object.values(recentGame.players).find((player) => player !== userId);
     const opponent = isNil(opponentId) ? 'Guest' : playerNames[opponentId] || playerNames[userId];
     const wasVictory = recentGame.players[recentGame.winner] === userId;
+    const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
+    const subText = `${startCase(toLower(recentGame.type))} - ${startCase(recentGame.format)} - ${timestamp}`;
 
     const formatIcons = {
       'normal': 'player',
@@ -66,7 +68,7 @@ class RecentGames extends Component {
             <Icon className={`ra ra-${formatIcons[recentGame.format]}`}/>
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={opponent} secondary={`${startCase(toLower(recentGame.type))} - ${startCase(recentGame.format)}`} />
+        <ListItemText primary={opponent} secondary={subText} />
         <ListItemText
           primaryTypographyProps={{
             className: wasVictory ? classes.victory : classes.defeat

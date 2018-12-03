@@ -17,7 +17,7 @@ type State = w.GameState;
 
 function nextStep(state: State, action: w.Action | null = null): State {
   function isAction(a: w.Action | string | undefined): a is w.Action {
-    return (a as w.Action).type !== undefined;
+    return !!a && (a as w.Action).type !== undefined;
   }
 
   if (state.tutorialCurrentStepIdx! < state.tutorialSteps!.length) {

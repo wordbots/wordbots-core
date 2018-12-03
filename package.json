@@ -3,6 +3,9 @@
   "version": "0.11.0-alpha",
   "description": "A card-and-board game that showcases card game semantic parsing",
   "license": "MIT",
+  "engines": {
+    "node": "8.10.0"
+  },
   "browserslist": [
     "last 4 versions",
     "chrome >= 48"

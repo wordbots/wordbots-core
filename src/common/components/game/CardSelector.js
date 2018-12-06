@@ -54,7 +54,7 @@ export default class CardSelector extends React.Component {
   get cardsList() {
     const { cardCollection } = this.props;
 
-    return sortBy(cardCollection, card => card.cost).map((card, index) =>
+    return sortBy(cardCollection, 'cost').map((card, index) =>
       <CardTooltip card={card} key={index}>
         <CardSelectorCard
           card={card}

@@ -114,3 +114,12 @@ export const instantKernelKillerAbilityCard: w.CardInStore = {
     '(function () { setTrigger(triggers["endOfTurn"](function () { return targets["self"](); }), (function () { actions["dealDamage"](objectsMatchingConditions("kernel", [conditions["controlledBy"](targets["opponent"]())]), 21); })); })'
   ]
 };
+
+export const reinforcementsCard: w.CardInStore = {
+  id: 'Reinforcements',
+  name: 'Reinforcements',
+  text: 'Spawn a 1/2/1 robot named "Reinforcements" on each tile adjacent to your kernel.',
+  command: "(function () { actions['spawnObject'](targets['generateCard']('robot', {'attack': 1, 'health': 2, 'speed': 1}, 'Reinforcements'), tilesMatchingConditions([conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))])); })",
+  cost: 4,
+  type: TYPE_EVENT
+};

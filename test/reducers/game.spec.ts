@@ -309,6 +309,11 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/2/2');
       expect(queryRobotAttributes(state, '2,1,-3')).toEqual('4/4/1');
     });
+
+    it('should be able to handle commands that spawn objects', () => {
+      let state = getDefaultState();
+      state = playEvent(state, 'orange', testCards.reinforcementsCard);
+    });
   });
 
   describe('[Triggered abilities]', () => {

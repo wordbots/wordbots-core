@@ -6,13 +6,15 @@ import { cloneDeep, isFunction, mapValues } from 'lodash';
 import { TYPE_CORE } from '../constants';
 import { clamp, applyFuncToField } from '../util/common';
 import {
-  ownerOf, getHex,
+  currentPlayer, ownerOf, getHex, validPlacementHexes,
   passTurn, drawCards, removeCardsFromHand,
   dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, removeObjectFromBoard,
   executeCmd
 } from '../util/game';
 import { splitSentences } from '../util/cards';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
+import { instantiateObject, afterObjectPlayed } from '../reducers/handlers/game/cards';
+import HexUtils from '../components/hexgrid/HexUtils';
 
 export default function actions(state: w.GameState): Record<string, w.Returns<void>> {
   const iterateOver = <T extends w.Targetable>(collection: w.Collection) => (fn: (item: T) => void) => {
@@ -221,6 +223,19 @@ export default function actions(state: w.GameState): Record<string, w.Returns<vo
           modifyAttribute(target, attr, () => value);
         });
       }
+    },
+
+    spawnObject: (cards: w.CardCollection, hexes: w.HexCollection): void => {
+      const card: w.CardInGame = cards.entries[0];
+      const player: w.PlayerInGameState = currentPlayer(state);
+
+      iterateOver<w.HexId>(hexes)((hex: w.HexId) => {
+        if (validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(hex)) {
+          const object: w.Object = instantiateObject(card);
+          player.robotsOnBoard[hex] = object;
+          afterObjectPlayed(state, object);
+        }
+      });
     },
 
     swapAttributes: (objects: w.ObjectOrPlayerCollection, attr1: w.Attribute, attr2: w.Attribute): void => {

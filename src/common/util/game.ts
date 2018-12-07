@@ -447,7 +447,12 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
 }
 
 export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
-  const ownerName = (ownerOf(state, object) as w.PlayerInGameState).name;
+  if (!allObjectsOnBoard(state)[hex]) {
+    // Object no longer exists - perhaps it has already been deleted by a previous effect in a chain of triggers?
+    return state;
+  }
+
+  const ownerName = ownerOf(state, object)!.name;
   if ((getAttribute(object, 'health') as number) > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
   } else if (!object.beingDestroyed) {

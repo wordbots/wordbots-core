@@ -114,7 +114,7 @@ export interface SavedGame { // Interface for games stored in Firebase.
   format: Format,
   type: string, // TODO more precise
   winner: PlayerColor | null,
-  timestamp: number
+  timestamp?: number
 }
 
 export interface EventTarget {

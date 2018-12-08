@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil, orderBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -231,11 +231,8 @@ export async function getRecentGamesByUserId(userId: string): Promise<w.SavedGam
   const blueGames = await getRecentGamesForColorByUserId(userId, 'blue');
   const orangeGames = await getRecentGamesForColorByUserId(userId, 'orange');
   const games = {...blueGames, ...orangeGames};
-
-  return Object.keys(games).map((firebaseKey: string) => ({
-    ...games[firebaseKey],
-    timestamp: decodeFirebaseKey(firebaseKey)
-  })).sort((gameA, gameB) => gameB.timestamp - gameA.timestamp);
+  const timestampedGames = mapValues(games, (game, firebaseKey) => ({ ...game, timestamp: decodeFirebaseKey(firebaseKey) }));
+  return orderBy(Object.values(timestampedGames), ['timestamp'], ['desc']);
 }
 
 async function getRecentGamesForColorByUserId(userId: string, color: string): Promise<Record<string, w.SavedGame>> {

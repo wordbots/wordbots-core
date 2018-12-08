@@ -70,7 +70,7 @@ export function animate(fns: Array<() => void>, delay: number): void {
 export function decodeFirebaseKey(key: string): number {
   const PUSH_CHARS = "-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
 
-  key = key.substring(0,8);
+  key = key.substring(0, 8);
   let timestamp = 0;
 
   for (let i = 0; i < key.length; i++) {

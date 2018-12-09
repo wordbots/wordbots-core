@@ -55,6 +55,49 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
   return state;
 }
 
+/** Create an Object from a card being played. */
+export function instantiateObject(card: w.CardInGame): w.Object {
+  return {
+    id: id(),
+    card,
+    type: card.type,
+    stats: {...card.stats!},
+    triggers: [],
+    abilities: [],
+    movesMade: 0,
+    cantMove: true,
+    cantAttack: true,
+    cantActivate: true,
+    justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
+                      // target themselves for afterPlayed triggers.
+  };
+}
+
+/** Handles things that should happen after an object is played or spawned (using actions.spawnObject). */
+export function afterObjectPlayed(state: State, playedObject: w.Object): State {
+  const player: PlayerState = currentPlayer(state);
+  const target = player.target.chosen ? player.target.chosen[0] : null;
+  const { card } = playedObject;
+  const timestamp = Date.now();
+
+  state = triggerSound(state, 'spawn.wav');
+  state = logAction(state, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+
+  if (card.abilities && card.abilities.length > 0) {
+    card.abilities.forEach((cmd, idx) => {
+      const cmdText = splitSentences(card.text || '')[idx];
+      state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+      executeCmd(state, cmd, playedObject);
+    });
+  }
+
+  state = triggerEvent(state, 'afterPlayed', {object: playedObject});
+
+  playedObject.justPlayed = false;
+
+  return state;
+}
+
 export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
@@ -62,25 +105,10 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
 
   const player: PlayerState = currentPlayer(tempState);
   const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
-  const timestamp = Date.now();
 
   if ((player.energy.available >= getCost(card) || state.sandbox) &&
       validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
-    const playedObject: w.Object = {
-      id: id(),
-      card,
-      type: card.type,
-      stats: Object.assign({}, card.stats),
-      triggers: [],
-      abilities: [],
-      movesMade: 0,
-      cantMove: true,
-      cantAttack: true,
-      cantActivate: true,
-      justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
-                        // target themselves for afterPlayed triggers.
-    };
-    const target = player.target.chosen ? player.target.chosen[0] : null;
+    const playedObject: w.Object = instantiateObject(card);
 
     player.robotsOnBoard[tile] = playedObject;
     if (!state.sandbox) {
@@ -90,20 +118,7 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
     player.status.message = '';
     player.selectedTile = tile;
 
-    tempState = triggerSound(tempState, 'spawn.wav');
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
-
-    if (card.abilities && card.abilities.length > 0) {
-      card.abilities.forEach((cmd, idx) => {
-        const cmdText = splitSentences(card.text || '')[idx];
-        tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
-        executeCmd(tempState, cmd, playedObject);
-      });
-    }
-
-    tempState = triggerEvent(tempState, 'afterPlayed', {object: playedObject});
-
-    playedObject.justPlayed = false;
+    tempState = afterObjectPlayed(tempState, playedObject);
 
     if (player.target.choosing) {
       // Target still needs to be selected, so roll back playing the card (and return old state).

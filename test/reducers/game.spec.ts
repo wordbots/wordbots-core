@@ -313,6 +313,13 @@ describe('Game reducer', () => {
     it('should be able to handle commands that spawn objects', () => {
       let state = getDefaultState();
       state = playEvent(state, 'orange', testCards.reinforcementsCard);
+      expect(
+        objectsOnBoardOfType(state, TYPE_ROBOT)
+      ).toEqual({
+        '2,0,-2': 'Reinforcements',
+        '2,1,-3': 'Reinforcements',
+        '3,-1,-2': 'Reinforcements'
+      });
     });
   });
 

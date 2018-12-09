@@ -96,13 +96,13 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       return {type: 'cards', entries: []};
     },
 
-    generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}): w.CardCollection => {
+    generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}, name?: string): w.CardCollection => {
       const card: w.CardInGame = {
         abilities: [],
         baseCost: 0,
         cost: 0,
         id: `token/${id()}`,
-        name: 'Token',
+        name: name || 'Token',
         source: 'generated',
         stats: attributes,
         type: stringToType(objectType)

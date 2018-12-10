@@ -30,7 +30,7 @@ export default class GameMode extends React.Component {
         alignItems: 'center'
       }}>
         {imagePath && <div style={{
-          height: 150,
+          height: 165,
           width: '100%',
           marginBottom: 10,
           color: 'grey',
@@ -39,7 +39,7 @@ export default class GameMode extends React.Component {
           justifyContent: 'center',
           overflow: 'hidden'
         }}>
-          <img src={imagePath} style={{width: '100%', imageRendering: 'pixelated'}} />
+          <img src={imagePath} style={{height: '100%', imageRendering: 'pixelated'}} />
         </div>}
         <div style={{
           display: 'flex',

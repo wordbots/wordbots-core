@@ -1,23 +1,42 @@
-import { cloneDeep, shuffle } from 'lodash';
+import { cloneDeep, groupBy, shuffle } from 'lodash';
 import * as seededRNG from 'seed-random';
 
 import * as w from '../types';
 import { DECK_SIZE } from '../constants';
-import { triggerSound } from '../util/game';
+import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
 
-import defaultState, { bluePlayerState, orangePlayerState } from './defaultGameState';
+import { triggerSound } from './game';
+
+interface Set {
+  // TODO more fields
+  name: string;
+  cards: [{
+    id: w.CardId
+  }];
+}
 
 function deckHasNCards(deck: w.Deck, num: number): boolean {
   return deck.cards.length === num;
+}
+
+function deckHasAtMostNCopiesPerCard(deck: w.Deck, maxNum: number): boolean {
+  const cardCounts: number[] = Object.values(groupBy(deck.cards, 'id'))
+                                     .map((cards) => cards.length);
+  return cardCounts.every((count) => count <= maxNum);
 }
 
 function deckHasOnlyBuiltinCards(deck: w.Deck): boolean {
   return deck.cards.every((card) => card.source === 'builtin');
 }
 
+function deckHasOnlyCardsInSet(deck: w.Deck, set: Set): boolean {
+  const cardIdsInSet: w.CardId[] = set.cards.map((c) => c.id);
+  return deck.cards.every((card) => cardIdsInSet.includes(card.id));
+}
+
 export class GameFormat {
   public static fromString(gameFormatStr: string): GameFormat {
-    const format = FORMATS.find((m) => m.name === gameFormatStr);
+    const format = BUILTIN_FORMATS.find((m) => m.name === gameFormatStr);
     if (!format) {
       throw new Error(`Unknown game format: ${gameFormatStr}`);
     }
@@ -114,7 +133,31 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   }
 });
 
-export const FORMATS = [
+export class SetFormat extends GameFormat {
+  public name = 'builtinOnly';
+  public displayName: string;
+  public description = 'Only cards from a given set are allowed, and no more than two per deck.';
+  private set: Set;
+
+  constructor(set: Set) {
+    super();
+    this.set = set;
+    this.displayName = `Set: ${set.name}`;
+  }
+
+  public isDeckValid = (deck: w.Deck): boolean => (
+    deckHasOnlyCardsInSet(deck, this.set) && deckHasAtMostNCopiesPerCard(deck, 2)
+  )
+
+  public startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
+  ): w.GameState {
+    return NormalGameFormat.startGame(state, player, usernames, decks, options, seed);
+  }
+}
+
+export const BUILTIN_FORMATS = [
   NormalGameFormat,
   BuiltinOnlyGameFormat,
   SharedDeckGameFormat

@@ -5,7 +5,7 @@ import { TableRow, TableRowColumn } from 'material-ui/Table';
 import FontIcon from 'material-ui/FontIcon';
 
 import { guestUID } from '../../../util/multiplayer.ts';
-import { GameFormat } from '../../../store/gameFormats.ts';
+import { GameFormat } from '../../../util/formats.ts';
 
 export default class GameRow extends React.Component {
   static propTypes = {

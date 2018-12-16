@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil, orderBy } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil, orderBy, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -8,7 +8,6 @@ import 'firebase/database';
 import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon } from './cards';
-import { decodeFirebaseKey } from './common';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -230,9 +229,8 @@ export function indexParsedSentence(sentence: string, tokens: string[], js: stri
 export async function getRecentGamesByUserId(userId: string): Promise<w.SavedGame[]> {
   const blueGames = await getRecentGamesForColorByUserId(userId, 'blue');
   const orangeGames = await getRecentGamesForColorByUserId(userId, 'orange');
-  const games = {...blueGames, ...orangeGames};
-  const timestampedGames = mapValues(games, (game, firebaseKey) => ({ ...game, timestamp: decodeFirebaseKey(firebaseKey) }));
-  return orderBy(Object.values(timestampedGames), ['timestamp'], ['desc']);
+  const games = Object.values({...blueGames, ...orangeGames});
+  return orderBy(uniqBy(games, 'id'), ['timestamp'], ['desc']);
 }
 
 async function getRecentGamesForColorByUserId(userId: string, color: string): Promise<Record<string, w.SavedGame>> {

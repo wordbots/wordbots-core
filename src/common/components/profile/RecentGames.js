@@ -50,7 +50,7 @@ class RecentGames extends Component {
     const { userId, playerNames, classes } = this.props;
 
     const opponentId = Object.values(recentGame.players).find((player) => player !== userId);
-    const opponent = isNil(opponentId) ? 'Guest' : playerNames[opponentId] || playerNames[userId];
+    const opponent = isNil(opponentId) || opponentId.startsWith('guest') ? 'Guest' : playerNames[opponentId] || playerNames[userId];
     const wasVictory = recentGame.players[recentGame.winner] === userId;
     const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
     const subText = `${startCase(toLower(recentGame.type))} - ${startCase(recentGame.format)} - ${timestamp}`;

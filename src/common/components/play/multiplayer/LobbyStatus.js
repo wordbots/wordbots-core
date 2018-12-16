@@ -34,6 +34,7 @@ const LobbyStatus = (props) => {
       }}
       href={userData && `/profile/${userData.uid}`}
       target="_blank"
+      rel="noopener noreferer"
     >
       {userData ? userData.displayName : clientId}
     </a>

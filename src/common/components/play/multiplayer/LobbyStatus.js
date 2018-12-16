@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { arrayOf, bool, func, object, string } from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 const LobbyStatus = (props) => {
-  const { connecting, connected, playersOnline, myClientId, userDataByClientId, onConnect, history } = props;
+  const { connecting, connected, playersOnline, myClientId, userDataByClientId, onConnect } = props;
 
   const connectedSpan = (
     <span style={{color: 'green'}}>
@@ -81,8 +80,7 @@ LobbyStatus.propTypes = {
   myClientId: string,
   playersOnline: arrayOf(string),
   userDataByClientId: object,
-  onConnect: func,
-  history: object
+  onConnect: func
 };
 
 export default LobbyStatus;

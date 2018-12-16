@@ -133,8 +133,7 @@ export default class MultiplayerLobby extends React.Component {
             myClientId={clientId}
             playersOnline={playersOnline}
             userDataByClientId={userDataByClientId}
-            onConnect={onConnect}
-            history={history} />
+            onConnect={onConnect} />
 
           {this.renderWaiting()}
 

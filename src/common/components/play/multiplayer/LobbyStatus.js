@@ -19,8 +19,10 @@ const LobbyStatus = (props) => {
     <span>Connecting ...</span>
   );
 
-  const renderPlayerName = (userData, clientId) => userData && !userData.uid.startsWith('guest_') ? 
-    renderRegisteredPlayer(userData, clientId) : renderGuestPlayerName(userData, clientId);
+  const renderPlayerName = (userData, clientId) => (
+    (userData && !userData.uid.startsWith('guest_')) ? renderRegisteredPlayer(userData, clientId) :
+      renderGuestPlayerName(userData, clientId)
+  );
 
   /* eslint-disable react/no-multi-comp */
   const renderRegisteredPlayer = (userData, clientId) => (
@@ -31,6 +33,7 @@ const LobbyStatus = (props) => {
         color: '#666'
       }}
       href={userData && `/profile/${userData.uid}`}
+      target="_blank"
     >
       {userData ? userData.displayName : clientId}
     </a>

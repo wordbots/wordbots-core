@@ -110,7 +110,7 @@ export interface TutorialStepInScript {
 }
 
 export interface SavedGame { // Interface for games stored in Firebase.
-  id: m.ClientID,
+  id: string,
   players: { [ color: string ]: any } // TODO more precise
   format: Format,
   type: string, // TODO more precise

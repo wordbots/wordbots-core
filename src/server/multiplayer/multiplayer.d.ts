@@ -26,7 +26,7 @@ export interface UserData {
 }
 
 export interface Game {
-  id: ClientID,
+  id: string,
   name: string,
   format: Format,
   type: string,

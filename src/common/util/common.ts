@@ -65,18 +65,3 @@ export function animate(fns: Array<() => void>, delay: number): void {
     setTimeout(() => animate(rest, delay), delay);
   }
 }
-
-// Decode a Firebase array key into a timestamp (https://stackoverflow.com/a/27910048)
-export function decodeFirebaseKey(key: string): number {
-  const PUSH_CHARS = "-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
-
-  key = key.substring(0, 8);
-  let timestamp = 0;
-
-  for (let i = 0; i < key.length; i++) {
-    const c = key.charAt(i);
-    timestamp = timestamp * 64 + PUSH_CHARS.indexOf(c);
-  }
-
-  return timestamp;
-}

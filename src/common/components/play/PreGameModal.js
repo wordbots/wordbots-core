@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import { unpackDeck } from '../../util/cards.ts';
-import { FORMATS } from '../../store/gameFormats.ts';
+import { BUILTIN_FORMATS } from '../../util/formats.ts';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -42,7 +42,7 @@ export default class PreGameModal extends React.Component {
   get format() {
     const { format } = this.props;
     const { selectedFormatIdx } = this.state;
-    return format || FORMATS[selectedFormatIdx];
+    return format || BUILTIN_FORMATS[selectedFormatIdx];
   }
 
   get validDecks() {

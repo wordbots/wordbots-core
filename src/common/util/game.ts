@@ -10,13 +10,13 @@ import {
   TYPE_ROBOT, TYPE_STRUCTURE, TYPE_CORE, stringToType
 } from '../constants';
 import { arbitraryPlayerState } from '../store/defaultGameState';
-import { GameFormat, SharedDeckGameFormat } from '../store/gameFormats';
 import buildVocabulary from '../vocabulary/vocabulary';
 import GridGenerator from '../components/hexgrid/GridGenerator';
 import Hex from '../components/hexgrid/Hex';
 import HexUtils from '../components/hexgrid/HexUtils';
 
 import { clamp } from './common';
+import { GameFormat, SharedDeckGameFormat } from './formats';
 
 //
 // I. Queries for game state.

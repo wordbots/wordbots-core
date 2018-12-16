@@ -9,7 +9,7 @@ import { opponent as opponentOf } from '../../common/util/game';
 import { saveGame } from '../../common/util/firebase';
 import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import defaultGameState from '../../common/store/defaultGameState';
-import { GameFormat } from '../../common/store/gameFormats';
+import { GameFormat } from '../../common/util/formats';
 import gameReducer from '../../common/reducers/game';
 
 import * as m from './multiplayer';

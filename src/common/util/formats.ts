@@ -7,12 +7,13 @@ import defaultState, { bluePlayerState, orangePlayerState } from '../store/defau
 
 import { triggerSound } from './game';
 
-interface Set {
+// TODO Move this to types.d.ts once we actually start using sets
+export interface Set {
   // TODO more fields
   name: string;
-  cards: [{
+  cards: Array<{
     id: w.CardId
-  }];
+  }>;
 }
 
 function deckHasNCards(deck: w.Deck, num: number): boolean {
@@ -146,7 +147,9 @@ export class SetFormat extends GameFormat {
   }
 
   public isDeckValid = (deck: w.Deck): boolean => (
-    deckHasOnlyCardsInSet(deck, this.set) && deckHasAtMostNCopiesPerCard(deck, 2)
+    deckHasNCards(deck, 30)
+      && deckHasOnlyCardsInSet(deck, this.set)
+      && deckHasAtMostNCopiesPerCard(deck, 2)
   )
 
   public startGame(

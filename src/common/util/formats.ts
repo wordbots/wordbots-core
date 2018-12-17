@@ -135,7 +135,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
 });
 
 export class SetFormat extends GameFormat {
-  public name = 'builtinOnly';
+  public name: string;
   public displayName: string;
   public description = 'Only cards from a given set are allowed, and no more than two per deck.';
   private set: Set;
@@ -143,6 +143,7 @@ export class SetFormat extends GameFormat {
   constructor(set: Set) {
     super();
     this.set = set;
+    this.name = `set ${set.name}`;
     this.displayName = `Set: ${set.name}`;
   }
 

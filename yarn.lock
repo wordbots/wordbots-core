@@ -10288,10 +10288,10 @@ react-transition-group@^2.2.1:
     prop-types "^15.5.8"
     warning "^3.0.0"
 
-react-web-notification@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.4.0.tgz#079b93f9041013c19bf9bb405cc59267372d148a"
-  integrity sha512-hj7sgx1WhpjSd1eIvDu2DoxYmhlw8wGY42gRgkaQUwOe8lZ/I4NMmUwz3B7fjw9d7LS5HYlLAYqPy/W1kuIY2Q==
+react-web-notification@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.5.0.tgz#011fceadcb9eb974f41dd7b7eb8dbeb5408b4431"
+  integrity sha512-xdUHyOMBP+RlhAwuvYd0WlNvT11tW7V4/vXnp3ApbmChyT6FE/4KYEcmeXw+RtP1cJH8B1KbT7RiYNHFnY/bcQ==
 
 react@15.0.1:
   version "15.0.1"

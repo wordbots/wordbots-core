@@ -28,7 +28,7 @@ export default class HexShape extends React.Component {
     tooltipTimeout: null
   }
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     if (this.props.hovered !== nextProps.hovered) {
       if (nextProps.hovered) {
         this.triggerTooltip();

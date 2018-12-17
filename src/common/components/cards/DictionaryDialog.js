@@ -37,7 +37,7 @@ export default class DictionaryDialog extends React.Component {
     showDefinitions: false
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.checkHash();
   }
 
@@ -49,7 +49,7 @@ export default class DictionaryDialog extends React.Component {
     });
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this.checkHash();
   }
 

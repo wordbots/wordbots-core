@@ -117,7 +117,7 @@ export default class DeckSummary extends React.Component {
     const numValidFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid({ cards })).length;
     const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
       `${format.isDeckValid({ cards }) ? '✓ valid' : '‎X invalid'} in ${format.displayName} format`
-    ).concat('X not valid in any Set formats')
+    ).concat('X not valid in any Set formats')  // TODO actually check this once constructing decks from sets is implemented
      .join('<br>');
 
     return (

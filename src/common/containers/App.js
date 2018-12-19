@@ -79,7 +79,8 @@ class App extends React.Component {
     loading: true
   };
 
-  componentWillMount() {
+  constructor() {
+    super();
     logAnalytics();
   }
 
@@ -97,7 +98,7 @@ class App extends React.Component {
     });
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     logAnalytics();
   }
 

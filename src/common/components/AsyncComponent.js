@@ -10,7 +10,7 @@ export default function asyncComponent(importComponent) {
       };
     }
 
-    async componentWillMount() {
+    async UNSAFE_componentWillMount() {
       const { default: component } = await importComponent();
 
       this.setState({ component });

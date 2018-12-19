@@ -1,15 +1,15 @@
 import { resolve } from 'path';
-import url from 'url';
-
-import repng from 'repng';
+import { parse as urlparse } from 'url';
 
 import { id } from '../common/util/common.ts';
 import { splitSentences } from '../common/util/cards.ts';
 import Card from '../common/components/card/Card';
 import Sentence from '../common/components/card/Sentence';
 
+const repng = require('repng');
+
 export default function produceApiResponse(response, location) {
-  const { pathname, query } = url.parse(location, true);
+  const { pathname, query } = urlparse(location, true);
 
   if (pathname === '/api/card.png') {
     renderCard(response, query);

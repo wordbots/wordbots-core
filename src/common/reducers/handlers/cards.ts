@@ -2,7 +2,7 @@ import * as w from '../../types';
 import { id } from '../../util/common';
 import {
   areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, createCardFromProps,
-  loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase
+  loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase, loadSetsFromFirebase
 } from '../../util/cards';
 
 type State = w.CollectionState;
@@ -43,6 +43,7 @@ const cardsHandlers = {
 
     state = loadCardsFromFirebase(state, data);
     state = loadDecksFromFirebase(state, data);
+    state = loadSetsFromFirebase(state, data);
 
     defaultDecks.forEach((defaultDeck) => {
       if (!state.decks.find((deck) => deck.id === defaultDeck.id)) {

@@ -16,13 +16,16 @@
     "build:stats": "npm run prebuild && node_modules/.bin/webpack -p --config webpack.build.config.js --json > stats.json",
     "clean": "node bin/clean.js dist",
     "heroku-postbuild": "npm run clean && npm run prebuild && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
-    "lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
     "prebuild": "sed 's/export default webpackConfig;/module.exports = webpackConfig;/' <webpack.config.js >webpack.build.config.js",
     "slate": "node bin/clean.js node_modules",
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --colors --profile",
     "start-prod": "set NODE_ENV=production && ts-node src/server/index.ts --progress --colors --profile",
-    "test": "jest",
-    "test:watch": "npm test -- --watch"
+    "test": "run-s test:lint test:types test:unit",
+    "test:lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
+    "test:types": "tsc --skipLibCheck --noEmit",
+    "test:unit": "jest",
+    "test:unit:coverage": "npm test:unit -- --coverage",
+    "test:unit:watch": "npm test:unit -- --watch"
   },
   "repository": {
     "type": "git",
@@ -131,6 +134,7 @@
     "jsdom-no-contextify": "3.1.0",
     "mocha": "^5.0.1",
     "mock-socket": "^8.0.2",
+    "npm-run-all": "^4.1.5",
     "react-test-renderer": "^16.6.3",
     "react-transform-catch-errors": "^1.0.2",
     "react-transform-hmr": "^1.0.4",

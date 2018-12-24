@@ -17,7 +17,6 @@ const defaultState: w.CollectionState = {
       cardIds: decks.healing.map((c) => c.id)
     }
   ],
-  sets: [],
   deckBeingEdited: null,
   exportedJson: null,
   firebaseLoaded: false

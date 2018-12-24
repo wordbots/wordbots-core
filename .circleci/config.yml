@@ -42,9 +42,8 @@ jobs:
 
       # Test
       - run: ./cc-test-reporter before-build
-      - run: yarn test:lint
-      - run: yarn test:types
-      - run: yarn test:jest --coverage
+      - run: node_modules/eslint/bin/eslint.js .
+      - run: yarn test --coverage
       - run: ./cc-test-reporter after-build --exit-code $? < coverage/lcov.info
       - run: cp -R coverage $CIRCLE_ARTIFACTS
       - run: NODE_ENV=test yarn start

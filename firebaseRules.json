@@ -13,13 +13,6 @@
       },
       ".indexOn": ["timestamp", "players/blue", "players/orange"]
     },
-    "sets": {
-      ".read": "true",
-      "$key": {
-        ".write": "auth != null && newData.child('metadata/authorId').val() == auth.uid && (!data.exists() || (data.child('metadata/authorId').val() == auth.uid && data.child('metadata/isPublished').val() != true))"
-      },
-      ".indexOn": ["timestamp", "metadata/authorId", "metadata/numDecksCreated"]
-    },
     "recentCards": {
       ".read": "true",
       "$key": {

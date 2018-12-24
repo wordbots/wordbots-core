@@ -84,17 +84,6 @@ export interface ObfuscatedCard {
   id: string
 }
 
-export interface Set {
-  id: string
-  cards: CardInStore[]
-  metadata: {
-    authorId: string
-    isPublished: boolean
-    lastModified: Date
-    numDecksCreated?: number
-  }
-}
-
 export interface Dictionary {
   definitions?: { [token: string]: any } // TODO more precise
   examplesByToken?: { [token: string]: string[] }
@@ -143,14 +132,13 @@ export interface State {
   creator: CreatorState
   game: GameState
   global: GlobalState
-  socket: SocketState
+  socket: SocketState,
   version: string
 }
 
 export interface CollectionState {
   cards: CardInStore[]
   decks: DeckInStore[]
-  sets: Set[]
   deckBeingEdited: DeckInStore | null
   exportedJson: string | null
   firebaseLoaded: boolean

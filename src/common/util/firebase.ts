@@ -118,7 +118,7 @@ export function saveUserData(key: string, value: any): void {
     .catch(noop);
 }
 
-export async function getUserNamesByIds(userIds: string[]): Promise<string[]> {
+export async function getUserNamesByIds(userIds: Array<string>): Promise<string[]> {
   const userLookupRefs = userIds.map((userId) => fb.database().ref(`users/${userId}`).once('value'));
   const users = await Promise.all(userLookupRefs);
   return users.map((user) => user.val().info.displayName);
@@ -137,16 +137,6 @@ export function listenToRecentCards(callback: (data: any) => any, uid?: string):
     .ref(isNil(uid) ? 'recentCards' : `users/${uid}/cards`)
     .orderByChild('timestamp')
     .limitToLast(50)
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
-      if (snapshot) {
-        callback(snapshot.val());
-      }
-    });
-}
-
-export function listenToSets(callback: (data: any) => any): void {
-  fb.database()
-    .ref(`sets`)
     .on('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
         callback(snapshot.val());
@@ -206,14 +196,6 @@ export function saveRecentCard(card: w.Card): void {
   fb.database()
     .ref('recentCards')
     .push(card);
-}
-
-export function saveSet(set: w.Set): void {
-  fb.database()
-    .ref(`sets/${set.id}`)
-    .update(set);  // see firebaseRules.json - this save will only succeed if either:
-                   //   (i) there is no set yet with the given id
-                   //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
 }
 
 export function saveReportedParseIssue(text: string): void {

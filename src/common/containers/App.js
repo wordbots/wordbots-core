@@ -11,7 +11,7 @@ import 'whatwg-fetch';
 
 import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants.ts';
 import { isFlagSet, logAnalytics } from '../util/browser.tsx';
-import { listenToUserData, listenToSets, onLogin, onLogout } from '../util/firebase.ts';
+import { listenToUserData, onLogin, onLogout } from '../util/firebase.ts';
 import * as actions from '../actions/global.ts';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavMenu from '../components/NavMenu';
@@ -89,7 +89,6 @@ class App extends React.Component {
       this.setState({loading: false});
       this.props.onLoggedIn(user.toJSON());
       listenToUserData(this.props.onReceiveFirebaseData);
-      listenToSets(this.props.onReceiveFirebaseData);
     });
 
     onLogout(() => {

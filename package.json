@@ -24,7 +24,7 @@
     "test:lint": "node_modules/eslint/bin/eslint.js src test && node_modules/tslint/bin/tslint src/**/*.ts",
     "test:types": "tsc --skipLibCheck --noEmit",
     "test:unit": "jest",
-    "test:unit:coverage": "npm test:unit -- --coverage",
+    "test:unit:coverage": "jest --coverage",
     "test:unit:watch": "npm test:unit -- --watch"
   },
   "repository": {

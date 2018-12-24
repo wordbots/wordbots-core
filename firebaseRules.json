@@ -1,0 +1,54 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "games": {
+      ".read": "true",
+      "$key": {
+        ".write": "!data.exists()"
+      },
+      ".indexOn": ["timestamp", "players/blue", "players/orange"]
+    },
+    "recentCards": {
+      ".read": "true",
+      "$key": {
+        ".write": "!data.exists()"
+      },
+      ".indexOn": "timestamp"
+    },
+    "reportedParseIssues": {
+      "$key": {
+        ".write": "!data.exists()"
+      },
+      ".indexOn": "timestamp"
+    },
+    "cardText": {
+      ".read": "true",
+      "all": {
+        "$key": {
+      		".write": "!data.exists()"
+        }
+      },
+      "byNode": {
+        "$type": {
+          "$node": {
+            "$key": {
+              ".write": "!data.exists()"
+            }
+          }
+        }
+      },
+      "byToken": {
+      	"$token": {
+          "$key": {
+            ".write": "!data.exists()"
+          }
+        }
+      } 
+    }
+  }
+}

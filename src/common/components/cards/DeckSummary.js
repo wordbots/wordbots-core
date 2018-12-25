@@ -109,15 +109,18 @@ export default class DeckSummary extends React.Component {
   renderCards(cards) {
     return sortBy(groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
   }
+
   render() {
     const { cards, deck } = this.props;
     const [robots, structures, events] = [TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT].map(t => filter(cards, ['type', t]));
     const isComplete = (cards.length === 30);
 
     const numValidFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid({ cards })).length;
+    const redX = '<span style="color: red;">X</span>';
+    const greenCheck = '<span style="color: green;">✓</span>';
     const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
-      `${format.isDeckValid({ cards }) ? '✓ valid' : '‎X invalid'} in ${format.displayName} format`
-    ).concat('X not valid in any Set formats')  // TODO actually check this once constructing decks from sets is implemented
+      `${format.isDeckValid({ cards }) ? `${greenCheck} valid` : `${redX} invalid`} in ${format.displayName} format`
+    ).concat(`${redX} not valid in any Set formats`)  // TODO actually check this once constructing decks from sets is implemented
      .join('<br>');
 
     return (
@@ -138,7 +141,7 @@ export default class DeckSummary extends React.Component {
             textAlign: 'right',
             fontSize: 24,
             color: (isComplete ? 'green' : 'red')}}>
-            <Tooltip inline html text={validFormatsHTML}>
+            <Tooltip inline html text={validFormatsHTML} style={{textAlign: 'left'}}>
               <FontIcon
                 className="material-icons"
                 style={{paddingRight: 5, color: (isComplete ? 'green' : 'red') }}

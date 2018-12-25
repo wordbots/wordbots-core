@@ -7,7 +7,9 @@ import { filter, sortBy } from 'lodash';
 
 import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants.ts';
 import { groupCards } from '../../util/cards.ts';
+import { BUILTIN_FORMATS } from '../../util/formats.ts';
 import ButtonInRow from '../ButtonInRow';
+import Tooltip from '../Tooltip';
 import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -50,6 +52,12 @@ export default class DeckSummary extends React.Component {
         display: 'flex',
         alignItems: 'center',
         fontWeight: 'bold'
+      },
+      validFormatsNote: {
+        cursor: 'help',
+        fontSize: '0.5em',
+        marginLeft: -5,
+        marginRight: 5
       }
     };
   }
@@ -107,6 +115,14 @@ export default class DeckSummary extends React.Component {
     const [robots, structures, events] = [TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT].map(t => filter(cards, ['type', t]));
     const isComplete = (cards.length === 30);
 
+    const numValidFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid({ cards })).length;
+    const redX = '<span style="color: red;">X</span>';
+    const greenCheck = '<span style="color: green;">✓</span>';
+    const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
+      `${format.isDeckValid({ cards }) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`
+    ).concat(`${redX} not valid in any Set formats`)  // TODO actually check this once constructing decks from sets is implemented
+     .join('<br>');
+
     return (
       <Paper
         key={deck.name}
@@ -125,12 +141,17 @@ export default class DeckSummary extends React.Component {
             textAlign: 'right',
             fontSize: 24,
             color: (isComplete ? 'green' : 'red')}}>
-            <FontIcon
-              className="material-icons"
-              style={{paddingRight: 5, color: (isComplete ? 'green' : 'red')}}
-            >
-              {isComplete ? 'done' : 'warning'}
-            </FontIcon>
+            <Tooltip inline html text={validFormatsHTML} style={{textAlign: 'left'}}>
+              <FontIcon
+                className="material-icons"
+                style={{paddingRight: 5, color: (isComplete ? 'green' : 'red') }}
+              >
+                {isComplete ? 'done' : 'warning'}
+              </FontIcon>
+              <sup style={this.styles.validFormatsNote}>
+                {numValidFormats}&thinsp;[?]
+              </sup>
+            </Tooltip>
             {cards.length} cards
           </div>
         </div>

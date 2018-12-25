@@ -362,15 +362,17 @@ export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.Co
 }
 
 export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
-  if (data) {
-    if (data.decks) {
-      state.decks = data.decks;
-    }
-  } else {
-    state.decks = defaultState.decks;
-  }
+  return {
+    ...state,
+    decks: data ? ((data.decks as w.DeckInStore[]) || state.decks) : defaultState.decks
+  };
+}
 
-  return state;
+export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
+  return {
+    ...state,
+    sets: data ? ((data.sets as w.Set[]) || state.sets) : defaultState.sets
+  };
 }
 
 export function saveCardToFirebase(card: w.CardInStore): void {

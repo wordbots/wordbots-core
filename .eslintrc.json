@@ -97,6 +97,9 @@
   "settings": {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
     "import/ignore": ["\\.tsx?$"],
-    "polyfills": ["fetch", "promises"]
+    "polyfills": ["fetch", "promises"],
+    "react": {
+      "version": "16.6.3"
+    }
   }
 }

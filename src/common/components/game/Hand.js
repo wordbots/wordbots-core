@@ -33,7 +33,7 @@ export default class Hand extends React.Component {
     this.calculateAvailableWidth();
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this.calculateAvailableWidth();
   }
 

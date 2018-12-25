@@ -119,7 +119,7 @@ export default class DeckSummary extends React.Component {
     const redX = '<span style="color: red;">X</span>';
     const greenCheck = '<span style="color: green;">✓</span>';
     const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
-      `${format.isDeckValid({ cards }) ? `${greenCheck} valid` : `${redX} invalid`} in ${format.displayName} format`
+      `${format.isDeckValid({ cards }) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`
     ).concat(`${redX} not valid in any Set formats`)  // TODO actually check this once constructing decks from sets is implemented
      .join('<br>');
 

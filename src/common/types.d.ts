@@ -86,11 +86,14 @@ export interface ObfuscatedCard {
 
 export interface Set {
   id: string
+  name: string
+  description?: string
   cards: CardInStore[]
   metadata: {
     authorId: string
+    authorName: string
     isPublished: boolean
-    lastModified: Date
+    lastModified: number  // timestamp
     numDecksCreated?: number
   }
 }

@@ -181,6 +181,7 @@
   "greenkeeper": {
     "ignore": [
       "css-loader",
+      "file-loader",
       "webpack",
       "webpack-dev-middleware"
     ]

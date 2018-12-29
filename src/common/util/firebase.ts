@@ -24,6 +24,18 @@ if (fb.apps.length === 0) {
   fb.initializeApp(config);
 }
 
+// Warning: not type-safe!
+function snapshotAsArray(snapshot: firebase.database.DataSnapshot): any {
+  const arr: any[] = [];
+
+  snapshot.forEach((childSnapshot: firebase.database.DataSnapshot) => {
+    arr.push(childSnapshot.val());
+    return true;
+  });
+
+  return arr;
+}
+
 // Users
 
 function saveUser(user: firebase.User): Promise<firebase.User> {
@@ -145,11 +157,16 @@ export function listenToRecentCards(callback: (data: any) => any, uid?: string):
 }
 
 export function listenToSets(callback: (data: any) => any): void {
+  const deserializeSet = (serializedSet: any): w.Set => ({
+    ...serializedSet,
+    cards: Object.values(serializedSet.cards)
+  });
+
   fb.database()
-    .ref(`sets`)
+    .ref('sets')
     .on('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
-        callback(snapshot.val());
+        callback({ sets: snapshotAsArray(snapshot).map(deserializeSet) });
       }
     });
 }

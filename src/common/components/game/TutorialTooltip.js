@@ -5,6 +5,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { noop } from 'lodash';
 
+import { TUTORIAL_Z_INDEX } from '../../constants.ts';
 import Popover from '../Popover';
 import Tooltip from '../Tooltip';
 
@@ -36,7 +37,7 @@ export default class TutorialTooltip extends React.Component {
   get styles() {
     return {
       container: {
-        zIndex: 999999,
+        zIndex: TUTORIAL_Z_INDEX,
         marginTop: this.props.top,
         marginLeft: this.props.left
       },

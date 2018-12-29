@@ -11,6 +11,7 @@ import HexGrid from '../../src/common/components/hexgrid/HexGrid';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils';
 import * as actions from '../../src/common/actions/game.ts';
 import gameReducer from '../../src/common/reducers/game.ts';
+import { BOARD_Z_INDEX } from '../../src/common/constants.ts';
 
 describe('GameArea container', () => {
   it('renders the default game state', () => {
@@ -39,7 +40,7 @@ describe('GameArea container', () => {
           left: 0, top: 75, bottom: 75, right: 0,
           margin: '0 auto',
           width: 1000,
-          zIndex: 1000
+          zIndex: BOARD_Z_INDEX
       }}>
         <Board
           selectedTile={null}

@@ -5,6 +5,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
 import { groupCards, selectType } from '../../util/cards.ts';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
@@ -58,7 +59,7 @@ export default class ActiveDeck extends React.Component {
 
     return (
       <div style={{width: '47.5%'}}>
-        <Tooltip text={tooltip} place="top" style={{zIndex: 99999}}>
+        <Tooltip text={tooltip} place="top" style={{ zIndex: MAX_Z_INDEX }}>
           <FontIcon
             className="material-icons"
             style={{

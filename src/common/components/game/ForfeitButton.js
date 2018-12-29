@@ -3,6 +3,7 @@ import { string, bool, object, func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
 import { opponent } from '../../util/game.ts';
 import Tooltip from '../Tooltip';
 
@@ -27,7 +28,7 @@ export default class ForfeitButton extends React.Component {
 
   render() {
     return (
-      <Tooltip text="Forfeit" place="top" style={{zIndex: 99999}}>
+      <Tooltip text="Forfeit" place="top" style={{ zIndex: MAX_Z_INDEX }}>
         <RaisedButton
           backgroundColor="#CCC"
           buttonStyle={{

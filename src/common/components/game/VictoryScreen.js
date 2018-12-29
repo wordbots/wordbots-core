@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { func, string } from 'prop-types';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
+
 const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {
   const colors = {
     'orange': '#ffb85d',
@@ -24,7 +26,7 @@ const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
         color: colors[winnerColor],
         borderRadius: 2,
-        zIndex: 99999
+        zIndex: MAX_Z_INDEX
     }}>
       <div>
         <div style={{fontSize: 96}}>

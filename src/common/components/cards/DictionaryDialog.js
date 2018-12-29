@@ -9,6 +9,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import { capitalize, mapKeys, noop, uniq } from 'lodash';
 
+import { DICTIONARY_TAB_Z_INDEX } from '../../constants.ts';
 import { getHash, setHash } from '../../util/browser.tsx';
 import { allKeywords, contractKeywords } from '../../util/cards.ts';
 import { listenToDictionaryData } from '../../util/firebase.ts';
@@ -163,7 +164,7 @@ export default class DictionaryDialog extends React.Component {
           value={this.state.tabIdx}
           onChange={this.handleChangeTab}
           style={{width: '100%'}}
-          inkBarStyle={{height: 7, marginTop: -7, zIndex: 10}}
+          inkBarStyle={{ height: 7, marginTop: -7, zIndex: DICTIONARY_TAB_Z_INDEX }}
         >
           <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
           <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>

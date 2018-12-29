@@ -52,6 +52,7 @@ class Sets extends React.Component<SetsProps> {
   }
 
   public render(): JSX.Element {
+    const { user } = this.props;
     return (
       <div>
         <Helmet title="Sets" />
@@ -61,8 +62,13 @@ class Sets extends React.Component<SetsProps> {
           <h2>Top published sets <i>({ this.publishedSets.length })</i></h2>
           { this.publishedSets.map((set) => <SetSummary key={set.id} set={set} />) }
 
-          <h2>Your sets <i>({ this.userSets.length })</i></h2>
-          { this.userSets.map((set) => <SetSummary key={set.id} set={set} />) }
+          {
+            user &&
+              <div>
+                <h2>Your sets <i>({ this.userSets.length })</i></h2>
+                { this.userSets.map((set) => <SetSummary key={set.id} set={set} />) }
+              </div>
+          }
         </div>
       </div>
     );

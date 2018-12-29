@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { func, object } from 'prop-types';
+import { bool, func, object } from 'prop-types';
 
 import CardTooltip from '../card/CardTooltip';
 
 export default class ActiveDeckCard extends React.Component {
   static propTypes = {
     card: object,
+    showCount: bool,
 
     onIncreaseCardCount: func,
     onDecreaseCardCount: func,
@@ -61,16 +62,16 @@ export default class ActiveDeckCard extends React.Component {
   handleRemoveCard = () => { this.props.onRemoveCard(this.props.card.id); };
 
   render = () => {
-    const { card } = this.props;
+    const { card, showCount } = this.props;
     return (
       <CardTooltip card={card}>
         <span style={this.styles.xButton} onClick={this.handleRemoveCard}>
           x
         </span>
         <div style={this.styles.outerCard}>
-          <div style={this.styles.cardCost}>{card.cost}</div>
+          {showCount && <div style={this.styles.cardCost}>{card.cost}</div>}
           <div style={this.styles.cardName}>{card.name}</div>
-          <div style={this.styles.cardCount}>
+          {showCount && <div style={this.styles.cardCount}>
             <span onClick={this.handleDecreaseCardCount}>
               &nbsp;&ndash;&nbsp;
             </span>
@@ -78,7 +79,7 @@ export default class ActiveDeckCard extends React.Component {
             <span onClick={this.handleIncreaseCardCount}>
               &nbsp;+&nbsp;
             </span>
-          </div>
+          </div>}
         </div>
       </CardTooltip>
     );

@@ -155,6 +155,7 @@ export interface CollectionState {
   decks: DeckInStore[]
   sets: Set[]
   deckBeingEdited: DeckInStore | null
+  setBeingEdited: Set | null
   exportedJson: string | null
   firebaseLoaded: boolean
 }

@@ -25,6 +25,7 @@ import Collection from './Collection';
 import Creator from './Creator';
 import Deck from './Deck';
 import Decks from './Decks';
+import Sets from './Sets.tsx';
 import Home from './Home';
 import Singleplayer from './Singleplayer';
 import Multiplayer from './Multiplayer';
@@ -138,6 +139,7 @@ class App extends React.Component {
             <Route path="/creator" component={Creator} />
             <Route path="/decks" component={Decks} />
             <Route path="/deck" component={Deck} />
+            <Route path="/sets" component={Sets} />
             <Route path="/singleplayer" component={Singleplayer} />
             <Route path="/multiplayer" component={Multiplayer} />
             <Route path="/about" component={About} />

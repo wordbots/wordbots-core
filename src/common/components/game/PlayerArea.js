@@ -30,7 +30,7 @@ export default class PlayerArea extends React.Component {
   }
 
   get styles() {
-    const { opponent, gameProps } = this.props;
+    const { opponent, gameProps: { isSandbox } } = this.props;
 
     return {
       container: {
@@ -54,7 +54,7 @@ export default class PlayerArea extends React.Component {
       },
       discard: {
         marginRight: 8,
-        marginTop: gameProps.isSandbox ? -24 : -36,
+        marginTop: isSandbox ? (opponent ? -23 : -9) : -36,
         transform: 'rotate(-90deg)',
         transformOrigin: '100% 100%',
         height: 36,

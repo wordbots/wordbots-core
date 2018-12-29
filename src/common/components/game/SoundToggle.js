@@ -2,6 +2,7 @@ import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
 import { isFlagSet, toggleFlag } from '../../util/browser.tsx';
 import Tooltip from '../Tooltip';
 
@@ -13,7 +14,7 @@ export default class SoundToggle extends React.Component {
 
   render() {
     return (
-      <Tooltip text={isFlagSet('sound') ? 'Mute' : 'Unmute'} place="bottom" style={{zIndex: 99999}}>
+      <Tooltip text={isFlagSet('sound') ? 'Mute' : 'Unmute'} place="bottom" style={{ zIndex: MAX_Z_INDEX }}>
         <IconButton
           style={{
             border: '2px solid #AAA',

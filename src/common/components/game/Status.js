@@ -3,9 +3,11 @@ import { string, object } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 
+import { STATUS_Z_INDEX } from '../../constants.ts';
+
 const styles = {
   root: {
-    zIndex: 2000,
+    zIndex: STATUS_Z_INDEX,
     transform: 'translateX(calc(-50% - 128px))'
   },
   message: {

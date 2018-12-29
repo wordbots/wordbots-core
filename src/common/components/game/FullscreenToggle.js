@@ -4,6 +4,7 @@ import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import * as screenfull from 'screenfull';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
 import Tooltip from '../Tooltip';
 
 export default class FullscreenToggle extends React.Component {
@@ -18,7 +19,7 @@ export default class FullscreenToggle extends React.Component {
 
   render() {
     return (
-      <Tooltip text="Fullscreen" place="bottom" style={{zIndex: 99999}}>
+      <Tooltip text="Fullscreen" place="bottom" style={{ zIndex: MAX_Z_INDEX }}>
         <IconButton
           style={{
             border: '2px solid #AAA',

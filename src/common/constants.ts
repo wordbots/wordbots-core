@@ -45,6 +45,13 @@ export const BOARD_Z_INDEX = 1000;
 export const BACKGROUND_Z_INDEX = 900;
 export const HAND_Z_INDEX = 1100;
 export const MAX_BOARD_SIZE = 700;
+export const MAX_Z_INDEX = 99999;
+export const TUTORIAL_Z_INDEX = 999999;
+export const DICTIONARY_TAB_Z_INDEX = 10;
+export const STATUS_Z_INDEX = 2000;
+export const DIALOG_OVERLAY_Z_INDEX = 950;
+export const DIALOG_MAIN_Z_INDEX = 960;
+export const DIALOG_BODY_Z_INDEX = 970;
 
 /* Board. */
 

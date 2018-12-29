@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { arrayOf, func, object, oneOfType } from 'prop-types';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
 import Popover from '../Popover';
 
 import ActivatedAbility from './ActivatedAbility';
@@ -16,7 +17,7 @@ export default class AbilitiesTooltip extends React.Component {
   get styles() {
     return {
       container: {
-        zIndex: 99999
+        zIndex: MAX_Z_INDEX
       },
       tooltip: {
         width: 330,

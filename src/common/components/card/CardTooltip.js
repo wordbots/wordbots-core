@@ -2,6 +2,7 @@ import * as React from 'react';
 import { arrayOf, bool, object, oneOfType } from 'prop-types';
 import * as ReactTooltip from 'react-tooltip';
 
+import { MAX_Z_INDEX } from '../../constants.ts';
 import { id } from '../../util/common.ts';
 import Popover from '../Popover';
 
@@ -25,7 +26,7 @@ export default class CardTooltip extends React.Component {
         <Popover
           isOpen={this.props.isOpen}
           body={Card.fromObj(this.props.card)}
-          style={{zIndex: 99999}}
+          style={{ zIndex: MAX_Z_INDEX }}
           place="above"
           showTip={false}
         >
@@ -38,7 +39,7 @@ export default class CardTooltip extends React.Component {
           <span data-tip="" data-for={this.tooltipId}>
             {this.props.children}
           </span>
-          <span style={{zIndex: 99999, backgroundColor: 'transparent'}}>
+          <span style={{ zIndex: MAX_Z_INDEX, backgroundColor: 'transparent' }}>
             <ReactTooltip
               id={this.tooltipId}
               className="hovered-card"

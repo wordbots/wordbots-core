@@ -87,7 +87,7 @@
     "source-map-loader": "^0.2.3",
     "style-loader": "0.23.1",
     "substitute-loader": "^1.0.0",
-    "trianglify": "^1.1.0",
+    "trianglify": "^2.0.0",
     "ts-node": "^7.0.1",
     "url-loader": "^1.0.1",
     "webpack": "^4.0.0",

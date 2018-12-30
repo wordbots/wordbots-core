@@ -24,18 +24,6 @@ if (fb.apps.length === 0) {
   fb.initializeApp(config);
 }
 
-// Warning: not type-safe!
-function snapshotAsArray(snapshot: firebase.database.DataSnapshot): any {
-  const arr: any[] = [];
-
-  snapshot.forEach((childSnapshot: firebase.database.DataSnapshot) => {
-    arr.push(childSnapshot.val());
-    return true;
-  });
-
-  return arr;
-}
-
 // Users
 
 function saveUser(user: firebase.User): Promise<firebase.User> {
@@ -164,9 +152,10 @@ export function listenToSets(callback: (data: any) => any): void {
 
   fb.database()
     .ref('sets')
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
+    .once('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
-        callback({ sets: snapshotAsArray(snapshot).map(deserializeSet) });
+        const serializedSets = Object.values(snapshot.val());
+        callback({ sets: serializedSets.map(deserializeSet) });
       }
     });
 }
@@ -226,11 +215,12 @@ export function saveRecentCard(card: w.Card): void {
 }
 
 export function saveSet(set: w.Set): void {
+  console.log(set);
   fb.database()
     .ref(`sets/${set.id}`)
     .update(set);  // see firebaseRules.json - this save will only succeed if either:
-                   //   (i) there is no set yet with the given id
-                   //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
+                 //   (i) there is no set yet with the given id
+                 //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
 }
 
 export function saveReportedParseIssue(text: string): void {

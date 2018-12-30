@@ -24,7 +24,7 @@ export default class ActiveDeck extends React.Component {
     onIncreaseCardCount: func,
     onDecreaseCardCount: func,
     onRemoveCard: func,
-    onSaveDeck: func
+    onSave: func
   }
 
   static defaultProps = {
@@ -62,9 +62,9 @@ export default class ActiveDeck extends React.Component {
   handleGroupByCost = () => { this.setState({grouping: 0}); };
   handleGroupByType = () => { this.setState({grouping: 1}); };
 
-  handleSaveDeck = () => {
-    const { id, cards, onSaveDeck } = this.props;
-    onSaveDeck(id, this.state.name, cards.map(c => c.id));
+  handleSave = () => {
+    const { id, cards, onSave } = this.props;
+    onSave(id, this.state.name, cards.map(c => c.id));
   }
 
   renderButton(grouping, iconName, tooltip) {
@@ -196,7 +196,7 @@ export default class ActiveDeck extends React.Component {
             disabled={!this.state.name}
             icon={<FontIcon className="material-icons">save</FontIcon>}
             style={{width: '100%', marginTop: 20}}
-            onClick={this.handleSaveDeck}
+            onClick={this.handleSave}
           />
         </MustBeLoggedIn>
       </div>

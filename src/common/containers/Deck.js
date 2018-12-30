@@ -181,7 +181,7 @@ class Deck extends React.Component {
                 onIncreaseCardCount={this.handleClickIncreaseCardCount}
                 onDecreaseCardCount={this.handleClickDecreaseCardCount}
                 onRemoveCard={this.handleRemoveCard}
-                onSaveDeck={this.handleClickSaveDeck} />
+                onSave={this.handleClickSaveDeck} />
             </Paper>
           </div>
         </div>

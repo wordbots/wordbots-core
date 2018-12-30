@@ -1,11 +1,15 @@
 import * as React from 'react';
-import Helmet from 'react-helmet';
+import { Dispatch, AnyAction } from 'redux';
 import { connect } from 'react-redux';
+import Helmet from 'react-helmet';
 import { withRouter } from 'react-router';
+import { History } from 'history';
+import * as fb from 'firebase';
 import Paper from '@material-ui/core/Paper';
 import { compact, find, noop } from 'lodash';
 
 import * as w from '../../common/types';
+import { id as generateId } from '../util/common';
 import { getDisplayedCards } from '../util/cards';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
@@ -14,12 +18,19 @@ import FilterControls from '../components/cards/FilterControls';
 import LayoutControls from '../components/cards/LayoutControls';
 import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
+import * as collectionActions from '../actions/collection';
 
-interface NewSetProps {
+interface NewSetStateProps {
   setBeingEdited: w.Set | null
   allCards: w.CardInStore[]
-  isLoggedIn: boolean
+  user: fb.User | null
 }
+
+interface NewSetDispatchProps {
+  onSaveSet: (set: w.Set) => void
+}
+
+type NewSetProps = NewSetStateProps & NewSetDispatchProps & { history: History };
 
 interface NewSetState {
   filters: {
@@ -35,11 +46,19 @@ interface NewSetState {
   layout: 0 | 1
 }
 
-function mapStateToProps(state: w.State): NewSetProps {
+function mapStateToProps(state: w.State): NewSetStateProps {
   return {
     setBeingEdited: state.collection.setBeingEdited,
     allCards: state.collection.cards,
-    isLoggedIn: state.global.user !== null
+    user: state.global.user
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AnyAction>): NewSetDispatchProps {
+  return {
+    onSaveSet: (set: w.Set) => {
+      dispatch(collectionActions.saveSet(set));
+    }
   };
 }
 
@@ -80,9 +99,12 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
   }
 
   public render(): JSX.Element {
+    const { setBeingEdited, user } = this.props;
+    const { layout, selectedCardIds } = this.state;
+
     return (
       <div>
-        <Helmet title="Building Set"/>
+        <Helmet title={setBeingEdited ? "Editing Set" : "Creating Set"} />
 
         <div style={{
           display: 'flex',
@@ -104,10 +126,9 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
 
           <div style={{marginTop: 10, width: '100%'}}>
             <CardCollection
-              allowMultipleSelection
-              layout={this.state.layout}
+              layout={layout}
               cards={this.displayedCards}
-              selectedCardIds={this.state.selectedCardIds}
+              selectedCardIds={selectedCardIds}
               onSelection={this.handleSelectCards} />
           </div>
 
@@ -119,18 +140,38 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
             <Paper style={{padding: 20}}>
               <ActiveDeck
                 isASet
-                id={this.props.setBeingEdited ? this.props.setBeingEdited.id : ''}
-                name={this.props.setBeingEdited ? this.props.setBeingEdited.name : ''}
+                id={setBeingEdited ? setBeingEdited.id : ''}
+                name={setBeingEdited ? setBeingEdited.name : ''}
                 cards={this.selectedCards}
-                loggedIn={this.props.isLoggedIn}
+                loggedIn={!!user}
                 onRemoveCard={this.handleRemoveCard}
-                onSaveDeck={noop} />
+                onSave={this.handleClickSaveSet} />
             </Paper>
           </div>
         </div>
       </div>
     );
   }
+
+  private renderSidebarControls = (): JSX.Element => (
+    <Paper style={{padding: 20, marginBottom: 10}}>
+      <SearchControls onChange={this.set('searchText')} />
+
+      <LayoutControls
+        layout={this.state.layout}
+        onSetLayout={this.set('layout')} />
+
+      <SortControls
+        criteria={this.state.sortCriteria}
+        order={this.state.sortOrder}
+        onSetCriteria={this.set('sortCriteria')}
+        onSetOrder={this.set('sortOrder')} />
+
+      <FilterControls
+        onToggleFilter={this.toggleFilter}
+        onSetCostRange={this.set('costRange')} />
+    </Paper>
+  )
 
   // this.set(key)(value) = this.setState({key: value})
   private set = (key: keyof NewSetState, callback = noop) => (value: any) => {
@@ -153,25 +194,28 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     }));
   }
 
-  private renderSidebarControls = (): JSX.Element => (
-    <Paper style={{padding: 20, marginBottom: 10}}>
-      <SearchControls onChange={this.set('searchText')} />
+  private handleClickSaveSet = (id: string | null, name: string, cardIds: string[]) => {
+    const { allCards, user, onSaveSet, history } = this.props;
 
-      <LayoutControls
-        layout={this.state.layout}
-        onSetLayout={this.set('layout')} />
+    if (!user) {
+      return;
+    }
 
-      <SortControls
-        criteria={this.state.sortCriteria}
-        order={this.state.sortOrder}
-        onSetCriteria={this.set('sortCriteria')}
-        onSetOrder={this.set('sortOrder')} />
+    const set: w.Set = {
+      id: id || generateId(),
+      name,
+      cards: allCards.filter((card) => cardIds.includes(card.id)),
+      metadata: {
+        authorId: user.uid,
+        authorName: user.displayName || user.uid,
+        isPublished: false,
+        lastModified: Date.now()
+      }
+    };
 
-      <FilterControls
-        onToggleFilter={this.toggleFilter}
-        onSetCostRange={this.set('costRange')} />
-    </Paper>
-  )
+    onSaveSet(set);
+    history.push('/sets');
+  }
 }
 
-export default withRouter(connect(mapStateToProps)(NewSet));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NewSet));

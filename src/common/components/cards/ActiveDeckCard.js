@@ -69,7 +69,7 @@ export default class ActiveDeckCard extends React.Component {
           x
         </span>
         <div style={this.styles.outerCard}>
-          {showCount && <div style={this.styles.cardCost}>{card.cost}</div>}
+          <div style={this.styles.cardCost}>{card.cost}</div>
           <div style={this.styles.cardName}>{card.name}</div>
           {showCount && <div style={this.styles.cardCount}>
             <span onClick={this.handleDecreaseCardCount}>

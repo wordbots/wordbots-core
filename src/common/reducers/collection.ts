@@ -45,6 +45,9 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case collectionActions.SAVE_DECK:
         return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds);
 
+      case collectionActions.SAVE_SET:
+        return c.saveSet(state, action.payload.set);
+
       default:
         return state;
     }

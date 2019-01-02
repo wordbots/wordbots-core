@@ -1,5 +1,6 @@
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, mapValues, noop, uniq, isNil, orderBy, uniqBy } from 'lodash';
+import { UserCredential } from '@firebase/auth-types';
+import { capitalize, concat, flatMap, fromPairs, mapValues, uniq, isNil, orderBy, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -49,7 +50,7 @@ function saveUser(user: firebase.User): Promise<firebase.User> {
     .then(() => user);
 }
 
-export function getLoggedInUser(): Promise<firebase.User> {
+function getLoggedInUser(): Promise<firebase.User> {
   return new Promise((resolve, reject) => {
     fb.auth().onAuthStateChanged((user: firebase.User) => {
       currentUser = user;
@@ -67,7 +68,7 @@ export function lookupUsername(fallback = 'You'): string {
 }
 
 export function onLogin(callback: (user: firebase.User) => any): firebase.Unsubscribe {
-  return fb.auth().onAuthStateChanged((user: firebase.User) => user && callback(user));
+  return fb.auth().onIdTokenChanged((user: firebase.User) => user && callback(user));
 }
 
 export function onLogout(callback: () => any): firebase.Unsubscribe {
@@ -75,15 +76,16 @@ export function onLogout(callback: () => any): firebase.Unsubscribe {
 }
 
 export function register(email: string, username: string, password: string): Promise<void> {
-  function postRegister(user: firebase.User): Promise<void> {
-    return user.updateProfile({ displayName: username, photoURL: null })
-               .then(() => { saveUser(user); })
-               .catch(noop);
-  }
-
   return fb.auth().createUserWithEmailAndPassword(email, password)
-    .then(postRegister)
-    .catch(noop);
+    .then((credential: UserCredential) => {
+      if (credential.user) {
+        const { user } = credential;
+        user.updateProfile({ displayName: username, photoURL: null })
+          .then(() => saveUser(user))
+          .then(() => fb.auth().currentUser.getIdToken(true))  // Refresh current user's ID token so displayName gets displayed
+          .catch(console.error);
+      }
+    });
 }
 
 export function login(email: string, password: string): Promise<firebase.User> {
@@ -127,7 +129,7 @@ export function saveUserData(key: string, value: any): void {
         .ref(`users/${user.uid}/${key}`)
         .set(value);
     })
-    .catch(noop);
+    .catch(console.error);
 }
 
 export async function getUserNamesByIds(userIds: string[]): Promise<string[]> {
@@ -258,7 +260,7 @@ export function indexParsedSentence(sentence: string, tokens: string[], js: stri
         fb.database().ref(loc).push(sentence);
       });
     })
-    .catch(noop);
+    .catch(console.error);
 }
 
 export async function getRecentGamesByUserId(userId: string): Promise<w.SavedGame[]> {

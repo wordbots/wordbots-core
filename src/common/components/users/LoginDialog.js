@@ -42,7 +42,6 @@ export default class LoginDialog extends React.Component {
   register = (email, username, password) => {
     register(email, username, password)
       .then(() => {
-        this.setState({error: null});
         this.setState({
           error: null,
           snackbarOpen: true,

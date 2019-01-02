@@ -176,7 +176,7 @@ export default class DeckSummary extends React.Component {
             label="Delete"
             icon="delete"
             tooltip="Delete this deck. This operation cannot be undone!"
-            onClick={this.handleClickDuplicate}
+            onClick={this.handleClickDelete}
             disabled={this.isDefaultDeck} />
           <ButtonInRow
             label="Try"

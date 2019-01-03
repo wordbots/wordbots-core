@@ -75,17 +75,15 @@ export function onLogout(callback: () => any): firebase.Unsubscribe {
   return fb.auth().onAuthStateChanged((user: firebase.User) => !user && callback());
 }
 
-export function register(email: string, username: string, password: string): Promise<void> {
-  return fb.auth().createUserWithEmailAndPassword(email, password)
-    .then((credential: UserCredential) => {
-      if (credential.user) {
-        const { user } = credential;
-        user.updateProfile({ displayName: username, photoURL: null })
-          .then(() => saveUser(user))
-          .then(() => fb.auth().currentUser.getIdToken(true))  // Refresh current user's ID token so displayName gets displayed
-          .catch(console.error);
-      }
-    });
+export async function register(email: string, username: string, password: string): Promise<void> {
+  const credential: UserCredential = await fb.auth().createUserWithEmailAndPassword(email, password);
+
+  if (credential.user) {
+    const { user } = credential;
+    await user.updateProfile({ displayName: username, photoURL: null });
+    await saveUser(user);
+    await fb.auth().currentUser.getIdToken(true); // Refresh current user's ID token so displayName gets displayed
+  }
 }
 
 export function login(email: string, password: string): Promise<firebase.User> {

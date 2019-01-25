@@ -215,12 +215,11 @@ export function saveRecentCard(card: w.Card): void {
 }
 
 export function saveSet(set: w.Set): void {
-  console.log(set);
   fb.database()
     .ref(`sets/${set.id}`)
     .update(set);  // see firebaseRules.json - this save will only succeed if either:
-                 //   (i) there is no set yet with the given id
-                 //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
+                   //   (i) there is no set yet with the given id
+                   //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
 }
 
 export function saveReportedParseIssue(text: string): void {

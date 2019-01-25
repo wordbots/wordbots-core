@@ -1,24 +1,25 @@
 import * as React from 'react';
-import { Dispatch, AnyAction } from 'redux';
+import { Dispatch, AnyAction, compose } from 'redux';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { withRouter } from 'react-router';
 import { History } from 'history';
 import * as fb from 'firebase';
 import Paper from '@material-ui/core/Paper';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { compact, find, noop } from 'lodash';
 
 import * as w from '../../common/types';
 import { id as generateId } from '../util/common';
 import { getDisplayedCards } from '../util/cards';
+import { DeckCreationProperties } from '../components/cards/types';
+import { SortCriteria, SortOrder, Layout } from '../components/cards/types.enums';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import EnergyCurve from '../components/cards/EnergyCurve';
-import FilterControls from '../components/cards/FilterControls';
-import LayoutControls from '../components/cards/LayoutControls';
-import SearchControls from '../components/cards/SearchControls';
-import SortControls from '../components/cards/SortControls';
 import * as collectionActions from '../actions/collection';
+import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
 
 interface NewSetStateProps {
   setBeingEdited: w.Set | null
@@ -30,21 +31,8 @@ interface NewSetDispatchProps {
   onSaveSet: (set: w.Set) => void
 }
 
-type NewSetProps = NewSetStateProps & NewSetDispatchProps & { history: History };
-
-interface NewSetState {
-  filters: {
-    robots: boolean
-    events: boolean
-    structures: boolean
-  }
-  costRange: [number, number]
-  sortCriteria: 0 | 1 | 2 | 3 | 4 | 5 | 6
-  sortOrder: 0 | 1
-  searchText: string
-  selectedCardIds: string[]
-  layout: 0 | 1
-}
+type NewSetProps = NewSetStateProps & NewSetDispatchProps & { history: History } & WithStyles;
+type NewSetState = DeckCreationProperties;
 
 function mapStateToProps(state: w.State): NewSetStateProps {
   return {
@@ -67,6 +55,16 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): NewSetDispatchProps 
  * @TODO Reduce duplication between NewSet and Deck containers.
  */
 class NewSet extends React.Component<NewSetProps, NewSetState> {
+  public static styles: Record<string, CSSProperties> = {
+    container: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+    leftSidebar: { margin: '30px 10px 50px 30px', width: 300, minWidth: 300 },
+    energyCurvePaper: { padding: 20, marginBottom: 20 },
+    energyCurveHeading: { fontWeight: 100, fontSize: 28 },
+    cards: { marginTop: 10, width: '100%' },
+    rightSidebar: { margin: '30px 30px 50px 10px', width: 300, minWidth: 300 },
+    deckPropsPaper: { padding: 20 }
+  };
+
   public state: NewSetState = {
     filters: {
       robots: true,
@@ -74,11 +72,11 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
       structures: true
     },
     costRange: [0, 20],
-    sortCriteria: 3,
-    sortOrder: 0,
+    sortCriteria: SortCriteria.Creator,
+    sortOrder: SortOrder.Ascending,
     searchText: '',
     selectedCardIds: [],
-    layout: 0
+    layout: Layout.Grid
   };
 
   constructor(props: NewSetProps) {
@@ -99,32 +97,29 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
   }
 
   public render(): JSX.Element {
-    const { setBeingEdited, user } = this.props;
-    const { layout, selectedCardIds } = this.state;
+    const { setBeingEdited, user, classes } = this.props;
+    const { layout, selectedCardIds, sortCriteria, sortOrder } = this.state;
 
     return (
       <div>
         <Helmet title={setBeingEdited ? "Editing Set" : "Creating Set"} />
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start'
-        }}>
-          <div style={{
-            margin: '30px 10px 50px 30px',
-            width: 300,
-            minWidth: 300
-          }}>
-            <Paper style={{padding: 20, marginBottom: 20}}>
-              <div style={{fontWeight: 100, fontSize: 28}}>Energy Curve</div>
+        <div className={classes.container}>
+          <div className={classes.leftSidebar}>
+            <Paper className={classes.energyCurvePaper}>
+              <div className={classes.energyCurveHeading}>Energy Curve</div>
               <EnergyCurve cards={this.selectedCards} />
             </Paper>
 
-            {this.renderSidebarControls()}
+            <DeckCreationSidebarControls
+              layout={layout}
+              sortCriteria={sortCriteria}
+              sortOrder={sortOrder}
+              onSetField={this.setField}
+              onToggleFilter={this.toggleFilter} />
           </div>
 
-          <div style={{marginTop: 10, width: '100%'}}>
+          <div className={classes.cards}>
             <CardCollection
               layout={layout}
               cards={this.displayedCards}
@@ -132,12 +127,8 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
               onSelection={this.handleSelectCards} />
           </div>
 
-          <div style={{
-            margin: '30px 30px 50px 10px',
-            width: 300,
-            minWidth: 300
-          }}>
-            <Paper style={{padding: 20}}>
+          <div className={classes.rightSidebar}>
+            <Paper className={classes.deckPropsPaper}>
               <ActiveDeck
                 isASet
                 id={setBeingEdited ? setBeingEdited.id : ''}
@@ -153,28 +144,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     );
   }
 
-  private renderSidebarControls = (): JSX.Element => (
-    <Paper style={{padding: 20, marginBottom: 10}}>
-      <SearchControls onChange={this.set('searchText')} />
-
-      <LayoutControls
-        layout={this.state.layout}
-        onSetLayout={this.set('layout')} />
-
-      <SortControls
-        criteria={this.state.sortCriteria}
-        order={this.state.sortOrder}
-        onSetCriteria={this.set('sortCriteria')}
-        onSetOrder={this.set('sortOrder')} />
-
-      <FilterControls
-        onToggleFilter={this.toggleFilter}
-        onSetCostRange={this.set('costRange')} />
-    </Paper>
-  )
-
-  // this.set(key)(value) = this.setState({key: value})
-  private set = (key: keyof NewSetState, callback = noop) => (value: any) => {
+  private setField = (key: keyof NewSetState, callback = noop) => (value: any) => {
     this.setState({[key]: value} as any, callback);
   }
 
@@ -218,4 +188,8 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NewSet));
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+  withStyles(NewSet.styles)
+)(NewSet);

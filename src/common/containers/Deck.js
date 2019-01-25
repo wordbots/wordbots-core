@@ -9,8 +9,8 @@ import { compact, find, noop } from 'lodash';
 import { getDisplayedCards } from '../util/cards.ts';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
+import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls.tsx';
 import EnergyCurve from '../components/cards/EnergyCurve';
-import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
 import * as collectionActions from '../actions/collection.ts';
 
 function mapStateToProps(state) {

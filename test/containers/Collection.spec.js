@@ -6,7 +6,7 @@ import { combineState } from '../testHelpers.ts';
 import { createCollection, renderElement } from '../reactHelpers';
 import CardGrid from '../../src/common/components/cards/CardGrid';
 import CardTable from '../../src/common/components/cards/CardTable';
-import FilterControls from '../../src/common/components/cards/FilterControls';
+import FilterControls from '../../src/common/components/cards/FilterControls.tsx';
 import LayoutControls from '../../src/common/components/cards/LayoutControls';
 import SearchControls from '../../src/common/components/cards/SearchControls';
 import collectionReducer from '../../src/common/reducers/collection.ts';

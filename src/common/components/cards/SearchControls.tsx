@@ -1,19 +1,16 @@
 import * as React from 'react';
-import { func } from 'prop-types';
 import TextField from 'material-ui/TextField';
 
-export default class SearchControls extends React.Component {
-  static propTypes = {
-    onChange: func
-  };
+interface SearchControlsProps {
+  onChange: (searchText: string) => void
+}
 
-  shouldComponentUpdate() {
+export default class SearchControls extends React.Component<SearchControlsProps> {
+  public shouldComponentUpdate(): boolean {
     return false;
   }
 
-  handleChangeText = (event, newValue) => { this.props.onChange(newValue); };
-
-  render() {
+  public render(): JSX.Element {
     return (
       <div>
         <div style={{
@@ -29,4 +26,6 @@ export default class SearchControls extends React.Component {
       </div>
     );
   }
+
+  private handleChangeText = (_e: React.SyntheticEvent<any>, newValue: string) => { this.props.onChange(newValue); };
 }

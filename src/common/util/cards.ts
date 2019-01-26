@@ -95,7 +95,7 @@ export function selectType(cards: w.CardInStore[], type: w.CardType): w.Card[] {
   return cards.filter((card) => card.type === type);
 }
 
-export function getDisplayedCards(cards: w.CardInStore[], opts: any = {}): w.Card[] {
+export function getDisplayedCards(cards: w.CardInStore[], opts: any = {}): w.CardInStore[] {
   return cards
     .filter((card) => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
     .sort((c1, c2) => sortCards(c1, c2, opts.sortCriteria, opts.sortOrder));

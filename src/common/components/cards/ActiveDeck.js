@@ -12,18 +12,23 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import ActiveDeckCard from './ActiveDeckCard';
 
-// Widget representing the deck currently being created or modified.
+// Widget representing the deck or set currently being created or modified.
 export default class ActiveDeck extends React.Component {
   static propTypes = {
     id: string,
     cards: arrayOf(object),
     name: string,
+    isASet: bool,
     loggedIn: bool,
 
     onIncreaseCardCount: func,
     onDecreaseCardCount: func,
     onRemoveCard: func,
-    onSaveDeck: func
+    onSave: func
+  }
+
+  static defaultProps = {
+    isASet: false
   }
 
   state = {
@@ -44,13 +49,22 @@ export default class ActiveDeck extends React.Component {
     }
   };
 
+  get hasRightCardCount() {
+    const { cards, isASet } = this.props;
+    if (isASet) {
+      return cards.length >= 15;
+    } else {
+      return cards.length === 30;
+    }
+  }
+
   handleChangeName = (e) => { this.setState({name: e.target.value}); };
   handleGroupByCost = () => { this.setState({grouping: 0}); };
   handleGroupByType = () => { this.setState({grouping: 1}); };
 
-  handleSaveDeck = () => {
-    const { id, cards, onSaveDeck } = this.props;
-    onSaveDeck(id, this.state.name, cards.map(c => c.id));
+  handleSave = () => {
+    const { id, cards, onSave } = this.props;
+    onSave(id, this.state.name, cards.map(c => c.id));
   }
 
   renderButton(grouping, iconName, tooltip) {
@@ -81,6 +95,7 @@ export default class ActiveDeck extends React.Component {
       <div key={idx} style={{position: 'relative'}}>
         <ActiveDeckCard
           card={card}
+          showCount={!this.props.isASet}
           onIncreaseCardCount={this.props.onIncreaseCardCount}
           onDecreaseCardCount={this.props.onDecreaseCardCount}
           onRemoveCard={this.props.onRemoveCard} />
@@ -147,16 +162,16 @@ export default class ActiveDeck extends React.Component {
           fontWeight: 100,
           fontSize: 28
         }}>
-          Deck [
-          <span style={{color: (this.props.cards.length === 30) ? 'green' : 'red'}}>
+          {this.props.isASet ? 'Set' : 'Deck'} [
+          <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
             &nbsp;{this.props.cards.length}&nbsp;
           </span>
-          / 30 ]
+          / {this.props.isASet ? '15' : '30'} ]
         </div>
 
         <TextField
           value={this.state.name}
-          floatingLabelText="Deck Name"
+          floatingLabelText={`${this.props.isASet ? 'Set' : 'Deck'} name`}
           style={{width: '100%', marginBottom: 10}}
           onChange={this.handleChangeName} />
 
@@ -175,13 +190,13 @@ export default class ActiveDeck extends React.Component {
 
         <MustBeLoggedIn loggedIn={this.props.loggedIn}>
           <RaisedButton
-            label="Save Deck"
+            label={`Save ${this.props.isASet ? 'Set' : 'Deck'}`}
             labelPosition="before"
             secondary
             disabled={!this.state.name}
             icon={<FontIcon className="material-icons">save</FontIcon>}
             style={{width: '100%', marginTop: 20}}
-            onClick={this.handleSaveDeck}
+            onClick={this.handleSave}
           />
         </MustBeLoggedIn>
       </div>

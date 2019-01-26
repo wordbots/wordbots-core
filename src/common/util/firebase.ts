@@ -25,18 +25,6 @@ if (fb.apps.length === 0) {
   fb.initializeApp(config);
 }
 
-// Warning: not type-safe!
-function snapshotAsArray(snapshot: firebase.database.DataSnapshot): any {
-  const arr: any[] = [];
-
-  snapshot.forEach((childSnapshot: firebase.database.DataSnapshot) => {
-    arr.push(childSnapshot.val());
-    return true;
-  });
-
-  return arr;
-}
-
 // Users
 
 function saveUser(user: firebase.User): Promise<firebase.User> {
@@ -164,9 +152,10 @@ export function listenToSets(callback: (data: any) => any): void {
 
   fb.database()
     .ref('sets')
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
+    .once('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
-        callback({ sets: snapshotAsArray(snapshot).map(deserializeSet) });
+        const serializedSets = Object.values(snapshot.val());
+        callback({ sets: serializedSets.map(deserializeSet) });
       }
     });
 }

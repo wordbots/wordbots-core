@@ -8,6 +8,7 @@ export const IMPORT_CARDS = 'IMPORT_CARDS';
 export const OPEN_CARD_FOR_EDITING = 'OPEN_CARD_FOR_EDITING';
 export const REMOVE_FROM_COLLECTION = 'REMOVE_FROM_COLLECTION';
 export const SAVE_DECK = 'SAVE_DECK';
+export const SAVE_SET = 'SAVE_SET';
 export const SELECT_DECK = 'SELECT_DECK';
 export const SELECT_FORMAT = 'SELECT_FORMAT';
 
@@ -65,5 +66,12 @@ export function saveDeck(id: w.DeckId, name: string, cardIds: w.CardId[]): w.Act
   return {
     type: SAVE_DECK,
     payload: { id, name, cardIds }
+  };
+}
+
+export function saveSet(set: w.Set): w.Action {
+  return {
+    type: SAVE_SET,
+    payload: { set }
   };
 }

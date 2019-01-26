@@ -9,11 +9,8 @@ import { compact, find, noop } from 'lodash';
 import { getDisplayedCards } from '../util/cards.ts';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
+import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls.tsx';
 import EnergyCurve from '../components/cards/EnergyCurve';
-import FilterControls from '../components/cards/FilterControls';
-import LayoutControls from '../components/cards/LayoutControls';
-import SearchControls from '../components/cards/SearchControls';
-import SortControls from '../components/cards/SortControls';
 import * as collectionActions from '../actions/collection.ts';
 
 function mapStateToProps(state) {
@@ -113,28 +110,6 @@ class Deck extends React.Component {
     });
   }
 
-  renderSidebarControls() {
-    return (
-      <Paper style={{padding: 20, marginBottom: 10}}>
-        <SearchControls onChange={this.set('searchText')} />
-
-        <LayoutControls
-          layout={this.state.layout}
-          onSetLayout={this.set('layout')} />
-
-        <SortControls
-          criteria={this.state.sortCriteria}
-          order={this.state.sortOrder}
-          onSetCriteria={this.set('sortCriteria')}
-          onSetOrder={this.set('sortOrder')} />
-
-        <FilterControls
-          onToggleFilter={this.toggleFilter}
-          onSetCostRange={this.set('costRange')} />
-      </Paper>
-    );
-  }
-
   render() {
     return (
       <div>
@@ -155,7 +130,12 @@ class Deck extends React.Component {
               <EnergyCurve cards={this.selectedCards} />
             </Paper>
 
-            {this.renderSidebarControls()}
+            <DeckCreationSidebarControls
+              layout={this.state.layout}
+              sortCriteria={this.state.sortCriteria}
+              sortOrder={this.state.sortOrder}
+              onSetField={this.set}
+              onToggleFilter={this.toggleFilter} />
           </div>
 
           <div style={{marginTop: 10, width: '100%'}}>
@@ -181,7 +161,7 @@ class Deck extends React.Component {
                 onIncreaseCardCount={this.handleClickIncreaseCardCount}
                 onDecreaseCardCount={this.handleClickDecreaseCardCount}
                 onRemoveCard={this.handleRemoveCard}
-                onSaveDeck={this.handleClickSaveDeck} />
+                onSave={this.handleClickSaveDeck} />
             </Paper>
           </div>
         </div>

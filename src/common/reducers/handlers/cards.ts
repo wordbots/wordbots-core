@@ -1,5 +1,6 @@
 import * as w from '../../types';
 import { id } from '../../util/common';
+import * as firebase from '../../util/firebase';
 import {
   areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, createCardFromProps,
   loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase, loadSetsFromFirebase
@@ -96,6 +97,14 @@ const cardsHandlers = {
     saveDecksToFirebase(state);
 
     return state;
+  },
+
+  saveSet: (state: State, set: w.Set) => {
+    firebase.saveSet(set);
+    return {
+      ...state,
+      sets: [...state.sets.filter((s) => s.id !== set.id), set]
+    };
   }
 };
 

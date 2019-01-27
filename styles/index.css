@@ -23,8 +23,9 @@ th {
   font-size: 1em !important;
 }
 
-.activeNavLink > div > span {
-  background-color: #d8d8d8 !important;
+.activeNavLink > div {
+  box-shadow: inset 4px 0 0 red;
+  background-color: #EEEEEE;
 }
 
 .markdownBlock img {

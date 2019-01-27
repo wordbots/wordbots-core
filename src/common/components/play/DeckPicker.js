@@ -7,6 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { cardsInDeck } from '../../util/cards.ts';
+import { sortDecks } from '../../util/decks.ts';
 import EnergyCurve from '../cards/EnergyCurve';
 
 export default class DeckPicker extends React.Component {
@@ -44,7 +45,7 @@ export default class DeckPicker extends React.Component {
             onChange={this.handleSelectDeck}
             disabled={this.noDecks}
           >
-            {this.props.availableDecks.map((deck, idx) =>
+            {sortDecks(this.props.availableDecks).map((deck, idx) =>
               <MenuItem key={idx} value={idx}>{deck.name}</MenuItem>
             )}
           </Select>

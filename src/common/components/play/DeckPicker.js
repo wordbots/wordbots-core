@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import { cardsInDeck } from '../../util/cards.ts';
 import { sortDecks } from '../../util/decks.ts';
-import EnergyCurve from '../cards/EnergyCurve';
+import EnergyCurve from '../cards/EnergyCurve.tsx';
 
 export default class DeckPicker extends React.Component {
   static propTypes = {
@@ -37,7 +37,7 @@ export default class DeckPicker extends React.Component {
           <InputLabel>Choose a deck</InputLabel>
           <Select
             style={{
-              width: '100%', 
+              width: '100%',
               marginRight: 25
             }}
             name="decks"

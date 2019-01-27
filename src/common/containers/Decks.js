@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { cardsInDeck } from '../util/cards.ts';
+import { sortDecks } from '../util/decks.ts';
 import Title from '../components/Title';
 import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
@@ -89,7 +90,7 @@ class Decks extends React.Component {
           width: '100%'
         }}>
           {
-            this.props.decks.map((deck, idx) =>
+            sortDecks(this.props.decks).map((deck, idx) =>
               <DeckSummary
                 key={idx}
                 deck={deck}

@@ -62,7 +62,7 @@ export function removeFromCollection(ids: w.CardId[]): w.Action {
   };
 }
 
-export function saveDeck(id: w.DeckId, name: string, cardIds: w.CardId[]): w.Action {
+export function saveDeck(id: w.DeckId | null, name: string, cardIds: w.CardId[]): w.Action {
   return {
     type: SAVE_DECK,
     payload: { id, name, cardIds }

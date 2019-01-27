@@ -104,7 +104,7 @@ class Sets extends React.Component<SetsProps> {
 
   private handleCreateSet = () => {
     this.props.history.push('/sets/new');
-  };
+  }
 }
 
 export default compose(

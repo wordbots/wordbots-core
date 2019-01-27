@@ -16,10 +16,10 @@ import RouterDialog from '../components/RouterDialog';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
 import ImportDialog from '../components/cards/ImportDialog';
-import FilterControls from '../components/cards/FilterControls';
-import LayoutControls from '../components/cards/LayoutControls';
-import SearchControls from '../components/cards/SearchControls';
-import SortControls from '../components/cards/SortControls';
+import FilterControls from '../components/cards/FilterControls.tsx';
+import LayoutControls from '../components/cards/LayoutControls.tsx';
+import SearchControls from '../components/cards/SearchControls.tsx';
+import SortControls from '../components/cards/SortControls.tsx';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection.ts';
 

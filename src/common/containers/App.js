@@ -23,7 +23,7 @@ import PersonalTheme from '../themes/personal';
 import TitleBar from './TitleBar';
 import Collection from './Collection';
 import Creator from './Creator';
-import Deck from './Deck';
+import Deck from './Deck.tsx';
 import Decks from './Decks';
 import Sets from './Sets.tsx';
 import NewSet from './NewSet.tsx';

@@ -7,19 +7,20 @@ import { History } from 'history';
 import * as fb from 'firebase';
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { compact, find, noop } from 'lodash';
 
 import * as w from '../../common/types';
 import { id as generateId } from '../util/common';
 import { getDisplayedCards } from '../util/cards';
-import { DeckCreationProperties } from '../components/cards/types';
+import { DeckCreationProperties, FilterKey } from '../components/cards/types';
 import { SortCriteria, SortOrder, Layout } from '../components/cards/types.enums';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import EnergyCurve from '../components/cards/EnergyCurve';
 import * as collectionActions from '../actions/collection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
+
+import { Deck } from './Deck';
 
 interface NewSetStateProps {
   setBeingEdited: w.Set | null
@@ -55,16 +56,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): NewSetDispatchProps 
  * @TODO Reduce duplication between NewSet and Deck containers.
  */
 class NewSet extends React.Component<NewSetProps, NewSetState> {
-  public static styles: Record<string, CSSProperties> = {
-    container: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
-    leftSidebar: { margin: '30px 10px 50px 30px', width: 300, minWidth: 300 },
-    energyCurvePaper: { padding: 20, marginBottom: 20 },
-    energyCurveHeading: { fontWeight: 100, fontSize: 28 },
-    cards: { marginTop: 10, width: '100%' },
-    rightSidebar: { margin: '30px 30px 50px 10px', width: 300, minWidth: 300 },
-    deckPropsPaper: { padding: 20 }
-  };
-
   public state: NewSetState = {
     filters: {
       robots: true,
@@ -148,7 +139,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     this.setState({[key]: value} as any, callback);
   }
 
-  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
     this.setState((state) => ({
       filters: Object.assign({}, state.filters, {[filter]: toggled})
     }));
@@ -191,5 +182,5 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  withStyles(NewSet.styles)
+  withStyles(Deck.styles)
 )(NewSet);

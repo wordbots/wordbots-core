@@ -1,21 +1,20 @@
 import * as React from 'react';
-import { func } from 'prop-types';
 import Toggle from 'material-ui/Toggle';
 import { Range } from 'rc-slider';
 
-export default class FilterControls extends React.Component {
-  static propTypes = {
-    onToggleFilter: func,
-    onSetCostRange: func
-  };
+import { FilterKey } from './types';
 
-  shouldComponentUpdate() {
+interface FilterControlsProps {
+  onToggleFilter: (filter: FilterKey) => (event: React.SyntheticEvent<any>, toggled: boolean) => void
+  onSetCostRange: (values: [number, number]) => void
+}
+
+export default class FilterControls extends React.Component<FilterControlsProps> {
+  public shouldComponentUpdate(): boolean {
     return false;
   }
 
-  handleChangeCostRange = (values) => { this.props.onSetCostRange(values); }
-
-  render() {
+  public render(): JSX.Element {
     const toggleStyle = { marginBottom: 10 };
 
     return (
@@ -58,11 +57,11 @@ export default class FilterControls extends React.Component {
               min={0}
               max={20}
               marks={{
-                0: 0,
-                5: 5,
-                10: 10,
-                15: 15,
-                20: 20
+                0: '0',
+                5: '5',
+                10: '10',
+                15: '15',
+                20: '20'
               }}
               defaultValue={[0, 20]}
               onChange={this.handleChangeCostRange}
@@ -71,5 +70,9 @@ export default class FilterControls extends React.Component {
         </div>
       </div>
     );
+  }
+
+  private handleChangeCostRange = (values: [number, number]) => {
+    this.props.onSetCostRange(values);
   }
 }

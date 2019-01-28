@@ -14,6 +14,7 @@
 
     "typeRoots": ["./node_modules/@types"],
     "paths": {
+      "react-bar-chart": ["types/packages"],
       "word-ngrams": ["types/word-ngrams"]
     },
 

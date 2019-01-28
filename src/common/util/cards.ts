@@ -91,7 +91,7 @@ export function groupCards(cards: w.CardInStore[]): Array<w.CardInStore & { coun
   );
 }
 
-export function selectType(cards: w.CardInStore[], type: w.CardType): w.Card[] {
+export function selectType(cards: w.CardInStore[], type: w.CardType): w.CardInStore[] {
   return cards.filter((card) => card.type === type);
 }
 

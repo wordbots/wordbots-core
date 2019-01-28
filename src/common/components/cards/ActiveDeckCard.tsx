@@ -1,19 +1,21 @@
 import * as React from 'react';
-import { bool, func, object } from 'prop-types';
+import { noop } from 'lodash';
 
+import * as w from '../../types';
 import CardTooltip from '../card/CardTooltip';
 
-export default class ActiveDeckCard extends React.Component {
-  static propTypes = {
-    card: object,
-    showCount: bool,
+import { CardWithCount } from './types';
 
-    onIncreaseCardCount: func,
-    onDecreaseCardCount: func,
-    onRemoveCard: func
-  }
+interface ActiveDeckCardProps {
+  card: CardWithCount
+  showCount: boolean
+  onIncreaseCardCount?: (cardId: w.CardId) => void
+  onDecreaseCardCount?: (cardId: w.CardId) => void
+  onRemoveCard: (cardId: w.CardId) => void
+}
 
-  styles = {
+export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps> {
+  private styles: Record<string, React.CSSProperties> = {
     outerCard: {
       display: 'flex',
       alignItems: 'stretch',
@@ -57,11 +59,7 @@ export default class ActiveDeckCard extends React.Component {
     }
   };
 
-  handleDecreaseCardCount = () => { this.props.onDecreaseCardCount(this.props.card.id); };
-  handleIncreaseCardCount = () => { this.props.onIncreaseCardCount(this.props.card.id); };
-  handleRemoveCard = () => { this.props.onRemoveCard(this.props.card.id); };
-
-  render = () => {
+  public render(): JSX.Element {
     const { card, showCount } = this.props;
     return (
       <CardTooltip card={card}>
@@ -83,5 +81,9 @@ export default class ActiveDeckCard extends React.Component {
         </div>
       </CardTooltip>
     );
-  };
+  }
+
+  private handleDecreaseCardCount = () => { (this.props.onDecreaseCardCount || noop)(this.props.card.id); };
+  private handleIncreaseCardCount = () => { (this.props.onIncreaseCardCount || noop)(this.props.card.id); };
+  private handleRemoveCard = () => { this.props.onRemoveCard(this.props.card.id); };
 }

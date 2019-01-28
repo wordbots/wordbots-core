@@ -4,6 +4,8 @@ import { SortCriteria, SortOrder, Layout } from './types.enums';
 
 export type FilterKey = 'robots' | 'events' | 'structures';
 
+export type CardWithCount = w.CardInStore & { count: number };
+
 export interface DeckCreationProperties {
   filters: {
     [F in FilterKey]: boolean

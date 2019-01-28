@@ -27,7 +27,7 @@ interface DeckStateProps {
 }
 
 interface DeckDispatchProps {
-  onSaveDeck: (id: string, name: string, cardIds: string[]) => void
+  onSaveDeck: (id: string | null, name: string, cardIds: string[]) => void
 }
 
 type DeckProps = DeckStateProps & DeckDispatchProps & { history: History } & WithStyles;
@@ -44,7 +44,7 @@ function mapStateToProps(state: w.State): DeckStateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>): DeckDispatchProps {
   return {
-    onSaveDeck: (id: string, name: string, cardIds: string[]) => {
+    onSaveDeck: (id: string | null, name: string, cardIds: string[]) => {
       dispatch(collectionActions.saveDeck(id, name, cardIds));
     }
   };
@@ -155,7 +155,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     this.setState({ selectedCardIds });
   }
 
-  private handleClickSaveDeck = (id: string, name: string, cardIds: w.CardId[]) => {
+  private handleClickSaveDeck = (id: string | null, name: string, cardIds: w.CardId[]) => {
     this.props.onSaveDeck(id, name, cardIds);
     this.props.history.push('/decks');
   }

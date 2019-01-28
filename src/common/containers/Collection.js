@@ -13,7 +13,7 @@ import { find, noop } from 'lodash';
 import { getDisplayedCards, isCardVisible } from '../util/cards.ts';
 import Title from '../components/Title';
 import RouterDialog from '../components/RouterDialog';
-import CardCollection from '../components/cards/CardCollection';
+import CardCollection from '../components/cards/CardCollection.tsx';
 import ExportDialog from '../components/cards/ExportDialog';
 import ImportDialog from '../components/cards/ImportDialog';
 import FilterControls from '../components/cards/FilterControls.tsx';

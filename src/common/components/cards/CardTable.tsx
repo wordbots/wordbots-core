@@ -7,14 +7,9 @@ import { typeToString } from '../../constants';
 import { id } from '../../util/common';
 import CardStat from '../card/CardStat';
 
-interface CardGridProps {
-  cards: w.CardInStore[]
-  selectedCardIds: string[]
-  selectable: boolean
-  onCardClick: (cardId: w.CardId) => void
-}
+import { CardGridOrTableProps } from './CardCollection';
 
-export default class CardTable extends React.Component<CardGridProps> {
+export default class CardTable extends React.Component<CardGridOrTableProps> {
   public render(): JSX.Element {
     return (
       <div>

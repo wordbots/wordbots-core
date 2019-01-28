@@ -7,14 +7,9 @@ import { splitSentences } from '../../util/cards';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 
-interface CardGridProps {
-  cards: w.CardInStore[]
-  selectedCardIds: string[]
-  selectable: boolean
-  onCardClick: (cardId: w.CardId) => void
-}
+import { CardGridOrTableProps } from './CardCollection';
 
-export default class CardGrid extends React.Component<CardGridProps> {
+export default class CardGrid extends React.Component<CardGridOrTableProps> {
   public render(): JSX.Element {
     return (
       <div style={{

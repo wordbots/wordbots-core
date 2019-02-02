@@ -195,7 +195,7 @@ export function replaceSynonyms(text: string): string {
   }), text);
 }
 
-export function splitSentences(str: string): string[] {
+export function splitSentences(str: string | undefined): string[] {
   return (str || '').split(/[\\.!?]/).filter((s) => /\S/.test(s));
 }
 

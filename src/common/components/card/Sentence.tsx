@@ -33,7 +33,7 @@ export default class Sentence extends React.Component<SentenceProps> {
         <span key={id()} style={{ color }}>
           {times(numInitialNewlines, (i) => <br key={i} />)}
           {phrases.map((p) =>
-            p.split(' ').map((word) => <Word word={word} keywords={keywords} result={result} />)
+            p.split(' ').map((word) => <Word key={id()} word={word} keywords={keywords} result={result} />)
           ).reduce((a, b) =>
             [...a, <span key={id()}>,</span>, ...b]
           )}

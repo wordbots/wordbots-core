@@ -3,8 +3,8 @@ import { arrayOf, func, number, object, string } from 'prop-types';
 
 import { SPRITE_VERSION } from '../../constants.ts';
 import { inBrowser } from '../../util/browser.tsx';
-import Card from '../card/Card';
-import Sentence from '../card/Sentence';
+import Card from '../card/Card.tsx';
+import Sentence from '../card/Sentence.tsx';
 
 export default class CardPreview extends React.Component {
   static propTypes = {

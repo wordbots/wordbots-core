@@ -2,9 +2,8 @@ import { resolve } from 'path';
 import { parse as urlparse } from 'url';
 
 import { id } from '../common/util/common.ts';
-import { splitSentences } from '../common/util/cards.ts';
-import Card from '../common/components/card/Card';
-import Sentence from '../common/components/card/Sentence';
+import Card from '../common/components/card/Card.tsx';
+import Sentence from '../common/components/card/Sentence.tsx';
 
 const repng = require('repng');
 
@@ -25,7 +24,7 @@ function renderCard(response, query) {
     type: card.type,
     cost: card.cost,
     baseCost: card.cost,
-    text: splitSentences(card.text).map(Sentence),
+    text: Sentence.fromText(card.text),
     rawText: card.text,
     stats: card.stats,
     cardStats: card.stats,

@@ -3,9 +3,8 @@ import { arrayOf, bool, func, object, string } from 'prop-types';
 
 import { id } from '../../util/common.ts';
 import { inBrowser } from '../../util/browser.tsx';
-import { splitSentences } from '../../util/cards.ts';
-import Card from '../card/Card';
-import Sentence from '../card/Sentence';
+import Card from '../card/Card.tsx';
+import Sentence from '../card/Sentence.tsx';
 
 export default class CardGrid extends React.Component {
   static propTypes = {
@@ -30,7 +29,7 @@ export default class CardGrid extends React.Component {
         spriteID={card.spriteID}
         spriteV={card.spriteV}
         type={card.type}
-        text={splitSentences(card.text).map(Sentence)}
+        text={Sentence.fromText(card.text)}
         rawText={card.text || ''}
         stats={card.stats}
         cardStats={card.stats}
@@ -57,4 +56,3 @@ export default class CardGrid extends React.Component {
     );
   }
 }
-

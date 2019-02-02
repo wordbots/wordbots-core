@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { bool, func, number, object } from 'prop-types';
 
-import { splitSentences } from '../../util/cards.ts';
 import { getCost } from '../../util/game.ts';
-import Card from '../card/Card';
-import Sentence from '../card/Sentence';
+import Card from '../card/Card.tsx';
+import Sentence from '../card/Sentence.tsx';
 import TutorialTooltip from '../game/TutorialTooltip';
 
 export default class CardInHand extends React.Component {
@@ -48,7 +47,7 @@ export default class CardInHand extends React.Component {
           <Card
             {...{ baseCost, img, name, source, spriteID, spriteV, type }}
 
-            text={splitSentences(text).map(Sentence)}
+            text={Sentence.fromText(text)}
             rawText={text || ''}
             cost={getCost(card)}
             cardStats={stats}

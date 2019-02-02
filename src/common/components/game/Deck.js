@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, bool, object } from 'prop-types';
 
 import Tooltip from '../Tooltip';
-import Card from '../card/Card';
+import Card from '../card/Card.tsx';
 import CardBack from '../card/CardBack';
 
 const Deck = ({ deck, opponent, reveal = false }) => {

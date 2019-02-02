@@ -5,7 +5,7 @@ import { uniqBy, range } from 'lodash';
 
 import { listenToRecentCards } from '../../util/firebase.ts';
 import { builtinCardNames } from '../../store/cards.ts';
-import Card from '../card/Card';
+import Card from '../card/Card.tsx';
 
 export default class RecentCardsCarousel extends React.Component {
   static propTypes = {

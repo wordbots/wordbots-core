@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { arrayOf, object } from 'prop-types';
 
-import Card from '../card/Card';
+import Card from '../card/Card.tsx';
 
 export default class DiscardPile extends React.Component {
   static propTypes = {

@@ -5,7 +5,7 @@ import { inBrowser } from '../../util/browser.tsx';
 import Tooltip from '../Tooltip';
 
 function Word(word, keywords, result) {
-  if ((result.unrecognizedTokens || []).includes(word.toLowerCase())) {
+  if (((result && result.unrecognizedTokens) || []).includes(word.toLowerCase())) {
     return (
       <span key={id()}>
         {' '}<u>{word}</u>

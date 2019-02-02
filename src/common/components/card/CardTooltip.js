@@ -6,7 +6,7 @@ import { MAX_Z_INDEX } from '../../constants.ts';
 import { id } from '../../util/common.ts';
 import Popover from '../Popover';
 
-import Card from './Card';
+import Card from './Card.tsx';
 
 export default class CardTooltip extends React.Component {
   static propTypes = {

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { getDefaultState, combineState } from '../testHelpers.ts';
 import { renderElement, getComponent, createGameArea } from '../reactHelpers';
-import Card from '../../src/common/components/card/Card';
+import Card from '../../src/common/components/card/Card.tsx';
 import Board from '../../src/common/components/game/Board';
 import EventAnimation from '../../src/common/components/game/EventAnimation';
 import PlayerArea from '../../src/common/components/game/PlayerArea';

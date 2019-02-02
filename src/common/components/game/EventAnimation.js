@@ -3,7 +3,7 @@ import { arrayOf, object, string } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { EVENT_ANIMATION_TIME_MS, MAX_Z_INDEX } from '../../constants.ts';
-import Card from '../card/Card';
+import Card from '../card/Card.tsx';
 
 export default class EventAnimation extends React.Component {
   static propTypes = {

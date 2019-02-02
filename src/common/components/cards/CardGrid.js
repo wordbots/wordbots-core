@@ -24,6 +24,7 @@ export default class CardGrid extends React.Component {
     }}>
       <Card
         collection
+        visible
         id={card.id}
         name={card.name}
         spriteID={card.spriteID}

@@ -377,7 +377,8 @@ export interface Sentence {
 export interface ParseResult {
   error?: string
   js?: StringRepresentationOf<() => void>
-  // TODO
+  unrecognizedTokens?: string[]
+  parsed?: boolean  // used by DictionaryDialog
 }
 
 /* Socket state subcomponents */

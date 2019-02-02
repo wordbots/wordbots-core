@@ -516,6 +516,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-tooltip@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@types/react-tooltip/-/react-tooltip-3.9.0.tgz#99246c208df53194db1fc96bb5345f0f66e63e52"
+  integrity sha512-jZSQovTbcskRIzHTCcGrnG633AaN6WfnMw6LlkmNO7JR3GlWHqzVI7/rI5t4pkyIaUQPGpwKN9A77pIRRe8MQw==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-transition-group@^2.0.8":
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-2.0.9.tgz#ed6a71fb711e524345844defec2a861c1a222a03"
@@ -552,6 +559,11 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.2.tgz#e13182e1b69871a422d7863e11a4a6f5b814a4bd"
   integrity sha512-42zEJkBpNfMEAvWR5WlwtTH22oDzcMjFsL9gDGExwF8X8WvAiw7Vwop7hPw03QT8TKfec83LwbHj6SvpqM4ELQ==
+
+"@types/trianglify@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/trianglify/-/trianglify-1.2.0.tgz#463aa0ef468819d5e0d9dcad81dde0bf4c2e292e"
+  integrity sha512-axoBaIOm463UgbE+BDGMHVxEadS0NuPGx44CWji2xp7lOzcnSr20l/at6EQg5Bk/2PXXmkhEdryOeBlag8GHKQ==
 
 "@types/uglify-js@*":
   version "3.0.2"

@@ -5,7 +5,7 @@ import Badge from 'material-ui/Badge';
 
 import { typeToString } from '../../constants.ts';
 import { id } from '../../util/common.ts';
-import CardStat from '../card/CardStat';
+import CardStat from '../card/CardStat.tsx';
 
 export default class CardTable extends React.Component {
   static propTypes = {

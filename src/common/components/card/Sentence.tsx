@@ -32,10 +32,13 @@ export default class Sentence extends React.Component<SentenceProps> {
       return (
         <span key={id()} style={{ color }}>
           {times(numInitialNewlines, (i) => <br key={i} />)}
-          {phrases.map((p) => p.split(' ').map((word) => Word(word, keywords, result)))
-                  .reduce((a, b) => [...a, <span key={id()}>,</span>, ...b])}
+          {phrases.map((p) =>
+            p.split(' ').map((word) => <Word word={word} keywords={keywords} result={result} />)
+          ).reduce((a, b) =>
+            [...a, <span key={id()}>,</span>, ...b]
+          )}
           {text.endsWith(',') ? '' : '.'}
-          { StatusIcon(text, result) }
+          <StatusIcon text={text} result={result} />
         </span>
       );
     } else {

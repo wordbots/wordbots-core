@@ -1,21 +1,20 @@
 import * as React from 'react';
-import { element, number, string } from 'prop-types';
 import Badge from 'material-ui/Badge';
 
-import { inBrowser } from '../../util/browser.tsx';
+import { inBrowser } from '../../util/browser';
 
-export default class CardCostBadge extends React.Component {
-  static propTypes = {
-    children: element,
-    cost: number,
-    baseCost: number,
-    scale: number,
-    margin: number,
-    zIndex: number,
-    transform: string
-  }
+interface CardCostBadgeProps {
+  children: JSX.Element
+  cost: number
+  baseCost: number
+  scale: number
+  margin: number
+  zIndex: number
+  transform: string
+}
 
-  get badgeContent() {
+export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
+  get badgeContent(): JSX.Element {
     return (
       <div style={this.badgeContentStyle}>
         {this.props.cost}
@@ -23,7 +22,7 @@ export default class CardCostBadge extends React.Component {
     );
   }
 
-  get badgeContentStyle() {
+  get badgeContentStyle(): React.CSSProperties {
     if (inBrowser()) {
       return {};
     } else {
@@ -36,7 +35,7 @@ export default class CardCostBadge extends React.Component {
     }
   }
 
-  get badgeContainerStyle() {
+  get badgeContainerStyle(): React.CSSProperties {
     const baseStyle = {
       top: 12,
       right: -4,
@@ -63,7 +62,7 @@ export default class CardCostBadge extends React.Component {
     }
   }
 
-  get rootStyle() {
+  get rootStyle(): React.CSSProperties {
     return {
       paddingLeft: 0,
       paddingRight: 0,
@@ -73,7 +72,7 @@ export default class CardCostBadge extends React.Component {
     };
   }
 
-  render() {
+  public render(): JSX.Element {
     return (
       <Badge
         badgeContent={this.badgeContent}

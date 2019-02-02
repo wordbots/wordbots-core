@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Paper, withStyles, WithStyles } from '@material-ui/core';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
 import * as w from '../../../common/types';
 import Card from '../card/Card';
@@ -13,10 +14,23 @@ interface SetSummaryState {
 }
 
 class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummaryState> {
-  public static styles = {
+  public static styles: Record<string, CSSProperties> = {
+    paper: {
+      position: 'relative',
+      padding: 10,
+      marginBottom: 5
+    },
     toggleCardListLink: {
       cursor: 'pointer',
       textDecoration: 'underline'
+    },
+    numDecksCreated: {
+      position: 'absolute',
+      right: 8,
+      bottom: 5,
+      fontStyle: 'italic',
+      color: '#666',
+      fontSize: '0.75em'
     }
   };
 
@@ -29,7 +43,7 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
     const { isCardListExpanded } = this.state;
 
     return (
-      <Paper style={{ padding: 10, marginBottom: 5 }}>
+      <Paper className={classes.paper}>
         <div>
           <strong>{name}</strong> by {metadata.authorName}
         </div>
@@ -49,6 +63,9 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
             <div style={{clear: 'both'}}></div>
           </div>
         )}
+        <div className={classes.numDecksCreated}>
+          {metadata.numDecksCreated || 0} decks created
+        </div>
       </Paper>
     );
   }

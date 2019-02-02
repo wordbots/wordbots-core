@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { History } from 'history';
 import * as fb from 'firebase';
-import { Button, Paper } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 import * as w from '../../common/types';
 import Title from '../components/Title';
+import SetSummary from '../components/cards/SetSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import { compose } from 'redux';
 
@@ -24,26 +25,6 @@ function mapStateToProps(state: w.State): SetsStateProps {
     sets: state.collection.sets,
     user: state.global.user
   };
-}
-
-// TODO this is just a barebones toy component
-class SetSummary extends React.Component<{ set: w.Set }> {
-  public render(): JSX.Element {
-    const { cards, description, metadata, name } = this.props.set;
-    return (
-      <Paper style={{ padding: 10, marginBottom: 5 }}>
-        <div>
-          <strong>{name}</strong> by {metadata.authorName}
-        </div>
-        <div>
-        {description}
-        </div>
-        <div>
-          [Show {cards.length} cards]
-        </div>
-      </Paper>
-    );
-  }
 }
 
 class Sets extends React.Component<SetsProps> {

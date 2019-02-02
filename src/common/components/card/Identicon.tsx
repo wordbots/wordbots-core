@@ -58,6 +58,7 @@ export default class Identicon extends React.Component<IdenticonProps> {
     const hashFn = options.hash || hashCode;
     const value = hashFn(id);
     const bin = value.toString(2);
+
     generator.start(value);
     let n = 0;
     for (let x = 0; x < size; x++) {

@@ -4,7 +4,7 @@ import { History } from 'history';
 
 declare const window: {
   location: { pathname: string }
-  process?: { title: string }
+  process?: { title: string, env: { NODE_ENV: string } }
 };
 
 let currentLocation: string;
@@ -17,6 +17,10 @@ export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
     (window.process && window.process.title.includes('node')) ||
     (window.process && window.process.title.includes('test')));
+}
+
+export function inTest(): boolean {
+  return typeof window !== 'undefined' && window.process && window.process.env && window.process.env.NODE_ENV === 'test' || false;
 }
 
 export function logAnalytics(): void {

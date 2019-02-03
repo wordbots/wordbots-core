@@ -21,7 +21,7 @@
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --colors --profile",
     "start-prod": "set NODE_ENV=production && ts-node src/server/index.ts --progress --colors --profile",
     "test": "run-s test:lint test:types test:unit",
-    "test:lint": "eslint src test && tslint src/**/*.ts",
+    "test:lint": "eslint src test && tslint src/**/*.ts* test/**/*.ts*",
     "test:types": "tsc --skipLibCheck --noEmit",
     "test:unit": "jest",
     "test:unit:coverage": "jest --coverage",

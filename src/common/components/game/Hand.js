@@ -86,7 +86,7 @@ export default class Hand extends React.Component {
             status={status}
             targetable={isActivePlayer && targetableCards.includes(card.id)}
             tutorialStep={tutorialStep}
-            visible={isActivePlayer || sandbox}
+            visible={true}
             yTranslation={curved ? translationPx : 0}
             zIndex={isNull(hoveredCardIdx) ? 0 : (1000 - Math.abs(hoveredCardIdx - idx) * 10)}
             onSelectCard={onSelectCard}

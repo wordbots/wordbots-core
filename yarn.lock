@@ -11451,6 +11451,11 @@ seed-random@^2.2.0:
   resolved "https://registry.yarnpkg.com/seed-random/-/seed-random-2.2.0.tgz#2a9b19e250a817099231a5b99a4daf80b7fbed54"
   integrity sha1-KpsZ4lCoFwmSMaW5mk2vgLf77VQ=
 
+seed-shuffle@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/seed-shuffle/-/seed-shuffle-1.0.0.tgz#e3eedabbf2b73dd0d1645962628a5d71f7d04cb0"
+  integrity sha1-4+7au/K3PdDRZFliYopdcffQTLA=
+
 seedrandom@^2.3.11:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-2.4.3.tgz#2438504dad33917314bff18ac4d794f16d6aaecc"

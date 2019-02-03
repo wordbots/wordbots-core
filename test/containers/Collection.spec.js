@@ -4,8 +4,8 @@ import { cloneDeep } from 'lodash';
 
 import { combineState } from '../testHelpers.ts';
 import { createCollection, renderElement } from '../reactHelpers';
-import CardGrid from '../../src/common/components/cards/CardGrid';
-import CardTable from '../../src/common/components/cards/CardTable';
+import CardGrid from '../../src/common/components/cards/CardGrid.tsx';
+import CardTable from '../../src/common/components/cards/CardTable.tsx';
 import FilterControls from '../../src/common/components/cards/FilterControls.tsx';
 import LayoutControls from '../../src/common/components/cards/LayoutControls.tsx';
 import SearchControls from '../../src/common/components/cards/SearchControls.tsx';

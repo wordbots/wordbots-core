@@ -17,6 +17,13 @@ interface CardCollectionProps {
   onSelection: (cardIds: w.CardId[]) => void
 }
 
+export interface CardGridOrTableProps {
+  cards: w.CardInStore[]
+  selectedCardIds: string[]
+  selectable: boolean
+  onCardClick: (cardId: w.CardId) => void
+}
+
 interface CardCollectionState {
   page: number
 }

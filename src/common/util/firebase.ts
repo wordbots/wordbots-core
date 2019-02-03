@@ -222,6 +222,10 @@ export function saveSet(set: w.Set): void {
                    //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
 }
 
+export function removeSet(setId: string): void {
+  fb.database().ref(`sets/${setId}`).remove();
+}
+
 export function saveReportedParseIssue(text: string): void {
   fb.database()
     .ref('reportedParseIssues')

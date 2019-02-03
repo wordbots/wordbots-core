@@ -3,7 +3,6 @@ import { Paper, withStyles, WithStyles, Button } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
-import { noop } from 'lodash';
 
 import * as w from '../../types';
 import Card from '../card/Card';
@@ -11,6 +10,7 @@ import Card from '../card/Card';
 interface SetSummaryProps {
   set: w.Set
   user: fb.User | null
+  onDeleteSet: () => void
   onEditSet: () => void
 }
 
@@ -60,7 +60,12 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
   }
 
   public render(): JSX.Element {
-    const { classes, set: { cards, description, metadata, name }, onEditSet } = this.props;
+    const {
+      classes,
+      set: { cards, description, metadata, name },
+      onDeleteSet,
+      onEditSet
+    } = this.props;
     const { isCardListExpanded } = this.state;
 
     return (
@@ -70,9 +75,9 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
         </div>
         <div className={classes.controls}>
           {
-            this.doesSetBelongToUser && <span>
+            (this.doesSetBelongToUser && !metadata.isPublished) && <span>
               {this.renderButton('Edit', onEditSet)}
-              {this.renderButton('Delete', noop, { color: 'secondary' })}
+              {this.renderButton('Delete', onDeleteSet, { color: 'secondary' })}
             </span>
           }
         </div>

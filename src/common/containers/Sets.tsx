@@ -21,6 +21,7 @@ interface SetsStateProps {
 }
 
 interface SetsDispatchProps {
+  onDeleteSet: (setId: string) => void
   onEditSet: (setId: string) => void
 }
 
@@ -35,6 +36,9 @@ function mapStateToProps(state: w.State): SetsStateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
   return {
+    onDeleteSet: (setId: string) => {
+      dispatch(collectionActions.deleteSet(setId));
+    },
     onEditSet: (setId: string) => {
       dispatch(collectionActions.editSet(setId));
     }
@@ -98,7 +102,12 @@ class Sets extends React.Component<SetsProps> {
   }
 
   private renderSetSummary = (set: w.Set): JSX.Element => (
-    <SetSummary key={set.id} set={set} user={this.props.user} onEditSet={() => this.handleEditSet(set.id)} />
+    <SetSummary
+      key={set.id}
+      set={set}
+      user={this.props.user}
+      onDeleteSet={() => this.props.onDeleteSet(set.id)}
+      onEditSet={() => this.handleEditSet(set.id)} />
   )
 
   private handleCreateSet = () => {

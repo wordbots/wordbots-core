@@ -27,6 +27,9 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case collectionActions.DELETE_DECK:
         return c.deleteDeck(state, action.payload.deckId);
 
+      case collectionActions.DELETE_SET:
+        return c.deleteSet(state, action.payload.setId);
+
       case collectionActions.DUPLICATE_DECK:
         return c.duplicateDeck(state, action.payload.deckId);
 

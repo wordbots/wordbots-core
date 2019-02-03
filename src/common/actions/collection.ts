@@ -1,6 +1,7 @@
 import * as w from '../types';
 
 export const DELETE_DECK = 'DELETE_DECK';
+export const DELETE_SET = 'DELETE_SET';
 export const DUPLICATE_DECK = 'DUPLICATE_DECK';
 export const EDIT_DECK = 'EDIT_DECK';
 export const EDIT_SET = 'EDIT_SET';
@@ -17,6 +18,13 @@ export function deleteDeck(deckId: w.DeckId): w.Action {
   return {
     type: DELETE_DECK,
     payload: { deckId }
+  };
+}
+
+export function deleteSet(setId: string): w.Action {
+  return {
+    type: DELETE_SET,
+    payload: { setId }
   };
 }
 

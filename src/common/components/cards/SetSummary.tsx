@@ -91,7 +91,7 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
         </div>
         {isCardListExpanded && (
           <div>
-            {cards.map((card) => <div style={{float: 'left'}}>
+            {cards.map((card, idx) => <div key={idx} style={{float: 'left'}}>
               {Card.fromObj(card, { scale: 0.7 })}
             </div>)}
             <div style={{clear: 'both'}}></div>

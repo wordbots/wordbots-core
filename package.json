@@ -116,6 +116,7 @@
     "@types/seed-random": "^2.2.0",
     "@types/shuffle-array": "^0.0.28",
     "@types/webpack": "^4.0.0",
+    "@types/whatwg-fetch": "^0.0.33",
     "@types/ws": "^6.0.0",
     "babel-eslint": "^10.0.1",
     "csstype": "^2.5.2",

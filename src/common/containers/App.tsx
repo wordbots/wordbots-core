@@ -1,18 +1,22 @@
 import * as React from 'react';
-import { bool, func, number, object } from 'prop-types';
+import { object } from 'prop-types';
 import { hot } from 'react-hot-loader';
+import { Dispatch, AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { Route, Redirect, Switch, withRouter } from 'react-router';
+import { History, Location } from 'history';
+import * as fb from 'firebase';
 import Helmet from 'react-helmet';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 /* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
 /* eslint-enable import/no-unassigned-import */
 
-import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants.ts';
-import { isFlagSet, logAnalytics } from '../util/browser.tsx';
-import { listenToUserData, listenToSets, onLogin, onLogout } from '../util/firebase.ts';
-import * as actions from '../actions/global.ts';
+import * as w from '../types';
+import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';
+import { isFlagSet, logAnalytics } from '../util/browser';
+import { listenToUserData, listenToSets, onLogin, onLogout } from '../util/firebase';
+import * as actions from '../actions/global';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
@@ -23,17 +27,39 @@ import PersonalTheme from '../themes/personal';
 import TitleBar from './TitleBar';
 import Collection from './Collection';
 import Creator from './Creator';
-import Deck from './Deck.tsx';
+import Deck from './Deck';
 import Decks from './Decks';
-import Sets from './Sets.tsx';
-import NewSet from './NewSet.tsx';
+import Sets from './Sets';
+import Set from './Set';
 import Home from './Home';
-import Singleplayer from './Singleplayer';
+import { Singleplayer } from './Singleplayer';
 import Multiplayer from './Multiplayer';
 import About from './About';
 import Profile from './Profile';
 
-function mapStateToProps(state) {
+interface AppStateProps {
+  inGame: boolean
+  inSandbox: boolean
+  renderId: number
+}
+
+interface AppDispatchProps {
+  onLoggedIn: (user: fb.User) => void
+  onLoggedOut: () => void
+  onReceiveFirebaseData: (data: any) => void
+  onRerender: () => void
+}
+
+type AppProps = AppStateProps & AppDispatchProps & {
+  history: History
+  location: Location
+};
+
+interface AppState {
+  loading: boolean
+}
+
+function mapStateToProps(state: w.State): AppStateProps {
   return {
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
@@ -41,55 +67,41 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
   return {
-    onLoggedIn(user) {
+    onLoggedIn: (user: fb.User) => {
       dispatch(actions.loggedIn(user));
     },
-    onLoggedOut() {
+    onLoggedOut: () => {
       dispatch(actions.loggedOut());
     },
-    onReceiveFirebaseData(data) {
+    onReceiveFirebaseData: (data: any) => {
       dispatch(actions.firebaseData(data));
     },
-    onRerender() {
+    onRerender: () => {
       dispatch(actions.rerender());
     }
   };
 }
 
-class App extends React.Component {
-  static childContextTypes = {
+class App extends React.Component<AppProps, AppState> {
+  public static childContextTypes = {
     muiTheme: object
   };
 
-  static propTypes = {
-    inGame: bool,
-    inSandbox: bool,
-    renderId: number,  // eslint-disable-line react/no-unused-prop-types
-
-    history: object,
-    location: object,
-
-    onLoggedIn: func,
-    onLoggedOut: func,
-    onReceiveFirebaseData: func,
-    onRerender: func
-  };
-
-  state = {
+  public state = {
     loading: true
   };
 
-  constructor() {
-    super();
+  constructor(props: AppProps) {
+    super(props);
     logAnalytics();
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     onLogin((user) => {
       this.setState({loading: false});
-      this.props.onLoggedIn(user.toJSON());
+      this.props.onLoggedIn(user);
       listenToUserData(this.props.onReceiveFirebaseData);
       listenToSets(this.props.onReceiveFirebaseData);
     });
@@ -101,22 +113,22 @@ class App extends React.Component {
     });
   }
 
-  componentDidUpdate() {
+  public componentDidUpdate(): void {
     logAnalytics();
   }
 
-  getChildContext() {
+  public getChildContext(): any {
     return {
       muiTheme: getMuiTheme(PersonalTheme)
     };
   }
 
-  get inGame() {
+  get inGame(): boolean {
     const { location, inGame, inSandbox } = this.props;
     return (inGame || Singleplayer.isInGameUrl(location.pathname)) && !inSandbox;
   }
 
-  get sidebar() {
+  get sidebar(): JSX.Element | null {
     if (this.state.loading || this.inGame) {
       return null;
     } else {
@@ -124,9 +136,11 @@ class App extends React.Component {
     }
   }
 
-  get content() {
+  get content(): JSX.Element {
     const sidebarWidth = isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
 
+    // TODO Figure out how to avoid having to type the Route components as `any`
+    // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
     return (
       <div style={{
         paddingLeft: this.inGame ? 0 : sidebarWidth,
@@ -139,9 +153,9 @@ class App extends React.Component {
             <Route path="/collection" component={Collection} />
             <Route path="/creator" component={Creator} />
             <Route path="/decks" component={Decks} />
-            <Route path="/deck" component={Deck} />
-            <Route path="/sets/new" component={NewSet} />
-            <Route path="/sets" component={Sets} />
+            <Route path="/deck" component={Deck as any} />
+            <Route path="/sets/:setId" component={Set as any} />
+            <Route path="/sets" component={Sets as any} />
             <Route path="/singleplayer" component={Singleplayer} />
             <Route path="/multiplayer" component={Multiplayer} />
             <Route path="/about" component={About} />
@@ -153,7 +167,7 @@ class App extends React.Component {
     );
   }
 
-  get dialogs() {
+  get dialogs(): JSX.Element | null {
     if (this.state.loading) {
       return null;
     } else {
@@ -168,11 +182,7 @@ class App extends React.Component {
     }
   }
 
-  redirectToRoot = () => (
-    <Redirect to="/"/>
-  );
-
-  render() {
+  public render(): JSX.Element {
     return (
       <div>
         <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
@@ -185,6 +195,10 @@ class App extends React.Component {
       </div>
     );
   }
+
+  private redirectToRoot = (): JSX.Element => (
+    <Redirect to="/"/>
+  )
 }
 
 export default hot(module)(withRouter(connect(mapStateToProps, mapDispatchToProps)(App)));

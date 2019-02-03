@@ -79,6 +79,13 @@ const cardsHandlers = {
     return state;
   },
 
+  openSetForEditing: (state: State, setId: string): State => {
+    return {
+      ...state,
+      setBeingEdited: setId && state.sets.find((s) => s.id === setId) || null
+    };
+  },
+
   saveCard: (state: State, cardProps: w.CreatorState): State => {
     const card = createCardFromProps(cardProps);
     return saveCard(state, card);

@@ -6,7 +6,7 @@ import { StaticRouter } from 'react-router';
 import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
 
-import App from '../common/containers/App';
+import App from '../common/containers/App.tsx';
 import configureStore from '../common/store/configureStore.ts';
 import * as packagejson from '../../package.json';
 

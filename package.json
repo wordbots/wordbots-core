@@ -55,7 +55,7 @@
     "moment": "^2.22.2",
     "prop-types": "^15.6.1",
     "rc-slider": "^8.6.1",
-    "react": "16.7.0",
+    "react": "16.8.1",
     "react-bar-chart": "^0.1.2",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "16.7.0",

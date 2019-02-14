@@ -9,7 +9,7 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { compact, find, noop } from 'lodash';
 
-import * as w from '../../common/types';
+import * as w from '../types';
 import { getDisplayedCards } from '../util/cards';
 import { DeckCreationProperties, FilterKey } from '../components/cards/types';
 import { SortCriteria, SortOrder, Layout } from '../components/cards/types.enums';

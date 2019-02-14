@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { compact, find, noop } from 'lodash';
 
-import * as w from '../../common/types';
+import * as w from '../types';
 import { id as generateId } from '../util/common';
 import { getDisplayedCards } from '../util/cards';
 import { DeckCreationProperties, FilterKey } from '../components/cards/types';
@@ -23,6 +23,7 @@ import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebar
 import { Deck } from './Deck';
 
 interface NewSetStateProps {
+  id: string | null,
   setBeingEdited: w.Set | null
   allCards: w.CardInStore[]
   user: fb.User | null
@@ -37,6 +38,7 @@ type NewSetState = DeckCreationProperties;
 
 function mapStateToProps(state: w.State): NewSetStateProps {
   return {
+    id: state.collection.setBeingEdited ? state.collection.setBeingEdited.id : null,
     setBeingEdited: state.collection.setBeingEdited,
     allCards: state.collection.cards,
     user: state.global.user
@@ -56,26 +58,22 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): NewSetDispatchProps 
  * @TODO Reduce duplication between NewSet and Deck containers.
  */
 class NewSet extends React.Component<NewSetProps, NewSetState> {
-  public state: NewSetState = {
-    filters: {
-      robots: true,
-      events: true,
-      structures: true
-    },
-    costRange: [0, 20],
-    sortCriteria: SortCriteria.Creator,
-    sortOrder: SortOrder.Ascending,
-    searchText: '',
-    selectedCardIds: [],
-    layout: Layout.Grid
-  };
-
   constructor(props: NewSetProps) {
     super(props);
 
-    if (props.setBeingEdited) {
-      this.setState({ selectedCardIds: props.setBeingEdited.cards.map((c) => c.id) });
-    }
+    this.state = {
+      filters: {
+        robots: true,
+        events: true,
+        structures: true
+      },
+      costRange: [0, 20],
+      sortCriteria: SortCriteria.Creator,
+      sortOrder: SortOrder.Ascending,
+      searchText: '',
+      selectedCardIds: props.setBeingEdited ? props.setBeingEdited.cards.map((c) => c.id) : [],
+      layout: Layout.Grid
+    };
   }
 
   get selectedCards(): w.CardInStore[] {

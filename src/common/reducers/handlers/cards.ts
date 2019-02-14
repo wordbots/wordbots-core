@@ -21,6 +21,14 @@ const cardsHandlers = {
     return state;
   },
 
+  deleteSet: (state: State, setId: string): State => {
+    firebase.removeSet(setId);
+    return {
+      ...state,
+      sets: state.sets.filter((set: w.Set) => set.id !== setId)
+    };
+  },
+
   duplicateDeck: (state: State, deckId: string): State => {
     const deck: w.DeckInStore = state.decks.find((d) => d.id === deckId)!;
     const copy: w.DeckInStore = Object.assign({}, deck, {
@@ -77,6 +85,13 @@ const cardsHandlers = {
   openDeckForEditing: (state: State, deckId: string): State => {
     state.deckBeingEdited = deckId ? state.decks.find((d) => d.id === deckId)! : null;
     return state;
+  },
+
+  openSetForEditing: (state: State, setId: string): State => {
+    return {
+      ...state,
+      setBeingEdited: setId && state.sets.find((s) => s.id === setId) || null
+    };
   },
 
   saveCard: (state: State, cardProps: w.CreatorState): State => {

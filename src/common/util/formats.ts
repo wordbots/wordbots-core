@@ -1,5 +1,6 @@
-import { cloneDeep, groupBy, shuffle } from 'lodash';
+import { cloneDeep, groupBy } from 'lodash';
 import * as seededRNG from 'seed-random';
+import { shuffle } from 'seed-shuffle';
 
 import * as w from '../types';
 import { DECK_SIZE } from '../constants';
@@ -122,7 +123,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, options, seed);
 
-    const deck = shuffle([...decks.blue, ...decks.orange]);
+    const deck = shuffle([...decks.blue, ...decks.orange], seed);
     // Give blue the top two cards, orange the next two (to form their starting hands),
     // and both players the rest of the deck.
     const [topTwo, nextTwo, restOfDeck] = [deck.slice(0, 2), deck.slice(2, 4), deck.slice(4)];

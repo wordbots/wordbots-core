@@ -12,7 +12,7 @@ export default function createDevToolsWindow(store) {
     popup.document.write('<div id="react-devtools-root"></div>');
     render(
       <DevTools store={store} />,
-      popup.document.getElementById('react-devtools-root')
+      popup.document.querySelector('#react-devtools-root')
     );
   }, 10);
 }

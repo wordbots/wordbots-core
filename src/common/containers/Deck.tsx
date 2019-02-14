@@ -61,26 +61,22 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     deckPropsPaper: { padding: 20 }
   };
 
-  public state: DeckState = {
-    filters: {
-      robots: true,
-      events: true,
-      structures: true
-    },
-    costRange: [0, 20],
-    sortCriteria: SortCriteria.Creator,
-    sortOrder: SortOrder.Ascending,
-    searchText: '',
-    selectedCardIds: [],
-    layout: Layout.Grid
-  };
-
   constructor(props: DeckProps) {
     super(props);
 
-    if (props.deck) {
-      this.setState({ selectedCardIds: props.deck.cardIds });
-    }
+    this.state = {
+      filters: {
+        robots: true,
+        events: true,
+        structures: true
+      },
+      costRange: [0, 20],
+      sortCriteria: SortCriteria.Creator,
+      sortOrder: SortOrder.Ascending,
+      searchText: '',
+      selectedCardIds: props.deck ? props.deck.cardIds : [],
+      layout: Layout.Grid
+    };
   }
 
   get selectedCards(): w.CardInStore[] {

@@ -3,8 +3,8 @@ import { arrayOf, func, number, object, string } from 'prop-types';
 
 import { SPRITE_VERSION } from '../../constants.ts';
 import { inBrowser } from '../../util/browser.tsx';
-import Card from '../card/Card';
-import Sentence from '../card/Sentence';
+import Card from '../card/Card.tsx';
+import Sentence from '../card/Sentence.tsx';
 
 export default class CardPreview extends React.Component {
   static propTypes = {
@@ -42,6 +42,7 @@ export default class CardPreview extends React.Component {
           paddingTop: 40
         }}>
           <Card
+            visible
             name={this.props.name || '[Unnamed]'}
             spriteID={this.props.spriteID}
             spriteV={SPRITE_VERSION}
@@ -49,7 +50,7 @@ export default class CardPreview extends React.Component {
             cost={this.props.energy}
             stats={this.stats}
             cardStats={this.stats}
-            text={this.props.sentences.map(s => Sentence(s.sentence, s.result))}
+            text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
             rawText={this.props.sentences.map(s => s.sentence).join('. ')}
             parseResults={JSON.stringify(this.props.sentences.map(s => s.result))}
             scale={3}

@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
 
 import Tooltip from '../Tooltip';
-import CardTooltip from '../card/CardTooltip';
+import CardTooltip from '../card/CardTooltip.tsx';
 
 import CardSelectorCard from './CardSelectorCard';
 

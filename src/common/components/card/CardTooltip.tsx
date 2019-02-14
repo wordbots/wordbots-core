@@ -1,24 +1,24 @@
 import * as React from 'react';
-import { arrayOf, bool, object, oneOfType } from 'prop-types';
 import * as ReactTooltip from 'react-tooltip';
 
-import { MAX_Z_INDEX } from '../../constants.ts';
-import { id } from '../../util/common.ts';
+import * as w from '../../types';
+import { MAX_Z_INDEX } from '../../constants';
+import { id } from '../../util/common';
 import Popover from '../Popover';
 
 import Card from './Card';
 
-export default class CardTooltip extends React.Component {
-  static propTypes = {
-    card: object,
-    children: oneOfType([arrayOf(object), object]),
-    popover: bool,
-    isOpen: bool
-  };
+interface CardTooltipProps {
+  card: w.CardInStore
+  children: JSX.Element | JSX.Element[]
+  popover?: boolean
+  isOpen?: boolean
+}
 
-  tooltipId = id()
+export default class CardTooltip extends React.Component<CardTooltipProps> {
+  private tooltipId = id();
 
-  render() {
+  public render(): JSX.Element | JSX.Element[] {
     if (!this.props.card) {
       return this.props.children;
     } else if (this.props.popover) {

@@ -1,26 +1,22 @@
 import * as React from 'react';
-import { bool, number, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { capitalize } from 'lodash';
 
-import { inBrowser } from '../../util/browser.tsx';
+import * as w from '../../types';
+import { inBrowser } from '../../util/browser';
 import Tooltip from '../Tooltip';
 
-export default class CardStat extends React.Component {
-  static propTypes = {
-    type: string,
-    base: number,
-    current: number,
-    scale: number,
-    noTooltip: bool
-  };
+interface CardStatProps {
+  type: w.Attribute
+  base?: number
+  current?: number
+  scale?: number
+  noTooltip?: boolean
+}
 
-  static defaultProps = {
-    scale: 1
-  };
-
-  get iconClass() {
+export default class CardStat extends React.Component<CardStatProps> {
+  get iconClass(): string {
     const { type } = this.props;
     switch (type) {
       case 'attack':
@@ -30,39 +26,40 @@ export default class CardStat extends React.Component {
       case 'health':
         return 'health';
       default:
-        throw `Unexpected icon type: ${type}`;
+        throw new Error(`Unexpected icon type: ${type}`);
     }
   }
 
-  get textColor() {
-    if (this.props.current && this.props.current > this.props.base) {
+  get textColor(): string {
+    const { base, current } = this.props;
+    if (current && base && current > base) {
       return '#81C784';
-    } else if (this.props.current && this.props.current < this.props.base) {
+    } else if (current && base && current < base) {
       return '#E57373';
     } else {
       return '#444';
     }
   }
 
-  get icon() {
+  get icon(): JSX.Element {
     return (
       <FontIcon
         className={`ra ra-${this.iconClass}`}
         style={{
-          fontSize: 14 * this.props.scale,
+          fontSize: 14 * (this.props.scale || 1),
           color: this.textColor,
-          marginRight: 4 * this.props.scale
+          marginRight: 4 * (this.props.scale || 1)
         }} />
     );
   }
 
-  get statText() {
-    const baseStatStyle = {
+  get statText(): JSX.Element {
+    const baseStatStyle: React.CSSProperties = {
       position: 'absolute',
       top: -5,
       left: -10,
       color: 'black',
-      fontSize: 10 * this.props.scale,
+      fontSize: 10 * (this.props.scale || 1),
       textDecoration: 'line-through'
     };
 
@@ -76,24 +73,24 @@ export default class CardStat extends React.Component {
         </span>
       );
     } else {
-      return this.props.base;
+      return <span>{this.props.base}</span>;
     }
   }
 
-  render() {
+  public render(): JSX.Element {
     return inBrowser() ? this.renderNewStyle() : this.renderOldStyle();
   }
 
-  renderNewStyle() {
-    const style = {
+  private renderNewStyle(): JSX.Element {
+    const style: React.CSSProperties = {
       float: 'left',
       width: '33%',
       lineHeight: '14px',
       color: this.textColor,
       fontFamily: 'Carter One',
-      fontSize: 18 * this.props.scale,
+      fontSize: 18 * (this.props.scale || 1),
       textAlign: 'center',
-      paddingBottom: 6 * this.props.scale
+      paddingBottom: 6 * (this.props.scale || 1)
     };
 
     if (this.props.noTooltip) {
@@ -115,8 +112,8 @@ export default class CardStat extends React.Component {
     }
   }
 
-  renderOldStyle() {
-    function backgroundColor(type) {
+  private renderOldStyle(): JSX.Element {
+    function backgroundColor(type: w.Attribute): string {
       switch (type) {
         case 'attack':
           return '#E57373';

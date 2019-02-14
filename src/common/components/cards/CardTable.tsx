@@ -72,8 +72,8 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
         <CardStat
           noTooltip
           type={type}
-          base={stats ? stats[type] : ''}
-          current={stats ? stats[type] : ''}
+          base={(stats || {})[type]}
+          current={(stats || {})[type]}
           scale={1} />
       );
     } else {

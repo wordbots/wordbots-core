@@ -10,7 +10,7 @@ import { groupCards } from '../../util/cards.ts';
 import { BUILTIN_FORMATS } from '../../util/formats.ts';
 import ButtonInRow from '../ButtonInRow';
 import Tooltip from '../Tooltip';
-import CardTooltip from '../card/CardTooltip';
+import CardTooltip from '../card/CardTooltip.tsx';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 export default class DeckSummary extends React.Component {

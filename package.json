@@ -114,6 +114,7 @@
     "@types/react-helmet": "^5.0.7",
     "@types/react-redux": "^7.0.1",
     "@types/react-router-dom": "^4.3.1",
+    "@types/react-tooltip": "^3.9.0",
     "@types/seed-random": "^2.2.0",
     "@types/shuffle-array": "^0.0.28",
     "@types/webpack": "^4.0.0",

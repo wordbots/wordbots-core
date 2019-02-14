@@ -9,6 +9,7 @@ import 'firebase/database';
 import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon } from './cards';
+import { inTest } from './browser';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -109,6 +110,10 @@ export function listenToUserDataById(uid: string, callback: (data: any) => any):
 }
 
 export function saveUserData(key: string, value: any): void {
+  if (inTest) {
+    return;
+  }
+
   getLoggedInUser()
     .then((user) => {
       fb.database()

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { arrayOf, bool, object } from 'prop-types';
 
 import Tooltip from '../Tooltip';
-import Card from '../card/Card';
-import CardBack from '../card/CardBack';
+import Card from '../card/Card.tsx';
+import CardBack from '../card/CardBack.tsx';
 
 const Deck = ({ deck, opponent, reveal = false }) => {
   if (deck.length > 0) {

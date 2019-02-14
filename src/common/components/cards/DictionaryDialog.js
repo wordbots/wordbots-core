@@ -14,7 +14,7 @@ import { getHash, setHash } from '../../util/browser.tsx';
 import { allKeywords, contractKeywords } from '../../util/cards.ts';
 import { listenToDictionaryData } from '../../util/firebase.ts';
 import RouterDialog from '../RouterDialog';
-import StatusIcon from '../card/StatusIcon';
+import StatusIcon from '../card/StatusIcon.tsx';
 
 import DictionarySearchBar from './DictionarySearchBar';
 import DictionarySidebar from './DictionarySidebar';
@@ -196,7 +196,7 @@ export default class DictionaryDialog extends React.Component {
           <ul>
             {examples.map(example =>
               <li key={example}>
-                {example}.&nbsp;{StatusIcon(example, {parsed: true})}
+                {example}.&nbsp;<StatusIcon text={example} result={{parsed: true}} />
               </li>
             )}
           </ul>

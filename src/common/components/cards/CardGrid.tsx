@@ -3,7 +3,6 @@ import * as React from 'react';
 import * as w from '../../types';
 import { id } from '../../util/common';
 import { inBrowser } from '../../util/browser';
-import { splitSentences } from '../../util/cards';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 
@@ -34,15 +33,16 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
     }}>
       <Card
         collection
+        visible
         id={card.id}
         name={card.name}
         spriteID={card.spriteID}
         spriteV={card.spriteV}
         type={card.type}
-        text={splitSentences(card.text).map((text) => Sentence(text))}
+        text={Sentence.fromText(card.text)}
         rawText={card.text || ''}
-        stats={card.stats}
-        cardStats={card.stats}
+        stats={card.stats || {}}
+        cardStats={card.stats || {}}
         cost={card.cost}
         baseCost={card.cost}
         source={card.source}

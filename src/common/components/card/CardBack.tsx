@@ -1,26 +1,23 @@
 import * as React from 'react';
-import { bool, number, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
-export default class CardBack extends React.Component {
-  static propTypes = {
-    deckLength: number,
-    customText: string,
-    hoverable: bool
-  };
+interface CardBackProps {
+  deckLength?: number
+  customText?: string
+  hoverable?: boolean
+}
 
-  state = {
+interface CardBackState {
+  hover: boolean
+}
+
+export default class CardBack extends React.Component<CardBackProps, CardBackState> {
+  public state = {
     hover: false
   };
 
-  toggleHover = () => {
-    if (this.props.hoverable) {
-      this.setState(state => ({hover: !state.hover}));
-    }
-  }
-
-  render() {
-    let style = {};
+  public render(): JSX.Element {
+    let style: React.CSSProperties = {};
 
     if (this.props.deckLength) {
       style = {
@@ -44,14 +41,15 @@ export default class CardBack extends React.Component {
           padding: 5,
           userSelect: 'none',
           cursor: 'pointer'
-      }, style)}>
+        }, style)}
+      >
         <div style={{
           writingMode: 'vertical-lr',
           width: 'calc(100% - 50px)',
           height: 'calc(100% - 4px)',
           display: 'flex',
           justifyContent: 'center',
-          //alignItems: 'center',
+          // alignItems: 'center',
           paddingLeft: 46,
           borderRadius: 5,
           border: '2px solid #FFF'
@@ -64,5 +62,11 @@ export default class CardBack extends React.Component {
         </div>
       </Paper>
     );
+  }
+
+  private toggleHover = () => {
+    if (this.props.hoverable) {
+      this.setState((state) => ({hover: !state.hover}));
+    }
   }
 }

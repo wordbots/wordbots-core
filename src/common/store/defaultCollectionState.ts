@@ -9,12 +9,14 @@ const defaultState: w.CollectionState = {
     {
       id: '[default-aggro]',
       name: 'RoboRampage (Built-in)',
-      cardIds: decks.aggro.map((c) => c.id)
+      cardIds: decks.aggro.map((c) => c.id),
+      setId: null
     },
     {
       id: '[default-healing]',
       name: 'Deft Defense (Built-in)',
-      cardIds: decks.healing.map((c) => c.id)
+      cardIds: decks.healing.map((c) => c.id),
+      setId: null
     }
   ],
   sets: [],

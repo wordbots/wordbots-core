@@ -1,31 +1,33 @@
 import * as React from 'react';
-import { arrayOf, bool, func, object } from 'prop-types';
 import Badge from 'material-ui/Badge';
 import Paper from '@material-ui/core/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
 
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants.ts';
-import { groupCards } from '../../util/cards.ts';
-import { BUILTIN_FORMATS } from '../../util/formats.ts';
+import * as w from '../../types';
+import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants';
+import { groupCards } from '../../util/cards';
+import { BUILTIN_FORMATS, SetFormat } from '../../util/formats';
 import ButtonInRow from '../ButtonInRow';
 import Tooltip from '../Tooltip';
-import CardTooltip from '../card/CardTooltip.tsx';
+import CardTooltip from '../card/CardTooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
-export default class DeckSummary extends React.Component {
-  static propTypes = {
-    cards: arrayOf(object),
-    deck: object,
-    loggedIn: bool,
+import { CardWithCount } from './types';
 
-    onDelete: func,
-    onDuplicate: func,
-    onEdit: func,
-    onTry: func
-  };
+interface DeckSummaryProps {
+  cards: w.CardInStore[]
+  deck: w.DeckInStore
+  set?: w.Set
+  loggedIn: boolean
+  onDelete: (deckId: string) => void
+  onDuplicate: (deckId: string) => void
+  onEdit: (deckId: string) => void
+  onTry: (deck: w.DeckInStore) => void
+}
 
-  get styles() {
+export default class DeckSummary extends React.Component<DeckSummaryProps> {
+  get styles(): Record<string, Record<string, string | number>> {
     return {
       cardItem: {
         display: 'flex',
@@ -62,65 +64,25 @@ export default class DeckSummary extends React.Component {
     };
   }
 
-  get isDefaultDeck() {
+  get isDefaultDeck(): boolean {
     return this.props.deck.id.startsWith('[default-');
   }
 
-  handleClickDelete = () => {
-    this.props.onDelete(this.props.deck.id);
-  };
-
-  handleClickDuplicate = () => {
-    this.props.onDuplicate(this.props.deck.id);
-  };
-
-  handleClickEdit = () => {
-    this.props.onEdit(this.props.deck.id);
-  };
-
-  handleClickTry = () => {
-    this.props.onTry(this.props.deck);
-  }
-
-  renderCard(card, idx) {
-    return (
-      <div
-        key={idx}
-        style={{
-          backgroundColor: '#FFFFFF',
-          marginBottom: 7,
-          height: 24,
-          minWidth: 200
-      }}>
-        <CardTooltip card={card}>
-          <div style={this.styles.cardItem}>
-            <Badge
-              badgeContent={card.cost}
-              badgeStyle={this.styles.cardBadgeStyle}
-              style={this.styles.cardBadge} />
-            <div style={this.styles.cardName}>{card.name}</div>
-            <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
-          </div>
-        </CardTooltip>
-      </div>
-    );
-  }
-
-  renderCards(cards) {
-    return sortBy(groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
-  }
-
-  render() {
-    const { cards, deck } = this.props;
-    const [robots, structures, events] = [TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT].map(t => filter(cards, ['type', t]));
+  public render(): JSX.Element {
+    const { cards, deck, set } = this.props;
+    const [robots, structures, events] = [TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT].map((t) => filter(cards, ['type', t]));
     const isComplete = (cards.length === 30);
+    const validatedDeck = {...deck, cards };
 
-    const numValidFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid({ cards })).length;
+    const numValidFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid(validatedDeck)).length;
     const redX = '<span style="color: red;">X</span>';
     const greenCheck = '<span style="color: green;">✓</span>';
+    const setFormatHTML = (set && new SetFormat(set).isDeckValid(validatedDeck))
+      ? `${greenCheck} valid in the '${set.name}' set (by ${set.metadata.authorName}) format`
+      : `${redX} not valid in any Set formats`;
     const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
-      `${format.isDeckValid({ cards }) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`
-    ).concat(`${redX} not valid in any Set formats`)  // TODO actually check this once constructing decks from sets is implemented
+      `${format.isDeckValid(validatedDeck) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`
+    ).concat(setFormatHTML)
      .join('<br>');
 
     return (
@@ -207,5 +169,49 @@ export default class DeckSummary extends React.Component {
         </div>
       </Paper>
     );
+  }
+
+  private handleClickDelete = () => {
+    this.props.onDelete(this.props.deck.id);
+  }
+
+  private handleClickDuplicate = () => {
+    this.props.onDuplicate(this.props.deck.id);
+  }
+
+  private handleClickEdit = () => {
+    this.props.onEdit(this.props.deck.id);
+  }
+
+  private handleClickTry = () => {
+    this.props.onTry(this.props.deck);
+  }
+
+  private renderCard(card: CardWithCount, idx: number): JSX.Element {
+    return (
+      <div
+        key={idx}
+        style={{
+          backgroundColor: '#FFFFFF',
+          marginBottom: 7,
+          height: 24,
+          minWidth: 200
+      }}>
+        <CardTooltip card={card}>
+          <div style={this.styles.cardItem}>
+            <Badge
+              badgeContent={card.cost}
+              badgeStyle={this.styles.cardBadgeStyle}
+              style={this.styles.cardBadge} />
+            <div style={this.styles.cardName}>{card.name}</div>
+            <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
+          </div>
+        </CardTooltip>
+      </div>
+    );
+  }
+
+  private renderCards(cards: w.CardInStore[]): JSX.Element[] {
+    return sortBy(groupCards(cards), ['cost', 'name']).map(this.renderCard.bind(this));
   }
 }

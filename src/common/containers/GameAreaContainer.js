@@ -14,7 +14,7 @@ import * as gameActions from '../actions/game.ts';
 import * as socketActions from '../actions/socket.ts';
 import { arbitraryPlayerState } from '../store/defaultGameState.ts';
 
-import Singleplayer from './Singleplayer';
+import Singleplayer from './Singleplayer.tsx';
 
 export function mapStateToProps(state) {
   const { game } = state;

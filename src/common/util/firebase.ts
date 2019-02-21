@@ -110,7 +110,7 @@ export function listenToUserDataById(uid: string, callback: (data: any) => any):
 }
 
 export function saveUserData(key: string, value: any): void {
-  if (inTest) {
+  if (inTest()) {
     return;
   }
 

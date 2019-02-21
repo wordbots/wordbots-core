@@ -12,7 +12,7 @@ import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection.ts';
 
-import Singleplayer from './Singleplayer';
+import Singleplayer from './Singleplayer.tsx';
 
 function mapStateToProps(state) {
   return {

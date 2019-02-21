@@ -74,11 +74,13 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
     const isComplete = (cards.length === 30);
     const validatedDeck = {...deck, cards };
 
-    const numValidFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid(validatedDeck)).length;
+    const isValidInSetFormat = set && new SetFormat(set).isDeckValid(validatedDeck);
+    const numValidBuiltinFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid(validatedDeck)).length;
+    const numValidFormats = numValidBuiltinFormats + (isValidInSetFormat ? 1 : 0);
     const redX = '<span style="color: red;">X</span>';
     const greenCheck = '<span style="color: green;">✓</span>';
-    const setFormatHTML = (set && new SetFormat(set).isDeckValid(validatedDeck))
-      ? `${greenCheck} valid in the '${set.name}' set (by ${set.metadata.authorName}) format`
+    const setFormatHTML = isValidInSetFormat
+      ? `${greenCheck} valid in the '${set!.name}' set (by ${set!.metadata.authorName}) format`
       : `${redX} not valid in any Set formats`;
     const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
       `${format.isDeckValid(validatedDeck) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`

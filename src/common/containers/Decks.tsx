@@ -88,7 +88,7 @@ class Decks extends React.Component<DecksProps> {
                   key={idx}
                   deck={deck}
                   cards={cardsInDeck(deck, cards)}
-                  set={sets.find((s) => s.id === deck.id)}
+                  set={sets.find((s) => s.id === deck.setId)}
                   loggedIn={loggedIn}
                   onDelete={onDeleteDeck}
                   onDuplicate={onDuplicateDeck}

@@ -32,7 +32,7 @@ import Decks from './Decks';
 import Sets from './Sets';
 import Set from './Set';
 import Home from './Home';
-import { Singleplayer } from './Singleplayer';
+import Singleplayer, { Singleplayer as SingleplayerBase } from './Singleplayer';
 import Multiplayer from './Multiplayer';
 import About from './About';
 import Profile from './Profile';
@@ -125,7 +125,7 @@ class App extends React.Component<AppProps, AppState> {
 
   get inGame(): boolean {
     const { location, inGame, inSandbox } = this.props;
-    return (inGame || Singleplayer.isInGameUrl(location.pathname)) && !inSandbox;
+    return (inGame || SingleplayerBase.isInGameUrl(location.pathname)) && !inSandbox;
   }
 
   get sidebar(): JSX.Element | null {
@@ -156,7 +156,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/deck" component={Deck as any} />
             <Route path="/sets/:setId" component={Set as any} />
             <Route path="/sets" component={Sets as any} />
-            <Route path="/singleplayer" component={Singleplayer} />
+            <Route path="/singleplayer" component={Singleplayer as any} />
             <Route path="/multiplayer" component={Multiplayer} />
             <Route path="/about" component={About} />
             <Route path="/profile/:userId" component={Profile} />

@@ -15,7 +15,7 @@ import { getSentencesFromInput, requestParse } from '../../util/cards.ts';
 import { getCardTextCorpus, saveReportedParseIssue } from '../../util/firebase.ts';
 import { prepareBigramProbs } from '../../util/language.ts';
 import CardTextExampleStore from '../../util/CardTextExampleStore.ts';
-import ButtonInRow from '../ButtonInRow';
+import ButtonInRow from '../ButtonInRow.tsx';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 

@@ -5,18 +5,21 @@ describe('sortDecks', () => {
     {
       id: 'someTestId',
       name: 'testName1',
-      cardIds: []
+      cardIds: [],
+      setId: null
     },
     {
       id: '[someOtherTestId]',
       name: 'testName2',
-      cardIds: []
+      cardIds: [],
+      setId: null
     },
     {
       id: 'anotherTestId',
       name: 'testName3',
       timestamp: 100,
-      cardIds: []
+      cardIds: [],
+      setId: null
     }
   ];
 

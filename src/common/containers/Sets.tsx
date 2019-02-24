@@ -106,6 +106,7 @@ class Sets extends React.Component<SetsProps> {
       key={set.id}
       set={set}
       user={this.props.user}
+      onCreateDeckFromSet={() => this.handleCreateDeckFromSet(set.id)}
       onDeleteSet={() => this.props.onDeleteSet(set.id)}
       onEditSet={() => this.handleEditSet(set.id)} />
   )
@@ -117,6 +118,10 @@ class Sets extends React.Component<SetsProps> {
   private handleEditSet = (setId: string) => {
     this.props.onEditSet(setId);
     this.props.history.push(`/sets/${setId}`);
+  }
+
+  private handleCreateDeckFromSet = (setId: string) => {
+    this.props.history.push(`/deck/for/set/${setId}`);
   }
 }
 

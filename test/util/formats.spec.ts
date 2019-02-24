@@ -24,7 +24,8 @@ export function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number):
     id: deckId,
     name: deckId,
     cardIds: cardsWithCopies.map((card) => card.id),
-    cards: cardsWithCopies
+    cards: cardsWithCopies,
+    setId: null
   };
 }
 

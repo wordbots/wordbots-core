@@ -152,7 +152,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/home" component={Home} />
             <Route path="/collection" component={Collection} />
             <Route path="/creator" component={Creator} />
-            <Route path="/decks" component={Decks} />
+            <Route path="/decks" component={Decks as any} />
             <Route path="/deck" component={Deck as any} />
             <Route path="/sets/:setId" component={Set as any} />
             <Route path="/sets" component={Sets as any} />

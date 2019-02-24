@@ -99,7 +99,7 @@ const cardsHandlers = {
     return saveCard(state, card);
   },
 
-  saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = []): State => {
+  saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {
     if (deckId) {
       // Existing deck.
       const deck = state.decks.find((d) => d.id === deckId);
@@ -110,7 +110,8 @@ const cardsHandlers = {
         id: id(),
         name,
         cardIds,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        setId
       });
     }
 

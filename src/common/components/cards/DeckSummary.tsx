@@ -27,8 +27,14 @@ interface DeckSummaryProps {
 }
 
 export default class DeckSummary extends React.Component<DeckSummaryProps> {
-  get styles(): Record<string, Record<string, string | number>> {
+  get styles(): Record<string, React.CSSProperties> {
     return {
+      card: {
+        backgroundColor: '#FFFFFF',
+        marginBottom: 7,
+        height: 24,
+        minWidth: 200
+      },
       cardItem: {
         display: 'flex',
         alignItems: 'stretch'
@@ -193,12 +199,7 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
     return (
       <div
         key={idx}
-        style={{
-          backgroundColor: '#FFFFFF',
-          marginBottom: 7,
-          height: 24,
-          minWidth: 200
-      }}>
+        style={this.styles.card}>
         <CardTooltip card={card}>
           <div style={this.styles.cardItem}>
             <Badge

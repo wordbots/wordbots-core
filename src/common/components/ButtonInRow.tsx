@@ -8,7 +8,7 @@ interface ButtonInRowProps {
   label: string
   icon: string
   tooltip: string
-  onClick: () => void
+  onClick: (e: React.MouseEvent<any>) => void
   disabled?: boolean
   width?: string
 }

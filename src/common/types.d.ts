@@ -45,8 +45,9 @@ export interface Deck extends DeckInStore {
 export interface DeckInStore {
   id: DeckId
   name: string
-  cardIds: string[],
+  cardIds: string[]
   timestamp?: number
+  setId: string | null
 }
 
 export interface CardInGame extends CardInStore {

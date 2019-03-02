@@ -49,7 +49,7 @@ export default function collection(oldState: State = defaultState, action: w.Act
         return c.deleteCards(state, action.payload.ids);
 
       case collectionActions.SAVE_DECK:
-        return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds);
+        return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds, action.payload.setId);
 
       case collectionActions.SAVE_SET:
         return c.saveSet(state, action.payload.set);

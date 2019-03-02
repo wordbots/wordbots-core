@@ -35,7 +35,7 @@ export function duplicateDeck(deckId: w.DeckId): w.Action {
   };
 }
 
-export function editDeck(deckId: w.DeckId): w.Action {
+export function editDeck(deckId: w.DeckId | null): w.Action {
   return {
     type: EDIT_DECK,
     payload: { deckId }
@@ -78,10 +78,10 @@ export function removeFromCollection(ids: w.CardId[]): w.Action {
   };
 }
 
-export function saveDeck(id: w.DeckId | null, name: string, cardIds: w.CardId[]): w.Action {
+export function saveDeck(id: w.DeckId | null, name: string, cardIds: w.CardId[], setId: string | null): w.Action {
   return {
     type: SAVE_DECK,
-    payload: { id, name, cardIds }
+    payload: { id, name, cardIds, setId }
   };
 }
 

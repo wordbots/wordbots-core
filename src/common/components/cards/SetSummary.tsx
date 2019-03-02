@@ -10,6 +10,7 @@ import Card from '../card/Card';
 interface SetSummaryProps {
   set: w.Set
   user: fb.User | null
+  onCreateDeckFromSet: () => void
   onDeleteSet: () => void
   onEditSet: () => void
 }
@@ -34,7 +35,7 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
       minHeight: 0,
       minWidth: 60,
       marginLeft: 5,
-      padding: 4
+      padding: '4px 8px'
     },
     toggleCardListLink: {
       cursor: 'pointer',
@@ -63,6 +64,7 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
     const {
       classes,
       set: { cards, description, metadata, name },
+      onCreateDeckFromSet,
       onDeleteSet,
       onEditSet
     } = this.props;
@@ -74,6 +76,7 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
           <strong>{name}</strong> by {metadata.authorName}
         </div>
         <div className={classes.controls}>
+          {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
           {
             (this.doesSetBelongToUser && !metadata.isPublished) && <span>
               {this.renderButton('Edit', onEditSet)}

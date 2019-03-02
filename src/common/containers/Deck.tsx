@@ -23,29 +23,36 @@ interface DeckStateProps {
   id: string | null
   cards: w.CardInStore[]
   deck: w.DeckInStore | null
+  sets: w.Set[]
   loggedIn: boolean
 }
 
 interface DeckDispatchProps {
-  onSaveDeck: (id: string | null, name: string, cardIds: string[]) => void
+  onSaveDeck: (id: string | null, name: string, cardIds: string[], setId: string | null) => void
 }
 
 type DeckProps = DeckStateProps & DeckDispatchProps & { history: History } & WithStyles;
-type DeckState = DeckCreationProperties;
+
+type DeckState = DeckCreationProperties & {
+  setId: string | null
+};
 
 function mapStateToProps(state: w.State): DeckStateProps {
+  const { collection: { deckBeingEdited: deck, cards, sets }, global: { user } } = state;
+
   return {
-    id: state.collection.deckBeingEdited ? state.collection.deckBeingEdited.id : null,
-    cards: state.collection.cards,
-    deck: state.collection.deckBeingEdited,
-    loggedIn: state.global.user !== null
+    id: deck ? deck.id : null,
+    cards,
+    deck,
+    sets,
+    loggedIn: user !== null
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>): DeckDispatchProps {
   return {
-    onSaveDeck: (id: string | null, name: string, cardIds: string[]) => {
-      dispatch(collectionActions.saveDeck(id, name, cardIds));
+    onSaveDeck: (id: string | null, name: string, cardIds: string[], setId: string | null) => {
+      dispatch(collectionActions.saveDeck(id, name, cardIds, setId));
     }
   };
 }
@@ -64,6 +71,8 @@ export class Deck extends React.Component<DeckProps, DeckState> {
   constructor(props: DeckProps) {
     super(props);
 
+    const { deck, history: { location: { pathname } } } = this.props;
+
     this.state = {
       filters: {
         robots: true,
@@ -74,8 +83,9 @@ export class Deck extends React.Component<DeckProps, DeckState> {
       sortCriteria: SortCriteria.Creator,
       sortOrder: SortOrder.Ascending,
       searchText: '',
-      selectedCardIds: props.deck ? props.deck.cardIds : [],
-      layout: Layout.Grid
+      selectedCardIds: deck ? deck.cardIds : [],
+      layout: Layout.Grid,
+      setId: pathname.startsWith('/deck/for/set/') ? pathname.split('for/set/')[1] : null
     };
   }
 
@@ -84,8 +94,16 @@ export class Deck extends React.Component<DeckProps, DeckState> {
   }
 
   get displayedCards(): w.CardInStore[] {
-    const { searchText, filters, costRange, sortCriteria, sortOrder } = this.state;
-    return getDisplayedCards(this.props.cards, { searchText, filters, costRange, sortCriteria, sortOrder });
+    const { cards, sets } = this.props;
+    const { searchText, filters, costRange, sortCriteria, sortOrder, setId } = this.state;
+
+    let cardPool = cards;
+    if (setId) {
+      const set = sets.find((s) => s.id === setId);
+      cardPool = set ? set.cards : [];
+    }
+
+    return getDisplayedCards(cardPool, { searchText, filters, costRange, sortCriteria, sortOrder });
   }
 
   public render(): JSX.Element {
@@ -152,7 +170,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
   }
 
   private handleClickSaveDeck = (id: string | null, name: string, cardIds: w.CardId[]) => {
-    this.props.onSaveDeck(id, name, cardIds);
+    this.props.onSaveDeck(id, name, cardIds, this.state.setId);
     this.props.history.push('/decks');
   }
 

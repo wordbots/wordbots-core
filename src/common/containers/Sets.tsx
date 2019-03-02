@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { History } from 'history';
 import * as fb from 'firebase';
+import * as qs from 'qs';
 import { Button } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { orderBy } from 'lodash';
@@ -47,10 +48,24 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
 
 class Sets extends React.Component<SetsProps> {
   public static styles = {
-    newSetButtonLabel: {
+    buttonLabel: {
       fontFamily: 'Carter One'
     }
   };
+
+  /**
+   * Returns either the single set to focus on (if there is a set=[setId] URL query parameter),
+   * or null to display all published and user sets.
+   */
+  get singleSet(): w.Set | null {
+    const { history: { location: { search }}, sets } = this.props;
+    const setId: string | undefined = qs.parse(search.replace('?', '')).set;
+    console.log(setId);
+    if (setId) {
+      return sets.find((set) => set.id === setId) || null;
+    }
+    return null;
+  }
 
   get publishedSets(): w.Set[] {
     const { sets } = this.props;
@@ -74,14 +89,39 @@ class Sets extends React.Component<SetsProps> {
             <Button
               variant="contained"
               color="secondary"
-              classes={{
-                label: classes.newSetButtonLabel
-              }}
+              classes={{ label: classes.buttonLabel }}
               onClick={this.handleCreateSet}
             >
               New Set
             </Button>
           </MustBeLoggedIn>
+          {this.renderSets()}
+        </div>
+      </div>
+    );
+  }
+
+  private renderSets = (): JSX.Element => {
+    const { classes } = this.props;
+    if (this.singleSet) {
+      return (
+        <div>
+          <div style={{ margin: '20px 0' }}>
+            {this.renderSetSummary(this.singleSet)}
+          </div>
+          <Button
+            variant="outlined"
+            color="primary"
+            classes={{ label: classes.buttonLabel }}
+            onClick={this.handleShowAllSets}
+          >
+            Show all sets
+          </Button>
+        </div>
+      );
+    } else {
+      return (
+        <div>
           {
             this.publishedSets.length > 0 &&
               <div>
@@ -97,8 +137,8 @@ class Sets extends React.Component<SetsProps> {
               </div>
           }
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   private renderSetSummary = (set: w.Set): JSX.Element => (
@@ -122,6 +162,10 @@ class Sets extends React.Component<SetsProps> {
 
   private handleCreateDeckFromSet = (setId: string) => {
     this.props.history.push(`/deck/for/set/${setId}`);
+  }
+
+  private handleShowAllSets = () => {
+    this.props.history.push('/sets');
   }
 }
 

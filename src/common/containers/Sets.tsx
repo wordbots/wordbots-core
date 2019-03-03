@@ -50,6 +50,9 @@ class Sets extends React.Component<SetsProps> {
   public static styles = {
     buttonLabel: {
       fontFamily: 'Carter One'
+    },
+    singleSetContainer: {
+      margin: '20px 0'
     }
   };
 
@@ -60,7 +63,6 @@ class Sets extends React.Component<SetsProps> {
   get singleSet(): w.Set | null {
     const { history: { location: { search }}, sets } = this.props;
     const setId: string | undefined = qs.parse(search.replace('?', '')).set;
-    console.log(setId);
     if (setId) {
       return sets.find((set) => set.id === setId) || null;
     }
@@ -106,7 +108,7 @@ class Sets extends React.Component<SetsProps> {
     if (this.singleSet) {
       return (
         <div>
-          <div style={{ margin: '20px 0' }}>
+          <div className={classes.singleSetContainer}>
             {this.renderSetSummary(this.singleSet)}
           </div>
           <Button

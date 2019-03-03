@@ -43,8 +43,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       padding: '4px 8px'
     },
     bottomLink: {
-      'cursor': 'pointer',
-      'textDecoration': 'underline',
+      cursor: 'pointer',
+      textDecoration: 'underline',
       '&:hover': {
         textDecoration: 'none'
       }

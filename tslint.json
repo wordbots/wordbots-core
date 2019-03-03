@@ -6,6 +6,7 @@
     "max-line-length": false,
     "new-parens": false,
     "no-var-requires": false,
+    "object-literal-key-quotes": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "quotemark": false,

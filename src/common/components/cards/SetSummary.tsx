@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { compose } from 'redux';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 import { Paper, withStyles, WithStyles, Button } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
@@ -7,7 +9,7 @@ import * as fb from 'firebase';
 import * as w from '../../types';
 import Card from '../card/Card';
 
-interface SetSummaryProps {
+interface SetSummaryBaseProps {
   set: w.Set
   user: fb.User | null
   onCreateDeckFromSet: () => void
@@ -16,10 +18,13 @@ interface SetSummaryProps {
 }
 
 interface SetSummaryState {
-  isCardListExpanded: boolean
+  isCardListExpanded: boolean,
+  isPermalinkCopied: boolean
 }
 
-class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummaryState> {
+type SetSummaryProps = SetSummaryBaseProps & WithStyles;
+
+class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   public static styles: Record<string, CSSProperties> = {
     paper: {
       position: 'relative',
@@ -37,9 +42,12 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
       marginLeft: 5,
       padding: '4px 8px'
     },
-    toggleCardListLink: {
+    bottomLink: {
       cursor: 'pointer',
-      textDecoration: 'underline'
+      textDecoration: 'underline',
+      '&:hover': {
+        textDecoration: 'none'
+      }
     },
     numDecksCreated: {
       position: 'absolute',
@@ -52,12 +60,18 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
   };
 
   public state = {
-    isCardListExpanded: false
+    isCardListExpanded: false,
+    isPermalinkCopied: false
   };
 
   get doesSetBelongToUser(): boolean {
     const { set, user } = this.props;
     return user ? set.metadata.authorId === user.uid : false;
+  }
+
+  get permalinkUrl(): string {
+    const { set } = this.props;
+    return `${window.location.href.split('?')[0]}?set=${set.id}`;
   }
 
   public render(): JSX.Element {
@@ -68,7 +82,7 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
       onDeleteSet,
       onEditSet
     } = this.props;
-    const { isCardListExpanded } = this.state;
+    const { isCardListExpanded, isPermalinkCopied } = this.state;
 
     return (
       <Paper className={classes.paper}>
@@ -88,9 +102,13 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
         {description}
         </div>
         <div>
-          <a className={classes.toggleCardListLink} onClick={this.toggleCardList}>
-            [{isCardListExpanded ? 'Hide' : 'Show'} {cards.length} cards]
+          <a className={classes.bottomLink} onClick={this.toggleCardList}>
+            [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
           </a>
+          {' '}
+          <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
+            <a className={classes.bottomLink}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
+          </CopyToClipboard>
         </div>
         {isCardListExpanded && (
           <div>
@@ -120,6 +138,10 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
     </Button>
   )
 
+  private afterCopyPermalink = () => {
+    this.setState({ isPermalinkCopied: true });
+  }
+
   private toggleCardList = () => {
     this.setState((state) => ({
       isCardListExpanded: !state.isCardListExpanded
@@ -127,4 +149,6 @@ class SetSummary extends React.Component<SetSummaryProps & WithStyles, SetSummar
   }
 }
 
-export default withStyles(SetSummary.styles)(SetSummary);
+export default compose(
+  withStyles(SetSummary.styles)
+)(SetSummary);

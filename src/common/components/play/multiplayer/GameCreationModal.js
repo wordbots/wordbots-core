@@ -10,6 +10,7 @@ export default class GameCreationModal extends React.Component {
   static propTypes = {
     availableDecks: arrayOf(object).isRequired,
     cards: arrayOf(object).isRequired,
+    sets: arrayOf(object).isRequired,
     path: string.isRequired,
     title: string,
 
@@ -81,7 +82,7 @@ export default class GameCreationModal extends React.Component {
   }
 
   render() {
-    const { availableDecks, cards, history, path, title } = this.props;
+    const { availableDecks, cards, sets, history, path, title } = this.props;
     const { gameName } = this.state;
 
     return (
@@ -90,6 +91,7 @@ export default class GameCreationModal extends React.Component {
         title={title}
         availableDecks={availableDecks}
         cards={cards}
+        sets={sets}
         history={history}
         onStartGame={this.handleCreateGame}
         gameName={gameName}

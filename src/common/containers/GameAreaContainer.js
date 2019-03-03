@@ -251,11 +251,11 @@ export class GameAreaContainer extends React.Component {
 
   /* Try to start a practice game from the URL. */
   tryToStartPracticeGame = (formatName, deckId) => {
-    const { history, onStartPractice, collection: { cards, decks } } = this.props;
+    const { history, onStartPractice, collection: { cards, decks, sets } } = this.props;
     const deck = decks.find(d => d.id === deckId);
 
     if (deck) {
-      onStartPractice(formatName, shuffleCardsInDeck(deck, cards));
+      onStartPractice(formatName, shuffleCardsInDeck(deck, cards, sets));
     } else {
       history.push(Singleplayer.baseUrl);
     }

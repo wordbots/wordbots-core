@@ -16,7 +16,7 @@ export function constantDeck(card: w.CardInStore, deckSize: number = 30): w.Deck
 }
 
 export const defaultDecks: w.Deck[] = (
-  defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards))
+  defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards, []))
 );
 
 export const emptyDeck: w.Deck = {id: '', name: '', cardIds: [], cards: [], setId: null};

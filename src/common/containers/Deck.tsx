@@ -89,21 +89,25 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     };
   }
 
+  get cardPool(): w.CardInStore[] {
+    const { cards, sets } = this.props;
+    const { setId } = this.state;
+
+    if (setId) {
+      const set = sets.find((s) => s.id === setId);
+      return set ? set.cards : [];
+    } else {
+      return cards;
+    }
+  }
+
   get selectedCards(): w.CardInStore[] {
-    return compact(this.state.selectedCardIds.map((id) => find(this.props.cards, { id })));
+    return compact(this.state.selectedCardIds.map((id) => find(this.cardPool, { id })));
   }
 
   get displayedCards(): w.CardInStore[] {
-    const { cards, sets } = this.props;
-    const { searchText, filters, costRange, sortCriteria, sortOrder, setId } = this.state;
-
-    let cardPool = cards;
-    if (setId) {
-      const set = sets.find((s) => s.id === setId);
-      cardPool = set ? set.cards : [];
-    }
-
-    return getDisplayedCards(cardPool, { searchText, filters, costRange, sortCriteria, sortOrder });
+    const { searchText, filters, costRange, sortCriteria, sortOrder } = this.state;
+    return getDisplayedCards(this.cardPool, { searchText, filters, costRange, sortCriteria, sortOrder });
   }
 
   public render(): JSX.Element {

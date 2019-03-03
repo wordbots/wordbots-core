@@ -14,7 +14,7 @@ import DeckSummary from '../components/cards/DeckSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as collectionActions from '../actions/collection';
 
-import Singleplayer from './Singleplayer';
+import { Singleplayer as SingleplayerBase } from './Singleplayer';
 
 interface DecksStateProps {
   cards: w.CardInStore[]
@@ -87,7 +87,7 @@ class Decks extends React.Component<DecksProps> {
                 <DeckSummary
                   key={idx}
                   deck={deck}
-                  cards={cardsInDeck(deck, cards)}
+                  cards={cardsInDeck(deck, cards, sets)}
                   set={sets.find((s) => s.id === deck.setId)}
                   loggedIn={loggedIn}
                   onDelete={onDeleteDeck}
@@ -114,7 +114,8 @@ class Decks extends React.Component<DecksProps> {
 
   private handleTryDeck = (deck: w.DeckInStore) => {
     const { history } = this.props;
-    history.push((Singleplayer as any).urlForGameMode('practice', deck), { previous: history.location });
+    const tryDeckUrl = SingleplayerBase.urlForGameMode('practice', 'normal', deck);
+    history.push(tryDeckUrl, { previous: history.location });
   }
 }
 

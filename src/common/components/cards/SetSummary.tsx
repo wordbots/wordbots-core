@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { compose } from 'redux';
+import { History } from 'history';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import { Paper, withStyles, WithStyles, Button } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
@@ -7,6 +8,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 
 import * as w from '../../types';
+import RouterDialog from '../RouterDialog';
 import Card from '../card/Card';
 
 interface SetSummaryBaseProps {
@@ -15,6 +17,8 @@ interface SetSummaryBaseProps {
   onCreateDeckFromSet: () => void
   onDeleteSet: () => void
   onEditSet: () => void
+  onPublishSet: () => void
+  history: History
 }
 
 interface SetSummaryState {
@@ -41,6 +45,9 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       minWidth: 60,
       marginLeft: 5,
       padding: '4px 8px'
+    },
+    dialogButton: {
+      marginLeft: 10
     },
     bottomLink: {
       cursor: 'pointer',
@@ -93,10 +100,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
           {
             (this.doesSetBelongToUser && !metadata.isPublished) && <span>
+              {this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 })}
               {this.renderButton('Edit', onEditSet)}
-              {this.renderButton('Delete', onDeleteSet, { color: 'secondary' })}
             </span>
           }
+          {this.doesSetBelongToUser && this.renderButton('Delete', onDeleteSet, { color: 'secondary' })}
         </div>
         <div>
         {description}
@@ -121,7 +129,46 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         <div className={classes.numDecksCreated}>
           {metadata.numDecksCreated || 0} decks created
         </div>
+        {this.renderConfirmPublishDialog()}
       </Paper>
+    );
+  }
+
+  private renderConfirmPublishDialog = () => {
+    const { set, history, classes } = this.props;
+
+    const actions: JSX.Element[] = [
+      <Button
+        key="publish"
+        color="primary"
+        variant="outlined"
+        className={classes.dialogButton}
+        onClick={this.handlePublishSet}
+      >
+        Publish
+      </Button>,
+      <Button
+        key="cancel"
+        color="primary"
+        variant="outlined"
+        className={classes.dialogButton}
+        onClick={this.closeDialogs}
+      >
+        Cancel
+      </Button>
+    ];
+
+    return (
+      <RouterDialog
+        path={`publish-${set.id}`}
+        title="Are you sure?"
+        history={history}
+        actions={actions}
+        style={{width: 400, position: 'relative'}}
+      >
+        <p>Are you sure you want to publish the <b>{set.name}</b> set?</p>
+        <p>Once a set is published, it can no longer be edited (only deleted), and it will be visible by all players.</p>
+      </RouterDialog>
     );
   }
 
@@ -146,6 +193,20 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     this.setState((state) => ({
       isCardListExpanded: !state.isCardListExpanded
     }));
+  }
+
+  private handleOpenPublishConfirmation = () => {
+    const { set, history } = this.props;
+    RouterDialog.openDialog(history, `publish-${set.id}`);
+  }
+
+  private handlePublishSet = () => {
+    this.props.onPublishSet();
+    this.closeDialogs();
+  }
+
+  private closeDialogs = () => {
+    RouterDialog.closeDialog(this.props.history);
   }
 }
 

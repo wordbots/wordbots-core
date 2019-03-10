@@ -94,6 +94,22 @@ const cardsHandlers = {
     };
   },
 
+  publishSet: (state: State, setId: string): State => {
+    const set: w.Set | undefined = state.sets.find((s) => s.id === setId);
+
+    if (!set) {
+      return state;
+    }
+
+    const publishedSet: w.Set = {...set, metadata: {...set.metadata, isPublished: true }};
+    firebase.saveSet(publishedSet);
+
+    return {
+      ...state,
+      sets: [...state.sets.filter((s) => s.id !== setId), publishedSet]
+    };
+  },
+
   saveCard: (state: State, cardProps: w.CreatorState): State => {
     const card = createCardFromProps(cardProps);
     return saveCard(state, card);
@@ -126,7 +142,7 @@ const cardsHandlers = {
       ...state,
       sets: [...state.sets.filter((s) => s.id !== set.id), set]
     };
-  }
+  },
 };
 
 // Saves a card, either as a new card or replacing an existing card.

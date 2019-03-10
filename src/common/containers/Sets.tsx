@@ -24,6 +24,7 @@ interface SetsStateProps {
 interface SetsDispatchProps {
   onDeleteSet: (setId: string) => void
   onEditSet: (setId: string) => void
+  onPublishSet: (setId: string) => void
 }
 
 type SetsProps = SetsStateProps & SetsDispatchProps & { history: History } & WithStyles;
@@ -42,6 +43,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
     },
     onEditSet: (setId: string) => {
       dispatch(collectionActions.editSet(setId));
+    },
+    onPublishSet: (setId: string) => {
+      dispatch(collectionActions.publishSet(setId));
     }
   };
 }
@@ -150,7 +154,9 @@ class Sets extends React.Component<SetsProps> {
       user={this.props.user}
       onCreateDeckFromSet={() => this.handleCreateDeckFromSet(set.id)}
       onDeleteSet={() => this.props.onDeleteSet(set.id)}
-      onEditSet={() => this.handleEditSet(set.id)} />
+      onEditSet={() => this.handleEditSet(set.id)}
+      onPublishSet={() => this.handlePublishSet(set.id)}
+      history={this.props.history} />
   )
 
   private handleCreateSet = () => {
@@ -164,6 +170,10 @@ class Sets extends React.Component<SetsProps> {
 
   private handleCreateDeckFromSet = (setId: string) => {
     this.props.history.push(`/deck/for/set/${setId}`);
+  }
+
+  private handlePublishSet = (setId: string) => {
+    this.props.onPublishSet(setId);
   }
 
   private handleShowAllSets = () => {

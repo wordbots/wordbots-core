@@ -8,6 +8,7 @@ export const EDIT_SET = 'EDIT_SET';
 export const EXPORT_CARDS = 'EXPORT_CARDS';
 export const IMPORT_CARDS = 'IMPORT_CARDS';
 export const OPEN_CARD_FOR_EDITING = 'OPEN_CARD_FOR_EDITING';
+export const PUBLISH_SET = 'PUBLISH_SET';
 export const REMOVE_FROM_COLLECTION = 'REMOVE_FROM_COLLECTION';
 export const SAVE_DECK = 'SAVE_DECK';
 export const SAVE_SET = 'SAVE_SET';
@@ -45,6 +46,13 @@ export function editDeck(deckId: w.DeckId | null): w.Action {
 export function editSet(setId: string): w.Action {
   return {
     type: EDIT_SET,
+    payload: { setId }
+  };
+}
+
+export function publishSet(setId: string): w.Action {
+  return {
+    type: PUBLISH_SET,
     payload: { setId }
   };
 }

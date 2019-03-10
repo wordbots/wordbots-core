@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { unpackDeck } from '../../util/cards.ts';
 import { BUILTIN_FORMATS } from '../../util/formats.ts';
-import RouterDialog from '../RouterDialog';
+import RouterDialog from '../RouterDialog.tsx';
 
 import DeckPicker from './DeckPicker.tsx';
 import FormatPicker from './FormatPicker';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, func, object } from 'prop-types';
 
 import Title from '../../Title';
-import RouterDialog from '../../RouterDialog';
+import RouterDialog from '../../RouterDialog.tsx';
 import PreGameModal from '../PreGameModal';
 
 import SingleplayerModeSelection from './SingleplayerModeSelection';

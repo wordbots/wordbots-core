@@ -3,7 +3,7 @@ import { func, object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-import RouterDialog from '../RouterDialog';
+import RouterDialog from '../RouterDialog.tsx';
 
 export default class ImportDialog extends React.Component {
   static propTypes = {

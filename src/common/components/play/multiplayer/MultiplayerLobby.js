@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, func, object } from 'prop-types';
 
 import { CHAT_WIDTH } from '../../../constants.ts';
-import RouterDialog from '../../RouterDialog';
+import RouterDialog from '../../RouterDialog.tsx';
 import Title from '../../Title';
 import PreGameModal from '../PreGameModal';
 

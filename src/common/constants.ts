@@ -146,3 +146,8 @@ function objToRegexes(obj: Record<string, string>): Record<string, RegExp> {
 
 export const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
 export const HINT_REGEXES = objToRegexes(HINTS);
+
+/* Player Colors */
+
+export const ORANGE_PLAYER_COLOR = '#ffb85d';
+export const BLUE_PLAYER_COLOR = '#badbff';

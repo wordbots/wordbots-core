@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { func, string } from 'prop-types';
 
-import { MAX_Z_INDEX } from '../../constants.ts';
+import { MAX_Z_INDEX, ORANGE_PLAYER_COLOR, BLUE_PLAYER_COLOR } from '../../constants.ts';
 
 const VictoryScreen = ({ winnerColor, winnerName, onClick }) => {
   const colors = {
-    'orange': '#ffb85d',
-    'blue': '#badbff'
+    'orange': ORANGE_PLAYER_COLOR,
+    'blue': BLUE_PLAYER_COLOR
   };
 
   return (

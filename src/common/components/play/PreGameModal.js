@@ -7,13 +7,14 @@ import { unpackDeck } from '../../util/cards.ts';
 import { BUILTIN_FORMATS } from '../../util/formats.ts';
 import RouterDialog from '../RouterDialog';
 
-import DeckPicker from './DeckPicker';
+import DeckPicker from './DeckPicker.tsx';
 import FormatPicker from './FormatPicker';
 
 export default class PreGameModal extends React.Component {
   static propTypes = {
     availableDecks: arrayOf(object).isRequired,
     cards: arrayOf(object).isRequired,
+    sets: arrayOf(object).isRequired,
     format: object,
     options: object,
     mode: string.isRequired,
@@ -46,8 +47,8 @@ export default class PreGameModal extends React.Component {
   }
 
   get validDecks() {
-    const { availableDecks, cards } = this.props;
-    return availableDecks.map(deck => unpackDeck(deck, cards)).filter(this.format.isDeckValid);
+    const { availableDecks, cards, sets } = this.props;
+    return availableDecks.map(deck => unpackDeck(deck, cards, sets)).filter(this.format.isDeckValid);
   }
 
   /* The currently selected deck, in its raw form. */
@@ -58,7 +59,8 @@ export default class PreGameModal extends React.Component {
 
   /* The currently selected deck, in a form ready to start a game with. */
   get deckForGame() {
-    return unpackDeck(this.deck, this.props.cards);
+    const { cards, sets } = this.props;
+    return unpackDeck(this.deck, cards, sets);
   }
 
   get actions() {
@@ -115,7 +117,7 @@ export default class PreGameModal extends React.Component {
   };
 
   render() {
-    const { cards, children, format, options, history, mode, title } = this.props;
+    const { cards, sets, children, format, options, history, mode, title } = this.props;
     const { enteredPassword, isPasswordInvalid, selectedDeckIdx, selectedFormatIdx } = this.state;
 
     return (
@@ -149,6 +151,7 @@ export default class PreGameModal extends React.Component {
         <DeckPicker
           cards={cards}
           availableDecks={this.validDecks}
+          sets={sets}
           selectedDeckIdx={selectedDeckIdx}
           onChooseDeck={this.handleChooseDeck} />
       </RouterDialog>

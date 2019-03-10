@@ -19,6 +19,7 @@ export function mapStateToProps(state) {
     socket: state.socket,
     cards: state.collection.cards,
     availableDecks: state.collection.decks,
+    sets: state.collection.sets,
     user: state.global.user
   };
 }
@@ -60,6 +61,7 @@ export class Multiplayer extends React.Component {
     socket: object,
     cards: arrayOf(object),
     availableDecks: arrayOf(object),
+    sets: arrayOf(object),
     user: object,
 
     history: object,
@@ -112,6 +114,7 @@ export class Multiplayer extends React.Component {
         <MultiplayerLobby
           socket={this.props.socket}
           cards={this.props.cards}
+          sets={this.props.sets}
           availableDecks={this.props.availableDecks}
           history={this.props.history}
           user={this.props.user}

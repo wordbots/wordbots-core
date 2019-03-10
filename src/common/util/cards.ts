@@ -25,19 +25,21 @@ export function areIdenticalCards(card1: w.Card, card2: w.Card): boolean {
   return compareCertainKeys(card1, card2, ['type', 'cost', 'text', 'stats']);
 }
 
-export function cardsInDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.CardInStore[] {
-  return compact((deck.cardIds || []).map((id) => cards.find((c) => c.id === id)));
+export function cardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInStore[] {
+  const set: w.Set | null = deck.setId && sets.find((s) => s.id === deck.setId) || null;
+  const cardPool = set ? set.cards : userCards;
+  return compact((deck.cardIds || []).map((id) => cardPool.find((c) => c.id === id)));
 }
 
-export function shuffleCardsInDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.CardInGame[] {
-  const unshuffledCards = cardsInDeck(deck, cards);
+export function shuffleCardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInGame[] {
+  const unshuffledCards = cardsInDeck(deck, userCards, sets);
   return (KEEP_DECKS_UNSHUFFLED ? unshuffledCards : shuffle(unshuffledCards)).map(instantiateCard);
 }
 
 // "Unpacks" a deck so that it can be used in a game.
 // { cardIds } => { cardIds, cards }
-export function unpackDeck(deck: w.DeckInStore, cards: w.CardInStore[]): w.Deck {
-  return { ...deck, cards: shuffleCardsInDeck(deck, cards) };
+export function unpackDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.Deck {
+  return { ...deck, cards: shuffleCardsInDeck(deck, userCards, sets) };
 }
 
 export function instantiateCard(card: w.CardInStore): w.CardInGame {

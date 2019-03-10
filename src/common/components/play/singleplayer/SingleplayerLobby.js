@@ -11,6 +11,7 @@ export default class SingleplayerLobby extends React.Component {
   static propTypes = {
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
+    sets: arrayOf(object),
 
     history: object,
 
@@ -31,7 +32,7 @@ export default class SingleplayerLobby extends React.Component {
   }
 
   render() {
-    const { availableDecks, cards, history } = this.props;
+    const { availableDecks, cards, sets, history } = this.props;
 
     return (
       <div >
@@ -43,6 +44,7 @@ export default class SingleplayerLobby extends React.Component {
             title="Start Practice Game"
             availableDecks={availableDecks}
             cards={cards}
+            sets={sets}
             history={history}
             onStartGame={this.handleStartPracticeGame} />
         </div>

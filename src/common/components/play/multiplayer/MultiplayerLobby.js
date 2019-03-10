@@ -17,6 +17,7 @@ export default class MultiplayerLobby extends React.Component {
     socket: object,
     availableDecks: arrayOf(object),
     cards: arrayOf(object),
+    sets: arrayOf(object),
     user: object,
 
     history: object,
@@ -86,7 +87,7 @@ export default class MultiplayerLobby extends React.Component {
 
   render() {
     const {
-      availableDecks, cards, history, socket, user,
+      availableDecks, cards, sets, history, socket, user,
       onConnect, onCancelHostGame, onSpectateGame
     } = this.props;
     const {
@@ -106,6 +107,7 @@ export default class MultiplayerLobby extends React.Component {
             options={casualGameBeingJoined.options}
             availableDecks={availableDecks}
             cards={cards}
+            sets={sets}
             history={history}
             onStartGame={this.handleJoinGame} />}
           <PreGameModal
@@ -114,6 +116,7 @@ export default class MultiplayerLobby extends React.Component {
             startButtonText="Join"
             availableDecks={availableDecks}
             cards={cards}
+            sets={sets}
             history={history}
             onStartGame={this.handleJoinQueue} />
           <GameCreationModal
@@ -121,6 +124,7 @@ export default class MultiplayerLobby extends React.Component {
             title="Create Casual Game"
             availableDecks={availableDecks}
             cards={cards}
+            sets={sets}
             history={history}
             onCreateGame={this.handleHostGame} />
         </div>

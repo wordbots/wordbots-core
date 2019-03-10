@@ -1,36 +1,34 @@
 import * as React from 'react';
-import { arrayOf, func, number, object } from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { cardsInDeck } from '../../util/cards.ts';
-import { sortDecks } from '../../util/decks.ts';
-import EnergyCurve from '../cards/EnergyCurve.tsx';
+import * as w from '../../types';
+import { cardsInDeck } from '../../util/cards';
+import { sortDecks } from '../../util/decks';
+import EnergyCurve from '../cards/EnergyCurve';
 
-export default class DeckPicker extends React.Component {
-  static propTypes = {
-    cards: arrayOf(object),
-    availableDecks: arrayOf(object),
-    selectedDeckIdx: number,
-    onChooseDeck: func
-  };
+interface DeckPickerProps {
+  cards: w.CardInStore[]
+  availableDecks: w.DeckInStore[]
+  sets: w.Set[]
+  selectedDeckIdx: number
+  onChooseDeck: (deckIdx: number) => {}
+}
 
-  get noDecks() {
+export default class DeckPicker extends React.Component<DeckPickerProps> {
+  get noDecks(): boolean {
     return this.props.availableDecks.length === 0;
   }
 
-  get cardsInDeck() {
-    return this.noDecks ? [] : cardsInDeck(this.props.availableDecks[this.props.selectedDeckIdx], this.props.cards);
+  get cardsInDeck(): w.CardInStore[] {
+    const { availableDecks, selectedDeckIdx, cards, sets } = this.props;
+    return this.noDecks ? [] : cardsInDeck(availableDecks[selectedDeckIdx], cards, sets);
   }
 
-  handleSelectDeck = (event) => {
-    this.props.onChooseDeck(event.target.value);
-  }
-
-  render() {
+  public render(): JSX.Element {
     return (
       <React.Fragment>
         <FormControl style={{ width: '100%', marginBottom: 15 }} error={this.noDecks}>
@@ -56,5 +54,9 @@ export default class DeckPicker extends React.Component {
         <EnergyCurve cards={this.cardsInDeck} height={80} />
       </React.Fragment>
     );
+  }
+
+  private handleSelectDeck = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.onChooseDeck(parseInt(event.target.value, 10));
   }
 }

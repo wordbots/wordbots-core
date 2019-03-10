@@ -59,19 +59,17 @@ export class Singleplayer extends React.Component<SingleplayerProps & { history:
     );
   }
 
-  private selectMode = (mode: string, format: w.Format | null = null, deck = null) => {
+  private selectMode = (mode: string, format: w.Format | null = null, deck: w.DeckInStore | null = null) => {
     this.props.history.push(Singleplayer.urlForGameMode(mode, format, deck));
   }
 
   private renderLobby = () => {
-    const { availableDecks, cards, sets, history, started, socket } = this.props;
+    const { availableDecks, cards, sets, history, started } = this.props;
     if (started && Singleplayer.isInGameUrl(history.location.pathname)) {
       return <GameAreaContainer />;
     } else {
       return (
         <SingleplayerLobby
-          socket={socket}
-          gameMode={history.location.pathname.split('/singleplayer')[1]}
           cards={cards}
           availableDecks={availableDecks}
           sets={sets}

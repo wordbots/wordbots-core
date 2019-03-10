@@ -226,9 +226,9 @@ export interface SocketState {
   gameName: string | null
   games: m.Game[]
   hosting: boolean
-  inQueue: number
   playersOnline: m.ClientID[]
   queuing: boolean
+  queueSize: number
   userDataByClientId: Record<m.ClientID, m.UserData>
   waitingPlayers: m.GameWaitingForPlayers[]
 }

@@ -1,8 +1,12 @@
 import * as React from 'react';
-import { arrayOf, func, object } from 'prop-types';
+import { History } from 'history';
+import * as fb from 'firebase';
 
-import { CHAT_WIDTH } from '../../../constants.ts';
-import RouterDialog from '../../RouterDialog.tsx';
+import * as w from '../../../types';
+import * as m from '../../../../server/multiplayer/multiplayer';
+import { CHAT_WIDTH } from '../../../constants';
+import { GameFormat } from '../../../util/formats';
+import RouterDialog from '../../RouterDialog';
 import Title from '../../Title';
 import PreGameModal from '../PreGameModal';
 
@@ -12,80 +16,44 @@ import LobbyStatus from './LobbyStatus';
 import MultiplayerModeSelection from './MultiplayerModeSelection';
 import Waiting from './Waiting';
 
-export default class MultiplayerLobby extends React.Component {
-  static propTypes = {
-    socket: object,
-    availableDecks: arrayOf(object),
-    cards: arrayOf(object),
-    sets: arrayOf(object),
-    user: object,
+interface MultiplayerLobbyProps {
+  socket: w.SocketState
+  availableDecks: w.DeckInStore[]
+  cards: w.CardInStore[]
+  sets: w.Set[]
+  user: fb.User | null
+  history: History
 
-    history: object,
+  onConnect: () => void
+  onJoinGame: (id: m.ClientID, name: string, deck: w.Deck) => void
+  onSpectateGame: (id: m.ClientID, name: string) => void
+  onJoinQueue: (format: w.Format, deck: w.Deck) => void
+  onLeaveQueue: () => void
+  onHostGame: (name: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => void
+  onCancelHostGame: () => void
+}
 
-    onConnect: func,
-    onJoinGame: func,
-    onSpectateGame: func,
-    onJoinQueue: func,
-    onLeaveQueue: func,
-    onHostGame: func,
-    onCancelHostGame: func
-  };
+interface MultiplayerLobbyState {
+  casualGameBeingJoined?: {
+    id: string
+    name: string
+    format: GameFormat
+    options: w.GameOptions
+  }
+  queueFormatName: string | null
+}
 
-  state = {
-    casualGameBeingJoined: null,
+export default class MultiplayerLobby extends React.Component<MultiplayerLobbyProps, MultiplayerLobbyState> {
+  public state: MultiplayerLobbyState = {
     queueFormatName: null
   };
 
-  get isWaiting() {
+  get isWaiting(): boolean {
     const { hosting, queuing } = this.props.socket;
     return hosting || queuing;
   }
 
-  handleSelectMode = (mode) => {
-    RouterDialog.openDialog(this.props.history, mode);
-  };
-
-  handleJoinQueue = (formatName, deck) => {
-    this.setState({ queueFormatName: formatName }, () => {
-      this.props.onJoinQueue(formatName, deck);
-    });
-  };
-
-  handleLeaveQueue = () => {
-    this.props.onLeaveQueue();
-  };
-
-  handleClickJoinCasualGame = (id, name, format, options) => {
-    this.setState({
-      casualGameBeingJoined: { id, name, format, options }
-    }, () => {
-      this.handleSelectMode('casual');
-    });
-  }
-
-  handleJoinGame = (formatName, deck) => {
-    const { id, name } = this.state.casualGameBeingJoined;
-    this.props.onJoinGame(id, name, deck);
-  };
-
-  handleHostGame = (gameName, formatName, deck, options) => {
-    this.props.onHostGame(gameName, formatName, deck, options);
-  };
-
-  renderWaiting() {
-    const { hosting, queuing, queueSize } = this.props.socket;
-    if (hosting || queuing) {
-      return (
-        <Waiting
-          inQueue={queuing}
-          queueFormat={this.state.queueFormatName}
-          queueSize={queueSize}
-          onLeaveQueue={this.handleLeaveQueue} />
-      );
-    }
-  }
-
-  render() {
+  public render(): JSX.Element {
     const {
       availableDecks, cards, sets, history, socket, user,
       onConnect, onCancelHostGame, onSpectateGame
@@ -158,5 +126,52 @@ export default class MultiplayerLobby extends React.Component {
         </div>
       </div>
     );
+  }
+
+  private handleSelectMode = (mode: string) => {
+    RouterDialog.openDialog(this.props.history, mode);
+  }
+
+  private handleJoinQueue = (formatName: w.Format, deck: w.Deck) => {
+    this.setState({ queueFormatName: formatName }, () => {
+      this.props.onJoinQueue(formatName, deck);
+    });
+  }
+
+  private handleLeaveQueue = () => {
+    this.props.onLeaveQueue();
+  }
+
+  private handleClickJoinCasualGame = (id: string, name: string, format: GameFormat, options: w.GameOptions) => {
+    this.setState({
+      casualGameBeingJoined: { id, name, format, options }
+    }, () => {
+      this.handleSelectMode('casual');
+    });
+  }
+
+  private handleJoinGame = (_formatName: w.Format, deck: w.Deck) => {
+    const { casualGameBeingJoined } = this.state;
+    if (casualGameBeingJoined) {
+      const { id, name } = casualGameBeingJoined;
+      this.props.onJoinGame(id, name, deck);
+    }
+  }
+
+  private handleHostGame = (gameName: string, formatName: w.Format, deck: w.Deck, options: w.GameOptions) => {
+    this.props.onHostGame(gameName, formatName, deck, options);
+  }
+
+  private renderWaiting(): JSX.Element | undefined {
+    const { hosting, queuing, queueSize } = this.props.socket;
+    if (hosting || queuing) {
+      return (
+        <Waiting
+          inQueue={queuing}
+          queueFormat={this.state.queueFormatName}
+          queueSize={queueSize}
+          onLeaveQueue={this.handleLeaveQueue} />
+      );
+    }
   }
 }

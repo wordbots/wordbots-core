@@ -1,28 +1,15 @@
 import * as React from 'react';
-import { bool, func } from 'prop-types';
 
 import GameMode from '../GameMode';
 
-export default class MultiplayerModeSelection extends React.Component {
-  static propTypes = {
-    disabled: bool,
-    isGuest: bool,
-    onSelectMode: func
-  };
+interface MultiplayerModeSelectionProps {
+  disabled?: boolean
+  isGuest: boolean
+  onSelectMode: (modeStr: string) => void
+}
 
-  static defaultProps = {
-    disabled: false
-  };
-
-  handleClickCreateCasual = () => {
-    this.props.onSelectMode('host');
-  }
-
-  handleClickMatchmaking = () => {
-    this.props.onSelectMode('matchmaking');
-  }
-
-  render() {
+export default class MultiplayerModeSelection extends React.Component<MultiplayerModeSelectionProps> {
+  public render(): JSX.Element {
     const { disabled, isGuest } = this.props;
     return (
       <div style={{
@@ -43,4 +30,13 @@ export default class MultiplayerModeSelection extends React.Component {
       </div>
     );
   }
+
+  private handleClickCreateCasual = () => {
+    this.props.onSelectMode('host');
+  }
+
+  private handleClickMatchmaking = () => {
+    this.props.onSelectMode('matchmaking');
+  }
+
 }

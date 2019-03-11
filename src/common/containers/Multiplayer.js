@@ -6,7 +6,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { compact } from 'lodash';
 
 import Chat from '../components/play/multiplayer/Chat';
-import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
+import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby.tsx';
 import * as socketActions from '../actions/socket.ts';
 
 import GameAreaContainer from './GameAreaContainer';

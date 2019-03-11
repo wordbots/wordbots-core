@@ -1,25 +1,28 @@
 import * as React from 'react';
-import { func, object, string } from 'prop-types';
+import * as fb from 'firebase';
 import Button from '@material-ui/core/Button';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 import FontIcon from 'material-ui/FontIcon';
 
-import { guestUID } from '../../../util/multiplayer.ts';
-import { GameFormat } from '../../../util/formats.ts';
+import * as w from '../../../types';
+import * as m from '../../../../server/multiplayer/multiplayer';
+import { guestUID } from '../../../util/multiplayer';
+import { GameFormat } from '../../../util/formats';
 
-export default class GameRow extends React.Component {
-  static propTypes = {
-    game: object,
-    user: object,
-    clientId: string,
-    userDataByClientId: object,
+import { DisplayedGame } from './GameBrowser';
 
-    onCancelHostGame: func,
-    onJoinGame: func,
-    onSpectateGame: func
-  };
+interface GameRowProps {
+  game: DisplayedGame
+  user: fb.User | null
+  clientId: m.ClientID
+  userDataByClientId: Record<m.ClientID, m.UserData>
+  onCancelHostGame: () => void
+  onJoinGame: (id: string, name: string, format: GameFormat, options: w.GameOptions) => void
+  onSpectateGame: (id: m.ClientID, name: string) => void
+}
 
-  get myUID() {
+export default class GameRow extends React.Component<GameRowProps> {
+  get myUID(): string {
     const { clientId, user } = this.props;
     if (user) {
       return user.uid;
@@ -28,25 +31,40 @@ export default class GameRow extends React.Component {
     }
   }
 
-  get isMyGame() {
+  get isMyGame(): boolean {
     const { game, userDataByClientId } = this.props;
-    return game.players.some(clientId =>
+    return game.players.some((clientId) =>
       userDataByClientId[clientId] && userDataByClientId[clientId].uid === this.myUID
     );
   }
 
-  handleJoinGame = () => {
+  public render(): JSX.Element {
+    const { game } = this.props;
+    return (
+      <TableRow key={game.id} selected={this.isMyGame}>
+        <TableRowColumn>{game.name}</TableRowColumn>
+        <TableRowColumn>{GameFormat.fromString(game.format).displayName}</TableRowColumn>
+        <TableRowColumn>{game.players.map(this.renderPlayerName).join(', ')}</TableRowColumn>
+        <TableRowColumn>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableRowColumn>
+        <TableRowColumn style={{textAlign: 'right'}}>
+          {this.renderButtons()}
+        </TableRowColumn>
+      </TableRow>
+    );
+  }
+
+  private handleJoinGame = () => {
     const { game: { id, name, format, options }, onJoinGame } = this.props;
 
     onJoinGame(id, name, GameFormat.fromString(format), options);
-  };
+  }
 
-  handleSpectateGame = () => {
+  private handleSpectateGame = () => {
     const { game, onSpectateGame } = this.props;
     onSpectateGame(game.id, game.name);
-  };
+  }
 
-  renderPlayerName = (clientId) => {
+  private renderPlayerName = (clientId: m.ClientID) => {
     const { userDataByClientId } = this.props;
     const userData = userDataByClientId[clientId];
     if (userData) {
@@ -56,7 +74,7 @@ export default class GameRow extends React.Component {
     }
   }
 
-  renderButtons = () => {
+  private renderButtons = () => {
     const { game } = this.props;
     if (!this.isMyGame) {
       return (game.players.length === 1) ?
@@ -95,20 +113,5 @@ export default class GameRow extends React.Component {
         </Button>
       );
     }
-  }
-
-  render() {
-    const { game } = this.props;
-    return (
-      <TableRow key={game.id} selected={this.isMyGame}>
-        <TableRowColumn>{game.name}</TableRowColumn>
-        <TableRowColumn>{GameFormat.fromString(game.format).displayName}</TableRowColumn>
-        <TableRowColumn>{game.players.map(this.renderPlayerName).join(', ')}</TableRowColumn>
-        <TableRowColumn>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableRowColumn>
-        <TableRowColumn style={{textAlign: 'right'}}>
-          {this.renderButtons()}
-        </TableRowColumn>
-      </TableRow>
-    );
   }
 }

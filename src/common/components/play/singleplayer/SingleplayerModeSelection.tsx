@@ -1,26 +1,13 @@
 import * as React from 'react';
-import { func } from 'prop-types';
 
 import GameMode from '../GameMode';
 
-export default class SinglePlayerModeSelection extends React.Component {
-  static propTypes = {
-    onSelectMode: func
-  };
+interface SinglePlayerModeSelectionProps {
+  onSelectMode: (modeStr: string) => void
+}
 
-  handleClickTutorial = () => {
-    this.props.onSelectMode('tutorial');
-  }
-
-  handleClickPractice = () => {
-    this.props.onSelectMode('practice');
-  }
-
-  handleClickSandbox = () => {
-    this.props.onSelectMode('sandbox');
-  }
-
-  render() {
+export default class SinglePlayerModeSelection extends React.Component<SinglePlayerModeSelectionProps> {
+  public render(): JSX.Element {
     return (
       <div style={{
         display: 'flex',
@@ -45,5 +32,17 @@ export default class SinglePlayerModeSelection extends React.Component {
           disabled />
       </div>
     );
+  }
+
+  private handleClickTutorial = () => {
+    this.props.onSelectMode('tutorial');
+  }
+
+  private handleClickPractice = () => {
+    this.props.onSelectMode('practice');
+  }
+
+  private handleClickSandbox = () => {
+    this.props.onSelectMode('sandbox');
   }
 }

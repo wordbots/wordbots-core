@@ -1,21 +1,20 @@
 import * as React from 'react';
-import { func, number } from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { BUILTIN_FORMATS } from '../../util/formats.ts';
+import { BUILTIN_FORMATS, GameFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
-export default class FormatPicker extends React.Component {
-  static propTypes = {
-    selectedFormatIdx: number,
-    onChooseFormat: func
-  };
+interface FormatPickerProps {
+  selectedFormatIdx: number
+  onChooseFormat: (formatIdx: number) => void
+}
 
-  get styles() {
+export default class FormatPicker extends React.Component<FormatPickerProps> {
+  get styles(): Record<string, React.CSSProperties> {
     return {
       body: {
         position: 'relative'
@@ -32,14 +31,10 @@ export default class FormatPicker extends React.Component {
     };
   }
 
-  handleSelectFormat = (event) => {
-    this.props.onChooseFormat(event.target.value);
-  }
-
-  render() {
+  public render(): JSX.Element {
     return (
       <div style={this.styles.body}>
-        <FormControl style={{ width: '100%', marginBottom: 15 }} error={this.noDecks}>
+        <FormControl style={{ width: '100%', marginBottom: 15 }}>
           <InputLabel>Choose a format</InputLabel>
           <Select
             style={this.styles.select}
@@ -56,11 +51,15 @@ export default class FormatPicker extends React.Component {
           html
           place="left"
           className="formats-tooltip"
-          text={BUILTIN_FORMATS.map(f => `<b>${f.displayName}:</b> ${f.description}`).join('<br><br>')}
+          text={BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>')}
         >
           <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
         </Tooltip>
       </div>
     );
+  }
+
+  private handleSelectFormat = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.onChooseFormat(parseInt(event.currentTarget.value, 10));
   }
 }

@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { bool, string } from 'prop-types';
 
+import { ORANGE_PLAYER_COLOR, BLUE_PLAYER_COLOR } from '../../constants.ts';
+
 const PlayerName = ({ color, opponent, playerName }) => (
   <div style={{
     position: 'absolute',
-    backgroundColor: {orange: '#ffb85d', blue: '#badbff'}[color],
+    backgroundColor: {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[color],
     color: 'white',
     fontFamily: 'Carter One',
     fontSize: 32,

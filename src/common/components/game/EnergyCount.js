@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import { times } from 'lodash';
 
 import { id } from '../../util/common.ts';
+import { ORANGE_PLAYER_COLOR, BLUE_PLAYER_COLOR } from '../../constants.ts';
 
 class EnergyCount extends React.Component {
   static propTypes = {
@@ -18,7 +19,7 @@ class EnergyCount extends React.Component {
         style={{
           height: 64,
           width: 18,
-          backgroundColor: filled ? {orange: '#ffb85d', blue: '#badbff'}[color] : 'transparent',
+          backgroundColor: filled ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[color] : 'transparent',
           marginLeft: 8,
           border: '3px solid white',
           borderRadius: 4

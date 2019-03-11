@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { arrayOf, string } from 'prop-types';
+import { arrayOf, string, number } from 'prop-types';
 
 import { inBrowser, isFlagSet } from '../../util/browser.tsx';
 
@@ -8,7 +8,8 @@ const soundManager = inBrowser() ? require('soundmanager2').soundManager : null;
 
 export default class Sfx extends React.Component {
   static propTypes = {
-    queue: arrayOf(string)
+    queue: arrayOf(string),
+    volume: number
   };
 
   state = {
@@ -38,13 +39,15 @@ export default class Sfx extends React.Component {
   };
 
   render() {
+    const { volume } = this.props;
+
     this.disableDebugMode();
 
     if (this.enabled && this.currentSound) {
       return (
         <Sound
           url={`/static/sound/${this.currentSound}`}
-          volume={45}
+          volume={volume}
           playStatus={Sound.status.PLAYING}
           onFinishedPlaying={this.proceedToNextSound} />
       );

@@ -20,7 +20,7 @@ import FullscreenToggle from './FullscreenToggle';
 import GameNotification from './GameNotification';
 import PlayerArea from './PlayerArea';
 import Sfx from './Sfx';
-import SoundToggle from './SoundToggle';
+import SoundToggle from './SoundToggle.tsx';
 import Status from './Status';
 import Timer from './Timer';
 import VictoryScreen from './VictoryScreen';
@@ -58,6 +58,7 @@ export const gameProps = {
   eventQueue: arrayOf(object),
   sfxQueue: arrayOf(string),
   tutorialStep: object,
+  volume: number,
 
   history: object,
   location: object,
@@ -91,7 +92,8 @@ export default class GameArea extends React.Component {
     onNextTutorialStep: func,
     onPrevTutorialStep: func,
     onSelectTile: func,
-    onAddCardToTopOfDeck: func
+    onAddCardToTopOfDeck: func,
+    onSetVolume: func
   };
   /* eslint-enable react/no-unused-prop-types */
 
@@ -161,9 +163,9 @@ export default class GameArea extends React.Component {
     const {
       attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
       isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
-      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,
+      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
-      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep
+      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onSetVolume
     } = this.props;
     const { areaHeight, boardSize } = this.state;
 
@@ -184,7 +186,7 @@ export default class GameArea extends React.Component {
         <div>
           <Helmet title="Play" />
           <GameNotification text="It's your turn!" enabled={currentTurn === player} />
-          <Sfx queue={sfxQueue} />
+          <Sfx queue={sfxQueue} volume={volume} />
           {(isMyTurn || isSandbox) && <Status type={status.type} message={status.message} />}
         </div>
 
@@ -228,10 +230,10 @@ export default class GameArea extends React.Component {
                 onPassTurn={onPassTurn} />
               <div style={{
                 display: 'flex',
-                justifyContent: 'space-around',
-                marginTop: 10
+                flexDirection: 'column',
+                justifyContent: 'space-around'
               }}>
-                <SoundToggle />
+                <SoundToggle onSetVolume={onSetVolume} volume={volume} />
                 <FullscreenToggle onClick={this.handleToggleFullScreen} />
               </div>
             </div>

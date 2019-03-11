@@ -153,3 +153,7 @@ a.topLink:hover {
 #end-turn-button:enabled:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
+
+.volume-slider {
+  transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
+}

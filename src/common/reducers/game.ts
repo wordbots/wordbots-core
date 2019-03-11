@@ -108,6 +108,9 @@ export function handleAction(
       return state;
     }
 
+    case actions.SET_VOLUME:
+      return { ...state, volume: payload.volume };
+
     case socketActions.CONNECTING:
       return Object.assign(state, {started: false});
 

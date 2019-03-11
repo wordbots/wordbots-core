@@ -4,7 +4,7 @@ import * as CopyToClipboard from 'react-copy-to-clipboard';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-import RouterDialog from '../RouterDialog';
+import RouterDialog from '../RouterDialog.tsx';
 
 export default class ExportDialog extends React.Component {
   static propTypes = {

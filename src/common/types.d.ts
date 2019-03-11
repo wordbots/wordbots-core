@@ -6,6 +6,8 @@ import * as m from '../server/multiplayer/multiplayer';
 
 /* Simple types */
 
+type timestamp = number;
+
 export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
 export type CardId = string;
@@ -46,7 +48,7 @@ export interface DeckInStore {
   id: DeckId
   name: string
   cardIds: string[]
-  timestamp?: number
+  timestamp?: timestamp
   setId: string | null
 }
 
@@ -79,7 +81,7 @@ export interface CardInStore {
   source?: string
   spriteV?: number
   parserV?: number | null
-  timestamp?: number
+  timestamp?: timestamp
 }
 
 export interface ObfuscatedCard {
@@ -95,7 +97,7 @@ export interface Set {
     authorId: string
     authorName: string
     isPublished: boolean
-    lastModified: number  // timestamp
+    lastModified: timestamp
     numDecksCreated?: number
   }
 }
@@ -131,7 +133,7 @@ export interface SavedGame { // Interface for games stored in Firebase.
   format: Format,
   type: string, // TODO more precise
   winner: PlayerColor | null,
-  timestamp: number
+  timestamp: timestamp
 }
 
 export interface EventTarget {
@@ -364,7 +366,7 @@ export interface LoggedAction {
   id: string
   user: string
   text: string
-  timestamp: number
+  timestamp: timestamp
   cards: Record<string, CardInGame>
 }
 
@@ -386,7 +388,7 @@ export interface ParseResult {
 
 export interface ChatMessage {
   text: string
-  timestamp: number
+  timestamp: timestamp
   user: string
 }
 

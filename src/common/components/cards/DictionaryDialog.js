@@ -13,7 +13,7 @@ import { DICTIONARY_TAB_Z_INDEX } from '../../constants.ts';
 import { getHash, setHash } from '../../util/browser.tsx';
 import { allKeywords, contractKeywords } from '../../util/cards.ts';
 import { listenToDictionaryData } from '../../util/firebase.ts';
-import RouterDialog from '../RouterDialog';
+import RouterDialog from '../RouterDialog.tsx';
 import StatusIcon from '../card/StatusIcon.tsx';
 
 import DictionarySearchBar from './DictionarySearchBar';

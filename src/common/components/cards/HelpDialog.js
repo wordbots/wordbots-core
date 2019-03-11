@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IFrame from 'react-iframe';
 
 import MarkdownBlock from '../MarkdownBlock';
-import RouterDialog from '../RouterDialog';
+import RouterDialog from '../RouterDialog.tsx';
 
 export default class HelpDialog extends React.Component {
   static propTypes = {

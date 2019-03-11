@@ -54,6 +54,9 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case collectionActions.SAVE_SET:
         return c.saveSet(state, action.payload.set);
 
+      case collectionActions.PUBLISH_SET:
+        return c.publishSet(state, action.payload.setId);
+
       default:
         return state;
     }

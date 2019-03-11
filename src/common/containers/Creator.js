@@ -8,7 +8,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { createCardFromProps } from '../util/cards.ts';
 import Title from '../components/Title';
-import RouterDialog from '../components/RouterDialog';
+import RouterDialog from '../components/RouterDialog.tsx';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
 import * as creatorActions from '../actions/creator.ts';

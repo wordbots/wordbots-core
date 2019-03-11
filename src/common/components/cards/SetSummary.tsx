@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { compose } from 'redux';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
-import { Paper, withStyles, WithStyles, Button } from '@material-ui/core';
+import { Paper, withStyles, WithStyles, Button, Dialog, DialogActions, DialogContent } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
@@ -15,11 +15,13 @@ interface SetSummaryBaseProps {
   onCreateDeckFromSet: () => void
   onDeleteSet: () => void
   onEditSet: () => void
+  onPublishSet: () => void
 }
 
 interface SetSummaryState {
   isCardListExpanded: boolean,
-  isPermalinkCopied: boolean
+  isPermalinkCopied: boolean,
+  isPublishConfirmDialogOpen: boolean
 }
 
 type SetSummaryProps = SetSummaryBaseProps & WithStyles;
@@ -42,6 +44,9 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       marginLeft: 5,
       padding: '4px 8px'
     },
+    dialogButton: {
+      marginLeft: 10
+    },
     bottomLink: {
       cursor: 'pointer',
       textDecoration: 'underline',
@@ -61,7 +66,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
 
   public state = {
     isCardListExpanded: false,
-    isPermalinkCopied: false
+    isPermalinkCopied: false,
+    isPublishConfirmDialogOpen: false
   };
 
   get doesSetBelongToUser(): boolean {
@@ -93,10 +99,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
           {
             (this.doesSetBelongToUser && !metadata.isPublished) && <span>
+              {this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 })}
               {this.renderButton('Edit', onEditSet)}
-              {this.renderButton('Delete', onDeleteSet, { color: 'secondary' })}
             </span>
           }
+          {this.doesSetBelongToUser && this.renderButton('Delete', onDeleteSet, { color: 'secondary' })}
         </div>
         <div>
         {description}
@@ -121,7 +128,43 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         <div className={classes.numDecksCreated}>
           {metadata.numDecksCreated || 0} decks created
         </div>
+        {this.renderConfirmPublishDialog()}
       </Paper>
+    );
+  }
+
+  private renderConfirmPublishDialog = () => {
+    const { set, classes, onPublishSet } = this.props;
+    const { isPublishConfirmDialogOpen } = this.state;
+
+    return (
+      <Dialog
+        open={isPublishConfirmDialogOpen}
+        onClose={this.closePublishConfirmDialogue}
+      >
+        <DialogContent>
+          <p>Are you sure that you want to publish the <b>{set.name}</b> set?</p>
+          <p>Once a set is published, it can no longer be edited (only deleted), and it will be visible by all players.</p>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.dialogButton}
+            onClick={onPublishSet}
+          >
+            Publish
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.dialogButton}
+            onClick={this.closePublishConfirmDialogue}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 
@@ -146,6 +189,14 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     this.setState((state) => ({
       isCardListExpanded: !state.isCardListExpanded
     }));
+  }
+
+  private handleOpenPublishConfirmation = () => {
+    this.setState({ isPublishConfirmDialogOpen: true });
+  }
+
+  private closePublishConfirmDialogue = () => {
+    this.setState({ isPublishConfirmDialogOpen: false });
   }
 }
 

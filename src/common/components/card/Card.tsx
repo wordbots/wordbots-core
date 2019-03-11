@@ -19,7 +19,7 @@ import CardImage from './CardImage';
 import CardStat from './CardStat';
 import Sentence from './Sentence';
 
-interface CardProps {
+export interface CardProps {
   children?: string | JSX.Element[]
 
   id: string

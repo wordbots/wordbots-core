@@ -10,6 +10,8 @@ import '../../styles/index.css';
 import '../../styles/lib.css';
 import '../../styles/animations.css';
 
+require('object.values').shim();  // TODO remove this shim when Object.values() is no longer used in JS code
+
 declare const window: {
   localStorage: Record<string, string>
   VERSION: string

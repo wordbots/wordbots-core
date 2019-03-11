@@ -155,8 +155,7 @@ class Sets extends React.Component<SetsProps> {
       onCreateDeckFromSet={() => this.handleCreateDeckFromSet(set.id)}
       onDeleteSet={() => this.props.onDeleteSet(set.id)}
       onEditSet={() => this.handleEditSet(set.id)}
-      onPublishSet={() => this.handlePublishSet(set.id)}
-      history={this.props.history} />
+      onPublishSet={() => this.handlePublishSet(set.id)} />
   )
 
   private handleCreateSet = () => {

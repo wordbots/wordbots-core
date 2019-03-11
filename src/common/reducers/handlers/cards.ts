@@ -142,7 +142,7 @@ const cardsHandlers = {
       ...state,
       sets: [...state.sets.filter((s) => s.id !== set.id), set]
     };
-  },
+  }
 };
 
 // Saves a card, either as a new card or replacing an existing card.

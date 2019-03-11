@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { compose } from 'redux';
-import { History } from 'history';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import { Paper, withStyles, WithStyles, Button, Dialog, DialogActions, DialogContent } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
@@ -17,7 +16,6 @@ interface SetSummaryBaseProps {
   onDeleteSet: () => void
   onEditSet: () => void
   onPublishSet: () => void
-  history: History
 }
 
 interface SetSummaryState {

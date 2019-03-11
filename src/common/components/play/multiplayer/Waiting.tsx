@@ -1,40 +1,34 @@
 import * as React from 'react';
-import { bool, func, number, string } from 'prop-types';
-import moment from 'moment';
+import * as moment from 'moment';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { Pulse } from 'better-react-spinkit';
 
-export default class Waiting extends React.Component {
-  static propTypes = {
-    inQueue: bool.isRequired,
-    queueFormat: string,
-    queueSize: number,
-    onLeaveQueue: func
-  };
+interface WaitingProps {
+  inQueue: boolean
+  queueFormat: string
+  queueSize: number
+  onLeaveQueue: () => void
+}
 
-  static defaultProps = {
-    inQueue: false
-  };
+interface WaitingState {
+  waitingSecs: number
+}
 
-  state = {
+export default class Waiting extends React.Component<WaitingProps, WaitingState> {
+  public state = {
     waitingSecs: 0
-  }
+  };
 
-  componentDidMount() {
+  public componentDidMount(): void {
     // https://github.com/moment/momentjs.com/blob/master/docs/moment/07-customization/13-relative-time-threshold.md
     moment.relativeTimeThreshold('s', 60);
     moment.relativeTimeThreshold('ss', 3);
-    
+
     setTimeout(this.tick, 1000);
   }
 
-  tick = () => {
-    this.setState(state => ({ waitingSecs: state.waitingSecs + 1 }));
-    setTimeout(this.tick, 1000);
-  }
-
-  render() {
+  public render(): JSX.Element {
     const { inQueue, queueFormat, queueSize, onLeaveQueue } = this.props;
     return (
       <Paper style={{
@@ -75,5 +69,10 @@ export default class Waiting extends React.Component {
         </div>
       </Paper>
     );
+  }
+
+  private tick = () => {
+    this.setState((state) => ({ waitingSecs: state.waitingSecs + 1 }));
+    setTimeout(this.tick, 1000);
   }
 }

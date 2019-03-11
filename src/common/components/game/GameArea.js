@@ -8,7 +8,7 @@ import {
   HEADER_HEIGHT, CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
 } from '../../constants.ts';
 import { inBrowser } from '../../util/browser.tsx';
-import Chat from '../play/multiplayer/Chat';
+import Chat from '../play/multiplayer/Chat.tsx';
 
 import Board from './Board';
 import CardSelector from './CardSelector';

@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { object, number } from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import CardTooltip from '../../card/CardTooltip.tsx';
+import * as w from '../../../types';
+import CardTooltip from '../../card/CardTooltip';
 
-export default class ChatMessage extends React.Component {
-  static propTypes = {
-    message: object,
-    idx: number
-  };
+interface ChatMessageProps {
+  message: w.ChatMessage
+  idx: number
+}
 
-  render() {
+export default class ChatMessage extends React.Component<ChatMessageProps> {
+  public render(): JSX.Element {
     const { message, idx } = this.props;
 
     return (
@@ -21,8 +21,8 @@ export default class ChatMessage extends React.Component {
           classNames="chat-message"
         >
           <div
-            name="chat-message"
             key={idx}
+            className="chat-message"
             style={{
               color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
               marginBottom: 5,
@@ -36,7 +36,7 @@ export default class ChatMessage extends React.Component {
     );
   }
 
-  renderPhrase = (phrase, message, messageIdx, phraseIdx) => {
+  private renderPhrase = (phrase: string, message: w.ChatMessage, messageIdx: number, phraseIdx: number) => {
     const card = (message.cards || {})[phrase];
     const key = `${messageIdx}_${phrase}_${phraseIdx}`;
     if (card) {

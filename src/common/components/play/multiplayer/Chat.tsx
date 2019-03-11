@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { arrayOf, bool, func, object, string } from 'prop-types';
 import Drawer from 'material-ui/Drawer';
 import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
@@ -9,24 +8,32 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { chain as _, isEqual } from 'lodash';
 
-import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, CHAT_Z_INDEX } from '../../../constants.ts';
-import { id } from '../../../util/common.ts';
+import * as w from '../../../types';
+import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, CHAT_Z_INDEX } from '../../../constants';
+import { id } from '../../../util/common';
 
 import ChatMessage from './ChatMessage';
 
-export default class Chat extends React.Component {
-  static propTypes = {
-    roomName: string,
-    messages: arrayOf(object),
-    inGame: bool,
-    open: bool,
-    fullscreen: bool,
+interface ChatProps {
+  roomName: string
+  messages: w.ChatMessage[]
+  inGame: boolean
+  open: boolean
+  fullscreen: boolean
+  onSendMessage: (message: string) => void
+  toggleChat: () => void
+}
 
-    onSendMessage: func,
-    toggleChat: func
-  };
+interface ChatState {
+  chatFieldValue: string
+  optionsVisible: boolean
+  showServerMsgs: boolean
+  showGameMsgs: boolean
+  showChatMsgs: boolean
+}
 
-  state = {
+export default class Chat extends React.Component<ChatProps, ChatState> {
+  public state = {
     chatFieldValue: '',
     optionsVisible: false,
     showServerMsgs: true,
@@ -34,7 +41,13 @@ export default class Chat extends React.Component {
     showChatMsgs: true
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
+  private chat: any = null;  // TODO type this ref correctly
+
+  get isClosed(): boolean {
+    return this.props.inGame && !this.props.open;
+  }
+
+  public shouldComponentUpdate(nextProps: ChatProps, nextState: ChatState): boolean {
     return this.props.open !== nextProps.open
       || this.props.fullscreen !== nextProps.fullscreen
       || this.props.messages.length !== nextProps.messages.length
@@ -42,15 +55,32 @@ export default class Chat extends React.Component {
       || !isEqual(this.state, nextState);
   }
 
-  componentDidUpdate() {
+  public componentDidUpdate(): void {
     this.scrollToBottom();
   }
 
-  get isClosed() {
-    return this.props.inGame && !this.props.open;
+  public render(): JSX.Element {
+    const containerStyle: React.CSSProperties = {
+      paddingTop: this.props.fullscreen ? 0 : 64,
+      marginTop: 0,
+      height: '100%',
+      overflow: 'visible',
+      boxSizing: 'border-box',
+      zIndex: CHAT_Z_INDEX
+    };
+
+    return (
+      <Drawer
+        openSecondary
+        docked
+        containerStyle={containerStyle}
+        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : CHAT_WIDTH}>
+        {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
+      </Drawer>
+    );
   }
 
-  scrollToBottom() {
+  private scrollToBottom(): void {
     if (this.chat) {
       const scrollHeight = this.chat.scrollHeight;
       const height = this.chat.clientHeight;
@@ -59,22 +89,21 @@ export default class Chat extends React.Component {
     }
   }
 
-  mergeMessagesById(messages) {
-    function join(msgs) {
-      return Object.assign({}, msgs[0], {
-        text: msgs.map(m => m.text).join(' '),
-        cards: Object.assign({}, ...msgs.map(m => m.cards))
-      });
-    }
+  private mergeMessagesById(messages: w.ChatMessage[]): w.ChatMessage[] {
+    const join = (msgs: w.ChatMessage[]): w.ChatMessage => ({
+      ...msgs[0],
+      text: msgs.map((m) => m.text).join(' '),
+      cards: Object.assign({}, ...msgs.map((m) => m.cards))
+    });
 
     return _(messages)
-            .groupBy(msg => msg.id || id())
+            .groupBy((msg) => msg.id || id())
             .map(join)
             .sortBy('timestamp')
             .value();
   }
 
-  filterMessage = (message) => {
+  private filterMessage = (message: w.ChatMessage) => {
     if (message.user === '[Server]') {
       return this.state.showServerMsgs;
     } else if (message.user === '[Game]') {
@@ -84,27 +113,33 @@ export default class Chat extends React.Component {
     }
   }
 
-  handleChatChange = (evt) => {
+  private handleChatChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ chatFieldValue: evt.target.value });
-  };
+  }
 
-  handleChatKeypress = (evt) => {
+  private handleChatKeypress = (evt: React.KeyboardEvent<HTMLInputElement>) => {
     if (evt.charCode === 13) {
       this.props.onSendMessage(this.state.chatFieldValue);
       this.scrollToBottom();
       this.setState({ chatFieldValue: '' });
     }
-  };
+  }
 
-  toggleOptionsVisibility = () => {
-    this.setState(state => ({ optionsVisible: !state.optionsVisible }));
-  };
+  private toggleOptionsVisibility = () => {
+    this.setState((state) => ({ optionsVisible: !state.optionsVisible }));
+  }
 
-  toggleServerMessages = (e, value) => { this.setState({showServerMsgs: value}); };
-  toggleGameMessages = (e, value) => { this.setState({showGameMsgs: value}); };
-  togglePlayerChat = (e, value) => { this.setState({showChatMsgs: value}); };
+  private toggleServerMessages = (_e: React.MouseEvent<HTMLElement>, value: boolean) => {
+    this.setState({showServerMsgs: value});
+  }
+  private toggleGameMessages = (_e: React.MouseEvent<HTMLElement>, value: boolean) => {
+    this.setState({showGameMsgs: value});
+  }
+  private togglePlayerChat = (_e: React.MouseEvent<HTMLElement>, value: boolean) => {
+    this.setState({showChatMsgs: value});
+  }
 
-  renderClosedChat() {
+  private renderClosedChat(): JSX.Element {
     return (
       <div>
         <div style={{
@@ -135,17 +170,7 @@ export default class Chat extends React.Component {
     );
   }
 
-  renderChatClose() {
-    if (this.props.inGame) {
-      return (
-        <IconButton onClick={this.props.toggleChat}>
-          <FontIcon color="#888" className="material-icons">fast_forward</FontIcon>
-        </IconButton>
-      );
-    }
-  }
-
-  renderOpenChat() {
+  private renderOpenChat(): JSX.Element {
     const { inGame, messages, roomName, toggleChat } = this.props;
     const chatTitle = inGame ? 'Chat' : (roomName || 'Lobby');
 
@@ -179,7 +204,7 @@ export default class Chat extends React.Component {
         </div>
 
         <div
-          ref={(el) => {this.chat = el;}}
+          ref={(el) => {this.chat = el; }}
           style={{
             padding: 10,
             height: this.state.optionsVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
@@ -205,27 +230,6 @@ export default class Chat extends React.Component {
           />
         </div>
       </div>
-    );
-  }
-
-  render() {
-    const containerStyle = {
-      paddingTop: this.props.fullscreen ? 0: 64,
-      marginTop: 0,
-      height: '100%',
-      overflow: 'visible',
-      boxSizing: 'border-box',
-      zIndex: CHAT_Z_INDEX
-    };
-
-    return (
-      <Drawer
-        openSecondary
-        docked
-        containerStyle={containerStyle}
-        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : CHAT_WIDTH}>
-        {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
-      </Drawer>
     );
   }
 }

@@ -387,9 +387,11 @@ export interface ParseResult {
 /* Socket state subcomponents */
 
 export interface ChatMessage {
+  id?: string
   text: string
   timestamp: timestamp
   user: string
+  cards?: Record<string, CardInGame>
 }
 
 /* Vocabulary types */

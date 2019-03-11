@@ -56,6 +56,7 @@ export function mapStateToProps(state) {
     sfxQueue: game.sfxQueue,
     tutorialStep: currentTutorialStep(game),
     isPractice: game.practice,
+    volume: game.volume,
 
     gameOver: game.winner !== null,
     isTutorial: game.tutorial,
@@ -146,6 +147,9 @@ export function mapDispatchToProps(dispatch) {
     },
     onAddCardToTopOfDeck: (player, card) => {
       dispatch(gameActions.addCardToTopOfDeck(player, card));
+    },
+    onSetVolume: (volume) => {
+      dispatch(gameActions.setVolume(volume));
     }
   };
 }
@@ -344,7 +348,8 @@ export class GameAreaContainer extends React.Component {
       onNextTutorialStep={this.handleNextTutorialStep}
       onPrevTutorialStep={this.handlePrevTutorialStep}
       onSelectTile={this.onSelectTile}
-      onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck} />;
+      onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck}
+      onSetVolume={this.props.onSetVolume} />;
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GameAreaContainer));

@@ -80,7 +80,8 @@ const defaultState: w.GameState = {
   memory: {},
   sfxQueue: [],
   eventQueue: [],
-  rng: Math.random
+  rng: Math.random,
+  volume: 25
 };
 
 export default defaultState;

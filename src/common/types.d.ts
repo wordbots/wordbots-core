@@ -197,6 +197,7 @@ export interface GameState {
   tutorial: boolean
   usernames: PerPlayer<string>
   winner: PlayerColor | null
+  volume: number
 
   actionId?: string
   callbackAfterTargetSelected?: (state: GameState) => GameState

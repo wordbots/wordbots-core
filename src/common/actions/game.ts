@@ -17,6 +17,7 @@ export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
+export const SET_VOLUME = 'SET_VOLUME';
 
 export function startPractice(format: w.Format, deck: w.Deck): w.Action {
   return {
@@ -131,4 +132,11 @@ export function addCardToTopOfDeck(player: w.PlayerColor, card: w.Card): w.Actio
     type: ADD_CARD_TO_TOP_OF_DECK,
     payload: { player, card }
   };
+}
+
+export function setVolume(volume: number): w.Action {
+  return {
+    type: SET_VOLUME,
+    payload: { volume }
+  }
 }

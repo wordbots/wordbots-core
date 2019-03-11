@@ -19,7 +19,7 @@ export default class FullscreenToggle extends React.Component {
 
   render() {
     return (
-      <Tooltip text="Fullscreen" place="bottom" style={{ zIndex: MAX_Z_INDEX }}>
+      <Tooltip text="Fullscreen" place="right" style={{ zIndex: MAX_Z_INDEX }} additionalStyles={{ width: 36 }}>
         <IconButton
           style={{
             border: '2px solid #AAA',

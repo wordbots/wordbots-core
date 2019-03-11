@@ -14,7 +14,7 @@ export default class SoundToggle extends React.Component {
 
   render() {
     return (
-      <Tooltip text={isFlagSet('sound') ? 'Mute' : 'Unmute'} place="bottom" style={{ zIndex: MAX_Z_INDEX }}>
+      <Tooltip text={isFlagSet('sound') ? 'Mute' : 'Unmute'} place="right" style={{ zIndex: MAX_Z_INDEX }} additionalStyles={{ width: 36 }}>
         <IconButton
           style={{
             border: '2px solid #AAA',
@@ -23,7 +23,7 @@ export default class SoundToggle extends React.Component {
             padding: 0,
             height: 36,
             width: 36,
-            marginRight: 10
+            marginBottom: 10
           }}
           onClick={this.handleClick}
         >

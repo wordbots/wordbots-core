@@ -13,7 +13,8 @@ export default class Tooltip extends React.Component {
     className: string,
     disable: bool,
     html: bool,
-    place: string
+    place: string,
+    additionalStyles: object
   };
 
   static defaultProps = {
@@ -28,12 +29,12 @@ export default class Tooltip extends React.Component {
   tooltipId = id()
 
   render() {
-    const { inline, style, text, children, disable, place, html, className} = this.props;
+    const { inline, style, text, children, disable, place, html, className, additionalStyles} = this.props;
     const SpanOrDiv = inline ? 'span' : 'div';
 
     return (
       <SpanOrDiv>
-        <SpanOrDiv data-tip={text} data-for={this.tooltipId}>
+        <SpanOrDiv data-tip={text} data-for={this.tooltipId} style={additionalStyles}>
           {children}
         </SpanOrDiv>
         <SpanOrDiv style={style}>

@@ -40,7 +40,7 @@
     "babel-loader": "^8.0.1",
     "better-react-spinkit": "^2.0.4",
     "cookie-parser": "^1.4.3",
-    "copy-webpack-plugin": "^4.5.0",
+    "copy-webpack-plugin": "^5.0.1",
     "css-loader": "^1.0.0",
     "d3": "^3.5.16",
     "express": "^4.16.1",

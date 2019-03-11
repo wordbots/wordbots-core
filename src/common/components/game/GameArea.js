@@ -20,8 +20,7 @@ import FullscreenToggle from './FullscreenToggle';
 import GameNotification from './GameNotification';
 import PlayerArea from './PlayerArea';
 import Sfx from './Sfx';
-import SoundToggle from './SoundToggle';
-import VolumeControl from './VolumeControl.tsx';
+import SoundToggle from './SoundToggle.tsx';
 import Status from './Status';
 import Timer from './Timer';
 import VictoryScreen from './VictoryScreen';
@@ -234,8 +233,7 @@ export default class GameArea extends React.Component {
                 flexDirection: 'column',
                 justifyContent: 'space-around'
               }}>
-                <SoundToggle />
-                <VolumeControl onSetVolume={onSetVolume} volume={volume} />
+                <SoundToggle onSetVolume={onSetVolume} volume={volume} />
                 <FullscreenToggle onClick={this.handleToggleFullScreen} />
               </div>
             </div>

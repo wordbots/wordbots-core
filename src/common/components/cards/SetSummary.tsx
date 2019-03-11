@@ -2,13 +2,12 @@ import * as React from 'react';
 import { compose } from 'redux';
 import { History } from 'history';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
-import { Paper, withStyles, WithStyles, Button } from '@material-ui/core';
+import { Paper, withStyles, WithStyles, Button, Dialog, DialogActions, DialogContent } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 
 import * as w from '../../types';
-import RouterDialog from '../RouterDialog';
 import Card from '../card/Card';
 
 interface SetSummaryBaseProps {
@@ -23,7 +22,8 @@ interface SetSummaryBaseProps {
 
 interface SetSummaryState {
   isCardListExpanded: boolean,
-  isPermalinkCopied: boolean
+  isPermalinkCopied: boolean,
+  isPublishConfirmDialogOpen: boolean
 }
 
 type SetSummaryProps = SetSummaryBaseProps & WithStyles;
@@ -68,7 +68,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
 
   public state = {
     isCardListExpanded: false,
-    isPermalinkCopied: false
+    isPermalinkCopied: false,
+    isPublishConfirmDialogOpen: false
   };
 
   get doesSetBelongToUser(): boolean {
@@ -135,40 +136,37 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   }
 
   private renderConfirmPublishDialog = () => {
-    const { set, history, classes } = this.props;
-
-    const actions: JSX.Element[] = [
-      <Button
-        key="publish"
-        color="primary"
-        variant="outlined"
-        className={classes.dialogButton}
-        onClick={this.handlePublishSet}
-      >
-        Publish
-      </Button>,
-      <Button
-        key="cancel"
-        color="primary"
-        variant="outlined"
-        className={classes.dialogButton}
-        onClick={this.closeDialogs}
-      >
-        Cancel
-      </Button>
-    ];
+    const { set, classes, onPublishSet } = this.props;
+    const { isPublishConfirmDialogOpen } = this.state;
 
     return (
-      <RouterDialog
-        path={`publish-${set.id}`}
-        title="Are you sure?"
-        history={history}
-        actions={actions}
-        style={{width: 400, position: 'relative'}}
+      <Dialog
+        open={isPublishConfirmDialogOpen}
+        onClose={this.closePublishConfirmDialogue}
       >
-        <p>Are you sure you want to publish the <b>{set.name}</b> set?</p>
-        <p>Once a set is published, it can no longer be edited (only deleted), and it will be visible by all players.</p>
-      </RouterDialog>
+        <DialogContent>
+          <p>Are you sure that you want to publish the <b>{set.name}</b> set?</p>
+          <p>Once a set is published, it can no longer be edited (only deleted), and it will be visible by all players.</p>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.dialogButton}
+            onClick={onPublishSet}
+          >
+            Publish
+          </Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.dialogButton}
+            onClick={this.closePublishConfirmDialogue}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 
@@ -196,17 +194,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   }
 
   private handleOpenPublishConfirmation = () => {
-    const { set, history } = this.props;
-    RouterDialog.openDialog(history, `publish-${set.id}`);
+    this.setState({ isPublishConfirmDialogOpen: true });
   }
 
-  private handlePublishSet = () => {
-    this.props.onPublishSet();
-    this.closeDialogs();
-  }
-
-  private closeDialogs = () => {
-    RouterDialog.closeDialog(this.props.history);
+  private closePublishConfirmDialogue = () => {
+    this.setState({ isPublishConfirmDialogOpen: false });
   }
 }
 

@@ -1,4 +1,3 @@
-/*eslint-disable import/no-unassigned-import */
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Store } from 'redux';
@@ -10,7 +9,8 @@ import configureStore from '../common/store/configureStore';
 import '../../styles/index.css';
 import '../../styles/lib.css';
 import '../../styles/animations.css';
-/* eslint-enable import/no-unassigned-import */
+
+require('object.values').shim();  // TODO remove this shim when Object.values() is no longer used in JS code
 
 declare const window: {
   localStorage: Record<string, string>

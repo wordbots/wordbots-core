@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 
 import * as collectionActions from '../actions/collection.ts';
 import * as gameActions from '../actions/game.ts';
-import PaperButton from '../components/PaperButton';
+import PaperButton from '../components/PaperButton.tsx';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 
 export function mapStateToProps(state) {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import { defaults } from 'lodash';
 
-import ChatMessage from '../../../../src/common/components/play/multiplayer/ChatMessage';
+import ChatMessage from '../../../../src/common/components/play/multiplayer/ChatMessage.tsx';
 
 import { makeMessage, makeChatMessage, makeGameMessage, makeServerMessage } from './chatTestHelpers';
 
@@ -19,7 +19,7 @@ const getWrapper = (props) => {
   />);
 };
 
-const findMessage = (wrapper) => wrapper.find('div[name="chat-message"]');
+const findMessage = (wrapper) => wrapper.find('div[className="chat-message"]');
 
 const checkRenderedMessageColor = (wrapper, color) => {
   expect(findMessage(wrapper).prop('style').color).toEqual(color);

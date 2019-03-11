@@ -102,7 +102,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
           <LobbyStatus
             connecting={connecting}
             connected={connected}
-            myClientId={clientId}
+            myClientId={clientId!}
             playersOnline={playersOnline}
             userDataByClientId={userDataByClientId}
             onConnect={onConnect} />
@@ -168,7 +168,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
       return (
         <Waiting
           inQueue={queuing}
-          queueFormat={this.state.queueFormatName}
+          queueFormat={this.state.queueFormatName!}
           queueSize={queueSize}
           onLeaveQueue={this.handleLeaveQueue} />
       );

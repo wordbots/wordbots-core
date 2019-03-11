@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove } from 'lodash';
 

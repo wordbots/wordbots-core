@@ -163,7 +163,7 @@ export default class GameArea extends React.Component {
     const {
       attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
       isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
-      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner,  volume,
+      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onSetVolume
     } = this.props;

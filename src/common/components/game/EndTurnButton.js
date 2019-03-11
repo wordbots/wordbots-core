@@ -3,6 +3,8 @@ import { string, bool, func, object } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import { ORANGE_PLAYER_COLOR, BLUE_PLAYER_COLOR } from '../../constants.ts';
+
 import TutorialTooltip from './TutorialTooltip';
 
 export default class EndTurnButton extends React.Component {
@@ -31,7 +33,7 @@ export default class EndTurnButton extends React.Component {
   handleClick = () => { this.props.onPassTurn(this.props.player); };
 
   render() {
-    const { tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
+    const { player, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
     return (
       <TutorialTooltip
         tutorialStep={tutorialStep}
@@ -42,7 +44,7 @@ export default class EndTurnButton extends React.Component {
         onPrevStep={onPrevTutorialStep}
       >
         <RaisedButton
-          backgroundColor="#111"
+          backgroundColor={{orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player]}
           buttonStyle={{
             height: '64px',
             lineHeight: '64px'

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { string, bool, func } from 'prop-types';
 
-import { DISABLE_TURN_TIMER } from '../../constants.ts';
+import { DISABLE_TURN_TIMER, ORANGE_PLAYER_COLOR, BLUE_PLAYER_COLOR } from '../../constants.ts';
 
 function padDigits(seconds) {
   return (seconds < 10 ? '0' : '') + seconds;
@@ -69,7 +69,7 @@ export default class Timer extends React.Component {
     this.setState({
       timer: `${minutes}:${seconds}`,
       timerStyle: {
-        color: {orange: '#ffb85d', blue: '#badbff'}[this.props.currentTurn],
+        color: {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[this.props.currentTurn],
         fontWeight: color === 'red' ? 'bold' : 'normal'
       }
     });

@@ -10,7 +10,7 @@ import App from '../common/containers/App.tsx';
 import configureStore from '../common/store/configureStore.ts';
 import * as packagejson from '../../package.json';
 
-import produceApiResponse from './api';
+import produceApiResponse from './api.ts';
 
 export default function handleRequest(request, response) {
   produceResponse(response, request.url);

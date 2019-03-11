@@ -8,7 +8,7 @@ const defaultState: w.SocketState = {
   hosting: false,
   gameName: null,
   queuing: false,
-  inQueue: 0,
+  queueSize: 0,
 
   games: [],
   playersOnline: [],

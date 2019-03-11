@@ -15,7 +15,7 @@ interface DeckPickerProps {
   availableDecks: w.DeckInStore[]
   sets: w.Set[]
   selectedDeckIdx: number
-  onChooseDeck: (deckIdx: number) => {}
+  onChooseDeck: (deckIdx: number) => void
 }
 
 export default class DeckPicker extends React.Component<DeckPickerProps> {

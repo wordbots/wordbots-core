@@ -4,7 +4,6 @@ import { collection } from '../../src/common/store/cards';
 import { executeCmd } from '../../src/common/util/game';
 import { getDefaultState } from '../testHelpers';
 
-/* eslint-disable no-console */
 const oldConsoleWarn = console.warn;
 
 describe('Built-in cards', () => {

@@ -1,8 +1,6 @@
 import * as w from '../../types';
 import { TYPE_STRUCTURE } from '../../constants';
 
-/* eslint-disable quotes */
-
 export const fortificationCard: w.CardInStore = {
   id: 'Fortification',
   name: 'Fortification',

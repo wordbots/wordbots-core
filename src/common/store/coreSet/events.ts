@@ -1,8 +1,6 @@
 import * as w from '../../types';
 import { TYPE_EVENT } from '../../constants';
 
-/* eslint-disable quotes */
-
 export const incinerateCard: w.CardInStore = {
   id: 'Incinerate',
   name: 'Incinerate',

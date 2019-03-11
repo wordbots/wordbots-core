@@ -35,7 +35,6 @@ export default class LobbyStatus extends React.Component<LobbyStatusProps> {
         renderGuestPlayerName(userData, clientId)
     );
 
-    /* eslint-disable react/no-multi-comp */
     const renderRegisteredPlayer = (userData: m.UserData, clientId: m.ClientID) => (
       <a
         style={{

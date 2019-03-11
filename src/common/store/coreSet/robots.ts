@@ -1,7 +1,6 @@
 import * as w from '../../types';
 import { TYPE_ROBOT } from '../../constants';
 
-/* eslint-disable quotes */
 export const crawlingWallCard: w.CardInStore = {
   id: 'Crawling Wall',
   name: 'Crawling Wall',

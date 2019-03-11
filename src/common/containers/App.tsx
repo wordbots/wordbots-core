@@ -8,9 +8,7 @@ import { History, Location } from 'history';
 import * as fb from 'firebase';
 import Helmet from 'react-helmet';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-/* eslint-disable import/no-unassigned-import */
 import 'whatwg-fetch';
-/* eslint-enable import/no-unassigned-import */
 
 import * as w from '../types';
 import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';

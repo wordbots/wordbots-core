@@ -150,4 +150,6 @@ export const HINT_REGEXES = objToRegexes(HINTS);
 /* Player Colors */
 
 export const ORANGE_PLAYER_COLOR = '#ffb85d';
+export const ORANGE_PLAYER_COLOR_DARKENED = '#d99237';
 export const BLUE_PLAYER_COLOR = '#badbff';
+export const BLUE_PLAYER_COLOR_DARKENED = '#94b5d9';

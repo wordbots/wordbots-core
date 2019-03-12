@@ -11,7 +11,7 @@ import { inBrowser } from '../../util/browser.tsx';
 import Chat from '../play/multiplayer/Chat.tsx';
 
 import Board from './Board';
-import CardSelector from './CardSelector';
+import CardSelector from './CardSelector.tsx';
 import EndTurnButton from './EndTurnButton';
 import EventAnimation from './EventAnimation';
 import ForfeitButton from './ForfeitButton';
@@ -200,6 +200,7 @@ export default class GameArea extends React.Component {
             background: `url(${this.loadBackground()})`
           }}
           onClick={onClickGameArea}
+          square
         >
           <div
             className="background"

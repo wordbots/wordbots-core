@@ -149,10 +149,10 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
     );
   }
 
-  private renderAddCardToDeckButton(player: string): JSX.Element {
+  private get buttons(): Record<string, Record<string, string>> {
     const { classes } = this.props;
 
-    const buttons: Record<string, Record<string, string>> = {
+    return {
       blue: {
         class: classes.buttonBlue,
         icon: 'fast_forward'
@@ -162,23 +162,24 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
         icon: 'fast_rewind'
       }
     };
+  }
+
+  private renderAddCardToDeckButton(player: string): JSX.Element {
+    const { classes } = this.props;
 
     return (
-      <Tooltip
-        text={`Place card on top of ${player} deck.`}
-        place="left"
-      >
+      <Tooltip  text={`Place card on top of ${player} deck.`} place="left" >
         <Button
           variant="contained"
           color="primary"
           classes={{
             root: classes.buttonRoot,
-            containedPrimary: buttons[player].class
+            containedPrimary: this.buttons[player].class
           }}
           onClick={this.handleGiveCard(player)}
           disabled={!this.state.selectedCard}
         >
-          <Icon>{buttons[player].icon}</Icon>
+          <Icon>{this.buttons[player].icon}</Icon>
         </Button>
       </Tooltip>
     );

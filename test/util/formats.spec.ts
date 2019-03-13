@@ -25,7 +25,7 @@ export function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number):
     name: deckId,
     cardIds: cardsWithCopies.map((card) => card.id),
     cards: cardsWithCopies,
-    setId: null
+    setId: 'set'  // to enable these decks to pass the SetFormat test if otherwise valid
   };
 }
 
@@ -61,7 +61,10 @@ describe('GameFormat#isDeckValid', () => {
 
   it('new SetFormat(set) only accepts 30-card decks made up only of cards from that set, with no more than 2 copies per card', () => {
     const builtInRobots: w.CardInStore[] = Object.values(robots);
-    const RobotsOnlySetFormat = new SetFormat({ name: 'Robots only', cards: builtInRobots });
+    const set: w.Set = { id: 'set', name: 'Robots only', cards: builtInRobots, metadata: { authorId: '', authorName: '', isPublished: false, lastModified: 0 } };
+    const RobotsOnlySetFormat = new SetFormat(set);
+
+    expect(RobotsOnlySetFormat.serialized()).toEqual({ _type: 'set', set });
 
     // None of the decks defined above are valid.
     expect(validDecks(RobotsOnlySetFormat, decks)).toHaveLength(0);

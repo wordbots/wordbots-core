@@ -43,7 +43,7 @@ export default class GameRow extends React.Component<GameRowProps> {
     return (
       <TableRow key={game.id} selected={this.isMyGame}>
         <TableRowColumn>{game.name}</TableRowColumn>
-        <TableRowColumn>{GameFormat.fromString(game.format).displayName}</TableRowColumn>
+        <TableRowColumn>{GameFormat.decode(game.format).displayName}</TableRowColumn>
         <TableRowColumn>{game.players.map(this.renderPlayerName).join(', ')}</TableRowColumn>
         <TableRowColumn>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableRowColumn>
         <TableRowColumn style={{textAlign: 'right'}}>
@@ -56,7 +56,7 @@ export default class GameRow extends React.Component<GameRowProps> {
   private handleJoinGame = () => {
     const { game: { id, name, format, options }, onJoinGame } = this.props;
 
-    onJoinGame(id, name, GameFormat.fromString(format), options);
+    onJoinGame(id, name, GameFormat.decode(format), options);
   }
 
   private handleSpectateGame = () => {
@@ -79,7 +79,7 @@ export default class GameRow extends React.Component<GameRowProps> {
     if (!this.isMyGame) {
       return (game.players.length === 1) ?
         <Button
-          variant="raised"
+          variant="contained"
           color="secondary"
           onClick={this.handleJoinGame}
           title={game.options.passwordToJoin ? 'This game requires a password to join.' : ''}
@@ -96,7 +96,7 @@ export default class GameRow extends React.Component<GameRowProps> {
           }
         </Button> :
         <Button
-          variant="raised"
+          variant="contained"
           color="secondary"
           onClick={this.handleSpectateGame}
         >

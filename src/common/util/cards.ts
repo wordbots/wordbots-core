@@ -33,7 +33,8 @@ export function cardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], set
 
 export function shuffleCardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInGame[] {
   const unshuffledCards = cardsInDeck(deck, userCards, sets);
-  return (KEEP_DECKS_UNSHUFFLED ? unshuffledCards : shuffle(unshuffledCards)).map(instantiateCard);
+  const potentiallyShuffledCards = KEEP_DECKS_UNSHUFFLED ? unshuffledCards : shuffle(unshuffledCards);
+  return potentiallyShuffledCards.map(instantiateCard);
 }
 
 // "Unpacks" a deck so that it can be used in a game.

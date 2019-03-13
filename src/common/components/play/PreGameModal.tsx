@@ -2,10 +2,11 @@ import * as React from 'react';
 import { History } from 'history';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { compact, uniqBy } from 'lodash';
 
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
-import { BUILTIN_FORMATS, GameFormat } from '../../util/formats';
+import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -28,7 +29,7 @@ interface PreGameModalProps {
 
 interface PreGameModalState {
   selectedDeckIdx: number
-  selectedFormatIdx: number
+  selectedFormatName: string
   enteredPassword: string
   isPasswordInvalid: boolean
 }
@@ -36,32 +37,50 @@ interface PreGameModalState {
 export default class PreGameModal extends React.Component<PreGameModalProps, PreGameModalState> {
   public state = {
     selectedDeckIdx: 0,
-    selectedFormatIdx: 0,
+    selectedFormatName: 'normal',
     enteredPassword: '',
     isPasswordInvalid: false
   };
 
+  /** The passed-in format, if any, otherwise the currently selected format */
   get format(): GameFormat {
     const { format } = this.props;
-    const { selectedFormatIdx } = this.state;
-    return format || BUILTIN_FORMATS[selectedFormatIdx];
+    const { selectedFormatName } = this.state;
+    const formats = this.availableFormats;
+
+    return format || formats.find((f) => f.name === selectedFormatName)!;
   }
 
-  get validDecks(): w.DeckInStore[] {
+  /** The full list of formats that are available to the player */
+  get availableFormats(): GameFormat[] {
+    const { sets } = this.props;
+    const setFormats = uniqBy(compact(this.decks.map((deck) => {
+      const set = sets.find((s) => s.id === deck.setId);
+      if (set) {
+        const setFormat = new SetFormat(set);
+        if (setFormat.isDeckValid(deck)) {
+          return setFormat;
+        }
+      }
+    })), (f: SetFormat) => f.name);
+
+    return [...BUILTIN_FORMATS, ...setFormats];
+  }
+
+  /** All of the player's decks, in an unpacked format ready to start the game with. */
+  get decks(): w.Deck[] {
     const { availableDecks, cards, sets } = this.props;
-    return availableDecks.map((deck) => unpackDeck(deck, cards, sets)).filter(this.format.isDeckValid);
+    return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
   }
 
-  /* The currently selected deck, in its raw form. */
-  get deck(): w.DeckInStore {
+  get validDecks(): w.Deck[] {
+    return this.decks.filter(this.format.isDeckValid);
+  }
+
+  /* The currently selected deck, in unpacked form. */
+  get deck(): w.Deck {
     const { selectedDeckIdx } = this.state;
     return this.validDecks[selectedDeckIdx];
-  }
-
-  /* The currently selected deck, in a form ready to start a game with. */
-  get deckForGame(): w.Deck {
-    const { cards, sets } = this.props;
-    return unpackDeck(this.deck, cards, sets);
   }
 
   get actions(): JSX.Element[] {
@@ -76,7 +95,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       </Button>,
       <Button
         key="start"
-        variant="raised"
+        variant="contained"
         color="secondary"
         disabled={gameName === '' && mode === 'host'}
         onClick={this.handleStartGame}>
@@ -91,7 +110,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
 
   public render(): JSX.Element {
     const { cards, sets, children, format, history, mode, title } = this.props;
-    const { enteredPassword, isPasswordInvalid, selectedDeckIdx, selectedFormatIdx } = this.state;
+    const { enteredPassword, isPasswordInvalid, selectedDeckIdx, selectedFormatName } = this.state;
 
     return (
       <RouterDialog
@@ -106,7 +125,8 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       >
         {children}
         {format ? null : <FormatPicker
-          selectedFormatIdx={selectedFormatIdx}
+          availableFormats={this.availableFormats}
+          selectedFormatName={selectedFormatName}
           onChooseFormat={this.handleChooseFormat}
         />}
         {this.options.passwordToJoin && <TextField
@@ -135,8 +155,8 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     RouterDialog.closeDialog(this.props.history);
   }
 
-  private handleChooseFormat = (selectedFormatIdx: number) => {
-    this.setState({ selectedFormatIdx, selectedDeckIdx: 0 });
+  private handleChooseFormat = (selectedFormatName: string) => {
+    this.setState({ selectedFormatName, selectedDeckIdx: 0 });
   }
 
   private handleChooseDeck = (selectedDeckIdx: number) => {
@@ -159,7 +179,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       return;
     }
 
-    onStartGame(this.format.name as w.Format, this.deckForGame);
+    onStartGame(this.format.serialized(), this.deck);
     this.close();
   }
 }

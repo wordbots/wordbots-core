@@ -132,9 +132,10 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
     RouterDialog.openDialog(this.props.history, mode);
   }
 
-  private handleJoinQueue = (formatName: w.Format, deck: w.Deck) => {
+  private handleJoinQueue = (encodedFormat: w.Format, deck: w.Deck) => {
+    const formatName: string = GameFormat.decode(encodedFormat).name!;
     this.setState({ queueFormatName: formatName }, () => {
-      this.props.onJoinQueue(formatName, deck);
+      this.props.onJoinQueue(encodedFormat, deck);
     });
   }
 
@@ -158,8 +159,8 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
     }
   }
 
-  private handleHostGame = (gameName: string, formatName: w.Format, deck: w.Deck, options: w.GameOptions) => {
-    this.props.onHostGame(gameName, formatName, deck, options);
+  private handleHostGame = (gameName: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => {
+    this.props.onHostGame(gameName, format, deck, options);
   }
 
   private renderWaiting(): JSX.Element | undefined {

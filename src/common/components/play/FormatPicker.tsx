@@ -5,7 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { BUILTIN_FORMATS, GameFormat } from '../../util/formats';
+import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
 interface FormatPickerProps {
@@ -32,6 +32,11 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
     };
   }
 
+  get formatsTooltip(): string {
+    const builtinFormatRows = BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
+    return `${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}`;
+  }
+
   public render(): JSX.Element {
     const { availableFormats, selectedFormatName } = this.props;
     return (
@@ -53,7 +58,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
           html
           place="left"
           className="formats-tooltip"
-          text={BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>')}
+          text={this.formatsTooltip}
         >
           <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
         </Tooltip>

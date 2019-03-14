@@ -138,9 +138,10 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
 });
 
 export class SetFormat extends GameFormat {
+  public static description = 'Only cards from a given set are allowed, and no more than two per deck.';
+
   public name: string;
   public displayName: string;
-  public description = 'Only cards from a given set are allowed, and no more than two per deck.';
   private set: w.Set;
 
   constructor(set: w.Set) {

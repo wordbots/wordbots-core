@@ -30,7 +30,7 @@ type SetSummaryProps = SetSummaryBaseProps & WithStyles;
 class SetSummaryCard extends React.Component<{ card: w.CardInStore, waitMs?: number }, { visible: boolean }> {
   public state = { visible: false };
 
-  public componentWillMount = () => {
+  public componentWillMount(): void {
     // https://stackoverflow.com/a/30807560/2608804
     setTimeout(() => {
       this.setState({ visible: true });

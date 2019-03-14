@@ -27,9 +27,18 @@ interface SetSummaryState {
 
 type SetSummaryProps = SetSummaryBaseProps & WithStyles;
 
-class SetSummaryCard extends React.Component<{ card: w.CardInStore }> {
-  public render(): JSX.Element {
-    return <div style={{float: 'left'}}>
+class SetSummaryCard extends React.Component<{ card: w.CardInStore, waitMs?: number }, { visible: boolean }> {
+  public state = { visible: false };
+
+  public componentWillMount = () => {
+    // https://stackoverflow.com/a/30807560/2608804
+    setTimeout(() => {
+      this.setState({ visible: true });
+    }, this.props.waitMs || 0);
+  }
+
+  public render(): React.ReactNode {
+    return this.state.visible && <div style={{float: 'left'}}>
       {Card.fromObj(this.props.card, { scale: 0.7 })}
     </div>;
   }
@@ -127,7 +136,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </CopyToClipboard>
         </div>
         {isCardListExpanded && <div>
-          {cards.map((card, idx) => <SetSummaryCard card={card} key={idx} />)}
+          {cards.map((card, idx) => <SetSummaryCard card={card} key={idx} waitMs={25 * idx} />)}
           <div style={{clear: 'both'}}></div>
         </div>}
         <div className={classes.numDecksCreated}>

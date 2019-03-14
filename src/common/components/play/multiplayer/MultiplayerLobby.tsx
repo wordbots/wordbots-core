@@ -5,6 +5,7 @@ import * as fb from 'firebase';
 import * as w from '../../../types';
 import * as m from '../../../../server/multiplayer/multiplayer';
 import { CHAT_WIDTH } from '../../../constants';
+import { unpackDeck } from '../../../util/cards';
 import { GameFormat } from '../../../util/formats';
 import RouterDialog from '../../RouterDialog';
 import Title from '../../Title';
@@ -51,6 +52,12 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
   get isWaiting(): boolean {
     const { hosting, queuing } = this.props.socket;
     return hosting || queuing;
+  }
+
+  /** All of the player's decks, in unpacked form. */
+  get decks(): w.Deck[] {
+    const { availableDecks, cards, sets } = this.props;
+    return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
   }
 
   public render(): JSX.Element {
@@ -120,6 +127,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
             user={user}
             clientId={clientId}
             userDataByClientId={userDataByClientId}
+            availableDecks={this.decks}
             onCancelHostGame={onCancelHostGame}
             onJoinGame={this.handleClickJoinCasualGame}
             onSpectateGame={onSpectateGame} />

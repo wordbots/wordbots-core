@@ -16,6 +16,7 @@ interface GameRowProps {
   user: fb.User | null
   clientId: m.ClientID
   userDataByClientId: Record<m.ClientID, m.UserData>
+  availableDecks: w.Deck[]
   onCancelHostGame: () => void
   onJoinGame: (id: string, name: string, format: GameFormat, options: w.GameOptions) => void
   onSpectateGame: (id: m.ClientID, name: string) => void
@@ -38,6 +39,25 @@ export default class GameRow extends React.Component<GameRowProps> {
     );
   }
 
+  get format(): GameFormat {
+    return GameFormat.decode(this.props.game.format);
+  }
+
+  get anyValidDecks(): boolean {
+    const { availableDecks } = this.props;
+    return availableDecks.some(this.format.isDeckValid);
+  }
+
+  get buttonTooltip(): string {
+    const { game } = this.props;
+    if (!this.anyValidDecks) {
+      return `None of your decks is valid in the ${this.format.displayName} format.`;
+    } else if (game.options.passwordToJoin) {
+      return 'This game requires a password to join.';
+    }
+    return '';
+  }
+
   public render(): JSX.Element {
     const { game } = this.props;
     return (
@@ -46,7 +66,7 @@ export default class GameRow extends React.Component<GameRowProps> {
         <TableRowColumn>{GameFormat.decode(game.format).displayName}</TableRowColumn>
         <TableRowColumn>{game.players.map(this.renderPlayerName).join(', ')}</TableRowColumn>
         <TableRowColumn>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableRowColumn>
-        <TableRowColumn style={{textAlign: 'right'}}>
+        <TableRowColumn style={{textAlign: 'right'}} title={this.buttonTooltip}>
           {this.renderButtons()}
         </TableRowColumn>
       </TableRow>
@@ -54,9 +74,9 @@ export default class GameRow extends React.Component<GameRowProps> {
   }
 
   private handleJoinGame = () => {
-    const { game: { id, name, format, options }, onJoinGame } = this.props;
+    const { game: { id, name, options }, onJoinGame } = this.props;
 
-    onJoinGame(id, name, GameFormat.decode(format), options);
+    onJoinGame(id, name, this.format, options);
   }
 
   private handleSpectateGame = () => {
@@ -82,7 +102,7 @@ export default class GameRow extends React.Component<GameRowProps> {
           variant="contained"
           color="secondary"
           onClick={this.handleJoinGame}
-          title={game.options.passwordToJoin ? 'This game requires a password to join.' : ''}
+          disabled={!this.anyValidDecks}
         >
           Join Game
           {game.options.passwordToJoin &&

@@ -63,10 +63,10 @@ export default class GameRow extends React.Component<GameRowProps> {
     return (
       <TableRow key={game.id} selected={this.isMyGame}>
         <TableRowColumn>{game.name}</TableRowColumn>
-        <TableRowColumn>{GameFormat.decode(game.format).displayName}</TableRowColumn>
+        <TableRowColumn>{GameFormat.decode(game.format).rendered()}</TableRowColumn>
         <TableRowColumn>{game.players.map(this.renderPlayerName).join(', ')}</TableRowColumn>
         <TableRowColumn>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableRowColumn>
-        <TableRowColumn style={{textAlign: 'right'}} title={this.buttonTooltip}>
+        <TableRowColumn style={{textAlign: 'right'}} {...{title: this.buttonTooltip}}>
           {this.renderButtons()}
         </TableRowColumn>
       </TableRow>

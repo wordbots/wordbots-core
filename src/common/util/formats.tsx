@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { cloneDeep, groupBy, isString } from 'lodash';
 import * as seededRNG from 'seed-random';
 import { shuffle } from 'seed-shuffle';
@@ -47,6 +48,8 @@ export class GameFormat {
   public description: string | undefined = undefined;
 
   public serialized = (): w.Format => this.name as w.Format;
+
+  public rendered = (): React.ReactNode => this.displayName;
 
   public isDeckValid = (_deck: w.Deck): boolean => false;
 
@@ -148,6 +151,24 @@ export class SetFormat extends GameFormat {
   }
 
   public serialized = (): w.SetFormat => ({ _type: 'set', set: this.set });
+
+  public rendered = (): React.ReactNode => (
+    <div>
+      <a
+        href={`/sets?set=${this.set.id}`}
+        style={{
+          fontStyle: 'italic',
+          textDecoration: 'underline',
+          color: '#666'
+        }}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {this.set.name}
+      </a>
+      {' '}set by {this.set.metadata.authorName}
+    </div>
+  )
 
   public isDeckValid = (deck: w.Deck): boolean => (
     deckHasNCards(deck, 30)

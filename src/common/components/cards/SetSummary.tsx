@@ -8,6 +8,7 @@ import * as fb from 'firebase';
 
 import * as w from '../../types';
 import Card from '../card/Card';
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 interface SetSummaryBaseProps {
   set: w.Set
@@ -25,6 +26,14 @@ interface SetSummaryState {
 }
 
 type SetSummaryProps = SetSummaryBaseProps & WithStyles;
+
+class SetSummaryCard extends React.Component<{ card: w.CardInStore }> {
+  public render(): JSX.Element {
+    return <div style={{float: 'left'}}>
+      {Card.fromObj(this.props.card, { scale: 0.7 })}
+    </div>;
+  }
+}
 
 class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   public static styles: Record<string, CSSProperties> = {
@@ -86,9 +95,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       set: { cards, description, metadata, name },
       onCreateDeckFromSet,
       onDeleteSet,
-      onEditSet
+      onEditSet,
+      user
     } = this.props;
     const { isCardListExpanded, isPermalinkCopied } = this.state;
+    const canEditSet = this.doesSetBelongToUser && !metadata.isPublished;
 
     return (
       <Paper className={classes.paper}>
@@ -96,14 +107,12 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           <strong>{name}</strong> by {metadata.authorName}
         </div>
         <div className={classes.controls}>
-          {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
-          {
-            (this.doesSetBelongToUser && !metadata.isPublished) && <span>
-              {this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 })}
-              {this.renderButton('Edit', onEditSet)}
-            </span>
-          }
-          {this.doesSetBelongToUser && this.renderButton('Delete', onDeleteSet, { color: 'secondary' })}
+          <MustBeLoggedIn loggedIn={!!user}>
+            {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
+            {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 }) : null}
+            {canEditSet ? this.renderButton('Edit', onEditSet) : null}
+            {this.doesSetBelongToUser ? this.renderButton('Delete', onDeleteSet, { color: 'secondary' }) : null}
+          </MustBeLoggedIn>
         </div>
         <div>
         {description}
@@ -117,14 +126,10 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             <a className={classes.bottomLink}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
           </CopyToClipboard>
         </div>
-        {isCardListExpanded && (
-          <div>
-            {cards.map((card, idx) => <div key={idx} style={{float: 'left'}}>
-              {Card.fromObj(card, { scale: 0.7 })}
-            </div>)}
-            <div style={{clear: 'both'}}></div>
-          </div>
-        )}
+        {isCardListExpanded && <div>
+          {cards.map((card, idx) => <SetSummaryCard card={card} key={idx} />)}
+          <div style={{clear: 'both'}}></div>
+        </div>}
         <div className={classes.numDecksCreated}>
           {metadata.numDecksCreated || 0} decks created
         </div>

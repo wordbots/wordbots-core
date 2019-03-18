@@ -168,7 +168,7 @@ export default class MultiplayerServerState {
 
     if (!this.isClientLoggedIn(clientID)) {
       console.warn(`${username} tried to start game ${name} but they weren't logged in.`);
-    } else if (!GameFormat.fromString(format).isDeckValid(deck)) {
+    } else if (!GameFormat.decode(format).isDeckValid(deck)) {
       console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
     } else {
       this.state.waitingPlayers.push({
@@ -192,7 +192,7 @@ export default class MultiplayerServerState {
   // Returns the game joined (if any).
   public joinGame = (clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck, gameProps = {}): m.Game | undefined => {
     const waitingPlayer = find(this.state.waitingPlayers, { id: opponentID });
-    const formatObj = waitingPlayer ? GameFormat.fromString(waitingPlayer.format) : undefined;
+    const formatObj = waitingPlayer ? GameFormat.decode(waitingPlayer.format) : undefined;
 
     if (waitingPlayer && formatObj!.isDeckValid(deck)) {
       const { name, format, options } = waitingPlayer;
@@ -285,7 +285,7 @@ export default class MultiplayerServerState {
 
   // Add a player to the matchmaking queue.
   public joinQueue = (clientID: m.ClientID, format: m.Format, deck: m.Deck): void => {
-    if (this.isClientLoggedIn(clientID) && GameFormat.fromString(format).isDeckValid(deck)) {
+    if (this.isClientLoggedIn(clientID) && GameFormat.decode(format).isDeckValid(deck)) {
       this.state.matchmakingQueue.push({ clientID, format, deck });
     }
   }

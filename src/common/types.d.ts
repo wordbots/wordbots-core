@@ -10,17 +10,18 @@ type timestamp = number;
 
 export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
+export type BuiltInFormat = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type CardId = string;
 export type CardType = 0 | 1 | 2 | 3;
 export type Cause = string;
 export type DeckId = string;
-export type Format = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type HexId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type Card = CardInGame | CardInStore | ObfuscatedCard;
+export type Format = BuiltInFormat | SetFormat;
 export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
@@ -100,6 +101,11 @@ export interface Set {
     lastModified: timestamp
     numDecksCreated?: number
   }
+}
+
+export interface SetFormat {
+  _type: 'set'
+  set: Set
 }
 
 export interface Dictionary {

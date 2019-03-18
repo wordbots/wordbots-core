@@ -5,12 +5,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FontIcon from 'material-ui/FontIcon';
 
-import { BUILTIN_FORMATS, GameFormat } from '../../util/formats';
+import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
 interface FormatPickerProps {
-  selectedFormatIdx: number
-  onChooseFormat: (formatIdx: number) => void
+  availableFormats: GameFormat[]
+  selectedFormatName: string
+  onChooseFormat: (formatName: string) => void
 }
 
 export default class FormatPicker extends React.Component<FormatPickerProps> {
@@ -31,7 +32,13 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
     };
   }
 
+  get formatsTooltip(): string {
+    const builtinFormatRows = BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
+    return `${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}`;
+  }
+
   public render(): JSX.Element {
+    const { availableFormats, selectedFormatName } = this.props;
     return (
       <div style={this.styles.body}>
         <FormControl style={{ width: '100%', marginBottom: 15 }}>
@@ -39,11 +46,11 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
           <Select
             style={this.styles.select}
             name="formats"
-            value={this.props.selectedFormatIdx}
+            value={selectedFormatName}
             onChange={this.handleSelectFormat}
           >
-            {BUILTIN_FORMATS.map((format, idx) =>
-              <MenuItem key={idx} value={idx}>{format.displayName}</MenuItem>
+            {availableFormats.map((format, idx) =>
+              <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
             )}
           </Select>
         </FormControl>
@@ -51,7 +58,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
           html
           place="left"
           className="formats-tooltip"
-          text={BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>')}
+          text={this.formatsTooltip}
         >
           <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
         </Tooltip>
@@ -60,6 +67,6 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
   }
 
   private handleSelectFormat = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.onChooseFormat(parseInt(event.currentTarget.value, 10));
+    this.props.onChooseFormat(event.target.value);
   }
 }

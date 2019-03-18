@@ -24,6 +24,7 @@ interface GameBrowserProps {
   user: fb.User | null
   clientId: m.ClientID | null
   userDataByClientId: Record<m.ClientID, m.UserData>
+  availableDecks: w.Deck[]
   onCancelHostGame: () => void
   onJoinGame: (id: string, name: string, format: GameFormat, options: w.GameOptions) => void
   onSpectateGame: (id: m.ClientID, name: string) => void
@@ -61,7 +62,7 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
   }
 
   private renderTableRows(): React.ReactNode {
-    const { user, clientId, userDataByClientId, onCancelHostGame, onJoinGame, onSpectateGame } = this.props;
+    const { user, clientId, userDataByClientId, availableDecks, onCancelHostGame, onJoinGame, onSpectateGame } = this.props;
 
     if (this.games.length > 0) {
       return (
@@ -72,6 +73,7 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
             user={user}
             clientId={clientId!}
             userDataByClientId={userDataByClientId}
+            availableDecks={availableDecks}
             onCancelHostGame={onCancelHostGame}
             onJoinGame={onJoinGame}
             onSpectateGame={onSpectateGame} />

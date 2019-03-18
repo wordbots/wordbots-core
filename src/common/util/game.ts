@@ -291,10 +291,10 @@ export function newGame(
   usernames: w.PerPlayer<string>,
   decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>,
   seed: string = '0',
-  gameFormat = DEFAULT_GAME_FORMAT,
+  gameFormat: w.Format = DEFAULT_GAME_FORMAT,
   gameOptions: w.GameOptions = {}
 ): w.GameState {
-  const format: GameFormat = GameFormat.fromString(gameFormat);
+  const format: GameFormat = GameFormat.decode(gameFormat);
   return format.startGame(state, player, usernames, decks, gameOptions, seed);
 }
 

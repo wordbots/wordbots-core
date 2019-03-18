@@ -97,6 +97,8 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public componentDidMount(): void {
+    listenToSets(this.props.onReceiveFirebaseData);
+
     onLogin((user) => {
       this.setState({loading: false});
       this.props.onLoggedIn(user);

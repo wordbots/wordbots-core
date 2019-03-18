@@ -17,7 +17,7 @@ import { prepareBigramProbs } from '../../util/language.ts';
 import CardTextExampleStore from '../../util/CardTextExampleStore.ts';
 import ButtonInRow from '../ButtonInRow.tsx';
 import Tooltip from '../Tooltip';
-import MustBeLoggedIn from '../users/MustBeLoggedIn';
+import MustBeLoggedIn from '../users/MustBeLoggedIn.tsx';
 
 import CardTextField from './CardTextField';
 import NumberField from './NumberField';

@@ -137,7 +137,7 @@
     "eslint-plugin-no-loops": "^0.3.0",
     "eslint-plugin-promise": "^4.0.0",
     "eslint-plugin-react": "^7.12.4",
-    "eslint-plugin-unicorn": "^7.1.0",
+    "eslint-plugin-unicorn": "^8.0.0",
     "expect": "^23.0.1",
     "ignore-styles": "^5.0.1",
     "jest": "^23.6.0",

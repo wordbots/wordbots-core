@@ -16,16 +16,18 @@ import ActiveDeckCard from './ActiveDeckCard';
 interface ActiveDeckProps {
   id: w.DeckId | null
   cards: w.CardInStore[]
+  description?: string  // (only for sets)
   name: string
-  isASet?: boolean
+  isASet?: boolean  // otherwise, a deck
   loggedIn: boolean
   onIncreaseCardCount?: (cardId: w.CardId) => void
   onDecreaseCardCount?: (cardId: w.CardId) => void
   onRemoveCard: (cardId: w.CardId) => void
-  onSave: (id: w.DeckId | null, name: string, cardIds: w.CardId[]) => void
+  onSave: (id: w.DeckId | null, name: string, cardIds: w.CardId[], description?: string) => void
 }
 
 interface ActiveDeckState {
+  description: string
   name: string
   grouping: number
 }
@@ -37,6 +39,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   };
 
   public state = {
+    description: this.props.description || '',
     name: this.props.name,
     grouping: 0
   };
@@ -64,24 +67,33 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   public render(): JSX.Element {
+    const { cards, isASet, loggedIn } = this.props;
+    const { description, name } = this.state;
+
     return (
       <div>
         <div style={{
           fontWeight: 100,
           fontSize: 28
         }}>
-          {this.props.isASet ? 'Set' : 'Deck'} [
+          {isASet ? 'Set' : 'Deck'} [
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
-            &nbsp;{this.props.cards.length}&nbsp;
+            &nbsp;{cards.length}&nbsp;
           </span>
-          / {this.props.isASet ? '15' : '30'} ]
+          / {isASet ? '15' : '30'} ]
         </div>
 
         <TextField
-          value={this.state.name}
-          floatingLabelText={`${this.props.isASet ? 'Set' : 'Deck'} name`}
+          value={name}
+          floatingLabelText={`${isASet ? 'Set' : 'Deck'} name`}
           style={{width: '100%', marginBottom: 10}}
           onChange={this.handleChangeName} />
+
+        {isASet && <TextField
+          value={description}
+          floatingLabelText="Description"
+          style={{width: '100%', marginBottom: 10}}
+          onChange={this.handleChangeDescription} />}
 
         <div>
           <div style={{
@@ -96,12 +108,12 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
 
         {this.renderCardList()}
 
-        <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+        <MustBeLoggedIn loggedIn={loggedIn}>
           <RaisedButton
-            label={`Save ${this.props.isASet ? 'Set' : 'Deck'}`}
+            label={`Save ${isASet ? 'Set' : 'Deck'}`}
             labelPosition="before"
             secondary
-            disabled={!this.state.name}
+            disabled={!name}
             icon={<FontIcon className="material-icons">save</FontIcon>}
             style={{width: '100%', marginTop: 20}}
             onClick={this.handleSave}
@@ -112,12 +124,15 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   private handleChangeName = (e: React.SyntheticEvent<any>) => { this.setState({name: e.currentTarget.value}); };
+  private handleChangeDescription = (e: React.SyntheticEvent<any>) => { this.setState({description: e.currentTarget.value}); };
   private handleGroupByCost = () => { this.setState({grouping: 0}); };
   private handleGroupByType = () => { this.setState({grouping: 1}); };
 
   private handleSave = () => {
-    const { id, cards, onSave } = this.props;
-    onSave(id, this.state.name, cards.map((c) => c.id));
+    const { id, cards, isASet, onSave } = this.props;
+    const { description, name } = this.state;
+
+    onSave(id, name, cards.map((c) => c.id), isASet ? description : undefined);
   }
 
   private renderButton(grouping: number, iconName: string, tooltip: string): JSX.Element {

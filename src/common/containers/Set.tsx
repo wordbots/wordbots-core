@@ -122,6 +122,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
                 isASet
                 id={setBeingEdited ? setBeingEdited.id : ''}
                 name={setBeingEdited ? setBeingEdited.name : ''}
+                description={setBeingEdited ? setBeingEdited.description : ''}
                 cards={this.selectedCards}
                 loggedIn={!!user}
                 onRemoveCard={this.handleRemoveCard}
@@ -153,7 +154,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     }));
   }
 
-  private handleClickSaveSet = (id: string | null, name: string, cardIds: string[]) => {
+  private handleClickSaveSet = (id: string | null, name: string, cardIds: string[], description?: string) => {
     const { allCards, user, onSaveSet, history } = this.props;
 
     if (!user) {
@@ -163,6 +164,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     const set: w.Set = {
       id: id || generateId(),
       name,
+      description,
       cards: allCards.filter((card) => cardIds.includes(card.id)),
       metadata: {
         authorId: user.uid,

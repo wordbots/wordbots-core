@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { compose } from 'redux';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import { Paper, withStyles, WithStyles, Button, Dialog, DialogActions, DialogContent } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
+import { isUndefined} from 'lodash';
 
 import * as w from '../../types';
 import Card from '../card/Card';
@@ -13,6 +13,7 @@ import MustBeLoggedIn from '../users/MustBeLoggedIn';
 interface SetSummaryBaseProps {
   set: w.Set
   user: fb.User | null
+  numDecksCreated?: number
   onCreateDeckFromSet: () => void
   onDeleteSet: () => void
   onEditSet: () => void
@@ -102,6 +103,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     const {
       classes,
       set: { cards, description, metadata, name },
+      numDecksCreated,
       onCreateDeckFromSet,
       onDeleteSet,
       onEditSet,
@@ -140,7 +142,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           <div style={{clear: 'both'}}></div>
         </div>}
         <div className={classes.numDecksCreated}>
-          {metadata.numDecksCreated || 0} decks created
+          {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created
         </div>
         {this.renderConfirmPublishDialog()}
       </Paper>
@@ -214,6 +216,4 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   }
 }
 
-export default compose(
-  withStyles(SetSummary.styles)
-)(SetSummary);
+export default withStyles(SetSummary.styles)(SetSummary);

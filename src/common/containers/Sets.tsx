@@ -8,9 +8,10 @@ import * as fb from 'firebase';
 import * as qs from 'qs';
 import { Button } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import { orderBy } from 'lodash';
+import { groupBy, mapValues, orderBy } from 'lodash';
 
 import * as w from '../types';
+import { listenToDecks } from '../util/firebase';
 import Title from '../components/Title';
 import SetSummary from '../components/cards/SetSummary';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
@@ -28,6 +29,10 @@ interface SetsDispatchProps {
 }
 
 type SetsProps = SetsStateProps & SetsDispatchProps & { history: History } & WithStyles;
+
+interface SetsState {
+  numDecksBySet?: Record<string, number>
+}
 
 function mapStateToProps(state: w.State): SetsStateProps {
   return {
@@ -50,7 +55,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
   };
 }
 
-class Sets extends React.Component<SetsProps> {
+class Sets extends React.Component<SetsProps, SetsState> {
   public static styles = {
     buttonLabel: {
       fontFamily: 'Carter One'
@@ -59,6 +64,8 @@ class Sets extends React.Component<SetsProps> {
       margin: '20px 0'
     }
   };
+
+  public state: SetsState = {};
 
   /**
    * Returns either the single set to focus on (if there is a set=[setId] URL query parameter),
@@ -81,6 +88,14 @@ class Sets extends React.Component<SetsProps> {
   get userSets(): w.Set[] {
     const { sets, user } = this.props;
     return user ? orderBy(sets.filter((set) => set.metadata.authorId === user.uid), 'metadata.lastModified', 'desc') : [];
+  }
+
+  public componentDidMount(): void {
+    listenToDecks((decks: w.DeckInStore[]) => {
+      this.setState({
+        numDecksBySet: mapValues(groupBy(decks, 'setId'), (group) => group.length)
+      });
+    });
   }
 
   public render(): JSX.Element {
@@ -147,16 +162,20 @@ class Sets extends React.Component<SetsProps> {
     }
   }
 
-  private renderSetSummary = (set: w.Set): JSX.Element => (
-    <SetSummary
-      key={set.id}
-      set={set}
-      user={this.props.user}
-      onCreateDeckFromSet={() => this.handleCreateDeckFromSet(set.id)}
-      onDeleteSet={() => this.props.onDeleteSet(set.id)}
-      onEditSet={() => this.handleEditSet(set.id)}
-      onPublishSet={() => this.handlePublishSet(set.id)} />
-  )
+  private renderSetSummary = (set: w.Set): JSX.Element => {
+    const { numDecksBySet } = this.state;
+    return (
+      <SetSummary
+        key={set.id}
+        set={set}
+        user={this.props.user}
+        numDecksCreated={numDecksBySet ? numDecksBySet[set.id] || 0 : undefined}
+        onCreateDeckFromSet={() => this.handleCreateDeckFromSet(set.id)}
+        onDeleteSet={() => this.props.onDeleteSet(set.id)}
+        onEditSet={() => this.handleEditSet(set.id)}
+        onPublishSet={() => this.handlePublishSet(set.id)} />
+    );
+  }
 
   private handleCreateSet = () => {
     this.props.history.push('/sets/new');

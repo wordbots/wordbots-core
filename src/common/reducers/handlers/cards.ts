@@ -18,6 +18,7 @@ const cardsHandlers = {
   deleteDeck: (state: State, deckId: string): State => {
     state.decks = state.decks.filter((deck: w.DeckInStore) => deck.id !== deckId);
     saveDecksToFirebase(state);
+    firebase.removeDeck(deckId);
     return state;
   },
 
@@ -116,22 +117,27 @@ const cardsHandlers = {
   },
 
   saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {
+    let deck: w.DeckInStore | undefined;
     if (deckId) {
       // Existing deck.
-      const deck = state.decks.find((d) => d.id === deckId);
+      deck = state.decks.find((d) => d.id === deckId);
       Object.assign(deck, { name, cardIds });
     } else {
       // New deck.
-      state.decks.push({
+      deck = {
         id: id(),
         name,
         cardIds,
         timestamp: Date.now(),
         setId
-      });
+      };
+      state.decks.push(deck);
     }
 
     saveDecksToFirebase(state);
+    if (deck) {
+      firebase.saveDeck(deck);
+    }
 
     return state;
   },

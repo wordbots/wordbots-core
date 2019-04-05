@@ -21,6 +21,7 @@ interface SetSummaryBaseProps {
 
 interface SetSummaryState {
   isCardListExpanded: boolean,
+  isDeleteConfirmationOpen: boolean,
   isPermalinkCopied: boolean,
   isPublishConfirmDialogOpen: boolean
 }
@@ -51,6 +52,15 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       padding: 10,
       marginBottom: 5
     },
+    confirmDeleteControl: {
+      fontSize: '13px',
+      paddingLeft: 5,
+      paddingRight: 2
+    },
+    confirmDeleteLabel: {
+      color: 'red',
+      marginRight: 3
+    },
     controls: {
       position: 'absolute',
       top: 5,
@@ -65,7 +75,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     dialogButton: {
       marginLeft: 10
     },
-    bottomLink: {
+    link: {
       cursor: 'pointer',
       textDecoration: 'underline',
       '&:hover': {
@@ -84,6 +94,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
 
   public state = {
     isCardListExpanded: false,
+    isDeleteConfirmationOpen: false,
     isPermalinkCopied: false,
     isPublishConfirmDialogOpen: false
   };
@@ -103,7 +114,6 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       classes,
       set: { cards, description, metadata, name },
       onCreateDeckFromSet,
-      onDeleteSet,
       onEditSet,
       user
     } = this.props;
@@ -120,19 +130,19 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
             {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 }) : null}
             {canEditSet ? this.renderButton('Edit', onEditSet) : null}
-            {this.doesSetBelongToUser ? this.renderButton('Delete', onDeleteSet, { color: 'secondary' }) : null}
+            {this.renderDeleteControl()}
           </MustBeLoggedIn>
         </div>
         <div>
         {description}
         </div>
         <div>
-          <a className={classes.bottomLink} onClick={this.toggleCardList}>
+          <a className={classes.link} onClick={this.toggleCardList}>
             [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
           </a>
           {' '}
           <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
-            <a className={classes.bottomLink}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
+            <a className={classes.link}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
           </CopyToClipboard>
         </div>
         {isCardListExpanded && <div>
@@ -154,7 +164,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     return (
       <Dialog
         open={isPublishConfirmDialogOpen}
-        onClose={this.closePublishConfirmDialogue}
+        onClose={this.handleClosePublishConfirmation}
       >
         <DialogContent>
           <p>Are you sure that you want to publish the <b>{set.name}</b> set?</p>
@@ -173,13 +183,31 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             color="primary"
             variant="outlined"
             className={classes.dialogButton}
-            onClick={this.closePublishConfirmDialogue}
+            onClick={this.handleClosePublishConfirmation}
           >
             Cancel
           </Button>
         </DialogActions>
       </Dialog>
     );
+  }
+
+  private renderDeleteControl = (): JSX.Element | null => {
+    const { classes } = this.props;
+    const { isDeleteConfirmationOpen } = this.state;
+
+    if (this.doesSetBelongToUser) {
+      if (isDeleteConfirmationOpen) {
+        return <span className={classes.confirmDeleteControl}>
+          <span className={classes.confirmDeleteLabel}>delete?</span>
+          <a className={classes.link} onClick={this.handleDeleteDialogue}>yes</a>/<a className={classes.link} onClick={this.handleCloseDeleteConfirmation}>no</a>
+        </span>;
+      } else {
+        return this.renderButton('Delete', this.handleOpenDeleteConfirmation, { color: 'secondary' });
+      }
+    } else {
+      return null;
+    }
   }
 
   private renderButton = (text: string, action: () => void, additionalProps?: ButtonProps): JSX.Element => (
@@ -205,13 +233,16 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     }));
   }
 
-  private handleOpenPublishConfirmation = () => {
-    this.setState({ isPublishConfirmDialogOpen: true });
+  private handleDeleteDialogue = () => {
+    this.handleCloseDeleteConfirmation();
+    this.props.onDeleteSet();
   }
 
-  private closePublishConfirmDialogue = () => {
-    this.setState({ isPublishConfirmDialogOpen: false });
-  }
+  private handleOpenDeleteConfirmation = () => { this.setState({ isDeleteConfirmationOpen: true }); };
+  private handleCloseDeleteConfirmation = () => { this.setState({ isDeleteConfirmationOpen: false }); };
+
+  private handleOpenPublishConfirmation = () => { this.setState({ isPublishConfirmDialogOpen: true }); };
+  private handleClosePublishConfirmation = () => { this.setState({ isPublishConfirmDialogOpen: false }); };
 }
 
 export default compose(

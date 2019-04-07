@@ -27,6 +27,12 @@
       },
       ".indexOn": "timestamp"
     },
+    "decks": {
+      ".read": "true",
+      "$key": {
+        ".write": "auth != null && (!newData.exists() || newData.child('authorId').val() == auth.uid) && (!data.exists() || (data.child('authorId').val() == auth.uid))"
+      }
+    },
     "reportedParseIssues": {
       "$key": {
         ".write": "!data.exists()"

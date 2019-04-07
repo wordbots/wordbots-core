@@ -231,6 +231,41 @@ export function removeSet(setId: string): void {
   fb.database().ref(`sets/${setId}`).remove();
 }
 
+/**
+ * Note that the source for truth for a player's decks is the users/ collection.
+ * The decks/ collection is used to be able to aggregate information about all decks on the client
+ * (e.g. for calculating number of decks that use a given set).
+ */
+export function saveDeck(deck: w.DeckInStore): void {
+  getLoggedInUser()
+    .then((user) => {
+      const deckWithAuthor: w.DeckInStoreWithAuthor = {...deck, authorId: user.uid};
+      fb.database()
+        .ref(`decks/${deck.id}`)
+        .update(deckWithAuthor);  // see firebaseRules.json - this save will only succeed if either:
+                                  //   (i) there is no deck yet with the given id
+                                  //   (ii) the deck with the given id is yet unpublished and was created by the logged-in user
+      })
+    .catch(console.error);
+}
+export function removeDeck(deckId: string): void {
+  fb.database().ref(`decks/${deckId}`).remove();
+}
+export function listenToDecks(callback: (data: any) => any): void {
+  fb.database()
+    .ref('decks')
+    .once('value', (snapshot: firebase.database.DataSnapshot) => {
+      try {
+        if (snapshot) {
+          const decks: w.DeckInStore[] = Object.values(snapshot.val()) as w.DeckInStore[];
+          callback(decks);
+        }
+      } catch (ex) {
+        callback([]);
+      }
+    });
+}
+
 export function saveReportedParseIssue(text: string): void {
   fb.database()
     .ref('reportedParseIssues')

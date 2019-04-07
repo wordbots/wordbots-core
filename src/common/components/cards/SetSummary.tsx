@@ -160,7 +160,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   }
 
   private renderConfirmPublishDialog = () => {
-    const { set, classes, onPublishSet } = this.props;
+    const { set, classes } = this.props;
     const { isPublishConfirmDialogOpen } = this.state;
 
     return (
@@ -177,7 +177,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             color="primary"
             variant="outlined"
             className={classes.dialogButton}
-            onClick={onPublishSet}
+            onClick={this.handlePublishSet}
           >
             Publish
           </Button>
@@ -202,7 +202,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       if (isDeleteConfirmationOpen) {
         return <span className={classes.confirmDeleteControl}>
           <span className={classes.confirmDeleteLabel}>delete?</span>
-          <a className={classes.link} onClick={this.handleDeleteDialogue}>yes</a>/<a className={classes.link} onClick={this.handleCloseDeleteConfirmation}>no</a>
+          <a className={classes.link} onClick={this.handleDeleteSet}>yes</a>/<a className={classes.link} onClick={this.handleCloseDeleteConfirmation}>no</a>
         </span>;
       } else {
         return this.renderButton('Delete', this.handleOpenDeleteConfirmation, { color: 'secondary' });
@@ -235,9 +235,14 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     }));
   }
 
-  private handleDeleteDialogue = () => {
+  private handleDeleteSet = () => {
     this.handleCloseDeleteConfirmation();
     this.props.onDeleteSet();
+  }
+
+  private handlePublishSet = () => {
+    this.handleClosePublishConfirmation();
+    this.props.onPublishSet();
   }
 
   private handleOpenDeleteConfirmation = () => { this.setState({ isDeleteConfirmationOpen: true }); };

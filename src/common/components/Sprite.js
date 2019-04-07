@@ -292,16 +292,16 @@ export default class Sprite extends React.PureComponent {
 
     const falloffs = {
       constant: { label: 'Constant', func: function (x) {
-        return 1.0;
+        return 1;
       }},
       linear: { label: 'Linear', func: function (x) {
-        return Math.max(0, Math.min(x, 1.0));
+        return Math.max(0, Math.min(x, 1));
       }},
       cosine: { label: 'Cosine', func: function (x) {
-        return (1.0 - Math.cos(x * Math.PI)) * 0.5;
+        return (1 - Math.cos(x * Math.PI)) * 0.5;
       }},
       spherical: { label: 'Spherical', func: function (x) {
-        return Math.sqrt(1.0 - ((1.0 - x) * (1.0 - x)));
+        return Math.sqrt(1 - ((1 - x) * (1 - x)));
       }}
     };
 
@@ -435,8 +435,8 @@ export default class Sprite extends React.PureComponent {
       // draw unique
       for(let y = 0; y < yLimit; y++) {
         for(let x = 0; x < xLimit; x++) {
-          const falloffX = falloffs[this.options['falloff']].func(1.0 - Math.abs((xRange - (x + 0.5)) / xRange));
-          const falloffY = falloffs[this.options['falloff']].func(1.0 - Math.abs((yRange - (y + 0.5)) / yRange));
+          const falloffX = falloffs[this.options['falloff']].func(1 - Math.abs((xRange - (x + 0.5)) / xRange));
+          const falloffY = falloffs[this.options['falloff']].func(1 - Math.abs((yRange - (y + 0.5)) / yRange));
           const prob = lerp(this.options['probmin'], this.options['probmax'], bias(this.options['bias'], gain(this.options['gain'], falloffX * falloffY)));
           const rand = random();
           if(rand <= prob)
@@ -517,8 +517,8 @@ export default class Sprite extends React.PureComponent {
       scaler0: { type: 'list', label: 'Scaler 0', default: 'eagle2x', options: scalers, description: 'First sprite scaling method.' },
       scaler1: { type: 'list', label: 'Scaler 1', default: 'none', options: scalers, description: 'Second sprite scaling method.' },
       falloff: { type: 'list', label: 'Falloff', default: 'linear', options: falloffs, description: 'Probability distribution function determining pixel placement across the sprite.' },
-      probmin: { type: 'real', label: 'Min', default: 0.0, min: 0, max: 1, description: 'Probability of pixel placement at the edge of the sprite.' },
-      probmax: { type: 'real', label: 'Max', default: 1.0, min: 0, max: 1, description: 'Probability of pixel placement at the centre of the sprite.' },
+      probmin: { type: 'real', label: 'Min', default: 0, min: 0, max: 1, description: 'Probability of pixel placement at the edge of the sprite.' },
+      probmax: { type: 'real', label: 'Max', default: 1, min: 0, max: 1, description: 'Probability of pixel placement at the centre of the sprite.' },
       bias: { type: 'real', label: 'Bias', default: 0.5, min: 0, max: 1, description: 'Perlin\'s bias function. Bends value toward or away from the extremes.' },
       gain: { type: 'real', label: 'Gain', default: 0.5, min: 0, max: 1, description: 'Perlin\'s gain function. Bends value toward or away from the centre.' },
       mirrorh: { type: 'real', label: 'Horizontal', default: 0.75, min: 0, max: 1, description: 'Probability of the sprite being horizontally mirrored.' },

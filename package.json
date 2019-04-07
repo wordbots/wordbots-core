@@ -8,7 +8,8 @@
   },
   "browserslist": [
     "last 4 versions",
-    "chrome >= 48"
+    "chrome >= 54",
+    "not ie <= 11"
   ],
   "scripts": {
     "analyze": "npm run prebuild && yarn run webpack -p --config webpack.build.config.js --progress --devtool source-map --display minimal && source-map-explorer dist/bundle.js",
@@ -130,14 +131,14 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^5.0.0",
-    "eslint-plugin-compat": "^2.7.0",
+    "eslint-plugin-compat": "^3.1.1",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jest": "^22.0.0",
     "eslint-plugin-lodash": "^5.1.0",
     "eslint-plugin-no-loops": "^0.3.0",
     "eslint-plugin-promise": "^4.0.0",
     "eslint-plugin-react": "^7.12.4",
-    "eslint-plugin-unicorn": "^7.1.0",
+    "eslint-plugin-unicorn": "^8.0.1",
     "expect": "^23.0.1",
     "ignore-styles": "^5.0.1",
     "jest": "^23.6.0",

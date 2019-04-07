@@ -53,6 +53,10 @@ export interface DeckInStore {
   setId: string | null
 }
 
+export interface DeckInStoreWithAuthor extends DeckInStore {
+  authorId: string
+}
+
 export interface CardInGame extends CardInStore {
   baseCost: number
   justPlayed?: boolean
@@ -99,7 +103,6 @@ export interface Set {
     authorName: string
     isPublished: boolean
     lastModified: timestamp
-    numDecksCreated?: number
   }
 }
 

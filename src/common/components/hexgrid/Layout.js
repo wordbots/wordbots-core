@@ -17,8 +17,8 @@ class Orientation {
 }
 
 class Layout {
-  static LAYOUT_FLAT = new Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0);
-  static LAYOUT_POINTY = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
+  static LAYOUT_FLAT = new Orientation(3 / 2, 0, Math.sqrt(3) / 2, Math.sqrt(3),2 / 3, 0, -1 / 3, Math.sqrt(3) / 3, 0);
+  static LAYOUT_POINTY = new Orientation(Math.sqrt(3), Math.sqrt(3) / 2, 0, 3 / 2, Math.sqrt(3) / 3, -1 / 3, 0, 2 / 3, 0.5);
 
   constructor(layout, origin) {
     this.orientation = (layout.flat) ? Layout.LAYOUT_FLAT : Layout.LAYOUT_POINTY;
@@ -28,7 +28,7 @@ class Layout {
   }
 
   getPointOffset(corner) {
-    const angle = 2.0 * Math.PI * (corner + this.orientation.startAngle) / 6;
+    const angle = 2 * Math.PI * (corner + this.orientation.startAngle) / 6;
     return new Point((this.size.x * BOARD_SIZE_MULTIPLIER) * Math.cos(angle), (this.size.y * BOARD_SIZE_MULTIPLIER) * Math.sin(angle));
   }
 

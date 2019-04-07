@@ -4,7 +4,7 @@ import { Paper, withStyles, WithStyles, Button, Dialog, DialogActions, DialogCon
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
-import { isUndefined} from 'lodash';
+import { isUndefined } from 'lodash';
 
 import * as w from '../../types';
 import Card from '../card/Card';

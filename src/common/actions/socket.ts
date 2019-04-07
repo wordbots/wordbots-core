@@ -1,7 +1,7 @@
 import * as fb from 'firebase';
 
-import * as w from '../types';
 import * as m from '../../server/multiplayer/multiplayer';
+import * as w from '../types';
 
 // Client => middleware
 

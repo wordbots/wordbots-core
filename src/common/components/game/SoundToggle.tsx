@@ -1,9 +1,9 @@
-import * as React from 'react';
-import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import Slider from '@material-ui/lab/Slider';
+import * as React from 'react';
 
 import { MAX_Z_INDEX } from '../../constants';
 import { isFlagSet, toggleFlag } from '../../util/browser';
@@ -59,12 +59,12 @@ class SoundToggle extends React.Component<SoundToggleProps, SoundToggleState> {
       visibility: 'hidden',
       opacity: 0
     }
-  }
+  };
 
   public state = {
     volumeSliderVisible: false
-  }
-  
+  };
+
   public render(): JSX.Element {
     const { volume, classes } = this.props;
     const { volumeSliderVisible } = this.state;
@@ -81,7 +81,7 @@ class SoundToggle extends React.Component<SoundToggleProps, SoundToggleState> {
           text={isFlagSet('sound') ? 'Mute' : 'Unmute'}
           place="top"
           style={{ zIndex: MAX_Z_INDEX }}
-          >
+        >
           <IconButton
             color="primary"
             classes={{
@@ -98,7 +98,7 @@ class SoundToggle extends React.Component<SoundToggleProps, SoundToggleState> {
             step={1}
             value={volume}
             onChange={this.handleSliderChange}
-            />
+          />
         </div>
       </div>
     );

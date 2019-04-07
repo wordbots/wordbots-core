@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { History } from 'history';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { History } from 'history';
 import { compact, uniqBy } from 'lodash';
+import * as React from 'react';
 
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
@@ -86,21 +86,27 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   get actions(): JSX.Element[] {
     const { mode, gameName } = this.props;
     return [
-      <Button
-        key="cancel"
-        variant="outlined"
-        onClick={this.close}
-        style={{ marginRight: 10 }}>
-        Cancel
-      </Button>,
-      <Button
-        key="start"
-        variant="contained"
-        color="secondary"
-        disabled={gameName === '' && mode === 'host'}
-        onClick={this.handleStartGame}>
-        {this.props.startButtonText || 'Start Game'}
-      </Button>
+      (
+        <Button
+          key="cancel"
+          variant="outlined"
+          onClick={this.close}
+          style={{ marginRight: 10 }}
+        >
+          Cancel
+        </Button>
+      ),
+      (
+        <Button
+          key="start"
+          variant="contained"
+          color="secondary"
+          disabled={gameName === '' && mode === 'host'}
+          onClick={this.handleStartGame}
+        >
+          {this.props.startButtonText || 'Start Game'}
+        </Button>
+      )
     ];
   }
 
@@ -140,13 +146,15 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
           style={{ width: '100%', marginBottom: 10 }}
           value={enteredPassword}
           label="Game password"
-          onChange={this.handleSetPassword} />}
+          onChange={this.handleSetPassword}
+        />}
         <DeckPicker
           cards={cards}
           availableDecks={this.validDecks}
           sets={sets}
           selectedDeckIdx={selectedDeckIdx}
-          onChooseDeck={this.handleChooseDeck} />
+          onChooseDeck={this.handleChooseDeck}
+        />
       </RouterDialog>
     );
   }

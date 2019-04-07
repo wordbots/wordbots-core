@@ -1,5 +1,5 @@
-import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
+import * as React from 'react';
 
 import * as m from '../../../../server/multiplayer/multiplayer';
 
@@ -69,9 +69,9 @@ export default class LobbyStatus extends React.Component<LobbyStatusProps> {
               {
                 playersOnline.map((clientId, idx) =>
                   <React.Fragment key={clientId}>
-                    { renderPlayerName(userDataByClientId[clientId], clientId) }
+                    {renderPlayerName(userDataByClientId[clientId], clientId)}
 
-                    { idx !== playersOnline.length - 1 && <span>,&nbsp;</span> }
+                    {idx !== playersOnline.length - 1 && <span>,&nbsp;</span>}
                   </React.Fragment>
                 )
               }

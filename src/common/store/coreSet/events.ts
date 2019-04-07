@@ -1,5 +1,5 @@
-import * as w from '../../types';
 import { TYPE_EVENT } from '../../constants';
+import * as w from '../../types';
 
 export const incinerateCard: w.CardInStore = {
   id: 'Incinerate',

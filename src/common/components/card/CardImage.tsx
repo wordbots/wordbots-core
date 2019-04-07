@@ -1,7 +1,7 @@
 import * as React from 'react';
 
+import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT } from '../../constants';
 import * as w from '../../types';
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT } from '../../constants';
 import loadImages from '../hexgrid/HexGridImages';
 import Sprite from '../Sprite';
 
@@ -25,11 +25,13 @@ export default class CardImage extends React.Component<CardImageProps> {
     if (type === TYPE_CORE) {
       const [width, height] = [50 * scale, 52 * scale];
       return (
-        <div style={{
-          width,
-          height,
-          margin: '3px auto 0'
-        }}>
+        <div
+          style={{
+            width,
+            height,
+            margin: '3px auto 0'
+          }}
+        >
           <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} />
         </div>
       );
@@ -44,7 +46,8 @@ export default class CardImage extends React.Component<CardImageProps> {
               width,
               height,
               margin: `${10 * scale}px auto 0`
-          }}>
+            }}
+          >
             <Identicon id={spriteID} width={width} size={4} />
           </div>
         );
@@ -56,12 +59,14 @@ export default class CardImage extends React.Component<CardImageProps> {
             style={{
               width,
               height
-          }}>
+            }}
+          >
             <TriangleArt
               id={spriteID}
               width={width}
               height={height}
-              cellSize={25 * scale} />
+              cellSize={25 * scale}
+            />
           </div>
         );
       }
@@ -73,13 +78,15 @@ export default class CardImage extends React.Component<CardImageProps> {
             width: 48 * scale,
             height: 48 * scale,
             margin: '2px auto 3px'
-        }}>
+          }}
+        >
           <Sprite
             id={spriteID}
             palette={type === TYPE_ROBOT ? 'nes' : 'greys'}
             size={24}
             scale={scale}
-            output="html" />
+            output="html"
+          />
         </div>
       );
     }

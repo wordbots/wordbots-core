@@ -1,6 +1,6 @@
+import { History } from 'history';
 import * as React from 'react';
 import * as ReactGA from 'react-ga';
-import { History } from 'history';
 
 declare const window: {
   location: { pathname: string }

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
+import * as React from 'react';
 
 interface CardBackProps {
   deckLength?: number
@@ -43,22 +43,28 @@ export default class CardBack extends React.Component<CardBackProps, CardBackSta
           cursor: 'pointer'
         }, style)}
       >
-        <div style={{
-          writingMode: 'vertical-lr',
-          width: 'calc(100% - 50px)',
-          height: 'calc(100% - 4px)',
-          display: 'flex',
-          justifyContent: 'center',
-          // alignItems: 'center',
-          paddingLeft: 46,
-          borderRadius: 5,
-          border: '2px solid #FFF'
-        }}>
-          <div style={{
-            color: '#fff',
-            fontSize: 26,
-            fontFamily: 'Carter One'
-          }}>{this.props.customText || 'WORDBOTS'}</div>
+        <div
+          style={{
+            writingMode: 'vertical-lr',
+            width: 'calc(100% - 50px)',
+            height: 'calc(100% - 4px)',
+            display: 'flex',
+            justifyContent: 'center',
+            // alignItems: 'center',
+            paddingLeft: 46,
+            borderRadius: 5,
+            border: '2px solid #FFF'
+          }}
+        >
+          <div
+            style={{
+              color: '#fff',
+              fontSize: 26,
+              fontFamily: 'Carter One'
+            }}
+          >
+            {this.props.customText || 'WORDBOTS'}
+          </div>
         </div>
       </Paper>
     );

@@ -1,10 +1,10 @@
-import { WebSocket as MockSocket } from 'mock-socket';
 import { noop } from 'lodash';
+import { WebSocket as MockSocket } from 'mock-socket';
 
-import { defaultDecks, emptyDeck, eventsOnlyDeck, botsOnlyDeck, kernelKillerDeck } from '../data/decks';
 import * as gameActions from '../../src/common/actions/game';
-import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
 import * as m from '../../src/server/multiplayer/multiplayer';
+import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
+import { botsOnlyDeck, defaultDecks, emptyDeck, eventsOnlyDeck, kernelKillerDeck } from '../data/decks';
 
 type MSS = MultiplayerServerState;
 
@@ -180,7 +180,7 @@ describe('MultiplayerServerState', () => {
       expect(warning).toEqual('Guest_guest was unable to join hostName\'s game.');
     });
 
-    it('should be able to join an active game as a spectator', () => {
+    it('should be able to join an active game as a spectator', () => {
       expectStateFn((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);

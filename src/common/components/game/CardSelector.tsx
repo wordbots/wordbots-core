@@ -1,15 +1,16 @@
-import * as React from 'react';
-import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import Icon from '@material-ui/core/Icon';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { sortBy, debounce } from 'lodash';
+import TextField from '@material-ui/core/TextField';
+import { debounce, sortBy } from 'lodash';
+import * as React from 'react';
 
-import { BLUE_PLAYER_COLOR, ORANGE_PLAYER_COLOR, ORANGE_PLAYER_COLOR_DARKENED, BLUE_PLAYER_COLOR_DARKENED } from '../../constants';
+import { BLUE_PLAYER_COLOR, BLUE_PLAYER_COLOR_DARKENED, ORANGE_PLAYER_COLOR, ORANGE_PLAYER_COLOR_DARKENED } from '../../constants';
 import * as w from '../../types';
-import Tooltip from '../Tooltip.js';
 import CardTooltip from '../card/CardTooltip';
+import Tooltip from '../Tooltip.js';
+
 import CardSelectorCard from './CardSelectorCard.js';
 
 interface CardSelectorBaseProps {
@@ -26,16 +27,6 @@ interface CardSelectorState {
 type CardSelectorProps = CardSelectorBaseProps & WithStyles;
 
 class CardSelector extends React.Component<CardSelectorProps, CardSelectorState> {
-  constructor(props: CardSelectorProps) {
-    super(props);
-
-    this.state = {
-      selectedCard: undefined,
-      searchText: '',
-      cardCollection: props.cardCollection
-    }
-  }
-
   public static styles: Record<string, CSSProperties> = {
     container: {
       height: '100%',
@@ -77,6 +68,24 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
         backgroundColor: ORANGE_PLAYER_COLOR_DARKENED
       }
     }
+  };
+
+  private filterCardCollection = debounce((searchText: string): void => {
+    const { cardCollection } = this.props;
+    const filteredCollection = cardCollection.filter((card: w.CardInStore): boolean =>
+      card.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    this.setState({ cardCollection: filteredCollection });
+  }, 500);
+
+  constructor(props: CardSelectorProps) {
+    super(props);
+
+    this.state = {
+      selectedCard: undefined,
+      searchText: '',
+      cardCollection: props.cardCollection
+    };
   }
 
   public render(): JSX.Element {
@@ -127,18 +136,10 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
     }
   }
 
-  private filterCardCollection = debounce((searchText: string): void => {
-    const { cardCollection } = this.props;
-    const filteredCollection = cardCollection.filter((card: w.CardInStore): boolean => 
-      card.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    this.setState({ cardCollection: filteredCollection });
-  }, 500)
-
   private get cardsList(): JSX.Element[] {
     const { cardCollection } = this.state;
 
-    return sortBy(cardCollection, 'cost').map((card: w.CardInStore, index: number): JSX.Element =>
+    return sortBy(cardCollection, 'cost').map((card: w.CardInStore, index: number): JSX.Element => (
       <CardTooltip card={card} key={index}>
         <CardSelectorCard
           card={card}
@@ -146,7 +147,7 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
           onCardSelect={this.handleSelectCard}
         />
       </CardTooltip>
-    );
+    ));
   }
 
   private get buttons(): Record<string, Record<string, string>> {

@@ -1,9 +1,10 @@
 import { constant, times } from 'lodash';
 
-import { attackBotCard, cantripCard, instantKernelKillerAbilityCard } from './cards';
+import defaultCollectionState from '../../src/common/store/defaultCollectionState';
 import * as w from '../../src/common/types';
 import { instantiateCard, unpackDeck } from '../../src/common/util/cards';
-import defaultCollectionState from '../../src/common/store/defaultCollectionState';
+
+import { attackBotCard, cantripCard, instantKernelKillerAbilityCard } from './cards';
 
 export function constantDeck(card: w.CardInStore, deckSize: number = 30): w.Deck {
   return {

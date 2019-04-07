@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { History } from 'history';
 import * as fb from 'firebase';
+import { History } from 'history';
+import * as React from 'react';
 
-import * as w from '../../../types';
 import * as m from '../../../../server/multiplayer/multiplayer';
 import { CHAT_WIDTH } from '../../../constants';
+import * as w from '../../../types';
 import { unpackDeck } from '../../../util/cards';
 import { GameFormat } from '../../../util/formats';
 import RouterDialog from '../../RouterDialog';
@@ -84,7 +84,8 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
             cards={cards}
             sets={sets}
             history={history}
-            onStartGame={this.handleJoinGame} />}
+            onStartGame={this.handleJoinGame}
+          />}
           <PreGameModal
             mode="matchmaking"
             title="Join Matchmaking Queue"
@@ -93,7 +94,8 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
             cards={cards}
             sets={sets}
             history={history}
-            onStartGame={this.handleJoinQueue} />
+            onStartGame={this.handleJoinQueue}
+          />
           <GameCreationModal
             path="host"
             title="Create Casual Game"
@@ -101,7 +103,8 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
             cards={cards}
             sets={sets}
             history={history}
-            onCreateGame={this.handleHostGame} />
+            onCreateGame={this.handleHostGame}
+          />
         </div>
 
         <Title text="Multiplayer" />
@@ -112,14 +115,16 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
             myClientId={clientId!}
             playersOnline={playersOnline}
             userDataByClientId={userDataByClientId}
-            onConnect={onConnect} />
+            onConnect={onConnect}
+          />
 
           {this.renderWaiting()}
 
           <MultiplayerModeSelection
             disabled={this.isWaiting}
             isGuest={!user}
-            onSelectMode={this.handleSelectMode} />
+            onSelectMode={this.handleSelectMode}
+          />
 
           <GameBrowser
             openGames={waitingPlayers}
@@ -130,7 +135,8 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
             availableDecks={this.decks}
             onCancelHostGame={onCancelHostGame}
             onJoinGame={this.handleClickJoinCasualGame}
-            onSpectateGame={onSpectateGame} />
+            onSpectateGame={onSpectateGame}
+          />
         </div>
       </div>
     );
@@ -179,7 +185,8 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
           inQueue={queuing}
           queueFormat={this.state.queueFormatName!}
           queueSize={queueSize}
-          onLeaveQueue={this.handleLeaveQueue} />
+          onLeaveQueue={this.handleLeaveQueue}
+        />
       );
     }
   }

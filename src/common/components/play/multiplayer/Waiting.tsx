@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as moment from 'moment';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { Pulse } from 'better-react-spinkit';
+import * as moment from 'moment';
+import * as React from 'react';
 
 interface WaitingProps {
   inQueue: boolean
@@ -31,23 +31,27 @@ export default class Waiting extends React.Component<WaitingProps, WaitingState>
   public render(): JSX.Element {
     const { inQueue, queueFormat, queueSize, onLeaveQueue } = this.props;
     return (
-      <Paper style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: 20,
-        marginBottom: 20
-      }}>
-        <Pulse style={{ marginRight: 15 }} />
-        <div style={{
+      <Paper
+        style={{
           display: 'flex',
-          width: '100%',
           alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
+          padding: 20,
+          marginBottom: 20
+        }}
+      >
+        <Pulse style={{ marginRight: 15 }} />
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
           <div>
             <div>
               Waiting for an opponent
-              { inQueue && ` in the '${queueFormat}' queue` }
+              {inQueue && ` in the '${queueFormat}' queue`}
               <em>
                 {' '}(waiting for {moment.duration(this.state.waitingSecs, 'seconds').humanize()}){' '}
               </em>

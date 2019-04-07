@@ -1,5 +1,5 @@
+import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../src/common/constants';
 import * as w from '../../src/common/types';
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../src/common/constants';
 
 /**
  * Returns basic stats for a robot that can move and attack.

@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { times } from 'lodash';
+import * as React from 'react';
 
 import * as w from '../../types';
-import { id } from '../../util/common';
 import { keywordsInSentence, splitSentences } from '../../util/cards';
+import { id } from '../../util/common';
 
 import StatusIcon from './StatusIcon';
 import Word from './Word';

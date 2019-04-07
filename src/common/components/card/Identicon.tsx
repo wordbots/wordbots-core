@@ -5,8 +5,8 @@
 // We can't use the identicons-react NPM package because
 // it is improperly exported (as ES6 rather than ES5).
 
-import * as React from 'react';
 import { noop } from 'lodash';
+import * as React from 'react';
 
 import { hashCode } from '../../util/common';
 

@@ -1,9 +1,9 @@
 import { newGame, passTurn } from '../../util/game';
 
-import { setSelectedCard, placeCard } from './game/cards';
-import { deselect, setSelectedTile, moveRobot, attack, attackComplete, activateObject } from './game/board';
-import { startTutorial, handleTutorialAction } from './game/tutorial';
-import { startPractice, startSandbox, aiResponse } from './game/practice';
+import { activateObject, attack, attackComplete, deselect, moveRobot, setSelectedTile } from './game/board';
+import { placeCard, setSelectedCard } from './game/cards';
+import { aiResponse, startPractice, startSandbox } from './game/practice';
+import { handleTutorialAction, startTutorial } from './game/tutorial';
 
 const gameHandlers = {
   newGame,

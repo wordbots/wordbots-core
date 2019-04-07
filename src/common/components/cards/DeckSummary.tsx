@@ -1,16 +1,16 @@
-import * as React from 'react';
-import Badge from 'material-ui/Badge';
 import Paper from '@material-ui/core/Paper';
-import FontIcon from 'material-ui/FontIcon';
 import { filter, sortBy } from 'lodash';
+import Badge from 'material-ui/Badge';
+import FontIcon from 'material-ui/FontIcon';
+import * as React from 'react';
 
+import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
-import { TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE } from '../../constants';
 import { groupCards } from '../../util/cards';
 import { BUILTIN_FORMATS, SetFormat } from '../../util/formats';
 import ButtonInRow from '../ButtonInRow';
-import Tooltip from '../Tooltip';
 import CardTooltip from '../card/CardTooltip';
+import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import { CardWithCount } from './types';
@@ -103,14 +103,17 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
             {deck.name}
           </div>
 
-          <div style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            textAlign: 'right',
-            fontSize: 24,
-            color: (isComplete ? 'green' : 'red')}}>
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              textAlign: 'right',
+              fontSize: 24,
+              color: (isComplete ? 'green' : 'red')
+            }}
+          >
             <Tooltip inline html text={validFormatsHTML} style={{textAlign: 'left'}}>
               <FontIcon
                 className="material-icons"
@@ -126,52 +129,71 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           </div>
         </div>
 
-        <MustBeLoggedIn loggedIn={this.props.loggedIn} style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          width: '100%'
-        }}>
+        <MustBeLoggedIn
+          loggedIn={this.props.loggedIn}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%'
+          }}
+        >
           <ButtonInRow
             label="Edit"
             icon="edit"
             tooltip="Edit the cards in this deck."
             onClick={this.handleClickEdit}
-            disabled={this.isDefaultDeck} />
+            disabled={this.isDefaultDeck}
+          />
           <ButtonInRow
             label="Duplicate"
             icon="add_circle"
             tooltip="Create a copy of this deck."
-            onClick={this.handleClickDuplicate} />
+            onClick={this.handleClickDuplicate}
+          />
           <ButtonInRow
             label="Delete"
             icon="delete"
             tooltip="Delete this deck. This operation cannot be undone!"
             onClick={this.handleClickDelete}
-            disabled={this.isDefaultDeck} />
+            disabled={this.isDefaultDeck}
+          />
           <ButtonInRow
             label="Try"
             icon="videogame_asset"
             tooltip="Try this deck in a practice game."
-            onClick={this.handleClickTry} />
+            onClick={this.handleClickTry}
+          />
         </MustBeLoggedIn>
 
         <div style={{padding: '0 10px 10px 10px'}}>
           <div style={{float: 'left', marginRight: 30}}>
-            <h4 style={{
-              margin: '20px 0 20px -10px'
-            }}>Robots ({robots.length})</h4>
+            <h4
+              style={{
+                margin: '20px 0 20px -10px'
+              }}
+            >
+              Robots ({robots.length})
+            </h4>
             {this.renderCards(robots)}
           </div>
 
           <div style={{float: 'left'}}>
-            <h4 style={{
-              margin: '20px 0 20px -10px'
-            }}>Structures ({structures.length})</h4>
+            <h4
+              style={{
+                margin: '20px 0 20px -10px'
+              }}
+            >
+              Structures ({structures.length})
+            </h4>
             {this.renderCards(structures)}
 
-            <h4 style={{
-              margin: '20px 0 20px -10px'
-            }}>Events ({events.length})</h4>
+            <h4
+              style={{
+                margin: '20px 0 20px -10px'
+              }}
+            >
+              Events ({events.length})
+            </h4>
             {this.renderCards(events)}
           </div>
         </div>
@@ -199,13 +221,15 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
     return (
       <div
         key={idx}
-        style={this.styles.card}>
+        style={this.styles.card}
+      >
         <CardTooltip card={card}>
           <div style={this.styles.cardItem}>
             <Badge
               badgeContent={card.cost}
               badgeStyle={this.styles.cardBadgeStyle}
-              style={this.styles.cardBadge} />
+              style={this.styles.cardBadge}
+            />
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
           </div>

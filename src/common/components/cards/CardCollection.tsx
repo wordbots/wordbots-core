@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { without } from 'lodash';
+import * as React from 'react';
 
 import * as w from '../../types';
 
-import { Layout } from './types.enums';
-import PageSwitcher from './PageSwitcher';
 import CardGrid from './CardGrid';
 import CardTable from './CardTable';
+import PageSwitcher from './PageSwitcher';
+import { Layout } from './types.enums';
 
 interface CardCollectionProps {
   cards: w.CardInStore[]
@@ -21,7 +21,7 @@ export interface CardGridOrTableProps {
   cards: w.CardInStore[]
   selectedCardIds: string[]
   selectable: boolean
-  onCardClick: (cardId: w.CardId) => void
+  onCardClick: (cardId: w.CardId) => void
 }
 
 interface CardCollectionState {
@@ -54,7 +54,8 @@ export default class CardCollection extends React.Component<CardCollectionProps,
           selectable={!this.props.allowMultipleSelection}
           cards={this.cards}
           selectedCardIds={this.props.selectedCardIds}
-          onCardClick={this.onCardClick}/>
+          onCardClick={this.onCardClick}
+        />
         {this.renderPageControls()}
       </div>
     );
@@ -83,6 +84,7 @@ export default class CardCollection extends React.Component<CardCollectionProps,
       page={this.currentPage}
       maxPages={this.numPages}
       prevPage={this.handleClickPrevPage}
-      nextPage={this.handleClickNextPage} />
+      nextPage={this.handleClickNextPage}
+    />
   )
 }

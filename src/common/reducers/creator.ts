@@ -1,11 +1,11 @@
 import { fromPairs } from 'lodash';
 
-import * as w from '../types';
-import { id } from '../util/common';
-import { getSentencesFromInput, replaceSynonyms } from '../util/cards';
-import defaultState from '../store/defaultCreatorState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
+import defaultState from '../store/defaultCreatorState';
+import * as w from '../types';
+import { getSentencesFromInput, replaceSynonyms } from '../util/cards';
+import { id } from '../util/common';
 
 import c from './handlers/cards';
 

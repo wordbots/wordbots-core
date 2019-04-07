@@ -1,10 +1,10 @@
-import * as React from 'react';
-import * as CopyToClipboard from 'react-copy-to-clipboard';
-import { Paper, withStyles, WithStyles, Button, Dialog, DialogActions, DialogContent } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, Paper, withStyles, WithStyles } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 import { isUndefined } from 'lodash';
+import * as React from 'react';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
 import Card from '../card/Card';
@@ -40,9 +40,11 @@ class SetSummaryCard extends React.Component<{ card: w.CardInStore, waitMs?: num
   }
 
   public render(): React.ReactNode {
-    return this.state.visible && <div style={{float: 'left'}}>
-      {Card.fromObj(this.props.card, { scale: 0.7 })}
-    </div>;
+    return this.state.visible && (
+      <div style={{float: 'left'}}>
+        {Card.fromObj(this.props.card, { scale: 0.7 })}
+      </div>
+    );
   }
 }
 
@@ -149,7 +151,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         </div>
         {isCardListExpanded && <div>
           {cards.map((card, idx) => <SetSummaryCard card={card} key={idx} waitMs={25 * idx} />)}
-          <div style={{clear: 'both'}}></div>
+          <div style={{clear: 'both'}}/>
         </div>}
         <div className={classes.numDecksCreated}>
           {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created
@@ -200,10 +202,12 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
 
     if (this.doesSetBelongToUser) {
       if (isDeleteConfirmationOpen) {
-        return <span className={classes.confirmDeleteControl}>
-          <span className={classes.confirmDeleteLabel}>delete?</span>
-          <a className={classes.link} onClick={this.handleDeleteDialogue}>yes</a>/<a className={classes.link} onClick={this.handleCloseDeleteConfirmation}>no</a>
-        </span>;
+        return (
+          <span className={classes.confirmDeleteControl}>
+            <span className={classes.confirmDeleteLabel}>delete?</span>
+            <a className={classes.link} onClick={this.handleDeleteDialogue}>yes</a>/<a className={classes.link} onClick={this.handleCloseDeleteConfirmation}>no</a>
+          </span>
+        );
       } else {
         return this.renderButton('Delete', this.handleOpenDeleteConfirmation, { color: 'secondary' });
       }

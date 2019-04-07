@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { pick } from 'lodash';
+import * as React from 'react';
 
 import Tooltip from '../Tooltip';
 

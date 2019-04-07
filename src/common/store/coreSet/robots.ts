@@ -1,5 +1,5 @@
-import * as w from '../../types';
 import { TYPE_ROBOT } from '../../constants';
+import * as w from '../../types';
 
 export const crawlingWallCard: w.CardInStore = {
   id: 'Crawling Wall',

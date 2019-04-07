@@ -1,10 +1,10 @@
 import * as w from '../../types';
+import {
+  areIdenticalCards, cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
+  loadDecksFromFirebase, loadSetsFromFirebase, saveCardsToFirebase, saveCardToFirebase, saveDecksToFirebase, splitSentences
+} from '../../util/cards';
 import { id } from '../../util/common';
 import * as firebase from '../../util/firebase';
-import {
-  areIdenticalCards, cardsToJson, cardsFromJson, splitSentences, createCardFromProps,
-  loadCardsFromFirebase, loadDecksFromFirebase, saveCardToFirebase, saveCardsToFirebase, saveDecksToFirebase, loadSetsFromFirebase
-} from '../../util/cards';
 
 type State = w.CollectionState;
 

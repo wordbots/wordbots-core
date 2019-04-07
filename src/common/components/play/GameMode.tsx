@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { noop } from 'lodash';
+import * as React from 'react';
 
 import PaperButton from '../PaperButton';
 
@@ -37,37 +37,47 @@ export default class GameMode extends React.Component<GameModeProps> {
   private renderInner(): JSX.Element {
     const { name, compact, disabled, imagePath } = this.props;
     return (
-      <div style={{
-        filter: disabled ? 'blur(2px)' : undefined,
-        padding: 20,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        {imagePath && <div style={{
-          height: 165,
-          width: '100%',
-          marginBottom: 10,
-          color: 'grey',
+      <div
+        style={{
+          filter: disabled ? 'blur(2px)' : undefined,
+          padding: 20,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden'
-        }}>
-          <img src={imagePath || ''} style={{height: '100%', imageRendering: 'pixelated'}} />
-        </div>}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: compact ? 'auto' : (imagePath ? 100 : 250),
-          textAlign: 'center',
-          fontSize: 24,
-          fontFamily: 'Carter One',
-          color: '#f44336',
-          WebkitTextStroke: '1px black'
-        }}>{name}</div>
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        {imagePath && (
+          <div
+            style={{
+              height: 165,
+              width: '100%',
+              marginBottom: 10,
+              color: 'grey',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden'
+            }}
+          >
+            <img src={imagePath || ''} style={{height: '100%', imageRendering: 'pixelated'}} />
+          </div>
+        )}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: compact ? 'auto' : (imagePath ? 100 : 250),
+            textAlign: 'center',
+            fontSize: 24,
+            fontFamily: 'Carter One',
+            color: '#f44336',
+            WebkitTextStroke: '1px black'
+          }}
+        >
+          {name}
+        </div>
       </div>
     );
   }

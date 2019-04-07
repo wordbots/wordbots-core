@@ -1,6 +1,6 @@
-import * as w from '../../src/common/types';
 import { TYPE_ROBOT } from '../../src/common/constants';
 import { collection } from '../../src/common/store/cards';
+import * as w from '../../src/common/types';
 import { executeCmd } from '../../src/common/util/game';
 import { getDefaultState } from '../testHelpers';
 

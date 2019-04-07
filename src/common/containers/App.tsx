@@ -1,39 +1,39 @@
-import * as React from 'react';
-import { object } from 'prop-types';
-import { hot } from 'react-hot-loader';
-import { Dispatch, AnyAction } from 'redux';
-import { connect } from 'react-redux';
-import { Route, Redirect, Switch, withRouter } from 'react-router';
-import { History, Location } from 'history';
 import * as fb from 'firebase';
-import Helmet from 'react-helmet';
+import { History, Location } from 'history';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { object } from 'prop-types';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { hot } from 'react-hot-loader';
+import { connect } from 'react-redux';
+import { Redirect, Route, Switch, withRouter } from 'react-router';
+import { AnyAction, Dispatch } from 'redux';
 import 'whatwg-fetch';
 
-import * as w from '../types';
-import { SIDEBAR_WIDTH, SIDEBAR_COLLAPSED_WIDTH } from '../constants';
-import { isFlagSet, logAnalytics } from '../util/browser';
-import { listenToUserData, listenToSets, onLogin, onLogout } from '../util/firebase';
 import * as actions from '../actions/global';
-import ErrorBoundary from '../components/ErrorBoundary';
-import NavMenu from '../components/NavMenu';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
 import HelpDialog from '../components/cards/HelpDialog';
+import ErrorBoundary from '../components/ErrorBoundary';
+import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
+import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
 import PersonalTheme from '../themes/personal';
+import * as w from '../types';
+import { isFlagSet, logAnalytics } from '../util/browser';
+import { listenToSets, listenToUserData, onLogin, onLogout } from '../util/firebase';
 
-import TitleBar from './TitleBar';
+import About from './About';
 import Collection from './Collection';
 import Creator from './Creator';
 import Deck from './Deck';
 import Decks from './Decks';
-import Sets from './Sets';
-import Set from './Set';
 import Home from './Home';
-import Singleplayer, { Singleplayer as SingleplayerBase } from './Singleplayer';
 import Multiplayer from './Multiplayer';
-import About from './About';
 import Profile from './Profile';
+import Set from './Set';
+import Sets from './Sets';
+import Singleplayer, { Singleplayer as SingleplayerBase } from './Singleplayer';
+import TitleBar from './TitleBar';
 
 interface AppStateProps {
   inGame: boolean
@@ -142,10 +142,12 @@ class App extends React.Component<AppProps, AppState> {
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
     return (
-      <div style={{
-        paddingLeft: this.inGame ? 0 : sidebarWidth,
-        transition: 'padding-left 200ms ease-in-out'
-      }}>
+      <div
+        style={{
+          paddingLeft: this.inGame ? 0 : sidebarWidth,
+          transition: 'padding-left 200ms ease-in-out'
+        }}
+      >
         <ErrorBoundary>
           <Switch>
             <Route exact path="/" component={Home} />

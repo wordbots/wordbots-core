@@ -1,17 +1,17 @@
-import * as React from 'react';
-import FontIcon from 'material-ui/FontIcon';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import { sortBy } from 'lodash';
+import FontIcon from 'material-ui/FontIcon';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import * as React from 'react';
 
-import * as w from '../../types';
 import { MAX_Z_INDEX } from '../../constants';
+import * as w from '../../types';
 import { groupCards, selectType } from '../../util/cards';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
-import { CardWithCount } from './types';
 import ActiveDeckCard from './ActiveDeckCard';
+import { CardWithCount } from './types';
 
 interface ActiveDeckProps {
   id: w.DeckId | null
@@ -72,10 +72,12 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
 
     return (
       <div>
-        <div style={{
-          fontWeight: 100,
-          fontSize: 28
-        }}>
+        <div
+          style={{
+            fontWeight: 100,
+            fontSize: 28
+          }}
+        >
           {isASet ? 'Set' : 'Deck'} [
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
             &nbsp;{cards.length}&nbsp;
@@ -87,20 +89,24 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           value={name}
           floatingLabelText={`${isASet ? 'Set' : 'Deck'} name`}
           style={{width: '100%', marginBottom: 10}}
-          onChange={this.handleChangeName} />
+          onChange={this.handleChangeName}
+        />
 
         {isASet && <TextField
           value={description}
           floatingLabelText="Description"
           style={{width: '100%', marginBottom: 10}}
-          onChange={this.handleChangeDescription} />}
+          onChange={this.handleChangeDescription}
+        />}
 
         <div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: 20
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: 20
+            }}
+          >
             {this.renderButton(0, 'view_headline', 'Group by Cost')}
             {this.renderButton(1, 'view_agenda', 'Group by Type')}
           </div>
@@ -166,7 +172,8 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           showCount={!this.props.isASet}
           onIncreaseCardCount={this.props.onIncreaseCardCount}
           onDecreaseCardCount={this.props.onDecreaseCardCount}
-          onRemoveCard={this.props.onRemoveCard} />
+          onRemoveCard={this.props.onRemoveCard}
+        />
       </div>
     );
   }
@@ -193,29 +200,41 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     } else {
       return (
         <div>
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10
-          }}>Robots</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10
+            }}
+          >
+            Robots
+          </div>
 
           {this.renderCardGroup(0)}
 
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10,
-            marginTop: 10
-          }}>Events</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10,
+              marginTop: 10
+            }}
+          >
+            Events
+          </div>
 
           {this.renderCardGroup(1)}
 
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10,
-            marginTop: 10
-          }}>Structures</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10,
+              marginTop: 10
+            }}
+          >
+            Structures
+          </div>
 
           {this.renderCardGroup(3)}
         </div>

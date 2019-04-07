@@ -1,10 +1,10 @@
 import { isArray, reduce } from 'lodash';
 
-import * as w from '../types';
-import defaultState from '../store/defaultCollectionState';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as globalActions from '../actions/global';
+import defaultState from '../store/defaultCollectionState';
+import * as w from '../types';
 
 import c from './handlers/cards';
 

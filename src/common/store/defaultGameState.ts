@@ -1,5 +1,5 @@
-import * as w from '../types';
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX, TYPE_CORE } from '../constants';
+import * as w from '../types';
 
 import * as cards from './cards';
 

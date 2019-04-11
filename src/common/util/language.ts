@@ -1,5 +1,5 @@
 import { mapValues, sum } from 'lodash';
-import { buildNGrams, listAllNGrams, BigramProbs, UnigramProbs } from 'word-ngrams';
+import { BigramProbs, buildNGrams, listAllNGrams, UnigramProbs } from 'word-ngrams';
 
 const DISALLOWED_PHRASES = ['all a'];
 

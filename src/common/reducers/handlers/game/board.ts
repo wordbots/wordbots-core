@@ -1,14 +1,14 @@
 import { cloneDeep } from 'lodash';
 
-import * as w from '../../../types';
-import { stringToType } from '../../../constants';
-import {
-  currentPlayer, opponentPlayer, allObjectsOnBoard, getAttribute, ownerOf, hasEffect,
-  validMovementHexes, validAttackHexes,
-  triggerSound, logAction, dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, setTargetAndExecuteQueuedAction,
-  executeCmd, triggerEvent, applyAbilities
-} from '../../../util/game';
 import HexUtils from '../../../components/hexgrid/HexUtils';
+import { stringToType } from '../../../constants';
+import * as w from '../../../types';
+import {
+  allObjectsOnBoard, applyAbilities, currentPlayer, dealDamageToObjectAtHex, executeCmd, getAttribute,
+  hasEffect, logAction,
+  opponentPlayer, ownerOf, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
+  updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
+} from '../../../util/game';
 
 type State = w.GameState;
 type PlayerState = w.PlayerInGameState;

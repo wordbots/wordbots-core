@@ -1,13 +1,13 @@
-import * as React from 'react';
-import * as fb from 'firebase';
 import Button from '@material-ui/core/Button';
-import { TableRow, TableRowColumn } from 'material-ui/Table';
+import * as fb from 'firebase';
 import FontIcon from 'material-ui/FontIcon';
+import { TableRow, TableRowColumn } from 'material-ui/Table';
+import * as React from 'react';
 
-import * as w from '../../../types';
 import * as m from '../../../../server/multiplayer/multiplayer';
-import { guestUID } from '../../../util/multiplayer';
+import * as w from '../../../types';
 import { GameFormat } from '../../../util/formats';
+import { guestUID } from '../../../util/multiplayer';
 
 import { DisplayedGame } from './GameBrowser';
 
@@ -97,31 +97,33 @@ export default class GameRow extends React.Component<GameRowProps> {
   private renderButtons = () => {
     const { game } = this.props;
     if (!this.isMyGame) {
-      return (game.players.length === 1) ?
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={this.handleJoinGame}
-          disabled={!this.anyValidDecks}
-        >
-          Join Game
-          {game.options.passwordToJoin &&
-            <FontIcon
-              className="material-icons"
-              color="white"
-              style={{ marginLeft: 5 }}
-            >
-              vpn_key
-            </FontIcon>
-          }
-        </Button> :
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={this.handleSpectateGame}
-        >
-          Spectate Game
-        </Button>;
+      return (game.players.length === 1) ? (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={this.handleJoinGame}
+            disabled={!this.anyValidDecks}
+          >
+            Join Game
+            {game.options.passwordToJoin &&
+              <FontIcon
+                className="material-icons"
+                color="white"
+                style={{ marginLeft: 5 }}
+              >
+                vpn_key
+              </FontIcon>
+            }
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={this.handleSpectateGame}
+          >
+            Spectate Game
+          </Button>
+        );
     } else {
       return (
         <Button

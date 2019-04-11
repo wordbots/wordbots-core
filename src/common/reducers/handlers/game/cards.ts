@@ -1,18 +1,18 @@
 import { cloneDeep, compact, isArray } from 'lodash';
 
-import * as w from '../../../types';
-import * as g from '../../../guards';
+import HexUtils from '../../../components/hexgrid/HexUtils';
 import { TYPE_EVENT } from '../../../constants';
+import * as g from '../../../guards';
+import * as w from '../../../types';
+import { assertCardVisible, splitSentences } from '../../../util/cards';
 import { id } from '../../../util/common';
 import {
-  currentPlayer, getCost, checkVictoryConditions, matchesType,
-  allHexIds, validPlacementHexes,
-  triggerSound, discardCards,
-  removeCardsFromHand, logAction, setTargetAndExecuteQueuedAction,
-  executeCmd, triggerEvent, applyAbilities
+  allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
+  discardCards, executeCmd,
+  getCost, logAction,
+  matchesType, removeCardsFromHand, setTargetAndExecuteQueuedAction,
+  triggerEvent, triggerSound, validPlacementHexes
 } from '../../../util/game';
-import { assertCardVisible, splitSentences } from '../../../util/cards';
-import HexUtils from '../../../components/hexgrid/HexUtils';
 
 type State = w.GameState;
 type PlayerState = w.PlayerInGameState;

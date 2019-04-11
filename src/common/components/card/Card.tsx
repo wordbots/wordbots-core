@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { object } from 'prop-types';
-import Textfit from 'react-textfit';
-import Divider from 'material-ui/Divider';
-import { CardHeader, CardText } from 'material-ui/Card';
 import Paper from '@material-ui/core/Paper';
+import { isEqual, noop } from 'lodash';
+import { CardHeader, CardText } from 'material-ui/Card';
+import Divider from 'material-ui/Divider';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { isEqual, noop } from 'lodash';
+import { object } from 'prop-types';
+import * as React from 'react';
+import Textfit from 'react-textfit';
 
+import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import * as w from '../../types';
-import { TYPE_ROBOT, TYPE_CORE, TYPE_EVENT, TYPE_STRUCTURE, typeToString } from '../../constants';
-import { compareCertainKeys } from '../../util/common';
 import { inBrowser } from '../../util/browser';
+import { compareCertainKeys } from '../../util/common';
 
 import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';
@@ -84,7 +84,8 @@ export default class Card extends React.Component<CardProps, CardState> {
       baseCost={card.cost}
       source={card.source}
       parseResults=""
-      {...props} />
+      {...props}
+    />
   )
 
   public state = {
@@ -170,11 +171,13 @@ export default class Card extends React.Component<CardProps, CardState> {
 
     if (!visible) {
       return (
-        <div style={{
-          padding: '24px 0 12px 0',
-          marginRight: margin,
-          transform
-        }}>
+        <div
+          style={{
+            padding: '24px 0 12px 0',
+            marginRight: margin,
+            transform
+          }}
+        >
           <CardBack />
         </div>
       );
@@ -212,7 +215,8 @@ export default class Card extends React.Component<CardProps, CardState> {
                   title={this.renderTitle()}
                   titleStyle={{fontSize: 15 * (scale || 1)}}
                   subtitle={typeToString(type)}
-                  subtitleStyle={{fontSize: 14 * (scale || 1)}} />
+                  subtitleStyle={{fontSize: 14 * (scale || 1)}}
+                />
 
                 <Divider/>
 
@@ -223,7 +227,8 @@ export default class Card extends React.Component<CardProps, CardState> {
                   img={img}
                   source={source}
                   scale={scale || 1}
-                  onSpriteClick={onSpriteClick || noop} />
+                  onSpriteClick={onSpriteClick || noop}
+                />
 
                 <Divider/>
 
@@ -269,11 +274,13 @@ export default class Card extends React.Component<CardProps, CardState> {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round(180 / name.length);
       return (
-        <div style={{
-          width: 105 * (scale || 1),
-          height: 20 * (scale || 1),
-          fontSize: Math.min(maxFontSize, 16) * (scale || 1)
-        }}>
+        <div
+          style={{
+            width: 105 * (scale || 1),
+            height: 20 * (scale || 1),
+            fontSize: Math.min(maxFontSize, 16) * (scale || 1)
+          }}
+        >
           {name}
         </div>
       );
@@ -286,7 +293,8 @@ export default class Card extends React.Component<CardProps, CardState> {
           style={{
             width: 105 * (scale || 1),
             height: 23 * (scale || 1)
-        }}>
+          }}
+        >
           {name}
         </Textfit>
       );
@@ -300,9 +308,11 @@ export default class Card extends React.Component<CardProps, CardState> {
       // Textfit won't work without a DOM, so just estimate something reasonable.
       const maxFontSize = Math.round((type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
       return (
-        <div style={Object.assign(this.textFitStyle, {
-          fontSize: Math.min(maxFontSize, 14)
-        })}>
+        <div
+          style={Object.assign(this.textFitStyle, {
+            fontSize: Math.min(maxFontSize, 14)
+          })}
+        >
           {text}
         </div>
       );

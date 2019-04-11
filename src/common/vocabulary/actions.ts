@@ -1,19 +1,18 @@
-import * as w from '../types';
-import * as g from '../guards';
-
 import { cloneDeep, isFunction, mapValues } from 'lodash';
 
 import { TYPE_CORE } from '../constants';
-import { clamp, applyFuncToField } from '../util/common';
-import {
-  currentPlayer, ownerOf, getHex, allObjectsOnBoard,
-  passTurn, drawCards, removeCardsFromHand,
-  dealDamageToObjectAtHex, updateOrDeleteObjectAtHex, removeObjectFromBoard,
-  executeCmd
-} from '../util/game';
-import { splitSentences } from '../util/cards';
+import * as g from '../guards';
 import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
-import { instantiateObject, afterObjectPlayed } from '../reducers/handlers/game/cards';
+import { afterObjectPlayed, instantiateObject } from '../reducers/handlers/game/cards';
+import * as w from '../types';
+import { splitSentences } from '../util/cards';
+import { applyFuncToField, clamp } from '../util/common';
+import {
+  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards,
+  executeCmd, getHex, ownerOf,
+  passTurn, removeCardsFromHand, removeObjectFromBoard,
+  updateOrDeleteObjectAtHex
+} from '../util/game';
 
 export default function actions(state: w.GameState): Record<string, w.Returns<void>> {
   const iterateOver = <T extends w.Targetable>(collection: w.Collection) => (fn: (item: T) => void) => {

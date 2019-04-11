@@ -1,6 +1,6 @@
 import * as w from '../../types';
 
-import { SortCriteria, SortOrder, Layout } from './types.enums';
+import { Layout, SortCriteria, SortOrder } from './types.enums';
 
 export type FilterKey = 'robots' | 'events' | 'structures';
 

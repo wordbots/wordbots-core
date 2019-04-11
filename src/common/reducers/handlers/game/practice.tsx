@@ -1,22 +1,22 @@
-import * as React from 'react';
 import { filter, findIndex, findKey, sample, shuffle } from 'lodash';
+import * as React from 'react';
 
+import HU from '../../../components/hexgrid/HexUtils';
+import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
+import { DISABLE_AI, ORANGE_CORE_HEX, TYPE_EVENT, TYPE_ROBOT } from '../../../constants';
+import * as builtinCards from '../../../store/cards';
 import * as w from '../../../types';
-import { DISABLE_AI, TYPE_ROBOT, TYPE_EVENT, ORANGE_CORE_HEX } from '../../../constants';
-import { id, convertRange } from '../../../util/common';
 import { isFlagSet } from '../../../util/browser';
 import { assertCardVisible, instantiateCard } from '../../../util/cards';
+import { convertRange, id } from '../../../util/common';
 import { lookupUsername } from '../../../util/firebase';
 import {
-  validPlacementHexes, validMovementHexes, validAttackHexes, intermediateMoveHexId,
-  newGame, passTurn
+  intermediateMoveHexId, newGame, passTurn, validAttackHexes,
+  validMovementHexes, validPlacementHexes
 } from '../../../util/game';
-import * as builtinCards from '../../../store/cards';
-import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
-import HU from '../../../components/hexgrid/HexUtils';
 
-import { setSelectedCard, placeCard } from './cards';
-import { setSelectedTile, moveRobot, attack } from './board';
+import { attack, moveRobot, setSelectedTile } from './board';
+import { placeCard, setSelectedCard } from './cards';
 
 type State = w.GameState;
 

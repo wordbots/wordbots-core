@@ -1,18 +1,18 @@
-import * as React from 'react';
-import Helmet from 'react-helmet';
-import { compose, Dispatch, AnyAction } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { History } from 'history';
 import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { AnyAction, compose, Dispatch } from 'redux';
 
+import * as collectionActions from '../actions/collection';
+import DeckSummary from '../components/cards/DeckSummary';
+import Title from '../components/Title';
+import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { cardsInDeck } from '../util/cards';
 import { sortDecks } from '../util/decks';
-import Title from '../components/Title';
-import DeckSummary from '../components/cards/DeckSummary';
-import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
-import * as collectionActions from '../actions/collection';
 
 import { Singleplayer as SingleplayerBase } from './Singleplayer';
 
@@ -73,15 +73,18 @@ class Decks extends React.Component<DecksProps> {
               secondary
               style={{marginBottom: 20}}
               labelStyle={{fontFamily: 'Carter One'}}
-              onClick={this.handleCreateDeck} />
+              onClick={this.handleCreateDeck}
+            />
           </MustBeLoggedIn>
 
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start',
-            width: '100%'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start',
+              width: '100%'
+            }}
+          >
             {
               sortDecks(decks).map((deck, idx) =>
                 <DeckSummary
@@ -93,7 +96,8 @@ class Decks extends React.Component<DecksProps> {
                   onDelete={onDeleteDeck}
                   onDuplicate={onDuplicateDeck}
                   onEdit={this.handleEditDeck}
-                  onTry={this.handleTryDeck} />
+                  onTry={this.handleTryDeck}
+                />
               )
             }
           </div>

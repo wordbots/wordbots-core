@@ -1,15 +1,15 @@
-import * as React from 'react';
+import { chain as _, isEqual } from 'lodash';
+import Divider from 'material-ui/Divider';
 import Drawer from 'material-ui/Drawer';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
+import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
-import { chain as _, isEqual } from 'lodash';
+import * as React from 'react';
 
+import { CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../../constants';
 import * as w from '../../../types';
-import { CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, CHAT_Z_INDEX } from '../../../constants';
 import { id } from '../../../util/common';
 
 import ChatMessage from './ChatMessage';
@@ -74,7 +74,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         openSecondary
         docked
         containerStyle={containerStyle}
-        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : CHAT_WIDTH}>
+        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : CHAT_WIDTH}
+      >
         {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
       </Drawer>
     );
@@ -142,30 +143,42 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   private renderClosedChat(): JSX.Element {
     return (
       <div>
-        <div style={{
-          height: 64,
-          backgroundColor: 'rgb(232, 232, 232)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer'
-        }} onClick={this.props.toggleChat}>
-          <FontIcon className="material-icons" style={{
-            color: 'rgba(0, 0, 0, 0.4)',
-            fontSize: 24
-          }}>chevron_left</FontIcon>
+        <div
+          style={{
+            height: 64,
+            backgroundColor: 'rgb(232, 232, 232)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={this.props.toggleChat}
+        >
+          <FontIcon
+            className="material-icons"
+            style={{
+              color: 'rgba(0, 0, 0, 0.4)',
+              fontSize: 24
+            }}
+          >
+            chevron_left
+          </FontIcon>
         </div>
-        <div style={{
-          writingMode: 'vertical-rl',
-          height: 'calc(100% - 64px)',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: 24,
-          paddingTop: 20,
-          color: 'rgba(0, 0, 0, 0.4)',
-          backgroundColor: 'rgb(232, 232, 232)'
-        }}>Chat</div>
+        <div
+          style={{
+            writingMode: 'vertical-rl',
+            height: 'calc(100% - 64px)',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: 24,
+            paddingTop: 20,
+            color: 'rgba(0, 0, 0, 0.4)',
+            backgroundColor: 'rgb(232, 232, 232)'
+          }}
+        >
+          Chat
+        </div>
       </div>
     );
   }
@@ -192,9 +205,11 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
           </ToolbarGroup>
         </Toolbar>
 
-        <div style={{
-          display: this.state.optionsVisible ? 'block' : 'none'
-        }}>
+        <div
+          style={{
+            display: this.state.optionsVisible ? 'block' : 'none'
+          }}
+        >
           <div style={{padding: 10}}>
             <Toggle label="Show server messages" defaultToggled onToggle={this.toggleServerMessages} />
             <Toggle label="Show game messages" defaultToggled onToggle={this.toggleGameMessages} />
@@ -209,7 +224,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             padding: 10,
             height: this.state.optionsVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
             overflowY: 'scroll'
-          }}>
+          }}
+        >
           {
             this.mergeMessagesById(messages)
               .filter(this.filterMessage)

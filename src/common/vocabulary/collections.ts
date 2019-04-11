@@ -1,6 +1,6 @@
 import * as w from '../types';
 
-import { allObjectsOnBoard, allHexIds, getHex, matchesType } from '../util/game';
+import { allHexIds, allObjectsOnBoard, getHex, matchesType } from '../util/game';
 
 // A collection is a function that returns one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}

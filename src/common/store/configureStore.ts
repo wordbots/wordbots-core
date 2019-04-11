@@ -1,15 +1,15 @@
-import {
-  createStore, applyMiddleware, compose,
-  AnyAction, Middleware, Store, StoreEnhancer
-} from 'redux';
 import { compact } from 'lodash';
+import {
+  AnyAction, applyMiddleware, compose,
+  createStore, Middleware, Store, StoreEnhancer
+} from 'redux';
 
-import * as w from '../types';
+import * as socketActions from '../actions/socket';
 import { ALWAYS_ENABLE_DEV_TOOLS, ENABLE_REDUX_TIME_TRAVEL } from '../constants';
 import multipleDispatchMiddleware from '../middleware/multipleDispatchMiddleware';
 import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
-import * as socketActions from '../actions/socket';
+import * as w from '../types';
 
 declare const module: { dev: any, hot: any };
 declare const process: { browser: any, env: { NODE_ENV: string } };

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import Badge from 'material-ui/Badge';
+import * as React from 'react';
 
 import { inBrowser } from '../../util/browser';
 

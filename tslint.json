@@ -1,6 +1,14 @@
 {
-  "extends": "tslint:recommended",
+  "extends": [
+    "tslint:recommended",
+    "tslint-eslint-rules-recommended",
+    "tslint-react"
+  ],
+  "rulesDirectory": [
+    "node_modules/tslint-eslint-rules/dist/rules"
+  ],
   "rules": {
+    "handle-callback-err": true,
     "interface-name": false,
     "max-classes-per-file": false,
     "max-line-length": false,
@@ -8,7 +16,14 @@
     "no-var-requires": false,
     "object-literal-key-quotes": false,
     "object-literal-sort-keys": false,
-    "ordered-imports": false,
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "case-insensitive",
+        "named-imports-order": "case-insensitive",
+        "grouped-imports": true
+      }
+    ],
     "quotemark": false,
     "semicolon": [true, "ignore-interfaces"],
     "trailing-comma": false,
@@ -17,6 +32,9 @@
       "call-signature",
       "property-declaration"
     ],
-    "variable-name": false
+    "variable-name": false,
+
+    "jsx-boolean-value": [true, "never"],
+    "jsx-no-multiline-js": false
   }
 }

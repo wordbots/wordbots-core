@@ -1,8 +1,8 @@
-import * as w from '../types';
 import { STARTING_PLAYER_HEALTH, TYPE_CORE } from '../constants';
+import * as w from '../types';
 
-import * as robots from './coreSet/robots';
 import * as events from './coreSet/events';
+import * as robots from './coreSet/robots';
 import * as structures from './coreSet/structures';
 
 export * from './coreSet/robots';

@@ -1,21 +1,21 @@
-import * as React from 'react';
-import Helmet from 'react-helmet';
-import { compose, Dispatch, AnyAction } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { History } from 'history';
-import * as fb from 'firebase';
-import * as qs from 'qs';
 import { Button } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
+import * as fb from 'firebase';
+import { History } from 'history';
 import { groupBy, mapValues, orderBy } from 'lodash';
+import * as qs from 'qs';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { AnyAction, compose, Dispatch } from 'redux';
 
+import * as collectionActions from '../actions/collection';
+import SetSummary from '../components/cards/SetSummary';
+import Title from '../components/Title';
+import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { listenToDecks } from '../util/firebase';
-import Title from '../components/Title';
-import SetSummary from '../components/cards/SetSummary';
-import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
-import * as collectionActions from '../actions/collection';
 
 interface SetsStateProps {
   sets: w.Set[]
@@ -146,15 +146,15 @@ class Sets extends React.Component<SetsProps, SetsState> {
           {
             this.publishedSets.length > 0 &&
               <div>
-                <h2>Top published sets <i>({ this.publishedSets.length })</i></h2>
-                { this.publishedSets.map(this.renderSetSummary) }
+                <h2>Top published sets <i>({this.publishedSets.length})</i></h2>
+                {this.publishedSets.map(this.renderSetSummary)}
               </div>
           }
           {
             this.userSets.length > 0 &&
               <div>
-                <h2>Your sets <i>({ this.userSets.length })</i></h2>
-                { this.userSets.map(this.renderSetSummary) }
+                <h2>Your sets <i>({this.userSets.length})</i></h2>
+                {this.userSets.map(this.renderSetSummary)}
               </div>
           }
         </div>
@@ -170,10 +170,11 @@ class Sets extends React.Component<SetsProps, SetsState> {
         set={set}
         user={this.props.user}
         numDecksCreated={numDecksBySet ? numDecksBySet[set.id] || 0 : undefined}
-        onCreateDeckFromSet={() => this.handleCreateDeckFromSet(set.id)}
-        onDeleteSet={() => this.props.onDeleteSet(set.id)}
-        onEditSet={() => this.handleEditSet(set.id)}
-        onPublishSet={() => this.handlePublishSet(set.id)} />
+        onCreateDeckFromSet={this.handleCreateDeckFromSet(set.id)}
+        onDeleteSet={this.handleDeleteSet(set.id)}
+        onEditSet={this.handleEditSet(set.id)}
+        onPublishSet={this.handlePublishSet(set.id)}
+      />
     );
   }
 
@@ -181,16 +182,20 @@ class Sets extends React.Component<SetsProps, SetsState> {
     this.props.history.push('/sets/new');
   }
 
-  private handleEditSet = (setId: string) => {
+  private handleEditSet = (setId: string) => () => {
     this.props.onEditSet(setId);
     this.props.history.push(`/sets/${setId}`);
   }
 
-  private handleCreateDeckFromSet = (setId: string) => {
+  private handleCreateDeckFromSet = (setId: string) => () => {
     this.props.history.push(`/deck/for/set/${setId}`);
   }
 
-  private handlePublishSet = (setId: string) => {
+  private handleDeleteSet = (setId: string) => () => {
+    this.props.onDeleteSet(setId);
+  }
+
+  private handlePublishSet = (setId: string) => () => {
     this.props.onPublishSet(setId);
   }
 

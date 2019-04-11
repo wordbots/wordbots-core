@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as fb from 'firebase';
 import * as fjp from 'fast-json-patch';
+import * as fb from 'firebase';
+import * as React from 'react';
 
 import * as m from '../server/multiplayer/multiplayer';
 

@@ -1,15 +1,15 @@
-import * as WebSocket from 'ws';
 import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove } from 'lodash';
+import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
-import { id as generateID } from '../../common/util/common';
-import { instantiateCard, obfuscateCards } from '../../common/util/cards';
-import { opponent as opponentOf } from '../../common/util/game';
-import { saveGame } from '../../common/util/firebase';
-import { guestUID, guestUsername } from '../../common/util/multiplayer';
-import defaultGameState from '../../common/store/defaultGameState';
-import { GameFormat } from '../../common/util/formats';
 import gameReducer from '../../common/reducers/game';
+import defaultGameState from '../../common/store/defaultGameState';
+import { instantiateCard, obfuscateCards } from '../../common/util/cards';
+import { id as generateID } from '../../common/util/common';
+import { saveGame } from '../../common/util/firebase';
+import { GameFormat } from '../../common/util/formats';
+import { opponent as opponentOf } from '../../common/util/game';
+import { guestUID, guestUsername } from '../../common/util/multiplayer';
 
 import * as m from './multiplayer';
 import { getPeopleInGame, withoutClient } from './util';

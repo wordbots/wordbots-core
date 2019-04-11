@@ -1,6 +1,6 @@
 import * as w from '../types';
 import { id } from '../util/common';
-import { reversedCmd, executeCmd } from '../util/game';
+import { executeCmd, reversedCmd } from '../util/game';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability) => {

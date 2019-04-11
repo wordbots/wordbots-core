@@ -1,9 +1,9 @@
-import * as React from 'react';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import FontIcon from 'material-ui/FontIcon';
+import * as React from 'react';
 
 import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';

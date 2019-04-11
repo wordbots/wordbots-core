@@ -1,6 +1,6 @@
-import * as firebase from 'firebase/app';
 import { UserCredential } from '@firebase/auth-types';
-import { capitalize, concat, flatMap, fromPairs, mapValues, uniq, isNil, orderBy, uniqBy } from 'lodash';
+import * as firebase from 'firebase/app';
+import { capitalize, concat, flatMap, fromPairs, isNil, mapValues, orderBy, uniq, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -8,8 +8,8 @@ import 'firebase/database';
 
 import * as w from '../types';
 
-import { expandKeywords, loadParserLexicon } from './cards';
 import { inTest } from './browser';
+import { expandKeywords, loadParserLexicon } from './cards';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',

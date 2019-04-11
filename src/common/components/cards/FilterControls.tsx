@@ -1,6 +1,6 @@
-import * as React from 'react';
 import Toggle from 'material-ui/Toggle';
 import { Range } from 'rc-slider';
+import * as React from 'react';
 
 import { FilterKey } from './types';
 
@@ -20,35 +20,46 @@ export default class FilterControls extends React.Component<FilterControlsProps>
     return (
       <div>
         <div key="type" style={{marginBottom: 20}}>
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 10
-          }}>Filter by Card Type</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 10
+            }}
+          >
+            Filter by Card Type
+          </div>
 
           <Toggle
             style={toggleStyle}
             label="Robots"
             defaultToggled
-            onToggle={this.props.onToggleFilter('robots')} />
+            onToggle={this.props.onToggleFilter('robots')}
+          />
           <Toggle
             style={toggleStyle}
             label="Events"
             defaultToggled
-            onToggle={this.props.onToggleFilter('events')} />
+            onToggle={this.props.onToggleFilter('events')}
+          />
           <Toggle
             style={toggleStyle}
             label="Structures"
             defaultToggled
-            onToggle={this.props.onToggleFilter('structures')} />
+            onToggle={this.props.onToggleFilter('structures')}
+          />
         </div>
 
         <div key="cost" style={{marginBottom: 20}}>
-          <div style={{
-            fontWeight: 700,
-            fontSize: 14,
-            marginBottom: 20
-          }}>Filter by Cost</div>
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              marginBottom: 20
+            }}
+          >
+            Filter by Cost
+          </div>
 
           <div>
             <Range

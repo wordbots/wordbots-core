@@ -1,13 +1,13 @@
-import * as React from 'react';
-import Helmet from 'react-helmet';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { History } from 'history';
 import { compact } from 'lodash';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+import { Redirect, Route, Switch, withRouter } from 'react-router';
+import { compose } from 'redux';
 
-import * as w from '../types';
 import SingleplayerLobby from '../components/play/singleplayer/SingleplayerLobby';
+import * as w from '../types';
 
 import GameAreaContainer from './GameAreaContainer';
 
@@ -74,7 +74,8 @@ export class Singleplayer extends React.Component<SingleplayerProps & { history:
           availableDecks={availableDecks}
           sets={sets}
           history={history}
-          onSelectMode={this.selectMode} />
+          onSelectMode={this.selectMode}
+        />
       );
     }
   }

@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { cloneDeep, groupBy, isString } from 'lodash';
+import * as React from 'react';
 import * as seededRNG from 'seed-random';
 import { shuffle } from 'seed-shuffle';
 
-import * as w from '../types';
 import { DECK_SIZE } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
+import * as w from '../types';
 
 import { triggerSound } from './game';
 

@@ -1,6 +1,7 @@
 import { capitalize, identity, pullAt, random, shuffle } from 'lodash';
 
 import * as w from '../types';
+
 import { parseBatch } from './cards';
 
 export default class CardTextExampleStore {

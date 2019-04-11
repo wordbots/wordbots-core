@@ -1,5 +1,5 @@
-import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import * as webpack from 'webpack';
 
 import webpackConfig from '../../webpack.config';

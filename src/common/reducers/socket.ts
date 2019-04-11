@@ -1,8 +1,8 @@
 import { cloneDeep, concat } from 'lodash';
 
-import * as w from '../types';
 import * as socketActions from '../actions/socket';
 import defaultState from '../store/defaultSocketState';
+import * as w from '../types';
 
 type State = w.SocketState;
 

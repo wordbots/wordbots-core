@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { times } from 'lodash';
+import * as React from 'react';
 
 import * as w from '../../types';
 import asyncComponent from '../AsyncComponent';
@@ -75,7 +75,8 @@ export default class EnergyCurve extends React.Component<EnergyCurveProps, Energ
           width={this.state.width}
           height={this.props.height}
           margin={margins}
-          data={this.data} />
+          data={this.data}
+        />
       </div>
     );
   }

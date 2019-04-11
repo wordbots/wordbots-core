@@ -1,8 +1,8 @@
-import * as React from 'react';
-import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/lab/Slider';
+import * as React from 'react';
 
 import { MAX_Z_INDEX } from '../../constants';
 
@@ -63,19 +63,19 @@ interface VolumeControlState {
 }
 
 class VolumeControl extends React.Component<VolumeControlProps, VolumeControlState> {
-  state = {
+  public state = {
     volumeSliderVisible: false
-  }
+  };
 
-  handleButtonClick = () => {
+  public handleButtonClick = () => {
     this.setState({ volumeSliderVisible: !this.state.volumeSliderVisible });
   }
 
-  handleSliderChange = (_event: React.SyntheticEvent<any>, value: number) => {
+  public handleSliderChange = (_event: React.SyntheticEvent<any>, value: number) => {
     this.props.onSetVolume(value);
   }
 
-  render() {
+  public render(): JSX.Element {
     const { volume, classes } = this.props;
     const { volumeSliderVisible } = this.state;
 

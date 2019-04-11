@@ -27,7 +27,8 @@ export default class ChatMessage extends React.Component<ChatMessageProps> {
               color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
               marginBottom: 5,
               wordBreak: 'break-word'
-            }}>
+            }}
+          >
             <b>{message.user}</b>:&nbsp;
             {message.text.split('|').map((phrase, phraseIdx) => this.renderPhrase(phrase, message, idx, phraseIdx))}
           </div>

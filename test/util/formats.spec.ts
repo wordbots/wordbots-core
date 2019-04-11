@@ -16,7 +16,7 @@ function validDecks(gameFormat: GameFormat, decksToTest: Record<string, w.Deck>)
   return Object.keys(decksToTest).filter((deckName) => (gameFormat.isDeckValid(decksToTest[deckName])));
 }
 
-export function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number): w.Deck {
+function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number): w.Deck {
   const deckId: string = uniqueId();
   const cardsWithCopies: w.CardInStore[] = flatMap(cards, (c) => times(numCopiesPerCard, constant(c)));
 
@@ -30,19 +30,23 @@ export function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number):
 }
 
 describe('GameFormat#isDeckValid', () => {
-  const defaultDeck = defaultDecks[0];
-  const constantBuiltinCardDeck = constantDeck(robots.oneBotCard);
-  const tooLargeBuiltinCardDeck = constantDeck(robots.oneBotCard, 60);
-  const tooSmallBuiltinCardDeck = constantDeck(robots.oneBotCard, 20);
-  const constantUserCardDeck = constantDeck(cantripCard);
+  let decks: Record<string, w.Deck>;
 
-  const decks: Record<string, w.Deck> = {
-    defaultDeck,
-    constantBuiltinCardDeck,
-    tooLargeBuiltinCardDeck,
-    tooSmallBuiltinCardDeck,
-    constantUserCardDeck
-  };
+  beforeAll(() => {
+    const defaultDeck = defaultDecks[0];
+    const constantBuiltinCardDeck = constantDeck(robots.oneBotCard);
+    const tooLargeBuiltinCardDeck = constantDeck(robots.oneBotCard, 60);
+    const tooSmallBuiltinCardDeck = constantDeck(robots.oneBotCard, 20);
+    const constantUserCardDeck = constantDeck(cantripCard);
+
+    decks = {
+      defaultDeck,
+      constantBuiltinCardDeck,
+      tooLargeBuiltinCardDeck,
+      tooSmallBuiltinCardDeck,
+      constantUserCardDeck
+    };
+  });
 
   it('new GameFormat() doesn\'t accept any decks', () => {
     expect(validDecks(new GameFormat(), decks)).toEqual([]);

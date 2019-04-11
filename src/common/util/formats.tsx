@@ -43,9 +43,9 @@ export class GameFormat {
     return format;
   }
 
-  public name: string | undefined = undefined;
-  public displayName: string | undefined = undefined;
-  public description: string | undefined = undefined;
+  public name: string | undefined;
+  public displayName: string | undefined;
+  public description: string | undefined;
 
   public serialized = (): w.Format => this.name as w.Format;
 

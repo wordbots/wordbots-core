@@ -5,7 +5,8 @@ import { placeCard, setSelectedCard } from './game/cards';
 import { aiResponse, startPractice, startSandbox } from './game/practice';
 import { handleTutorialAction, startTutorial } from './game/tutorial';
 
-const gameHandlers = {
+// All handlers for game actions.
+const game = {
   newGame,
   passTurn,
 
@@ -27,4 +28,4 @@ const gameHandlers = {
   aiResponse
 };
 
-export default gameHandlers;
+export default game;

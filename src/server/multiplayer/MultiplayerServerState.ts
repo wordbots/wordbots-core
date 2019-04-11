@@ -26,7 +26,9 @@ export default class MultiplayerServerState {
     waitingPlayers: [],  // array of { id, name, format, deck, players }
   };
 
-  /* Getters */
+  /*
+   * Getters
+   */
 
   // Returns a serializable subset of the state for broadcast as an INFO message.
   public serialize = (): m.SerializedServerState => {
@@ -126,7 +128,9 @@ export default class MultiplayerServerState {
     }));
   }
 
-  /* Mutations */
+  /*
+   * Mutations
+   */
 
   // Connect a player at the specified websocket to the server.
   public connectClient = (clientID: m.ClientID, socket: WebSocket): void => {

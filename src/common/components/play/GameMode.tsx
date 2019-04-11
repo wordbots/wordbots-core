@@ -60,7 +60,11 @@ export default class GameMode extends React.Component<GameModeProps> {
               overflow: 'hidden'
             }}
           >
-            <img src={imagePath || ''} style={{height: '100%', imageRendering: 'pixelated'}} />
+            <img
+              src={imagePath || ''}
+              style={{height: '100%', imageRendering: 'pixelated'}}
+              alt={`${name} game mode`}
+            />
           </div>
         )}
         <div

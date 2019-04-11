@@ -42,7 +42,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     isPasswordInvalid: false
   };
 
-  /** The passed-in format, if any, otherwise the currently selected format */
+  // The passed-in format, if any, otherwise the currently selected format.
   get format(): GameFormat {
     const { format } = this.props;
     const { selectedFormatName } = this.state;
@@ -51,7 +51,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     return format || formats.find((f) => f.name === selectedFormatName)!;
   }
 
-  /** The full list of formats that are available to the player */
+  // The full list of formats that are available to the player.
   get availableFormats(): GameFormat[] {
     const { sets } = this.props;
     const setFormats = uniqBy(compact(this.decks.map((deck) => {
@@ -67,7 +67,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     return [...BUILTIN_FORMATS, ...setFormats];
   }
 
-  /** All of the player's decks, in an unpacked format ready to start the game with. */
+  // All of the player's decks, in an unpacked format ready to start the game with.
   get decks(): w.Deck[] {
     const { availableDecks, cards, sets } = this.props;
     return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
@@ -77,7 +77,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     return this.decks.filter(this.format.isDeckValid);
   }
 
-  /* The currently selected deck, in unpacked form. */
+  // The currently selected deck, in unpacked form.
   get deck(): w.Deck {
     const { selectedDeckIdx } = this.state;
     return this.validDecks[selectedDeckIdx];

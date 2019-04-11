@@ -32,7 +32,7 @@ export default class CardImage extends React.Component<CardImageProps> {
             margin: '3px auto 0'
           }}
         >
-          <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} />
+          <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} alt={img!} />
         </div>
       );
     } else if (type === TYPE_EVENT) {

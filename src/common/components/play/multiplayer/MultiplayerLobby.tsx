@@ -54,7 +54,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
     return hosting || queuing;
   }
 
-  /** All of the player's decks, in unpacked form. */
+  // All of the player's decks, in unpacked form.
   get decks(): w.Deck[] {
     const { availableDecks, cards, sets } = this.props;
     return availableDecks.map((deck) => unpackDeck(deck, cards, sets));

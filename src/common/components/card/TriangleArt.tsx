@@ -40,6 +40,7 @@ export default class TriangleArt extends React.PureComponent<TriangleArtProps> {
     return (
       <img
         src={inBrowser() ? trianglify(this.opts).png() : ''}
+        alt="Event card image"
         width={this.props.width}
         height={this.props.height}
         style={{imageRendering: 'pixelated'}}

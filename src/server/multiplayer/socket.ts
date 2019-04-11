@@ -14,6 +14,7 @@ const MAX_DEBUG_MSG_LENGTH = 500;
 const QUEUE_INTERVAL_MSECS = 500;
 
 /* tslint:disable:no-console */
+// tslint:disable-next-line export-name
 export default function launchWebsocketServer(server: Server, path: string): void {
   const state = new MultiplayerServerState();
 

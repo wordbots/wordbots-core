@@ -173,4 +173,4 @@ function saveCard(state: State, card: w.CardInStore): State {
   return state;
 }
 
-export default cardsHandlers;
+export default cardsHandlers; // tslint:disable-line export-name

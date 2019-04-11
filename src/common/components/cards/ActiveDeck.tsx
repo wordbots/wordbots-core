@@ -82,7 +82,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
             &nbsp;{cards.length}&nbsp;
           </span>
-          / {isASet ? '15' : '30'} ]
+          / {isASet ? 'at least 15' : '30'} ]
         </div>
 
         <TextField

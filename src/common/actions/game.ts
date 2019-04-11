@@ -138,5 +138,5 @@ export function setVolume(volume: number): w.Action {
   return {
     type: SET_VOLUME,
     payload: { volume }
-  }
+  };
 }

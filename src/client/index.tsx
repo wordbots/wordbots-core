@@ -1,14 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Store } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { Store } from 'redux';
 
-import App from '../common/containers/App';
-import configureStore from '../common/store/configureStore';
+import '../../styles/animations.css';
 import '../../styles/index.css';
 import '../../styles/lib.css';
-import '../../styles/animations.css';
+import App from '../common/containers/App';
+import configureStore from '../common/store/configureStore';
 
 require('object.values').shim();  // TODO remove this shim when Object.values() is no longer used in JS code
 
@@ -28,11 +28,13 @@ if (window.localStorage.profileOnLoad && window.Perf) {
 }
 
 ReactDOM.hydrate(
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>,
+  (
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  ),
   rootElement
 );
 

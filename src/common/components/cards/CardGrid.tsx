@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import * as w from '../../types';
-import { id } from '../../util/common';
 import { inBrowser } from '../../util/browser';
+import { id } from '../../util/common';
 import Card from '../card/Card';
 import Sentence from '../card/Sentence';
 
@@ -11,15 +11,21 @@ import { CardGridOrTableProps } from './CardCollection';
 export default class CardGrid extends React.Component<CardGridOrTableProps> {
   public render(): JSX.Element {
     return (
-      <div style={{
-        width: 'calc(100% - 40px)',
-        margin: '0 20px'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-start'
-        }}>{!inBrowser() ? null : this.props.cards.map(this.renderCard)}</div>
+      <div
+        style={{
+          width: 'calc(100% - 40px)',
+          margin: '0 20px'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start'
+          }}
+        >
+          {!inBrowser() ? null : this.props.cards.map(this.renderCard)}
+        </div>
       </div>
     );
   }
@@ -30,7 +36,8 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
       style={{
         marginRight: 15,
         marginTop: -12
-    }}>
+      }}
+    >
       <Card
         collection
         visible
@@ -47,7 +54,8 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
         baseCost={card.cost}
         source={card.source}
         selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
-        onCardClick={this.props.onCardClick} />
+        onCardClick={this.props.onCardClick}
+      />
     </div>
   )
 }

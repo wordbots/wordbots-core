@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { Route } from 'react-router';
 import { History } from 'history';
 import Dialog from 'material-ui/Dialog';
+import * as React from 'react';
+import { Route } from 'react-router';
 
-import { DIALOG_OVERLAY_Z_INDEX, DIALOG_MAIN_Z_INDEX, DIALOG_BODY_Z_INDEX } from '../constants';
+import { DIALOG_BODY_Z_INDEX, DIALOG_MAIN_Z_INDEX, DIALOG_OVERLAY_Z_INDEX } from '../constants';
 import { transformHistory } from '../util/browser';
 
 interface RouterDialogProps {

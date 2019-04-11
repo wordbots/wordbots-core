@@ -1,24 +1,24 @@
-import * as React from 'react';
-import { Dispatch, AnyAction, compose } from 'redux';
-import { connect } from 'react-redux';
-import Helmet from 'react-helmet';
-import { withRouter } from 'react-router';
-import { History } from 'history';
-import * as fb from 'firebase';
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
+import * as fb from 'firebase';
+import { History } from 'history';
 import { compact, find, noop } from 'lodash';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { AnyAction, compose, Dispatch } from 'redux';
 
-import * as w from '../types';
-import { id as generateId } from '../util/common';
-import { getDisplayedCards } from '../util/cards';
-import { DeckCreationProperties, FilterKey } from '../components/cards/types';
-import { SortCriteria, SortOrder, Layout } from '../components/cards/types.enums';
+import * as collectionActions from '../actions/collection';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
-import EnergyCurve from '../components/cards/EnergyCurve';
-import * as collectionActions from '../actions/collection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
+import EnergyCurve from '../components/cards/EnergyCurve';
+import { DeckCreationProperties, FilterKey } from '../components/cards/types';
+import { Layout, SortCriteria, SortOrder } from '../components/cards/types.enums';
+import * as w from '../types';
+import { getDisplayedCards } from '../util/cards';
+import { id as generateId } from '../util/common';
 
 import { Deck } from './Deck';
 
@@ -105,7 +105,8 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
               sortCriteria={sortCriteria}
               sortOrder={sortOrder}
               onSetField={this.setField}
-              onToggleFilter={this.toggleFilter} />
+              onToggleFilter={this.toggleFilter}
+            />
           </div>
 
           <div className={classes.cards}>
@@ -113,7 +114,8 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
               layout={layout}
               cards={this.displayedCards}
               selectedCardIds={selectedCardIds}
-              onSelection={this.handleSelectCards} />
+              onSelection={this.handleSelectCards}
+            />
           </div>
 
           <div className={classes.rightSidebar}>
@@ -126,7 +128,8 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
                 cards={this.selectedCards}
                 loggedIn={!!user}
                 onRemoveCard={this.handleRemoveCard}
-                onSave={this.handleClickSaveSet} />
+                onSave={this.handleClickSaveSet}
+              />
             </Paper>
           </div>
         </div>

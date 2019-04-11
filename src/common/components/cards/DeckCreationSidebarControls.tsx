@@ -1,11 +1,11 @@
-import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
+import * as React from 'react';
 
-import { DeckCreationProperties, FilterKey } from './types';
 import FilterControls from './FilterControls';
 import LayoutControls from './LayoutControls';
 import SearchControls from './SearchControls';
 import SortControls from './SortControls';
+import { DeckCreationProperties, FilterKey } from './types';
 
 interface DeckCreationSidebarControlsProps {
   layout: DeckCreationProperties['layout']
@@ -28,17 +28,20 @@ export default class DeckCreationSidebarControls extends React.Component<DeckCre
 
         <LayoutControls
           layout={layout}
-          onSetLayout={onSetField('layout')} />
+          onSetLayout={onSetField('layout')}
+        />
 
         <SortControls
           criteria={sortCriteria}
           order={sortOrder}
           onSetCriteria={onSetField('sortCriteria')}
-          onSetOrder={onSetField('sortOrder')} />
+          onSetOrder={onSetField('sortOrder')}
+        />
 
         <FilterControls
           onToggleFilter={onToggleFilter}
-          onSetCostRange={onSetField('costRange')} />
+          onSetCostRange={onSetField('costRange')}
+        />
       </Paper>
     );
   }

@@ -1,11 +1,11 @@
-import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 import * as fb from 'firebase';
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
-import * as w from '../types';
-import { LOG_SOCKET_IO } from '../constants';
-import { logIfFlagSet } from '../util/browser';
 import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
+import { LOG_SOCKET_IO } from '../constants';
+import * as w from '../types';
+import { logIfFlagSet } from '../util/browser';
 
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 

@@ -1,22 +1,22 @@
 import { cloneDeep, find, findIndex, size, times } from 'lodash';
 
-import * as w from '../../src/common/types';
-import game from '../../src/common/reducers/game';
 import * as actions from '../../src/common/actions/game';
-import defaultState from '../../src/common/store/defaultGameState';
-import * as cards from '../../src/common/store/cards';
 import {
-  BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, DECK_SIZE,
+  BLUE_CORE_HEX, DECK_SIZE, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH,
   TYPE_ROBOT, TYPE_STRUCTURE
 } from '../../src/common/constants';
+import game from '../../src/common/reducers/game';
+import * as cards from '../../src/common/store/cards';
+import defaultState from '../../src/common/store/defaultGameState';
+import * as w from '../../src/common/types';
 import { instantiateCard } from '../../src/common/util/cards';
 import { getCost } from '../../src/common/util/game';
+import * as testCards from '../data/cards';
 import {
-  getDefaultState, objectsOnBoardOfType, queryObjectAttribute, queryRobotAttributes, queryPlayerHealth,
-  newTurn, drawCardToHand, playObject, playEvent, moveRobot, attack, activate,
+  activate, attack, drawCardToHand, getDefaultState, moveRobot,
+  newTurn, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, queryPlayerHealth, queryRobotAttributes,
   setUpBoardState
 } from '../testHelpers';
-import * as testCards from '../data/cards';
 
 describe('Game reducer', () => {
   it('should return the initial state', () => {

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
+import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
 
 interface PageSwitcherProps {
   page: number
@@ -13,12 +13,14 @@ export default class PageSwitcher extends React.Component<PageSwitcherProps> {
   public render(): JSX.Element {
     const { page, maxPages, prevPage, nextPage } = this.props;
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        margin: '20px',
-        width: 'calc(100% - 40px)'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          margin: '20px',
+          width: 'calc(100% - 40px)'
+        }}
+      >
         <RaisedButton
           icon={<FontIcon className="material-icons">arrow_back</FontIcon>}
           disabled={page <= 1}

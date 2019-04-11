@@ -1,13 +1,13 @@
 import { compact, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
-import * as w from '../types';
-import * as g from '../guards';
 import { stringToType } from '../constants';
+import * as g from '../guards';
+import * as w from '../types';
 import { arrayToSentence, id } from '../util/common';
 import {
-  opponent, currentPlayer, opponentPlayer, allObjectsOnBoard, getHex, ownerOf,
-  logAction
+  allObjectsOnBoard, currentPlayer, getHex, logAction, opponent, opponentPlayer,
+  ownerOf
 } from '../util/game';
 
 // Targets are all functions that return one of:

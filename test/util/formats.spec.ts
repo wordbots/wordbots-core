@@ -1,8 +1,7 @@
 import { constant, flatMap, times, uniqueId } from 'lodash';
 
+import * as robots from '../../src/common/store/coreSet/robots';
 import * as w from '../../src/common/types';
-import { cantripCard } from '../data/cards';
-import { constantDeck, defaultDecks } from '../data/decks';
 import {
   BuiltinOnlyGameFormat,
   GameFormat,
@@ -10,7 +9,8 @@ import {
   SetFormat,
   SharedDeckGameFormat
 } from '../../src/common/util/formats';
-import * as robots from '../../src/common/store/coreSet/robots';
+import { cantripCard } from '../data/cards';
+import { constantDeck, defaultDecks } from '../data/decks';
 
 function validDecks(gameFormat: GameFormat, decksToTest: Record<string, w.Deck>): string[] {
   return Object.keys(decksToTest).filter((deckName) => (gameFormat.isDeckValid(decksToTest[deckName])));

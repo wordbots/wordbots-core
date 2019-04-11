@@ -1,23 +1,23 @@
-import * as React from 'react';
-import { Dispatch, AnyAction, compose } from 'redux';
-import { connect } from 'react-redux';
-import Helmet from 'react-helmet';
-import { withRouter } from 'react-router';
-import { History } from 'history';
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import { History } from 'history';
 import { compact, find, noop } from 'lodash';
+import * as React from 'react';
+import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { AnyAction, compose, Dispatch } from 'redux';
 
-import * as w from '../types';
-import { getDisplayedCards } from '../util/cards';
-import { DeckCreationProperties, FilterKey } from '../components/cards/types';
-import { SortCriteria, SortOrder, Layout } from '../components/cards/types.enums';
+import * as collectionActions from '../actions/collection';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
 import EnergyCurve from '../components/cards/EnergyCurve';
-import * as collectionActions from '../actions/collection';
+import { DeckCreationProperties, FilterKey } from '../components/cards/types';
+import { Layout, SortCriteria, SortOrder } from '../components/cards/types.enums';
+import * as w from '../types';
+import { getDisplayedCards } from '../util/cards';
 
 interface DeckStateProps {
   id: string | null
@@ -129,7 +129,8 @@ export class Deck extends React.Component<DeckProps, DeckState> {
               sortCriteria={this.state.sortCriteria}
               sortOrder={this.state.sortOrder}
               onSetField={this.setField}
-              onToggleFilter={this.toggleFilter} />
+              onToggleFilter={this.toggleFilter}
+            />
           </div>
 
           <div className={classes.cards}>
@@ -138,7 +139,8 @@ export class Deck extends React.Component<DeckProps, DeckState> {
               layout={this.state.layout}
               cards={this.displayedCards}
               selectedCardIds={this.state.selectedCardIds}
-              onSelection={this.handleSelectCards} />
+              onSelection={this.handleSelectCards}
+            />
           </div>
 
           <div className={classes.rightSidebar}>
@@ -151,7 +153,8 @@ export class Deck extends React.Component<DeckProps, DeckState> {
                 onIncreaseCardCount={this.handleClickIncreaseCardCount}
                 onDecreaseCardCount={this.handleClickDecreaseCardCount}
                 onRemoveCard={this.handleRemoveCard}
-                onSave={this.handleClickSaveDeck} />
+                onSave={this.handleClickSaveDeck}
+              />
             </Paper>
           </div>
         </div>

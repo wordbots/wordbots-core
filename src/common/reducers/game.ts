@@ -1,13 +1,13 @@
 import { cloneDeep, isArray, reduce } from 'lodash';
 
-import * as w from '../types';
-import { DEFAULT_GAME_FORMAT } from '../constants';
-import { id } from '../util/common';
-import { triggerSound } from '../util/game';
-import { replaceCardsInPlayerState } from '../util/cards';
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
+import { DEFAULT_GAME_FORMAT } from '../constants';
 import defaultState from '../store/defaultGameState';
+import * as w from '../types';
+import { replaceCardsInPlayerState } from '../util/cards';
+import { id } from '../util/common';
+import { triggerSound } from '../util/game';
 
 import g from './handlers/game';
 

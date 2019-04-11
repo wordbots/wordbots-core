@@ -1,8 +1,8 @@
-import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
+import * as React from 'react';
 
-import * as w from '../../types';
 import { PARSER_URL } from '../../constants';
+import * as w from '../../types';
 import { expandKeywords } from '../../util/cards';
 import Tooltip from '../Tooltip';
 
@@ -28,7 +28,8 @@ export default class StatusIcon extends React.Component<StatusIconProps> {
               fontSize: '0.7em',
               verticalAlign: 'top',
               color: isParsed ? 'green' : (result.error ? 'red' : 'black')}
-          }>
+            }
+          >
             {isParsed ? 'code' : (result.error ? 'error_outline' : 'more_horiz')}
           </FontIcon>
         </Tooltip>

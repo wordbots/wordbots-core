@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactTooltip from 'react-tooltip';
 
-import * as w from '../../types';
 import { MAX_Z_INDEX } from '../../constants';
+import * as w from '../../types';
 import { id } from '../../util/common';
 import Popover from '../Popover';
 

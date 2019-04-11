@@ -3,18 +3,18 @@ import {
   isArray, mapValues, omit, pick, reduce, shuffle, uniqBy
 } from 'lodash';
 
-import * as w from '../types';
-import * as g from '../guards';
 import {
-  KEEP_DECKS_UNSHUFFLED,
-  CARD_SCHEMA_VERSION, SPRITE_VERSION, PARSER_URL, PARSE_DEBOUNCE_MS,
-  TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTURE, typeToString,
-  SYNONYMS, KEYWORDS, HINTS, KEYWORD_REGEXES, HINT_REGEXES
+  CARD_SCHEMA_VERSION,
+  HINT_REGEXES, HINTS, KEEP_DECKS_UNSHUFFLED, KEYWORD_REGEXES,
+  KEYWORDS, PARSE_DEBOUNCE_MS, PARSER_URL, SPRITE_VERSION,
+  SYNONYMS, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString
 } from '../constants';
+import * as g from '../guards';
 import defaultState from '../store/defaultCollectionState';
+import * as w from '../types';
 
-import { id as generateId, compareCertainKeys } from './common';
-import { saveUserData, saveRecentCard, indexParsedSentence } from './firebase';
+import { compareCertainKeys, id as generateId } from './common';
+import { indexParsedSentence, saveRecentCard, saveUserData } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.

@@ -42,7 +42,8 @@ export default class TriangleArt extends React.PureComponent<TriangleArtProps> {
         src={inBrowser() ? trianglify(this.opts).png() : ''}
         width={this.props.width}
         height={this.props.height}
-        style={{imageRendering: 'pixelated'}} />
+        style={{imageRendering: 'pixelated'}}
+      />
     );
   }
 }

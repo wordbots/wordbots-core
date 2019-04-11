@@ -12,21 +12,25 @@ export default class MultiplayerModeSelection extends React.Component<Multiplaye
   public render(): JSX.Element {
     const { disabled, isGuest } = this.props;
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between'
+        }}
+      >
         <GameMode
           compact
           name="Create Casual Game"
           disabled={disabled}
-          onSelect={this.handleClickCreateCasual} />
+          onSelect={this.handleClickCreateCasual}
+        />
         <GameMode
           compact
           name="Matchmaking"
           disabled={disabled || isGuest}
-          onSelect={this.handleClickMatchmaking} />
+          onSelect={this.handleClickMatchmaking}
+        />
       </div>
     );
   }

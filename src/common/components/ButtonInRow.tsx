@@ -1,6 +1,6 @@
-import * as React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
+import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
 
 import Tooltip from './Tooltip';
 
@@ -28,15 +28,17 @@ export default class ButtonInRow extends React.Component<ButtonInRowProps> {
             <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
               {icon}
             </FontIcon>
-            <span style={{
-              fontSize: 14,
-              textTransform: 'uppercase',
-              fontWeight: 500,
-              userSelect: 'none',
-              paddingLeft: 8,
-              paddingRight: 8,
-              color: 'white'
-            }}>
+            <span
+              style={{
+                fontSize: 14,
+                textTransform: 'uppercase',
+                fontWeight: 500,
+                userSelect: 'none',
+                paddingLeft: 8,
+                paddingRight: 8,
+                color: 'white'
+              }}
+            >
               {label}
             </span>
           </Tooltip>

@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import * as w from '../../types';
-import { id } from '../../util/common';
 import { inBrowser } from '../../util/browser';
+import { id } from '../../util/common';
 import Tooltip from '../Tooltip';
 
 interface WordProps {

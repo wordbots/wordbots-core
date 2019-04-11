@@ -1,6 +1,6 @@
-import * as w from '../types';
 import * as ga from '../actions/global';
 import defaultState from '../store/defaultGlobalState';
+import * as w from '../types';
 
 export default function global(state: w.GlobalState = defaultState, action: w.Action): w.GlobalState {
   switch (action.type) {

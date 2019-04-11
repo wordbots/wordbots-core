@@ -1,10 +1,10 @@
-import * as React from 'react';
 import * as fb from 'firebase';
 import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import * as React from 'react';
 
-import * as w from '../../../types';
 import * as m from '../../../../server/multiplayer/multiplayer';
+import * as w from '../../../types';
 import { GameFormat } from '../../../util/formats';
 
 import GameRow from './GameRow';
@@ -37,9 +37,9 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
 
   public render(): JSX.Element {
     return (
-      <Paper style={{
-        marginBottom: 20
-      }}>
+      <Paper
+        style={{ marginBottom: 20 }}
+      >
         <Table fixedHeader>
           <TableHeader displaySelectAll={false}>
             <TableRow>
@@ -53,7 +53,8 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
           <TableBody
             showRowHover
             stripedRows={false}
-            displayRowCheckbox={false}>
+            displayRowCheckbox={false}
+          >
             {this.renderTableRows()}
           </TableBody>
         </Table>
@@ -66,7 +67,7 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
 
     if (this.games.length > 0) {
       return (
-        this.games.map((game) =>
+        this.games.map((game) => (
           <GameRow
             key={game.id}
             game={game}
@@ -76,8 +77,9 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
             availableDecks={availableDecks}
             onCancelHostGame={onCancelHostGame}
             onJoinGame={onJoinGame}
-            onSpectateGame={onSpectateGame} />
-        )
+            onSpectateGame={onSpectateGame}
+          />
+        ))
       );
     } else {
       return (
@@ -90,7 +92,10 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
               fontWeight: 300,
               textAlign: 'center',
               padding: 24
-            }}>No open games.</TableRowColumn>
+            }}
+          >
+            No open games.
+          </TableRowColumn>
         </TableRow>
       );
     }

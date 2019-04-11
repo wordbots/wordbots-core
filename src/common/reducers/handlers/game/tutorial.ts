@@ -1,17 +1,17 @@
-import { cloneDeep, isEqual } from 'lodash';
 import { applyPatch, compare } from 'fast-json-patch';
+import { cloneDeep, isEqual } from 'lodash';
 
-import * as w from '../../../types';
-import { handleAction } from '../../game';
-import { TYPE_EVENT } from '../../../constants';
-import { id } from '../../../util/common';
-import { instantiateCard } from '../../../util/cards';
-import { lookupUsername } from '../../../util/firebase';
-import { currentTutorialStep, passTurn } from '../../../util/game';
 import * as actions from '../../../actions/game';
 import * as socketActions from '../../../actions/socket';
+import { TYPE_EVENT } from '../../../constants';
 import * as cards from '../../../store/cards';
 import defaultState from '../../../store/defaultGameState';
+import * as w from '../../../types';
+import { instantiateCard } from '../../../util/cards';
+import { id } from '../../../util/common';
+import { lookupUsername } from '../../../util/firebase';
+import { currentTutorialStep, passTurn } from '../../../util/game';
+import { handleAction } from '../../game';
 
 type State = w.GameState;
 

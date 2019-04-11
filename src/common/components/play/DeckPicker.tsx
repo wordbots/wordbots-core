@@ -1,9 +1,9 @@
-import * as React from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import * as React from 'react';
 
 import * as w from '../../types';
 import { cardsInDeck } from '../../util/cards';
@@ -47,9 +47,13 @@ export default class DeckPicker extends React.Component<DeckPickerProps> {
               <MenuItem key={idx} value={idx}>{deck.name}</MenuItem>
             )}
           </Select>
-          <FormHelperText style={{
-            display: this.noDecks ? 'none' : 'none'
-          }}>You don&#39;t have any complete (30-card) decks</FormHelperText>
+          <FormHelperText
+            style={{
+              display: this.noDecks ? 'none' : 'none'
+            }}
+          >
+            You don&#39;t have any complete (30-card) decks
+          </FormHelperText>
         </FormControl>
         <EnergyCurve cards={this.cardsInDeck} height={80} />
       </React.Fragment>

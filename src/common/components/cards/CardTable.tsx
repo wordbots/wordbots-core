@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Badge from 'material-ui/Badge';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import * as React from 'react';
 
-import * as w from '../../types';
 import { typeToString } from '../../constants';
+import * as w from '../../types';
 import { id } from '../../util/common';
 import CardStat from '../card/CardStat';
 
@@ -13,12 +13,14 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
   public render(): JSX.Element {
     return (
       <div>
-        <div style={{
-          width: 'calc(100% - 20px)',
-          marginRight: 10,
-          marginBottom: 20,
-          boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px'
-        }}>
+        <div
+          style={{
+            width: 'calc(100% - 20px)',
+            marginRight: 10,
+            marginBottom: 20,
+            boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px'
+          }}
+        >
           <Table
             className="cardTable"
             multiSelectable
@@ -45,7 +47,8 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
             <TableBody
               displayRowCheckbox={false}
               deselectOnClickaway={false}
-              showRowHover>
+              showRowHover
+            >
                 {this.props.cards.map(this.renderCardRow)}
             </TableBody>
           </Table>
@@ -74,7 +77,8 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
           type={type}
           base={(stats || {})[type]}
           current={(stats || {})[type]}
-          scale={1} />
+          scale={1}
+        />
       );
     } else {
       return '';
@@ -89,7 +93,8 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
           width: 30, height: 30, backgroundColor: '#00bcd4',
           fontFamily: 'Carter One', fontSize: 16, color: 'white'
         }}
-        style={{padding: 0, width: 24, height: 24}} />
+        style={{padding: 0, width: 24, height: 24}}
+      />
     );
   }
 

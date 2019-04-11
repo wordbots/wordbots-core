@@ -1,5 +1,5 @@
-import * as w from '../../types';
 import { TYPE_STRUCTURE } from '../../constants';
+import * as w from '../../types';
 
 export const fortificationCard: w.CardInStore = {
   id: 'Fortification',

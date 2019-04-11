@@ -1,5 +1,5 @@
-import * as React from 'react';
 import FontIcon from 'material-ui/FontIcon';
+import * as React from 'react';
 
 import { Layout } from './types.enums';
 
@@ -28,17 +28,23 @@ export default class LayoutControls extends React.Component<LayoutControlsProps>
   public render(): JSX.Element {
     return (
       <div>
-        <div style={{
-          fontWeight: 700,
-          fontSize: 14,
-          marginBottom: 20
-        }}>Layout</div>
+        <div
+          style={{
+            fontWeight: 700,
+            fontSize: 14,
+            marginBottom: 20
+          }}
+        >
+          Layout
+        </div>
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: 20
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: 20
+          }}
+        >
           {this.renderButton(0, 'view_module')}
           {this.renderButton(1, 'view_list')}
         </div>

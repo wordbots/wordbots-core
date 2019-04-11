@@ -1,14 +1,14 @@
-import * as WebSocket from 'ws';
 import { Server } from 'http';
 import { noop, truncate } from 'lodash';
+import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
 import { opponent as opponentOf } from '../../common/util/game';
 
 import * as m from './multiplayer';
-import { getPeopleInGame } from './util';
 import MultiplayerServerState from './MultiplayerServerState';
+import { getPeopleInGame } from './util';
 
 const MAX_DEBUG_MSG_LENGTH = 500;
 const QUEUE_INTERVAL_MSECS = 500;

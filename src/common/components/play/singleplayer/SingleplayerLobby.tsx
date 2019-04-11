@@ -1,12 +1,12 @@
+import { History } from 'history';
 import * as React from 'react';
 
 import * as w from '../../../types';
-import Title from '../../Title';
 import RouterDialog from '../../RouterDialog';
+import Title from '../../Title';
 import PreGameModal from '../PreGameModal';
 
 import SingleplayerModeSelection from './SingleplayerModeSelection';
-import { History } from 'history';
 
 interface SingleplayerLobbyProps {
   availableDecks: w.DeckInStore[]
@@ -32,7 +32,8 @@ export default class SingleplayerLobby extends React.Component<SingleplayerLobby
             cards={cards}
             sets={sets}
             history={history}
-            onStartGame={this.handleStartPracticeGame} />
+            onStartGame={this.handleStartPracticeGame}
+          />
         </div>
       </div>
     );

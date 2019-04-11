@@ -1,7 +1,7 @@
-import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
-import FontIcon from 'material-ui/FontIcon';
 import { capitalize } from 'lodash';
+import FontIcon from 'material-ui/FontIcon';
+import * as React from 'react';
 
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
@@ -49,7 +49,8 @@ export default class CardStat extends React.Component<CardStatProps> {
           fontSize: 14 * (this.props.scale || 1),
           color: this.textColor,
           marginRight: 4 * (this.props.scale || 1)
-        }} />
+        }}
+      />
     );
   }
 
@@ -139,7 +140,8 @@ export default class CardStat extends React.Component<CardStatProps> {
             margin: 8,
             marginBottom: 4,
             paddingTop: 4
-        }}>
+          }}
+        >
           <span style={{color: '#fff'}}>
             {this.props.current || this.props.base}
           </span>

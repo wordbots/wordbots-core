@@ -1,8 +1,8 @@
 import { flatMap, has, some } from 'lodash';
 
-import * as w from '../types';
-import { allHexIds, getHex, getAttribute, getAdjacentHexes } from '../util/game';
 import HU from '../components/hexgrid/HexUtils';
+import * as w from '../types';
+import { allHexIds, getAdjacentHexes, getAttribute, getHex } from '../util/game';
 
 function objectHasProperty(obj: w.Object, property: string): boolean {
   switch (property) {

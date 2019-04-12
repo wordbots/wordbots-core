@@ -82,7 +82,14 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
   get publishedSets(): w.Set[] {
     const { sets } = this.props;
-    return orderBy(sets.filter((set) => set.metadata.isPublished), 'metadata.numDecksCreated', 'desc');
+    const { numDecksBySet } = this.state;
+    const unorderedPublishedSets = sets.filter((set) => set.metadata.isPublished);
+
+    if (numDecksBySet) {
+      return orderBy(unorderedPublishedSets, (set) => numDecksBySet[set.id], 'desc');
+    } else {
+      return unorderedPublishedSets;
+    }
   }
 
   get userSets(): w.Set[] {

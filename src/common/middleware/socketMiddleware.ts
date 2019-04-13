@@ -13,7 +13,8 @@ interface SocketMiddlewareOpts {
   excludedActions: w.ActionType[]
 }
 
-function createSocketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware {
+// Middleware creator that builds socketMiddleware given SocketMiddlewareOpts.
+function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware {
   return (store: MiddlewareAPI<Dispatch<AnyAction>, w.State>) => {
     let socket: WebSocket;
     let keepaliveNeeded: boolean = false;
@@ -100,4 +101,4 @@ function createSocketMiddleware({ excludedActions }: SocketMiddlewareOpts): Midd
   };
 }
 
-export default createSocketMiddleware;
+export default socketMiddleware;

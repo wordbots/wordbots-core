@@ -3,7 +3,7 @@ import * as w from '../types';
 import { collection } from './cards';
 import * as decks from './decks';
 
-const defaultState: w.CollectionState = {
+const defaultCollectionState: w.CollectionState = {
   cards: collection,
   decks: [
     {
@@ -26,4 +26,4 @@ const defaultState: w.CollectionState = {
   firebaseLoaded: false
 };
 
-export default defaultState;
+export default defaultCollectionState;

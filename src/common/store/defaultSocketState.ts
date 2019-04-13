@@ -1,6 +1,6 @@
 import * as w from '../types';
 
-const defaultState: w.SocketState = {
+const defaultSocketState: w.SocketState = {
   connecting: false,
   connected: false,
   clientId: null,
@@ -18,4 +18,4 @@ const defaultState: w.SocketState = {
   chatMessages: []
 };
 
-export default defaultState;
+export default defaultSocketState;

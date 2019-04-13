@@ -2,7 +2,7 @@ import { capitalize, fromPairs, invert, isNil } from 'lodash';
 
 import { CardType, Format, HexId } from './types';
 
-/* Debug flags. */
+// Debug flags.
 
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;
@@ -14,25 +14,25 @@ export const ENABLE_REDUX_TIME_TRAVEL = false;
 const USE_LOCAL_PARSER = false;
 const LOCAL_PARSER_PORT = 8080;
 
-/* Server settings */
+// Server settings.
 
 export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to try until all the bugs are worked out!
 
-/* Game rules. */
+// Game rules.
 
 export const DEFAULT_GAME_FORMAT: Format = 'normal';
 export const STARTING_PLAYER_HEALTH = 20;
 export const DECK_SIZE = 30;
 export const MAX_HAND_SIZE = 7;
 
-/* Animations. */
+// Animations.
 
 export const ANIMATION_TIME_MS = 400;
 export const AI_RESPONSE_TIME_MS = 2200;
 export const EVENT_ANIMATION_TIME_MS = 2000;
 export const SHOW_TOOLTIP_TIMEOUT_MS = 500;
 
-/* Layout. */
+// Layout.
 
 export const HEADER_HEIGHT = 64;
 export const SIDEBAR_WIDTH = 225;
@@ -41,7 +41,7 @@ export const CHAT_WIDTH = 256;
 export const CHAT_COLLAPSED_WIDTH = 64;
 export const MAX_BOARD_SIZE = 700;
 
-/* Z Indices */
+// Z Indices
 
 export const DICTIONARY_TAB_Z_INDEX = 10;
 export const BACKGROUND_Z_INDEX = 900;
@@ -56,7 +56,7 @@ export const STATUS_Z_INDEX = 2000;
 export const MAX_Z_INDEX = 99999;
 export const TUTORIAL_Z_INDEX = 999999;
 
-/* Board. */
+// Board.
 
 export const GRID_CONFIG = {
   width: 600, height: 600,
@@ -72,7 +72,7 @@ export const BLUE_PLACEMENT_HEXES: HexId[] = ['0,-3,3', '-1,-2,3', '-2,-1,3', '-
 export const ORANGE_CORE_HEX: HexId = '3,0,-3';
 export const ORANGE_PLACEMENT_HEXES: HexId[] = ['3,-3,0', '3,-2,-1', '3,-1,-2', '2,1,-3', '1,2,-3', '0,3,-3'];
 
-/* Cards. */
+// Cards.
 
 export const CARD_SCHEMA_VERSION = 1;
 export const SPRITE_VERSION = 2;
@@ -101,7 +101,7 @@ export function stringToType(str: string): CardType {
   return parseInt(invert(typeToStringMapping)[str.toLowerCase()], 10) as CardType;
 }
 
-/* Parsing. */
+// Parsing.
 
 export const PARSER_URL = USE_LOCAL_PARSER ? `http://localhost:${LOCAL_PARSER_PORT}` : 'http://parser.wordbots.io';
 export const PARSE_DEBOUNCE_MS = 500;
@@ -147,7 +147,7 @@ function objToRegexes(obj: Record<string, string>): Record<string, RegExp> {
 export const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
 export const HINT_REGEXES = objToRegexes(HINTS);
 
-/* Player Colors */
+// Player colors.
 
 export const ORANGE_PLAYER_COLOR = '#ffb85d';
 export const ORANGE_PLAYER_COLOR_DARKENED = '#d99237';

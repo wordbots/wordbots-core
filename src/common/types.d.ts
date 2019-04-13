@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import * as m from '../server/multiplayer/multiplayer';
 
-/* Simple types */
+// Simple types
 
 type timestamp = number;
 
@@ -29,7 +29,7 @@ export type PerPlayer<T> = Record<PlayerColor, T>;
 export type Returns<T> = (...args: any[]) => T;
 export type StringRepresentationOf<T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
-/* Library types */
+// Library types
 
 export type ActionType = string;
 export type ActionPayload = any;
@@ -39,7 +39,7 @@ export interface Action {
   payload?: ActionPayload
 }
 
-/* General types */
+// General types
 
 export interface Deck extends DeckInStore {
   cards: CardInStore[]
@@ -152,7 +152,7 @@ export interface EventTarget {
   undergoer?: _Object
 }
 
-/* Redux store types */
+// Redux store types
 
 export interface State {
   collection: CollectionState
@@ -243,7 +243,7 @@ export interface SocketState {
   waitingPlayers: m.GameWaitingForPlayers[]
 }
 
-/* Game state subcomponents */
+// Game state subcomponents
 
 export interface GameOptions {
   disableTurnTimer?: boolean
@@ -380,7 +380,7 @@ export interface LoggedAction {
   cards: Record<string, CardInGame>
 }
 
-/* Creator state subcomponents */
+// Creator state subcomponents
 
 export interface Sentence {
   sentence: string
@@ -394,7 +394,7 @@ export interface ParseResult {
   parsed?: boolean  // used by DictionaryDialog
 }
 
-/* Socket state subcomponents */
+// Socket state subcomponents
 
 export interface ChatMessage {
   id?: string
@@ -404,7 +404,7 @@ export interface ChatMessage {
   cards?: Record<string, CardInGame>
 }
 
-/* Vocabulary types */
+// Vocabulary types
 
 export type Collection = CardCollection | ObjectOrPlayerCollection | HexCollection;
 export type Target = Collection;

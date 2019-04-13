@@ -2,12 +2,15 @@
   "extends": [
     "tslint:recommended",
     "tslint-eslint-rules-recommended",
-    "tslint-react"
+    "tslint-react",
+    "tslint-microsoft-contrib/recommended"
   ],
   "rulesDirectory": [
-    "node_modules/tslint-eslint-rules/dist/rules"
+    "node_modules/tslint-eslint-rules/dist/rules",
+    "node_modules/tslint-microsoft-contrib"
   ],
   "rules": {
+    "array-type": [true, "array-simple"],
     "handle-callback-err": true,
     "interface-name": false,
     "max-classes-per-file": false,
@@ -35,6 +38,22 @@
     "variable-name": false,
 
     "jsx-boolean-value": [true, "never"],
-    "jsx-no-multiline-js": false
+    "jsx-no-multiline-js": false,
+
+    "export-name": [true, { "allow": ["\\("] }],
+    "function-name": false,
+    "import-name": false,
+    "insecure-random": false,
+    "max-func-body-length": false,
+    "no-angle-bracket-type-assertion": true,
+    "no-http-string": [true, "http://.*\\.wordbots\\.io.*", "http://localhost.*"],
+    "no-relative-imports": false,
+    "no-suspicious-comment": false,
+    "prefer-array-literal": false,
+    "prefer-type-cast": false,
+    "react-a11y-anchors": false,
+    "react-a11y-event-has-role": false,
+    "react-this-binding-issue": [ true, { "allow-anonymous-listeners": true } ],
+    "use-simple-attributes": false
   }
 }

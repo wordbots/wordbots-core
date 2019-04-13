@@ -2,6 +2,8 @@ import { History } from 'history';
 import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
+// tslint:disable no-typeof-undefined
+
 declare const window: {
   location: { pathname: string }
   process?: { title: string, env: { NODE_ENV: string } }

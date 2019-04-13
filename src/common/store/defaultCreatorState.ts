@@ -1,7 +1,7 @@
 import * as w from '../types';
 import { id } from '../util/common';
 
-const defaultState: w.CreatorState = {
+const defaultCreatorState: w.CreatorState = {
   id: null,  // Only exists for existing cards that are being edited (not new cards).
   name: '',
   spriteID: id(),
@@ -15,4 +15,4 @@ const defaultState: w.CreatorState = {
   parserVersion: null
 };
 
-export default defaultState;
+export default defaultCreatorState;

@@ -55,7 +55,7 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
   return state;
 }
 
-/** Create an Object from a card being played. */
+// Create an Object from a card being played.
 export function instantiateObject(card: w.CardInGame): w.Object {
   return {
     id: id(),
@@ -73,7 +73,7 @@ export function instantiateObject(card: w.CardInGame): w.Object {
   };
 }
 
-/** Handles things that should happen after an object is played or spawned (using actions.spawnObject). */
+// Handles things that should happen after an object is played or spawned (using actions.spawnObject).
 export function afterObjectPlayed(state: State, playedObject: w.Object): State {
   const player: PlayerState = currentPlayer(state);
   const target = player.target.chosen ? player.target.chosen[0] : null;

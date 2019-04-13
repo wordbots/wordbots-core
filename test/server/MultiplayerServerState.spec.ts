@@ -1,5 +1,6 @@
 import { noop } from 'lodash';
 import { WebSocket as MockSocket } from 'mock-socket';
+import * as WebSocket from 'ws';
 
 import * as gameActions from '../../src/common/actions/game';
 import * as m from '../../src/server/multiplayer/multiplayer';
@@ -8,7 +9,6 @@ import { botsOnlyDeck, defaultDecks, emptyDeck, eventsOnlyDeck, kernelKillerDeck
 
 type MSS = MultiplayerServerState;
 
-const dummyWebSocket: any = new MockSocket('ws://null');
 const initialState: m.SerializedServerState = {
   games: [],
   waitingPlayers: [],
@@ -30,11 +30,15 @@ function expectStateFn(fn: (state: MSS) => void, expectedSerializedStateFn: (sta
 
 describe('MultiplayerServerState', () => {
   const oldConsole = {log: console.log, warn: console.warn};
+  let dummyWebSocket: WebSocket;
   let warning: string = '';
+
   beforeAll(() => {
+    dummyWebSocket = new MockSocket('ws://null') as any as WebSocket;
     console.log = noop;
     console.warn = (message: string) => warning = message;
   });
+
   afterAll(() => {
     console.log = oldConsole.log;
     console.warn = oldConsole.warn;

@@ -1,8 +1,8 @@
 import * as w from '../types';
 
-const defaultState: w.GlobalState = {
+const defaultGlobalState: w.GlobalState = {
   renderId: 0,
   user: null
 };
 
-export default defaultState;
+export default defaultGlobalState;

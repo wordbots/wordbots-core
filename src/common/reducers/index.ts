@@ -18,4 +18,4 @@ const rootReducer: Reducer<w.State, any> = combineReducers({
   version
 });
 
-export default rootReducer;
+export default rootReducer;  // tslint:disable-line export-name

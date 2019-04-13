@@ -59,7 +59,7 @@ function playerState(
   };
 }
 
-const defaultState: w.GameState = {
+const defaultGameState: w.GameState = {
   storeKey: 'game',
   players: {
     blue: bluePlayerState([]),
@@ -84,4 +84,4 @@ const defaultState: w.GameState = {
   volume: 25
 };
 
-export default defaultState;
+export default defaultGameState;

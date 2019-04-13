@@ -7,7 +7,7 @@ interface Global {
 declare const global: Global;
 
 // See https://reactjs.org/docs/javascript-environment-requirements.html
-global.requestAnimationFrame = (callback) => {
+global.requestAnimationFrame = (callback: () => void) => {
   setTimeout(callback, 0);
 };
 

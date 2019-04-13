@@ -1,4 +1,4 @@
-/* Multiplayer-related functions used both in the client and server go here. */
+// Multiplayer-related functions used both in the client and server go here.
 
 import * as m from '../../server/multiplayer/multiplayer';
 

@@ -1,6 +1,6 @@
 import { combineState } from '../testHelpers.ts';
 import { getComponent } from '../reactHelpers';
-import CardCreationForm from '../../src/common/components/cards/CardCreationForm';
+import CardCreationForm from '../../src/common/components/cards/CardCreationForm.tsx';
 import collectionReducer from '../../src/common/reducers/collection.ts';
 import creatorReducer from '../../src/common/reducers/creator.ts';
 import gameReducer from '../../src/common/reducers/game.ts';

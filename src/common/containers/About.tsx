@@ -1,55 +1,57 @@
+import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
-import { string } from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Paper from '@material-ui/core/Paper';
 
-import Title from '../components/Title';
 import MarkdownBlock from '../components/MarkdownBlock';
+import Title from '../components/Title';
+import * as w from '../types';
 
-export function mapStateToProps(state) {
+interface AboutProps {
+  version: string
+}
+
+export function mapStateToProps(state: w.State): AboutProps {
   return {
     version: state.version
   };
 }
 
-const About = function (props) {
-  const [version, sha] = props.version.split('+');
+class About extends React.Component<AboutProps> {
+  public render(): JSX.Element {
+    const [version, sha] = this.props.version.split('+');
 
-  return (
-    <div>
-      <Helmet title="About"/>
-      <Title text="About" />
+    return (
+      <div>
+        <Helmet title="About"/>
+        <Title text="About" />
 
-      <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
-        <div style={{width: '50%', marginRight: 20}}>
-          <Paper style={{padding: '5px 20px'}}>
-            <MarkdownBlock source={whatIsWordbots(version, sha)} />
-          </Paper>
+        <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
+          <div style={{width: '50%', marginRight: 20}}>
+            <Paper style={{padding: '5px 20px'}}>
+              <MarkdownBlock source={whatIsWordbots(version, sha)} />
+            </Paper>
 
-          <Paper style={{padding: '5px 20px', marginTop: 20}}>
-            <MarkdownBlock source={getInvolved} />
-          </Paper>
-        </div>
+            <Paper style={{padding: '5px 20px', marginTop: 20}}>
+              <MarkdownBlock source={getInvolved} />
+            </Paper>
+          </div>
 
-        <div style={{width: '50%'}}>
-          <Paper style={{padding: '5px 20px'}}>
-            <MarkdownBlock source={howToPlay} />
-          </Paper>
+          <div style={{width: '50%'}}>
+            <Paper style={{padding: '5px 20px'}}>
+              <MarkdownBlock source={howToPlay} />
+            </Paper>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-About.propTypes = {
-  version: string
-};
+    );
+  }
+}
 
 export default withRouter(connect(mapStateToProps)(About));
 
-const whatIsWordbots = (version, sha) => (`
+const whatIsWordbots = (version: string, sha: string) => (`
 # Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
 ![](http://app.wordbots.io/static/screenshot_mini.png)
 **Wordbots** is a customizable hex-based card game with a twist – _you_, the player,

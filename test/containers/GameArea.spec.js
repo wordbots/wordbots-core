@@ -146,7 +146,7 @@ describe('GameArea container', () => {
     const state = combineState({...getDefaultState(), started: false});
     const historyParams = {
       location: { pathname: '/singleplayer/practice/deckId' },
-      match: { params: { deck: 'deckId' } },
+      match: { params: { deck: 'deckId', format: 'normal' } },
       history: { push: (url) => dispatchedActions.push({ type: 'HISTORY.PUSH', payload: { url } }) }
     };
 

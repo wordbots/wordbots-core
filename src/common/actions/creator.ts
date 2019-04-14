@@ -22,7 +22,7 @@ export function setType(type: w.CardType): w.Action {
   };
 }
 
-export function setAttribute(attr: w.Attribute, value: number): w.Action {
+export function setAttribute(attr: w.Attribute | 'cost', value: number): w.Action {
   return {
     type: SET_ATTRIBUTE,
     payload: { attr, value }

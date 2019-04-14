@@ -19,7 +19,7 @@ export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
 export const SET_VOLUME = 'SET_VOLUME';
 
-export function startPractice(format: w.Format, deck: w.Deck): w.Action {
+export function startPractice(format: w.BuiltInFormat, deck: w.CardInStore[]): w.Action {
   return {
     type: START_PRACTICE,
     payload: { format, deck }

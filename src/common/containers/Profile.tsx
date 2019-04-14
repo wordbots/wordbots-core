@@ -13,10 +13,10 @@ import { Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
-import MatchmakingInfo from '../components/profile/MatchmakingInfo';
-import PlayerInfo from '../components/profile/PlayerInfo';
-import RecentGames from '../components/profile/RecentGames';
 import Title from '../components/Title';
+import MatchmakingInfo from '../components/users/profile/MatchmakingInfo';
+import PlayerInfo from '../components/users/profile/PlayerInfo';
+import RecentGames from '../components/users/profile/RecentGames';
 import * as w from '../types';
 import {
   getCardsCreatedCountByUserId,

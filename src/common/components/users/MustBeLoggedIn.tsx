@@ -6,12 +6,12 @@ import Tooltip from '../Tooltip';
 interface MustBeLoggedInProps {
   loggedIn: boolean
   style?: React.CSSProperties
-  children: React.ReactChild
+  children: React.ReactChild | Array<React.ReactChild | null>
 }
 
 export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps> {
   get children(): React.ReactChild[] {
-    const children = this.props.children as React.ReactChild;
+    const children = this.props.children as React.ReactChild | Array<React.ReactChild | null>;
     return isArray(children) ? compact(children) : [children];
   }
 

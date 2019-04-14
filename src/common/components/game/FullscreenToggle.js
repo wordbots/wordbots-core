@@ -5,7 +5,7 @@ import IconButton from 'material-ui/IconButton';
 import * as screenfull from 'screenfull';
 
 import { MAX_Z_INDEX } from '../../constants.ts';
-import Tooltip from '../Tooltip';
+import Tooltip from '../Tooltip.tsx';
 
 export default class FullscreenToggle extends React.Component {
   static propTypes = {

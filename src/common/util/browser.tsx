@@ -69,6 +69,6 @@ export function getGameAreaNode(): HTMLElement {
   return document.getElementById('gameArea') || document.body;
 }
 
-export function zeroWidthJoin(...items: Array<React.ReactElement<any>>): React.ReactElement<any> {
+export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {
   return items.reduce((a, b) => <span>{a}&zwnj;{b}</span>);
 }

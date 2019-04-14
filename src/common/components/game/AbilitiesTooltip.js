@@ -2,7 +2,7 @@ import * as React from 'react';
 import { arrayOf, func, object, oneOfType } from 'prop-types';
 
 import { MAX_Z_INDEX } from '../../constants.ts';
-import Popover from '../Popover';
+import Popover from '../Popover.tsx';
 
 import ActivatedAbility from './ActivatedAbility';
 

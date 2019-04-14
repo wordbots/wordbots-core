@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import { MAX_Z_INDEX } from '../../constants.ts';
 import { opponent } from '../../util/game.ts';
-import Tooltip from '../Tooltip';
+import Tooltip from '../Tooltip.tsx';
 
 export default class ForfeitButton extends React.Component {
   static propTypes = {

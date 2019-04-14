@@ -3,7 +3,7 @@ import { object } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import IFrame from 'react-iframe';
 
-import MarkdownBlock from '../MarkdownBlock';
+import MarkdownBlock from '../MarkdownBlock.tsx';
 import RouterDialog from '../RouterDialog.tsx';
 
 export default class HelpDialog extends React.Component {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { arrayOf, bool, object } from 'prop-types';
 
-import Tooltip from '../Tooltip';
+import Tooltip from '../Tooltip.tsx';
 import Card from '../card/Card.tsx';
 import CardBack from '../card/CardBack.tsx';
 

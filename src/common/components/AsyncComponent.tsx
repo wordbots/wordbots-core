@@ -1,7 +1,13 @@
 import * as React from 'react';
 
 export default function asyncComponent<P>(importComponent: () => Promise<any>): React.ComponentType<P> {
-  class AsyncComponent extends React.Component<P, { component?: React.ComponentType<P> }> {
+  interface State {
+    component?: React.ComponentType<P>  // tslint:disable-line react-unused-props-and-state
+  }
+
+  class AsyncComponent extends React.Component<P, State> {
+    public state: State = {};
+
     public async UNSAFE_componentWillMount(): Promise<void> {
       const { default: component } = await importComponent() as { default: React.ComponentType<P> };
 

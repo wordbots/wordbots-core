@@ -16,7 +16,6 @@ interface SingleplayerProps {
   socket: w.SocketState
   cards: w.CardInStore[]
   availableDecks: w.DeckInStore[]
-  sets: w.Set[]
 }
 
 export function mapStateToProps(state: w.State): SingleplayerProps {
@@ -26,7 +25,6 @@ export function mapStateToProps(state: w.State): SingleplayerProps {
     socket: state.socket,
     cards: state.collection.cards,
     availableDecks: state.collection.decks,
-    sets: state.collection.sets
   };
 }
 
@@ -64,7 +62,7 @@ export class Singleplayer extends React.Component<SingleplayerProps & { history:
   }
 
   private renderLobby = () => {
-    const { availableDecks, cards, sets, history, started } = this.props;
+    const { availableDecks, cards, history, started } = this.props;
     if (started && Singleplayer.isInGameUrl(history.location.pathname)) {
       return <GameAreaContainer />;
     } else {
@@ -72,7 +70,6 @@ export class Singleplayer extends React.Component<SingleplayerProps & { history:
         <SingleplayerLobby
           cards={cards}
           availableDecks={availableDecks}
-          sets={sets}
           history={history}
           onSelectMode={this.selectMode}
         />

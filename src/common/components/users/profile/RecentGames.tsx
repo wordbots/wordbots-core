@@ -1,18 +1,26 @@
-import React, { Component } from 'react';
-import { arrayOf, object, string } from 'prop-types';
-import { isNil, startCase, toLower } from 'lodash';
-import { withStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Icon from '@material-ui/core/Icon';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import Icon from '@material-ui/core/Icon';
+import { withStyles } from '@material-ui/core/styles';
+import { CSSProperties, WithStyles } from '@material-ui/core/styles/withStyles';
+import { isNil, isString, startCase, toLower } from 'lodash';
+import * as React from 'react';
 
-import Title from '../Title.tsx';
+import * as w from '../../../types';
+import { GameFormat } from '../../../util/formats';
+import Title from '../../Title';
 
-const styles = {
+interface RecentGamesProps {
+  recentGames?: w.SavedGame[]
+  playerNames?: Record<string, string>
+  userId: string
+}
+
+const styles: Record<string, CSSProperties> = {
   root: {
     width: '100%',
     height: '100%',
@@ -38,23 +46,38 @@ const styles = {
   }
 };
 
-class RecentGames extends Component {
-  static propTypes = {
-    recentGames: arrayOf(object),
-    playerNames: object,
-    userId: string,
-    classes: object
-  };
+class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
+  public render(): JSX.Element {
+    const { recentGames, classes } = this.props;
 
-  renderRecentGame = (recentGame, index) => {
+    return (
+      <div className={classes.root}>
+        <Title text="Recent Games" small />
+        { isNil(recentGames) ?
+          <div className={classes.progressContainer}>
+            <CircularProgress />
+          </div> :
+          <List>
+            {recentGames.map(this.renderRecentGame)}
+          </List>
+        }
+      </div>
+    );
+  }
+
+  private renderRecentGame = (recentGame: w.SavedGame, index: number) => {
     const { userId, playerNames, classes } = this.props;
+
+    if (!playerNames) {
+      return;
+    }
 
     const opponentId = Object.values(recentGame.players).find((player) => player !== userId);
     const isGuest = isNil(opponentId) || opponentId.startsWith('guest');
     const opponent = isGuest ? 'Guest' : playerNames[opponentId] || playerNames[userId];
-    const wasVictory = recentGame.players[recentGame.winner] === userId;
+    const wasVictory = recentGame.winner && recentGame.players[recentGame.winner] === userId;
     const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
-    const subText = `${startCase(toLower(recentGame.type))} - ${startCase(recentGame.format)} - ${timestamp}`;
+    const subText = `${startCase(toLower(recentGame.type))} - ${GameFormat.decode(recentGame.format).displayName} - ${timestamp}`;
 
     const formatIcons = {
       'normal': 'player',
@@ -66,7 +89,7 @@ class RecentGames extends Component {
       <ListItem key={index} className={classes.recentGame}>
         <ListItemAvatar>
           <Avatar>
-            <Icon className={`ra ra-${formatIcons[recentGame.format]}`}/>
+            <Icon className={`ra ra-${isString(recentGame.format) && formatIcons[recentGame.format]}`}/>
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={opponent} secondary={subText} />
@@ -74,26 +97,9 @@ class RecentGames extends Component {
           primaryTypographyProps={{
             className: wasVictory ? classes.victory : classes.defeat
           }}
-          primary={wasVictory ? 'VICTORY' : 'DEFEAT'} />
+          primary={wasVictory ? 'VICTORY' : 'DEFEAT'}
+        />
       </ListItem>
-    );
-  }
-
-  render() {
-    const { recentGames, classes } = this.props;
-
-    return (
-      <div className={classes.root}>
-        <Title text="Recent Games" small />
-        { isNil(recentGames) ?
-          <div className={classes.progressContainer}>
-            <CircularProgress />
-          </div> :
-          <List>
-            { recentGames.map(this.renderRecentGame) }
-          </List>
-        }
-      </div>
     );
   }
 }

@@ -1,12 +1,21 @@
-import React, { Component } from 'react';
-import { object } from 'prop-types';
-import { isNil, upperCase } from 'lodash';
-import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import { isNil, upperCase } from 'lodash';
+import * as React from 'react';
 
-import Title from '../Title.tsx';
+import Title from '../../Title';
 
-const styles = {
+interface PlayerInfoProps {
+  playerInfo: {
+    cardsCreated: number,
+    decksCreated: number,
+    gamesPlayed: number,
+    winRate: string
+  }
+}
+
+const styles: Record<string, CSSProperties> = {
   root: {
     width: '100%',
     height: '100%'
@@ -42,25 +51,8 @@ const styles = {
   }
 };
 
-// eslint-disable-next-line react/prefer-stateless-function
-class PlayerInfo extends Component {
-  static propTypes = {
-    playerInfo: object,
-    classes: object
-  };
-
-  renderPlayerInfo = (playerInfo) => {
-    const { classes } = this.props;
-
-    return Object.keys(playerInfo).map((playerInfoKey) => (
-      <div key={playerInfoKey} className={classes.playerInfoItem}>
-        <div className={classes.playerInfoKey}>{upperCase(playerInfoKey)}</div>
-        <div className={classes.playerInfoValue}>{playerInfo[playerInfoKey]}</div>
-      </div>
-    ));
-  }
-
-  render() {
+class PlayerInfo extends React.Component<PlayerInfoProps & WithStyles> {
+  public render(): JSX.Element {
     const { playerInfo, classes } = this.props;
 
     return (
@@ -70,10 +62,21 @@ class PlayerInfo extends Component {
           <div className={classes.progressContainer}>
             <CircularProgress />
           </div> :
-          <div className={classes.playerInfo}>{this.renderPlayerInfo(playerInfo)}</div>
+          <div className={classes.playerInfo}>{this.renderPlayerInfo()}</div>
         }
       </div>
     );
+  }
+
+  private renderPlayerInfo = () => {
+    const { playerInfo, classes } = this.props;
+
+    return Object.keys(playerInfo).map((playerInfoKey) => (
+      <div key={playerInfoKey} className={classes.playerInfoItem}>
+        <div className={classes.playerInfoKey}>{upperCase(playerInfoKey)}</div>
+        <div className={classes.playerInfoValue}>{playerInfo[playerInfoKey as keyof PlayerInfoProps['playerInfo']]}</div>
+      </div>
+    ));
   }
 }
 

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { object } from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import * as React from 'react';
 
-import Title from '../Title.tsx';
+import Title from '../../Title';
 
-const styles = {
+const styles: Record<string, CSSProperties> = {
   root: {
     width: '100%',
     height: '100%'
@@ -21,12 +21,8 @@ const styles = {
 };
 
 // eslint-disable-next-line react/prefer-stateless-function
-class MatchmakingInfo extends Component {
-  static propTypes = {
-    classes: object
-  };
-
-  render() {
+class MatchmakingInfo extends React.Component<WithStyles> {
+  public render(): JSX.Element {
     const { classes } = this.props;
 
     return (

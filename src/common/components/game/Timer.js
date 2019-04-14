@@ -52,7 +52,8 @@ export default class Timer extends React.Component {
         borderRadius: 5,
         boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
         fontFamily: 'VT323',
-        fontSize: 72
+        fontSize: 72,
+        maringRight: 10
       }
     };
   }

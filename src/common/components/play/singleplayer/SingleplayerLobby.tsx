@@ -11,14 +11,13 @@ import SingleplayerModeSelection from './SingleplayerModeSelection';
 interface SingleplayerLobbyProps {
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
-  sets: w.Set[]
   history: History
   onSelectMode: (modeStr: string, formatStr: w.Format | null, deck: w.DeckInStore | null) => void
 }
 
 export default class SingleplayerLobby extends React.Component<SingleplayerLobbyProps> {
   public render(): JSX.Element {
-    const { availableDecks, cards, sets, history } = this.props;
+    const { availableDecks, cards, history } = this.props;
 
     return (
       <div >
@@ -30,7 +29,7 @@ export default class SingleplayerLobby extends React.Component<SingleplayerLobby
             title="Start Practice Game"
             availableDecks={availableDecks}
             cards={cards}
-            sets={sets}
+            sets={[]/* we don't support set formats in practice games */}
             history={history}
             onStartGame={this.handleStartPracticeGame}
           />

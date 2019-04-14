@@ -8,7 +8,7 @@ import { transformHistory } from '../util/browser';
 
 interface RouterDialogProps {
   path: string
-  title: string
+  title?: string
   children: React.ReactNode
   history: History
   bodyStyle?: React.CSSProperties

@@ -545,6 +545,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-popover@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@types/react-popover/-/react-popover-0.5.3.tgz#5bee27490d2fd81f891b87799c39dbc520e5d1b7"
+  integrity sha512-xfmnFHRKMXtGdWuSwEg4XiHxODKlN/bPEXfretBpojI7cNoeAtnmpyTmFk4UNcO+ys3W2SOsMXzcaqCNPyYP2g==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-redux@^7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.0.1.tgz#9dd2503be7a9861c5a092bf1c5050b7ade4dc62e"

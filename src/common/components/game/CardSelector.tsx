@@ -9,9 +9,9 @@ import * as React from 'react';
 import { BLUE_PLAYER_COLOR, BLUE_PLAYER_COLOR_DARKENED, ORANGE_PLAYER_COLOR, ORANGE_PLAYER_COLOR_DARKENED } from '../../constants';
 import * as w from '../../types';
 import CardTooltip from '../card/CardTooltip';
-import Tooltip from '../Tooltip.js';
+import Tooltip from '../Tooltip';
 
-import CardSelectorCard from './CardSelectorCard.js';
+import CardSelectorCard from './CardSelectorCard';
 
 interface CardSelectorBaseProps {
   onAddCardToTopOfDeck: (player: string, card: w.CardInStore) => void

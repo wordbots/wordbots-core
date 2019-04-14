@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { MAX_Z_INDEX } from '../../constants';
 
-import Tooltip from '../Tooltip.js';
+import Tooltip from '../Tooltip';
 
 const styles = {
   container: {

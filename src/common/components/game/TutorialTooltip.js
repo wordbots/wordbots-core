@@ -6,8 +6,8 @@ import FontIcon from 'material-ui/FontIcon';
 import { noop } from 'lodash';
 
 import { TUTORIAL_Z_INDEX } from '../../constants.ts';
-import Popover from '../Popover';
-import Tooltip from '../Tooltip';
+import Popover from '../Popover.tsx';
+import Tooltip from '../Tooltip.tsx';
 
 export default class TutorialTooltip extends React.Component {
   static propTypes = {

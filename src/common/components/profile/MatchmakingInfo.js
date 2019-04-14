@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { object } from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-import Title from '../Title';
+import Title from '../Title.tsx';
 
 const styles = {
   root: {
@@ -18,7 +18,7 @@ const styles = {
     fontSize: 36,
     fontWeight: 100
   }
-}; 
+};
 
 // eslint-disable-next-line react/prefer-stateless-function
 class MatchmakingInfo extends Component {

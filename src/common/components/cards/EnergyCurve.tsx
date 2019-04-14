@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as w from '../../types';
 import asyncComponent from '../AsyncComponent';
 
-const BarChart = asyncComponent(() => import(/* webpackChunkName: 'react-bar-chart' */ 'react-bar-chart'));
+const BarChart = asyncComponent<any>(() => import(/* webpackChunkName: 'react-bar-chart' */ 'react-bar-chart'));
 
 interface EnergyCurveProps {
   cards: w.CardInStore[]

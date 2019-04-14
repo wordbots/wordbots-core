@@ -4,7 +4,7 @@ import { isNil, upperCase } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import Title from '../Title';
+import Title from '../Title.tsx';
 
 const styles = {
   root: {

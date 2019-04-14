@@ -1,24 +1,20 @@
 import * as React from 'react';
-import { arrayOf, element, oneOfType } from 'prop-types';
 
-export default class ErrorBoundary extends React.Component {
-  static propTypes = {
-    children: oneOfType([element, arrayOf(element)])
+interface ErrorBoundaryProps {
+  children: React.ReactNode
+}
+
+interface ErrorBoundaryState {
+  error?: Error
+  errorInfo: React.ErrorInfo
+}
+
+export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    this.setState({ error, errorInfo });
   }
 
-  state = {
-    error: null,
-    errorInfo: null
-  }
-
-  componentDidCatch(error, errorInfo) {
-    this.setState({
-      error: error,
-      errorInfo: errorInfo
-    });
-  }
-
-  render() {
+  public render(): React.ReactNode {
     if (this.state.error) {
       return (
         <div style={{margin: 20}}>

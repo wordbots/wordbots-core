@@ -10,7 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Icon from '@material-ui/core/Icon';
 
-import Title from '../Title';
+import Title from '../Title.tsx';
 
 const styles = {
   root: {

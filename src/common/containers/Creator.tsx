@@ -37,7 +37,7 @@ interface CreatorDispatchProps {
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
   onSetText: (text: string) => void
-  onSetAttribute: (attr: w.Attribute, value: number) => void
+  onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
   onAddToCollection: (props: w.CreatorState) => void
@@ -75,7 +75,7 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
     onSetText: (text: string) => {
       dispatch(creatorActions.setText(text));
     },
-    onSetAttribute: (attr: w.Attribute, value: number) => {
+    onSetAttribute: (attr: w.Attribute | 'cost', value: number) => {
       dispatch(creatorActions.setAttribute(attr, value));
     },
     onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => {

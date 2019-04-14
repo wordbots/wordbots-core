@@ -49,11 +49,14 @@ export function arrayToSentence(arr: string[]): string {
 }
 
 // Returns error on failure, undefined on success.
-export function ensureInRange(name: string, value: string, min: number, max: number): string | undefined {
-  if (isNaN(parseInt(value, 10))) {
+export function ensureInRange(name: string, value: number | string, min: number, max: number): string | null {
+  const val = isString(value) ? parseInt(value, 10) : value;
+  if (isNaN(val)) {
     return `Invalid ${name}.`;
-  } else if (parseInt(value, 10) < min || parseInt(value, 10) > max) {
+  } else if (val < min || val > max) {
     return `Not between ${min} and ${max}.`;
+  } else {
+    return null;
   }
 }
 

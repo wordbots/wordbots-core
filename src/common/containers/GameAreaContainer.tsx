@@ -369,10 +369,10 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
 
   private handleClickGameArea = (evt: React.MouseEvent<HTMLElement>) => {
     const { player, onDeselect } = this.props;
-    const { className } = evt.currentTarget;
+    const { className } = evt.target as any;
 
     // Not sure why this is necessary ...
-    const { baseVal } = (className as any as { baseVal: string | undefined });
+    const { baseVal } = className;
     const actualClassName = baseVal !== undefined ? baseVal : className;
 
     if (player !== 'neither' && actualClassName.includes('background')) {

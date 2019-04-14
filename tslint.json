@@ -49,6 +49,7 @@
     "no-http-string": [true, "http://.*\\.wordbots\\.io.*", "http://localhost.*"],
     "no-relative-imports": false,
     "no-suspicious-comment": false,
+    "possible-timing-attack": false,
     "prefer-array-literal": false,
     "prefer-type-cast": false,
     "react-a11y-anchors": false,

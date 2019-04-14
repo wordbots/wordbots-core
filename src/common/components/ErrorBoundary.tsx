@@ -6,10 +6,12 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   error?: Error
-  errorInfo: React.ErrorInfo
+  errorInfo?: React.ErrorInfo
 }
 
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = {};
+
   public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     this.setState({ error, errorInfo });
   }
@@ -22,7 +24,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
           <details style={{ whiteSpace: 'pre-wrap' }}>
             {this.state.error && this.state.error.toString()}
             <br />
-            {this.state.errorInfo.componentStack}
+            {this.state.errorInfo!.componentStack}
           </details>
         </div>
       );

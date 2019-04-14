@@ -1,17 +1,18 @@
-import * as React from 'react';
-import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import Paper from '@material-ui/core/Paper';
+import * as React from 'react';
 import Helmet from 'react-helmet';
+import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
 import {
-  HEADER_HEIGHT, CHAT_WIDTH, CHAT_COLLAPSED_WIDTH, BOARD_Z_INDEX, BACKGROUND_Z_INDEX, MAX_BOARD_SIZE
-} from '../../constants.ts';
-import { inBrowser } from '../../util/browser.tsx';
-import Chat from '../play/multiplayer/Chat.tsx';
+  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE
+} from '../../constants';
+import * as w from '../../types';
+import { inBrowser } from '../../util/browser';
+import Chat from '../play/multiplayer/Chat';
 
 import Board from './Board';
-import CardSelector from './CardSelector.tsx';
+import CardSelector from './CardSelector';
 import EndTurnButton from './EndTurnButton';
 import EventAnimation from './EventAnimation';
 import ForfeitButton from './ForfeitButton';
@@ -20,146 +21,101 @@ import FullscreenToggle from './FullscreenToggle';
 import GameNotification from './GameNotification';
 import PlayerArea from './PlayerArea';
 import Sfx from './Sfx';
-import SoundToggle from './SoundToggle.tsx';
+import SoundToggle from './SoundToggle';
 import Status from './Status';
 import Timer from './Timer';
 import VictoryScreen from './VictoryScreen';
 
-/* Props shared by GameArea and GameAreaContainer. */
-export const gameProps = {
-  player: string,
-  currentTurn: string,
-  usernames: object,
-  winner: string,
-  gameOptions: object,
+// Props shared by GameArea and GameAreaContainer.
+export interface GameProps {
+  player: w.PlayerColor | 'neither'
+  currentTurn: w.PlayerColor
+  usernames: w.PerPlayer<string>
+  winner: w.PlayerColor | null
+  gameOptions: w.GameOptions
 
-  selectedTile: string,
-  playingCardType: number,
+  selectedTile: w.HexId | null
+  playingCardType: w.CardType | null
 
-  status: object,
-  target: object,
-  attack: object,
+  status: w.PlayerStatus
+  target: w.CurrentTarget
+  attack: w.Attack | null
 
-  blueHand: arrayOf(object),
-  orangeHand: arrayOf(object),
+  blueHand: w.PossiblyObfuscatedCard[]
+  orangeHand: w.PossiblyObfuscatedCard[]
 
-  bluePieces: object,
-  orangePieces: object,
+  bluePieces: Record<string, w.Object>
+  orangePieces: Record<string, w.Object>
 
-  blueEnergy: object,
-  orangeEnergy: object,
+  blueEnergy: w.PlayerEnergy
+  orangeEnergy: w.PlayerEnergy
 
-  blueDeck: arrayOf(object),
-  orangeDeck: arrayOf(object),
+  blueDeck: w.PossiblyObfuscatedCard[]
+  orangeDeck: w.PossiblyObfuscatedCard[]
 
-  blueDiscardPile: arrayOf(object),
-  orangeDiscardPile: arrayOf(object),
+  blueDiscardPile: w.PossiblyObfuscatedCard[]
+  orangeDiscardPile: w.PossiblyObfuscatedCard[]
 
-  eventQueue: arrayOf(object),
-  sfxQueue: arrayOf(string),
-  tutorialStep: object,
-  volume: number,
+  eventQueue: w.CardInGame[]
+  sfxQueue: string[]
+  tutorialStep?: w.TutorialStep
+  volume: number
 
-  history: object,
-  location: object,
-  match: object,
+  gameOver: boolean
+  isTutorial: boolean
+  isPractice: boolean
+  isSandbox: boolean
+  isMyTurn: boolean
+  isSpectator: boolean
+  isAttackHappening: boolean
 
-  gameOver: bool,
-  isTutorial: bool,
-  isPractice: bool,
-  isSandbox: bool,
-  isMyTurn: bool,
-  isSpectator: bool,
-  isAttackHappening: bool,
+  actionLog: w.LoggedAction[]
+  collection: w.CollectionState
+  socket: w.SocketState
+}
 
-  actionLog: arrayOf(object),
-  socket: object
+type GameAreaProps = GameProps & RouteComponentProps & {
+  message: string | null
+  onPassTurn: (player: w.PlayerColor) => void
+  onForfeit: (winner: w.PlayerColor) => void
+  onTutorialStep: (back?: boolean) => void
+  onSendChatMessage: (msg: string) => void
+  onActivateObject: (abilityIdx: number) => void
+  onClickGameArea: (evt: React.MouseEvent<HTMLElement>) => void
+  onClickEndGame: () => void
+  onNextTutorialStep: () => void
+  onPrevTutorialStep: () => void
+  onSelectTile: (hexId: w.HexId, action: 'move' | 'attack' | 'place', intermediateMoveHexId: w.HexId | null) => void
+  onAddCardToTopOfDeck: (player: w.PlayerColor, card: w.Card) => void
+  onSetVolume: (volume: number) => void
 };
 
-export default class GameArea extends React.Component {
-  /* eslint-disable react/no-unused-prop-types */
-  static propTypes = {
-    ...gameProps,
-    message: string,
+interface GameAreaState {
+  areaHeight: number
+  boardSize: number
+  chatOpen: boolean
+}
 
-    onPassTurn: func,
-    onForfeit: func,
-    onTutorialStep: func,
-    onSendChatMessage: func,
-    onActivateObject: func,
-    onClickGameArea: func,
-    onClickEndGame: func,
-    onNextTutorialStep: func,
-    onPrevTutorialStep: func,
-    onSelectTile: func,
-    onAddCardToTopOfDeck: func,
-    onSetVolume: func
-  };
-  /* eslint-enable react/no-unused-prop-types */
-
-  state = {
+export default class GameArea extends React.Component<GameAreaProps, GameAreaState> {
+  public state = {
     areaHeight: 1250,
     boardSize: 1000,
     chatOpen: true
   };
 
-  componentDidMount() {
+  public componentDidMount(): void {
     this.updateDimensions();
-    window.addEventListener('resize', () => { this.updateDimensions(); });
+    window.addEventListener('resize', this.updateDimensions);
   }
 
-  get actualPlayer() {
+  get actualPlayer(): w.PlayerColor | null {
     // In sandbox mode, the "actual player" is whoever's turn it is,
     // because the "player" can move either side's pieces.
-    const { currentTurn, isSandbox, player } = this.props;
-    return isSandbox ? currentTurn : player;
+    const { currentTurn, isSandbox, isSpectator, player } = this.props;
+    return isSpectator ? null : (isSandbox ? currentTurn : player as w.PlayerColor);
   }
 
-  handleToggleFullScreen = () => {
-    screenfull.toggle(this.gameArea);
-  };
-
-  handleToggleChat = () => {
-    this.setState(state => ({ chatOpen: !state.chatOpen }));
-  };
-
-  loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
-
-  updateDimensions = () => {
-    const maxBoardHeight = window.innerHeight - HEADER_HEIGHT - 150;
-    const maxBoardWidth = window.innerWidth - CHAT_WIDTH;
-
-    this.setState({
-      areaHeight: window.innerHeight - HEADER_HEIGHT,
-      boardSize: Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE)
-    });
-  };
-
-  renderSidebar = () => {
-    const { actionLog, collection, isSandbox, socket, onAddCardToTopOfDeck, onSendChatMessage } = this.props;
-    const { chatOpen } = this.state;
-
-    if (isSandbox) {
-      return (
-        <CardSelector
-          cardCollection={collection.cards}
-          onAddCardToTopOfDeck={onAddCardToTopOfDeck} />
-      );
-    } else {
-      return (
-        <Chat
-          inGame
-          fullscreen={screenfull.isFullscreen}
-          open={chatOpen}
-          toggleChat={this.handleToggleChat}
-          roomName={socket.hosting ? null : socket.gameName}
-          messages={socket.chatMessages.concat(actionLog)}
-          onSendMessage={onSendChatMessage} />
-      );
-    }
-  }
-
-  render() {
+  public render(): JSX.Element {
     const {
       attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
       isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
@@ -176,7 +132,7 @@ export default class GameArea extends React.Component {
     return (
       <div
         id="gameArea"
-        ref={(gameArea) => { this.gameArea = gameArea; }}
+        ref={(gameArea) => { (this as any).gameArea = gameArea; /* TODO more type-safe ref handling */ }}
         style={{
           width: screenfull.isFullscreen ? '100%' : 'auto',
           height: screenfull.isFullscreen ? this.state.areaHeight + HEADER_HEIGHT : this.state.areaHeight,
@@ -228,12 +184,15 @@ export default class GameArea extends React.Component {
                 enabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
                 isMyTurn={isMyTurn}
                 isAttackHappening={isAttackHappening}
-                onPassTurn={onPassTurn} />
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-around'
-              }}>
+                onPassTurn={onPassTurn}
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-around'
+                }}
+              >
                 <SoundToggle onSetVolume={onSetVolume} volume={volume} />
                 <FullscreenToggle onClick={this.handleToggleFullScreen} />
               </div>
@@ -255,14 +214,16 @@ export default class GameArea extends React.Component {
                 tutorialStep={tutorialStep}
                 onPassTurn={onPassTurn}
                 onNextTutorialStep={onNextTutorialStep}
-                onPrevTutorialStep={onPrevTutorialStep} />
+                onPrevTutorialStep={onPrevTutorialStep}
+              />
               <ForfeitButton
                 player={this.actualPlayer}
                 history={history}
                 gameOver={gameOver}
                 isSpectator={isSpectator}
                 isTutorial={isTutorial}
-                onForfeit={onForfeit} />
+                onForfeit={onForfeit}
+              />
             </div>
           </div>
           <PlayerArea opponent gameProps={this.props} />
@@ -294,18 +255,66 @@ export default class GameArea extends React.Component {
               onSelectTile={onSelectTile}
               onActivateAbility={onActivateObject}
               onTutorialStep={onTutorialStep}
-              onEndGame={onClickEndGame} />
+              onEndGame={onClickEndGame}
+            />
           </div>
           <PlayerArea gameProps={this.props} />
           <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
           <VictoryScreen
             winnerColor={winner}
             winnerName={winner ? usernames[winner] : null}
-            onClick={onClickEndGame} />
+            onClick={onClickEndGame}
+          />
         </Paper>
 
         {this.renderSidebar()}
       </div>
     );
+  }
+
+  private handleToggleFullScreen = () => {
+    screenfull.toggle((this as any).gameArea);
+  }
+
+  private handleToggleChat = () => {
+    this.setState((state) => ({ chatOpen: !state.chatOpen }));
+  }
+
+  private loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
+
+  private updateDimensions = () => {
+    const maxBoardHeight = window.innerHeight - HEADER_HEIGHT - 150;
+    const maxBoardWidth = window.innerWidth - CHAT_WIDTH;
+
+    this.setState({
+      areaHeight: window.innerHeight - HEADER_HEIGHT,
+      boardSize: Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE)
+    });
+  }
+
+  private renderSidebar = () => {
+    const { actionLog, collection, isSandbox, socket, onAddCardToTopOfDeck, onSendChatMessage } = this.props;
+    const { chatOpen } = this.state;
+
+    if (isSandbox) {
+      return (
+        <CardSelector
+          cardCollection={collection.cards}
+          onAddCardToTopOfDeck={onAddCardToTopOfDeck}
+        />
+      );
+    } else {
+      return (
+        <Chat
+          inGame
+          fullscreen={screenfull.isFullscreen}
+          open={chatOpen}
+          toggleChat={this.handleToggleChat}
+          roomName={socket.hosting ? null : socket.gameName}
+          messages={socket.chatMessages.concat(actionLog)}
+          onSendMessage={onSendChatMessage}
+        />
+      );
+    }
   }
 }

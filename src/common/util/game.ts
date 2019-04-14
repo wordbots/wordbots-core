@@ -30,8 +30,8 @@ export function opponentName(state: w.GameState): w.PlayerColor {
   return opponent(state.currentTurn);
 }
 
-export function activePlayer(state: w.GameState): w.PlayerInGameState {
-  return state.players[state.player];
+export function activePlayer(state: w.GameState): w.PlayerInGameState | null {
+  return state.player !== 'neither' ? state.players[state.player] : null;
 }
 
 export function currentPlayer(state: w.GameState): w.PlayerInGameState {

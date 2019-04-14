@@ -15,13 +15,13 @@ import { id } from '../../../util/common';
 import ChatMessage from './ChatMessage';
 
 interface ChatProps {
-  roomName: string
+  roomName: string | null
   messages: w.ChatMessage[]
-  inGame: boolean
-  open: boolean
-  fullscreen: boolean
+  inGame?: boolean
+  open?: boolean
+  fullscreen?: boolean
   onSendMessage: (message: string) => void
-  toggleChat: () => void
+  toggleChat?: () => void
 }
 
 interface ChatState {
@@ -44,7 +44,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   private chat: any = null;  // TODO type this ref correctly
 
   get isClosed(): boolean {
-    return this.props.inGame && !this.props.open;
+    return !!this.props.inGame && !this.props.open;
   }
 
   public shouldComponentUpdate(nextProps: ChatProps, nextState: ChatState): boolean {

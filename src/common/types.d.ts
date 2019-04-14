@@ -195,7 +195,7 @@ export interface GameState {
   gameFormat: Format
   memory: Record<string, any>
   options: GameOptions
-  player: PlayerColor,
+  player: PlayerColor | 'neither',
   players: PerPlayer<PlayerInGameState>
   practice: boolean
   rng: () => number,
@@ -254,27 +254,31 @@ export interface PlayerInGameState {
   collection: PossiblyObfuscatedCard[]
   deck: PossiblyObfuscatedCard[]
   discardPile: PossiblyObfuscatedCard[]
-  energy: {
-    available: number
-    total: number
-  }
+  energy: PlayerEnergy
   hand: PossiblyObfuscatedCard[]
   name: PlayerColor
-  robotsOnBoard: {
-    [hexId: string]: _Object
-  }
+  robotsOnBoard: Record<string, _Object>
   selectedCard: number | null
   selectedTile: HexId | null
-  status: {
-    message: string
-    type: 'text' | 'error' | ''
-  }
-  target: {
-    choosing: boolean
-    chosen: Array<CardInGame | HexId> | null
-    possibleCards: CardId[]
-    possibleHexes: HexId[]
-  }
+  status: PlayerStatus
+  target: CurrentTarget
+}
+
+export interface PlayerEnergy {
+  available: number
+  total: number
+}
+
+export interface PlayerStatus {
+  message: string
+  type: 'text' | 'error' | ''
+}
+
+export interface CurrentTarget {
+  choosing: boolean
+  chosen: Array<CardInGame | HexId> | null
+  possibleCards: CardId[]
+  possibleHexes: HexId[]
 }
 
 // Object is not a valid type name, but we want to export `types.Object`,
@@ -372,7 +376,7 @@ export interface Attack {
   to: HexId
 }
 
-export interface LoggedAction {
+export interface LoggedAction extends ChatMessage {
   id: string
   user: string
   text: string

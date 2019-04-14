@@ -370,6 +370,11 @@
     prop-types "^15.6.0"
     react-is "^16.6.3"
 
+"@types/base16@*":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/base16/-/base16-1.0.1.tgz#76dc8630675e99d1d5be78dfef59307254831203"
+  integrity sha1-dtyGMGdemdHVvnjf71kwclSDEgM=
+
 "@types/body-parser@*":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"
@@ -585,6 +590,36 @@
   integrity sha512-wNUGm49fPl7eE2fnYdF0v5vSOrUMdKMQD/4NwtQRnb6mnPwtkhabmuFz37eq90+hhyfz0pWd38jkZHOcaZ6LGw==
   dependencies:
     csstype "^2.2.0"
+
+"@types/redux-devtools-dock-monitor@^1.1.33":
+  version "1.1.33"
+  resolved "https://registry.yarnpkg.com/@types/redux-devtools-dock-monitor/-/redux-devtools-dock-monitor-1.1.33.tgz#9df918cbcfbab67be3c6b7c58ba22fe15afc7c7f"
+  integrity sha512-ia8R0puVcY/h4PS6LmpCjEqnD53cLdsmQHQAqYP6Dobjic/Q9JE/CbenLQ1dfonR8LeKKHvjmTAqy319vPeVmw==
+  dependencies:
+    "@types/react" "*"
+
+"@types/redux-devtools-log-monitor@^1.0.34":
+  version "1.0.34"
+  resolved "https://registry.yarnpkg.com/@types/redux-devtools-log-monitor/-/redux-devtools-log-monitor-1.0.34.tgz#09cbd9325d97e6f8a4084fab37db510fc79167c7"
+  integrity sha512-fmQCpk1w+PxR3zqpM0zvHUCFcTyucOuRHKPIlsRYYS+2X3eTaZhxkD2UF8W5ZiwpbiJpMXjGVnUuzU6p42o5yg==
+  dependencies:
+    "@types/base16" "*"
+    "@types/react" "*"
+
+"@types/redux-devtools@^3.0.46":
+  version "3.0.46"
+  resolved "https://registry.yarnpkg.com/@types/redux-devtools/-/redux-devtools-3.0.46.tgz#cc7aab7d7eb88120c30aa2fbe1375382bdb270ea"
+  integrity sha512-64aS3RUEECeOTQ/XsQNG+8QKYesK6gJZN5+IRVT6Vocrm42Osq+LEolf7u8F0/CFIZEgRPLXIwGWctiCZTarhw==
+  dependencies:
+    "@types/react" "*"
+    redux "^3.6.0"
+
+"@types/screenfull@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@types/screenfull/-/screenfull-4.1.0.tgz#e2f7bbb1d2c32c07e54908e47d00724b7515c2cb"
+  integrity sha512-TuFSOzuzGFVCdQmwp+a0/Qim+nJhclaWha18yK/xmjrwdPI7qrfeyoSyPx8MoJP8X5d2MwB4a6d2sZhUjJwz9A==
+  dependencies:
+    screenfull "*"
 
 "@types/seed-random@^2.2.0":
   version "2.2.0"
@@ -8179,6 +8214,11 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
+lodash-es@^4.2.1:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.11.tgz#145ab4a7ac5c5e52a3531fb4f310255a152b4be0"
+  integrity sha512-DHb1ub+rMjjrxqlB3H56/6MXtm1lSksDp2rA2cNWjG8mlDUYFhUj3Di2Zn5IwSU87xLv8tNIQ7sSwE/YOX/D/Q==
+
 lodash._baseassign@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash._baseassign/-/lodash._baseassign-3.2.0.tgz#8c38a099500f215ad09e59f1722fd0c52bfe0a4e"
@@ -8409,7 +8449,7 @@ lodash.zip@^4.2.0:
   resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
   integrity sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=
 
-lodash@4.17.11, lodash@^4.17.11, lodash@^4.17.4, lodash@^4.2.0:
+lodash@4.17.11, lodash@^4.17.11, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -11205,6 +11245,16 @@ redux-logger@3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
+redux@^3.6.0:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
+  integrity sha512-pNqnf9q1hI5HHZRBkj3bAngGZW/JMCmexDlOxw4XagXY2o1327nHH54LoTjiPJ0gizoqPDRqWyX/00g0hD6w+A==
+  dependencies:
+    lodash "^4.2.1"
+    lodash-es "^4.2.1"
+    loose-envify "^1.1.0"
+    symbol-observable "^1.0.3"
+
 redux@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.0.tgz#aa698a92b729315d22b34a0553d7e6533555cc03"
@@ -11759,6 +11809,11 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
+
+screenfull@*:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-4.2.0.tgz#d5252a5a0f56504719abbed9ebbcd9208115da03"
+  integrity sha512-qpyI9XbwuMJElWRP5vTgxkFAl4k7HpyhIqBFOZEwX9QBXn0MAuRSpn7LOc6/4CeSwoz61oBu1VPV+2fbIWC+5Q==
 
 screenfull@^4.0.0:
   version "4.0.0"
@@ -12686,7 +12741,7 @@ symbol-observable@1.0.4:
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
   integrity sha1-Kb9hXUqnEhvdiYsi1LP5vE4qoD0=
 
-symbol-observable@^1.0.2, symbol-observable@^1.0.4, symbol-observable@^1.1.0, symbol-observable@^1.2.0:
+symbol-observable@^1.0.2, symbol-observable@^1.0.3, symbol-observable@^1.0.4, symbol-observable@^1.1.0, symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==

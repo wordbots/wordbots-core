@@ -4,6 +4,7 @@ import {
   createStore, Middleware, Store, StoreEnhancer
 } from 'redux';
 
+import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
 import { ALWAYS_ENABLE_DEV_TOOLS, ENABLE_REDUX_TIME_TRAVEL } from '../constants';
 import multipleDispatchMiddleware from '../middleware/multipleDispatchMiddleware';
@@ -19,7 +20,7 @@ const DEV_TOOLS_ENABLED = ALWAYS_ENABLE_DEV_TOOLS || !['production', 'test'].inc
 const selectStoreEnhancers = (): StoreEnhancer[] => {
   if (process.browser) {
     const socketMiddleware: Middleware = createSocketMiddleware({
-      excludedActions: [socketActions.CONNECTING, socketActions.CONNECTED, socketActions.DISCONNECTED]
+      excludedActions: [socketActions.CONNECTING, socketActions.CONNECTED, socketActions.DISCONNECTED, gameActions.SET_VOLUME]
     });
 
     if (DEV_TOOLS_ENABLED) {

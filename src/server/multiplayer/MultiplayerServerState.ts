@@ -170,9 +170,7 @@ export default class MultiplayerServerState {
   public hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions = {}): void => {
     const username = this.getClientUsername(clientID);
 
-    if (!this.isClientLoggedIn(clientID)) {
-      console.warn(`${username} tried to start game ${name} but they weren't logged in.`);
-    } else if (!GameFormat.decode(format).isDeckValid(deck)) {
+    if (!GameFormat.decode(format).isDeckValid(deck)) {
       console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${format} format.`);
     } else {
       this.state.waitingPlayers.push({

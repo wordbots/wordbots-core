@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import { compact, isArray, pick } from 'lodash';
 import * as React from 'react';
 
 import Tooltip from '../Tooltip';
@@ -6,27 +6,33 @@ import Tooltip from '../Tooltip';
 interface MustBeLoggedInProps {
   loggedIn: boolean
   style?: React.CSSProperties
-  children: JSX.Element | Array<JSX.Element | null>
+  children: React.ReactChild | Array<React.ReactChild | null>
 }
 
 export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps> {
+  get children(): React.ReactChild[] {
+    const children = this.props.children as React.ReactChild | Array<React.ReactChild | null>;
+    return isArray(children) ? compact(children) : [children];
+  }
+
   public render(): JSX.Element {
-    if (this.props.loggedIn) {
+    const { loggedIn, style } = this.props;
+    if (loggedIn) {
       return (
-        <div style={this.props.style}>
-          {this.props.children}
+        <div style={style}>
+          {this.children}
         </div>
       );
     } else {
       return (
-        <div className="notAllowed" style={this.props.style}>
-          {React.Children.map(this.props.children, this.renderDisabledChild)}
+        <div className="notAllowed" style={style}>
+          {React.Children.map(this.children, this.renderDisabledChild)}
         </div>
       );
     }
   }
 
-  private renderDisabledChild(child: React.ReactChild | null): React.ReactNode {
+  private renderDisabledChild(child: React.ReactChild): React.ReactChild {
     if (!child || typeof child !== 'object') {
       return child;
     }

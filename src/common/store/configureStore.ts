@@ -20,7 +20,13 @@ const DEV_TOOLS_ENABLED = ALWAYS_ENABLE_DEV_TOOLS || !['production', 'test'].inc
 const selectStoreEnhancers = (): StoreEnhancer[] => {
   if (process.browser) {
     const socketMiddleware: Middleware = createSocketMiddleware({
-      excludedActions: [socketActions.CONNECTING, socketActions.CONNECTED, socketActions.DISCONNECTED, gameActions.SET_VOLUME]
+      excludedActions: [
+        gameActions.END_GAME,
+        gameActions.SET_VOLUME,
+        socketActions.CONNECTING,
+        socketActions.CONNECTED,
+        socketActions.DISCONNECTED
+      ]
     });
 
     if (DEV_TOOLS_ENABLED) {

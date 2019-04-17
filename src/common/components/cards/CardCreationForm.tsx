@@ -405,7 +405,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
         maxValue={opts.max || 10}
         style={CardCreationForm.styles.attribute}
         disabled={!enabled}
-        errorText={(this as any as Record<string, string | undefined>)[`${attribute}Error`]}
+        errorText={(this as any as Record<string, string | undefined>)[`${attribute}Error`] || null}
         onChange={this.setAttribute(attribute)}
       />
     );

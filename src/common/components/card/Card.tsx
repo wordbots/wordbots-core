@@ -22,7 +22,7 @@ import Sentence from './Sentence';
 export interface CardProps {
   children?: string | JSX.Element[]
 
-  id: string
+  id?: string
   name: string
   spriteID?: string
   spriteV?: number
@@ -34,7 +34,7 @@ export interface CardProps {
   cardStats: Partial<Record<w.Attribute, number | undefined>>
   stats: Partial<Record<w.Attribute, number | undefined>>
   cost: number
-  baseCost: number
+  baseCost?: number
   source?: string
   collection?: boolean
 
@@ -186,7 +186,7 @@ export default class Card extends React.Component<CardProps, CardState> {
         <div>
           <CardCostBadge
             cost={cost}
-            baseCost={baseCost}
+            baseCost={baseCost || cost}
             scale={scale || 1}
             margin={margin || 0}
             zIndex={zIndex || 0}
@@ -246,7 +246,7 @@ export default class Card extends React.Component<CardProps, CardState> {
 
   private handleClick = () => {
     const { id, onCardClick } = this.props;
-    if (onCardClick) {
+    if (id && onCardClick) {
       onCardClick(id);
     }
   }

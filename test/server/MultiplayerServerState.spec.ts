@@ -102,15 +102,24 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should NOT be able to host a game as a guest', () => {
+    it('should be able to host a game as a guest', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
-        playersOnline: ['host']
+        playersOnline: ['host'],
+        waitingPlayers: [
+          {
+            deck: defaultDecks[0],
+            format: 'normal',
+            id: 'host',
+            name: 'My Game',
+            options: {},
+            players: ['host']
+          }
+        ]
       });
-      expect(warning).toEqual('Guest_host tried to start game My Game but they weren\'t logged in.');
     });
 
     it('should NOT be able to host a game with an invalid deck', () => {

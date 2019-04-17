@@ -171,7 +171,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
               className="background"
               style={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginLeft: 20,
@@ -190,7 +190,8 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-around'
+                  justifyContent: 'space-around',
+                  paddingLeft: 10
                 }}
               >
                 <SoundToggle onSetVolume={onSetVolume} volume={volume} />

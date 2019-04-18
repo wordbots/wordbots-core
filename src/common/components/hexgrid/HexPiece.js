@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { object } from 'prop-types';
-import { isUndefined } from 'lodash';
+import { isUndefined, times } from 'lodash';
 
 import { ANIMATION_TIME_MS } from '../../constants.ts';
 
@@ -95,10 +95,31 @@ export default class HexPiece extends React.Component {
     );
   }
 
+  renderSpeedStat() {
+    const movesUsed = this.props.piece.stats.movesUsed;
+    const movesAvailable = this.props.piece.stats.movesAvailable;
+
+    const wrapperStyle = {
+      fontSize: 10,
+      letterSpacing: -1
+    };
+    const movesUsedStyle = { fillOpacity: 0.2 };
+    const movesAvailableStyle = { fillOpacity: 0.7 }
+
+    const movesUsedDots = <tspan key="moves-used" style={movesUsedStyle}>{times(parseInt(movesUsed), () => '.').join('')}</tspan>;
+    const movesAvailableDots = <tspan key="moves-available" style={movesAvailableStyle}>{times(parseInt(movesAvailable), () => '.').join('')}</tspan>;
+
+    return (
+      <g key="speed">
+        <text x="0" y="6" textAnchor="middle" style={wrapperStyle}>{movesAvailableDots}{movesUsedDots}</text>
+      </g>
+    );
+  }
+
   renderPieceStats() {
     const stats = this.props.piece.stats;
     if (stats && !isUndefined(stats.attack)) {
-      return [this.renderStat('attack'), this.renderStat('health')];
+      return [this.renderStat('attack'), this.renderSpeedStat(), this.renderStat('health')];
     } else if (stats && !isUndefined(stats.health)) {
       return this.renderStat('health');
     } else {

@@ -6,7 +6,7 @@ import HexGrid from '../hexgrid/HexGrid';
 import HexUtils from '../hexgrid/HexUtils';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants.ts';
 import {
-  getAttribute, ownerOf,
+  getAttribute, ownerOf, movesLeft,
   validPlacementHexes, validMovementHexes, validAttackHexes, validActionHexes, intermediateMoveHexId
 } from '../../util/game.ts';
 
@@ -73,7 +73,9 @@ export default class Board extends React.Component {
       card: piece.card,
       stats: {
         health: getAttribute(piece, 'health'),
-        attack: getAttribute(piece, 'attack')
+        attack: getAttribute(piece, 'attack'),
+        movesUsed: getAttribute(piece, 'speed') - movesLeft(piece),
+        movesAvailable: movesLeft(piece)
       },
       attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null
     }));

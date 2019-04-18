@@ -104,7 +104,7 @@ export default class HexPiece extends React.Component {
       letterSpacing: -1
     };
     const movesUsedStyle = { fillOpacity: 0.2 };
-    const movesAvailableStyle = { fillOpacity: 0.7 }
+    const movesAvailableStyle = { fillOpacity: 0.7 };
 
     const movesUsedDots = <tspan key="moves-used" style={movesUsedStyle}>{times(parseInt(movesUsed), () => '.').join('')}</tspan>;
     const movesAvailableDots = <tspan key="moves-available" style={movesAvailableStyle}>{times(parseInt(movesAvailable), () => '.').join('')}</tspan>;

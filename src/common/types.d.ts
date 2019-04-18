@@ -395,6 +395,7 @@ export interface ParseResult {
   error?: string
   js?: StringRepresentationOf<() => void>
   unrecognizedTokens?: string[]
+  suggestions?: string[]
   parsed?: boolean  // used by DictionaryDialog
 }
 

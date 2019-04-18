@@ -1,46 +1,47 @@
-import * as React from 'react';
-import { object } from 'prop-types';
+import { History } from 'history';
 import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
 import IFrame from 'react-iframe';
 
-import MarkdownBlock from '../MarkdownBlock.tsx';
-import RouterDialog from '../RouterDialog.tsx';
+import MarkdownBlock from '../MarkdownBlock';
+import RouterDialog from '../RouterDialog';
 
-export default class HelpDialog extends React.Component {
-  static propTypes = {
-    history: object
-  };
+export default class HelpDialog extends React.Component<{ history: History }> {
+  public render(): JSX.Element {
+    return (
+      <RouterDialog
+        scroll
+        path="help"
+        title="How to Write a Card"
+        history={this.props.history}
+        style={{width: 800}}
+        actions={[
+          <RaisedButton
+            primary
+            label="Close"
+            key="Close"
+            onClick={this.handleClose}
+          />
+        ]}
+      >
+        <div className="markdownBlock">
+          <h2>Video Tutorial</h2>
+          <IFrame
+            position="relative"
+            url="https://www.youtube.com/embed/GeZwKIOKc1c?rel=0"
+            width="708"
+            height="444"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          />
+        </div>
+        <MarkdownBlock source={helpText} />
+      </RouterDialog>
+    );
+  }
 
-  handleClose = () => { RouterDialog.closeDialog(this.props.history); };
-
-  render = () => (
-    <RouterDialog
-      scroll
-      path="help"
-      title="How to Write a Card"
-      history={this.props.history}
-      style={{width: 800}}
-      actions={[
-        <RaisedButton
-          primary
-          label="Close"
-          key="Close"
-          onClick={this.handleClose} />
-    ]}>
-      <div className="markdownBlock">
-        <h2>Video Tutorial</h2>
-        <IFrame
-          position="relative"
-          url="https://www.youtube.com/embed/GeZwKIOKc1c?rel=0"
-          width="708"
-          height="444"
-          frameborder="0"
-          allow="autoplay; encrypted-media"
-          allowFullScreen />
-      </div>
-      <MarkdownBlock source={helpText} />
-    </RouterDialog>
-  );
+  private handleClose = () => { RouterDialog.closeDialog(this.props.history); };
 }
 
 const helpText = `

@@ -28,7 +28,7 @@
     "test:types": "tsc --skipLibCheck --noEmit",
     "test:unit": "jest",
     "test:unit:coverage": "jest --coverage",
-    "test:unit:watch": "npm test:unit -- --watch"
+    "test:unit:watch": "yarn test:unit --watch"
   },
   "repository": {
     "type": "git",

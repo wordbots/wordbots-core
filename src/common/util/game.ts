@@ -88,7 +88,7 @@ export function getCost(card: w.CardInGame): number {
   }
 }
 
-function movesLeft(robot: w.Robot): number {
+export function movesLeft(robot: w.Robot): number {
   return robot.cantMove ? 0 : (getAttribute(robot, 'speed') as number) - robot.movesMade;
 }
 

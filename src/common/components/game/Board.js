@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bool, func, number, object, string } from 'prop-types';
-import { forOwn, isString, mapValues } from 'lodash';
+import { forOwn, isString, mapValues, isUndefined } from 'lodash';
 
 import HexGrid from '../hexgrid/HexGrid';
 import HexUtils from '../hexgrid/HexUtils';
@@ -74,8 +74,8 @@ export default class Board extends React.Component {
       stats: {
         health: getAttribute(piece, 'health'),
         attack: getAttribute(piece, 'attack'),
-        movesUsed: getAttribute(piece, 'speed') - movesLeft(piece),
-        movesAvailable: movesLeft(piece)
+        movesUsed: !isUndefined(getAttribute(piece, 'speed')) ? (getAttribute(piece, 'speed') - movesLeft(piece)) : undefined,
+        movesAvailable: !isUndefined(getAttribute(piece, 'speed')) ? movesLeft(piece) : undefined
       },
       attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null
     }));

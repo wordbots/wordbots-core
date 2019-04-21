@@ -6,7 +6,7 @@ import * as m from '../../../../server/multiplayer/multiplayer';
 import { CHAT_WIDTH } from '../../../constants';
 import * as w from '../../../types';
 import { unpackDeck } from '../../../util/cards';
-import { GameFormat } from '../../../util/formats';
+import { GameFormat, renderFormatDisplayName } from '../../../util/formats';
 import RouterDialog from '../../RouterDialog';
 import Title from '../../Title';
 import PreGameModal from '../PreGameModal';
@@ -41,13 +41,11 @@ interface MultiplayerLobbyState {
     format: GameFormat
     options: w.GameOptions
   }
-  queueFormatName: string | null
+  queueFormat?: w.Format
 }
 
 export default class MultiplayerLobby extends React.Component<MultiplayerLobbyProps, MultiplayerLobbyState> {
-  public state: MultiplayerLobbyState = {
-    queueFormatName: null
-  };
+  public state: MultiplayerLobbyState = {};
 
   get isWaiting(): boolean {
     const { hosting, queuing } = this.props.socket;
@@ -146,10 +144,9 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
     RouterDialog.openDialog(this.props.history, mode);
   }
 
-  private handleJoinQueue = (encodedFormat: w.Format, deck: w.Deck) => {
-    const formatName: string = GameFormat.decode(encodedFormat).name!;
-    this.setState({ queueFormatName: formatName }, () => {
-      this.props.onJoinQueue(encodedFormat, deck);
+  private handleJoinQueue = (format: w.Format, deck: w.Deck) => {
+    this.setState({ queueFormat: format }, () => {
+      this.props.onJoinQueue(format, deck);
     });
   }
 
@@ -179,11 +176,13 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
 
   private renderWaiting(): JSX.Element | undefined {
     const { hosting, queuing, queueSize } = this.props.socket;
+    const { queueFormat } = this.state;
+
     if (hosting || queuing) {
       return (
         <Waiting
           inQueue={queuing}
-          queueFormat={this.state.queueFormatName!}
+          queueFormatName={renderFormatDisplayName(queueFormat!)}
           queueSize={queueSize}
           onLeaveQueue={this.handleLeaveQueue}
         />

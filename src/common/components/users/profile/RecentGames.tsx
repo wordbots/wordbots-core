@@ -11,7 +11,7 @@ import { isNil, isString, startCase, toLower } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../../types';
-import { GameFormat } from '../../../util/formats';
+import { renderFormatDisplayName } from '../../../util/formats';
 import Title from '../../Title';
 
 interface RecentGamesProps {
@@ -77,7 +77,7 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
     const opponent = isGuest ? 'Guest' : playerNames[opponentId] || playerNames[userId];
     const wasVictory = recentGame.winner && recentGame.players[recentGame.winner] === userId;
     const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
-    const subText = `${startCase(toLower(recentGame.type))} - ${GameFormat.decode(recentGame.format).displayName} - ${timestamp}`;
+    const subText = `${startCase(toLower(recentGame.type))} - ${renderFormatDisplayName(recentGame.format)} - ${timestamp}`;
 
     const formatIcons = {
       'normal': 'player',

@@ -9,6 +9,10 @@ import * as w from '../types';
 
 import { triggerSound } from './game';
 
+export function renderFormatDisplayName(format: w.Format): string {
+  return GameFormat.decode(format).displayName!;
+}
+
 function deckHasNCards(deck: w.Deck, num: number): boolean {
   return deck.cards.length === num;
 }

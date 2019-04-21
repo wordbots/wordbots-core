@@ -316,7 +316,7 @@ export default class MultiplayerServerState {
       const [ playerId1, playerId2 ] = [ player1.clientID, player2.clientID ];
       const gameName = `${this.getClientUsername(playerId1)} vs ${this.getClientUsername(playerId2)}`;
 
-      this.hostGame(playerId1, gameName, 'normal', player1.deck);
+      this.hostGame(playerId1, gameName, player1.format, player1.deck);
       const game = this.joinGame(playerId2, playerId1, player2.deck, { type: 'RANKED' });
 
       if (game) {

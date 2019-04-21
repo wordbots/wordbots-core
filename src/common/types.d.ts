@@ -409,6 +409,23 @@ export interface ChatMessage {
   cards?: Record<string, CardInGame>
 }
 
+// Types used for in-game display
+
+export type PreLoadedImageName = string;
+export interface PieceOnBoard {
+  id: string
+  type: CardType
+  image: { img: PreLoadedImageName } | { sprite: string } | null
+  card: CardInGame
+  stats: {
+    health: number
+    attack?: number
+    movesUsed?: number
+    movesAvailable?: number
+  }
+  attacking: Attack | null
+}
+
 // Vocabulary types
 
 export type Collection = CardCollection | ObjectOrPlayerCollection | HexCollection;

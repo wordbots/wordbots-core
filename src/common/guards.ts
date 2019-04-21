@@ -33,3 +33,7 @@ export function isCardVisible(target: w.PossiblyObfuscatedCard): target is w.Car
 export function isPassiveAbility(ability: w.Ability): ability is w.PassiveAbility {
   return (ability as w.PassiveAbility).unapply !== undefined;
 }
+
+export function isSpriteImage(image: { img: w.PreLoadedImageName } | { sprite: string }): image is { sprite: string } {
+  return (image as { sprite: string }).sprite !== undefined;
+}

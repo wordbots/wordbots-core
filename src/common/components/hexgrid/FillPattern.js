@@ -2,7 +2,7 @@ import * as React from 'react';
 import { object, string } from 'prop-types';
 
 import HexUtils from './HexUtils';
-import loadImages from './HexGridImages';
+import loadImages from './HexGridImages.tsx';
 
 export default class FillPattern extends React.Component {
   static propTypes = {

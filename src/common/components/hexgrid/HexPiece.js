@@ -4,7 +4,7 @@ import { isUndefined, times } from 'lodash';
 
 import { ANIMATION_TIME_MS } from '../../constants.ts';
 
-import PiecePattern from './PiecePattern';
+import PiecePattern from './PiecePattern.tsx';
 import HexUtils from './HexUtils';
 
 export default class HexPiece extends React.Component {
@@ -101,7 +101,8 @@ export default class HexPiece extends React.Component {
 
     const wrapperStyle = {
       fontSize: 10,
-      letterSpacing: -1
+      letterSpacing: -1,
+      pointerEvents: 'none'
     };
     const movesUsedStyle = { fillOpacity: 0.2 };
     const movesAvailableStyle = { fillOpacity: 0.7 };

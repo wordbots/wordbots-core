@@ -1,6 +1,8 @@
-import { inTest } from '../../util/browser.tsx';
+import * as w from '../../types';
+import { inTest } from '../../util/browser';
 
-export default function loadImages() {
+// tslint:disable-next-line export-name
+export default function loadImages(): Record<w.PreLoadedImageName, any> {
   // (Don't try to load images while in test mode because it's too complicated.)
   if (inTest()) {
     return {};

@@ -6,7 +6,7 @@ import * as React from 'react';
 
 interface WaitingProps {
   inQueue: boolean
-  queueFormat: string
+  queueFormatName: string
   queueSize: number
   onLeaveQueue: () => void
 }
@@ -29,7 +29,7 @@ export default class Waiting extends React.Component<WaitingProps, WaitingState>
   }
 
   public render(): JSX.Element {
-    const { inQueue, queueFormat, queueSize, onLeaveQueue } = this.props;
+    const { inQueue, queueFormatName, queueSize, onLeaveQueue } = this.props;
     return (
       <Paper
         style={{
@@ -51,7 +51,7 @@ export default class Waiting extends React.Component<WaitingProps, WaitingState>
           <div>
             <div>
               Waiting for an opponent
-              {inQueue && ` in the '${queueFormat}' queue`}
+              {inQueue && ` in the '${queueFormatName}' queue`}
               <em>
                 {' '}(waiting for {moment.duration(this.state.waitingSecs, 'seconds').humanize()}){' '}
               </em>

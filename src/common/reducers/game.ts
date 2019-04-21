@@ -129,7 +129,7 @@ export function handleAction(
 
     case socketActions.FORFEIT: {
       state = Object.assign(state, {winner: payload.winner});
-      state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
+      state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
       return state;
     }
 

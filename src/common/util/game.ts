@@ -140,7 +140,7 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
   }
 
   if (state.winner) {
-    state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'lose.wav');
+    state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
     state = logAction(state, state.players[state.winner as w.PlayerColor], state.winner === state.player ? ' win' : 'wins');
   }
 

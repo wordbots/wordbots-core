@@ -34,7 +34,7 @@ export default class CardInHand extends React.Component {
       card, tutorialStep,
       status, selected, targetable, visible, margin, rotation, yTranslation, zIndex
     } = this.props;
-    const { baseCost, img, name, source, stats, text, type, spriteID, spriteV } = card;
+    const { baseCost, id, img, name, source, stats, text, type, spriteID, spriteV } = card;
 
     return (
       <TutorialTooltip
@@ -45,7 +45,7 @@ export default class CardInHand extends React.Component {
       >
         <div>
           <Card
-            {...{ baseCost, img, name, source, spriteID, spriteV, type }}
+            {...{ id, baseCost, img, name, source, spriteID, spriteV, type }}
 
             text={Sentence.fromText(text)}
             rawText={text || ''}

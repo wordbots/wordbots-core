@@ -13,11 +13,6 @@ export default function loadImages(): Record<w.PreLoadedImageName, any> {
       'orange_tile': require('../img/orange_tile.png'),
       'bright_orange_tile': require('../img/bright_orange_tile.png'),
 
-      'blue_grayish_tile': require('../img/blue_grayish_tile.png'),
-      'bright_blue_grayish_tile': require('../img/bright_blue_grayish_tile.png'),
-      'orange_grayish_tile': require('../img/orange_grayish_tile.png'),
-      'bright_orange_grayish_tile': require('../img/bright_orange_grayish_tile.png'),
-
       'red_tile': require('../img/red_tile.png'),
       'green_tile': require('../img/green_tile.png'),
 

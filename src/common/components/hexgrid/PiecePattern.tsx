@@ -1,17 +1,17 @@
 import * as React from 'react';
 
-import { isSpriteImage } from '../../guards';
-import * as w from '../../types';
 import Sprite from '../Sprite';
 
+import { isSpriteImage } from './guards';
 import loadImages from './HexGridImages';
+import { PieceOnBoard, PreLoadedImageName } from './types';
 
 interface PiecePatternProps {
-  piece: w.PieceOnBoard
+  piece: PieceOnBoard
 }
 
 export default class PiecePattern extends React.Component<PiecePatternProps> {
-  get images(): Record<w.PreLoadedImageName, any> {
+  get images(): Record<PreLoadedImageName, any> {
     return loadImages();
   }
 

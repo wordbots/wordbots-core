@@ -184,7 +184,7 @@ export function getAdjacentHexes(hex: Hex): Hex[] {
 }
 
 export function validPlacementHexes(state: w.GameState, playerName: w.PlayerColor, type: w.CardType): Hex[] {
-  let hexes = Array<Hex>();
+  let hexes: Hex[] = Array<Hex>();
   if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
       hexes = BLUE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
@@ -192,7 +192,7 @@ export function validPlacementHexes(state: w.GameState, playerName: w.PlayerColo
       hexes = ORANGE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
     }
   } else if (type === TYPE_STRUCTURE) {
-    const occupiedHexes = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
+    const occupiedHexes: Hex[] = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
     hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }
 

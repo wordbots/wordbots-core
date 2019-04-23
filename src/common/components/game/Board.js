@@ -2,8 +2,8 @@ import * as React from 'react';
 import { bool, func, number, object, string } from 'prop-types';
 import { forOwn, isString, mapValues, isUndefined } from 'lodash';
 
-import HexGrid from '../hexgrid/HexGrid';
-import HexUtils from '../hexgrid/HexUtils';
+import HexGrid from '../hexgrid/HexGrid.tsx';
+import HexUtils from '../hexgrid/HexUtils.ts';
 import { TYPE_ROBOT, TYPE_STRUCTURE, GRID_CONFIG } from '../../constants.ts';
 import {
   getAttribute, ownerOf, movesLeft,

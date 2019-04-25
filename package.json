@@ -169,7 +169,7 @@
     "webpack-bundle-analyzer": "^3.0.2",
     "webpack-dev-middleware": "2.0.4",
     "webpack-dev-server": "^3.1.0",
-    "webpack-hot-middleware": "^2.21.2"
+    "webpack-hot-middleware": "^2.24.4"
   },
   "optionalDependencies": {
     "canvas-prebuilt": "^1.6.0"

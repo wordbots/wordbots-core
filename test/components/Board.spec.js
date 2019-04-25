@@ -5,8 +5,8 @@ import * as actions from '../../src/common/actions/game.ts';
 import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants.ts';
 import gameReducer from '../../src/common/reducers/game.ts';
 import { blueCoreCard, orangeCoreCard, shockCard } from '../../src/common/store/cards.ts';
-import HexGrid from '../../src/common/components/hexgrid/HexGrid';
-import HexUtils from '../../src/common/components/hexgrid/HexUtils';
+import HexGrid from '../../src/common/components/hexgrid/HexGrid.tsx';
+import HexUtils from '../../src/common/components/hexgrid/HexUtils.ts';
 
 describe('Board component', () => {
   it('renders the default board state', () => {

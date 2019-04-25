@@ -102,7 +102,7 @@ function playACard(state: State): State {
     } else {
       const validHexes = validPlacementHexes(state, ai.name, card.type);
       if (validHexes.length > 0) {
-        state = placeCard(state, idx, HU.getID(sample(validHexes)));
+        state = placeCard(state, idx, HU.getID(sample(validHexes)!));
       }
     }
   }

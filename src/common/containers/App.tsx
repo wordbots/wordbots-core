@@ -28,11 +28,10 @@ import Creator from './Creator';
 import Deck from './Deck';
 import Decks from './Decks';
 import Home from './Home';
-import Multiplayer from './Multiplayer';
+import Play, { isInGameUrl } from './Play';
 import Profile from './Profile';
 import Set from './Set';
 import Sets from './Sets';
-import Singleplayer, { Singleplayer as SingleplayerBase } from './Singleplayer';
 import TitleBar from './TitleBar';
 
 interface AppStateProps {
@@ -125,7 +124,7 @@ class App extends React.Component<AppProps, AppState> {
 
   get inGame(): boolean {
     const { location, inGame, inSandbox } = this.props;
-    return (inGame || SingleplayerBase.isInGameUrl(location.pathname)) && !inSandbox;
+    return (inGame || isInGameUrl(location.pathname)) && !inSandbox;
   }
 
   get sidebar(): JSX.Element | null {
@@ -158,8 +157,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/deck" component={Deck as any} />
             <Route path="/sets/:setId" component={Set as any} />
             <Route path="/sets" component={Sets as any} />
-            <Route path="/singleplayer" component={Singleplayer as any} />
-            <Route path="/multiplayer" component={Multiplayer} />
+            <Route path="/play" component={Play} />
             <Route path="/about" component={About} />
             <Route path="/profile/:userId" component={Profile} />
             <Route render={this.redirectToRoot} />

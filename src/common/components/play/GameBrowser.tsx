@@ -3,9 +3,9 @@ import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import * as React from 'react';
 
-import * as m from '../../../../server/multiplayer/multiplayer';
-import * as w from '../../../types';
-import { GameFormat } from '../../../util/formats';
+import * as m from '../../../server/multiplayer/multiplayer';
+import * as w from '../../types';
+import { GameFormat } from '../../util/formats';
 
 import GameRow from './GameRow';
 

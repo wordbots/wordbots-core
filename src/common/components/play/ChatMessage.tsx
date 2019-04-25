@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import * as w from '../../../types';
-import CardTooltip from '../../card/CardTooltip';
+import * as w from '../../types';
+import CardTooltip from '../card/CardTooltip';
 
 interface ChatMessageProps {
   message: w.ChatMessage

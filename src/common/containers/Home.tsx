@@ -78,7 +78,7 @@ class Home extends React.Component<HomeProps> {
           }}
         >
           {this.renderButton('Tutorial', () => { this.props.history.push('singleplayer/tutorial'); this.props.onStartTutorial(); })}
-          {this.renderButton('Play', () => { this.props.history.push('multiplayer'); })}
+          {this.renderButton('Play', () => { this.props.history.push('play'); })}
           {this.renderButton('Your Cards', () => { this.props.history.push('collection'); })}
           {this.renderButton('Card Creator', () => { this.props.history.push('creator'); })}
         </div>

@@ -14,7 +14,7 @@ import * as w from '../types';
 import { cardsInDeck } from '../util/cards';
 import { sortDecks } from '../util/decks';
 
-import { Singleplayer as SingleplayerBase } from './Singleplayer';
+import { urlForGameMode } from './Play';
 
 interface DecksStateProps {
   cards: w.CardInStore[]
@@ -118,7 +118,7 @@ class Decks extends React.Component<DecksProps> {
 
   private handleTryDeck = (deck: w.DeckInStore) => {
     const { history } = this.props;
-    const tryDeckUrl = SingleplayerBase.urlForGameMode('practice', 'normal', deck);
+    const tryDeckUrl = urlForGameMode('practice', 'normal', deck);
     history.push(tryDeckUrl, { previous: history.location });
   }
 }

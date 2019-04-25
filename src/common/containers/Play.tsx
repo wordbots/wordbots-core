@@ -9,13 +9,13 @@ import { Dispatch } from 'redux';
 
 import * as m from '../../server/multiplayer/multiplayer';
 import * as socketActions from '../actions/socket';
-import Chat from '../components/play/multiplayer/Chat';
-import MultiplayerLobby from '../components/play/multiplayer/MultiplayerLobby';
+import Chat from '../components/play/Chat';
+import Lobby from '../components/play/Lobby';
 import * as w from '../types';
 
 import GameAreaContainer from './GameAreaContainer';
 
-interface MultiplayerStateProps {
+interface PlayStateProps {
   actionLog: w.LoggedAction[]
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
@@ -25,7 +25,7 @@ interface MultiplayerStateProps {
   user: fb.User | null
 }
 
-interface MultiplayerDispatchProps {
+interface PlayDispatchProps {
   onConnect: () => void
   onHostGame: (name: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => void
   onCancelHostGame: () => void
@@ -36,9 +36,9 @@ interface MultiplayerDispatchProps {
   onSendChatMessage: (msg: string) => void
 }
 
-type MultiplayerProps = MultiplayerStateProps & MultiplayerDispatchProps & { history: History };
+type PlayProps = PlayStateProps & PlayDispatchProps & { history: History };
 
-export function mapStateToProps(state: w.State): MultiplayerStateProps {
+export function mapStateToProps(state: w.State): PlayStateProps {
   return {
     started: state.game.started,
     actionLog: state.game.actionLog,
@@ -51,7 +51,7 @@ export function mapStateToProps(state: w.State): MultiplayerStateProps {
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch): MultiplayerDispatchProps {
+export function mapDispatchToProps(dispatch: Dispatch): PlayDispatchProps {
   return {
     onConnect: () => {
       dispatch(socketActions.connect());
@@ -80,18 +80,17 @@ export function mapDispatchToProps(dispatch: Dispatch): MultiplayerDispatchProps
   };
 }
 
-export class Multiplayer extends React.Component<MultiplayerProps> {
-  public static baseUrl: string = '/multiplayer';
+export const baseGameUrl: string = '/play';
 
-  public static urlForGameMode = (mode: string, format: w.BuiltInFormat | null = null, deck: w.DeckInStore | null = null) => {
-    const maybeFormatParam = format ? `/${format}` : '';
-    const maybeDeckParam = deck ? `/${deck.id}` : '';
-    return `${Multiplayer.baseUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
-  }
+export const isInGameUrl = (url: string) => (url.startsWith(baseGameUrl) && compact(url.split('/')).length > 2);
 
-  public static isInGameUrl = (url: string) =>
-    (url.startsWith(Multiplayer.baseUrl) && compact(url.split('/')).length > 2)
+export const urlForGameMode = (mode: string, format: w.BuiltInFormat | null = null, deck: w.DeckInStore | null = null) => {
+  const maybeFormatParam = format ? `/${format}` : '';
+  const maybeDeckParam = deck ? `/${deck.id}` : '';
+  return `${baseGameUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;
+};
 
+export class Play extends React.Component<PlayProps> {
   get rightMenu(): React.ReactNode {
     if (this.props.started) {
       return null;  // If a game is in progress, it will render its own <Chat>.
@@ -115,14 +114,14 @@ export class Multiplayer extends React.Component<MultiplayerProps> {
   public render(): JSX.Element {
     return (
       <div>
-        <Helmet title="Multiplayer"/>
+        <Helmet title="Play"/>
 
         <Switch>
-          <Route path={Multiplayer.urlForGameMode('tutorial')} component={GameAreaContainer} />
-          <Route path={`${Multiplayer.urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
-          <Route exact path={Multiplayer.baseUrl} render={this.renderLobby} />
-          <Route path={`${Multiplayer.baseUrl}//:dialog`} render={this.renderLobby} />
-          <Redirect to={Multiplayer.baseUrl} />
+          <Route path={urlForGameMode('tutorial')} component={GameAreaContainer} />
+          <Route path={`${urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
+          <Route exact path={baseGameUrl} render={this.renderLobby} />
+          <Route path={`${baseGameUrl}//:dialog`} render={this.renderLobby} />
+          <Redirect to={baseGameUrl} />
         </Switch>
 
         {this.rightMenu}
@@ -135,7 +134,7 @@ export class Multiplayer extends React.Component<MultiplayerProps> {
       return <GameAreaContainer />;
     } else {
       return (
-        <MultiplayerLobby
+        <Lobby
           socket={this.props.socket}
           cards={this.props.cards}
           sets={this.props.sets}
@@ -149,10 +148,15 @@ export class Multiplayer extends React.Component<MultiplayerProps> {
           onJoinQueue={this.props.onJoinQueue}
           onLeaveQueue={this.props.onLeaveQueue}
           onSpectateGame={this.props.onSpectateGame}
+          onNavigateToGameMode={this.navigateToMode}
         />
       );
     }
   }
+
+  private navigateToMode = (mode: string, format: w.BuiltInFormat | null = null, deck: w.DeckInStore | null = null) => {
+    this.props.history.push(urlForGameMode(mode, format, deck));
+  }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Multiplayer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Play));

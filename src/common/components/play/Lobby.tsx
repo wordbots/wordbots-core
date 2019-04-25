@@ -2,22 +2,23 @@ import * as fb from 'firebase';
 import { History } from 'history';
 import * as React from 'react';
 
-import * as m from '../../../../server/multiplayer/multiplayer';
-import { CHAT_WIDTH } from '../../../constants';
-import * as w from '../../../types';
-import { unpackDeck } from '../../../util/cards';
-import { GameFormat, renderFormatDisplayName } from '../../../util/formats';
-import RouterDialog from '../../RouterDialog';
-import Title from '../../Title';
-import PreGameModal from '../PreGameModal';
+import * as m from '../../../server/multiplayer/multiplayer';
+import { CHAT_WIDTH } from '../../constants';
+import * as w from '../../types';
+import { unpackDeck } from '../../util/cards';
+import { GameFormat, renderFormatDisplayName } from '../../util/formats';
+import RouterDialog from '../RouterDialog';
+import Title from '../Title';
 
 import GameBrowser from './GameBrowser';
 import GameCreationModal from './GameCreationModal';
 import LobbyStatus from './LobbyStatus';
 import MultiplayerModeSelection from './MultiplayerModeSelection';
+import PreGameModal from './PreGameModal';
+import SingleplayerDialog from './SingleplayerDialog';
 import Waiting from './Waiting';
 
-interface MultiplayerLobbyProps {
+interface LobbyProps {
   socket: w.SocketState
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
@@ -32,9 +33,10 @@ interface MultiplayerLobbyProps {
   onLeaveQueue: () => void
   onHostGame: (name: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => void
   onCancelHostGame: () => void
+  onNavigateToGameMode: (mode: string, format: w.BuiltInFormat | null, deck: w.DeckInStore | null) => void
 }
 
-interface MultiplayerLobbyState {
+interface LobbyState {
   casualGameBeingJoined?: {
     id: string
     name: string
@@ -44,8 +46,8 @@ interface MultiplayerLobbyState {
   queueFormat?: w.Format
 }
 
-export default class MultiplayerLobby extends React.Component<MultiplayerLobbyProps, MultiplayerLobbyState> {
-  public state: MultiplayerLobbyState = {};
+export default class Lobby extends React.Component<LobbyProps, LobbyState> {
+  public state: LobbyState = {};
 
   get isWaiting(): boolean {
     const { hosting, queuing } = this.props.socket;
@@ -61,7 +63,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
   public render(): JSX.Element {
     const {
       availableDecks, cards, sets, history, socket, user,
-      onConnect, onCancelHostGame, onSpectateGame
+      onConnect, onCancelHostGame, onNavigateToGameMode, onSpectateGame
     } = this.props;
     const {
       clientId, connected, connecting, games,
@@ -74,7 +76,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
         <div>
           {casualGameBeingJoined && <PreGameModal
             mode="casual"
-            title={`Join Casual Game: ${casualGameBeingJoined.name}`}
+            title={`Join Game: ${casualGameBeingJoined.name}`}
             startButtonText="Join"
             format={casualGameBeingJoined.format}
             options={casualGameBeingJoined.options}
@@ -96,16 +98,22 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
           />
           <GameCreationModal
             path="host"
-            title="Create Casual Game"
+            title="Host a Multiplayer Game"
             availableDecks={availableDecks}
             cards={cards}
             sets={sets}
             history={history}
             onCreateGame={this.handleHostGame}
           />
+          <SingleplayerDialog
+            availableDecks={availableDecks}
+            cards={cards}
+            history={history}
+            onSelectMode={onNavigateToGameMode}
+          />
         </div>
 
-        <Title text="Multiplayer" />
+        <Title text="Play" />
         <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
           <LobbyStatus
             connecting={connecting}
@@ -182,7 +190,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
       return (
         <Waiting
           inQueue={queuing}
-          queueFormatName={renderFormatDisplayName(queueFormat!)}
+          queueFormatName={queueFormat ? renderFormatDisplayName(queueFormat) : ''}
           queueSize={queueSize}
           onLeaveQueue={this.handleLeaveQueue}
         />

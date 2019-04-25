@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import GameMode from '../GameMode';
+import GameMode from './GameMode';
 
 interface SinglePlayerModeSelectionProps {
   onSelectMode: (modeStr: string) => void
@@ -14,7 +14,8 @@ export default class SinglePlayerModeSelection extends React.Component<SinglePla
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          marginBottom: '-10px'
         }}
       >
         <GameMode
@@ -29,7 +30,7 @@ export default class SinglePlayerModeSelection extends React.Component<SinglePla
         />
         <GameMode
           name="Sandbox"
-          imagePath="/static/practice.png"
+          imagePath="/static/casual.png"
           onSelect={this.handleClickSandbox}
         />
         <GameMode

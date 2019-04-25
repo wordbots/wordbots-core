@@ -24,7 +24,7 @@ export default class GameMode extends React.Component<GameModeProps> {
         onClick={onSelect || noop}
         style={{
           width: `calc(${widthPercent} - ${widthPadding}px)`,
-          height: compact ? 'auto' : 300,
+          height: compact ? 'auto' : 230,
           position: 'relative',
           marginBottom: 20
         }}
@@ -40,7 +40,7 @@ export default class GameMode extends React.Component<GameModeProps> {
       <div
         style={{
           filter: disabled ? 'blur(2px)' : undefined,
-          padding: 20,
+          padding: compact ? 15 : '0 20px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -52,7 +52,6 @@ export default class GameMode extends React.Component<GameModeProps> {
             style={{
               height: 165,
               width: '100%',
-              marginBottom: 10,
               color: 'grey',
               display: 'flex',
               alignItems: 'center',
@@ -72,7 +71,7 @@ export default class GameMode extends React.Component<GameModeProps> {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: compact ? 'auto' : (imagePath ? 100 : 250),
+            height: (compact || imagePath) ? 'auto' : 250,
             textAlign: 'center',
             fontSize: 24,
             fontFamily: 'Carter One',

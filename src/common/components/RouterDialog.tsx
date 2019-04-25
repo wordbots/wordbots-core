@@ -44,7 +44,7 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
       open
       repositionOnUpdate={false}
       modal={this.props.modal || false}
-      bodyStyle={Object.assign({ zIndex: DIALOG_BODY_Z_INDEX }, this.props.bodyStyle || {})}
+      bodyStyle={{ zIndex: DIALOG_BODY_Z_INDEX, ...(this.props.bodyStyle || {}) }}
       style={{ zIndex: DIALOG_MAIN_Z_INDEX }}
       autoScrollBodyContent={this.props.scroll}
       title={this.props.title}

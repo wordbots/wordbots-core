@@ -182,7 +182,7 @@ export default class MultiplayerLobby extends React.Component<MultiplayerLobbyPr
       return (
         <Waiting
           inQueue={queuing}
-          queueFormatName={renderFormatDisplayName(queueFormat!)}
+          queueFormatName={queueFormat ? renderFormatDisplayName(queueFormat) : ''}
           queueSize={queueSize}
           onLeaveQueue={this.handleLeaveQueue}
         />

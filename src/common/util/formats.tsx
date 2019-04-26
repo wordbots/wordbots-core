@@ -37,7 +37,7 @@ export class GameFormat {
     let format: GameFormat | undefined;
     if (isString(encodedFormat)) {
       format = BUILTIN_FORMATS.find((m) => m.name === encodedFormat);
-    } else if (encodedFormat._type === 'set') {
+    } else if (encodedFormat && encodedFormat._type === 'set') {
       format = new SetFormat((encodedFormat as w.SetFormat).set);
     }
 

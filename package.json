@@ -72,7 +72,7 @@
     "react-iframe": "^1.8.0",
     "react-markdown": "^4.0.0",
     "react-popover": "^0.5.4",
-    "react-redux": "^6.0.0",
+    "react-redux": "^7.0.3",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.23.0",

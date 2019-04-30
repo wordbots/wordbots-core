@@ -9,7 +9,7 @@ import {
 } from '../../constants';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
-import Chat from '../play/multiplayer/Chat';
+import Chat from '../play/Chat';
 
 import Board from './Board';
 import CardSelector from './CardSelector';

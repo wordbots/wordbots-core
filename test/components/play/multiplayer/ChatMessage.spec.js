@@ -2,7 +2,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import { defaults } from 'lodash';
 
-import ChatMessage from '../../../../src/common/components/play/multiplayer/ChatMessage.tsx';
+import ChatMessage from '../../../../src/common/components/play/ChatMessage.tsx';
 
 import { makeMessage, makeChatMessage, makeGameMessage, makeServerMessage } from './chatTestHelpers';
 

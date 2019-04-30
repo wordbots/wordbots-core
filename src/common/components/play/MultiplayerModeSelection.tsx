@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import GameMode from '../GameMode';
+import GameMode from './GameMode';
 
 interface MultiplayerModeSelectionProps {
   disabled?: boolean
@@ -21,18 +21,31 @@ export default class MultiplayerModeSelection extends React.Component<Multiplaye
       >
         <GameMode
           compact
-          name="Create Casual Game"
+          name="Singleplayer"
+          disabled={disabled}
+          onSelect={this.handleClickSingleplayer}
+          modesPerRow={3}
+        />
+        <GameMode
+          compact
+          name="Host Game"
           disabled={disabled}
           onSelect={this.handleClickCreateCasual}
+          modesPerRow={3}
         />
         <GameMode
           compact
           name="Matchmaking"
           disabled={disabled || isGuest}
           onSelect={this.handleClickMatchmaking}
+          modesPerRow={3}
         />
       </div>
     );
+  }
+
+  private handleClickSingleplayer = () => {
+    this.props.onSelectMode('singleplayer');
   }
 
   private handleClickCreateCasual = () => {
@@ -42,5 +55,4 @@ export default class MultiplayerModeSelection extends React.Component<Multiplaye
   private handleClickMatchmaking = () => {
     this.props.onSelectMode('matchmaking');
   }
-
 }

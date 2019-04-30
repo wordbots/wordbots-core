@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 
-import * as m from '../../../../server/multiplayer/multiplayer';
+import * as m from '../../../server/multiplayer/multiplayer';
 
 interface LobbyStatusProps {
   connecting: boolean

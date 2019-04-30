@@ -4,10 +4,10 @@ import FontIcon from 'material-ui/FontIcon';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
 import * as React from 'react';
 
-import * as m from '../../../../server/multiplayer/multiplayer';
-import * as w from '../../../types';
-import { GameFormat } from '../../../util/formats';
-import { guestUID } from '../../../util/multiplayer';
+import * as m from '../../../server/multiplayer/multiplayer';
+import * as w from '../../types';
+import { GameFormat } from '../../util/formats';
+import { guestUID } from '../../util/multiplayer';
 
 import { DisplayedGame } from './GameBrowser';
 

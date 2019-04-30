@@ -8,9 +8,9 @@ import Toggle from 'material-ui/Toggle';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 import * as React from 'react';
 
-import { CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../../constants';
-import * as w from '../../../types';
-import { id } from '../../../util/common';
+import { CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../constants';
+import * as w from '../../types';
+import { id } from '../../util/common';
 
 import ChatMessage from './ChatMessage';
 

@@ -4,8 +4,9 @@ import TextField from '@material-ui/core/TextField';
 import { History } from 'history';
 import * as React from 'react';
 
-import * as w from '../../../types';
-import PreGameModal from '../PreGameModal';
+import * as w from '../../types';
+
+import PreGameModal from './PreGameModal';
 
 interface GameCreationModalProps {
   availableDecks: w.DeckInStore[]

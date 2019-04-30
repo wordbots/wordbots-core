@@ -17,7 +17,7 @@ import { shuffleCardsInDeck } from '../util/cards';
 import { animate } from '../util/common';
 import { currentTutorialStep } from '../util/game';
 
-import { Singleplayer } from './Singleplayer';
+import { baseGameUrl, urlForGameMode } from './Play';
 
 type GameAreaStateProps = GameProps & {
   selectedCard: any
@@ -255,7 +255,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     );
   }
 
-  private urlMatchesGameMode = (mode: string) => this.props.location.pathname.startsWith(Singleplayer.urlForGameMode(mode));
+  private urlMatchesGameMode = (mode: string) => this.props.location.pathname.startsWith(urlForGameMode(mode));
 
   // Try to start a game (based on the URL) if it hasn't started yet.
   private tryToStartGame = () => {
@@ -292,7 +292,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
         } else if (this.urlMatchesGameMode('sandbox')) {
           onStartSandbox();
         } else {
-          history.push(Singleplayer.baseUrl);
+          history.push(baseGameUrl);
         }
       } else {
         // If we're still waiting on Firebase, render a message.
@@ -309,7 +309,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     if (deck) {
       onStartPractice(formatName, shuffleCardsInDeck(deck, cards, sets));
     } else {
-      history.push(Singleplayer.baseUrl);
+      history.push(baseGameUrl);
     }
   }
 

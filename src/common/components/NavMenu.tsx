@@ -37,8 +37,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
         {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/sets', 'Sets', 'layers')}
-        {this.renderLink('/singleplayer', 'Singleplayer', 'videogame_asset')}
-        {this.renderLink('/multiplayer', 'Multiplayer', 'supervised_user_circle')}
+        {this.renderLink('/play', 'Play', 'videogame_asset')}
         {this.renderLink('/about', 'About', 'info_outline')}
         {this.renderExpandCollapseButton()}
       </Drawer>

@@ -102,7 +102,7 @@
     "webpack-cli": "^3.0.8",
     "whatwg-fetch": "^2.0.3",
     "word-ngrams": "^0.2.0",
-    "ws": "^6.0.0",
+    "ws": "^7.0.0",
     "yarn": "^1.7.0"
   },
   "devDependencies": {

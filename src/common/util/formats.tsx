@@ -81,7 +81,7 @@ export class GameFormat {
 
 export const NormalGameFormat = new (class extends GameFormat {
   public name = 'normal';
-  public displayName = 'Normal';
+  public displayName = 'Anything Goes';
   public description = 'Each player has a 30-card deck. No restrictions on cards.';
 
   public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
@@ -101,7 +101,7 @@ export const NormalGameFormat = new (class extends GameFormat {
 
 export const BuiltinOnlyGameFormat = new (class extends GameFormat {
   public name = 'builtinOnly';
-  public displayName = 'Built-in Only';
+  public displayName = 'Builtins Only';
   public description = 'Normal game with only built-in cards allowed.';
 
   public isDeckValid = (deck: w.Deck): boolean => (

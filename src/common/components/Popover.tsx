@@ -15,11 +15,11 @@ interface PopoverProps {
 
 export default class Popover extends React.Component<PopoverProps> {
   get isOpen(): boolean {
-    return this.props.isOpen !== undefined ? this.props.isOpen : false;
+    return this.props.isOpen !== undefined ? this.props.isOpen : true;
   }
 
   get showTip(): boolean {
-    return this.props.showTip !== undefined ? this.props.showTip : false;
+    return this.props.showTip !== undefined ? this.props.showTip : true;
   }
 
   public render(): JSX.Element {

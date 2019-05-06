@@ -7,6 +7,7 @@ import * as screenfull from 'screenfull';
 import {
   BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE
 } from '../../constants';
+import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import Chat from '../play/Chat';
@@ -227,7 +228,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
               />
             </div>
           </div>
-          <PlayerArea opponent gameProps={this.props} />
+          <PlayerArea opponent gameProps={this.props as any as GameAreaContainerProps} />
           <div
             className="background"
             style={{
@@ -259,7 +260,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
               onEndGame={onClickEndGame}
             />
           </div>
-          <PlayerArea gameProps={this.props} />
+          <PlayerArea gameProps={this.props as any as GameAreaContainerProps} />
           <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
           <VictoryScreen
             winnerColor={winner}

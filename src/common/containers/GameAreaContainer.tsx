@@ -48,7 +48,7 @@ interface GameAreaDispatchProps {
   onSetVolume: (volume: number) => void
 }
 
-type GameAreaContainerProps = GameAreaStateProps & GameAreaDispatchProps & RouteComponentProps;
+export type GameAreaContainerProps = GameAreaStateProps & GameAreaDispatchProps & RouteComponentProps;
 
 interface GameAreaContainerState {
   interval?: NodeJS.Timeout,
@@ -239,18 +239,11 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
       <GameArea
         {...this.props}
         message={this.state.message}
-        onPassTurn={this.props.onPassTurn}
-        onForfeit={this.props.onForfeit}
-        onTutorialStep={this.props.onTutorialStep}
-        onSendChatMessage={this.props.onSendChatMessage}
-        onActivateObject={this.props.onActivateObject}
         onClickGameArea={this.handleClickGameArea}
         onClickEndGame={this.handleClickEndGame}
         onNextTutorialStep={this.handleNextTutorialStep}
         onPrevTutorialStep={this.handlePrevTutorialStep}
         onSelectTile={this.onSelectTile}
-        onAddCardToTopOfDeck={this.props.onAddCardToTopOfDeck}
-        onSetVolume={this.props.onSetVolume}
       />
     );
   }

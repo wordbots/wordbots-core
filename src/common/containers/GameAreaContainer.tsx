@@ -349,7 +349,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     this.props.onPlaceRobot(hexId, this.props.selectedCard);
   }
 
-  private onSelectTile = (hexId: w.HexId, action: 'move' | 'attack' | 'place', intermediateMoveHexId: w.HexId | null = null) => {
+  private onSelectTile = (hexId: w.HexId, action: 'move' | 'attack' | 'place' | null = null, intermediateMoveHexId: w.HexId | null = null) => {
     const { attack, currentTurn, isSandbox, player, onSelectTile } = this.props;
 
     if (player === 'neither') {

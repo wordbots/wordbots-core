@@ -374,6 +374,7 @@ export interface Trigger {
 export interface Attack {
   from: HexId
   to: HexId
+  retract?: boolean
 }
 
 export interface LoggedAction extends ChatMessage {

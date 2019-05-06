@@ -13,8 +13,7 @@ import HexPiece from './HexPiece';
 import HexShape from './HexShape';
 import HexUtils from './HexUtils';
 import Layout from './Layout';
-import Point from './Point';
-import { Actions, LayoutParams, PieceOnBoard } from './types';
+import { Actions, GridConfig, PieceOnBoard } from './types';
 
 interface HexShapeProps {
   width: number
@@ -33,7 +32,7 @@ interface HexShapeProps {
 }
 
 export default class HexGrid extends React.Component<HexShapeProps> {
-  public static generate(config: { layout: LayoutParams, origin: Point, map: string, mapProps: any }): { hexagons: Hex[], layout: Layout } {
+  public static generate(config: GridConfig): { hexagons: Hex[], layout: Layout } {
     const layout = new Layout(config.layout, config.origin);
     const generator: w.Returns<Hex[]> = GridGenerator.getGenerator(config.map)!;
     const hexagons = generator.apply(this, config.mapProps);

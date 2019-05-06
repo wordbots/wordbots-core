@@ -85,7 +85,7 @@ type GameAreaProps = GameProps & RouteComponentProps & {
   onClickEndGame: () => void
   onNextTutorialStep: () => void
   onPrevTutorialStep: () => void
-  onSelectTile: (hexId: w.HexId, action: 'move' | 'attack' | 'place', intermediateMoveHexId: w.HexId | null) => void
+  onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHexId?: w.HexId | null) => void
   onAddCardToTopOfDeck: (player: w.PlayerColor, card: w.Card) => void
   onSetVolume: (volume: number) => void
 };

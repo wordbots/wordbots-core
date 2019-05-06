@@ -1,5 +1,6 @@
 import { capitalize, fromPairs, invert, isNil } from 'lodash';
 
+import { GridConfig } from './components/hexgrid/types';
 import { CardType, Format, HexId } from './types';
 
 // Debug flags.
@@ -58,8 +59,7 @@ export const TUTORIAL_Z_INDEX = 999999;
 
 // Board.
 
-export const GRID_CONFIG = {
-  width: 600, height: 600,
+export const GRID_CONFIG: GridConfig = {
   layout: { width: 6, height: 6, flat: false, spacing: 0 },
   origin: { x: 0, y: 0 },
   map: 'hexagon',

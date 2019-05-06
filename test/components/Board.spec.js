@@ -1,22 +1,29 @@
+import { fromPairs } from 'lodash';
+
 import { getDefaultState, combineState, setUpBoardState, newTurn, playObject, playEvent } from '../testHelpers.ts';
 import { getComponent } from '../reactHelpers';
 import { attackBotCard } from '../data/cards.ts';
 import * as actions from '../../src/common/actions/game.ts';
-import { ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants.ts';
+import { BLUE_PLACEMENT_HEXES, ORANGE_PLACEMENT_HEXES, TYPE_CORE, STARTING_PLAYER_HEALTH, GRID_CONFIG } from '../../src/common/constants.ts';
 import gameReducer from '../../src/common/reducers/game.ts';
 import { blueCoreCard, orangeCoreCard, shockCard } from '../../src/common/store/cards.ts';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid.tsx';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils.ts';
 
 describe('Board component', () => {
+  const DEFAULT_HEX_COLORS = {
+    '-3,0,3': 'blue',  // Blue core
+    '3,0,-3': 'orange',  // Orange core
+    ...(fromPairs(BLUE_PLACEMENT_HEXES.map(hex => [hex, 'blue']))),
+    ...(fromPairs(ORANGE_PLACEMENT_HEXES.map(hex => [hex, 'orange'])))
+  };
+
   it('renders the default board state', () => {
     const gridProps = getComponent('GameArea', HexGrid, combineState(getDefaultState())).props;
 
     expect(gridProps.hexagons).toEqual(HexGrid.generate(GRID_CONFIG).hexagons);
 
-    expect(gridProps.hexColors).toEqual(
-      { '-3,0,3': 'blue', '3,0,-3': 'orange' }
-    );
+    expect(gridProps.hexColors).toEqual(DEFAULT_HEX_COLORS);
 
     expect(gridProps.pieces).toEqual({
       '-3,0,3': {
@@ -54,8 +61,7 @@ describe('Board component', () => {
 
     it('are colored green', () => {
       expect(hexGrid.props.hexColors).toEqual({
-        '-3,0,3': 'blue',  // Blue core
-        '3,0,-3': 'orange',  // Orange core
+        ...DEFAULT_HEX_COLORS,
         '3,-3,0': 'green',  // Valid orange placement hex
         '3,-2,-1': 'green',  // Valid orange placement hex
         '3,-1,-2': 'green',  // Valid orange placement hex
@@ -93,11 +99,10 @@ describe('Board component', () => {
 
     it('are colored as expected', () => {
       expect(hexGrid.props.hexColors).toEqual({
-        '-3,0,3': 'blue',  // Blue core
+        ...DEFAULT_HEX_COLORS,
         '-1,0,1': 'red',  // Blue piece (can be attacked)
         '-1,-1,2': 'red',  // Blue piece (can be attacked)
         '-2,-1,3': 'blue',  // Blue piece (blocked from being attacked by the pieces at 0,0,0 and -1,-1,2)
-        '3,0,-3': 'orange',  // Orange core
         '0,0,0': 'bright_orange',  // Orange piece (currently selected)
         '1,0,-1': 'bright_orange',  // Orange piece
         // There are 18 hexes within 2 distance of an interior hex, but 5 are blocked off
@@ -148,8 +153,7 @@ describe('Board component', () => {
     const hexGrid = getComponent('GameArea', HexGrid, combineState(state));
 
     expect(hexGrid.props.hexColors).toEqual({
-      '-3,0,3': 'blue',  // Blue core
-      '3,0,-3': 'orange',  // Orange core
+      ...DEFAULT_HEX_COLORS,
       '3,-1,-2': 'green'  // Valid target
     });
   });

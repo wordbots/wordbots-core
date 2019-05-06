@@ -25,7 +25,7 @@ interface HexShapeProps {
   hexColors: Record<w.HexId, string>
 
   tutorialStep?: w.TutorialStep
-  activatedAbilities?: w.ActivatedAbility[]
+  activatedAbilities: w.ActivatedAbility[]
   selectedHexId?: w.HexId
   hoveredHexId?: w.HexId
   isGameOver?: boolean

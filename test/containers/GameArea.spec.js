@@ -5,7 +5,7 @@ import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card.tsx';
 import Board from '../../src/common/components/game/Board.tsx';
 import EventAnimation from '../../src/common/components/game/EventAnimation';
-import PlayerArea from '../../src/common/components/game/PlayerArea';
+import PlayerArea from '../../src/common/components/game/PlayerArea.tsx';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid.tsx';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils.ts';

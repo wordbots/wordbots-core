@@ -119,6 +119,7 @@ export class Play extends React.Component<PlayProps> {
         <Switch>
           <Route path={urlForGameMode('tutorial')} component={GameAreaContainer} />
           <Route path={`${urlForGameMode('practice')}/:format/:deck`} component={GameAreaContainer} />
+          <Route path={urlForGameMode('sandbox')} component={GameAreaContainer} />
           <Route exact path={baseGameUrl} render={this.renderLobby} />
           <Route path={`${baseGameUrl}//:dialog`} render={this.renderLobby} />
           <Redirect to={baseGameUrl} />

@@ -1,25 +1,31 @@
-import * as React from 'react';
-import { object, bool } from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
 
-import Hand from './Hand';
-import PlayerName from './PlayerName';
-import EnergyCount from './EnergyCount';
+import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
+import * as w from '../../types';
+
 import Deck from './Deck';
 import DiscardPile from './DiscardPile';
+import EnergyCount from './EnergyCount';
+import Hand from './Hand';
+import PlayerName from './PlayerName';
 
-export default class PlayerArea extends React.Component {
-  static propTypes = {
-    gameProps: object,
-    opponent: bool
-  };
+interface PlayerAreaProps {
+  gameProps: GameAreaContainerProps
+  opponent?: boolean
+}
 
-  state = {
+interface PlayerAreaState {
+  discardOpen: boolean
+}
+
+export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerAreaState> {
+  public state = {
     discardOpen: false
   };
 
-  get color() {
+  get color(): 'blue' | 'orange' {
     const { opponent, gameProps: { player } } = this.props;
 
     if (opponent) {
@@ -29,7 +35,27 @@ export default class PlayerArea extends React.Component {
     }
   }
 
-  get styles() {
+  get deck(): w.PossiblyObfuscatedCard[] {
+    const { gameProps } = this.props;
+    return this.color === 'blue' ? gameProps.blueDeck : gameProps.orangeDeck;
+  }
+
+  get discardPile(): w.PossiblyObfuscatedCard[] {
+    const { gameProps } = this.props;
+    return this.color === 'blue' ? gameProps.blueDiscardPile : gameProps.orangeDiscardPile;
+  }
+
+  get energy(): w.PlayerEnergy {
+    const { gameProps } = this.props;
+    return this.color === 'blue' ? gameProps.blueEnergy : gameProps.orangeEnergy;
+  }
+
+  get hand(): w.PossiblyObfuscatedCard[] {
+    const { gameProps } = this.props;
+    return this.color === 'blue' ? gameProps.blueHand : gameProps.orangeHand;
+  }
+
+  get styles(): Record<string, React.CSSProperties> {
     const { opponent, gameProps: { isSandbox } } = this.props;
 
     return {
@@ -63,17 +89,7 @@ export default class PlayerArea extends React.Component {
     };
   }
 
-  handleSelectCard = (idx) => this.props.gameProps.onSelectCard(idx, this.color);
-
-  handleOpenDiscardPile = () => {
-    if (this.props.gameProps[`${this.color}DiscardPile`].length > 0) {
-      this.setState({ discardOpen: true });
-    }
-  };
-
-  handleCloseDiscardPile = () => this.setState({ discardOpen: false });
-
-  render() {
+  public render(): JSX.Element {
     const { opponent, gameProps } = this.props;
     const color = this.color;
 
@@ -85,22 +101,25 @@ export default class PlayerArea extends React.Component {
         <PlayerName
           opponent={opponent}
           color={color}
-          playerName={gameProps.usernames[color]} />
+          playerName={gameProps.usernames[color]}
+        />
         <EnergyCount
           color={color}
-          energy={gameProps[`${color}Energy`]} />
+          energy={this.energy}
+        />
         <Hand
           // curved
           opponent={opponent}
           selectedCard={gameProps.selectedCard}
           targetableCards={gameProps.target.possibleCards}
           isActivePlayer={gameProps.player === color || gameProps.isSandbox}
-          cards={gameProps[`${color}Hand`]}
+          cards={this.hand}
           sandbox={gameProps.isSandbox}
           status={gameProps.status}
           tutorialStep={gameProps.tutorialStep}
           onSelectCard={this.handleSelectCard}
-          onTutorialStep={gameProps.onTutorialStep} />
+          onTutorialStep={gameProps.onTutorialStep}
+        />
 
         <div
           className="background"
@@ -108,11 +127,12 @@ export default class PlayerArea extends React.Component {
         >
           <RaisedButton
             secondary
-            label={`Discard Pile (${gameProps[`${color}DiscardPile`].length})`}
+            label={`Discard Pile (${this.discardPile.length})`}
             onClick={this.handleOpenDiscardPile}
             style={this.styles.discard}
-            disabled={gameProps[`${color}DiscardPile`].length === 0}/>
-          <Deck deck={gameProps[`${color}Deck`]} reveal={gameProps.isSandbox} opponent={opponent} />
+            disabled={this.discardPile.length === 0}
+          />
+          <Deck deck={this.deck} reveal={gameProps.isSandbox} opponent={opponent} />
         </div>
 
         <Dialog
@@ -123,9 +143,19 @@ export default class PlayerArea extends React.Component {
           bodyStyle={{ overflow: 'auto' }}
           onRequestClose={this.handleCloseDiscardPile}
         >
-          <DiscardPile cards={gameProps[`${color}DiscardPile`]} />
+          <DiscardPile cards={this.discardPile} />
         </Dialog>
       </div>
     );
   }
+
+  private handleSelectCard = (idx: number) => this.props.gameProps.onSelectCard(idx, this.color);
+
+  private handleOpenDiscardPile = () => {
+    if (this.discardPile.length > 0) {
+      this.setState({ discardOpen: true });
+    }
+  }
+
+  private handleCloseDiscardPile = () => this.setState({ discardOpen: false });
 }

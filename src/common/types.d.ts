@@ -1,6 +1,7 @@
 import * as fjp from 'fast-json-patch';
 import * as fb from 'firebase';
 import * as React from 'react';
+import * as ReactPopover from 'react-popover';
 
 import * as m from '../server/multiplayer/multiplayer';
 
@@ -131,7 +132,7 @@ export interface TutorialStepInScript {
     card?: string
     hex?: HexId
     location?: string
-    place?: string
+    place?: ReactPopover.PopoverPlace
     text: string
   }
 }

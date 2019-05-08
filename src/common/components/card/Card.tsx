@@ -9,6 +9,7 @@ import * as React from 'react';
 import Textfit from 'react-textfit';
 
 import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString } from '../../constants';
+import { isCardVisible } from '../../guards';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import { compareCertainKeys } from '../../util/common';
@@ -67,25 +68,28 @@ export default class Card extends React.Component<CardProps, CardState> {
     muiTheme: object.isRequired
   };
 
-  public static fromObj = (card: w.CardInStore, props = {}) => (
-    <Card
-      visible
-      id={card.id}
-      name={card.name}
-      spriteID={card.spriteID}
-      spriteV={card.spriteV}
-      img={card.img}
-      type={card.type}
-      text={Sentence.fromText(card.text)}
-      rawText={card.text || ''}
-      stats={card.stats || {}}
-      cardStats={card.stats || {}}
-      cost={card.cost}
-      baseCost={card.cost}
-      source={card.source}
-      parseResults=""
-      {...props}
-    />
+  public static fromObj = (card: w.PossiblyObfuscatedCard, props = {}) => (
+    isCardVisible(card)
+      ? (
+      <Card
+        visible
+        id={card.id}
+        name={card.name}
+        spriteID={card.spriteID}
+        spriteV={card.spriteV}
+        img={card.img}
+        type={card.type}
+        text={Sentence.fromText(card.text)}
+        rawText={card.text || ''}
+        stats={card.stats || {}}
+        cardStats={card.stats || {}}
+        cost={card.cost}
+        baseCost={card.cost}
+        source={card.source}
+        parseResults=""
+        {...props}
+      />
+      ) : <CardBack />
   )
 
   public state = {

@@ -1,20 +1,15 @@
-import * as React from 'react';
-import { func, number, string } from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
 
-export default class ActivatedAbility extends React.Component {
-  static propTypes = {
-    idx: number,
-    marginBottom: number,
-    text: string,
-    onActivateAbility: func
-  }
+interface ActivatedAbilityProps {
+  idx: number
+  marginBottom: number
+  text: string
+  onActivateAbility: (idx: number) => void
+}
 
-  handleClick = () => {
-    this.props.onActivateAbility(this.props.idx);
-  }
-
-  render() {
+export default class ActivatedAbility extends React.Component<ActivatedAbilityProps> {
+  public render(): JSX.Element {
     const { marginBottom, text } = this.props;
     return (
       <div style={{ marginBottom }}>
@@ -28,8 +23,13 @@ export default class ActivatedAbility extends React.Component {
             overflow: 'hidden',
             display: 'block'
           }}
-          onClick={this.handleClick} />
+          onClick={this.handleClick}
+        />
       </div>
     );
+  }
+
+  private handleClick = () => {
+    this.props.onActivateAbility(this.props.idx);
   }
 }

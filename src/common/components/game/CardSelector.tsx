@@ -3,7 +3,7 @@ import Icon from '@material-ui/core/Icon';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
-import { debounce, sortBy } from 'lodash';
+import { debounce, isEqual, sortBy } from 'lodash';
 import * as React from 'react';
 
 import { BLUE_PLAYER_COLOR, BLUE_PLAYER_COLOR_DARKENED, ORANGE_PLAYER_COLOR, ORANGE_PLAYER_COLOR_DARKENED } from '../../constants';
@@ -137,13 +137,13 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
   }
 
   private get cardsList(): JSX.Element[] {
-    const { cardCollection } = this.state;
+    const { cardCollection, selectedCard } = this.state;
 
     return sortBy(cardCollection, 'cost').map((card: w.CardInStore, index: number): JSX.Element => (
       <CardTooltip card={card} key={index}>
         <CardSelectorCard
           card={card}
-          selectedCard={this.state.selectedCard}
+          isSelected={!!selectedCard && isEqual(card, selectedCard)}
           onCardSelect={this.handleSelectCard}
         />
       </CardTooltip>

@@ -100,7 +100,7 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
       );
     } else if (isGameOver) {
       return this.renderHex();
-    } else if ((activatedAbilities || []).length > 0) {
+    } else if (activatedAbilities && activatedAbilities.length > 0) {
       return (
         <AbilitiesTooltip
           activatedAbilities={activatedAbilities}

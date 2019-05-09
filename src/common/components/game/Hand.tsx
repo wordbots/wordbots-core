@@ -1,54 +1,78 @@
+import { isEmpty, isNull } from 'lodash';
 import * as React from 'react';
-import { arrayOf, bool, func, number, object } from 'prop-types';
 import * as ReactDOM from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { isEmpty, isNull } from 'lodash';
 
-import { HAND_Z_INDEX } from '../../constants.ts';
+import { HAND_Z_INDEX } from '../../constants';
+import * as w from '../../types';
 
 import CardInHand from './CardInHand';
 
-export default class Hand extends React.Component {
-  static propTypes = {
-    cards: arrayOf(object),
-    isActivePlayer: bool,
-    selectedCard: number,
-    targetableCards: arrayOf(object),
-    status: object,
-    curved: bool,
-    opponent: bool,
-    sandbox: bool,
-    tutorialStep: object,
+interface HandProps {
+  cards: w.PossiblyObfuscatedCard[]
+  selectedCard: number
+  targetableCards: w.CardId[]
+  status: w.PlayerStatus
+  isActivePlayer?: boolean
+  curved?: boolean
+  opponent?: boolean
+  sandbox?: boolean
+  tutorialStep?: w.TutorialStep
+  onSelectCard: (cardIdx: number) => void
+  onTutorialStep: (back?: boolean) => void
+}
 
-    onSelectCard: func,
-    onTutorialStep: func
-  };
+interface HandState {
+  availableWidth: number
+  hoveredCardIdx: number | null
+}
 
-  state = {
+export default class Hand extends React.Component<HandProps, HandState> {
+  public state = {
     availableWidth: 500,
     hoveredCardIdx: null
   };
 
-  componentDidMount() {
+  public componentDidMount(): void {
     this.calculateAvailableWidth();
   }
 
-  UNSAFE_componentWillReceiveProps() {
+  public UNSAFE_componentWillReceiveProps(): void {
     this.calculateAvailableWidth();
   }
 
-  calculateAvailableWidth() {
+  public render(): JSX.Element {
+    return (
+      <TransitionGroup
+        id={this.props.opponent ? 'handTop' : 'handBottom'}
+        className={isNull(this.props.selectedCard) ? '' : 'selected'}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: 'calc(100% - 400px)',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          margin: '0 auto',
+          zIndex: HAND_Z_INDEX
+        }}
+      >
+        {this.renderCards()}
+      </TransitionGroup>
+    );
+  }
+
+  private calculateAvailableWidth(): void {
     // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
-    /* eslint-disable react/no-find-dom-node */
-    if (ReactDOM.findDOMNode(this)) {
-      this.setState({availableWidth: ReactDOM.findDOMNode(this).offsetWidth});
+    const node: HTMLElement | null = ReactDOM.findDOMNode(this) as HTMLElement | null;
+    if (node) {
+      this.setState({availableWidth: node.offsetWidth});
     }
-    /* eslint-enable react/no-find-dom-node */
   }
 
-  handleHoverCard = (hoveredCardIdx) => { this.setState({ hoveredCardIdx }); }
+  private handleHoverCard = (hoveredCardIdx: number | null) => { this.setState({ hoveredCardIdx }); };
 
-  renderCards() {
+  private renderCards(): JSX.Element[] {
     const {
       cards, isActivePlayer, targetableCards, status, curved, opponent, sandbox, selectedCard, tutorialStep,
       onSelectCard, onTutorialStep
@@ -67,7 +91,7 @@ export default class Hand extends React.Component {
 
     return cards.map((card, idx) => {
       // TODO this isn't quite right ...
-      const rotationDegs = (idx - (numCards - 1)/2) * 5;
+      const rotationDegs = (idx - (numCards - 1) / 2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
       return (
@@ -86,34 +110,15 @@ export default class Hand extends React.Component {
             status={status}
             targetable={isActivePlayer && targetableCards.includes(card.id)}
             tutorialStep={tutorialStep}
-            visible={isActivePlayer || sandbox}
+            visible={!!isActivePlayer || !!sandbox}
             yTranslation={curved ? translationPx : 0}
-            zIndex={isNull(hoveredCardIdx) ? 0 : (1000 - Math.abs(hoveredCardIdx - idx) * 10)}
+            zIndex={isNull(hoveredCardIdx) ? 0 : (1000 - Math.abs(hoveredCardIdx! - idx) * 10)}
             onSelectCard={onSelectCard}
             onHoverCard={this.handleHoverCard}
-            onTutorialStep={onTutorialStep} />
-       </CSSTransition>
+            onTutorialStep={onTutorialStep}
+          />
+        </CSSTransition>
       );
     });
-  }
-
-  render() {
-    return (
-      <TransitionGroup
-        id={this.props.opponent ? 'handTop' : 'handBottom'}
-        className={isNull(this.props.selectedCard) ? '' : 'selected'}
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: 'calc(100% - 400px)',
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          margin: '0 auto',
-          zIndex: HAND_Z_INDEX
-        }}>
-        {this.renderCards()}
-      </TransitionGroup>
-    );
   }
 }

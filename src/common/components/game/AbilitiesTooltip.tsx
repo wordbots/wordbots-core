@@ -1,20 +1,19 @@
 import * as React from 'react';
-import { arrayOf, func, object, oneOfType } from 'prop-types';
 
-import { MAX_Z_INDEX } from '../../constants.ts';
-import Popover from '../Popover.tsx';
+import { MAX_Z_INDEX } from '../../constants';
+import * as w from '../../types';
+import Popover from '../Popover';
 
 import ActivatedAbility from './ActivatedAbility';
 
-export default class AbilitiesTooltip extends React.Component {
-  static propTypes = {
-    children: oneOfType([arrayOf(object), object]),
-    activatedAbilities: arrayOf(object),
+interface AbilitiesTooltipProps {
+  children: JSX.Element | JSX.Element[]
+  activatedAbilities: w.ActivatedAbility[]
+  onActivateAbility: (idx: number) => void
+}
 
-    onActivateAbility: func
-  };
-
-  get styles() {
+export default class AbilitiesTooltip extends React.Component<AbilitiesTooltipProps> {
+  get styles(): Record<string, React.CSSProperties> {
     return {
       container: {
         zIndex: MAX_Z_INDEX
@@ -29,7 +28,7 @@ export default class AbilitiesTooltip extends React.Component {
     };
   }
 
-  get tooltipBody() {
+  get tooltipBody(): JSX.Element {
     return (
       <div style={this.styles.tooltip}>
         {
@@ -39,14 +38,15 @@ export default class AbilitiesTooltip extends React.Component {
               idx={idx}
               marginBottom={idx === this.props.activatedAbilities.length - 1 ? 0 : 10}
               text={ability.text}
-              onActivateAbility={this.props.onActivateAbility} />
+              onActivateAbility={this.props.onActivateAbility}
+            />
           )
         }
       </div>
     );
   }
 
-  render() {
+  public render(): JSX.Element {
     return (
       <Popover
         style={this.styles.container}

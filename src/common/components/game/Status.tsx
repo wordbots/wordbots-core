@@ -1,11 +1,16 @@
-import * as React from 'react';
-import { string, object } from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import * as React from 'react';
 
-import { STATUS_Z_INDEX } from '../../constants.ts';
+import { STATUS_Z_INDEX } from '../../constants';
 
-const styles = {
+interface StatusProps {
+  type: 'error' | 'warning'
+  message: string
+}
+
+const styles: Record<string, CSSProperties> = {
   root: {
     zIndex: STATUS_Z_INDEX,
     transform: 'translateX(calc(-50% - 128px))'
@@ -17,21 +22,15 @@ const styles = {
   }
 };
 
-class Status extends React.Component {
-  static propTypes = {
-    type: string,
-    message: string,
-    classes: object
-  };
-
-  get color() {
+class Status extends React.Component<StatusProps & WithStyles> {
+  get color(): string {
     return {
       error: '#F44336',
       warning: '#FFEB3B'
     }[this.props.type] || '#CCC';
   }
 
-  render() {
+  public render(): JSX.Element {
     const { message, classes } = this.props;
 
     return (

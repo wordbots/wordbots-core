@@ -1,45 +1,43 @@
-import * as React from 'react';
-import { arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
 import { noop } from 'lodash';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
+import * as ReactPopover from 'react-popover';
 
-import { TUTORIAL_Z_INDEX } from '../../constants.ts';
-import Popover from '../Popover.tsx';
-import Tooltip from '../Tooltip.tsx';
+import { TUTORIAL_Z_INDEX } from '../../constants';
+import * as w from '../../types';
+import Popover from '../Popover';
+import Tooltip from '../Tooltip';
 
-export default class TutorialTooltip extends React.Component {
-  static propTypes = {
-    children: oneOfType([arrayOf(object), object]),
-    tutorialStep: object,
-    enabled: bool,
-    top: number,
-    left: number,
-    place: string,
+interface TutorialTooltipProps {
+  children: JSX.Element | JSX.Element[]
+  tutorialStep?: w.TutorialStep
+  place?: ReactPopover.PopoverPlace
+  enabled?: boolean
+  top?: number
+  left?: number
 
-    onNextStep: func,
-    onPrevStep: func,
-    onEndTutorial: func
-  };
+  onNextStep: () => void
+  onPrevStep: () => void
+  onEndTutorial?: () => void
+}
 
-  static defaultProps = {
-    enabled: true,
-    top: 15,
-    left: 0,
-    onEndTutorial: noop
-  };
+interface TutorialTooltipState {
+  hidden: boolean
+}
 
-  state = {
+export default class TutorialTooltip extends React.Component<TutorialTooltipProps, TutorialTooltipState> {
+  public state = {
     hidden: false
   };
 
-  get styles() {
+  get styles(): Record<string, React.CSSProperties> {
     return {
       container: {
         zIndex: TUTORIAL_Z_INDEX,
-        marginTop: this.props.top,
-        marginLeft: this.props.left
+        marginTop: this.props.top || 15,
+        marginLeft: this.props.left || 0
       },
       tooltip: {
         width: 330,
@@ -67,24 +65,24 @@ export default class TutorialTooltip extends React.Component {
     };
   }
 
-  get step() {
+  get step(): w.TutorialStep | undefined {
     return this.props.tutorialStep;
   }
 
-  get isOnlyStep() {
-    return this.step.numSteps === 1;
+  get isOnlyStep(): boolean {
+    return !!this.step && this.step.numSteps === 1;
   }
 
-  get pctComplete() {
-    return Math.round((this.step.idx + 1) / this.step.numSteps * 100);
+  get pctComplete(): number {
+    return this.step ? Math.round((this.step.idx + 1) / this.step.numSteps * 100) : 0;
   }
 
-  get isComplete() {
+  get isComplete(): boolean {
     return this.pctComplete === 100;
   }
 
-  get backButton() {
-    return (
+  get backButton(): JSX.Element | null {
+    return this.step ? (
       <Tooltip inline text="Go back a step">
         <IconButton
           onClick={this.props.onPrevStep}
@@ -94,24 +92,24 @@ export default class TutorialTooltip extends React.Component {
           <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>arrow_back</FontIcon>
         </IconButton>
       </Tooltip>
-    );
+    ) : null;
   }
 
-  get nextButton() {
-    if (this.step.action) {
+  get nextButton(): JSX.Element | null {
+    if (!this.step || this.step.action) {
       return null;  // Only display the Next button if there is no other action to perform.
     } else {
       return (
         <RaisedButton
           label={this.isComplete ? 'FINISH' : 'NEXT'}
           style={this.styles.nextButton}
-          onClick={this.isComplete ? this.props.onEndTutorial : this.props.onNextStep}
+          onClick={this.isComplete ? (this.props.onEndTutorial || noop) : this.props.onNextStep}
         />
       );
     }
   }
 
-  get hideButton() {
+  get hideButton(): JSX.Element {
     return (
       <RaisedButton
         label="CLOSE"
@@ -121,8 +119,8 @@ export default class TutorialTooltip extends React.Component {
     );
   }
 
-  get tooltipBody() {
-    return (
+  get tooltipBody(): JSX.Element | null {
+    return this.step ? (
       <div style={this.styles.tooltip}>
         {!this.isOnlyStep && <div style={this.styles.percent}>
           {this.pctComplete}% complete
@@ -135,18 +133,15 @@ export default class TutorialTooltip extends React.Component {
         {this.step.tooltip.backButton || this.backButton}
         {this.isOnlyStep ? this.hideButton : this.nextButton}
       </div>
-    );
+    ) : null;
   }
 
-  hide = () => {
-    this.setState({ hidden: true });
-  };
-
-  render() {
-    if (this.step && this.props.enabled && !this.state.hidden) {
+  public render(): JSX.Element | JSX.Element[] {
+    const enabled = this.props.enabled === undefined ? true : this.props.enabled;
+    if (this.step && enabled && !this.state.hidden) {
       return (
         <Popover
-          body={this.tooltipBody}
+          body={this.tooltipBody!}
           style={this.styles.container}
           place={this.props.place}
         >
@@ -156,5 +151,9 @@ export default class TutorialTooltip extends React.Component {
     } else {
       return this.props.children;
     }
+  }
+
+  private hide = () => {
+    this.setState({ hidden: true });
   }
 }

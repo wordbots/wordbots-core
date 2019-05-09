@@ -1,38 +1,36 @@
-import * as React from 'react';
-import { string, bool, func, object } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
+import * as React from 'react';
 
-import { ORANGE_PLAYER_COLOR, BLUE_PLAYER_COLOR } from '../../constants.ts';
+import { BLUE_PLAYER_COLOR, ORANGE_PLAYER_COLOR } from '../../constants';
+import * as w from '../../types';
 
 import TutorialTooltip from './TutorialTooltip';
 
-export default class EndTurnButton extends React.Component {
-  static propTypes = {
-    player: string,
-    gameOver: bool,
-    isMyTurn: bool,
-    isAttackHappening: bool,
-    tutorialStep: object,
+interface EndTurnButtonProps {
+  player: w.PlayerColor | null
+  gameOver?: boolean
+  isMyTurn?: boolean
+  isAttackHappening?: boolean
+  tutorialStep?: w.TutorialStep
 
-    onPassTurn: func,
-    onNextTutorialStep: func,
-    onPrevTutorialStep: func
-  };
+  onPassTurn: (color: w.PlayerColor) => void
+  onNextTutorialStep: () => void
+  onPrevTutorialStep: () => void
+}
 
-  get buttonEnabled() {
+export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
+  get buttonEnabled(): boolean {
     const { isMyTurn, isAttackHappening, gameOver } = this.props;
-    return isMyTurn && !isAttackHappening && !gameOver;
+    return !!isMyTurn && !isAttackHappening && !gameOver;
   }
 
-  get tutorialTooltipEnabled() {
+  get tutorialTooltipEnabled(): boolean {
     const { tutorialStep } = this.props;
-    return tutorialStep && tutorialStep.tooltip.location === 'endTurnButton';
+    return !!tutorialStep && tutorialStep.tooltip.location === 'endTurnButton';
   }
 
-  handleClick = () => { this.props.onPassTurn(this.props.player); };
-
-  render() {
+  public render(): JSX.Element {
     const { player, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
     return (
       <TutorialTooltip
@@ -44,7 +42,8 @@ export default class EndTurnButton extends React.Component {
         onPrevStep={onPrevTutorialStep}
       >
         <RaisedButton
-          backgroundColor={{orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player]}
+          className="end-turn-button"
+          backgroundColor={player ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player] : undefined}
           buttonStyle={{
             height: '64px',
             lineHeight: '64px'
@@ -69,13 +68,21 @@ export default class EndTurnButton extends React.Component {
               style={{
                 lineHeight: '64px',
                 verticalAlign: 'none'
-            }}>
+              }}
+            >
               timer
             </FontIcon>
           }
-          id="end-turn-button"
-          disabled={!this.buttonEnabled} />
-        </TutorialTooltip>
+          disabled={!this.buttonEnabled}
+        />
+      </TutorialTooltip>
     );
+  }
+
+  private handleClick = () => {
+    const { player, onPassTurn } = this.props;
+    if (player) {
+      onPassTurn(player);
+    }
   }
 }

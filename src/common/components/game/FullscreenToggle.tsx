@@ -1,23 +1,17 @@
-import * as React from 'react';
-import { func } from 'prop-types';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
+import * as React from 'react';
 import * as screenfull from 'screenfull';
 
-import { MAX_Z_INDEX } from '../../constants.ts';
-import Tooltip from '../Tooltip.tsx';
+import { MAX_Z_INDEX } from '../../constants';
+import Tooltip from '../Tooltip';
 
-export default class FullscreenToggle extends React.Component {
-  static propTypes = {
-    onClick: func
-  }
+interface FullscreenToggleProps {
+  onClick: () => void
+}
 
-  handleClick = () => {
-    this.props.onClick();
-    this.forceUpdate();
-  }
-
-  render() {
+export default class FullscreenToggle extends React.Component<FullscreenToggleProps> {
+  public render(): JSX.Element {
     return (
       <Tooltip text="Fullscreen" place="right" style={{ zIndex: MAX_Z_INDEX }} additionalStyles={{ width: 36 }}>
         <IconButton
@@ -33,11 +27,17 @@ export default class FullscreenToggle extends React.Component {
         >
           <FontIcon
             className="material-icons"
-            color="#FFF">
+            color="#FFF"
+          >
             {!screenfull.isFullscreen ? 'fullscreen' : 'fullscreen_exit'}
           </FontIcon>
         </IconButton>
       </Tooltip>
     );
+  }
+
+  private handleClick = () => {
+    this.props.onClick();
+    this.forceUpdate();
   }
 }

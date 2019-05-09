@@ -8,7 +8,7 @@ interface PopoverProps {
   style?: React.CSSProperties
   body: JSX.Element
   children: React.ReactNode
-  place: ReactPopover.PopoverPlace
+  place?: ReactPopover.PopoverPlace
   preferPlace?: ReactPopover.PopoverPlace
   showTip?: boolean
 }

@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
-import { CSSProperties, WithStyles } from '@material-ui/core/styles/withStyles';
+import { WithStyles } from '@material-ui/core/styles/withStyles';
 import { isNil, isString, startCase, toLower } from 'lodash';
 import * as React from 'react';
 
@@ -14,37 +14,13 @@ import * as w from '../../../types';
 import { renderFormatDisplayName } from '../../../util/formats';
 import Title from '../../Title';
 
+import { styles } from './PlayerInfo';
+
 interface RecentGamesProps {
   recentGames?: w.SavedGame[]
   playerNames?: Record<string, string>
   userId: string
 }
-
-const styles: Record<string, CSSProperties> = {
-  root: {
-    width: '100%',
-    height: '100%',
-    overflowY: 'scroll'
-  },
-  progressContainer: {
-    height: 'calc(100% - 35px)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  victory: {
-    color: '#4CAF50',
-    fontWeight: 600,
-    fontSize: 14,
-    textAlign: 'right'
-  },
-  defeat: {
-    color: '#E57373',
-    fontWeight: 600,
-    fontSize: 14,
-    textAlign: 'right'
-  }
-};
 
 class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
   public render(): JSX.Element {
@@ -57,9 +33,13 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
           <div className={classes.progressContainer}>
             <CircularProgress />
           </div> :
-          <List>
-            {recentGames.map(this.renderRecentGame)}
-          </List>
+            (
+              recentGames.length > 0 ?
+                <List>
+                  {recentGames.map(this.renderRecentGame)}
+                </List> :
+                <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
+            )
         }
       </div>
     );

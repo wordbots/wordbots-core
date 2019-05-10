@@ -257,7 +257,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   private tryToStartGame = () => {
     const {
       started,
-      isSandbox,
       collection: { firebaseLoaded },
       onStartTutorial,
       onStartSandbox,
@@ -271,12 +270,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     // If the URL is '/play/tutorial' or `/play/practice/:deck`,
     // start the corresponding game mode.
     // Otherwise, just return to the lobby.
-    // * If there is a sandbox game happening, restart the game anyway because
-    //   most likely the player left a previous sandbox game but isSandbox
-    //   is still set to true in the store. (This is possible because sandbox
-    //   mode is the only game mode that lets you navigate away without explicitly
-    //   ending the game.)
-    if (!started || isSandbox) {
+    if (!started) {
       if (this.urlMatchesGameMode('tutorial')) {
         onStartTutorial();
       } else if (firebaseLoaded) {

@@ -54,7 +54,7 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
 
     const opponentId = Object.values(recentGame.players).find((player) => player !== userId);
     const isGuest = isNil(opponentId) || opponentId.startsWith('guest');
-    const opponent = isGuest ? 'Guest' : playerNames[opponentId] || playerNames[userId];
+    const opponent = isGuest ? 'Guest' : playerNames[opponentId!] || playerNames[userId];
     const wasVictory = recentGame.winner && recentGame.players[recentGame.winner] === userId;
     const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
     const subText = `${startCase(toLower(recentGame.type))} - ${renderFormatDisplayName(recentGame.format)} - ${timestamp}`;

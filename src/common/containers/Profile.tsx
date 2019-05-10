@@ -2,7 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { History } from 'history';
-import { chain as _, flatten, uniq, zipObject } from 'lodash';
+import { chain as _, compact, flatten, uniq, zipObject } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -154,7 +154,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 
   private async loadRecentGamesData(recentGames: w.SavedGame[]): Promise<void> {
-    const playerIds = uniq(flatten(recentGames.map((recentGame) => Object.values(recentGame.players)))).filter((playerId) => !playerId.startsWith('guest'));
+    const playerIds = compact(uniq(flatten(recentGames.map((g) => Object.values(g.players)))).filter((pid) => pid && !pid.startsWith('guest')));
     const playerNamesList = await getUserNamesByIds(playerIds);
     const playerNames = zipObject(playerIds, playerNamesList);
 

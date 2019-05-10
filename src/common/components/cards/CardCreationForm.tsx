@@ -243,7 +243,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             <ButtonInRow
               label="Test"
               icon="videogame_asset"
-              tooltip="Test out this card in a practice game."
+              tooltip="Test out this card in sandbox mode."
               onClick={this.props.onTestCard}
               width={`calc(${buttonMaxWidth}% - ${buttonPadding}px)`}
               disabled={!this.isValid}

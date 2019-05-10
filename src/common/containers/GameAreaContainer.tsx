@@ -228,7 +228,10 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentWillUnmount(): void {
+    const { onEndGame } = this.props;
     const { interval } = this.state;
+
+    onEndGame();
     if (interval) {
       clearInterval(interval);
     }

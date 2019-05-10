@@ -17,7 +17,7 @@ export default function vocabulary(
   source: w.AbilityId | null = null
 ): Record<string, w.Returns<void> | Record<string, w.Returns<void>>> {
   return {
-    actions: actions(state),
+    actions: actions(state, currentObject),
     targets: targets(state, currentObject),
     conditions: objectConditions(state),
     globalConditions: globalConditions(state),

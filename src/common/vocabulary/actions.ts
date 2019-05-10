@@ -14,7 +14,7 @@ import {
   updateOrDeleteObjectAtHex
 } from '../util/game';
 
-export default function actions(state: w.GameState): Record<string, w.Returns<void>> {
+export default function actions(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<void>> {
   const iterateOver = <T extends w.Targetable>(collection: w.Collection) => (fn: (item: T) => void) => {
     const items: T[] = (collection.entries as w.Targetable[]).map(reassignToKernelIfPlayer) as T[];
     items.forEach((item: T) => {
@@ -223,14 +223,17 @@ export default function actions(state: w.GameState): Record<string, w.Returns<vo
       }
     },
 
-    spawnObject: (cards: w.CardCollection, hexes: w.HexCollection): void => {
+    // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).
+    spawnObject: (cards: w.CardCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
       const card: w.CardInGame = cards.entries[0];
-      const player: w.PlayerInGameState = currentPlayer(state);
+
+      const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);
+      const owner: w.PlayerInGameState = owners ? owners.entries[0] : defaultOwner;
 
       iterateOver<w.HexId>(hexes)((hex: w.HexId) => {
         if (!allObjectsOnBoard(state)[hex]) {
           const object: w.Object = instantiateObject(card);
-          player.robotsOnBoard[hex] = object;
+          owner.robotsOnBoard[hex] = object;
           afterObjectPlayed(state, object);
         }
       });

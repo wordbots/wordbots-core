@@ -116,6 +116,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
           <Paper className={classes.recentCardsContainer}>
             { userId &&
               <RecentCardsCarousel
+                key={userId}
                 userId={userId}
                 history={this.props.history}
                 onOpenForEditing={this.props.onOpenForEditing}

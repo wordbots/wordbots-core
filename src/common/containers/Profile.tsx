@@ -1,7 +1,6 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import * as fb from 'firebase';
 import { History } from 'history';
 import { flatten, uniq, zipObject } from 'lodash';
 import * as React from 'react';
@@ -25,21 +24,18 @@ import {
   getUserNamesByIds
 } from '../util/firebase';
 
-interface ProfileStateProps {
-  user: fb.User | null
-}
-
 interface ProfileDispatchProps {
   onOpenForEditing: (card: w.CardInStore) => void
 }
 
-type ProfileProps = ProfileStateProps & ProfileDispatchProps & WithStyles & {
+type ProfileProps = ProfileDispatchProps & WithStyles & {
   history: History,
   match: Match<{ userId?: string }>
 };
 
 interface ProfileState {
-  userId: string
+  userId?: string
+  userName?: string
   recentGames?: w.SavedGame[]
   playerNames?: Record<string, string>
   playerInfo?: {
@@ -48,12 +44,6 @@ interface ProfileState {
     gamesPlayed: number,
     winRate: string
   }
-}
-
-export function mapStateToProps(state: w.State): ProfileStateProps {
-  return {
-    user: state.global.user
-  };
 }
 
 export function mapDispatchToProps(dispatch: Dispatch): ProfileDispatchProps {
@@ -83,30 +73,24 @@ const styles: Record<string, CSSProperties> = {
 };
 
 class Profile extends React.Component<ProfileProps, ProfileState> {
-  constructor(props: ProfileProps) {
-    super(props);
-
-    if (!props.match.params.userId) {
-      props.history.push('/');
-    } else {
-      this.state = {
-        userId: props.match.params.userId,
-        recentGames: undefined,
-        playerNames: undefined,
-        playerInfo: undefined
-      };
-    }
-  }
+  public state: ProfileState = {};
 
   public async componentDidMount(): Promise<void> {
     this.loadProfileData();
   }
 
-  public render(): JSX.Element {
-    const { user, classes } = this.props;
-    const { userId, recentGames, playerNames, playerInfo } = this.state;
+  public async componentDidUpdate(nextProps: ProfileProps): Promise<void> {
+    // Did the userId change?
+    if (nextProps.match.params.userId !== this.props.match.params.userId) {
+      this.loadProfileData();
+    }
+  }
 
-    const title = user && user.displayName ? `${user.displayName}'s Profile` : 'Profile';
+  public render(): JSX.Element {
+    const { classes } = this.props;
+    const { recentGames, playerNames, playerInfo, userId, userName } = this.state;
+
+    const title = userName ? `${userName}'s Profile` : 'Profile';
 
     return (
       <div>
@@ -144,12 +128,22 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 
   private async loadProfileData(): Promise<void> {
-    const userId = this.props.match.params.userId;
-    if (userId) {
-      const recentGames = await getRecentGamesByUserId(userId);
+    try {
+      const { userId } = this.props.match.params;
+      if (!userId) {
+        throw new Error('No userId in URL');
+      }
 
+      const [userName] = await getUserNamesByIds([userId]);
+      this.setState({ userId, userName });
+
+      const recentGames = await getRecentGamesByUserId(userId);
       this.loadRecentGamesData(recentGames);
       this.loadPlayerInfoData(userId, recentGames);
+    } catch (err) {
+      // Most likely reason is that userId is undefined or that user doesn't exist.
+      console.error(err); // tslint:disable-line no-console
+      this.props.history.push('/');
     }
   }
 
@@ -194,4 +188,4 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
 }
 
 // TO-DO: replace this with decorators
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Profile)));
+export default withRouter(connect(() => ({}), mapDispatchToProps)(withStyles(styles)(Profile)));

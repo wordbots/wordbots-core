@@ -22,7 +22,7 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
     const { bigramProbs, sentences } = this.props;
     if (bigramProbs) {
       return _(sentences)
-              .flatMap((s) =>
+              .flatMap((s: w.Sentence) =>
                 (s.result.suggestions || []).map((suggestion) =>
                   ({
                     original: s.sentence.trim(),

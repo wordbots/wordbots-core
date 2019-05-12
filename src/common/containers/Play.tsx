@@ -106,8 +106,9 @@ export class Play extends React.Component<PlayProps> {
   }
 
   public componentDidMount(): void {
-    if (!this.props.socket.connected) {
-      this.props.onConnect();
+    const { started, socket, onConnect } = this.props;
+    if (!started && !socket.connected) {
+      onConnect();
     }
   }
 

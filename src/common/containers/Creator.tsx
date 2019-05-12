@@ -154,7 +154,7 @@ export class Creator extends React.Component<CreatorProps> {
   private testCard = () => {
     const card = createCardFromProps(this.props);
     this.props.onStartSandbox(card);
-    this.props.history.push('/singleplayer/sandbox', { previous: this.props.history.location });
+    this.props.history.push('/play/sandbox', { previous: this.props.history.location });
   }
 
   private addToCollection = () => {

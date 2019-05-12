@@ -4,6 +4,7 @@ import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
 
 import * as w from '../../types';
+import { contractKeywords } from '../../util/cards';
 import { bigramNLL } from '../../util/language';
 
 import CardTextSuggestion from './CardTextSuggestion';
@@ -23,7 +24,10 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
       return _(sentences)
               .flatMap((s) =>
                 (s.result.suggestions || []).map((suggestion) =>
-                  ({ original: s.sentence.trim(), suggestion })
+                  ({
+                    original: s.sentence.trim(),
+                    suggestion: contractKeywords(suggestion)
+                  })
                 )
               )
               .sortBy(({ suggestion }) => bigramNLL(suggestion, bigramProbs))

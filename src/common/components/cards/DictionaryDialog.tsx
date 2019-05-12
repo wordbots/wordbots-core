@@ -277,7 +277,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
         <div style={{display: 'flex', justifyContent: 'stretch'}}>
           <div style={{width: '20%'}}>
-            <DictionarySearchBar onChange={this.handleSetSearchTerm} />
+            <DictionarySearchBar onChange={this.handleSetSearchTerm} text={this.state.searchText} />
             <DictionarySidebar
               terms={this.currentTabTerms}
               selectedTerm={this.selectedTerm}

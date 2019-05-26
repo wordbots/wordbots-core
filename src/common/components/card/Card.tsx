@@ -211,7 +211,9 @@ export default class Card extends React.Component<CardProps, CardState> {
                   userSelect: 'none',
                   cursor: 'pointer',
                   border: source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
-                  position: 'relative', ...(selected || targetable ? selectedStyle : {})} as React.CSSProperties}
+                  position: 'relative',
+                  ...(selected || targetable ? selectedStyle : {})
+                } as React.CSSProperties}
               >
                 <CardHeader
                   style={{padding: 8 * (scale || 1), height: 'auto'}}
@@ -312,8 +314,10 @@ export default class Card extends React.Component<CardProps, CardState> {
       const maxFontSize = Math.round((type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
       return (
         <div
-          style={{...this.textFitStyle,
-            fontSize: Math.min(maxFontSize, 14)}}
+          style={{
+            ...this.textFitStyle,
+            fontSize: Math.min(maxFontSize, 14)
+          }}
         >
           {text}
         </div>

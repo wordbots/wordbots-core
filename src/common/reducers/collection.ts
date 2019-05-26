@@ -11,7 +11,7 @@ import c from './handlers/cards';
 type State = w.CollectionState;
 
 export default function collection(oldState: State = defaultState, action: w.Action): State {
-  const state = Object.assign({}, oldState);
+  const state = {...oldState};
 
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.

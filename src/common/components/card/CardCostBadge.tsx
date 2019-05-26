@@ -48,15 +48,13 @@ export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
     };
 
     if (this.props.cost < this.props.baseCost) {
-      return Object.assign(baseStyle, {
+      return {...baseStyle,
         color: '#81C784',
-        WebkitTextStroke: '1px white'
-      });
+        WebkitTextStroke: '1px white'};
     } else if (this.props.cost > this.props.baseCost) {
-      return Object.assign(baseStyle, {
+      return {...baseStyle,
         color: '#E57373',
-        WebkitTextStroke: '1px white'
-      });
+        WebkitTextStroke: '1px white'};
     } else {
       return baseStyle;
     }

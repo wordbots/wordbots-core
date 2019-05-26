@@ -12,7 +12,7 @@ import c from './handlers/cards';
 type State = w.CreatorState;
 
 export default function creator(oldState: State = defaultState, { type, payload }: w.Action): State {
-  const state: State = Object.assign({}, oldState);
+  const state: State = {...oldState};
 
   switch (type) {
     case creatorActions.SET_NAME:
@@ -47,7 +47,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
       state.parserVersion = payload.result.version;
       state.sentences = state.sentences.map((s, idx) => {
         if (idx === payload.idx) {
-          return Object.assign({}, s, {result: payload.result});
+          return {...s, result: payload.result};
         } else {
           return s;
         }
@@ -60,7 +60,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
 
     case creatorActions.ADD_TO_COLLECTION:
       // Reset card creator state.
-      return Object.assign(state, defaultState, { spriteID: id() });
+      return {...state, ...defaultState,  spriteID: id()};
 
     case collectionActions.OPEN_CARD_FOR_EDITING:
       return c.openCardForEditing(state, payload.card);

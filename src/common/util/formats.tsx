@@ -65,14 +65,15 @@ export class GameFormat {
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
     _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
   ): w.GameState {
-    state = Object.assign(state, cloneDeep(defaultState), {
-      gameFormat: this.name,
+    state = {
+      ...state,
+      ...cloneDeep(defaultState),
+      gameFormat: this.serialized(),
       player,
       rng: seededRNG(seed),
       started: true,
       usernames,
-      options
-    });
+      options};
     state = triggerSound(state, 'yourmove.wav');
 
     return state;
@@ -84,7 +85,9 @@ export const NormalGameFormat = new (class extends GameFormat {
   public displayName = 'Anything Goes';
   public description = 'Each player has a 30-card deck. No restrictions on cards.';
 
-  public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
+  public isDeckValid = (deck: w.Deck): boolean => {
+    return deckHasNCards(deck, DECK_SIZE);
+  }
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,

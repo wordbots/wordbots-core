@@ -39,10 +39,10 @@ export const collection: w.CardInStore[] = [
   ...Object.values(events),
   ...Object.values(structures)
 ].map((card) =>
-  Object.assign(card, {
-    id: `builtin/${card.id}`,
-    source: 'builtin'
-  })
+  // We rely on the fact that the Object.assign() here actually modifies the all of the cards in coreSet in-place
+  // (e.g. because we lookup cards by id and expect them to have 'builtin/' in the id).
+  // TODO don't do that.
+  Object.assign(card, { id: `builtin/${card.id}`, source: 'builtin' })  // tslint:disable-line prefer-object-spread
 );
 
 export const builtinCardNames = collection.map((card) => card.name);

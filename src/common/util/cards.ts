@@ -44,10 +44,11 @@ export function unpackDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets
 }
 
 export function instantiateCard(card: w.CardInStore): w.CardInGame {
-  return Object.assign({}, card, {
+  return {
+    ...card,
     id: generateId(),
     baseCost: card.cost
-  });
+  };
 }
 
 // Obfuscate all cards in an array, optionally leaving one card unobfuscated (e.g. if that card is about to be played).
@@ -90,7 +91,7 @@ export function replaceCardsInPlayerState(
 
 export function groupCards(cards: w.CardInStore[]): Array<w.CardInStore & { count: number }> {
   return uniqBy(cards, 'id').map((card) =>
-    Object.assign({}, card, {count: countBy(cards, 'name')[card.name]})
+    ({...card, count: countBy(cards, 'name')[card.name]})
   );
 }
 
@@ -290,17 +291,17 @@ function phrases(sentence: string): string[] {
 }
 
 export function allKeywords(): { [keyword: string]: string } {
-  return Object.assign({}, KEYWORDS, HINTS);
+  return {...KEYWORDS, ...HINTS};
 }
 
 export function isKeywordExpression(sentence: string, hintsToo = false): boolean {
-  const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
+  const keywords = hintsToo ? {...KEYWORDS, ...HINTS} : KEYWORDS;
   return phrases(sentence).every((p) => has(keywords, p.toLowerCase()));
 }
 
 export function keywordsInSentence(sentence: string, hintsToo = false): { [keyword: string]: string } {
-  const keywords = hintsToo ? Object.assign({}, KEYWORDS, HINTS) : KEYWORDS;
-  const regexes = hintsToo ? Object.assign({}, KEYWORD_REGEXES, HINT_REGEXES) : KEYWORD_REGEXES;
+  const keywords = hintsToo ? {...KEYWORDS, ...HINTS} : KEYWORDS;
+  const regexes = hintsToo ? {...KEYWORD_REGEXES, ...HINT_REGEXES} : KEYWORD_REGEXES;
 
   if (isKeywordExpression(sentence, hintsToo)) {
     return fromPairs(phrases(sentence).map((p) => [p, keywords[p.toLowerCase()]]));
@@ -333,7 +334,7 @@ export function contractKeywords(sentence: string): string {
 export function cardsToJson(cards: w.Card[]): string {
   const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats'];
   const cardsToExport = cards.map((card) =>
-    Object.assign({}, pick(card, exportedFields), {schema: CARD_SCHEMA_VERSION})
+    ({...pick(card, exportedFields), schema: CARD_SCHEMA_VERSION})
   );
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
@@ -343,11 +344,10 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
     .map((card: w.Card) =>
-      Object.assign({}, omit(card, ['schema']), {
+      ({...omit(card, ['schema']),
         id: generateId(),
         source: 'user',
-        timestamp: Date.now()
-      })
+        timestamp: Date.now()})
     )
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
 }

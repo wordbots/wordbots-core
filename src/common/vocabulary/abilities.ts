@@ -5,10 +5,9 @@ import { executeCmd, reversedCmd } from '../util/game';
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability) => {
     if (currentObject && (!source || !currentObject.abilities.find((a) => a.source === source))) {
-      ability = Object.assign({}, ability, {
+      ability = {...ability,
         source,
-        duration: state.memory.duration || null
-      });
+        duration: state.memory.duration || null};
 
       currentObject.abilities = currentObject.abilities.concat([ability]);
     }
@@ -19,7 +18,7 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
   return () => {
     if (currentObject) {
       currentObject.abilities = currentObject.abilities.map((ability) =>
-        Object.assign({}, ability, {disabled: ability.source === source})
+        ({...ability, disabled: ability.source === source})
       );
     }
   };

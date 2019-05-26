@@ -143,7 +143,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
 
   private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
     this.setState((state) => ({
-      filters: Object.assign({}, state.filters, {[filter]: toggled})
+      filters: {...state.filters, [filter]: toggled}
     }));
   }
 

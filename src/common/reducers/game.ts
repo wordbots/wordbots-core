@@ -35,12 +35,11 @@ export function handleAction(
   oldState: State,
   { type, payload }: w.Action = { type: '' }
 ): State {
-  let state: State = Object.assign({}, oldState);
+  let state: State = {...oldState};
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
-    state = Object.assign(state, {
-      actionId: id()  // actionId is used to correctly merge actions in the action log.
-    });
+    state = {...state,
+      actionId: id()};
   }
 
   switch (type) {
@@ -68,7 +67,7 @@ export function handleAction(
       return g.aiResponse(state);
 
     case actions.END_GAME:
-      return Object.assign(state, {started: false});
+      return {...state, started: false};
 
     case actions.MOVE_ROBOT:
       return g.moveRobot(state, payload.from, payload.to);
@@ -77,7 +76,7 @@ export function handleAction(
       return g.attack(state, payload.source, payload.target);
 
     case actions.ATTACK_RETRACT:
-      return Object.assign(state, {attack: {...state.attack, retract: true}});
+      return {...state, attack: state.attack ? {...state.attack, retract: true} : null };
 
     case actions.ATTACK_COMPLETE:
       return g.attackComplete(state);
@@ -112,7 +111,7 @@ export function handleAction(
       return { ...state, volume: payload.volume };
 
     case socketActions.CONNECTING:
-      return Object.assign(state, {started: false});
+      return {...state, started: false};
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
@@ -128,7 +127,7 @@ export function handleAction(
     }
 
     case socketActions.FORFEIT: {
-      state = Object.assign(state, {winner: payload.winner});
+      state = {...state, winner: payload.winner};
       state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
       return state;
     }

@@ -104,7 +104,7 @@ export default class CardStat extends React.Component<CardStatProps> {
     } else {
       return (
         <Tooltip text={capitalize(this.props.type)}>
-          <div style={Object.assign(style, {cursor: 'pointer'})}>
+          <div style={{...style, cursor: 'pointer'}}>
             {this.icon}
             {this.statText}
           </div>

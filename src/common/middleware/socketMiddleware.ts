@@ -80,7 +80,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
       const action = JSON.parse(msg);
 
       logIfFlagSet(LOG_SOCKET_IO, `Received ${msg}.`);
-      store.dispatch(Object.assign({}, action, {fromServer: true}));
+      store.dispatch({...action, fromServer: true});
     }
 
     function keepalive(): void {

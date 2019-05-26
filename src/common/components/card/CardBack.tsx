@@ -31,7 +31,7 @@ export default class CardBack extends React.Component<CardBackProps, CardBackSta
         elevation={2}
         onMouseEnter={this.toggleHover}
         onMouseLeave={this.toggleHover}
-        style={Object.assign({
+        style={{
           width: 140,
           height: 210,
           marginRight: 10,
@@ -40,8 +40,7 @@ export default class CardBack extends React.Component<CardBackProps, CardBackSta
           boxSizing: 'border-box',
           padding: 5,
           userSelect: 'none',
-          cursor: 'pointer'
-        }, style)}
+          cursor: 'pointer', ...style}}
       >
         <div
           style={{

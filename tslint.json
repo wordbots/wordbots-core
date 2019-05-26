@@ -27,6 +27,7 @@
         "grouped-imports": true
       }
     ],
+    "prefer-object-spread": true,
     "quotemark": false,
     "semicolon": [true, "ignore-interfaces"],
     "trailing-comma": false,

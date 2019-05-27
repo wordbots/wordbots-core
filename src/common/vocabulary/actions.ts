@@ -1,4 +1,4 @@
-import { cloneDeep, isFunction, mapValues } from 'lodash';
+import { cloneDeep, isArray, isFunction, mapValues } from 'lodash';
 
 import { TYPE_CORE } from '../constants';
 import * as g from '../guards';
@@ -6,7 +6,7 @@ import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
 import { afterObjectPlayed, instantiateObject } from '../reducers/handlers/game/cards';
 import * as w from '../types';
 import { splitSentences } from '../util/cards';
-import { applyFuncToField, clamp } from '../util/common';
+import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
 import {
   allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards,
   executeCmd, getHex, ownerOf,
@@ -36,7 +36,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
   // modifyAttribute() is defined here because it is also called by setAttribute().
   const modifyAttribute = (
     objects: w.ObjectOrPlayerCollection | w.CardCollection,
-    attr: w.Attribute | 'cost' | 'allattributes',
+    attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
     func: ((attr: number) => number) | w.StringRepresentationOf<(attr: number) => number>
   ): void => {
     if (state.memory.duration && g.isObjectCollection(objects)) {
@@ -55,7 +55,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         } else if (attr === 'cost' && !g.isObject(object)) {
           object.cost = clamp(func)((object as w.CardInGame).cost);
         } else {
-          object.stats = applyFuncToField(object.stats, func, attr);
+          object.stats = applyFuncToFields(object.stats, func, isArray(attr) ? attr : [attr]);
         }
       });
     }
@@ -207,7 +207,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
     setAttribute: (
       objects: w.ObjectOrPlayerCollection,
-      attr: w.Attribute | 'cost' | 'allattributes',
+      attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
       num: number | ((state: w.GameState) => number)
     ): void => {
       if (state.memory.duration) {

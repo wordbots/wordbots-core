@@ -1,4 +1,4 @@
-import {clamp as _clamp, isEqual, isNaN, isString, some} from 'lodash';
+import {clamp as _clamp, fromPairs, isEqual, isNaN, isString, some} from 'lodash';
 
 import * as w from '../types';
 
@@ -38,7 +38,14 @@ export function clamp(func: ((x: any) => number) | w.StringRepresentationOf<(x: 
 }
 
 export function applyFuncToField(obj: any, func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>, field: string): any {
-  return {...obj, [field]: clamp(func)(obj[field])};
+  return applyFuncToFields(obj, func, [field]);
+}
+
+export function applyFuncToFields(obj: any, func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>, fields: string[]): any {
+  return {
+    ...obj,
+    ...fromPairs(fields.map((field) => [field, clamp(func)(obj[field])]))
+  };
 }
 
 // http://stackoverflow.com/a/28248573

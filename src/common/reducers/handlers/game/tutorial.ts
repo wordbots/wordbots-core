@@ -60,13 +60,15 @@ function deck(cardList: w.CardInGame[]): w.CardInGame[] {
 
 export function startTutorial(state: State): State {
   // Reset game state and enable tutorial mode.
-  state = {...state, ...cloneDeep(defaultState),
+  state = {
+    ...state, ...cloneDeep(defaultState),
     started: true,
     usernames: {orange: lookupUsername(), blue: 'Computer'},
     tutorial: true,
     tutorialCurrentStepIdx: 0,
     tutorialSteps: tutorialScript,
-    undoStack: []};
+    undoStack: []
+  };
 
   // Set up.
   state.players.orange.deck = deck([

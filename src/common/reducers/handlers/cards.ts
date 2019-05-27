@@ -34,10 +34,12 @@ const cardsHandlers = {
 
   duplicateDeck: (state: State, deckId: string): State => {
     const deck: w.DeckInStore = state.decks.find((d) => d.id === deckId)!;
-    const copy: w.DeckInStore = {...deck,
+    const copy: w.DeckInStore = {
+      ...deck,
       id: id(),
       name: `${deck.name} Copy`,
-      timestamp: Date.now()};
+      timestamp: Date.now()
+    };
 
     state.decks.push(copy);
     saveDecksToFirebase(state);

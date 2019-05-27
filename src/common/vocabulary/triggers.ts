@@ -14,7 +14,9 @@ export function setTrigger(state: w.GameState, currentObject: w.Object | null, s
       action: `(${action.toString()})`,
       override: false,
       source,
-      duration: state.memory.duration || null, ...props};
+      duration: state.memory.duration || null,
+      ...props
+    };
 
     if (currentObject && !currentObject.triggers.find((t) => areTriggersEqual(t, triggerObj))) {
       currentObject.triggers = currentObject.triggers.concat([triggerObj]);

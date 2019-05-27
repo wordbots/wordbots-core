@@ -46,9 +46,11 @@ export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefi
   if ((state.tutorial || state.sandbox) && state.tutorialSteps) {
     const idx = state.tutorialCurrentStepIdx || 0;
     const step = state.tutorialSteps[idx];
-    return {...step,
+    return {
+      ...step,
       idx,
-      numSteps: state.tutorialSteps.length};
+      numSteps: state.tutorialSteps.length
+    };
   }
 }
 
@@ -310,8 +312,8 @@ function startTurn(state: w.GameState): w.GameState {
   player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => {
-    return {...obj,
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => ({
+      ...obj,
       movesMade: 0,
       cantActivate: false,
       cantAttack: false,
@@ -319,8 +321,8 @@ function startTurn(state: w.GameState): w.GameState {
       attackedThisTurn: false,
       movedThisTurn: false,
       attackedLastTurn: (obj as w.Robot).attackedThisTurn,
-      movedLastTurn: (obj as w.Robot).movedThisTurn};
-  }));
+      movedLastTurn: (obj as w.Robot).movedThisTurn
+  })));
 
   state = drawCards(state, player, 1);
   state = triggerEvent(state, 'beginningOfTurn', {player: true});

@@ -38,7 +38,7 @@ export function clamp(func: ((x: any) => number) | w.StringRepresentationOf<(x: 
 }
 
 export function applyFuncToField(obj: any, func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>, field: string): any {
-  return Object.assign({}, obj, {[field]: clamp(func)(obj[field])});
+  return {...obj, [field]: clamp(func)(obj[field])};
 }
 
 // http://stackoverflow.com/a/28248573

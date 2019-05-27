@@ -333,9 +333,10 @@ export function contractKeywords(sentence: string): string {
 
 export function cardsToJson(cards: w.Card[]): string {
   const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats'];
-  const cardsToExport = cards.map((card) =>
-    ({...pick(card, exportedFields), schema: CARD_SCHEMA_VERSION})
-  );
+  const cardsToExport = cards.map((card) => ({
+    ...pick(card, exportedFields),
+    schema: CARD_SCHEMA_VERSION
+  }));
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
 
@@ -343,12 +344,12 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
-    .map((card: w.Card) =>
-      ({...omit(card, ['schema']),
-        id: generateId(),
-        source: 'user',
-        timestamp: Date.now()})
-    )
+    .map((card: w.Card) => ({
+      ...omit(card, ['schema']),
+      id: generateId(),
+      source: 'user',
+      timestamp: Date.now()
+    }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
 }
 

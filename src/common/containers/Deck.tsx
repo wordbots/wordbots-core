@@ -168,7 +168,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
 
   private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
     this.setState((state) => ({
-      filters: Object.assign({}, state.filters, {[filter]: toggled})
+      filters: {...state.filters, [filter]: toggled}
     }));
   }
 

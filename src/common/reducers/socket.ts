@@ -7,17 +7,17 @@ import * as w from '../types';
 type State = w.SocketState;
 
 export default function socket(oldState: State = cloneDeep(defaultState), action: w.Action): State {
-  const state: State = Object.assign({}, oldState);
+  const state: State = {...oldState};
 
   switch (action.type) {
     case socketActions.CONNECTING:
-      return Object.assign(state, {connected: false, connecting: true});
+      return {...state, connected: false, connecting: true};
 
     case socketActions.CONNECTED:
-      return Object.assign(state, {connected: true, connecting: false});
+      return {...state, connected: true, connecting: false};
 
     case socketActions.DISCONNECTED:
-      return Object.assign(state, {connected: false, connecting: false});
+      return {...state, connected: false, connecting: false};
 
     case socketActions.CHAT: {
       const { chatMessages, userDataByClientId: userDataMap } = state;
@@ -31,46 +31,44 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
         timestamp: Date.now()
       };
 
-      return Object.assign(state, {
-        chatMessages: concat(chatMessages, [message])
-      });
+      return {...state,
+        chatMessages: concat(chatMessages, [message])};
     }
 
     case socketActions.CLIENT_ID:
-      return Object.assign(state, {clientId: action.payload.clientID});
+      return {...state, clientId: action.payload.clientID};
 
     case socketActions.INFO:
-      return Object.assign(state, {
+      return {...state,
         games: action.payload.games,
         waitingPlayers: action.payload.waitingPlayers,
         userDataByClientId: action.payload.userData,
         playersOnline: action.payload.playersOnline,
-        queueSize: action.payload.queueSize
-      });
+        queueSize: action.payload.queueSize};
 
     case socketActions.GAME_START:
-      return Object.assign(state, {hosting: false, queuing: false});
+      return {...state, hosting: false, queuing: false};
 
     case socketActions.HOST:
-      return Object.assign(state, {gameName: action.payload.name, hosting: true});
+      return {...state, gameName: action.payload.name, hosting: true};
 
     case socketActions.CANCEL_HOSTING:
-      return Object.assign(state, {gameName: null, hosting: false});
+      return {...state, gameName: null, hosting: false};
 
     case socketActions.JOIN:
-      return Object.assign(state, {gameName: action.payload.name});
+      return {...state, gameName: action.payload.name};
 
     case socketActions.JOIN_QUEUE:
-      return Object.assign(state, {queuing: true});
+      return {...state, queuing: true};
 
     case socketActions.LEAVE_QUEUE:
-      return Object.assign(state, {queuing: false});
+      return {...state, queuing: false};
 
     case socketActions.SPECTATE:
-      return Object.assign(state, {gameName: action.payload.name});
+      return {...state, gameName: action.payload.name};
 
     case socketActions.LEAVE:
-      return Object.assign(state, {gameName: null});
+      return {...state, gameName: null};
 
     default:
       return state;

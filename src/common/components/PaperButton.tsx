@@ -24,7 +24,7 @@ export default class PaperButton extends React.Component<PaperButtonProps, Paper
         onClick={this.onClick}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut}
-        style={Object.assign({cursor: this.props.disabled ? 'auto' : 'pointer'}, this.props.style)}
+        style={{cursor: this.props.disabled ? 'auto' : 'pointer', ...this.props.style}}
       >
         {this.props.children}
       </Paper>

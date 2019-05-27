@@ -7,10 +7,11 @@ import * as m from './multiplayer';
 // removed from both the players and spectators lists (if present),
 // or null if this results in the game no longer having >=2 active players.
 export function withoutClient(game: m.Game, clientID: m.ClientID): m.Game | null {
-  const updatedGame = Object.assign({}, game, {
+  const updatedGame = {
+    ...game,
     players: without(game.players, clientID),
     spectators: without(game.spectators, clientID)
-  });
+  };
   return updatedGame.players.length >= 2 ? updatedGame : null;
 }
 

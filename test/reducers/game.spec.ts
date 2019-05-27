@@ -21,7 +21,7 @@ import {
 describe('Game reducer', () => {
   it('should return the initial state', () => {
     const gameState = game();
-    const expectedGameState = Object.assign({}, cloneDeep(defaultState), {actionId: gameState.actionId});
+    const expectedGameState = {...cloneDeep(defaultState), actionId: gameState.actionId};
     expect(gameState).toEqual(expectedGameState);
   });
 

@@ -46,15 +46,16 @@ export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefi
   if ((state.tutorial || state.sandbox) && state.tutorialSteps) {
     const idx = state.tutorialCurrentStepIdx || 0;
     const step = state.tutorialSteps[idx];
-    return Object.assign({}, step, {
+    return {
+      ...step,
       idx,
       numSteps: state.tutorialSteps.length
-    });
+    };
   }
 }
 
 export function allObjectsOnBoard(state: w.GameState): { [hexId: string]: w.Object } {
-  return Object.assign({}, state.players.blue.robotsOnBoard, state.players.orange.robotsOnBoard);
+  return {...state.players.blue.robotsOnBoard, ...state.players.orange.robotsOnBoard};
 }
 
 export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameState | undefined {
@@ -278,7 +279,7 @@ export function logAction(
     user: '[Game]',
     text: `${playerStr}${action}${targetStr}.`,
     timestamp: timestamp || Date.now(),
-    cards: Object.assign({}, cards, targetCards)
+    cards: {...cards, ...targetCards}
   };
 
   state.actionLog.push(message);
@@ -311,8 +312,8 @@ function startTurn(state: w.GameState): w.GameState {
   player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => {
-    return Object.assign({}, obj, {
+  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => ({
+      ...obj,
       movesMade: 0,
       cantActivate: false,
       cantAttack: false,
@@ -321,8 +322,7 @@ function startTurn(state: w.GameState): w.GameState {
       movedThisTurn: false,
       attackedLastTurn: (obj as w.Robot).attackedThisTurn,
       movedLastTurn: (obj as w.Robot).movedThisTurn
-    });
-  }));
+  })));
 
   state = drawCards(state, player, 1);
   state = triggerEvent(state, 'beginningOfTurn', {player: true});
@@ -345,7 +345,7 @@ function endTurn(state: w.GameState): w.GameState {
         }
         return null;
       } else {
-        return Object.assign({}, ability, {duration: duration ? duration - 1 : null});
+        return {...ability, duration: duration ? duration - 1 : undefined};
       }
     } else {
       return ability;
@@ -357,25 +357,23 @@ function endTurn(state: w.GameState): w.GameState {
   previousTurnPlayer.selectedTile = null;
   previousTurnPlayer.status.message = '';
   previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
-  previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, ((obj) =>
-    Object.assign({}, obj, {
-      attackedThisTurn: false,
-      movedThisTurn: false,
-      attackedLastTurn: ('attackedThisTurn' in obj) ? obj.attackedThisTurn : undefined,
-      movedLastTurn: ('movedThisTurn' in obj) ? obj.movedThisTurn : undefined,
+  previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, ((obj) => ({
+    ...obj,
+    attackedThisTurn: false,
+    movedThisTurn: false,
+    attackedLastTurn: ('attackedThisTurn' in obj) ? obj.attackedThisTurn : undefined,
+    movedLastTurn: ('movedThisTurn' in obj) ? obj.movedThisTurn : undefined,
 
-      abilities: obj.abilities ? compact(obj.abilities.map(decrementDuration)) : undefined,
-      triggers: obj.triggers ? compact(obj.triggers.map(decrementDuration)) : undefined
-    })
-  ));
+    abilities: obj.abilities ? compact(obj.abilities.map(decrementDuration) as w.PassiveAbility[]) : [],
+    triggers: obj.triggers ? compact(obj.triggers.map(decrementDuration) as w.TriggeredAbility[]) : []
+  })));
 
   const nextTurnPlayer = opponentPlayer(state);
-  nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) =>
-    Object.assign({}, obj, {
-      abilities: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration)),
-      triggers: compact((obj.triggers || Array<w.Ability>()).map(decrementDuration))
-    })
-  ));
+  nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) => ({
+    ...obj,
+    abilities: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration)) as w.PassiveAbility[],
+    triggers: compact((obj.triggers || Array<w.Ability>()).map(decrementDuration)) as w.TriggeredAbility[]
+  })));
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
   state = checkVictoryConditions(state);
@@ -512,7 +510,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
   if (tempState.players[player.name].target.choosing) {
     // Still need more targets!
     // So we revert to old state but use new target selection properties.
-    state.players[player.name].target = Object.assign({}, tempState.players[player.name].target, {chosen: targets});
+    state.players[player.name].target = {...tempState.players[player.name].target, chosen: targets};
 
     return state;
   } else {
@@ -555,12 +553,12 @@ export function triggerEvent(
   let condition: ((t: w.Trigger) => boolean) = defaultCondition;
 
   if (target.object) {
-    state = Object.assign({}, state, {it: target.object});
+    state = {...state, it: target.object};
     condition = ((t: w.Trigger) =>
       (t.targets as w.Object[]).map((o: w.Object) => o.id).includes(target.object!.id) && defaultCondition(t)
     );
   } else if (target.player) {
-    state = Object.assign({}, state, {itP: currentPlayer(state)});
+    state = {...state, itP: currentPlayer(state)};
     condition = ((t: w.Trigger) =>
       (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t)
     );
@@ -577,7 +575,7 @@ export function triggerEvent(
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = (executeCmd(state, t.trigger.targetFunc, object) as w.Target).entries;
-        return Object.assign({}, t, {object});
+        return {...t, object};
       })
       .filter((t) => t.trigger.type === triggerType && condition(t.trigger))
   ));
@@ -603,7 +601,7 @@ export function triggerEvent(
     executeCmd(state, t.action, currentObject);
   });
 
-  return Object.assign({}, state, {it: null, itP: null, that: null});
+  return {...state, it: undefined, itP: undefined, that: undefined};
 }
 
 export function applyAbilities(state: w.GameState): w.GameState {

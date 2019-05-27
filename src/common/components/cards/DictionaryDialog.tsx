@@ -54,7 +54,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
   public componentDidMount(): void {
     listenToDictionaryData((data) => {
       this.setState((state) => ({
-        dictionary: Object.assign({}, state.dictionary, data.dictionary)
+        dictionary: {...state.dictionary, ...data.dictionary}
       }));
     });
   }

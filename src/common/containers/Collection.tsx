@@ -171,7 +171,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
 
   private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.MouseEvent<any>, toggled: boolean) => {
     this.setState((state) => ({
-      filters: Object.assign({}, state.filters, {[filter]: toggled})
+      filters: {...state.filters, [filter]: toggled}
     }), this.refreshSelection);
   }
 

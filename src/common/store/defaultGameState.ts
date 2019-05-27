@@ -38,7 +38,7 @@ function playerState(
         id: `${color}Core`,
         type: TYPE_CORE,
         card: coreCard,
-        stats: Object.assign({}, coreCard.stats),
+        stats: {...coreCard.stats} as { health: number },
         movesMade: 0,
         triggers: [],
         abilities: []

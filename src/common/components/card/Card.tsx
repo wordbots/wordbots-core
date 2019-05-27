@@ -130,7 +130,7 @@ export default class Card extends React.Component<CardProps, CardState> {
     };
 
     if (type === TYPE_EVENT && this.numChars < 30) {
-      return Object.assign(baseStyle, compactStyle);
+      return {...baseStyle, ...compactStyle};
     } else {
       return baseStyle;
     }
@@ -203,7 +203,7 @@ export default class Card extends React.Component<CardProps, CardState> {
             >
               <Paper
                 elevation={this.state.shadow}
-                style={Object.assign({
+                style={{
                   width: 140 * (scale || 1),
                   height: 211 * (scale || 1),
                   marginRight: 10 * (scale || 1),
@@ -211,8 +211,9 @@ export default class Card extends React.Component<CardProps, CardState> {
                   userSelect: 'none',
                   cursor: 'pointer',
                   border: source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
-                  position: 'relative'
-                }, (selected || targetable ? selectedStyle : {})) as React.CSSProperties}
+                  position: 'relative',
+                  ...(selected || targetable ? selectedStyle : {})
+                } as React.CSSProperties}
               >
                 <CardHeader
                   style={{padding: 8 * (scale || 1), height: 'auto'}}
@@ -313,9 +314,10 @@ export default class Card extends React.Component<CardProps, CardState> {
       const maxFontSize = Math.round((type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
       return (
         <div
-          style={Object.assign(this.textFitStyle, {
+          style={{
+            ...this.textFitStyle,
             fontSize: Math.min(maxFontSize, 14)
-          })}
+          }}
         >
           {text}
         </div>
@@ -360,7 +362,7 @@ export default class Card extends React.Component<CardProps, CardState> {
       );
     } else if (type === TYPE_CORE || type === TYPE_STRUCTURE) {
       return (
-        <CardText style={Object.assign(style, {marginLeft: '31%'})}>
+        <CardText style={{...style, marginLeft: '31%'}}>
           {this.renderStat('health')}
         </CardText>
       );

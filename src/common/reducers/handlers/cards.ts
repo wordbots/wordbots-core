@@ -1,3 +1,5 @@
+import { isUndefined, omitBy, pick } from 'lodash';
+
 import * as w from '../../types';
 import {
   areIdenticalCards, cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
@@ -32,11 +34,12 @@ const cardsHandlers = {
 
   duplicateDeck: (state: State, deckId: string): State => {
     const deck: w.DeckInStore = state.decks.find((d) => d.id === deckId)!;
-    const copy: w.DeckInStore = Object.assign({}, deck, {
+    const copy: w.DeckInStore = {
+      ...deck,
       id: id(),
       name: `${deck.name} Copy`,
       timestamp: Date.now()
-    });
+    };
 
     state.decks.push(copy);
     saveDecksToFirebase(state);
@@ -44,7 +47,7 @@ const cardsHandlers = {
   },
 
   exportCards: (state: State, cards: w.Card[]): State => {
-    return Object.assign({}, state, {exportedJson: cardsToJson(cards)});
+    return {...state, exportedJson: cardsToJson(cards)};
   },
 
   importCards: (state: State, json: string): State => {
@@ -69,18 +72,15 @@ const cardsHandlers = {
   },
 
   openCardForEditing: (state: w.CreatorState, card: w.CardInStore): w.CreatorState => {
-    return Object.assign(state, {
-      id: card.id,
-      name: card.name,
-      type: card.type,
-      spriteID: card.spriteID,
-      sentences: splitSentences(card.text || '').map((s) => ({sentence: s, result: {}})),
-      energy: card.cost,
+    const newFields: Partial<w.CreatorState> = {
+      ...pick(card, ['id', 'name', 'type', 'text', 'cost', 'spriteID']),
       health: card.stats ? card.stats.health : undefined,
       speed: card.stats ? card.stats.speed : undefined,
       attack: card.stats ? card.stats.attack : undefined,
-      text: card.text
-    });
+      sentences: splitSentences(card.text || '').map((s) => ({sentence: s, result: {}}))
+    };
+
+    return {...state, ...omitBy(newFields, isUndefined)};
   },
 
   openDeckForEditing: (state: State, deckId: string): State => {

@@ -31,20 +31,24 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
         timestamp: Date.now()
       };
 
-      return {...state,
-        chatMessages: concat(chatMessages, [message])};
+      return {
+        ...state,
+        chatMessages: concat(chatMessages, [message])
+      };
     }
 
     case socketActions.CLIENT_ID:
       return {...state, clientId: action.payload.clientID};
 
     case socketActions.INFO:
-      return {...state,
+      return {
+        ...state,
         games: action.payload.games,
         waitingPlayers: action.payload.waitingPlayers,
         userDataByClientId: action.payload.userData,
         playersOnline: action.payload.playersOnline,
-        queueSize: action.payload.queueSize};
+        queueSize: action.payload.queueSize
+      };
 
     case socketActions.GAME_START:
       return {...state, hosting: false, queuing: false};

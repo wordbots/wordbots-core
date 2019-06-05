@@ -23,7 +23,7 @@ interface PlayerAreaState {
 
 export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerAreaState> {
   public state = {
-    discardOpen: this.props.gameProps.target.possibleCardsInDiscardPile.length > 0 ? true : false
+    discardOpen: false
   };
 
   get color(): 'blue' | 'orange' {

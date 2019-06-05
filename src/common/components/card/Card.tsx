@@ -68,7 +68,7 @@ export default class Card extends React.Component<CardProps, CardState> {
     muiTheme: object.isRequired
   };
 
-  public static fromObj = (card: w.PossiblyObfuscatedCard, props = {}) => (
+  public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}) => (
     isCardVisible(card)
       ? (
       <Card

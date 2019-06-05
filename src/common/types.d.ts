@@ -254,7 +254,7 @@ export interface GameOptions {
 export interface PlayerInGameState {
   collection: PossiblyObfuscatedCard[]
   deck: PossiblyObfuscatedCard[]
-  discardPile: PossiblyObfuscatedCard[]
+  discardPile: CardInGame[]
   energy: PlayerEnergy
   hand: PossiblyObfuscatedCard[]
   name: PlayerColor
@@ -278,7 +278,8 @@ export interface PlayerStatus {
 export interface CurrentTarget {
   choosing: boolean
   chosen: Array<CardInGame | HexId> | null
-  possibleCards: CardId[]
+  possibleCardsInDiscardPile: CardId[]
+  possibleCardsInHand: CardId[]
   possibleHexes: HexId[]
 }
 
@@ -413,11 +414,17 @@ export interface ChatMessage {
 
 // Vocabulary types
 
-export type Collection = CardCollection | ObjectOrPlayerCollection | HexCollection;
+export type Collection = CardCollection | CardInDiscardPileCollection | ObjectOrPlayerCollection | HexCollection;
 export type Target = Collection;
 export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
+// Note that CardCollection only represents cards in the active player's hand.
+// Use CardInDiscardPileCollection to represent cards in the active player's discard pile.
 export interface CardCollection {
   type: 'cards'
+  entries: CardInGame[]
+}
+export interface CardInDiscardPileCollection {
+  type: 'cardsInDiscardPile'
   entries: CardInGame[]
 }
 export interface ObjectCollection {

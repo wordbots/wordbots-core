@@ -4,6 +4,7 @@ import { allHexIds, allObjectsOnBoard, getHex, matchesType } from '../util/game'
 
 // A collection is a function that returns one of:
 //    {type: 'cards', entries: <an array of cards in a players' hand>}
+//    {type: 'cardsInDiscardPile', entries: <an array of cards in a players' hand>}
 //    {type: 'objects', entries: <array of objects on the board>}
 //    {type: 'hexes', entries: <array of hex ids>}
 
@@ -20,6 +21,18 @@ export function cardsInHand(_: w.GameState): w.Returns<w.CardCollection> {
       type: 'cards',
       entries: (player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
         matchesType(card, cardType) && !card.justPlayed
+      )
+    };
+  };
+}
+
+export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPileCollection> {
+  return (players: w.PlayerCollection, cardType: string) => {
+    const player = players.entries[0]; // Unpack player target.
+    return {
+      type: 'cardsInDiscardPile',
+      entries: (player.discardPile as w.CardInGame[]).filter((card: w.CardInGame) =>
+        matchesType(card, cardType)
       )
     };
   };

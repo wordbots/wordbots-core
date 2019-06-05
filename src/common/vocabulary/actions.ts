@@ -1,4 +1,5 @@
-import { cloneDeep, isArray, isFunction, mapValues } from 'lodash';
+import { cloneDeep, isArray, isFunction, mapValues, remove } from 'lodash';
+import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
 import * as g from '../guards';
@@ -11,7 +12,8 @@ import {
   allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards,
   executeCmd, getHex, ownerOf,
   passTurn, removeCardsFromHand, removeObjectFromBoard,
-  updateOrDeleteObjectAtHex
+  updateOrDeleteObjectAtHex,
+  removeCardsFromDiscardPile
 } from '../util/game';
 
 export default function actions(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<void>> {
@@ -147,6 +149,15 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       });
     },
 
+    moveCardsToHand: (cards: w.CardInDiscardPileCollection, players: w.PlayerCollection): void => {
+      // Unpack.
+      const recipient: w.PlayerInGameState = players.entries[0];
+
+      removeCardsFromDiscardPile(state, cards.entries, (card) => {
+        recipient.hand.push(card);
+      });
+    },
+
     moveObject: (objects: w.ObjectCollection, hexes: w.HexCollection): void => {
       // Unpack.
       const object: w.Object | undefined = objects.entries[0] as w.Object | undefined;
@@ -221,6 +232,15 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
           modifyAttribute(target, attr, () => value);
         });
       }
+    },
+
+    shuffleCardsIntoDeck: (cards: w.CardInDiscardPileCollection, players: w.PlayerCollection): void => {
+      // Unpack.
+      const recipient: w.PlayerInGameState = players.entries[0];
+
+      removeCardsFromDiscardPile(state, cards.entries, (card) => {
+        recipient.deck = shuffle([...recipient.deck, card], state.rng());
+      });
     },
 
     // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).

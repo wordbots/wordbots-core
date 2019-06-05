@@ -27,7 +27,7 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
 
   if (isCurrentPlayer &&
       player.target.choosing &&
-      player.target.possibleCards.includes(selectedCard.id) &&
+      player.target.possibleCardsInHand.includes(selectedCard.id) &&
       (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, assertCardVisible(selectedCard));
@@ -50,6 +50,25 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
       player.selectedCard = cardIdx;
       player.status = { type: 'error', message: 'You do not have enough energy to play this card.' };
     }
+  }
+
+  return state;
+}
+
+export function setSelectedCardInDiscardPile(state: State, playerName: w.PlayerColor, cardId: w.CardId): State {
+  const player: PlayerState = state.players[playerName];
+  const isCurrentPlayer = (playerName === state.currentTurn);
+  const selectedCard: w.CardInGame | undefined = player.discardPile.find((card) => card.id === cardId);
+
+  player.selectedTile = null;
+
+  if (isCurrentPlayer &&
+      player.target.choosing &&
+      selectedCard &&
+      player.target.possibleCardsInDiscardPile.includes(selectedCard.id) &&
+      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
+    // Target chosen for a queued action.
+    return setTargetAndExecuteQueuedAction(state, selectedCard);
   }
 
   return state;
@@ -195,7 +214,7 @@ function playEvent(state: State, cardIdx: number): State {
       // In that case, the player needs to "target" the board to confirm that they want to play the event.
       state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
-      currentPlayer(state).target = { choosing: true, chosen: null, possibleCards: [], possibleHexes: allHexIds() };
+      currentPlayer(state).target = { choosing: true, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: allHexIds() };
       currentPlayer(state).status = {message: `Click anywhere on the board to play ${card.name}.`, type: 'text'};
     } else {
       // Everything is good (valid state + no more targets to select), so we can return the new state!

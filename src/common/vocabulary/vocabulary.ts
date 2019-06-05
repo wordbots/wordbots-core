@@ -3,7 +3,7 @@ import * as w from '../types';
 import { abilities, setAbility, unsetAbility } from './abilities';
 import actions from './actions';
 import {
-  allTiles, cardsInHand, objectsInPlay, objectsMatchingConditions,
+  allTiles, cardsInDiscardPile, cardsInHand, objectsInPlay, objectsMatchingConditions,
   other, tilesMatchingConditions
 } from './collections';
 import { globalConditions, objectConditions } from './conditions';
@@ -35,6 +35,7 @@ export default function vocabulary(
     // Collections
     allTiles: allTiles(state),
     cardsInHand: cardsInHand(state),
+    cardsInDiscardPile: cardsInDiscardPile(state),
     objectsInPlay: objectsInPlay(state),
     objectsMatchingConditions: objectsMatchingConditions(state),
     other: other(state, currentObject),

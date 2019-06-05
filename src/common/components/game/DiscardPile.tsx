@@ -5,6 +5,8 @@ import Card from '../card/Card';
 
 interface DiscardPileProps {
   cards: w.PossiblyObfuscatedCard[]
+  targetableCards: w.CardId[]
+  onSelectCard: (id: w.CardId) => void
 }
 
 export default class DiscardPile extends React.Component<DiscardPileProps> {
@@ -17,12 +19,13 @@ export default class DiscardPile extends React.Component<DiscardPileProps> {
           display: 'flex'
         }}
       >
-        {cards.length > 0 ? this.renderCards(cards) : ''}
+        {cards.length > 0 ? this.renderCards() : ''}
       </div>
     );
   }
 
-  private renderCards(cards: w.PossiblyObfuscatedCard[]): JSX.Element[] {
+  private renderCards(): JSX.Element[] {
+    const { cards, targetableCards, onSelectCard } = this.props;
     return cards.map((card, index) =>
       (
         <div
@@ -32,7 +35,12 @@ export default class DiscardPile extends React.Component<DiscardPileProps> {
           }}
           key={index}
         >
-          {Card.fromObj(card)}
+          {
+            Card.fromObj(card, {
+              targetable: targetableCards.includes(card.id),
+              onCardClick: onSelectCard
+            })
+          }
         </div>
       )
     );

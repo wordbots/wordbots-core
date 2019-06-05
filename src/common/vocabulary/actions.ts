@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, isFunction, mapValues, remove } from 'lodash';
+import { cloneDeep, isArray, isFunction, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
@@ -9,11 +9,8 @@ import * as w from '../types';
 import { splitSentences } from '../util/cards';
 import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
 import {
-  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards,
-  executeCmd, getHex, ownerOf,
-  passTurn, removeCardsFromHand, removeObjectFromBoard,
-  updateOrDeleteObjectAtHex,
-  removeCardsFromDiscardPile
+  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards, executeCmd, getHex, ownerOf,
+  passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
 } from '../util/game';
 
 export default function actions(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<void>> {

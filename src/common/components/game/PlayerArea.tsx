@@ -2,6 +2,7 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 
+import { STATUS_Z_INDEX } from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import * as w from '../../types';
 
@@ -76,7 +77,8 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         color: 'white'
       },
       discardContainer: {
-        display: 'flex'
+        display: 'flex',
+        zIndex: STATUS_Z_INDEX
       },
       discard: {
         marginRight: 8,

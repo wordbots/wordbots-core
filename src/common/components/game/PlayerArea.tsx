@@ -1,4 +1,5 @@
 import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 
@@ -57,7 +58,7 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
   }
 
   get styles(): Record<string, React.CSSProperties> {
-    const { opponent, gameProps: { isSandbox } } = this.props;
+    const { opponent } = this.props;
 
     return {
       container: {
@@ -81,12 +82,10 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         zIndex: STATUS_Z_INDEX
       },
       discard: {
-        marginRight: 8,
-        marginTop: isSandbox ? (opponent ? -23 : -9) : -36,
-        transform: 'rotate(-90deg)',
-        transformOrigin: '100% 100%',
-        height: 36,
-        width: 210
+        width: 36,
+        minWidth: 0,
+        height: 210,
+        marginRight: 8
       }
     };
   }
@@ -143,12 +142,18 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         >
           <RaisedButton
             secondary
-            label={`Discard Pile (${this.discardPile.length})`}
+            buttonStyle={{
+              lineHeight: 0
+            }}
+            label={<span>Open Discard Pile&nbsp;&nbsp;(<b>{this.discardPile.length}</b>)</span>}
+            labelStyle={{
+              height: '100%',
+              writingMode: 'vertical-rl'
+            }}
             onClick={this.handleOpenDiscardPile}
             style={this.styles.discard}
-            disabled={this.discardPile.length === 0}
           />
-          <Deck deck={this.deck} reveal={gameProps.isSandbox} opponent={opponent} />
+          <Deck deck={this.deck} />
         </div>
 
         <Dialog
@@ -158,6 +163,14 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
           contentStyle={{ width: 700 }}
           bodyStyle={{ overflow: 'auto' }}
           onRequestClose={this.handleCloseDiscardPile}
+          actions={[
+            <FlatButton
+              key="Close"
+              label="Close"
+              primary
+              onClick={this.handleCloseDiscardPile}
+            />
+          ]}
         >
           <DiscardPile
             cards={this.discardPile}
@@ -177,9 +190,7 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
   }
 
   private handleOpenDiscardPile = () => {
-    if (this.discardPile.length > 0) {
-      this.setState({ discardOpen: true });
-    }
+    this.setState({ discardOpen: true });
   }
 
   private handleCloseDiscardPile = () => this.setState({ discardOpen: false });

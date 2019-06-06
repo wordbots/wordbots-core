@@ -19,7 +19,7 @@ export default class DiscardPile extends React.Component<DiscardPileProps> {
           display: 'flex'
         }}
       >
-        {cards.length > 0 ? this.renderCards() : ''}
+        {cards.length > 0 ? this.renderCards() : '(empty)'}
       </div>
     );
   }

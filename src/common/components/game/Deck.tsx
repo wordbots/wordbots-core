@@ -1,19 +1,16 @@
 import * as React from 'react';
 
 import * as w from '../../types';
-import Card from '../card/Card';
 import CardBack from '../card/CardBack';
 import Tooltip from '../Tooltip';
 
 interface DeckProps {
   deck: w.PossiblyObfuscatedCard[]
-  opponent?: boolean
-  reveal?: boolean
 }
 
 export default class Deck extends React.Component<DeckProps> {
   public render(): JSX.Element {
-    const { deck, opponent, reveal } = this.props;
+    const { deck } = this.props;
 
     if (deck.length > 0) {
       return (
@@ -21,11 +18,7 @@ export default class Deck extends React.Component<DeckProps> {
           text={`${deck.length} Cards`}
           style={{fontFamily: 'Carter One'}}
         >
-          {
-            reveal ?
-              Card.fromObj(deck[0], {rotation: opponent ? 180 : 0}) :
-              <CardBack deckLength={deck.length} />
-          }
+          <CardBack deckLength={deck.length} />
         </Tooltip>
       );
     } else {

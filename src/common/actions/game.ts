@@ -17,7 +17,7 @@ export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
 export const SET_SELECTED_CARD_IN_DISCARD_PILE = 'SET_SELECTED_CARD_IN_DISCARD_PILE';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
-export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
+export const ADD_CARD_TO_HAND = 'ADD_CARD_TO_HAND';
 export const SET_VOLUME = 'SET_VOLUME';
 
 export function startPractice(format: w.BuiltInFormat, deck: w.CardInStore[]): w.Action {
@@ -135,9 +135,9 @@ export function deselect(player: w.PlayerColor): w.Action {
 }
 
 // (only used on sandbox mode)
-export function addCardToTopOfDeck(player: w.PlayerColor, card: w.Card): w.Action {
+export function addCardToHand(player: w.PlayerColor, card: w.Card): w.Action {
   return {
-    type: ADD_CARD_TO_TOP_OF_DECK,
+    type: ADD_CARD_TO_HAND,
     payload: { player, card }
   };
 }

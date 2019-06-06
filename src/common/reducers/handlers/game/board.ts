@@ -21,7 +21,7 @@ function selectTile(state: State, tile: w.HexId | null): State {
 
 function resetTargetAndStatus(player: PlayerState): void {
   player.status = { message: '', type: '' };
-  player.target = { choosing: false, chosen: null, possibleCards: [], possibleHexes: [] };
+  player.target = { choosing: false, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: [] };
 }
 
 export function deselect(state: State, playerColor: w.PlayerColor = state.currentTurn): State {

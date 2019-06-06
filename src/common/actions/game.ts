@@ -14,6 +14,7 @@ export const ACTIVATE_OBJECT = 'ACTIVATE_OBJECT';
 export const PLACE_CARD = 'PLACE_CARD';
 export const PASS_TURN = 'PASS_TURN';
 export const SET_SELECTED_CARD = 'SET_SELECTED_CARD';
+export const SET_SELECTED_CARD_IN_DISCARD_PILE = 'SET_SELECTED_CARD_IN_DISCARD_PILE';
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_TOP_OF_DECK = 'ADD_CARD_TO_TOP_OF_DECK';
@@ -109,6 +110,13 @@ export function setSelectedCard(selectedCard: number, player: w.PlayerColor): w.
   return {
     type: SET_SELECTED_CARD,
     payload: { selectedCard, player }
+  };
+}
+
+export function setSelectedCardInDiscardPile(selectedCardId: w.CardId, player: w.PlayerColor): w.Action {
+  return {
+    type: SET_SELECTED_CARD_IN_DISCARD_PILE,
+    payload: { selectedCardId, player }
   };
 }
 

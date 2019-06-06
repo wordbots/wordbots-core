@@ -93,6 +93,9 @@ export function handleAction(
     case actions.SET_SELECTED_CARD:
       return g.setSelectedCard(state, payload.player, payload.selectedCard);
 
+    case actions.SET_SELECTED_CARD_IN_DISCARD_PILE:
+      return g.setSelectedCardInDiscardPile(state, payload.player, payload.selectedCardId);
+
     case actions.SET_SELECTED_TILE:
       return g.setSelectedTile(state, payload.player, payload.selectedTile);
 

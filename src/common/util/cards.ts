@@ -74,7 +74,7 @@ export function replaceCardsInPlayerState(
   newCards: {
     deck?: w.PossiblyObfuscatedCard[],
     hand?: w.PossiblyObfuscatedCard[],
-    discardPile?: w.PossiblyObfuscatedCard[]
+    discardPile?: w.CardInGame[]
   } = {}
 ): w.PlayerInGameState {
   return {

@@ -1,6 +1,6 @@
 import {
   chain as _, compact, filter, findKey, flatMap,
-  intersection, isArray, isString, mapValues, some, times, uniqBy
+  intersection, isArray, isString, mapValues, noop, remove, some, times, uniqBy
 } from 'lodash';
 
 import GridGenerator from '../components/hexgrid/GridGenerator';
@@ -15,6 +15,7 @@ import { arbitraryPlayerState } from '../store/defaultGameState';
 import * as w from '../types';
 import buildVocabulary from '../vocabulary/vocabulary';
 
+import { assertCardVisible } from './cards';
 import { clamp } from './common';
 import { GameFormat, SharedDeckGameFormat } from './formats';
 
@@ -356,7 +357,7 @@ function endTurn(state: w.GameState): w.GameState {
   previousTurnPlayer.selectedCard = null;
   previousTurnPlayer.selectedTile = null;
   previousTurnPlayer.status.message = '';
-  previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCards: []};
+  previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCardsInHand: [], possibleCardsInDiscardPile: []};
   previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, ((obj) => ({
     ...obj,
     attackedThisTurn: false,
@@ -406,7 +407,7 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
       if (SharedDeckGameFormat.isActive(state)) {
         otherPlayer.deck.splice(0, 1);
       }
-      player.discardPile = player.discardPile.concat([card]);
+      player.discardPile = player.discardPile.concat([assertCardVisible(card)]);
       state = logAction(state, player, `had to discard a card due to having a full hand of ${MAX_HAND_SIZE} cards`);
     }
   });
@@ -429,6 +430,23 @@ export function removeCardsFromHand(state: w.GameState, cards: w.CardInGame[]): 
   const player = currentPlayer(state);
   const cardIds = cards.map((c) => c.id);
   player.hand = filter(player.hand, (c) => !cardIds.includes(c.id));
+  return state;
+}
+
+// Search and remove the given cards from each player's discard pile.
+// For each card found this way, call the given callback function.
+export function removeCardsFromDiscardPile(state: w.GameState, cards: w.CardInGame[], callback: (card: w.CardInGame) => void = noop): w.GameState {
+  const discardPiles: w.CardInGame[][] = Object.values(state.players).map((player) => player.discardPile);
+
+  cards.forEach((targetCard: w.CardInGame) => {
+    discardPiles.forEach((discardPile: w.CardInGame[]) => {
+      if (discardPile.find((card) => card.id === targetCard.id)) {
+        remove(discardPile, ((card) => card.id === targetCard.id));
+        callback(targetCard);
+      }
+    });
+  });
+
   return state;
 }
 
@@ -501,7 +519,8 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
     chosen: targets,
     choosing: false,
     possibleHexes: [],
-    possibleCards: []
+    possibleCardsInHand: [],
+    possibleCardsInDiscardPile: []
   };
 
   // Perform the trigger (in a temp state because we may need more targets yet).

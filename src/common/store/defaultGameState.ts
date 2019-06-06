@@ -53,7 +53,8 @@ function playerState(
     target: {
       choosing: false,
       chosen: null,
-      possibleCards: [],
+      possibleCardsInHand: [],
+      possibleCardsInDiscardPile: [],
       possibleHexes: []
     }
   };

@@ -2,6 +2,7 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 
+import { STATUS_Z_INDEX } from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import * as w from '../../types';
 
@@ -76,7 +77,8 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         color: 'white'
       },
       discardContainer: {
-        display: 'flex'
+        display: 'flex',
+        zIndex: STATUS_Z_INDEX
       },
       discard: {
         marginRight: 8,
@@ -87,6 +89,20 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         width: 210
       }
     };
+  }
+
+  public componentWillReceiveProps(newProps: PlayerAreaProps): void {
+    const { gameProps } = this.props;
+    const { gameProps: newGameProps } = newProps;
+    const { discardOpen } = this.state;
+
+    // Automatically open the discard pile dialog if the player needs to select cards from it.
+    if (newGameProps.target.possibleCardsInDiscardPile.length > 0 && gameProps.target.possibleCardsInDiscardPile.length === 0) {
+      // Is the discard pile currently closed and are there selectable cards in it?
+      if (!discardOpen && newGameProps.target.possibleCardsInDiscardPile.find((id) => this.discardPile.map((c) => c.id).includes(id))) {
+        this.handleOpenDiscardPile();
+      }
+    }
   }
 
   public render(): JSX.Element {
@@ -111,7 +127,7 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
           // curved
           opponent={opponent}
           selectedCard={gameProps.selectedCard}
-          targetableCards={gameProps.target.possibleCards}
+          targetableCards={gameProps.target.possibleCardsInHand}
           isActivePlayer={gameProps.player === color || gameProps.isSandbox}
           cards={this.hand}
           sandbox={gameProps.isSandbox}
@@ -143,13 +159,22 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
           bodyStyle={{ overflow: 'auto' }}
           onRequestClose={this.handleCloseDiscardPile}
         >
-          <DiscardPile cards={this.discardPile} />
+          <DiscardPile
+            cards={this.discardPile}
+            targetableCards={gameProps.target.possibleCardsInDiscardPile}
+            onSelectCard={this.handleSelectCardInDiscardPile}
+          />
         </Dialog>
       </div>
     );
   }
 
   private handleSelectCard = (idx: number) => this.props.gameProps.onSelectCard(idx, this.color);
+
+  private handleSelectCardInDiscardPile = (id: w.CardId) => {
+    this.props.gameProps.onSelectCardInDiscardPile(id, this.color);
+    this.handleCloseDiscardPile();
+  }
 
   private handleOpenDiscardPile = () => {
     if (this.discardPile.length > 0) {

@@ -33,6 +33,7 @@ interface GameAreaDispatchProps {
   onActivateObject: (abilityIdx: number) => void
   onPlaceRobot: (tileHexId: w.HexId, cardIdx: number) => void
   onSelectCard: (index: number, player: w.PlayerColor) => void
+  onSelectCardInDiscardPile: (cardId: w.CardId, player: w.PlayerColor) => void
   onSelectTile: (hexId: w.HexId, player: w.PlayerColor) => void
   onDeselect: (player: w.PlayerColor) => void
   onPassTurn: (player: w.PlayerColor) => void
@@ -150,6 +151,9 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): GameAreaDispatchPro
     },
     onSelectCard: (index: number, player: w.PlayerColor) => {
       dispatch(gameActions.setSelectedCard(index, player));
+    },
+    onSelectCardInDiscardPile: (cardId: w.CardId, player: w.PlayerColor) => {
+      dispatch(gameActions.setSelectedCardInDiscardPile(cardId, player));
     },
     onSelectTile: (hexId: w.HexId, player: w.PlayerColor) => {
       dispatch(gameActions.setSelectedTile(hexId, player));

@@ -34,7 +34,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
   // modifyAttribute() is defined here because it is also called by setAttribute().
   const modifyAttribute = (
-    objects: w.ObjectOrPlayerCollection | w.CardCollection,
+    objects: w.ObjectOrPlayerCollection | w.CardInHandCollection,
     attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
     func: ((attr: number) => number) | w.StringRepresentationOf<(attr: number) => number>
   ): void => {
@@ -62,7 +62,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
   return {
     // Become a card.
-    become: (sources: w.ObjectOrPlayerCollection, cards: w.CardCollection): void => {
+    become: (sources: w.ObjectOrPlayerCollection, cards: w.CardInHandCollection): void => {
       const card = cards.entries[0];
       iterateOver<w.Object>(sources)((source: w.Object) => {
         Object.assign(source, {
@@ -118,7 +118,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       });
     },
 
-    discard: (cards: w.CardCollection): void => {
+    discard: (cards: w.CardInHandCollection): void => {
       removeCardsFromHand(state, cards.entries);
     },
 
@@ -231,17 +231,23 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    shuffleCardsIntoDeck: (cards: w.CardInDiscardPileCollection, players: w.PlayerCollection): void => {
+    shuffleCardsIntoDeck: (cards: w.CardInHandCollection | w.CardInDiscardPileCollection, players: w.PlayerCollection): void => {
       // Unpack.
       const recipient: w.PlayerInGameState = players.entries[0];
+      const collectionType = cards.type;
 
-      removeCardsFromDiscardPile(state, cards.entries, (card) => {
-        recipient.deck = shuffle([...recipient.deck, card], state.rng());
-      });
+      if (collectionType === 'cards') {
+        removeCardsFromHand(state, cards.entries);
+        recipient.deck = shuffle([...recipient.deck, ...cards.entries], state.rng());
+      } else if (collectionType === 'cardsInDiscardPile') {
+        removeCardsFromDiscardPile(state, cards.entries, (card) => {
+          recipient.deck = shuffle([...recipient.deck, card], state.rng());
+        });
+      }
     },
 
     // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).
-    spawnObject: (cards: w.CardCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
+    spawnObject: (cards: w.CardInHandCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
       const card: w.CardInGame = cards.entries[0];
 
       const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);

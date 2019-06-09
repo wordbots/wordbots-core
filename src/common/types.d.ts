@@ -414,12 +414,10 @@ export interface ChatMessage {
 
 // Vocabulary types
 
-export type Collection = CardCollection | CardInDiscardPileCollection | ObjectOrPlayerCollection | HexCollection;
-export type Target = Collection;
+export type Collection = CardInHandCollection | CardInDiscardPileCollection | ObjectOrPlayerCollection | HexCollection;
+export type Target = Collection;  // Easier to not have to maintain separate types for Target vs Collection since they're conceptually interchangeable.
 export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
-// Note that CardCollection only represents cards in the active player's hand.
-// Use CardInDiscardPileCollection to represent cards in the active player's discard pile.
-export interface CardCollection {
+export interface CardInHandCollection {
   type: 'cards'
   entries: CardInGame[]
 }

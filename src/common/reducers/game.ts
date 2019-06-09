@@ -102,11 +102,11 @@ export function handleAction(
     case actions.DESELECT:
       return g.deselect(state, payload.player);
 
-    case actions.ADD_CARD_TO_TOP_OF_DECK: {
+    case actions.ADD_CARD_TO_HAND: {
       // Only to be used in sandbox mode.
       const { player } = payload;
       const card: w.CardInGame = { ...payload.card, id: id() };
-      state.players[player as w.PlayerColor].deck.unshift(card);
+      state.players[player as w.PlayerColor].hand.push(card);
       return state;
     }
 

@@ -87,7 +87,7 @@ type GameAreaProps = GameProps & RouteComponentProps & {
   onNextTutorialStep: () => void
   onPrevTutorialStep: () => void
   onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHexId?: w.HexId | null) => void
-  onAddCardToTopOfDeck: (player: w.PlayerColor, card: w.Card) => void
+  onaddCardToHand: (player: w.PlayerColor, card: w.Card) => void
   onSetVolume: (volume: number) => void
 };
 
@@ -295,14 +295,14 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
   }
 
   private renderSidebar = () => {
-    const { actionLog, collection, isSandbox, socket, onAddCardToTopOfDeck, onSendChatMessage } = this.props;
+    const { actionLog, collection, isSandbox, socket, onaddCardToHand, onSendChatMessage } = this.props;
     const { chatOpen } = this.state;
 
     if (isSandbox) {
       return (
         <CardSelector
           cardCollection={collection.cards}
-          onAddCardToTopOfDeck={onAddCardToTopOfDeck}
+          onaddCardToHand={onaddCardToHand}
         />
       );
     } else {

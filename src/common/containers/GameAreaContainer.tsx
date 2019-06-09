@@ -45,7 +45,7 @@ interface GameAreaDispatchProps {
   onStartPractice: (format: w.BuiltInFormat, deck: w.CardInStore[]) => void
   onAIResponse: () => void
   onSendChatMessage: (msg: string) => void
-  onAddCardToTopOfDeck: (player: w.PlayerColor, card: w.Card) => void
+  onaddCardToHand: (player: w.PlayerColor, card: w.Card) => void
   onSetVolume: (volume: number) => void
 }
 
@@ -194,8 +194,8 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): GameAreaDispatchPro
     onSendChatMessage: (msg: string) => {
       dispatch(socketActions.chat(msg));
     },
-    onAddCardToTopOfDeck: (player: w.PlayerColor, card: w.Card) => {
-      dispatch(gameActions.addCardToTopOfDeck(player, card));
+    onaddCardToHand: (player: w.PlayerColor, card: w.Card) => {
+      dispatch(gameActions.addCardToHand(player, card));
     },
     onSetVolume: (volume: number) => {
       dispatch(gameActions.setVolume(volume));

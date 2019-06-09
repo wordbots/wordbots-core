@@ -1,9 +1,8 @@
 import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
-import { debounce, isEqual, sortBy } from 'lodash';
+import { capitalize, debounce, isEqual, sortBy } from 'lodash';
 import * as React from 'react';
 
 import { BLUE_PLAYER_COLOR, BLUE_PLAYER_COLOR_DARKENED, ORANGE_PLAYER_COLOR, ORANGE_PLAYER_COLOR_DARKENED } from '../../constants';
@@ -14,7 +13,7 @@ import Tooltip from '../Tooltip';
 import CardSelectorCard from './CardSelectorCard';
 
 interface CardSelectorBaseProps {
-  onAddCardToTopOfDeck: (player: string, card: w.CardInStore) => void
+  onaddCardToHand: (player: string, card: w.CardInStore) => void
   cardCollection: w.CardInStore[]
 }
 
@@ -75,8 +74,13 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
     const filteredCollection = cardCollection.filter((card: w.CardInStore): boolean =>
       card.name.toLowerCase().includes(searchText.toLowerCase())
     );
-    this.setState({ cardCollection: filteredCollection });
-  }, 500);
+
+    this.setState(({ selectedCard }) => ({
+      cardCollection: filteredCollection,
+      // Unselect currently selected card if it's no longer visible
+      selectedCard: (selectedCard && filteredCollection.map((c) => c.id).includes(selectedCard.id)) ? selectedCard : undefined
+    }));
+  }, 300);
 
   constructor(props: CardSelectorProps) {
     super(props);
@@ -116,23 +120,16 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
   }
 
   private handleSelectCard = (card: w.CardInStore): void => {
-    const selectedCard = this.state.selectedCard;
-
-    if (card === selectedCard) {
-      this.deselectCard();
-    } else {
-      this.setState({ selectedCard: card });
-    }
-  }
-
-  private deselectCard = (): void => {
-    this.setState({ selectedCard: undefined });
+    this.setState((state) => ({
+      selectedCard: card === state.selectedCard ? undefined : card
+    }));
   }
 
   private handleGiveCard = (player: string): () => void => (): void => {
     const { selectedCard } = this.state;
     if (selectedCard) {
-      this.props.onAddCardToTopOfDeck(player, selectedCard);
+      this.props.onaddCardToHand(player, selectedCard);
+      this.setState({ selectedCard: undefined });
     }
   }
 
@@ -150,37 +147,22 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
     ));
   }
 
-  private get buttons(): Record<string, Record<string, string>> {
-    const { classes } = this.props;
-
-    return {
-      blue: {
-        class: classes.buttonBlue,
-        icon: 'fast_forward'
-      },
-      orange: {
-        class: classes.buttonOrange,
-        icon: 'fast_rewind'
-      }
-    };
-  }
-
   private renderAddCardToDeckButton(player: string): JSX.Element {
     const { classes } = this.props;
 
     return (
-      <Tooltip  text={`Place card on top of ${player} deck.`} place="left" >
+      <Tooltip text={`Place card in the ${player} player's hand.`} place="left">
         <Button
           variant="contained"
           color="primary"
           classes={{
             root: classes.buttonRoot,
-            containedPrimary: this.buttons[player].class
+            containedPrimary: classes[`button${capitalize(player)}`]
           }}
           onClick={this.handleGiveCard(player)}
           disabled={!this.state.selectedCard}
         >
-          <Icon>{this.buttons[player].icon}</Icon>
+          Give to<br />{player}
         </Button>
       </Tooltip>
     );

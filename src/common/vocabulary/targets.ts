@@ -12,7 +12,7 @@ import {
 
 // Targets are all functions that return one of:
 //    {type: 'cards', entries: <an array of cards in a player's hand>}
-//    {type: 'cardsInDiscardPile', entries: <an array of cards in a player's discard pile>}
+//    {type: 'cardsInDiscardPile', entries: <an array of cards in either player's discard pile>}
 //    {type: 'objects', entries: <array of objects on the board>}
 //    {type: 'players', entries: <array of players>}
 // An empty array of entries means either that there are no valid targets

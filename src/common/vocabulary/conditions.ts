@@ -80,6 +80,10 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
 // They're used in if-expressions.
 export function globalConditions(_state: w.GameState): Record<string, w.Returns<boolean>> {
   return {
+    collectionCountComparison: (collection: w.Collection, comp: (count: number) => boolean) => {
+      return comp(collection.entries.length);
+    },
+
     collectionExists: (collection: w.Collection) => {
       return collection.entries.length > 0;
     },

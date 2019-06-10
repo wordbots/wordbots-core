@@ -86,7 +86,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       };
     },
 
-    applyEffect: (targetFunc: (state: w.GameState) => w.Target[], effect: string, props = {}) => {
+    applyEffect: (targetFunc: (state: w.GameState) => w.Target[], effect: w.EffectType, props = {}) => {
       const aid: w.AbilityId = id();
       return {
         aid,

@@ -12,7 +12,7 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
-const USE_LOCAL_PARSER = false;
+const USE_LOCAL_PARSER = true;
 const LOCAL_PARSER_PORT = 8080;
 
 // Server settings.

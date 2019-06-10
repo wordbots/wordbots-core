@@ -5,7 +5,7 @@ import { BLUE_PLACEMENT_HEXES, GRID_CONFIG, ORANGE_PLACEMENT_HEXES, TYPE_ROBOT, 
 import defaultGameState, { arbitraryPlayerState } from '../../store/defaultGameState';
 import * as w from '../../types';
 import {
-  getAttribute, intermediateMoveHexId, movesLeft, ownerOf,
+  canActivate, getAttribute, intermediateMoveHexId, movesLeft, ownerOf,
   validActionHexes, validAttackHexes, validMovementHexes, validPlacementHexes
 } from '../../util/game';
 import Hex from '../hexgrid/Hex';
@@ -103,9 +103,9 @@ export default class Board extends React.Component<BoardProps, BoardState> {
 
   get selectedActivatedAbilities(): w.ActivatedAbility[] {
     if (this.isMyTurn && this.selectedPiece
-          && this.selectedPiece.activatedAbilities && !this.selectedPiece.cantActivate
+          && canActivate(this.selectedPiece)
           && !this.props.target.choosing) {  // Don't display activated abilities popup while choosing a target.
-      return this.selectedPiece.activatedAbilities;
+      return this.selectedPiece.activatedAbilities!;
     } else {
       return [];
     }

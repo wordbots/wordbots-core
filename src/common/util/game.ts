@@ -422,7 +422,7 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
       if (SharedDeckGameFormat.isActive(state)) {
         otherPlayer.deck.splice(0, 1);
       }
-      player.discardPile = player.discardPile.concat([assertCardVisible(card)]);
+      state = putCardsInDiscardPile(state, player, [assertCardVisible(card)]);
       state = logAction(state, player, `had to discard a card due to having a full hand of ${MAX_HAND_SIZE} cards`);
     }
   });
@@ -431,12 +431,25 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
   return state;
 }
 
+export function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGameState, cards: w.CardInGame[]): w.GameState {
+  player.discardPile = [...player.discardPile, ...cards];
+
+  cards.forEach((card) => {
+    state = triggerEvent(state, 'afterCardEntersDiscardPile', {
+      player: true,
+      condition: (t: w.Trigger) => matchesType(card, t.cardType!)
+    });
+  });
+
+  return state;
+}
+
 // Note: This is used to either play or discard a set of cards.
-export function discardCards(state: w.GameState, color: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
+export function discardCardsFromHand(state: w.GameState, color: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
   // At the moment, only the currently active player can ever play or discard a card.
   const player = state.players[color];
-  player.discardPile = player.discardPile.concat(cards);
-  removeCardsFromHand(state, cards);
+  state = putCardsInDiscardPile(state, player, cards);
+  state = removeCardsFromHand(state, cards);
   return state;
 }
 
@@ -498,7 +511,7 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
     if (allObjectsOnBoard(state)[hex]) {
       const card = state.players[ownerName].robotsOnBoard[hex].card;
       state = removeObjectFromBoard(state, object, hex);
-      state = discardCards(state, state.players[ownerName].name, [card]);
+      state = discardCardsFromHand(state, state.players[ownerName].name, [card]);
     }
   }
 

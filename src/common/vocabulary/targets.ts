@@ -94,6 +94,15 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
+    // Used for things like ConditionTargetOn.
+    conditionOn: (target: w.Collection, condition: () => boolean): w.Collection => {
+      if (condition()) {
+        return target;
+      } else {
+        return { type: target.type, entries: [] } as w.Collection;
+      }
+    },
+
     controllerOf: (objects: w.ObjectCollection): w.PlayerCollection => {
       // Assume that only one object is ever passed in here.
       return {type: 'players', entries: (objects.entries.length === 1) ? [ownerOf(state, objects.entries[0])!] : []};

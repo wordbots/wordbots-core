@@ -14,7 +14,7 @@ export type Attribute = 'attack' | 'health' | 'speed';
 export type BuiltInFormat = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type CardId = string;
 export type CardType = 0 | 1 | 2 | 3;
-export type Cause = string;
+export type Cause = 'combat' | 'anyevent';
 export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack' | 'cannotfightback' | 'cannotmove' | 'canonlyattack';
 export type DeckId = string;
 export type HexId = string;
@@ -316,6 +316,7 @@ interface _Object { // tslint:disable-line:class-name
   movedLastTurn?: boolean
   beingDestroyed?: boolean
   isDestroyed?: boolean
+  mostRecentlyInCombatWith?: _Object
   justPlayed?: boolean
 }
 export type Object = _Object;

@@ -94,7 +94,6 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    // Used for things like ConditionTargetOn.
     conditionOn: (target: w.Collection, condition: () => boolean): w.Collection => {
       if (condition()) {
         return target;

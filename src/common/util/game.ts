@@ -91,14 +91,18 @@ export function getCost(card: w.CardInGame): number {
 }
 
 export function movesLeft(robot: w.Robot): number {
-  return robot.cantMove ? 0 : (getAttribute(robot, 'speed') as number) - robot.movesMade;
+  if (robot.cantMove || hasEffect(robot, 'cannotmove')) {
+    return 0;
+  } else {
+    return getAttribute(robot, 'speed')! - robot.movesMade;
+  }
 }
 
-export function hasEffect(object: w.Object, effect: string): boolean {
+export function hasEffect(object: w.Object, effect: w.EffectType): boolean {
   return some((object.effects || []), ['effect', effect]);
 }
 
-function getEffect(object: w.Object, effect: string): any {
+function getEffect(object: w.Object, effect: w.EffectType): any {
   return (object.effects || Array<w.Effect>())
             .filter((eff: w.Effect) => eff.effect === effect)
             .map((eff: w.Effect) => eff.props);
@@ -120,6 +124,10 @@ function allowedToAttack(state: w.GameState, attacker: w.Robot, targetHex: Hex):
   } else {
     return true;
   }
+}
+
+export function canActivate(object: w.Object): boolean {
+  return (object.activatedAbilities || []).length > 0 && !object.cantActivate && !hasEffect(object, 'cannotactivate');
 }
 
 export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery: string | string[]): boolean {
@@ -203,6 +211,9 @@ export function validPlacementHexes(state: w.GameState, playerName: w.PlayerColo
 
 export function validMovementHexes(state: w.GameState, startHex: Hex): Hex[] {
   const object: w.Robot = allObjectsOnBoard(state)[HexUtils.getID(startHex)] as w.Robot;
+  if (!object) {
+    return [];
+  }
 
   let potentialMovementHexes = [startHex];
 
@@ -219,6 +230,10 @@ export function validMovementHexes(state: w.GameState, startHex: Hex): Hex[] {
 
 export function validAttackHexes(state: w.GameState, startHex: Hex): Hex[] {
   const object: w.Robot = allObjectsOnBoard(state)[HexUtils.getID(startHex)] as w.Robot;
+  if (!object) {
+    return [];
+  }
+
   const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex));
   const potentialAttackHexes = _(validMoveHexes).flatMap(getAdjacentHexes).uniqBy(HexUtils.getID).value();
 
@@ -227,15 +242,15 @@ export function validAttackHexes(state: w.GameState, startHex: Hex): Hex[] {
 
 export function validActionHexes(state: w.GameState, startHex: Hex): Hex[] {
   const object = allObjectsOnBoard(state)[HexUtils.getID(startHex)];
-  if (object) {
-    const movementHexes = validMovementHexes(state, startHex);
-    const attackHexes = validAttackHexes(state, startHex);
-    const activateHexes = ((object.activatedAbilities || []).length > 0 && !object.cantActivate) ? [startHex] : [];
-
-    return Array<Hex>().concat(movementHexes, attackHexes, activateHexes);
-  } else {
+  if (!object) {
     return [];
   }
+
+  const movementHexes = validMovementHexes(state, startHex);
+  const attackHexes = validAttackHexes(state, startHex);
+  const activateHexes = canActivate(object) ? [startHex] : [];
+
+  return Array<Hex>().concat(movementHexes, attackHexes, activateHexes);
 }
 
 export function intermediateMoveHexId(state: w.GameState, startHex: Hex, attackHex: Hex): w.HexId | null {

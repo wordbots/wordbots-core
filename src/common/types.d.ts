@@ -15,6 +15,7 @@ export type BuiltInFormat = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type CardId = string;
 export type CardType = 0 | 1 | 2 | 3;
 export type Cause = string;
+export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack' | 'cannotfightback' | 'cannotmove' | 'canonlyattack';
 export type DeckId = string;
 export type HexId = string;
 export type ParserMode = 'event' | 'object';
@@ -334,7 +335,7 @@ export interface StatAdjustment {
 
 export interface Effect {
   aid: AbilityId
-  effect: string
+  effect: EffectType
   props: any
 }
 

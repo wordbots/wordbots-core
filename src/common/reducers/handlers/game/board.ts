@@ -4,7 +4,7 @@ import HexUtils from '../../../components/hexgrid/HexUtils';
 import { stringToType } from '../../../constants';
 import * as w from '../../../types';
 import {
-  allObjectsOnBoard, applyAbilities, currentPlayer, dealDamageToObjectAtHex, executeCmd, getAttribute,
+  allObjectsOnBoard, applyAbilities, canActivate, currentPlayer, dealDamageToObjectAtHex, executeCmd, getAttribute,
   hasEffect, logAction,
   opponentPlayer, ownerOf, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
   updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
@@ -190,9 +190,9 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
 
   const object = allObjectsOnBoard(tempState)[hexId];
 
-  if (object && !object.cantActivate && object.activatedAbilities && object.activatedAbilities[abilityIdx]) {
+  if (object && canActivate(object) && object.activatedAbilities![abilityIdx]) {
     const player: PlayerState = currentPlayer(tempState);
-    const ability: w.ActivatedAbility = object.activatedAbilities[abilityIdx];
+    const ability: w.ActivatedAbility = object.activatedAbilities![abilityIdx];
 
     const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
     const target: w.Targetable | null = player.target.chosen ? player.target.chosen[0] : null;

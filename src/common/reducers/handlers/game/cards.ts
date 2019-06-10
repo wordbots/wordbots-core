@@ -8,7 +8,7 @@ import { assertCardVisible, splitSentences } from '../../../util/cards';
 import { id } from '../../../util/common';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
-  discardCards, executeCmd,
+  discardCardsFromHand, executeCmd,
   getCost, logAction,
   matchesType, removeCardsFromHand, setTargetAndExecuteQueuedAction,
   triggerEvent, triggerSound, validPlacementHexes
@@ -220,7 +220,7 @@ function playEvent(state: State, cardIdx: number): State {
       // Everything is good (valid state + no more targets to select), so we can return the new state!
       card.justPlayed = false;
 
-      tempState = discardCards(tempState, currentPlayer(state).name, [card]);
+      tempState = discardCardsFromHand(tempState, currentPlayer(state).name, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
         condition: (t: w.Trigger) => matchesType(card, t.cardType!)

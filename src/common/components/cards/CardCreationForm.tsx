@@ -61,7 +61,7 @@ interface CardCreationFormState {
 
 export default class CardCreationForm extends React.Component<CardCreationFormProps, CardCreationFormState> {
   private static styles: Record<string, React.CSSProperties> = {
-    container: {width: '60%', flex: 1, padding: 64},
+    container: {width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32},
     paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
 
     section: {display: 'flex', justifyContent: 'space-between'},
@@ -209,7 +209,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     const FULL_WIDTH_PERCENT = 100;
     const NUMBER_OF_BUTTONS = 4;
-    const MARGIN_PX = 20;
+    const MARGIN_PX = 15;
 
     const buttonMaxWidth = FULL_WIDTH_PERCENT / NUMBER_OF_BUTTONS;
     const buttonPadding = (MARGIN_PX * (NUMBER_OF_BUTTONS - 1)) / NUMBER_OF_BUTTONS;

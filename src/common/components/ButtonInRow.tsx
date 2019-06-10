@@ -19,6 +19,7 @@ export default class ButtonInRow extends React.Component<ButtonInRowProps> {
     return (
       <RaisedButton
         primary
+        className="button-in-row"
         style={width ? { width } : {margin: '0 5px'}}
         onClick={onClick}
         disabled={disabled}
@@ -36,7 +37,9 @@ export default class ButtonInRow extends React.Component<ButtonInRowProps> {
                 userSelect: 'none',
                 paddingLeft: 8,
                 paddingRight: 8,
-                color: 'white'
+                color: 'white',
+                wordBreak: 'break-all',
+                hyphens: 'auto'
               }}
             >
               {label}

@@ -73,6 +73,14 @@ export function triggers(_state: w.GameState): Record<string, w.Returns<w.Trigge
       };
     },
 
+    afterDestroysOtherObject: (targetFunc: (state: w.GameState) => w.Target[], objectType: string): w.Trigger => {
+      return {
+        type: 'afterDestroysOtherObject',
+        cardType: objectType,
+        targetFunc: `(${targetFunc.toString()})`
+      };
+    },
+
     afterMove: (targetFunc: (state: w.GameState) => w.Target[]): w.Trigger => {
       return {
         type: 'afterMove',

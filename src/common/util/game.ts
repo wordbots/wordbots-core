@@ -379,6 +379,7 @@ function endTurn(state: w.GameState): w.GameState {
     movedThisTurn: false,
     attackedLastTurn: ('attackedThisTurn' in obj) ? obj.attackedThisTurn : undefined,
     movedLastTurn: ('movedThisTurn' in obj) ? obj.movedThisTurn : undefined,
+    mostRecentlyInCombatWith: undefined,
 
     abilities: obj.abilities ? compact(obj.abilities.map(decrementDuration) as w.PassiveAbility[]) : [],
     triggers: obj.triggers ? compact(obj.triggers.map(decrementDuration) as w.TriggeredAbility[]) : []
@@ -505,6 +506,12 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
     state = triggerSound(state, 'destroyed.wav');
     state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object, condition: ((t: w.Trigger) => (t.cause === cause || t.cause === 'anyevent'))});
+    if (cause === 'combat' && object.mostRecentlyInCombatWith) {
+      state = triggerEvent(state, 'afterDestroysOtherObject', {
+        object: object.mostRecentlyInCombatWith,
+        condition: ((t: w.Trigger) => matchesType(object.card, t.cardType!))
+      });
+    }
 
     // Check if the object is still there, because the afterDestroyed trigger may have,
     // e.g., returned it to its owner's hand.

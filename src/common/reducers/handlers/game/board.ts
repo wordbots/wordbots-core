@@ -103,7 +103,7 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
   const player: PlayerState = currentPlayer(state);
   const opponent: PlayerState = opponentPlayer(state);
 
-  const attacker: w.Object = player.robotsOnBoard[source];
+  const attacker: w.Robot = player.robotsOnBoard[source] as w.Robot;
   const defender: w.Object = opponent.robotsOnBoard[target];
 
   if (player.target.choosing) {
@@ -146,11 +146,13 @@ export function attackComplete(state: State): State {
       object: attacker,
       condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
       undergoer: defender
-    }, () =>
-      dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat')
-    );
+    }, () => {
+      defender.mostRecentlyInCombatWith = attacker;
+      return dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+    });
 
     if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack')! > 0) {
+      attacker.mostRecentlyInCombatWith = defender;
       state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
     }
 

@@ -14,7 +14,7 @@ export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
   };
 }
 
-export function cardsInHand(_: w.GameState): w.Returns<w.CardCollection> {
+export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
   return (players: w.PlayerCollection, cardType: string) => {
     const player = players.entries[0]; // Unpack player target.
     return {

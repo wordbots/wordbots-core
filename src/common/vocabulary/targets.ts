@@ -99,7 +99,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       return {type: 'players', entries: (objects.entries.length === 1) ? [ownerOf(state, objects.entries[0])!] : []};
     },
 
-    copyOf: (collection: w.Collection): w.CardCollection => {
+    copyOf: (collection: w.Collection): w.CardInHandCollection => {
       // Assume that exactly one object is ever passed in here.
       // currently only allow picking from objects on field.
       // allow picking from hand in future.
@@ -109,7 +109,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       return {type: 'cards', entries: []};
     },
 
-    generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}, name?: string): w.CardCollection => {
+    generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}, name?: string): w.CardInHandCollection => {
       const card: w.CardInGame = {
         abilities: [],
         baseCost: 0,
@@ -124,7 +124,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     },
 
     // Currently salient object.
-    it: (): w.ObjectCollection | w.CardCollection => {
+    it: (): w.ObjectCollection | w.CardInHandCollection => {
       /* console.log({
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null
@@ -190,7 +190,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     // with:
     //     Whenever this robot attacks a robot, destroy that robot.
     //     ("that robot" clearly refers to the object)
-    that: (): w.ObjectCollection | w.CardCollection => {
+    that: (): w.ObjectCollection | w.CardInHandCollection => {
       if (state.that) {
         return { type: 'objects', entries: [state.that] };
       } else if (state.it) {

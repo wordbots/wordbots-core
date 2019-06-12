@@ -7,15 +7,19 @@ import * as React from 'react';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
+import { sortCards } from '../../util/cards';
 import Card from '../card/Card';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 interface SetSummaryBaseProps {
   set: w.Set
   user: fb.User | null
+  inPublishedSetsList?: boolean
+  isSingleSet?: boolean
   numDecksCreated?: number
   onCreateDeckFromSet: () => void
   onDeleteSet: () => void
+  onDuplicateSet: () => void
   onEditSet: () => void
   onPublishSet: () => void
 }
@@ -96,7 +100,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   };
 
   public state = {
-    isCardListExpanded: false,
+    isCardListExpanded: !!this.props.isSingleSet,
     isDeleteConfirmationOpen: false,
     isPermalinkCopied: false,
     isPublishConfirmDialogOpen: false
@@ -117,7 +121,9 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       classes,
       set: { cards, description, metadata, name },
       numDecksCreated,
+      inPublishedSetsList,
       onCreateDeckFromSet,
+      onDuplicateSet,
       onEditSet,
       user
     } = this.props;
@@ -128,12 +134,14 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       <Paper className={classes.paper}>
         <div>
           <strong>{name}</strong> by {metadata.authorName}
+          {!inPublishedSetsList && metadata.isPublished && <i> (published)</i>}
         </div>
         <div className={classes.controls}>
           <MustBeLoggedIn loggedIn={!!user}>
             {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
             {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 }) : null}
             {canEditSet ? this.renderButton('Edit', onEditSet) : null}
+            {this.doesSetBelongToUser ? this.renderButton('Duplicate', onDuplicateSet) : null}
             {this.renderDeleteControl()}
           </MustBeLoggedIn>
         </div>
@@ -150,7 +158,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </CopyToClipboard>
         </div>
         {isCardListExpanded && <div>
-          {cards.map((card, idx) => <SetSummaryCard card={card} key={idx} waitMs={25 * idx} />)}
+          {
+            cards
+              .sort((c1, c2) => sortCards(c1, c2, 0))
+              .map((card, idx) => <SetSummaryCard card={card} key={idx} waitMs={25 * idx} />)
+          }
           <div style={{clear: 'both'}}/>
         </div>}
         <div className={classes.numDecksCreated}>

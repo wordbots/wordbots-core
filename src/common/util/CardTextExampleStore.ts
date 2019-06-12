@@ -2,7 +2,7 @@ import { capitalize, identity, pullAt, random, shuffle } from 'lodash';
 
 import * as w from '../types';
 
-import { parseBatch } from './cards';
+import { expandKeywords, parseBatch } from './cards';
 
 export default class CardTextExampleStore {
   private examples: { [mode: string]: string[] } = {
@@ -18,7 +18,7 @@ export default class CardTextExampleStore {
   }
 
   public loadExamples = (sentences: string[], numToTry: number, onLoad: (s: string) => any = identity): void => {
-    const candidates = shuffle(sentences).map(capitalize).slice(0, numToTry);
+    const candidates = shuffle(sentences).map(capitalize).map(expandKeywords).slice(0, numToTry);
     const modes = Object.keys(this.examples);
 
     modes.forEach((mode) => {

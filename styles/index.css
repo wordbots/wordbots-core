@@ -157,3 +157,9 @@ a.topLink:hover {
 .volume-slider {
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
+
+@media only screen and (max-width: 1400px) {
+  .button-in-row .material-icons {
+    display: none !important;
+  }
+}

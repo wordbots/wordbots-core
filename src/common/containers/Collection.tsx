@@ -109,10 +109,17 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element {
+    const { exportedJson, history, onImportCards } = this.props;
+
     return (
       <div>
         <Helmet title="Collection" />
-        <Title text="Collection" />
+        <div style={{ display: 'flex' }}>
+          <Title text="Collection" />
+          <div style={{ marginLeft: 30, marginTop: 12 }}>
+            {this.renderButtons(true)}
+          </div>
+        </div>
 
         <div
           style={{
@@ -122,13 +129,13 @@ export class Collection extends React.Component<CollectionProps, CollectionState
           }}
         >
           <ExportDialog
-            history={this.props.history}
-            text={this.props.exportedJson}
+            history={history}
+            text={exportedJson}
           />
 
           <ImportDialog
-            history={this.props.history}
-            onImport={this.props.onImportCards}
+            history={history}
+            onImport={onImportCards}
           />
 
           <CardCollection
@@ -147,7 +154,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
             }}
           >
             {this.renderSidebarControls()}
-            {this.renderSidebarButtons()}
+            {this.renderButtons(false)}
           </div>
         </div>
       </div>
@@ -234,58 +241,64 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     </Paper>
   )
 
-  private renderSidebarButtons = () => (
-    <MustBeLoggedIn loggedIn={this.props.loggedIn}>
-      <RaisedButton
-        label="New Card"
-        labelPosition="after"
-        secondary
-        icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">queue</FontIcon>}
-        style={{width: '100%', marginTop: 10, height: 48}}
-        buttonStyle={{textAlign: 'left'}}
-        onClick={this.handleClickNewCard}
-      />
-      <RaisedButton
-        label="Edit Selected"
-        labelPosition="after"
-        secondary
-        disabled={this.state.selectedCardIds.length !== 1}
-        icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">edit</FontIcon>}
-        style={{width: '100%', marginTop: 10, height: 48}}
-        buttonStyle={{textAlign: 'left'}}
-        onClick={this.handleClickEdit}
-      />
-      <RaisedButton
-        label="Delete Selected"
-        labelPosition="after"
-        secondary
-        disabled={this.state.selectedCardIds.length === 0}
-        icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">delete</FontIcon>}
-        style={{width: '100%', marginTop: 10, height: 48}}
-        buttonStyle={{textAlign: 'left'}}
-        onClick={this.handleClickDelete}
-      />
-      <RaisedButton
-        label="Export Selected"
-        labelPosition="after"
-        secondary
-        disabled={this.state.selectedCardIds.length === 0}
-        icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_download</FontIcon>}
-        style={{width: '100%', marginTop: 10, height: 48}}
-        buttonStyle={{textAlign: 'left'}}
-        onClick={this.handleClickExport}
-      />
-      <RaisedButton
-        label="Import Cards"
-        labelPosition="after"
-        secondary
-        icon={<FontIcon style={{margin: '0 20px'}} className="material-icons">file_upload</FontIcon>}
-        style={{width: '100%', marginTop: 10, height: 48}}
-        buttonStyle={{textAlign: 'left'}}
-        onClick={this.handleClickImport}
-      />
-    </MustBeLoggedIn>
-  )
+  private renderButtons = (compact: boolean) => {
+    const { loggedIn } = this.props;
+    const style = compact ? { marginLeft: 10 } : { width: '100%', marginTop: 10, height: 48 };
+    const iconStyle = compact ? { margin: '0 5px 0 15px' } : { margin: '0 20px' };
+
+    return (
+      <MustBeLoggedIn loggedIn={loggedIn}>
+        <RaisedButton
+          label="New Card"
+          labelPosition="after"
+          primary
+          icon={<FontIcon style={iconStyle} className="material-icons">queue</FontIcon>}
+          style={style}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={this.handleClickNewCard}
+        />
+        <RaisedButton
+          label={compact ? 'Edit' : 'Edit Selected'}
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length !== 1}
+          icon={<FontIcon style={iconStyle} className="material-icons">edit</FontIcon>}
+          style={style}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={this.handleClickEdit}
+        />
+        <RaisedButton
+          label={compact ? 'Delete' : 'Delete Selected'}
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length === 0}
+          icon={<FontIcon style={iconStyle} className="material-icons">delete</FontIcon>}
+          style={style}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={this.handleClickDelete}
+        />
+        {compact ? null : <RaisedButton
+          label="Export Selected"
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length === 0}
+          icon={<FontIcon style={iconStyle} className="material-icons">file_download</FontIcon>}
+          style={style}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={this.handleClickExport}
+        />}
+        {compact ? null : <RaisedButton
+          label="Import Cards"
+          labelPosition="after"
+          secondary
+          icon={<FontIcon style={iconStyle} className="material-icons">file_upload</FontIcon>}
+          style={style}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={this.handleClickImport}
+        />}
+      </MustBeLoggedIn>
+    );
+  }
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Collection));

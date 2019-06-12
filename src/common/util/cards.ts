@@ -252,7 +252,7 @@ export function parseBatch(
   })
     .then((response) => response.json())
     .then((results) => {
-      Object.entries(results).forEach(([sentence, result]) => {
+      (results as Array<[string, w.ParseResult]>).forEach(([sentence, result]) => {
         callback(sentence, result);
       });
     })

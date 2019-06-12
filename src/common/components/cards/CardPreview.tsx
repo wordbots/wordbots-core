@@ -38,7 +38,7 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            padding: 64,
+            paddingRight: 32,
             paddingLeft: 20,
             paddingTop: 40
           }}

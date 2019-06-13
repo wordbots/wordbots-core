@@ -33,25 +33,6 @@ interface SetSummaryState {
 
 type SetSummaryProps = SetSummaryBaseProps & WithStyles;
 
-class SetSummaryCard extends React.Component<{ card: w.CardInStore, waitMs?: number }, { visible: boolean }> {
-  public state = { visible: false };
-
-  public componentWillMount(): void {
-    // https://stackoverflow.com/a/30807560/2608804
-    setTimeout(() => {
-      this.setState({ visible: true });
-    }, this.props.waitMs || 0);
-  }
-
-  public render(): React.ReactNode {
-    return this.state.visible && (
-      <div style={{float: 'left'}}>
-        {Card.fromObj(this.props.card, { scale: 0.7 })}
-      </div>
-    );
-  }
-}
-
 class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   public static styles: Record<string, CSSProperties> = {
     paper: {
@@ -161,7 +142,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           {
             cards
               .sort((c1, c2) => sortCards(c1, c2, 0))
-              .map((card, idx) => <SetSummaryCard card={card} key={idx} waitMs={25 * idx} />)
+              .map((card, idx) => (
+                <div key={idx} style={{float: 'left'}}>
+                  {Card.fromObj(card, { scale: 0.7 })}
+                </div>
+              ))
           }
           <div style={{clear: 'both'}}/>
         </div>}

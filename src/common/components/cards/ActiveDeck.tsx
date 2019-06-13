@@ -67,7 +67,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   public render(): JSX.Element {
-    const { cards, isASet, loggedIn } = this.props;
+    const { cards, isASet } = this.props;
     const { description, name } = this.state;
 
     return (
@@ -112,19 +112,9 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           </div>
         </div>
 
+        {this.renderSaveButton({ marginBottom: 20 })}
         {this.renderCardList()}
-
-        <MustBeLoggedIn loggedIn={loggedIn}>
-          <RaisedButton
-            label={`Save ${isASet ? 'Set' : 'Deck'}`}
-            labelPosition="before"
-            secondary
-            disabled={!name}
-            icon={<FontIcon className="material-icons">save</FontIcon>}
-            style={{width: '100%', marginTop: 20}}
-            onClick={this.handleSave}
-          />
-        </MustBeLoggedIn>
+        {this.renderSaveButton({ marginTop: 20 })}
       </div>
     );
   }
@@ -139,6 +129,24 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     const { description, name } = this.state;
 
     onSave(id, name, cards.map((c) => c.id), isASet ? description : undefined);
+  }
+
+  private renderSaveButton(style: React.CSSProperties = {}): JSX.Element {
+    const { isASet, loggedIn, name } = this.props;
+
+    return (
+      <MustBeLoggedIn loggedIn={loggedIn}>
+        <RaisedButton
+          label={`Save ${isASet ? 'Set' : 'Deck'}`}
+          labelPosition="before"
+          secondary
+          disabled={!name}
+          icon={<FontIcon className="material-icons">save</FontIcon>}
+          style={{ width: '100%', ...style }}
+          onClick={this.handleSave}
+        />
+      </MustBeLoggedIn>
+    );
   }
 
   private renderButton(grouping: number, iconName: string, tooltip: string): JSX.Element {

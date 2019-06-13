@@ -46,6 +46,29 @@ const cardsHandlers = {
     return state;
   },
 
+  duplicateSet: (state: State, setId: string): State => {
+    const set: w.Set = state.sets.find((d) => d.id === setId)!;
+    const versionMatch = set.name.match('v(\d+)^');
+    const version: number = versionMatch && parseInt(versionMatch[1], 10) || 1;
+
+    const copy: w.Set = {
+      ...set,
+      id: id(),
+      name: `${set.name.split(/v(\d+)^/)[0]} v${version + 1}`,
+      metadata: {
+        ...set.metadata,
+        isPublished: false,
+        lastModified: Date.now()
+      }
+    };
+
+    firebase.saveSet(copy);
+    return {
+      ...state,
+      sets: [...state.sets, copy]
+    };
+  },
+
   exportCards: (state: State, cards: w.Card[]): State => {
     return {...state, exportedJson: cardsToJson(cards)};
   },

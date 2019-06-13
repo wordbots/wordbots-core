@@ -24,6 +24,7 @@ interface SetsStateProps {
 
 interface SetsDispatchProps {
   onDeleteSet: (setId: string) => void
+  onDuplicateSet: (setId: string) => void
   onEditSet: (setId: string) => void
   onPublishSet: (setId: string) => void
 }
@@ -45,6 +46,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
   return {
     onDeleteSet: (setId: string) => {
       dispatch(collectionActions.deleteSet(setId));
+    },
+    onDuplicateSet: (setId: string) => {
+      dispatch(collectionActions.duplicateSet(setId));
     },
     onEditSet: (setId: string) => {
       dispatch(collectionActions.editSet(setId));
@@ -154,14 +158,14 @@ class Sets extends React.Component<SetsProps, SetsState> {
             this.publishedSets.length > 0 &&
               <div>
                 <h2>Top published sets <i>({this.publishedSets.length})</i></h2>
-                {this.publishedSets.map(this.renderSetSummary)}
+                {this.publishedSets.map((set) => this.renderSetSummary(set, { inPublishedSetsList: true }))}
               </div>
           }
           {
             this.userSets.length > 0 &&
               <div>
                 <h2>Your sets <i>({this.userSets.length})</i></h2>
-                {this.userSets.map(this.renderSetSummary)}
+                {this.userSets.map((set) => this.renderSetSummary(set))}
               </div>
           }
         </div>
@@ -169,7 +173,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
     }
   }
 
-  private renderSetSummary = (set: w.Set): JSX.Element => {
+  private renderSetSummary = (set: w.Set, extraProps: Record<string, any> = {}): JSX.Element => {
     const { numDecksBySet } = this.state;
     return (
       <SetSummary
@@ -177,10 +181,13 @@ class Sets extends React.Component<SetsProps, SetsState> {
         set={set}
         user={this.props.user}
         numDecksCreated={numDecksBySet ? numDecksBySet[set.id] || 0 : undefined}
+        isSingleSet={!!this.singleSet}
         onCreateDeckFromSet={this.handleCreateDeckFromSet(set.id)}
         onDeleteSet={this.handleDeleteSet(set.id)}
+        onDuplicateSet={this.handleDuplicateSet(set.id)}
         onEditSet={this.handleEditSet(set.id)}
         onPublishSet={this.handlePublishSet(set.id)}
+        {...extraProps}
       />
     );
   }
@@ -200,6 +207,10 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
   private handleDeleteSet = (setId: string) => () => {
     this.props.onDeleteSet(setId);
+  }
+
+  private handleDuplicateSet = (setId: string) => () => {
+    this.props.onDuplicateSet(setId);
   }
 
   private handlePublishSet = (setId: string) => () => {

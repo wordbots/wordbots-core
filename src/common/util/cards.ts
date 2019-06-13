@@ -153,7 +153,7 @@ function searchCards(card: w.CardInStore, query = ''): boolean {
   return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
 }
 
-function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 | 2 | 3 | 4 | 5 | 6, order: 1 | -1): 1 | 0 | -1 {
+export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 | 2 | 3 | 4 | 5 | 6, order: 0 | 1 = 0): 1 | 0 | -1 {
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const [cost, name, type, source, attack, health, speed] = [

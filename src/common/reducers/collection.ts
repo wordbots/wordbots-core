@@ -33,6 +33,9 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case collectionActions.DUPLICATE_DECK:
         return c.duplicateDeck(state, action.payload.deckId);
 
+      case collectionActions.DUPLICATE_SET:
+        return c.duplicateSet(state, action.payload.setId);
+
       case collectionActions.EDIT_DECK:
         return c.openDeckForEditing(state, action.payload.deckId);
 

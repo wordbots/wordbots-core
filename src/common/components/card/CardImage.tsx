@@ -18,11 +18,36 @@ interface CardImageProps {
   onSpriteClick: () => void
 }
 
-export default class CardImage extends React.Component<CardImageProps> {
-  public render(): JSX.Element {
+interface CardImageState {
+  loadImage: boolean
+}
+
+export default class CardImage extends React.Component<CardImageProps, CardImageState> {
+  public state = {
+    loadImage: false
+  };
+
+  public componentWillMount(): void {
+    setTimeout(() => {
+      this.setState({ loadImage: true });
+    }, 50);
+  }
+
+  public render(): JSX.Element | null {
     const { type, spriteID, spriteV, img, source, scale, onSpriteClick } = this.props;
 
-    if (type === TYPE_CORE) {
+    if (!this.state.loadImage) {
+      return (
+        <div
+          style={{
+            width: 1,
+            height: 52 * scale
+          }}
+        >
+          &nbsp;
+        </div>
+      );
+    } else if (type === TYPE_CORE) {
       const [width, height] = [50 * scale, 52 * scale];
       return (
         <div
@@ -77,7 +102,7 @@ export default class CardImage extends React.Component<CardImageProps> {
           style={{
             width: 48 * scale,
             height: 48 * scale,
-            margin: '2px auto 3px'
+            margin: `${1.0 * scale}px auto ${3.0 * scale}px`
           }}
         >
           <Sprite

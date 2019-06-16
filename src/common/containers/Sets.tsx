@@ -1,8 +1,10 @@
-import { Button } from '@material-ui/core';
+import { Button, Paper } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { groupBy, mapValues, orderBy } from 'lodash';
+import { FontIcon } from 'material-ui';
 import * as qs from 'qs';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -32,7 +34,8 @@ interface SetsDispatchProps {
 type SetsProps = SetsStateProps & SetsDispatchProps & { history: History } & WithStyles;
 
 interface SetsState {
-  numDecksBySet?: Record<string, number>
+  numDecksBySet?: Record<string, number>,
+  showHelpText: boolean
 }
 
 function mapStateToProps(state: w.State): SetsStateProps {
@@ -60,16 +63,34 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
 }
 
 class Sets extends React.Component<SetsProps, SetsState> {
-  public static styles = {
+  public static styles: Record<string, CSSProperties> = {
     buttonLabel: {
       fontFamily: 'Carter One'
+    },
+    helpPaper: {
+      display: 'inline-block',
+      marginLeft: 20,
+      marginTop: 15,
+      padding: 10,
+      '& button': {
+        float: 'right',
+        padding: 2,
+      },
+      '& p': {
+        marginTop: 0
+      },
+      '& p:last-child': {
+        marginBottom: 0
+      }
     },
     singleSetContainer: {
       margin: '20px 0'
     }
   };
 
-  public state: SetsState = {};
+  public state: SetsState = {
+    showHelpText: true
+  };
 
   /**
    * Returns either the single set to focus on (if there is a set=[setId] URL query parameter),
@@ -90,7 +111,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
     const unorderedPublishedSets = sets.filter((set) => set.metadata.isPublished);
 
     if (numDecksBySet) {
-      return orderBy(unorderedPublishedSets, (set) => numDecksBySet[set.id], 'desc');
+      return orderBy(unorderedPublishedSets, (set) => numDecksBySet[set.id] || 0, 'desc');
     } else {
       return unorderedPublishedSets;
     }
@@ -111,10 +132,25 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
   public render(): JSX.Element {
     const { user, classes } = this.props;
+    const { showHelpText } = this.state;
+
     return (
       <div>
         <Helmet title="Sets" />
         <Title text="Sets" />
+
+        {showHelpText && <div>
+          <Paper className={classes.helpPaper}>
+            <Button variant="flat" color="secondary" onClick={this.handleHideHelpText}>
+              <FontIcon className="material-icons">
+                close
+              </FontIcon>
+            </Button>
+            <p><b>Sets</b> offer a way for you to play games of Wordbots in which both players use the same pool of cards.</p>
+            <p>You can take a popular set, make a deck from it, and play against other players who've made decks using that set.</p>
+            <p>If you're feeling creative, create your own set (using your own cards and/or cards you've found),<br />share it with your friends to challenge them, or publish it for the world to see!</p>
+          </Paper>
+        </div>}
 
         <div style={{ margin: 20 }}>
           <MustBeLoggedIn loggedIn={!!user}>
@@ -219,6 +255,10 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
   private handleShowAllSets = () => {
     this.props.history.push('/sets');
+  }
+
+  private handleHideHelpText = () => {
+    this.setState({ showHelpText: false });
   }
 }
 

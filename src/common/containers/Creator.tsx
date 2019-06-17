@@ -157,9 +157,11 @@ export class Creator extends React.Component<CreatorProps> {
     this.props.history.push('/play/sandbox', { previous: this.props.history.location });
   }
 
-  private addToCollection = () => {
+  private addToCollection = (redirectToCollection: boolean) => {
     this.props.onAddToCollection(this.props);
-    this.props.history.push('/collection');
+    if (redirectToCollection) {
+      this.props.history.push('/collection');
+    }
   }
 }
 

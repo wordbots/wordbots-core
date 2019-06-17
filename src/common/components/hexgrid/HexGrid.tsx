@@ -51,6 +51,7 @@ export default class HexGrid extends React.Component<HexShapeProps> {
     return (
       <svg
         className="grid background"
+        style={{ userSelect: 'none' }}
         width={this.props.width || 800}
         height={this.props.height || 600}
         viewBox="-50 -50 100 100"

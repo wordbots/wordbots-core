@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, isNil, mapValues, orderBy, uniq, uniqBy } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, identity, isNil, mapValues, orderBy, uniq, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -126,7 +126,10 @@ export function saveUserData(key: string, value: any): void {
 export async function getUserNamesByIds(userIds: string[]): Promise<string[]> {
   const userLookupRefs = userIds.map((userId) => fb.database().ref(`users/${userId}`).once('value'));
   const users = await Promise.all(userLookupRefs);
-  return users.map((user) => user.val().info.displayName);
+  return users
+    .map((user) => user.val())
+    .filter(identity)
+    .map((val) => val.info.displayName);
 }
 
 // Game results
@@ -310,16 +313,24 @@ async function getRecentGamesForColorByUserId(userId: string, color: string): Pr
   return snapshot.val();
 }
 
-export async function getCardsCreatedCountByUserId(userId: string): Promise<number> {
+export async function getNumCardsCreatedCountByUserId(userId: string): Promise<number> {
   const snapshot = await fb.database()
     .ref(`users/${userId}/cards`)
     .once('value');
   return snapshot.numChildren();
 }
 
-export async function getDecksCreatedCountByUserId(userId: string): Promise<number> {
+export async function getNumDecksCreatedCountByUserId(userId: string): Promise<number> {
   const snapshot = await fb.database()
     .ref(`users/${userId}/decks`)
     .once('value');
   return snapshot.numChildren();
+}
+
+export async function getNumSetsCreatedCountByUserId(userId: string): Promise<number> {
+  const snapshot = await fb.database()
+    .ref(`sets`)
+    .once('value');
+  const sets: w.Set[] = Object.values(snapshot.val());
+  return sets.filter((set) => set.metadata.authorId === userId).length;
 }

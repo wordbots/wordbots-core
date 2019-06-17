@@ -2,7 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { History } from 'history';
-import { flatten, uniq, zipObject } from 'lodash';
+import { chain as _, compact, flatten, uniq, zipObject } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -18,8 +18,9 @@ import PlayerInfo from '../components/users/profile/PlayerInfo';
 import RecentGames from '../components/users/profile/RecentGames';
 import * as w from '../types';
 import {
-  getCardsCreatedCountByUserId,
-  getDecksCreatedCountByUserId,
+  getNumCardsCreatedCountByUserId,
+  getNumDecksCreatedCountByUserId,
+  getNumSetsCreatedCountByUserId,
   getRecentGamesByUserId,
   getUserNamesByIds
 } from '../util/firebase';
@@ -41,8 +42,9 @@ interface ProfileState {
   playerInfo?: {
     cardsCreated: number,
     decksCreated: number,
+    setsCreated: number,
     gamesPlayed: number,
-    winRate: string
+    favoriteOpponent?: string
   }
 }
 
@@ -103,7 +105,10 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               <PlayerInfo playerInfo={playerInfo} />
             </Paper>
             <Paper className={classes.gridItem}>
-              <MatchmakingInfo userId={userId} />
+              <MatchmakingInfo
+                userId={userId}
+                games={recentGames}
+              />
             </Paper>
             <Paper className={classes.gridItem}>
               <RecentGames
@@ -149,7 +154,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 
   private async loadRecentGamesData(recentGames: w.SavedGame[]): Promise<void> {
-    const playerIds = uniq(flatten(recentGames.map((recentGame) => Object.values(recentGame.players)))).filter((playerId) => !playerId.startsWith('guest'));
+    const playerIds = compact(uniq(flatten(recentGames.map((g) => Object.values(g.players)))).filter((pid) => pid && !pid.startsWith('guest')));
     const playerNamesList = await getUserNamesByIds(playerIds);
     const playerNames = zipObject(playerIds, playerNamesList);
 
@@ -160,31 +165,30 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 
   private async loadPlayerInfoData(userId: string, recentGames: w.SavedGame[]): Promise<void> {
-    const cardsCreated = await getCardsCreatedCountByUserId(userId);
-    const decksCreated = await getDecksCreatedCountByUserId(userId);
+    const cardsCreated = await getNumCardsCreatedCountByUserId(userId);
+    const decksCreated = await getNumDecksCreatedCountByUserId(userId);
+    const setsCreated = await getNumSetsCreatedCountByUserId(userId);
     const gamesPlayed = recentGames.length;
-    const winRate = this.getWinRate(userId, recentGames);
+
+    const favoriteOpponentIds = _(recentGames)
+      .flatMap((g) => Object.values(g.players))
+      .countBy()
+      .toPairs()
+      .sortBy(([_playerId, count]) => -count)
+      .map(([playerId, _count]) => playerId)
+      .filter((playerId) => playerId !== userId && !playerId.startsWith('guest'))
+      .value();
+    const [favoriteOpponentName] = await getUserNamesByIds(favoriteOpponentIds.slice(0, 1));
 
     this.setState({
       playerInfo: {
         cardsCreated,
         decksCreated,
+        setsCreated,
         gamesPlayed,
-        winRate
+        favoriteOpponent: favoriteOpponentName || undefined
       }
     });
-  }
-
-  private getWinRate = (userId: string, recentGames: w.SavedGame[]) => {
-    type GameWithWinner = Array<w.SavedGame & { winner: w.PlayerColor }> ;
-    const games: GameWithWinner = recentGames.filter((game) => game.winner) as GameWithWinner;
-
-    const numGamesWon = games.reduce((gamesWon, recentGame) => {
-      const wonGame = recentGame.players[recentGame.winner] === userId ? 1 : 0;
-      return gamesWon + wonGame;
-    }, 0);
-
-    return `${((numGamesWon / games.length) * 100).toFixed(2)}%`;
   }
 }
 

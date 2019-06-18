@@ -1,3 +1,4 @@
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { capitalize, compact, isEmpty } from 'lodash';
 import FontIcon from 'material-ui/FontIcon';
@@ -44,7 +45,7 @@ interface CardCreationFormProps {
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
-  onAddToCollection: () => void
+  onAddToCollection: (redirectToCollection: boolean) => void
   onOpenDialog: (dialog: string) => void
   onTestCard: () => void
 }
@@ -57,6 +58,7 @@ interface CardCreationFormState {
   }
   submittedParseIssue: string | null
   submittedParseIssueConfirmationOpen: boolean
+  willCreateAnother: boolean
 }
 
 export default class CardCreationForm extends React.Component<CardCreationFormProps, CardCreationFormState> {
@@ -80,6 +82,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       color: 'white'
     },
     saveButton: {marginTop: 20},
+    createAnotherCheckbox: { margin: '15px 5px 0' },
 
     icon: {verticalAlign: 'middle', color: 'white'}
   };
@@ -90,7 +93,8 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       object: false
     },
     submittedParseIssue: null,
-    submittedParseIssueConfirmationOpen: false
+    submittedParseIssueConfirmationOpen: false,
+    willCreateAnother: false
   };
 
   get robot(): boolean { return this.props.type === TYPE_ROBOT; }
@@ -204,7 +208,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public render(): JSX.Element {
-    const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
+    const { submittedParseIssue, submittedParseIssueConfirmationOpen, willCreateAnother } = this.state;
     const examplesLoaded = this.state.examplesLoaded[this.parserMode];
 
     const FULL_WIDTH_PERCENT = 100;
@@ -332,16 +336,27 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             {this.renderAttributeField('speed', this.robot, {max: 3})}
           </div>
 
-          <MustBeLoggedIn loggedIn={this.props.loggedIn}>
-            <RaisedButton
-              primary
-              fullWidth
-              label={this.props.isNewCard ? 'Add to Collection' : 'Save Edits'}
-              disabled={!this.isValid}
-              style={CardCreationForm.styles.saveButton}
-              onClick={this.props.onAddToCollection}
+          <div style={CardCreationForm.styles.section}>
+            <div style={{ flex: 1 }}>
+              <MustBeLoggedIn loggedIn={this.props.loggedIn}>
+                <RaisedButton
+                  primary
+                  fullWidth
+                  label="Save Card"
+                  disabled={!this.isValid}
+                  style={CardCreationForm.styles.saveButton}
+                  onClick={this.handleSaveCard}
+                />
+              </MustBeLoggedIn>
+            </div>
+            <FormControlLabel
+              style={CardCreationForm.styles.createAnotherCheckbox}
+              control={
+                <Checkbox checked={willCreateAnother} onChange={this.handleToggleCreateAnother} color="primary" />
+              }
+              label="Create another?"
             />
-          </MustBeLoggedIn>
+          </div>
         </Paper>
       </div>
     );
@@ -386,6 +401,14 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
   private handleCloseReportParseIssueSnackbar = () => {
     this.setState({ submittedParseIssueConfirmationOpen: false });
+  }
+
+  private handleToggleCreateAnother = () => {
+    this.setState((state) => ({ willCreateAnother: !state.willCreateAnother }));
+  }
+
+  private handleSaveCard = () => {
+    this.props.onAddToCollection(!this.state.willCreateAnother);
   }
 
   private onUpdateText = (text: string, cardType: w.CardType = this.props.type, dontIndex: boolean = false) => {

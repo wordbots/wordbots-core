@@ -35,6 +35,7 @@ import Sets from './Sets';
 import TitleBar from './TitleBar';
 
 interface AppStateProps {
+  cardIdBeingEdited: string | null
   inGame: boolean
   inSandbox: boolean
   renderId: number
@@ -58,6 +59,7 @@ interface AppState {
 
 function mapStateToProps(state: w.State): AppStateProps {
   return {
+    cardIdBeingEdited: state.creator.id,
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
     renderId: state.global.renderId
@@ -128,10 +130,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get sidebar(): JSX.Element | null {
+    const { cardIdBeingEdited, onRerender } = this.props;
     if (this.state.loading || this.inGame) {
       return null;
     } else {
-      return <NavMenu onRerender={this.props.onRerender} />;
+      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
     }
   }
 

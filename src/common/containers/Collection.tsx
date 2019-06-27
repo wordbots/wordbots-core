@@ -105,7 +105,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element {
-    const { exportedJson, history, onImportCards } = this.props;
+    const { exportedJson, history, loggedIn, onImportCards } = this.props;
 
     return (
       <div>
@@ -113,7 +113,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         <div style={{ display: 'flex' }}>
           <Title text="Collection" />
           <div style={{ marginLeft: 30, marginTop: 12 }}>
-            {this.renderButtons(true)}
+            {loggedIn && this.renderButtons(true)}
           </div>
         </div>
 

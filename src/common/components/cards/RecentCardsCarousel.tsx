@@ -10,7 +10,6 @@ import Card from '../card/Card';
 
 interface RecentCardsCarouselProps {
   history: History
-  onOpenForEditing: (card: w.CardInStore) => void
   userId?: string
 }
 
@@ -110,7 +109,6 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private handleClickCard = (card: w.CardInStore) => () => {
-    this.props.onOpenForEditing(card);
-    this.props.history.push('/creator');
+    this.props.history.push(`/card/${card.id}`, { card });
   }
 }

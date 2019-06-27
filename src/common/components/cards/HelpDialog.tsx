@@ -1,4 +1,4 @@
-import { History } from 'history';
+import { History, Location } from 'history';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 import IFrame from 'react-iframe';
@@ -6,14 +6,15 @@ import IFrame from 'react-iframe';
 import MarkdownBlock from '../MarkdownBlock';
 import RouterDialog from '../RouterDialog';
 
-export default class HelpDialog extends React.Component<{ history: History }> {
+export default class HelpDialog extends React.Component<{ history: History, location: Location }> {
   public render(): JSX.Element {
+    const { history, location } = this.props;
     return (
       <RouterDialog
         scroll
         path="help"
         title="How to Write a Card"
-        history={this.props.history}
+        history={history}
         style={{width: 800}}
         actions={[
           <RaisedButton
@@ -36,7 +37,7 @@ export default class HelpDialog extends React.Component<{ history: History }> {
             allowFullScreen
           />
         </div>
-        <MarkdownBlock source={helpText} />
+        <MarkdownBlock source={helpText(location)} />
       </RouterDialog>
     );
   }
@@ -44,7 +45,7 @@ export default class HelpDialog extends React.Component<{ history: History }> {
   private handleClose = () => { RouterDialog.closeDialog(this.props.history); };
 }
 
-const helpText = `
+const helpText = (location: Location) => `
 ## Types of Cards
 
 * A **robot** must played adjacent to your kernel, and can move, attack, and activate.
@@ -78,7 +79,7 @@ If your card text is not parsing successfully, here are some things to consider:
 
 **1. Are you using a word or phrase that is not recognized?**
 
-If any words are underlined in red in the card preview, that means that the parser can’t recognize them. If you’re getting stuck, try checking the [dictionary](/creator//dictionary) to see what words/phrases the parser understands.
+If any words are underlined in red in the card preview, that means that the parser can’t recognize them. If you’re getting stuck, try checking the [dictionary](${location.pathname}//dictionary) to see what words/phrases the parser understands.
 
 **2. Are you writing the right kind of sentence for the card type?**
 
@@ -86,11 +87,11 @@ Remember that events must have actions, while robots/structures must have abilit
 
 **3. Is your phrasing incorrect?**
 
-If you keep getting syntax errors, you might be phrasing what you’re trying to express in a way that the parser doesn’t understand. Check the [dictionary](/creator//dictionary) for similar sentences (sentences that use the same phrases that you’re using) and see how they’re worded.
+If you keep getting syntax errors, you might be phrasing what you’re trying to express in a way that the parser doesn’t understand. Check the [dictionary](${location.pathname}//dictionary) for similar sentences (sentences that use the same phrases that you’re using) and see how they’re worded.
 
 **4. Are you trying to do something that the game doesn’t support?**
 
-You might be trying to implement a feature that’s not supported by the game. Check the [thesaurus](/creator//dictionary#t) to see all of the actions, abilities, conditions, and targets that are currently supported.
+You might be trying to implement a feature that’s not supported by the game. Check the [thesaurus](${location.pathname}//dictionary#t) to see all of the actions, abilities, conditions, and targets that are currently supported.
 
 **5. Still no luck?**
 

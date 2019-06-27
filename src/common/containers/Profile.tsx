@@ -1,16 +1,12 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { History } from 'history';
 import { chain as _, compact, flatten, uniq, zipObject } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import { match as Match } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
-import { Dispatch } from 'redux';
 
-import * as collectionActions from '../actions/collection';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import Title from '../components/Title';
 import MatchmakingInfo from '../components/users/profile/MatchmakingInfo';
@@ -25,14 +21,7 @@ import {
   getUserNamesByIds
 } from '../util/firebase';
 
-interface ProfileDispatchProps {
-  onOpenForEditing: (card: w.CardInStore) => void
-}
-
-type ProfileProps = ProfileDispatchProps & WithStyles & {
-  history: History,
-  match: Match<{ userId?: string }>
-};
+type ProfileProps = RouteComponentProps<{ userId: string }> & WithStyles;
 
 interface ProfileState {
   userId?: string
@@ -46,14 +35,6 @@ interface ProfileState {
     gamesPlayed: number,
     favoriteOpponent?: string
   }
-}
-
-export function mapDispatchToProps(dispatch: Dispatch): ProfileDispatchProps {
-  return {
-    onOpenForEditing: (card) => {
-      dispatch(collectionActions.openForEditing(card));
-    }
-  };
 }
 
 const styles: Record<string, CSSProperties> = {
@@ -124,7 +105,6 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
                 key={userId}
                 userId={userId}
                 history={this.props.history}
-                onOpenForEditing={this.props.onOpenForEditing}
               />
             }
           </Paper>
@@ -192,5 +172,4 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 }
 
-// TO-DO: replace this with decorators
-export default withRouter(connect(() => ({}), mapDispatchToProps)(withStyles(styles)(Profile)));
+export default withStyles(styles)(withRouter(Profile));

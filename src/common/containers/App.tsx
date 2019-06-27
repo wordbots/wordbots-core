@@ -152,7 +152,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route exact path="/" component={Home} />
             <Route path="/home" component={Home} />
             <Route path="/collection" component={Collection} />
-            <Route path="/creator" component={Creator} />
+            <Route path="/card/:cardId" component={Creator} />
             <Route path="/decks" component={Decks as any} />
             <Route path="/deck" component={Deck as any} />
             <Route path="/sets/:setId" component={Set as any} />
@@ -171,12 +171,12 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.loading) {
       return null;
     } else {
-      const { history } = this.props;
+      const { history, location } = this.props;
       return (
         <div>
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
-          <HelpDialog history={history} />
+          <HelpDialog history={history} location={location} />
         </div>
       );
     }

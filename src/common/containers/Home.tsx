@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import * as collectionActions from '../actions/collection';
 import * as gameActions from '../actions/game';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import PaperButton from '../components/PaperButton';
@@ -16,7 +15,6 @@ interface HomeStateProps {
 }
 
 interface HomeDispatchProps {
-  onOpenForEditing: (card: w.CardInStore) => void
   onStartTutorial: () => void
 }
 
@@ -28,9 +26,6 @@ export function mapStateToProps(state: w.State): HomeStateProps {
 
 export function mapDispatchToProps(dispatch: Dispatch): HomeDispatchProps {
   return {
-    onOpenForEditing: (card) => {
-      dispatch(collectionActions.openForEditing(card));
-    },
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
     }
@@ -83,10 +78,7 @@ class Home extends React.Component<HomeProps> {
           {this.renderButton('Card Creator', () => { this.props.history.push('creator'); })}
         </div>
 
-        <RecentCardsCarousel
-          history={this.props.history}
-          onOpenForEditing={this.props.onOpenForEditing}
-        />
+        <RecentCardsCarousel history={this.props.history} />
 
         <div
           style={{

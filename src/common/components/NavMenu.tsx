@@ -10,6 +10,7 @@ import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
 import Tooltip from './Tooltip';
 
 interface NavMenuProps {
+  cardIdBeingEdited: string | null
   onRerender: () => void
 }
 
@@ -19,6 +20,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
   }
 
   public render(): JSX.Element {
+    const { cardIdBeingEdited } = this.props;
     return (
       <Drawer
         open
@@ -34,7 +36,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
       >
         {this.renderLink('/', 'Home', 'home')}
         {this.renderLink('/collection', 'Collection', 'view_module')}
-        {this.renderLink('/creator', 'Creator', 'add_circle_outline')}
+        {this.renderLink(`/card/${cardIdBeingEdited || 'new'}`, 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/sets', 'Sets', 'layers')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}

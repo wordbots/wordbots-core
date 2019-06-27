@@ -33,7 +33,6 @@ interface CollectionStateProps {
 }
 
 interface CollectionDispatchProps {
-  onEditCard: (card: w.CardInStore) => void
   onExportCards: (cards: w.CardInStore[]) => void
   onImportCards: (json: string) => void
   onRemoveFromCollection: (cards: w.CardId[]) => void
@@ -65,9 +64,6 @@ export function mapStateToProps(state: w.State): CollectionStateProps {
 
 export function mapDispatchToProps(dispatch: Dispatch): CollectionDispatchProps {
   return {
-    onEditCard: (card: w.CardInStore) => {
-      dispatch(collectionActions.openForEditing(card));
-    },
     onExportCards: (cards: w.CardInStore[]) => {
       dispatch(collectionActions.exportCards(cards));
     },
@@ -187,15 +183,14 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   }
 
   private handleClickNewCard = () => {
-    this.props.history.push('/creator');
+    this.props.history.push('/card/new');
   }
 
   private handleClickEdit = () => {
     const id = this.state.selectedCardIds[0];
     const card = this.props.cards.find((c) => c.id === id);
     if (card) {
-      this.props.onEditCard(card);
-      this.props.history.push('/creator');
+      this.props.history.push(`/card/${card.id}`, { card });
     }
   }
 

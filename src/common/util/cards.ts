@@ -243,7 +243,7 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 export function parseBatch(
   sentences: string[],
   mode: w.ParserMode,
-  callback: (sentence: string, result: w.ParseResult) => any
+  callback: (validSentences: string[]) => any
 ): void {
   fetch(`${PARSER_URL}/parse`, {
     method: 'POST',
@@ -252,9 +252,8 @@ export function parseBatch(
   })
     .then((response) => response.json())
     .then((results) => {
-      (results as Array<[string, w.ParseResult]>).forEach(([sentence, result]) => {
-        callback(sentence, result);
-      });
+      const validSentences: string[] = (results as Array<[string, w.ParseResult]>).filter(([_, result]) => !result.error).map(([sentence, _]) => sentence);
+      callback(validSentences);
     })
     .catch((err) => {
       // TODO better error handling

@@ -1,13 +1,13 @@
-import { History } from 'history';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { object } from 'prop-types';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
+import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
 import CardCreationForm from '../components/cards/CardCreationForm';
@@ -34,6 +34,7 @@ interface CreatorStateProps {
 }
 
 interface CreatorDispatchProps {
+  onOpenCard: (card: w.CardInStore) => void
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
   onSetText: (text: string) => void
@@ -44,7 +45,7 @@ interface CreatorDispatchProps {
   onStartSandbox: (card: w.CardInStore) => void
 }
 
-type CreatorProps = CreatorStateProps & CreatorDispatchProps & { history: History };
+type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentProps;
 
 export function mapStateToProps(state: w.State): CreatorStateProps {
   return {
@@ -66,6 +67,9 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
 
 export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
   return {
+    onOpenCard: (card: w.CardInStore) => {
+      dispatch(collectionActions.openForEditing(card));
+    },
     onSetName: (name: string) => {
       dispatch(creatorActions.setName(name));
     },
@@ -99,6 +103,21 @@ export class Creator extends React.Component<CreatorProps> {
     muiTheme: object.isRequired
   };
 
+  public componentDidMount(): void {
+    this.maybeLoadCard();
+  }
+
+  public componentDidUpdate(prevProps: CreatorProps): void {
+    const { id, cards } = this.props;
+
+    // If we haven't yet loaded a card and we now have a bigger pool of cards
+    // (e.g. because we just received all the user's cards from Firebase), try loading the card again.
+    // TODO Should we also allow loading cards by ID even if you don't own them? (This would require searching by card ID in Firebase.)
+    if (!id && cards.length > prevProps.cards.length) {
+      this.maybeLoadCard();
+    }
+  }
+
     // For testing.
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
@@ -110,6 +129,7 @@ export class Creator extends React.Component<CreatorProps> {
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <CardCreationForm
+            key={this.props.id || 'newCard'}
             loggedIn={this.props.loggedIn}
             id={this.props.id}
             name={this.props.name}
@@ -145,6 +165,21 @@ export class Creator extends React.Component<CreatorProps> {
         </div>
       </div>
     );
+  }
+
+  private maybeLoadCard = () => {
+    const { cards, location, match, onOpenCard } = this.props;
+    const params = (match ? match.params : {}) as Record<string, string | undefined>;
+    const { cardId } = params;
+
+    if (cardId) {
+      const cardFromRouter = location.state && location.state.card ? location.state.card as w.CardInStore : undefined;
+      const card: w.CardInStore | undefined = (cardFromRouter && cardFromRouter.id === cardId) ? cardFromRouter : cards.find((c) => c.id === cardId);
+
+      if (card) {
+        onOpenCard(card);
+      }
+    }
   }
 
   private openDialog = (dialogPath: string) => {

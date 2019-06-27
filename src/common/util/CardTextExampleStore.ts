@@ -22,11 +22,9 @@ export default class CardTextExampleStore {
     const modes = Object.keys(this.examples);
 
     modes.forEach((mode) => {
-      parseBatch(candidates, mode as w.ParserMode, (sentence: string, result: w.ParseResult) => {
-        if (!result.error) {
-          this.examples[mode].push(sentence);
-          onLoad(mode);
-        }
+      parseBatch(candidates, mode as w.ParserMode, (validSentences: string[]) => {
+        this.examples[mode].push(...validSentences);
+        onLoad(mode);
       });
     });
   }

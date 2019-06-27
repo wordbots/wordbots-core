@@ -35,6 +35,7 @@ import Sets from './Sets';
 import TitleBar from './TitleBar';
 
 interface AppStateProps {
+  cardIdBeingEdited: string | null
   inGame: boolean
   inSandbox: boolean
   renderId: number
@@ -58,6 +59,7 @@ interface AppState {
 
 function mapStateToProps(state: w.State): AppStateProps {
   return {
+    cardIdBeingEdited: state.creator.id,
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
     renderId: state.global.renderId
@@ -128,10 +130,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get sidebar(): JSX.Element | null {
+    const { cardIdBeingEdited, onRerender } = this.props;
     if (this.state.loading || this.inGame) {
       return null;
     } else {
-      return <NavMenu onRerender={this.props.onRerender} />;
+      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
     }
   }
 
@@ -152,7 +155,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route exact path="/" component={Home} />
             <Route path="/home" component={Home} />
             <Route path="/collection" component={Collection} />
-            <Route path="/creator" component={Creator} />
+            <Route path="/card/:cardId" component={Creator} />
             <Route path="/decks" component={Decks as any} />
             <Route path="/deck" component={Deck as any} />
             <Route path="/sets/:setId" component={Set as any} />
@@ -171,12 +174,12 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.loading) {
       return null;
     } else {
-      const { history } = this.props;
+      const { history, location } = this.props;
       return (
         <div>
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
-          <HelpDialog history={history} />
+          <HelpDialog history={history} location={location} />
         </div>
       );
     }

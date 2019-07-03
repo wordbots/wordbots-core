@@ -67,6 +67,14 @@ export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameSta
   }
 }
 
+export function ownerOfCard(state: w.GameState, card: w.CardInGame): w.PlayerInGameState | undefined {
+  if (some(state.players.blue.hand, ['id', card.id])) {
+    return state.players.blue;
+  } else if (some(state.players.orange.hand, ['id', card.id])) {
+    return state.players.orange;
+  }
+}
+
 export function getAttribute(object: w.Object, attr: w.Attribute): number | undefined {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.

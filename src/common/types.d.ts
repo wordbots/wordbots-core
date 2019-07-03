@@ -422,7 +422,6 @@ export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
 export interface CardInHandCollection {
   type: 'cards'
   entries: CardInGame[]
-  owner: PlayerInGameState
 }
 export interface CardInDiscardPileCollection {
   type: 'cardsInDiscardPile'

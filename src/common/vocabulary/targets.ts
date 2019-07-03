@@ -230,7 +230,6 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     // e.g. "Set the attack of all robots to *their* health."
     theyP: (): w.PlayerCollection => {
       const they = state.currentEntryInCollection;
-      console.log(they);
       if (they && g.isPlayerState(they)) {
         return ({ type: 'players', entries: [they] });
       } else {

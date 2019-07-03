@@ -9,7 +9,7 @@ import * as w from '../types';
 import { splitSentences } from '../util/cards';
 import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
 import {
-  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards, executeCmd, getHex, ownerOf,
+  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards, executeCmd, getHex, ownerOf, ownerOfCard,
   passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
 } from '../util/game';
 
@@ -243,7 +243,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       const collectionType = cards.type;
 
       if (collectionType === 'cards') {
-        removeCardsFromHand(state, cards.entries, (cards as w.CardInHandCollection).owner);
+        removeCardsFromHand(state, cards.entries, ownerOfCard(state, (cards as w.CardInHandCollection).entries[0]));
         recipient.deck = shuffle([...recipient.deck, ...cards.entries], state.rng());
       } else if (collectionType === 'cardsInDiscardPile') {
         removeCardsFromDiscardPile(state, cards.entries, (card) => {

@@ -447,16 +447,13 @@ export function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGame
 
 // Note: This is used to either play or discard a set of cards.
 export function discardCardsFromHand(state: w.GameState, color: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
-  // At the moment, only the currently active player can ever play or discard a card.
   const player = state.players[color];
   state = putCardsInDiscardPile(state, player, cards);
-  state = removeCardsFromHand(state, cards);
+  state = removeCardsFromHand(state, cards, player);
   return state;
 }
 
-export function removeCardsFromHand(state: w.GameState, cards: w.CardInGame[]): w.GameState {
-  // At the moment, only the currently active player can ever play or discard a card.
-  const player = currentPlayer(state);
+export function removeCardsFromHand(state: w.GameState, cards: w.CardInGame[], player: w.PlayerInGameState = currentPlayer(state)): w.GameState {
   const cardIds = cards.map((c) => c.id);
   player.hand = filter(player.hand, (c) => !cardIds.includes(c.id));
   return state;

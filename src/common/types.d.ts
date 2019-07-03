@@ -213,7 +213,7 @@ export interface GameState {
   actionId?: string
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentCmdText?: string
-  currentObjectInCollection?: Targetable
+  currentEntryInCollection?: Targetable
   eventExecuting?: boolean
   invalid?: boolean
   it?: _Object | CardInGame
@@ -422,6 +422,7 @@ export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
 export interface CardInHandCollection {
   type: 'cards'
   entries: CardInGame[]
+  owner: PlayerInGameState
 }
 export interface CardInDiscardPileCollection {
   type: 'cardsInDiscardPile'

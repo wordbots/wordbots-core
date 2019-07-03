@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, isFunction, mapValues } from 'lodash';
+import { cloneDeep, identity, isArray, isFunction, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
@@ -14,12 +14,12 @@ import {
 } from '../util/game';
 
 export default function actions(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<void>> {
-  const iterateOver = <T extends w.Targetable>(collection: w.Collection) => (fn: (item: T) => void) => {
-    const items: T[] = (collection.entries as w.Targetable[]).map(reassignToKernelIfPlayer) as T[];
+  const iterateOver = <T extends w.Targetable>(collection: w.Collection, shouldReassignPlayerToKernel: boolean = true) => (fn: (item: T) => void) => {
+    const items: T[] = (collection.entries as w.Targetable[]).map(shouldReassignPlayerToKernel ? reassignToKernelIfPlayer : identity) as T[];
     items.forEach((item: T) => {
-      state.currentObjectInCollection = item;  // (Needed for tracking of targets.they)
+      state.currentEntryInCollection = item;  // (Needed for tracking of targets.they)
       fn(item);
-      state.currentObjectInCollection = undefined;
+      state.currentEntryInCollection = undefined;
     });
   };
 
@@ -132,6 +132,12 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       Object.assign(state, passTurn(state, state.currentTurn));
     },
 
+    forEach: (collection: w.Collection, cmd: (state: w.GameState) => any): void => {
+      iterateOver(collection, false)((elt: w.Targetable) => {
+        executeCmd(state, cmd, g.isObject(elt) ? elt : currentObject);
+      });
+    },
+
     giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(state: w.GameState) => any>): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         executeCmd(state, abilityCmd, object);
@@ -237,7 +243,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       const collectionType = cards.type;
 
       if (collectionType === 'cards') {
-        removeCardsFromHand(state, cards.entries);
+        removeCardsFromHand(state, cards.entries, (cards as w.CardInHandCollection).owner);
         recipient.deck = shuffle([...recipient.deck, ...cards.entries], state.rng());
       } else if (collectionType === 'cardsInDiscardPile') {
         removeCardsFromDiscardPile(state, cards.entries, (card) => {

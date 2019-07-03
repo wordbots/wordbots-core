@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, isFunction, mapValues } from 'lodash';
+import { cloneDeep, isArray, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
@@ -216,15 +216,15 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     setAttribute: (
       objects: w.ObjectOrPlayerCollection,
       attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
-      num: number | ((state: w.GameState) => number)
+      numCmd: w.StringRepresentationOf<(state: w.GameState) => number>
     ): void => {
       if (state.memory.duration) {
         // Temporary attribute adjustment.
-        modifyAttribute(objects, attr, `(function () { return ${num}; })`);
+        modifyAttribute(objects, attr, `(function () { return ${numCmd}; })`);
       } else {
         // Permanent attribute adjustment.
         iterateOver<w.Object>(objects)((object: w.Object) => {
-          const value = isFunction(num) ? num(state) : num;  // num could be wrapped as a function of state (see targets.they)
+          const value = executeCmd(state, numCmd) as number;
           const target: w.ObjectCollection = {type: 'objects', entries: [object]};
           modifyAttribute(target, attr, () => value);
         });

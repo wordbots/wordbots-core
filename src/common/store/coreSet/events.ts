@@ -94,7 +94,7 @@ export const equalizeCard: w.CardInStore = {
   id: 'Equalize',
   name: 'Equalize',
   text: 'Set the attack of all robots equal to their health',
-  command: "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'attack', attributeValue(targets['they'](), 'health')); })",
+  command: "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'attack', \"() => (attributeValue(targets['they'](), 'health'))\"); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -139,7 +139,7 @@ export const threedomCard: w.CardInStore = {
   id: 'Threedom',
   name: 'Threedom',
   text: 'Set all stats of all robots in play to 3.',
-  command: "(function () { actions['setAttribute'](objectsInPlay('robot'), 'allattributes', 3); })",
+  command: "(function () { actions['setAttribute'](objectsInPlay('robot'), 'allattributes', '() => (3)'); })",
   cost: 4,
   type: TYPE_EVENT
 };
@@ -176,7 +176,7 @@ export const empCard: w.CardInStore = {
   name: 'EMP',
   text: 'Set the attack and speed of all robots to 0. \nGive all robots "Activate: Destroy this robot".',
   command: [
-    "(function () { (function () { save('target', objectsMatchingConditions('robot', [])); })(); (function () { actions['setAttribute'](load('target'), 'attack', 0); })(); (function () { actions['setAttribute'](load('target'), 'speed', 0); })(); })",
+    "(function () { (function () { save('target', objectsMatchingConditions('robot', [])); })(); (function () { actions['setAttribute'](load('target'), 'attack', '() => (0)'); })(); (function () { actions['setAttribute'](load('target'), 'speed', '() => (0)'); })(); })",
     "(function () { actions['giveAbility'](objectsMatchingConditions('robot', []), \"(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \\\"(function () { actions['destroy'](targets['thisRobot']()); })\\\")); })\"); })"
   ],
   cost: 7,

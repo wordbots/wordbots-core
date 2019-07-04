@@ -214,12 +214,13 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     // Prioritize current iteratee in a collection of objects.
     // e.g. "Set the attack of all robots to *their* health."
-    they: (): ((state: w.GameState) => w.ObjectCollection) => {
-      // Wrap it as a function of state because this needs to be evaluated as late as possible.
-      return (currentState: w.GameState) => ({
-        type: 'objects',
-        entries: compact([(currentState.currentObjectInCollection as w.Object) || currentState.it])
-      });
+    they: (): w.ObjectCollection => {
+      const they = state.currentObjectInCollection;
+      if (they && g.isObject(they)) {
+        return ({ type: 'objects', entries: [they] });
+      } else {
+        return ({ type: 'objects', entries: compact([state.it as w.Object | undefined]) });
+      }
     },
 
     thisRobot: (): w.ObjectCollection => {

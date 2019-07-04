@@ -213,7 +213,7 @@ export interface GameState {
   actionId?: string
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentCmdText?: string
-  currentObjectInCollection?: Targetable
+  currentEntryInCollection?: Targetable
   eventExecuting?: boolean
   invalid?: boolean
   it?: _Object | CardInGame

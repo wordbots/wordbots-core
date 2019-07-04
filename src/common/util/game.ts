@@ -67,6 +67,14 @@ export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameSta
   }
 }
 
+export function ownerOfCard(state: w.GameState, card: w.CardInGame): w.PlayerInGameState | undefined {
+  if (some(state.players.blue.hand, ['id', card.id])) {
+    return state.players.blue;
+  } else if (some(state.players.orange.hand, ['id', card.id])) {
+    return state.players.orange;
+  }
+}
+
 export function getAttribute(object: w.Object, attr: w.Attribute): number | undefined {
   if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
@@ -447,16 +455,13 @@ export function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGame
 
 // Note: This is used to either play or discard a set of cards.
 export function discardCardsFromHand(state: w.GameState, color: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
-  // At the moment, only the currently active player can ever play or discard a card.
   const player = state.players[color];
   state = putCardsInDiscardPile(state, player, cards);
-  state = removeCardsFromHand(state, cards);
+  state = removeCardsFromHand(state, cards, player);
   return state;
 }
 
-export function removeCardsFromHand(state: w.GameState, cards: w.CardInGame[]): w.GameState {
-  // At the moment, only the currently active player can ever play or discard a card.
-  const player = currentPlayer(state);
+export function removeCardsFromHand(state: w.GameState, cards: w.CardInGame[], player: w.PlayerInGameState = currentPlayer(state)): w.GameState {
   const cardIds = cards.map((c) => c.id);
   player.hand = filter(player.hand, (c) => !cardIds.includes(c.id));
   return state;

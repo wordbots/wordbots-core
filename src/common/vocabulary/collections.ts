@@ -21,7 +21,8 @@ export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
       type: 'cards',
       entries: (player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
         matchesType(card, cardType) && !card.justPlayed
-      )
+      ),
+      owner: player
     };
   };
 }

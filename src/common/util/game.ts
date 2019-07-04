@@ -592,7 +592,7 @@ export function executeCmd(
   cmd: ((state: w.GameState) => any) | w.StringRepresentationOf<(state: w.GameState) => any>,
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
-): w.GameState | w.Target {
+): w.GameState | w.Target | number {
   type BuildVocabulary = (state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null) => any;
   const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];

@@ -17,6 +17,10 @@ export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
 export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
   return (players: w.PlayerCollection, cardType: string) => {
     const player = players.entries[0]; // Unpack player target.
+    if (!player) {
+      return { type: 'cards', entries: [] };
+    }
+
     return {
       type: 'cards',
       entries: (player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
@@ -30,6 +34,10 @@ export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
 export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPileCollection> {
   return (players: w.PlayerCollection, cardType: string) => {
     const player = players.entries[0]; // Unpack player target.
+    if (!player) {
+      return { type: 'cardsInDiscardPile', entries: [] };
+    }
+
     return {
       type: 'cardsInDiscardPile',
       entries: (player.discardPile as w.CardInGame[]).filter((card: w.CardInGame) =>

@@ -306,6 +306,7 @@ export function logAction(
     cards: {...cards, ...targetCards}
   };
 
+  // console.log(message.text);
   state.actionLog.push(message);
   return state;
 }

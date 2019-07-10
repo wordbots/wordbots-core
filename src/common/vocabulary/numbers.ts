@@ -19,7 +19,7 @@ export function attributeValue(_: w.GameState): w.Returns<number> {
     attribute: w.Attribute
   ): number => {
     const object: w.Object | undefined = (targetObjects as w.ObjectCollection).entries[0]; // targetObjects is an array of objects, so unpack.
-    return object ? getAttribute(object, attribute)! : 0;
+    return object && getAttribute(object, attribute) || 0;
   };
 }
 
@@ -30,7 +30,7 @@ export function count(_: w.GameState): w.Returns<number> {
 }
 
 export function energyAmount(_: w.GameState): w.Returns<number> {
-  return (player: w.PlayerInGameState) => {
-    return player.energy.available;
+  return (players: w.PlayerCollection) => {
+    return players.entries[0].energy.available;
   };
 }

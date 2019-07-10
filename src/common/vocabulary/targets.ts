@@ -104,7 +104,10 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     controllerOf: (objects: w.ObjectCollection): w.PlayerCollection => {
       // Assume that only one object is ever passed in here.
-      return {type: 'players', entries: (objects.entries.length === 1) ? [ownerOf(state, objects.entries[0])!] : []};
+      return {
+        type: 'players',
+        entries: (objects.entries.length === 1) ? compact([ownerOf(state, objects.entries[0])!]) : []
+      };
     },
 
     copyOf: (collection: w.Collection): w.CardInHandCollection => {
@@ -230,7 +233,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       if (they && g.isPlayerState(they)) {
         return ({ type: 'players', entries: [they] });
       } else {
-        return ({ type: 'players', entries: compact([state.itP]) });
+        return ({ type: 'players', entries: compact([state.itP || opponentPlayer(state)]) });
       }
     },
 

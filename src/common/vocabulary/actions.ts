@@ -64,25 +64,27 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     // Become a card.
     become: (sources: w.ObjectOrPlayerCollection, cards: w.CardInHandCollection): void => {
       const card = cards.entries[0];
-      iterateOver<w.Object>(sources)((source: w.Object) => {
-        Object.assign(source, {
-          card: cloneDeep(card),
-          stats: cloneDeep(card.stats),
-          abilities: [],
-          triggers: []
-        });
-      });
-
-      // Set triggers one-by-one.
-      if (card.abilities && card.abilities.length > 0) {
-        card.abilities.forEach((cmd, idx) => {
-          const cmdText = splitSentences(card.text!)[idx];
-          state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
-
-          iterateOver<w.Object>(sources)((source: w.Object) => {
-            executeCmd(state, cmd, source);
+      if (card) {
+        iterateOver<w.Object>(sources)((source: w.Object) => {
+          Object.assign(source, {
+            card: cloneDeep(card),
+            stats: cloneDeep(card.stats),
+            abilities: [],
+            triggers: []
           });
         });
+
+        // Set triggers one-by-one.
+        if (card.abilities && card.abilities.length > 0) {
+          card.abilities.forEach((cmd, idx) => {
+            const cmdText = splitSentences(card.text!)[idx];
+            state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+
+            iterateOver<w.Object>(sources)((source: w.Object) => {
+              executeCmd(state, cmd, source);
+            });
+          });
+        }
       }
     },
 
@@ -242,7 +244,9 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       const recipient: w.PlayerInGameState = players.entries[0];
       const collectionType = cards.type;
 
-      if (collectionType === 'cards') {
+      if (cards.entries.length === 0 || !recipient) {
+        return;
+      } else if (collectionType === 'cards') {
         removeCardsFromHand(state, cards.entries, ownerOfCard(state, (cards as w.CardInHandCollection).entries[0]));
         recipient.deck = shuffle([...recipient.deck, ...cards.entries], state.rng());
       } else if (collectionType === 'cardsInDiscardPile') {
@@ -255,17 +259,18 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).
     spawnObject: (cards: w.CardInHandCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
       const card: w.CardInGame = cards.entries[0];
+      if (card) {
+        const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);
+        const owner: w.PlayerInGameState = owners ? owners.entries[0] : defaultOwner;
 
-      const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);
-      const owner: w.PlayerInGameState = owners ? owners.entries[0] : defaultOwner;
-
-      iterateOver<w.HexId>(hexes)((hex: w.HexId) => {
-        if (!allObjectsOnBoard(state)[hex]) {
-          const object: w.Object = instantiateObject(card);
-          owner.robotsOnBoard[hex] = object;
-          afterObjectPlayed(state, object);
-        }
-      });
+        iterateOver<w.HexId>(hexes)((hex: w.HexId) => {
+          if (!allObjectsOnBoard(state)[hex]) {
+            const object: w.Object = instantiateObject(card);
+            owner.robotsOnBoard[hex] = object;
+            afterObjectPlayed(state, object);
+          }
+        });
+      }
     },
 
     swapAttributes: (objects: w.ObjectOrPlayerCollection, attr1: w.Attribute, attr2: w.Attribute): void => {

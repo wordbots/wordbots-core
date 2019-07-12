@@ -80,7 +80,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
         structures: true
       },
       costRange: [0, 20],
-      sortCriteria: SortCriteria.Creator,
+      sortCriteria: SortCriteria.Timestamp,
       sortOrder: SortOrder.Ascending,
       searchText: '',
       selectedCardIds: deck ? deck.cardIds : [],

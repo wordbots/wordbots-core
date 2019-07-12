@@ -4,7 +4,7 @@ export enum SortCriteria {
   Cost,
   Name,
   Type,
-  Creator,
+  Timestamp,
   Attack,
   Health,
   Speed

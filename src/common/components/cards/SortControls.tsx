@@ -18,7 +18,7 @@ export default class SortControls extends React.Component<SortControlsProps> {
   }
 
   public render(): JSX.Element {
-    const criteria = ['By Cost', 'By Name', 'By Type', 'By Creator', 'By Attack', 'By Health', 'By Speed'];
+    const criteria = ['By Cost', 'By Name', 'By Type', 'By Recency', 'By Attack', 'By Health', 'By Speed'];
 
     return (
       <div style={{marginBottom: 20}}>
@@ -43,6 +43,7 @@ export default class SortControls extends React.Component<SortControlsProps> {
     return (
       <SelectField
         style={{width: '100%', marginRight: margin}}
+        labelStyle={{paddingRight: 40}}
         value={this.props[field]}
         floatingLabelText={capitalize(field)}
         onChange={this.handleSetField(field)}

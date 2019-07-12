@@ -259,8 +259,6 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).
     spawnObject: (cards: w.CardInHandCollection | w.CardInDiscardPileCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
       const card: w.CardInGame = cards.entries[0];
-      console.log(card);
-      console.log(hexes);
       if (card) {
         const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);
         const owner: w.PlayerInGameState = owners ? owners.entries[0] : defaultOwner;

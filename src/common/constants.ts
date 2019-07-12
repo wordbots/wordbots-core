@@ -103,7 +103,8 @@ export function stringToType(str: string): CardType {
 
 // Parsing.
 
-export const PARSER_URL = (USE_LOCAL_PARSER_ON_LOCALHOST && window && window.location.hostname === 'localhost') ? `http://localhost:${LOCAL_PARSER_PORT}` : '//parser.wordbots.io';
+const shouldUseLocalParser = USE_LOCAL_PARSER_ON_LOCALHOST && typeof window !== 'undefined' && window.location.hostname === 'localhost';  // tslint:disable-line no-typeof-undefined
+export const PARSER_URL = shouldUseLocalParser ? `http://localhost:${LOCAL_PARSER_PORT}` : '//parser.wordbots.io';
 export const PARSE_DEBOUNCE_MS = 500;
 
 export const SYNONYMS = {

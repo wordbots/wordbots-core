@@ -1,6 +1,6 @@
 import {
   chain as _, compact, filter, findKey, flatMap,
-  intersection, isArray, isString, mapValues, noop, remove, some, times, uniqBy
+  intersection, isArray, isString, isUndefined, mapValues, noop, remove, some, times, uniqBy
 } from 'lodash';
 
 import GridGenerator from '../components/hexgrid/GridGenerator';
@@ -75,28 +75,26 @@ export function ownerOfCard(state: w.GameState, card: w.CardInGame): w.PlayerInG
   }
 }
 
-export function getAttribute(object: w.Object, attr: w.Attribute): number | undefined {
-  if (object.temporaryStatAdjustments && object.temporaryStatAdjustments[attr]) {
+export function getAttribute(objectOrCard: w.Object | w.CardInGame, attr: w.Attribute | 'cost'): number | undefined {
+  const { stats, temporaryStatAdjustments } = objectOrCard;
+  const value: number | undefined = attr === 'cost' ? (objectOrCard as w.CardInGame).cost : stats && stats[attr as w.Attribute];
+
+  if (isUndefined(value)) {
+    return undefined;
+  } else if (temporaryStatAdjustments && temporaryStatAdjustments[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
-    return (object.temporaryStatAdjustments[attr] as w.StatAdjustment[])
-      .reduce((val: number | undefined, adj: { func: string }) =>
-        clamp(eval(adj.func) as (x: number) => number)(val), object.stats[attr]  // tslint:disable-line:no-eval
+    return (temporaryStatAdjustments[attr] as w.StatAdjustment[])
+      .reduce(
+        (val: number | undefined, adj: { func: string }) =>
+          clamp(eval(adj.func) as (x: number) => number)(val),   // tslint:disable-line:no-eval
+        value
       );
   } else {
-    return (object.stats[attr] === undefined) ? undefined : object.stats[attr];
+    return value;
   }
 }
 
-export function getCost(card: w.CardInGame): number {
-  if (card.temporaryStatAdjustments && card.temporaryStatAdjustments.cost) {
-    // Apply all temporary adjustments, one at a time, in order.
-    return card.temporaryStatAdjustments.cost.reduce((val: number, adj: { func: string }) =>
-      clamp(eval(adj.func) as (x: number) => number)(val), card.cost  // tslint:disable-line:no-eval
-    );
-  } else {
-    return card.cost;
-  }
-}
+export const getCost = (card: w.CardInGame): number => getAttribute(card, 'cost')!;
 
 export function movesLeft(robot: w.Robot): number {
   if (robot.cantMove || hasEffect(robot, 'cannotmove')) {
@@ -416,14 +414,21 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
   const numCardsDrawn = Math.min(count, maxHandSize - player.hand.length);
   const numCardsDiscarded = count - numCardsDrawn;
 
-  if (numCardsDrawn > 0) {
-    player.hand = player.hand.concat(player.deck.splice(0, numCardsDrawn));
-    if (SharedDeckGameFormat.isActive(state)) {
-      // In sharedDeck mode, drawing a card (or discarding the top card of the deck)
-      // affects both players' decks.
-      otherPlayer.deck.splice(0, numCardsDrawn);
+  times(numCardsDrawn, () => {
+    const card = player.deck[0];
+    if (card) {
+      player.hand = [...player.hand, ...player.deck.splice(0, 1)];
+      if (SharedDeckGameFormat.isActive(state)) {
+        // In sharedDeck mode, drawing a card (or discarding the top card of the deck) affects both players' decks.
+        otherPlayer.deck.splice(0, 1);
+      }
+
+      state = triggerEvent(state, 'afterCardDraw', {
+        player: true,
+        condition: (t: w.Trigger) => matchesType(card as w.CardInGame, t.cardType!)  // Hmm, how would this work with obfuscated cards?
+      });
     }
-  }
+  });
 
   times(numCardsDiscarded, () => {
     const card = player.deck[0];

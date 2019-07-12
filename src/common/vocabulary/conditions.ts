@@ -23,7 +23,9 @@ function objectHasProperty(obj: w.Object, property: string): boolean {
 
 // Object conditions return (hexId, obj) -> bool functions.
 // They are used by the objectsMatchingConditions() collection.
-type ObjectCondition = (hexId: w.HexId, obj: w.Object) => boolean;
+export type ObjectCondition = (hexId: w.HexId, obj: w.Object) => boolean;
+export type CardCondition = (hexId: null, obj: w.CardInGame) => boolean;
+type ObjectOrCardCondition = (hexId: w.HexId | null, obj: w.Object | w.CardInGame) => boolean;
 
 export function objectConditions(state: w.GameState): Record<string, w.Returns<ObjectCondition>> {
   return {
@@ -34,7 +36,7 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
       return ((hexId, _obj) => neighborHexes.includes(hexId));
     },
 
-    attributeComparison: (attr: w.Attribute, comp: (attrValue: number) => boolean): ObjectCondition => {
+    attributeComparison: (attr: w.Attribute, comp: (attrValue: number) => boolean): ObjectOrCardCondition => {
       return ((_hexId, obj) => comp(getAttribute(obj, attr)!));
     },
 

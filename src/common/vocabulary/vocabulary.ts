@@ -7,7 +7,7 @@ import {
   other, tilesMatchingConditions
 } from './collections';
 import { globalConditions, objectConditions } from './conditions';
-import { attributeSum, attributeValue, count, energyAmount } from './numbers';
+import { attributeSum, attributeValue, count, energyAmount, maximumEnergyAmount } from './numbers';
 import targets from './targets';
 import { setTrigger, triggers, unsetTrigger } from './triggers';
 
@@ -46,6 +46,7 @@ export default function vocabulary(
     attributeValue: attributeValue(state),
     count: count(state),
     energyAmount: energyAmount(state),
+    maximumEnergyAmount: maximumEnergyAmount(state),
 
     // Utility methods
     save: (key, value) => { state.memory[key] = value; },

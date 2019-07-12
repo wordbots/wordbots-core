@@ -34,3 +34,9 @@ export function energyAmount(_: w.GameState): w.Returns<number> {
     return players.entries[0].energy.available;
   };
 }
+
+export function maximumEnergyAmount(_: w.GameState): w.Returns<number> {
+  return (players: w.PlayerCollection) => {
+    return players.entries[0].energy.total;
+  };
+}

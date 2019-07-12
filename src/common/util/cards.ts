@@ -166,8 +166,6 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 
     (c: w.CardInStore) => (c.stats && c.stats.speed || 0).toString(36)
   ];
 
-  console.log([c1.name, c1.timestamp, timestamp(c1)]);
-
   // Sorting functions for card collections:
   // 0 = cost, 1 = name, 2 = type, 3 = timestamp, 4 = attack, 5 = health, 6 = speed.
   const f = [

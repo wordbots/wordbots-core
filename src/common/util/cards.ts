@@ -394,7 +394,7 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
 
   return {
     ...state,
-    sets: data ? ((data.sets as w.Set[]).map(correctCardSources) || state.sets) : defaultState.sets
+    sets: data ? (data.sets ? (data.sets as w.Set[]).map(correctCardSources) : state.sets) : defaultState.sets
   };
 }
 

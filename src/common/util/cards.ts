@@ -354,7 +354,6 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
     .map((card: w.Card) => ({
       ...omit(card, ['schema']),
       id: generateId(),
-      source: 'user',
       timestamp: Date.now()
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
@@ -365,7 +364,7 @@ export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.Co
     if (data.cards) {
       const cardsFromFirebase = data.cards.map((card: w.CardInStore) => ({
         ...card,
-        source: card.source === 'user' ? cardSourceForCurrentUser() : card.source  // Correctly resolve card source for old cards with source = 'user'
+        source: card.source === 'user' ? cardSourceForCurrentUser() : card.source  // Correctly resolve card source for old cards with source == 'user'
       })) || [];
       state.cards = uniqBy(state.cards.concat(cardsFromFirebase), 'id');
     }
@@ -384,9 +383,18 @@ export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.Co
 }
 
 export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
+  // Correctly resolve card source for old cards with source == 'user'
+  const correctCardSources = (set: w.Set): w.Set => ({
+    ...set,
+    cards: set.cards.map((card) => ({
+      ...card,
+      source: card.source === 'user' ? { uid: set.metadata.authorId, username: set.metadata.authorName } : card.source
+    }))
+  });
+
   return {
     ...state,
-    sets: data ? ((data.sets as w.Set[]) || state.sets) : defaultState.sets
+    sets: data ? ((data.sets as w.Set[]).map(correctCardSources) || state.sets) : defaultState.sets
   };
 }
 

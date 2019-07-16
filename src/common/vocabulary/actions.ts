@@ -257,7 +257,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     },
 
     // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).
-    spawnObject: (cards: w.CardInHandCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
+    spawnObject: (cards: w.CardInHandCollection | w.CardInDiscardPileCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
       const card: w.CardInGame = cards.entries[0];
       if (card) {
         const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);
@@ -270,6 +270,10 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
             afterObjectPlayed(state, object);
           }
         });
+
+        if (cards.type === 'cardsInDiscardPile') {
+          removeCardsFromDiscardPile(state, [card]);
+        }
       }
     },
 

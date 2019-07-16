@@ -12,7 +12,7 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
-const USE_LOCAL_PARSER = false;
+const USE_LOCAL_PARSER_ON_LOCALHOST = true;
 const LOCAL_PARSER_PORT = 8080;
 
 // Server settings.
@@ -103,7 +103,8 @@ export function stringToType(str: string): CardType {
 
 // Parsing.
 
-export const PARSER_URL = USE_LOCAL_PARSER ? `http://localhost:${LOCAL_PARSER_PORT}` : '//parser.wordbots.io';
+const shouldUseLocalParser = USE_LOCAL_PARSER_ON_LOCALHOST && typeof window !== 'undefined' && window.location.hostname === 'localhost';  // tslint:disable-line no-typeof-undefined
+export const PARSER_URL = shouldUseLocalParser ? `http://localhost:${LOCAL_PARSER_PORT}` : '//parser.wordbots.io';
 export const PARSE_DEBOUNCE_MS = 500;
 
 export const SYNONYMS = {

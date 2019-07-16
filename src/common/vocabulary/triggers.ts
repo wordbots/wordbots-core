@@ -50,6 +50,14 @@ export function triggers(_state: w.GameState): Record<string, w.Returns<w.Trigge
       };
     },
 
+    afterCardDraw: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => {
+      return {
+        type: 'afterCardDraw',
+        cardType,
+        targetFunc: `(${targetFunc.toString()})`
+      };
+    },
+
     afterCardPlay: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => {
       return {
         type: 'afterCardPlay',

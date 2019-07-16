@@ -74,7 +74,7 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
           ? 'Built-in card.'
           : (
             <span>
-              Created by <a href={`profile/${source.uid}`} target="_blank" rel="noopener noreferrer">{source.username}</a>.
+              Created by <a href={`/profile/${source.uid}`} target="_blank" rel="noopener noreferrer">{source.username}</a>.
               {' '}{timestamp && `Last modified ${moment(timestamp).format('ll')}.`}
             </span>
           )

@@ -156,23 +156,23 @@ function searchCards(card: w.CardInStore, query = ''): boolean {
 export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 | 2 | 3 | 4 | 5 | 6, order: 0 | 1 = 0): 1 | 0 | -1 {
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
-  const [cost, name, type, timestamp, attack, health, speed] = [
+  const [timestamp, cost, name, type, attack, health, speed] = [
+    (c: w.CardInStore) => (9999999999999 - (c.timestamp || 0)).toString(36),  // we want timestamp to be sorted backwards compared to other fields
     (c: w.CardInStore) => c.cost.toString(36),
     (c: w.CardInStore) => c.name.toLowerCase(),
     (c: w.CardInStore) => typeToString(c.type),
-    (c: w.CardInStore) => (9999999999999 - (c.timestamp || 0)).toString(36),  // we want timestamp to be sorted backwards compared to other fields
     (c: w.CardInStore) => (c.stats && c.stats.attack || 0).toString(36),
     (c: w.CardInStore) => (c.stats && c.stats.health || 0).toString(36),
     (c: w.CardInStore) => (c.stats && c.stats.speed || 0).toString(36)
   ];
 
   // Sorting functions for card collections:
-  // 0 = cost, 1 = name, 2 = type, 3 = timestamp, 4 = attack, 5 = health, 6 = speed.
+  // 0 = timestamp, 1 = cost, 2 = name, 3 = type, 4 = attack, 5 = health, 6 = speed.
   const f = [
+    (c: w.CardInStore) => [timestamp(c), cost(c), name(c)],
     (c: w.CardInStore) => [cost(c), name(c)],
     (c: w.CardInStore) => [name(c), cost(c)],
     (c: w.CardInStore) => [type(c), cost(c), name(c)],
-    (c: w.CardInStore) => [timestamp(c), cost(c), name(c)],
     (c: w.CardInStore) => [attack(c), cost(c), name(c)],
     (c: w.CardInStore) => [health(c), cost(c), name(c)],
     (c: w.CardInStore) => [speed(c), cost(c), name(c)]

@@ -68,7 +68,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
         structures: true
       },
       costRange: [0, 20],
-      sortCriteria: SortCriteria.Creator,
+      sortCriteria: SortCriteria.Timestamp,
       sortOrder: SortOrder.Ascending,
       searchText: '',
       selectedCardIds: props.setBeingEdited ? props.setBeingEdited.cards.map((c) => c.id) : [],

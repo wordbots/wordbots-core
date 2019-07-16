@@ -20,6 +20,7 @@ import ImportDialog from '../components/cards/ImportDialog';
 import LayoutControls from '../components/cards/LayoutControls';
 import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
+import { SortCriteria, SortOrder } from '../components/cards/types.enums';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
@@ -89,8 +90,8 @@ export class Collection extends React.Component<CollectionProps, CollectionState
       structures: true
     },
     costRange: [0, 20],
-    sortCriteria: 3,
-    sortOrder: 0,
+    sortCriteria: SortCriteria.Timestamp,
+    sortOrder: SortOrder.Ascending,
     searchText: '',
     selectedCardIds: [],
     layout: 0

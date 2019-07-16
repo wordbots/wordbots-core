@@ -18,7 +18,8 @@ export default class SortControls extends React.Component<SortControlsProps> {
   }
 
   public render(): JSX.Element {
-    const criteria = ['By Cost', 'By Name', 'By Type', 'By Creator', 'By Attack', 'By Health', 'By Speed'];
+    const criteria = ['By Timestamp', 'By Cost', 'By Name', 'By Type', 'By Attack', 'By Health', 'By Speed'];
+    const orders = this.props.criteria === SortCriteria.Timestamp ? ['New → Old', 'Old → New'] : ['Ascending', 'Descending'];
 
     return (
       <div style={{marginBottom: 20}}>
@@ -33,7 +34,7 @@ export default class SortControls extends React.Component<SortControlsProps> {
 
         <div style={{display: 'flex'}}>
           {this.renderSelectField('criteria', criteria, 10)}
-          {this.renderSelectField('order', ['Ascending', 'Descending'], 0)}
+          {this.renderSelectField('order', orders, 0)}
         </div>
       </div>
     );
@@ -43,6 +44,7 @@ export default class SortControls extends React.Component<SortControlsProps> {
     return (
       <SelectField
         style={{width: '100%', marginRight: margin}}
+        labelStyle={{paddingRight: 40}}
         value={this.props[field]}
         floatingLabelText={capitalize(field)}
         onChange={this.handleSetField(field)}

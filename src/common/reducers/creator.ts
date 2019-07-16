@@ -58,6 +58,9 @@ export default function creator(oldState: State = defaultState, { type, payload 
       state.spriteID = id();
       return state;
 
+    case creatorActions.TOGGLE_WILL_CREATE_ANOTHER:
+      return {...state, willCreateAnother: !state.willCreateAnother};
+
     case creatorActions.ADD_TO_COLLECTION:
       // Reset card creator state.
       return {...state, ...defaultState,  spriteID: id()};

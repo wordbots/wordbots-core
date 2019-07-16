@@ -187,6 +187,7 @@ export interface CreatorState {
   spriteID: string
   text: string
   type: CardType
+  willCreateAnother: boolean
 }
 
 export interface GameState {

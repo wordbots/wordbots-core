@@ -30,6 +30,7 @@ interface CreatorStateProps {
   cost: number
   loggedIn: boolean
   parserVersion: number | null
+  willCreateAnother: boolean
   cards: w.CardInStore[]
 }
 
@@ -42,6 +43,7 @@ interface CreatorDispatchProps {
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
   onAddToCollection: (props: w.CreatorState) => void
+  onToggleWillCreateAnother: () => void
   onStartSandbox: (card: w.CardInStore) => void
 }
 
@@ -61,6 +63,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
     text: state.creator.text,
     parserVersion: state.creator.parserVersion,
     loggedIn: state.global.user !== null,
+    willCreateAnother: state.creator.willCreateAnother,
     cards: state.collection.cards
   };
 }
@@ -90,6 +93,9 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
     },
     onAddToCollection: (props: w.CreatorState) => {
       dispatch(creatorActions.addToCollection(props));
+    },
+    onToggleWillCreateAnother: () => {
+      dispatch(creatorActions.toggleWillCreateAnother());
     },
     onStartSandbox: (card: w.CardInStore) => {
       dispatch(gameActions.startSandbox(card));
@@ -141,6 +147,7 @@ export class Creator extends React.Component<CreatorProps> {
             text={this.props.text}
             sentences={this.props.sentences}
             isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
+            willCreateAnother={this.props.willCreateAnother}
             onSetName={this.props.onSetName}
             onSetType={this.props.onSetType}
             onSetText={this.props.onSetText}
@@ -150,6 +157,7 @@ export class Creator extends React.Component<CreatorProps> {
             onOpenDialog={this.openDialog}
             onTestCard={this.testCard}
             onAddToCollection={this.addToCollection}
+            onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
           />
             <CardPreview
               name={this.props.name}

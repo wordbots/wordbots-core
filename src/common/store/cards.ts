@@ -17,7 +17,7 @@ const coreCard = {
     health: STARTING_PLAYER_HEALTH
   },
   abilities: [],
-  source: 'builtin'
+  source: 'builtin' as w.CardSource
 };
 
 export const blueCoreCard: w.CardInGame = {

@@ -74,7 +74,9 @@ export const ORANGE_PLACEMENT_HEXES: HexId[] = ['3,-3,0', '3,-2,-1', '3,-1,-2', 
 
 // Cards.
 
-export const CARD_SCHEMA_VERSION = 1;
+export const CARD_SCHEMA_VERSION = 2;
+// JSON schema changes:
+// * 1->2: export creator's uid and username
 export const SPRITE_VERSION = 2;
 // Sprite changes:
 // * 1->2: trianglify instead of identicons for events

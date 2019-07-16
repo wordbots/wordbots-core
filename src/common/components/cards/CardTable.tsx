@@ -57,11 +57,13 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
     );
   }
 
-  private sourceToString(source?: string): string {
-    if (source === 'user') {
-      return 'You';
-    } else {
+  private sourceToString(source?: w.CardSource): string {
+    if (source === 'builtin') {
       return 'Built-In';
+    } else if (source) {
+      return source.username;
+    } else {
+      return '';
     }
   }
 

@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, identity, isNil, mapValues, orderBy, uniq, uniqBy } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, identity, isNil, isUndefined, mapValues, omitBy, orderBy, uniq, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -52,6 +52,10 @@ function getLoggedInUser(): Promise<firebase.User> {
   });
 }
 
+export function lookupCurrentUser(): firebase.User | null {
+  return currentUser;
+}
+
 export function lookupUsername(fallback = 'You'): string {
   return (currentUser && currentUser.displayName) || fallback;
 }
@@ -97,16 +101,6 @@ export function listenToUserData(callback: (data: any) => any): Promise<void> {
         }
       });
   });
-}
-
-export function listenToUserDataById(uid: string, callback: (data: any) => any): void {
-  fb.database()
-    .ref(`users/${uid}`)
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
-      if (snapshot) {
-        callback(snapshot.val());
-      }
-    });
 }
 
 export function saveUserData(key: string, value: any): void {
@@ -219,7 +213,7 @@ export function listenToDictionaryData(callback: (data: { dictionary: w.Dictiona
 export function saveRecentCard(card: w.Card): void {
   fb.database()
     .ref('recentCards')
-    .push(card);
+    .push(omitBy(card, isUndefined));
 }
 
 export function saveSet(set: w.Set): void {

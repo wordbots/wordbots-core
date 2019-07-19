@@ -36,7 +36,7 @@ export interface CardProps {
   stats: Partial<Record<w.Attribute, number | undefined>>
   cost: number
   baseCost?: number
-  source?: string
+  source?: w.CardSource
   collection?: boolean
 
   visible: boolean

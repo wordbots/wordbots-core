@@ -13,7 +13,7 @@ interface CardImageProps {
   spriteID: string
   spriteV?: number
   img?: string
-  source?: string
+  source?: w.CardSource
   scale: number
   onSpriteClick: () => void
 }

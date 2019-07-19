@@ -14,7 +14,7 @@ import defaultState from '../store/defaultCollectionState';
 import * as w from '../types';
 
 import { compareCertainKeys, id as generateId } from './common';
-import { indexParsedSentence, saveRecentCard, saveUserData } from './firebase';
+import { indexParsedSentence, lookupCurrentUser, saveRecentCard, saveUserData } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
@@ -85,6 +85,11 @@ export function replaceCardsInPlayerState(
   };
 }
 
+function cardSourceForCurrentUser(): w.CardSource | undefined {
+  const user = lookupCurrentUser();
+  return user ? { uid: user.uid, username: user.displayName || user.uid } : undefined;
+}
+
 //
 // 2. Helper functions for card-related components.
 //
@@ -124,8 +129,9 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
   const command = sentences.map((s: { result: { js?: string }}) => s.result.js!);
+  const source = cardSourceForCurrentUser();
 
-  const card: w.Card = {
+  const card: w.CardInStore = {
     id: id || generateId(),
     name,
     type,
@@ -134,7 +140,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     parserV: parserVersion,
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
     cost,
-    source: 'user',  // In the future, this will specify *which* user created the card.
+    source,
     timestamp: Date.now()
   };
 
@@ -332,8 +338,10 @@ export function contractKeywords(sentence: string): string {
 
 export function cardsToJson(cards: w.Card[]): string {
   const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats'];
+  const source = cardSourceForCurrentUser();
   const cardsToExport = cards.map((card) => ({
     ...pick(card, exportedFields),
+    source,
     schema: CARD_SCHEMA_VERSION
   }));
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
@@ -346,7 +354,6 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
     .map((card: w.Card) => ({
       ...omit(card, ['schema']),
       id: generateId(),
-      source: 'user',
       timestamp: Date.now()
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
@@ -355,7 +362,11 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
 export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
   if (data) {
     if (data.cards) {
-      state.cards = uniqBy(state.cards.concat(data.cards || []), 'id');
+      const cardsFromFirebase = data.cards.map((card: w.CardInStore) => ({
+        ...card,
+        source: card.source === 'user' ? cardSourceForCurrentUser() : card.source  // Correctly resolve card source for old cards with source == 'user'
+      })) || [];
+      state.cards = uniqBy(state.cards.concat(cardsFromFirebase), 'id');
     }
   } else {
     state.cards = defaultState.cards;
@@ -372,9 +383,18 @@ export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.Co
 }
 
 export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
+  // Correctly resolve card source for old cards with source == 'user'
+  const correctCardSources = (set: w.Set): w.Set => ({
+    ...set,
+    cards: set.cards.map((card) => ({
+      ...card,
+      source: card.source === 'user' ? { uid: set.metadata.authorId, username: set.metadata.authorName } : card.source
+    }))
+  });
+
   return {
     ...state,
-    sets: data ? ((data.sets as w.Set[]) || state.sets) : defaultState.sets
+    sets: data ? (data.sets ? (data.sets as w.Set[]).map(correctCardSources) : state.sets) : defaultState.sets
   };
 }
 

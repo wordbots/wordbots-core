@@ -163,7 +163,9 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
   const [timestamp, cost, name, type, attack, health, speed] = [
-    (c: w.CardInStore) => (9999999999999 - (c.timestamp || 0)).toString(36),  // we want timestamp to be sorted backwards compared to other fields
+    // we want timestamp to be sorted backwards compared to other fields.
+    // also, created cards without a timestamp should still come before builtin cards.
+    (c: w.CardInStore) => (9999999999999 - (c.timestamp || (c.source === 'builtin' ? 0 : 1))).toString(36),
     (c: w.CardInStore) => c.cost.toString(36),
     (c: w.CardInStore) => c.name.toLowerCase(),
     (c: w.CardInStore) => typeToString(c.type),

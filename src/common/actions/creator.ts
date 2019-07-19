@@ -6,6 +6,7 @@ export const SET_ATTRIBUTE = 'SET_ATTRIBUTE';
 export const SET_TEXT = 'SET_TEXT';
 export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
+export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
 export const ADD_TO_COLLECTION = 'ADD_TO_COLLECTION';
 
 export function setName(name: string): w.Action {
@@ -46,6 +47,12 @@ export function parseComplete(idx: number, sentence: string, result: w.ParseResu
 export function regenerateSprite(): w.Action {
   return {
     type: REGENERATE_SPRITE
+  };
+}
+
+export function toggleWillCreateAnother(): w.Action {
+  return {
+    type: TOGGLE_WILL_CREATE_ANOTHER
   };
 }
 

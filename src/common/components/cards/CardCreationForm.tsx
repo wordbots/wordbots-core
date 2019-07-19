@@ -38,6 +38,7 @@ interface CardCreationFormProps {
   cost: number
   loggedIn: boolean
   isNewCard: boolean
+  willCreateAnother: boolean
 
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
@@ -48,6 +49,7 @@ interface CardCreationFormProps {
   onAddToCollection: (redirectToCollection: boolean) => void
   onOpenDialog: (dialog: string) => void
   onTestCard: () => void
+  onToggleWillCreateAnother: () => void
 }
 
 interface CardCreationFormState {
@@ -58,7 +60,6 @@ interface CardCreationFormState {
   }
   submittedParseIssue: string | null
   submittedParseIssueConfirmationOpen: boolean
-  willCreateAnother: boolean
 }
 
 export default class CardCreationForm extends React.Component<CardCreationFormProps, CardCreationFormState> {
@@ -93,8 +94,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       object: false
     },
     submittedParseIssue: null,
-    submittedParseIssueConfirmationOpen: false,
-    willCreateAnother: false
+    submittedParseIssueConfirmationOpen: false
   };
 
   get robot(): boolean { return this.props.type === TYPE_ROBOT; }
@@ -208,7 +208,8 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public render(): JSX.Element {
-    const { submittedParseIssue, submittedParseIssueConfirmationOpen, willCreateAnother } = this.state;
+    const { willCreateAnother, onToggleWillCreateAnother } = this.props;
+    const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
     const examplesLoaded = this.state.examplesLoaded[this.parserMode];
 
     const FULL_WIDTH_PERCENT = 100;
@@ -352,7 +353,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             <FormControlLabel
               style={CardCreationForm.styles.createAnotherCheckbox}
               control={
-                <Checkbox checked={willCreateAnother} onChange={this.handleToggleCreateAnother} color="primary" />
+                <Checkbox checked={willCreateAnother} onChange={onToggleWillCreateAnother} color="primary" />
               }
               label="Create another?"
             />
@@ -403,12 +404,8 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     this.setState({ submittedParseIssueConfirmationOpen: false });
   }
 
-  private handleToggleCreateAnother = () => {
-    this.setState((state) => ({ willCreateAnother: !state.willCreateAnother }));
-  }
-
   private handleSaveCard = () => {
-    this.props.onAddToCollection(!this.state.willCreateAnother);
+    this.props.onAddToCollection(!this.props.willCreateAnother);
   }
 
   private onUpdateText = (text: string, cardType: w.CardType = this.props.type, dontIndex: boolean = false) => {

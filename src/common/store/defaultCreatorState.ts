@@ -12,7 +12,8 @@ const defaultCreatorState: w.CreatorState = {
   speed: 1,
   health: 1,
   cost: 1,
-  parserVersion: null
+  parserVersion: null,
+  willCreateAnother: false
 };
 
 export default defaultCreatorState;

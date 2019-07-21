@@ -100,7 +100,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
               </sup>
             </Tooltip>
           }
-          ]
+          {' '}]
         </div>
 
         <TextField

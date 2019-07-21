@@ -77,6 +77,11 @@ a.topLink:hover {
   fill: white;
 }
 
+.help-tooltip {
+  font-weight: normal;
+  max-width: 180px;
+}
+
 .formats-tooltip {
   max-width: 300px;
 }

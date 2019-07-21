@@ -63,7 +63,11 @@ export default function creator(oldState: State = defaultState, { type, payload 
 
     case creatorActions.ADD_TO_COLLECTION:
       // Reset card creator state.
-      return {...state, ...defaultState,  spriteID: id()};
+      return {
+        ...defaultState,
+        willCreateAnother: state.willCreateAnother,
+        spriteID: id()
+      };
 
     case collectionActions.OPEN_CARD_FOR_EDITING:
       return c.openCardForEditing(state, payload.card);

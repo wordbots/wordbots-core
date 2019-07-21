@@ -401,11 +401,14 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
 }
 
 export function saveCardToFirebase(card: w.CardInStore): void {
-  saveRecentCard(card);
+  // No point in keeping track of recent "vanilla" (text-less) cards
+  if (card.text) {
+    saveRecentCard(card);
+  }
 }
 
 export function saveCardsToFirebase(state: w.CollectionState): void {
-  saveUserData('cards', state.cards.filter((c) => c.source !== 'builtin'));
+  saveUserData('cards', state.cards.filter((c) => c.source && c.source !== 'builtin'));
 }
 
 export function saveDecksToFirebase(state: w.CollectionState): void {

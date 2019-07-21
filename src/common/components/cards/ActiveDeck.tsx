@@ -132,7 +132,8 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   private renderSaveButton(style: React.CSSProperties = {}): JSX.Element {
-    const { isASet, loggedIn, name } = this.props;
+    const { isASet, loggedIn } = this.props;
+    const { name } = this.state;
 
     return (
       <MustBeLoggedIn loggedIn={loggedIn}>

@@ -88,19 +88,25 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
             &nbsp;{cards.length}&nbsp;
           </span>
-          / {isASet ? 'at least 15' : '30'}
-          {isASet &&
-            <Tooltip
-              inline
-              className="help-tooltip"
-              text="15 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
-            >
-              <sup>
-                <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
-              </sup>
-            </Tooltip>
+          /{' '}
+          {
+            isASet ?
+              <span>
+                at least 15
+                <Tooltip
+                  inline
+                  className="help-tooltip"
+                  place="left"
+                  text="15 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
+                >
+                  <sup>
+                    <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
+                  </sup>
+                </Tooltip>
+              </span> :
+              '30 '
           }
-          {' '}]
+          ]
         </div>
 
         <TextField

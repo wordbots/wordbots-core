@@ -77,7 +77,11 @@ export function ownerOfCard(state: w.GameState, card: w.CardInGame): w.PlayerInG
 
 export function getAttribute(objectOrCard: w.Object | w.CardInGame, attr: w.Attribute | 'cost'): number | undefined {
   const { stats, temporaryStatAdjustments } = objectOrCard;
-  const value: number | undefined = attr === 'cost' ? (objectOrCard as w.CardInGame).cost : stats && stats[attr as w.Attribute];
+  const value: number | undefined = (
+    attr === 'cost' ?
+      g.isObject(objectOrCard) ? objectOrCard.card.cost : objectOrCard.cost :
+      stats && stats[attr as w.Attribute]
+  );
 
   if (isUndefined(value)) {
     return undefined;

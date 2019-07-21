@@ -44,7 +44,8 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     function connect(): void {
       store.dispatch(sa.connecting());
 
-      socket = new WebSocket(`ws://${window.location.host}/socket`);
+      const protocol = window.location.protocol.includes('https') ? 'wss' : 'ws';
+      socket = new WebSocket(`${protocol}://${window.location.host}/socket`);
       socket.onopen = connected;
       socket.onclose = disconnected;
       socket.onmessage = receive;

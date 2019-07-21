@@ -27,7 +27,7 @@ export default class CardTooltip extends React.Component<CardTooltipProps> {
           isOpen={this.props.isOpen}
           body={Card.fromObj(this.props.card)}
           style={{ zIndex: MAX_Z_INDEX }}
-          place="above"
+          preferPlace="above"
           showTip={false}
         >
           {this.props.children}

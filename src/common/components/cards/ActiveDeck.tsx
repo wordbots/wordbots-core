@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import * as React from 'react';
 
-import { MAX_Z_INDEX } from '../../constants';
+import { MAX_Z_INDEX, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
 import { groupCards, selectType } from '../../util/cards';
 import Tooltip from '../Tooltip';
@@ -41,7 +41,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   public state = {
     description: this.props.description || '',
     name: this.props.name,
-    grouping: 0
+    grouping: this.props.isASet ? 1 : 1
   };
 
   private styles: Record<string, React.CSSProperties> = {
@@ -54,6 +54,12 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
       width: '100%',
       boxSizing: 'border-box',
       textAlign: 'center'
+    },
+    cardGroupHeading: {
+      fontWeight: 700,
+      fontSize: 14,
+      marginBottom: 10,
+      marginTop: 10
     }
   };
 
@@ -82,7 +88,19 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
             &nbsp;{cards.length}&nbsp;
           </span>
-          / {isASet ? 'at least 15' : '30'} ]
+          / {isASet ? 'at least 15' : '30'}
+          {isASet &&
+            <Tooltip
+              inline
+              className="help-tooltip"
+              text="15 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
+            >
+              <sup>
+                <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
+              </sup>
+            </Tooltip>
+          }
+          ]
         </div>
 
         <TextField
@@ -198,10 +216,12 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   private renderCardList(): JSX.Element {
+    const { cards } = this.props;
+
     if (this.state.grouping === 0) {
       return (
         <div>
-          {sortBy(groupCards(this.props.cards), ['cost', 'name']).map((card, idx) =>
+          {sortBy(groupCards(cards), ['cost', 'name']).map((card, idx) =>
             this.renderCard(card, idx)
           )}
         </div>
@@ -209,43 +229,20 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     } else {
       return (
         <div>
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: 14,
-              marginBottom: 10
-            }}
-          >
-            Robots
+          <div style={this.styles.cardGroupHeading}>
+            Robots ({selectType(cards, TYPE_ROBOT).length})
           </div>
+          {this.renderCardGroup(TYPE_ROBOT)}
 
-          {this.renderCardGroup(0)}
-
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: 14,
-              marginBottom: 10,
-              marginTop: 10
-            }}
-          >
-            Events
+          <div style={this.styles.cardGroupHeading}>
+            Events ({selectType(cards, TYPE_EVENT).length})
           </div>
+          {this.renderCardGroup(TYPE_EVENT)}
 
-          {this.renderCardGroup(1)}
-
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: 14,
-              marginBottom: 10,
-              marginTop: 10
-            }}
-          >
-            Structures
+          <div style={this.styles.cardGroupHeading}>
+            Structures ({selectType(cards, TYPE_STRUCTURE).length})
           </div>
-
-          {this.renderCardGroup(3)}
+          {this.renderCardGroup(TYPE_STRUCTURE)}
         </div>
       );
     }

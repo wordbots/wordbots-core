@@ -41,7 +41,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   public state = {
     description: this.props.description || '',
     name: this.props.name,
-    grouping: this.props.isASet ? 1 : 1
+    grouping: this.props.isASet ? 1 : 0
   };
 
   private styles: Record<string, React.CSSProperties> = {

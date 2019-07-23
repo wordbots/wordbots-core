@@ -38,6 +38,7 @@ interface CardCreationFormProps {
   cost: number
   loggedIn: boolean
   isNewCard: boolean
+  isReadonly: boolean
   willCreateAnother: boolean
 
   onSetName: (name: string) => void
@@ -208,7 +209,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public render(): JSX.Element {
-    const { willCreateAnother, onToggleWillCreateAnother } = this.props;
+    const { isReadonly, willCreateAnother, onToggleWillCreateAnother } = this.props;
     const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
     const examplesLoaded = this.state.examplesLoaded[this.parserMode];
 
@@ -243,7 +244,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
               onClick={this.handleClickRandomize}
               width={`calc(${buttonMaxWidth}% - ${buttonPadding}px)`}
-              disabled={!examplesLoaded}
+              disabled={!examplesLoaded || isReadonly}
             />
             <ButtonInRow
               label="Test"
@@ -259,6 +260,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
         <Paper style={CardCreationForm.styles.paper}>
           <div style={CardCreationForm.styles.section}>
             <TextField
+              disabled={isReadonly}
               value={this.props.name}
               floatingLabelText="Card Name"
               style={CardCreationForm.styles.leftCol}
@@ -266,6 +268,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               onChange={this.handleSetName}
             />
             <NumberField
+              disabled={isReadonly}
               label="Energy Cost"
               value={this.props.cost}
               maxValue={20}
@@ -277,6 +280,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
           <div style={CardCreationForm.styles.section}>
             <SelectField
+              disabled={isReadonly}
               value={this.props.type}
               floatingLabelText="Card Type"
               style={{width: 'calc(100% - 60px)'}}
@@ -291,6 +295,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             <div style={CardCreationForm.styles.rightColContainer}>
               <Tooltip text="Generate a new image">
                 <RaisedButton
+                  disabled={isReadonly}
                   primary
                   style={{width: 40, minWidth: 40}}
                   onClick={this.props.onSpriteClick}
@@ -304,6 +309,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           <div style={CardCreationForm.styles.section}>
             <div style={{flex: 1, marginRight: 20}}>
               <CardTextField
+                readonly={isReadonly}
                 text={this.props.text}
                 sentences={this.nonEmptySentences}
                 error={this.textError}
@@ -332,9 +338,9 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           </div>
 
           <div style={CardCreationForm.styles.section}>
-            {this.renderAttributeField('attack', this.robot)}
-            {this.renderAttributeField('health', !this.event)}
-            {this.renderAttributeField('speed', this.robot, {max: 3})}
+            {this.renderAttributeField('attack', this.robot && !isReadonly)}
+            {this.renderAttributeField('health', !this.event && !isReadonly)}
+            {this.renderAttributeField('speed', this.robot && !isReadonly, {max: 3})}
           </div>
 
           <div style={CardCreationForm.styles.section}>
@@ -343,20 +349,20 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                 <RaisedButton
                   primary
                   fullWidth
-                  label="Save Card"
+                  label={isReadonly ? "Add to Collection" : "Save Card"}
                   disabled={!this.isValid}
                   style={CardCreationForm.styles.saveButton}
                   onClick={this.handleSaveCard}
                 />
               </MustBeLoggedIn>
             </div>
-            <FormControlLabel
+            {!isReadonly && <FormControlLabel
               style={CardCreationForm.styles.createAnotherCheckbox}
               control={
                 <Checkbox checked={willCreateAnother} onChange={onToggleWillCreateAnother} color="primary" />
               }
               label="Create another?"
-            />
+            />}
           </div>
         </Paper>
       </div>
@@ -364,12 +370,17 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   private setAttribute = (key: w.Attribute | 'cost') => (value: number) => {
+    if (this.props.isReadonly) { return; }
     this.props.onSetAttribute(key, value);
   }
 
-  private handleSetName = (_e: React.FormEvent<HTMLElement>, value: string) => { this.props.onSetName(value); };
+  private handleSetName = (_e: React.FormEvent<HTMLElement>, value: string) => {
+    if (this.props.isReadonly) { return; }
+    this.props.onSetName(value);
+  };
 
   private handleSetType = (_e: React.SyntheticEvent<any>, _i: number, value: w.CardType) => {
+    if (this.props.isReadonly) { return; }
     this.props.onSetType(value);
     // Re-parse card text because different card types now have different validations.
     this.onUpdateText(this.props.text, value);
@@ -384,6 +395,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   private handleClickRandomize = () => {
+    if (this.props.isReadonly) { return; }
     const example = exampleStore.getExample(this.parserMode);
     if (example) {
       this.onUpdateText(example, this.props.type, true);

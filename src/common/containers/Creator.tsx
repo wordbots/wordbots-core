@@ -16,6 +16,7 @@ import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import * as w from '../types';
 import { createCardFromProps } from '../util/cards';
+import { lookupCurrentUser } from '../util/firebase';
 
 interface CreatorStateProps {
   id: string | null
@@ -42,12 +43,17 @@ interface CreatorDispatchProps {
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
-  onAddToCollection: (props: w.CreatorState) => void
+  onAddExistingCardToCollection: (card: w.CardInStore) => void
+  onAddNewCardToCollection: (props: w.CreatorState) => void
   onToggleWillCreateAnother: () => void
   onStartSandbox: (card: w.CardInStore) => void
 }
 
 type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentProps;
+
+interface CreatorState {
+  cardOpenedForEditing?: w.CardInStore
+}
 
 export function mapStateToProps(state: w.State): CreatorStateProps {
   return {
@@ -91,8 +97,11 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
     onSpriteClick: () => {
       dispatch(creatorActions.regenerateSprite());
     },
-    onAddToCollection: (props: w.CreatorState) => {
+    onAddNewCardToCollection: (props: w.CreatorState) => {
       dispatch(creatorActions.addToCollection(props));
+    },
+    onAddExistingCardToCollection: (props: w.CardInStore) => {
+      dispatch(creatorActions.addExistingCardToCollection(props));
     },
     onToggleWillCreateAnother: () => {
       dispatch(creatorActions.toggleWillCreateAnother());
@@ -103,11 +112,26 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
   };
 }
 
-export class Creator extends React.Component<CreatorProps> {
+export class Creator extends React.Component<CreatorProps, CreatorState> {
   // For testing.
   public static childContextTypes = {
     muiTheme: object.isRequired
   };
+
+  public state: CreatorState = {};
+
+  get isCardEditable(): boolean {
+    const { cardOpenedForEditing } = this.state;
+    if (cardOpenedForEditing && cardOpenedForEditing.source) {
+      const { source } = cardOpenedForEditing;
+      if (source) {
+        const currentUser = lookupCurrentUser();
+        return source !== 'builtin' && !!currentUser && source.uid === currentUser.uid;
+      }
+    }
+
+    return true;
+  }
 
   public componentDidMount(): void {
     this.maybeLoadCard();
@@ -147,6 +171,7 @@ export class Creator extends React.Component<CreatorProps> {
             text={this.props.text}
             sentences={this.props.sentences}
             isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
+            isReadonly={!this.isCardEditable}
             willCreateAnother={this.props.willCreateAnother}
             onSetName={this.props.onSetName}
             onSetType={this.props.onSetType}
@@ -185,7 +210,9 @@ export class Creator extends React.Component<CreatorProps> {
       const card: w.CardInStore | undefined = (cardFromRouter && cardFromRouter.id === cardId) ? cardFromRouter : cards.find((c) => c.id === cardId);
 
       if (card) {
-        onOpenCard(card);
+        this.setState({ cardOpenedForEditing: card }, () => {
+          onOpenCard(card);
+        });
       }
     }
   }
@@ -201,9 +228,17 @@ export class Creator extends React.Component<CreatorProps> {
   }
 
   private addToCollection = (redirectToCollection: boolean) => {
-    this.props.onAddToCollection(this.props);
+    const { onAddExistingCardToCollection, onAddNewCardToCollection, history } = this.props;
+    const { cardOpenedForEditing } = this.state;
+
+    if (cardOpenedForEditing) {
+      onAddExistingCardToCollection(cardOpenedForEditing);
+    } else {
+      onAddNewCardToCollection(this.props);
+    }
+
     if (redirectToCollection) {
-      this.props.history.push('/collection');
+      history.push('/collection');
     }
   }
 }

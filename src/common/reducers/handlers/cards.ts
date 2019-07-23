@@ -69,7 +69,7 @@ const cardsHandlers = {
     };
   },
 
-  exportCards: (state: State, cards: w.Card[]): State => {
+  exportCards: (state: State, cards: w.CardInStore[]): State => {
     return {...state, exportedJson: cardsToJson(cards)};
   },
 
@@ -139,6 +139,11 @@ const cardsHandlers = {
     return saveCard(state, card);
   },
 
+  saveExistingCard: (state: State, card: w.CardInStore): State => {
+    // e.g. used when importing a card from the RecentCardsCarousel
+    return saveCard(state, card);
+  },
+
   saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {
     let deck: w.DeckInStore | undefined;
     if (deckId) {
@@ -176,13 +181,17 @@ const cardsHandlers = {
 
 // Saves a card, either as a new card or replacing an existing card.
 function saveCard(state: State, card: w.CardInStore): State {
+  const currentUser = firebase.lookupCurrentUser();
+  if (!currentUser) { return state; }
+
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
   const existingCard = state.cards.find((c) => c.id === card.id || areIdenticalCards(c, card));
 
   if (existingCard) {
     // Editing an existing card.
-    if (existingCard.source === 'builtin') {
+    const { source } = existingCard;
+    if (source === 'builtin' || source && source.uid !== currentUser.uid) {
       // TODO Log warning about not being about not being able to replace builtin cards.
     } else {
       Object.assign(existingCard, card, {id: existingCard.id});

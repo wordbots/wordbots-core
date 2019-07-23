@@ -24,6 +24,9 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case creatorActions.ADD_TO_COLLECTION:
         return c.saveCard(state, action.payload);
 
+      case creatorActions.ADD_EXISTING_CARD_TO_COLLECTION:
+        return c.saveExistingCard(state, action.payload.card);
+
       case collectionActions.DELETE_DECK:
         return c.deleteDeck(state, action.payload.deckId);
 

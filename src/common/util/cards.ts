@@ -129,7 +129,6 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
   const command = sentences.map((s: { result: { js?: string }}) => s.result.js!);
-  const source = cardSourceForCurrentUser();
 
   const card: w.CardInStore = {
     id: id || generateId(),
@@ -140,7 +139,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     parserV: parserVersion,
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
     cost,
-    source,
+    source: cardSourceForCurrentUser(),
     timestamp: Date.now()
   };
 
@@ -338,12 +337,11 @@ export function contractKeywords(sentence: string): string {
 // 4. Import/export.
 //
 
-export function cardsToJson(cards: w.Card[]): string {
-  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats'];
-  const source = cardSourceForCurrentUser();
+export function cardsToJson(cards: w.CardInStore[]): string {
+  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats', 'timestamp'];
   const cardsToExport = cards.map((card) => ({
     ...pick(card, exportedFields),
-    source,
+    source: card.source || cardSourceForCurrentUser(),
     schema: CARD_SCHEMA_VERSION
   }));
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
@@ -353,10 +351,10 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
-    .map((card: w.Card) => ({
+    .map((card: w.CardInStore) => ({
       ...omit(card, ['schema']),
       id: generateId(),
-      timestamp: Date.now()
+      timestamp: card.timestamp || Date.now()
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
 }

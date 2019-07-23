@@ -89,16 +89,17 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     };
   }
 
-  get cardPool(): w.CardInStore[] {
-    const { cards, sets } = this.props;
+  get set(): w.Set | undefined {
+    const { sets } = this.props;
     const { setId } = this.state;
 
     if (setId) {
-      const set = sets.find((s) => s.id === setId);
-      return set ? set.cards : [];
-    } else {
-      return cards;
+      return sets.find((s) => s.id === setId);
     }
+  }
+
+  get cardPool(): w.CardInStore[] {
+    return this.set ? this.set.cards : this.props.cards;
   }
 
   get selectedCards(): w.CardInStore[] {
@@ -149,6 +150,8 @@ export class Deck extends React.Component<DeckProps, DeckState> {
                 id={id}
                 name={deck ? deck.name : ''}
                 cards={this.selectedCards}
+                deck={deck || undefined}
+                setForDeck={this.set}
                 loggedIn={loggedIn}
                 onIncreaseCardCount={this.handleClickIncreaseCardCount}
                 onDecreaseCardCount={this.handleClickDecreaseCardCount}

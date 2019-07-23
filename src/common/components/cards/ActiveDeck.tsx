@@ -133,7 +133,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         {isASet && <TextField
           value={description}
           floatingLabelText="Description"
-          style={{width: '100%', marginBottom: 10}}
+          style={{width: '100%', marginBottom: 10, marginTop: -20}}
           onChange={this.handleChangeDescription}
         />}
 

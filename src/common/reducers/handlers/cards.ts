@@ -74,7 +74,7 @@ const cardsHandlers = {
   },
 
   importCards: (state: State, json: string): State => {
-    cardsFromJson(json, (card) => { saveCard(state, card); });
+    cardsFromJson(json, (card) => { saveCard(state, card, false); });
     return state;
   },
 
@@ -180,7 +180,7 @@ const cardsHandlers = {
 };
 
 // Saves a card, either as a new card or replacing an existing card.
-function saveCard(state: State, card: w.CardInStore): State {
+function saveCard(state: State, card: w.CardInStore, saveToRecentCards: boolean = true): State {
 
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
@@ -198,7 +198,9 @@ function saveCard(state: State, card: w.CardInStore): State {
     state.cards.push(card);
 
     // And save it to "Recent Cards" carousel
-    saveCardToFirebase(card);
+    if (saveToRecentCards) {
+      saveCardToFirebase(card);
+    }
   }
 
   saveCardsToFirebase(state);

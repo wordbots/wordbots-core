@@ -24,7 +24,7 @@ interface PreGameModalProps {
   title: string
   gameName?: string
   children?: JSX.Element | JSX.Element[]
-  onStartGame: (formatName: w.Format, deck: w.DeckInStore) => void
+  onStartGame: (formatName: w.Format, deck: w.Deck) => void
   history: History
 }
 
@@ -71,15 +71,15 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   // All of the player's decks, in an unpacked format ready to start the game with.
   get decks(): w.Deck[] {
     const { availableDecks, cards, sets } = this.props;
-    return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
+    return sortDecks(availableDecks.map((deck) => unpackDeck(deck, cards, sets)));
   }
 
-  get validDecks(): w.DeckInStore[] {
-    return sortDecks(this.decks.filter(this.format.isDeckValid));
+  get validDecks(): w.Deck[] {
+    return this.decks.filter(this.format.isDeckValid);
   }
 
   // The currently selected deck, in unpacked form.
-  get deck(): w.DeckInStore | null {
+  get deck(): w.Deck | null {
     const { selectedDeckId } = this.state;
     if (this.validDecks) {
       return this.validDecks.find((d) => d.id === selectedDeckId) || this.validDecks[0];

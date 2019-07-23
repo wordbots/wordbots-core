@@ -6,7 +6,6 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import { cardsInDeck } from '../../util/cards';
-import { sortDecks } from '../../util/decks';
 import EnergyCurve from '../cards/EnergyCurve';
 
 interface DeckPickerProps {
@@ -18,10 +17,6 @@ interface DeckPickerProps {
 }
 
 export default class DeckPicker extends React.Component<DeckPickerProps> {
-  get decks(): w.DeckInStore[] {
-    return sortDecks(this.props.availableDecks);
-  }
-
   get noDecks(): boolean {
     return this.props.availableDecks.length === 0;
   }
@@ -32,7 +27,7 @@ export default class DeckPicker extends React.Component<DeckPickerProps> {
   }
 
   public render(): JSX.Element {
-    const { selectedDeck } = this.props;
+    const { availableDecks, selectedDeck } = this.props;
     return (
       <React.Fragment>
         <FormControl style={{ width: '100%', marginBottom: 15 }} error={this.noDecks}>
@@ -47,7 +42,7 @@ export default class DeckPicker extends React.Component<DeckPickerProps> {
             onChange={this.handleSelectDeck}
             disabled={this.noDecks}
           >
-            {this.decks.map((deck, idx) =>
+            {availableDecks.map((deck, idx) =>
               <MenuItem key={idx} value={deck.id}>{deck.name}</MenuItem>
             )}
           </Select>

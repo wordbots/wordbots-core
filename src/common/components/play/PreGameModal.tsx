@@ -176,7 +176,6 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   }
 
   private handleChooseDeck = (deck: w.DeckInStore) => {
-    console.log(deck);
     this.setState({
       selectedDeckId: deck.id
     });

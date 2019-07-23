@@ -196,9 +196,11 @@ function saveCard(state: State, card: w.CardInStore): State {
     }
   } else {
     state.cards.push(card);
+
+    // And save it to "Recent Cards" carousel
+    saveCardToFirebase(card);
   }
 
-  saveCardToFirebase(card);
   saveCardsToFirebase(state);
   return state;
 }

@@ -121,7 +121,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
 
   public render(): JSX.Element {
     const { cards, sets, children, format, history, mode, title } = this.props;
-    const { enteredPassword, isPasswordInvalid, selectedDeckId, selectedFormatName } = this.state;
+    const { enteredPassword, isPasswordInvalid, selectedFormatName } = this.state;
 
     return (
       <RouterDialog

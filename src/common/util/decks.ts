@@ -4,15 +4,16 @@ import * as w from '../types';
 
 // TODO Move more methods from cards.ts to decks.ts
 
+// Note: this method is parametrized because it needs to support both Deck and DeckInStore.
 // tslint:disable-next-line export-name
-export function sortDecks(decks: w.DeckInStore[]): w.DeckInStore[] {
-  const decksWithTimestamps = decks.map((deck): w.DeckInStore => {
+export function sortDecks<T extends w.DeckInStore>(decks: T[]): T[] {
+  const decksWithTimestamps: T[] = decks.map((deck: T) => {
     if (deck.timestamp) {
       return deck;                      // Deck has a timestamp
     } else if (deck.id[0] === '[') {
-      return { ...deck, timestamp: 0 }; // Deck is built-in
+      return { ...(deck as w.DeckInStore), timestamp: 0 } as T; // Deck is built-in
     } else {
-      return { ...deck, timestamp: 1 }; // Deck is user-created, but doesn't have a timestamp
+      return { ...(deck as w.DeckInStore), timestamp: 1 } as T; // Deck is user-created, but doesn't have a timestamp
     }
   });
   return orderBy(decksWithTimestamps, ['timestamp'], ['desc']);

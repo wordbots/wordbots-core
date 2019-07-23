@@ -171,7 +171,7 @@ export default class Card extends React.Component<CardProps, CardState> {
     const selectedStyle = {
       boxShadow: `${(status && status.type === 'error') || collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
     };
-    const transform = `rotate(${rotation}deg) translate(0px, ${yTranslation}px)`;
+    const transform = `rotate(${rotation || 0}deg) translate(0px, ${yTranslation || 0}px)`;
 
     if (!visible) {
       return (

@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
+import { sortDecks } from '../../util/decks';
 import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
@@ -23,20 +24,20 @@ interface PreGameModalProps {
   title: string
   gameName?: string
   children?: JSX.Element | JSX.Element[]
-  onStartGame: (formatName: w.Format, deck: w.Deck) => void
+  onStartGame: (formatName: w.Format, deck: w.DeckInStore) => void
   history: History
 }
 
 interface PreGameModalState {
-  selectedDeckIdx: number
+  selectedDeckId: w.DeckId | null
   selectedFormatName: string
   enteredPassword: string
   isPasswordInvalid: boolean
 }
 
 export default class PreGameModal extends React.Component<PreGameModalProps, PreGameModalState> {
-  public state = {
-    selectedDeckIdx: 0,
+  public state: PreGameModalState = {
+    selectedDeckId: null,
     selectedFormatName: 'normal',
     enteredPassword: '',
     isPasswordInvalid: false
@@ -73,14 +74,18 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
   }
 
-  get validDecks(): w.Deck[] {
-    return this.decks.filter(this.format.isDeckValid);
+  get validDecks(): w.DeckInStore[] {
+    return sortDecks(this.decks.filter(this.format.isDeckValid));
   }
 
   // The currently selected deck, in unpacked form.
-  get deck(): w.Deck {
-    const { selectedDeckIdx } = this.state;
-    return this.validDecks[selectedDeckIdx];
+  get deck(): w.DeckInStore | null {
+    const { selectedDeckId } = this.state;
+    if (this.validDecks) {
+      return this.validDecks.find((d) => d.id === selectedDeckId) || this.validDecks[0];
+    } else {
+      return null;
+    }
   }
 
   get actions(): JSX.Element[] {
@@ -116,7 +121,8 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
 
   public render(): JSX.Element {
     const { cards, sets, children, format, history, mode, title } = this.props;
-    const { enteredPassword, isPasswordInvalid, selectedDeckIdx, selectedFormatName } = this.state;
+    const { enteredPassword, isPasswordInvalid, selectedDeckId, selectedFormatName } = this.state;
+    console.log(selectedDeckId);
 
     return (
       <RouterDialog
@@ -152,7 +158,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
           cards={cards}
           availableDecks={this.validDecks}
           sets={sets}
-          selectedDeckIdx={selectedDeckIdx}
+          selectedDeck={this.deck}
           onChooseDeck={this.handleChooseDeck}
         />
       </RouterDialog>
@@ -164,11 +170,17 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   }
 
   private handleChooseFormat = (selectedFormatName: string) => {
-    this.setState({ selectedFormatName, selectedDeckIdx: 0 });
+    this.setState({
+      selectedFormatName,
+      selectedDeckId: this.validDecks[0].id
+    });
   }
 
-  private handleChooseDeck = (selectedDeckIdx: number) => {
-    this.setState({ selectedDeckIdx });
+  private handleChooseDeck = (deck: w.DeckInStore) => {
+    console.log(deck);
+    this.setState({
+      selectedDeckId: deck.id
+    });
   }
 
   private handleSetPassword = (e: React.ChangeEvent<HTMLInputElement>) => {

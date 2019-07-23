@@ -25,6 +25,7 @@ interface SetsStateProps {
 }
 
 interface SetsDispatchProps {
+  onCreateDeck: () => void
   onDeleteSet: (setId: string) => void
   onDuplicateSet: (setId: string) => void
   onEditSet: (setId: string) => void
@@ -47,6 +48,9 @@ function mapStateToProps(state: w.State): SetsStateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
   return {
+    onCreateDeck: () => {
+      dispatch(collectionActions.editDeck(null));
+    },
     onDeleteSet: (setId: string) => {
       dispatch(collectionActions.deleteSet(setId));
     },
@@ -238,6 +242,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
   }
 
   private handleCreateDeckFromSet = (setId: string) => () => {
+    this.props.onCreateDeck();
     this.props.history.push(`/deck/for/set/${setId}`);
   }
 

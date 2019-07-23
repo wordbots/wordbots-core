@@ -11,14 +11,21 @@ import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import ActiveDeckCard from './ActiveDeckCard';
+import DeckValidationIndicator from './DeckValidationIndicator';
 import { CardWithCount } from './types';
 
 interface ActiveDeckProps {
   id: w.DeckId | null
   cards: w.CardInStore[]
-  description?: string  // (only for sets)
   name: string
+
   isASet?: boolean  // otherwise, a deck
+  // Only for decks:
+  deck?: w.DeckInStore
+  setForDeck?: w.Set
+  // Only for sets:
+  description?: string
+
   loggedIn: boolean
   onIncreaseCardCount?: (cardId: w.CardId) => void
   onDecreaseCardCount?: (cardId: w.CardId) => void
@@ -73,7 +80,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   public render(): JSX.Element {
-    const { cards, isASet } = this.props;
+    const { cards, isASet, deck, setForDeck } = this.props;
     const { description, name } = this.state;
 
     return (
@@ -107,6 +114,13 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
               '30 '
           }
           ]
+          {
+            !isASet && (
+              <div style={{ float: 'right' }}>
+                <DeckValidationIndicator hideNumCards cards={cards} deck={deck} set={setForDeck}  />
+              </div>
+            )
+          }
         </div>
 
         <TextField
@@ -122,6 +136,16 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           style={{width: '100%', marginBottom: 10}}
           onChange={this.handleChangeDescription}
         />}
+
+        {
+          setForDeck &&
+            <TextField
+              disabled
+              floatingLabelText="For the set:"
+              value={`${setForDeck.name} by ${setForDeck.metadata.authorName}`}
+              style={{width: '100%', marginBottom: 10, marginTop: -20}}
+            />
+        }
 
         <div>
           <div

@@ -1,18 +1,16 @@
 import Paper from '@material-ui/core/Paper';
 import { filter, sortBy } from 'lodash';
 import Badge from 'material-ui/Badge';
-import FontIcon from 'material-ui/FontIcon';
 import * as React from 'react';
 
 import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
 import { groupCards } from '../../util/cards';
-import { BUILTIN_FORMATS, SetFormat } from '../../util/formats';
 import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
-import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
+import DeckValidationIndicator from './DeckValidationIndicator';
 import { CardWithCount } from './types';
 
 interface DeckSummaryProps {
@@ -60,12 +58,6 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
         display: 'flex',
         alignItems: 'center',
         fontWeight: 'bold'
-      },
-      validFormatsNote: {
-        cursor: 'help',
-        fontSize: '0.5em',
-        marginLeft: -5,
-        marginRight: 5
       }
     };
   }
@@ -77,21 +69,6 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
   public render(): JSX.Element {
     const { cards, deck, set } = this.props;
     const [robots, structures, events] = [TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT].map((t) => filter(cards, ['type', t]));
-    const isComplete = (cards.length === 30);
-    const validatedDeck = {...deck, cards };
-
-    const isValidInSetFormat = set && new SetFormat(set).isDeckValid(validatedDeck);
-    const numValidBuiltinFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid(validatedDeck)).length;
-    const numValidFormats = numValidBuiltinFormats + (isValidInSetFormat ? 1 : 0);
-    const redX = '<span style="color: red;">X</span>';
-    const greenCheck = '<span style="color: green;">✓</span>';
-    const setFormatHTML = isValidInSetFormat
-      ? `${greenCheck} valid in the '${set!.name}' set (by ${set!.metadata.authorName}) format`
-      : `${redX} not valid in any Set formats`;
-    const validFormatsHTML = BUILTIN_FORMATS.map((format) =>
-      `${format.isDeckValid(validatedDeck) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`
-    ).concat(setFormatHTML)
-     .join('<br>');
 
     return (
       <Paper
@@ -103,30 +80,7 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
             {deck.name}
           </div>
 
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              textAlign: 'right',
-              fontSize: 24,
-              color: (isComplete ? 'green' : 'red')
-            }}
-          >
-            <Tooltip inline html text={validFormatsHTML} style={{textAlign: 'left'}}>
-              <FontIcon
-                className="material-icons"
-                style={{paddingRight: 5, color: (isComplete ? 'green' : 'red') }}
-              >
-                {isComplete ? 'done' : 'warning'}
-              </FontIcon>
-              <sup style={this.styles.validFormatsNote}>
-                {numValidFormats}&thinsp;[?]
-              </sup>
-            </Tooltip>
-            {cards.length} cards
-          </div>
+          <DeckValidationIndicator deck={deck} cards={cards} set={set} />
         </div>
 
         <MustBeLoggedIn

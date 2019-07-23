@@ -377,7 +377,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   private handleSetName = (_e: React.FormEvent<HTMLElement>, value: string) => {
     if (this.props.isReadonly) { return; }
     this.props.onSetName(value);
-  };
+  }
 
   private handleSetType = (_e: React.SyntheticEvent<any>, _i: number, value: w.CardType) => {
     if (this.props.isReadonly) { return; }

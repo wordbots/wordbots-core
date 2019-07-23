@@ -1,3 +1,4 @@
+import Paper from '@material-ui/core/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { object } from 'prop-types';
@@ -12,6 +13,7 @@ import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
+import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import * as w from '../types';
@@ -152,49 +154,57 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element {
+    const { cardOpenedForEditing } = this.state;
     return (
       <div style={{position: 'relative'}}>
         <Helmet title="Creator" />
         <Title text="Creator" />
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <CardCreationForm
-            key={this.props.id || 'newCard'}
-            loggedIn={this.props.loggedIn}
-            id={this.props.id}
-            name={this.props.name}
-            type={this.props.type}
-            attack={this.props.attack}
-            speed={this.props.speed}
-            health={this.props.health}
-            cost={this.props.cost}
-            text={this.props.text}
-            sentences={this.props.sentences}
-            isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
-            isReadonly={!this.isCardEditable}
-            willCreateAnother={this.props.willCreateAnother}
-            onSetName={this.props.onSetName}
-            onSetType={this.props.onSetType}
-            onSetText={this.props.onSetText}
-            onSetAttribute={this.props.onSetAttribute}
-            onParseComplete={this.props.onParseComplete}
-            onSpriteClick={this.props.onSpriteClick}
-            onOpenDialog={this.openDialog}
-            onTestCard={this.testCard}
-            onAddToCollection={this.addToCollection}
-            onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
-          />
-            <CardPreview
+          <div style={{width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32}}>
+            <CardCreationForm
+              key={this.props.id || 'newCard'}
+              loggedIn={this.props.loggedIn}
+              id={this.props.id}
               name={this.props.name}
               type={this.props.type}
-              spriteID={this.props.spriteID}
-              sentences={this.props.sentences}
               attack={this.props.attack}
               speed={this.props.speed}
               health={this.props.health}
-              energy={this.props.cost}
+              cost={this.props.cost}
+              text={this.props.text}
+              sentences={this.props.sentences}
+              isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
+              isReadonly={!this.isCardEditable}
+              willCreateAnother={this.props.willCreateAnother}
+              onSetName={this.props.onSetName}
+              onSetType={this.props.onSetType}
+              onSetText={this.props.onSetText}
+              onSetAttribute={this.props.onSetAttribute}
+              onParseComplete={this.props.onParseComplete}
               onSpriteClick={this.props.onSpriteClick}
+              onOpenDialog={this.openDialog}
+              onTestCard={this.testCard}
+              onAddToCollection={this.addToCollection}
+              onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
             />
+            {cardOpenedForEditing && <div>
+              <Paper style={{ padding: 10, marginTop: 20 }}>
+                <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />
+              </Paper>
+            </div>}
+          </div>
+          <CardPreview
+            name={this.props.name}
+            type={this.props.type}
+            spriteID={this.props.spriteID}
+            sentences={this.props.sentences}
+            attack={this.props.attack}
+            speed={this.props.speed}
+            health={this.props.health}
+            energy={this.props.cost}
+            onSpriteClick={this.props.onSpriteClick}
+          />
         </div>
       </div>
     );

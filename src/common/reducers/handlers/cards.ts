@@ -181,8 +181,6 @@ const cardsHandlers = {
 
 // Saves a card, either as a new card or replacing an existing card.
 function saveCard(state: State, card: w.CardInStore): State {
-  const currentUser = firebase.lookupCurrentUser();
-  if (!currentUser) { return state; }
 
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
@@ -191,7 +189,7 @@ function saveCard(state: State, card: w.CardInStore): State {
   if (existingCard) {
     // Editing an existing card.
     const { source } = existingCard;
-    if (source === 'builtin' || source && source.uid !== currentUser.uid) {
+    if (source === 'builtin' || (source && source.uid !== firebase.lookupCurrentUser()!.uid)) {
       // TODO Log warning about not being about not being able to replace builtin cards.
     } else {
       Object.assign(existingCard, card, {id: existingCard.id});

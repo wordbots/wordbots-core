@@ -85,7 +85,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
       searchText: '',
       selectedCardIds: deck ? deck.cardIds : [],
       layout: Layout.Grid,
-      setId: pathname.startsWith('/deck/for/set/') ? pathname.split('for/set/')[1] : null
+      setId: pathname.startsWith('/deck/for/set/') ? pathname.split('for/set/')[1] : (deck && deck.setId)
     };
   }
 

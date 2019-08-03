@@ -11,6 +11,7 @@ import Card from '../card/Card';
 interface RecentCardsCarouselProps {
   history: History
   userId?: string
+  username?: string
 }
 
 interface RecentCardsCarouselState {
@@ -109,6 +110,13 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private handleClickCard = (card: w.CardInStore) => () => {
-    this.props.history.push(`/card/${card.id}`, { card });
+    const { userId, username } = this.props;
+    // Provide a source field if it's missing on the card.
+    const cardWithSource: w.CardInStore = {
+      ...card,
+      source: card.source && card.source !== 'user' ? card.source : (userId && username ? { uid: userId, username } : undefined)
+    };
+
+    this.props.history.push(`/card/${card.id}`, { card: cardWithSource });
   }
 }

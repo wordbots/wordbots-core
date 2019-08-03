@@ -13,6 +13,7 @@ interface CardTextFieldProps {
   text: string
   sentences: w.Sentence[]
   error: string | null
+  readonly?: boolean
   bigramProbs?: BigramProbs
   onUpdateText: (text: string) => void
 }
@@ -45,6 +46,7 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
           <div style={{width: '100%'}}>
             <TextField
               multiLine
+              disabled={this.props.readonly}
               value={this.props.text}
               floatingLabelText="Card Text"
               style={{width: '100%'}}

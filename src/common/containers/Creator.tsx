@@ -1,3 +1,4 @@
+import Paper from '@material-ui/core/Paper';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { object } from 'prop-types';
@@ -12,10 +13,12 @@ import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardPreview from '../components/cards/CardPreview';
+import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import * as w from '../types';
 import { createCardFromProps } from '../util/cards';
+import { lookupCurrentUser } from '../util/firebase';
 
 interface CreatorStateProps {
   id: string | null
@@ -42,12 +45,17 @@ interface CreatorDispatchProps {
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
-  onAddToCollection: (props: w.CreatorState) => void
+  onAddExistingCardToCollection: (card: w.CardInStore) => void
+  onAddNewCardToCollection: (props: w.CreatorState) => void
   onToggleWillCreateAnother: () => void
   onStartSandbox: (card: w.CardInStore) => void
 }
 
 type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentProps;
+
+interface CreatorState {
+  cardOpenedForEditing?: w.CardInStore
+}
 
 export function mapStateToProps(state: w.State): CreatorStateProps {
   return {
@@ -91,8 +99,11 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
     onSpriteClick: () => {
       dispatch(creatorActions.regenerateSprite());
     },
-    onAddToCollection: (props: w.CreatorState) => {
+    onAddNewCardToCollection: (props: w.CreatorState) => {
       dispatch(creatorActions.addToCollection(props));
+    },
+    onAddExistingCardToCollection: (props: w.CardInStore) => {
+      dispatch(creatorActions.addExistingCardToCollection(props));
     },
     onToggleWillCreateAnother: () => {
       dispatch(creatorActions.toggleWillCreateAnother());
@@ -103,11 +114,26 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
   };
 }
 
-export class Creator extends React.Component<CreatorProps> {
+export class Creator extends React.Component<CreatorProps, CreatorState> {
   // For testing.
   public static childContextTypes = {
     muiTheme: object.isRequired
   };
+
+  public state: CreatorState = {};
+
+  get isCardEditable(): boolean {
+    const { cardOpenedForEditing } = this.state;
+    if (cardOpenedForEditing && cardOpenedForEditing.source) {
+      const { source } = cardOpenedForEditing;
+      if (source) {
+        const currentUser = lookupCurrentUser();
+        return source !== 'builtin' && !!currentUser && source.uid === currentUser.uid;
+      }
+    }
+
+    return true;
+  }
 
   public componentDidMount(): void {
     this.maybeLoadCard();
@@ -128,48 +154,57 @@ export class Creator extends React.Component<CreatorProps> {
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element {
+    const { cardOpenedForEditing } = this.state;
     return (
       <div style={{position: 'relative'}}>
         <Helmet title="Creator" />
         <Title text="Creator" />
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <CardCreationForm
-            key={this.props.id || 'newCard'}
-            loggedIn={this.props.loggedIn}
-            id={this.props.id}
-            name={this.props.name}
-            type={this.props.type}
-            attack={this.props.attack}
-            speed={this.props.speed}
-            health={this.props.health}
-            cost={this.props.cost}
-            text={this.props.text}
-            sentences={this.props.sentences}
-            isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
-            willCreateAnother={this.props.willCreateAnother}
-            onSetName={this.props.onSetName}
-            onSetType={this.props.onSetType}
-            onSetText={this.props.onSetText}
-            onSetAttribute={this.props.onSetAttribute}
-            onParseComplete={this.props.onParseComplete}
-            onSpriteClick={this.props.onSpriteClick}
-            onOpenDialog={this.openDialog}
-            onTestCard={this.testCard}
-            onAddToCollection={this.addToCollection}
-            onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
-          />
-            <CardPreview
+          <div style={{width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32}}>
+            <CardCreationForm
+              key={this.props.id || 'newCard'}
+              loggedIn={this.props.loggedIn}
+              id={this.props.id}
               name={this.props.name}
               type={this.props.type}
-              spriteID={this.props.spriteID}
-              sentences={this.props.sentences}
               attack={this.props.attack}
               speed={this.props.speed}
               health={this.props.health}
-              energy={this.props.cost}
+              cost={this.props.cost}
+              text={this.props.text}
+              sentences={this.props.sentences}
+              isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
+              isReadonly={!this.isCardEditable}
+              willCreateAnother={this.props.willCreateAnother}
+              onSetName={this.props.onSetName}
+              onSetType={this.props.onSetType}
+              onSetText={this.props.onSetText}
+              onSetAttribute={this.props.onSetAttribute}
+              onParseComplete={this.props.onParseComplete}
               onSpriteClick={this.props.onSpriteClick}
+              onOpenDialog={this.openDialog}
+              onTestCard={this.testCard}
+              onAddToCollection={this.addToCollection}
+              onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
             />
+            {cardOpenedForEditing && <div>
+              <Paper style={{ padding: 10, marginTop: 20 }}>
+                <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />
+              </Paper>
+            </div>}
+          </div>
+          <CardPreview
+            name={this.props.name}
+            type={this.props.type}
+            spriteID={this.props.spriteID}
+            sentences={this.props.sentences}
+            attack={this.props.attack}
+            speed={this.props.speed}
+            health={this.props.health}
+            energy={this.props.cost}
+            onSpriteClick={this.props.onSpriteClick}
+          />
         </div>
       </div>
     );
@@ -185,7 +220,9 @@ export class Creator extends React.Component<CreatorProps> {
       const card: w.CardInStore | undefined = (cardFromRouter && cardFromRouter.id === cardId) ? cardFromRouter : cards.find((c) => c.id === cardId);
 
       if (card) {
-        onOpenCard(card);
+        this.setState({ cardOpenedForEditing: card }, () => {
+          onOpenCard(card);
+        });
       }
     }
   }
@@ -201,9 +238,17 @@ export class Creator extends React.Component<CreatorProps> {
   }
 
   private addToCollection = (redirectToCollection: boolean) => {
-    this.props.onAddToCollection(this.props);
+    const { onAddExistingCardToCollection, onAddNewCardToCollection, history } = this.props;
+    const { cardOpenedForEditing } = this.state;
+
+    if (cardOpenedForEditing) {
+      onAddExistingCardToCollection(cardOpenedForEditing);
+    } else {
+      onAddNewCardToCollection(this.props);
+    }
+
     if (redirectToCollection) {
-      this.props.history.push('/collection');
+      history.push('/collection');
     }
   }
 }

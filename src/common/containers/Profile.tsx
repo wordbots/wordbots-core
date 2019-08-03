@@ -104,6 +104,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               <RecentCardsCarousel
                 key={userId}
                 userId={userId}
+                username={userName}
                 history={this.props.history}
               />
             }

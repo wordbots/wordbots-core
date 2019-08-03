@@ -1,4 +1,5 @@
 import Paper from '@material-ui/core/Paper';
+import * as fb from 'firebase';
 import { History } from 'history';
 import { find, noop } from 'lodash';
 import FontIcon from 'material-ui/FontIcon';
@@ -26,6 +27,7 @@ import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { getDisplayedCards, isCardVisible } from '../util/cards';
+import { lookupCurrentUser } from '../util/firebase';
 
 interface CollectionStateProps {
   cards: w.CardInStore[]
@@ -100,6 +102,18 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   get displayedCards(): w.CardInStore[] {
     const { searchText, filters, costRange, sortCriteria, sortOrder } = this.state;
     return getDisplayedCards(this.props.cards, { searchText, filters, costRange, sortCriteria, sortOrder });
+  }
+
+  get canEditSelectedCard(): boolean {
+    const { cards } = this.props;
+    const { selectedCardIds } = this.state;
+    if (selectedCardIds.length === 1) {
+      const currentUser: fb.User | null = lookupCurrentUser();
+      const card = cards.find((c) => c.id === selectedCardIds[0]);
+      return !!card && card.source !== 'builtin' && (!card.source || (!!currentUser && card.source.uid === currentUser.uid));
+    } else {
+      return false;
+    }
   }
 
   // For testing.
@@ -188,9 +202,9 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   }
 
   private handleClickEdit = () => {
-    const id = this.state.selectedCardIds[0];
-    const card = this.props.cards.find((c) => c.id === id);
-    if (card) {
+    if (this.canEditSelectedCard) {
+      const id = this.state.selectedCardIds[0];
+      const card = this.props.cards.find((c) => c.id === id)!;
       this.props.history.push(`/card/${card.id}`, { card });
     }
   }
@@ -257,7 +271,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
           label={compact ? 'Edit' : 'Edit Selected'}
           labelPosition="after"
           secondary
-          disabled={this.state.selectedCardIds.length !== 1}
+          disabled={!this.canEditSelectedCard}
           icon={<FontIcon style={iconStyle} className="material-icons">edit</FontIcon>}
           style={style}
           buttonStyle={{textAlign: 'left'}}

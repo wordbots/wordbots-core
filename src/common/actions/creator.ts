@@ -8,6 +8,7 @@ export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
 export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
 export const ADD_TO_COLLECTION = 'ADD_TO_COLLECTION';
+export const ADD_EXISTING_CARD_TO_COLLECTION = 'ADD_EXISTING_CARD_TO_COLLECTION';
 
 export function setName(name: string): w.Action {
   return {
@@ -56,10 +57,18 @@ export function toggleWillCreateAnother(): w.Action {
   };
 }
 
-// Note: This actions is consumed by the cardCreator, collection, AND game reducers!
+// Note: This actions is consumed by the cardCreator, AND collection reducers!
 export function addToCollection(props: w.CreatorState): w.Action {
   return {
     type: ADD_TO_COLLECTION,
     payload: props
+  };
+}
+
+// Note: This actions is consumed by the cardCreator, collection reducers!
+export function addExistingCardToCollection(card: w.CardInStore): w.Action {
+  return {
+    type: ADD_EXISTING_CARD_TO_COLLECTION,
+    payload: { card }
   };
 }

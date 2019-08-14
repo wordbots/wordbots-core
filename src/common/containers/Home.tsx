@@ -36,7 +36,8 @@ type HomeProps = HomeStateProps & HomeDispatchProps & { history: History };
 
 class Home extends React.Component<HomeProps> {
   public render(): JSX.Element {
-    const [version, sha] = this.props.version.split('+');
+    const { history, onStartTutorial, version: versionAndSha } = this.props;
+    const [version, sha] = versionAndSha.split('+');
 
     return (
       <div style={{margin: '48px 72px'}}>
@@ -72,13 +73,13 @@ class Home extends React.Component<HomeProps> {
             flexDirection: 'row'
           }}
         >
-          {this.renderButton('Tutorial', () => { this.props.history.push('singleplayer/tutorial'); this.props.onStartTutorial(); })}
-          {this.renderButton('Play', () => { this.props.history.push('play'); })}
-          {this.renderButton('Your Cards', () => { this.props.history.push('collection'); })}
-          {this.renderButton('Card Creator', () => { this.props.history.push('card/new'); })}
+          {this.renderButton('Tutorial', () => { history.push('play/tutorial'); onStartTutorial(); })}
+          {this.renderButton('Play', () => { history.push('play'); })}
+          {this.renderButton('Your Cards', () => { history.push('collection'); })}
+          {this.renderButton('Card Creator', () => { history.push('card/new'); })}
         </div>
 
-        <RecentCardsCarousel history={this.props.history} />
+        <RecentCardsCarousel history={history} />
 
         <div
           style={{

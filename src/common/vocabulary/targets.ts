@@ -222,7 +222,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       if (they && g.isObject(they)) {
         return ({ type: 'objects', entries: [they] });
       } else {
-        return ({ type: 'objects', entries: compact([state.it as w.Object | undefined]) });
+        return ({ type: 'objects', entries: compact([(state.it as w.Object | undefined) || currentObject]) });
       }
     },
 

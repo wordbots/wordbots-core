@@ -41,7 +41,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
 
     listenToRecentCards((data) => {
       let recentCards = uniqBy(Object.values(data as w.CardInStore[]), 'name')
-                            .filter((card) => card.text && !builtinCardNames.includes(card.name))
+                            .filter((card) => card.text && card.source && card.source !== 'builtin' && (!userId || card.source.uid === userId))
                             .reverse()
                             .slice(0, 10);
 

@@ -1,4 +1,3 @@
-import * as fjp from 'fast-json-patch';
 import * as fb from 'firebase';
 import * as React from 'react';
 import * as ReactPopover from 'react-popover';
@@ -221,9 +220,9 @@ export interface GameState {
   it?: _Object | CardInGame
   itP?: PlayerInGameState
   that?: _Object
+  tutorialActionsPerformed?: Array<Action | null>
   tutorialCurrentStepIdx?: number
   tutorialSteps?: TutorialStepInScript[]
-  undoStack?: fjp.Operation[][]
 }
 
 export interface GlobalState {

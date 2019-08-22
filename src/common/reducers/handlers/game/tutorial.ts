@@ -1,4 +1,3 @@
-import { applyPatch, compare } from 'fast-json-patch';
 import { cloneDeep, isEqual } from 'lodash';
 
 import * as actions from '../../../actions/game';
@@ -21,7 +20,6 @@ function nextStep(state: State, action: w.Action | null = null): State {
   }
 
   if (state.tutorialCurrentStepIdx! < state.tutorialSteps!.length) {
-    const oldState: State = cloneDeep(state);
     const currentStep: w.TutorialStep = currentTutorialStep(state)!;
     action = action || (isAction(currentStep.action) ? currentStep.action : null);
 
@@ -37,20 +35,28 @@ function nextStep(state: State, action: w.Action | null = null): State {
       state = endTutorial(state);
     } else {
       state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx! + 1;
+      state.tutorialActionsPerformed!.push(action || null);
     }
-
-    state.undoStack!.push(compare(state, oldState));
   }
 
   return state;
 }
 
 function prevStep(state: State): State {
-  if (state.undoStack!.length > 0) {
-    applyPatch(state, state.undoStack!.pop()!);
-  }
+  const lastActionPerformed: w.Action | null = state.tutorialActionsPerformed!.pop()!;
 
-  return state;
+  if (lastActionPerformed) {
+    // Replay tutorial from the beginning up to the last action.
+    let newState = startTutorial(state);
+    state.tutorialActionsPerformed!.forEach((action) => {
+      newState = nextStep(newState, action);
+    });
+    return newState;
+  } else {
+    // No action was performed, so just wind back the tutorial step index.
+    state.tutorialCurrentStepIdx = state.tutorialCurrentStepIdx! - 1;
+    return state;
+  }
 }
 
 function deck(cardList: w.CardInGame[]): w.CardInGame[] {
@@ -65,9 +71,9 @@ export function startTutorial(state: State): State {
     started: true,
     usernames: {orange: lookupUsername(), blue: 'Computer'},
     tutorial: true,
+    tutorialActionsPerformed: [],
     tutorialCurrentStepIdx: 0,
-    tutorialSteps: tutorialScript,
-    undoStack: []
+    tutorialSteps: tutorialScript
   };
 
   // Set up.
@@ -88,12 +94,15 @@ export function startTutorial(state: State): State {
 }
 
 export function endTutorial(state: State): State {
-  return {...state, ...cloneDeep(defaultState),
+  return {
+    ...state,
+    ...cloneDeep(defaultState),
     started: false,
     tutorial: false,
     tutorialCurrentStepIdx: 0,
     tutorialSteps: [],
-    undoStack: []};
+    tutorialActionsPerformed: []
+  };
 }
 
 export function handleTutorialAction(state: State, action: w.Action): State {

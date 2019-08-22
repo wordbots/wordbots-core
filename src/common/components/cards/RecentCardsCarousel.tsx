@@ -3,7 +3,6 @@ import { range, uniqBy } from 'lodash';
 import * as React from 'react';
 import Carousel, { ResponsiveObject } from 'react-slick';
 
-import { builtinCardNames } from '../../store/cards';
 import * as w from '../../types';
 import { listenToRecentCards } from '../../util/firebase';
 import Card from '../card/Card';

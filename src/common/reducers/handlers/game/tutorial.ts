@@ -273,7 +273,8 @@ const tutorialScript: w.TutorialStepInScript[] = [
       hex: '-3,1,2',
       text: 'Attack the enemy robot!'
     },
-    action: actions.moveRobot('0,1,-1', '-2,1,1')
+    action: actions.moveRobot('0,1,-1', '-2,1,1'),
+    responses: [actions.setSelectedTile('-2,1,1', 'orange')]
   },
   {
     tooltip: {

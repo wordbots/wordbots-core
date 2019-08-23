@@ -129,7 +129,6 @@ export interface TutorialStepInScript {
   highlight?: boolean
   responses?: Action[]
   tooltip: {
-    backButton?: React.ReactElement<any>,
     card?: string
     hex?: HexId
     location?: string

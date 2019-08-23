@@ -86,7 +86,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
       <Tooltip inline text="Go back a step">
         <IconButton
           onClick={this.props.onPrevStep}
-          disabled={this.step.idx === 0}
+          disabled={this.step.idx === 0 || this.isComplete}
           style={this.styles.backButton}
         >
           <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>arrow_back</FontIcon>
@@ -130,7 +130,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
           {this.step.tooltip.text.split('\n').map((text, i) => <p key={i}>{text}</p>)}
         </div>
 
-        {this.step.tooltip.backButton || this.backButton}
+        {this.backButton}
         {this.isOnlyStep ? this.hideButton : this.nextButton}
       </div>
     ) : null;

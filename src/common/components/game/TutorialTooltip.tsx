@@ -130,7 +130,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
           {this.step.tooltip.text.split('\n').map((text, i) => <p key={i}>{text}</p>)}
         </div>
 
-        {this.backButton}
+        {this.step.tooltip.backButton || this.backButton}
         {this.isOnlyStep ? this.hideButton : this.nextButton}
       </div>
     ) : null;

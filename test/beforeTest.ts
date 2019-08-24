@@ -13,3 +13,10 @@ global.requestAnimationFrame = (callback: () => void) => {
 
 // See Installation https://github.com/airbnb/enzyme
 Enzyme.configure({ adapter: new EnzymeAdapter() });
+
+// See https://github.com/akiran/react-slick/issues/742
+window.matchMedia = window.matchMedia || (() => ({
+  matches : false,
+  addListener : () => undefined,
+  removeListener: () => undefined
+}));

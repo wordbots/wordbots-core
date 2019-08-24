@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
 import { createRenderer } from 'react-test-renderer/shallow';
+import { MemoryRouter, withRouter } from 'react-router';
 import { noop } from 'lodash';
 
 import * as coll from '../src/common/containers/Collection.tsx';
 import * as creator from '../src/common/containers/Creator.tsx';
 import * as gameArea from '../src/common/containers/GameAreaContainer.tsx';
+import * as home from '../src/common/containers/Home.tsx';
 
 export function renderElement(elt, deep = false) {
   if (deep) {
@@ -29,6 +31,14 @@ function createCreator(state, dispatch = noop) {
 
 export function createCollection(state, dispatch = noop) {
   return React.createElement(coll.Collection, { ...coll.mapStateToProps(state), ...coll.mapDispatchToProps(dispatch) });
+}
+
+export function createHome(state, dispatch = noop) {
+  return (
+    <MemoryRouter>
+      {React.createElement(withRouter(home.Home), { ...home.mapStateToProps(state), ...home.mapDispatchToProps(dispatch) })}
+    </MemoryRouter>
+  );
 }
 
 /* eslint-enable react/no-multi-comp */

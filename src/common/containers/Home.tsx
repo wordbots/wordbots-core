@@ -34,7 +34,7 @@ export function mapDispatchToProps(dispatch: Dispatch): HomeDispatchProps {
 
 type HomeProps = HomeStateProps & HomeDispatchProps & { history: History };
 
-class Home extends React.Component<HomeProps> {
+export class Home extends React.Component<HomeProps> {
   public render(): JSX.Element {
     const { history, onStartTutorial, version: versionAndSha } = this.props;
     const [version, sha] = versionAndSha.split('+');

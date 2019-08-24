@@ -7,6 +7,8 @@ import * as w from '../../types';
 import { listenToRecentCards } from '../../util/firebase';
 import Card from '../card/Card';
 
+import CardProvenanceDescription from './CardProvenanceDescription';
+
 interface RecentCardsCarouselProps {
   history: History
   userId?: string
@@ -56,7 +58,10 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   public render(): JSX.Element | null {
-    if (this.state.recentCards.length > 0) {
+    const { userId } = this.props;
+    const { recentCards } = this.state;
+
+    if (recentCards.length > 0) {
       return (
         <div>
           <Carousel
@@ -75,7 +80,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
             ]}
           >
             {
-              this.state.recentCards.map((card, idx) =>
+              recentCards.map((card, idx) =>
                 <div
                   key={idx}
                   onClick={this.handleClickCard(card)}
@@ -85,6 +90,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
                   }}
                 >
                   {Card.fromObj(card)}
+                  {!userId && <CardProvenanceDescription card={card} style={{ fontSize: 11, color: '#888', maxWidth: 155 }} />}
                 </div>
               )
             }

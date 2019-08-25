@@ -10,6 +10,7 @@ import Title from '../../Title';
 import { styles } from './PlayerInfo';
 
 interface FormatResults {
+  format: GameFormat
   numGames: number
   numWins: number
   numLosses: number
@@ -22,19 +23,19 @@ interface MatchmakingInfoProps {
 
 // eslint-disable-next-line react/prefer-stateless-function
 class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles> {
-  get resultsByFormat(): Record<string, FormatResults> {
+  get resultsByFormat(): FormatResults[] {
     const { games, userId } = this.props;
 
     return _(games)
-      .groupBy((g: w.SavedGame) => JSON.stringify(GameFormat.decode(g.format).serialized()))
-      .mapValues((gamesInFormat: w.SavedGame[]) => ({
+      .groupBy((g: w.SavedGame) => GameFormat.decode(g.format).name)
+      .values()
+      .map((gamesInFormat: w.SavedGame[]) => ({
+        format: GameFormat.decode(gamesInFormat[0].format),
         numGames: gamesInFormat.length,
         numWins: gamesInFormat.filter((g) => g.winner && g.players[g.winner] === userId).length,
         numLosses: gamesInFormat.filter((g) => g.winner && g.players[g.winner] !== userId).length
       }))
-      .toPairs()
-      .sortBy(([_format, results]) => -results.numGames)
-      .fromPairs()
+      .sortBy((results) => -results.numGames)
       .value();
   }
 
@@ -61,8 +62,7 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
 
   private renderResults = () => {
     const { classes } = this.props;
-    return Object.entries(this.resultsByFormat).map(([serializedFormat, { numWins, numLosses }]) => {
-      const format: GameFormat = GameFormat.decode(JSON.parse(serializedFormat));
+    return this.resultsByFormat.map(({ format, numWins, numLosses }) => {
       return (
         <div key={format.name} className={classes.playerInfoItem}>
           <div className={classes.playerInfoKey}>{format.rendered()}</div>

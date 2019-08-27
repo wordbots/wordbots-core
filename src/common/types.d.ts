@@ -172,7 +172,6 @@ export interface CollectionState {
   deckBeingEdited: DeckInStore | null
   setBeingEdited: Set | null
   exportedJson: string | null
-  firebaseLoaded: boolean
 }
 
 export interface CreatorState {

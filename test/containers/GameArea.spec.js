@@ -154,18 +154,8 @@ describe('GameArea container', () => {
       dispatchedActions.push(action);
     }
 
-    it('should do nothing if collection.firebaseLoaded = false', () => {
+    it('should redirect to /play if the deck doesn\'t exist', () => {
       const game = createGameArea(state, dispatch, {...historyParams, collection: {
-        firebaseLoaded: false
-      }});
-      renderElement(game, true);
-
-      expect(dispatchedActions.length).toEqual(0);
-    });
-
-    it('should redirect to /play if collection.firebaseLoaded = true but the deck doesn\'t exist', () => {
-      const game = createGameArea(state, dispatch, {...historyParams, collection: {
-        firebaseLoaded: true,
         decks: []
       }});
       renderElement(game, true);
@@ -175,9 +165,8 @@ describe('GameArea container', () => {
       );
     });
 
-    it('should start a practice game if collection.firebaseLoaded = true and the deck exists', () => {
+    it('should start a practice game if the deck exists', () => {
       const game = createGameArea(state, dispatch, {...historyParams, collection: {
-        firebaseLoaded: true,
         cards: state.collection.cards,
         decks: [{ id: 'deckId', cardIds: ['builtin/One Bot', 'builtin/Two Bot'] }]
       }});

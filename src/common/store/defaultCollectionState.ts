@@ -22,8 +22,7 @@ const defaultCollectionState: w.CollectionState = {
   sets: [],
   deckBeingEdited: null,
   setBeingEdited: null,
-  exportedJson: null,
-  firebaseLoaded: false
+  exportedJson: null
 };
 
 export default defaultCollectionState;

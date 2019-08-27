@@ -62,7 +62,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
   public static styles: Record<string, CSSProperties> = {
     container: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
     leftSidebar: { margin: '30px 10px 50px 25px', width: 240, minWidth: 240 },
-    energyCurvePaper: { padding: 10, marginBottom: 20 },
+    energyCurvePaper: { padding: 10, paddingTop: 10, marginBottom: 20 },
     energyCurveHeading: { paddingLeft: 10, fontWeight: 100, fontSize: 28 },
     cards: { marginTop: 10, width: '100%' },
     rightSidebar: { margin: '30px 25px 50px 10px', width: 240, minWidth: 240 },

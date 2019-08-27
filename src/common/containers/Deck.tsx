@@ -65,8 +65,8 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     energyCurvePaper: { padding: 10, paddingTop: 10, marginBottom: 20 },
     energyCurveHeading: { paddingLeft: 10, fontWeight: 100, fontSize: 28 },
     cards: { marginTop: 10, width: '100%' },
-    rightSidebar: { margin: '30px 25px 50px 10px', width: 240, minWidth: 240 },
-    deckPropsPaper: { padding: '15px 10px 15px 20px' }
+    rightSidebar: { margin: '30px 20px 50px 10px', width: 240, minWidth: 240 },
+    deckPropsPaper: { padding: '15px 15px 15px 20px' }
   };
 
   constructor(props: DeckProps) {

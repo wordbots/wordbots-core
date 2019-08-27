@@ -93,9 +93,9 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         >
           {isASet ? 'Set' : 'Deck'} [
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
-            &nbsp;{cards.length}&nbsp;
+            {cards.length}
           </span>
-          /{' '}
+          {' '}/{' '}
           {
             isASet ?
               <span>
@@ -111,7 +111,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
                   </sup>
                 </Tooltip>
               </span> :
-              '30 '
+              '30'
           }
           ]
           {

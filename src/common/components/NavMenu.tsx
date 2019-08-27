@@ -10,17 +10,18 @@ import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
 import Tooltip from './Tooltip';
 
 interface NavMenuProps {
+  canExpand: boolean
   cardIdBeingEdited: string | null
   onRerender: () => void
 }
 
 export default class NavMenu extends React.Component<NavMenuProps> {
   get isExpanded(): boolean {
-    return !isFlagSet('sidebarCollapsed');
+    return this.props.canExpand && !isFlagSet('sidebarCollapsed');
   }
 
   public render(): JSX.Element {
-    const { cardIdBeingEdited } = this.props;
+    const { canExpand, cardIdBeingEdited } = this.props;
     return (
       <Drawer
         open
@@ -41,7 +42,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
         {this.renderLink('/sets', 'Sets', 'layers')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}
         {this.renderLink('/about', 'About', 'info_outline')}
-        {this.renderExpandCollapseButton()}
+        {canExpand && this.renderExpandCollapseButton()}
       </Drawer>
     );
   }

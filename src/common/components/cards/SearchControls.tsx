@@ -25,7 +25,7 @@ export default class SearchControls extends React.Component<SearchControlsProps>
 
         <TextField
           hintText="Enter card name or text"
-          style={{marginBottom: 10}}
+          style={{ width: '100%', marginBottom: 10 }}
           onChange={this.handleChangeText}
         />
       </div>

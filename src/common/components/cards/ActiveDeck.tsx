@@ -88,7 +88,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         <div
           style={{
             fontWeight: 100,
-            fontSize: 28
+            fontSize: 26
           }}
         >
           {isASet ? 'Set' : 'Deck'} [
@@ -99,7 +99,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           {
             isASet ?
               <span>
-                at least 15
+                ≥15
                 <Tooltip
                   inline
                   className="help-tooltip"

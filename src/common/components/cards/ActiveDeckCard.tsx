@@ -1,4 +1,4 @@
-import { noop } from 'lodash';
+import { noop, truncate } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../types';
@@ -39,10 +39,11 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
       borderRight: '2px solid #444'
     },
     cardName: {
-      width: 'calc(100% - 65px)',
+      width: 'calc(100% - 30px)',
       marginLeft: 5,
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
+      fontSize: '0.9em'
     },
     cardCount: {
       width: 65,
@@ -68,7 +69,7 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
         </span>
         <div style={this.styles.outerCard}>
           <div style={this.styles.cardCost}>{card.cost}</div>
-          <div style={this.styles.cardName}>{card.name}</div>
+          <div style={this.styles.cardName}>{truncate(card.name, { length: 17 })}</div>
           {showCount && <div style={this.styles.cardCount}>
             <span onClick={this.handleDecreaseCardCount}>
               &nbsp;&ndash;&nbsp;

@@ -106,7 +106,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               />
             </Paper>
           </div>
-          <Paper className={classes.recentCardsContainer}>
+          <div className={classes.recentCardsContainer}>
             { userId &&
               <RecentCardsCarousel
                 key={userId}
@@ -115,7 +115,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
                 history={this.props.history}
               />
             }
-          </Paper>
+          </div>
         </div>
       </div>
     );

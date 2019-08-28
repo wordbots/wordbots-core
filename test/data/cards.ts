@@ -123,3 +123,13 @@ export const reinforcementsCard: w.CardInStore = {
   cost: 4,
   type: TYPE_EVENT
 };
+
+// Convenience method to generate a dummy event from text and parse, to easily run an arbitrary command.
+export const event = (text: string, command: string): w.CardInStore => ({
+  id: text,
+  name: text,
+  text,
+  command,
+  cost: 0,
+  type: TYPE_EVENT
+});

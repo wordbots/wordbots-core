@@ -59,28 +59,45 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       };
     },
 
-    attributeAdjustment: (targetFunc: (state: w.GameState) => w.Target[], attr: w.Attribute | 'cost', func) => {
+    attributeAdjustment: (targetFunc: (state: w.GameState) => w.Target[], attr: w.Attribute | 'cost' | 'allattributes', func) => {
       const aid: w.AbilityId = id();
+
+      function adjustAttr(target: w.Object | w.CardInGame, att: w.Attribute | 'cost'): void {
+        if (!target.temporaryStatAdjustments) {
+          target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
+        }
+
+        target.temporaryStatAdjustments[att] = target.temporaryStatAdjustments[att]!.concat({
+          aid,
+          // Convert func to string so that we can serialize this temporaryStatAdjustment if necessary
+          // (e.g. to reveal a card from the server).
+          func: `(${func.toString()})`
+        });
+      }
+
+      function unadjustAttr(target: w.Object | w.CardInGame, att: w.Attribute | 'cost'): void {
+        if (target.temporaryStatAdjustments && target.temporaryStatAdjustments[att]) {
+          target.temporaryStatAdjustments[att] = target.temporaryStatAdjustments[att]!.filter((adj) =>
+            adj.aid !== aid
+          );
+        }
+      }
+
       return {
-        aid,
+        aid: id(),
         targets: `(${targetFunc.toString()})`,
         apply: (target: w.Object | w.CardInGame) => {
-          if (!target.temporaryStatAdjustments) {
-            target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
+          if (attr === 'allattributes') {
+            (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => adjustAttr(target, att));
+          } else {
+            adjustAttr(target, attr);
           }
-
-          target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr]!.concat({
-            aid,
-            // Convert func to string so that we can serialize this temporaryStatAdjustment if necessary
-            // (e.g. to reveal a card from the server).
-            func: `(${func.toString()})`
-          });
         },
         unapply: (target: w.Object | w.CardInGame) => {
-          if (target.temporaryStatAdjustments && target.temporaryStatAdjustments[attr]) {
-            target.temporaryStatAdjustments[attr] = target.temporaryStatAdjustments[attr]!.filter((adj) =>
-              adj.aid !== aid
-            );
+          if (attr === 'allattributes') {
+            (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => unadjustAttr(target, att));
+          } else {
+            unadjustAttr(target, attr);
           }
         }
       };
@@ -104,11 +121,6 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
           target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
         }
       };
-    },
-
-    freezeAttribute: (_targetFunc: (state: w.GameState) => w.Target[], _attribute: w.Attribute) => {
-      // TODO
-      throw new Error('Not yet implemented!');
     },
 
     giveAbility: (targetFunc: (state: w.GameState) => w.Target[], cmd) => {

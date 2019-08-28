@@ -10,7 +10,7 @@ import * as cards from '../../src/common/store/cards';
 import defaultState from '../../src/common/store/defaultGameState';
 import * as w from '../../src/common/types';
 import { instantiateCard } from '../../src/common/util/cards';
-import { getCost } from '../../src/common/util/game';
+import { allObjectsOnBoard, getCost } from '../../src/common/util/game';
 import * as testCards from '../data/cards';
 import {
   activate, attack, drawCardToHand, getDefaultState, moveRobot,
@@ -310,15 +310,102 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '2,1,-3')).toEqual('4/4/1');
     });
 
-    it('should be able to handle commands that spawn objects', () => {
+    it('should correctly handle temporary attribute modifications', () => {
       let state = getDefaultState();
-      state = playEvent(state, 'orange', testCards.reinforcementsCard);
-      expect(
-        objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({
-        '2,0,-2': 'Reinforcements',
-        '2,1,-3': 'Reinforcements',
-        '3,-1,-2': 'Reinforcements'
+      state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');  // 1/2/2
+
+      state = playEvent(state, 'orange', testCards.event("Give all robots you control +2 attack until the end of the turn.", "(function () { save('duration', 1); (function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack', function (x) { return x + 2; }); })(); save('duration', null); })"));
+      expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('3/2/2');
+      state = game(state, actions.passTurn('orange'));
+      expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/2/2');
+
+      state = playEvent(state, 'blue', testCards.event("Set all attributes of all robots to 3 until the end of the turn", "(function () { save('duration', 1); (function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'allattributes', \"(function () { return 3; })\"); })(); save('duration', null); })"));
+      expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('3/3/3');
+      state = game(state, actions.passTurn('blue'));
+      expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/2/2');
+    });
+
+    describe('should be able to correctly execute specific actions', () => {
+      it('removeAllAbilities', () => {
+        let state = getDefaultState();
+        state = playObject(state, 'orange', cards.hermesCard, '3,-1,-2');
+        expect(allObjectsOnBoard(state)['3,-1,-2'].abilities.length).toEqual(1);
+        state = playEvent(state, 'orange', cards.greatSimplificationCard);  // "Remove all abilities from all robots."
+        expect(allObjectsOnBoard(state)['3,-1,-2'].abilities.length).toEqual(0);
+      });
+
+      it('restoreHealth', () => {
+        let state = getDefaultState();
+        state = playObject(state, 'orange', cards.blueBotCard, '3,-1,-2');  // 2/8/1
+        state = playEvent(state, 'orange', cards.shockCard, { hex: '3,-1,-2' });  // deal 3 damage
+        expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/5/1');
+
+        state = playEvent(
+          state, 'orange',
+          testCards.event("Restore 1 health to a robot", "(function () { actions['restoreHealth'](targets['choose'](objectsMatchingConditions('robot', [])), 1); })"),
+          { hex: '3,-1,-2' }
+        );
+        expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/6/1');
+
+        state = playEvent(state, 'orange', testCards.event("Restore all robots' health", "(function () { actions['restoreHealth'](objectsMatchingConditions('robot', [])); })"));
+        expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/8/1');
+      });
+
+      it('returnToHand', () => {
+        let state = getDefaultState();
+        state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
+        state = playEvent(
+          state, 'orange',
+          testCards.event("Return a robot to its owner's hand", "(function () { actions['returnToHand'](targets['choose'](objectsMatchingConditions('robot', []))); })"),
+          { hex: '3,-1,-2' }
+        );
+        expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+        expect(state.players.orange.hand.length).toEqual(getDefaultState().players.orange.hand.length + 1);
+      });
+
+      it('shuffleCardsIntoDeck', () => {
+        let state = getDefaultState();
+
+        state = playEvent(state, 'orange', testCards.event("Shuffle all cards from your discard pile into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+        expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length);
+        expect(state.players.orange.discardPile.length).toEqual(1);
+
+        state = playEvent(state, 'orange', testCards.event("Shuffle all cards from your discard pile into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+        expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1);
+        expect(state.players.orange.discardPile.length).toEqual(1);
+
+        state = playEvent(state, 'orange', testCards.event("Shuffle all cards from your hand into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['self'](), 'anycard', [])), targets['self']()); })"));
+        expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1 + getDefaultState().players.orange.hand.length);
+      });
+
+      it('spawnObject (inline)', () => {
+        let state = getDefaultState();
+        state = playEvent(state, 'orange', testCards.reinforcementsCard);
+        expect(
+          objectsOnBoardOfType(state, TYPE_ROBOT)
+        ).toEqual({
+          '2,0,-2': 'Reinforcements',
+          '2,1,-3': 'Reinforcements',
+          '3,-1,-2': 'Reinforcements'
+        });
+      });
+
+      it('spawnObject (from discard pile)', () => {
+        let state = getDefaultState();
+        state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
+        state = playEvent(state, 'orange', testCards.wrathOfRobotGodCard);  // "Destroy all robots."
+        expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+        expect(state.players.orange.discardPile.filter((c) => c.type === TYPE_ROBOT).length).toEqual(1);
+        state = playEvent(state, 'orange', testCards.event("Play a random robot from your discard pile on a random tile adjacent to your kernel.", "(function () { actions['spawnObject'](targets['random'](1, cardsInDiscardPile(targets['self'](), 'robot', [])), targets['random'](1, tilesMatchingConditions([conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))])), targets['self']()); })"));
+        expect(Object.values(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(["Attack Bot"]);
+        expect(state.players.orange.discardPile.filter((c) => c.type === TYPE_ROBOT).length).toEqual(0);
+      });
+
+      it('swapAttributes', () => {
+        let state = getDefaultState();
+        state = playObject(state, 'orange', cards.blueBotCard, '3,-1,-2');  // 2/8/1
+        state = playEvent(state, 'orange', testCards.event("Swap all robots' attack and health.", "(function () { actions['swapAttributes'](objectsMatchingConditions('robot', []), 'attack', 'health'); })"));
+        expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('8/2/1');
       });
     });
   });

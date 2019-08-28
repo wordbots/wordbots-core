@@ -228,7 +228,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     ): void => {
       if (state.memory.duration) {
         // Temporary attribute adjustment.
-        modifyAttribute(objects, attr, `(function () { return ${numCmd}; })`);
+        modifyAttribute(objects, attr, numCmd);
       } else {
         // Permanent attribute adjustment.
         iterateOver<w.Object>(objects)((object: w.Object) => {

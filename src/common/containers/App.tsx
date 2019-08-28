@@ -16,7 +16,7 @@ import HelpDialog from '../components/cards/HelpDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
-import { SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
+import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
 import PersonalTheme from '../themes/personal';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
@@ -55,6 +55,7 @@ type AppProps = AppStateProps & AppDispatchProps & {
 
 interface AppState {
   loading: boolean
+  canSidebarExpand: boolean
 }
 
 function mapStateToProps(state: w.State): AppStateProps {
@@ -89,7 +90,8 @@ class App extends React.Component<AppProps, AppState> {
   };
 
   public state = {
-    loading: true
+    loading: true,
+    canSidebarExpand: window.innerWidth < MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
   };
 
   constructor(props: AppProps) {
@@ -99,6 +101,10 @@ class App extends React.Component<AppProps, AppState> {
 
   public componentDidMount(): void {
     const { onLoggedIn, onLoggedOut, onReceiveFirebaseData } = this.props;
+
+    window.addEventListener('resize', () => {
+      this.setState({ canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR });
+    });
 
     listenToSets(onReceiveFirebaseData);
 
@@ -134,15 +140,18 @@ class App extends React.Component<AppProps, AppState> {
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited, onRerender } = this.props;
+    const { canSidebarExpand } = this.state;
+
     if (this.inGame) {
       return null;
     } else {
-      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
+      return <NavMenu canExpand={canSidebarExpand} cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
     }
   }
 
   get content(): JSX.Element {
-    const sidebarWidth = isFlagSet('sidebarCollapsed') ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
+    const isSidebarExpanded = this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed');
+    const sidebarWidth = isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)

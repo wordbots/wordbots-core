@@ -225,12 +225,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     this.tryToStartGame();
   }
 
-  public componentDidUpdate(prevProps: GameAreaContainerProps): void {
-    if (this.props.collection.firebaseLoaded !== prevProps.collection.firebaseLoaded) {
-      this.tryToStartGame();
-    }
-  }
-
   public componentWillUnmount(): void {
     const { onEndGame } = this.props;
     const { interval } = this.state;
@@ -261,7 +255,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   private tryToStartGame = () => {
     const {
       started,
-      collection: { firebaseLoaded },
       onStartTutorial,
       onStartSandbox,
       history,
@@ -277,7 +270,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     if (!started) {
       if (this.urlMatchesGameMode('tutorial')) {
         onStartTutorial();
-      } else if (firebaseLoaded) {
+      } else {
         // Wait until we retrieve data from Firebase so we can get
         // username and deck list.
         this.setState({ message: null });
@@ -288,9 +281,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
         } else {
           history.push(baseGameUrl);
         }
-      } else {
-        // If we're still waiting on Firebase, render a message.
-        this.setState({ message: 'Connecting...' });
       }
     }
   }

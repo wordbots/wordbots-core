@@ -98,19 +98,22 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public componentDidMount(): void {
-    listenToSets(this.props.onReceiveFirebaseData);
+    const { onLoggedIn, onLoggedOut, onReceiveFirebaseData } = this.props;
+
+    listenToSets(onReceiveFirebaseData);
 
     onLogin((user) => {
-      this.setState({loading: false});
-      this.props.onLoggedIn(user);
-      listenToUserData(this.props.onReceiveFirebaseData);
-      listenToSets(this.props.onReceiveFirebaseData);
+      onLoggedIn(user);
+      listenToUserData((data) => {
+        onReceiveFirebaseData(data);
+        this.setState({ loading: false });
+      });
     });
 
     onLogout(() => {
-      this.setState({loading: false});
-      this.props.onLoggedOut();
-      this.props.onReceiveFirebaseData(null);
+      this.setState({ loading: false });
+      onLoggedOut();
+      onReceiveFirebaseData(null);
     });
   }
 
@@ -131,7 +134,7 @@ class App extends React.Component<AppProps, AppState> {
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited, onRerender } = this.props;
-    if (this.state.loading || this.inGame) {
+    if (this.inGame) {
       return null;
     } else {
       return <NavMenu cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
@@ -185,6 +188,22 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
+  get loadingMessage(): JSX.Element {
+    return (
+      <div
+        style={{
+          margin: '200px auto',
+          textAlign: 'center',
+          fontFamily: 'Carter One',
+          fontSize: '2em',
+          color: '#999',
+        }}
+      >
+        Connecting to server ...
+      </div>
+    );
+  }
+
   public render(): JSX.Element {
     return (
       <div>
@@ -192,7 +211,7 @@ class App extends React.Component<AppProps, AppState> {
         <TitleBar />
         <div>
           {this.sidebar}
-          {this.state.loading ? null : this.content}
+          {this.state.loading ? this.loadingMessage : this.content}
         </div>
         {this.dialogs}
       </div>

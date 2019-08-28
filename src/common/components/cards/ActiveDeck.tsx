@@ -88,18 +88,18 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         <div
           style={{
             fontWeight: 100,
-            fontSize: 28
+            fontSize: 26
           }}
         >
           {isASet ? 'Set' : 'Deck'} [
           <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
-            &nbsp;{cards.length}&nbsp;
+            {cards.length}
           </span>
-          /{' '}
+          {' '}/{' '}
           {
             isASet ?
               <span>
-                at least 15
+                ≥15
                 <Tooltip
                   inline
                   className="help-tooltip"
@@ -111,7 +111,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
                   </sup>
                 </Tooltip>
               </span> :
-              '30 '
+              '30'
           }
           ]
           {

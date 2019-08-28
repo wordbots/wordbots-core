@@ -100,23 +100,26 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public componentDidMount(): void {
+    const { onLoggedIn, onLoggedOut, onReceiveFirebaseData } = this.props;
+
     window.addEventListener('resize', () => {
       this.setState({ canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR });
     });
 
-    listenToSets(this.props.onReceiveFirebaseData);
+    listenToSets(onReceiveFirebaseData);
 
     onLogin((user) => {
-      this.setState({loading: false});
-      this.props.onLoggedIn(user);
-      listenToUserData(this.props.onReceiveFirebaseData);
-      listenToSets(this.props.onReceiveFirebaseData);
+      onLoggedIn(user);
+      listenToUserData((data) => {
+        onReceiveFirebaseData(data);
+        this.setState({ loading: false });
+      });
     });
 
     onLogout(() => {
-      this.setState({loading: false});
-      this.props.onLoggedOut();
-      this.props.onReceiveFirebaseData(null);
+      this.setState({ loading: false });
+      onLoggedOut();
+      onReceiveFirebaseData(null);
     });
   }
 
@@ -137,9 +140,9 @@ class App extends React.Component<AppProps, AppState> {
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited, onRerender } = this.props;
-    const { loading, canSidebarExpand } = this.state;
-
-    if (loading || this.inGame) {
+    const { canSidebarExpand } = this.state;
+        
+    if (this.inGame) {
       return null;
     } else {
       return <NavMenu canExpand={canSidebarExpand} cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
@@ -194,6 +197,22 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
+  get loadingMessage(): JSX.Element {
+    return (
+      <div
+        style={{
+          margin: '200px auto',
+          textAlign: 'center',
+          fontFamily: 'Carter One',
+          fontSize: '2em',
+          color: '#999',
+        }}
+      >
+        Connecting to server ...
+      </div>
+    );
+  }
+
   public render(): JSX.Element {
     return (
       <div>
@@ -201,7 +220,7 @@ class App extends React.Component<AppProps, AppState> {
         <TitleBar />
         <div>
           {this.sidebar}
-          {this.state.loading ? null : this.content}
+          {this.state.loading ? this.loadingMessage : this.content}
         </div>
         {this.dialogs}
       </div>

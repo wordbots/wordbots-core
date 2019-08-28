@@ -332,6 +332,26 @@ describe('Game reducer', () => {
     });
 
     describe('should be able to correctly execute specific actions', () => {
+      it("forEach", () => {
+        let state = getDefaultState();
+        state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
+        state = playObject(state, 'orange', cards.oneBotCard, '2,1,-3');
+        state = playEvent(state, 'orange', event("Deal 3 damage to your kernel for each robot in play", "(function () { actions['forEach'](objectsMatchingConditions('robot', []), (function () { actions['dealDamage'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })); })"));
+        expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 6);
+      });
+
+      it('moveCardsToHand', () => {
+        let state = getDefaultState();
+
+        state = playEvent(state, 'orange', event("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+        expect(state.players.orange.hand.length).toEqual(getDefaultState().players.orange.hand.length);
+        expect(state.players.orange.discardPile.length).toEqual(1);
+
+        state = playEvent(state, 'orange', event("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+        expect(state.players.orange.hand.length).toEqual(getDefaultState().players.orange.hand.length + 1);
+        expect(state.players.orange.discardPile.length).toEqual(1);
+      });
+
       it('removeAllAbilities', () => {
         let state = getDefaultState();
         state = playObject(state, 'orange', cards.hermesCard, '3,-1,-2');

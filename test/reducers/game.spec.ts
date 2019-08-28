@@ -256,6 +256,10 @@ describe('Game reducer', () => {
       // "Deal 5 damage to your opponent."
       state = playEvent(state, 'orange', cards.missileStrikeCard);
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
+
+      // "End the turn."
+      state = playEvent(state, 'orange', testCards.event('End the turn', "(function () { actions['endTurn'](); })"));
+      expect(state.player).toEqual('blue');
     });
 
     it('should be able to play events that target selected tiles or cards', () => {

@@ -84,7 +84,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       }
 
       return {
-        aid: id(),
+        aid,
         targets: `(${targetFunc.toString()})`,
         apply: (target: w.Object | w.CardInGame) => {
           if (attr === 'allattributes') {

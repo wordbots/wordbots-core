@@ -131,7 +131,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     },
 
     endTurn: (): void => {
-      Object.assign(state, passTurn(state, state.currentTurn));
+      state.callbackAfterExecution = (s: w.GameState) => passTurn(s, s.currentTurn);
     },
 
     forEach: (collection: w.Collection, cmd: (state: w.GameState) => any): void => {

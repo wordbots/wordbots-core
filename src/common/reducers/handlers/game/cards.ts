@@ -234,6 +234,10 @@ function playEvent(state: State, cardIdx: number): State {
         player.energy.available -= getCost(card);
       }
 
+      if (tempState.callbackAfterExecution) {
+        tempState = tempState.callbackAfterExecution(tempState);
+      }
+
       tempState.eventQueue = [...tempState.eventQueue, card];
 
       return tempState;

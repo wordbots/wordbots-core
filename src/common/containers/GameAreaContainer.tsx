@@ -52,8 +52,7 @@ interface GameAreaDispatchProps {
 export type GameAreaContainerProps = GameAreaStateProps & GameAreaDispatchProps & RouteComponentProps;
 
 interface GameAreaContainerState {
-  interval?: NodeJS.Timeout,
-  message: string | null
+  interval?: NodeJS.Timeout
 }
 
 export function mapStateToProps(state: w.State): GameAreaStateProps {
@@ -213,8 +212,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   constructor(props: GameAreaContainerProps) {
     super(props);
     this.state = {
-      interval: setInterval(this.performAIResponse, AI_RESPONSE_TIME_MS),
-      message: null
+      interval: setInterval(this.performAIResponse, AI_RESPONSE_TIME_MS)
     };
   }
 
@@ -239,7 +237,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     return (
       <GameArea
         {...this.props}
-        message={this.state.message}
         onClickGameArea={this.handleClickGameArea}
         onClickEndGame={this.handleClickEndGame}
         onNextTutorialStep={this.handleNextTutorialStep}
@@ -270,17 +267,12 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     if (!started) {
       if (this.urlMatchesGameMode('tutorial')) {
         onStartTutorial();
+      } else if (this.urlMatchesGameMode('practice') && params.format && params.deck) {
+        this.tryToStartPracticeGame(params.format as w.BuiltInFormat, params.deck);
+      } else if (this.urlMatchesGameMode('sandbox')) {
+        onStartSandbox();
       } else {
-        // Wait until we retrieve data from Firebase so we can get
-        // username and deck list.
-        this.setState({ message: null });
-        if (this.urlMatchesGameMode('practice') && params.format && params.deck) {
-          this.tryToStartPracticeGame(params.format as w.BuiltInFormat, params.deck);
-        } else if (this.urlMatchesGameMode('sandbox')) {
-          onStartSandbox();
-        } else {
-          history.push(baseGameUrl);
-        }
+        history.push(baseGameUrl);
       }
     }
   }

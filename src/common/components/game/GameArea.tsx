@@ -17,7 +17,6 @@ import CardSelector from './CardSelector';
 import EndTurnButton from './EndTurnButton';
 import EventAnimation from './EventAnimation';
 import ForfeitButton from './ForfeitButton';
-import FullscreenMessage from './FullscreenMessage';
 import FullscreenToggle from './FullscreenToggle';
 import GameNotification from './GameNotification';
 import PlayerArea from './PlayerArea';
@@ -76,7 +75,6 @@ export interface GameProps {
 }
 
 type GameAreaProps = GameProps & RouteComponentProps & {
-  message: string | null
   onPassTurn: (player: w.PlayerColor) => void
   onForfeit: (winner: w.PlayerColor) => void
   onTutorialStep: (back?: boolean) => void
@@ -119,16 +117,12 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
   public render(): JSX.Element {
     const {
       attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
+      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, orangePieces, player, playingCardType,
       selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onSetVolume
     } = this.props;
     const { areaHeight, boardSize } = this.state;
-
-    if (message) {
-      return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
-    }
 
     return (
       <div

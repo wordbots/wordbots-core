@@ -19,7 +19,7 @@ import LoginDialog from '../components/users/LoginDialog';
 import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
 import PersonalTheme from '../themes/personal';
 import * as w from '../types';
-import { isFlagSet, logAnalytics } from '../util/browser';
+import { inBrowser, isFlagSet, logAnalytics } from '../util/browser';
 import { listenToSets, listenToUserData, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
@@ -91,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
 
   public state = {
     loading: true,
-    canSidebarExpand: window.innerWidth < MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
+    canSidebarExpand: inBrowser() && window.innerWidth < MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
   };
 
   constructor(props: AppProps) {

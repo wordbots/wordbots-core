@@ -22,9 +22,10 @@ export default class SortControls extends React.Component<SortControlsProps> {
     const orders = this.props.criteria === SortCriteria.Timestamp ? ['New → Old', 'Old → New'] : ['Ascending', 'Descending'];
 
     return (
-      <div style={{marginBottom: 20}}>
+      <div style={{ marginBottom: 10 }}>
         <div
           style={{
+            marginBottom: 5,
             fontWeight: 700,
             fontSize: 14
           }}
@@ -32,21 +33,17 @@ export default class SortControls extends React.Component<SortControlsProps> {
           Sorting
         </div>
 
-        <div style={{display: 'flex'}}>
-          {this.renderSelectField('criteria', criteria, 10)}
-          {this.renderSelectField('order', orders, 0)}
-        </div>
+        {this.renderSelectField('criteria', criteria)}
+        {this.renderSelectField('order', orders)}
       </div>
     );
   }
 
-  private renderSelectField(field: 'criteria' | 'order', items: string[], margin: number): JSX.Element {
+  private renderSelectField(field: 'criteria' | 'order', items: string[]): JSX.Element {
     return (
       <SelectField
-        style={{width: '100%', marginRight: margin}}
-        labelStyle={{paddingRight: 40}}
+        style={{ display: 'block', width: '100%' }}
         value={this.props[field]}
-        floatingLabelText={capitalize(field)}
         onChange={this.handleSetField(field)}
       >
         {items.map((item, idx) => (

@@ -58,14 +58,15 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): DeckDispatchProps {
 }
 
 export class Deck extends React.Component<DeckProps, DeckState> {
+  // Note that these styles are also used by the Set container.
   public static styles: Record<string, CSSProperties> = {
     container: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
-    leftSidebar: { margin: '30px 10px 50px 30px', width: 300, minWidth: 300 },
-    energyCurvePaper: { padding: 20, marginBottom: 20 },
-    energyCurveHeading: { fontWeight: 100, fontSize: 28 },
+    leftSidebar: { margin: '30px 10px 50px 25px', width: 240, minWidth: 240 },
+    energyCurvePaper: { padding: 10, paddingTop: 10, marginBottom: 20 },
+    energyCurveHeading: { paddingLeft: 10, fontWeight: 100, fontSize: 28 },
     cards: { marginTop: 10, width: '100%' },
-    rightSidebar: { margin: '30px 30px 50px 10px', width: 300, minWidth: 300 },
-    deckPropsPaper: { padding: 20 }
+    rightSidebar: { margin: '30px 20px 50px 10px', width: 240, minWidth: 240 },
+    deckPropsPaper: { padding: '15px 15px 15px 20px' }
   };
 
   constructor(props: DeckProps) {

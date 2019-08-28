@@ -36,6 +36,7 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
         numLosses: gamesInFormat.filter((g) => g.winner && g.players[g.winner] !== userId).length
       }))
       .sortBy((results) => -results.numGames)
+      .slice(0, 5)
       .value();
   }
 
@@ -50,7 +51,7 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
           </div> :
             (
               games.length > 0 ?
-                <div className={classes.playerInfo}>
+                <div className={classes.playerInfo} style={{ justifyContent: 'flex-start' }}>
                   {this.renderResults()}
                 </div> :
                 <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
@@ -64,7 +65,7 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
     const { classes } = this.props;
     return this.resultsByFormat.map(({ format, numWins, numLosses }) => {
       return (
-        <div key={format.name} className={classes.playerInfoItem}>
+        <div key={format.name} className={classes.playerInfoItem} style={{ margin: 13 }}>
           <div className={classes.playerInfoKey}>{format.rendered()}</div>
           <div className={classes.playerInfoValue}>{numWins} W • {numLosses} L • {(numWins / (numWins + numLosses) * 100).toFixed(1)}%</div>
         </div>

@@ -13,6 +13,7 @@ import * as React from 'react';
 import * as w from '../../../types';
 import { renderFormatDisplayName } from '../../../util/formats';
 import Title from '../../Title';
+import ProfileLink from '../ProfileLink';
 
 import { styles } from './PlayerInfo';
 
@@ -52,12 +53,12 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
       return;
     }
 
-    const opponentId = Object.values(recentGame.players).find((player) => player !== userId);
+    const opponentId = Object.values(recentGame.players).find((player) => player !== userId)!;
     const isGuest = isNil(opponentId) || opponentId.startsWith('guest');
     const opponent = isGuest ? 'Guest' : playerNames[opponentId!] || playerNames[userId];
     const wasVictory = recentGame.winner && recentGame.players[recentGame.winner] === userId;
     const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
-    const subText = `${startCase(toLower(recentGame.type))} - ${renderFormatDisplayName(recentGame.format)} - ${timestamp}`;
+    const gameDetails = `${startCase(toLower(recentGame.type))} - ${renderFormatDisplayName(recentGame.format)} - ${timestamp}`;
 
     const formatIcons = {
       'normal': 'player',
@@ -72,7 +73,10 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
             <Icon className={`ra ra-${isString(recentGame.format) && formatIcons[recentGame.format]}`}/>
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={opponent} secondary={subText} />
+        <ListItemText
+          primary={<ProfileLink uid={opponentId} username={opponent} />}
+          secondary={gameDetails}
+        />
         <ListItemText
           primaryTypographyProps={{
             className: wasVictory ? classes.victory : classes.defeat

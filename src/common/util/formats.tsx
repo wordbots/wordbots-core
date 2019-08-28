@@ -8,6 +8,7 @@ import defaultState, { bluePlayerState, orangePlayerState } from '../store/defau
 import * as w from '../types';
 
 import { triggerSound } from './game';
+import ProfileLink from '../components/users/ProfileLink';
 
 export function renderFormatDisplayName(format: w.Format): string {
   return GameFormat.decode(format).displayName!;
@@ -174,7 +175,8 @@ export class SetFormat extends GameFormat {
       >
         {this.set.name}
       </a>
-      {' '}set by {this.set.metadata.authorName}
+      {' '}set by{' '}
+      <ProfileLink uid={this.set.metadata.authorId} username={this.set.metadata.authorName} />
     </div>
   )
 

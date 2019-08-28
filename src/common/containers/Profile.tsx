@@ -12,6 +12,7 @@ import Title from '../components/Title';
 import MatchmakingInfo from '../components/users/profile/MatchmakingInfo';
 import PlayerInfo from '../components/users/profile/PlayerInfo';
 import RecentGames from '../components/users/profile/RecentGames';
+import ProfileLink from '../components/users/ProfileLink';
 import * as w from '../types';
 import {
   getNumCardsCreatedCountByUserId,
@@ -33,7 +34,7 @@ interface ProfileState {
     decksCreated: number,
     setsCreated: number,
     gamesPlayed: number,
-    favoriteOpponent?: string
+    favoriteOpponent?: React.ReactNode
   }
 }
 
@@ -65,7 +66,13 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   public async componentDidUpdate(nextProps: ProfileProps): Promise<void> {
     // Did the userId change?
     if (nextProps.match.params.userId !== this.props.match.params.userId) {
-      this.loadProfileData();
+      this.setState(({
+        userId: undefined,
+        userName: undefined,
+        recentGames: undefined,
+        playerNames: undefined,
+        playerInfo: undefined
+      }), this.loadProfileData);
     }
   }
 
@@ -151,6 +158,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     const setsCreated = await getNumSetsCreatedCountByUserId(userId);
     const gamesPlayed = recentGames.length;
 
+    // TODO break this chunk out into its own method
     const favoriteOpponentIds = _(recentGames)
       .flatMap((g) => Object.values(g.players))
       .countBy()
@@ -160,6 +168,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       .filter((playerId) => playerId !== userId && !playerId.startsWith('guest'))
       .value();
     const [favoriteOpponentName] = await getUserNamesByIds(favoriteOpponentIds.slice(0, 1));
+    const favoriteOpponent = favoriteOpponentName && <ProfileLink className="underline" uid={favoriteOpponentIds[0]} username={favoriteOpponentName} />;
 
     this.setState({
       playerInfo: {
@@ -167,7 +176,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
         decksCreated,
         setsCreated,
         gamesPlayed,
-        favoriteOpponent: favoriteOpponentName || undefined
+        favoriteOpponent
       }
     });
   }

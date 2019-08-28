@@ -71,6 +71,24 @@ a.topLink:hover {
   outline: none;
 }
 
+.profile-link {
+  color: inherit;
+  transition: color 300ms ease-in-out;
+}
+
+.profile-link:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+.profile-link.underline {
+  text-decoration: underline;
+}
+
+.profile-link.underline:hover {
+  text-decoration: none;
+}
+
 /* Custom tooltip styling */
 
 .Popover-tipShape {

@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import * as React from 'react';
 
 import * as w from '../../types';
+import ProfileLink from '../users/ProfileLink';
 
 export default class CardProvenanceDescription extends React.Component<{card: w.CardInStore, style?: React.CSSProperties}> {
   public render(): React.ReactNode {
@@ -16,7 +17,7 @@ export default class CardProvenanceDescription extends React.Component<{card: w.
                 Created by{' '}
                 {(source as any) === 'user'
                   ? <i>unknown user</i>
-                  : <a href={`/profile/${source.uid}`} target="_blank" rel="noopener noreferrer">{source.username}</a>
+                  : <ProfileLink uid={source.uid} username={source.username} />
                 }
                 . {timestamp && `Last modified ${moment(timestamp).format('ll')}.`}
               </span>

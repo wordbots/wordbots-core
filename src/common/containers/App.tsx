@@ -141,7 +141,7 @@ class App extends React.Component<AppProps, AppState> {
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited, onRerender } = this.props;
     const { canSidebarExpand } = this.state;
-        
+
     if (this.inGame) {
       return null;
     } else {

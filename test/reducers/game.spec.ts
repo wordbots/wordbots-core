@@ -255,7 +255,7 @@ describe('Game reducer', () => {
       state = playEvent(state, 'orange', testCards.wrathOfRobotGodCard);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
 
-      // "Deal 5 damage to your opponent."
+      // "Deal 4 damage to your opponent."
       state = playEvent(state, 'orange', cards.missileStrikeCard);
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
 
@@ -332,6 +332,33 @@ describe('Game reducer', () => {
     });
 
     describe('should be able to correctly execute specific actions', () => {
+      it('canAttackAgain', () => {
+        let state = setUpBoardState({
+          orange: { '0,0,0': cards.twoBotCard },
+          blue: { '-1,0,1': cards.twoBotCard }
+        });
+
+        state = attack(state, '0,0,0', '-1,0,1', true);  // Both Two Bots should now be down to 4-2=2 health.
+        expect(size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(2);
+        state = playEvent(state, 'orange', event("All robots can attack again.", "(function () { actions['canAttackAgain'](objectsMatchingConditions('robot', [])); })"));
+        state = attack(state, '0,0,0', '-1,0,1');  // Both Two Bots should now be destroyed.
+        expect(size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(0);
+      });
+
+      it('giveAbility', () => {
+        let state = setUpBoardState({
+          orange: { '0,0,0': cards.twoBotCard },
+          blue: { '-1,0,1': cards.twoBotCard }
+        });
+
+        state = playEvent(state, 'blue', cards.missileStrikeCard);  // "Deal 5 damage to your opponent."
+        expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 4);
+
+        state = playEvent(state, 'orange', cards.vampirePotionCard, { hex: '0,0,0' });  // 'Give a robot "When this robot attacks, restore 3 health to your kernel"'
+        state = attack(state, '0,0,0', '-1,0,1', true);
+        expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 4 + 3);
+      });
+
       it("forEach", () => {
         let state = getDefaultState();
         state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
@@ -536,6 +563,16 @@ describe('Game reducer', () => {
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({'1,-1,0': 'Attack Bot', '2,1,-3': 'General Bot'});
+    });
+
+    it('should be able to activate afterCardPlay triggered abilities', () => {
+      // Mirror: "When you play a robot, this structure becomes a copy of that robot."
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.mirrorCard, '3,-1,-2');
+      state = playObject(state, 'orange', cards.speedyBotCard, '2,1,-3');
+      expect(
+        objectsOnBoardOfType(state, TYPE_ROBOT)
+      ).toEqual({'3,-1,-2': 'Speedy Bot', '2,1,-3': 'Speedy Bot'});
     });
 
     it('should be able to activate beginningOfTurn triggered abilities', () => {
@@ -855,6 +892,27 @@ describe('Game reducer', () => {
       currentHand = hand();
       state = activate(state, '2,1,-3', 0, {card: 0});
       expect(hand()).toEqual(currentHand);
+    });
+
+    it('should handle activated abilities with energy costs', () => {
+      let state = getDefaultState();
+      // Govt Researcher: "Activate: Pay 1 energy and each player draws a card"
+      state = playObject(state, 'orange', cards.governmentResearcherCard, '2,1,-3');
+
+      state = newTurn(state, 'orange');
+      expect(state.players.orange.energy.available).toEqual(2);
+      let currentHandSize = state.players.orange.hand.length;
+      state = activate(state, '2,1,-3', 0);
+      expect(state.players.orange.energy.available).toEqual(1);
+      expect(state.players.orange.hand.length).toEqual(currentHandSize + 1);  // Ability executed
+
+      state = newTurn(state, 'orange');
+      // Now let's make the orange player not have enough energy to pay the cost.
+      state.players.orange.energy.available = 0;
+      currentHandSize = state.players.orange.hand.length;
+      state = activate(state, '2,1,-3', 0);
+      expect(state.players.orange.energy.available).toEqual(0);
+      expect(state.players.orange.hand.length).toEqual(currentHandSize);  // Ability did not execute
     });
   });
 

@@ -6,7 +6,7 @@ import { allObjectsOnBoard } from '../../src/common/util/game';
 import * as testCards from '../data/cards';
 import {
   attack, event, getDefaultState, objectsOnBoardOfType,
-  playEvent, playObject, queryPlayerHealth, queryRobotAttributes, setUpBoardState
+  playEvent, playObject, queryPlayerHealth, queryRobotAttributes, setUpBoardState, startingHandSize
 } from '../testHelpers';
 
 describe('[vocabulary.actions]', () => {
@@ -49,11 +49,11 @@ describe('[vocabulary.actions]', () => {
     let state = getDefaultState();
 
     state = playEvent(state, 'orange', event("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
-    expect(state.players.orange.hand.length).toEqual(getDefaultState().players.orange.hand.length);
+    expect(state.players.orange.hand.length).toEqual(startingHandSize);
     expect(state.players.orange.discardPile.length).toEqual(1);
 
     state = playEvent(state, 'orange', event("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
-    expect(state.players.orange.hand.length).toEqual(getDefaultState().players.orange.hand.length + 1);
+    expect(state.players.orange.hand.length).toEqual(startingHandSize + 1);
     expect(state.players.orange.discardPile.length).toEqual(1);
   });
 
@@ -91,7 +91,7 @@ describe('[vocabulary.actions]', () => {
       { hex: '3,-1,-2' }
     );
     expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
-    expect(state.players.orange.hand.length).toEqual(getDefaultState().players.orange.hand.length + 1);
+    expect(state.players.orange.hand.length).toEqual(startingHandSize + 1);
   });
 
   it('shuffleCardsIntoDeck', () => {
@@ -106,7 +106,7 @@ describe('[vocabulary.actions]', () => {
     expect(state.players.orange.discardPile.length).toEqual(1);
 
     state = playEvent(state, 'orange', event("Shuffle all cards from your hand into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['self'](), 'anycard', [])), targets['self']()); })"));
-    expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1 + getDefaultState().players.orange.hand.length);
+    expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1 + startingHandSize);
   });
 
   it('spawnObject (inline)', () => {

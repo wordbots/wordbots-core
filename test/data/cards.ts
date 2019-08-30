@@ -123,3 +123,25 @@ export const reinforcementsCard: w.CardInStore = {
   cost: 4,
   type: TYPE_EVENT
 };
+
+export const discardMuncherCard: w.CardInStore = {
+  id: 'Discard Muncher',
+  name: 'Discard Muncher',
+  text: 'Whenever any card enters your discard pile, gain 1 life.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterCardEntersDiscardPile'](function () { return targets['self'](); }, 'anycard'), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 1; }); })); })"
+  ],
+  cost: 2,
+  type: TYPE_ROBOT
+};
+
+export const fairnessField: w.CardInStore = {
+  id: 'Fairness Field',
+  name: 'Fairness Field',
+  text: 'Whenever a player draws a card, that player discards a random card.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterCardDraw'](function () { return targets['allPlayers'](); }, 'anycard'), (function () { actions['discard'](targets['random'](1, cardsInHand(targets['itP'](), 'anycard', []))); })); })"
+  ],
+  cost: 3,
+  type: TYPE_STRUCTURE
+};

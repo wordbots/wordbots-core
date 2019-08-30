@@ -27,16 +27,21 @@ interface Target {
 
 export function getDefaultState(format: string | null = null): w.GameState {
   const state = cloneDeep(defaultGameState);
-  const deck: w.CardInGame[] = [attackBotCard].concat(collection.slice(1, DECK_SIZE)).map(instantiateCard);
+  const dummyDeck = [attackBotCard].concat(collection.slice(1, DECK_SIZE));
   const simulatedGameStartAction = {
     type: socketActions.GAME_START,
     payload: {
-      decks: {orange: deck, blue: deck},
+      decks: {
+        orange: dummyDeck.map(instantiateCard),
+        blue: dummyDeck.map(instantiateCard)
+      },
       format
     }
   };
   return game(state, simulatedGameStartAction);
 }
+
+export const startingHandSize: number = getDefaultState().players.orange.hand.length;
 
 export function combineState(gameState: w.GameState = defaultGameState): w.State {
   return {

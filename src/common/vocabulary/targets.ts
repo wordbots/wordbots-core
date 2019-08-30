@@ -17,7 +17,7 @@ import {
 //    {type: 'players', entries: <array of players>}
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
-export default function targets(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<w.Collection | w.Returns<w.Collection>>> {
+export default function targets(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<w.Collection>> {
   return {
     all: <T extends w.Collection>(collection: T): T => {
       return collection;
@@ -27,10 +27,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       return {type: 'players', entries: [currentPlayer(state), opponentPlayer(state)]};
     },
 
-    // Note: Unlike other target functions, choose() can return a [hex]
+    // Note: Unlike other target functions, choose() can also return a HexCollection
     //       (if the chosen hex does not contain an object.)
-    // TODO Figure out how to parametrize this method.
-    choose: (collection: w.Collection): w.Collection => {
+    choose: <T extends w.Collection>(collection: T): T => {
       const player = currentPlayer(state);
 
       if (player.target.chosen && player.target.chosen.length > 0) {
@@ -43,9 +42,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         if (g.isCardInGame(target)) {
           state.it = target;  // "it" stores most recently chosen salient object for lookup.
           if (player.hand.map((card) => card.id).includes(target.id)) {
-            return {type: 'cards', entries: [target]};
+            return {type: 'cards', entries: [target]} as w.CardInHandCollection as T;
           } else if (player.discardPile.map((card) => card.id).includes(target.id)) {
-            return {type: 'cardsInDiscardPile', entries: [target]};
+            return {type: 'cardsInDiscardPile', entries: [target]} as w.CardInDiscardPileCollection as T;
           } else {
             throw new Error(`Card chosen does not exist in player's hand or discard pile!: ${target}`);
           }
@@ -53,9 +52,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           // Return objects if possible or hexes if not.
           if (allObjectsOnBoard(state)[target]) {
             state.it = allObjectsOnBoard(state)[target];  // "it" stores most recently chosen salient object for lookup.
-            return {type: 'objects', entries: [allObjectsOnBoard(state)[target]]};
+            return {type: 'objects', entries: [allObjectsOnBoard(state)[target]]} as w.ObjectCollection as T;
           } else {
-            return {type: 'hexes', entries: [target]};
+            return {type: 'hexes', entries: [target]} as w.HexCollection as T;
           }
         }
       } else {
@@ -73,24 +72,24 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           };
 
           if (collection.type === 'cards') {
-            player.target.possibleCardsInHand = collection.entries.map((card) => card.id);
+            player.target.possibleCardsInHand = (collection as w.CardInHandCollection).entries.map((card) => card.id);
           } else if (collection.type === 'objects') {
             // Don't allow player to pick the object that is being played (if any).
-            player.target.possibleHexes = collection.entries.filter((obj) => !obj.justPlayed).map((obj) => getHex(state, obj)!);
+            player.target.possibleHexes = (collection as w.ObjectCollection).entries.filter((obj) => !obj.justPlayed).map((obj) => getHex(state, obj)!);
           } else if (collection.type === 'hexes') {
             // Don't allow player to pick the hex of the object that is being played (if any).
-            player.target.possibleHexes = collection.entries.filter((hex) => {
+            player.target.possibleHexes = (collection as w.HexCollection).entries.filter((hex) => {
               const obj = allObjectsOnBoard(state)[hex];
               return obj ? !obj.justPlayed : true;
             });
           } else if (collection.type === 'cardsInDiscardPile') {
-            player.target.possibleCardsInDiscardPile = collection.entries.map((card) => card.id);
+            player.target.possibleCardsInDiscardPile = (collection as w.CardInDiscardPileCollection).entries.map((card) => card.id);
           }
 
           state.players[player.name] = player;
         }
 
-        return {type: collection.type, entries: []} as w.Collection;
+        return {type: collection.type, entries: []} as w.Collection as T;
       }
     },
 

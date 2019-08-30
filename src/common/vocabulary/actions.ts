@@ -122,8 +122,10 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
     discard: (cards: w.CardInHandCollection): void => {
       if (cards.entries.length > 0) {
-        const owner: w.PlayerInGameState = ownerOfCard(state, cards.entries[0])!;
-        discardCardsFromHand(state, owner.name, cards.entries);
+        const owner = ownerOfCard(state, cards.entries[0]);
+        if (owner) {
+          discardCardsFromHand(state, owner.name, cards.entries);
+        }
       }
     },
 

@@ -132,7 +132,12 @@ export const discardMuncherCard: w.CardInStore = {
     "(function () { setTrigger(triggers['afterCardEntersDiscardPile'](function () { return targets['self'](); }, 'anycard'), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 1; }); })); })"
   ],
   cost: 2,
-  type: TYPE_ROBOT
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  },
 };
 
 export const fairnessField: w.CardInStore = {
@@ -143,5 +148,40 @@ export const fairnessField: w.CardInStore = {
     "(function () { setTrigger(triggers['afterCardDraw'](function () { return targets['allPlayers'](); }, 'anycard'), (function () { actions['discard'](targets['random'](1, cardsInHand(targets['itP'](), 'anycard', []))); })); })"
   ],
   cost: 3,
-  type: TYPE_STRUCTURE
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 5
+  },
+};
+
+export const looterBotCard: w.CardInStore = {
+  id: 'Looter Bot',
+  name: 'Looter Bot',
+  text: 'Whenever this robot destroys an enemy robot, draw a card.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterDestroysOtherObject'](function () { return targets['thisRobot'](); }, 'robot'), (function () { actions['draw'](targets['self'](), 1); })); })"
+  ],
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 2,
+    health: 2,
+    speed: 1
+  },
+};
+
+export const walkingMonkCard: w.CardInStore = {
+  id: 'Looter Bot',
+  name: 'Looter Bot',
+  text: 'Whenever this robot moves, gain 1 life.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterMove'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 1; }); })); })"
+  ],
+  cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  },
 };

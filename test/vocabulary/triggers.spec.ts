@@ -199,5 +199,30 @@ describe('[vocabulary.triggers]', () => {
       expect(state.players.orange.discardPile.length).toEqual(2);
       expect(state.players.blue.discardPile.length).toEqual(2);
     });
+
+    it('should be able to activate afterDestroysOtherObject triggered abilites', () => {
+      // Looter Bot: "Whenever this robot destroys an enemy robot, draw a card."
+      let state = setUpBoardState({
+        orange: {
+          '0,0,0': testCards.looterBotCard // 2/2
+        },
+        blue: {
+          '-1,0,1': testCards.attackBotCard, // 1/1
+        }
+      });
+
+      state = newTurn(state, 'orange');
+      const handSize = state.players.orange.hand.length;
+      state = attack(state, '0,0,0', '-1,0,1');
+      expect(state.players.orange.hand.length).toEqual(handSize + 1);
+    });
+
+    it('should be able to activate afterMove triggered abilites', () => {
+      // Walking Monk: "Whenever this robot moves, gain 1 life."
+      let state = getDefaultState();
+      state = playObject(state, 'orange', testCards.walkingMonkCard, '3,-1,-2');
+      state = moveRobot(state, '3,-1,-2', '2,-1,-1', true);
+      expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH + 1);
+    });
   });
 });

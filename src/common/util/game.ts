@@ -27,12 +27,8 @@ export function opponent(playerName: w.PlayerColor): w.PlayerColor {
   return (playerName === 'blue') ? 'orange' : 'blue';
 }
 
-export function opponentName(state: w.GameState): w.PlayerColor {
+function opponentName(state: w.GameState): w.PlayerColor {
   return opponent(state.currentTurn);
-}
-
-export function activePlayer(state: w.GameState): w.PlayerInGameState | null {
-  return state.player !== 'neither' ? state.players[state.player] : null;
 }
 
 export function currentPlayer(state: w.GameState): w.PlayerInGameState {
@@ -450,7 +446,7 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
   return state;
 }
 
-export function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGameState, cards: w.CardInGame[]): w.GameState {
+function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGameState, cards: w.CardInGame[]): w.GameState {
   player.discardPile = [...player.discardPile, ...cards];
 
   cards.forEach((card) => {

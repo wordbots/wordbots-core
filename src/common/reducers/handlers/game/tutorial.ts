@@ -93,7 +93,7 @@ export function startTutorial(state: State): State {
   return state;
 }
 
-export function endTutorial(state: State): State {
+function endTutorial(state: State): State {
   return {
     ...state,
     ...cloneDeep(defaultState),

@@ -300,7 +300,7 @@ export function allKeywords(): { [keyword: string]: string } {
   return {...KEYWORDS, ...HINTS};
 }
 
-export function isKeywordExpression(sentence: string, hintsToo = false): boolean {
+function isKeywordExpression(sentence: string, hintsToo = false): boolean {
   const keywords = hintsToo ? {...KEYWORDS, ...HINTS} : KEYWORDS;
   return phrases(sentence).every((p) => has(keywords, p.toLowerCase()));
 }

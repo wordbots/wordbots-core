@@ -226,7 +226,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     },
 
     // Prioritize current iteratee in a collection of players.
-    // e.g. "Set the attack of all robots to *their* health."
+    // e.g. "Each player shuffles all cards from *their* hand into *their* deck."
     theyP: (): w.PlayerCollection => {
       const they = state.currentEntryInCollection;
       if (they && g.isPlayerState(they)) {

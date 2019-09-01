@@ -183,6 +183,12 @@
       "src/common/components/hexgrid/",
       "src/common/components/Sprite.js"
     ],
+    "coverageThreshold": {
+      "./src/common/vocabulary/**/!(targets).ts": {
+        "//": "Enable this coverage check for targets.ts as well once #1237 is complete!",
+        "lines": 100
+      }
+    },
     "globals": {
       "_": {}
     },

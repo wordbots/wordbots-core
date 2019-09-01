@@ -256,7 +256,10 @@ export function setUpBoardState(players: Record<string, Record<w.HexId, w.CardIn
 }
 
 // Convenience method to generate a dummy event from text and parse, to easily run an arbitrary command.
-export const event = (text: string, command: string): w.CardInStore => ({
+export const event = (
+  text: string,
+  command: w.StringRepresentationOf<(state: w.GameState) => any> | Array<w.StringRepresentationOf<(state: w.GameState) => any>>
+): w.CardInStore => ({
   id: text,
   name: text,
   text,

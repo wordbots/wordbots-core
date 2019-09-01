@@ -171,13 +171,29 @@ export const looterBotCard: w.CardInStore = {
 };
 
 export const walkingMonkCard: w.CardInStore = {
-  id: 'Looter Bot',
-  name: 'Looter Bot',
+  id: 'Walking Monk',
+  name: 'Walking Monk',
   text: 'Whenever this robot moves, gain 1 life.',
   abilities: [
     "(function () { setTrigger(triggers['afterMove'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 1; }); })); })"
   ],
   cost: 3,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  },
+};
+
+export const thresholderCard: w.CardInStore = {
+  id: 'Thresholder',
+  name: 'Thresholder',
+  text: 'This robot has +4 attack if your discard pile has 5 or more cards.',
+  abilities: [
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return targets['conditionOn'](targets['thisRobot'](), function () { return globalConditions['collectionCountComparison'](cardsInDiscardPile(targets['self'](), 'anycard', []), (function (x) { return x >= 5; })); }); }, 'attack', function (x) { return x + 4; })); })"
+  ],
+  cost: 2,
   type: TYPE_ROBOT,
   stats: {
     attack: 1,

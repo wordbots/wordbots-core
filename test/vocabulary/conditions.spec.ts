@@ -1,7 +1,7 @@
 import { STARTING_PLAYER_HEALTH, TYPE_ROBOT } from '../../src/common/constants';
 import * as cards from '../../src/common/store/cards';
 import * as testCards from '../data/cards';
-import { attack, event, getDefaultState, newTurn, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, queryPlayerHealth, setUpBoardState, moveRobot } from '../testHelpers';
+import { attack, event, getDefaultState, moveRobot, newTurn, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, queryPlayerHealth, setUpBoardState } from '../testHelpers';
 
 describe('[vocabulary.conditions]', () => {
   describe('[properties]', () => {

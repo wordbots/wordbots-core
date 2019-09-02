@@ -52,7 +52,8 @@ describe('[vocabulary.actions]', () => {
     expect(state.players.orange.hand.length).toEqual(startingHandSize);
     expect(state.players.orange.discardPile.length).toEqual(1);
 
-    state = playEvent(state, 'orange', event("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+    // Let's also test filtering on cardsInDiscardPile while we're at it ...
+    state = playEvent(state, 'orange', event("Move all event cards from your discard pile that costs 0 or more energy to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'event', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
     expect(state.players.orange.hand.length).toEqual(startingHandSize + 1);
     expect(state.players.orange.discardPile.length).toEqual(1);
   });
@@ -105,7 +106,8 @@ describe('[vocabulary.actions]', () => {
     expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1);
     expect(state.players.orange.discardPile.length).toEqual(1);
 
-    state = playEvent(state, 'orange', event("Shuffle all cards from your hand into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['self'](), 'anycard', [])), targets['self']()); })"));
+    // "the 0 or more energy" part is unnecessary but lets us test out applying conditions to cardsInHand()
+    state = playEvent(state, 'orange', event("Shuffle all cards from your hand that costs 0 or more energy into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['self'](), 'anycard', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
     expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1 + startingHandSize);
   });
 

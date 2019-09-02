@@ -21,7 +21,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
   // Currently salient object
   // Note: currentObject has higher salience than state.it .
   //       (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
-  const it: w.ObjectCollection | w.CardInHandCollection = (() => {
+  function it(): w.ObjectCollection | w.CardInHandCollection {
     if (currentObject) {
       return { type: 'objects', entries: [currentObject] } as w.ObjectCollection;
     } else if (state.it) {
@@ -31,15 +31,18 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         return { type: 'cards', entries: [state.it] } as w.CardInHandCollection;
       }
     } else {
+      /* istanbul ignore next: this is a fallback that should be rarely hit */
       return { type: 'objects', entries: [] } as w.ObjectCollection;
     }
-  })();
+  }
 
   // Currently salient player
-  const itP: w.PlayerCollection = {
-    type: 'players',
-    entries: compact([state.itP || opponentPlayer(state)])
-  };
+  function itP(): w.PlayerCollection {
+    return {
+      type: 'players',
+      entries: compact([state.itP || opponentPlayer(state)])
+    };
+  }
 
   return {
     all: <T extends w.Collection>(collection: T): T => {
@@ -162,12 +165,12 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null
       }); */
-      return it;
+      return it();
     },
 
     // Currently salient player.
     itP: (): w.PlayerCollection => {
-      return itP;
+      return itP();
     },
 
     opponent: (): w.PlayerCollection => {
@@ -214,7 +217,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       if (state.that) {
         return { type: 'objects', entries: [state.that] };
       } else {
-        return it;
+        return it();
       }
     },
 
@@ -226,7 +229,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         return ({ type: 'objects', entries: [they] });
       } else {
         /* istanbul ignore next: this is a last-resort fallback that should be hit rarely */
-        return it;
+        return it();
       }
     },
 
@@ -237,7 +240,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       if (they && g.isPlayerState(they)) {
         return ({ type: 'players', entries: [they] });
       } else {
-        return itP;
+        return itP();
       }
     },
 

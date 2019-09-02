@@ -184,8 +184,7 @@
       "src/common/components/Sprite.js"
     ],
     "coverageThreshold": {
-      "./src/common/vocabulary/**/!(targets).ts": {
-        "//": "Enable this coverage check for targets.ts as well once #1237 is complete!",
+      "./src/common/vocabulary/**/*.ts": {
         "lines": 100
       }
     },

@@ -211,12 +211,12 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       });
     },
 
-    returnToHand: (objects: w.ObjectCollection): void => {
+    returnToHand: (objects: w.ObjectCollection, players: w.PlayerCollection | null): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         const ownerName = ownerOf(state, object)!.name;
-        const owner = state.players[ownerName];
+        const player = players ? players.entries[0] : state.players[ownerName];  // Default to card owner by default
 
-        owner.hand = owner.hand.concat([object.card]);
+        player.hand = player.hand.concat([object.card]);
         removeObjectFromBoard(state, object, getHex(state, object)!);
       });
     },

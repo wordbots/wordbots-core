@@ -10,6 +10,7 @@ import Tooltip from '../Tooltip';
 
 interface ForfeitButtonProps {
   player: w.PlayerColor | null
+  compact?: boolean
   history: History
   gameOver?: boolean
   isSpectator?: boolean
@@ -19,13 +20,16 @@ interface ForfeitButtonProps {
 
 export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   public render(): JSX.Element {
+    const { compact, gameOver, isSpectator } = this.props;
+    const height = compact ? '40px' : '64px';
+
     return (
       <Tooltip text="Forfeit" place="top" style={{ zIndex: MAX_Z_INDEX }}>
         <RaisedButton
           backgroundColor="#CCC"
           buttonStyle={{
-            height: '64px',
-            lineHeight: '64px'
+            height,
+            lineHeight: height
           }}
           style={{
             borderRadius: 5,
@@ -33,22 +37,20 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
             minWidth: 48,
             marginLeft: 10
           }}
-          overlayStyle={{
-            height: '64px'
-          }}
+          overlayStyle={{ height }}
           onClick={this.handleClick}
           icon={
             <FontIcon
               className="material-icons"
               style={{
-                lineHeight: '64px',
+                lineHeight: height,
                 verticalAlign: 'none'
               }}
             >
               flag
             </FontIcon>
           }
-          disabled={this.props.isSpectator || this.props.gameOver}
+          disabled={isSpectator || gameOver}
         />
       </Tooltip>
     );

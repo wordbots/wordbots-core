@@ -11,7 +11,6 @@ import HexGrid from '../../src/common/components/hexgrid/HexGrid.tsx';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils.ts';
 import * as actions from '../../src/common/actions/game.ts';
 import gameReducer from '../../src/common/reducers/game.ts';
-import { BOARD_Z_INDEX } from '../../src/common/constants.ts';
 
 describe('GameArea container', () => {
   it('renders the default game state', () => {
@@ -35,23 +34,17 @@ describe('GameArea container', () => {
       <div
         className="background"
         ref={mainDiv.ref}
-        style={{
-          position: 'absolute',
-          left: 0, top: 75, bottom: 75, right: 0,
-          margin: '0 auto',
-          width: 1000,
-          zIndex: BOARD_Z_INDEX
-      }}>
+        style={mainDiv.props.style}>
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}
           bluePieces={state.game.players.blue.robotsOnBoard}
           orangePieces={state.game.players.orange.robotsOnBoard}
-          player={'orange'}
-          currentTurn={'orange'}
+          player="orange"
+          currentTurn="orange"
           playingCardType={null}
           attack={null}
-          size={1000}
+          size={board.props.size}
           isGameOver={false}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}

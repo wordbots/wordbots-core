@@ -91,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
 
   public state = {
     loading: true,
-    canSidebarExpand: inBrowser() && window.innerWidth < MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
+    canSidebarExpand: true;
   };
 
   constructor(props: AppProps) {
@@ -102,9 +102,8 @@ class App extends React.Component<AppProps, AppState> {
   public componentDidMount(): void {
     const { onLoggedIn, onLoggedOut, onReceiveFirebaseData } = this.props;
 
-    window.addEventListener('resize', () => {
-      this.setState({ canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR });
-    });
+    this.calculateDimensions();
+    window.addEventListener('resize', this.calculateDimensions);
 
     listenToSets(onReceiveFirebaseData);
 
@@ -230,6 +229,12 @@ class App extends React.Component<AppProps, AppState> {
   private redirectToRoot = (): JSX.Element => (
     <Redirect to="/"/>
   )
+
+  private calculateDimensions = (): void => {
+    this.setState({
+      canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
+    });
+  }
 }
 
 export default hot(module)(withRouter(connect(mapStateToProps, mapDispatchToProps)(App)));

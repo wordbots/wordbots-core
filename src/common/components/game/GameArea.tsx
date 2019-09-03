@@ -4,9 +4,7 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
-import {
-  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE
-} from '../../constants';
+import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH, CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE } from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
@@ -93,20 +91,28 @@ type GameAreaProps = GameProps & RouteComponentProps & {
 
 interface GameAreaState {
   areaHeight: number
+  windowWidth: number
   boardSize: number
+  boardMargin: { left: number, top: number }
   chatOpen: boolean
+  chatWidth: number,
+  compactControls: boolean
 }
 
 export default class GameArea extends React.Component<GameAreaProps, GameAreaState> {
   public state = {
-    areaHeight: 1250,
+    areaHeight: 1000,
+    windowWidth: 1000,
     boardSize: 1000,
-    chatOpen: true
+    boardMargin: { left: 0, top: 0 },
+    chatOpen: true,
+    chatWidth: CHAT_WIDTH,
+    compactControls: false
   };
 
-  public componentDidMount(): void {
-    this.updateDimensions();
-    window.addEventListener('resize', this.updateDimensions);
+  public componentWillMount(): void {
+    this.calculateDimensions();
+    window.addEventListener('resize', this.calculateDimensions);
   }
 
   get actualPlayer(): w.PlayerColor | null {
@@ -124,7 +130,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
       onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onSetVolume
     } = this.props;
-    const { areaHeight, boardSize } = this.state;
+    const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls } = this.state;
 
     if (message) {
       return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
@@ -151,8 +157,8 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           className="background"
           style={{
             position: 'relative',
-            marginRight: this.props.isSandbox ? 0 : (this.state.chatOpen ? CHAT_WIDTH : CHAT_COLLAPSED_WIDTH),
-            width: this.props.isSandbox ? `calc(100% - ${CHAT_WIDTH}px)` : 'auto',
+            marginRight: this.props.isSandbox ? 0 : (chatOpen ? chatWidth : CHAT_COLLAPSED_WIDTH),
+            width: this.props.isSandbox ? `calc(100% - ${chatOpen ? chatWidth : CHAT_COLLAPSED_WIDTH}px)` : 'auto',
             height: screenfull.isFullscreen ? areaHeight + HEADER_HEIGHT : areaHeight,
             background: `url(${this.loadBackground()})`
           }}
@@ -210,6 +216,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             >
               <EndTurnButton
                 player={this.actualPlayer}
+                compact={compactControls}
                 gameOver={gameOver}
                 isMyTurn={isMyTurn || isSandbox}
                 isAttackHappening={isAttackHappening}
@@ -220,6 +227,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
               />
               <ForfeitButton
                 player={this.actualPlayer}
+                compact={compactControls}
                 history={history}
                 gameOver={gameOver}
                 isSpectator={isSpectator}
@@ -233,13 +241,13 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             className="background"
             style={{
               position: 'absolute',
-              left: 0,
-              top: 75,
-              bottom: 75,
-              right: 0,
-              margin: '0 auto',
+              left: boardMargin.left,
+              top: boardMargin.top,
+              margin: 0,
               zIndex: BOARD_Z_INDEX,
-              width: boardSize
+              width: boardSize,
+              height: boardSize,
+              // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
             <Board
@@ -279,24 +287,48 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
   }
 
   private handleToggleChat = () => {
-    this.setState((state) => ({ chatOpen: !state.chatOpen }));
+    this.setState((state) => ({ chatOpen: !state.chatOpen }), this.calculateDimensions);
   }
 
   private loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
 
-  private updateDimensions = () => {
-    const maxBoardHeight = window.innerHeight - HEADER_HEIGHT - 150;
-    const maxBoardWidth = window.innerWidth - CHAT_WIDTH;
+  private calculateDimensions = () => {
+    const compactControls: boolean = window.innerWidth < 1200;
 
-    this.setState({
-      areaHeight: window.innerHeight - HEADER_HEIGHT,
-      boardSize: Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE)
+    const topBottomMargin = 80;
+    const leftMargin = 80;
+    const rightMargin = compactControls ? 270 : 310;
+
+    this.setState(({ chatOpen }) => {
+      const chatWidth = !chatOpen ? CHAT_COLLAPSED_WIDTH : (compactControls ? CHAT_NARROW_WIDTH : CHAT_WIDTH);
+
+      const areaHeight = window.innerHeight - HEADER_HEIGHT;
+      const areaWidth = window.innerWidth - chatWidth;
+
+      const maxBoardHeight = areaHeight - topBottomMargin * 2;
+      const maxBoardWidth = areaWidth - leftMargin - rightMargin;
+      const boardSize = Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE);
+
+      return {
+        areaHeight,
+        windowWidth: window.innerWidth,
+        boardSize,
+        boardMargin: {
+          // On a large enough screen (areaWidth > 1300), center the board in the exact middle of the game area.
+          // On smaller screens (areaWidth < 1300), position the board halfway between the controls on the left and right sides.
+          // (This moves the board closer to the left because the left controls (volume, &c) are much narrower than the right (End Turn, &c))
+          left: areaWidth > 1300 ? (areaWidth - boardSize) / 2 : leftMargin + (maxBoardWidth - boardSize) / 2,
+          top: topBottomMargin + (maxBoardHeight - boardSize) / 2
+        },
+        compactControls,
+        chatWidth
+      };
     });
   }
 
   private renderSidebar = () => {
     const { actionLog, collection, isSandbox, socket, onaddCardToHand, onSendChatMessage } = this.props;
-    const { chatOpen } = this.state;
+    const { chatOpen, compactControls } = this.state;
 
     if (isSandbox) {
       return (
@@ -311,6 +343,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           inGame
           fullscreen={screenfull.isFullscreen}
           open={chatOpen}
+          compact={compactControls}
           toggleChat={this.handleToggleChat}
           roomName={socket.hosting ? null : socket.gameName}
           messages={socket.chatMessages.concat(actionLog)}

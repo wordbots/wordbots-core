@@ -5,10 +5,10 @@ import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
-import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
+import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import * as React from 'react';
 
-import { CHAT_COLLAPSED_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../constants';
+import { CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { id } from '../../util/common';
 
@@ -19,6 +19,7 @@ interface ChatProps {
   messages: w.ChatMessage[]
   inGame?: boolean
   open?: boolean
+  compact?: boolean
   fullscreen?: boolean
   onSendMessage: (message: string) => void
   toggleChat?: () => void
@@ -49,6 +50,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
   public shouldComponentUpdate(nextProps: ChatProps, nextState: ChatState): boolean {
     return this.props.open !== nextProps.open
+      || this.props.compact !== nextProps.compact
       || this.props.fullscreen !== nextProps.fullscreen
       || this.props.messages.length !== nextProps.messages.length
       || this.props.roomName !== nextProps.roomName
@@ -74,7 +76,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         openSecondary
         docked
         containerStyle={containerStyle}
-        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : CHAT_WIDTH}
+        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : (this.props.compact ? CHAT_NARROW_WIDTH : CHAT_WIDTH)}
       >
         {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
       </Drawer>
@@ -184,7 +186,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private renderOpenChat(): JSX.Element {
-    const { inGame, messages, roomName, toggleChat } = this.props;
+    const { compact, inGame, messages, roomName, toggleChat } = this.props;
     const chatTitle = inGame ? 'Chat' : (roomName || 'Lobby');
 
     return (
@@ -210,7 +212,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             display: this.state.optionsVisible ? 'block' : 'none'
           }}
         >
-          <div style={{padding: 10}}>
+          <div style={{padding: 10, fontSize: compact ? '0.8em' : '1em' }}>
             <Toggle label="Show server messages" defaultToggled onToggle={this.toggleServerMessages} />
             <Toggle label="Show game messages" defaultToggled onToggle={this.toggleGameMessages} />
             <Toggle label="Show player chat" defaultToggled onToggle={this.togglePlayerChat} />

@@ -114,7 +114,7 @@ export function handleAction(
       return { ...state, volume: payload.volume };
 
     case socketActions.CONNECTING:
-      return {...state, started: false};
+      return {...state, started: state.practice ? state.started : false};
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.

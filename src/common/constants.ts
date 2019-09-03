@@ -40,6 +40,7 @@ export const SIDEBAR_WIDTH = 225;
 export const SIDEBAR_COLLAPSED_WIDTH = 64;
 export const MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR = 1200;
 export const CHAT_WIDTH = 256;
+export const CHAT_NARROW_WIDTH = 200;
 export const CHAT_COLLAPSED_WIDTH = 64;
 export const MAX_BOARD_SIZE = 700;
 

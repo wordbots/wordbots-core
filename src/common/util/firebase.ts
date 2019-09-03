@@ -288,7 +288,11 @@ export function indexParsedSentence(sentence: string, tokens: string[], js: stri
         fb.database().ref(loc).push(sentence);
       });
     })
-    .catch(console.error);
+    .catch((err) => {
+      if (err !== "Not logged in") {
+        console.error(err);  // tslint:disable-line
+      }
+    });
 }
 
 export async function getRecentGamesByUserId(userId: string): Promise<w.SavedGame[]> {

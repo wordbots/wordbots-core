@@ -11,7 +11,7 @@ export const fortificationCard: w.CardInStore = {
   },
   text: 'Your adjacent robots have +1 health.',
   abilities: [
-    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()),conditions["controlledBy"](targets["self"]())])); }, "health", function (x) { return x + 1; })); })'
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['self']())]); }, 'health', function (x) { return x + 1; })); })"
   ]
 };
 
@@ -37,7 +37,7 @@ export const antiGravityFieldCard: w.CardInStore = {
   text: "All robots have Jump.",
   cost: 3,
   abilities: [
-    "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'canmoveoverobjects')); })\")); })"
+    "(function () { setAbility(abilities['giveAbility'](function () { return objectsMatchingConditions('robot', []); }, \"(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'canmoveoverobjects')); })\")); })"
   ],
   stats: {
     health: 5
@@ -66,7 +66,7 @@ export const magpieMachineCard: w.CardInStore = {
   text: "All robots have \"Whenever this robot attacks a kernel, draw a card\".",
   cost: 3,
   abilities: [
-    "(function () { setAbility(abilities['giveAbility'](function () { return targets['all'](objectsInPlay('robot')); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'kernel'), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
+    "(function () { setAbility(abilities['giveAbility'](function () { return objectsMatchingConditions('robot', []); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'kernel'), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
   ],
   stats: {
     health: 4
@@ -83,7 +83,7 @@ export const arenaCard: w.CardInStore = {
   },
   text: 'Whenever a robot is destroyed in combat, deal 1 damage to its controller.',
   abilities: [
-    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['all'](objectsInPlay('robot')); }, 'combat'), (function () { actions['dealDamage'](targets['controllerOf'](targets['it']()), 1); })); })"
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['all'](objectsMatchingConditions('robot', [])); }, 'combat'), (function () { actions['dealDamage'](targets['controllerOf'](targets['it']()), 1); })); })"
   ]
 };
 

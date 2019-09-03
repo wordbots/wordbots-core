@@ -270,18 +270,23 @@ export function parseBatch(
 
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.
-function parseCard(card: w.CardInStore, callback: (card: w.CardInStore) => any): void {
+// Used only by cardsFromJson() and in integration tests.
+export function parseCard(card: w.CardInStore, callback: (card: w.CardInStore, parseResult: string[]) => any): void {
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text || '');
   const parseResults: string[] = [];
 
   parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
+    if (response.error) {
+      throw new Error(`Received '${response.error}' while parsing '${sentences[idx]}'`);
+    }
+
     parseResults[idx] = response.js!;
 
     // Are we done parsing?
     if (compact(parseResults).length === sentences.length) {
       card[isEvent ? 'command' : 'abilities'] = parseResults;
-      callback(card);
+      callback(card, parseResults);
     }
   });
 }

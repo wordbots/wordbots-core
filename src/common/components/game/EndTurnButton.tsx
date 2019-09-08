@@ -9,6 +9,7 @@ import TutorialTooltip from './TutorialTooltip';
 
 interface EndTurnButtonProps {
   player: w.PlayerColor | null
+  compact?: boolean
   gameOver?: boolean
   isMyTurn?: boolean
   isAttackHappening?: boolean
@@ -31,7 +32,9 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
   }
 
   public render(): JSX.Element {
-    const { player, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
+    const { player, compact, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
+    const height = compact ? '40px' : '64px';
+
     return (
       <TutorialTooltip
         tutorialStep={tutorialStep}
@@ -45,8 +48,8 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
           className="end-turn-button"
           backgroundColor={player ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player] : undefined}
           buttonStyle={{
-            height: '64px',
-            lineHeight: '64px'
+            height,
+            lineHeight: height
           }}
           style={{
             borderRadius: 5,
@@ -55,18 +58,17 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
           label="End Turn"
           labelStyle={{
             color: '#FFF',
-            fontSize: 32,
-            fontFamily: 'Carter One'
+            fontSize: compact ? 22 : 32,
+            fontFamily: 'Carter One',
+            top: compact ? '-3px' : 0
           }}
-          overlayStyle={{
-            height: '64px'
-          }}
+          overlayStyle={{ height }}
           onClick={this.handleClick}
           icon={
             <FontIcon
               className="material-icons"
               style={{
-                lineHeight: '64px',
+                lineHeight: height,
                 verticalAlign: 'none'
               }}
             >

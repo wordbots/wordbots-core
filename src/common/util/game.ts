@@ -149,15 +149,21 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
 }
 
 export function checkVictoryConditions(state: w.GameState): w.GameState {
-  if (!some(state.players.blue.robotsOnBoard, {card: {type: TYPE_CORE}})) {
+  const blueKernelExists = some(state.players.blue.robotsOnBoard, {card: {type: TYPE_CORE}});
+  const orangeKernelExists = some(state.players.orange.robotsOnBoard, {card: {type: TYPE_CORE}});
+
+  if (!blueKernelExists && !orangeKernelExists) {
+    state.winner = 'draw';
+  } else if (!blueKernelExists) {
     state.winner = 'orange';
-  } else if (!some(state.players.orange.robotsOnBoard, {card: {type: TYPE_CORE}})) {
+  } else if (!orangeKernelExists) {
     state.winner = 'blue';
   }
 
   if (state.winner) {
+    const gameOverMsg = state.winner === 'draw' ? 'Draw game' : (state.winner === state.player ? ' win' : 'wins');
     state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
-    state = logAction(state, state.players[state.winner as w.PlayerColor], state.winner === state.player ? ' win' : 'wins');
+    state = logAction(state, state.players[state.winner as w.PlayerColor], gameOverMsg);
   }
 
   return state;

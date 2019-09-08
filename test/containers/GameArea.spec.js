@@ -56,7 +56,7 @@ describe('GameArea container', () => {
       <PlayerArea gameProps={gameInner.props} />,
       <EventAnimation eventQueue={[]} currentTurn="orange" />,
       <VictoryScreen
-        winnerColor={null}
+        winner={null}
         winnerName={null}
         onClick={victoryScreen.props.onClick} />
     ]);

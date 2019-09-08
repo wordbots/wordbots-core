@@ -4,14 +4,14 @@ import { BLUE_PLAYER_COLOR, MAX_Z_INDEX, ORANGE_PLAYER_COLOR } from '../../const
 import * as w from '../../types';
 
 interface VictoryScreenProps {
-  winnerColor: w.PlayerColor | null
+  winner: w.GameWinner  // 'blue', 'orange', 'draw' or null (null indicates game still in progress)
   winnerName: string | null,
   onClick: () => void
 }
 
 export default class VictoryScreen extends React.Component<VictoryScreenProps> {
   public render(): JSX.Element {
-    const { winnerColor, winnerName, onClick } = this.props;
+    const { winner, winnerName, onClick } = this.props;
     const colors = {
       'orange': ORANGE_PLAYER_COLOR,
       'blue': BLUE_PLAYER_COLOR
@@ -21,7 +21,7 @@ export default class VictoryScreen extends React.Component<VictoryScreenProps> {
       <div
         onClick={onClick}
         style={{
-          display: winnerColor === null ? 'none' : 'flex',
+          display: winner === null ? 'none' : 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           position: 'absolute',
@@ -32,14 +32,14 @@ export default class VictoryScreen extends React.Component<VictoryScreenProps> {
           right: 0,
           fontFamily: 'Carter One',
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          color: winnerColor ? colors[winnerColor] : 'white',
+          color: (winner && winner !== 'draw') ? colors[winner] : 'white',
           borderRadius: 2,
           zIndex: MAX_Z_INDEX
         }}
       >
         <div>
           <div style={{fontSize: 96}}>
-            {`${winnerName} ${winnerName === 'You' ? 'win' : 'wins'}!`}
+            {winnerName ? `${winnerName} ${winnerName === 'You' ? 'win' : 'wins'}!` : (winner === 'draw' ? 'Draw game!' : '')}
           </div>
           <div>Click anywhere to leave the game.</div>
         </div>

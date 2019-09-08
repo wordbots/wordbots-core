@@ -49,6 +49,7 @@
     "no-angle-bracket-type-assertion": true,
     "no-http-string": [true, "http://.*\\.wordbots\\.io.*", "http://localhost.*"],
     "no-relative-imports": false,
+    "no-single-line-block-comment": false,
     "no-suspicious-comment": false,
     "possible-timing-attack": false,
     "prefer-array-literal": false,

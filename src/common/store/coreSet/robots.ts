@@ -238,7 +238,7 @@ export const martyrBotCard: w.CardInStore = {
   },
   text: 'When this robot is destroyed, take control of all adjacent robots.',
   abilities: [
-    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['takeControl'](targets['self'](), targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]))); })); })"
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['takeControl'](targets['self'](), objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])); })); })"
   ]
 };
 
@@ -287,7 +287,7 @@ export const recruiterBotCard: w.CardInStore = {
   },
   text: 'Robots you play cost 1 less energy.',
   abilities: [
-    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](cardsInHand(targets["self"](), "robot")); }, "cost", function (x) { return x - 1; })); })'
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return targets['all'](cardsInHand(targets['self'](), 'robot', [])); }, 'cost', function (x) { return x - 1; })); })"
   ]
 };
 
@@ -299,7 +299,7 @@ export const recyclerCard: w.CardInStore = {
   text: "Activate: Discard a card, then draw a card.",
   cost: 3,
   abilities: [
-    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard'))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })\")); })"
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard', []))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })\")); })"
   ],
   stats: {
     attack: 1,
@@ -397,7 +397,7 @@ export const energyHoarderCard: w.CardInStore = {
     attack: 4
   },
   abilities: [
-    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['payEnergy'](targets['self'](), 3); })(); (function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard'))); })(); (function () { (function () { save('target', targets['thisRobot']()); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 1; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 1; }); })(); })(); })(); })\")); })"
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { (function () { actions['payEnergy'](targets['self'](), 3); })(); (function () { (function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'anycard', []))); })(); (function () { (function () { save('target', targets['thisRobot']()); })(); (function () { actions['modifyAttribute'](load('target'), 'attack', function (x) { return x + 1; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x + 1; }); })(); })(); })(); })\")); })"
   ]
 };
 
@@ -462,7 +462,7 @@ export const monkeyBotCard: w.CardInStore = {
   },
   text: 'When this robot attacks, it deals damage to all adjacent robots instead.',
   abilities: [
-    "(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['all'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])), attributeValue(targets['thisRobot'](), 'attack')); }), {override: true}); })"
+    "(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'allobjects'), (function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]), attributeValue(targets['thisRobot'](), 'attack')); }), {override: true}); })"
   ]
 };
 
@@ -511,7 +511,7 @@ export const botOfPainCard: w.CardInStore = {
   },
   text: 'At the end of each turn, each robot takes 1 damage.',
   abilities: [
-    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { actions['dealDamage'](objectsInPlay('robot'), 1); })); })"
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { actions['dealDamage'](objectsMatchingConditions('robot', []), 1); })); })"
   ]
 };
 
@@ -527,7 +527,7 @@ export const flametongueBotCard: w.CardInStore = {
   },
   text: 'When this robot is played, deal 4 damage.',
   abilities: [
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['choose'](objectsInPlay('allobjects')), 4); })); })"
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['dealDamage'](targets['choose'](objectsMatchingConditions('allobjects', [])), 4); })); })"
   ]
 };
 
@@ -557,7 +557,7 @@ export const generalBotCard: w.CardInStore = {
   },
   text: 'Startup: All of your other robots can move again. \nAdjacent robots have +1 attack',
   abilities: [
-    '(function () { setAbility(abilities["attributeAdjustment"](function () { return targets["all"](objectsMatchingConditions("robot", [conditions["adjacentTo"](targets["thisRobot"]()), conditions["controlledBy"](targets["self"]())])); }, "attack", function (x) { return x + 1; })); })',
-    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['canMoveAgain'](other(objectsMatchingConditions('robot', []))); })); })"
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { actions['canMoveAgain'](other(objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]))); })); })",
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]); }, 'attack', function (x) { return x + 1; })); })"
   ]
 };

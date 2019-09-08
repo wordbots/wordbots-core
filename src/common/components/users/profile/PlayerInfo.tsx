@@ -11,7 +11,8 @@ interface PlayerInfoProps {
     cardsCreated: number,
     decksCreated: number,
     gamesPlayed: number,
-    winRate: string
+    winRate: string,
+    favoriteOpponent?: React.ReactNode
   }
 }
 

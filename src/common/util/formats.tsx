@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as seededRNG from 'seed-random';
 import { shuffle } from 'seed-shuffle';
 
+import ProfileLink from '../components/users/ProfileLink';
 import { DECK_SIZE } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
 import * as w from '../types';
@@ -174,7 +175,8 @@ export class SetFormat extends GameFormat {
       >
         {this.set.name}
       </a>
-      {' '}set by {this.set.metadata.authorName}
+      {' '}set by{' '}
+      <ProfileLink uid={this.set.metadata.authorId} username={this.set.metadata.authorName} />
     </div>
   )
 

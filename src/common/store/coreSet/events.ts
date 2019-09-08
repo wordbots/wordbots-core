@@ -17,7 +17,7 @@ export const superchargeCard: w.CardInStore = {
   id: 'Supercharge',
   name: 'Supercharge',
   text: 'Gain 2 energy.',
-  command: '(function () { actions["modifyEnergy"](targets["self"](), function (x) { return x + 2; }); })',
+  command: "(function () { actions['modifyEnergy'](targets['self'](), function (x) { return x + 2; }); })",
   cost: 0,
   type: TYPE_EVENT
 };
@@ -36,8 +36,8 @@ export const consumeCard: w.CardInStore = {
   name: 'Consume',
   text: 'Discard a robot card. Gain life equal to its health.',
   command: [
-    "(function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'robot'))); })",
-    "(function () { actions['modifyAttribute'](targets['all'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())])), 'health', function (x) { return x + attributeValue(targets['it'](), 'health'); }); })"
+    "(function () { actions['discard'](targets['choose'](cardsInHand(targets['self'](), 'robot', []))); })",
+    "(function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + attributeValue(targets['it'](), 'health'); }); })"
   ],
   cost: 2,
   type: TYPE_EVENT
@@ -59,7 +59,7 @@ export const smashCard: w.CardInStore = {
   text: "Destroy a structure.",
   cost: 2,
   command: [
-    "(function () { actions['destroy'](targets['choose'](objectsInPlay('structure'))); })"
+    "(function () { actions['destroy'](targets['choose'](objectsMatchingConditions('structure', []))); })"
   ]
 };
 
@@ -85,7 +85,7 @@ export const discountCard: w.CardInStore = {
   id: 'Discount',
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
-  command: "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard')), 'cost', function (x) { return x - 1; }); })",
+  command: "(function () { actions['modifyAttribute'](targets['all'](cardsInHand(targets['self'](), 'anycard', [])), 'cost', function (x) { return x - 1; }); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -94,7 +94,7 @@ export const equalizeCard: w.CardInStore = {
   id: 'Equalize',
   name: 'Equalize',
   text: 'Set the attack of all robots equal to their health',
-  command: "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'attack', \"() => (attributeValue(targets['they'](), 'health'))\"); })",
+  command: "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'attack', \"(function () { return attributeValue(targets['they'](), 'health'); })\"); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -103,7 +103,7 @@ export const firestormCard: w.CardInStore = {
   id: 'Firestorm',
   name: 'Firestorm',
   text: 'Deal 1 damage to everything adjacent to a tile.',
-  command: '(function () { actions["dealDamage"](targets["all"](objectsMatchingConditions("allobjects", [conditions["adjacentTo"](targets["choose"](allTiles()))])), 1); })',
+  command: "(function () { actions['dealDamage'](objectsMatchingConditions('allobjects', [conditions['adjacentTo'](targets['choose'](allTiles()))]), 1); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -121,7 +121,7 @@ export const shockCard: w.CardInStore = {
   id: 'Shock',
   name: 'Shock',
   text: 'Deal 3 damage to a robot.',
-  command: '(function () { actions["dealDamage"](targets["choose"](objectsInPlay("robot")), 3); })',
+  command: "(function () { actions['dealDamage'](targets['choose'](objectsMatchingConditions('robot', [])), 3); })",
   cost: 3,
   type: TYPE_EVENT
 };
@@ -130,7 +130,7 @@ export const missileStrikeCard: w.CardInStore = {
   id: 'Missile Strike',
   name: 'Missile Strike',
   text: 'Deal 4 damage to your opponent.',
-  command: '(function () { actions["dealDamage"](targets["opponent"](), 4); })',
+  command: "(function () { actions['dealDamage'](targets['opponent'](), 4); })",
   cost: 4,
   type: TYPE_EVENT
 };
@@ -139,7 +139,7 @@ export const threedomCard: w.CardInStore = {
   id: 'Threedom',
   name: 'Threedom',
   text: 'Set all stats of all robots in play to 3.',
-  command: "(function () { actions['setAttribute'](objectsInPlay('robot'), 'allattributes', '() => (3)'); })",
+  command: "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'allattributes', \"(function () { return 3; })\"); })",
   cost: 4,
   type: TYPE_EVENT
 };
@@ -148,7 +148,7 @@ export const wisdomCard: w.CardInStore = {
   id: 'Wisdom',
   name: 'Wisdom',
   text: 'Draw cards equal to the number of robots you control.',
-  command: '(function () { actions["draw"](targets["self"](), count(objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())]))); })',
+  command: "(function () { actions['draw'](targets['self'](), count(objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]))); })",
   cost: 4,
   type: TYPE_EVENT
 };
@@ -157,7 +157,7 @@ export const earthquakeCard: w.CardInStore = {
   id: 'Earthquake',
   name: 'Earthquake',
   text: 'Destroy all robots that have less than 2 speed.',
-  command: '(function () { actions["destroy"](targets["all"](objectsMatchingConditions("robot", [conditions["attributeComparison"]("speed", (function (x) { return x < 2; }))]))); })',
+  command: "(function () { actions['destroy'](objectsMatchingConditions('robot', [conditions['attributeComparison']('speed', (function (x) { return x < 2; }))])); })",
   cost: 5,
   type: TYPE_EVENT
 };
@@ -176,7 +176,7 @@ export const empCard: w.CardInStore = {
   name: 'EMP',
   text: 'Set the attack and speed of all robots to 0. \nGive all robots "Activate: Destroy this robot".',
   command: [
-    "(function () { (function () { save('target', objectsMatchingConditions('robot', [])); })(); (function () { actions['setAttribute'](load('target'), 'attack', '() => (0)'); })(); (function () { actions['setAttribute'](load('target'), 'speed', '() => (0)'); })(); })",
+    "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), ['attack', 'speed'], \"(function () { return 0; })\"); })",
     "(function () { actions['giveAbility'](objectsMatchingConditions('robot', []), \"(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \\\"(function () { actions['destroy'](targets['thisRobot']()); })\\\")); })\"); })"
   ],
   cost: 7,

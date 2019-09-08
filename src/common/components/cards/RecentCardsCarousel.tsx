@@ -83,13 +83,12 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
               recentCards.map((card, idx) =>
                 <div
                   key={idx}
-                  onClick={this.handleClickCard(card)}
                   style={{
                     display: 'flex',
                     justifyContent: 'center'
                   }}
                 >
-                  {Card.fromObj(card)}
+                  {Card.fromObj(card, { onCardClick: () => this.handleClickCard(card) })}
                   {!userId && <CardProvenanceDescription card={card} style={{ fontSize: 11, color: '#888', maxWidth: 155 }} />}
                 </div>
               )

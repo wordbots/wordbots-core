@@ -19,7 +19,8 @@ export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
 export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
   return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => {
     const player = players.entries[0]; // Unpack player target.
-    if (!player) {
+    /* istanbul ignore if */
+    if (!player) {  // Unusual case that we should still handle, just in case.
       return { type: 'cards', entries: [] };
     }
 
@@ -36,7 +37,8 @@ export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
 export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPileCollection> {
   return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => {
     const player = players.entries[0]; // Unpack player target.
-    if (!player) {
+    /* istanbul ignore if */
+    if (!player) {  // Unusual case that we should still handle, just in case.
       return { type: 'cardsInDiscardPile', entries: [] };
     }
 

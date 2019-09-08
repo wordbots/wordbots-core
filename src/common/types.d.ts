@@ -211,6 +211,7 @@ export interface GameState {
   volume: number
 
   actionId?: string
+  callbackAfterExecution?: (state: GameState) => GameState
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentCmdText?: string
   currentEntryInCollection?: Targetable

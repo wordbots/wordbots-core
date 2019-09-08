@@ -27,12 +27,8 @@ export function opponent(playerName: w.PlayerColor): w.PlayerColor {
   return (playerName === 'blue') ? 'orange' : 'blue';
 }
 
-export function opponentName(state: w.GameState): w.PlayerColor {
+function opponentName(state: w.GameState): w.PlayerColor {
   return opponent(state.currentTurn);
-}
-
-export function activePlayer(state: w.GameState): w.PlayerInGameState | null {
-  return state.player !== 'neither' ? state.players[state.player] : null;
 }
 
 export function currentPlayer(state: w.GameState): w.PlayerInGameState {
@@ -450,7 +446,7 @@ export function drawCards(state: w.GameState, player: w.PlayerInGameState, count
   return state;
 }
 
-export function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGameState, cards: w.CardInGame[]): w.GameState {
+function putCardsInDiscardPile(state: w.GameState, player: w.PlayerInGameState, cards: w.CardInGame[]): w.GameState {
   player.discardPile = [...player.discardPile, ...cards];
 
   cards.forEach((card) => {
@@ -604,10 +600,13 @@ export function executeCmd(
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
   type BuildVocabulary = (state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null) => any;
+
+  state.callbackAfterExecution = undefined;
+
   const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
-
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
+
   return eval(wrappedCmd)(...definitions);  // tslint:disable-line:no-eval
 }
 
@@ -668,6 +667,10 @@ export function triggerEvent(
     const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it as w.Object) : null);
     const currentObject: w.Object = it || t.object;
     executeCmd(state, t.action, currentObject);
+
+    if (state.callbackAfterExecution) {
+      state = state.callbackAfterExecution(state);
+    }
   });
 
   return {...state, it: undefined, itP: undefined, that: undefined};

@@ -1,4 +1,4 @@
-/* tslint:disable no-http-string */  // tslint-disable no-single-line-block-comment
+/* tslint:disable no-http-string */
 
 import { chain as _ } from 'lodash';
 import * as React from 'react';

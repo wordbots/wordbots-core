@@ -9,7 +9,7 @@ import * as w from '../types';
 import { splitSentences } from '../util/cards';
 import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
 import {
-  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, drawCards, executeCmd, getHex, ownerOf, ownerOfCard,
+  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, ownerOf, ownerOfCard,
   passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
 } from '../util/game';
 
@@ -121,7 +121,12 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     },
 
     discard: (cards: w.CardInHandCollection): void => {
-      removeCardsFromHand(state, cards.entries);
+      if (cards.entries.length > 0) {
+        const owner = ownerOfCard(state, cards.entries[0]);
+        if (owner) {
+          discardCardsFromHand(state, owner.name, cards.entries);
+        }
+      }
     },
 
     draw: (players: w.PlayerCollection, count: number): void => {
@@ -131,7 +136,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     },
 
     endTurn: (): void => {
-      Object.assign(state, passTurn(state, state.currentTurn));
+      state.callbackAfterExecution = (s: w.GameState) => passTurn(s, s.currentTurn);
     },
 
     forEach: (collection: w.Collection, cmd: (state: w.GameState) => any): void => {
@@ -228,7 +233,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     ): void => {
       if (state.memory.duration) {
         // Temporary attribute adjustment.
-        modifyAttribute(objects, attr, `(function () { return ${numCmd}; })`);
+        modifyAttribute(objects, attr, numCmd);
       } else {
         // Permanent attribute adjustment.
         iterateOver<w.Object>(objects)((object: w.Object) => {

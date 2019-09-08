@@ -18,6 +18,32 @@ import {
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
 export default function targets(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<w.Collection>> {
+  // Currently salient object
+  // Note: currentObject has higher salience than state.it .
+  //       (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
+  function it(): w.ObjectCollection | w.CardInHandCollection {
+    if (currentObject) {
+      return { type: 'objects', entries: [currentObject] } as w.ObjectCollection;
+    } else if (state.it) {
+      if (g.isObject(state.it)) {
+        return { type: 'objects', entries: [state.it] } as w.ObjectCollection;
+      } else {
+        return { type: 'cards', entries: [state.it] } as w.CardInHandCollection;
+      }
+    } else {
+      /* istanbul ignore next: this is a fallback that should be rarely hit */
+      return { type: 'objects', entries: [] } as w.ObjectCollection;
+    }
+  }
+
+  // Currently salient player
+  function itP(): w.PlayerCollection {
+    return {
+      type: 'players',
+      entries: compact([state.itP || opponentPlayer(state)])
+    };
+  }
+
   return {
     all: <T extends w.Collection>(collection: T): T => {
       return collection;
@@ -46,6 +72,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           } else if (player.discardPile.map((card) => card.id).includes(target.id)) {
             return {type: 'cardsInDiscardPile', entries: [target]} as w.CardInDiscardPileCollection as T;
           } else {
+            /* istanbul ignore next: this case should never be hit */
             throw new Error(`Card chosen does not exist in player's hand or discard pile!: ${target}`);
           }
         } else {
@@ -109,14 +136,13 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       };
     },
 
-    copyOf: (collection: w.Collection): w.CardInHandCollection => {
+    copyOf: (collection: w.ObjectCollection): w.CardInHandCollection => {
       // Assume that exactly one object is ever passed in here.
-      // currently only allow picking from objects on field.
-      // allow picking from hand in future.
-      if (g.isObjectCollection(collection)) {
-        return {type: 'cards', entries: [collection.entries[0].card]};
-      }
-      return {type: 'cards', entries: []};
+      // TODO Also support copyOf on CardInHandCollection.
+      return {
+        type: 'cards',
+        entries: g.isObjectCollection(collection) ? [collection.entries[0].card] : []
+      };
     },
 
     generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}, name?: string): w.CardInHandCollection => {
@@ -139,25 +165,12 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null
       }); */
-
-      // currentObject has higher salience than state.it .
-      // (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
-      if (currentObject) {
-        return { type: 'objects', entries: [currentObject] };
-      } else if (state.it) {
-        if (g.isObject(state.it)) {
-          return { type: 'objects', entries: [state.it] };
-        } else {
-          return { type: 'cards', entries: [state.it] };
-        }
-      } else {
-        return { type: 'objects', entries: [] };
-      }
+      return it();
     },
 
     // Currently salient player.
     itP: (): w.PlayerCollection => {
-      return {type: 'players', entries: compact([state.itP || opponentPlayer(state)])};
+      return itP();
     },
 
     opponent: (): w.PlayerCollection => {
@@ -203,36 +216,31 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     that: (): w.ObjectCollection | w.CardInHandCollection => {
       if (state.that) {
         return { type: 'objects', entries: [state.that] };
-      } else if (state.it) {
-        if (g.isObject(state.it)) {
-          return { type: 'objects', entries: [state.it] };
-        } else {
-          return { type: 'cards', entries: [state.it] };
-        }
       } else {
-        return { type: 'objects', entries: [] };
+        return it();
       }
     },
 
     // Prioritize current iteratee in a collection of objects.
     // e.g. "Set the attack of all robots to *their* health."
-    they: (): w.ObjectCollection => {
+    they: (): w.ObjectCollection | w.CardInHandCollection => {
       const they = state.currentEntryInCollection;
       if (they && g.isObject(they)) {
         return ({ type: 'objects', entries: [they] });
       } else {
-        return ({ type: 'objects', entries: compact([(state.it as w.Object | undefined) || currentObject]) });
+        /* istanbul ignore next: this is a last-resort fallback that should be hit rarely */
+        return it();
       }
     },
 
     // Prioritize current iteratee in a collection of players.
-    // e.g. "Set the attack of all robots to *their* health."
+    // e.g. "Each player shuffles all cards from *their* hand into *their* deck."
     theyP: (): w.PlayerCollection => {
       const they = state.currentEntryInCollection;
       if (they && g.isPlayerState(they)) {
         return ({ type: 'players', entries: [they] });
       } else {
-        return ({ type: 'players', entries: compact([state.itP || opponentPlayer(state)]) });
+        return itP();
       }
     },
 

@@ -3,7 +3,7 @@ import { cloneDeep, findIndex, forOwn, has, isArray, isObject, mapValues, pickBy
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
 import HexUtils from '../src/common/components/hexgrid/HexUtils';
-import { BLUE_CORE_HEX, DECK_SIZE, ORANGE_CORE_HEX } from '../src/common/constants';
+import { BLUE_CORE_HEX, DECK_SIZE, ORANGE_CORE_HEX, TYPE_EVENT } from '../src/common/constants';
 import game from '../src/common/reducers/game';
 import { transportObject } from '../src/common/reducers/handlers/game/board';
 import { collection } from '../src/common/store/cards';
@@ -27,16 +27,21 @@ interface Target {
 
 export function getDefaultState(format: string | null = null): w.GameState {
   const state = cloneDeep(defaultGameState);
-  const deck: w.CardInGame[] = [attackBotCard].concat(collection.slice(1, DECK_SIZE)).map(instantiateCard);
+  const dummyDeck = [attackBotCard].concat(collection.slice(1, DECK_SIZE));
   const simulatedGameStartAction = {
     type: socketActions.GAME_START,
     payload: {
-      decks: {orange: deck, blue: deck},
+      decks: {
+        orange: dummyDeck.map(instantiateCard),
+        blue: dummyDeck.map(instantiateCard)
+      },
       format
     }
   };
   return game(state, simulatedGameStartAction);
 }
+
+export const startingHandSize: number = getDefaultState().players.orange.hand.length;
 
 export function combineState(gameState: w.GameState = defaultGameState): w.State {
   return {
@@ -249,3 +254,16 @@ export function setUpBoardState(players: Record<string, Record<w.HexId, w.CardIn
 
   return state;
 }
+
+// Convenience method to generate a dummy event from text and parse, to easily run an arbitrary command.
+export const event = (
+  text: string,
+  command: w.StringRepresentationOf<(state: w.GameState) => any> | Array<w.StringRepresentationOf<(state: w.GameState) => any>>
+): w.CardInStore => ({
+  id: text,
+  name: text,
+  text,
+  command,
+  cost: 0,
+  type: TYPE_EVENT
+});

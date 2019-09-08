@@ -11,14 +11,16 @@ function objectHasProperty(obj: w.Object, property: string): boolean {
     case 'attackedthisturn': return obj.attackedThisTurn || false;
     case 'movedlastturn': return obj.movedLastTurn || false;
     case 'movedthisturn': return obj.movedThisTurn || false;
-    case 'isdestroyed': return obj.isDestroyed || false;
+    case 'isdestroyed': return obj.isDestroyed || obj.beingDestroyed || false;
 
     // Complex properties.
     case 'isdamaged':
       return getAttribute(obj, 'health')! < obj.card.stats!.health;
-  }
 
-  throw new Error(`Unknown property ${property}!`);
+    /* istanbul ignore next */
+    default:
+      throw new Error(`Unknown property ${property}!`);
+  }
 }
 
 // Object conditions return (hexId, obj) -> bool functions.

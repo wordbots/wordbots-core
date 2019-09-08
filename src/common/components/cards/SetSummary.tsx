@@ -10,6 +10,7 @@ import * as w from '../../types';
 import { sortCards } from '../../util/cards';
 import Card from '../card/Card';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
+import ProfileLink from '../users/ProfileLink';
 
 interface SetSummaryBaseProps {
   set: w.Set
@@ -114,7 +115,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     return (
       <Paper className={classes.paper}>
         <div>
-          <strong>{name}</strong> by {metadata.authorName}
+          <strong>{name}</strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
           {!inPublishedSetsList && metadata.isPublished && <i> (published)</i>}
         </div>
         <div className={classes.controls}>

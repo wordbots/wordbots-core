@@ -2,6 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 
 import * as m from '../../../server/multiplayer/multiplayer';
+import ProfileLink from '../users/ProfileLink';
 
 interface LobbyStatusProps {
   connecting: boolean
@@ -36,18 +37,14 @@ export default class LobbyStatus extends React.Component<LobbyStatusProps> {
     );
 
     const renderRegisteredPlayer = (userData: m.UserData, clientId: m.ClientID) => (
-      <a
+      <ProfileLink
+        uid={userData.uid}
+        username={userData ? userData.displayName : clientId}
         style={{
           fontStyle: clientId === myClientId ? 'italic' : 'normal',
-          textDecoration: 'underline',
           color: '#666'
         }}
-        href={userData && `/profile/${userData.uid}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {userData ? userData.displayName : clientId}
-      </a>
+      />
     );
 
     const renderGuestPlayerName = (userData: m.UserData, clientId: m.ClientID) => (

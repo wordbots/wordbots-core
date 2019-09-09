@@ -4,10 +4,10 @@ import HexUtils from '../../../components/hexgrid/HexUtils';
 import { stringToType } from '../../../constants';
 import * as w from '../../../types';
 import {
-  allObjectsOnBoard, applyAbilities, canActivate, currentPlayer, dealDamageToObjectAtHex, executeCmd, getAttribute,
-  hasEffect, logAction,
+  allObjectsOnBoard, applyAbilities, canActivate, checkVictoryConditions, currentPlayer,
+  dealDamageToObjectAtHex, executeCmd, getAttribute, hasEffect, logAction,
   opponentPlayer, ownerOf, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
-  updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes, checkVictoryConditions
+  updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
 } from '../../../util/game';
 
 type State = w.GameState;

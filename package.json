@@ -175,6 +175,7 @@
   },
   "resolutions": {
     "repng/babel-loader": "^8.0.1",
+    "repng/**/growl": "1.10.0",
     "repng/**/cheerio": "1.0.0-rc.2",
     "trianglify/gulp": "^4.0.0",
     "**/gulp-decompress": "2.0.2",

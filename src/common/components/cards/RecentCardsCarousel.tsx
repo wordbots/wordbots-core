@@ -88,7 +88,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
                     justifyContent: 'center'
                   }}
                 >
-                  {Card.fromObj(card, { onCardClick: () => this.handleClickCard(card) })}
+                  {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); }})}
                   {!userId && <CardProvenanceDescription card={card} style={{ fontSize: 11, color: '#888', maxWidth: 155 }} />}
                 </div>
               )
@@ -113,7 +113,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     }
   }
 
-  private handleClickCard = (card: w.CardInStore) => () => {
+  private handleClickCard = (card: w.CardInStore) => {
     const { userId, username } = this.props;
     // Provide a source field if it's missing on the card.
     const cardWithSource: w.CardInStore = {

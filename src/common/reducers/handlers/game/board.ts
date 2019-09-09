@@ -7,7 +7,7 @@ import {
   allObjectsOnBoard, applyAbilities, canActivate, currentPlayer, dealDamageToObjectAtHex, executeCmd, getAttribute,
   hasEffect, logAction,
   opponentPlayer, ownerOf, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
-  updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
+  updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes, checkVictoryConditions
 } from '../../../util/game';
 
 type State = w.GameState;
@@ -227,6 +227,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
       tempState = applyAbilities(tempState);
       tempState = updateOrDeleteObjectAtHex(tempState, object, hexId);
       tempState = deselect(tempState);
+      tempState = checkVictoryConditions(tempState);
 
       return tempState;
     }

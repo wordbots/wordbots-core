@@ -4,8 +4,12 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
-import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH, CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE } from '../../constants';
+import {
+  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
+  CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE, SIDEBAR_COLLAPSED_WIDTH
+} from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
+import { urlForGameMode } from '../../containers/Play';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import Chat from '../play/Chat';
@@ -282,6 +286,8 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     );
   }
 
+  private urlMatchesGameMode = (mode: string) => this.props.location.pathname.startsWith(urlForGameMode(mode));
+
   private handleToggleFullScreen = () => {
     screenfull.toggle((this as any).gameArea);
   }
@@ -294,6 +300,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
   private calculateDimensions = () => {
     const compactControls: boolean = window.innerWidth < 1200;
+    const navSidebarWidth = this.urlMatchesGameMode('sandbox') ? SIDEBAR_COLLAPSED_WIDTH : 0;
 
     const topBottomMargin = 80;
     const leftMargin = 80;
@@ -303,7 +310,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
       const chatWidth = !chatOpen ? CHAT_COLLAPSED_WIDTH : (compactControls ? CHAT_NARROW_WIDTH : CHAT_WIDTH);
 
       const areaHeight = window.innerHeight - HEADER_HEIGHT;
-      const areaWidth = window.innerWidth - chatWidth;
+      const areaWidth = window.innerWidth - chatWidth - navSidebarWidth;
 
       const maxBoardHeight = areaHeight - topBottomMargin * 2;
       const maxBoardWidth = areaWidth - leftMargin - rightMargin;

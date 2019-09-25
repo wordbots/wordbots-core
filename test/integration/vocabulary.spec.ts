@@ -7,7 +7,7 @@ import actions from './100randomActions';
 const oldConsoleWarn = console.warn;
 
 // Sanity test that a sample of 100 random Wordbots ASTs (see Randomizer.scala), when converted to JavaScript,
-// call all be executed without any crashes.
+// can all be executed without any crashes.
 describe('Randomly generated actions', () => {
   beforeAll(() => {
     console.warn = (err: string) => { throw err; };

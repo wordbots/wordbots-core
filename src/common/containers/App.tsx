@@ -91,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
 
   public state = {
     loading: true,
-    canSidebarExpand: true
+    canSidebarExpand: false
   };
 
   constructor(props: AppProps) {
@@ -132,6 +132,10 @@ class App extends React.Component<AppProps, AppState> {
     };
   }
 
+  get isSidebarExpanded(): boolean {
+    return this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed');
+  }
+
   get inGame(): boolean {
     const { location, inGame, inSandbox } = this.props;
     return (inGame || isInGameUrl(location.pathname)) && !inSandbox;
@@ -144,23 +148,24 @@ class App extends React.Component<AppProps, AppState> {
     if (this.inGame) {
       return null;
     } else {
-      return <NavMenu canExpand={canSidebarExpand} cardIdBeingEdited={cardIdBeingEdited} onRerender={onRerender} />;
+      return (
+        <NavMenu
+          canExpand={canSidebarExpand}
+          isExpanded={this.isSidebarExpanded}
+          cardIdBeingEdited={cardIdBeingEdited}
+          onRerender={onRerender}
+        />
+      );
     }
   }
 
   get content(): JSX.Element {
-    const isSidebarExpanded = this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed');
-    const sidebarWidth = isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
+    const sidebarWidth = this.isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
     return (
-      <div
-        style={{
-          paddingLeft: this.inGame ? 0 : sidebarWidth,
-          transition: 'padding-left 200ms ease-in-out'
-        }}
-      >
+      <div style={{paddingLeft: this.inGame ? 0 : sidebarWidth}}>
         <ErrorBoundary>
           <Switch>
             <Route exact path="/" component={Home} />

@@ -11,24 +11,23 @@ import Tooltip from './Tooltip';
 
 interface NavMenuProps {
   canExpand: boolean
+  isExpanded: boolean
   cardIdBeingEdited: string | null
   onRerender: () => void
 }
 
 export default class NavMenu extends React.Component<NavMenuProps> {
-  get isExpanded(): boolean {
-    return this.props.canExpand && !isFlagSet('sidebarCollapsed');
-  }
-
   public render(): JSX.Element {
-    const { canExpand, cardIdBeingEdited } = this.props;
+    const { canExpand, isExpanded, cardIdBeingEdited } = this.props;
+    const width = isExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
     return (
       <Drawer
         open
+        width={width}
         containerStyle={{
           top: 54,
           paddingTop: 10,
-          width: this.isExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+          width,
           transition: 'width 200ms ease-in-out',
           height: 'calc(100% - 54px)',
           overflow: 'visible',
@@ -56,7 +55,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
     <FontIcon
       className="material-icons"
       style={{
-        left: this.isExpanded ? 4 : 8
+        left: this.props.isExpanded ? 4 : 8
       }}
     >
       {icon}
@@ -66,7 +65,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
   private renderLink = (path: string, text: string, icon: string) => (
     <NavLink exact to={path} activeClassName="activeNavLink">
       <Tooltip
-        disable={this.isExpanded}
+        disable={this.props.isExpanded}
         text={text}
         place="right"
         style={{
@@ -74,7 +73,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
         }}
       >
         <MenuItem
-          primaryText={this.isExpanded ? text : ''}
+          primaryText={this.props.isExpanded ? text : ''}
           leftIcon={this.renderIcon(icon)}
         />
       </Tooltip>
@@ -101,7 +100,7 @@ export default class NavMenu extends React.Component<NavMenuProps> {
           }}
         >
           <span>
-            {this.isExpanded ? zeroWidthJoin('arrow_forward', 'arrow_back') : zeroWidthJoin('arrow_back', 'arrow_forward')}
+            {this.props.isExpanded ? zeroWidthJoin('arrow_forward', 'arrow_back') : zeroWidthJoin('arrow_back', 'arrow_forward')}
           </span>
         </FontIcon>
       </Tooltip>

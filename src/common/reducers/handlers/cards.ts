@@ -32,6 +32,23 @@ const cardsHandlers = {
     };
   },
 
+  duplicateCard: (state: State, originalCard: w.CardInStore): State => {
+    const currentUser = firebase.lookupCurrentUser();
+
+    if (currentUser) {
+      const duplicateCard: w.CardInStore = {
+        ...originalCard,
+        id: id(),
+        name: `Copy of ${originalCard.name}`,
+        source: { uid: currentUser.uid, username: currentUser.displayName!, duplicatedFrom: originalCard.id }
+      };
+
+      saveCard(state, duplicateCard, false);
+    }
+
+    return state;
+  },
+
   duplicateDeck: (state: State, deckId: string): State => {
     const deck: w.DeckInStore = state.decks.find((d) => d.id === deckId)!;
     const copy: w.DeckInStore = {

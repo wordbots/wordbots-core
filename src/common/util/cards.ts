@@ -20,7 +20,12 @@ import { indexParsedSentence, lookupCurrentUser, saveRecentCard, saveUserData } 
 // 1. Miscellaneous helper functions pertaining to cards.
 //
 
-export function areIdenticalCards(card1: w.Card, card2: w.Card): boolean {
+export function areIdenticalCards(card1: w.CardInStore, card2: w.CardInStore): boolean {
+  // Ignore if one card is explicitly a duplicate of the other.
+  if ((card2.source !== 'builtin' && card2.source!.duplicatedFrom === card1.id) || (card1.source !== 'builtin' && card1.source!.duplicatedFrom === card2.id)) {
+    return false;
+  }
+
   // TODO: Check abilities/command rather than text.
   return compareCertainKeys(card1, card2, ['type', 'cost', 'text', 'stats']);
 }
@@ -403,6 +408,7 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
   };
 }
 
+// Saves a card to the Recent Cards carousel
 export function saveCardToFirebase(card: w.CardInStore): void {
   // No point in keeping track of recent "vanilla" (text-less) cards
   if (card.text) {
@@ -410,6 +416,7 @@ export function saveCardToFirebase(card: w.CardInStore): void {
   }
 }
 
+// Saves a card to the user's collection
 export function saveCardsToFirebase(state: w.CollectionState): void {
   saveUserData('cards', state.cards.filter((c) => c.source && c.source !== 'builtin'));
 }

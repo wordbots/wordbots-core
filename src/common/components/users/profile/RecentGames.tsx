@@ -7,7 +7,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/core/styles/withStyles';
-import { isNil, isString, startCase, toLower } from 'lodash';
+import { isNil, isString, startCase, toLower, toUpper } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../../types';
@@ -46,19 +46,20 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
     );
   }
 
-  private renderRecentGame = (recentGame: w.SavedGame, index: number) => {
+  private renderRecentGame = (game: w.SavedGame, index: number) => {
     const { userId, playerNames, classes } = this.props;
+    const { winner } = game;
 
     if (!playerNames) {
       return;
     }
 
-    const opponentId = Object.values(recentGame.players).find((player) => player !== userId)!;
+    const opponentId = Object.values(game.players).find((player) => player !== userId)!;
     const isGuest = isNil(opponentId) || opponentId.startsWith('guest');
     const opponent = isGuest ? 'Guest' : playerNames[opponentId!] || playerNames[userId];
-    const wasVictory = recentGame.winner && recentGame.players[recentGame.winner] === userId;
-    const timestamp = new Date(recentGame.timestamp).toLocaleDateString();
-    const gameDetails = `${startCase(toLower(recentGame.type))} - ${renderFormatDisplayName(recentGame.format)} - ${timestamp}`;
+    const outcome = winner ? (winner === 'draw' ? 'draw' : (game.players[winner] === userId ? 'victory' : 'defeat')) : '';
+    const timestamp = new Date(game.timestamp).toLocaleDateString();
+    const gameDetails = `${startCase(toLower(game.type))} - ${renderFormatDisplayName(game.format)} - ${timestamp}`;
 
     const formatIcons = {
       'normal': 'player',
@@ -67,10 +68,10 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
     };
 
     return (
-      <ListItem key={index} className={classes.recentGame}>
+      <ListItem key={index} className={classes.game}>
         <ListItemAvatar>
           <Avatar>
-            <Icon className={`ra ra-${isString(recentGame.format) && formatIcons[recentGame.format]}`}/>
+            <Icon className={`ra ra-${isString(game.format) && formatIcons[game.format]}`}/>
           </Avatar>
         </ListItemAvatar>
         <ListItemText
@@ -78,10 +79,8 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
           secondary={gameDetails}
         />
         <ListItemText
-          primaryTypographyProps={{
-            className: wasVictory ? classes.victory : classes.defeat
-          }}
-          primary={wasVictory ? 'VICTORY' : 'DEFEAT'}
+          primaryTypographyProps={{ className: classes[outcome] }}
+          primary={toUpper(outcome)}
         />
       </ListItem>
     );

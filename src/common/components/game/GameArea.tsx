@@ -30,7 +30,7 @@ export interface GameProps {
   player: w.PlayerColor | 'neither'
   currentTurn: w.PlayerColor
   usernames: w.PerPlayer<string>
-  winner: w.PlayerColor | null
+  winner: w.GameWinner
   gameOptions: w.GameOptions
 
   selectedTile: w.HexId | null
@@ -271,8 +271,8 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           <PlayerArea gameProps={this.props as any as GameAreaContainerProps} />
           <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
           <VictoryScreen
-            winnerColor={winner}
-            winnerName={winner ? usernames[winner] : null}
+            winner={winner}
+            winnerName={(winner && winner !== 'draw') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
         </Paper>

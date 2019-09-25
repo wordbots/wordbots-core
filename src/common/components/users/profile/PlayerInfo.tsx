@@ -64,6 +64,11 @@ export const styles: Record<string, CSSProperties> = {
     fontSize: 14,
     textAlign: 'right'
   },
+  draw: {
+    fontWeight: 600,
+    fontSize: 14,
+    textAlign: 'right'
+  },
   noGames: {
     width: '100%',
     height: 'calc(100% - 35px)',

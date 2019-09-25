@@ -32,8 +32,8 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
       .map((gamesInFormat: w.SavedGame[]) => ({
         format: GameFormat.decode(gamesInFormat[0].format),
         numGames: gamesInFormat.length,
-        numWins: gamesInFormat.filter((g) => g.winner && g.players[g.winner] === userId).length,
-        numLosses: gamesInFormat.filter((g) => g.winner && g.players[g.winner] !== userId).length
+        numWins: gamesInFormat.filter((g) => g.winner && g.winner !== 'draw' && g.players[g.winner] === userId).length,
+        numLosses: gamesInFormat.filter((g) => g.winner && g.winner !== 'draw' && g.players[g.winner] !== userId).length
       }))
       .sortBy((results) => -results.numGames)
       .slice(0, 5)

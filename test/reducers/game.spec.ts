@@ -236,6 +236,12 @@ describe('Game reducer', () => {
       state = newTurn(state, 'blue');
       expect(state.winner).toEqual('blue');
     });
+
+    it('should handle draws', () => {
+      let state = getDefaultState();
+      state = playEvent(state, 'orange', event('Destroy each kernel', "(function () { actions['destroy'](objectsMatchingConditions('kernel', [])); })"));
+      expect(state.winner).toEqual('draw');
+    });
   });
 
   describe('[Events]', () => {

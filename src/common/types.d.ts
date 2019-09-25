@@ -17,6 +17,7 @@ export type CardType = 0 | 1 | 2 | 3;
 export type Cause = 'combat' | 'anyevent';
 export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack' | 'cannotfightback' | 'cannotmove' | 'canonlyattack';
 export type DeckId = string;
+export type GameWinner = PlayerColor | 'draw' | null;  // (null indicates game is still in progress)
 export type HexId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
@@ -143,7 +144,7 @@ export interface SavedGame { // Interface for games stored in Firebase.
   players: { [ color: string ]: m.ClientID | null }
   format: Format,
   type: string, // TODO more precise
-  winner: PlayerColor | null,
+  winner: GameWinner,
   timestamp: timestamp
 }
 
@@ -207,7 +208,7 @@ export interface GameState {
   storeKey: 'game'
   tutorial: boolean
   usernames: PerPlayer<string>
-  winner: PlayerColor | null
+  winner: GameWinner
   volume: number
 
   actionId?: string

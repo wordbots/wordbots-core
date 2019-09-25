@@ -4,8 +4,8 @@ import HexUtils from '../../../components/hexgrid/HexUtils';
 import { stringToType } from '../../../constants';
 import * as w from '../../../types';
 import {
-  allObjectsOnBoard, applyAbilities, canActivate, currentPlayer, dealDamageToObjectAtHex, executeCmd, getAttribute,
-  hasEffect, logAction,
+  allObjectsOnBoard, applyAbilities, canActivate, checkVictoryConditions, currentPlayer,
+  dealDamageToObjectAtHex, executeCmd, getAttribute, hasEffect, logAction,
   opponentPlayer, ownerOf, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
   updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
 } from '../../../util/game';
@@ -227,6 +227,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
       tempState = applyAbilities(tempState);
       tempState = updateOrDeleteObjectAtHex(tempState, object, hexId);
       tempState = deselect(tempState);
+      tempState = checkVictoryConditions(tempState);
 
       return tempState;
     }

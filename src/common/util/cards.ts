@@ -22,7 +22,8 @@ import { indexParsedSentence, lookupCurrentUser, saveRecentCard, saveUserData } 
 
 export function areIdenticalCards(card1: w.CardInStore, card2: w.CardInStore): boolean {
   // Ignore if one card is explicitly a duplicate of the other.
-  if ((card2.source !== 'builtin' && card2.source!.duplicatedFrom === card1.id) || (card1.source !== 'builtin' && card1.source!.duplicatedFrom === card2.id)) {
+  if ((card2.source && card2.source !== 'builtin' && card2.source!.duplicatedFrom === card1.id) ||
+    (card1.source && card1.source !== 'builtin' && card1.source!.duplicatedFrom === card2.id)) {
     return false;
   }
 

@@ -1,4 +1,7 @@
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
+import { FontIcon } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { object } from 'prop-types';
@@ -16,6 +19,7 @@ import CardPreview from '../components/cards/CardPreview';
 import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
+import Tooltip from '../components/Tooltip';
 import * as w from '../types';
 import { createCardFromProps } from '../util/cards';
 import { lookupCurrentUser } from '../util/firebase';
@@ -34,6 +38,7 @@ interface CreatorStateProps {
   loggedIn: boolean
   parserVersion: number | null
   willCreateAnother: boolean
+  isPrivate?: boolean
   cards: w.CardInStore[]
 }
 
@@ -48,6 +53,7 @@ interface CreatorDispatchProps {
   onAddExistingCardToCollection: (card: w.CardInStore) => void
   onAddNewCardToCollection: (props: w.CreatorState) => void
   onToggleWillCreateAnother: () => void
+  onToggleIsPrivate: () => void
   onStartSandbox: (card: w.CardInStore) => void
 }
 
@@ -72,6 +78,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
     parserVersion: state.creator.parserVersion,
     loggedIn: state.global.user !== null,
     willCreateAnother: state.creator.willCreateAnother,
+    isPrivate: state.creator.isPrivate,
     cards: state.collection.cards
   };
 }
@@ -107,6 +114,9 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
     },
     onToggleWillCreateAnother: () => {
       dispatch(creatorActions.toggleWillCreateAnother());
+    },
+    onToggleIsPrivate: () => {
+      dispatch(creatorActions.togglePrivate());
     },
     onStartSandbox: (card: w.CardInStore) => {
       dispatch(gameActions.startSandbox(card));
@@ -155,6 +165,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   public render(): JSX.Element {
     const { cardOpenedForEditing } = this.state;
+
     return (
       <div style={{position: 'relative'}}>
         <Helmet title="Creator" />
@@ -188,11 +199,35 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onAddToCollection={this.addToCollection}
               onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
             />
-            {cardOpenedForEditing && <div>
-              <Paper style={{ padding: 10, marginTop: 20 }}>
-                <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />
-              </Paper>
-            </div>}
+            <Paper style={{ padding: cardOpenedForEditing ? 10 : 0, marginTop: 20 }}>
+              {
+                cardOpenedForEditing
+                  ? <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />
+                  : (
+                    <div style={{ textAlign: 'right', fontSize: 13 }}>
+                      Card visibility:
+                      <span style={{ marginLeft: 10 }}>
+                        <FormControlLabel
+                          control={<Switch checked={this.props.isPrivate} onChange={this.props.onToggleIsPrivate} />}
+                          label={
+                            <span>
+                              <span style={{ fontSize: 15, fontVariant: 'all-small-caps', position: 'relative', top: -6, left: -4, paddingRight: 2 }}>
+                                {this.props.isPrivate ? "Private" : "Public"}
+                              </span>
+                              <Tooltip
+                                inline
+                                text="Private cards won't show up on your profile page or on the Recent Cards carousel on the homepage."
+                              >
+                                <FontIcon className="material-icons">help</FontIcon>
+                              </Tooltip>
+                            </span>
+                          }
+                        />
+                      </span>
+                    </div>
+                  )
+              }
+            </Paper>
           </div>
           <CardPreview
             name={this.props.name}

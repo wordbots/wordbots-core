@@ -22,7 +22,7 @@ export default function collection(oldState: State = defaultState, action: w.Act
         return c.loadState(state, action.payload.data);
 
       case creatorActions.ADD_TO_COLLECTION:
-        return c.saveCard(state, action.payload);
+        return c.saveCard(state, action.payload, !action.payload.isPrivate);
 
       case creatorActions.ADD_EXISTING_CARD_TO_COLLECTION:
         return c.saveExistingCard(state, action.payload.card);

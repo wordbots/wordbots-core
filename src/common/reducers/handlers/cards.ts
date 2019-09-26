@@ -151,9 +151,9 @@ const cardsHandlers = {
     };
   },
 
-  saveCard: (state: State, cardProps: w.CreatorState): State => {
+  saveCard: (state: State, cardProps: w.CreatorState, saveToRecentCards: boolean): State => {
     const card = createCardFromProps(cardProps);
-    return saveCard(state, card);
+    return saveCard(state, card, saveToRecentCards);
   },
 
   saveExistingCard: (state: State, card: w.CardInStore): State => {
@@ -202,6 +202,12 @@ function saveCard(state: State, card: w.CardInStore, saveToRecentCards: boolean 
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
   const existingCard = state.cards.find((c) => c.id === card.id || areIdenticalCards(c, card));
+
+  console.log({
+    card,
+    existingCard,
+    saveToRecentCards
+  });
 
   if (existingCard) {
     // Editing an existing card.

@@ -9,6 +9,7 @@ function asArrayOfStrings(str: string | string[]): string[] {
 
 const oldConsoleError = console.error;
 
+// Tests that all the built-in cards parse as expected.
 // Before running this test, make sure the wordbots-parser server is running on port 8080.
 describe.skip('Built-in cards', () => {
   beforeAll(() => {

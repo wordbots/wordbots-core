@@ -2,6 +2,7 @@ import * as w from '../types';
 
 export const DELETE_DECK = 'DELETE_DECK';
 export const DELETE_SET = 'DELETE_SET';
+export const DUPLICATE_CARD = 'DUPLICATE_CARD';
 export const DUPLICATE_DECK = 'DUPLICATE_DECK';
 export const DUPLICATE_SET = 'DUPLICATE_SET';
 export const EDIT_DECK = 'EDIT_DECK';
@@ -27,6 +28,13 @@ export function deleteSet(setId: string): w.Action {
   return {
     type: DELETE_SET,
     payload: { setId }
+  };
+}
+
+export function duplicateCard(card: w.CardInStore): w.Action {
+  return {
+    type: DUPLICATE_CARD,
+    payload: { card }
   };
 }
 

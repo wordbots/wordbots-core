@@ -36,6 +36,7 @@ interface CollectionStateProps {
 }
 
 interface CollectionDispatchProps {
+  onDuplicateCard: (card: w.CardInStore) => void
   onExportCards: (cards: w.CardInStore[]) => void
   onImportCards: (json: string) => void
   onRemoveFromCollection: (cards: w.CardId[]) => void
@@ -67,6 +68,9 @@ export function mapStateToProps(state: w.State): CollectionStateProps {
 
 export function mapDispatchToProps(dispatch: Dispatch): CollectionDispatchProps {
   return {
+    onDuplicateCard: (card: w.CardInStore) => {
+      dispatch(collectionActions.duplicateCard(card));
+    },
     onExportCards: (cards: w.CardInStore[]) => {
       dispatch(collectionActions.exportCards(cards));
     },
@@ -209,6 +213,14 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     }
   }
 
+  private handleClickDuplicate = () => {
+    const card = this.props.cards.find((c) => this.state.selectedCardIds.includes(c.id));
+    if (card) {
+      this.props.onDuplicateCard(card);
+      this.setState({selectedCardIds: []});
+    }
+  }
+
   private handleClickDelete = () => {
     this.props.onRemoveFromCollection(this.state.selectedCardIds);
     this.setState({selectedCardIds: []});
@@ -276,6 +288,16 @@ export class Collection extends React.Component<CollectionProps, CollectionState
           style={style}
           buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickEdit}
+        />
+        <RaisedButton
+          label={compact ? 'Duplicate' : 'Duplicate Selected'}
+          labelPosition="after"
+          secondary
+          disabled={this.state.selectedCardIds.length !== 1}
+          icon={<FontIcon style={iconStyle} className="material-icons">file_copy</FontIcon>}
+          style={style}
+          buttonStyle={{textAlign: 'left'}}
+          onClick={this.handleClickDuplicate}
         />
         <RaisedButton
           label={compact ? 'Delete' : 'Delete Selected'}

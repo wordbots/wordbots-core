@@ -91,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
 
   public state = {
     loading: true,
-    canSidebarExpand: false
+    canSidebarExpand: true
   };
 
   constructor(props: AppProps) {
@@ -144,9 +144,9 @@ class App extends React.Component<AppProps, AppState> {
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited, inSandbox, onRerender } = this.props;
-    const { canSidebarExpand } = this.state;
+    const { canSidebarExpand, loading } = this.state;
 
-    if (this.inGame) {
+    if (loading || this.inGame) {
       return null;
     } else {
       return (

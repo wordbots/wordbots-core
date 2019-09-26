@@ -203,12 +203,6 @@ function saveCard(state: State, card: w.CardInStore, saveToRecentCards: boolean 
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
   const existingCard = state.cards.find((c) => c.id === card.id || areIdenticalCards(c, card));
 
-  console.log({
-    card,
-    existingCard,
-    saveToRecentCards
-  });
-
   if (existingCard) {
     // Editing an existing card.
     const { source } = existingCard;

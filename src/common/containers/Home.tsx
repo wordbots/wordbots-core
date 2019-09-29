@@ -10,6 +10,7 @@ import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import PaperButton from '../components/PaperButton';
 import RouterDialog from '../components/RouterDialog';
 import * as w from '../types';
+import { isFlagSet } from '../util/browser';
 
 interface HomeStateProps {
   version: string
@@ -83,10 +84,13 @@ class Home extends React.Component<HomeProps> {
 
         <RecentCardsCarousel history={history} />
 
-        <div className="new-here-robot" onClick={this.handleClickNewHere}>
-          <div className="speech-bubble" style={{ fontFamily: 'Carter One', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
-          <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
-        </div>
+        {
+          !isFlagSet('skipNewHere') &&
+            <div className="new-here-robot" onClick={this.handleClickNewHere}>
+              <div className="speech-bubble" style={{ fontFamily: 'Carter One', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
+              <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
+            </div>
+        }
 
         <div
           style={{

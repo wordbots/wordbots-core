@@ -1,6 +1,6 @@
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
-import Switch from '@material-ui/core/Switch';
+import Select from '@material-ui/core/Select';
 import { FontIcon } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -199,33 +199,11 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onAddToCollection={this.addToCollection}
               onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
             />
-            <Paper style={{ padding: cardOpenedForEditing ? 10 : 0, marginTop: 20 }}>
+            <Paper style={{ padding: 10, marginTop: 20, paddingTop: cardOpenedForEditing ? 10 : 0 }}>
               {
                 cardOpenedForEditing
                   ? <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />
-                  : (
-                    <div style={{ textAlign: 'right', fontSize: 13 }}>
-                      Card visibility:
-                      <span style={{ marginLeft: 10 }}>
-                        <FormControlLabel
-                          control={<Switch checked={this.props.isPrivate} onChange={this.props.onToggleIsPrivate} />}
-                          label={
-                            <span>
-                              <span style={{ fontSize: 15, fontVariant: 'all-small-caps', position: 'relative', top: -6, left: -4, paddingRight: 2 }}>
-                                {this.props.isPrivate ? "Private" : "Public"}
-                              </span>
-                              <Tooltip
-                                inline
-                                text="Private cards won't show up on your profile page or on the Recent Cards carousel on the homepage."
-                              >
-                                <FontIcon className="material-icons">help</FontIcon>
-                              </Tooltip>
-                            </span>
-                          }
-                        />
-                      </span>
-                    </div>
-                  )
+                  : this.renderCardCreationOptionsControls()
               }
             </Paper>
           </div>
@@ -241,6 +219,29 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             onSpriteClick={this.props.onSpriteClick}
           />
         </div>
+      </div>
+    );
+  }
+
+  private renderCardCreationOptionsControls = () => {
+    const { isPrivate, onToggleIsPrivate } = this.props;
+    return (
+      <div style={{ textAlign: 'right', fontSize: 13 }}>
+        Card visibility:
+        <Select
+          style={{ marginLeft: 10, fontSize: '0.9em' }}
+          value={isPrivate ? 'private' : 'public'}
+          onChange={onToggleIsPrivate}
+        >
+          <MenuItem key="public" value="public">Public</MenuItem>
+          <MenuItem key="private" value="private">Private</MenuItem>
+        </Select>
+        <Tooltip
+          inline
+          text="Private cards won't show up on your profile page or on the Recent Cards carousel on the homepage."
+        >
+          <FontIcon className="material-icons" style={{ position: 'relative', top: 6 }}>help</FontIcon>
+        </Tooltip>
       </div>
     );
   }

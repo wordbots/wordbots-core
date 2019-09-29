@@ -183,26 +183,26 @@ a.topLink:hover {
 
 /* based on https://leaverou.github.io/bubbly/ */
 .speech-bubble {
-	position: relative;
-	background: white;
+  position: relative;
+  background: white;
   border-radius: .4em;
   padding: 5px;
   top: -10px;
   left: -55px;
 }
 .speech-bubble:after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	left: 70%;
-	width: 0;
-	height: 0;
-	border: 20px solid transparent;
-	border-top-color: white;
-	border-bottom: 0;
-	border-right: 0;
-	margin-left: -10px;
-	margin-bottom: -12px;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 70%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-top-color: white;
+  border-bottom: 0;
+  border-right: 0;
+  margin-left: -10px;
+  margin-bottom: -12px;
 }
 
 /* Media queries */

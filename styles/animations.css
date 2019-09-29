@@ -37,3 +37,28 @@
   transform: translateY(0%);
   transition: transform 500ms ease-in-out;
 }
+
+.new-here-robot {
+  animation: SlowShake 5s linear infinite;
+  position: fixed;
+  top: 120px;
+  right: -30px;
+  cursor: pointer;
+}
+
+.new-here-robot:hover {
+  animation: none;
+  right: -24px;
+  top: 114px;
+}
+
+@keyframes SlowShake {
+  0%, 40% {
+    right: -30px;
+    top: 120px;
+  }
+  20% {
+    right: -38px;
+    top: 128px;
+  }
+}

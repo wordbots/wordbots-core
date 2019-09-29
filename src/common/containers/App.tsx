@@ -12,8 +12,9 @@ import 'whatwg-fetch';
 
 import * as actions from '../actions/global';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
-import HelpDialog from '../components/cards/HelpDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
+import HelpDialog from '../components/help/HelpDialog';
+import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
 import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
@@ -170,6 +171,7 @@ class App extends React.Component<AppProps, AppState> {
         <ErrorBoundary>
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route path="//:dialog" component={Home} />
             <Route path="/home" component={Home} />
             <Route path="/collection" component={Collection} />
             <Route path="/card/:cardId" component={Creator} />
@@ -197,6 +199,7 @@ class App extends React.Component<AppProps, AppState> {
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
           <HelpDialog history={history} location={location} />
+          <NewHereDialog history={history} />
         </div>
       );
     }

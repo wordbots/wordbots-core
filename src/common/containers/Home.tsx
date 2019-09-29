@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 import * as gameActions from '../actions/game';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import PaperButton from '../components/PaperButton';
+import RouterDialog from '../components/RouterDialog';
 import * as w from '../types';
 
 interface HomeStateProps {
@@ -45,7 +46,8 @@ class Home extends React.Component<HomeProps> {
 
         <div
           style={{
-            margin: '10px 0',
+            margin: '10px auto',
+            maxWidth: 600,
             textAlign: 'center',
             fontSize: 24,
             color: '#666'
@@ -80,6 +82,11 @@ class Home extends React.Component<HomeProps> {
         </div>
 
         <RecentCardsCarousel history={history} />
+
+        <div className="new-here-robot" onClick={this.handleClickNewHere}>
+          <div className="speech-bubble" style={{ fontFamily: 'Carter One', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
+          <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
+        </div>
 
         <div
           style={{
@@ -118,6 +125,10 @@ class Home extends React.Component<HomeProps> {
       </div>
     </PaperButton>
   )
+
+  private handleClickNewHere = () => {
+    RouterDialog.openDialog(this.props.history, 'new-here');
+  }
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));

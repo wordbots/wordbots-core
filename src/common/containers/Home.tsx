@@ -8,8 +8,8 @@ import { Dispatch } from 'redux';
 import * as gameActions from '../actions/game';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import PaperButton from '../components/PaperButton';
-import * as w from '../types';
 import RouterDialog from '../components/RouterDialog';
+import * as w from '../types';
 
 interface HomeStateProps {
   version: string
@@ -85,7 +85,7 @@ class Home extends React.Component<HomeProps> {
 
         <div className="new-here-robot" onClick={this.handleClickNewHere}>
           <div className="speech-bubble" style={{ fontFamily: 'Carter One', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
-          <img src="https://i.imgur.com/e8BYAok.png" alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
+          <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
         </div>
 
         <div

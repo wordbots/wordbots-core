@@ -48,17 +48,17 @@
 
 .new-here-robot:hover {
   animation: none;
-  top: 110px;
-  right: -20px;
+  right: -24px;
+  top: 114px;
 }
 
 @keyframes SlowShake {
   0%, 40% {
-    top: 120px;
     right: -30px;
+    top: 120px;
   }
   20% {
-    top: 128px;
     right: -38px;
+    top: 128px;
   }
 }

@@ -12,8 +12,8 @@ import 'whatwg-fetch';
 
 import * as actions from '../actions/global';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
-import HelpDialog from '../components/cards/HelpDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
+import HelpDialog from '../components/help/HelpDialog';
 import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';

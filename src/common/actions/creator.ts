@@ -7,6 +7,7 @@ export const SET_TEXT = 'SET_TEXT';
 export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
 export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
+export const TOGGLE_PRIVATE = 'TOGGLE_PRIVATE';
 export const ADD_TO_COLLECTION = 'ADD_TO_COLLECTION';
 export const ADD_EXISTING_CARD_TO_COLLECTION = 'ADD_EXISTING_CARD_TO_COLLECTION';
 
@@ -57,7 +58,13 @@ export function toggleWillCreateAnother(): w.Action {
   };
 }
 
-// Note: This actions is consumed by the cardCreator, AND collection reducers!
+export function togglePrivate(): w.Action {
+  return {
+    type: TOGGLE_PRIVATE
+  };
+}
+
+// Note: This actions is consumed by the cardCreator AND collection reducers!
 export function addToCollection(props: w.CreatorState): w.Action {
   return {
     type: ADD_TO_COLLECTION,
@@ -65,7 +72,7 @@ export function addToCollection(props: w.CreatorState): w.Action {
   };
 }
 
-// Note: This actions is consumed by the cardCreator, collection reducers!
+// Note: This actions is consumed by the cardCreator AND collection reducers!
 export function addExistingCardToCollection(card: w.CardInStore): w.Action {
   return {
     type: ADD_EXISTING_CARD_TO_COLLECTION,

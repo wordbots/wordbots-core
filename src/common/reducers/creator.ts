@@ -61,6 +61,9 @@ export default function creator(oldState: State = defaultState, { type, payload 
     case creatorActions.TOGGLE_WILL_CREATE_ANOTHER:
       return {...state, willCreateAnother: !state.willCreateAnother};
 
+    case creatorActions.TOGGLE_PRIVATE:
+      return {...state, isPrivate: !state.isPrivate};
+
     case creatorActions.ADD_TO_COLLECTION:
     case creatorActions.ADD_EXISTING_CARD_TO_COLLECTION:
       // Reset card creator state.

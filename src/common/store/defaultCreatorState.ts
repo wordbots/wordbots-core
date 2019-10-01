@@ -13,7 +13,8 @@ const defaultCreatorState: w.CreatorState = {
   health: 1,
   cost: 1,
   parserVersion: null,
-  willCreateAnother: false
+  willCreateAnother: false,
+  isPrivate: false
 };
 
 export default defaultCreatorState;

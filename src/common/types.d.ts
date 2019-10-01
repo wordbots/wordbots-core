@@ -180,6 +180,7 @@ export interface CreatorState {
   cost: number
   health: number
   id: string | null
+  isPrivate?: boolean
   name: string
   parserVersion: number | null
   sentences: Sentence[]

@@ -151,9 +151,9 @@ const cardsHandlers = {
     };
   },
 
-  saveCard: (state: State, cardProps: w.CreatorState): State => {
+  saveCard: (state: State, cardProps: w.CreatorState, saveToRecentCards: boolean): State => {
     const card = createCardFromProps(cardProps);
-    return saveCard(state, card);
+    return saveCard(state, card, saveToRecentCards);
   },
 
   saveExistingCard: (state: State, card: w.CardInStore): State => {

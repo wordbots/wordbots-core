@@ -62,7 +62,7 @@ export default class CardCollection extends React.Component<CardCollectionProps,
   }
 
   private isSelectable(card: w.CardInStore): boolean {
-    return !this.props.onlySelectCustomCards || card.source !== 'builtin';
+    return !this.props.onlySelectCustomCards || card.metadata.source.type === 'user';
   }
 
   private onCardClick = (id: w.CardId) => {

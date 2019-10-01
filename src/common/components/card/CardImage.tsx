@@ -13,7 +13,7 @@ interface CardImageProps {
   spriteID: string
   spriteV?: number
   img?: string
-  source?: w.CardSource
+  source: w.CardSource
   scale: number
   onSpriteClick: () => void
 }
@@ -61,7 +61,7 @@ export default class CardImage extends React.Component<CardImageProps, CardImage
         </div>
       );
     } else if (type === TYPE_EVENT) {
-      if ((!spriteV || spriteV < 2) && source !== 'builtin') {
+      if ((!spriteV || spriteV < 2) && source.type === 'user') {
         // Legacy event images.
         const [width, height] = [25 * scale, 42 * scale];
         return (

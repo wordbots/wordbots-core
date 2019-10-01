@@ -134,11 +134,11 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   get isCardEditable(): boolean {
     const { cardOpenedForEditing } = this.state;
-    if (cardOpenedForEditing && cardOpenedForEditing.source) {
-      const { source } = cardOpenedForEditing;
-      if (source) {
+    if (cardOpenedForEditing && cardOpenedForEditing) {
+      const { source } = cardOpenedForEditing.metadata;
+      if (source.type === 'user') {
         const currentUser = lookupCurrentUser();
-        return source !== 'builtin' && !!currentUser && source.uid === currentUser.uid;
+        return !!currentUser && source.uid === currentUser.uid;
       }
     }
 

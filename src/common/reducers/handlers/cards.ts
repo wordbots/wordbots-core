@@ -40,7 +40,13 @@ const cardsHandlers = {
         ...originalCard,
         id: id(),
         name: `Copy of ${originalCard.name}`,
-        source: { uid: currentUser.uid, username: currentUser.displayName!, duplicatedFrom: originalCard.id }
+        metadata: {
+          source: { type: 'user', uid: currentUser.uid, username: currentUser.displayName! },
+          created: Date.now(),
+          updated: Date.now(),
+          duplicatedFrom: originalCard.id,
+          isPrivate: false,
+        }
       };
 
       saveCard(state, duplicateCard, false);
@@ -205,8 +211,8 @@ function saveCard(state: State, card: w.CardInStore, saveToRecentCards: boolean 
 
   if (existingCard) {
     // Editing an existing card.
-    const { source } = existingCard;
-    if (source === 'builtin' || (source && source.uid !== firebase.lookupCurrentUser()!.uid)) {
+    const { source } = existingCard.metadata;
+    if (source.type === 'builtin' || source.uid !== firebase.lookupCurrentUser()!.uid) {
       // TODO Log warning about not being about not being able to replace builtin cards.
     } else {
       Object.assign(existingCard, card, {id: existingCard.id});

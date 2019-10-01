@@ -54,6 +54,7 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             cardStats={this.stats}
             text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
             rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
+            source={{ type: 'user' }}
             parseResults={JSON.stringify(this.props.sentences.map((s) => s.result))}
             scale={3}
             onSpriteClick={this.props.onSpriteClick}

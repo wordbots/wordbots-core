@@ -2,6 +2,7 @@ import { TYPE_ROBOT } from '../../constants';
 import * as w from '../../types';
 
 export const crawlingWallCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Crawling Wall',
   name: 'Crawling Wall',
   cost: 1,
@@ -18,6 +19,7 @@ export const crawlingWallCard: w.CardInStore = {
 };
 
 export const dojoDiscipleCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Dojo Disciple',
   name: 'Dojo Disciple',
   cost: 1,
@@ -34,6 +36,7 @@ export const dojoDiscipleCard: w.CardInStore = {
 };
 
 export const oneBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'One Bot',
   name: 'One Bot',
   cost: 1,
@@ -47,6 +50,7 @@ export const oneBotCard: w.CardInStore = {
 };
 
 export const madGamblerCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Mad Gambler',
   name: 'Mad Gambler',
   cost: 1,
@@ -64,6 +68,7 @@ export const madGamblerCard: w.CardInStore = {
 };
 
 export const speedyBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Speedy Bot",
   name: "Speedy Bot",
   type: TYPE_ROBOT,
@@ -82,6 +87,7 @@ export const speedyBotCard: w.CardInStore = {
 };
 
 export const bloodSwordmasterCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Blood Swordmaster",
   name: "Blood Swordmaster",
   type: TYPE_ROBOT,
@@ -99,6 +105,7 @@ export const bloodSwordmasterCard: w.CardInStore = {
 };
 
 export const medicBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Medic Bot',
   name: 'Medic Bot',
   cost: 2,
@@ -115,6 +122,7 @@ export const medicBotCard: w.CardInStore = {
 };
 
 export const mercenaryBlacksmithCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Mercenary Blacksmith",
   name: "Mercenary Blacksmith",
   type: TYPE_ROBOT,
@@ -132,6 +140,7 @@ export const mercenaryBlacksmithCard: w.CardInStore = {
 };
 
 export const thornyBushCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Thorny Bush',
   name: 'Thorny Bush',
   cost: 2,
@@ -148,6 +157,7 @@ export const thornyBushCard: w.CardInStore = {
 };
 
 export const twoBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Two Bot',
   name: 'Two Bot',
   cost: 2,
@@ -161,6 +171,7 @@ export const twoBotCard: w.CardInStore = {
 };
 
 export const batteryBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Battery Bot',
   name: 'Battery Bot',
   cost: 3,
@@ -177,6 +188,7 @@ export const batteryBotCard: w.CardInStore = {
 };
 
 export const governmentResearcherCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Government Researcher',
   name: 'Gov\'t Researcher',
   cost: 3,
@@ -193,6 +205,7 @@ export const governmentResearcherCard: w.CardInStore = {
 };
 
 export const hermesCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Hermes",
   name: "Hermes",
   type: TYPE_ROBOT,
@@ -210,6 +223,7 @@ export const hermesCard: w.CardInStore = {
 };
 
 export const kernelEaterCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Kernel Eater",
   name: "Kernel Eater",
   type: TYPE_ROBOT,
@@ -227,6 +241,7 @@ export const kernelEaterCard: w.CardInStore = {
 };
 
 export const martyrBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Martyr Bot',
   name: 'Martyr Bot',
   cost: 3,
@@ -243,6 +258,7 @@ export const martyrBotCard: w.CardInStore = {
 };
 
 export const pacifistCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Pacifist',
   name: 'Pacifist',
   cost: 3,
@@ -259,6 +275,7 @@ export const pacifistCard: w.CardInStore = {
 };
 
 export const recklessBerserkerCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Reckless Berserker",
   name: "Reckless Berserker",
   type: TYPE_ROBOT,
@@ -276,6 +293,7 @@ export const recklessBerserkerCard: w.CardInStore = {
 };
 
 export const recruiterBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Recruiter Bot',
   name: 'Recruiter Bot',
   cost: 3,
@@ -292,6 +310,7 @@ export const recruiterBotCard: w.CardInStore = {
 };
 
 export const recyclerCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Recycler",
   name: "Recycler",
   type: TYPE_ROBOT,
@@ -309,6 +328,7 @@ export const recyclerCard: w.CardInStore = {
 };
 
 export const redBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Red Bot',
   name: 'Red Bot',
   cost: 3,
@@ -322,6 +342,7 @@ export const redBotCard: w.CardInStore = {
 };
 
 export const roboSlugCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Robo Slug",
   name: "Robo Slug",
   type: TYPE_ROBOT,
@@ -339,6 +360,7 @@ export const roboSlugCard: w.CardInStore = {
 };
 
 export const bloodDonorCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Blood Donor',
   name: 'Blood Donor',
   cost: 4,
@@ -355,6 +377,7 @@ export const bloodDonorCard: w.CardInStore = {
 };
 
 export const blueBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Blue Bot',
   name: 'Blue Bot',
   cost: 4,
@@ -368,6 +391,7 @@ export const blueBotCard: w.CardInStore = {
 };
 
 export const defenderBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Defender Bot',
   name: 'Defender Bot',
   cost: 4,
@@ -385,6 +409,7 @@ export const defenderBotCard: w.CardInStore = {
 };
 
 export const energyHoarderCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Energy Hoarder",
   name: "Energy Hoarder",
   type: TYPE_ROBOT,
@@ -402,6 +427,7 @@ export const energyHoarderCard: w.CardInStore = {
 };
 
 export const friendlyRiotShieldCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Friendly Riot Shield',
   name: 'Friendly Riot Shield',
   cost: 4,
@@ -419,6 +445,7 @@ export const friendlyRiotShieldCard: w.CardInStore = {
 };
 
 export const knowledgeBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Knowledge Bot',
   name: 'Knowledge Bot',
   cost: 4,
@@ -435,6 +462,7 @@ export const knowledgeBotCard: w.CardInStore = {
 };
 
 export const leapFrogBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Leap Frog Bot',
   name: 'Leap Frog Bot',
   cost: 4,
@@ -451,6 +479,7 @@ export const leapFrogBotCard: w.CardInStore = {
 };
 
 export const monkeyBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Monkey Bot',
   name: 'Monkey Bot',
   cost: 4,
@@ -467,6 +496,7 @@ export const monkeyBotCard: w.CardInStore = {
 };
 
 export const calmMonkCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Calm Monk',
   name: 'Calm Monk',
   cost: 5,
@@ -483,6 +513,7 @@ export const calmMonkCard: w.CardInStore = {
 };
 
 export const royalGuardCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Royal Guard',
   name: 'Royal Guard',
   cost: 5,
@@ -500,6 +531,7 @@ export const royalGuardCard: w.CardInStore = {
 };
 
 export const botOfPainCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Bot of Pain',
   name: 'Bot of Pain',
   cost: 6,
@@ -516,6 +548,7 @@ export const botOfPainCard: w.CardInStore = {
 };
 
 export const flametongueBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Flametongue Bot',
   name: 'Flametongue Bot',
   cost: 6,
@@ -532,6 +565,7 @@ export const flametongueBotCard: w.CardInStore = {
 };
 
 export const effectiveTrollCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Effective Troll',
   name: 'Effective Troll',
   cost: 7,
@@ -546,6 +580,7 @@ export const effectiveTrollCard: w.CardInStore = {
 };
 
 export const generalBotCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'General Bot',
   name: 'General Bot',
   cost: 7,

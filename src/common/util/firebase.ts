@@ -9,7 +9,7 @@ import 'firebase/database';
 import * as w from '../types';
 
 import { inTest } from './browser';
-import { expandKeywords, loadParserLexicon } from './cards';
+import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -145,7 +145,10 @@ export function listenToRecentCards(callback: (data: any) => any, uid?: string):
     .limitToLast(50)
     .on('value', (snapshot: firebase.database.DataSnapshot) => {
       if (snapshot) {
-        callback(snapshot.val());
+        const unnormalizedCards = snapshot.val();
+        const normalizedCards = mapValues(unnormalizedCards, (card: any) => normalizeCard(card));
+
+        callback(normalizedCards);
       }
     });
 }

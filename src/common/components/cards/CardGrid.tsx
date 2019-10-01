@@ -53,7 +53,7 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
         cardStats={card.stats || {}}
         cost={card.cost}
         baseCost={card.cost}
-        source={card.source}
+        source={card.metadata.source}
         selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
         onCardClick={this.props.onCardClick}
       />

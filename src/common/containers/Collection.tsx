@@ -114,10 +114,13 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     if (selectedCardIds.length === 1) {
       const currentUser: fb.User | null = lookupCurrentUser();
       const card = cards.find((c) => c.id === selectedCardIds[0]);
-      return !!card && card.source !== 'builtin' && (!card.source || (!!currentUser && card.source.uid === currentUser.uid));
-    } else {
-      return false;
+      if (card && currentUser) {
+        const { source } = card.metadata;
+        return source.type === 'user' && source.uid === currentUser.uid;
+      }
     }
+
+    return false;
   }
 
   // For testing.

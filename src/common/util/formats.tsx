@@ -25,7 +25,7 @@ function deckHasAtMostNCopiesPerCard(deck: w.Deck, maxNum: number): boolean {
 }
 
 function deckHasOnlyBuiltinCards(deck: w.Deck): boolean {
-  return deck.cards.every((card) => card.source === 'builtin');
+  return deck.cards.every((card) => card.metadata.source.type === 'builtin');
 }
 
 function deckBelongsToSet(deck: w.Deck, set: w.Set): boolean {

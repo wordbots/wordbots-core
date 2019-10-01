@@ -122,6 +122,7 @@ export function handleTutorialAction(state: State, action: w.Action): State {
 
 const tutorialExclusiveCards: Record<string, w.CardInStore> = {
   upgradeCard: {
+    metadata: { source: { type: 'builtin' } as w.CardSource },
     id: 'upgrade',
     name: 'Upgrade',
     text: 'Give a robot +2 attack and +2 health.',
@@ -130,6 +131,7 @@ const tutorialExclusiveCards: Record<string, w.CardInStore> = {
     type: TYPE_EVENT
   },
   rechargeCard: {
+    metadata: { source: { type: 'builtin' } as w.CardSource },
     id: 'recharge',
     name: 'Recharge',
     text: 'All of your robots can move and attack again.',

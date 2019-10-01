@@ -11,6 +11,7 @@ const getBasicStats = () => ({
 });
 
 export const cantripCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Cantrip',
   name: 'Cantrip',
   text: 'Draw a card.',
@@ -20,6 +21,7 @@ export const cantripCard: w.CardInStore = {
 };
 
 export const attackBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Attack Bot',
   name: 'Attack Bot',
   cost: 1,
@@ -33,6 +35,7 @@ export const attackBotCard: w.CardInStore = {
 };
 
 export const wisdomBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Wisdom Bot',
   name: 'Wisdom Bot',
   cost: 2,
@@ -49,6 +52,7 @@ export const wisdomBotCard: w.CardInStore = {
 };
 
 export const hasteBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Haste Bot',
   name: 'Haste Bot',
   cost: 2,
@@ -65,6 +69,7 @@ export const hasteBotCard: w.CardInStore = {
 };
 
 export const investorBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Investor Bot',
   name: 'Investor Bot',
   cost: 3,
@@ -81,6 +86,7 @@ export const investorBotCard: w.CardInStore = {
 };
 
 export const wrathOfRobotGodCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Wrath of RoboGod',
   name: 'Wrath of RoboGod',
   text: 'Destroy all robots.',
@@ -90,6 +96,7 @@ export const wrathOfRobotGodCard: w.CardInStore = {
 };
 
 export const healthAuraCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Health Aura',
   name: 'Health Aura',
   cost: 3,
@@ -104,6 +111,7 @@ export const healthAuraCard: w.CardInStore = {
 };
 
 export const instantKernelKillerAbilityCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Remove Enemy Kernel',
   name: 'Remove Enemy Kernel',
   text: 'At the end of the turn, deal 21 damage to your opponent\'s kernel.',
@@ -116,6 +124,7 @@ export const instantKernelKillerAbilityCard: w.CardInStore = {
 };
 
 export const reinforcementsCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Reinforcements',
   name: 'Reinforcements',
   text: 'Spawn a 1/2/1 robot named "Reinforcements" on each tile adjacent to your kernel.',
@@ -125,6 +134,7 @@ export const reinforcementsCard: w.CardInStore = {
 };
 
 export const discardMuncherCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Discard Muncher',
   name: 'Discard Muncher',
   text: 'Whenever any card enters your discard pile, gain 1 life.',
@@ -141,6 +151,7 @@ export const discardMuncherCard: w.CardInStore = {
 };
 
 export const fairnessField: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Fairness Field',
   name: 'Fairness Field',
   text: 'Whenever a player draws a card, that player discards a random card.',
@@ -155,6 +166,7 @@ export const fairnessField: w.CardInStore = {
 };
 
 export const looterBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Looter Bot',
   name: 'Looter Bot',
   text: 'Whenever this robot destroys an enemy robot, draw a card.',
@@ -171,6 +183,7 @@ export const looterBotCard: w.CardInStore = {
 };
 
 export const walkingMonkCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Walking Monk',
   name: 'Walking Monk',
   text: 'Whenever this robot moves, gain 1 life.',
@@ -187,6 +200,7 @@ export const walkingMonkCard: w.CardInStore = {
 };
 
 export const thresholderCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Thresholder',
   name: 'Thresholder',
   text: 'This robot has +4 attack if your discard pile has 5 or more cards.',

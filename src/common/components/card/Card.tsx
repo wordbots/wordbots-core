@@ -36,7 +36,7 @@ export interface CardProps {
   stats: Partial<Record<w.Attribute, number | undefined>>
   cost: number
   baseCost?: number
-  source?: w.CardSource
+  source: w.CardSource
   collection?: boolean
 
   visible: boolean
@@ -85,7 +85,7 @@ export default class Card extends React.Component<CardProps, CardState> {
         cardStats={card.stats || {}}
         cost={card.cost}
         baseCost={card.cost}
-        source={card.source}
+        source={card.metadata.source}
         parseResults=""
         {...props}
       />
@@ -210,7 +210,7 @@ export default class Card extends React.Component<CardProps, CardState> {
                   borderRadius: 5 * (scale || 1),
                   userSelect: 'none',
                   cursor: 'pointer',
-                  border: source === 'builtin' ? '3px solid #888' : '3px solid #f44336',
+                  border: source.type === 'builtin' ? '3px solid #888' : '3px solid #f44336',
                   position: 'relative',
                   ...(selected || targetable ? selectedStyle : {})
                 } as React.CSSProperties}

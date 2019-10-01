@@ -2,6 +2,7 @@ import { TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
 
 export const fortificationCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Fortification',
   name: 'Fortification',
   cost: 2,
@@ -16,6 +17,7 @@ export const fortificationCard: w.CardInStore = {
 };
 
 export const energyWellCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Energy Well',
   name: 'Energy Well',
   cost: 2,
@@ -30,6 +32,7 @@ export const energyWellCard: w.CardInStore = {
 };
 
 export const antiGravityFieldCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Anti-Gravity Field",
   name: "Anti-Gravity Field",
   type: TYPE_STRUCTURE,
@@ -45,6 +48,7 @@ export const antiGravityFieldCard: w.CardInStore = {
 };
 
 export const acceleratorCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Accelerator',
   name: 'Accelerator',
   cost: 3,
@@ -59,6 +63,7 @@ export const acceleratorCard: w.CardInStore = {
 };
 
 export const magpieMachineCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: "Magpie Machine",
   name: "Magpie Machine",
   type: TYPE_STRUCTURE,
@@ -74,6 +79,7 @@ export const magpieMachineCard: w.CardInStore = {
 };
 
 export const arenaCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Arena',
   name: 'Arena',
   cost: 3,
@@ -88,6 +94,7 @@ export const arenaCard: w.CardInStore = {
 };
 
 export const killingBeamCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Killing Beam',
   name: 'Killing Beam',
   cost: 4,
@@ -103,6 +110,7 @@ export const killingBeamCard: w.CardInStore = {
 };
 
 export const healingWellCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Healing Well',
   name: 'Healing Well',
   cost: 4,
@@ -118,6 +126,7 @@ export const healingWellCard: w.CardInStore = {
 };
 
 export const mirrorCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Mirror',
   name: 'Mirror',
   cost: 4,
@@ -132,6 +141,7 @@ export const mirrorCard: w.CardInStore = {
 };
 
 export const theBombCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'The Bomb',
   name: 'The Bomb',
   cost: 6,

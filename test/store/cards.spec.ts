@@ -18,6 +18,7 @@ describe('Built-in cards', () => {
       id: 'orangeCore',  // (Object id that is guaranteed to exist.)
       type: TYPE_ROBOT,
       card: {
+        metadata: { source: { type: 'builtin' } as w.CardSource },
         id: 'Test',
         name: 'Test',
         type: TYPE_ROBOT,

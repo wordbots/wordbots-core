@@ -11,7 +11,7 @@ interface CardSelectorCardProps {
 export default class CardSelectorCard extends React.Component<CardSelectorCardProps> {
   public render(): JSX.Element {
     const { card, isSelected } = this.props;
-    const color = card.source === 'builtin' ? '#666' : 'black';
+    const color = card.metadata.source.type === 'builtin' ? '#666' : 'black';
     const backgroundColor = isSelected ? '#BBB' : 'white';
 
     return (

@@ -42,7 +42,8 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
 
     listenToRecentCards((data) => {
       let recentCards = uniqBy(Object.values(data as w.CardInStore[]), 'name')
-                            .filter((card) => card.text && card.source && card.source !== 'builtin' && (!userId || card.source.uid === userId))
+                            // Filter out cards with no text, private cards, built-in cards, etc.
+                            .filter((c) => c.text && !c.metadata.isPrivate && c.metadata.source.type === 'user' && (!userId || c.metadata.source.uid === userId))
                             .reverse()
                             .slice(0, 10);
 
@@ -114,13 +115,6 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private handleClickCard = (card: w.CardInStore) => {
-    const { userId, username } = this.props;
-    // Provide a source field if it's missing on the card.
-    const cardWithSource: w.CardInStore = {
-      ...card,
-      source: card.source && card.source !== 'user' ? card.source : (userId && username ? { uid: userId, username } : undefined)
-    };
-
-    this.props.history.push(`/card/${card.id}`, { card: cardWithSource });
+    this.props.history.push(`/card/${card.id}`, { card });
   }
 }

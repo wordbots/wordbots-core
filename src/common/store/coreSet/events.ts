@@ -2,6 +2,7 @@ import { TYPE_EVENT } from '../../constants';
 import * as w from '../../types';
 
 export const incinerateCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Incinerate',
   name: 'Incinerate',
   text: 'Gain energy equal to the total power of robots you control. Destroy all robots you control.',
@@ -14,6 +15,7 @@ export const incinerateCard: w.CardInStore = {
 };
 
 export const superchargeCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Supercharge',
   name: 'Supercharge',
   text: 'Gain 2 energy.',
@@ -23,6 +25,7 @@ export const superchargeCard: w.CardInStore = {
 };
 
 export const concentrationCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Concentration',
   name: 'Concentration',
   text: 'Draw 2 cards.',
@@ -32,6 +35,7 @@ export const concentrationCard: w.CardInStore = {
 };
 
 export const consumeCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Consume',
   name: 'Consume',
   text: 'Discard a robot card. Gain life equal to its health.',
@@ -44,6 +48,7 @@ export const consumeCard: w.CardInStore = {
 };
 
 export const gustOfWindCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Gust of Wind',
   name: 'Gust of Wind',
   text: 'Move a robot up to 2 spaces.',
@@ -53,6 +58,7 @@ export const gustOfWindCard: w.CardInStore = {
 };
 
 export const smashCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Smash',
   name: "Smash",
   type: TYPE_EVENT,
@@ -64,6 +70,7 @@ export const smashCard: w.CardInStore = {
 };
 
 export const vampirePotionCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Vampire Potion',
   name: 'Vampire Potion',
   text: 'Give a robot "When this robot attacks, restore 3 health to your kernel"',
@@ -73,6 +80,7 @@ export const vampirePotionCard: w.CardInStore = {
 };
 
 export const designatedSurvivorCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Designated Survivor',
   name: 'Designated Survivor',
   text: 'Double a robot\'s health',
@@ -82,6 +90,7 @@ export const designatedSurvivorCard: w.CardInStore = {
 };
 
 export const discountCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Discount',
   name: 'Discount',
   text: 'Reduce the cost of all cards in your hand by 1.',
@@ -91,6 +100,7 @@ export const discountCard: w.CardInStore = {
 };
 
 export const equalizeCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Equalize',
   name: 'Equalize',
   text: 'Set the attack of all robots equal to their health',
@@ -100,6 +110,7 @@ export const equalizeCard: w.CardInStore = {
 };
 
 export const firestormCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Firestorm',
   name: 'Firestorm',
   text: 'Deal 1 damage to everything adjacent to a tile.',
@@ -109,6 +120,7 @@ export const firestormCard: w.CardInStore = {
 };
 
 export const rampageCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Rampage',
   name: 'Rampage',
   text: 'Give all robots you control +2 attack.',
@@ -118,6 +130,7 @@ export const rampageCard: w.CardInStore = {
 };
 
 export const shockCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Shock',
   name: 'Shock',
   text: 'Deal 3 damage to a robot.',
@@ -127,6 +140,7 @@ export const shockCard: w.CardInStore = {
 };
 
 export const missileStrikeCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Missile Strike',
   name: 'Missile Strike',
   text: 'Deal 4 damage to your opponent.',
@@ -136,6 +150,7 @@ export const missileStrikeCard: w.CardInStore = {
 };
 
 export const threedomCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Threedom',
   name: 'Threedom',
   text: 'Set all stats of all robots in play to 3.',
@@ -145,6 +160,7 @@ export const threedomCard: w.CardInStore = {
 };
 
 export const wisdomCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Wisdom',
   name: 'Wisdom',
   text: 'Draw cards equal to the number of robots you control.',
@@ -154,6 +170,7 @@ export const wisdomCard: w.CardInStore = {
 };
 
 export const earthquakeCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Earthquake',
   name: 'Earthquake',
   text: 'Destroy all robots that have less than 2 speed.',
@@ -163,6 +180,7 @@ export const earthquakeCard: w.CardInStore = {
 };
 
 export const greatSimplificationCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Great Simplification',
   name: 'Great Simplification',
   text: 'Remove all abilities from all robots',
@@ -172,6 +190,7 @@ export const greatSimplificationCard: w.CardInStore = {
 };
 
 export const empCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'EMP',
   name: 'EMP',
   text: 'Set the attack and speed of all robots to 0. \nGive all robots "Activate: Destroy this robot".',
@@ -184,6 +203,7 @@ export const empCard: w.CardInStore = {
 };
 
 export const explosiveBoostCard: w.CardInStore = {
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Explosive Boost',
   name: 'Explosive Boost',
   text: 'Give your robots +2 attack and +2 health. Deal 1 damage to each enemy object',

@@ -57,13 +57,11 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
     );
   }
 
-  private sourceToString(source?: w.CardSource): string {
-    if (source === 'builtin') {
+  private sourceToString(source: w.CardSource): string {
+    if (source.type === 'builtin') {
       return 'Built-In';
-    } else if (source) {
-      return source.username;
     } else {
-      return '';
+      return source.username || '';
     }
   }
 
@@ -104,11 +102,11 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
     <TableRow
       key={card.id || id()}
       selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
-      selectable={!this.props.selectable || card.source !== 'builtin'}
+      selectable={!this.props.selectable || card.metadata.source.type === 'builtin'}
     >
       <TableRowColumn style={{width: 130}}>{card.name}</TableRowColumn>
       <TableRowColumn style={{width: 50}}>{typeToString(card.type)}</TableRowColumn>
-      <TableRowColumn style={{width: 50}}>{this.sourceToString(card.source)}</TableRowColumn>
+      <TableRowColumn style={{width: 50}}>{this.sourceToString(card.metadata.source)}</TableRowColumn>
       <TableRowColumn>{card.text}</TableRowColumn>
       <TableRowColumn style={{width: 30, textAlign: 'center'}}>{this.renderCardRowStat('attack', card.stats)}</TableRowColumn>
       <TableRowColumn style={{width: 30, textAlign: 'center'}}>{this.renderCardRowStat('health', card.stats)}</TableRowColumn>

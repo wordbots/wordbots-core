@@ -152,7 +152,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         cost: 0,
         id: `token/${id()}`,
         name: name || 'Token',
-        // source: 'generated',
+        metadata: {
+          source: { type: 'generated' }
+        },
         stats: attributes,
         type: stringToType(objectType)
       };

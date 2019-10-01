@@ -33,7 +33,7 @@ export default class CardInHand extends React.Component<CardInHandProps> {
       status, selected, targetable, visible, margin, rotation, yTranslation, zIndex
     } = this.props;
     if (isCardVisible(card)) {
-      const { baseCost, id, img, name, source, stats, text, type, spriteID, spriteV } = card;
+      const { baseCost, id, img, name, metadata, stats, text, type, spriteID, spriteV } = card;
 
       return (
         <TutorialTooltip
@@ -44,13 +44,14 @@ export default class CardInHand extends React.Component<CardInHandProps> {
         >
           <div>
             <Card
-              {...{ id, baseCost, img, name, source, spriteID, spriteV, type }}
+              {...{ id, baseCost, img, name, spriteID, spriteV, type }}
 
               text={Sentence.fromText(text)}
               rawText={text || ''}
               cost={getCost(card)}
               stats={stats || {}}
               cardStats={stats || {}}
+              source={metadata.source}
 
               {...{ status, selected, targetable, visible, margin, rotation, yTranslation, zIndex }}
 

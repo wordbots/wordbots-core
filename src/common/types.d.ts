@@ -12,7 +12,6 @@ export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
 export type BuiltInFormat = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type CardId = string;
-export type CardSource = 'builtin' | { uid: string, username: string, duplicatedFrom?: string };
 export type CardType = 0 | 1 | 2 | 3;
 export type Cause = 'combat' | 'anyevent';
 export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack' | 'cannotfightback' | 'cannotmove' | 'canonlyattack';
@@ -86,14 +85,25 @@ export interface CardInStore {
   text?: string
   abilities?: string[]
   command?: StringRepresentationOf<(state: GameState) => any> | Array<StringRepresentationOf<(state: GameState) => any>>
-  source?: CardSource
   spriteV?: number
   parserV?: number | null
-  timestamp?: timestamp
+  metadata: {
+    source: CardSource
+    created?: timestamp
+    updated?: timestamp
+    duplicatedFrom?: CardId
+    isPrivate?: boolean
+  }
 }
 
 export interface ObfuscatedCard {
   id: string
+}
+
+export interface CardSource {
+  type: 'builtin' | 'user' | 'generated'  // For 'generated', see targets['generateCard']
+  uid?: string
+  username?: string
 }
 
 export interface Set {

@@ -17,14 +17,16 @@ const coreCard = {
     health: STARTING_PLAYER_HEALTH
   },
   abilities: [],
-  source: 'builtin' as w.CardSource
+  metadata: {
+    source: { type: 'builtin' } as w.CardSource
+  }
 };
 
 export const blueCoreCard: w.CardInGame = {
   ...coreCard,
   id: 'blueKernel',
   name: 'Blue Kernel',
-  img: 'core_blue'
+  img: 'core_blue',
 };
 
 export const orangeCoreCard: w.CardInGame = {

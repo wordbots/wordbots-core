@@ -22,8 +22,7 @@ import { indexParsedSentence, lookupCurrentUser, saveRecentCard, saveUserData } 
 
 export function areIdenticalCards(card1: w.CardInStore, card2: w.CardInStore): boolean {
   // Ignore if one card is explicitly a duplicate of the other.
-  if ((card2.source && card2.source !== 'builtin' && card2.source!.duplicatedFrom === card1.id) ||
-    (card1.source && card1.source !== 'builtin' && card1.source!.duplicatedFrom === card2.id)) {
+  if ((card2.metadata.duplicatedFrom === card1.id) || (card1.metadata.duplicatedFrom === card2.id)) {
     return false;
   }
 
@@ -91,9 +90,13 @@ export function replaceCardsInPlayerState(
   };
 }
 
-function cardSourceForCurrentUser(): w.CardSource | undefined {
+function cardSourceForCurrentUser(): w.CardSource {
   const user = lookupCurrentUser();
-  return user ? { uid: user.uid, username: user.displayName || user.uid } : undefined;
+  return {
+    type: 'user',
+    uid: user ? user.uid : undefined,
+    username: user ? user.displayName! : undefined
+  };
 }
 
 //
@@ -130,7 +133,7 @@ export function isCardVisible(card: w.CardInStore, filters: any = {}, costRange 
 // Converts card from cardCreator store format -> format for collection and game stores.
 export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   const {
-    attack, cost, health, id, name, parserVersion,
+    attack, cost, health, id, isPrivate, name, parserVersion,
     sentences: rawSentences, speed, spriteID, type
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
@@ -145,8 +148,12 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     parserV: parserVersion,
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
     cost,
-    source: cardSourceForCurrentUser(),
-    timestamp: Date.now()
+    metadata: {
+      source: cardSourceForCurrentUser(),
+      created: Date.now(),
+      updated: Date.now(),
+      isPrivate: !!isPrivate
+    }
   };
 
   if (type === TYPE_EVENT) {
@@ -170,7 +177,7 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 
   const [timestamp, cost, name, type, attack, health, speed] = [
     // we want timestamp to be sorted backwards compared to other fields.
     // also, created cards without a timestamp should still come before builtin cards.
-    (c: w.CardInStore) => (9999999999999 - (c.timestamp || (c.source === 'builtin' ? 0 : 1))).toString(36),
+    (c: w.CardInStore) => (9999999999999 - (c.metadata.updated || (c.metadata.source.type === 'builtin' ? 0 : 1))).toString(36),
     (c: w.CardInStore) => c.cost.toString(36),
     (c: w.CardInStore) => c.name.toLowerCase(),
     (c: w.CardInStore) => typeToString(c.type),
@@ -349,10 +356,9 @@ export function contractKeywords(sentence: string): string {
 //
 
 export function cardsToJson(cards: w.CardInStore[]): string {
-  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats', 'timestamp'];
+  const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats', 'metadata'];
   const cardsToExport = cards.map((card) => ({
     ...pick(card, exportedFields),
-    source: card.source || cardSourceForCurrentUser(),
     schema: CARD_SCHEMA_VERSION
   }));
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
@@ -365,18 +371,44 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
     .map((card: w.CardInStore) => ({
       ...omit(card, ['schema']),
       id: generateId(),
-      timestamp: card.timestamp || Date.now()
+      metadata: {
+        ...card.metadata,
+        created: card.metadata.created || Date.now(),
+        updated: card.metadata.updated || Date.now()
+      }
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
+}
+
+/** Given a card (e.g. from Firebase) that may be in an older format, return a valid CardInStore. */
+export function normalizeCard(card: w.CardInStore, set?: w.Set): w.CardInStore {
+  function normalizeSource(source: any): w.CardSource {
+    // Correctly resolve card source for old cards with source == 'user' or source == 'builtin'
+    if (source === 'builtin') {
+      return { type: 'builtin' };
+    } else if (source === 'user') {
+      return set ? { type: 'user', uid: set.metadata.authorId, username: set.metadata.authorName } : cardSourceForCurrentUser();
+    } else {
+      return { ...source, type: 'user' };
+    }
+  }
+
+  return {
+    ...card,
+    metadata: card.metadata || {
+      // Build metadata field for older cards without it
+      source: normalizeSource((card as any).source),
+      updated: (card as any).timestamp,
+      duplicatedFrom: (card as any).source && (card as any).source.duplicatedFrom,
+      isPrivate: false
+    } as w.CardInStore['metadata']
+  };
 }
 
 export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
   if (data) {
     if (data.cards) {
-      const cardsFromFirebase = data.cards.map((card: w.CardInStore) => ({
-        ...card,
-        source: card.source === 'user' ? cardSourceForCurrentUser() : card.source  // Correctly resolve card source for old cards with source == 'user'
-      })) || [];
+      const cardsFromFirebase = data.cards.map(normalizeCard) || [];
       state.cards = uniqBy(state.cards.concat(cardsFromFirebase), 'id');
     }
   } else {
@@ -394,18 +426,14 @@ export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.Co
 }
 
 export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
-  // Correctly resolve card source for old cards with source == 'user'
-  const correctCardSources = (set: w.Set): w.Set => ({
+  const normalizeCards = (set: w.Set): w.Set => ({
     ...set,
-    cards: set.cards.map((card) => ({
-      ...card,
-      source: card.source === 'user' ? { uid: set.metadata.authorId, username: set.metadata.authorName } : card.source
-    }))
+    cards: set.cards.map((card) => normalizeCard(card, set))
   });
 
   return {
     ...state,
-    sets: data ? (data.sets ? (data.sets as w.Set[]).map(correctCardSources) : state.sets) : defaultState.sets
+    sets: data ? (data.sets ? (data.sets as w.Set[]).map(normalizeCards) : state.sets) : defaultState.sets
   };
 }
 
@@ -419,7 +447,7 @@ export function saveCardToFirebase(card: w.CardInStore): void {
 
 // Saves a card to the user's collection
 export function saveCardsToFirebase(state: w.CollectionState): void {
-  saveUserData('cards', state.cards.filter((c) => c.source && c.source !== 'builtin'));
+  saveUserData('cards', state.cards.filter((c) => c.metadata.source.type !== 'builtin'));
 }
 
 export function saveDecksToFirebase(state: w.CollectionState): void {

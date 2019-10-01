@@ -260,6 +260,7 @@ export const event = (
   text: string,
   command: w.StringRepresentationOf<(state: w.GameState) => any> | Array<w.StringRepresentationOf<(state: w.GameState) => any>>
 ): w.CardInStore => ({
+  metadata: { source: { type: 'builtin' } as w.CardSource },
   id: text,
   name: text,
   text,

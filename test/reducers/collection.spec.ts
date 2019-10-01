@@ -19,7 +19,11 @@ describe('Collection reducer', () => {
       ...oneBotCard,
       id: newCard.id,
       name: 'Copy of One Bot',
-      source: { uid: 'test-user-id', username: 'test-user-name', duplicatedFrom: oneBotCard.id }
+      metadata: {
+        ...newCard.metadata,
+        source: { type: 'user', uid: 'test-user-id', username: 'test-user-name' },
+        duplicatedFrom: oneBotCard.id
+      }
     });
   });
 });

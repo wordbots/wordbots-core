@@ -6,20 +6,17 @@ import ProfileLink from '../users/ProfileLink';
 
 export default class CardProvenanceDescription extends React.Component<{card: w.CardInStore, style?: React.CSSProperties}> {
   public render(): React.ReactNode {
-    const { source, timestamp } = this.props.card;
+    const { source, updated } = this.props.card.metadata;
     if (source) {
       return (
         <div style={this.props.style || {}}>
-          {source === 'builtin'
+          {source.type === 'builtin'
             ? 'Built-in card.'
             : (
               <span>
                 Created by{' '}
-                {(source as any) === 'user'
-                  ? <i>unknown user</i>
-                  : <ProfileLink uid={source.uid} username={source.username} />
-                }
-                . {timestamp && `Last modified ${moment(timestamp).format('ll')}.`}
+                {!source.uid ? <i>unknown user</i> : <ProfileLink uid={source.uid!} username={source.username!} />}
+                . {updated && `Last modified ${moment(updated).format('ll')}.`}
               </span>
             )
           }

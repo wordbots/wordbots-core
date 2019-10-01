@@ -20,9 +20,11 @@ describe('Collection container', () => {
 
   const customCardId = 'customCardId';
   const customCard = {
+    metadata: {
+      source: { type: 'user' }
+    },
     id: customCardId,
     name: 'Custom Card',
-    source: 'user',
     type: 1,
     cost: 1,
     text: ''

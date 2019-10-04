@@ -18,14 +18,22 @@
       "$key": {
         ".write": "auth != null && (!newData.exists() || newData.child('metadata/authorId').val() == auth.uid) && (!data.exists() || (data.child('metadata/authorId').val() == auth.uid && (!newData.exists() || data.child('metadata/isPublished').val() != true)))"
       },
-      ".indexOn": ["timestamp", "metadata/authorId"]
+      ".indexOn": ["timestamp", "metadata/authorId", "metadata/numDecksCreated"]
     },
     "recentCards": {
+      /* deprecated */
       ".read": "true",
       "$key": {
         ".write": "!data.exists()"
       },
       ".indexOn": "timestamp"
+    },
+    "cards": {
+      ".read": "true",
+      "$key": {
+        ".write": "auth != null && (!newData.exists() || newData.child('metadata/source/uid').val() == auth.uid) && (!data.exists() || (data.child('metadata/source/uid').val() == auth.uid))"
+      },
+      ".indexOn": ["metadata/source/uid", "metadata/updated"]
     },
     "decks": {
       ".read": "true",

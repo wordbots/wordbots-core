@@ -1,10 +1,10 @@
 import { History } from 'history';
-import { range, uniqBy } from 'lodash';
+import { chain as _, range } from 'lodash';
 import * as React from 'react';
 import Carousel, { ResponsiveObject } from 'react-slick';
 
 import * as w from '../../types';
-import { listenToRecentCards } from '../../util/firebase';
+import { listenToCards } from '../../util/firebase';
 import Card from '../card/Card';
 
 import CardProvenanceDescription from './CardProvenanceDescription';
@@ -40,12 +40,17 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   public componentDidMount(): void {
     const { userId } = this.props;
 
-    listenToRecentCards((data) => {
-      let recentCards = uniqBy(Object.values(data as w.CardInStore[]), 'name')
-                            // Filter out cards with no text, private cards, built-in cards, etc.
-                            .filter((c) => c.text && !c.metadata.isPrivate && c.metadata.source.type === 'user' && (!userId || c.metadata.source.uid === userId))
-                            .reverse()
-                            .slice(0, 10);
+    listenToCards((data) => {
+      let recentCards: w.CardInStore[] = _(Object.values(data) as w.CardInStore[])
+        .uniqBy('name')
+        // Filter out cards w/o text, cards w/o timestamp, private cards, duplicates, built-in cards, etc.
+        .filter((c: w.CardInStore) =>
+          !!c.text && !!c.metadata.updated && !c.metadata.isPrivate
+            && !c.metadata.duplicatedFrom && c.metadata.source.type === 'user' && (!userId || c.metadata.source.uid === userId
+        ))
+        .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
+        .slice(0, 10)
+        .value();
 
       if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
         // eslint-disable-next-line no-loops/no-loops

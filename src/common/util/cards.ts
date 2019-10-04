@@ -14,7 +14,7 @@ import defaultState from '../store/defaultCollectionState';
 import * as w from '../types';
 
 import { compareCertainKeys, id as generateId } from './common';
-import { indexParsedSentence, lookupCurrentUser, saveRecentCard, saveUserData } from './firebase';
+import { indexParsedSentence, lookupCurrentUser, saveCard, saveUserData } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
@@ -373,8 +373,10 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
       id: generateId(),
       metadata: {
         ...card.metadata,
-        created: card.metadata.created || Date.now(),
-        updated: card.metadata.updated || Date.now()
+        source: cardSourceForCurrentUser(),
+        duplicatedFrom: 'json-import',  // TODO maybe this should be a separate metadata field
+        created: (card.metadata && card.metadata.created) || Date.now(),
+        updated: Date.now()
       }
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
@@ -441,13 +443,8 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
 export function saveCardToFirebase(card: w.CardInStore): void {
   // No point in keeping track of recent "vanilla" (text-less) cards
   if (card.text) {
-    saveRecentCard(card);
+    saveCard(card);
   }
-}
-
-// Saves a card to the user's collection
-export function saveCardsToFirebase(state: w.CollectionState): void {
-  saveUserData('cards', state.cards.filter((c) => c.metadata.source.type !== 'builtin'));
 }
 
 export function saveDecksToFirebase(state: w.CollectionState): void {

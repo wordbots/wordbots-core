@@ -3,7 +3,7 @@ import { isUndefined, omitBy, pick } from 'lodash';
 import * as w from '../../types';
 import {
   areIdenticalCards, cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
-  loadDecksFromFirebase, loadSetsFromFirebase, saveCardsToFirebase, saveCardToFirebase, saveDecksToFirebase, splitSentences
+  loadDecksFromFirebase, loadSetsFromFirebase, saveCardToFirebase, saveDecksToFirebase, splitSentences
 } from '../../util/cards';
 import { id } from '../../util/common';
 import * as firebase from '../../util/firebase';
@@ -13,7 +13,9 @@ type State = w.CollectionState;
 const cardsHandlers = {
   deleteCards: (state: State, ids: string[]): State => {
     state.cards = state.cards.filter((c: w.CardInStore) => !ids.includes(c.id));
-    saveCardsToFirebase(state);
+    // The firebase update needs to run right after we finish handling the delete action,
+    // to avoid "You may not call store.getState() while the reducer is executing" exceptions
+    setTimeout(() => firebase.removeCards(ids), 0);
     return state;
   },
 
@@ -49,7 +51,7 @@ const cardsHandlers = {
         }
       };
 
-      saveCard(state, duplicateCard, false);
+      saveCard(state, duplicateCard);
     }
 
     return state;
@@ -97,7 +99,7 @@ const cardsHandlers = {
   },
 
   importCards: (state: State, json: string): State => {
-    cardsFromJson(json, (card) => { saveCard(state, card, false); });
+    cardsFromJson(json, (card) => { saveCard(state, card); });
     return state;
   },
 
@@ -157,9 +159,9 @@ const cardsHandlers = {
     };
   },
 
-  saveCard: (state: State, cardProps: w.CreatorState, saveToRecentCards: boolean): State => {
+  saveCard: (state: State, cardProps: w.CreatorState): State => {
     const card = createCardFromProps(cardProps);
-    return saveCard(state, card, saveToRecentCards);
+    return saveCard(state, card);
   },
 
   saveExistingCard: (state: State, card: w.CardInStore): State => {
@@ -203,7 +205,7 @@ const cardsHandlers = {
 };
 
 // Saves a card, either as a new card or replacing an existing card.
-function saveCard(state: State, card: w.CardInStore, saveToRecentCards: boolean = true): State {
+function saveCard(state: State, card: w.CardInStore): State {
 
   // Is there already a card with the same ID (i.e. we're currently editing it)
   // or that is identical to the saved card (i.e. we're replacing it with a card with the same name)?
@@ -212,21 +214,16 @@ function saveCard(state: State, card: w.CardInStore, saveToRecentCards: boolean 
   if (existingCard) {
     // Editing an existing card.
     const { source } = existingCard.metadata;
-    if (source.type === 'builtin' || source.uid !== firebase.lookupCurrentUser()!.uid) {
+    if (!source || source.type === 'builtin' || source.uid !== firebase.lookupCurrentUser()!.uid) {
       // TODO Log warning about not being about not being able to replace builtin cards.
     } else {
       Object.assign(existingCard, card, {id: existingCard.id});
     }
   } else {
     state.cards.push(card);
-
-    // And save it to "Recent Cards" carousel
-    if (saveToRecentCards) {
-      saveCardToFirebase(card);
-    }
+    saveCardToFirebase(card);
   }
 
-  saveCardsToFirebase(state);
   return state;
 }
 

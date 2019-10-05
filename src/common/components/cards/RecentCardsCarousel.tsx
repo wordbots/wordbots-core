@@ -60,7 +60,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
       }
 
       this.setState({ recentCards });
-    }, userId);
+    }, userId || null);
   }
 
   public render(): JSX.Element | null {

@@ -3,7 +3,7 @@ import { isUndefined, omitBy, pick } from 'lodash';
 import * as w from '../../types';
 import {
   areIdenticalCards, cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
-  loadDecksFromFirebase, loadSetsFromFirebase, saveCardToFirebase, saveDecksToFirebase, splitSentences
+  loadDecksFromFirebase, loadSetsFromFirebase, saveDecksToFirebase, splitSentences
 } from '../../util/cards';
 import { id } from '../../util/common';
 import * as firebase from '../../util/firebase';
@@ -221,7 +221,7 @@ function saveCard(state: State, card: w.CardInStore): State {
     }
   } else {
     state.cards.push(card);
-    saveCardToFirebase(card);
+    firebase.saveCard(card);
   }
 
   return state;

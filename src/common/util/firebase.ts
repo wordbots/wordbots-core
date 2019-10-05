@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, identity, isUndefined, mapValues, omitBy, orderBy, uniq, uniqBy } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, identity, mapValues, orderBy, uniq, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -10,6 +10,7 @@ import * as w from '../types';
 
 import { inTest } from './browser';
 import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
+import { withoutEmptyFields } from './common';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -142,7 +143,7 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 // Cards and text
 
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */
-export function listenToCards(callback: (data: any) => any, uid?: string): void {
+export function listenToCards(callback: (data: any) => any, uid: string | null): void {
   const ref = uid
     ? fb.database().ref('cards').orderByChild('metadata/source/uid').equalTo(uid)
     : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
@@ -227,7 +228,7 @@ export function saveCard(card: w.Card): void {
     // see firebaseRules.json - this save will only succeed if either:
     //   (i) there is no card yet with the given id
     //   (ii) the card with the given id was created by the logged-in user
-    .update(omitBy(card, isUndefined));
+    .update(withoutEmptyFields(card));
 }
 
 export function removeCards(cardIds: string[]): void {

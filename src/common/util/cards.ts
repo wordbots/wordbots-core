@@ -14,7 +14,7 @@ import defaultState from '../store/defaultCollectionState';
 import * as w from '../types';
 
 import { compareCertainKeys, id as generateId } from './common';
-import { indexParsedSentence, lookupCurrentUser, saveCard, saveUserData } from './firebase';
+import { indexParsedSentence, lookupCurrentUser, saveUserData } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
@@ -407,7 +407,7 @@ export function normalizeCard(card: w.CardInStore, set?: w.Set): w.CardInStore {
   };
 }
 
-export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
+export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.CollectionState {
   if (data) {
     if (data.cards) {
       const cardsFromFirebase = data.cards.map(normalizeCard) || [];
@@ -437,14 +437,6 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
     ...state,
     sets: data ? (data.sets ? (data.sets as w.Set[]).map(normalizeCards) : state.sets) : defaultState.sets
   };
-}
-
-// Saves a card to the Recent Cards carousel
-export function saveCardToFirebase(card: w.CardInStore): void {
-  // No point in keeping track of recent "vanilla" (text-less) cards
-  if (card.text) {
-    saveCard(card);
-  }
 }
 
 export function saveDecksToFirebase(state: w.CollectionState): void {

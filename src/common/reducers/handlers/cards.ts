@@ -2,7 +2,7 @@ import { isUndefined, omitBy, pick } from 'lodash';
 
 import * as w from '../../types';
 import {
-  areIdenticalCards, cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
+  cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
   loadDecksFromFirebase, loadSetsFromFirebase, saveDecksToFirebase, splitSentences
 } from '../../util/cards';
 import { id } from '../../util/common';

@@ -93,6 +93,7 @@ export interface CardInStore {
     updated?: timestamp
     duplicatedFrom?: CardId
     isPrivate?: boolean
+    importedFromJson?: timestamp
   }
 }
 

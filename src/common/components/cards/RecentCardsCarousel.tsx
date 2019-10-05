@@ -43,11 +43,14 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     listenToCards((data) => {
       let recentCards: w.CardInStore[] = _(Object.values(data) as w.CardInStore[])
         .uniqBy('name')
-        // Filter out cards w/o text, cards w/o timestamp, private cards, duplicates, built-in cards, etc.
-        .filter((c: w.CardInStore) =>
-          !!c.text && !!c.metadata.updated && !c.metadata.isPrivate
-            && !c.metadata.duplicatedFrom && c.metadata.source.type === 'user' && (!userId || c.metadata.source.uid === userId
-        ))
+        .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
+          !!c.text  // cards without text (uninteresting)
+            && !!c.metadata.updated  // cards without timestamp (can't order them)
+            && c.metadata.source.type === 'user'  // built-in cards
+            && !c.metadata.isPrivate  // private cards
+            && !c.metadata.duplicatedFrom  // duplicated cards
+            && !c.metadata.importedFromJson  // cards imported from JSON
+        )
         .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
         .slice(0, 10)
         .value();

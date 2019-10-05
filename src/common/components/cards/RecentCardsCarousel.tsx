@@ -40,6 +40,9 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   public componentDidMount(): void {
     const { userId } = this.props;
 
+    // TODO cancel this subscription in componentWillUnmount(), to fix:
+    //   backend.js:1 Warning: Can't perform a React state update on an unmounted component.
+    //   This is a no-op, but it indicates a memory leak in your application.
     listenToCards((data) => {
       let recentCards: w.CardInStore[] = _(Object.values(data) as w.CardInStore[])
         .uniqBy('name')

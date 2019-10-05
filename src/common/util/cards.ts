@@ -13,22 +13,12 @@ import * as g from '../guards';
 import defaultState from '../store/defaultCollectionState';
 import * as w from '../types';
 
-import { compareCertainKeys, id as generateId } from './common';
+import { id as generateId } from './common';
 import { indexParsedSentence, lookupCurrentUser, saveUserData } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
 //
-
-export function areIdenticalCards(card1: w.CardInStore, card2: w.CardInStore): boolean {
-  // Ignore if one card is explicitly a duplicate of the other.
-  if ((card2.metadata.duplicatedFrom === card1.id) || (card1.metadata.duplicatedFrom === card2.id)) {
-    return false;
-  }
-
-  // TODO: Check abilities/command rather than text.
-  return compareCertainKeys(card1, card2, ['type', 'cost', 'text', 'stats']);
-}
 
 export function cardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInStore[] {
   const set: w.Set | null = deck.setId && sets.find((s) => s.id === deck.setId) || null;

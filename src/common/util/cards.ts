@@ -374,9 +374,9 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
       metadata: {
         ...card.metadata,
         source: cardSourceForCurrentUser(),
-        duplicatedFrom: 'json-import',  // TODO maybe this should be a separate metadata field
         created: (card.metadata && card.metadata.created) || Date.now(),
-        updated: Date.now()
+        updated: Date.now(),
+        importedFromJson: Date.now()
       }
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });

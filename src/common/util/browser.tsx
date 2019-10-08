@@ -78,5 +78,10 @@ export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {
 // to avoid "You may not call store.getState() while the reducer is executing" exceptions.
 // The easiest solution for now is to just use setTimeout, but it's pretty gross. TODO find a better way.
 export function defer(fn: () => void): void {
-  setTimeout(fn, 0);
+  if (inBrowser()) {
+    setTimeout(fn, 0);
+  } else {
+    // This branch mainly for tests
+    fn();
+  }
 }

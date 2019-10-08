@@ -141,7 +141,7 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */
 export function listenToCards(callback: (data: any) => any, uid: string | null): void {
   const ref = uid
-    ? fb.database().ref('cards').orderByChild('metadata/source/uid').equalTo(uid)
+    ? fb.database().ref('cards').orderByChild('metadata/ownerId').equalTo(uid)
     : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
 
   ref.on('value', (snapshot: firebase.database.DataSnapshot) => {

@@ -1,6 +1,7 @@
 import { isUndefined, omitBy, pick } from 'lodash';
 
 import * as w from '../../types';
+import { defer } from '../../util/browser';
 import {
   cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
   loadDecksFromFirebase, loadSetsFromFirebase, saveDecksToFirebase, splitSentences
@@ -13,9 +14,7 @@ type State = w.CollectionState;
 const cardsHandlers = {
   deleteCards: (state: State, ids: string[]): State => {
     state.cards = state.cards.filter((c: w.CardInStore) => !ids.includes(c.id));
-    // The firebase update needs to run right after we finish handling the delete action,
-    // to avoid "You may not call store.getState() while the reducer is executing" exceptions
-    setTimeout(() => firebase.removeCards(ids), 0);
+    defer(() => firebase.removeCards(ids));
     return state;
   },
 
@@ -213,17 +212,18 @@ function saveCard(state: State, card: w.CardInStore): State {
   if (existingCard) {
     // Editing an existing card.
     const { source } = existingCard.metadata;
-    if (!source || source.type === 'builtin' || source.uid !== firebase.lookupCurrentUser()!.uid) {
-      throw new Error("Can't edit this card! Maybe it's a built-in card or a card that doesn't belong to you?");
+    if (source && source.type !== 'builtin' && source.uid === firebase.lookupCurrentUser()!.uid) {
+      Object.assign(existingCard, card, { id: existingCard.id });
     } else {
-      Object.assign(existingCard, card, {id: existingCard.id});
+      alert("Can't edit this card! Maybe it's a built-in card or a card that doesn't belong to you?");
+      return state;
     }
   } else {
     // Creating a new card.
     state.cards.push(card);
   }
 
-  firebase.saveCard(card);
+  defer(() => firebase.saveCard(card));
   return state;
 }
 

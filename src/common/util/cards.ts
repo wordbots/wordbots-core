@@ -139,6 +139,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
     cost,
     metadata: {
+      ownerId: cardSourceForCurrentUser().uid!,
       source: cardSourceForCurrentUser(),
       created: Date.now(),
       updated: Date.now(),
@@ -373,28 +374,30 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
 }
 
 /** Given a card (e.g. from Firebase) that may be in an older format, return a valid CardInStore. */
-export function normalizeCard(card: w.CardInStore, set?: w.Set): w.CardInStore {
-  function normalizeSource(source: any): w.CardSource {
+export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource): w.CardInStore {
+  function normalizeSource(cardSource: any): w.CardSource {
     // Correctly resolve card source for old cards with source == 'user' or source == 'builtin'
-    if (source === 'builtin') {
+    if (cardSource === 'builtin') {
       return { type: 'builtin' };
-    } else if (source === 'user') {
-      return set ? { type: 'user', uid: set.metadata.authorId, username: set.metadata.authorName } : cardSourceForCurrentUser();
+    } else if (cardSource === 'user') {
+      return explicitSource || cardSourceForCurrentUser();
     } else {
-      return { ...source, type: 'user' };
+      return { ...cardSource, type: 'user' };
     }
   }
 
-  return {
-    ...card,
-    metadata: card.metadata || {
-      // Build metadata field for older cards without it
-      source: normalizeSource((card as any).source),
-      updated: (card as any).timestamp,
-      duplicatedFrom: (card as any).source && (card as any).source.duplicatedFrom,
-      isPrivate: false
-    } as w.CardInStore['metadata']
+  const source: w.CardSource = (card.metadata && card.metadata.source) || normalizeSource((card as any).source);
+  const metadata: w.CardMetadata = {
+    // Build metadata field for older cards without it
+    ...card.metadata,
+    ownerId: (explicitSource && explicitSource.uid) || source.uid,
+    source,
+    updated: (card.metadata && card.metadata.updated) || (card as any).timestamp,
+    duplicatedFrom: (card.metadata && card.metadata.duplicatedFrom) || (source as any).duplicatedFrom,
+    isPrivate: (card.metadata && card.metadata.isPrivate) || false
   };
+
+  return { ...card, metadata };
 }
 
 export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.CollectionState {
@@ -420,7 +423,9 @@ export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.Co
 export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
   const normalizeCards = (set: w.Set): w.Set => ({
     ...set,
-    cards: set.cards.map((card) => normalizeCard(card, set))
+    cards: set.cards.map((card) =>
+      normalizeCard(card, { type: 'user', uid: set.metadata.authorId, username: set.metadata.authorName })
+    )
   });
 
   return {

@@ -43,6 +43,7 @@ const cardsHandlers = {
         id: id(),
         name: `Copy of ${originalCard.name}`,
         metadata: {
+          ownerId: currentUser.uid,
           source: { type: 'user', uid: currentUser.uid, username: currentUser.displayName! },
           created: Date.now(),
           updated: Date.now(),
@@ -161,6 +162,11 @@ const cardsHandlers = {
 
   saveCard: (state: State, cardProps: w.CreatorState): State => {
     const card = createCardFromProps(cardProps);
+    return saveCard(state, card);
+  },
+
+  saveExistingCard: (state: State, card: w.CardInStore): State => {
+    // e.g. used when importing a card from the RecentCardsCarousel
     return saveCard(state, card);
   },
 

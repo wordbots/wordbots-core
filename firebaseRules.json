@@ -33,7 +33,7 @@
       "$key": {
         ".write": "auth != null && (!newData.exists() || newData.child('metadata/source/uid').val() == auth.uid) && (!data.exists() || (data.child('metadata/source/uid').val() == auth.uid))"
       },
-      ".indexOn": ["id", "metadata/source/uid", "metadata/updated"]
+      ".indexOn": ["id", "metadata/ownerId", "metadata/updated"]
     },
     "decks": {
       ".read": "true",

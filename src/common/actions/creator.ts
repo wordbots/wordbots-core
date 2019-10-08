@@ -9,7 +9,7 @@ export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
 export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
 export const TOGGLE_PRIVATE = 'TOGGLE_PRIVATE';
 export const SAVE_CARD = 'SAVE_CARD';
-export const RESET_CARD_CREATOR = 'RESET_CARD_CREATOR';
+export const ADD_EXISTING_CARD_TO_COLLECTION = 'ADD_EXISTING_CARD_TO_COLLECTION';
 
 export function setName(name: string): w.Action {
   return {
@@ -64,7 +64,7 @@ export function togglePrivate(): w.Action {
   };
 }
 
-// Note: This action is consumed by the collection reducer! (TODO move this to collection/actions)
+// Note: This actions is consumed by the cardCreator AND collection reducers!
 export function saveCard(props: w.CreatorState): w.Action {
   return {
     type: SAVE_CARD,
@@ -72,8 +72,10 @@ export function saveCard(props: w.CreatorState): w.Action {
   };
 }
 
-export function resetCardCreator(): w.Action {
+// Note: This actions is consumed by the cardCreator AND collection reducers!
+export function addExistingCardToCollection(card: w.CardInStore): w.Action {
   return {
-    type: RESET_CARD_CREATOR
+    type: ADD_EXISTING_CARD_TO_COLLECTION,
+    payload: { card }
   };
 }

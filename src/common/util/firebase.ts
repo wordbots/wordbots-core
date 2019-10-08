@@ -55,10 +55,6 @@ function getLoggedInUser(): Promise<firebase.User> {
 }
 
 export function lookupCurrentUser(): firebase.User | null {
-  if (inTest()) {
-    return { uid: 'test-user-id', displayName: 'test-user-name' } as firebase.User;
-  }
-
   return currentUser;
 }
 

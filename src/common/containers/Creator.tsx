@@ -50,7 +50,6 @@ interface CreatorDispatchProps {
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
-  onAddExistingCardToCollection: (card: w.CardInStore) => void
   onAddNewCardToCollection: (props: w.CreatorState) => void
   onToggleWillCreateAnother: () => void
   onToggleIsPrivate: () => void
@@ -107,10 +106,7 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
       dispatch(creatorActions.regenerateSprite());
     },
     onAddNewCardToCollection: (props: w.CreatorState) => {
-      dispatch(creatorActions.addToCollection(props));
-    },
-    onAddExistingCardToCollection: (props: w.CardInStore) => {
-      dispatch(creatorActions.addExistingCardToCollection(props));
+      dispatch(creatorActions.saveCard(props));
     },
     onToggleWillCreateAnother: () => {
       dispatch(creatorActions.toggleWillCreateAnother());
@@ -196,7 +192,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onSpriteClick={this.props.onSpriteClick}
               onOpenDialog={this.openDialog}
               onTestCard={this.testCard}
-              onAddToCollection={this.addToCollection}
+              onAddToCollection={this.saveCard}
               onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
             />
             <Paper style={{ padding: 10, marginTop: 20, paddingTop: cardOpenedForEditing ? 10 : 0 }}>
@@ -273,11 +269,12 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     this.props.history.push('/play/sandbox', { previous: this.props.history.location });
   }
 
-  private addToCollection = (redirectToCollection: boolean) => {
-    const { onAddExistingCardToCollection, onAddNewCardToCollection, history } = this.props;
-    const { cardOpenedForEditing } = this.state;
+  private saveCard = (redirectToCollection: boolean) => {
+    const { onAddNewCardToCollection, history } = this.props;
 
-    if (cardOpenedForEditing) {
+    if (!this.isCardEditable) {
+      // TODO Instead of onAddExistingCardToCollection, we probably want to duplicate the card here
+      // and the button should maybe be called "ADD COPY"
       onAddExistingCardToCollection(cardOpenedForEditing);
     } else {
       onAddNewCardToCollection(this.props);

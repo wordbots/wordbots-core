@@ -8,8 +8,8 @@ export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
 export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
 export const TOGGLE_PRIVATE = 'TOGGLE_PRIVATE';
-export const ADD_TO_COLLECTION = 'ADD_TO_COLLECTION';
-export const ADD_EXISTING_CARD_TO_COLLECTION = 'ADD_EXISTING_CARD_TO_COLLECTION';
+export const SAVE_CARD = 'SAVE_CARD';
+export const RESET_CARD_CREATOR = 'RESET_CARD_CREATOR';
 
 export function setName(name: string): w.Action {
   return {
@@ -64,18 +64,16 @@ export function togglePrivate(): w.Action {
   };
 }
 
-// Note: This actions is consumed by the cardCreator AND collection reducers!
-export function addToCollection(props: w.CreatorState): w.Action {
+// Note: This action is consumed by the collection reducer! (TODO move this to collection/actions)
+export function saveCard(props: w.CreatorState): w.Action {
   return {
-    type: ADD_TO_COLLECTION,
+    type: SAVE_CARD,
     payload: props
   };
 }
 
-// Note: This actions is consumed by the cardCreator AND collection reducers!
-export function addExistingCardToCollection(card: w.CardInStore): w.Action {
+export function resetCardCreator(): w.Action {
   return {
-    type: ADD_EXISTING_CARD_TO_COLLECTION,
-    payload: { card }
+    type: RESET_CARD_CREATOR
   };
 }

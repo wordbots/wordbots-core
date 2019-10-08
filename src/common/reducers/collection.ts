@@ -21,11 +21,8 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case globalActions.FIREBASE_DATA:
         return c.loadState(state, action.payload.data);
 
-      case creatorActions.ADD_TO_COLLECTION:
+      case creatorActions.SAVE_CARD:
         return c.saveCard(state, action.payload);
-
-      case creatorActions.ADD_EXISTING_CARD_TO_COLLECTION:
-        return c.saveExistingCard(state, action.payload.card);
 
       case collectionActions.DELETE_DECK:
         return c.deleteDeck(state, action.payload.deckId);

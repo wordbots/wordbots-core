@@ -164,11 +164,6 @@ const cardsHandlers = {
     return saveCard(state, card);
   },
 
-  saveExistingCard: (state: State, card: w.CardInStore): State => {
-    // e.g. used when importing a card from the RecentCardsCarousel
-    return saveCard(state, card);
-  },
-
   saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {
     let deck: w.DeckInStore | undefined;
     if (deckId) {

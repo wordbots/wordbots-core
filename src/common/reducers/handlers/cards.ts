@@ -214,15 +214,16 @@ function saveCard(state: State, card: w.CardInStore): State {
     // Editing an existing card.
     const { source } = existingCard.metadata;
     if (!source || source.type === 'builtin' || source.uid !== firebase.lookupCurrentUser()!.uid) {
-      // TODO Log warning about not being about not being able to replace builtin cards.
+      throw new Error("Can't edit this card! Maybe it's a built-in card or a card that doesn't belong to you?");
     } else {
       Object.assign(existingCard, card, {id: existingCard.id});
     }
   } else {
+    // Creating a new card.
     state.cards.push(card);
-    firebase.saveCard(card);
   }
 
+  firebase.saveCard(card);
   return state;
 }
 

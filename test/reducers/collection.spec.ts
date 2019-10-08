@@ -88,6 +88,7 @@ describe('Collection reducer', () => {
 
       // firebase.saveCard() should have been called twice (once for the creation, once for the edit)
       expect(firebase.saveCard).toHaveBeenCalledTimes(2);
+      expectCardsToBeEqual((firebase.saveCard as any).mock.calls[1][0], { ...testBotCard, cost: 2 });
     });
   });
 });

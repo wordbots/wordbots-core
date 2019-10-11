@@ -22,6 +22,7 @@ function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number): w.Deck
 
   return {
     id: deckId,
+    authorId: '',
     name: deckId,
     cardIds: cardsWithCopies.map((card) => card.id),
     cards: cardsWithCopies,

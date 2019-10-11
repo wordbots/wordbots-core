@@ -4,8 +4,10 @@
       "$uid": {
       	/* deprecated: all fields except user/$uid/info */
         ".write": "auth != null && auth.uid === $uid",
-        "displayName": {
-          ".read": "true"
+        "info": {
+          "displayName": {
+            ".read": "true"
+          }
         }
       }
     },

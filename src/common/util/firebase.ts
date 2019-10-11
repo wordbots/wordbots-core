@@ -110,6 +110,7 @@ export async function getRecentGamesByUserId(userId: w.UserId): Promise<w.SavedG
   const orangeGames = await gamesByColor('orange');
   return orderBy(uniqBy([...blueGames, ...orangeGames], 'id'), ['timestamp'], ['desc']);
 }
+
 // Cards
 
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */

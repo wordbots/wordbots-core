@@ -1,6 +1,7 @@
 import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
+import { find } from 'lodash';
 import { FontIcon } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -22,7 +23,7 @@ import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
 import * as w from '../types';
 import { createCardFromProps } from '../util/cards';
-import { lookupCurrentUser } from '../util/firebase';
+import { getCardById, lookupCurrentUser } from '../util/firebase';
 
 interface CreatorStateProps {
   id: string | null
@@ -61,6 +62,7 @@ type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentPro
 
 interface CreatorState {
   cardOpenedForEditing?: w.CardInStore
+  loaded: boolean
 }
 
 export function mapStateToProps(state: w.State): CreatorStateProps {
@@ -130,16 +132,16 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     muiTheme: object.isRequired
   };
 
-  public state: CreatorState = {};
+  public state: CreatorState = {
+    loaded: false
+  };
 
   get isCardEditable(): boolean {
     const { cardOpenedForEditing } = this.state;
-    if (cardOpenedForEditing && cardOpenedForEditing) {
+    if (cardOpenedForEditing) {
       const { source } = cardOpenedForEditing.metadata;
-      if (source.type === 'user') {
-        const currentUser = lookupCurrentUser();
-        return !!currentUser && source.uid === currentUser.uid;
-      }
+      const currentUser = lookupCurrentUser();
+      return !!currentUser && source.type === 'user' && source.uid === currentUser.uid;
     }
 
     return true;
@@ -149,22 +151,15 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     this.maybeLoadCard();
   }
 
-  public componentDidUpdate(prevProps: CreatorProps): void {
-    const { id, cards } = this.props;
-
-    // If we haven't yet loaded a card and we now have a bigger pool of cards
-    // (e.g. because we just received all the user's cards from Firebase), try loading the card again.
-    // TODO Should we also allow loading cards by ID even if you don't own them? (This would require searching by card ID in Firebase.)
-    if (!id && cards.length > prevProps.cards.length) {
-      this.maybeLoadCard();
-    }
-  }
-
     // For testing.
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
-  public render(): JSX.Element {
-    const { cardOpenedForEditing } = this.state;
+  public render(): JSX.Element | null {
+    const { cardOpenedForEditing, loaded } = this.state;
+
+    if (!loaded) {
+      return null;
+    }
 
     return (
       <div style={{position: 'relative'}}>
@@ -246,21 +241,33 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     );
   }
 
-  private maybeLoadCard = () => {
-    const { cards, location, match, onOpenCard } = this.props;
+  /** If there is a cardId in the URL, try to load the desired card. */
+  private maybeLoadCard = async () => {
+    const { cards, history, location, match, onOpenCard } = this.props;
     const params = (match ? match.params : {}) as Record<string, string | undefined>;
     const { cardId } = params;
 
-    if (cardId) {
-      const cardFromRouter = location.state && location.state.card ? location.state.card as w.CardInStore : undefined;
-      const card: w.CardInStore | undefined = (cardFromRouter && cardFromRouter.id === cardId) ? cardFromRouter : cards.find((c) => c.id === cardId);
+    if (match) {
+      if (cardId) {
+        // Search for the card in these locations, in order:
+        // 1. location state (passed through the router, if a link was just followed)
+        // 2. redux state (if the card is in the player's collection)
+        // 3. firebase (async lookup)
+        const cardFromRouter = location.state && location.state.card && (location.state.card.id === cardId) ? location.state.card as w.CardInStore : undefined;
+        const card: w.CardInStore | undefined = cardFromRouter || find(cards, { id: cardId }) || await getCardById(cardId);
 
-      if (card) {
-        this.setState({ cardOpenedForEditing: card }, () => {
-          onOpenCard(card);
-        });
+        if (card) {
+          this.setState({ cardOpenedForEditing: card }, () => {
+            onOpenCard(card);
+          });
+        } else {
+          // If card not found, redirect to the new card URL.
+          history.replace('/card/new');
+        }
       }
     }
+
+    this.setState({ loaded: true });
   }
 
   private openDialog = (dialogPath: string) => {

@@ -139,19 +139,24 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 // Cards and text
 
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */
-export function listenToCards(callback: (data: any) => any, uid: string | null): void {
+export function listenToCards(callback: (data: any) => any, uid: string | null): { off: () => void } {
   const ref = uid
     ? fb.database().ref('cards').orderByChild('metadata/ownerId').equalTo(uid)
     : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
 
-  ref.on('value', (snapshot: firebase.database.DataSnapshot) => {
+  const actualCallback = (snapshot: firebase.database.DataSnapshot) => {
     if (snapshot) {
       const unnormalizedCards = snapshot.val();
       const normalizedCards = mapValues(unnormalizedCards, (card: any) => normalizeCard(card));
 
       callback(normalizedCards);
     }
-  });
+  };
+
+  ref.on('value', actualCallback);
+
+  // Return a function that turns off the listener.
+  return { off: () => ref.off('value', actualCallback) };
 }
 
 export function listenToSets(callback: (data: any) => any): void {
@@ -218,6 +223,8 @@ export function listenToDictionaryData(callback: (data: { dictionary: w.Dictiona
     });
 }
 
+// Cards
+
 export function saveCard(card: w.Card): void {
   fb.database()
     .ref(`cards/${card.id}`)
@@ -232,6 +239,13 @@ export function removeCards(cardIds: string[]): void {
   fb.database().ref(`cards`)
     .update(Object.assign({}, ...cardIds.map((id) => ({[id]: null}))));
 }
+
+export async function getCardById(cardId: string): Promise<w.CardInStore> {
+  const snapshot = await fb.database().ref(`cards/${cardId}`).once('value');
+  return snapshot.val() as w.CardInStore;
+}
+
+// Sets
 
 export function saveSet(set: w.Set): void {
   fb.database()

@@ -21,7 +21,7 @@ import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WI
 import PersonalTheme from '../themes/personal';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
-import { listenToCards, listenToSets, listenToUserData, onLogin, onLogout } from '../util/firebase';
+import { listenToCards, listenToDecks, listenToSets, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
 import Collection from './Collection';
@@ -55,7 +55,9 @@ type AppProps = AppStateProps & AppDispatchProps & {
 };
 
 interface AppState {
-  loading: boolean
+  loadedCards: boolean
+  loadedDecks: boolean
+  loadedSets: boolean
   canSidebarExpand: boolean
 }
 
@@ -91,7 +93,9 @@ class App extends React.Component<AppProps, AppState> {
   };
 
   public state = {
-    loading: true,
+    loadedCards: false,
+    loadedDecks: false,
+    loadedSets: false,
     canSidebarExpand: true
   };
 
@@ -106,20 +110,27 @@ class App extends React.Component<AppProps, AppState> {
     this.calculateDimensions();
     window.addEventListener('resize', this.calculateDimensions);
 
-    listenToSets(onReceiveFirebaseData);
+    listenToSets((sets) => {
+      onReceiveFirebaseData({ sets });
+      this.setState({ loadedSets: true });
+    });
 
     onLogin((user) => {
       onLoggedIn(user);
-      // TODO actually check that *all* Firebase data is loaded before setting loading: false
-      listenToCards((data) => onReceiveFirebaseData({ cards: Object.values(data) }), user.uid);
-      listenToUserData((data) => {
-        onReceiveFirebaseData(data);
-        this.setState({ loading: false });
+
+      listenToCards(user.uid, (cards) => {
+        onReceiveFirebaseData({ cards });
+        this.setState({ loadedCards: true });
+      });
+
+      listenToDecks(user.uid, (decks) => {
+        onReceiveFirebaseData({ decks });
+        this.setState({ loadedDecks: true });
       });
     });
 
     onLogout(() => {
-      this.setState({ loading: false });
+      this.setState({ loadedCards: true, loadedDecks: true });
       onLoggedOut();
       onReceiveFirebaseData(null);
     });
@@ -135,6 +146,11 @@ class App extends React.Component<AppProps, AppState> {
     };
   }
 
+  get isLoading(): boolean {
+    const { loadedCards, loadedDecks, loadedSets } = this.state;
+    return !(loadedCards && loadedDecks && loadedSets);
+  }
+
   get isSidebarExpanded(): boolean {
     const { inSandbox } = this.props;
     return this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed') && !inSandbox;
@@ -147,9 +163,9 @@ class App extends React.Component<AppProps, AppState> {
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited, inSandbox, onRerender } = this.props;
-    const { canSidebarExpand, loading } = this.state;
+    const { canSidebarExpand } = this.state;
 
-    if (loading || this.inGame) {
+    if (this.isLoading || this.inGame) {
       return null;
     } else {
       return (
@@ -192,7 +208,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get dialogs(): JSX.Element | null {
-    if (this.state.loading) {
+    if (this.isLoading) {
       return null;
     } else {
       const { history, location } = this.props;
@@ -230,7 +246,7 @@ class App extends React.Component<AppProps, AppState> {
         <TitleBar />
         <div>
           {this.sidebar}
-          {this.state.loading ? this.loadingMessage : this.content}
+          {this.isLoading ? this.loadingMessage : this.content}
         </div>
         {this.dialogs}
       </div>

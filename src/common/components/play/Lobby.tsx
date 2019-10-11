@@ -27,11 +27,11 @@ interface LobbyProps {
   history: History
 
   onConnect: () => void
-  onJoinGame: (id: m.ClientID, name: string, deck: w.Deck) => void
+  onJoinGame: (id: m.ClientID, name: string, deck: w.DeckInGame) => void
   onSpectateGame: (id: m.ClientID, name: string) => void
-  onJoinQueue: (format: w.Format, deck: w.Deck) => void
+  onJoinQueue: (format: w.Format, deck: w.DeckInGame) => void
   onLeaveQueue: () => void
-  onHostGame: (name: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => void
+  onHostGame: (name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => void
   onCancelHostGame: () => void
   onNavigateToGameMode: (mode: string, format: w.BuiltInFormat | null, deck: w.DeckInStore | null) => void
 }
@@ -55,7 +55,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
   }
 
   // All of the player's decks, in unpacked form.
-  get decks(): w.Deck[] {
+  get decks(): w.DeckInGame[] {
     const { availableDecks, cards, sets } = this.props;
     return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
   }
@@ -152,7 +152,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
     RouterDialog.openDialog(this.props.history, mode);
   }
 
-  private handleJoinQueue = (format: w.Format, deck: w.Deck) => {
+  private handleJoinQueue = (format: w.Format, deck: w.DeckInGame) => {
     this.setState({ queueFormat: format }, () => {
       this.props.onJoinQueue(format, deck);
     });
@@ -170,7 +170,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
     });
   }
 
-  private handleJoinGame = (_formatName: w.Format, deck: w.Deck) => {
+  private handleJoinGame = (_formatName: w.Format, deck: w.DeckInGame) => {
     const { casualGameBeingJoined } = this.state;
     if (casualGameBeingJoined) {
       const { id, name } = casualGameBeingJoined;
@@ -178,7 +178,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
     }
   }
 
-  private handleHostGame = (gameName: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => {
+  private handleHostGame = (gameName: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => {
     this.props.onHostGame(gameName, format, deck, options);
   }
 

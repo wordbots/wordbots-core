@@ -49,7 +49,7 @@ export const LEAVE = 'ws:LEAVE';
 export const SEND_USER_DATA = 'ws:SEND_USER_DATA';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
-export function host(name: string, format: w.Format, deck: w.Deck, options: w.GameOptions): w.Action {
+export function host(name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions): w.Action {
   return {
     type: HOST,
     payload: { name, format, deck, options }
@@ -62,14 +62,14 @@ export function cancelHost(): w.Action {
   };
 }
 
-export function join(id: m.ClientID, name: string, deck: w.Deck): w.Action {
+export function join(id: m.ClientID, name: string, deck: w.DeckInGame): w.Action {
   return {
     type: JOIN,
     payload: { id, name, deck }
   };
 }
 
-export function joinQueue(format: w.Format, deck: w.Deck): w.Action {
+export function joinQueue(format: w.Format, deck: w.DeckInGame): w.Action {
   return {
     type: JOIN_QUEUE,
     payload: { format, deck }

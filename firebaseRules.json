@@ -2,8 +2,11 @@
   "rules": {
     "users": {
       "$uid": {
-        ".read": "true",
-        ".write": "auth != null && auth.uid === $uid"
+      	/* deprecated: all fields except user/$uid/info */
+        ".write": "auth != null && auth.uid === $uid",
+        "displayName": {
+          ".read": "true"
+        }
       }
     },
     "games": {
@@ -33,13 +36,14 @@
       "$key": {
         ".write": "auth != null && (!data.exists() || data.child('metadata/ownerId').val() == auth.uid) && (!newData.exists() || newData.child('metadata/ownerId').val() == auth.uid)"
       },
-      ".indexOn": ["id", "metadata/ownerId", "metadata/updated", "metadata/source/uid"]
+      ".indexOn": ["metadata/ownerId", "metadata/updated", "metadata/source/uid"]
     },
     "decks": {
       ".read": "true",
       "$key": {
         ".write": "auth != null && (!newData.exists() || newData.child('authorId').val() == auth.uid) && (!data.exists() || (data.child('authorId').val() == auth.uid))"
-      }
+      },
+      ".indexOn": ["authorId", "setId"]
     },
     "reportedParseIssues": {
       "$key": {

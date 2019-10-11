@@ -3,7 +3,7 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 import { History } from 'history';
-import { groupBy, mapValues, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { FontIcon } from 'material-ui';
 import * as qs from 'qs';
 import * as React from 'react';
@@ -17,7 +17,7 @@ import SetSummary from '../components/cards/SetSummary';
 import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
-import { listenToDecks } from '../util/firebase';
+import { getNumDecksCreatedCountBySetId } from '../util/firebase';
 
 interface SetsStateProps {
   sets: w.Set[]
@@ -127,11 +127,8 @@ class Sets extends React.Component<SetsProps, SetsState> {
   }
 
   public componentDidMount(): void {
-    listenToDecks((decks: w.DeckInStore[]) => {
-      this.setState({
-        numDecksBySet: mapValues(groupBy(decks, 'setId'), (group) => group.length)
-      });
-    });
+    const { sets } = this.props;
+    sets.forEach(this.lookupAsyncInfoForSet);
   }
 
   public render(): JSX.Element {
@@ -145,7 +142,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
         {showHelpText && <div>
           <Paper className={classes.helpPaper}>
-            <Button variant="flat" color="secondary" onClick={this.handleHideHelpText}>
+            <Button variant="text" color="secondary" onClick={this.handleHideHelpText}>
               <FontIcon className="material-icons">
                 close
               </FontIcon>
@@ -230,6 +227,17 @@ class Sets extends React.Component<SetsProps, SetsState> {
         {...extraProps}
       />
     );
+  }
+
+  private lookupAsyncInfoForSet = async (set: w.Set): Promise<void> => {
+    const numDecks = await getNumDecksCreatedCountBySetId(set.id);
+
+    this.setState((state) => ({
+      numDecksBySet: {
+        ...(state.numDecksBySet || {}),
+        [set.id]: numDecks
+      }
+    }));
   }
 
   private handleCreateSet = () => {

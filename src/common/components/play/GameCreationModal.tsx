@@ -14,7 +14,7 @@ interface GameCreationModalProps {
   sets: w.Set[]
   path: string
   title: string
-  onCreateGame: (gameName: string, formatName: w.Format, deck: w.Deck, options: w.GameOptions) => void
+  onCreateGame: (gameName: string, formatName: w.Format, deck: w.DeckInGame, options: w.GameOptions) => void
   history: History
 }
 
@@ -70,7 +70,7 @@ export default class GameCreationModal extends React.Component<GameCreationModal
     }));
   }
 
-  private handleCreateGame = (format: w.Format, deck: w.Deck) => {
+  private handleCreateGame = (format: w.Format, deck: w.DeckInGame) => {
     const { gameName, options } = this.state;
     this.props.onCreateGame(gameName, format, deck, options);
     this.setState({ gameName: '' });

@@ -4,7 +4,7 @@ import * as w from '../../types';
 import { defer } from '../../util/browser';
 import {
   cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
-  loadDecksFromFirebase, loadSetsFromFirebase, saveDecksToFirebase, splitSentences
+  loadDecksFromFirebase, loadSetsFromFirebase, splitSentences
 } from '../../util/cards';
 import { id } from '../../util/common';
 import * as firebase from '../../util/firebase';
@@ -20,13 +20,12 @@ const cardsHandlers = {
 
   deleteDeck: (state: State, deckId: string): State => {
     state.decks = state.decks.filter((deck: w.DeckInStore) => deck.id !== deckId);
-    saveDecksToFirebase(state);
-    firebase.removeDeck(deckId);
+    defer(() => firebase.removeDeck(deckId));
     return state;
   },
 
   deleteSet: (state: State, setId: string): State => {
-    firebase.removeSet(setId);
+    defer(() => firebase.removeSet(setId));
     return {
       ...state,
       sets: state.sets.filter((set: w.Set) => set.id !== setId)
@@ -67,19 +66,19 @@ const cardsHandlers = {
     };
 
     state.decks.push(copy);
-    saveDecksToFirebase(state);
+    defer(() => firebase.saveDeck(copy));
     return state;
   },
 
   duplicateSet: (state: State, setId: string): State => {
     const set: w.Set = state.sets.find((d) => d.id === setId)!;
-    const versionMatch = set.name.match('v(\d+)^');
+    const versionMatch = set.name.match(/v(\d+)$/);
     const version: number = versionMatch && parseInt(versionMatch[1], 10) || 1;
 
     const copy: w.Set = {
       ...set,
       id: id(),
-      name: `${set.name.split(/v(\d+)^/)[0]} v${version + 1}`,
+      name: `${set.name.split(/v(\d+)$/)[0]} v${version + 1}`,
       metadata: {
         ...set.metadata,
         isPublished: false,
@@ -87,7 +86,7 @@ const cardsHandlers = {
       }
     };
 
-    firebase.saveSet(copy);
+    defer(() => firebase.saveSet(copy));
     return {
       ...state,
       sets: [...state.sets, copy]
@@ -151,7 +150,7 @@ const cardsHandlers = {
     }
 
     const publishedSet: w.Set = {...set, metadata: {...set.metadata, isPublished: true }};
-    firebase.saveSet(publishedSet);
+    defer(() => firebase.saveSet(publishedSet));
 
     return {
       ...state,
@@ -170,15 +169,18 @@ const cardsHandlers = {
   },
 
   saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {
+    const currentUser = firebase.lookupCurrentUser();
+
     let deck: w.DeckInStore | undefined;
     if (deckId) {
       // Existing deck.
       deck = state.decks.find((d) => d.id === deckId);
       Object.assign(deck, { name, cardIds });
-    } else {
+    } else if (currentUser) {
       // New deck.
       deck = {
         id: id(),
+        authorId: currentUser.uid,
         name,
         cardIds,
         timestamp: Date.now(),
@@ -187,16 +189,15 @@ const cardsHandlers = {
       state.decks.push(deck);
     }
 
-    saveDecksToFirebase(state);
     if (deck) {
-      firebase.saveDeck(deck);
+      defer(() => firebase.saveDeck(deck!));
     }
 
     return state;
   },
 
   saveSet: (state: State, set: w.Set) => {
-    firebase.saveSet(set);
+    defer(() => firebase.saveSet(set));
     return {
       ...state,
       sets: [...state.sets.filter((s) => s.id !== set.id), set]

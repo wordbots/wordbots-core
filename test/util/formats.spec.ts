@@ -12,11 +12,11 @@ import {
 import { cantripCard } from '../data/cards';
 import { constantDeck, defaultDecks } from '../data/decks';
 
-function validDecks(gameFormat: GameFormat, decksToTest: Record<string, w.Deck>): string[] {
+function validDecks(gameFormat: GameFormat, decksToTest: Record<string, w.DeckInGame>): string[] {
   return Object.keys(decksToTest).filter((deckName) => (gameFormat.isDeckValid(decksToTest[deckName])));
 }
 
-function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number): w.Deck {
+function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number): w.DeckInGame {
   const deckId: string = uniqueId();
   const cardsWithCopies: w.CardInStore[] = flatMap(cards, (c) => times(numCopiesPerCard, constant(c)));
 
@@ -30,7 +30,7 @@ function deckFromCards(cards: w.CardInStore[], numCopiesPerCard: number): w.Deck
 }
 
 describe('GameFormat#isDeckValid', () => {
-  let decks: Record<string, w.Deck>;
+  let decks: Record<string, w.DeckInGame>;
 
   beforeAll(() => {
     const defaultDeck = defaultDecks[0];

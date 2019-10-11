@@ -27,10 +27,10 @@ interface PlayStateProps {
 
 interface PlayDispatchProps {
   onConnect: () => void
-  onHostGame: (name: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => void
+  onHostGame: (name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => void
   onCancelHostGame: () => void
-  onJoinGame: (id: m.ClientID, name: string, deck: w.Deck) => void
-  onJoinQueue: (format: w.Format, deck: w.Deck) => void
+  onJoinGame: (id: m.ClientID, name: string, deck: w.DeckInGame) => void
+  onJoinQueue: (format: w.Format, deck: w.DeckInGame) => void
   onLeaveQueue: () => void
   onSpectateGame: (id: m.ClientID, name: string) => void
   onSendChatMessage: (msg: string) => void
@@ -56,16 +56,16 @@ export function mapDispatchToProps(dispatch: Dispatch): PlayDispatchProps {
     onConnect: () => {
       dispatch(socketActions.connect());
     },
-    onHostGame: (name: string, format: w.Format, deck: w.Deck, options: w.GameOptions) => {
+    onHostGame: (name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => {
       dispatch(socketActions.host(name, format, deck, options));
     },
     onCancelHostGame: () => {
       dispatch(socketActions.cancelHost());
     },
-    onJoinGame: (id: m.ClientID, name: string, deck: w.Deck) => {
+    onJoinGame: (id: m.ClientID, name: string, deck: w.DeckInGame) => {
       dispatch(socketActions.join(id, name, deck));
     },
-    onJoinQueue: (format: w.Format, deck: w.Deck) => {
+    onJoinQueue: (format: w.Format, deck: w.DeckInGame) => {
       dispatch(socketActions.joinQueue(format, deck));
     },
     onLeaveQueue: () => {

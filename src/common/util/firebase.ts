@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, identity, isNil, isUndefined, mapValues, omitBy, orderBy, uniq, uniqBy } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, identity, mapValues, orderBy, uniq, uniqBy } from 'lodash';
 
 const fb = require('firebase/app').default;
 import 'firebase/auth';
@@ -10,6 +10,7 @@ import * as w from '../types';
 
 import { inTest } from './browser';
 import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
+import { withoutEmptyFields } from './common';
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',
@@ -24,6 +25,7 @@ let currentUser: firebase.User | null = null;
 
 if (fb.apps.length === 0) {
   fb.initializeApp(config);
+  // (window as any).fb = fb;
 }
 
 // Users
@@ -53,10 +55,6 @@ function getLoggedInUser(): Promise<firebase.User> {
 }
 
 export function lookupCurrentUser(): firebase.User | null {
-  if (inTest()) {
-    return { uid: 'test-user-id', displayName: 'test-user-name' } as firebase.User;
-  }
-
   return currentUser;
 }
 
@@ -95,13 +93,15 @@ export function resetPassword(email: string): Promise<void> {
   return fb.auth().sendPasswordResetEmail(email);
 }
 
+/** Historically cards, decks, are sets were all stored per-user. Now, *only decks* are stored here - cards are at /cards/ and sets are at /sets/ */
 export function listenToUserData(callback: (data: any) => any): Promise<void> {
   return getLoggedInUser().then((user) => {
     fb.database()
       .ref(`users/${user.uid}`)
       .on('value', (snapshot: firebase.database.DataSnapshot) => {
         if (snapshot) {
-          callback(snapshot.val());
+          const { decks } = snapshot.val();
+          callback({ decks });
         }
       });
   });
@@ -138,19 +138,25 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 
 // Cards and text
 
-export function listenToRecentCards(callback: (data: any) => any, uid?: string): void {
-  fb.database()
-    .ref(isNil(uid) ? 'recentCards' : `users/${uid}/cards`)
-    .orderByChild('timestamp')
-    .limitToLast(50)
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
-      if (snapshot) {
-        const unnormalizedCards = snapshot.val();
-        const normalizedCards = mapValues(unnormalizedCards, (card: any) => normalizeCard(card));
+/** Returns either all cards for a given user or the most recent cards belonging to any user. */
+export function listenToCards(callback: (data: any) => any, uid: string | null): { off: () => void } {
+  const ref = uid
+    ? fb.database().ref('cards').orderByChild('metadata/ownerId').equalTo(uid)
+    : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
 
-        callback(normalizedCards);
-      }
-    });
+  const actualCallback = (snapshot: firebase.database.DataSnapshot) => {
+    if (snapshot) {
+      const unnormalizedCards = snapshot.val();
+      const normalizedCards = mapValues(unnormalizedCards, (card: any) => normalizeCard(card));
+
+      callback(normalizedCards);
+    }
+  };
+
+  ref.on('value', actualCallback);
+
+  // Return a function that turns off the listener.
+  return { off: () => ref.off('value', actualCallback) };
 }
 
 export function listenToSets(callback: (data: any) => any): void {
@@ -217,11 +223,29 @@ export function listenToDictionaryData(callback: (data: { dictionary: w.Dictiona
     });
 }
 
-export function saveRecentCard(card: w.Card): void {
+// Cards
+
+export function saveCard(card: w.Card): void {
   fb.database()
-    .ref('recentCards')
-    .push(omitBy(card, isUndefined));
+    .ref(`cards/${card.id}`)
+    // see firebaseRules.json - this save will only succeed if either:
+    //   (i) there is no card yet with the given id
+    //   (ii) the card with the given id was created by the logged-in user
+    .update(withoutEmptyFields(card));
 }
+
+export function removeCards(cardIds: string[]): void {
+  // Set all card/:cardId to null
+  fb.database().ref(`cards`)
+    .update(Object.assign({}, ...cardIds.map((id) => ({[id]: null}))));
+}
+
+export async function getCardById(cardId: string): Promise<w.CardInStore> {
+  const snapshot = await fb.database().ref(`cards/${cardId}`).once('value');
+  return snapshot.val() as w.CardInStore;
+}
+
+// Sets
 
 export function saveSet(set: w.Set): void {
   fb.database()
@@ -236,9 +260,10 @@ export function removeSet(setId: string): void {
 }
 
 /**
- * Note that the source for truth for a player's decks is the users/ collection.
+ * Note that the source for truth for a player's decks is (at the moment) the users/ collection.
  * The decks/ collection is used to be able to aggregate information about all decks on the client
  * (e.g. for calculating number of decks that use a given set).
+ * TODO use /decks/ as the source of truth so that we can finally get rid of relying on the /users/ collection for things.
  */
 export function saveDeck(deck: w.DeckInStore): void {
   getLoggedInUser()
@@ -320,7 +345,9 @@ async function getRecentGamesForColorByUserId(userId: string, color: string): Pr
 
 export async function getNumCardsCreatedCountByUserId(userId: string): Promise<number> {
   const snapshot = await fb.database()
-    .ref(`users/${userId}/cards`)
+    .ref('cards')
+    .orderByChild('metadata/source/uid')
+    .equalTo(userId)
     .once('value');
   return snapshot.numChildren();
 }

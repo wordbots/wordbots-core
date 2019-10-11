@@ -13,22 +13,12 @@ import * as g from '../guards';
 import defaultState from '../store/defaultCollectionState';
 import * as w from '../types';
 
-import { compareCertainKeys, id as generateId } from './common';
-import { indexParsedSentence, lookupCurrentUser, saveRecentCard, saveUserData } from './firebase';
+import { id as generateId } from './common';
+import { indexParsedSentence, lookupCurrentUser, saveUserData } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
 //
-
-export function areIdenticalCards(card1: w.CardInStore, card2: w.CardInStore): boolean {
-  // Ignore if one card is explicitly a duplicate of the other.
-  if ((card2.metadata.duplicatedFrom === card1.id) || (card1.metadata.duplicatedFrom === card2.id)) {
-    return false;
-  }
-
-  // TODO: Check abilities/command rather than text.
-  return compareCertainKeys(card1, card2, ['type', 'cost', 'text', 'stats']);
-}
 
 export function cardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInStore[] {
   const set: w.Set | null = deck.setId && sets.find((s) => s.id === deck.setId) || null;
@@ -149,6 +139,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
     cost,
     metadata: {
+      ownerId: cardSourceForCurrentUser().uid!,
       source: cardSourceForCurrentUser(),
       created: Date.now(),
       updated: Date.now(),
@@ -373,39 +364,43 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
       id: generateId(),
       metadata: {
         ...card.metadata,
-        created: card.metadata.created || Date.now(),
-        updated: card.metadata.updated || Date.now()
+        source: cardSourceForCurrentUser(),
+        created: (card.metadata && card.metadata.created) || Date.now(),
+        updated: Date.now(),
+        importedFromJson: Date.now()
       }
     }))
     .forEach((card: w.CardInStore) => { parseCard(card, callback); });
 }
 
 /** Given a card (e.g. from Firebase) that may be in an older format, return a valid CardInStore. */
-export function normalizeCard(card: w.CardInStore, set?: w.Set): w.CardInStore {
-  function normalizeSource(source: any): w.CardSource {
+export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource): w.CardInStore {
+  function normalizeSource(cardSource: any): w.CardSource {
     // Correctly resolve card source for old cards with source == 'user' or source == 'builtin'
-    if (source === 'builtin') {
+    if (cardSource === 'builtin') {
       return { type: 'builtin' };
-    } else if (source === 'user') {
-      return set ? { type: 'user', uid: set.metadata.authorId, username: set.metadata.authorName } : cardSourceForCurrentUser();
+    } else if (cardSource === 'user') {
+      return explicitSource || cardSourceForCurrentUser();
     } else {
-      return { ...source, type: 'user' };
+      return { ...cardSource, type: 'user' };
     }
   }
 
-  return {
-    ...card,
-    metadata: card.metadata || {
-      // Build metadata field for older cards without it
-      source: normalizeSource((card as any).source),
-      updated: (card as any).timestamp,
-      duplicatedFrom: (card as any).source && (card as any).source.duplicatedFrom,
-      isPrivate: false
-    } as w.CardInStore['metadata']
+  const source: w.CardSource = (card.metadata && card.metadata.source) || normalizeSource((card as any).source);
+  const metadata: w.CardMetadata = {
+    // Build metadata field for older cards without it
+    ...card.metadata,
+    ownerId: (explicitSource && explicitSource.uid) || source.uid,
+    source,
+    updated: (card.metadata && card.metadata.updated) || (card as any).timestamp,
+    duplicatedFrom: (card.metadata && card.metadata.duplicatedFrom) || (source as any).duplicatedFrom,
+    isPrivate: (card.metadata && card.metadata.isPrivate) || false
   };
+
+  return { ...card, metadata };
 }
 
-export function loadCardsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
+export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.CollectionState {
   if (data) {
     if (data.cards) {
       const cardsFromFirebase = data.cards.map(normalizeCard) || [];
@@ -428,26 +423,15 @@ export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.Co
 export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
   const normalizeCards = (set: w.Set): w.Set => ({
     ...set,
-    cards: set.cards.map((card) => normalizeCard(card, set))
+    cards: set.cards.map((card) =>
+      normalizeCard(card, { type: 'user', uid: set.metadata.authorId, username: set.metadata.authorName })
+    )
   });
 
   return {
     ...state,
     sets: data ? (data.sets ? (data.sets as w.Set[]).map(normalizeCards) : state.sets) : defaultState.sets
   };
-}
-
-// Saves a card to the Recent Cards carousel
-export function saveCardToFirebase(card: w.CardInStore): void {
-  // No point in keeping track of recent "vanilla" (text-less) cards
-  if (card.text) {
-    saveRecentCard(card);
-  }
-}
-
-// Saves a card to the user's collection
-export function saveCardsToFirebase(state: w.CollectionState): void {
-  saveUserData('cards', state.cards.filter((c) => c.metadata.source.type !== 'builtin'));
 }
 
 export function saveDecksToFirebase(state: w.CollectionState): void {

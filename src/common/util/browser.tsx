@@ -72,3 +72,16 @@ export function getGameAreaNode(): HTMLElement {
 export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {
   return items.reduce((a, b) => <span>{a}&zwnj;{b}</span>);
 }
+
+// Sometimes we need to perform a firebase update inside a redux reducer, but
+// the firebase update needs to run right *after* we finish handling the action,
+// to avoid "You may not call store.getState() while the reducer is executing" exceptions.
+// The easiest solution for now is to just use setTimeout, but it's pretty gross. TODO find a better way.
+export function defer(fn: () => void): void {
+  if (inBrowser()) {
+    setTimeout(fn, 0);
+  } else {
+    // This branch mainly for tests
+    fn();
+  }
+}

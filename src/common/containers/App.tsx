@@ -21,7 +21,7 @@ import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WI
 import PersonalTheme from '../themes/personal';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
-import { listenToSets, listenToUserData, onLogin, onLogout } from '../util/firebase';
+import { listenToCards, listenToSets, listenToUserData, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
 import Collection from './Collection';
@@ -110,6 +110,8 @@ class App extends React.Component<AppProps, AppState> {
 
     onLogin((user) => {
       onLoggedIn(user);
+      // TODO actually check that *all* Firebase data is loaded before setting loading: false
+      listenToCards((data) => onReceiveFirebaseData({ cards: Object.values(data) }), user.uid);
       listenToUserData((data) => {
         onReceiveFirebaseData(data);
         this.setState({ loading: false });

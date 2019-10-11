@@ -7,6 +7,7 @@ import * as m from '../server/multiplayer/multiplayer';
 // Simple types
 
 type timestamp = number;
+type UserId = string;
 
 export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
@@ -87,22 +88,26 @@ export interface CardInStore {
   command?: StringRepresentationOf<(state: GameState) => any> | Array<StringRepresentationOf<(state: GameState) => any>>
   spriteV?: number
   parserV?: number | null
-  metadata: {
-    source: CardSource
-    created?: timestamp
-    updated?: timestamp
-    duplicatedFrom?: CardId
-    isPrivate?: boolean
-  }
+  metadata: CardMetadata
 }
 
 export interface ObfuscatedCard {
   id: string
 }
 
+export interface CardMetadata {
+  ownerId?: UserId  // should only be undefined if source.type === 'builtin'
+  source: CardSource
+  created?: timestamp
+  updated?: timestamp
+  duplicatedFrom?: CardId
+  isPrivate?: boolean
+  importedFromJson?: timestamp
+}
+
 export interface CardSource {
   type: 'builtin' | 'user' | 'generated'  // For 'generated', see targets['generateCard']
-  uid?: string
+  uid?: UserId
   username?: string
 }
 

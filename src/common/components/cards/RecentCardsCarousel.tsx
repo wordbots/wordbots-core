@@ -1,10 +1,10 @@
 import { History } from 'history';
-import { range, uniqBy } from 'lodash';
+import { chain as _, range } from 'lodash';
 import * as React from 'react';
 import Carousel, { ResponsiveObject } from 'react-slick';
 
 import * as w from '../../types';
-import { listenToRecentCards } from '../../util/firebase';
+import { listenToCards } from '../../util/firebase';
 import Card from '../card/Card';
 
 import CardProvenanceDescription from './CardProvenanceDescription';
@@ -40,12 +40,23 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   public componentDidMount(): void {
     const { userId } = this.props;
 
-    listenToRecentCards((data) => {
-      let recentCards = uniqBy(Object.values(data as w.CardInStore[]), 'name')
-                            // Filter out cards with no text, private cards, built-in cards, etc.
-                            .filter((c) => c.text && !c.metadata.isPrivate && c.metadata.source.type === 'user' && (!userId || c.metadata.source.uid === userId))
-                            .reverse()
-                            .slice(0, 10);
+    // TODO cancel this subscription in componentWillUnmount(), to fix:
+    //   backend.js:1 Warning: Can't perform a React state update on an unmounted component.
+    //   This is a no-op, but it indicates a memory leak in your application.
+    (this as any).listener = listenToCards((data) => {
+      let recentCards: w.CardInStore[] = _(Object.values(data) as w.CardInStore[])
+        .uniqBy('name')
+        .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
+          !!c.text  // cards without text (uninteresting)
+            && !!c.metadata.updated  // cards without timestamp (can't order them)
+            && c.metadata.source.type === 'user'  // built-in cards
+            && !c.metadata.isPrivate  // private cards
+            && !c.metadata.duplicatedFrom  // duplicated cards
+            && !c.metadata.importedFromJson  // cards imported from JSON
+        )
+        .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
+        .slice(0, 10)
+        .value();
 
       if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
         // eslint-disable-next-line no-loops/no-loops
@@ -55,7 +66,11 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
       }
 
       this.setState({ recentCards });
-    }, userId);
+    }, userId || null);
+  }
+
+  public componentWillUnmount(): void {
+    (this as any).listener.off();
   }
 
   public render(): JSX.Element | null {

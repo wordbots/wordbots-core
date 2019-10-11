@@ -1,4 +1,4 @@
-import {clamp as _clamp, fromPairs, isEqual, isNaN, isString, some} from 'lodash';
+import {clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, some} from 'lodash';
 
 import * as w from '../types';
 
@@ -74,4 +74,17 @@ export function animate(fns: Array<() => void>, delay: number): void {
     first();
     setTimeout(() => animate(rest, delay), delay);
   }
+}
+
+// Removes all undefined (but not null) fields recursively from an object.
+// Based on https://stackoverflow.com/a/38340730/2608804
+// TODO this can be cleaned up a lot with Object.fromEntries() after we upgrade to TypeScript 3.x
+export function withoutEmptyFields<T extends object>(obj: T): T {
+  return Object.entries(obj)
+    .filter(([_k, v]) => !isUndefined(v))
+    .reduce(
+      // tslint:disable-next-line prefer-object-spread (object spread here doesn't type-check due to a bug in TypeScript <3.2)
+      (newObjSoFar, [k, v]) => Object.assign({}, newObjSoFar as T, { [k]: isObject(v) ? withoutEmptyFields(v) : v }),
+      {} as T
+    );
 }

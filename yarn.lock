@@ -5092,6 +5092,13 @@ eslint-plugin-compat@^3.1.1:
     mdn-browser-compat-data "^0.0.72"
     semver "^5.6.0"
 
+eslint-plugin-flowtype@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-4.3.0.tgz#06d0837ac341caf369e7e6dbb112dd7fd21acf17"
+  integrity sha512-elvqoadMHnYqSYN1YXn02DR7SFW8Kc2CLe8na3m2GdQPQhIY+BgCd2quVJ1AbW3aO0zcyE9loVJ7Szy8A/xlMA==
+  dependencies:
+    lodash "^4.17.15"
+
 eslint-plugin-import@^2.9.0:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.14.0.tgz#6b17626d2e3e6ad52cfce8807a845d15e22111a8"
@@ -9002,6 +9009,11 @@ lodash@^4.13.1, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.1
   version "4.17.13"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.13.tgz#0bdc3a6adc873d2f4e0c4bac285df91b64fc7b93"
   integrity sha512-vm3/XWXfWtRua0FkUyEHBZy8kCPjErNBT9fJx8Zvs+U6zjqPbTUOpkaoum3O5uiA8sm+yNMHXfYkTUHFoMxFNA==
+
+lodash@^4.17.15:
+  version "4.17.15"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
 log-symbols@2.2.0, log-symbols@^2.1.0:
   version "2.2.0"

@@ -51,13 +51,14 @@ describe('Collection reducer', () => {
 
   it('DUPLICATE_DECK', () => {
     let state: w.CollectionState = defaultCollectionState();
-    state = collection(state, collectionActions.duplicateDeck('[default-aggro]'));
+    const roboRampageDeck: w.DeckInStore = state.decks.find((d) => d.name === 'RoboRampage (Built-in)')!;
+    state = collection(state, collectionActions.duplicateDeck(roboRampageDeck.id));
 
     expect(state.decks.length).toEqual(defaultState.decks.length + 1);
-    expect(state.decks.map((d) => d.name)).toContain('Copy of RoboRampage (Built-in)');
-    expect(state.decks.find((d) => d.name === 'Copy of RoboRampage (Built-in)')!.cardIds).toEqual(state.decks.find((d) => d.name === 'RoboRampage (Built-in)')!.cardIds);
+    expect(state.decks.map((d) => d.name)).toContain('RoboRampage (Built-in) Copy');
+    expect(state.decks.find((d) => d.name === 'RoboRampage (Built-in) Copy')!.cardIds).toEqual(roboRampageDeck.cardIds);
     expect(firebase.saveDeck).toHaveBeenCalledTimes(1);
-    expect(args(firebase.saveDeck)[0]).toMatchObject({ authorId: 'test-user-id', name: 'One Bot Deck', cardIds: [oneBotCard.id], setId: null });
+    expect(args(firebase.saveDeck)[0]).toMatchObject({ authorId: 'test-user-id', name: 'RoboRampage (Built-in) Copy', cardIds: roboRampageDeck.cardIds, setId: null });
 });
 
   describe('SAVE_CARD', () => {

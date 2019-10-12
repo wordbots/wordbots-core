@@ -126,8 +126,10 @@ describe('Collection reducer', () => {
       let state: w.CollectionState = defaultCollectionState();
       // Create One Bot Deck with one card ...
       state = collection(state, collectionActions.saveDeck(null, 'One Bot Deck', [oneBotCard.id], null));
-      // ... then add another card to it
       const oneBotDeck: w.DeckInStore = state.decks.find((d) => d.name === 'One Bot Deck')!;
+      // ... then add another card to it
+      state = collection(state, collectionActions.editDeck(oneBotDeck.id));
+      expect(state.deckBeingEdited).toEqual(oneBotDeck);
       state = collection(state, collectionActions.saveDeck(oneBotDeck.id, 'One Bot Deck', [oneBotCard.id, twoBotCard.id], null));
 
       // Only the edited deck should be in the player's collection now

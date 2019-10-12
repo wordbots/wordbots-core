@@ -49,6 +49,17 @@ describe('Collection reducer', () => {
     expect(firebase.saveCard).toHaveBeenCalledTimes(1);
   });
 
+  it('DUPLICATE_DECK', () => {
+    let state: w.CollectionState = defaultCollectionState();
+    state = collection(state, collectionActions.duplicateDeck('[default-aggro]'));
+
+    expect(state.decks.length).toEqual(defaultState.decks.length + 1);
+    expect(state.decks.map((d) => d.name)).toContain('Copy of RoboRampage (Built-in)');
+    expect(state.decks.find((d) => d.name === 'Copy of RoboRampage (Built-in)')!.cardIds).toEqual(state.decks.find((d) => d.name === 'RoboRampage (Built-in)')!.cardIds);
+    expect(firebase.saveDeck).toHaveBeenCalledTimes(1);
+    expect(args(firebase.saveDeck)[0]).toMatchObject({ authorId: 'test-user-id', name: 'One Bot Deck', cardIds: [oneBotCard.id], setId: null });
+});
+
   describe('SAVE_CARD', () => {
     const testBotCreatorState: w.CreatorState = {
       attack: 1,
@@ -105,7 +116,7 @@ describe('Collection reducer', () => {
 
       expect(state.decks.length).toEqual(defaultState.decks.length + 1);
       expect(state.decks.map((d) => d.name)).toContain('One Bot Deck');
-      expect(state.decks.find((d) => d.name === 'One Bot Deck')!.cardIds === [oneBotCard.id]);
+      expect(state.decks.find((d) => d.name === 'One Bot Deck')!.cardIds).toEqual([oneBotCard.id]);
       expect(firebase.saveDeck).toHaveBeenCalledTimes(1);
       expect(args(firebase.saveDeck)[0]).toMatchObject({ authorId: 'test-user-id', name: 'One Bot Deck', cardIds: [oneBotCard.id], setId: null });
     });
@@ -121,11 +132,16 @@ describe('Collection reducer', () => {
       // Only the edited deck should be in the player's collection now
       expect(state.decks.length).toEqual(defaultState.decks.length + 1);
       expect(state.decks.map((d) => d.name)).toContain('One Bot Deck');
-      expect(state.decks.find((d) => d.name === 'One Bot Deck')!.cardIds === [oneBotCard.id, twoBotCard.id]);
+      expect(state.decks.find((d) => d.name === 'One Bot Deck')!.cardIds).toEqual([oneBotCard.id, twoBotCard.id]);
 
       // firebase.saveDeck() should have been called twice (once for the creation, once for the edit)
       expect(firebase.saveDeck).toHaveBeenCalledTimes(2);
       expect(args(firebase.saveDeck, 1)[0]).toMatchObject({ authorId: 'test-user-id', name: 'One Bot Deck', cardIds: [oneBotCard.id, twoBotCard.id], setId: null });
     });
   });
+
+  // TODO tests:
+  // - deleting
+  // - sets (CRUD, publish)
+  // - JSON import/export, Firebase import?
 });

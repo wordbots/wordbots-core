@@ -32,6 +32,7 @@ function defaultCollectionState(): w.CollectionState {
 describe('Collection reducer', () => {
   beforeAll(() => {
     (firebase.lookupCurrentUser as any).mockImplementation(() => ({ uid: 'test-user-id', displayName: 'test-user-name' }));
+    (firebase.removeDeck as any).mockImplementation(noop);
     (firebase.saveCard as any).mockImplementation(noop);
     (firebase.saveDeck as any).mockImplementation(noop);
   });
@@ -49,6 +50,20 @@ describe('Collection reducer', () => {
     expectCardsToBeEqual(newCards[0], { ...attackBotCard });
     expect(firebase.saveCard).toHaveBeenCalledTimes(1);
     expect(args(firebase.saveCard)[0]).toEqual(attackBotCard);
+  });
+
+  it('DELETE_DECK', () => {
+    let state: w.CollectionState = defaultCollectionState();
+    // Create One Bot Deck ...
+    state = collection(state, collectionActions.saveDeck(null, 'One Bot Deck', [oneBotCard.id], null));
+    const oneBotDeck: w.DeckInStore = state.decks.find((d) => d.name === 'One Bot Deck')!;
+    // ... then delete it
+    state = collection(state, collectionActions.deleteDeck(oneBotDeck.id));
+
+    expect(state.decks).toEqual(defaultState.decks);
+    expect(firebase.saveDeck).toHaveBeenCalledTimes(1);
+    expect(firebase.removeDeck).toHaveBeenCalledTimes(1);
+    expect(args(firebase.removeDeck)[0]).toEqual(oneBotDeck.id);
   });
 
   it('DUPLICATE_CARD', () => {

@@ -46,7 +46,7 @@ function saveUser(user: firebase.User): Promise<firebase.User> {
 }
 
 export function lookupCurrentUser(): firebase.User | null {
-  return currentUser;
+  return currentUser || fb.auth().currentUser;
 }
 
 export function lookupUsername(fallback = 'You'): string {

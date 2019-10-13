@@ -185,7 +185,8 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public componentDidMount(): void {
-    (this as any).ismounted = true;
+    // See https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
+    (this as any)._isMounted = true;
 
     // Generate new spriteID on reload.
     if (!this.props.id) {
@@ -198,14 +199,13 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     }
 
     getCardTextCorpus((corpus, examples) => {
-      if ((this as any).ismounted) {
+      if ((this as any)._isMounted) {
         const bigramProbs = prepareBigramProbs(corpus);
         this.setState({ bigramProbs });
       }
 
-      // TODO do this better with cancellable Promises or something
       exampleStore.loadExamples(examples, 100, (mode) => {
-        if ((this as any).ismounted) {
+        if ((this as any)._isMounted) {  // TODO do this better with cancellable Promises or something
           this.setState((state) => ({
             examplesLoaded: {...state.examplesLoaded, [mode]: true}
           }));
@@ -215,7 +215,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public componentWillUnmount(): void {
-    (this as any).ismounted = false;
+    (this as any)._isMounted = false;
   }
 
   public render(): JSX.Element {

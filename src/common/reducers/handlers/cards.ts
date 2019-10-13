@@ -175,28 +175,30 @@ const cardsHandlers = {
   },
 
   saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {
-    const currentUser = firebase.lookupCurrentUser();
+    const user = firebase.lookupCurrentUser();
 
-    let deck: w.DeckInStore | undefined;
-    if (deckId) {
-      // Existing deck.
-      deck = state.decks.find((d) => d.id === deckId);
-      Object.assign(deck, { name, cardIds });
-    } else if (currentUser) {
-      // New deck.
-      deck = {
-        id: id(),
-        authorId: currentUser.uid,
-        name,
-        cardIds,
-        timestamp: Date.now(),
-        setId
-      };
-      state.decks.push(deck);
-    }
+    if (user) {
+      if (deckId) {
+        // Existing deck.
+        const deck: w.DeckInStore | undefined = state.decks.find((d) => d.id === deckId);
 
-    if (deck) {
-      defer(() => firebase.saveDeck(deck!));
+        if (deck) {
+          Object.assign(deck, { name, cardIds });
+          defer(() => firebase.saveDeck(deck));
+        }
+      } else {
+        const deck: w.DeckInStore = {
+          id: id(),
+          authorId: user.uid,
+          name,
+          cardIds,
+          timestamp: Date.now(),
+          setId
+        };
+
+        state.decks.push(deck);
+        defer(() => firebase.saveDeck(deck));
+      }
     }
 
     return state;

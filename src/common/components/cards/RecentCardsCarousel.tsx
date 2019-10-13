@@ -40,7 +40,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   public componentDidMount(): void {
     const { userId } = this.props;
 
-    (this as any).listener = listenToCards(userId || null, (cards) => {
+    (this as any).unsubscribe = listenToCards(userId || null, (cards) => {
       let recentCards: w.CardInStore[] = _(cards)
         .uniqBy('name')
         .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
@@ -70,7 +70,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     // Cancel listenToCards() subscription, to fix:
     //   backend.js:1 Warning: Can't perform a React state update on an unmounted component.
     //   This is a no-op, but it indicates a memory leak in your application.
-    (this as any).listener.off();
+    (this as any).unsubscribe();
   }
 
   public render(): JSX.Element | null {

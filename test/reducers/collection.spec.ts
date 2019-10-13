@@ -59,7 +59,7 @@ describe('Collection reducer', () => {
     expect(state.decks.find((d) => d.name === 'RoboRampage (Built-in) Copy')!.cardIds).toEqual(roboRampageDeck.cardIds);
     expect(firebase.saveDeck).toHaveBeenCalledTimes(1);
     expect(args(firebase.saveDeck)[0]).toMatchObject({ authorId: 'test-user-id', name: 'RoboRampage (Built-in) Copy', cardIds: roboRampageDeck.cardIds, setId: null });
-});
+  });
 
   describe('SAVE_CARD', () => {
     const testBotCreatorState: w.CreatorState = {

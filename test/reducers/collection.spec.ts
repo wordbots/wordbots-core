@@ -52,7 +52,7 @@ describe('Collection reducer', () => {
     expect(firebase.saveCard).toHaveBeenCalledTimes(1);
     expectCardsToBeEqual(args(firebase.saveCard)[0], attackBotCard);
     expect(args(firebase.saveCard)[0].id).not.toEqual(attackBotCard.id);
-    expect(args(firebase.saveCard)[0].metadata).toEqual({ ...attackBotCard.metadata, ownerId: 'test-user-id' });
+    expect(args(firebase.saveCard)[0].metadata.ownerId).toEqual('test-user-id');
   });
 
   it('DELETE_DECK', () => {

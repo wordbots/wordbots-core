@@ -177,7 +177,11 @@ const cardsHandlers = {
       return saveCard(state, {
         ...card,
         id: id(),  // generate a new ID so the card gets saved in a new place in Firebase
-        metadata: { ...card.metadata, ownerId: user.uid }  // this copy of the card is owned by the current user
+        metadata: {
+          ...card.metadata,
+          ownerId: user.uid,  // this copy of the card is owned by the current user
+          updated: Date.now(),  // set updated date to Date.now() so the card is easy to find
+        }
       });
     } else {
       return state;

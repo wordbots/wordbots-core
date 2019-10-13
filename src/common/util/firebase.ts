@@ -11,10 +11,6 @@ import * as w from '../types';
 import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
 import { withoutEmptyFields } from './common';
 
-interface Unsubscriber {
-  off: () => void
-}
-
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
   authDomain: 'wordbots.firebaseapp.com',
@@ -31,12 +27,9 @@ if (fb.apps.length === 0) {
   // (window as any).fb = fb;
 }
 
-function listenWithUnsubscriber(ref: firebase.database.Reference, cb: (snapshot: firebase.database.DataSnapshot | null) => void): Unsubscriber {
+function listenWithUnsubscribe(ref: firebase.database.Reference, cb: (snapshot: firebase.database.DataSnapshot | null) => void): firebase.Unsubscribe {
   ref.on('value', cb);
-
-  return {
-    off: () => ref.off('value', cb)
-  };
+  return () => ref.off('value', cb);
 }
 
 // Users
@@ -126,12 +119,12 @@ export async function getRecentGamesByUserId(userId: w.UserId): Promise<w.SavedG
 // Cards
 
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */
-export function listenToCards(uid: w.UserId | null, callback: (data: w.CardInStore[]) => any): Unsubscriber {
+export function listenToCards(uid: w.UserId | null, callback: (data: w.CardInStore[]) => any): firebase.Unsubscribe {
   const ref = uid
     ? fb.database().ref('cards').orderByChild('metadata/ownerId').equalTo(uid)
     : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
 
-  return listenWithUnsubscriber(ref, (snapshot: firebase.database.DataSnapshot | null) => {
+  return listenWithUnsubscribe(ref, (snapshot: firebase.database.DataSnapshot | null) => {
     if (snapshot) {
       const unnormalizedCards = Object.values(snapshot.val());
       const normalizedCards = unnormalizedCards.map((card: any) => normalizeCard(card));

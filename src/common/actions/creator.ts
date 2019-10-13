@@ -10,6 +10,7 @@ export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
 export const TOGGLE_PRIVATE = 'TOGGLE_PRIVATE';
 export const SAVE_CARD = 'SAVE_CARD';
 export const ADD_EXISTING_CARD_TO_COLLECTION = 'ADD_EXISTING_CARD_TO_COLLECTION';
+export const RESET_CREATOR = 'RESET_CREATOR';
 
 export function setName(name: string): w.Action {
   return {
@@ -77,5 +78,12 @@ export function addExistingCardToCollection(card: w.CardInStore): w.Action {
   return {
     type: ADD_EXISTING_CARD_TO_COLLECTION,
     payload: { card }
+  };
+}
+
+// Note: This actions is consumed by the cardCreator AND collection reducers!
+export function resetCreator(): w.Action {
+  return {
+    type: RESET_CREATOR,
   };
 }

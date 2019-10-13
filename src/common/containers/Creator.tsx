@@ -2,7 +2,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import { find } from 'lodash';
-import { FontIcon } from 'material-ui';
+import { FontIcon, RaisedButton } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { object } from 'prop-types';
@@ -53,6 +53,7 @@ interface CreatorDispatchProps {
   onSpriteClick: () => void
   onAddExistingCardToCollection: (card: w.CardInStore) => void
   onAddNewCardToCollection: (props: w.CreatorState) => void
+  onResetCreator: () => void
   onToggleWillCreateAnother: () => void
   onToggleIsPrivate: () => void
   onStartSandbox: (card: w.CardInStore) => void
@@ -114,6 +115,9 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
     onAddExistingCardToCollection: (props: w.CardInStore) => {
       dispatch(creatorActions.addExistingCardToCollection(props));
     },
+    onResetCreator: () => {
+      dispatch(creatorActions.resetCreator());
+    },
     onToggleWillCreateAnother: () => {
       dispatch(creatorActions.toggleWillCreateAnother());
     },
@@ -165,6 +169,15 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
       <div style={{position: 'relative'}}>
         <Helmet title="Creator" />
         <Title text="Creator" />
+
+        <RaisedButton
+          label="New Card"
+          labelPosition="after"
+          primary
+          icon={<FontIcon style={{ margin: '0 5px 0 15px' }} className="material-icons">queue</FontIcon>}
+          style={{ marginLeft: 40, marginTop: 12 }}
+          onClick={this.handleClickNewCard}
+        />
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div style={{width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32}}>
@@ -272,6 +285,11 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   private openDialog = (dialogPath: string) => {
     RouterDialog.openDialog(this.props.history, dialogPath);
+  }
+
+  private handleClickNewCard = () => {
+    this.props.onResetCreator();
+    this.props.history.push('/card/new');
   }
 
   private testCard = () => {

@@ -13,9 +13,9 @@ interface DeckValidationIndicatorProps {
 }
 
 export default class DeckValidationIndicator extends React.Component<DeckValidationIndicatorProps> {
-  get deck(): w.Deck {
+  get deck(): w.DeckInGame {
     const { cards, deck, set } = this.props;
-    const dummyDeck = { id: '', name: '', cardIds: [] };
+    const dummyDeck = { id: '', authorId: '', name: '', cardIds: [] };
     return  {...(deck || dummyDeck), cards, setId: set ? set.id : null };
   }
 

@@ -27,6 +27,15 @@ export default function collection(oldState: State = defaultState, action: w.Act
       case creatorActions.ADD_EXISTING_CARD_TO_COLLECTION:
         return c.saveExistingCard(state, action.payload.card);
 
+      case collectionActions.SAVE_DECK:
+        return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds, action.payload.setId);
+
+      case collectionActions.SAVE_SET:
+        return c.saveSet(state, action.payload.set);
+
+      case collectionActions.DELETE_CARDS:
+        return c.deleteCards(state, action.payload.ids);
+
       case collectionActions.DELETE_DECK:
         return c.deleteDeck(state, action.payload.deckId);
 
@@ -53,15 +62,6 @@ export default function collection(oldState: State = defaultState, action: w.Act
 
       case collectionActions.IMPORT_CARDS:
         return c.importCards(state, action.payload.json);
-
-      case collectionActions.REMOVE_FROM_COLLECTION:
-        return c.deleteCards(state, action.payload.ids);
-
-      case collectionActions.SAVE_DECK:
-        return c.saveDeck(state, action.payload.id, action.payload.name, action.payload.cardIds, action.payload.setId);
-
-      case collectionActions.SAVE_SET:
-        return c.saveSet(state, action.payload.set);
 
       case collectionActions.PUBLISH_SET:
         return c.publishSet(state, action.payload.setId);

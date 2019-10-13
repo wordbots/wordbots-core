@@ -14,21 +14,21 @@ export function renderFormatDisplayName(format: w.Format): string {
   return GameFormat.decode(format).displayName!;
 }
 
-function deckHasNCards(deck: w.Deck, num: number): boolean {
+function deckHasNCards(deck: w.DeckInGame, num: number): boolean {
   return deck.cards.length === num;
 }
 
-function deckHasAtMostNCopiesPerCard(deck: w.Deck, maxNum: number): boolean {
+function deckHasAtMostNCopiesPerCard(deck: w.DeckInGame, maxNum: number): boolean {
   const cardCounts: number[] = Object.values(groupBy(deck.cards, 'id'))
                                      .map((cards) => cards.length);
   return cardCounts.every((count) => count <= maxNum);
 }
 
-function deckHasOnlyBuiltinCards(deck: w.Deck): boolean {
+function deckHasOnlyBuiltinCards(deck: w.DeckInGame): boolean {
   return deck.cards.every((card) => card.metadata.source.type === 'builtin');
 }
 
-function deckBelongsToSet(deck: w.Deck, set: w.Set): boolean {
+function deckBelongsToSet(deck: w.DeckInGame, set: w.Set): boolean {
   const cardIdsInSet: w.CardId[] = set.cards.map((c) => c.id);
   return deck.setId === set.id && deck.cardIds.every((id) => cardIdsInSet.includes(id));
 }
@@ -56,7 +56,7 @@ export class GameFormat {
 
   public rendered = (): React.ReactNode => this.displayName;
 
-  public isDeckValid = (_deck: w.Deck): boolean => false;
+  public isDeckValid = (_deck: w.DeckInGame): boolean => false;
 
   public isActive(state: w.GameState): boolean {
     return state.gameFormat === this.serialized();
@@ -86,7 +86,7 @@ export const NormalGameFormat = new (class extends GameFormat {
   public displayName = 'Anything Goes';
   public description = 'Each player has a 30-card deck. No restrictions on cards.';
 
-  public isDeckValid = (deck: w.Deck): boolean => {
+  public isDeckValid = (deck: w.DeckInGame): boolean => {
     return deckHasNCards(deck, DECK_SIZE);
   }
 
@@ -108,7 +108,7 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
   public displayName = 'Builtins Only';
   public description = 'Normal game with only built-in cards allowed.';
 
-  public isDeckValid = (deck: w.Deck): boolean => (
+  public isDeckValid = (deck: w.DeckInGame): boolean => (
     deckHasNCards(deck, DECK_SIZE) && deckHasOnlyBuiltinCards(deck)
   )
 
@@ -125,7 +125,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   public displayName = 'Shared Deck';
   public description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
 
-  public isDeckValid = (deck: w.Deck): boolean => deckHasNCards(deck, DECK_SIZE);
+  public isDeckValid = (deck: w.DeckInGame): boolean => deckHasNCards(deck, DECK_SIZE);
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
@@ -180,7 +180,7 @@ export class SetFormat extends GameFormat {
     </div>
   )
 
-  public isDeckValid = (deck: w.Deck): boolean => (
+  public isDeckValid = (deck: w.DeckInGame): boolean => (
     deckHasNCards(deck, 30)
       && deckBelongsToSet(deck, this.set)
       && deckHasAtMostNCopiesPerCard(deck, 2)

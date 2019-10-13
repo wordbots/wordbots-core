@@ -14,7 +14,7 @@ import defaultState from '../store/defaultCollectionState';
 import * as w from '../types';
 
 import { id as generateId } from './common';
-import { indexParsedSentence, lookupCurrentUser, saveUserData } from './firebase';
+import { indexParsedSentence, lookupCurrentUser } from './firebase';
 
 //
 // 1. Miscellaneous helper functions pertaining to cards.
@@ -34,7 +34,7 @@ export function shuffleCardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore
 
 // "Unpacks" a deck so that it can be used in a game.
 // { cardIds } => { cardIds, cards }
-export function unpackDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.Deck {
+export function unpackDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.DeckInGame {
   return { ...deck, cards: shuffleCardsInDeck(deck, userCards, sets) };
 }
 
@@ -432,10 +432,6 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
     ...state,
     sets: data ? (data.sets ? (data.sets as w.Set[]).map(normalizeCards) : state.sets) : defaultState.sets
   };
-}
-
-export function saveDecksToFirebase(state: w.CollectionState): void {
-  saveUserData('decks', state.decks);
 }
 
 export function loadParserLexicon(callback: (json: { [token: string]: any }) => any): void {

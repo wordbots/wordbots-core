@@ -44,20 +44,17 @@ export interface Action {
 
 // General types
 
-export interface Deck extends DeckInStore {
+export interface DeckInGame extends DeckInStore {
   cards: CardInStore[]
 }
 
 export interface DeckInStore {
   id: DeckId
+  authorId: UserId
   name: string
   cardIds: string[]
   timestamp?: timestamp
   setId: string | null
-}
-
-export interface DeckInStoreWithAuthor extends DeckInStore {
-  authorId: string
 }
 
 export interface CardInGame extends CardInStore {

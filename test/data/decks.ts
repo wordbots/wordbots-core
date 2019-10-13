@@ -6,9 +6,10 @@ import { instantiateCard, unpackDeck } from '../../src/common/util/cards';
 
 import { attackBotCard, cantripCard, instantKernelKillerAbilityCard } from './cards';
 
-export function constantDeck(card: w.CardInStore, deckSize: number = 30): w.Deck {
+export function constantDeck(card: w.CardInStore, deckSize: number = 30): w.DeckInGame {
   return {
     id: card.id,
+    authorId: '',
     name: card.id,
     cardIds: times(deckSize, constant('dummyId')),
     cards: times(deckSize, constant(card)).map(instantiateCard),
@@ -16,12 +17,12 @@ export function constantDeck(card: w.CardInStore, deckSize: number = 30): w.Deck
   };
 }
 
-export const defaultDecks: w.Deck[] = (
+export const defaultDecks: w.DeckInGame[] = (
   defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards, []))
 );
 
-export const emptyDeck: w.Deck = {id: '', name: '', cardIds: [], cards: [], setId: null};
+export const emptyDeck: w.DeckInGame = {id: '', authorId: '', name: '', cardIds: [], cards: [], setId: null};
 
-export const botsOnlyDeck: w.Deck = constantDeck(attackBotCard);
-export const eventsOnlyDeck: w.Deck = constantDeck(cantripCard);
-export const kernelKillerDeck: w.Deck = constantDeck(instantKernelKillerAbilityCard);
+export const botsOnlyDeck: w.DeckInGame = constantDeck(attackBotCard);
+export const eventsOnlyDeck: w.DeckInGame = constantDeck(cantripCard);
+export const kernelKillerDeck: w.DeckInGame = constantDeck(instantKernelKillerAbilityCard);

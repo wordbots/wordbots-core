@@ -16,7 +16,7 @@ interface GameRowProps {
   user: fb.User | null
   clientId: m.ClientID
   userDataByClientId: Record<m.ClientID, m.UserData>
-  availableDecks: w.Deck[]
+  availableDecks: w.DeckInGame[]
   onCancelHostGame: () => void
   onJoinGame: (id: string, name: string, format: GameFormat, options: w.GameOptions) => void
   onSpectateGame: (id: m.ClientID, name: string) => void

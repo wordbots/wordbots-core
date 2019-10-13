@@ -171,9 +171,19 @@ const cardsHandlers = {
     return saveCard(state, card);
   },
 
+  // e.g. used when importing a card from the RecentCardsCarousel
   saveExistingCard: (state: State, card: w.CardInStore): State => {
-    // e.g. used when importing a card from the RecentCardsCarousel
-    return saveCard(state, card);
+    const user = firebase.lookupCurrentUser();
+
+    if (user) {
+      return saveCard(state, {
+        ...card,
+        id: id(),  // generate a new ID so the card gets saved in a new place in Firebase
+        metadata: { ...card.metadata, ownerId: user.uid }  // this copy of the card is owned by the current user
+      });
+    } else {
+      return state;
+    }
   },
 
   saveDeck: (state: State, deckId: string, name: string, cardIds: string[] = [], setId: string | null = null): State => {

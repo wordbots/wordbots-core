@@ -47,9 +47,12 @@ describe('Collection reducer', () => {
 
     const newCards = difference(state.cards, defaultState.cards);
     expect(newCards.length).toEqual(1);
-    expectCardsToBeEqual(newCards[0], { ...attackBotCard });
+    expectCardsToBeEqual(newCards[0], attackBotCard);
+    // Make sure that we're saving the card with a different id and with the current user's ownerId.
     expect(firebase.saveCard).toHaveBeenCalledTimes(1);
-    expect(args(firebase.saveCard)[0]).toEqual(attackBotCard);
+    expectCardsToBeEqual(args(firebase.saveCard)[0], attackBotCard);
+    expect(args(firebase.saveCard)[0].id).not.toEqual(attackBotCard.id);
+    expect(args(firebase.saveCard)[0].metadata).toEqual({ ...attackBotCard.metadata, ownerId: 'test-user-id' });
   });
 
   it('DELETE_DECK', () => {

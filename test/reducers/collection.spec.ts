@@ -1,7 +1,7 @@
 import { difference, noop, omit } from 'lodash';
 
 import * as collectionActions from '../../src/common/actions/collection';
-import { saveCard } from '../../src/common/actions/creator';
+import * as creatorActions from '../../src/common/actions/creator';
 import { TYPE_ROBOT } from '../../src/common/constants';
 import collection from '../../src/common/reducers/collection';
 import { oneBotCard, twoBotCard } from '../../src/common/store/cards';
@@ -9,6 +9,7 @@ import defaultState from '../../src/common/store/defaultCollectionState';
 import * as w from '../../src/common/types';
 import { createCardFromProps } from '../../src/common/util/cards';
 import * as firebase from '../../src/common/util/firebase';
+import { attackBotCard } from '../data/cards';
 
 jest.mock('../../src/common/util/firebase');
 
@@ -37,6 +38,17 @@ describe('Collection reducer', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('ADD_EXISTING_CARD_TO_COLLECTION', () => {
+    let state: w.CollectionState = defaultCollectionState();
+    state = collection(state, creatorActions.addExistingCardToCollection(attackBotCard));
+
+    const newCards = difference(state.cards, defaultState.cards);
+    expect(newCards.length).toEqual(1);
+    expectCardsToBeEqual(newCards[0], { ...attackBotCard });
+    expect(firebase.saveCard).toHaveBeenCalledTimes(1);
+    expect(args(firebase.saveCard)[0]).toEqual(attackBotCard);
   });
 
   it('DUPLICATE_CARD', () => {
@@ -80,7 +92,7 @@ describe('Collection reducer', () => {
 
     it('creates new card', () => {
       let state: w.CollectionState = defaultCollectionState();
-      state = collection(state, saveCard(testBotCreatorState));
+      state = collection(state, creatorActions.saveCard(testBotCreatorState));
 
       const newCards = difference(state.cards, defaultState.cards);
       expect(newCards.length).toEqual(1);
@@ -93,11 +105,11 @@ describe('Collection reducer', () => {
       let state: w.CollectionState = defaultCollectionState();
 
       // Create Test Bot ...
-      state = collection(state, saveCard(testBotCreatorState));
+      state = collection(state, creatorActions.saveCard(testBotCreatorState));
       // ... then edit its cost to be 2
       const testBotId: w.CardId = difference(state.cards, defaultState.cards)[0].id;
       const editedTestBotCreatorState: w.CreatorState = { ...testBotCreatorState, id: testBotId, cost: 2 };
-      state = collection(state, saveCard(editedTestBotCreatorState));
+      state = collection(state, creatorActions.saveCard(editedTestBotCreatorState));
 
       // Only the edited card should be in the player's collection now
       const newCards = difference(state.cards, defaultState.cards);

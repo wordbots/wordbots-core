@@ -104,8 +104,6 @@ const cardsHandlers = {
   },
 
   importCards: (state: State, json: string): State => {
-    // TODO The firebase update in saveCard() should ideally be run only once here,
-    // or we may run into timing issues with defer() (TODO test this)
     cardsFromJson(json, (card) => { saveCard(state, card); });
     return state;
   },

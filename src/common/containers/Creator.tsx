@@ -176,7 +176,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           labelPosition="after"
           primary
           icon={<FontIcon style={{ margin: '0 5px 0 15px' }} className="material-icons">queue</FontIcon>}
-          style={{ marginLeft: 40, marginTop: 12 }}
+          style={{ marginLeft: 40, marginTop: 9 }}
           onClick={this.handleClickNewCard}
         />
 

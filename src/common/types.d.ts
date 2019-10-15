@@ -99,7 +99,7 @@ export interface CardMetadata {
   updated?: timestamp
   duplicatedFrom?: CardId
   isPrivate?: boolean
-  importedFromJson?: timestamp
+  importedFromJson?: timestamp  // undefined if the card wasn't imported from JSON, otherwise the timestamp that the import happened
 }
 
 export interface CardSource {
@@ -114,7 +114,7 @@ export interface Set {
   description?: string
   cards: CardInStore[]
   metadata: {
-    authorId: string
+    authorId: UserId
     authorName: string
     isPublished: boolean
     lastModified: timestamp

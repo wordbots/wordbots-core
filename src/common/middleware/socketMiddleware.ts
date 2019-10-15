@@ -5,7 +5,6 @@ import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
 import { LOG_SOCKET_IO } from '../constants';
 import * as w from '../types';
-import { logIfFlagSet } from '../util/browser';
 
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
@@ -20,6 +19,12 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     let keepaliveNeeded: boolean = false;
     let user: fb.User | undefined;
     let sendQueue: AnyAction[] = [];
+
+    function logSocketMsg(msg: string): void {
+      if (LOG_SOCKET_IO) {
+        console.log(msg); // tslint:disable-line no-console
+      }
+    }
 
     function handleAction(action: AnyAction, next: Dispatch<AnyAction>): AnyAction {
       if (action.type === sa.CONNECT) {
@@ -68,7 +73,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
         // Either send the action or queue it to send later.
         if (socket.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify(action));
-          logIfFlagSet(LOG_SOCKET_IO, `Sent ${JSON.stringify(action)}.`);
+          logSocketMsg(`Sent ${JSON.stringify(action)}.`);
           keepaliveNeeded = false;
         } else {
           sendQueue.push(action);
@@ -80,7 +85,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
       const msg = event.data;
       const action = JSON.parse(msg);
 
-      logIfFlagSet(LOG_SOCKET_IO, `Received ${msg}.`);
+      logSocketMsg(`Received ${msg}.`);
       store.dispatch({...action, fromServer: true});
     }
 

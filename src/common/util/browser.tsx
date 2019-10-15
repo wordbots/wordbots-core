@@ -57,14 +57,6 @@ export function toggleFlag(flag: string): void {
   localStorage[`wb$${flag}`] = !isFlagSet(flag);
 }
 
-export function logIfFlagSet(flag: boolean, msg: string): void {
-  if (flag) {
-    /* tslint:disable:no-console */
-    console.log(msg);
-    /* tslint:enable:no-console */
-  }
-}
-
 export function getGameAreaNode(): HTMLElement {
   return document.getElementById('gameArea') || document.body;
 }
@@ -78,10 +70,13 @@ export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {
 // to avoid "You may not call store.getState() while the reducer is executing" exceptions.
 // The easiest solution for now is to just use setTimeout, but it's pretty gross. TODO find a better way.
 export function defer(fn: () => void): void {
-  if (inBrowser()) {
-    setTimeout(fn, 0);
-  } else {
-    // This branch mainly for tests
+  // Run fn() immediately in tests because the test won't wait for the promise.
+  if (inTest()) {
     fn();
   }
+
+  // Defer execution until the end of the event loop.
+  // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises#Guarantees :
+  // "Callbacks will never be called before the completion of the current run of the JavaScript event loop."
+  Promise.resolve().then(fn);
 }

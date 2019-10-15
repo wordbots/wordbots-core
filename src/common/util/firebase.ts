@@ -27,6 +27,11 @@ if (fb.apps.length === 0) {
   // (window as any).fb = fb;
 }
 
+function listenWithUnsubscribe(ref: firebase.database.Reference, cb: (snapshot: firebase.database.DataSnapshot | null) => void): firebase.Unsubscribe {
+  ref.on('value', cb);
+  return () => ref.off('value', cb);
+}
+
 // Users
 
 function saveUser(user: firebase.User): Promise<firebase.User> {
@@ -41,7 +46,7 @@ function saveUser(user: firebase.User): Promise<firebase.User> {
 }
 
 export function lookupCurrentUser(): firebase.User | null {
-  return currentUser;
+  return currentUser || fb.auth().currentUser;
 }
 
 export function lookupUsername(fallback = 'You'): string {
@@ -114,23 +119,18 @@ export async function getRecentGamesByUserId(userId: w.UserId): Promise<w.SavedG
 // Cards
 
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */
-export function listenToCards(uid: w.UserId | null, callback: (data: w.CardInStore[]) => any): { off: () => void } {
+export function listenToCards(uid: w.UserId | null, callback: (data: w.CardInStore[]) => any): firebase.Unsubscribe {
   const ref = uid
     ? fb.database().ref('cards').orderByChild('metadata/ownerId').equalTo(uid)
     : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
 
-  const actualCallback = (snapshot: firebase.database.DataSnapshot) => {
+  return listenWithUnsubscribe(ref, (snapshot: firebase.database.DataSnapshot | null) => {
     if (snapshot) {
       const unnormalizedCards = Object.values(snapshot.val());
       const normalizedCards = unnormalizedCards.map((card: any) => normalizeCard(card));
       callback(normalizedCards);
     }
-  };
-
-  ref.on('value', actualCallback);
-
-  // Return a function that turns off the listener.
-  return { off: () => ref.off('value', actualCallback) };
+  });
 }
 
 export function saveCard(card: w.Card): void {

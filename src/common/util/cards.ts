@@ -364,7 +364,8 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
       id: generateId(),
       metadata: {
         ...card.metadata,
-        source: cardSourceForCurrentUser(),
+        ownerId: cardSourceForCurrentUser().uid,
+        source: (card.metadata && card.metadata.source) || cardSourceForCurrentUser(),
         created: (card.metadata && card.metadata.created) || Date.now(),
         updated: Date.now(),
         importedFromJson: Date.now()

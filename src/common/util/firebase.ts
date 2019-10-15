@@ -39,7 +39,7 @@ async function query(ref: string, child: string, value: string): Promise<firebas
 }
 async function queryObjects<T>(ref: string, child: string, value: string): Promise<T[]> {
   const snapshot = await query(ref, child, value);
-  return snapshot ? Object.values(snapshot.val() as Record<string, T>) : [];
+  return snapshot && snapshot.val() ? Object.values(snapshot.val() as Record<string, T>) : [];
 }
 
 // Users

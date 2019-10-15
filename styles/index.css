@@ -13,6 +13,15 @@ a {
   text-decoration: none;
 }
 
+a.underline {
+  cursor: pointer;
+  text-decoration: underline !important;
+}
+
+a.underline:hover {
+  text-decoration: none !important;
+}
+
 thead {
   background-color: #f44336 !important;
 }
@@ -79,14 +88,6 @@ a.topLink:hover {
 .profile-link:hover {
   color: #333;
   text-decoration: underline;
-}
-
-.profile-link.underline {
-  text-decoration: underline;
-}
-
-.profile-link.underline:hover {
-  text-decoration: none;
 }
 
 /* Custom tooltip styling */

@@ -13,7 +13,7 @@ interface NewHereLinkProps {
 class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps & WithStyles> {
   public static styles: Record<string, CSSProperties> = {
     container: {
-      height: 150,
+      height: 130,
       border: '1px solid black',
       margin: 2,
       padding: 5,

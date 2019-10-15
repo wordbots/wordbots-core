@@ -39,6 +39,7 @@ interface AppStateProps {
   cardIdBeingEdited: string | null
   inGame: boolean
   inSandbox: boolean
+  loggedIn: boolean
   renderId: number
 }
 
@@ -66,6 +67,7 @@ function mapStateToProps(state: w.State): AppStateProps {
     cardIdBeingEdited: state.creator.id,
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
+    loggedIn: state.global.user !== null,
     renderId: state.global.renderId
   };
 }
@@ -211,13 +213,13 @@ class App extends React.Component<AppProps, AppState> {
     if (this.isLoading) {
       return null;
     } else {
-      const { history, location } = this.props;
+      const { loggedIn, history, location } = this.props;
       return (
         <div>
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
           <HelpDialog history={history} location={location} />
-          <NewHereDialog history={history} />
+          <NewHereDialog history={history} loggedIn={loggedIn} />
         </div>
       );
     }

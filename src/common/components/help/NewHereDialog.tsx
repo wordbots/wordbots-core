@@ -7,9 +7,14 @@ import RouterDialog from '../RouterDialog';
 
 import NewHereLink from './NewHereLink';
 
-export default class NewHereDialog extends React.Component<{ history: History }> {
+interface NewHereDialogProps {
+  history: History
+  loggedIn: boolean
+}
+
+export default class NewHereDialog extends React.Component<NewHereDialogProps> {
   public render(): JSX.Element {
-    const { history } = this.props;
+    const { history, loggedIn } = this.props;
     return (
       <RouterDialog
         path="new-here"
@@ -18,10 +23,10 @@ export default class NewHereDialog extends React.Component<{ history: History }>
         actions={[
           <span
             key="don't-show-again"
-            style={{ float: 'left', padding: 5, fontSize: '0.85em', textDecoration: 'underline', cursor: 'pointer' }}
+            style={{ float: 'left', padding: 5, fontSize: '0.85em' }}
             onClick={this.dontShowAgain}
           >
-            Don't show this dialog again
+            <a className="underline">Don't show this dialog again</a>
           </span>,
           <RaisedButton
             primary
@@ -31,8 +36,12 @@ export default class NewHereDialog extends React.Component<{ history: History }>
           />
         ]}
       >
-        <p>Welcome! <b>Wordbots</b> is a new kind of card game, where players <i>– like you –</i> get to write the cards.</p>
-        <p>There's a lot to take in, so here's the order we'd suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
+        <div>
+          <p>Welcome! <b>Wordbots</b> is a new kind of card game, where players <i>– like you –</i> get to write the cards.</p>
+          <p>There's a lot to take in, so here's the order we'd suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
+          {!loggedIn && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
+        </div>
+
         <table style={{ margin: '0 auto' }}>
           <tbody>
             <tr>
@@ -65,7 +74,9 @@ export default class NewHereDialog extends React.Component<{ history: History }>
                 <NewHereLink idx={8} href="/play//host">Challenge other players with your deck, in either the "Anything&nbsp;Goes" or "Shared&nbsp;Deck" format.</NewHereLink>
               </td>
               <td>
-                <NewHereLink idx={9}>Now the world of Wordbots is your oyster!<br /><br /><em>Bonus points: make your own set!</em></NewHereLink>
+                <NewHereLink idx={9}>
+                  Now the world of Wordbots is your oyster!
+                  <div style={{ marginTop: 5 }}><em>(Bonus points: make your own set!)</em></div></NewHereLink>
               </td>
             </tr>
           </tbody>
@@ -75,6 +86,10 @@ export default class NewHereDialog extends React.Component<{ history: History }>
   }
 
   private handleClose = () => { RouterDialog.closeDialog(this.props.history); };
+
+  private handleClickLogin = () => {
+    RouterDialog.openDialog(this.props.history, 'login');
+  }
 
   private dontShowAgain = () => {
     toggleFlag('skipNewHere');

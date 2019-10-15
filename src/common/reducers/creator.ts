@@ -66,6 +66,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
 
     case creatorActions.SAVE_CARD:
     case creatorActions.ADD_EXISTING_CARD_TO_COLLECTION:
+    case creatorActions.RESET_CREATOR:
       return {
         ...defaultState,
         willCreateAnother: state.willCreateAnother,

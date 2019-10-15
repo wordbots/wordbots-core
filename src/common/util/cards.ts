@@ -249,23 +249,21 @@ function parse(
 
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
-// Parse a batch of sentences and call callback on each [sentence, result] pair.
+// Parse a batch of sentences and return a promise for each [sentence, result] pair.
 // TODO Use parseBatch() for all parsing?
 export function parseBatch(
   sentences: string[],
   mode: w.ParserMode,
-  callback: (validSentences: string[]) => any
-): void {
-  fetch(`${PARSER_URL}/parse`, {
+): Promise<Array<{ sentence: string, result: w.ParseResult }>> {
+  return fetch(`${PARSER_URL}/parse`, {
     method: 'POST',
     body: JSON.stringify(sentences.map((input) => ({ input, mode }))),
     headers: { 'Content-Type': 'application/json' }
   })
     .then((response) => response.json())
-    .then((results) => {
-      const validSentences: string[] = (results as Array<[string, w.ParseResult]>).filter(([_, result]) => !result.error).map(([sentence, _]) => sentence);
-      callback(validSentences);
-    })
+    .then((results) => (
+      (results as Array<[string, w.ParseResult]>).map(([sentence, result]) => ({ sentence, result }))
+    ))
     .catch((err) => {
       // TODO better error handling
       throw new Error((`Parser error: ${err}`));
@@ -391,7 +389,7 @@ export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource
   const metadata: w.CardMetadata = {
     // Build metadata field for older cards without it
     ...card.metadata,
-    ownerId: (explicitSource && explicitSource.uid) || source.uid,
+    ownerId: (card.metadata && card.metadata.ownerId) || (explicitSource && explicitSource.uid) || source.uid,
     source,
     updated: (card.metadata && card.metadata.updated) || (card as any).timestamp,
     duplicatedFrom: (card.metadata && card.metadata.duplicatedFrom) || (source as any).duplicatedFrom,
@@ -404,7 +402,7 @@ export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource
 export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.CollectionState {
   if (data) {
     if (data.cards) {
-      const cardsFromFirebase = data.cards.map(normalizeCard) || [];
+      const cardsFromFirebase = data.cards.map((card: any) => normalizeCard(card)) || [];
       state.cards = uniqBy(state.cards.concat(cardsFromFirebase), 'id');
     }
   } else {
@@ -435,10 +433,9 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
   };
 }
 
-export function loadParserLexicon(callback: (json: { [token: string]: any }) => any): void {
-  fetch(`${PARSER_URL}/lexicon?format=json`)
+export function loadParserLexicon(): Promise<{ [token: string]: any }> {
+  return fetch(`${PARSER_URL}/lexicon?format=json`)
     .then((response) => response.json())
-    .then(callback)
     .catch((err) => {
       // TODO better error handling
       throw new Error((`Error retrieving lexicon: ${err}`));

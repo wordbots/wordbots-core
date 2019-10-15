@@ -107,14 +107,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
             </Paper>
           </div>
           <div className={classes.recentCardsContainer}>
-            { userId &&
-              <RecentCardsCarousel
-                key={userId}
-                userId={userId}
-                username={userName}
-                history={this.props.history}
-              />
-            }
+            {userId && <RecentCardsCarousel key={userId} userId={userId} history={this.props.history} />}
           </div>
         </div>
       </div>

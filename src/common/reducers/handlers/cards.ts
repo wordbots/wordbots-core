@@ -1,7 +1,6 @@
 import { isUndefined, omitBy, pick } from 'lodash';
 
 import * as w from '../../types';
-import { defer } from '../../util/browser';
 import {
   cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
   loadDecksFromFirebase, loadSetsFromFirebase, splitSentences
@@ -14,18 +13,18 @@ type State = w.CollectionState;
 const cardsHandlers = {
   deleteCards: (state: State, ids: string[]): State => {
     state.cards = state.cards.filter((c: w.CardInStore) => !ids.includes(c.id));
-    defer(() => firebase.removeCards(ids));
+    firebase.removeCards(ids);
     return state;
   },
 
   deleteDeck: (state: State, deckId: string): State => {
     state.decks = state.decks.filter((deck: w.DeckInStore) => deck.id !== deckId);
-    defer(() => firebase.removeDeck(deckId));
+    firebase.removeDeck(deckId);
     return state;
   },
 
   deleteSet: (state: State, setId: string): State => {
-    defer(() => firebase.removeSet(setId));
+    firebase.removeSet(setId);
     return {
       ...state,
       sets: state.sets.filter((set: w.Set) => set.id !== setId)
@@ -70,7 +69,7 @@ const cardsHandlers = {
       };
 
       state.decks.push(copy);
-      defer(() => firebase.saveDeck(copy));
+      firebase.saveDeck(copy);
     }
 
     return state;
@@ -92,7 +91,7 @@ const cardsHandlers = {
       }
     };
 
-    defer(() => firebase.saveSet(copy));
+    firebase.saveSet(copy);
     return {
       ...state,
       sets: [...state.sets, copy]
@@ -156,7 +155,7 @@ const cardsHandlers = {
     }
 
     const publishedSet: w.Set = {...set, metadata: {...set.metadata, isPublished: true }};
-    defer(() => firebase.saveSet(publishedSet));
+    firebase.saveSet(publishedSet);
 
     return {
       ...state,
@@ -174,7 +173,7 @@ const cardsHandlers = {
     const user = firebase.lookupCurrentUser();
 
     if (user) {
-      return saveCard(state, {
+      const copy: w.CardInStore =  {
         ...card,
         id: id(),  // generate a new ID so the card gets saved in a new place in Firebase
         metadata: {
@@ -182,7 +181,8 @@ const cardsHandlers = {
           ownerId: user.uid,  // this copy of the card is owned by the current user
           updated: Date.now(),  // set updated date to Date.now() so the card is easy to find
         }
-      });
+      };
+      return saveCard(state, copy);
     } else {
       return state;
     }
@@ -198,7 +198,7 @@ const cardsHandlers = {
 
         if (deck) {
           Object.assign(deck, { name, cardIds });
-          defer(() => firebase.saveDeck(deck));
+          firebase.saveDeck(deck);
         }
       } else {
         const deck: w.DeckInStore = {
@@ -211,7 +211,7 @@ const cardsHandlers = {
         };
 
         state.decks.push(deck);
-        defer(() => firebase.saveDeck(deck));
+        firebase.saveDeck(deck);
       }
     }
 
@@ -219,7 +219,7 @@ const cardsHandlers = {
   },
 
   saveSet: (state: State, set: w.Set) => {
-    defer(() => firebase.saveSet(set));
+    firebase.saveSet(set);
     return {
       ...state,
       sets: [...state.sets.filter((s) => s.id !== set.id), set]
@@ -227,7 +227,7 @@ const cardsHandlers = {
   }
 };
 
-// Saves a card, either as a new card or replacing an existing card.
+// Saves a card to Redux and Firebase, either as a new card or replacing an existing card.
 function saveCard(state: State, card: w.CardInStore): State {
   // Is there already a card with the same ID (i.e. we're currently editing it)?
   const existingCard = state.cards.find((c) => c.id === card.id);
@@ -246,7 +246,7 @@ function saveCard(state: State, card: w.CardInStore): State {
     state.cards.push(card);
   }
 
-  defer(() => firebase.saveCard(card));
+  firebase.saveCard(card);
   return state;
 }
 

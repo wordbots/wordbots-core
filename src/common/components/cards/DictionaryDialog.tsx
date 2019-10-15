@@ -13,7 +13,7 @@ import { DICTIONARY_TAB_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { getHash, setHash } from '../../util/browser';
 import { allKeywords, contractKeywords } from '../../util/cards';
-import { listenToDictionaryData } from '../../util/firebase';
+import { getDictionaryData } from '../../util/firebase';
 import StatusIcon from '../card/StatusIcon';
 import RouterDialog from '../RouterDialog';
 
@@ -51,12 +51,11 @@ export default class DictionaryDialog extends React.Component<{ history: History
     this.checkHash();
   }
 
-  public componentDidMount(): void {
-    listenToDictionaryData((data) => {
-      this.setState((state) => ({
-        dictionary: {...state.dictionary, ...data.dictionary}
-      }));
-    });
+  public async componentDidMount(): Promise<void> {
+    const dictionary: w.Dictionary = await getDictionaryData();
+    this.setState((state) => ({
+      dictionary: {...state.dictionary, ...dictionary}
+    }));
   }
 
   public UNSAFE_componentWillReceiveProps(): void {

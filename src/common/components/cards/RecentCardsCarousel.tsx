@@ -4,7 +4,7 @@ import * as React from 'react';
 import Carousel, { ResponsiveObject } from 'react-slick';
 
 import * as w from '../../types';
-import { listenToCards } from '../../util/firebase';
+import { getCards } from '../../util/firebase';
 import Card from '../card/Card';
 
 import CardProvenanceDescription from './CardProvenanceDescription';
@@ -12,7 +12,6 @@ import CardProvenanceDescription from './CardProvenanceDescription';
 interface RecentCardsCarouselProps {
   history: History
   userId?: string
-  username?: string
 }
 
 interface RecentCardsCarouselState {
@@ -37,44 +36,36 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     }));
   }
 
-  public componentDidMount(): void {
+  public async componentDidMount(): Promise<void> {
     const { userId } = this.props;
 
-    (this as any).unsubscribe = listenToCards(userId || null, (cards) => {
-      let recentCards: w.CardInStore[] = _(cards)
-        .uniqBy('name')
-        .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
-          !!c.text  // cards without text (uninteresting)
-            && !!c.metadata.updated  // cards without timestamp (can't order them)
-            && c.metadata.source.type === 'user'  // built-in cards
-            && !c.metadata.isPrivate  // private cards
-            && !c.metadata.duplicatedFrom  // duplicated cards
-            && !c.metadata.importedFromJson  // cards imported from JSON
-        )
-        .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
-        .slice(0, 10)
-        .value();
+    const cards = await getCards(userId || null);
+    let recentCards: w.CardInStore[] = _(cards)
+      .uniqBy('name')
+      .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
+        !!c.text  // cards without text (uninteresting)
+          && !!c.metadata.updated  // cards without timestamp (can't order them)
+          && c.metadata.source.type === 'user'  // built-in cards
+          && !c.metadata.isPrivate  // private cards
+          && !c.metadata.duplicatedFrom  // duplicated cards
+          && !c.metadata.importedFromJson  // cards imported from JSON
+          && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
+      )
+      .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
+      .slice(0, 10)
+      .value();
 
-      if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
-        // eslint-disable-next-line no-loops/no-loops
-        while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
-          recentCards = [...recentCards, ...recentCards];
-        }
+    if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
+      // eslint-disable-next-line no-loops/no-loops
+      while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
+        recentCards = [...recentCards, ...recentCards];
       }
+    }
 
-      this.setState({ recentCards });
-    });
-  }
-
-  public componentWillUnmount(): void {
-    // Cancel listenToCards() subscription, to fix:
-    //   backend.js:1 Warning: Can't perform a React state update on an unmounted component.
-    //   This is a no-op, but it indicates a memory leak in your application.
-    (this as any).unsubscribe();
+    this.setState({ recentCards });
   }
 
   public render(): JSX.Element | null {
-    const { userId } = this.props;
     const { recentCards } = this.state;
 
     if (recentCards.length > 0) {
@@ -105,7 +96,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
                   }}
                 >
                   {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); }})}
-                  {!userId && <CardProvenanceDescription card={card} style={{ fontSize: 11, color: '#888', maxWidth: 155 }} />}
+                  <CardProvenanceDescription card={card} style={{ fontSize: 11, color: '#888', maxWidth: 155 }} />
                 </div>
               )
             }

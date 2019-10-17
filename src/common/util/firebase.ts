@@ -27,9 +27,19 @@ if (fb.apps.length === 0) {
   // (window as any).fb = fb;
 }
 
-function listenWithUnsubscribe(ref: firebase.database.Reference, cb: (snapshot: firebase.database.DataSnapshot | null) => void): firebase.Unsubscribe {
-  ref.on('value', cb);
-  return () => ref.off('value', cb);
+// Util functions
+
+/* SELECT * from [ref] WHERE [child] == [value] */
+async function query(ref: string, child: string, value: string): Promise<firebase.database.DataSnapshot> {
+  return await fb.database()
+    .ref(ref)
+    .orderByChild(child)
+    .equalTo(value)
+    .once('value');
+}
+async function queryObjects<T>(ref: string, child: string, value: string): Promise<T[]> {
+  const snapshot = await query(ref, child, value);
+  return snapshot && snapshot.val() ? Object.values(snapshot.val() as Record<string, T>) : [];
 }
 
 // Users
@@ -102,44 +112,38 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 }
 
 export async function getRecentGamesByUserId(userId: w.UserId): Promise<w.SavedGame[]> {
-  async function gamesByColor(color: string): Promise<w.SavedGame[]> {
-    const snapshot = await fb.database()
-      .ref('games')
-      .orderByChild(`players/${color}`)
-      .equalTo(userId)
-      .once('value');
-    return Object.values(snapshot.val());
-  }
-
-  const blueGames = await gamesByColor('blue');
-  const orangeGames = await gamesByColor('orange');
+  const blueGames = await queryObjects<w.SavedGame>('games', 'players/blue', userId);
+  const orangeGames = await queryObjects<w.SavedGame>('games', 'players/orange', userId);
   return orderBy(uniqBy([...blueGames, ...orangeGames], 'id'), ['timestamp'], ['desc']);
 }
 
 // Cards
 
 /** Returns either all cards for a given user or the most recent cards belonging to any user. */
-export function listenToCards(uid: w.UserId | null, callback: (data: w.CardInStore[]) => any): firebase.Unsubscribe {
-  const ref = uid
-    ? fb.database().ref('cards').orderByChild('metadata/ownerId').equalTo(uid)
-    : fb.database().ref('cards').orderByChild('metadata/updated').limitToLast(50);
+export async function getCards(uid: w.UserId | null): Promise<w.CardInStore[]> {
+  const cardsRef = fb.database().ref('cards');
+  const ref = uid ? cardsRef.orderByChild('metadata/ownerId').equalTo(uid) : cardsRef.orderByChild('metadata/updated').limitToLast(50);
+  const snapshot = await ref.once('value');
 
-  return listenWithUnsubscribe(ref, (snapshot: firebase.database.DataSnapshot | null) => {
-    if (snapshot) {
-      const unnormalizedCards = Object.values(snapshot.val());
-      const normalizedCards = unnormalizedCards.map((card: any) => normalizeCard(card));
-      callback(normalizedCards);
-    }
-  });
+  if (snapshot) {
+    const unnormalizedCards = Object.values(snapshot.val());
+    return unnormalizedCards.map((card: any) => normalizeCard(card));
+  } else {
+    return [];
+  }
+}
+
+export async function getCardById(cardId: string): Promise<w.CardInStore> {
+  const snapshot = await fb.database().ref(`cards/${cardId}`).once('value');
+  return snapshot.val() as w.CardInStore;
 }
 
 export function saveCard(card: w.Card): void {
   fb.database()
     .ref(`cards/${card.id}`)
-    // see firebaseRules.json - this save will only succeed if either:
-    //   (i) there is no card yet with the given id
-    //   (ii) the card with the given id was created by the logged-in user
-    .update(withoutEmptyFields(card));
+    .update(withoutEmptyFields(card));  // see firebaseRules.json - this save will only succeed if either:
+                                        //   (i) there is no card yet with the given id
+                                        //   (ii) the card with the given id was created by the logged-in user
 }
 
 export function removeCards(cardIds: string[]): void {
@@ -148,37 +152,16 @@ export function removeCards(cardIds: string[]): void {
     .update(Object.assign({}, ...cardIds.map((id) => ({[id]: null}))));
 }
 
-export async function getCardById(cardId: string): Promise<w.CardInStore> {
-  const snapshot = await fb.database().ref(`cards/${cardId}`).once('value');
-  return snapshot.val() as w.CardInStore;
-}
-
 export async function getNumCardsCreatedCountByUserId(userId: w.UserId): Promise<number> {
-  const snapshot = await fb.database()
-    .ref('cards')
-    .orderByChild('metadata/source/uid')
-    .equalTo(userId)
-    .once('value');
+  const snapshot = await query('cards', 'metadata/source/uid', userId);
   return snapshot.numChildren();
 }
 
 // Decks
 
-// Returns either all decks belonging to a given user.
-export function listenToDecks(uid: w.UserId, callback: (data: w.DeckInStore[]) => any): void {
-  fb.database()
-    .ref('decks')
-    .orderByChild('authorId')
-    .equalTo(uid)
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
-      try {
-        if (snapshot) {
-          callback(Object.values(snapshot.val()) as w.DeckInStore[]);
-        }
-      } catch (ex) {
-        callback([]);
-      }
-    });
+// Returns all decks belonging to a given user.
+export async function getDecks(uid: w.UserId): Promise<w.DeckInStore[]> {
+  return queryObjects<w.DeckInStore>('decks', 'authorId', uid);
 }
 
 export function saveDeck(deck: w.DeckInStore): void {
@@ -194,39 +177,24 @@ export function removeDeck(deckId: string): void {
 }
 
 export async function getNumDecksCreatedCountByUserId(userId: w.UserId): Promise<number> {
-  const snapshot = await fb.database()
-    .ref('decks')
-    .orderByChild('authorId')
-    .equalTo(userId)
-    .once('value');
+  const snapshot = await query('decks', 'authorId', userId);
   return snapshot.numChildren();
 }
 
 export async function getNumDecksCreatedCountBySetId(setId: string): Promise<number> {
-  const snapshot = await fb.database()
-    .ref('decks')
-    .orderByChild('setId')
-    .equalTo(setId)
-    .once('value');
+  const snapshot = await query('decks', 'setId', setId);
   return snapshot.numChildren();
 }
 
 // Sets
 
-export function listenToSets(callback: (data: w.Set[]) => any): void {
-  const deserializeSet = (serializedSet: any): w.Set => ({
-    ...serializedSet,
-    cards: Object.values(serializedSet.cards)
-  });
+export async function getSets(): Promise<w.Set[]> {
+  function deserializeSet(serializedSet: any): w.Set {
+    return { ...serializedSet, cards: Object.values(serializedSet.cards) };
+  }
 
-  fb.database()
-    .ref('sets')
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
-      if (snapshot) {
-        const serializedSets = Object.values(snapshot.val());
-        callback(serializedSets.map(deserializeSet));
-      }
-    });
+  const snapshot = await fb.database().ref('sets').once('value');
+  return snapshot ? Object.values(snapshot.val()).map(deserializeSet) : [];
 }
 
 export function saveSet(set: w.Set): void {
@@ -242,15 +210,22 @@ export function removeSet(setId: string): void {
 }
 
 export async function getNumSetsCreatedCountByUserId(userId: w.UserId): Promise<number> {
-  const snapshot = await fb.database()
-    .ref('sets')
-    .orderByChild('metadata/authorId')
-    .equalTo(userId)
-    .once('value');
+  const snapshot = await query('sets', 'metadata/authorId', userId);
   return snapshot.numChildren();
 }
 
 // Parsing-related
+
+interface CardTextInFirebase {
+  byToken: {
+    [token: string]: string[]
+  }
+  byNode: {
+    [type: string]: {
+      [entry: string]: string[]
+    }
+  }
+}
 
 function cleanupExamples(examples: string[]): string[] {
   return uniq(Object.values(examples).map((example) =>
@@ -258,56 +233,40 @@ function cleanupExamples(examples: string[]): string[] {
   );
 }
 
-export function getCardTextCorpus(callback: (corpus: string, examples: string[]) => any): void {
-  fb.database()
-    .ref('cardText/all')
-    .once('value', (snapshot: firebase.database.DataSnapshot) => {
-      const examples = cleanupExamples(snapshot.val());
-      const corpus = examples.map((ex) => `${expandKeywords(ex).toLowerCase()} . `).join();
-      callback(corpus, examples);
-    });
+export async function getCardTextCorpus(): Promise<{ corpus: string, examples: string[] }> {
+  const snapshot = await fb.database().ref('cardText/all').once('value');
+  const examples = cleanupExamples(snapshot.val());
+  return {
+    examples,
+    corpus: examples.map((ex) => `${expandKeywords(ex).toLowerCase()} . `).join()
+  };
 }
 
-export function listenToDictionaryData(callback: (data: { dictionary: w.Dictionary }) => any): void {
-  loadParserLexicon((json: { [token: string]: any }) => {
-    callback({
-      dictionary: {
-        definitions: json
-      }
-    });
-  });
+export async function getDictionaryData(): Promise<w.Dictionary> {
+  interface Node { type: string, entry: string }
 
-  fb.database()
-    .ref('cardText')
-    .on('value', (snapshot: firebase.database.DataSnapshot) => {
-      if (snapshot) {
-        const val = snapshot.val();
+  const definitions: Record<string, any> = await loadParserLexicon();
+  const snapshot = await fb.database().ref('cardText').once('value');
+  const { byToken, byNode } = snapshot.val() as CardTextInFirebase;
 
-        const examplesByToken: { [token: string]: string[] } = val.byToken;
+  const nodes: Node[] = flatMap(byNode, (entries, type) => Object.keys(entries).map((entry) => ({ type, entry })));
+  const byNodeFlat: Record<string, string[]> = fromPairs(nodes.map(({ type, entry }) => [`${type}.${entry}`, byNode[type][entry]] ));
 
-        const nodes = flatMap(val.byNode, ((entries, type) => Object.keys(entries).map((entry) => `${type}.${entry}`)));
-        const examplesByNode: { [token: string]: string[] } = fromPairs(nodes.map((n) =>
-          [n, val.byNode[n.split('.')[0]][n.split('.')[1]]]
-        ));
-
-        callback({
-          dictionary: {
-            examplesByToken: mapValues(examplesByToken, cleanupExamples),
-            examplesByNode: mapValues(examplesByNode, cleanupExamples)
-          }
-        });
-      }
-    });
+  return {
+    definitions,
+    examplesByToken: mapValues(byToken, cleanupExamples),
+    examplesByNode: mapValues(byNodeFlat, cleanupExamples)
+  };
 }
 
 export function saveReportedParseIssue(text: string): void {
-  fb.database()
-    .ref('reportedParseIssues')
-    .push({
-      text,
-      date: fb.database.ServerValue.TIMESTAMP,
-      user: currentUser && currentUser.email
-    });
+  const issue = {
+    text,
+    date: fb.database.ServerValue.TIMESTAMP,
+    user: currentUser && currentUser.email
+  };
+
+  fb.database().ref('reportedParseIssues').push(issue);
 }
 
 export function indexParsedSentence(sentence: string, tokens: string[], js: string): void {

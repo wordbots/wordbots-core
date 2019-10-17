@@ -1,4 +1,4 @@
-import { capitalize, identity, pullAt, random, shuffle } from 'lodash';
+import { capitalize, pullAt, random, shuffle } from 'lodash';
 
 import * as w from '../types';
 
@@ -17,15 +17,14 @@ export default class CardTextExampleStore {
     return `${example}.`;
   }
 
-  public loadExamples = (sentences: string[], numToTry: number, onLoad: (s: string) => any = identity): void => {
+  public loadExamples = (sentences: string[], numToTry: number): Promise<any> => {
     const candidates = shuffle(sentences).map(capitalize).map(expandKeywords).slice(0, numToTry);
     const modes = Object.keys(this.examples);
 
-    modes.forEach((mode) => {
-      parseBatch(candidates, mode as w.ParserMode, (validSentences: string[]) => {
-        this.examples[mode].push(...validSentences);
-        onLoad(mode);
-      });
-    });
+    return Promise.all(modes.map(async (mode) => {
+      const results = await parseBatch(candidates, mode as w.ParserMode);
+      const validSentences = results.filter(({ result }) => !result.error).map(({ sentence }) => sentence);
+      this.examples[mode].push(...validSentences);
+    }));
   }
 }

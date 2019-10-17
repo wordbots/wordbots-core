@@ -21,7 +21,7 @@ import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WI
 import PersonalTheme from '../themes/personal';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
-import { listenToCards, listenToDecks, listenToSets, onLogin, onLogout } from '../util/firebase';
+import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
 import Collection from './Collection';
@@ -107,34 +107,21 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public componentDidMount(): void {
-    const { onLoggedIn, onLoggedOut, onReceiveFirebaseData } = this.props;
+    const { onLoggedIn, onLoggedOut } = this.props;
 
     this.calculateDimensions();
     window.addEventListener('resize', this.calculateDimensions);
 
-    listenToSets((sets) => {
-      onReceiveFirebaseData({ sets });
-      this.setState({ loadedSets: true });
-    });
+    this.loadSets();
 
     onLogin((user) => {
       onLoggedIn(user);
-
-      listenToCards(user.uid, (cards) => {
-        onReceiveFirebaseData({ cards });
-        this.setState({ loadedCards: true });
-      });
-
-      listenToDecks(user.uid, (decks) => {
-        onReceiveFirebaseData({ decks });
-        this.setState({ loadedDecks: true });
-      });
+      this.loadUserCardsAndDecks(user.uid);
     });
 
     onLogout(() => {
-      this.setState({ loadedCards: true, loadedDecks: true });
       onLoggedOut();
-      onReceiveFirebaseData(null);
+      this.loadUserCardsAndDecks(null);
     });
   }
 
@@ -263,6 +250,27 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
     });
+  }
+
+  private loadUserCardsAndDecks = async (uid: w.UserId | null): Promise<void> => {
+    const { onReceiveFirebaseData } = this.props;
+
+    if (uid) {
+      const [cards, decks] = await Promise.all([getCards(uid), getDecks(uid)]);
+      onReceiveFirebaseData({ cards, decks });
+    } else {
+      onReceiveFirebaseData(null);
+    }
+
+    this.setState({ loadedCards: true, loadedDecks: true });
+  }
+
+  private loadSets = async (): Promise<void> => {
+    const { onReceiveFirebaseData } = this.props;
+
+    const sets = await getSets();
+    onReceiveFirebaseData({ sets });
+    this.setState({ loadedSets: true });
   }
 }
 

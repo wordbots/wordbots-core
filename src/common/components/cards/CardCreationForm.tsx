@@ -55,10 +55,7 @@ interface CardCreationFormProps {
 
 interface CardCreationFormState {
   bigramProbs?: BigramProbs
-  examplesLoaded: {
-    event: boolean
-    object: boolean
-  }
+  examplesLoaded: boolean
   submittedParseIssue: string | null
   submittedParseIssueConfirmationOpen: boolean
 }
@@ -89,10 +86,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   };
 
   public state: CardCreationFormState = {
-    examplesLoaded: {
-      event: false,
-      object: false
-    },
+    examplesLoaded: false,
     submittedParseIssue: null,
     submittedParseIssueConfirmationOpen: false
   };
@@ -185,6 +179,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public componentDidMount(): void {
+    // Used by setStateIfMounted()
     // See https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
     (this as any)._isMounted = true;
 
@@ -198,20 +193,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       this.onUpdateText(this.props.text, this.props.type);
     }
 
-    getCardTextCorpus((corpus, examples) => {
-      if ((this as any)._isMounted) {
-        const bigramProbs = prepareBigramProbs(corpus);
-        this.setState({ bigramProbs });
-      }
-
-      exampleStore.loadExamples(examples, 100, (mode) => {
-        if ((this as any)._isMounted) {  // TODO do this better with cancellable Promises or something
-          this.setState((state) => ({
-            examplesLoaded: {...state.examplesLoaded, [mode]: true}
-          }));
-        }
-      });
-    });
+    this.loadExampleCards();
   }
 
   public componentWillUnmount(): void {
@@ -220,8 +202,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
   public render(): JSX.Element {
     const { isReadonly, willCreateAnother, onToggleWillCreateAnother } = this.props;
-    const { submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
-    const examplesLoaded = this.state.examplesLoaded[this.parserMode];
+    const { examplesLoaded, submittedParseIssue, submittedParseIssueConfirmationOpen } = this.state;
 
     const FULL_WIDTH_PERCENT = 100;
     const NUMBER_OF_BUTTONS = 4;
@@ -439,6 +420,17 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   }
 
+  private loadExampleCards = async () => {
+    const { corpus, examples } = await getCardTextCorpus();
+
+    const bigramProbs = prepareBigramProbs(corpus);
+    this.setStateIfMounted({ bigramProbs });
+
+    exampleStore.loadExamples(examples, 100).then(() => {
+      this.setStateIfMounted({ examplesLoaded: true });
+    });
+  }
+
   private renderAttributeField(attribute: 'attack' | 'health' | 'speed', enabled = true, opts: { max?: number } = {}): JSX.Element {
     return (
       <NumberField
@@ -451,5 +443,15 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
         onChange={this.setAttribute(attribute)}
       />
     );
+  }
+
+  // Prevents warnings like:
+  //   backend.js:1 Warning: Can't perform a React state update on an unmounted component.
+  //   This is a no-op, but it indicates a memory leak in your application
+  // TODO do this better with cancellable Promises or something
+  private setStateIfMounted = (newState: Partial<CardCreationFormState>) => {
+    if ((this as any)._isMounted) {
+      this.setState(newState as any);
+    }
   }
 }

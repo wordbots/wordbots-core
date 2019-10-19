@@ -3,10 +3,15 @@ import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 import IFrame from 'react-iframe';
 
+import { markAchievement } from '../../util/firebase';
 import MarkdownBlock from '../MarkdownBlock';
 import RouterDialog from '../RouterDialog';
 
-export default class HelpDialog extends React.Component<{ history: History, location: Location }> {
+export default class CreatorHelpDialog extends React.Component<{ history: History, location: Location }> {
+  public componentDidMount(): void {
+    markAchievement('openedCardCreatorHelp');
+  }
+
   public render(): JSX.Element {
     const { history, location } = this.props;
     return (

@@ -46,7 +46,6 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
   public render(): JSX.Element {
     const { history, uid } = this.props;
     const { achievements, games } = this.state;
-    const { cards, decks } = this;
 
     return (
       <RouterDialog
@@ -89,7 +88,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
                 </NewHereLink>
               </td>
               <td>
-                <NewHereLink idx={3} href="/sets" accomplished={decks.filter((d) => d.setId).length > 0}>
+                <NewHereLink idx={3} href="/sets" accomplished={this.decks.filter((d) => d.setId).length > 0}>
                   Find a custom set that looks cool, build a deck, and challenge other players with it.
                 </NewHereLink>
               </td>
@@ -101,7 +100,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
                 </NewHereLink>
               </td>
               <td>
-                <NewHereLink idx={5} href="/card/new" accomplished={cards.length >= 2}>
+                <NewHereLink idx={5} href="/card/new" accomplished={this.cards.length >= 2}>
                   <br />Make some cards!
                 </NewHereLink>
               </td>
@@ -113,7 +112,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             </tr>
             <tr>
               <td>
-                <NewHereLink idx={7} href="/decks" accomplished={decks.filter((d) => !d.setId).length > 0}>
+                <NewHereLink idx={7} href="/decks" accomplished={this.decks.filter((d) => !d.setId).length > 0}>
                   Build a deck, using a combination of your own, built-in, and/or other players' cards.
                 </NewHereLink>
               </td>

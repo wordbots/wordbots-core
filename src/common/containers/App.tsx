@@ -13,7 +13,7 @@ import 'whatwg-fetch';
 import * as actions from '../actions/global';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
-import HelpDialog from '../components/help/HelpDialog';
+import CreatorHelpDialog from '../components/help/CreatorHelpDialog';
 import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
@@ -207,7 +207,7 @@ class App extends React.Component<AppProps, AppState> {
         <div>
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
-          <HelpDialog history={history} location={location} />
+          <CreatorHelpDialog history={history} location={location} />
           <NewHereDialog collection={collection} history={history} uid={uid} />
         </div>
       );

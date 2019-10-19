@@ -8,7 +8,7 @@ import defaultState from '../../../store/defaultGameState';
 import * as w from '../../../types';
 import { instantiateCard } from '../../../util/cards';
 import { id } from '../../../util/common';
-import { lookupUsername } from '../../../util/firebase';
+import { lookupUsername, markAchievement } from '../../../util/firebase';
 import { currentTutorialStep, passTurn } from '../../../util/game';
 import { handleAction } from '../../game';
 
@@ -94,6 +94,7 @@ export function startTutorial(state: State): State {
 }
 
 function endTutorial(state: State): State {
+  markAchievement('finishedTutorial');
   return {
     ...state,
     ...cloneDeep(defaultState),

@@ -58,7 +58,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
     }));
   }
 
-  public async componentDidUpdate(): Promise<void> {
+  public componentDidUpdate(): void {
     const { tabIdx } = this.state;
     if (tabIdx === 0) {
       markAchievement('openedDictionary');

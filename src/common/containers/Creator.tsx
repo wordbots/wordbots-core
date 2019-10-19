@@ -262,7 +262,6 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     const { cardId } = params;
 
     if (match) {
-      console.log(match);
       if (cardId && cardId !== 'new') {
         // Search for the card in these locations, in order:
         // 1. location state (passed through the router, if a link was just followed)

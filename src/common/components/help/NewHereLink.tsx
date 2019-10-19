@@ -27,7 +27,7 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
       }
     },
     accomplished: {
-      background: 'repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #fbc6c2 10px, #fbc6c2 20px);'
+      background: 'repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #ffdbd9 10px, #ffdbd9 20px);'
     },
     checkmark: {
       top: 10,

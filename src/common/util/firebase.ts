@@ -116,12 +116,12 @@ export async function getAchievements(): Promise<string[]> {
   return [];
 }
 
-export function setAchievement(achievementName: string): void {
+export function markAchievement(achievementName: string): void {
   const user = lookupCurrentUser();
   if (user) {
     fb.database()
       .ref(`users/${user.uid}/achievements/${achievementName}`)
-      .update(true);
+      .set(true);
   }
 }
 

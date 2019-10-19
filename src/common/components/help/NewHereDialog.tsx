@@ -1,20 +1,59 @@
 import { History } from 'history';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
+import { connect } from 'react-redux';
 
+import * as w from '../../types';
 import { toggleFlag } from '../../util/browser';
+import { getAchievements, getRecentGamesByUserId, lookupCurrentUser } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 
 import NewHereLink from './NewHereLink';
 
-interface NewHereDialogProps {
-  history: History
-  loggedIn: boolean
+interface NewHereDialogStateProps {
+  uid: w.UserId | null
+  cards: w.CardInStore[]
+  decks: w.DeckInStore[]
 }
 
-export default class NewHereDialog extends React.Component<NewHereDialogProps> {
+type NewHereDialogProps = NewHereDialogStateProps & {
+  history: History
+  loggedIn: boolean
+};
+
+interface NewHereDialogState {
+  achievements: string[],
+  games: w.SavedGame[]
+}
+
+function mapStateToProps(state: w.State): NewHereDialogStateProps {
+  const user = lookupCurrentUser();
+  const uid = user ? user.uid : null;
+
+  return {
+    uid,
+    cards: state.collection.cards.filter((c) => c.metadata.source.uid === uid),
+    decks: state.collection.decks.filter((d) => d.authorId === uid),
+  };
+}
+
+class NewHereDialog extends React.Component<NewHereDialogProps, NewHereDialogState> {
+  public state: NewHereDialogState = {
+    achievements: [],
+    games: []
+  };
+
+  public async componentDidMount(): Promise<void> {
+    const { uid } = this.props;
+    const achievements: string[] = await getAchievements();
+    const games = uid ? await getRecentGamesByUserId(uid) : [];
+    this.setState({ achievements, games });
+  }
+
   public render(): JSX.Element {
-    const { history, loggedIn } = this.props;
+    const { cards, decks, history, loggedIn } = this.props;
+    const { achievements, games } = this.state;
+
     return (
       <RouterDialog
         path="new-here"
@@ -46,37 +85,54 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps> {
           <tbody>
             <tr>
               <td>
-                <NewHereLink idx={1} href="/play/tutorial">Play through the interactive gameplay tutorial.</NewHereLink>
+                <NewHereLink idx={1} href="/play/tutorial" accomplished={achievements.includes('finishedTutorial')}>
+                  Play through the interactive gameplay tutorial.
+                </NewHereLink>
               </td>
               <td>
-                <NewHereLink idx={2} href="/play//practice">Try an AI practice game using one of the built-in decks.</NewHereLink>
+                <NewHereLink idx={2} href="/play//practice" accomplished={achievements.includes('playedPracticeGame')}>
+                  Try an AI practice game using one of the built-in decks.
+                </NewHereLink>
               </td>
               <td>
-                <NewHereLink idx={3} href="/sets">Find a custom set that looks cool, build a deck, and challenge other players with it.</NewHereLink>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <NewHereLink idx={4} href="/card/new//help">Watch the tutorial on how to use the Card Creator.</NewHereLink>
-              </td>
-              <td>
-                <NewHereLink idx={5} href="/card/new"><br />Make some cards!</NewHereLink>
-              </td>
-              <td>
-                <NewHereLink idx={6} href="/card/new//dictionary">If you get stuck (or want some more ideas), explore the dictionary and thesaurus dialog.</NewHereLink>
+                <NewHereLink idx={3} href="/sets" accomplished={decks.filter((d) => d.setId).length > 0}>
+                  Find a custom set that looks cool, build a deck, and challenge other players with it.
+                </NewHereLink>
               </td>
             </tr>
             <tr>
               <td>
-                <NewHereLink idx={7} href="/decks">Build a deck, using a combination of your own, built-in, and/or other players' cards.</NewHereLink>
+                <NewHereLink idx={4} href="/card/new//help" accomplished={achievements.includes('openedCardCreatorHelp')}>
+                  Watch the tutorial on how to use the Card Creator.
+                </NewHereLink>
               </td>
               <td>
-                <NewHereLink idx={8} href="/play//host">Challenge other players with your deck, in either the "Anything&nbsp;Goes" or "Shared&nbsp;Deck" format.</NewHereLink>
+                <NewHereLink idx={5} href="/card/new" accomplished={cards.length >= 2}>
+                  <br />Make some cards!
+                </NewHereLink>
+              </td>
+              <td>
+                <NewHereLink idx={6} href="/card/new//dictionary" accomplished={achievements.includes('openedDictionary') && achievements.includes('openedThesaurus')}>
+                  If you get stuck (or want some more ideas), explore the dictionary and thesaurus dialog.
+                </NewHereLink>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <NewHereLink idx={7} href="/decks" accomplished={decks.filter((d) => !d.setId).length > 0}>
+                  Build a deck, using a combination of your own, built-in, and/or other players' cards.
+                </NewHereLink>
+              </td>
+              <td>
+                <NewHereLink idx={8} href="/play//host" accomplished={games.length >= 2}>
+                  Challenge other players with your deck, in either the "Anything&nbsp;Goes" or "Shared&nbsp;Deck" format.
+                </NewHereLink>
               </td>
               <td>
                 <NewHereLink idx={9}>
                   Now the world of Wordbots is your oyster!
-                  <div style={{ marginTop: 5 }}><em>(Bonus points: make your own set!)</em></div></NewHereLink>
+                  <div style={{ marginTop: 5 }}><em>(Bonus points: make your own set!)</em></div>
+                </NewHereLink>
               </td>
             </tr>
           </tbody>
@@ -96,3 +152,5 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps> {
     this.handleClose();
   }
 }
+
+export default connect(mapStateToProps)(NewHereDialog);

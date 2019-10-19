@@ -105,6 +105,26 @@ export async function getUserNamesByIds(userIds: string[]): Promise<string[]> {
   return users.map((user) => user.val());
 }
 
+export async function getAchievements(): Promise<string[]> {
+  const user = lookupCurrentUser();
+  if (user) {
+    const snapshot = await fb.database().ref(`users/${user.uid}/achievements`).once('value');
+    const achievements = snapshot.val();
+    return achievements ? Object.keys(achievements) : [];
+  }
+
+  return [];
+}
+
+export function setAchievement(achievementName: string): void {
+  const user = lookupCurrentUser();
+  if (user) {
+    fb.database()
+      .ref(`users/${user.uid}/achievements/${achievementName}`)
+      .update(true);
+  }
+}
+
 // Games (results)
 
 export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {

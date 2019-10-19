@@ -1,47 +1,40 @@
 import { History } from 'history';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 import * as w from '../../types';
 import { toggleFlag } from '../../util/browser';
-import { getAchievements, getRecentGamesByUserId, lookupCurrentUser } from '../../util/firebase';
+import { getAchievements, getRecentGamesByUserId } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 
 import NewHereLink from './NewHereLink';
 
-interface NewHereDialogStateProps {
-  uid: w.UserId | null
-  cards: w.CardInStore[]
-  decks: w.DeckInStore[]
-}
-
-type NewHereDialogProps = NewHereDialogStateProps & {
+interface NewHereDialogProps {
+  collection: w.CollectionState
   history: History
-  loggedIn: boolean
-};
+  uid: w.UserId | null
+}
 
 interface NewHereDialogState {
   achievements: string[],
   games: w.SavedGame[]
 }
 
-function mapStateToProps(state: w.State): NewHereDialogStateProps {
-  const user = lookupCurrentUser();
-  const uid = user ? user.uid : null;
-
-  return {
-    uid,
-    cards: state.collection.cards.filter((c) => c.metadata.source.uid === uid),
-    decks: state.collection.decks.filter((d) => d.authorId === uid),
-  };
-}
-
-class NewHereDialog extends React.Component<NewHereDialogProps, NewHereDialogState> {
+export default class NewHereDialog extends React.Component<NewHereDialogProps, NewHereDialogState> {
   public state: NewHereDialogState = {
     achievements: [],
     games: []
   };
+
+  get cards(): w.CardInStore[] {
+    const { collection, uid } = this.props;
+    return collection.cards.filter((c) => c.metadata.source.uid === uid);
+  }
+
+  get decks(): w.DeckInStore[] {
+    const { collection, uid } = this.props;
+    return collection.decks.filter((d) => d.authorId === uid);
+  }
 
   public async componentDidMount(): Promise<void> {
     const { uid } = this.props;
@@ -51,8 +44,9 @@ class NewHereDialog extends React.Component<NewHereDialogProps, NewHereDialogSta
   }
 
   public render(): JSX.Element {
-    const { cards, decks, history, loggedIn } = this.props;
+    const { history, uid } = this.props;
     const { achievements, games } = this.state;
+    const { cards, decks } = this;
 
     return (
       <RouterDialog
@@ -78,7 +72,7 @@ class NewHereDialog extends React.Component<NewHereDialogProps, NewHereDialogSta
         <div>
           <p>Welcome! <b>Wordbots</b> is a new kind of card game, where players <i>– like you –</i> get to write the cards.</p>
           <p>There's a lot to take in, so here's the order we'd suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
-          {!loggedIn && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
+          {!uid && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
         </div>
 
         <table style={{ margin: '0 auto' }}>
@@ -152,5 +146,3 @@ class NewHereDialog extends React.Component<NewHereDialogProps, NewHereDialogSta
     this.handleClose();
   }
 }
-
-export default connect(mapStateToProps)(NewHereDialog);

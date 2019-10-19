@@ -37,10 +37,11 @@ import TitleBar from './TitleBar';
 
 interface AppStateProps {
   cardIdBeingEdited: string | null
+  collection: w.CollectionState
   inGame: boolean
   inSandbox: boolean
-  loggedIn: boolean
   renderId: number
+  uid: w.UserId | null
 }
 
 interface AppDispatchProps {
@@ -65,10 +66,11 @@ interface AppState {
 function mapStateToProps(state: w.State): AppStateProps {
   return {
     cardIdBeingEdited: state.creator.id,
+    collection: state.collection,
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
-    loggedIn: state.global.user !== null,
-    renderId: state.global.renderId
+    renderId: state.global.renderId,
+    uid: state.global.user ? state.global.user.uid : null,
   };
 }
 
@@ -200,13 +202,13 @@ class App extends React.Component<AppProps, AppState> {
     if (this.isLoading) {
       return null;
     } else {
-      const { loggedIn, history, location } = this.props;
+      const { collection, uid, history, location } = this.props;
       return (
         <div>
           <LoginDialog history={history} />
           <DictionaryDialog history={history} />
           <HelpDialog history={history} location={location} />
-          <NewHereDialog history={history} loggedIn={loggedIn} />
+          <NewHereDialog collection={collection} history={history} uid={uid} />
         </div>
       );
     }

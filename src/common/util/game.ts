@@ -17,8 +17,8 @@ import buildVocabulary from '../vocabulary/vocabulary';
 
 import { assertCardVisible } from './cards';
 import { clamp } from './common';
-import { GameFormat, SharedDeckGameFormat } from './formats';
 import { markAchievement } from './firebase';
+import { GameFormat, SharedDeckGameFormat } from './formats';
 
 //
 // I. Queries for game state.

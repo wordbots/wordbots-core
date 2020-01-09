@@ -8,6 +8,9 @@
           "displayName": {
             ".read": "true"
           }
+        },
+        "achievements": {
+          ".read": "true"
         }
       }
     },

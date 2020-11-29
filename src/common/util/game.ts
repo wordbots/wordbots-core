@@ -17,6 +17,7 @@ import buildVocabulary from '../vocabulary/vocabulary';
 
 import { assertCardVisible } from './cards';
 import { clamp } from './common';
+import { markAchievement } from './firebase';
 import { GameFormat, SharedDeckGameFormat } from './formats';
 
 //
@@ -164,6 +165,10 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
     const gameOverMsg = state.winner === 'draw' ? 'Draw game' : (state.winner === state.player ? ' win' : 'wins');
     state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
     state = logAction(state, state.players[state.winner as w.PlayerColor], gameOverMsg);
+
+    if (state.practice) {
+      markAchievement('playedPracticeGame');
+    }
   }
 
   return state;

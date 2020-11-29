@@ -13,7 +13,7 @@ import { DICTIONARY_TAB_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { getHash, setHash } from '../../util/browser';
 import { allKeywords, contractKeywords } from '../../util/cards';
-import { getDictionaryData } from '../../util/firebase';
+import { getDictionaryData, markAchievement } from '../../util/firebase';
 import StatusIcon from '../card/StatusIcon';
 import RouterDialog from '../RouterDialog';
 
@@ -56,6 +56,15 @@ export default class DictionaryDialog extends React.Component<{ history: History
     this.setState((state) => ({
       dictionary: {...state.dictionary, ...dictionary}
     }));
+  }
+
+  public componentDidUpdate(): void {
+    const { tabIdx } = this.state;
+    if (tabIdx === 0) {
+      markAchievement('openedDictionary');
+    } else if (tabIdx === 1) {
+      markAchievement('openedThesaurus');
+    }
   }
 
   public UNSAFE_componentWillReceiveProps(): void {

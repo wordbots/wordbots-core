@@ -33,7 +33,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
       const sentences: string[] = getSentencesFromInput(payload.text);
       const validCurrentParses: Record<string, string> = fromPairs(state.sentences.map((s: w.Sentence) =>
         [s.sentence, s.result.js]
-      ));
+      )) as Record<string, string>;
 
       state.text = replaceSynonyms(payload.text);
       state.sentences = sentences.map((sentence: string) => ({

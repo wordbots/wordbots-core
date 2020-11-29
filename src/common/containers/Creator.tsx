@@ -177,7 +177,9 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           primary
           icon={<FontIcon style={{ margin: '0 5px 0 15px' }} className="material-icons">queue</FontIcon>}
           style={{ marginLeft: 40, marginTop: 9 }}
-          onClick={this.handleClickNewCard}
+          onClick={() => {
+            this.unloadCard(this.handleClickNewCard);
+          }}
         />
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -282,6 +284,10 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     }
 
     this.setState({ loaded: true });
+  }
+
+  private unloadCard = (cb: () => void) => {
+    this.setState({ cardOpenedForEditing: undefined }, cb);
   }
 
   private openDialog = (dialogPath: string) => {

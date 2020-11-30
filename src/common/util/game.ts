@@ -513,23 +513,34 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-function deleteAllDyingObjects(state: w.GameState): w.GameState {
+export function deleteAllDyingObjects(state: w.GameState): w.GameState {
   Object.entries(allObjectsOnBoard(state)).forEach(([ hex, object ]) => {
-    state = updateOrDeleteObjectAtHex(state, object, hex);
+    state = updateOrDeleteObjectAtHex(state, object, hex, null, false);
   });
+
+  // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call
+  state = applyAbilities(state);
 
   return state;
 }
 
-export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
+export function updateOrDeleteObjectAtHex(
+  state: w.GameState,
+  object: w.Object,
+  hex: w.HexId,
+  cause: w.Cause | null = null,
+  shouldApplyAbilities = true
+): w.GameState {
   if (!allObjectsOnBoard(state)[hex]) {
     // Object no longer exists - perhaps it has already been deleted by a previous effect in a chain of triggers?
     return state;
   }
 
   const ownerName = ownerOf(state, object)!.name;
+
   if ((getAttribute(object, 'health') as number) > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
+    return state;
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
@@ -551,10 +562,10 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
       state = discardCardsFromHand(state, state.players[ownerName].name, [card]);
     }
 
-    state = applyAbilities(state);
+    return shouldApplyAbilities ? applyAbilities(state) : state;
+  } else {
+    return state;
   }
-
-  return state;
 }
 
 export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex: w.HexId): w.GameState {
@@ -686,8 +697,6 @@ export function triggerEvent(
     const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it as w.Object) : null);
     const currentObject: w.Object = it || t.object;
     executeCmd(state, t.action, currentObject);
-
-    deleteAllDyingObjects(state);
 
     if (state.callbackAfterExecution) {
       state = state.callbackAfterExecution(state);

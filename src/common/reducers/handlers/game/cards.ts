@@ -8,6 +8,7 @@ import { assertCardVisible, splitSentences } from '../../../util/cards';
 import { id } from '../../../util/common';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
+  deleteAllDyingObjects,
   discardCardsFromHand, executeCmd,
   getCost, logAction,
   matchesType, removeCardsFromHand, setTargetAndExecuteQueuedAction,
@@ -158,6 +159,7 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
         undergoer: playedObject
       });
       tempState = applyAbilities(tempState);
+      tempState = deleteAllDyingObjects(tempState);
 
       return tempState;
     }

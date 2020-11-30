@@ -17,6 +17,7 @@ import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
 import CardCreationForm from '../components/cards/CardCreationForm';
+import CardCreationTutorial from '../components/cards/CardCreationTutorial';
 import CardPreview from '../components/cards/CardPreview';
 import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
 import RouterDialog from '../components/RouterDialog';
@@ -182,6 +183,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div style={{width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32}}>
+            <CardCreationTutorial />
             <CardCreationForm
               key={this.props.id || 'newCard'}
               loggedIn={this.props.loggedIn}
@@ -208,7 +210,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onAddToCollection={this.addToCollection}
               onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
             />
-            <Paper style={{ padding: 10, marginTop: 20, paddingTop: cardOpenedForEditing ? 10 : 0 }}>
+            <Paper style={{ padding: 10, margin: '15px auto', maxWidth: 840, paddingTop: cardOpenedForEditing ? 10 : 0 }}>
               {
                 cardOpenedForEditing
                   ? <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />

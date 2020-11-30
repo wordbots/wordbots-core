@@ -513,6 +513,14 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
+function deleteAllDyingObjects(state: w.GameState): w.GameState {
+  Object.entries(allObjectsOnBoard(state)).forEach(([ hex, object ]) => {
+    state = updateOrDeleteObjectAtHex(state, object, hex);
+  });
+
+  return state;
+}
+
 export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
   if (!allObjectsOnBoard(state)[hex]) {
     // Object no longer exists - perhaps it has already been deleted by a previous effect in a chain of triggers?
@@ -542,9 +550,9 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
       state = removeObjectFromBoard(state, object, hex);
       state = discardCardsFromHand(state, state.players[ownerName].name, [card]);
     }
-  }
 
-  state = applyAbilities(state);
+    state = applyAbilities(state);
+  }
 
   return state;
 }
@@ -679,6 +687,8 @@ export function triggerEvent(
     const currentObject: w.Object = it || t.object;
     executeCmd(state, t.action, currentObject);
 
+    deleteAllDyingObjects(state);
+
     if (state.callbackAfterExecution) {
       state = state.callbackAfterExecution(state);
     }
@@ -703,7 +713,9 @@ export function applyAbilities(state: w.GameState): w.GameState {
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
         ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
         const targets: w.Targetable[] = ability.currentTargets.entries;
-        targets.forEach(ability.apply);
+        targets.forEach((target) => {
+          ability.apply(target);
+        });
       }
     });
 

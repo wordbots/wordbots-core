@@ -12,7 +12,7 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
-const USE_STAGING_PARSER = false;  // Note: USE_STAGING_PARSER overrides USE_LOCAL_PARSER_ON_LOCALHOST
+const USE_STAGING_PARSER = true;  // Note: USE_STAGING_PARSER overrides USE_LOCAL_PARSER_ON_LOCALHOST
 const USE_LOCAL_PARSER_ON_LOCALHOST = true;
 const LOCAL_PARSER_PORT = 8080;
 
@@ -58,7 +58,8 @@ export const BOARD_Z_INDEX = 1000;
 export const HAND_Z_INDEX = 1100;
 export const STATUS_Z_INDEX = 2000;
 export const MAX_Z_INDEX = 99999;
-export const TUTORIAL_Z_INDEX = 999999;
+export const TUTORIAL_Z_INDEX = 999998;
+export const TUTORIAL_INTRO_Z_INDEX = 999999;
 
 // Board.
 

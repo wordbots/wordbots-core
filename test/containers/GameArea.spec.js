@@ -6,6 +6,7 @@ import Card from '../../src/common/components/card/Card.tsx';
 import Board from '../../src/common/components/game/Board.tsx';
 import EventAnimation from '../../src/common/components/game/EventAnimation.tsx';
 import PlayerArea from '../../src/common/components/game/PlayerArea.tsx';
+import TutorialIntroScreen from '../../src/common/components/game/TutorialIntroScreen.tsx';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen.tsx';
 import HexGrid from '../../src/common/components/hexgrid/HexGrid.tsx';
 import HexUtils from '../../src/common/components/hexgrid/HexUtils.ts';
@@ -58,7 +59,8 @@ describe('GameArea container', () => {
       <VictoryScreen
         winner={null}
         winnerName={null}
-        onClick={victoryScreen.props.onClick} />
+        onClick={victoryScreen.props.onClick} />,
+      <TutorialIntroScreen onClickEndGame={board.props.onEndGame} />
     ]);
   });
   /* eslint-enable react/jsx-key */

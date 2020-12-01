@@ -513,17 +513,6 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-export function deleteAllDyingObjects(state: w.GameState): w.GameState {
-  Object.entries(allObjectsOnBoard(state)).forEach(([ hex, object ]) => {
-    state = updateOrDeleteObjectAtHex(state, object, hex, null, false);
-  });
-
-  // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call
-  state = applyAbilities(state);
-
-  return state;
-}
-
 export function updateOrDeleteObjectAtHex(
   state: w.GameState,
   object: w.Object,
@@ -566,6 +555,18 @@ export function updateOrDeleteObjectAtHex(
   } else {
     return state;
   }
+}
+
+export function deleteAllDyingObjects(state: w.GameState): w.GameState {
+  const objects: Array<[w.HexId, w.Object]> = Object.entries(allObjectsOnBoard(state));
+
+  state = objects.reduceRight<w.GameState>((currentState, [ hex, object ]) => (
+    updateOrDeleteObjectAtHex(currentState, object, hex, null, false)
+  ), state);
+  // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call
+  state = applyAbilities(state);
+
+  return state;
 }
 
 export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex: w.HexId): w.GameState {
@@ -722,9 +723,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
         ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
         const targets: w.Targetable[] = ability.currentTargets.entries;
-        targets.forEach((target) => {
-          ability.apply(target);
-        });
+        targets.forEach(ability.apply);
       }
     });
 

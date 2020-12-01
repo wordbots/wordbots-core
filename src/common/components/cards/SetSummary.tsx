@@ -1,5 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent, Paper, withStyles, WithStyles } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, Paper, } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 import { isUndefined } from 'lodash';

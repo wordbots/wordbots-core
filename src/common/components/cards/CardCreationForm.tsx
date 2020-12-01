@@ -214,7 +214,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     return (
       <div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: MARGIN_PX, width: '100%', maxWidth: 800}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: MARGIN_PX, width: '100%', maxWidth: 860}}>
             <ButtonInRow
               label="Help"
               icon="help_outline"

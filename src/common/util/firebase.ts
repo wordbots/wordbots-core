@@ -206,7 +206,7 @@ export async function getSets(): Promise<w.Set[]> {
   }
 
   const snapshot = await fb.database().ref('sets').once('value');
-  return snapshot ? Object.values(snapshot.val()).map(deserializeSet) : [];
+  return snapshot ? Object.values(snapshot.val() || {}).map(deserializeSet) : [];
 }
 
 export function saveSet(set: w.Set): void {
@@ -247,7 +247,7 @@ function cleanupExamples(examples: string[]): string[] {
 
 export async function getCardTextCorpus(): Promise<{ corpus: string, examples: string[] }> {
   const snapshot = await fb.database().ref('cardText/all').once('value');
-  const examples = cleanupExamples(snapshot.val());
+  const examples = cleanupExamples(snapshot.val() || {});
   return {
     examples,
     corpus: examples.map((ex) => `${expandKeywords(ex).toLowerCase()} . `).join()
@@ -259,7 +259,7 @@ export async function getDictionaryData(): Promise<w.Dictionary> {
 
   const definitions: Record<string, any> = await loadParserLexicon();
   const snapshot = await fb.database().ref('cardText').once('value');
-  const { byToken, byNode } = snapshot.val() as CardTextInFirebase;
+  const { byToken, byNode } = (snapshot.val() as CardTextInFirebase) || { byToken: {}, byNode: {} };
 
   const nodes: Node[] = flatMap(byNode, (entries, type) => Object.keys(entries).map((entry) => ({ type, entry })));
   const byNodeFlat: Record<string, string[]> = fromPairs(nodes.map(({ type, entry }) => [`${type}.${entry}`, byNode[type][entry]] ));

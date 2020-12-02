@@ -4,6 +4,10 @@ import { BigramProbs, buildNGrams, listAllNGrams, UnigramProbs } from 'word-ngra
 const DISALLOWED_PHRASES = ['all a'];
 
 export function prepareBigramProbs(corpus: string): BigramProbs {
+  if (!corpus) {
+    return {};
+  }
+
   // e.g. {a: 1, b: 3} => {a: 0.25, b: 0.75}
   function normalizeValues(obj: UnigramProbs): UnigramProbs {
     const total = sum(Object.values(obj));

@@ -5,7 +5,7 @@ import * as ReactGA from 'react-ga';
 // tslint:disable no-typeof-undefined
 
 declare const window: {
-  location: { pathname: string }
+  location: { pathname: string, hostname: string }
   process?: { title: string, env: { NODE_ENV: string } }
 };
 
@@ -19,6 +19,10 @@ export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
     (window.process && window.process.title.includes('node')) ||
     (window.process && window.process.title.includes('test')));
+}
+
+export function onLocalhost(): boolean {
+  return inBrowser() && window.location.hostname === 'localhost';
 }
 
 export function inTest(): boolean {

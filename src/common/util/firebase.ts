@@ -6,24 +6,16 @@ const fb = require('firebase/app').default;
 import 'firebase/auth';
 import 'firebase/database';
 
+import { FIREBASE_CONFIG } from '../constants';
 import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
 import { withoutEmptyFields } from './common';
 
-const config = {
-  apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
-  authDomain: 'wordbots.firebaseapp.com',
-  databaseURL: 'https://wordbots.firebaseio.com',
-  projectId: 'wordbots',
-  storageBucket: 'wordbots.appspot.com',
-  messagingSenderId: '913868073872'
-};
-
 let currentUser: firebase.User | null = null;
 
 if (fb.apps.length === 0) {
-  fb.initializeApp(config);
+  fb.initializeApp(FIREBASE_CONFIG);
   // (window as any).fb = fb;
 }
 

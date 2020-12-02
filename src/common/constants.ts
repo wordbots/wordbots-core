@@ -12,13 +12,21 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
-const USE_STAGING_PARSER = false;  // Note: USE_STAGING_PARSER overrides USE_LOCAL_PARSER_ON_LOCALHOST
-const USE_LOCAL_PARSER_ON_LOCALHOST = true;
-const LOCAL_PARSER_PORT = 8080;
 
 // Server settings.
 
-export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to try until all the bugs are worked out!
+export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to true until all the bugs are worked out!
+
+// DB.
+
+export const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
+  authDomain: 'wordbots.firebaseapp.com',
+  databaseURL: 'https://wordbots.firebaseio.com',
+  projectId: 'wordbots',
+  storageBucket: 'wordbots.appspot.com',
+  messagingSenderId: '913868073872'
+};
 
 // Game rules.
 
@@ -108,10 +116,34 @@ export function stringToType(str: string): CardType {
 
 // Parsing.
 
-const shouldUseLocalParser = USE_LOCAL_PARSER_ON_LOCALHOST && typeof window !== 'undefined' && window.location.hostname === 'localhost';  // tslint:disable-line no-typeof-undefined
-const liveParserUrl = '//parser.wordbots.io';
-const stagingParserUrl = '//wordbots-parser-staging.herokuapp.com';
-export const PARSER_URL = USE_STAGING_PARSER ? stagingParserUrl : (shouldUseLocalParser ? `http://localhost:${LOCAL_PARSER_PORT}` : liveParserUrl);
+const LIVE_PARSER_URL = '//parser.wordbots.io';
+const STAGING_PARSER_URL = '//parser-staging.wordbots.io';
+const LOCAL_PARSER_URL = 'http://localhost:8080';
+
+export const PARSER_URL = (() => {
+  // tslint:disable-next-line: no-typeof-undefined
+  if (typeof window === 'undefined') {
+    return '';
+  } else {
+    if (window.location.hostname === 'localhost') {
+      // On localhost, default to staging parser unless otherwise specified
+      if (process.env.PARSER === 'local') {
+        return LOCAL_PARSER_URL;
+      } else if (process.env.PARSER === 'live') {
+        return LIVE_PARSER_URL;
+      } else {
+        return STAGING_PARSER_URL;
+      }
+    } else if (window.location.hostname.includes('staging')) {
+      // On staging.wordbots.io or http://wordbots-game-staging.herokuapp.com/, use staging parser
+      return STAGING_PARSER_URL;
+    } else {
+      // Default to live parser
+      return LIVE_PARSER_URL;
+    }
+  }
+})();
+
 export const PARSE_DEBOUNCE_MS = 500;
 
 export const SYNONYMS = {

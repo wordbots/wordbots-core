@@ -9,8 +9,9 @@ import * as gameActions from '../actions/game';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import PaperButton from '../components/PaperButton';
 import RouterDialog from '../components/RouterDialog';
+import { FIREBASE_CONFIG, PARSER_URL } from '../constants';
 import * as w from '../types';
-import { isFlagSet } from '../util/browser';
+import { isFlagSet, onLocalhost } from '../util/browser';
 
 interface HomeStateProps {
   version: string
@@ -101,6 +102,7 @@ class Home extends React.Component<HomeProps> {
           }}
         >
           v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{sha}
+          {onLocalhost() && <span> [ <em>parser:</em> {PARSER_URL}, <em>db:</em> {FIREBASE_CONFIG.databaseURL} ]</span>}
         </div>
       </div>
     );

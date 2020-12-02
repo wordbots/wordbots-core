@@ -12,7 +12,7 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
-const USE_STAGING_PARSER = false;  // Note: USE_STAGING_PARSER overrides USE_LOCAL_PARSER_ON_LOCALHOST
+const USE_STAGING_PARSER = !!process.env.USE_STAGING_PARSER;  // Note: USE_STAGING_PARSER overrides USE_LOCAL_PARSER_ON_LOCALHOST
 const USE_LOCAL_PARSER_ON_LOCALHOST = true;
 const LOCAL_PARSER_PORT = 8080;
 

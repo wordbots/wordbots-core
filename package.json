@@ -20,6 +20,7 @@
     "prebuild": "sed 's/export default webpackConfig;/module.exports = webpackConfig;/' <webpack.config.js >webpack.build.config.js",
     "slate": "node bin/clean.js node_modules",
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --colors --profile",
+    "start:staging-parser": "set USE_STAGING_PARSER=true && yarn start",
     "start-prod": "set NODE_ENV=production && ts-node src/server/index.ts --progress --colors --profile",
     "test": "run-s test:lint test:types test:unit",
     "test:lint": "run-s test:lint:es test:lint:ts",

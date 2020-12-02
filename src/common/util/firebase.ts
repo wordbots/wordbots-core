@@ -138,7 +138,7 @@ export async function getCards(uid: w.UserId | null): Promise<w.CardInStore[]> {
   const snapshot = await ref.once('value');
 
   if (snapshot) {
-    const unnormalizedCards = Object.values(snapshot.val());
+    const unnormalizedCards = Object.values(snapshot.val() || {});
     return unnormalizedCards.map((card: any) => normalizeCard(card));
   } else {
     return [];

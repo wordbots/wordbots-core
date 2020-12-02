@@ -6,7 +6,7 @@ import * as ReactGA from 'react-ga';
 
 declare const window: {
   location: { pathname: string }
-  process?: { title: string, env: { NODE_ENV: string } }
+  process?: { title: string, env: { NODE_ENV: string, JEST_WORKER_ID?: string } }
 };
 
 let currentLocation: string;
@@ -18,7 +18,8 @@ if (inBrowser()) {
 export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
     (window.process && window.process.title.includes('node')) ||
-    (window.process && window.process.title.includes('test')));
+    (window.process && window.process.title.includes('test')) ||
+    (window.process && window.process.env.JEST_WORKER_ID !== undefined));
 }
 
 export function inTest(): boolean {

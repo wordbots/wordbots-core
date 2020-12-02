@@ -26,8 +26,10 @@
     "test:lint:es": "eslint src test",
     "test:lint:ts": "tslint --project tsconfig.json 'src/**/*.{ts,tsx}' 'test/**/*.{ts,tsx}'",
     "test:types": "tsc --skipLibCheck --noEmit",
-    "test:unit": "jest",
-    "test:unit:coverage": "jest --coverage",
+    "test:integration": "jest integration",
+    "test:integration:watch": "yarn test:integration --watch",
+    "test:unit": "jest --testPathIgnorePatterns integration",
+    "test:unit:coverage": "yarn test:unit --coverage",
     "test:unit:watch": "yarn test:unit --watch"
   },
   "repository": {

@@ -129,6 +129,14 @@ describe('[vocabulary.triggers]', () => {
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
     });
 
+    it('should destroy robots whose health is reduced to ≤0 by afterPlayed triggered abilities', () => {
+      // Accelerator: "Startup: Give all friendly robots +1 speed and -1 health."
+      let state = getDefaultState();
+      state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2'); // 1/1 robot, should be destroyed by Accelerator
+      state = playObject(state, 'orange', cards.acceleratorCard, '2,1,-3');
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+    });
+
     it('should be able to activate afterCardPlay triggered abilities', () => {
       // Mirror: "When you play a robot, this structure becomes a copy of that robot."
       let state = getDefaultState();

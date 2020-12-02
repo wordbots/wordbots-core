@@ -513,15 +513,23 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
+export function updateOrDeleteObjectAtHex(
+  state: w.GameState,
+  object: w.Object,
+  hex: w.HexId,
+  cause: w.Cause | null = null,
+  shouldApplyAbilities = true
+): w.GameState {
   if (!allObjectsOnBoard(state)[hex]) {
     // Object no longer exists - perhaps it has already been deleted by a previous effect in a chain of triggers?
     return state;
   }
 
   const ownerName = ownerOf(state, object)!.name;
+
   if ((getAttribute(object, 'health') as number) > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
+    return state;
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
@@ -542,8 +550,20 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
       state = removeObjectFromBoard(state, object, hex);
       state = discardCardsFromHand(state, state.players[ownerName].name, [card]);
     }
-  }
 
+    return shouldApplyAbilities ? applyAbilities(state) : state;
+  } else {
+    return state;
+  }
+}
+
+export function deleteAllDyingObjects(state: w.GameState): w.GameState {
+  const objects: Array<[w.HexId, w.Object]> = Object.entries(allObjectsOnBoard(state));
+
+  state = objects.reduce<w.GameState>((currentState, [ hex, object ]) => (
+    updateOrDeleteObjectAtHex(currentState, object, hex, null, false)
+  ), state);
+  // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call
   state = applyAbilities(state);
 
   return state;

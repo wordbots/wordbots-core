@@ -560,7 +560,7 @@ export function updateOrDeleteObjectAtHex(
 export function deleteAllDyingObjects(state: w.GameState): w.GameState {
   const objects: Array<[w.HexId, w.Object]> = Object.entries(allObjectsOnBoard(state));
 
-  state = objects.reduceRight<w.GameState>((currentState, [ hex, object ]) => (
+  state = objects.reduce<w.GameState>((currentState, [ hex, object ]) => (
     updateOrDeleteObjectAtHex(currentState, object, hex, null, false)
   ), state);
   // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call

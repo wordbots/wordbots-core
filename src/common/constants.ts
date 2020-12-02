@@ -135,7 +135,7 @@ export const PARSER_URL = (() => {
         return STAGING_PARSER_URL;
       }
     } else if (window.location.hostname.includes('staging')) {
-      // On staging.wordbots.io or http://wordbots-game-staging.herokuapp.com/, use staging parser
+      // On staging.wordbots.io or wordbots-game-staging.herokuapp.com, use staging parser
       return STAGING_PARSER_URL;
     } else {
       // Default to live parser

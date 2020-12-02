@@ -17,7 +17,7 @@ describe('GameArea container', () => {
   it('renders the default game state', () => {
     const state = combineState(getDefaultState());
 
-    const game = createGameArea(state);
+    const game = createGameArea(state, null);
 
     // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
     const gameInner = renderElement(game);
@@ -60,10 +60,65 @@ describe('GameArea container', () => {
         winner={null}
         winnerName={null}
         onClick={victoryScreen.props.onClick} />,
-      <TutorialIntroScreen onClickEndGame={board.props.onEndGame} />
+      undefined
     ]);
+    /* eslint-enable react/jsx-key */
   });
-  /* eslint-enable react/jsx-key */
+
+  it('renders the default game state in tutorial mode', () => {
+    const state = combineState(getDefaultState());
+
+    const testTutorialStep = { idx: 0 }; 
+    const game = createGameArea(state, undefined, { tutorialStep: testTutorialStep});
+
+    // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
+    const gameInner = renderElement(game);
+    const dom = renderElement(gameInner);
+
+    const paper = dom.props.children[1];
+    const mainDiv = paper.props.children[2];
+    const board = mainDiv.props.children;
+    const victoryScreen = paper.props.children[5];
+    // eslint-disable-next-line no-magic-numbers
+    const tutorialIntroScreen = paper.props.children[6];
+
+    /* eslint-disable react/jsx-key */
+    expect(paper.props.children).toEqual([
+      paper.props.children[0],
+      <PlayerArea opponent gameProps={gameInner.props} />,
+      <div
+        className="background"
+        ref={mainDiv.ref}
+        style={mainDiv.props.style}>
+        <Board
+          selectedTile={null}
+          target={state.game.players.orange.target}
+          bluePieces={state.game.players.blue.robotsOnBoard}
+          orangePieces={state.game.players.orange.robotsOnBoard}
+          player="orange"
+          currentTurn="orange"
+          playingCardType={null}
+          attack={null}
+          size={board.props.size}
+          isGameOver={false}
+          onSelectTile={board.props.onSelectTile}
+          onHoverTile={board.props.onHoverTile}
+          onActivateAbility={board.props.onActivateAbility}
+          onTutorialStep={board.props.onTutorialStep}
+          onEndGame={board.props.onEndGame}
+          tutorialStep={testTutorialStep}
+          />
+      </div>,
+      <PlayerArea gameProps={gameInner.props} />,
+      <EventAnimation eventQueue={[]} currentTurn="orange" />,
+      <VictoryScreen
+        winner={null}
+        winnerName={null}
+        onClick={victoryScreen.props.onClick} />,
+      <TutorialIntroScreen onClickEndGame={tutorialIntroScreen.props.onClickEndGame} />
+    ]);
+    /* eslint-enable react/jsx-key */
+  });
 
   it('should propagate events', () => {
     const dispatchedActions = [];

@@ -12,7 +12,7 @@ export const fortificationCard: w.CardInStore = {
   },
   text: 'Your adjacent robots have +1 health.',
   abilities: [
-    '(function () { setAbility(abilities[\'attributeAdjustment\'](function () { return objectsMatchingConditions(\'robot\', [conditions[\'adjacentTo\'](targets[\'thisRobot\']()), conditions[\'controlledBy\'](targets[\'self\']())]); }, \'health\', function (x) { return x + 1; })); })'
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['self']())]); }, 'health', function (x) { return x + 1; })); })"
   ]
 };
 
@@ -25,22 +25,22 @@ export const energyWellCard: w.CardInStore = {
   stats: {
     health: 5
   },
-  text: 'At the start of each player\'s turn, that player gains 1 energy if they control an adjacent robot.',
+  text: "At the start of each player's turn, that player gains 1 energy if they control an adjacent robot.",
   abilities: [
-    '(function () { setTrigger(triggers[\'beginningOfTurn\'](function () { return targets[\'allPlayers\'](); }), (function () { if (globalConditions[\'collectionExists\'](objectsMatchingConditions(\'robot\', [conditions[\'adjacentTo\'](targets[\'thisRobot\']()), conditions[\'controlledBy\'](targets[\'itP\']())]))) { ((function () { actions[\'modifyEnergy\'](targets[\'itP\'](), function (x) { return x + 1; }); }))(); } })); })'
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['allPlayers'](); }), (function () { if (globalConditions['collectionExists'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['itP']())]))) { ((function () { actions['modifyEnergy'](targets['itP'](), function (x) { return x + 1; }); }))(); } })); })"
   ]
 };
 
 export const antiGravityFieldCard: w.CardInStore = {
   metadata: { source: { type: 'builtin' } as w.CardSource },
-  id: 'Anti-Gravity Field',
-  name: 'Anti-Gravity Field',
+  id: "Anti-Gravity Field",
+  name: "Anti-Gravity Field",
   type: TYPE_STRUCTURE,
-  spriteID: 'jjax9vh3xh',
-  text: 'All robots have Jump.',
+  spriteID: "jjax9vh3xh",
+  text: "All robots have Jump.",
   cost: 3,
   abilities: [
-    '(function () { setAbility(abilities[\'giveAbility\'](function () { return objectsMatchingConditions(\'robot\', []); }, "(function () { setAbility(abilities[\'applyEffect\'](function () { return targets[\'thisRobot\'](); }, \'canmoveoverobjects\')); })")); })'
+    "(function () { setAbility(abilities['giveAbility'](function () { return objectsMatchingConditions('robot', []); }, \"(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'canmoveoverobjects')); })\")); })"
   ],
   stats: {
     health: 5
@@ -58,20 +58,20 @@ export const acceleratorCard: w.CardInStore = {
   },
   text: 'Startup: Give all friendly robots +1 speed and -1 health.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterPlayed\'](function () { return targets[\'thisRobot\'](); }), (function () { (function () { save(\'target\', objectsMatchingConditions(\'robot\', [conditions[\'controlledBy\'](targets[\'self\']())])); })(); (function () { actions[\'modifyAttribute\'](load(\'target\'), \'speed\', function (x) { return x + 1; }); })(); (function () { actions[\'modifyAttribute\'](load(\'target\'), \'health\', function (x) { return x - 1; }); })(); })); })'
+    "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['thisRobot'](); }), (function () { (function () { save('target', objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())])); })(); (function () { actions['modifyAttribute'](load('target'), 'speed', function (x) { return x + 1; }); })(); (function () { actions['modifyAttribute'](load('target'), 'health', function (x) { return x - 1; }); })(); })); })"
   ]
 };
 
 export const magpieMachineCard: w.CardInStore = {
   metadata: { source: { type: 'builtin' } as w.CardSource },
-  id: 'Magpie Machine',
-  name: 'Magpie Machine',
+  id: "Magpie Machine",
+  name: "Magpie Machine",
   type: TYPE_STRUCTURE,
-  spriteID: 'vw3x59ovn0q',
-  text: 'All robots have "Whenever this robot attacks a kernel, draw a card".',
+  spriteID: "vw3x59ovn0q",
+  text: "All robots have \"Whenever this robot attacks a kernel, draw a card\".",
   cost: 3,
   abilities: [
-    '(function () { setAbility(abilities[\'giveAbility\'](function () { return objectsMatchingConditions(\'robot\', []); }, "(function () { setTrigger(triggers[\'afterAttack\'](function () { return targets[\'thisRobot\'](); }, \'kernel\'), (function () { actions[\'draw\'](targets[\'self\'](), 1); })); })")); })'
+    "(function () { setAbility(abilities['giveAbility'](function () { return objectsMatchingConditions('robot', []); }, \"(function () { setTrigger(triggers['afterAttack'](function () { return targets['thisRobot'](); }, 'kernel'), (function () { actions['draw'](targets['self'](), 1); })); })\")); })"
   ],
   stats: {
     health: 4
@@ -89,7 +89,7 @@ export const arenaCard: w.CardInStore = {
   },
   text: 'Whenever a robot is destroyed in combat, deal 1 damage to its controller.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterDestroyed\'](function () { return targets[\'all\'](objectsMatchingConditions(\'robot\', [])); }, \'combat\'), (function () { actions[\'dealDamage\'](targets[\'controllerOf\'](targets[\'it\']()), 1); })); })'
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['all'](objectsMatchingConditions('robot', [])); }, 'combat'), (function () { actions['dealDamage'](targets['controllerOf'](targets['it']()), 1); })); })"
   ]
 };
 
@@ -104,8 +104,8 @@ export const killingBeamCard: w.CardInStore = {
   },
   text: 'At the start of your turn, this structure gains 1 health. \nActivate: Destroy all robots with cost equal to this structure\'s health.',
   abilities: [
-    '(function () { setTrigger(triggers[\'beginningOfTurn\'](function () { return targets[\'self\'](); }), (function () { actions[\'modifyAttribute\'](targets[\'thisRobot\'](), \'health\', function (x) { return x + 1; }); })); })',
-    '(function () { setAbility(abilities[\'activated\'](function () { return targets[\'thisRobot\'](); }, "(function () { actions[\'destroy\'](objectsMatchingConditions(\'robot\', [conditions[\'attributeComparison\'](\'cost\', (function (x) { return x === attributeValue(targets[\'thisRobot\'](), \'health\'); }))])); })")); })'
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['self'](); }), (function () { actions['modifyAttribute'](targets['thisRobot'](), 'health', function (x) { return x + 1; }); })); })",
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['destroy'](objectsMatchingConditions('robot', [conditions['attributeComparison']('cost', (function (x) { return x === attributeValue(targets['thisRobot'](), 'health'); }))])); })\")); })"
   ]
 };
 
@@ -120,8 +120,8 @@ export const healingWellCard: w.CardInStore = {
   },
   text: 'Activate: Destroy this structure. \nShutdown: Restore all adjacent robots\' health',
   abilities: [
-    '(function () { setAbility(abilities[\'activated\'](function () { return targets[\'thisRobot\'](); }, "(function () { actions[\'destroy\'](targets[\'thisRobot\']()); })")); })',
-    '(function () { setTrigger(triggers[\'afterDestroyed\'](function () { return targets[\'thisRobot\'](); }, \'anyevent\'), (function () { actions[\'restoreHealth\'](objectsMatchingConditions(\'robot\', [conditions[\'adjacentTo\'](targets[\'thisRobot\']())])); })); })'
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['destroy'](targets['thisRobot']()); })\")); })",
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['restoreHealth'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])); })); })"
   ]
 };
 
@@ -136,7 +136,7 @@ export const mirrorCard: w.CardInStore = {
   },
   text: 'When you play a robot, this structure becomes a copy of that robot.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterCardPlay\'](function () { return targets[\'self\'](); }, \'robot\'), (function () { actions[\'become\'](targets[\'thisRobot\'](), targets[\'copyOf\'](targets[\'that\']())); })); })'
+    "(function () { setTrigger(triggers['afterCardPlay'](function () { return targets['self'](); }, 'robot'), (function () { actions['become'](targets['thisRobot'](), targets['copyOf'](targets['that']())); })); })"
   ]
 };
 
@@ -151,7 +151,7 @@ export const theBombCard: w.CardInStore = {
   },
   text: 'Activate: Destroy this structure. \nShutdown: Deal 2 damage to all objects within 2 spaces.',
   abilities: [
-    '(function () { setAbility(abilities[\'activated\'](function () { return targets[\'thisRobot\'](); }, "(function () { actions[\'destroy\'](targets[\'thisRobot\']()); })")); })',
-    '(function () { setTrigger(triggers[\'afterDestroyed\'](function () { return targets[\'thisRobot\'](); }, \'anyevent\'), (function () { actions[\'dealDamage\'](objectsMatchingConditions(\'allobjects\', [conditions[\'withinDistanceOf\'](2, targets[\'thisRobot\']())]), 2); })); })'
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['destroy'](targets['thisRobot']()); })\")); })",
+    "(function () { setTrigger(triggers['afterDestroyed'](function () { return targets['thisRobot'](); }, 'anyevent'), (function () { actions['dealDamage'](objectsMatchingConditions('allobjects', [conditions['withinDistanceOf'](2, targets['thisRobot']())]), 2); })); })"
   ]
 };

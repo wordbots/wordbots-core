@@ -2,6 +2,7 @@ import { capitalize, fromPairs, invert, isNil } from 'lodash';
 
 import { GridConfig } from './components/hexgrid/types';
 import { CardType, Format, HexId } from './types';
+import { inBrowser } from './util/browser';
 
 // Debug flags.
 // Note that you can use the env vars PARSER={local,staging,live} FIREBASE_DB={staging,production}
@@ -41,8 +42,7 @@ const FIREBASE_STAGING_CONFIG = {
 };
 
 export const FIREBASE_CONFIG = (() => {
-  // tslint:disable-next-line: no-typeof-undefined
-  if (typeof window !== 'undefined') {
+  if (inBrowser()) {
     if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
       // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
       return FIREBASE_PROD_CONFIG;
@@ -148,8 +148,7 @@ const STAGING_PARSER_URL = '//parser-staging.wordbots.io';
 const LOCAL_PARSER_URL = 'http://localhost:8080';
 
 export const PARSER_URL: string = (() => {
-  // tslint:disable-next-line: no-typeof-undefined
-  if (typeof window !== 'undefined') {
+  if (inBrowser()) {
     if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
       // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
       return LIVE_PARSER_URL;

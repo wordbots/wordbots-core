@@ -340,7 +340,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                 <RaisedButton
                   primary
                   fullWidth
-                  label={isReadonly ? "Add to Collection" : "Save Card"}
+                  label={isReadonly ? 'Add to Collection' : 'Save Card'}
                   disabled={!this.isValid}
                   style={CardCreationForm.styles.saveButton}
                   onClick={this.handleSaveCard}
@@ -411,7 +411,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     this.props.onAddToCollection(!this.props.willCreateAnother);
   }
 
-  private onUpdateText = (text: string, cardType: w.CardType = this.props.type, dontIndex: boolean = false) => {
+  private onUpdateText = (text: string, cardType: w.CardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
@@ -428,7 +428,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     exampleStore.loadExamples(examples, 100).then(() => {
       this.setStateIfMounted({ examplesLoaded: true });
-    });
+    }).catch(console.error);
   }
 
   private renderAttributeField(attribute: 'attack' | 'health' | 'speed', enabled = true, opts: { max?: number } = {}): JSX.Element {

@@ -8,7 +8,7 @@ interface CardCreationTutorialState {
   visible: boolean;
 }
 
-export default class CardCreationTutorial extends React.Component<{}, CardCreationTutorialState> {
+export default class CardCreationTutorial extends React.Component<Record<string, never>, CardCreationTutorialState> {
   public state = {
     visible: !isFlagSet('skipCardCreationTutorial')
   };

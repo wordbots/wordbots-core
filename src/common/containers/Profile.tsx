@@ -127,9 +127,9 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       const recentGames = await getRecentGamesByUserId(userId);
       this.loadRecentGamesData(recentGames);
       this.loadPlayerInfoData(userId, recentGames);
-    } catch (err) {
+    } catch (error) {
       // Most likely reason is that userId is undefined or that user doesn't exist.
-      console.error(err); // tslint:disable-line no-console
+      console.error(error); // eslint-disable-line  no-console
       this.props.history.push('/');
     }
   }

@@ -26,8 +26,8 @@ describe('Randomly generated actions', () => {
         executeCmd({...state, memory: { target: currentObjTarget }}, action, currentObj);
         numSuccessful++;
       } catch (error) {
-        console.log(action);  // tslint:disable-line no-console
-        console.error(error);  // tslint:disable-line no-console
+        console.log(action);  // eslint-disable-line  no-console
+        console.error(error);  // eslint-disable-line  no-console
         // throw error;
       }
     });

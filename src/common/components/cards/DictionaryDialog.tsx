@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 import Paper from '@material-ui/core/Paper';
 import { History } from 'history';
 import { capitalize, mapKeys, noop, uniq } from 'lodash';
@@ -53,6 +54,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
   public async componentDidMount(): Promise<void> {
     const dictionary: w.Dictionary = await getDictionaryData();
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState((state) => ({
       dictionary: {...state.dictionary, ...dictionary}
     }));
@@ -128,7 +130,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
     );
   }
 
-  private cleanupTerms = <V extends {}>(obj: Record<string, V>): Record<string, V> => (
+  private cleanupTerms = <V extends Record<string, any>>(obj: Record<string, V>): Record<string, V> => (
     mapKeys(obj, (_value, term) => term.replace(' \'', '\''))
   )
   private cleanupExample = (example: string) => (

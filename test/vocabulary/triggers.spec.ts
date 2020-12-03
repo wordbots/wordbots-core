@@ -207,7 +207,7 @@ describe('[vocabulary.triggers]', () => {
           '0,0,0': testCards.looterBotCard // 2/2
         },
         blue: {
-          '-1,0,1': testCards.attackBotCard, // 1/1
+          '-1,0,1': testCards.attackBotCard // 1/1
         }
       });
 

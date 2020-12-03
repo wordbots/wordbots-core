@@ -108,7 +108,7 @@ export function stringToType(str: string): CardType {
 
 // Parsing.
 
-const shouldUseLocalParser = USE_LOCAL_PARSER_ON_LOCALHOST && typeof window !== 'undefined' && window.location.hostname === 'localhost';  // tslint:disable-line no-typeof-undefined
+const shouldUseLocalParser = USE_LOCAL_PARSER_ON_LOCALHOST && typeof window !== 'undefined' && window.location.hostname === 'localhost';  // eslint-disable-line 
 const liveParserUrl = '//parser.wordbots.io';
 const stagingParserUrl = '//wordbots-parser-staging.herokuapp.com';
 export const PARSER_URL = USE_STAGING_PARSER ? stagingParserUrl : (shouldUseLocalParser ? `http://localhost:${LOCAL_PARSER_PORT}` : liveParserUrl);

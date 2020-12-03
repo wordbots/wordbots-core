@@ -69,7 +69,7 @@ export default class EnergyCount extends React.Component<EnergyCountProps> {
   private renderEnergyTiles(): JSX.Element[] {
     const { color, energy } = this.props;
     const emptyEnergy = energy.total - energy.available;
-    const energyTiles: JSX.Element[] = Array<JSX.Element>();
+    const energyTiles: JSX.Element[] = new Array<JSX.Element>();
 
     times(energy.available, () => {
       energyTiles.push(this.renderEnergyTile(color, true));

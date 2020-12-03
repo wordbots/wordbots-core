@@ -2,7 +2,7 @@ import { History } from 'history';
 import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
-// tslint:disable no-typeof-undefined
+// eslint-disable  
 
 declare const window: {
   location: { pathname: string }
@@ -58,7 +58,7 @@ export function toggleFlag(flag: string): void {
 }
 
 export function getGameAreaNode(): HTMLElement {
-  return document.getElementById('gameArea') || document.body;
+  return document.querySelector('#gameArea') || document.body;
 }
 
 export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {

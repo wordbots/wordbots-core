@@ -4,7 +4,7 @@ import Hex from './Hex';
 
 class GridGenerator {
   public static getGenerator(name: string): w.Returns<Hex[]> | null {
-    if (GridGenerator.hasOwnProperty(name)) {
+    if (name in GridGenerator) {
       return (GridGenerator as any)[name];
     }
 

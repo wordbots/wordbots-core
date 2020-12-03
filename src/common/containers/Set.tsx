@@ -91,7 +91,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
 
     return (
       <div>
-        <Helmet title={setBeingEdited ? "Editing Set" : "Creating Set"} />
+        <Helmet title={setBeingEdited ? 'Editing Set' : 'Creating Set'} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>

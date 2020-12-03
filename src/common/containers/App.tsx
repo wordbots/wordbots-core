@@ -70,7 +70,7 @@ function mapStateToProps(state: w.State): AppStateProps {
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
     renderId: state.global.renderId,
-    uid: state.global.user ? state.global.user.uid : null,
+    uid: state.global.user ? state.global.user.uid : null
   };
 }
 
@@ -222,7 +222,7 @@ class App extends React.Component<AppProps, AppState> {
           textAlign: 'center',
           fontFamily: 'Carter One',
           fontSize: '2em',
-          color: '#999',
+          color: '#999'
         }}
       >
         Connecting to server ...

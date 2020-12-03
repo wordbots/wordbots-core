@@ -1,5 +1,4 @@
 import * as w from '../types';
-
 import { allHexIds, allObjectsOnBoard, getHex, matchesType } from '../util/game';
 
 import { CardCondition, ObjectCondition } from './conditions';
@@ -11,9 +10,7 @@ import { CardCondition, ObjectCondition } from './conditions';
 //    {type: 'hexes', entries: <array of hex ids>}
 
 export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
-  return () => {
-    return {type: 'hexes', entries: allHexIds()};
-  };
+  return () => ({type: 'hexes', entries: allHexIds()});
 }
 
 export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
@@ -44,7 +41,7 @@ export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPil
 
     return {
       type: 'cardsInDiscardPile',
-      entries: (player.discardPile as w.CardInGame[]).filter((card: w.CardInGame) =>
+      entries: (player.discardPile ).filter((card: w.CardInGame) =>
         matchesType(card, cardType) && conditions.every((cond) => cond(null, card))
       )
     };
@@ -53,9 +50,7 @@ export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPil
 
 // Included here for backwards compatibility, but no longer outputted by the parser.
 export function objectsInPlay(state: w.GameState): w.Returns<w.ObjectCollection> {
-  return (objType: string) => {
-    return objectsMatchingConditions(state)(objType, []);
-  };
+  return (objType: string) => objectsMatchingConditions(state)(objType, []);
 }
 
 export function objectsMatchingConditions(state: w.GameState): w.Returns<w.ObjectCollection> {
@@ -68,14 +63,12 @@ export function objectsMatchingConditions(state: w.GameState): w.Returns<w.Objec
 }
 
 export function other(_: w.GameState, currentObject: w.Object | null): w.Returns<w.ObjectCollection> {
-  return (collection) => {
-    return {
+  return (collection) => ({
       type: 'objects',
       entries: collection.entries.filter((obj: w.Object) =>
         obj.id !== currentObject!.id
       )
-    };
-  };
+    });
 }
 
 export function tilesMatchingConditions(state: w.GameState): w.Returns<w.Collection> {

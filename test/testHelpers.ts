@@ -83,7 +83,7 @@ export function queryPlayerHealth(state: w.GameState, playerName: w.PlayerColor)
 
 export function drawCardToHand(state: w.GameState, playerName: w.PlayerColor, card: w.CardInStore): w.GameState {
   const player = state.players[playerName];
-  player.deck = [instantiateCard(card as w.CardInStore)].concat(player.deck as w.CardInGame[]);
+  player.deck = [instantiateCard(card )].concat(player.deck as w.CardInGame[]);
   return drawCards(state, player, 1);
 }
 
@@ -175,7 +175,7 @@ export function playEvent(
   return state;
 }
 
-export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, asNewTurn: boolean = false): w.GameState {
+export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, asNewTurn = false): w.GameState {
   if (asNewTurn) {
     const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex])!.name;
     state = newTurn(state, owner);
@@ -208,7 +208,7 @@ export function attack(state: w.GameState, source: w.HexId, target: w.HexId, asN
   ]);
 }
 
-export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, target: Target | null = null, asNewTurn: boolean = false): w.GameState {
+export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, target: Target | null = null, asNewTurn = false): w.GameState {
   const player = ownerOf(state, allObjectsOnBoard(state)[hex])!;
 
   if (asNewTurn) {

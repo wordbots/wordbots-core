@@ -24,19 +24,13 @@ export function attributeValue(_: w.GameState): w.Returns<number> {
 }
 
 export function count(_: w.GameState): w.Returns<number> {
-  return (collection: w.Collection) => {
-    return size(collection.entries);
-  };
+  return (collection: w.Collection) => size(collection.entries);
 }
 
 export function energyAmount(_: w.GameState): w.Returns<number> {
-  return (players: w.PlayerCollection) => {
-    return players.entries[0].energy.available;
-  };
+  return (players: w.PlayerCollection) => players.entries[0].energy.available;
 }
 
 export function maximumEnergyAmount(_: w.GameState): w.Returns<number> {
-  return (players: w.PlayerCollection) => {
-    return players.entries[0].energy.total;
-  };
+  return (players: w.PlayerCollection) => players.entries[0].energy.total;
 }

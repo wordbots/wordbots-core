@@ -56,7 +56,6 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
       .value();
 
     if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
-      // eslint-disable-next-line no-loops/no-loops
       while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
         recentCards = [...recentCards, ...recentCards];
       }

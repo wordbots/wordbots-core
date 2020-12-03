@@ -78,7 +78,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
       padding: 10,
       '& button': {
         float: 'right',
-        padding: 2,
+        padding: 2
       },
       '& p': {
         marginTop: 0

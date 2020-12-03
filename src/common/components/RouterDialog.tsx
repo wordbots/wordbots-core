@@ -20,11 +20,11 @@ interface RouterDialogProps {
 
 export default class RouterDialog extends React.Component<RouterDialogProps> {
   public static openDialog(history: History, dialogPath: string): void {
-    transformHistory(history, (path) => `${path.replace(/\/\/[^\/]*/, '')}//${dialogPath}`);
+    transformHistory(history, (path) => `${path.replace(/\/\/[^/]*/, '')}//${dialogPath}`);
   }
 
   public static closeDialog(history: History): void {
-    transformHistory(history, (path) => path.replace(/\/\/[^\/]*/, ''));
+    transformHistory(history, (path) => path.replace(/\/\/[^/]*/, ''));
   }
 
   public render(): JSX.Element | null {

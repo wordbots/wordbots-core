@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export default function asyncComponent<P>(importComponent: () => Promise<any>): React.ComponentType<P> {
   interface State {
-    component?: React.ComponentType<P>  // tslint:disable-line react-unused-props-and-state
+    component?: React.ComponentType<P>  // eslint-disable-line 
   }
 
   class AsyncComponent extends React.Component<P, State> {

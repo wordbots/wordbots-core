@@ -1,4 +1,4 @@
-/* tslint:disable no-http-string */
+/* eslint-disable  */
 
 import { chain as _ } from 'lodash';
 import * as React from 'react';

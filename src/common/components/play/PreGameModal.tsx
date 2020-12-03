@@ -63,7 +63,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
           return setFormat;
         }
       }
-    })), (f: SetFormat) => f.name);
+    })), 'name');
 
     return [...BUILTIN_FORMATS, ...setFormats];
   }

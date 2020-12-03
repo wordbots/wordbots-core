@@ -77,7 +77,7 @@ export function getAttribute(objectOrCard: w.Object | w.CardInGame, attr: w.Attr
   const value: number | undefined = (
     attr === 'cost' ?
       g.isObject(objectOrCard) ? objectOrCard.card.cost : objectOrCard.cost :
-      stats && stats[attr as w.Attribute]
+      stats && stats[attr ]
   );
 
   if (isUndefined(value)) {
@@ -87,7 +87,7 @@ export function getAttribute(objectOrCard: w.Object | w.CardInGame, attr: w.Attr
     return (temporaryStatAdjustments[attr] as w.StatAdjustment[])
       .reduce(
         (val: number | undefined, adj: { func: string }) =>
-          clamp(eval(adj.func) as (x: number) => number)(val),   // tslint:disable-line:no-eval
+          clamp(eval(adj.func) as (x: number) => number)(val),   // eslint-disable-line no-eval
         value
       );
   } else {
@@ -110,7 +110,7 @@ export function hasEffect(object: w.Object, effect: w.EffectType): boolean {
 }
 
 function getEffect(object: w.Object, effect: w.EffectType): any {
-  return (object.effects || Array<w.Effect>())
+  return (object.effects || new Array<w.Effect>())
             .filter((eff: w.Effect) => eff.effect === effect)
             .map((eff: w.Effect) => eff.props);
 }
@@ -211,7 +211,7 @@ export function getAdjacentHexes(hex: Hex): Hex[] {
 }
 
 export function validPlacementHexes(state: w.GameState, playerName: w.PlayerColor, type: w.CardType): Hex[] {
-  let hexes: Hex[] = Array<Hex>();
+  let hexes: Hex[] = new Array<Hex>();
   if (type === TYPE_ROBOT) {
     if (playerName === 'blue') {
       hexes = BLUE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
@@ -267,7 +267,7 @@ export function validActionHexes(state: w.GameState, startHex: Hex): Hex[] {
   const attackHexes = validAttackHexes(state, startHex);
   const activateHexes = canActivate(object) ? [startHex] : [];
 
-  return Array<Hex>().concat(movementHexes, attackHexes, activateHexes);
+  return new Array<Hex>().concat(movementHexes, attackHexes, activateHexes);
 }
 
 export function intermediateMoveHexId(state: w.GameState, startHex: Hex, attackHex: Hex): w.HexId | null {
@@ -300,7 +300,7 @@ export function logAction(
   const playerStr = player ?
     (player.name === state.player ?
       'You ' :
-      `${(state.usernames as w.PerPlayer<string>)[player.name]} `) :
+      `${(state.usernames )[player.name]} `) :
     '';
 
   target = determineTargetCard(state, target);
@@ -325,7 +325,7 @@ export function newGame(
   player: w.PlayerColor,
   usernames: w.PerPlayer<string>,
   decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>,
-  seed: string = '0',
+  seed = '0',
   gameFormat: w.Format = DEFAULT_GAME_FORMAT,
   gameOptions: w.GameOptions = {}
 ): w.GameState {
@@ -406,8 +406,8 @@ function endTurn(state: w.GameState): w.GameState {
   const nextTurnPlayer = opponentPlayer(state);
   nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) => ({
     ...obj,
-    abilities: compact((obj.abilities || Array<w.Ability>()).map(decrementDuration)) as w.PassiveAbility[],
-    triggers: compact((obj.triggers || Array<w.Ability>()).map(decrementDuration)) as w.TriggeredAbility[]
+    abilities: compact((obj.abilities || new Array<w.Ability>()).map(decrementDuration)) as w.PassiveAbility[],
+    triggers: compact((obj.triggers || new Array<w.Ability>()).map(decrementDuration)) as w.TriggeredAbility[]
   })));
 
   state = triggerEvent(state, 'endOfTurn', {player: true});
@@ -492,7 +492,7 @@ export function removeCardsFromDiscardPile(state: w.GameState, cards: w.CardInGa
   cards.forEach((targetCard: w.CardInGame) => {
     discardPiles.forEach((discardPile: w.CardInGame[]) => {
       if (discardPile.find((card) => card.id === targetCard.id)) {
-        remove(discardPile, ((card) => card.id === targetCard.id));
+        remove(discardPile, {id: targetCard.id});
         callback(targetCard);
       }
     });
@@ -555,7 +555,7 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
   delete state.players[ownerName].robotsOnBoard[hex];
 
   // Unapply any abilities that this object had.
-  (object.abilities || Array<w.Ability>())
+  (object.abilities || new Array<w.Ability>())
     .filter((ability) => ability.currentTargets)
     .forEach((ability) => {
       const targets: w.Targetable[] = ability.currentTargets!.entries;
@@ -618,7 +618,7 @@ export function executeCmd(
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
 
-  return eval(wrappedCmd)(...definitions);  // tslint:disable-line:no-eval
+  return eval(wrappedCmd)(...definitions);  // eslint-disable-line no-eval
 }
 
 export function triggerEvent(
@@ -650,7 +650,7 @@ export function triggerEvent(
 
   // Look up any relevant triggers for this condition.
   const triggers = flatMap(Object.values(allObjectsOnBoard(state)), ((object: w.Object) =>
-    (object.triggers || Array<w.TriggeredAbility>())
+    (object.triggers || new Array<w.TriggeredAbility>())
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = (executeCmd(state, t.trigger.targetFunc, object) as w.Target).entries;
@@ -675,7 +675,7 @@ export function triggerEvent(
     //         state.it = (destroyed robot)
     //         t.object = Arena
     //         "its controller" should = (destroyed robot)
-    const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it as w.Object) : null);
+    const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it ) : null);
     const currentObject: w.Object = it || t.object;
     executeCmd(state, t.action, currentObject);
 
@@ -689,7 +689,7 @@ export function triggerEvent(
 
 export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    const abilities: w.PassiveAbility[] = obj.abilities || Array<w.PassiveAbility>();
+    const abilities: w.PassiveAbility[] = obj.abilities || new Array<w.PassiveAbility>();
 
     abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.

@@ -1,7 +1,6 @@
 {
   "env": {
     "browser": true,
-    "es6": true,
     "node": true
   },
   "extends": [
@@ -9,19 +8,37 @@
     "plugin:lodash/recommended",
     "plugin:promise/recommended",
     "plugin:react/recommended",
-    "plugin:unicorn/recommended"
+    "plugin:unicorn/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "compat",
+    "jest",
+    "lodash",
+    "promise",
+    "unicorn",
+    "eslint-plugin-import",
+    "eslint-plugin-react",
+    "eslint-plugin-jsdoc",
+    "eslint-plugin-prefer-arrow",
+    "@typescript-eslint",
+    "@typescript-eslint/tslint"
+  ],
   "rules": {
     "arrow-body-style": 2,
     "arrow-spacing": 2,
-    "comma-dangle": 2,
+    "comma-dangle": 0,
     "eol-last": 2,
     "eqeqeq": 2,
     "jsx-quotes": 2,
     "no-console": [1, { "allow": ["error"]  }],
-    "no-shadow": 2,
-    "no-unused-vars": [2, { "args": "none" }],
+    "no-magic-numbers": 0,
+    "no-unused-vars": 0,
     "no-var": 2,
     "prefer-arrow-callback": 2,
     "prefer-const": 2,
@@ -35,17 +52,15 @@
     }],
     "strict": [2, "global"],
 
-    "compat/compat": 2,
+    "@typescript-eslint/prefer-optional-chain": 1,
 
     "import/no-unresolved": 2,
     "import/named": 2,
     "import/default": 2,
-    "import/namespace": 2,
     "import/first": 2,
     "import/no-duplicates": 2,
     "import/order": [2, { "newlines-between": "always" }],
     "import/newline-after-import": 2,
-    "import/no-unassigned-import": 2,
     "import/prefer-default-export": 1,
 
     "jest/no-disabled-tests": 1,
@@ -56,9 +71,9 @@
     "lodash/chaining": [1, "always", 3],
     "lodash/import-scope": 0,
     "lodash/prefer-constant": 0,
+    "lodash/prefer-immutable-method": 0,
     "lodash/prefer-lodash-method": 0,
-
-    "no-loops/no-loops": 2,
+    "lodash/prefer-matches": 0,
 
     "promise/always-return": 0,
     "promise/avoid-new": 0,
@@ -71,33 +86,42 @@
     "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-access-state-in-setstate": 2,
-    "react/no-did-mount-set-state": 2,
-    "react/no-did-update-set-state": 2,
     "react/no-will-update-set-state": 2,
     "react/no-multi-comp": 2,
     "react/no-unused-prop-types": 2,
     "react/no-unused-state": 2,
-    "react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
+    //"react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
     "react/self-closing-comp": 2,
 
     "unicorn/filename-case": 0,
     "unicorn/no-fn-reference-in-iterator": 0,
     "unicorn/no-process-exit": 0,
-    "unicorn/prevent-abbreviations": 0
+    "unicorn/prevent-abbreviations": 0,
+
+    /** Rules that we are disabling for now as part of the tslint->eslint transition
+        TODO re-enable these when feasible. */
+    "no-shadow": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "compat/compat": 0,
+    "import/namespace": 0,
+    "import/no-unassigned-import": 0,
+    "react/prefer-stateless-function": 0,
+    "react/no-did-mount-set-state": 0,
+    "react/no-did-update-set-state": 0,
+    "react/no-unescaped-entities": 0,
+    "unicorn/no-abusive-eslint-disable": 0
   },
-  "plugins": [
-    "compat",
-    "import",
-    "jest",
-    "lodash",
-    "no-loops",
-    "promise",
-    "react",
-    "unicorn"
-  ],
   "settings": {
-    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
-    "import/ignore": ["\\.tsx?$"],
+    "import/extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx", ".d.ts"]
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
+      }
+    },
     "polyfills": ["fetch", "promises", "object-values"],
     "react": {
       "version": "16.6.3"

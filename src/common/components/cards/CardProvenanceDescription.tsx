@@ -15,7 +15,7 @@ export default class CardProvenanceDescription extends React.Component<{card: w.
             : (
               <span>
                 Created by{' '}
-                {!source.uid ? <i>unknown user</i> : <ProfileLink uid={source.uid!} username={source.username!} />}
+                {!source.uid ? <i>unknown user</i> : <ProfileLink uid={source.uid} username={source.username!} />}
                 . {updated && `Last modified ${moment(updated).format('ll')}.`}
               </span>
             )

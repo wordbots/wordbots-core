@@ -60,7 +60,7 @@ function prevStep(state: State): State {
 }
 
 function deck(cardList: w.CardInGame[]): w.CardInGame[] {
-  const filler: w.CardInGame[] = Array(4).fill(cards.oneBotCard).map((card) => instantiateCard({...card, id: id()}));
+  const filler: w.CardInGame[] = new Array(4).fill(cards.oneBotCard).map((card) => instantiateCard({...card, id: id()}));
   return cardList.concat(filler);
 }
 

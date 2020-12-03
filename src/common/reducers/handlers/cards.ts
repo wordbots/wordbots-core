@@ -45,7 +45,7 @@ const cardsHandlers = {
           created: Date.now(),
           updated: Date.now(),
           duplicatedFrom: originalCard.id,
-          isPrivate: false,
+          isPrivate: false
         }
       };
 
@@ -98,9 +98,7 @@ const cardsHandlers = {
     };
   },
 
-  exportCards: (state: State, cards: w.CardInStore[]): State => {
-    return {...state, exportedJson: cardsToJson(cards)};
-  },
+  exportCards: (state: State, cards: w.CardInStore[]): State => ({...state, exportedJson: cardsToJson(cards)}),
 
   importCards: (state: State, json: string): State => {
     cardsFromJson(json, (card) => { saveCard(state, card); });
@@ -140,12 +138,10 @@ const cardsHandlers = {
     return state;
   },
 
-  openSetForEditing: (state: State, setId: string): State => {
-    return {
+  openSetForEditing: (state: State, setId: string): State => ({
       ...state,
       setBeingEdited: setId && state.sets.find((s) => s.id === setId) || null
-    };
-  },
+    }),
 
   publishSet: (state: State, setId: string): State => {
     const set: w.Set | undefined = state.sets.find((s) => s.id === setId);
@@ -179,7 +175,7 @@ const cardsHandlers = {
         metadata: {
           ...card.metadata,
           ownerId: user.uid,  // this copy of the card is owned by the current user
-          updated: Date.now(),  // set updated date to Date.now() so the card is easy to find
+          updated: Date.now()  // set updated date to Date.now() so the card is easy to find
         }
       };
       return saveCard(state, copy);
@@ -238,7 +234,7 @@ function saveCard(state: State, card: w.CardInStore): State {
     if (source && source.type !== 'builtin' && source.uid === firebase.lookupCurrentUser()!.uid) {
       Object.assign(existingCard, card, { id: existingCard.id });
     } else {
-      alert("Can't edit this card! Maybe it's a built-in card or a card that doesn't belong to you?");
+      alert('Can\'t edit this card! Maybe it\'s a built-in card or a card that doesn\'t belong to you?');
       return state;
     }
   } else {
@@ -250,4 +246,4 @@ function saveCard(state: State, card: w.CardInStore): State {
   return state;
 }
 
-export default cardsHandlers; // tslint:disable-line export-name
+export default cardsHandlers; // eslint-disable-line  

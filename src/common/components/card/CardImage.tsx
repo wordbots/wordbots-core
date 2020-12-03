@@ -57,7 +57,7 @@ export default class CardImage extends React.Component<CardImageProps, CardImage
             margin: '3px auto 0'
           }}
         >
-          <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} alt={img!} />
+          <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} alt={img} />
         </div>
       );
     } else if (type === TYPE_EVENT) {
@@ -102,7 +102,7 @@ export default class CardImage extends React.Component<CardImageProps, CardImage
           style={{
             width: 48 * scale,
             height: 48 * scale,
-            margin: `${1.0 * scale}px auto ${3.0 * scale}px`
+            margin: `${1 * scale}px auto ${3 * scale}px`
           }}
         >
           <Sprite

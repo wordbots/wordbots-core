@@ -26,8 +26,8 @@ describe('Built-in cards', () => {
         cost: 0
       },
       stats: { attack: 1, health: 1, speed: 1 },
-      abilities: Array<w.PassiveAbility>(),
-      triggers: Array<w.TriggeredAbility>(),
+      abilities: new Array<w.PassiveAbility>(),
+      triggers: new Array<w.TriggeredAbility>(),
       movesMade: 0
     };
 
@@ -47,7 +47,7 @@ describe('Built-in cards', () => {
           dummyCurrentObj.triggers = [];
         });
       } catch (error) {
-        console.error(`Error executing ability for ${card.name} card!`); // tslint:disable-line no-console
+        console.error(`Error executing ability for ${card.name} card!`); // eslint-disable-line  no-console
         throw error;
       }
     });

@@ -239,7 +239,7 @@ describe('Game reducer', () => {
 
     it('should handle draws', () => {
       let state = getDefaultState();
-      state = playEvent(state, 'orange', event('Destroy each kernel', "(function () { actions['destroy'](objectsMatchingConditions('kernel', [])); })"));
+      state = playEvent(state, 'orange', event('Destroy each kernel', '(function () { actions[\'destroy\'](objectsMatchingConditions(\'kernel\', [])); })'));
       expect(state.winner).toEqual('draw');
     });
   });
@@ -264,7 +264,7 @@ describe('Game reducer', () => {
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
 
       // "End the turn."
-      state = playEvent(state, 'orange', event('End the turn', "(function () { actions['endTurn'](); })"));
+      state = playEvent(state, 'orange', event('End the turn', '(function () { actions[\'endTurn\'](); })'));
       expect(state.currentTurn).toEqual('blue');
     });
 
@@ -324,12 +324,12 @@ describe('Game reducer', () => {
       let state = getDefaultState();
       state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');  // 1/2/2
 
-      state = playEvent(state, 'orange', event("Give all robots you control +2 attack until the end of the turn.", "(function () { save('duration', 1); (function () { actions['modifyAttribute'](objectsMatchingConditions('robot', [conditions['controlledBy'](targets['self']())]), 'attack', function (x) { return x + 2; }); })(); save('duration', null); })"));
+      state = playEvent(state, 'orange', event('Give all robots you control +2 attack until the end of the turn.', '(function () { save(\'duration\', 1); (function () { actions[\'modifyAttribute\'](objectsMatchingConditions(\'robot\', [conditions[\'controlledBy\'](targets[\'self\']())]), \'attack\', function (x) { return x + 2; }); })(); save(\'duration\', null); })'));
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('3/2/2');
       state = game(state, actions.passTurn('orange'));
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/2/2');
 
-      state = playEvent(state, 'blue', event("Set all attributes of all robots to 3 until the end of the turn", "(function () { save('duration', 1); (function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'allattributes', \"(function () { return 3; })\"); })(); save('duration', null); })"));
+      state = playEvent(state, 'blue', event('Set all attributes of all robots to 3 until the end of the turn', '(function () { save(\'duration\', 1); (function () { actions[\'setAttribute\'](objectsMatchingConditions(\'robot\', []), \'allattributes\', "(function () { return 3; })"); })(); save(\'duration\', null); })'));
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('3/3/3');
       state = game(state, actions.passTurn('blue'));
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/2/2');

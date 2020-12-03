@@ -118,7 +118,7 @@ export default class Board extends React.Component<BoardProps, BoardState> {
   get hexColors(): Record<w.HexId, 'blue' | 'bright_blue' | 'orange' | 'bright_orange' | 'green' | 'red'> {
     const hexColors: Record<w.HexId, 'blue' | 'bright_blue' | 'orange' | 'bright_orange' | 'green' | 'red'> = {};
 
-    // tslint:disable-next-line no-inner-declarations
+    // eslint-disable-next-line 
     function color(hexes: Array<Hex | w.HexId>, colorName: 'blue' | 'bright_blue' | 'orange' | 'bright_orange' | 'green' | 'red'): void {
       hexes.forEach((hex) => {
         hexColors[isString(hex) ? hex : HexUtils.getID(hex)] = colorName;

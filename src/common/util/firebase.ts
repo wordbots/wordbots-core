@@ -1,8 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
 import { capitalize, concat, flatMap, fromPairs, mapValues, orderBy, uniq, uniqBy } from 'lodash';
-
-const fb = require('firebase/app').default;
 import 'firebase/auth';
 import 'firebase/database';
 
@@ -10,6 +8,8 @@ import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
 import { withoutEmptyFields } from './common';
+
+const fb = require('firebase/app').default;
 
 const config = {
   apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
@@ -168,7 +168,7 @@ export function saveCard(card: w.Card): void {
 
 export function removeCards(cardIds: string[]): void {
   // Set all card/:cardId to null
-  fb.database().ref(`cards`)
+  fb.database().ref('cards')
     .update(Object.assign({}, ...cardIds.map((id) => ({[id]: null}))));
 }
 

@@ -192,7 +192,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
   }
 
   private notEmpty(fields: string[]): boolean {
-    return fields.reduce((base, field) => base && (field !== ''), true);
+    return fields.reduce<boolean>((base, field) => base && (field !== ''), true);
   }
 
   private renderLoginForm(): JSX.Element {

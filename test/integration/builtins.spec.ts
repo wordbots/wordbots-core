@@ -16,11 +16,11 @@ describe.skip('Built-in cards', () => {
     console.error = noop;
   });
 
-  // tslint:disable-next-line mocha-no-side-effect-code
+  // eslint-disable-next-line 
   collection.forEach((card) => {
     const { abilities, command, name, text } = card;
 
-    if (text && !text.includes(",.")) {  // Ignore vanilla and "French vanilla" cards
+    if (text && !text.includes(',.')) {  // Ignore vanilla and "French vanilla" cards
       it(`${name}: ${text}`, (done) => {
         const expectedJs: string[] = (command ? asArrayOfStrings(command) : asArrayOfStrings(abilities || []));
 

@@ -2,4 +2,4 @@ env:
   node: true
   jest: true
 rules:
-  no-magic-numbers: [1, {"ignore": [0, 1, 2, 3, 4, 5]}]
+  no-magic-numbers: 0

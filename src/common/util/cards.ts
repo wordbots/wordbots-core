@@ -240,9 +240,9 @@ function parse(
           indexParsedSentence(sentence, json.tokens, json.js);
         }
       })
-      .catch((err) => {
+      .catch((error) => {
         // TODO better error handling
-        throw new Error((`Parser error: ${err}`));
+        throw new Error((`Parser error: ${error}`));
       });
   });
 }
@@ -253,7 +253,7 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 // TODO Use parseBatch() for all parsing?
 export function parseBatch(
   sentences: string[],
-  mode: w.ParserMode,
+  mode: w.ParserMode
 ): Promise<Array<{ sentence: string, result: w.ParseResult }>> {
   return fetch(`${PARSER_URL}/parse`, {
     method: 'POST',
@@ -264,9 +264,9 @@ export function parseBatch(
     .then((results) => (
       (results as Array<[string, w.ParseResult]>).map(([sentence, result]) => ({ sentence, result }))
     ))
-    .catch((err) => {
+    .catch((error) => {
       // TODO better error handling
-      throw new Error((`Parser error: ${err}`));
+      throw new Error((`Parser error: ${error}`));
     });
 }
 
@@ -436,8 +436,8 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
 export function loadParserLexicon(): Promise<{ [token: string]: any }> {
   return fetch(`${PARSER_URL}/lexicon?format=json`)
     .then((response) => response.json())
-    .catch((err) => {
+    .catch((error) => {
       // TODO better error handling
-      throw new Error((`Error retrieving lexicon: ${err}`));
+      throw new Error((`Error retrieving lexicon: ${error}`));
     });
 }

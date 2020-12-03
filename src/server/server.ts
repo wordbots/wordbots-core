@@ -51,8 +51,8 @@ app.get('/*', handleRequest);
 
 const server = app.listen(PORT || 3000, (): void => {
   const address: { address: string, port: number } = server.address() as { address: string, port: number };
-  /* tslint:disable:no-console */
+  /* eslint-disable no-console */
   console.log(`App listening at http://${address.address}:${address.port}`);
-  /* tslint:enable:no-console */
+  /* eslint-enable no-console */
 });
 launchWebsocketServer(server, '/socket');

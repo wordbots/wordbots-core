@@ -80,7 +80,7 @@ export function mapDispatchToProps(dispatch: Dispatch): PlayDispatchProps {
   };
 }
 
-export const baseGameUrl: string = '/play';
+export const baseGameUrl = '/play';
 
 export const isInGameUrl = (url: string) => (url.startsWith(baseGameUrl) && compact(url.split('/')).length > 2);
 

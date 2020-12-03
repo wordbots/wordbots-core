@@ -13,7 +13,7 @@ import { attackBotCard } from '../data/cards';
 
 jest.mock('../../src/common/util/firebase');
 
-function args(mockedFn: any, callNum: number = 0): any[] {
+function args(mockedFn: any, callNum = 0): any[] {
   return mockedFn.mock.calls[callNum];
 }
 
@@ -106,7 +106,7 @@ describe('Collection reducer', () => {
       type: TYPE_ROBOT,
       willCreateAnother: false
     };
-    const testBotCard: w.CardInStore = createCardFromProps(testBotCreatorState);  // tslint:disable-line mocha-no-side-effect-code
+    const testBotCard: w.CardInStore = createCardFromProps(testBotCreatorState);  // eslint-disable-line  
 
     it('creates new card', () => {
       let state: w.CollectionState = defaultCollectionState();

@@ -95,7 +95,6 @@ type GameAreaProps = GameProps & RouteComponentProps & {
 
 interface GameAreaState {
   areaHeight: number
-  windowWidth: number
   boardSize: number
   boardMargin: { left: number, top: number }
   chatOpen: boolean
@@ -106,7 +105,6 @@ interface GameAreaState {
 export default class GameArea extends React.Component<GameAreaProps, GameAreaState> {
   public state = {
     areaHeight: 1000,
-    windowWidth: 1000,
     boardSize: 1000,
     boardMargin: { left: 0, top: 0 },
     chatOpen: true,
@@ -250,7 +248,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
               margin: 0,
               zIndex: BOARD_Z_INDEX,
               width: boardSize,
-              height: boardSize,
+              height: boardSize
               // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
@@ -321,7 +319,6 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
       return {
         areaHeight,
-        windowWidth: window.innerWidth,
         boardSize,
         boardMargin: {
           // On a large enough screen (areaWidth > 1300), center the board in the exact middle of the game area.

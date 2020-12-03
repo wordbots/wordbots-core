@@ -64,6 +64,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
 
   private calculateAvailableWidth(): void {
     // The only way to accurately get the width of the hand seems to be through ReactDOM.findDOMNode().
+    // eslint-disable-next-line react/no-find-dom-node
     const node: HTMLElement | null = ReactDOM.findDOMNode(this) as HTMLElement | null;
     if (node) {
       this.setState({availableWidth: node.offsetWidth});

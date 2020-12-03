@@ -84,6 +84,6 @@ export function addExistingCardToCollection(card: w.CardInStore): w.Action {
 // Note: This actions is consumed by the cardCreator AND collection reducers!
 export function resetCreator(): w.Action {
   return {
-    type: RESET_CREATOR,
+    type: RESET_CREATOR
   };
 }

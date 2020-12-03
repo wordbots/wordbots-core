@@ -1,7 +1,8 @@
-import * as express from 'express';
 import { ParsedUrlQuery } from 'querystring';
-import * as repng from 'repng';
 import { parse as urlparse } from 'url';
+
+import * as express from 'express';
+import * as repng from 'repng';
 
 import Card, { CardProps } from '../common/components/card/Card';
 import Sentence from '../common/components/card/Sentence';
@@ -9,11 +10,11 @@ import Sentence from '../common/components/card/Sentence';
 export default function produceApiResponse(response: express.Response, location: string): void {
   const { pathname, query } = urlparse(location, true);
 
-  console.info(`Received API request: ${location}`);  // tslint:disable-line
+  console.info(`Received API request: ${location}`);  // eslint-disable-line
   if (pathname === '/api/card.png') {
     renderCard(response, query);
   } else {
-    console.warn(`Unknown path: ${pathname}`);  // tslint:disable-line
+    console.warn(`Unknown path: ${pathname}`);  // eslint-disable-line
   }
 }
 

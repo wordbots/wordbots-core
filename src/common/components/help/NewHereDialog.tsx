@@ -58,7 +58,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             style={{ float: 'left', padding: 5, fontSize: '0.85em' }}
             onClick={this.dontShowAgain}
           >
-            <a className="underline">Don&rquo;t show this dialog again</a>
+            <a className="underline">Don't show this dialog again</a>
           </span>,
           <RaisedButton
             primary
@@ -70,7 +70,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
       >
         <div>
           <p>Welcome! <b>Wordbots</b> is a new kind of card game, where players <i>– like you –</i> get to write the cards.</p>
-          <p>There&rquo;s a lot to take in, so here&rquo;s the order we&rquo;d suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
+          <p>There's a lot to take in, so here's the order we'd suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
           {!uid && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
         </div>
 
@@ -113,7 +113,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             <tr>
               <td>
                 <NewHereLink idx={7} href="/decks" accomplished={this.decks.filter((d) => !d.setId).length > 0}>
-                  Build a deck, using a combination of your own, built-in, and/or other players&rquo; cards.
+                  Build a deck, using a combination of your own, built-in, and/or other players' cards.
                 </NewHereLink>
               </td>
               <td>

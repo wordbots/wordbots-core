@@ -106,7 +106,7 @@ describe('Collection reducer', () => {
       type: TYPE_ROBOT,
       willCreateAnother: false
     };
-    const testBotCard: w.CardInStore = createCardFromProps(testBotCreatorState);  // eslint-disable-line  
+    const testBotCard: w.CardInStore = createCardFromProps(testBotCreatorState);
 
     it('creates new card', () => {
       let state: w.CollectionState = defaultCollectionState();

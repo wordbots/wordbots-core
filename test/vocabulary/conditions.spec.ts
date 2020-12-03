@@ -5,7 +5,6 @@ import { attack, event, getDefaultState, moveRobot, newTurn, objectsOnBoardOfTyp
 
 describe('[vocabulary.conditions]', () => {
   describe('[properties]', () => {
-    // eslint-disable-next-line  
     const initialStateSetup = {
       orange: {
         '0,0,0': cards.oneBotCard,
@@ -20,7 +19,7 @@ describe('[vocabulary.conditions]', () => {
       let state = setUpBoardState(initialStateSetup);
       state = attack(state, '0,0,0', '0,-1,1', true);
       state = newTurn(state, 'blue');
-      state = playEvent(state, 'blue', event('Deal 1 damage to each robot that attacked last turn', '(function () { actions[\'dealDamage\'](objectsMatchingConditions(\'robot\', [conditions[\'hasProperty\'](\'attackedlastturn\')]), 1); })'));
+      state = playEvent(state, 'blue', event('Deal 1 damage to each robot that attacked last turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('attackedlastturn')]), 1); })"));
        // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
@@ -28,7 +27,7 @@ describe('[vocabulary.conditions]', () => {
     it('attackedthisturn', () => {
       let state = setUpBoardState(initialStateSetup);
       state = attack(state, '0,0,0', '0,-1,1', true);
-      state = playEvent(state, 'orange', event('Deal 1 damage to each robot that attacked this turn', '(function () { actions[\'dealDamage\'](objectsMatchingConditions(\'robot\', [conditions[\'hasProperty\'](\'attackedthisturn\')]), 1); })'));
+      state = playEvent(state, 'orange', event('Deal 1 damage to each robot that attacked this turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('attackedthisturn')]), 1); })"));
        // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
@@ -36,8 +35,8 @@ describe('[vocabulary.conditions]', () => {
     it('isdestroyed', () => {
       let state = setUpBoardState(initialStateSetup);
       const card = event('Deal 2 damage to a robot. If that robot is destroyed, gain 2 life', [
-        '(function () { actions[\'dealDamage\'](targets[\'choose\'](objectsMatchingConditions(\'robot\', [])), 2); })',
-        '(function () { if (globalConditions[\'targetHasProperty\'](targets[\'that\'](), \'isdestroyed\')) { ((function () { actions[\'modifyAttribute\'](objectsMatchingConditions(\'kernel\', [conditions[\'controlledBy\'](targets[\'self\']())]), \'health\', function (x) { return x + 2; }); }))(); } })'
+        "(function () { actions['dealDamage'](targets['choose'](objectsMatchingConditions('robot', [])), 2); })",
+        "(function () { if (globalConditions['targetHasProperty'](targets['that'](), 'isdestroyed')) { ((function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 2; }); }))(); } })"
       ]);
       state = playEvent(state, 'orange', card, { hex: '0,-1,1' });
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,0,0', '0,-2,2'].sort());
@@ -48,7 +47,7 @@ describe('[vocabulary.conditions]', () => {
       let state = setUpBoardState(initialStateSetup);
       state = moveRobot(state, '0,0,0', '0,1,-1', true);
       state = newTurn(state, 'blue');
-      state = playEvent(state, 'blue', event('Deal 2 damage to each robot that attacked last turn', '(function () { actions[\'dealDamage\'](objectsMatchingConditions(\'robot\', [conditions[\'hasProperty\'](\'movedlastturn\')]), 2); })'));
+      state = playEvent(state, 'blue', event('Deal 2 damage to each robot that attacked last turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('movedlastturn')]), 2); })"));
        // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
@@ -56,7 +55,7 @@ describe('[vocabulary.conditions]', () => {
     it('movedthisturn', () => {
       let state = setUpBoardState(initialStateSetup);
       state = moveRobot(state, '0,0,0', '0,1,-1', true);
-      state = playEvent(state, 'orange', event('Deal 2 damage to each robot that attacked this turn', '(function () { actions[\'dealDamage\'](objectsMatchingConditions(\'robot\', [conditions[\'hasProperty\'](\'movedthisturn\')]), 2); })'));
+      state = playEvent(state, 'orange', event('Deal 2 damage to each robot that attacked this turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('movedthisturn')]), 2); })"));
        // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
@@ -65,7 +64,7 @@ describe('[vocabulary.conditions]', () => {
       let state = setUpBoardState(initialStateSetup);
       state = attack(state, '0,0,0', '0,-1,1', true);
       state = newTurn(state, 'blue');
-      state = playEvent(state, 'blue', event('Deal 1 damage to each damaged robot', '(function () { actions[\'dealDamage\'](objectsMatchingConditions(\'robot\', [conditions[\'hasProperty\'](\'isdamaged\')]), 1); })'));
+      state = playEvent(state, 'blue', event('Deal 1 damage to each damaged robot', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('isdamaged')]), 1); })"));
        // The robots at 0,0,0 and 0,-1,1 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2'].sort());
     });

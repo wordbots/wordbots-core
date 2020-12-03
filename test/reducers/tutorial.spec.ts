@@ -18,7 +18,7 @@ describe('Game reducer: tutorial mode', () => {
         const currentStep = s.tutorialSteps![s.tutorialCurrentStepIdx!];
 
         if (currentStep.action && !isString(currentStep.action)) {
-          s = game(s, currentStep.action);
+          s = game(s, currentStep.action!);
         } else {
           s = game(s, actions.tutorialStep());
         }

@@ -44,7 +44,7 @@
     "prefer-const": 2,
     "prefer-spread": 2,
     "prefer-template": 2,
-    "quotes": [2, "single"],
+    "quotes": 0,
     "semi": 2,
     "space-before-function-paren": [2, {
       "anonymous": "always",

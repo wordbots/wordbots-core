@@ -128,7 +128,7 @@ export const reinforcementsCard: w.CardInStore = {
   id: 'Reinforcements',
   name: 'Reinforcements',
   text: 'Spawn a 1/2/1 robot named "Reinforcements" on each tile adjacent to your kernel.',
-  command: '(function () { actions[\'spawnObject\'](targets[\'generateCard\'](\'robot\', {\'attack\': 1, \'health\': 2, \'speed\': 1}, \'Reinforcements\'), tilesMatchingConditions([conditions[\'adjacentTo\'](objectsMatchingConditions(\'kernel\', [conditions[\'controlledBy\'](targets[\'self\']())]))])); })',
+  command: "(function () { actions['spawnObject'](targets['generateCard']('robot', {'attack': 1, 'health': 2, 'speed': 1}, 'Reinforcements'), tilesMatchingConditions([conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))])); })",
   cost: 4,
   type: TYPE_EVENT
 };
@@ -139,7 +139,7 @@ export const discardMuncherCard: w.CardInStore = {
   name: 'Discard Muncher',
   text: 'Whenever any card enters your discard pile, gain 1 life.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterCardEntersDiscardPile\'](function () { return targets[\'self\'](); }, \'anycard\'), (function () { actions[\'modifyAttribute\'](objectsMatchingConditions(\'kernel\', [conditions[\'controlledBy\'](targets[\'self\']())]), \'health\', function (x) { return x + 1; }); })); })'
+    "(function () { setTrigger(triggers['afterCardEntersDiscardPile'](function () { return targets['self'](); }, 'anycard'), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 1; }); })); })"
   ],
   cost: 2,
   type: TYPE_ROBOT,
@@ -147,7 +147,7 @@ export const discardMuncherCard: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
 };
 
 export const fairnessField: w.CardInStore = {
@@ -156,13 +156,13 @@ export const fairnessField: w.CardInStore = {
   name: 'Fairness Field',
   text: 'Whenever a player draws a card, that player discards a random card.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterCardDraw\'](function () { return targets[\'allPlayers\'](); }, \'anycard\'), (function () { actions[\'discard\'](targets[\'random\'](1, cardsInHand(targets[\'itP\'](), \'anycard\', []))); })); })'
+    "(function () { setTrigger(triggers['afterCardDraw'](function () { return targets['allPlayers'](); }, 'anycard'), (function () { actions['discard'](targets['random'](1, cardsInHand(targets['itP'](), 'anycard', []))); })); })"
   ],
   cost: 3,
   type: TYPE_STRUCTURE,
   stats: {
     health: 5
-  }
+  },
 };
 
 export const looterBotCard: w.CardInStore = {
@@ -171,7 +171,7 @@ export const looterBotCard: w.CardInStore = {
   name: 'Looter Bot',
   text: 'Whenever this robot destroys an enemy robot, draw a card.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterDestroysOtherObject\'](function () { return targets[\'thisRobot\'](); }, \'robot\'), (function () { actions[\'draw\'](targets[\'self\'](), 1); })); })'
+    "(function () { setTrigger(triggers['afterDestroysOtherObject'](function () { return targets['thisRobot'](); }, 'robot'), (function () { actions['draw'](targets['self'](), 1); })); })"
   ],
   cost: 2,
   type: TYPE_ROBOT,
@@ -179,7 +179,7 @@ export const looterBotCard: w.CardInStore = {
     attack: 2,
     health: 2,
     speed: 1
-  }
+  },
 };
 
 export const walkingMonkCard: w.CardInStore = {
@@ -188,7 +188,7 @@ export const walkingMonkCard: w.CardInStore = {
   name: 'Walking Monk',
   text: 'Whenever this robot moves, gain 1 life.',
   abilities: [
-    '(function () { setTrigger(triggers[\'afterMove\'](function () { return targets[\'thisRobot\'](); }), (function () { actions[\'modifyAttribute\'](objectsMatchingConditions(\'kernel\', [conditions[\'controlledBy\'](targets[\'self\']())]), \'health\', function (x) { return x + 1; }); })); })'
+    "(function () { setTrigger(triggers['afterMove'](function () { return targets['thisRobot'](); }), (function () { actions['modifyAttribute'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 'health', function (x) { return x + 1; }); })); })"
   ],
   cost: 3,
   type: TYPE_ROBOT,
@@ -196,7 +196,7 @@ export const walkingMonkCard: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
 };
 
 export const thresholderCard: w.CardInStore = {
@@ -205,7 +205,7 @@ export const thresholderCard: w.CardInStore = {
   name: 'Thresholder',
   text: 'This robot has +4 attack if your discard pile has 5 or more cards.',
   abilities: [
-    '(function () { setAbility(abilities[\'attributeAdjustment\'](function () { return targets[\'conditionOn\'](targets[\'thisRobot\'](), function () { return globalConditions[\'collectionCountComparison\'](cardsInDiscardPile(targets[\'self\'](), \'anycard\', []), (function (x) { return x >= 5; })); }); }, \'attack\', function (x) { return x + 4; })); })'
+    "(function () { setAbility(abilities['attributeAdjustment'](function () { return targets['conditionOn'](targets['thisRobot'](), function () { return globalConditions['collectionCountComparison'](cardsInDiscardPile(targets['self'](), 'anycard', []), (function (x) { return x >= 5; })); }); }, 'attack', function (x) { return x + 4; })); })"
   ],
   cost: 2,
   type: TYPE_ROBOT,
@@ -213,5 +213,5 @@ export const thresholderCard: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
 };

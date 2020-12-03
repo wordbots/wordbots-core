@@ -83,7 +83,7 @@ export function queryPlayerHealth(state: w.GameState, playerName: w.PlayerColor)
 
 export function drawCardToHand(state: w.GameState, playerName: w.PlayerColor, card: w.CardInStore): w.GameState {
   const player = state.players[playerName];
-  player.deck = [instantiateCard(card )].concat(player.deck as w.CardInGame[]);
+  player.deck = [instantiateCard(card as w.CardInStore)].concat(player.deck as w.CardInGame[]);
   return drawCards(state, player, 1);
 }
 

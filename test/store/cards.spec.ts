@@ -47,7 +47,7 @@ describe('Built-in cards', () => {
           dummyCurrentObj.triggers = [];
         });
       } catch (error) {
-        console.error(`Error executing ability for ${card.name} card!`); // eslint-disable-line  no-console
+        console.error(`Error executing ability for ${card.name} card!`);
         throw error;
       }
     });

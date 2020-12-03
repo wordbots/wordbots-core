@@ -26,14 +26,14 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
     return (
       <Tooltip text="Forfeit" place="top" style={{ zIndex: MAX_Z_INDEX }}>
         <RaisedButton
-          backgroundColor="#CCC"
+          backgroundColor="black"
           buttonStyle={{
             height,
             lineHeight: height
           }}
           style={{
             borderRadius: 5,
-            border: '2px solid #AAA',
+            border: '2px solid white',
             minWidth: 48,
             marginLeft: 10
           }}
@@ -44,7 +44,8 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
               className="material-icons"
               style={{
                 lineHeight: height,
-                verticalAlign: 'none'
+                verticalAlign: 'none',
+                color: '#ffffff'
               }}
             >
               flag

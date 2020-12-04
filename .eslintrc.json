@@ -21,7 +21,6 @@
     "eslint-plugin-compat",
     "eslint-plugin-import",
     "eslint-plugin-jest",
-    "eslint-plugin-jsdoc",
     "eslint-plugin-lodash",
     "eslint-plugin-prefer-arrow",
     "eslint-plugin-promise",

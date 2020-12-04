@@ -8,9 +8,7 @@ import { assertCardVisible, splitSentences } from '../../../util/cards';
 import { id } from '../../../util/common';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
-  deleteAllDyingObjects,
-  discardCardsFromHand, executeCmd,
-  getCost, logAction,
+  deleteAllDyingObjects, discardCardsFromHand, executeCmd, getCost, logAction,
   matchesType, removeCardsFromHand, setTargetAndExecuteQueuedAction,
   triggerEvent, triggerSound, validPlacementHexes
 } from '../../../util/game';

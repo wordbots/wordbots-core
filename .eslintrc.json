@@ -1,7 +1,6 @@
 {
   "env": {
     "browser": true,
-    "es6": true,
     "node": true
   },
   "extends": [
@@ -9,25 +8,42 @@
     "plugin:lodash/recommended",
     "plugin:promise/recommended",
     "plugin:react/recommended",
-    "plugin:unicorn/recommended"
+    "plugin:unicorn/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "eslint-plugin-compat",
+    "eslint-plugin-import",
+    "eslint-plugin-jest",
+    "eslint-plugin-lodash",
+    "eslint-plugin-prefer-arrow",
+    "eslint-plugin-promise",
+    "eslint-plugin-react",
+    "eslint-plugin-unicorn"
+  ],
   "rules": {
     "arrow-body-style": 2,
     "arrow-spacing": 2,
-    "comma-dangle": 2,
+    "comma-dangle": 0,
     "eol-last": 2,
     "eqeqeq": 2,
     "jsx-quotes": 2,
     "no-console": [1, { "allow": ["error"]  }],
+    "no-magic-numbers": 0,
     "no-shadow": 2,
-    "no-unused-vars": [2, { "args": "none" }],
+    "no-unused-vars": 0,
     "no-var": 2,
     "prefer-arrow-callback": 2,
     "prefer-const": 2,
     "prefer-spread": 2,
     "prefer-template": 2,
-    "quotes": [2, "single"],
+    "quotes": 0,
     "semi": 2,
     "space-before-function-paren": [2, {
       "anonymous": "always",
@@ -35,17 +51,28 @@
     }],
     "strict": [2, "global"],
 
+    "@typescript-eslint/array-type": [2, { "default": "array-simple" }],
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/consistent-type-assertions": 2,
+    "@typescript-eslint/member-delimiter-style": [2, {
+      "multiline": { "delimiter": "none" },
+      "singleline": { "delimiter": "comma" }
+    }],
+    "@typescript-eslint/no-unused-vars": [2, { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/prefer-optional-chain": 2,
+
     "compat/compat": 2,
 
-    "import/no-unresolved": 2,
-    "import/named": 2,
     "import/default": 2,
-    "import/namespace": 2,
     "import/first": 2,
-    "import/no-duplicates": 2,
-    "import/order": [2, { "newlines-between": "always" }],
+    "import/named": 2,
+    "import/namespace": 2,
     "import/newline-after-import": 2,
-    "import/no-unassigned-import": 2,
+    "import/no-duplicates": 2,
+    "import/no-unresolved": 2,
+    "import/no-unassigned-import": [2, { "allow": ["**/*.css"] }],
+    "import/order": [2, { "newlines-between": "always" }],
     "import/prefer-default-export": 1,
 
     "jest/no-disabled-tests": 1,
@@ -56,9 +83,9 @@
     "lodash/chaining": [1, "always", 3],
     "lodash/import-scope": 0,
     "lodash/prefer-constant": 0,
+    "lodash/prefer-immutable-method": 0,
     "lodash/prefer-lodash-method": 0,
-
-    "no-loops/no-loops": 2,
+    "lodash/prefer-matches": 0,
 
     "promise/always-return": 0,
     "promise/avoid-new": 0,
@@ -68,16 +95,14 @@
     "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "react/jsx-boolean-value": 2,
     "react/jsx-no-bind": [2, { "ignoreRefs": true }],
-    "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-access-state-in-setstate": 2,
     "react/no-did-mount-set-state": 2,
-    "react/no-did-update-set-state": 2,
-    "react/no-will-update-set-state": 2,
     "react/no-multi-comp": 2,
     "react/no-unused-prop-types": 2,
     "react/no-unused-state": 2,
-    "react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
+    "react/no-will-update-set-state": 2,
+    "react/prefer-stateless-function": [1, { "ignorePureComponents": true }],
     "react/self-closing-comp": 2,
 
     "unicorn/filename-case": 0,
@@ -85,19 +110,16 @@
     "unicorn/no-process-exit": 0,
     "unicorn/prevent-abbreviations": 0
   },
-  "plugins": [
-    "compat",
-    "import",
-    "jest",
-    "lodash",
-    "no-loops",
-    "promise",
-    "react",
-    "unicorn"
-  ],
   "settings": {
-    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
-    "import/ignore": ["\\.tsx?$"],
+    "import/extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx", ".d.ts"]
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
+      }
+    },
     "polyfills": ["fetch", "promises", "object-values"],
     "react": {
       "version": "16.6.3"

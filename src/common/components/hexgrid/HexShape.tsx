@@ -34,7 +34,7 @@ interface HexShapeState {
 export default class HexShape extends React.Component<HexShapeProps, HexShapeState> {
   public state = {
     displayTooltip: false,
-    tooltipTimeout: null
+    tooltipTimeout: null as NodeJS.Timeout | null
   };
 
   get points(): string {
@@ -93,7 +93,7 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
           onNextStep={this.handleClickNextTutorialStep}
           onPrevStep={this.handleClickPrevTutorialStep}
           onEndTutorial={actions.onEndGame}
-          place={tutorialStep && tutorialStep.tooltip.place || 'above'}
+          place={tutorialStep?.tooltip.place || 'above'}
         >
           {this.renderHex()}
         </TutorialTooltip>
@@ -135,9 +135,10 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
   }
 
   private untriggerTooltip = () => {
-    this.setState((state) => {
-      const { tooltipTimeout } = state;
-      if (tooltipTimeout !== null) {
+    const { tooltipTimeout } = this.state;
+
+    this.setState(() => {
+      if (tooltipTimeout) {
         clearTimeout(tooltipTimeout);
       }
 

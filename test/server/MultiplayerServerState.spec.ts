@@ -31,7 +31,7 @@ function expectStateFn(fn: (state: MSS) => void, expectedSerializedStateFn: (sta
 describe('MultiplayerServerState', () => {
   const oldConsole = {log: console.log, warn: console.warn};
   let dummyWebSocket: WebSocket;
-  let warning: string = '';
+  let warning = '';
 
   beforeAll(() => {
     dummyWebSocket = new MockSocket('ws://null') as any as WebSocket;

@@ -15,7 +15,7 @@ export default class Word extends React.Component<WordProps> {
   public render(): JSX.Element {
     const { word, keywords, result } = this.props;
 
-    if (((result && result.unrecognizedTokens) || []).includes(word.toLowerCase())) {
+    if (((result?.unrecognizedTokens) || []).includes(word.toLowerCase())) {
       return (
         <span key={id()}>
           {' '}<u>{word}</u>

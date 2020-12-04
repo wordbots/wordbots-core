@@ -25,7 +25,7 @@ export default class DictionarySearchBar extends React.Component<DictionarySearc
     );
   }
 
-  private handleChangeText = (_e: React.FormEvent<{}>, value: string) => { this.props.onChange(value); };
+  private handleChangeText = (_e: React.FormEvent<any>, value: string) => { this.props.onChange(value); };
   private handleClickClear = () => { this.props.onChange(''); };
 
   private renderClearButton(): React.ReactNode {

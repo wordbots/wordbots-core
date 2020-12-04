@@ -14,7 +14,7 @@ import {
 } from '../util/game';
 
 export default function actions(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<void>> {
-  const iterateOver = <T extends w.Targetable>(collection: w.Collection, shouldReassignPlayerToKernel: boolean = true) => (fn: (item: T) => void) => {
+  const iterateOver = <T extends w.Targetable>(collection: w.Collection, shouldReassignPlayerToKernel = true) => (fn: (item: T) => void) => {
     const items: T[] = (collection.entries as w.Targetable[]).map(shouldReassignPlayerToKernel ? reassignToKernelIfPlayer : identity) as T[];
     items.forEach((item: T) => {
       state.currentEntryInCollection = item;  // (Needed for tracking of targets.they)
@@ -36,7 +36,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
   const modifyAttribute = (
     objects: w.ObjectOrPlayerCollection | w.CardInHandCollection,
     attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
-    func: ((attr: number) => number) | w.StringRepresentationOf<(attr: number) => number>
+    func: ((a: number) => number) | w.StringRepresentationOf<(a: number) => number>
   ): void => {
     if (state.memory.duration && g.isObjectCollection(objects)) {
       // Temporary attribute adjustment.
@@ -52,7 +52,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         if (attr === 'allattributes') {
           object.stats = mapValues(object.stats, clamp(func)) as {attack?: number, health: number, speed?: number};
         } else if (attr === 'cost' && !g.isObject(object)) {
-          object.cost = clamp(func)((object as w.CardInGame).cost);
+          object.cost = clamp(func)((object ).cost);
         } else {
           object.stats = applyFuncToFields(object.stats, func, isArray(attr) ? attr : [attr]);
         }
@@ -77,7 +77,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         // Set triggers one-by-one.
         if (card.abilities && card.abilities.length > 0) {
           card.abilities.forEach((cmd, idx) => {
-            const cmdText = splitSentences(card.text!)[idx];
+            const cmdText = splitSentences(card.text)[idx];
             state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
 
             iterateOver<w.Object>(sources)((source: w.Object) => {
@@ -139,13 +139,13 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       state.callbackAfterExecution = (s: w.GameState) => passTurn(s, s.currentTurn);
     },
 
-    forEach: (collection: w.Collection, cmd: (state: w.GameState) => any): void => {
+    forEach: (collection: w.Collection, cmd: (s: w.GameState) => any): void => {
       iterateOver(collection, false)((elt: w.Targetable) => {
         executeCmd(state, cmd, g.isObject(elt) ? elt : currentObject);
       });
     },
 
-    giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(state: w.GameState) => any>): void => {
+    giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(s: w.GameState) => any>): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         executeCmd(state, abilityCmd, object);
       });
@@ -229,7 +229,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     setAttribute: (
       objects: w.ObjectOrPlayerCollection,
       attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
-      numCmd: w.StringRepresentationOf<(state: w.GameState) => number>
+      numCmd: w.StringRepresentationOf<(s: w.GameState) => number>
     ): void => {
       if (state.memory.duration) {
         // Temporary attribute adjustment.
@@ -285,8 +285,8 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     swapAttributes: (objects: w.ObjectOrPlayerCollection, attr1: w.Attribute, attr2: w.Attribute): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         const [savedAttr1, savedAttr2] = [object.stats[attr1], object.stats[attr2]];
-        object.stats[attr2] = savedAttr1;
-        object.stats[attr1] = savedAttr2;
+        object.stats[attr2] = savedAttr1!;
+        object.stats[attr1] = savedAttr2!;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object)!);
       });
     },

@@ -14,9 +14,9 @@ export interface Actions {
 }
 
 export interface GridConfig {
-  layout: LayoutParams,
-  origin: Point,
-  map: string,
+  layout: LayoutParams
+  origin: Point
+  map: string
   mapProps: any
 }
 

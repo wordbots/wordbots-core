@@ -35,7 +35,7 @@ interface SetsDispatchProps {
 type SetsProps = SetsStateProps & SetsDispatchProps & { history: History } & WithStyles;
 
 interface SetsState {
-  numDecksBySet?: Record<string, number>,
+  numDecksBySet?: Record<string, number>
   showHelpText: boolean
 }
 
@@ -78,7 +78,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
       padding: 10,
       '& button': {
         float: 'right',
-        padding: 2,
+        padding: 2
       },
       '& p': {
         marginTop: 0
@@ -148,8 +148,8 @@ class Sets extends React.Component<SetsProps, SetsState> {
               </FontIcon>
             </Button>
             <p><b>Sets</b> offer a way for you to play games of Wordbots in which both players use the same pool of cards.</p>
-            <p>You can take a popular set, make a deck from it, and play against other players who've made decks using that set.</p>
-            <p>If you're feeling creative, create your own set (using your own cards and/or cards you've found),<br />share it with your friends to challenge them, or publish it for the world to see!</p>
+            <p>You can take a popular set, make a deck from it, and play against other players who&rsquo;ve made decks using that set.</p>
+            <p>If you&rsquo;re feeling creative, create your own set (using your own cards and/or cards you&rsquo;ve found),<br />share it with your friends to challenge them, or publish it for the world to see!</p>
           </Paper>
         </div>}
 

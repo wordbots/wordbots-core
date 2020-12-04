@@ -18,7 +18,7 @@ declare const window: {
   Perf?: any
 };
 
-const rootElement: HTMLElement | null = document.getElementById('root');
+const rootElement: HTMLElement | null = document.querySelector('#root');
 const store: Store<any, any> = configureStore({
   version: window.VERSION
 });

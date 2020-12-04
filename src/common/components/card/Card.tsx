@@ -210,7 +210,7 @@ export default class Card extends React.Component<CardProps, CardState> {
                   borderRadius: 5 * (scale || 1),
                   userSelect: 'none',
                   cursor: 'pointer',
-                  border: source && source.type === 'builtin' ? '3px solid #888' : '3px solid #f44336',
+                  border: source?.type === 'builtin' ? '3px solid #888' : '3px solid #f44336',
                   position: 'relative',
                   ...(selected || targetable ? selectedStyle : {})
                 } as React.CSSProperties}

@@ -23,7 +23,7 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
       '&:hover': {
         background: red500,
         borderColor: red500,
-        color: '#eee',
+        color: '#eee'
       }
     },
     accomplished: {
@@ -34,7 +34,7 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
       right: 10,
       color: '#f44336 !important',
       ':hover > &': {
-        color: 'white !important',
+        color: 'white !important'
       }
     },
     number: {
@@ -45,7 +45,7 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
       marginBottom: -5,
       ':hover > &': {
         color: 'white',
-        WebkitTextStroke: 0,
+        WebkitTextStroke: 0
       }
     },
     text: {

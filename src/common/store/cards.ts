@@ -26,7 +26,7 @@ export const blueCoreCard: w.CardInGame = {
   ...coreCard,
   id: 'blueKernel',
   name: 'Blue Kernel',
-  img: 'core_blue',
+  img: 'core_blue'
 };
 
 export const orangeCoreCard: w.CardInGame = {
@@ -44,7 +44,7 @@ export const collection: w.CardInStore[] = [
   // We rely on the fact that the Object.assign() here actually modifies the all of the cards in coreSet in-place
   // (e.g. because we lookup cards by id and expect them to have 'builtin/' in the id).
   // TODO don't do that.
-  Object.assign(card, { id: `builtin/${card.id}`, source: 'builtin' })  // tslint:disable-line prefer-object-spread
+  Object.assign(card, { id: `builtin/${card.id}`, source: 'builtin' })  // eslint-disable-line  prefer-object-spread
 );
 
 export const builtinCardNames = collection.map((card) => card.name);

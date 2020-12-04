@@ -1,3 +1,4 @@
+/* eslint-disable import/namespace */  /* (For some reason the import/namespace rule is confused about 'moment'.) */
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { Pulse } from 'better-react-spinkit';

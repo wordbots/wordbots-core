@@ -54,7 +54,7 @@ export default class SortControls extends React.Component<SortControlsProps> {
   }
 
   private handleSetField = (field: 'criteria' | 'order') => (_e: React.SyntheticEvent<any>, _i: number, value: number) => {
-    const setter = this.props[`onSet${capitalize(field)}` as 'onSetCriteria' | 'onSetOrder'] as (value: number) => void;
+    const setter = this.props[`onSet${capitalize(field)}` as 'onSetCriteria' | 'onSetOrder'] as (val: number) => void;
     setter(value);
   }
 }

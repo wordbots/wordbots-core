@@ -70,7 +70,7 @@ export default class CardTable extends React.Component<CardGridOrTableProps> {
   }
 
   private renderCardRowStat(type: w.Attribute, stats: w.CardInStore['stats']): JSX.Element | string {
-    if (stats && stats[type]) {
+    if (stats?.[type]) {
       return (
         <CardStat
           noTooltip

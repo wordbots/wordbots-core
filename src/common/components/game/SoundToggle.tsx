@@ -7,11 +7,10 @@ import * as React from 'react';
 
 import { MAX_Z_INDEX } from '../../constants';
 import { isFlagSet, toggleFlag } from '../../util/browser';
-
 import Tooltip from '../Tooltip';
 
 interface SoundToggleBaseProps {
-  volume: number,
+  volume: number
   onSetVolume: (volume: number) => void
 }
 
@@ -53,7 +52,7 @@ class SoundToggle extends React.Component<SoundToggleProps, SoundToggleState> {
     },
     volumeSliderContainerVisible: {
       visibility: 'visible',
-      opacity: 1,
+      opacity: 1
     },
     volumeSliderContainerHidden: {
       visibility: 'hidden',

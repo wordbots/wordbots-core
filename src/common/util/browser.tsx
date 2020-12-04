@@ -2,8 +2,6 @@ import { History } from 'history';
 import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
-// tslint:disable no-typeof-undefined
-
 declare const window: {
   location: { pathname: string, hostname: string }
   process?: { title: string, env: { NODE_ENV: string, JEST_WORKER_ID?: string } }
@@ -17,17 +15,18 @@ if (inBrowser()) {
 
 export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
-    (window.process && window.process.title.includes('node')) ||
-    (window.process && window.process.title.includes('test')) ||
-    (window.process && window.process.env.JEST_WORKER_ID !== undefined));
+    (window.process?.title.includes('node')) ||
+    (window.process?.title.includes('test')) ||
+    (window.process?.env.JEST_WORKER_ID !== undefined));
 }
 
 export function onLocalhost(): boolean {
+  // eslint-disable-next-line compat/compat
   return inBrowser() && window.location.hostname === 'localhost';
 }
 
 export function inTest(): boolean {
-  return typeof window !== 'undefined' && window.process && window.process.env && window.process.env.NODE_ENV === 'test' || false;
+  return typeof window !== 'undefined' && window.process?.env?.NODE_ENV === 'test' || false;
 }
 
 export function logAnalytics(): void {
@@ -39,7 +38,7 @@ export function logAnalytics(): void {
 }
 
 export function transformHistory(history: History, func: (path: string) => string): void {
-  if (history && history.location) {
+  if (history?.location) {
     const currentPath = history.location.pathname;
     const newPath = func(currentPath === '/' ? '/home' : currentPath);
     history.push(newPath);
@@ -47,7 +46,7 @@ export function transformHistory(history: History, func: (path: string) => strin
 }
 
 export function getHash(history: History): string {
-  return history && history.location.hash.split('#')[1];
+  return history?.location.hash.split('#')[1];
 }
 
 export function setHash(history: History, hash: string): void {
@@ -63,7 +62,7 @@ export function toggleFlag(flag: string): void {
 }
 
 export function getGameAreaNode(): HTMLElement {
-  return document.getElementById('gameArea') || document.body;
+  return document.querySelector('#gameArea') || document.body;
 }
 
 export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {

@@ -39,7 +39,7 @@ export class GameFormat {
     if (isString(encodedFormat)) {
       format = BUILTIN_FORMATS.find((m) => m.name === encodedFormat);
     } else if (encodedFormat && encodedFormat._type === 'set') {
-      format = new SetFormat((encodedFormat as w.SetFormat).set);
+      format = new SetFormat((encodedFormat ).set);
     }
 
     if (!format) {
@@ -86,9 +86,7 @@ export const NormalGameFormat = new (class extends GameFormat {
   public displayName = 'Anything Goes';
   public description = 'Each player has a 30-card deck. No restrictions on cards.';
 
-  public isDeckValid = (deck: w.DeckInGame): boolean => {
-    return deckHasNCards(deck, DECK_SIZE);
-  }
+  public isDeckValid = (deck: w.DeckInGame): boolean => deckHasNCards(deck, DECK_SIZE)
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,

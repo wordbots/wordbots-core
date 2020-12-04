@@ -102,4 +102,4 @@ const actions = [
   "(function () { actions['modifyAttribute'](targets['conditionOn'](targets['choose'](cardsInDiscardPile(targets['itP'](), 'anycard')), function () { return globalConditions['collectionExists'](targets['allPlayers'](), (function (x) { return x < attributeValue(objectsMatchingConditions([], []), 'health'); })); }), 'health', function (x) { return x + count(cardsInDiscardPile(targets['self'](), 'structure')); }); })"
 ];
 
-export default actions;  // tslint:disable-line export-name
+export default actions;

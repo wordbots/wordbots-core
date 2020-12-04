@@ -45,13 +45,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
   }
 
   return {
-    all: <T extends w.Collection>(collection: T): T => {
-      return collection;
-    },
+    all: <T extends w.Collection>(collection: T): T => collection,
 
-    allPlayers: (): w.PlayerCollection => {
-      return {type: 'players', entries: [currentPlayer(state), opponentPlayer(state)]};
-    },
+    allPlayers: (): w.PlayerCollection => ({type: 'players', entries: [currentPlayer(state), opponentPlayer(state)]}),
 
     // Note: Unlike other target functions, choose() can also return a HexCollection
     //       (if the chosen hex does not contain an object.)
@@ -128,22 +124,22 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    controllerOf: (objects: w.ObjectCollection): w.PlayerCollection => {
+    controllerOf: (objects: w.ObjectCollection): w.PlayerCollection => 
       // Assume that only one object is ever passed in here.
-      return {
+       ({
         type: 'players',
         entries: (objects.entries.length === 1) ? compact([ownerOf(state, objects.entries[0])!]) : []
-      };
-    },
+      })
+    ,
 
-    copyOf: (collection: w.ObjectCollection): w.CardInHandCollection => {
+    copyOf: (collection: w.ObjectCollection): w.CardInHandCollection => 
       // Assume that exactly one object is ever passed in here.
       // TODO Also support copyOf on CardInHandCollection.
-      return {
+       ({
         type: 'cards',
         entries: g.isObjectCollection(collection) ? [collection.entries[0].card] : []
-      };
-    },
+      })
+    ,
 
     generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}, name?: string): w.CardInHandCollection => {
       const card: w.CardInGame = {
@@ -162,18 +158,16 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     },
 
     // Currently salient object.
-    it: (): w.ObjectCollection | w.CardInHandCollection => {
+    it: (): w.ObjectCollection | w.CardInHandCollection => 
       /* console.log({
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null
       }); */
-      return it();
-    },
+       it()
+    ,
 
     // Currently salient player.
-    itP: (): w.PlayerCollection => {
-      return itP();
-    },
+    itP: (): w.PlayerCollection => itP(),
 
     opponent: (): w.PlayerCollection => {
       if (currentObject) {
@@ -246,8 +240,6 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    thisRobot: (): w.ObjectCollection => {
-      return {type: 'objects', entries: [currentObject!]};
-    }
+    thisRobot: (): w.ObjectCollection => ({type: 'objects', entries: [currentObject!]})
   };
 }

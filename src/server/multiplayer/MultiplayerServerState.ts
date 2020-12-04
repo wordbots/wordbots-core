@@ -14,7 +14,7 @@ import { guestUID, guestUsername } from '../../common/util/multiplayer';
 import * as m from './multiplayer';
 import { getPeopleInGame, withoutClient } from './util';
 
-/* tslint:disable:no-console */
+/* eslint-disable no-console */
 export default class MultiplayerServerState {
   private state: m.ServerState = {
     connections: {},  // map of { clientID: websocket }

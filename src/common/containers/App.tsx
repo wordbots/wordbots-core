@@ -8,7 +8,7 @@ import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { AnyAction, Dispatch } from 'redux';
-import 'whatwg-fetch';
+import 'whatwg-fetch';  // eslint-disable-line import/no-unassigned-import
 
 import * as actions from '../actions/global';
 import DictionaryDialog from '../components/cards/DictionaryDialog';
@@ -70,7 +70,7 @@ function mapStateToProps(state: w.State): AppStateProps {
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
     renderId: state.global.renderId,
-    uid: state.global.user ? state.global.user.uid : null,
+    uid: state.global.user ? state.global.user.uid : null
   };
 }
 
@@ -222,7 +222,7 @@ class App extends React.Component<AppProps, AppState> {
           textAlign: 'center',
           fontFamily: 'Carter One',
           fontSize: '2em',
-          color: '#999',
+          color: '#999'
         }}
       >
         Connecting to server ...

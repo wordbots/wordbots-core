@@ -10,10 +10,10 @@ import { GameFormat } from '../../util/formats';
 import GameRow from './GameRow';
 
 export interface DisplayedGame {
-  id: string,
-  name: string,
-  format: w.Format,
-  players: m.ClientID[],
+  id: string
+  name: string
+  format: w.Format
+  players: m.ClientID[]
   options: w.GameOptions
   spectators?: m.ClientID[]
 }

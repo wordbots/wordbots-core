@@ -13,7 +13,7 @@ interface TimerProps {
 }
 
 interface TimerState {
-  interval?: NodeJS.Timeout,
+  interval?: NodeJS.Timeout
   timer: string
   timerStyle: React.CSSProperties
 }
@@ -36,6 +36,7 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
     }, 1000);
 
     this.resetTimer();
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ interval });
   }
 

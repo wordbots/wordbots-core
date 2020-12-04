@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, Paper, } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, Paper } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
@@ -27,9 +27,9 @@ interface SetSummaryBaseProps {
 }
 
 interface SetSummaryState {
-  isCardListExpanded: boolean,
-  isDeleteConfirmationOpen: boolean,
-  isPermalinkCopied: boolean,
+  isCardListExpanded: boolean
+  isDeleteConfirmationOpen: boolean
+  isPermalinkCopied: boolean
   isPublishConfirmDialogOpen: boolean
 }
 

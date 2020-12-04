@@ -63,14 +63,12 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
 
   private renderResults = () => {
     const { classes } = this.props;
-    return this.resultsByFormat.map(({ format, numWins, numLosses }) => {
-      return (
+    return this.resultsByFormat.map(({ format, numWins, numLosses }) => (
         <div key={format.name} className={classes.playerInfoItem} style={{ margin: 13 }}>
           <div className={classes.playerInfoKey}>{format.rendered()}</div>
           <div className={classes.playerInfoValue}>{numWins} W • {numLosses} L • {(numWins / (numWins + numLosses) * 100).toFixed(1)}%</div>
         </div>
-      );
-    });
+      ));
   }
 }
 

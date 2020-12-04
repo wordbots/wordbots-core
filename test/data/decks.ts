@@ -6,7 +6,7 @@ import { instantiateCard, unpackDeck } from '../../src/common/util/cards';
 
 import { attackBotCard, cantripCard, instantKernelKillerAbilityCard } from './cards';
 
-export function constantDeck(card: w.CardInStore, deckSize: number = 30): w.DeckInGame {
+export function constantDeck(card: w.CardInStore, deckSize = 30): w.DeckInGame {
   return {
     id: card.id,
     authorId: '',

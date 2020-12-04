@@ -6,11 +6,11 @@ import * as React from 'react';
 import { TUTORIAL_INTRO_Z_INDEX } from '../../../common/constants';
 
 interface TutorialIntroScreenProps {
-  onClickEndGame: () => void;
+  onClickEndGame: () => void
 }
 
 interface TutorialIntroScreenState {
-  open: boolean;
+  open: boolean
 }
 
 class TutorialIntroScreen extends React.Component<TutorialIntroScreenProps & WithStyles, TutorialIntroScreenState> {

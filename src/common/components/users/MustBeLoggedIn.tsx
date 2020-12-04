@@ -1,4 +1,4 @@
-import { compact, isArray, pick } from 'lodash';
+import { compact, isArray, isObject, pick } from 'lodash';
 import * as React from 'react';
 
 import Tooltip from '../Tooltip';
@@ -33,13 +33,13 @@ export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps>
   }
 
   private renderDisabledChild(child: React.ReactChild): React.ReactChild {
-    if (!child || typeof child !== 'object') {
+    if (!child || !isObject(child)) {
       return child;
     }
 
     const propagatedStyleKeys = ['float', 'width', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'];
 
-    const childStyle = child.props.style || {};
+    const childStyle = (child as React.ReactElement<any>).props.style || {};
     const parentStyle = pick(childStyle, propagatedStyleKeys);
     const disabledChildstyle = {
       ...childStyle,
@@ -51,7 +51,7 @@ export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps>
     return (
       <Tooltip text="You must be logged in to perform this action.">
         <div style={parentStyle}>
-          {React.cloneElement(child, { disabled: true, style: disabledChildstyle })}
+          {React.cloneElement(child as React.ReactElement<any>, { disabled: true, style: disabledChildstyle })}
         </div>
       </Tooltip>
     );

@@ -82,7 +82,7 @@ export function aiResponse(state: State): State {
   } else if (cards.length === 0) {
     return moveARobot(state);
   } else {
-    return Math.random() < 0.50 ? playACard(state) : moveARobot(state);
+    return Math.random() < 0.5 ? playACard(state) : moveARobot(state);
   }
 }
 
@@ -128,8 +128,8 @@ function moveARobot(state: State): State {
     } else if (targetHexIds.length > 0) {
       // Prefer hexes closer to the orange kernel.
       const hexDistribution: w.HexId[] = targetHexIds.reduce((acc: w.HexId[], hex: w.HexId) =>
-        acc.concat(Array(priority(hex)).fill(hex)
-      ), Array<w.HexId>());
+        acc.concat(new Array(priority(hex)).fill(hex)
+      ), new Array<w.HexId>());
       const targetHexId: w.HexId = sample(hexDistribution)!;
 
       if (attackHexIds.includes(targetHexId)) {

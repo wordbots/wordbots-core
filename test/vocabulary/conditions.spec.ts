@@ -5,7 +5,6 @@ import { attack, event, getDefaultState, moveRobot, newTurn, objectsOnBoardOfTyp
 
 describe('[vocabulary.conditions]', () => {
   describe('[properties]', () => {
-    // tslint:disable-next-line mocha-no-side-effect-code
     const initialStateSetup = {
       orange: {
         '0,0,0': cards.oneBotCard,

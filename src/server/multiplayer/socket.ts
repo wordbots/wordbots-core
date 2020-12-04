@@ -1,4 +1,5 @@
 import { Server } from 'http';
+
 import { noop, truncate } from 'lodash';
 import * as WebSocket from 'ws';
 
@@ -13,8 +14,7 @@ import { getPeopleInGame } from './util';
 const MAX_DEBUG_MSG_LENGTH = 500;
 const QUEUE_INTERVAL_MSECS = 500;
 
-/* tslint:disable:no-console */
-// tslint:disable-next-line export-name
+/* eslint-disable no-console */
 export default function launchWebsocketServer(server: Server, path: string): void {
   const state = new MultiplayerServerState();
 
@@ -34,7 +34,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       setInterval(performMatchmaking, QUEUE_INTERVAL_MSECS);
     } else {
-      console.error("WebSocket server failed to start");
+      console.error('WebSocket server failed to start');
     }
   }
 
@@ -47,15 +47,15 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     socket.on('message', (msg: string) => {
       try {
         onMessage(clientID, msg);
-      } catch (ex) {
-        console.error(ex);
+      } catch (error) {
+        console.error(error);
       }
     });
     socket.on('close', () => {
       try {
         onDisconnect(clientID);
-      } catch (ex) {
-        console.error(ex);
+      } catch (error) {
+        console.error(error);
       }
     });
     socket.on('error', noop); // Probably a disconnect (throws an error in ws 3.3.3+).
@@ -87,7 +87,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = {...payload, sender: clientID};
-      (inGame.length ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
+      (inGame.length > 0 ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{type, payload}, clientID]);
@@ -107,24 +107,24 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.disconnectClient(clientID);
   }
 
-  function sendMessage(type: string, payload: object = {}, recipientIDs: m.ClientID[] | null = null): void {
+  function sendMessage(type: string, payload: Record<string, any> = {}, recipientIDs: m.ClientID[] | null = null): void {
     const message = JSON.stringify({type, payload});
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
         console.log(`> ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})}`);
-      } catch (err) {
-        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${err.message}`);
+      } catch (error) {
+        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${error.message}`);
       }
     });
   }
 
-  function sendMessageInLobby(clientID: m.ClientID, type: string, payload: object = {}): void {
+  function sendMessageInLobby(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
     console.log(`${clientID} broadcast a message to the lobby: ${type} ${JSON.stringify(payload)}`);
     sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
-  function sendMessageInGame(clientID: m.ClientID, type: string, payload: object = {}): void {
+  function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
     const opponentIds = state.getAllOpponents(clientID);
     if (opponentIds.length > 0) {
       console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${JSON.stringify(payload)}`);

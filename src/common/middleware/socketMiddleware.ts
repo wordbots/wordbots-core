@@ -16,13 +16,13 @@ interface SocketMiddlewareOpts {
 function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware {
   return (store: MiddlewareAPI<Dispatch<AnyAction>, w.State>) => {
     let socket: WebSocket;
-    let keepaliveNeeded: boolean = false;
+    let keepaliveNeeded = false;
     let user: fb.User | undefined;
     let sendQueue: AnyAction[] = [];
 
     function logSocketMsg(msg: string): void {
       if (LOG_SOCKET_IO) {
-        console.log(msg); // tslint:disable-line no-console
+        console.log(msg); // eslint-disable-line  no-console
       }
     }
 
@@ -51,9 +51,9 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
 
       const protocol = window.location.protocol.includes('https') ? 'wss' : 'ws';
       socket = new WebSocket(`${protocol}://${window.location.host}/socket`);
-      socket.onopen = connected;
+      socket.addEventListener('open', connected);
       socket.onclose = disconnected;
-      socket.onmessage = receive;
+      socket.addEventListener('message', receive);
     }
 
     function connected(): void {

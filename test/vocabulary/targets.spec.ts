@@ -22,12 +22,12 @@ describe('[vocabulary.targets]', () => {
     });
   });
 
-  describe('that', () => {
+  // eslint-disable-next-line lodash/prefer-noop
+  xdescribe('that', () => {
     // TODO: "Whenever this robot attacks a robot, destroy that robot."
   });
 
   describe('they', () => {
-    // tslint:disable-next-line mocha-no-side-effect-code
     const initialStateSetup = {
       orange: { '0,0,0': cards.oneBotCard },  // 1/2/2
       blue: { '0,-1,1': cards.oneBotCard }  // 1/2/2

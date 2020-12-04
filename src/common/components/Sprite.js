@@ -1,7 +1,5 @@
 // Adapted from https://github.com/not-surt/spritegen .
 
-/* eslint-disable no-loops/no-loops */
-
 import * as React from 'react';
 import { number, string } from 'prop-types';
 import { isUndefined } from 'lodash';
@@ -115,7 +113,7 @@ export default class Sprite extends React.PureComponent {
 
     function getPixel(data, x, y) {
       if (x >= 0 && x < data.width && y >= 0 && y < data.height) {
-        const colour = new Array();
+        const colour = [];
         arraycopy(colour, 0, data.data, indexFromCoord(data.width * PIXEL_SIZE, x * PIXEL_SIZE, y), PIXEL_SIZE);
         return colour;
       }
@@ -291,7 +289,7 @@ export default class Sprite extends React.PureComponent {
     }
 
     const falloffs = {
-      constant: { label: 'Constant', func: function (x) {
+      constant: { label: 'Constant', func: function (_x) {
         return 1;
       }},
       linear: { label: 'Linear', func: function (x) {
@@ -331,7 +329,7 @@ export default class Sprite extends React.PureComponent {
     const neighbourOffsets = [[-1, -1], [0, -1], [+1, -1], [+1, 0], [+1, +1], [0, +1], [-1, +1], [-1, 0]];
 
     function getNeighbours(data, x, y) {
-      const neighbours = new Array();
+      const neighbours = [];
       for(let i = 0; i < 8; i++) {
         neighbours[i] = getPixel(data, x + neighbourOffsets[i][0], y + neighbourOffsets[i][1]);
       }

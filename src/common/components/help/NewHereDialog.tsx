@@ -16,7 +16,7 @@ interface NewHereDialogProps {
 }
 
 interface NewHereDialogState {
-  achievements: string[],
+  achievements: string[]
   games: w.SavedGame[]
 }
 
@@ -26,6 +26,11 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
     games: []
   };
 
+  public constructor(props: NewHereDialogProps) {
+    super(props);
+    this.initializeAchievements(props.uid);
+  }
+
   get cards(): w.CardInStore[] {
     const { collection, uid } = this.props;
     return collection.cards.filter((c) => c.metadata.source.uid === uid);
@@ -34,13 +39,6 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
   get decks(): w.DeckInStore[] {
     const { collection, uid } = this.props;
     return collection.decks.filter((d) => d.authorId === uid);
-  }
-
-  public async componentDidMount(): Promise<void> {
-    const { uid } = this.props;
-    const achievements: string[] = await getAchievements();
-    const games = uid ? await getRecentGamesByUserId(uid) : [];
-    this.setState({ achievements, games });
   }
 
   public render(): JSX.Element {
@@ -58,7 +56,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             style={{ float: 'left', padding: 5, fontSize: '0.85em' }}
             onClick={this.dontShowAgain}
           >
-            <a className="underline">Don't show this dialog again</a>
+            <a className="underline">Don&rsquo;t show this dialog again</a>
           </span>,
           <RaisedButton
             primary
@@ -70,7 +68,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
       >
         <div>
           <p>Welcome! <b>Wordbots</b> is a new kind of card game, where players <i>– like you –</i> get to write the cards.</p>
-          <p>There's a lot to take in, so here's the order we'd suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
+          <p>There&rsquo;s a lot to take in, so here&rsquo;s the order we&rsquo;d suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
           {!uid && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
         </div>
 
@@ -113,12 +111,12 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             <tr>
               <td>
                 <NewHereLink idx={7} href="/decks" accomplished={this.decks.filter((d) => !d.setId).length > 0}>
-                  Build a deck, using a combination of your own, built-in, and/or other players' cards.
+                  Build a deck, using a combination of your own, built-in, and/or other players&rsquo; cards.
                 </NewHereLink>
               </td>
               <td>
                 <NewHereLink idx={8} href="/play//host" accomplished={games.length >= 2}>
-                  Challenge other players with your deck, in either the "Anything&nbsp;Goes" or "Shared&nbsp;Deck" format.
+                  Challenge other players with your deck, in either the &ldquo;Anything&nbsp;Goes&rdquo; or &ldquo;Shared&nbsp;Deck&rdquo; format.
                 </NewHereLink>
               </td>
               <td>
@@ -132,6 +130,12 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
         </table>
       </RouterDialog>
     );
+  }
+
+  private initializeAchievements = async (uid: string | null) => {
+    const achievements: string[] = await getAchievements();
+    const games = uid ? await getRecentGamesByUserId(uid) : [];
+    this.setState({ achievements, games });
   }
 
   private handleClose = () => { RouterDialog.closeDialog(this.props.history); };

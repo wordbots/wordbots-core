@@ -38,9 +38,7 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
       return ((hexId, _obj) => neighborHexes.includes(hexId));
     },
 
-    attributeComparison: (attr: w.Attribute, comp: (attrValue: number) => boolean): ObjectOrCardCondition => {
-      return ((_hexId, obj) => comp(getAttribute(obj, attr)!));
-    },
+    attributeComparison: (attr: w.Attribute, comp: (attrValue: number) => boolean): ObjectOrCardCondition => ((_hexId, obj) => comp(getAttribute(obj, attr)!)),
 
     controlledBy: (players: w.PlayerCollection): ObjectCondition => {
       const player = players.entries[0]; // Unpack player target.
@@ -57,17 +55,11 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
     },
 
     // Only used interally, not exposed by parser.
-    hasId: (id: w.HexId): ObjectCondition => {
-      return ((_hexId, obj) => obj.id === id);
-    },
+    hasId: (id: w.HexId): ObjectCondition => ((_hexId, obj) => obj.id === id),
 
-    hasProperty: (property: string): ObjectCondition => {
-      return ((_hexId, obj) => objectHasProperty(obj, property));
-    },
+    hasProperty: (property: string): ObjectCondition => ((_hexId, obj) => objectHasProperty(obj, property)),
 
-    unoccupied: (): ObjectCondition => {
-      return ((_hexId, obj) => !obj);
-    },
+    unoccupied: (): ObjectCondition => ((_hexId, obj) => !obj),
 
     withinDistanceOf: (distance: number, targets: w.ObjectCollection | w.HexCollection): ObjectCondition => {
       const targetHexIds: w.HexId[] = targets.type === 'objects' ? targets.entries.map((o) => getHex(state, o)!) : targets.entries;
@@ -84,16 +76,10 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
 // They're used in if-expressions.
 export function globalConditions(_state: w.GameState): Record<string, w.Returns<boolean>> {
   return {
-    collectionCountComparison: (collection: w.Collection, comp: (count: number) => boolean) => {
-      return comp(collection.entries.length);
-    },
+    collectionCountComparison: (collection: w.Collection, comp: (count: number) => boolean) => comp(collection.entries.length),
 
-    collectionExists: (collection: w.Collection) => {
-      return collection.entries.length > 0;
-    },
+    collectionExists: (collection: w.Collection) => collection.entries.length > 0,
 
-    targetHasProperty: (target: w.ObjectCollection, property: string) => {
-      return target.entries.every((obj) => objectHasProperty(obj, property));
-    }
+    targetHasProperty: (target: w.ObjectCollection, property: string) => target.entries.every((obj) => objectHasProperty(obj, property))
   };
 }

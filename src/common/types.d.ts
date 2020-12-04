@@ -30,6 +30,7 @@ export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
 export type PerPlayer<T> = Record<PlayerColor, T>;
 export type Returns<T> = (...args: any[]) => T;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type StringRepresentationOf<T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
 // Library types
@@ -38,7 +39,7 @@ export type ActionType = string;
 export type ActionPayload = any;
 
 export interface Action {
-  type: ActionType,
+  type: ActionType
   payload?: ActionPayload
 }
 
@@ -142,7 +143,7 @@ export interface TutorialStepInScript {
   highlight?: boolean
   responses?: Action[]
   tooltip: {
-    backButton?: React.ReactElement<any>,
+    backButton?: React.ReactElement<any>
     card?: string
     hex?: HexId
     location?: string
@@ -152,11 +153,11 @@ export interface TutorialStepInScript {
 }
 
 export interface SavedGame { // Interface for games stored in Firebase.
-  id: string,
+  id: string
   players: { [ color: string ]: m.ClientID | null }
-  format: Format,
-  type: string, // TODO more precise
-  winner: GameWinner,
+  format: Format
+  type: string // TODO more precise
+  winner: GameWinner
   timestamp: timestamp
 }
 
@@ -206,15 +207,15 @@ export interface CreatorState {
 export interface GameState {
   actionLog: LoggedAction[]
   attack: Attack | null
-  currentTurn: PlayerColor,
+  currentTurn: PlayerColor
   eventQueue: CardInGame[]
   gameFormat: Format
   memory: Record<string, any>
   options: GameOptions
-  player: PlayerColor | 'neither',
+  player: PlayerColor | 'neither'
   players: PerPlayer<PlayerInGameState>
   practice: boolean
-  rng: () => number,
+  rng: () => number
   sandbox: boolean
   sfxQueue: string[]
   started: boolean
@@ -301,10 +302,10 @@ export interface CurrentTarget {
 
 // Object is not a valid type name, but we want to export `types.Object`,
 // so define it with the name `_Object` here and export it as `Object`.
-interface _Object { // tslint:disable-line:class-name
+interface _Object { // eslint-disable-line @typescript-eslint/naming-convention
   id: string
-  type: CardType,
-  card: CardInGame,
+  type: CardType
+  card: CardInGame
   stats: {
     attack?: number
     health: number

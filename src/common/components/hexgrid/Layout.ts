@@ -54,7 +54,7 @@ class Layout {
     const corners: Point[] = [];
     const center: Point = new Point(0, 0);
 
-    Array.from(new Array(6), (_x, i) => {
+    [...new Array(6)].map((_x, i) => {
       const offset = this.getPointOffset(i);
       const point = new Point(center.x + offset.x, center.y + offset.y);
       corners.push(point);

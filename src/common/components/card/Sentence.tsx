@@ -23,7 +23,7 @@ export default class Sentence extends React.Component<SentenceProps> {
   public render(): JSX.Element | null {
     const { text, result } = this.props;
     const keywords = keywordsInSentence(text, true);
-    const color = (result && result.js) ? 'green' : ((result && result.error) ? 'red' : 'black');
+    const color = result?.js ? 'green' : (result?.error ? 'red' : 'black');
 
     if (/\S/.test(text)) {
       const phrases = text.trim().split(',');

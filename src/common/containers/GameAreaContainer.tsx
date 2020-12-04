@@ -53,7 +53,7 @@ interface GameAreaDispatchProps {
 export type GameAreaContainerProps = GameAreaStateProps & GameAreaDispatchProps & RouteComponentProps;
 
 interface GameAreaContainerState {
-  interval?: NodeJS.Timeout,
+  interval?: NodeJS.Timeout
   message: string | null
 }
 
@@ -378,7 +378,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     this.handleEndGame();
     // We can't just do history.goBack() because we may have gotten here
     // from outside of Wordbots and we don't want to leave the site.
-    if (history.location.state && history.location.state.previous) {
+    if (history.location.state?.previous) {
       history.push(history.location.state.previous.pathname);
     } else {
       history.push('/play');

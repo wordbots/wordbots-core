@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as w from '../../src/common/types';
 import { allObjectsOnBoard, executeCmd } from '../../src/common/util/game';
 import { getDefaultState } from '../testHelpers';
@@ -26,8 +27,8 @@ describe('Randomly generated actions', () => {
         executeCmd({...state, memory: { target: currentObjTarget }}, action, currentObj);
         numSuccessful++;
       } catch (error) {
-        console.log(action);  // tslint:disable-line no-console
-        console.error(error);  // tslint:disable-line no-console
+        console.log(action);
+        console.error(error);
         // throw error;
       }
     });

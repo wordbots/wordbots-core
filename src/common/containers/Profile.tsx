@@ -30,10 +30,10 @@ interface ProfileState {
   recentGames?: w.SavedGame[]
   playerNames?: Record<string, string>
   playerInfo?: {
-    cardsCreated: number,
-    decksCreated: number,
-    setsCreated: number,
-    gamesPlayed: number,
+    cardsCreated: number
+    decksCreated: number
+    setsCreated: number
+    gamesPlayed: number
     favoriteOpponent?: React.ReactNode
   }
 }
@@ -63,9 +63,9 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     this.loadProfileData();
   }
 
-  public async componentDidUpdate(nextProps: ProfileProps): Promise<void> {
+  public async componentDidUpdate(prevProps: ProfileProps): Promise<void> {
     // Did the userId change?
-    if (nextProps.match.params.userId !== this.props.match.params.userId) {
+    if (prevProps.match.params.userId !== this.props.match.params.userId) {
       this.setState(({
         userId: undefined,
         userName: undefined,
@@ -127,9 +127,9 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       const recentGames = await getRecentGamesByUserId(userId);
       this.loadRecentGamesData(recentGames);
       this.loadPlayerInfoData(userId, recentGames);
-    } catch (err) {
+    } catch (error) {
       // Most likely reason is that userId is undefined or that user doesn't exist.
-      console.error(err); // tslint:disable-line no-console
+      console.error(error); // eslint-disable-line  no-console
       this.props.history.push('/');
     }
   }

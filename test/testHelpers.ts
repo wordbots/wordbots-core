@@ -21,7 +21,7 @@ import {
 import { attackBotCard } from './data/cards';
 
 interface Target {
-  hex?: w.HexId,
+  hex?: w.HexId
   card?: w.CardInStore | number
 }
 
@@ -116,13 +116,13 @@ export function playObject(
   player.hand = [card].concat(player.hand as w.CardInStore[]);
   player.energy.available += card.cost;
 
-  if (target && target.hex) {
+  if (target?.hex) {
     return game(state, [
       gameActions.setSelectedCard(0, playerName),
       gameActions.placeCard(hex, 0),
       gameActions.setSelectedTile(target.hex, playerName)
     ]);
-  } else if (target && target.card) {
+  } else if (target?.card) {
     const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name])! : (target.card as number);
     return game(state, [
       gameActions.setSelectedCard(0, playerName),
@@ -175,7 +175,7 @@ export function playEvent(
   return state;
 }
 
-export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, asNewTurn: boolean = false): w.GameState {
+export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, asNewTurn = false): w.GameState {
   if (asNewTurn) {
     const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex])!.name;
     state = newTurn(state, owner);
@@ -208,14 +208,14 @@ export function attack(state: w.GameState, source: w.HexId, target: w.HexId, asN
   ]);
 }
 
-export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, target: Target | null = null, asNewTurn: boolean = false): w.GameState {
+export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, target: Target | null = null, asNewTurn = false): w.GameState {
   const player = ownerOf(state, allObjectsOnBoard(state)[hex])!;
 
   if (asNewTurn) {
     state = newTurn(state, player.name);
   }
 
-  if (target && target.hex) {
+  if (target?.hex) {
     return game(state, [
       gameActions.setSelectedTile(hex, player.name),
       gameActions.activateObject(abilityIdx),

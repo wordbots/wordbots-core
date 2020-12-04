@@ -16,7 +16,6 @@ describe.skip('Built-in cards', () => {
     console.error = noop;
   });
 
-  // tslint:disable-next-line mocha-no-side-effect-code
   collection.forEach((card) => {
     const { abilities, command, name, text } = card;
 

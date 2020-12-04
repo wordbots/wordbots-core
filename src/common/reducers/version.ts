@@ -1,5 +1,5 @@
 import * as w from '../types';
 
-export default function version(state: string = '', _: w.Action): string {
+export default function version(state = '', _: w.Action): string {
   return state;
 }

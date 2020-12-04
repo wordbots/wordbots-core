@@ -1,5 +1,4 @@
+// eslint-disable-next-line import/no-unassigned-import
 require('./server');
 
-require.extensions['.png'] = () => {
-  return null;
-};
+require.extensions['.png'] = () => null;

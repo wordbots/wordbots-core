@@ -23,7 +23,7 @@ import { id as generateId } from '../util/common';
 import { Deck } from './Deck';
 
 interface NewSetStateProps {
-  id: string | null,
+  id: string | null
   setBeingEdited: w.Set | null
   allCards: w.CardInStore[]
   user: fb.User | null
@@ -91,7 +91,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
 
     return (
       <div>
-        <Helmet title={setBeingEdited ? "Editing Set" : "Creating Set"} />
+        <Helmet title={setBeingEdited ? 'Editing Set' : 'Creating Set'} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>

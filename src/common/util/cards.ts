@@ -67,8 +67,8 @@ export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame 
 export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
   newCards: {
-    deck?: w.PossiblyObfuscatedCard[],
-    hand?: w.PossiblyObfuscatedCard[],
+    deck?: w.PossiblyObfuscatedCard[]
+    hand?: w.PossiblyObfuscatedCard[]
     discardPile?: w.CardInGame[]
   } = {}
 ): w.PlayerInGameState {
@@ -172,9 +172,9 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 
     (c: w.CardInStore) => c.cost.toString(36),
     (c: w.CardInStore) => c.name.toLowerCase(),
     (c: w.CardInStore) => typeToString(c.type),
-    (c: w.CardInStore) => (c.stats && c.stats.attack || 0).toString(36),
-    (c: w.CardInStore) => (c.stats && c.stats.health || 0).toString(36),
-    (c: w.CardInStore) => (c.stats && c.stats.speed || 0).toString(36)
+    (c: w.CardInStore) => (c.stats?.attack || 0).toString(36),
+    (c: w.CardInStore) => (c.stats?.health || 0).toString(36),
+    (c: w.CardInStore) => (c.stats?.speed || 0).toString(36)
   ];
 
   // Sorting functions for card collections:
@@ -240,9 +240,9 @@ function parse(
           indexParsedSentence(sentence, json.tokens, json.js);
         }
       })
-      .catch((err) => {
+      .catch((error) => {
         // TODO better error handling
-        throw new Error((`Parser error: ${err}`));
+        throw new Error((`Parser error: ${error}`));
       });
   });
 }
@@ -253,7 +253,7 @@ export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 // TODO Use parseBatch() for all parsing?
 export function parseBatch(
   sentences: string[],
-  mode: w.ParserMode,
+  mode: w.ParserMode
 ): Promise<Array<{ sentence: string, result: w.ParseResult }>> {
   return fetch(`${PARSER_URL}/parse`, {
     method: 'POST',
@@ -264,16 +264,16 @@ export function parseBatch(
     .then((results) => (
       (results as Array<[string, w.ParseResult]>).map(([sentence, result]) => ({ sentence, result }))
     ))
-    .catch((err) => {
+    .catch((error) => {
       // TODO better error handling
-      throw new Error((`Parser error: ${err}`));
+      throw new Error((`Parser error: ${error}`));
     });
 }
 
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.
 // Used only by cardsFromJson() and in integration tests.
-export function parseCard(card: w.CardInStore, callback: (card: w.CardInStore, parseResult: string[]) => any): void {
+export function parseCard(card: w.CardInStore, callback: (c: w.CardInStore, parseResult: string[]) => any): void {
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text || '');
   const parseResults: string[] = [];
@@ -363,8 +363,8 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
       metadata: {
         ...card.metadata,
         ownerId: cardSourceForCurrentUser().uid,
-        source: (card.metadata && card.metadata.source) || cardSourceForCurrentUser(),
-        created: (card.metadata && card.metadata.created) || Date.now(),
+        source: (card.metadata?.source) || cardSourceForCurrentUser(),
+        created: (card.metadata?.created) || Date.now(),
         updated: Date.now(),
         importedFromJson: Date.now()
       }
@@ -385,15 +385,15 @@ export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource
     }
   }
 
-  const source: w.CardSource = (card.metadata && card.metadata.source) || normalizeSource((card as any).source);
+  const source: w.CardSource = card.metadata?.source || normalizeSource((card as any).source);
   const metadata: w.CardMetadata = {
     // Build metadata field for older cards without it
     ...card.metadata,
-    ownerId: (card.metadata && card.metadata.ownerId) || (explicitSource && explicitSource.uid) || source.uid,
+    ownerId: card.metadata?.ownerId || explicitSource?.uid || source.uid,
     source,
-    updated: (card.metadata && card.metadata.updated) || (card as any).timestamp,
-    duplicatedFrom: (card.metadata && card.metadata.duplicatedFrom) || (source as any).duplicatedFrom,
-    isPrivate: (card.metadata && card.metadata.isPrivate) || false
+    updated: (card.metadata?.updated) || (card as any).timestamp,
+    duplicatedFrom: (card.metadata?.duplicatedFrom) || (source as any).duplicatedFrom,
+    isPrivate: (card.metadata?.isPrivate) || false
   };
 
   return { ...card, metadata };
@@ -436,8 +436,8 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
 export function loadParserLexicon(): Promise<{ [token: string]: any }> {
   return fetch(`${PARSER_URL}/lexicon?format=json`)
     .then((response) => response.json())
-    .catch((err) => {
+    .catch((error) => {
       // TODO better error handling
-      throw new Error((`Error retrieving lexicon: ${err}`));
+      throw new Error((`Error retrieving lexicon: ${error}`));
     });
 }

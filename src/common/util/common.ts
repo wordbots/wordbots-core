@@ -18,8 +18,8 @@ export function hashCode(s: string): number {
   let value = 0;
   for (let i = 0; i < s.length; i++) {
     const char = s.charCodeAt(i);
-    value = ((value << 5) - value) + char;  // tslint:disable-line:no-bitwise
-    value = value & value;  // tslint:disable-line:no-bitwise
+    value = ((value << 5) - value) + char;  // eslint-disable-line no-bitwise
+    value = value & value;  // eslint-disable-line no-bitwise
   }
   return Math.abs(value);
 }
@@ -34,7 +34,7 @@ export function compareCertainKeys(obj1: any, obj2: any, keys: string[]): boolea
 }
 
 export function clamp(func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>): (x: any) => number {
-  return ((x) => _clamp((isString(func) ? eval(func) : func)(x), 0, 99));  // tslint:disable-line no-eval
+  return ((x) => _clamp((isString(func) ? eval(func) : func)(x), 0, 99));  // eslint-disable-line  no-eval
 }
 
 export function applyFuncToField(obj: any, func: ((x: any) => number) | w.StringRepresentationOf<(x: any) => number>, field: string): any {
@@ -51,7 +51,7 @@ export function applyFuncToFields(obj: any, func: ((x: any) => number) | w.Strin
 // http://stackoverflow.com/a/28248573
 export function arrayToSentence(arr: string[]): string {
   return arr.slice(0, -2).join(', ') +
-    (arr.slice(0, -2).length ? ', ' : '') +
+    (arr.slice(0, -2).length > 0 ? ', ' : '') +
     arr.slice(-2).join(' and ');
 }
 
@@ -79,12 +79,12 @@ export function animate(fns: Array<() => void>, delay: number): void {
 // Removes all undefined (but not null) fields recursively from an object.
 // Based on https://stackoverflow.com/a/38340730/2608804
 // TODO this can be cleaned up a lot with Object.fromEntries() after we upgrade to TypeScript 3.x
-export function withoutEmptyFields<T extends object>(obj: T): T {
+export function withoutEmptyFields<T extends Record<string, any>>(obj: T): T {
   return Object.entries(obj)
     .filter(([_k, v]) => !isUndefined(v))
     .reduce(
-      // tslint:disable-next-line prefer-object-spread (object spread here doesn't type-check due to a bug in TypeScript <3.2)
-      (newObjSoFar, [k, v]) => Object.assign({}, newObjSoFar as T, { [k]: isObject(v) ? withoutEmptyFields(v) : v }),
+      // eslint-disable-next-line  prefer-object-spread
+      (newObjSoFar, [k, v]) => Object.assign({}, newObjSoFar , { [k]: isObject(v) ? withoutEmptyFields(v) : v }),
       {} as T
     );
 }

@@ -63,9 +63,9 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     this.loadProfileData();
   }
 
-  public async componentDidUpdate(nextProps: ProfileProps): Promise<void> {
+  public async componentDidUpdate(prevProps: ProfileProps): Promise<void> {
     // Did the userId change?
-    if (nextProps.match.params.userId !== this.props.match.params.userId) {
+    if (prevProps.match.params.userId !== this.props.match.params.userId) {
       this.setState(({
         userId: undefined,
         userName: undefined,

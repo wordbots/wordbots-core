@@ -36,6 +36,7 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
     }, 1000);
 
     this.resetTimer();
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ interval });
   }
 

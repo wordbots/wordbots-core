@@ -25,6 +25,11 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     recentCards: []
   };
 
+  public constructor(props: RecentCardsCarouselProps) {
+    super(props);
+    this.initializeCarousel(props.userId);
+  }
+
   get carouselBreakpoints(): ResponsiveObject[] {
     const BASE_WIDTH_BREAKPOINT = 950;
     const BASE_SLIDES_TO_SHOW = 3;
@@ -34,34 +39,6 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
       breakpoint: BASE_WIDTH_BREAKPOINT + (slidesToShow - BASE_SLIDES_TO_SHOW) * CARD_WIDTH,
       settings: { slidesToShow }
     }));
-  }
-
-  public async componentDidMount(): Promise<void> {
-    const { userId } = this.props;
-
-    const cards = await getCards(userId || null);
-    let recentCards: w.CardInStore[] = _(cards)
-      .uniqBy('name')
-      .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
-        !!c.text  // cards without text (uninteresting)
-          && !!c.metadata.updated  // cards without timestamp (can't order them)
-          && c.metadata.source.type === 'user'  // built-in cards
-          && !c.metadata.isPrivate  // private cards
-          && !c.metadata.duplicatedFrom  // duplicated cards
-          && !c.metadata.importedFromJson  // cards imported from JSON
-          && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
-      )
-      .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
-      .slice(0, 10)
-      .value();
-
-    if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
-      while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
-        recentCards = [...recentCards, ...recentCards];
-      }
-    }
-
-    this.setState({ recentCards });
   }
 
   public render(): JSX.Element | null {
@@ -117,6 +94,32 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     } else {
       return null;
     }
+  }
+
+  private initializeCarousel = async (userId?: string) => {
+    const cards = await getCards(userId || null);
+    let recentCards: w.CardInStore[] = _(cards)
+      .uniqBy('name')
+      .filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
+        !!c.text  // cards without text (uninteresting)
+          && !!c.metadata.updated  // cards without timestamp (can't order them)
+          && c.metadata.source.type === 'user'  // built-in cards
+          && !c.metadata.isPrivate  // private cards
+          && !c.metadata.duplicatedFrom  // duplicated cards
+          && !c.metadata.importedFromJson  // cards imported from JSON
+          && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
+      )
+      .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
+      .slice(0, 10)
+      .value();
+
+    if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
+      while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
+        recentCards = [...recentCards, ...recentCards];
+      }
+    }
+
+    this.setState({ recentCards });
   }
 
   private handleClickCard = (card: w.CardInStore) => {

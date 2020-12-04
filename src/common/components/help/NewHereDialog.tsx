@@ -26,6 +26,11 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
     games: []
   };
 
+  public constructor(props: NewHereDialogProps) {
+    super(props);
+    this.initializeAchievements(props.uid);
+  }
+
   get cards(): w.CardInStore[] {
     const { collection, uid } = this.props;
     return collection.cards.filter((c) => c.metadata.source.uid === uid);
@@ -34,13 +39,6 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
   get decks(): w.DeckInStore[] {
     const { collection, uid } = this.props;
     return collection.decks.filter((d) => d.authorId === uid);
-  }
-
-  public async componentDidMount(): Promise<void> {
-    const { uid } = this.props;
-    const achievements: string[] = await getAchievements();
-    const games = uid ? await getRecentGamesByUserId(uid) : [];
-    this.setState({ achievements, games });
   }
 
   public render(): JSX.Element {
@@ -132,6 +130,12 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
         </table>
       </RouterDialog>
     );
+  }
+
+  private initializeAchievements = async (uid: string | null) => {
+    const achievements: string[] = await getAchievements();
+    const games = uid ? await getRecentGamesByUserId(uid) : [];
+    this.setState({ achievements, games });
   }
 
   private handleClose = () => { RouterDialog.closeDialog(this.props.history); };

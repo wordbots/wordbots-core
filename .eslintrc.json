@@ -98,6 +98,7 @@
     "react/jsx-no-bind": [2, { "ignoreRefs": true }],
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-access-state-in-setstate": 2,
+    "react/no-did-mount-set-state": 2,
     "react/no-multi-comp": 2,
     "react/no-unused-prop-types": 2,
     "react/no-unused-state": 2,
@@ -108,12 +109,7 @@
     "unicorn/filename-case": 0,
     "unicorn/no-fn-reference-in-iterator": 0,
     "unicorn/no-process-exit": 0,
-    "unicorn/prevent-abbreviations": 0,
-
-    /** Rules that we are disabling for now as part of the tslint->eslint transition
-        TODO re-enable these when feasible. */
-    "react/no-did-mount-set-state": 0,
-    "react/no-did-update-set-state": 0
+    "unicorn/prevent-abbreviations": 0
   },
   "settings": {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"],

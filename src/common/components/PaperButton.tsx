@@ -24,7 +24,7 @@ export default class PaperButton extends React.Component<PaperButtonProps, Paper
         onClick={this.onClick}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut}
-        style={{cursor: this.props.disabled ? 'auto' : 'pointer', ...this.props.style}}
+        style={{cursor: this.props.disabled ? 'auto' : 'pointer', transition: 'box-shadow 200ms', ...this.props.style}}
       >
         {this.props.children}
       </Paper>
@@ -39,7 +39,7 @@ export default class PaperButton extends React.Component<PaperButtonProps, Paper
 
   private onMouseOver = () => {
     if (!this.props.disabled) {
-      this.setState({shadow: 10});
+      this.setState({shadow: 5});
     }
   }
 

@@ -1,13 +1,10 @@
 import * as express from 'express';
-import { resolve } from 'path';
 import { ParsedUrlQuery } from 'querystring';
+import * as repng from 'repng';
 import { parse as urlparse } from 'url';
 
 import Card, { CardProps } from '../common/components/card/Card';
 import Sentence from '../common/components/card/Sentence';
-import { id } from '../common/util/common';
-
-const repng = require('repng');
 
 export default function produceApiResponse(response: express.Response, location: string): void {
   const { pathname, query } = urlparse(location, true);
@@ -38,16 +35,17 @@ function renderCard(response: express.Response, query: ParsedUrlQuery): void {
     visible: true
   };
 
-  const filename = id();
-
   repng(Card, {
     props,
     width: 170,
     height: 250,
-    outDir: './temp/',
-    filename
-  }).then(() => {
-    response.sendFile(resolve(`./temp/${filename}.png`));
+    css: '.MuiPaper-root-1 { background: white; }'
+  }).then((img: Buffer) => {
+    response.writeHead(200, {
+      'Content-Type': 'image/png',
+      'Content-Length': img.length
+    });
+    response.end(img);
   }).catch((error: any) => {
     response
       .status(500)

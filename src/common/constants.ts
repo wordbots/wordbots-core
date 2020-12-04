@@ -93,7 +93,8 @@ export const BOARD_Z_INDEX = 1000;
 export const HAND_Z_INDEX = 1100;
 export const STATUS_Z_INDEX = 2000;
 export const MAX_Z_INDEX = 99999;
-export const TUTORIAL_Z_INDEX = 999999;
+export const TUTORIAL_Z_INDEX = 999998;
+export const TUTORIAL_INTRO_Z_INDEX = 999999;
 
 // Board.
 

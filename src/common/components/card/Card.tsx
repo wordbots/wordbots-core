@@ -166,7 +166,7 @@ export default class Card extends React.Component<CardProps, CardState> {
       scale, margin, rotation, yTranslation, zIndex,
       onSpriteClick
     } = this.props;
-    const redShadow = 'rgba(255, 35, 35, 0.95)';
+    const redShadow = 'rgba(255, 35, 35, 0.45)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
       boxShadow: `${(status && status.type === 'error') || collection ? redShadow : greenShadow  } 0px 0px 20px 5px`

@@ -3,8 +3,8 @@ import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
 declare const window: {
-  location: { pathname: string }
-  process?: { title: string, env: { NODE_ENV: string } }
+  location: { pathname: string, hostname: string }
+  process?: { title: string, env: { NODE_ENV: string, JEST_WORKER_ID?: string } }
 };
 
 let currentLocation: string;
@@ -16,7 +16,13 @@ if (inBrowser()) {
 export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
     (window.process?.title.includes('node')) ||
-    (window.process?.title.includes('test')));
+    (window.process?.title.includes('test')) ||
+    (window.process?.env.JEST_WORKER_ID !== undefined));
+}
+
+export function onLocalhost(): boolean {
+  // eslint-disable-next-line compat/compat
+  return inBrowser() && window.location.hostname === 'localhost';
 }
 
 export function inTest(): boolean {

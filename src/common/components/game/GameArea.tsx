@@ -27,6 +27,7 @@ import Sfx from './Sfx';
 import SoundToggle from './SoundToggle';
 import Status from './Status';
 import Timer from './Timer';
+import TutorialIntroScreen from './TutorialIntroScreen';
 import VictoryScreen from './VictoryScreen';
 
 // Props shared by GameArea and GameAreaContainer.
@@ -277,6 +278,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             winnerName={(winner && winner !== 'draw') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
+          {tutorialStep && tutorialStep.idx === 0 && <TutorialIntroScreen onClickEndGame={onClickEndGame} />}
         </Paper>
 
         {this.renderSidebar()}

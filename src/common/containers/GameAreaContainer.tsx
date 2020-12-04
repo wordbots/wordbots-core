@@ -39,6 +39,7 @@ interface GameAreaDispatchProps {
   onPassTurn: (player: w.PlayerColor) => void
   onEndGame: () => void
   onForfeit: (winner: w.PlayerColor) => void
+  onLeave: () => void
   onStartTutorial: () => void
   onStartSandbox: () => void
   onTutorialStep: (back?: boolean) => void
@@ -165,16 +166,16 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): GameAreaDispatchPro
       dispatch(gameActions.passTurn(player));
     },
     onEndGame: () => {
-      dispatch([
-        gameActions.endGame(),
-        socketActions.leave()
-      ]);
+      dispatch(gameActions.endGame());
     },
     onForfeit: (winner: w.PlayerColor) => {
       dispatch([
         socketActions.forfeit(winner),
         socketActions.leave()
       ]);
+    },
+    onLeave: () => {
+      dispatch(socketActions.leave());
     },
     onStartTutorial: () => {
       dispatch(gameActions.startTutorial());
@@ -226,10 +227,9 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentWillUnmount(): void {
-    const { onEndGame } = this.props;
     const { interval } = this.state;
 
-    onEndGame();
+    this.handleEndGame();
     if (interval) {
       clearInterval(interval);
     }
@@ -294,6 +294,15 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
       onStartPractice(formatName, shuffleCardsInDeck(deck, cards, sets));
     } else {
       history.push(baseGameUrl);
+    }
+  }
+
+  private handleEndGame = () => {
+    const { onEndGame, onLeave, winner } = this.props;
+
+    onEndGame();
+    if (!winner) {
+      onLeave();
     }
   }
 
@@ -365,8 +374,8 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   private handleClickEndGame = () => {
-    const { history, onEndGame } = this.props;
-    onEndGame();
+    const { history } = this.props;
+    this.handleEndGame();
     // We can't just do history.goBack() because we may have gotten here
     // from outside of Wordbots and we don't want to leave the site.
     if (history.location.state?.previous) {

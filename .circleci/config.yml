@@ -43,8 +43,8 @@ jobs:
       - run: ./cc-test-reporter before-build
       - run: yarn test:lint
       - run: yarn test:types
-      - run: yarn test:unit:coverage --testPathIgnorePatterns integration -w 2
-      - run: yarn test:unit integration -w 2
+      - run: yarn test:unit:coverage -w 2
+      - run: yarn test:integration -w 2
       - run: ./cc-test-reporter after-build --exit-code $? < coverage/lcov.info
       - run: cp -R coverage $CIRCLE_ARTIFACTS
       - run: NODE_ENV=test yarn start

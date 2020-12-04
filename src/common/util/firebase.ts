@@ -4,6 +4,7 @@ import { capitalize, concat, flatMap, fromPairs, mapValues, orderBy, uniq, uniqB
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
 import 'firebase/database';  // eslint-disable-line import/no-unassigned-import
 
+import { FIREBASE_CONFIG } from '../constants';
 import * as w from '../types';
 
 import { expandKeywords, loadParserLexicon, normalizeCard } from './cards';
@@ -11,19 +12,10 @@ import { withoutEmptyFields } from './common';
 
 const fb = require('firebase/app').default;
 
-const config = {
-  apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
-  authDomain: 'wordbots.firebaseapp.com',
-  databaseURL: 'https://wordbots.firebaseio.com',
-  projectId: 'wordbots',
-  storageBucket: 'wordbots.appspot.com',
-  messagingSenderId: '913868073872'
-};
-
 let currentUser: firebase.User | null = null;
 
 if (fb.apps.length === 0) {
-  fb.initializeApp(config);
+  fb.initializeApp(FIREBASE_CONFIG);
   // (window as any).fb = fb;
 }
 
@@ -146,7 +138,7 @@ export async function getCards(uid: w.UserId | null): Promise<w.CardInStore[]> {
   const snapshot = await ref.once('value');
 
   if (snapshot) {
-    const unnormalizedCards = Object.values(snapshot.val());
+    const unnormalizedCards = Object.values(snapshot.val() || {});
     return unnormalizedCards.map((card: any) => normalizeCard(card));
   } else {
     return [];
@@ -214,7 +206,7 @@ export async function getSets(): Promise<w.Set[]> {
   }
 
   const snapshot = await fb.database().ref('sets').once('value');
-  return snapshot ? Object.values(snapshot.val()).map(deserializeSet) : [];
+  return snapshot ? Object.values(snapshot.val() || {}).map(deserializeSet) : [];
 }
 
 export function saveSet(set: w.Set): void {
@@ -255,7 +247,7 @@ function cleanupExamples(examples: string[]): string[] {
 
 export async function getCardTextCorpus(): Promise<{ corpus: string, examples: string[] }> {
   const snapshot = await fb.database().ref('cardText/all').once('value');
-  const examples = cleanupExamples(snapshot.val());
+  const examples = cleanupExamples(snapshot.val() || {});
   return {
     examples,
     corpus: examples.map((ex) => `${expandKeywords(ex).toLowerCase()} . `).join()
@@ -267,7 +259,7 @@ export async function getDictionaryData(): Promise<w.Dictionary> {
 
   const definitions: Record<string, any> = await loadParserLexicon();
   const snapshot = await fb.database().ref('cardText').once('value');
-  const { byToken, byNode } = snapshot.val() as CardTextInFirebase;
+  const { byToken, byNode } = (snapshot.val() as CardTextInFirebase) || { byToken: {}, byNode: {} };
 
   const nodes: Node[] = flatMap(byNode, (entries, type) => Object.keys(entries).map((entry) => ({ type, entry })));
   const byNodeFlat: Record<string, string[]> = fromPairs(nodes.map(({ type, entry }) => [`${type}.${entry}`, byNode[type][entry]] ));

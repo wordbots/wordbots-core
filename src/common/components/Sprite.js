@@ -289,7 +289,7 @@ export default class Sprite extends React.PureComponent {
     }
 
     const falloffs = {
-      constant: { label: 'Constant', func: function (x) {
+      constant: { label: 'Constant', func: function (_x) {
         return 1;
       }},
       linear: { label: 'Linear', func: function (x) {

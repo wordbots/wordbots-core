@@ -1,5 +1,3 @@
-/* eslint-disable  */
-
 import { chain as _ } from 'lodash';
 import * as React from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -121,7 +119,7 @@ export default class HexGrid extends React.Component<HexShapeProps> {
     const { actions, activatedAbilities, layout, tutorialStep } = this.props;
     const selectedHexes = [];
 
-    if (tutorialStep && tutorialStep.highlight && tutorialStep.tooltip && tutorialStep.tooltip.hex) {
+    if (tutorialStep?.highlight && tutorialStep.tooltip?.hex) {
       selectedHexes.push(
         <HexShape
           key="tutorialStep"

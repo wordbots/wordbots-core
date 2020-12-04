@@ -5,7 +5,7 @@ import * as w from '../../types';
 
 interface VictoryScreenProps {
   winner: w.GameWinner  // 'blue', 'orange', 'draw' or null (null indicates game still in progress)
-  winnerName: string | null,
+  winnerName: string | null
   onClick: () => void
 }
 

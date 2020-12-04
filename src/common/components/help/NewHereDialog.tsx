@@ -16,7 +16,7 @@ interface NewHereDialogProps {
 }
 
 interface NewHereDialogState {
-  achievements: string[],
+  achievements: string[]
   games: w.SavedGame[]
 }
 

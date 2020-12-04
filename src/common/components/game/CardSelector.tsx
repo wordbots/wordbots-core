@@ -18,8 +18,8 @@ interface CardSelectorBaseProps {
 }
 
 interface CardSelectorState {
-  selectedCard?: w.CardInStore,
-  searchText: string,
+  selectedCard?: w.CardInStore
+  searchText: string
   cardCollection: w.CardInStore[]
 }
 

@@ -17,17 +17,16 @@
     "sourceType": "module"
   },
   "plugins": [
-    "compat",
-    "jest",
-    "lodash",
-    "promise",
-    "unicorn",
-    "eslint-plugin-import",
-    "eslint-plugin-react",
-    "eslint-plugin-jsdoc",
-    "eslint-plugin-prefer-arrow",
     "@typescript-eslint",
-    "@typescript-eslint/tslint"
+    "eslint-plugin-compat",
+    "eslint-plugin-import",
+    "eslint-plugin-jest",
+    "eslint-plugin-jsdoc",
+    "eslint-plugin-lodash",
+    "eslint-plugin-prefer-arrow",
+    "eslint-plugin-promise",
+    "eslint-plugin-react",
+    "eslint-plugin-unicorn"
   ],
   "rules": {
     "arrow-body-style": 2,
@@ -38,6 +37,7 @@
     "jsx-quotes": 2,
     "no-console": [1, { "allow": ["error"]  }],
     "no-magic-numbers": 0,
+    "no-shadow": 2,
     "no-unused-vars": 0,
     "no-var": 2,
     "prefer-arrow-callback": 2,
@@ -52,15 +52,28 @@
     }],
     "strict": [2, "global"],
 
+    "@typescript-eslint/array-type": [2, { "default": "array-simple" }],
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/consistent-type-assertions": 2,
+    "@typescript-eslint/member-delimiter-style": [2, {
+      "multiline": { "delimiter": "none" },
+      "singleline": { "delimiter": "comma" }
+    }],
+    "@typescript-eslint/no-unused-vars": [2, { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/prefer-optional-chain": 1,
 
-    "import/no-unresolved": 2,
-    "import/named": 2,
+    "compat/compat": 2,
+
     "import/default": 2,
     "import/first": 2,
-    "import/no-duplicates": 2,
-    "import/order": [2, { "newlines-between": "always" }],
+    "import/named": 2,
+    "import/namespace": 2,
     "import/newline-after-import": 2,
+    "import/no-duplicates": 2,
+    "import/no-unresolved": 2,
+    "import/no-unassigned-import": [2, { "allow": ["**/*.css"] }],
+    "import/order": [2, { "newlines-between": "always" }],
     "import/prefer-default-export": 1,
 
     "jest/no-disabled-tests": 1,
@@ -86,11 +99,10 @@
     "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-access-state-in-setstate": 2,
-    "react/no-will-update-set-state": 2,
     "react/no-multi-comp": 2,
     "react/no-unused-prop-types": 2,
     "react/no-unused-state": 2,
-    //"react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
+    "react/no-will-update-set-state": 2,
     "react/self-closing-comp": 2,
 
     "unicorn/filename-case": 0,
@@ -100,17 +112,10 @@
 
     /** Rules that we are disabling for now as part of the tslint->eslint transition
         TODO re-enable these when feasible. */
-    "no-shadow": 0,
-    "@typescript-eslint/ban-ts-comment": 0,
-    "@typescript-eslint/no-var-requires": 0,
-    "compat/compat": 0,
-    "import/namespace": 0,
-    "import/no-unassigned-import": 0,
-    "react/prefer-stateless-function": 0,
+    "react/prefer-stateless-function": [0, { "ignorePureComponents": true }],
     "react/no-did-mount-set-state": 0,
     "react/no-did-update-set-state": 0,
-    "react/no-unescaped-entities": 0,
-    "unicorn/no-abusive-eslint-disable": 0
+    "react/no-unescaped-entities": 0
   },
   "settings": {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"],

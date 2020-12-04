@@ -21,7 +21,7 @@ import {
 import { attackBotCard } from './data/cards';
 
 interface Target {
-  hex?: w.HexId,
+  hex?: w.HexId
   card?: w.CardInStore | number
 }
 

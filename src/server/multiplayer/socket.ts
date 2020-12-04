@@ -15,7 +15,6 @@ const MAX_DEBUG_MSG_LENGTH = 500;
 const QUEUE_INTERVAL_MSECS = 500;
 
 /* eslint-disable no-console */
-// eslint-disable-next-line
 export default function launchWebsocketServer(server: Server, path: string): void {
   const state = new MultiplayerServerState();
 

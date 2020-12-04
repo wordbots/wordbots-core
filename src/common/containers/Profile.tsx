@@ -30,10 +30,10 @@ interface ProfileState {
   recentGames?: w.SavedGame[]
   playerNames?: Record<string, string>
   playerInfo?: {
-    cardsCreated: number,
-    decksCreated: number,
-    setsCreated: number,
-    gamesPlayed: number,
+    cardsCreated: number
+    decksCreated: number
+    setsCreated: number
+    gamesPlayed: number
     favoriteOpponent?: React.ReactNode
   }
 }

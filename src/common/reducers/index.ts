@@ -18,4 +18,4 @@ const rootReducer: Reducer<w.State, any> = combineReducers({
   version
 });
 
-export default rootReducer;  // eslint-disable-line  
+export default rootReducer;

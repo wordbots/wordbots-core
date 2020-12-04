@@ -11,7 +11,7 @@ interface EventAnimationProps {
 }
 
 interface EventAnimationState {
-  idx: number,
+  idx: number
   timeout?: NodeJS.Timeout
 }
 

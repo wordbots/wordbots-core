@@ -28,14 +28,14 @@ interface BoardProps {
   attack: w.Attack | null
   isGameOver: boolean
 
-  onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHexId?: w.HexId | null) => void
+  onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHex?: w.HexId | null) => void
   onActivateAbility: (abilityIdx: number) => void
   onTutorialStep: (back?: boolean) => void
   onEndGame: () => void
 }
 
 interface BoardState {
-  grid: { hexagons: Hex[], layout: Layout },
+  grid: { hexagons: Hex[], layout: Layout }
   hoveredHexId: w.HexId | undefined
 }
 
@@ -118,7 +118,6 @@ export default class Board extends React.Component<BoardProps, BoardState> {
   get hexColors(): Record<w.HexId, 'blue' | 'bright_blue' | 'orange' | 'bright_orange' | 'green' | 'red'> {
     const hexColors: Record<w.HexId, 'blue' | 'bright_blue' | 'orange' | 'bright_orange' | 'green' | 'red'> = {};
 
-    // eslint-disable-next-line 
     function color(hexes: Array<Hex | w.HexId>, colorName: 'blue' | 'bright_blue' | 'orange' | 'bright_orange' | 'green' | 'red'): void {
       hexes.forEach((hex) => {
         hexColors[isString(hex) ? hex : HexUtils.getID(hex)] = colorName;

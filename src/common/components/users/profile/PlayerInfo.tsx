@@ -8,10 +8,10 @@ import Title from '../../Title';
 
 interface PlayerInfoProps {
   playerInfo: {
-    cardsCreated: number,
-    decksCreated: number,
-    gamesPlayed: number,
-    winRate: string,
+    cardsCreated: number
+    decksCreated: number
+    gamesPlayed: number
+    winRate: string
     favoriteOpponent?: React.ReactNode
   }
 }

@@ -24,14 +24,8 @@ interface CardImageState {
 
 export default class CardImage extends React.Component<CardImageProps, CardImageState> {
   public state = {
-    loadImage: false
+    loadImage: true
   };
-
-  public componentWillMount(): void {
-    setTimeout(() => {
-      this.setState({ loadImage: true });
-    }, 50);
-  }
 
   public render(): JSX.Element | null {
     const { type, spriteID, spriteV, img, source, scale, onSpriteClick } = this.props;

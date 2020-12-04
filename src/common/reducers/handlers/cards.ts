@@ -246,4 +246,4 @@ function saveCard(state: State, card: w.CardInStore): State {
   return state;
 }
 
-export default cardsHandlers; // eslint-disable-line  
+export default cardsHandlers;

@@ -1,8 +1,8 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
 import { capitalize, concat, flatMap, fromPairs, mapValues, orderBy, uniq, uniqBy } from 'lodash';
-import 'firebase/auth';
-import 'firebase/database';
+import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
+import 'firebase/database';  // eslint-disable-line import/no-unassigned-import
 
 import * as w from '../types';
 

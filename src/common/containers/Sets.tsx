@@ -35,7 +35,7 @@ interface SetsDispatchProps {
 type SetsProps = SetsStateProps & SetsDispatchProps & { history: History } & WithStyles;
 
 interface SetsState {
-  numDecksBySet?: Record<string, number>,
+  numDecksBySet?: Record<string, number>
   showHelpText: boolean
 }
 

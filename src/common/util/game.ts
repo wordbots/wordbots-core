@@ -513,15 +513,23 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   return updateOrDeleteObjectAtHex(state, object, hex, cause);
 }
 
-export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
+export function updateOrDeleteObjectAtHex(
+  state: w.GameState,
+  object: w.Object,
+  hex: w.HexId,
+  cause: w.Cause | null = null,
+  shouldApplyAbilities = true
+): w.GameState {
   if (!allObjectsOnBoard(state)[hex]) {
     // Object no longer exists - perhaps it has already been deleted by a previous effect in a chain of triggers?
     return state;
   }
 
   const ownerName = ownerOf(state, object)!.name;
+
   if ((getAttribute(object, 'health') as number) > 0 && !object.isDestroyed) {
     state.players[ownerName].robotsOnBoard[hex] = object;
+    return state;
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
 
@@ -542,8 +550,20 @@ export function updateOrDeleteObjectAtHex(state: w.GameState, object: w.Object, 
       state = removeObjectFromBoard(state, object, hex);
       state = discardCardsFromHand(state, state.players[ownerName].name, [card]);
     }
-  }
 
+    return shouldApplyAbilities ? applyAbilities(state) : state;
+  } else {
+    return state;
+  }
+}
+
+export function deleteAllDyingObjects(state: w.GameState): w.GameState {
+  const objects: Array<[w.HexId, w.Object]> = Object.entries(allObjectsOnBoard(state));
+
+  state = objects.reduce<w.GameState>((currentState, [ hex, object ]) => (
+    updateOrDeleteObjectAtHex(currentState, object, hex, null, false)
+  ), state);
+  // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call
   state = applyAbilities(state);
 
   return state;
@@ -606,11 +626,11 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
 
 export function executeCmd(
   state: w.GameState,
-  cmd: ((state: w.GameState) => any) | w.StringRepresentationOf<(state: w.GameState) => any>,
+  cmd: ((s: w.GameState) => any) | w.StringRepresentationOf<(s: w.GameState) => any>,
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  type BuildVocabulary = (state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null) => any;
+  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => any;
 
   state.callbackAfterExecution = undefined;
 
@@ -625,7 +645,7 @@ export function triggerEvent(
   state: w.GameState,
   triggerType: string,
   target: w.EventTarget,
-  defaultBehavior: null | ((state: w.GameState) => w.GameState) = null
+  defaultBehavior: null | ((s: w.GameState) => w.GameState) = null
 ): w.GameState {
   // Formulate the trigger condition.
   const defaultCondition = ((t: w.Trigger) => (target.condition ? target.condition(t) : true));

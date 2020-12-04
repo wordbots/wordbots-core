@@ -52,7 +52,7 @@ interface GameAreaDispatchProps {
 export type GameAreaContainerProps = GameAreaStateProps & GameAreaDispatchProps & RouteComponentProps;
 
 interface GameAreaContainerState {
-  interval?: NodeJS.Timeout,
+  interval?: NodeJS.Timeout
   message: string | null
 }
 

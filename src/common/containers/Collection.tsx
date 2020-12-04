@@ -46,15 +46,15 @@ type CollectionProps = CollectionStateProps & CollectionDispatchProps & { histor
 
 interface CollectionState {
   filters: {
-    robots: boolean,
-    events: boolean,
+    robots: boolean
+    events: boolean
     structures: boolean
-  },
-  costRange: [number, number],
-  sortCriteria: number,
-  sortOrder: number,
-  searchText: string,
-  selectedCardIds: w.CardId[],
+  }
+  costRange: [number, number]
+  sortCriteria: number
+  sortOrder: number
+  searchText: string
+  selectedCardIds: w.CardId[]
   layout: 0 | 1
 }
 

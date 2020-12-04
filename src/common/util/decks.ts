@@ -5,7 +5,7 @@ import * as w from '../types';
 // TODO Move more methods from cards.ts to decks.ts
 
 // Note: this method is parametrized because it needs to support both Deck and DeckInStore.
-// eslint-disable-next-line  
+// eslint-disable-next-line import/prefer-default-export
 export function sortDecks<T extends w.DeckInStore>(decks: T[]): T[] {
   const decksWithTimestamps: T[] = decks.map((deck: T) => {
     if (deck.timestamp) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as w from '../../src/common/types';
 import { allObjectsOnBoard, executeCmd } from '../../src/common/util/game';
 import { getDefaultState } from '../testHelpers';

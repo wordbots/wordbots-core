@@ -67,8 +67,8 @@ export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame 
 export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
   newCards: {
-    deck?: w.PossiblyObfuscatedCard[],
-    hand?: w.PossiblyObfuscatedCard[],
+    deck?: w.PossiblyObfuscatedCard[]
+    hand?: w.PossiblyObfuscatedCard[]
     discardPile?: w.CardInGame[]
   } = {}
 ): w.PlayerInGameState {
@@ -273,7 +273,7 @@ export function parseBatch(
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.
 // Used only by cardsFromJson() and in integration tests.
-export function parseCard(card: w.CardInStore, callback: (card: w.CardInStore, parseResult: string[]) => any): void {
+export function parseCard(card: w.CardInStore, callback: (c: w.CardInStore, parseResult: string[]) => any): void {
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text || '');
   const parseResults: string[] = [];

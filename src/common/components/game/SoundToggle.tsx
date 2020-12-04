@@ -10,7 +10,7 @@ import { isFlagSet, toggleFlag } from '../../util/browser';
 import Tooltip from '../Tooltip';
 
 interface SoundToggleBaseProps {
-  volume: number,
+  volume: number
   onSetVolume: (volume: number) => void
 }
 

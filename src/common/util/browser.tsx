@@ -2,8 +2,6 @@ import { History } from 'history';
 import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
-// eslint-disable  
-
 declare const window: {
   location: { pathname: string }
   process?: { title: string, env: { NODE_ENV: string } }
@@ -17,12 +15,12 @@ if (inBrowser()) {
 
 export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
-    (window.process && window.process.title.includes('node')) ||
-    (window.process && window.process.title.includes('test')));
+    (window.process?.title.includes('node')) ||
+    (window.process?.title.includes('test')));
 }
 
 export function inTest(): boolean {
-  return typeof window !== 'undefined' && window.process && window.process.env && window.process.env.NODE_ENV === 'test' || false;
+  return typeof window !== 'undefined' && window.process?.env?.NODE_ENV === 'test' || false;
 }
 
 export function logAnalytics(): void {
@@ -34,7 +32,7 @@ export function logAnalytics(): void {
 }
 
 export function transformHistory(history: History, func: (path: string) => string): void {
-  if (history && history.location) {
+  if (history?.location) {
     const currentPath = history.location.pathname;
     const newPath = func(currentPath === '/' ? '/home' : currentPath);
     history.push(newPath);
@@ -42,7 +40,7 @@ export function transformHistory(history: History, func: (path: string) => strin
 }
 
 export function getHash(history: History): string {
-  return history && history.location.hash.split('#')[1];
+  return history?.location.hash.split('#')[1];
 }
 
 export function setHash(history: History, hash: string): void {

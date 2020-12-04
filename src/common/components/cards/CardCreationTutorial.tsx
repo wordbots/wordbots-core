@@ -5,7 +5,7 @@ import IFrame from 'react-iframe';
 import { isFlagSet, toggleFlag } from '../../util/browser';
 
 interface CardCreationTutorialState {
-  visible: boolean;
+  visible: boolean
 }
 
 export default class CardCreationTutorial extends React.Component<Record<string, never>, CardCreationTutorialState> {

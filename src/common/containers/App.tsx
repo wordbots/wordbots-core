@@ -8,7 +8,7 @@ import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { AnyAction, Dispatch } from 'redux';
-import 'whatwg-fetch';
+import 'whatwg-fetch';  // eslint-disable-line import/no-unassigned-import
 
 import * as actions from '../actions/global';
 import DictionaryDialog from '../components/cards/DictionaryDialog';

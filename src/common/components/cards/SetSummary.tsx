@@ -27,9 +27,9 @@ interface SetSummaryBaseProps {
 }
 
 interface SetSummaryState {
-  isCardListExpanded: boolean,
-  isDeleteConfirmationOpen: boolean,
-  isPermalinkCopied: boolean,
+  isCardListExpanded: boolean
+  isDeleteConfirmationOpen: boolean
+  isPermalinkCopied: boolean
   isPublishConfirmDialogOpen: boolean
 }
 

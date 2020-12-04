@@ -21,8 +21,10 @@
     },
 
     "strict": true,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "strictPropertyInitialization": true
   },
   "exclude": [
     "./node_modules/"

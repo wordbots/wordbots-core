@@ -23,7 +23,7 @@ import { id as generateId } from '../util/common';
 import { Deck } from './Deck';
 
 interface NewSetStateProps {
-  id: string | null,
+  id: string | null
   setBeingEdited: w.Set | null
   allCards: w.CardInStore[]
   user: fb.User | null

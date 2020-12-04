@@ -35,7 +35,7 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
 
 export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
   return {
-    activated: (targetFunc: (state: w.GameState) => w.Target[], action) => {
+    activated: (targetFunc: (s: w.GameState) => w.Target[], action) => {
       const aid: w.AbilityId = id();
       const cmdText: string = state.currentCmdText || '';
 
@@ -59,7 +59,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       };
     },
 
-    attributeAdjustment: (targetFunc: (state: w.GameState) => w.Target[], attr: w.Attribute | 'cost' | 'allattributes', func) => {
+    attributeAdjustment: (targetFunc: (s: w.GameState) => w.Target[], attr: w.Attribute | 'cost' | 'allattributes', func) => {
       const aid: w.AbilityId = id();
 
       function adjustAttr(target: w.Object | w.CardInGame, att: w.Attribute | 'cost'): void {
@@ -103,7 +103,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       };
     },
 
-    applyEffect: (targetFunc: (state: w.GameState) => w.Target[], effect: w.EffectType, props = {}) => {
+    applyEffect: (targetFunc: (s: w.GameState) => w.Target[], effect: w.EffectType, props = {}) => {
       const aid: w.AbilityId = id();
       return {
         aid,
@@ -123,7 +123,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       };
     },
 
-    giveAbility: (targetFunc: (state: w.GameState) => w.Target[], cmd) => {
+    giveAbility: (targetFunc: (s: w.GameState) => w.Target[], cmd) => {
       const aid: w.AbilityId = id();
       return {
         aid,

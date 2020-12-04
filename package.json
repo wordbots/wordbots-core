@@ -8,8 +8,9 @@
   },
   "browserslist": [
     "last 4 versions",
-    "chrome >= 54",
-    "not ie <= 11"
+    "not ie <= 11",
+    "not dead",
+    "not op_mini all"
   ],
   "scripts": {
     "analyze": "npm run prebuild && yarn run webpack -p --config webpack.build.config.js --progress --devtool source-map --display minimal && source-map-explorer dist/bundle.js",
@@ -54,7 +55,7 @@
     "lodash": "^4.17.19",
     "material-ui": "^0.20.0",
     "merge": "1.2.1",
-    "moment": "^2.22.2",
+    "moment": "2.23.0",
     "object.values": "^1.1.0",
     "prop-types": "^15.6.1",
     "qs": "^6.6.0",
@@ -132,7 +133,6 @@
     "@types/whatwg-fetch": "^0.0.33",
     "@types/ws": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
-    "@typescript-eslint/eslint-plugin-tslint": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
     "babel-eslint": "^10.0.1",
     "csstype": "^2.5.2",
@@ -140,7 +140,7 @@
     "enzyme-adapter-react-16": "1.12.1",
     "eslint": "7.14.0",
     "eslint-import-resolver-typescript": "^2.3.0",
-    "eslint-plugin-compat": "^3.1.1",
+    "eslint-plugin-compat": "^3.8.0",
     "eslint-plugin-flowtype": "^4.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^22.0.0",

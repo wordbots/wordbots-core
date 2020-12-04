@@ -98,7 +98,7 @@ interface GameAreaState {
   boardSize: number
   boardMargin: { left: number, top: number }
   chatOpen: boolean
-  chatWidth: number,
+  chatWidth: number
   compactControls: boolean
 }
 

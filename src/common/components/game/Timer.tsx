@@ -13,7 +13,7 @@ interface TimerProps {
 }
 
 interface TimerState {
-  interval?: NodeJS.Timeout,
+  interval?: NodeJS.Timeout
   timer: string
   timerStyle: React.CSSProperties
 }

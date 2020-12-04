@@ -36,7 +36,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
   const modifyAttribute = (
     objects: w.ObjectOrPlayerCollection | w.CardInHandCollection,
     attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
-    func: ((attr: number) => number) | w.StringRepresentationOf<(attr: number) => number>
+    func: ((a: number) => number) | w.StringRepresentationOf<(a: number) => number>
   ): void => {
     if (state.memory.duration && g.isObjectCollection(objects)) {
       // Temporary attribute adjustment.
@@ -139,13 +139,13 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       state.callbackAfterExecution = (s: w.GameState) => passTurn(s, s.currentTurn);
     },
 
-    forEach: (collection: w.Collection, cmd: (state: w.GameState) => any): void => {
+    forEach: (collection: w.Collection, cmd: (s: w.GameState) => any): void => {
       iterateOver(collection, false)((elt: w.Targetable) => {
         executeCmd(state, cmd, g.isObject(elt) ? elt : currentObject);
       });
     },
 
-    giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(state: w.GameState) => any>): void => {
+    giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(s: w.GameState) => any>): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         executeCmd(state, abilityCmd, object);
       });
@@ -229,7 +229,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     setAttribute: (
       objects: w.ObjectOrPlayerCollection,
       attr: w.Attribute | w.Attribute[] | 'cost' | 'allattributes',
-      numCmd: w.StringRepresentationOf<(state: w.GameState) => number>
+      numCmd: w.StringRepresentationOf<(s: w.GameState) => number>
     ): void => {
       if (state.memory.duration) {
         // Temporary attribute adjustment.

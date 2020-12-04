@@ -110,7 +110,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
           && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
       )
       .orderBy((c: w.CardInStore) => c.metadata.updated, ['desc'])
-      .slice(0, 10)
+      .slice(0, 15)
       .value();
 
     if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {

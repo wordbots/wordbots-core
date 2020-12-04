@@ -21,7 +21,7 @@
     "prebuild": "sed 's/export default webpackConfig;/module.exports = webpackConfig;/' <webpack.config.js >webpack.build.config.js",
     "slate": "node bin/clean.js node_modules",
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --transpile-only",
-    "start-prod": "set NODE_ENV=production && ts-node src/server/index.ts",
+    "start-prod": "set NODE_ENV=production && node --max-old-space-size=4096 -- node_modules/.bin/ts-node src/server/index.ts",
     "test": "run-s test:lint test:types test:unit",
     "test:lint": "eslint src test --quiet",
     "test:types": "tsc --skipLibCheck --noEmit",

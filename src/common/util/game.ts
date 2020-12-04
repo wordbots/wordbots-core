@@ -77,12 +77,12 @@ export function getAttribute(objectOrCard: w.Object | w.CardInGame, attr: w.Attr
   const value: number | undefined = (
     attr === 'cost' ?
       g.isObject(objectOrCard) ? objectOrCard.card.cost : objectOrCard.cost :
-      stats && stats[attr ]
+      stats?.[attr]
   );
 
   if (isUndefined(value)) {
     return undefined;
-  } else if (temporaryStatAdjustments && temporaryStatAdjustments[attr]) {
+  } else if (temporaryStatAdjustments?.[attr]) {
     // Apply all temporary adjustments, one at a time, in order.
     return (temporaryStatAdjustments[attr] as w.StatAdjustment[])
       .reduce(

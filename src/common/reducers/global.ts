@@ -5,7 +5,7 @@ import * as w from '../types';
 export default function global(state: w.GlobalState = defaultState, action: w.Action): w.GlobalState {
   switch (action.type) {
     case ga.FIREBASE_DATA:
-      if (action.payload.data && action.payload.data.dictionary) {
+      if (action.payload.data?.dictionary) {
         return {...state, dictionary: {...state.dictionary, ...action.payload.data.dictionary}};
       } else {
         return state;

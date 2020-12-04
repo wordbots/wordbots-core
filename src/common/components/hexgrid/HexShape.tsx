@@ -93,7 +93,7 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
           onNextStep={this.handleClickNextTutorialStep}
           onPrevStep={this.handleClickPrevTutorialStep}
           onEndTutorial={actions.onEndGame}
-          place={tutorialStep && tutorialStep.tooltip.place || 'above'}
+          place={tutorialStep?.tooltip.place || 'above'}
         >
           {this.renderHex()}
         </TutorialTooltip>

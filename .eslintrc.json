@@ -61,7 +61,7 @@
     }],
     "@typescript-eslint/no-unused-vars": [2, { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-var-requires": 0,
-    "@typescript-eslint/prefer-optional-chain": 1,
+    "@typescript-eslint/prefer-optional-chain": 2,
 
     "compat/compat": 2,
 
@@ -96,13 +96,13 @@
     "react/forbid-prop-types": [2, { "forbid": ["any", "array"] }],
     "react/jsx-boolean-value": 2,
     "react/jsx-no-bind": [2, { "ignoreRefs": true }],
-    "react/jsx-sort-props": 0,
     "react/jsx-wrap-multilines": [2, { "arrow": false }],
     "react/no-access-state-in-setstate": 2,
     "react/no-multi-comp": 2,
     "react/no-unused-prop-types": 2,
     "react/no-unused-state": 2,
     "react/no-will-update-set-state": 2,
+    "react/prefer-stateless-function": [1, { "ignorePureComponents": true }],
     "react/self-closing-comp": 2,
 
     "unicorn/filename-case": 0,
@@ -112,10 +112,8 @@
 
     /** Rules that we are disabling for now as part of the tslint->eslint transition
         TODO re-enable these when feasible. */
-    "react/prefer-stateless-function": [0, { "ignorePureComponents": true }],
     "react/no-did-mount-set-state": 0,
-    "react/no-did-update-set-state": 0,
-    "react/no-unescaped-entities": 0
+    "react/no-did-update-set-state": 0
   },
   "settings": {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"],

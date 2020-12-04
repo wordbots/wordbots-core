@@ -51,7 +51,7 @@ export default class Sfx extends React.Component<SfxProps, SfxState> {
   }
 
   private disableDebugMode = () => {
-    if (soundManager && soundManager.debugMode) {
+    if (soundManager?.debugMode) {
       soundManager.setup({ debugMode: false });
     }
   }

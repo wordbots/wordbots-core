@@ -76,7 +76,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       }
 
       function unadjustAttr(target: w.Object | w.CardInGame, att: w.Attribute | 'cost'): void {
-        if (target.temporaryStatAdjustments && target.temporaryStatAdjustments[att]) {
+        if (target.temporaryStatAdjustments?.[att]) {
           target.temporaryStatAdjustments[att] = target.temporaryStatAdjustments[att]!.filter((adj) =>
             adj.aid !== aid
           );

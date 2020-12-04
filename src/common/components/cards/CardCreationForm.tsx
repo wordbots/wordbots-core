@@ -304,7 +304,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                 text={this.props.text}
                 sentences={this.nonEmptySentences}
                 error={this.textError}
-                bigramProbs={this.state && this.state.bigramProbs}
+                bigramProbs={this.state?.bigramProbs}
                 onUpdateText={this.onUpdateText}
               />
             </div>

@@ -39,7 +39,7 @@ async function query(ref: string, child: string, value: string): Promise<firebas
 }
 async function queryObjects<T>(ref: string, child: string, value: string): Promise<T[]> {
   const snapshot = await query(ref, child, value);
-  return snapshot && snapshot.val() ? Object.values(snapshot.val() as Record<string, T>) : [];
+  return snapshot?.val() ? Object.values(snapshot.val() as Record<string, T>) : [];
 }
 
 // Users
@@ -60,7 +60,7 @@ export function lookupCurrentUser(): firebase.User | null {
 }
 
 export function lookupUsername(fallback = 'You'): string {
-  return (currentUser && currentUser.displayName) || fallback;
+  return currentUser?.displayName || fallback;
 }
 
 export function onLogin(callback: (user: firebase.User) => any): firebase.Unsubscribe {
@@ -283,7 +283,7 @@ export function saveReportedParseIssue(text: string): void {
   const issue = {
     text,
     date: fb.database.ServerValue.TIMESTAMP,
-    user: currentUser && currentUser.email
+    user: currentUser?.email
   };
 
   fb.database().ref('reportedParseIssues').push(issue);

@@ -172,9 +172,9 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 
     (c: w.CardInStore) => c.cost.toString(36),
     (c: w.CardInStore) => c.name.toLowerCase(),
     (c: w.CardInStore) => typeToString(c.type),
-    (c: w.CardInStore) => (c.stats && c.stats.attack || 0).toString(36),
-    (c: w.CardInStore) => (c.stats && c.stats.health || 0).toString(36),
-    (c: w.CardInStore) => (c.stats && c.stats.speed || 0).toString(36)
+    (c: w.CardInStore) => (c.stats?.attack || 0).toString(36),
+    (c: w.CardInStore) => (c.stats?.health || 0).toString(36),
+    (c: w.CardInStore) => (c.stats?.speed || 0).toString(36)
   ];
 
   // Sorting functions for card collections:
@@ -363,8 +363,8 @@ export function cardsFromJson(json: string, callback: (card: w.CardInStore) => a
       metadata: {
         ...card.metadata,
         ownerId: cardSourceForCurrentUser().uid,
-        source: (card.metadata && card.metadata.source) || cardSourceForCurrentUser(),
-        created: (card.metadata && card.metadata.created) || Date.now(),
+        source: (card.metadata?.source) || cardSourceForCurrentUser(),
+        created: (card.metadata?.created) || Date.now(),
         updated: Date.now(),
         importedFromJson: Date.now()
       }
@@ -385,15 +385,15 @@ export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource
     }
   }
 
-  const source: w.CardSource = (card.metadata && card.metadata.source) || normalizeSource((card as any).source);
+  const source: w.CardSource = card.metadata?.source || normalizeSource((card as any).source);
   const metadata: w.CardMetadata = {
     // Build metadata field for older cards without it
     ...card.metadata,
-    ownerId: (card.metadata && card.metadata.ownerId) || (explicitSource && explicitSource.uid) || source.uid,
+    ownerId: card.metadata?.ownerId || explicitSource?.uid || source.uid,
     source,
-    updated: (card.metadata && card.metadata.updated) || (card as any).timestamp,
-    duplicatedFrom: (card.metadata && card.metadata.duplicatedFrom) || (source as any).duplicatedFrom,
-    isPrivate: (card.metadata && card.metadata.isPrivate) || false
+    updated: (card.metadata?.updated) || (card as any).timestamp,
+    duplicatedFrom: (card.metadata?.duplicatedFrom) || (source as any).duplicatedFrom,
+    isPrivate: (card.metadata?.isPrivate) || false
   };
 
   return { ...card, metadata };

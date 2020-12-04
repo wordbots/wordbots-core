@@ -286,7 +286,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
   private urlMatchesGameMode = (mode: string) => {
     const { location } = this.props;
-    return location && location.pathname.startsWith(urlForGameMode(mode));
+    return location?.pathname.startsWith(urlForGameMode(mode));
   }
 
   private handleToggleFullScreen = () => {

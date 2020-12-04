@@ -269,7 +269,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         // 1. location state (passed through the router, if a link was just followed)
         // 2. redux state (if the card is in the player's collection)
         // 3. firebase (async lookup)
-        const cardFromRouter = location.state && location.state.card && (location.state.card.id === cardId) ? location.state.card as w.CardInStore : undefined;
+        const cardFromRouter = location.state?.card?.id === cardId ? location.state.card as w.CardInStore : undefined;
         const card: w.CardInStore | undefined = cardFromRouter || find(cards, { id: cardId }) || await getCardById(cardId);
 
         if (card) {

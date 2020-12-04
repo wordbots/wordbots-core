@@ -116,13 +116,13 @@ export function playObject(
   player.hand = [card].concat(player.hand as w.CardInStore[]);
   player.energy.available += card.cost;
 
-  if (target && target.hex) {
+  if (target?.hex) {
     return game(state, [
       gameActions.setSelectedCard(0, playerName),
       gameActions.placeCard(hex, 0),
       gameActions.setSelectedTile(target.hex, playerName)
     ]);
-  } else if (target && target.card) {
+  } else if (target?.card) {
     const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name])! : (target.card as number);
     return game(state, [
       gameActions.setSelectedCard(0, playerName),
@@ -215,7 +215,7 @@ export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, t
     state = newTurn(state, player.name);
   }
 
-  if (target && target.hex) {
+  if (target?.hex) {
     return game(state, [
       gameActions.setSelectedTile(hex, player.name),
       gameActions.activateObject(abilityIdx),

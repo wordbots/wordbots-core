@@ -5,7 +5,7 @@ import * as ReactGA from 'react-ga';
 // tslint:disable no-typeof-undefined
 
 declare const window: {
-  location: { pathname: string }
+  location: { pathname: string, hostname: string }
   process?: { title: string, env: { NODE_ENV: string, JEST_WORKER_ID?: string } }
 };
 
@@ -20,6 +20,10 @@ export function inBrowser(): boolean {
     (window.process && window.process.title.includes('node')) ||
     (window.process && window.process.title.includes('test')) ||
     (window.process && window.process.env.JEST_WORKER_ID !== undefined));
+}
+
+export function onLocalhost(): boolean {
+  return inBrowser() && window.location.hostname === 'localhost';
 }
 
 export function inTest(): boolean {

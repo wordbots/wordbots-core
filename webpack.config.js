@@ -59,9 +59,7 @@ const webpackConfig = {
     new CopyWebpackPlugin([{from: 'static'}]),
     new webpack.IgnorePlugin(/canvas/),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),  // Ignore all locale files of moment.js
-    new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify(NODE_ENV) }
-    })
+    new webpack.EnvironmentPlugin({ NODE_ENV: 'development', PARSER: null, FIREBASE_DB: null })
   ]),
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']

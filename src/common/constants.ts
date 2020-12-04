@@ -2,8 +2,11 @@ import { capitalize, fromPairs, invert, isNil } from 'lodash';
 
 import { GridConfig } from './components/hexgrid/types';
 import { CardType, Format, HexId } from './types';
+import { inBrowser } from './util/browser';
 
 // Debug flags.
+// Note that you can use the env vars PARSER={local,staging,live} FIREBASE_DB={staging,production}
+// to switch out the parser server and Firebase DB endpoints locally ('staging' is default for both).
 
 export const ALWAYS_ENABLE_DEV_TOOLS = true;
 export const LOG_SOCKET_IO = false;
@@ -12,13 +15,45 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
-const USE_STAGING_PARSER = false;  // Note: USE_STAGING_PARSER overrides USE_LOCAL_PARSER_ON_LOCALHOST
-const USE_LOCAL_PARSER_ON_LOCALHOST = true;
-const LOCAL_PARSER_PORT = 8080;
 
 // Server settings.
 
-export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to try until all the bugs are worked out!
+export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to true until all the bugs are worked out!
+
+// DB.
+
+const FIREBASE_PROD_CONFIG = {
+  apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
+  authDomain: 'wordbots.firebaseapp.com',
+  databaseURL: 'https://wordbots.firebaseio.com',
+  projectId: 'wordbots',
+  storageBucket: 'wordbots.appspot.com',
+  messagingSenderId: '913868073872'
+};
+
+const FIREBASE_STAGING_CONFIG = {
+  apiKey: "AIzaSyCNa7SYKFX91T_UPSXK5SBHfLTL2QSAH5A",  // Note that this is the client API key, with very limited permissions
+  authDomain: "wordbots-staging.firebaseapp.com",
+  databaseURL: "https://wordbots-staging.firebaseio.com",
+  projectId: "wordbots-staging",
+  storageBucket: "wordbots-staging.appspot.com",
+  messagingSenderId: "755003910639",
+  appId: "1:755003910639:web:777afce7e570ea691c6e1a"
+};
+
+export const FIREBASE_CONFIG = (() => {
+  if (inBrowser()) {
+    if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+      // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
+      return FIREBASE_PROD_CONFIG;
+    } else if (window.location.hostname === 'localhost') {
+      // On localhost, default to staging DB unless otherwise specified
+      return process.env.FIREBASE_DB === 'production' ? FIREBASE_PROD_CONFIG : FIREBASE_STAGING_CONFIG;
+    }
+  }
+
+  return FIREBASE_STAGING_CONFIG; // otherwise, default to staging DB
+})();
 
 // Game rules.
 
@@ -109,10 +144,30 @@ export function stringToType(str: string): CardType {
 
 // Parsing.
 
-const shouldUseLocalParser = USE_LOCAL_PARSER_ON_LOCALHOST && typeof window !== 'undefined' && window.location.hostname === 'localhost';  // tslint:disable-line no-typeof-undefined
-const liveParserUrl = '//parser.wordbots.io';
-const stagingParserUrl = '//wordbots-parser-staging.herokuapp.com';
-export const PARSER_URL = USE_STAGING_PARSER ? stagingParserUrl : (shouldUseLocalParser ? `http://localhost:${LOCAL_PARSER_PORT}` : liveParserUrl);
+const LIVE_PARSER_URL = '//parser.wordbots.io';
+const STAGING_PARSER_URL = '//parser-staging.wordbots.io';
+const LOCAL_PARSER_URL = 'http://localhost:8080';
+
+export const PARSER_URL: string = (() => {
+  if (inBrowser()) {
+    if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+      // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
+      return LIVE_PARSER_URL;
+    } else if (window.location.hostname === 'localhost') {
+      // On localhost, default to staging parser unless otherwise specified
+      if (process.env.PARSER === 'local') {
+        return LOCAL_PARSER_URL;
+      } else if (process.env.PARSER === 'live') {
+        return LIVE_PARSER_URL;
+      } else {
+        return STAGING_PARSER_URL;
+      }
+    }
+  }
+
+  return STAGING_PARSER_URL;  // otherwise default to staging parser
+})();
+
 export const PARSE_DEBOUNCE_MS = 500;
 
 export const SYNONYMS = {

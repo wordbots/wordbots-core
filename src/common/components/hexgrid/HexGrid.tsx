@@ -1,4 +1,4 @@
-import { chain as _ } from 'lodash';
+import { flow, map, sortBy, toPairs } from 'lodash/fp';
 import * as React from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
@@ -92,10 +92,10 @@ export default class HexGrid extends React.Component<HexShapeProps> {
     return (
       <TransitionGroup component="g">
         {
-          _(this.props.pieces)
-            .toPairs()
-            .sortBy(([_hex, piece]) => piece.id)
-            .map(([hex, piece]) => (
+          flow(
+            toPairs,
+            sortBy(([_hex, piece]) => piece.id),
+            map(([hex, piece]) => (
               <CSSTransition
                 key={piece.id}
                 classNames="hex-piece"
@@ -109,7 +109,7 @@ export default class HexGrid extends React.Component<HexShapeProps> {
                 />
               </CSSTransition>
             ))
-            .value()
+          )(this.props.pieces)
         }
       </TransitionGroup>
     );

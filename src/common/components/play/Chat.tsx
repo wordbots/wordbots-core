@@ -1,4 +1,5 @@
-import { chain as _, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
+import { flow, groupBy, map, sortBy } from 'lodash/fp';
 import Divider from 'material-ui/Divider';
 import Drawer from 'material-ui/Drawer';
 import FontIcon from 'material-ui/FontIcon';
@@ -99,11 +100,11 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
       cards: Object.assign({}, ...msgs.map((m) => m.cards))
     });
 
-    return _(messages)
-            .groupBy((msg) => msg.id || id())
-            .map(join)
-            .sortBy('timestamp')
-            .value();
+    return flow(
+      groupBy((msg: w.ChatMessage) => msg.id || id()),
+      map(join),
+      sortBy('timestamp')
+    )(messages);
   }
 
   private filterMessage = (message: w.ChatMessage) => {

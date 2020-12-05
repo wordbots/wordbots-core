@@ -1,5 +1,5 @@
 import {
-  chain as _, compact, filter, findKey, flatMap,
+  compact, filter, findKey, flatMap,
   intersection, isArray, isString, isUndefined, mapValues, noop, remove, some, times, uniqBy
 } from 'lodash';
 
@@ -252,7 +252,7 @@ export function validAttackHexes(state: w.GameState, startHex: Hex): Hex[] {
   }
 
   const validMoveHexes = [startHex].concat(validMovementHexes(state, startHex));
-  const potentialAttackHexes = _(validMoveHexes).flatMap(getAdjacentHexes).uniqBy(HexUtils.getID).value();
+  const potentialAttackHexes = uniqBy(flatMap(validMoveHexes, getAdjacentHexes), HexUtils.getID);
 
   return potentialAttackHexes.filter((hex) => allowedToAttack(state, object, hex));
 }

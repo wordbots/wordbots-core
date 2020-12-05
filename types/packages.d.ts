@@ -8,4 +8,4 @@ declare module 'react-web-notification';
 declare module 'repng';
 declare module 'screenfull';  // Not sure why TS isn't picking up the @types/screenfull package
 declare module 'seed-shuffle';
-declare module 'trianglify';
+declare module '@wordbots/trianglify-no-canvas';

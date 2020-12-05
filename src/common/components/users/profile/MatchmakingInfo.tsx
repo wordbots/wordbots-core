@@ -1,6 +1,7 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import { chain as _, isNil } from 'lodash';
+import { isNil } from 'lodash';
+import { flow, groupBy, map, slice, sortBy } from 'lodash/fp';
 import * as React from 'react';
 
 import * as w from '../../../types';
@@ -26,18 +27,18 @@ class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles>
   get resultsByFormat(): FormatResults[] {
     const { games, userId } = this.props;
 
-    return _(games)
-      .groupBy((g: w.SavedGame) => GameFormat.decode(g.format).name)
-      .values()
-      .map((gamesInFormat: w.SavedGame[]) => ({
+    return flow(
+      groupBy((g: w.SavedGame) => GameFormat.decode(g.format).name),
+      Object.values,
+      map((gamesInFormat: w.SavedGame[]) => ({
         format: GameFormat.decode(gamesInFormat[0].format),
         numGames: gamesInFormat.length,
         numWins: gamesInFormat.filter((g) => g.winner && g.winner !== 'draw' && g.players[g.winner] === userId).length,
         numLosses: gamesInFormat.filter((g) => g.winner && g.winner !== 'draw' && g.players[g.winner] !== userId).length
-      }))
-      .sortBy((results) => -results.numGames)
-      .slice(0, 5)
-      .value();
+      })),
+      sortBy((results) => -results.numGames),
+      slice(0, 5)
+    )(games);
   }
 
   public render(): JSX.Element {

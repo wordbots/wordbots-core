@@ -1,7 +1,8 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { chain as _, compact, flatten, uniq, zipObject } from 'lodash';
+import { compact, flatten, uniq, zipObject } from 'lodash';
+import { countBy, filter, flatMap, flow, map, sortBy, toPairs } from 'lodash/fp';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
@@ -152,14 +153,14 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     const gamesPlayed = recentGames.length;
 
     // TODO break this chunk out into its own method
-    const favoriteOpponentIds = _(recentGames)
-      .flatMap((g) => Object.values(g.players))
-      .countBy()
-      .toPairs()
-      .sortBy(([_playerId, count]) => -count)
-      .map(([playerId, _count]) => playerId)
-      .filter((playerId) => playerId !== userId && !playerId.startsWith('guest'))
-      .value();
+    const favoriteOpponentIds: string[] = flow(
+      flatMap((g: w.SavedGame) => Object.values(g.players)),
+      countBy,
+      toPairs,
+      sortBy(([_playerId, count]) => -count),
+      map(([playerId, _count]) => playerId),
+      filter((playerId: string) => playerId !== userId && !playerId.startsWith('guest'))
+    )(recentGames);
     const [favoriteOpponentName] = await getUserNamesByIds(favoriteOpponentIds.slice(0, 1));
     const favoriteOpponent = favoriteOpponentName && <ProfileLink className="underline" uid={favoriteOpponentIds[0]} username={favoriteOpponentName} />;
 

@@ -1,4 +1,4 @@
-import { chain as _ } from 'lodash';
+import { flatMap, flow, slice, sortBy } from 'lodash/fp';
 import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
@@ -21,22 +21,23 @@ interface CardTextFieldProps {
 export default class CardTextField extends React.Component<CardTextFieldProps> {
   get textSuggestions(): Array<{ original: string, suggestion: string }> {
     const { bigramProbs, sentences } = this.props;
-    if (bigramProbs) {
-      return _(sentences)
-              .flatMap((s: w.Sentence) =>
-                (s.result.suggestions || []).map((suggestion) =>
-                  ({
-                    original: s.sentence.trim(),
-                    suggestion: contractKeywords(suggestion)
-                  })
-                )
-              )
-              .sortBy(({ suggestion }) => bigramNLL(suggestion, bigramProbs))
-              .slice(0, 5)
-              .value();
-    } else {
+
+    if (!bigramProbs) {
       return [];
     }
+
+    return flow(
+      flatMap((s: w.Sentence) =>
+        (s.result.suggestions || []).map((suggestion) =>
+          ({
+            original: s.sentence.trim(),
+            suggestion: contractKeywords(suggestion)
+          })
+        )
+      ),
+      sortBy(({ suggestion }) => bigramNLL(suggestion, bigramProbs)),
+      slice(0, 5)
+    )(sentences);
   }
 
   public render(): JSX.Element {

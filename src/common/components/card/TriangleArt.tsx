@@ -1,5 +1,5 @@
 import * as React from 'react';
-import trianglify from 'trianglify';
+import trianglify from '@wordbots/trianglify-no-canvas';
 
 import { inBrowser } from '../../util/browser';
 

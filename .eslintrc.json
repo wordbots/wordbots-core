@@ -22,7 +22,6 @@
     "eslint-plugin-import",
     "eslint-plugin-jest",
     "eslint-plugin-lodash",
-    "eslint-plugin-prefer-arrow",
     "eslint-plugin-promise",
     "eslint-plugin-react",
     "eslint-plugin-unicorn"

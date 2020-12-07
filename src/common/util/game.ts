@@ -193,7 +193,7 @@ export function allHexIds(): w.HexId[] {
 }
 
 export function getHex(state: w.GameState, object: w.Object): w.HexId | undefined {
-  return findKey(allObjectsOnBoard(state), ['id', object.id]);
+  return findKey(allObjectsOnBoard(state), ['id', object.id]) || state.objectsDestroyedThisTurn[object.id];
 }
 
 export function getAdjacentHexes(hex: Hex): Hex[] {
@@ -413,6 +413,7 @@ function endTurn(state: w.GameState): w.GameState {
   state = triggerEvent(state, 'endOfTurn', {player: true});
   state = checkVictoryConditions(state);
   state.currentTurn = opponentName(state);
+  state.objectsDestroyedThisTurn = {};
 
   return state;
 }
@@ -581,6 +582,8 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
       const targets: w.Targetable[] = ability.currentTargets!.entries;
       targets.forEach(ability.unapply);
     });
+
+  state.objectsDestroyedThisTurn[object.id] = hex;
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);

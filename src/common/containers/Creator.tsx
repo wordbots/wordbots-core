@@ -7,6 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { object } from 'prop-types';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -65,6 +66,7 @@ type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentPro
 
 interface CreatorState {
   cardOpenedForEditing?: w.CardInStore
+  isPermalinkCopied: boolean
   loaded: boolean
 }
 
@@ -139,7 +141,8 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   };
 
   public state: CreatorState = {
-    loaded: false
+    loaded: false,
+    isPermalinkCopied: false
   };
 
   get isCardEditable(): boolean {
@@ -153,6 +156,10 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     return true;
   }
 
+  get permalinkUrl(): string {
+    return window.location.href;
+  }
+
   public componentDidMount(): void {
     this.maybeLoadCard();
   }
@@ -161,7 +168,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element | null {
-    const { cardOpenedForEditing, loaded } = this.state;
+    const { cardOpenedForEditing, isPermalinkCopied, loaded } = this.state;
 
     if (!loaded) {
       return null;
@@ -180,6 +187,19 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           style={{ marginLeft: 40, marginTop: 9 }}
           onClick={this.handleClickNewCard}
         />
+
+        {
+          cardOpenedForEditing && 
+          <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
+            <RaisedButton
+              label={isPermalinkCopied ? 'Copied!' : 'Copy Permalink'}
+              labelPosition="after"
+              primary
+              icon={<FontIcon style={{ margin: '0 5px 0 15px' }} className="material-icons">link</FontIcon>}
+              style={{ marginLeft: 10, marginTop: 9 }}
+            />
+          </CopyToClipboard>
+        }
 
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div style={{width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32}}>
@@ -318,6 +338,10 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     if (redirectToCollection) {
       history.push('/collection');
     }
+  }
+
+  private afterCopyPermalink = () => {
+    this.setState({ isPermalinkCopied: true });
   }
 }
 

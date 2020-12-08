@@ -40,7 +40,7 @@ type PlayProps = PlayStateProps & PlayDispatchProps & { history: History };
 
 export function mapStateToProps(state: w.State): PlayStateProps {
   return {
-    started: state.game.started || state.game.sandbox,
+    started: state.game.started,
     actionLog: state.game.actionLog,
 
     socket: state.socket,

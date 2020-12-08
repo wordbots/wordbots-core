@@ -278,7 +278,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             winnerName={(winner && winner !== 'draw') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
-          {tutorialStep && tutorialStep.idx === 0 && <TutorialIntroScreen onClickEndGame={onClickEndGame} />}
+          {isTutorial && tutorialStep?.idx === 0 && <TutorialIntroScreen onClickEndGame={onClickEndGame} />}
         </Paper>
 
         {this.renderSidebar()}

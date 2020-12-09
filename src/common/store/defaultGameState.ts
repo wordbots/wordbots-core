@@ -77,6 +77,7 @@ const defaultGameState: w.GameState = {
   usernames: { blue: '', orange: '' },
   actionLog: [],
   attack: null,
+  objectsDestroyedThisTurn: {},
   memory: {},
   sfxQueue: [],
   eventQueue: [],

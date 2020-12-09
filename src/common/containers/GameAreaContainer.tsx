@@ -298,10 +298,10 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   private handleEndGame = () => {
-    const { onEndGame, onLeave, winner } = this.props;
+    const { isSandbox, isTutorial, onEndGame, onLeave, winner } = this.props;
 
     onEndGame();
-    if (!winner) {
+    if (!winner && !isSandbox && !isTutorial) {
       onLeave();
     }
   }

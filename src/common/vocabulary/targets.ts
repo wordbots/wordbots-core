@@ -21,6 +21,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
   // Currently salient object
   // Note: currentObject has higher salience than state.it .
   //       (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
+  /* eslint-disable jest/no-disabled-tests */  // eslint gets confused because of the it() function
   function it(): w.ObjectCollection | w.CardInHandCollection {
     if (currentObject) {
       return { type: 'objects', entries: [currentObject] } as w.ObjectCollection;
@@ -124,7 +125,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    controllerOf: (objects: w.ObjectCollection): w.PlayerCollection => 
+    controllerOf: (objects: w.ObjectCollection): w.PlayerCollection =>
       // Assume that only one object is ever passed in here.
        ({
         type: 'players',
@@ -132,7 +133,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       })
     ,
 
-    copyOf: (collection: w.ObjectCollection): w.CardInHandCollection => 
+    copyOf: (collection: w.ObjectCollection): w.CardInHandCollection =>
       // Assume that exactly one object is ever passed in here.
       // TODO Also support copyOf on CardInHandCollection.
        ({
@@ -158,7 +159,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     },
 
     // Currently salient object.
-    it: (): w.ObjectCollection | w.CardInHandCollection => 
+    it: (): w.ObjectCollection | w.CardInHandCollection =>
       /* console.log({
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null

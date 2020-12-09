@@ -28,7 +28,7 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
 
   get tutorialTooltipEnabled(): boolean {
     const { tutorialStep } = this.props;
-    return !!tutorialStep && tutorialStep.tooltip.location === 'endTurnButton';
+    return tutorialStep?.tooltip?.location === 'endTurnButton';
   }
 
   public render(): JSX.Element {

@@ -65,7 +65,8 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
   }
 
   get shouldRenderTutorialTooltip(): boolean {
-    return !!this.props.tutorialStep && (HexUtils.getID(this.props.hex) === this.props.tutorialStep.tooltip.hex);
+    const { hex, tutorialStep } = this.props;
+    return HexUtils.getID(hex) === tutorialStep?.tooltip?.hex;
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: HexShapeProps): void {

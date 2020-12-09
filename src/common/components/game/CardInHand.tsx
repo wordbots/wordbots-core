@@ -38,7 +38,7 @@ export default class CardInHand extends React.Component<CardInHandProps> {
       return (
         <TutorialTooltip
           tutorialStep={tutorialStep}
-          enabled={tutorialStep && tutorialStep.tooltip.card === name}
+          enabled={tutorialStep?.tooltip?.card === name}
           onNextStep={this.handleClickNextStep}
           onPrevStep={this.handleClickPrevStep}
         >

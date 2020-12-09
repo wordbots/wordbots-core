@@ -182,7 +182,7 @@ describe('Game reducer', () => {
       state = attack(state, blueTwoBotPos, orangeAttackBotPos);
       blueTwoBotPos = orangeAttackBotPos;
       expect(
-        state.players.blue.robotsOnBoard[blueTwoBotPos].card.name
+        state.players.blue.objectsOnBoard[blueTwoBotPos].card.name
       ).toEqual('Two Bot');
       expect(
         Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()
@@ -542,7 +542,7 @@ describe('Game reducer', () => {
       // Card draw.
       state = newTurn(state, 'orange');
       currentHandSize = handSize();
-      // console.log(state.players.orange.robotsOnBoard['-3,1,2']);
+      // console.log(state.players.orange.objectsOnBoard['-3,1,2']);
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize + 1);
 

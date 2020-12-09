@@ -125,7 +125,7 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         <Hand
           // curved
           opponent={opponent}
-          selectedCard={gameProps.selectedCard}
+          selectedCard={gameProps.selectedCard!}
           targetableCards={gameProps.target.possibleCardsInHand}
           isActivePlayer={gameProps.player === color || gameProps.isSandbox}
           cards={this.hand}

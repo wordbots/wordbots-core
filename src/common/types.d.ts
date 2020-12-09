@@ -270,12 +270,12 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
+  color: PlayerColor
   deck: PossiblyObfuscatedCard[]
   discardPile: CardInGame[]
   energy: PlayerEnergy
   hand: PossiblyObfuscatedCard[]
-  name: PlayerColor
-  robotsOnBoard: Record<string, _Object>
+  objectsOnBoard: Record<string, _Object>
   selectedCard: number | null
   selectedTile: HexId | null
   status: PlayerStatus

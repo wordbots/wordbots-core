@@ -110,7 +110,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
             player.target.possibleCardsInDiscardPile = (collection as w.CardInDiscardPileCollection).entries.map((card) => card.id);
           }
 
-          state.players[player.name] = player;
+          state.players[player.color] = player;
         }
 
         return {type: collection.type, entries: []} as w.Collection as T;
@@ -172,7 +172,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     opponent: (): w.PlayerCollection => {
       if (currentObject) {
-        return {type: 'players', entries: [state.players[opponent(ownerOf(state, currentObject)!.name)]]};
+        return {type: 'players', entries: [state.players[opponent(ownerOf(state, currentObject)!.color)]]};
       } else {
         return {type: 'players', entries: [opponentPlayer(state)]};
       }

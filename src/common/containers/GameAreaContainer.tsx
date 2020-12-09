@@ -11,7 +11,7 @@ import * as socketActions from '../actions/socket';
 import GameArea, { GameProps } from '../components/game/GameArea';
 import { AI_RESPONSE_TIME_MS, ANIMATION_TIME_MS } from '../constants';
 import { isCardVisible } from '../guards';
-import { arbitraryPlayerState } from '../store/defaultGameState';
+import { defaultTarget } from '../store/defaultGameState';
 import * as w from '../types';
 import { shuffleCardsInDeck } from '../util/cards';
 import { animate } from '../util/common';
@@ -20,7 +20,7 @@ import { currentTutorialStep } from '../util/game';
 import { baseGameUrl, urlForGameMode } from './Play';
 
 type GameAreaStateProps = GameProps & {
-  selectedCard: any
+  selectedCard: number | null
   started: boolean
 };
 
@@ -61,12 +61,10 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
   const { game } = state;
 
   const currentPlayer = game.players[game.currentTurn];
-  const activePlayer: w.PlayerInGameState = (
-    game.sandbox
-      ? currentPlayer
-      : (game.player !== 'neither' && game.players[game.player] || arbitraryPlayerState())
-  );
-  const currentPlayerSelectedCard: w.PossiblyObfuscatedCard | null = currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard] : null;
+  const activePlayer: w.PlayerInGameState | null =
+    game.player === 'neither' ? null : (game.sandbox ? currentPlayer : game.players[game.player]);
+  const currentPlayerSelectedCard: w.PossiblyObfuscatedCard | null =
+    currentPlayer.selectedCard ? currentPlayer.hand[currentPlayer.selectedCard] : null;
 
   return {
     started: game.started,
@@ -76,19 +74,19 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     winner: game.winner,
     gameOptions: game.options,
 
-    selectedTile: activePlayer.selectedTile,
-    selectedCard: activePlayer.selectedCard,
+    selectedTile: activePlayer?.selectedTile || null,
+    selectedCard: activePlayer?.selectedCard || null,
     playingCardType: currentPlayerSelectedCard && isCardVisible(currentPlayerSelectedCard) ? currentPlayerSelectedCard.type : null,
 
-    status: activePlayer.status,
-    target: activePlayer.target,
+    status: activePlayer?.status || { message: '', type: '' },
+    target: activePlayer?.target || defaultTarget(),
     attack: game.attack,
 
     blueHand: game.players.blue.hand,
     orangeHand: game.players.orange.hand,
 
-    bluePieces: game.players.blue.robotsOnBoard,
-    orangePieces: game.players.orange.robotsOnBoard,
+    bluePieces: game.players.blue.objectsOnBoard,
+    orangePieces: game.players.orange.objectsOnBoard,
 
     blueEnergy: game.players.blue.energy,
     orangeEnergy: game.players.orange.energy,
@@ -339,7 +337,10 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   private placePiece = (hexId: w.HexId) => {
-    this.props.onPlaceRobot(hexId, this.props.selectedCard);
+    const { selectedCard, onPlaceRobot } = this.props;
+    if (selectedCard !== null) {
+      onPlaceRobot(hexId, selectedCard);
+    }
   }
 
   private onSelectTile = (hexId: w.HexId, action: 'move' | 'attack' | 'place' | null = null, intermediateMoveHexId: w.HexId | null = null) => {

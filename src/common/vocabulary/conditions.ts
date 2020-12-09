@@ -42,7 +42,7 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
 
     controlledBy: (players: w.PlayerCollection): ObjectCondition => {
       const player = players.entries[0]; // Unpack player target.
-      return ((hexId, _obj) => has(player.robotsOnBoard, hexId));
+      return ((hexId, _obj) => has(player.objectsOnBoard, hexId));
     },
 
     exactDistanceFrom: (distance: number, targets: w.ObjectCollection | w.HexCollection): ObjectCondition => {

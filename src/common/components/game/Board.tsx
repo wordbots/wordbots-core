@@ -2,7 +2,7 @@ import { forOwn, isString, mapValues } from 'lodash';
 import * as React from 'react';
 
 import { BLUE_PLACEMENT_HEXES, GRID_CONFIG, ORANGE_PLACEMENT_HEXES, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
-import defaultGameState, { arbitraryPlayerState } from '../../store/defaultGameState';
+import defaultGameState, { bluePlayerState, orangePlayerState } from '../../store/defaultGameState';
 import * as w from '../../types';
 import {
   canActivate, getAttribute, intermediateMoveHexId, movesLeft, ownerOf,
@@ -51,8 +51,8 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     return {
       ...defaultGameState,
       players: {
-        blue: {...arbitraryPlayerState(), name: 'blue', robotsOnBoard: this.props.bluePieces},
-        orange: {...arbitraryPlayerState(), name: 'orange', robotsOnBoard: this.props.orangePieces}
+        blue: {...bluePlayerState([]), objectsOnBoard: this.props.bluePieces},
+        orange: {...orangePlayerState([]), objectsOnBoard: this.props.orangePieces}
       }
     };
   }
@@ -128,7 +128,7 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     color(ORANGE_PLACEMENT_HEXES, 'orange');
 
     forOwn(this.allPieces, (piece, hex) => {
-      const owner = ownerOf(this.dummyGameState, piece)!.name;
+      const owner = ownerOf(this.dummyGameState, piece)!.color;
       const canMove = (owner === this.props.currentTurn) && this.hasValidActions(HexUtils.IDToHex(hex));
 
       color([hex], `${canMove ? 'bright_' : ''}${owner}` as 'blue' | 'bright_blue' | 'orange' | 'bright_orange');

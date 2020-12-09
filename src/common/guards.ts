@@ -14,7 +14,7 @@ export function isCardInGame(target: w.Targetable): target is w.CardInGame {
 }
 
 export function isPlayerState(target: w.Targetable): target is w.PlayerInGameState {
-  return !isNil(target) && (target as w.PlayerInGameState).robotsOnBoard !== undefined;
+  return !isNil(target) && (target as w.PlayerInGameState).objectsOnBoard !== undefined;
 }
 
 export function isObjectCollection(collection: w.Collection): collection is w.ObjectCollection {

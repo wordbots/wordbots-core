@@ -2,11 +2,10 @@
   "rules": {
     "users": {
       "$uid": {
-      	/* deprecated: all fields except user/$uid/info */
-        ".write": "auth != null && auth.uid === $uid",
         "info": {
           "displayName": {
-            ".read": "true"
+            ".read": "true",
+            ".write": "auth != null && auth.uid === $uid"
           }
         },
         "achievements": {
@@ -27,14 +26,6 @@
         ".write": "auth != null && (!newData.exists() || newData.child('metadata/authorId').val() == auth.uid) && (!data.exists() || (data.child('metadata/authorId').val() == auth.uid && (!newData.exists() || data.child('metadata/isPublished').val() != true)))"
       },
       ".indexOn": ["timestamp", "metadata/authorId", "metadata/numDecksCreated"]
-    },
-    "recentCards": {
-      /* deprecated */
-      ".read": "true",
-      "$key": {
-        ".write": "!data.exists()"
-      },
-      ".indexOn": "timestamp"
     },
     "cards": {
       ".read": "true",

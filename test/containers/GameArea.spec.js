@@ -69,15 +69,15 @@ describe('GameArea container', () => {
 
     expect(paper.props.children).toEqual([
       ...getCommonGameAreaComponents(state, gameInner, dom),
-      undefined
+      null
     ]);
   });
 
   it('renders the default game state in tutorial mode', () => {
     const state = combineState(getDefaultState());
 
-    const testTutorialStep = { idx: 0 }; 
-    const game = createGameArea(state, undefined, { tutorialStep: testTutorialStep});
+    const testTutorialStep = { idx: 0 };
+    const game = createGameArea(state, undefined, { isTutorial: true, tutorialStep: testTutorialStep });
 
     // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
     const gameInner = renderElement(game);

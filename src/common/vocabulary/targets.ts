@@ -1,4 +1,4 @@
-import { compact, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
+import { compact, flatMap, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
 import { pick } from 'shuffle-array';
 
 import { stringToType } from '../constants';
@@ -241,6 +241,20 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    thisRobot: (): w.ObjectCollection => ({type: 'objects', entries: [currentObject!]})
+    // Prioritize currentObject,
+    // but also allow falling back to the currently salient object, if any.
+    thisRobot: (): w.ObjectCollection => {
+      if (currentObject) {
+        return { type: 'objects', entries: [currentObject] };
+      } else if (state.it && g.isObject(state.it)) {
+        return { type: 'objects', entries: [state.it] };
+      } else {
+        return { type: 'objects', entries: [] };
+      }
+    },
+
+    union: (collections: w.ObjectCollection[]): w.ObjectCollection => (
+      { type: 'objects', entries: flatMap(collections, 'entries') }
+    ),
   };
 }

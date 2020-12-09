@@ -85,4 +85,19 @@ describe('[vocabulary.targets]', () => {
       ).toEqual(['One Bot']);
     });
   });
+
+  describe('thisRobot', () => {
+    it('falls back to `it` when there is no currentObject', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
+      state = playObject(state, 'orange', cards.oneBotCard, '2,-1,-3');
+
+      const fragGrenadeAltCard = event(
+        "Deal 3 damage to a robot and all adjacent robots",
+        "(function () { actions['dealDamage'](targets['union']([ targets['choose'](objectsMatchingConditions('robot', [])), objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]) ]), 3); })"
+      );
+      state = playEvent(state, 'blue', fragGrenadeAltCard, [{ hex: '3,-1,-2' }]);
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+    });
+  });
 });

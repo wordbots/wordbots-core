@@ -270,7 +270,6 @@ export interface GameOptions {
 }
 
 export interface PlayerInGameState {
-  collection: PossiblyObfuscatedCard[]
   deck: PossiblyObfuscatedCard[]
   discardPile: CardInGame[]
   energy: PlayerEnergy

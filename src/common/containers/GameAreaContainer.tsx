@@ -75,7 +75,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     gameOptions: game.options,
 
     selectedTile: activePlayer?.selectedTile || null,
-    selectedCard: activePlayer?.selectedCard || null,
+    selectedCard: activePlayer ? activePlayer.selectedCard : null,
     playingCardType: currentPlayerSelectedCard && isCardVisible(currentPlayerSelectedCard) ? currentPlayerSelectedCard.type : null,
 
     status: activePlayer?.status || { message: '', type: '' },
@@ -108,7 +108,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     isSandbox: game.sandbox,
     isMyTurn: game.currentTurn === game.player,
     isSpectator: game.player === 'neither',
-    isAttackHappening: !!game.attack && !!game.attack.from && !!game.attack.to,
+    isAttackHappening: !!game.attack?.from && !!game.attack?.to,
 
     actionLog: game.actionLog,
     collection: state.collection,

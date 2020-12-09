@@ -64,7 +64,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
   const activePlayer: w.PlayerInGameState | null =
     game.player === 'neither' ? null : (game.sandbox ? currentPlayer : game.players[game.player]);
   const currentPlayerSelectedCard: w.PossiblyObfuscatedCard | null =
-    currentPlayer.selectedCard ? currentPlayer.hand[currentPlayer.selectedCard] : null;
+    currentPlayer.selectedCard !== null ? currentPlayer.hand[currentPlayer.selectedCard] : null;
 
   return {
     started: game.started,

@@ -27,7 +27,7 @@
     "test:types": "tsc --skipLibCheck --noEmit",
     "test:integration": "jest integration",
     "test:integration:watch": "yarn test:integration --watch",
-    "test:unit": "jest --testPathIgnorePatterns integration",
+    "test:unit": "jest --testPathIgnorePatterns integration --testPathPattern",
     "test:unit:coverage": "yarn test:unit --coverage",
     "test:unit:watch": "yarn test:unit --watch"
   },

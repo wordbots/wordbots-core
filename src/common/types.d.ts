@@ -211,6 +211,7 @@ export interface GameState {
   eventQueue: CardInGame[]
   gameFormat: Format
   memory: Record<string, any>
+  objectsDestroyedThisTurn: Record<string, HexId>  // object id -> last hex id
   options: GameOptions
   player: PlayerColor | 'neither'
   players: PerPlayer<PlayerInGameState>

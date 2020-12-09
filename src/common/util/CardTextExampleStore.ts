@@ -10,11 +10,15 @@ export default class CardTextExampleStore {
     object: []
   };
 
-  public getExample = (mode: w.ParserMode): string => {
+  public getExample = (mode: w.ParserMode): string | null => {
     const examples = this.examples[mode];
-    const idx = random(0, examples.length - 1);
-    const example = pullAt(examples, idx)[0];
-    return `${example}.`;
+    if (examples.length > 0) {
+      const idx = random(0, examples.length - 1);
+      const example = pullAt(examples, idx)[0];
+      return `${example}.`;
+    } else {
+      return null;
+    }
   }
 
   public loadExamples = (sentences: string[], numToTry: number): Promise<any> => {

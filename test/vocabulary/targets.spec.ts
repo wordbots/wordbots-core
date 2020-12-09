@@ -22,9 +22,21 @@ describe('[vocabulary.targets]', () => {
     });
   });
 
-  // eslint-disable-next-line lodash/prefer-noop
-  xdescribe('that', () => {
+  describe('that', () => {
     // TODO: "Whenever this robot attacks a robot, destroy that robot."
+
+    it('handles situations where a targeted object no longer exists', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
+      state = playObject(state, 'orange', cards.oneBotCard, '2,-1,-3');
+
+      const fragGrenadeCard = event(
+        'Deal 3 damage to a robot, then deal 3 damage to all robots adjacent to that robot.',
+        "(function () { (function () { actions['dealDamage'](targets['choose'](objectsMatchingConditions('robot', [])), 3); })(); (function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['that']())]), 3); })(); })"
+      );
+      state = playEvent(state, 'blue', fragGrenadeCard, [{ hex: '3,-1,-2' }]);
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+    });
   });
 
   describe('they', () => {

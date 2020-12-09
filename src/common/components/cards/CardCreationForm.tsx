@@ -387,7 +387,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
   private handleClickRandomize = () => {
     if (this.props.isReadonly) { return; }
-    const example = exampleStore.getExample(this.parserMode);
+    const example: string | null = exampleStore.getExample(this.parserMode);
     if (example) {
       this.onUpdateText(example, this.props.type, true);
     }

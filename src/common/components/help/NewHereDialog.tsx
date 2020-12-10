@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import { toggleFlag } from '../../util/browser';
-import { getAchievements, getRecentGamesByUserId } from '../../util/firebase';
+import { getAchievements, getGamesByUser } from '../../util/firebase';
 import RouterDialog from '../RouterDialog';
 
 import NewHereLink from './NewHereLink';
@@ -134,7 +134,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
 
   private initializeAchievements = async (uid: string | null) => {
     const achievements: string[] = await getAchievements();
-    const games = uid ? await getRecentGamesByUserId(uid) : [];
+    const games = uid ? await getGamesByUser(uid) : [];
     this.setState({ achievements, games });
   }
 

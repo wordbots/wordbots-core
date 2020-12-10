@@ -55,7 +55,7 @@ export function lookupUsername(fallback = 'You'): string {
   return currentUser?.displayName || fallback;
 }
 
-export function onLogin(callback: (user: firebase.User) => any): firebase.Unsubscribe {
+export function onLogin(callback: (user: firebase.User) => void): firebase.Unsubscribe {
   return fb.auth().onIdTokenChanged((user: firebase.User) => {
     if (user) {
       currentUser = user;
@@ -64,7 +64,7 @@ export function onLogin(callback: (user: firebase.User) => any): firebase.Unsubs
   });
 }
 
-export function onLogout(callback: () => any): firebase.Unsubscribe {
+export function onLogout(callback: () => void): firebase.Unsubscribe {
   return fb.auth().onAuthStateChanged((user: firebase.User) => !user && callback());
 }
 
@@ -117,13 +117,33 @@ export function markAchievement(achievementName: string): void {
   }
 }
 
+async function getStatistics(uid: string): Promise<Record<string, number>> {
+  const snapshot = await fb.database().ref(`users/${uid}/statistics`).once('value');
+  return snapshot.val() || {};
+}
+
+export async function setStatistic(uid: string, statisticName: string, value: number): Promise<void> {
+  const statisticRef = fb.database().ref(`users/${uid}/statistics/${statisticName}`);
+  statisticRef.set(value);
+}
+
+export async function incrementStatistic(statisticName: string): Promise<void> {
+  const user = lookupCurrentUser();
+  if (user) {
+    const statisticRef = fb.database().ref(`users/${user.uid}/statistics/${statisticName}`);
+    const currentVal = (await getStatistics(user.uid))[statisticName];
+    statisticRef.set((currentVal || 0) + 1);
+  }
+}
+
 // Games (results)
 
 export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {
+  incrementStatistic('gamesPlayed');
   return fb.database().ref('games').push(game);
 }
 
-export async function getRecentGamesByUserId(userId: w.UserId): Promise<w.SavedGame[]> {
+export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
   const blueGames = await queryObjects<w.SavedGame>('games', 'players/blue', userId);
   const orangeGames = await queryObjects<w.SavedGame>('games', 'players/orange', userId);
   return orderBy(uniqBy([...blueGames, ...orangeGames], 'id'), ['timestamp'], ['desc']);
@@ -150,18 +170,28 @@ export async function getCardById(cardId: string): Promise<w.CardInStore> {
   return snapshot.val() as w.CardInStore;
 }
 
-export function saveCard(card: w.Card): void {
+export async function saveCard(card: w.Card): Promise<void> {
   fb.database()
     .ref(`cards/${card.id}`)
     .update(withoutEmptyFields(card));  // see firebaseRules.json - this save will only succeed if either:
                                         //   (i) there is no card yet with the given id
                                         //   (ii) the card with the given id was created by the logged-in user
+
+  // Bring user's cardsCreated statistic up to date
+  if (currentUser) {
+    setStatistic(currentUser.uid, 'cardsCreated', await getNumCardsCreatedCountByUserId(currentUser.uid));
+  }
 }
 
-export function removeCards(cardIds: string[]): void {
+export async function removeCards(cardIds: string[]): Promise<void> {
   // Set all card/:cardId to null
   fb.database().ref('cards')
     .update(Object.assign({}, ...cardIds.map((id) => ({[id]: null}))));
+
+  // Bring user's cardsCreated statistic up to date
+  if (currentUser) {
+    setStatistic(currentUser.uid, 'cardsCreated', await getNumCardsCreatedCountByUserId(currentUser.uid));
+  }
 }
 
 export async function getNumCardsCreatedCountByUserId(userId: w.UserId): Promise<number> {
@@ -176,16 +206,26 @@ export async function getDecks(uid: w.UserId): Promise<w.DeckInStore[]> {
   return queryObjects<w.DeckInStore>('decks', 'authorId', uid);
 }
 
-export function saveDeck(deck: w.DeckInStore): void {
+export async function saveDeck(deck: w.DeckInStore): Promise<void> {
   fb.database()
     .ref(`decks/${deck.id}`)
     .update(withoutEmptyFields(deck));  // see firebaseRules.json - this save will only succeed if either:
                                         //   (i) there is no deck yet with the given id
                                         //   (ii) the deck with the given id was created by the logged-in user
+
+  // Bring user's decksCreated statistic up to date
+  if (currentUser) {
+    setStatistic(currentUser.uid, 'decksCreated', await getNumDecksCreatedCountByUserId(currentUser.uid));
+  }
 }
 
-export function removeDeck(deckId: string): void {
+export async function removeDeck(deckId: string): Promise<void> {
   fb.database().ref(`decks/${deckId}`).remove();
+
+  // Bring user's decksCreated statistic up to date
+  if (currentUser) {
+    setStatistic(currentUser.uid, 'decksCreated', await getNumDecksCreatedCountByUserId(currentUser.uid));
+  }
 }
 
 export async function getNumDecksCreatedCountByUserId(userId: w.UserId): Promise<number> {
@@ -209,16 +249,26 @@ export async function getSets(): Promise<w.Set[]> {
   return snapshot ? Object.values(snapshot.val() || {}).map(deserializeSet) : [];
 }
 
-export function saveSet(set: w.Set): void {
+export async function saveSet(set: w.Set): Promise<void> {
   fb.database()
     .ref(`sets/${set.id}`)
     .update(withoutEmptyFields(set));  // see firebaseRules.json - this save will only succeed if either:
                                        //   (i) there is no set yet with the given id
                                        //   (ii) the set with the given id is yet unpublished and was created by the logged-in user
+
+  // Bring user's setsCreated statistic up to date
+  if (currentUser) {
+    setStatistic(currentUser.uid, 'setsCreated', await getNumSetsCreatedCountByUserId(currentUser.uid));
+  }
 }
 
-export function removeSet(setId: string): void {
+export async function removeSet(setId: string): Promise<void> {
   fb.database().ref(`sets/${setId}`).remove();
+
+  // Bring user's setsCreated statistic up to date
+  if (currentUser) {
+    setStatistic(currentUser.uid, 'setsCreated', await getNumSetsCreatedCountByUserId(currentUser.uid));
+  }
 }
 
 export async function getNumSetsCreatedCountByUserId(userId: w.UserId): Promise<number> {

@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { compact, flatten, uniq, zipObject } from 'lodash';
+import { compact, flatten, identity, uniq, zipObject } from 'lodash';
 import { countBy, filter, flatMap, flow, map, sortBy, toPairs } from 'lodash/fp';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -19,8 +19,9 @@ import {
   getNumCardsCreatedCountByUserId,
   getNumDecksCreatedCountByUserId,
   getNumSetsCreatedCountByUserId,
-  getRecentGamesByUserId,
-  getUserNamesByIds
+  getGamesByUser,
+  getUserNamesByIds,
+  setStatistic
 } from '../util/firebase';
 
 type ProfileProps = RouteComponentProps<{ userId: string }> & WithStyles;
@@ -28,7 +29,7 @@ type ProfileProps = RouteComponentProps<{ userId: string }> & WithStyles;
 interface ProfileState {
   userId?: string
   userName?: string
-  recentGames?: w.SavedGame[]
+  games?: w.SavedGame[]
   playerNames?: Record<string, string>
   playerInfo?: {
     cardsCreated: number
@@ -70,7 +71,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       this.setState(({
         userId: undefined,
         userName: undefined,
-        recentGames: undefined,
+        games: undefined,
         playerNames: undefined,
         playerInfo: undefined
       }), this.loadProfileData);
@@ -79,7 +80,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
 
   public render(): JSX.Element {
     const { classes } = this.props;
-    const { recentGames, playerNames, playerInfo, userId, userName } = this.state;
+    const { games, playerNames, playerInfo, userId, userName } = this.state;
 
     const title = userName ? `${userName}'s Profile` : 'Profile';
 
@@ -96,12 +97,12 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
             <Paper className={classes.gridItem}>
               <MatchmakingInfo
                 userId={userId}
-                games={recentGames}
+                games={games}
               />
             </Paper>
             <Paper className={classes.gridItem}>
               <RecentGames
-                recentGames={recentGames}
+                games={games}
                 playerNames={playerNames}
                 userId={userId}
               />
@@ -125,9 +126,9 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       const [userName] = await getUserNamesByIds([userId]);
       this.setState({ userId, userName });
 
-      const recentGames = await getRecentGamesByUserId(userId);
-      this.loadRecentGamesData(recentGames);
-      this.loadPlayerInfoData(userId, recentGames);
+      const games = await getGamesByUser(userId);
+      this.loadGamesData(games);
+      this.loadPlayerInfoData(userId, games);
     } catch (error) {
       // Most likely reason is that userId is undefined or that user doesn't exist.
       console.error(error); // eslint-disable-line  no-console
@@ -135,32 +136,32 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     }
   }
 
-  private async loadRecentGamesData(recentGames: w.SavedGame[]): Promise<void> {
-    const playerIds = compact(uniq(flatten(recentGames.map((g) => Object.values(g.players)))).filter((pid) => pid && !pid.startsWith('guest')));
+  private async loadGamesData(games: w.SavedGame[]): Promise<void> {
+    const playerIds = compact(uniq(flatten(games.map((g) => Object.values(g.players)))).filter((pid) => pid && !pid.startsWith('guest')));
     const playerNamesList = await getUserNamesByIds(playerIds);
     const playerNames = zipObject(playerIds, playerNamesList);
 
     this.setState({
-      recentGames,
+      games,
       playerNames
     });
   }
 
-  private async loadPlayerInfoData(userId: string, recentGames: w.SavedGame[]): Promise<void> {
+  private async loadPlayerInfoData(userId: string, games: w.SavedGame[]): Promise<void> {
     const cardsCreated = await getNumCardsCreatedCountByUserId(userId);
     const decksCreated = await getNumDecksCreatedCountByUserId(userId);
     const setsCreated = await getNumSetsCreatedCountByUserId(userId);
-    const gamesPlayed = recentGames.length;
+    const gamesPlayed = games.length;
 
     // TODO break this chunk out into its own method
     const favoriteOpponentIds: string[] = flow(
       flatMap((g: w.SavedGame) => Object.values(g.players)),
-      countBy,
+      countBy(identity),
       toPairs,
       sortBy(([_playerId, count]) => -count),
       map(([playerId, _count]) => playerId),
       filter((playerId: string) => playerId !== userId && !playerId.startsWith('guest'))
-    )(recentGames);
+    )(games);
     const [favoriteOpponentName] = await getUserNamesByIds(favoriteOpponentIds.slice(0, 1));
     const favoriteOpponent = favoriteOpponentName && <ProfileLink className="underline" uid={favoriteOpponentIds[0]} username={favoriteOpponentName} />;
 
@@ -173,6 +174,13 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
         favoriteOpponent
       }
     });
+
+
+    // TODO remove these once all users' statistics are consistent
+    setStatistic(userId, "cardsCreated", cardsCreated);
+    setStatistic(userId, "decksCreated", decksCreated);
+    setStatistic(userId, "setsCreated", setsCreated);
+    setStatistic(userId, "gamesPlayed", gamesPlayed);
   }
 }
 

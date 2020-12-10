@@ -177,11 +177,11 @@ export function playEvent(
 
 export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, asNewTurn = false): w.GameState {
   if (asNewTurn) {
-    const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex])!.name;
+    const owner = ownerOf(state, allObjectsOnBoard(state)[fromHex])!.color;
     state = newTurn(state, owner);
   }
 
-  if (!state.players[state.currentTurn].robotsOnBoard[fromHex]) {
+  if (!state.players[state.currentTurn].objectsOnBoard[fromHex]) {
     throw new Error(`No ${state.currentTurn} robot on ${fromHex}!`);
   }
 
@@ -193,11 +193,11 @@ export function moveRobot(state: w.GameState, fromHex: w.HexId, toHex: w.HexId, 
 
 export function attack(state: w.GameState, source: w.HexId, target: w.HexId, asNewTurn = false): w.GameState {
   if (asNewTurn) {
-    const owner = ownerOf(state, allObjectsOnBoard(state)[source])!.name;
+    const owner = ownerOf(state, allObjectsOnBoard(state)[source])!.color;
     state = newTurn(state, owner);
   }
 
-  if (!state.players[state.currentTurn].robotsOnBoard[source]) {
+  if (!state.players[state.currentTurn].objectsOnBoard[source]) {
     throw new Error(`No ${state.currentTurn} robot on ${source}!`);
   }
 
@@ -212,25 +212,25 @@ export function activate(state: w.GameState, hex: w.HexId, abilityIdx: number, t
   const player = ownerOf(state, allObjectsOnBoard(state)[hex])!;
 
   if (asNewTurn) {
-    state = newTurn(state, player.name);
+    state = newTurn(state, player.color);
   }
 
   if (target?.hex) {
     return game(state, [
-      gameActions.setSelectedTile(hex, player.name),
+      gameActions.setSelectedTile(hex, player.color),
       gameActions.activateObject(abilityIdx),
-      gameActions.setSelectedTile(target.hex, player.name)
+      gameActions.setSelectedTile(target.hex, player.color)
     ]);
   } else if (target && has(target, 'card')) {
     const cardIdx = isObject(target.card) ? findIndex(player.hand, ['name', (target.card as w.CardInGame).name])! : (target.card as number);
     return game(state, [
-      gameActions.setSelectedTile(hex, player.name),
+      gameActions.setSelectedTile(hex, player.color),
       gameActions.activateObject(abilityIdx),
-      gameActions.setSelectedCard(cardIdx, player.name)
+      gameActions.setSelectedCard(cardIdx, player.color)
     ]);
   } else {
     return game(state, [
-      gameActions.setSelectedTile(hex, player.name),
+      gameActions.setSelectedTile(hex, player.color),
       gameActions.activateObject(abilityIdx)
     ]);
   }

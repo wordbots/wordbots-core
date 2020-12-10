@@ -1,7 +1,7 @@
 import { capitalize, fromPairs, invert, isNil } from 'lodash';
 
 import { GridConfig } from './components/hexgrid/types';
-import { CardType, Format, HexId } from './types';
+import { CardType, Format, HexId, PlayerColor } from './types';
 import { inBrowser } from './util/browser';
 
 // Debug flags.
@@ -58,6 +58,7 @@ export const FIREBASE_CONFIG = (() => {
 // Game rules.
 
 export const DEFAULT_GAME_FORMAT: Format = 'normal';
+export const STARTING_PLAYER_COLOR: PlayerColor = 'orange';
 export const STARTING_PLAYER_HEALTH = 20;
 export const DECK_SIZE = 30;
 export const MAX_HAND_SIZE = 7;

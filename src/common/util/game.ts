@@ -11,7 +11,7 @@ import {
   stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE
 } from '../constants';
 import * as g from '../guards';
-import { arbitraryPlayerState } from '../store/defaultGameState';
+import { defaultTarget } from '../store/defaultGameState';
 import * as w from '../types';
 import buildVocabulary from '../vocabulary/vocabulary';
 
@@ -53,13 +53,13 @@ export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefi
 }
 
 export function allObjectsOnBoard(state: w.GameState): { [hexId: string]: w.Object } {
-  return {...state.players.blue.robotsOnBoard, ...state.players.orange.robotsOnBoard};
+  return {...state.players.blue.objectsOnBoard, ...state.players.orange.objectsOnBoard};
 }
 
 export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameState | undefined {
-  if (some(state.players.blue.robotsOnBoard, ['id', object.id])) {
+  if (some(state.players.blue.objectsOnBoard, ['id', object.id])) {
     return state.players.blue;
-  } else if (some(state.players.orange.robotsOnBoard, ['id', object.id])) {
+  } else if (some(state.players.orange.objectsOnBoard, ['id', object.id])) {
     return state.players.orange;
   }
 }
@@ -119,7 +119,7 @@ function allowedToAttack(state: w.GameState, attacker: w.Robot, targetHex: Hex):
   const defender: w.Object = allObjectsOnBoard(state)[HexUtils.getID(targetHex)];
 
   if (!defender ||
-      (ownerOf(state, defender) as w.PlayerInGameState).name === (ownerOf(state, attacker) as w.PlayerInGameState).name ||
+      ownerOf(state, defender)!.color === ownerOf(state, attacker)!.color ||
       attacker.card.type !== TYPE_ROBOT ||
       attacker.cantAttack ||
       hasEffect(attacker, 'cannotattack') ||
@@ -150,8 +150,8 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
 }
 
 export function checkVictoryConditions(state: w.GameState): w.GameState {
-  const blueKernelExists = some(state.players.blue.robotsOnBoard, {card: {type: TYPE_CORE}});
-  const orangeKernelExists = some(state.players.orange.robotsOnBoard, {card: {type: TYPE_CORE}});
+  const blueKernelExists = some(state.players.blue.objectsOnBoard, {card: {type: TYPE_CORE}});
+  const orangeKernelExists = some(state.players.orange.objectsOnBoard, {card: {type: TYPE_CORE}});
 
   if (!blueKernelExists && !orangeKernelExists) {
     state.winner = 'draw';
@@ -219,7 +219,7 @@ export function validPlacementHexes(state: w.GameState, playerName: w.PlayerColo
       hexes = ORANGE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
     }
   } else if (type === TYPE_STRUCTURE) {
-    const occupiedHexes: Hex[] = Object.keys(state.players[playerName].robotsOnBoard).map(HexUtils.IDToHex);
+    const occupiedHexes: Hex[] = Object.keys(state.players[playerName].objectsOnBoard).map(HexUtils.IDToHex);
     hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }
 
@@ -298,9 +298,9 @@ export function logAction(
   target: w.Targetable | null = null
 ): w.GameState {
   const playerStr = player ?
-    (player.name === state.player ?
+    (player.color === state.player ?
       'You ' :
-      `${(state.usernames )[player.name]} `) :
+      `${(state.usernames )[player.color]} `) :
     '';
 
   target = determineTargetCard(state, target);
@@ -346,7 +346,7 @@ function startTurn(state: w.GameState): w.GameState {
   player.selectedCard = null;
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
-  player.robotsOnBoard = mapValues(player.robotsOnBoard, ((obj: w.Object) => ({
+  player.objectsOnBoard = mapValues(player.objectsOnBoard, ((obj: w.Object) => ({
       ...obj,
       movesMade: 0,
       cantActivate: false,
@@ -360,7 +360,7 @@ function startTurn(state: w.GameState): w.GameState {
 
   state = drawCards(state, player, 1);
   state = triggerEvent(state, 'beginningOfTurn', {player: true});
-  if (player.name === state.player) {
+  if (player.color === state.player) {
     state = triggerSound(state, 'yourmove.wav');
   }
 
@@ -391,7 +391,7 @@ function endTurn(state: w.GameState): w.GameState {
   previousTurnPlayer.selectedTile = null;
   previousTurnPlayer.status.message = '';
   previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCardsInHand: [], possibleCardsInDiscardPile: []};
-  previousTurnPlayer.robotsOnBoard = mapValues(previousTurnPlayer.robotsOnBoard, ((obj) => ({
+  previousTurnPlayer.objectsOnBoard = mapValues(previousTurnPlayer.objectsOnBoard, ((obj) => ({
     ...obj,
     attackedThisTurn: false,
     movedThisTurn: false,
@@ -404,7 +404,7 @@ function endTurn(state: w.GameState): w.GameState {
   })));
 
   const nextTurnPlayer = opponentPlayer(state);
-  nextTurnPlayer.robotsOnBoard = mapValues(nextTurnPlayer.robotsOnBoard, ((obj) => ({
+  nextTurnPlayer.objectsOnBoard = mapValues(nextTurnPlayer.objectsOnBoard, ((obj) => ({
     ...obj,
     abilities: compact((obj.abilities || new Array<w.Ability>()).map(decrementDuration)) as w.PassiveAbility[],
     triggers: compact((obj.triggers || new Array<w.Ability>()).map(decrementDuration)) as w.TriggeredAbility[]
@@ -419,7 +419,7 @@ function endTurn(state: w.GameState): w.GameState {
 }
 
 export function drawCards(state: w.GameState, player: w.PlayerInGameState, count: number): w.GameState {
-  const otherPlayer = state.players[opponent(player.name)];
+  const otherPlayer = state.players[opponent(player.color)];
   // Allow 1 extra card if an event is played (because that card will be discarded).
   const maxHandSize = MAX_HAND_SIZE + (state.eventExecuting ? 1 : 0);
 
@@ -526,10 +526,10 @@ export function updateOrDeleteObjectAtHex(
     return state;
   }
 
-  const ownerName = ownerOf(state, object)!.name;
+  const ownerName = ownerOf(state, object)!.color;
 
   if ((getAttribute(object, 'health') as number) > 0 && !object.isDestroyed) {
-    state.players[ownerName].robotsOnBoard[hex] = object;
+    state.players[ownerName].objectsOnBoard[hex] = object;
     return state;
   } else if (!object.beingDestroyed) {
     object.beingDestroyed = true;
@@ -547,9 +547,9 @@ export function updateOrDeleteObjectAtHex(
     // Check if the object is still there, because the afterDestroyed trigger may have,
     // e.g., returned it to its owner's hand.
     if (allObjectsOnBoard(state)[hex]) {
-      const card = state.players[ownerName].robotsOnBoard[hex].card;
+      const card = state.players[ownerName].objectsOnBoard[hex].card;
       state = removeObjectFromBoard(state, object, hex);
-      state = discardCardsFromHand(state, state.players[ownerName].name, [card]);
+      state = discardCardsFromHand(state, state.players[ownerName].color, [card]);
     }
 
     return shouldApplyAbilities ? applyAbilities(state) : state;
@@ -571,12 +571,12 @@ export function deleteAllDyingObjects(state: w.GameState): w.GameState {
 }
 
 export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex: w.HexId): w.GameState {
-  const ownerName: w.PlayerColor = (ownerOf(state, object) as w.PlayerInGameState).name;
+  const ownerName: w.PlayerColor = (ownerOf(state, object) as w.PlayerInGameState).color;
 
-  delete state.players[ownerName].robotsOnBoard[hex];
+  delete state.players[ownerName].objectsOnBoard[hex];
 
   // Unapply any abilities that this object had.
-  (object.abilities || new Array<w.Ability>())
+  (object.abilities || new Array<w.PassiveAbility>())
     .filter((ability) => ability.currentTargets)
     .forEach((ability) => {
       const targets: w.Targetable[] = ability.currentTargets!.entries;
@@ -606,18 +606,18 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
   // Perform the trigger (in a temp state because we may need more targets yet).
   const tempState: w.GameState = state.callbackAfterTargetSelected!(state);
 
-  if (tempState.players[player.name].target.choosing) {
+  if (tempState.players[player.color].target.choosing) {
     // Still need more targets!
     // So we revert to old state but use new target selection properties.
-    state.players[player.name].target = {...tempState.players[player.name].target, chosen: targets};
+    state.players[player.color].target = {...tempState.players[player.color].target, chosen: targets};
 
     return state;
   } else {
     // We have all the targets we need and we're good to go.
     // Reset target and return new state.
     tempState.callbackAfterTargetSelected = undefined;
-    tempState.players[player.name].target = arbitraryPlayerState().target;
-    tempState.players[player.name].status.message = '';
+    tempState.players[player.color].target = defaultTarget();
+    tempState.players[player.color].status.message = '';
 
     return tempState;
   }
@@ -662,7 +662,7 @@ export function triggerEvent(
   } else if (target.player) {
     state = {...state, itP: currentPlayer(state)};
     condition = ((t: w.Trigger) =>
-      (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.name).includes(state.currentTurn) && defaultCondition(t)
+      (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.color).includes(state.currentTurn) && defaultCondition(t)
     );
   }
   if (target.undergoer) {

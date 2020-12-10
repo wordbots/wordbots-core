@@ -79,6 +79,7 @@ export function instantiateObject(card: w.CardInGame): w.Object {
     id: id(),
     card,
     type: card.type,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     stats: {...card.stats!},
     triggers: [],
     abilities: [],
@@ -125,10 +126,10 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
   const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
 
   if ((player.energy.available >= getCost(card) || state.sandbox) &&
-      validPlacementHexes(state, player.name, card.type).map(HexUtils.getID).includes(tile)) {
+      validPlacementHexes(state, player.color, card.type).map(HexUtils.getID).includes(tile)) {
     const playedObject: w.Object = instantiateObject(card);
 
-    player.robotsOnBoard[tile] = playedObject;
+    player.objectsOnBoard[tile] = playedObject;
     if (!state.sandbox) {
       player.energy.available -= getCost(card);
     }
@@ -220,7 +221,7 @@ function playEvent(state: State, cardIdx: number): State {
       // Everything is good (valid state + no more targets to select), so we can return the new state!
       card.justPlayed = false;
 
-      tempState = discardCardsFromHand(tempState, currentPlayer(state).name, [card]);
+      tempState = discardCardsFromHand(tempState, currentPlayer(state).color, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
         condition: (t: w.Trigger) => matchesType(card, t.cardType!)

@@ -1,6 +1,7 @@
 import { filter, findIndex, findKey, sample, shuffle } from 'lodash';
 import * as React from 'react';
 
+import Hex from '../../../components/hexgrid/Hex';
 import HU from '../../../components/hexgrid/HexUtils';
 import ToggleTooltipLink from '../../../components/ToggleTooltipLink';
 import { DISABLE_AI, ORANGE_CORE_HEX, TYPE_EVENT, TYPE_ROBOT } from '../../../constants';
@@ -90,19 +91,20 @@ function playACard(state: State): State {
   const ai: w.PlayerInGameState = state.players[state.currentTurn];
   const cards: w.CardInGame[] = availableCards(state, ai);
 
-  if (cards.length > 0) {
-    const card: w.CardInGame = sample(cards)!;
+  const card: w.CardInGame | undefined = sample(cards);
+  if (card) {
     const idx = findIndex(ai.hand, {id: card.id});
 
-    state = setSelectedCard(state, ai.name, idx);
+    state = setSelectedCard(state, ai.color, idx);
 
     if (card.type === TYPE_EVENT) {
       // All events in the practice deck are global, so click anywhere on the board.
-      state = setSelectedTile(state, ai.name, '0,0,0');
+      state = setSelectedTile(state, ai.color, '0,0,0');
     } else {
-      const validHexes = validPlacementHexes(state, ai.name, card.type);
-      if (validHexes.length > 0) {
-        state = placeCard(state, idx, HU.getID(sample(validHexes)!));
+      const validHexes = validPlacementHexes(state, ai.color, card.type);
+      const hex: Hex | undefined = sample(validHexes);
+      if (hex) {
+        state = placeCard(state, idx, HU.getID(hex));
       }
     }
   }
@@ -114,9 +116,9 @@ function moveARobot(state: State): State {
   const ai: w.PlayerInGameState = state.players[state.currentTurn];
   const robots: w.Object[] = availableRobots(state, ai);
 
-  if (robots.length > 0 && Math.random() > 0.1) {  // (10% chance a given robot does nothing.)
-    const robot: w.Object = sample(robots)!;
-    const robotHexId: w.HexId = findKey(ai.robotsOnBoard, {id: robot.id})!;
+  const robot: w.Object | undefined = sample(robots);
+  if (robot && Math.random() > 0.1) {  // (10% chance a given robot does nothing.)
+    const robotHexId: w.HexId = findKey(ai.objectsOnBoard, {id: robot.id})!;
 
     const moveHexIds: w.HexId[] = validMovementHexes(state, HU.IDToHex(robotHexId)).map(HU.getID);
     const attackHexIds: w.HexId[] = validAttackHexes(state, HU.IDToHex(robotHexId)).map(HU.getID);
@@ -168,12 +170,12 @@ function availableCards(state: State, ai: w.PlayerInGameState): w.CardInGame[] {
   const cards: w.CardInGame[] = ai.hand.map(assertCardVisible);
   return cards.filter((card) =>
     card.cost <= ai.energy.available &&
-      (card.type === TYPE_EVENT || validPlacementHexes(state, ai.name, card.type).length > 0)
+      (card.type === TYPE_EVENT || validPlacementHexes(state, ai.color, card.type).length > 0)
   );
 }
 
 function availableRobots(state: State, ai: w.PlayerInGameState): w.Object[] {
-  return filter(ai.robotsOnBoard, (obj: w.Object, hex: w.HexId) =>
+  return filter(ai.objectsOnBoard, (obj: w.Object, hex: w.HexId) =>
     obj.card.type === TYPE_ROBOT &&
       validMovementHexes(state, HU.IDToHex(hex)).concat(validAttackHexes(state, HU.IDToHex(hex))).length > 0
   );

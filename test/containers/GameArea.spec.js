@@ -31,8 +31,8 @@ describe('GameArea container', () => {
         <Board
           selectedTile={null}
           target={state.game.players.orange.target}
-          bluePieces={state.game.players.blue.robotsOnBoard}
-          orangePieces={state.game.players.orange.robotsOnBoard}
+          bluePieces={state.game.players.blue.objectsOnBoard}
+          orangePieces={state.game.players.orange.objectsOnBoard}
           player="orange"
           currentTurn="orange"
           playingCardType={null}

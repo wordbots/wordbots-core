@@ -81,7 +81,7 @@ describe('[vocabulary.targets]', () => {
       state = playEvent(state, 'blue', event('Your opponent returns a random robot from their discard pile to a random tile', "(function () { actions['spawnObject'](targets['random'](1, cardsInDiscardPile(targets['theyP'](), 'robot', [])), targets['random'](1, allTiles()), targets['opponent']()); })"));
       expect(state.players.orange.discardPile.length).toEqual(0);
       expect(
-        Object.values(state.players.orange.robotsOnBoard).filter((o) => o.type === TYPE_ROBOT).map((o) => o.card.name)
+        Object.values(state.players.orange.objectsOnBoard).filter((o) => o.type === TYPE_ROBOT).map((o) => o.card.name)
       ).toEqual(['One Bot']);
     });
   });

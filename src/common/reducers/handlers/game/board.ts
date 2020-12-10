@@ -53,7 +53,7 @@ export function setSelectedTile(state: State, playerColor: w.PlayerColor, tile: 
 
 export function moveRobot(state: State, fromHex: w.HexId, toHex: w.HexId): State {
   const player: PlayerState = state.players[state.currentTurn];
-  const movingRobot: w.Object = player.robotsOnBoard[fromHex];
+  const movingRobot: w.Object = player.objectsOnBoard[fromHex];
 
   if (player.target.choosing) {
     // If the player is in target-selection mode, just get out of that mode instead.
@@ -103,8 +103,8 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
   const player: PlayerState = currentPlayer(state);
   const opponent: PlayerState = opponentPlayer(state);
 
-  const attacker: w.Robot = player.robotsOnBoard[source] as w.Robot;
-  const defender: w.Object = opponent.robotsOnBoard[target];
+  const attacker: w.Robot = player.objectsOnBoard[source] as w.Robot;
+  const defender: w.Object = opponent.objectsOnBoard[target];
 
   if (player.target.choosing) {
     // If the player is in target-selection mode, just get out of that mode instead.
@@ -139,8 +139,8 @@ export function attackComplete(state: State): State {
   if (state.attack?.from && state.attack?.to) {
     const [source, target]: w.HexId[] = [state.attack.from, state.attack.to];
 
-    const attacker: w.Object = currentPlayer(state).robotsOnBoard[source];
-    const defender: w.Object = opponentPlayer(state).robotsOnBoard[target];
+    const attacker: w.Object = currentPlayer(state).objectsOnBoard[source];
+    const defender: w.Object = opponentPlayer(state).objectsOnBoard[target];
 
     state = triggerEvent(state, 'afterAttack', {
       object: attacker,
@@ -243,8 +243,8 @@ export function transportObject(state: State, fromHex: w.HexId, toHex: w.HexId):
   const owner = ownerOf(state, object);
 
   if (object && owner) {
-    owner.robotsOnBoard[toHex] = object;
-    delete owner.robotsOnBoard[fromHex];
+    owner.objectsOnBoard[toHex] = object;
+    delete owner.objectsOnBoard[fromHex];
   }
 
   return state;

@@ -26,7 +26,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
   const reassignToKernelIfPlayer = <T extends w.Targetable>(target: w.Targetable): T => {
     if (g.isPlayerState(target)) {
       // target is actually a player, so reassign target to be their kernel.
-      return Object.values(target.robotsOnBoard).find((obj) => obj.type === TYPE_CORE)! as T;
+      return Object.values(target.objectsOnBoard).find((obj) => obj.type === TYPE_CORE)! as T;
     } else {
       return target as T;
     }
@@ -124,7 +124,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       if (cards.entries.length > 0) {
         const owner = ownerOfCard(state, cards.entries[0]);
         if (owner) {
-          discardCardsFromHand(state, owner.name, cards.entries);
+          discardCardsFromHand(state, owner.color, cards.entries);
         }
       }
     },
@@ -218,7 +218,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
     returnToHand: (objects: w.ObjectCollection, players: w.PlayerCollection | null): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
-        const ownerName = ownerOf(state, object)!.name;
+        const ownerName = ownerOf(state, object)!.color;
         const player = players ? players.entries[0] : state.players[ownerName];  // Default to card owner by default
 
         player.hand = player.hand.concat([object.card]);
@@ -271,7 +271,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         iterateOver<w.HexId>(hexes)((hex: w.HexId) => {
           if (!allObjectsOnBoard(state)[hex]) {
             const object: w.Object = instantiateObject(card);
-            owner.robotsOnBoard[hex] = object;
+            owner.objectsOnBoard[hex] = object;
             afterObjectPlayed(state, object);
           }
         });
@@ -296,11 +296,11 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
       iterateOver<w.Object>(objects)((object: w.Object) => {
         const currentOwner: w.PlayerInGameState = ownerOf(state, object)!;
-        if (newOwner.name !== currentOwner.name) {
+        if (newOwner.color !== currentOwner.color) {
           const hex = getHex(state, object)!;
 
-          newOwner.robotsOnBoard[hex] = object;
-          delete currentOwner.robotsOnBoard[hex];
+          newOwner.objectsOnBoard[hex] = object;
+          delete currentOwner.objectsOnBoard[hex];
         }
       });
     }

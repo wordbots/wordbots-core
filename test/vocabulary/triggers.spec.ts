@@ -98,7 +98,7 @@ describe('[vocabulary.triggers]', () => {
       });
       // Orange has taken control of Two Bot (now in Martyr Bot's position) and Attack Bot.
       expect(
-        Object.keys(state.players.orange.robotsOnBoard).sort()
+        Object.keys(state.players.orange.objectsOnBoard).sort()
       ).toEqual([ORANGE_CORE_HEX, '1,0,-1', '0,0,0', '-1,1,0'].sort());
     });
 
@@ -153,11 +153,11 @@ describe('[vocabulary.triggers]', () => {
       state = playObject(state, 'orange', cards.dojoDiscipleCard, '3,-1,-2');
       state = newTurn(state, 'blue');
       expect(
-        state.players.orange.robotsOnBoard['3,-1,-2'].stats.attack
+        state.players.orange.objectsOnBoard['3,-1,-2'].stats.attack
       ).toEqual(0);
       state = newTurn(state, 'orange');
       expect(
-        state.players.orange.robotsOnBoard['3,-1,-2'].stats.attack
+        state.players.orange.objectsOnBoard['3,-1,-2'].stats.attack
       ).toEqual(1);
     });
 

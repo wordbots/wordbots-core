@@ -85,8 +85,8 @@ export function startTutorial(state: State): State {
   state.players.blue.deck = deck([
     cards.redBotCard
   ].map((card) => instantiateCard({...card, id: id()})));
-  state.players.orange.robotsOnBoard['3,0,-3'].stats.health = 5;
-  state.players.blue.robotsOnBoard['-3,0,3'].stats.health = 3;
+  state.players.orange.objectsOnBoard['3,0,-3'].stats.health = 5;
+  state.players.blue.objectsOnBoard['-3,0,3'].stats.health = 3;
   state = passTurn(state, 'orange');
   state = passTurn(state, 'blue');
 

@@ -1,6 +1,6 @@
-import { fromPairs, sum } from 'lodash';
+import { sum } from 'lodash';
 import { filter, flow, orderBy, slice } from 'lodash/fp';
-import { Paper } from 'material-ui';
+import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -49,7 +49,14 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
           </Paper>
         </div>
 
-        <div>
+        <div
+          style={{
+            margin: 20,
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start'
+          }}
+        >
           {users.map(this.renderUser)}
         </div>
       </div>
@@ -64,18 +71,18 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
     const card: w.CardInStore | undefined = mostRecentCardByUserId[info.uid];
 
     return (
-      <Paper key={info.uid} style={{ float: 'left', width: 400, margin: 20, padding: 10 }}>
-        <div style={{ float: 'left', width: '48%' }}>
-          <ProfileLink uid={info.uid} username={info.displayName!} style={{ fontWeight: 'bold' }} />
-          <p>{statistics['cardsCreated'] || 0} cards created</p>
-          <p>{statistics['decksCreated'] || 0} decks created</p>
-          <p>{statistics['setsCreated'] || 0} sets created</p>
-          <p>{statistics['gamesPlayed'] || 0} games played</p>
+      <Paper key={info.uid} style={{ width: 280, marginRight: 20, marginBottom: 20, padding: 10 }}>
+        <div style={{ float: 'left', width: 130 }}>
+          <ProfileLink uid={info.uid} username={info.displayName!} style={{ fontWeight: 'bold', fontSize: '1.2em' }} />
+          <p><b>{statistics['cardsCreated'] || 0}</b> cards created</p>
+          <p><b>{statistics['decksCreated'] || 0}</b> decks created</p>
+          <p><b>{statistics['setsCreated'] || 0}</b> sets created</p>
+          <p><b>{statistics['gamesPlayed'] || 0}</b> games played</p>
         </div>
         {card && (
-          <div style={{ float: 'right', width: '48%' }}>
-            {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); }})}
-            <span style={{ color: '#999', fontSize: '0.85em' }}>Most recent card created</span>
+          <div style={{ float: 'right', width: 130 }}>
+            {Card.fromObj(card, { scale: 0.8, onCardClick: () => { this.handleClickCard(card); }})}
+            <div style={{ textAlign: 'center', color: '#999', fontSize: '0.7em' }}>Most recent card</div>
           </div>
         )}
 

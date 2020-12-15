@@ -1,6 +1,7 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, mapValues, orderBy, uniq, uniqBy } from 'lodash';
+import { capitalize, concat, flatMap, fromPairs, mapValues, uniq } from 'lodash';
+import { filter, flow, orderBy, slice, uniqBy } from 'lodash/fp';
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
 import 'firebase/database';  // eslint-disable-line import/no-unassigned-import
 
@@ -91,6 +92,11 @@ export function resetPassword(email: string): Promise<void> {
   return fb.auth().sendPasswordResetEmail(email);
 }
 
+export async function getUsers(): Promise<w.User[]> {
+  const snapshot = await fb.database().ref('users').once('value');
+  return Object.values(snapshot.val());
+}
+
 export async function getUserNamesByIds(userIds: string[]): Promise<string[]> {
   const userLookupRefs = userIds.map((userId) => fb.database().ref(`users/${userId}/info/displayName`).once('value'));
   const users = await Promise.all(userLookupRefs);
@@ -146,7 +152,10 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
 export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
   const blueGames = await queryObjects<w.SavedGame>('games', 'players/blue', userId);
   const orangeGames = await queryObjects<w.SavedGame>('games', 'players/orange', userId);
-  return orderBy(uniqBy([...blueGames, ...orangeGames], 'id'), ['timestamp'], ['desc']);
+  return flow(
+    uniqBy((g: w.SavedGame) => g.id),
+    orderBy('timestamp', 'desc')
+  )([...blueGames, ...orangeGames]) as w.SavedGame[];
 }
 
 // Cards
@@ -168,6 +177,25 @@ export async function getCards(uid: w.UserId | null): Promise<w.CardInStore[]> {
 export async function getCardById(cardId: string): Promise<w.CardInStore> {
   const snapshot = await fb.database().ref(`cards/${cardId}`).once('value');
   return snapshot.val() as w.CardInStore;
+}
+
+export async function mostRecentCards(uid: w.UserId | undefined, limit: number): Promise<w.CardInStore[]> {
+  const cards = await getCards(uid || null);
+
+  return flow(
+    uniqBy((c: w.CardInStore) => c.name),
+    filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
+      !!c.text  // cards without text (uninteresting)
+        && !!c.metadata.updated  // cards without timestamp (can't order them)
+        && c.metadata.source.type === 'user'  // built-in cards
+        && !c.metadata.isPrivate  // private cards
+        && !c.metadata.duplicatedFrom  // duplicated cards
+        && !c.metadata.importedFromJson  // cards imported from JSON
+        && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
+    ),
+    orderBy((c: w.CardInStore) => c.metadata.updated, ['desc']),
+    slice(0, limit)
+  )(cards) as w.CardInStore[];
 }
 
 export async function saveCard(card: w.Card): Promise<void> {

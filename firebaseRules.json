@@ -5,6 +5,9 @@
         ".write": "auth != null && auth.uid === $uid",
         ".indexOn": ["statistics/numCardsCreated", "statistics/numDecksCreated", "statistics/numSetsCreated", "statistics/numGamesPlayed"],
         "info": {
+          "uid": {
+            ".read": "true"
+          },
           "displayName": {
             ".read": "true"
           }

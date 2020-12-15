@@ -34,30 +34,30 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
         <Helmet title="Community"/>
         <Title text="Community" />
 
-        <div>
-          <Paper
+        <div style={{ margin: 20 }}>
+          <div>
+            <Paper
+              style={{
+                display: 'inline-block',
+                padding: '5px 15px',
+                fontSize: 20,
+                fontFamily: 'Carter One'
+              }}
+            >
+              Most active players
+            </Paper>
+          </div>
+
+          <div
             style={{
-              display: 'inline-block',
-              marginLeft: 20,
               marginTop: 20,
-              padding: '5px 15px',
-              fontSize: 20,
-              fontFamily: 'Carter One'
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start'
             }}
           >
-            Most active players
-          </Paper>
-        </div>
-
-        <div
-          style={{
-            margin: 20,
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start'
-          }}
-        >
-          {users.map(this.renderUser)}
+            {users.map(this.renderUser)}
+          </div>
         </div>
       </div>
     );

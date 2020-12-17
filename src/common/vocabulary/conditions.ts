@@ -74,12 +74,18 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
 
 // Global conditions simply return a boolean.
 // They're used in if-expressions.
-export function globalConditions(_state: w.GameState): Record<string, w.Returns<boolean>> {
+export function globalConditions(state: w.GameState): Record<string, w.Returns<boolean>> {
   return {
-    collectionCountComparison: (collection: w.Collection, comp: (count: number) => boolean) => comp(collection.entries.length),
+    collectionCountComparison: (collection: w.Collection, comp: (count: number) => boolean) =>
+      comp(collection.entries.length),
 
-    collectionExists: (collection: w.Collection) => collection.entries.length > 0,
+    collectionExists: (collection: w.Collection) =>
+      collection.entries.length > 0,
 
-    targetHasProperty: (target: w.ObjectCollection, property: string) => target.entries.every((obj) => objectHasProperty(obj, property))
+    targetHasProperty: (target: w.ObjectCollection, property: string) =>
+      target.entries.every((obj) => objectHasProperty(obj, property)),
+
+    targetMeetsCondition: (target: w.ObjectCollection, condition: ObjectCondition) =>
+      target.entries.every((obj) => condition(getHex(state, obj), obj))
   };
 }

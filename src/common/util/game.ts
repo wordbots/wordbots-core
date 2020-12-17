@@ -629,11 +629,11 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
 
 export function executeCmd(
   state: w.GameState,
-  cmd: ((s: w.GameState) => any) | w.StringRepresentationOf<(s: w.GameState) => any>,
+  cmd: ((s: w.GameState) => void) | w.StringRepresentationOf<(s: w.GameState) => void>,
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => any;
+  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => unknown;
 
   state.callbackAfterExecution = undefined;
 
@@ -641,7 +641,12 @@ export function executeCmd(
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
 
-  return eval(wrappedCmd)(...definitions);  // eslint-disable-line no-eval
+  try {
+    return eval(wrappedCmd)(...definitions);  // eslint-disable-line no-eval
+  } catch (error) {
+    alert(`Oops!\n\n${error}`);
+    throw error;
+  }
 }
 
 export function triggerEvent(
@@ -707,6 +712,7 @@ export function triggerEvent(
     }
   });
 
+  state = applyAbilities(state);
   return {...state, it: undefined, itP: undefined, that: undefined};
 }
 
@@ -726,13 +732,19 @@ export function applyAbilities(state: w.GameState): w.GameState {
         // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
         ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
         const targets: w.Targetable[] = ability.currentTargets.entries;
-        targets.forEach(ability.apply);
+        if (targets.length > 0) {
+          targets.forEach(ability.apply);
+          if (ability.onlyExecuteOnce) {
+            ability.disabled = true;
+          }
+        }
       }
     });
 
     obj.abilities = abilities.filter((ability) => !ability.disabled);
   });
 
+  state = checkVictoryConditions(state);
   return state;
 }
 

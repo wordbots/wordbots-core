@@ -1,6 +1,8 @@
+import { noop } from 'lodash';
 import * as w from '../types';
 import { id } from '../util/common';
 import { executeCmd, reversedCmd } from '../util/game';
+import targets from './targets';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability) => {
@@ -33,7 +35,14 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
 
-export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
+interface PassiveAbilityObj {
+  aid: string
+  targets: w.StringRepresentationOf<() => w.Object[]>
+  apply: (target: w.Object) => void
+  unapply: (target: w.Object) => void
+}
+
+export function abilities(state: w.GameState): Record<string, w.Returns<PassiveAbilityObj>> {
   return {
     activated: (targetFunc: (s: w.GameState) => w.Target[], action) => {
       const aid: w.AbilityId = id();
@@ -120,6 +129,23 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
         unapply: (target: w.Object) => {
           target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
         }
+      };
+    },
+
+    conditionalAction: (conditionFunc: (s: w.GameState) => boolean, cmd) => {
+      console.log(conditionFunc.toString());
+
+      const aid: w.AbilityId = id();
+      const targetFuncStr =
+        `(function () { return ((${conditionFunc.toString()})() ? targets['thisRobot']() : { type: 'objects', entries: [] } ); })`;
+      return {
+        aid,
+        targets: targetFuncStr,
+        apply: (target: w.Object) => {
+          executeCmd(state, cmd, target, aid);
+        },
+        unapply: noop,  // Can't "unapply" a one-time action
+        onlyExecuteOnce: true
       };
     },
 

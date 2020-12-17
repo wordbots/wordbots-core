@@ -368,6 +368,7 @@ export interface PassiveAbility {
   currentTargets?: Target
   disabled?: boolean
   duration?: number
+  onlyExecuteOnce?: boolean
   source?: AbilityId
   targets: StringRepresentationOf<(state: GameState) => Target>
   unapply: (target: Targetable) => Targetable

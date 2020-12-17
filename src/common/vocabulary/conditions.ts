@@ -86,6 +86,6 @@ export function globalConditions(state: w.GameState): Record<string, w.Returns<b
       target.entries.every((obj) => objectHasProperty(obj, property)),
 
     targetMeetsCondition: (target: w.ObjectCollection, condition: ObjectCondition) =>
-      target.entries.every((obj) => condition(getHex(state, obj), obj))
+      target.entries.every((obj) => condition(getHex(state, obj)!, obj))
   };
 }

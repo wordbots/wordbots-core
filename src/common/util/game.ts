@@ -633,7 +633,7 @@ export function executeCmd(
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => unknown;
+  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => any;
 
   state.callbackAfterExecution = undefined;
 

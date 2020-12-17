@@ -9,7 +9,7 @@ import * as w from '../types';
 import { splitSentences } from '../util/cards';
 import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
 import {
-  allObjectsOnBoard, checkVictoryConditions, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, opponent, ownerOf, ownerOfCard,
+  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, opponent, ownerOf, ownerOfCard,
   passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
 } from '../util/game';
 

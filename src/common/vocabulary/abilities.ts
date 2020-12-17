@@ -1,8 +1,8 @@
 import { noop } from 'lodash';
+
 import * as w from '../types';
 import { id } from '../util/common';
 import { executeCmd, reversedCmd } from '../util/game';
-import targets from './targets';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability) => {

@@ -1,6 +1,6 @@
 import { noop } from 'lodash';
 
-import { isObject } from '../guards';
+import { isCardInGame, isObject } from '../guards';
 import * as w from '../types';
 import { id } from '../util/common';
 import { executeCmd, reversedCmd } from '../util/game';
@@ -46,7 +46,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object | w.CardInGame) => {
+        apply: (target: w.Targetable) => {
           if (isObject(target)) {
             target.activatedAbilities = (target.activatedAbilities || []);
 
@@ -59,7 +59,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
             }
           }
         },
-        unapply: (target: w.Object | w.CardInGame) => {
+        unapply: (target: w.Targetable) => {
           if (isObject(target)) {
             target.activatedAbilities = (target.activatedAbilities || []).filter((a) => a.aid !== aid);
           }
@@ -94,18 +94,22 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object | w.CardInGame) => {
-          if (attr === 'allattributes') {
-            (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => adjustAttr(target, att));
-          } else {
-            adjustAttr(target, attr);
+        apply: (target: w.Targetable) => {
+          if (isObject(target) || isCardInGame(target)) {
+            if (attr === 'allattributes') {
+              (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => adjustAttr(target, att));
+            } else {
+              adjustAttr(target, attr);
+            }
           }
         },
-        unapply: (target: w.Object | w.CardInGame) => {
-          if (attr === 'allattributes') {
-            (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => unadjustAttr(target, att));
-          } else {
-            unadjustAttr(target, attr);
+        unapply: (target: w.Targetable) => {
+          if (isObject(target) || isCardInGame(target)) {
+            if (attr === 'allattributes') {
+              (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => unadjustAttr(target, att));
+            } else {
+              unadjustAttr(target, attr);
+            }
           }
         }
       };
@@ -116,7 +120,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object | w.CardInGame) => {
+        apply: (target: w.Targetable) => {
           if (isObject(target)) {
             if (!(target.effects || []).find((eff) => eff.aid === aid)) {
               target.effects = (target.effects || []).concat({
@@ -127,7 +131,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
             }
           }
         },
-        unapply: (target: w.Object | w.CardInGame) => {
+        unapply: (target: w.Targetable) => {
           if (isObject(target)) {
             target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
           }
@@ -142,7 +146,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
       return {
         aid,
         targets: targetFuncStr,
-        apply: (target: w.Object | w.CardInGame) => {
+        apply: (target: w.Targetable) => {
           if (isObject(target)) {
             executeCmd(state, cmd, target, aid);
           }
@@ -157,12 +161,12 @@ export function abilities(state: w.GameState): Record<string, w.Returns<w.Passiv
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object | w.CardInGame) => {
+        apply: (target: w.Targetable) => {
           if (isObject(target)) {
             executeCmd(state, cmd, target, aid);
           }
         },
-        unapply: (target: w.Object | w.CardInGame) => {
+        unapply: (target: w.Targetable) => {
           if (isObject(target)) {
             executeCmd(state, reversedCmd(cmd), target, aid);
           }

@@ -364,14 +364,14 @@ export interface ActivatedAbility {
 
 export interface PassiveAbility {
   aid: AbilityId
-  apply: (target: _Object | CardInGame) => void
+  apply: (target: Targetable) => void
   currentTargets?: Target
   disabled?: boolean
   duration?: number
   onlyExecuteOnce?: boolean
   source?: AbilityId
   targets: StringRepresentationOf<(state: GameState) => Target>
-  unapply: (target: _Object | CardInGame) => void
+  unapply: (target: Targetable) => void
 }
 
 export interface TriggeredAbility {

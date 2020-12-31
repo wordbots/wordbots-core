@@ -644,6 +644,7 @@ export function executeCmd(
   try {
     return eval(wrappedCmd)(...definitions);  // eslint-disable-line no-eval
   } catch (error) {
+    // TODO better error handling: throw a custom Error object that we handle in the game reducer?
     alert(`Oops!\n\n${error}`);
     throw error;
   }

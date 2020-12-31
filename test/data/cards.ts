@@ -215,3 +215,19 @@ export const thresholderCard: w.CardInStore = {
     speed: 1
   },
 };
+
+export const countdownClockCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Countdown Clock',
+  name: 'Countdown Clock',
+  text: 'At the start of your turn, give this object 1 health. \nWhen this object has 15 or more health, you win the game.',
+  abilities: [
+    "(function () { setTrigger(triggers['beginningOfTurn'](function () { return targets['self'](); }), (function () { actions['modifyAttribute'](targets['thisRobot'](), 'health', function (x) { return x + 1; }); })); })",
+    "(function () { setAbility(abilities['conditionalAction'](function () { return globalConditions['targetMeetsCondition'](targets['thisRobot'](), conditions['attributeComparison']('health', (function (x) { return x >= 15; }))); }, (function () { actions['winGame'](targets['self']()); }))); })"
+  ],
+  cost: 3,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 1,
+  },
+};

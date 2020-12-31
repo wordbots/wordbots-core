@@ -1,3 +1,6 @@
+import { noop } from 'lodash';
+
+import { isCardInGame, isObject } from '../guards';
 import * as w from '../types';
 import { id } from '../util/common';
 import { executeCmd, reversedCmd } from '../util/game';
@@ -27,13 +30,14 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
   };
 }
 
-// Abilities are functions that return an object the following properties:
+// Abilities are functions that return a PassiveAbility with the following properties:
 //   aid => ('ability ID') unique identifier
 //   targets => function that returns targets when called with executeCmd
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
+//   onlyExecuteOnce => if true, the given ability will be disabled after executing once
 
-export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
+export function abilities(state: w.GameState): Record<string, w.Returns<w.PassiveAbility>> {
   return {
     activated: (targetFunc: (s: w.GameState) => w.Target[], action) => {
       const aid: w.AbilityId = id();
@@ -42,19 +46,23 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object) => {
-          target.activatedAbilities = (target.activatedAbilities || []);
+        apply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            target.activatedAbilities = (target.activatedAbilities || []);
 
-          if (!target.activatedAbilities.find((a) => a.aid === aid)) {
-            target.activatedAbilities = target.activatedAbilities.concat({
-              aid,
-              text: cmdText.replace('Activate: ', ''),
-              cmd: action
-            });
+            if (!target.activatedAbilities.find((a) => a.aid === aid)) {
+              target.activatedAbilities = target.activatedAbilities.concat({
+                aid,
+                text: cmdText.replace('Activate: ', ''),
+                cmd: action
+              });
+            }
           }
         },
-        unapply: (target: w.Object) => {
-          target.activatedAbilities = (target.activatedAbilities || []).filter((a) => a.aid !== aid);
+        unapply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            target.activatedAbilities = (target.activatedAbilities || []).filter((a) => a.aid !== aid);
+          }
         }
       };
     },
@@ -86,18 +94,22 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object | w.CardInGame) => {
-          if (attr === 'allattributes') {
-            (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => adjustAttr(target, att));
-          } else {
-            adjustAttr(target, attr);
+        apply: (target: w.Targetable) => {
+          if (isObject(target) || isCardInGame(target)) {
+            if (attr === 'allattributes') {
+              (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => adjustAttr(target, att));
+            } else {
+              adjustAttr(target, attr);
+            }
           }
         },
-        unapply: (target: w.Object | w.CardInGame) => {
-          if (attr === 'allattributes') {
-            (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => unadjustAttr(target, att));
-          } else {
-            unadjustAttr(target, attr);
+        unapply: (target: w.Targetable) => {
+          if (isObject(target) || isCardInGame(target)) {
+            if (attr === 'allattributes') {
+              (['attack', 'health', 'speed'] as w.Attribute[]).forEach((att) => unadjustAttr(target, att));
+            } else {
+              unadjustAttr(target, attr);
+            }
           }
         }
       };
@@ -108,18 +120,39 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object) => {
-          if (!(target.effects || []).find((eff) => eff.aid === aid)) {
-            target.effects = (target.effects || []).concat({
-              aid,
-              effect,
-              props
-            });
+        apply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            if (!(target.effects || []).find((eff) => eff.aid === aid)) {
+              target.effects = (target.effects || []).concat({
+                aid,
+                effect,
+                props
+              });
+            }
           }
         },
-        unapply: (target: w.Object) => {
-          target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
+        unapply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
+          }
         }
+      };
+    },
+
+    conditionalAction: (conditionFunc: (s: w.GameState) => boolean, cmd) => {
+      const aid: w.AbilityId = id();
+      const targetFuncStr =
+        `(function () { return ((${conditionFunc.toString()})() ? targets['thisRobot']() : { type: 'objects', entries: [] } ); })`;
+      return {
+        aid,
+        targets: targetFuncStr,
+        apply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            executeCmd(state, cmd, target, aid);
+          }
+        },
+        unapply: noop,  // Can't "unapply" a one-time action
+        onlyExecuteOnce: true
       };
     },
 
@@ -128,11 +161,15 @@ export function abilities(state: w.GameState): Record<string, w.Returns<any>> {
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Object) => {
-          executeCmd(state, cmd, target, aid);
+        apply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            executeCmd(state, cmd, target, aid);
+          }
         },
-        unapply: (target: w.Object) => {
-          executeCmd(state, reversedCmd(cmd), target, aid);
+        unapply: (target: w.Targetable) => {
+          if (isObject(target)) {
+            executeCmd(state, reversedCmd(cmd), target, aid);
+          }
         }
       };
     }

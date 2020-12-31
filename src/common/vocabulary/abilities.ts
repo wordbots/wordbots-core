@@ -29,17 +29,18 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
   };
 }
 
-// Abilities are functions that return an object the following properties:
+// Abilities are functions that return a PassiveAbilityObj with the following properties:
 //   aid => ('ability ID') unique identifier
 //   targets => function that returns targets when called with executeCmd
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
-
+//   onlyExecuteOnce => if true, the given ability will be disabled after executing once
 interface PassiveAbilityObj {
   aid: string
   targets: w.StringRepresentationOf<() => w.Object[]>
   apply: (target: w.Object) => void
   unapply: (target: w.Object) => void
+  onlyExecuteOnce?: boolean
 }
 
 export function abilities(state: w.GameState): Record<string, w.Returns<PassiveAbilityObj>> {

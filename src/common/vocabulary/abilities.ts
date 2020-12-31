@@ -133,8 +133,6 @@ export function abilities(state: w.GameState): Record<string, w.Returns<PassiveA
     },
 
     conditionalAction: (conditionFunc: (s: w.GameState) => boolean, cmd) => {
-      console.log(conditionFunc.toString());
-
       const aid: w.AbilityId = id();
       const targetFuncStr =
         `(function () { return ((${conditionFunc.toString()})() ? targets['thisRobot']() : { type: 'objects', entries: [] } ); })`;

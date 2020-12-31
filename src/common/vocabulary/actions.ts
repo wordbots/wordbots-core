@@ -9,7 +9,7 @@ import * as w from '../types';
 import { splitSentences } from '../util/cards';
 import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
 import {
-  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, ownerOf, ownerOfCard,
+  allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, opponent, ownerOf, ownerOfCard,
   passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
 } from '../util/game';
 
@@ -303,6 +303,17 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
           delete currentOwner.objectsOnBoard[hex];
         }
       });
+    },
+
+    winGame: (players: w.PlayerCollection): void => {
+      const player = players.entries[0];
+      const opponentPlayer = state.players[opponent(player.color)];
+      const opponentKernel = Object.values(opponentPlayer.objectsOnBoard).find((o) => o.type === TYPE_CORE);
+
+      if (opponentKernel) {
+        opponentKernel.isDestroyed = true;
+        updateOrDeleteObjectAtHex(state, opponentKernel, getHex(state, opponentKernel)!);
+      }
     }
   };
 }

@@ -25,6 +25,7 @@ import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase
 
 import About from './About';
 import Collection from './Collection';
+import Community from './Community';
 import Creator from './Creator';
 import Deck from './Deck';
 import Decks from './Decks';
@@ -189,6 +190,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/sets/:setId" component={Set as any} />
             <Route path="/sets" component={Sets as any} />
             <Route path="/play" component={Play} />
+            <Route path="/community" component={Community} />
             <Route path="/about" component={About} />
             <Route path="/profile/:userId" component={Profile} />
             <Route render={this.redirectToRoot} />

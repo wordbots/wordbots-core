@@ -1,19 +1,11 @@
 {
   "rules": {
     "users": {
+      ".read": "true",
       "$uid": {
         ".write": "auth != null && auth.uid === $uid",
         ".indexOn": ["statistics/numCardsCreated", "statistics/numDecksCreated", "statistics/numSetsCreated", "statistics/numGamesPlayed"],
-        "info": {
-          "displayName": {
-            ".read": "true"
-          }
-        },
-        "achievements": {
-          ".read": "true"
-        },
         "statistics": {
-          ".read": "true",
           ".write": "true"
         }
       }

@@ -168,6 +168,12 @@ export interface EventTarget {
   undergoer?: _Object
 }
 
+export interface User {
+  info?: fb.UserInfo
+  achievements?: Record<string, boolean>
+  statistics?: Record<string, number>
+}
+
 // Redux store types
 
 export interface State {

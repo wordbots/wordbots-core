@@ -1,11 +1,10 @@
 import { History } from 'history';
-import { range, uniqBy } from 'lodash';
-import { filter, flow, orderBy, slice } from 'lodash/fp';
+import { range } from 'lodash';
 import * as React from 'react';
 import Carousel, { ResponsiveObject } from 'react-slick';
 
 import * as w from '../../types';
-import { getCards } from '../../util/firebase';
+import { mostRecentCards } from '../../util/firebase';
 import Card from '../card/Card';
 
 import CardProvenanceDescription from './CardProvenanceDescription';
@@ -98,21 +97,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private initializeCarousel = async (userId?: string) => {
-    const cards = await getCards(userId || null);
-    let recentCards: w.CardInStore[] = flow(
-      (cs: w.CardInStore[]) => uniqBy(cs, 'name'),
-      filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
-        !!c.text  // cards without text (uninteresting)
-          && !!c.metadata.updated  // cards without timestamp (can't order them)
-          && c.metadata.source.type === 'user'  // built-in cards
-          && !c.metadata.isPrivate  // private cards
-          && !c.metadata.duplicatedFrom  // duplicated cards
-          && !c.metadata.importedFromJson  // cards imported from JSON
-          && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
-      ),
-      orderBy((c: w.CardInStore) => c.metadata.updated, ['desc']),
-      slice(0, 15)
-    )(cards) as w.CardInStore[];
+    let recentCards = await mostRecentCards(userId || null, 15);
 
     if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
       while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {

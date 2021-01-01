@@ -5,7 +5,6 @@ import Divider from '@material-ui/core/Divider';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { isEqual, noop } from 'lodash';
-import { object } from 'prop-types';
 import * as React from 'react';
 import Textfit from 'react-textfit';
 
@@ -64,11 +63,6 @@ interface CardState {
 }
 
 export class Card extends React.Component<CardProps & WithStyles, CardState> {
-  // (For server-side rendering via /api/card.png)
-  public static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-
   public static styles: Record<string, CSSProperties> = {
     headerTitle: {
       lineHeight: '1em',
@@ -80,7 +74,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     }
   }
 
-  public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}) => (
+  public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}): JSX.Element => (
     isCardVisible(card)
       ? (
       <CardWithStyles

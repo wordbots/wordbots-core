@@ -5,7 +5,7 @@ import Carousel, { ResponsiveObject } from 'react-slick';
 
 import * as w from '../../types';
 import { mostRecentCards } from '../../util/firebase';
-import Card from '../card/Card';
+import { Card } from '../card/Card';
 
 import CardProvenanceDescription from './CardProvenanceDescription';
 

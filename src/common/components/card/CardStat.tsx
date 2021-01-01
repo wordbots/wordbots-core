@@ -1,6 +1,6 @@
 import Paper from '@material-ui/core/Paper';
 import { capitalize } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import * as w from '../../types';
@@ -43,7 +43,7 @@ export default class CardStat extends React.Component<CardStatProps> {
 
   get icon(): JSX.Element {
     return (
-      <FontIcon
+      <Icon
         className={`ra ra-${this.iconClass}`}
         style={{
           fontSize: 14 * (this.props.scale || 1),

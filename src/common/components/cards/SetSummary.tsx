@@ -9,7 +9,7 @@ import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
 import { sortCards } from '../../util/cards';
-import Card from '../card/Card';
+import { Card } from '../card/Card';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import ProfileLink from '../users/ProfileLink';
 

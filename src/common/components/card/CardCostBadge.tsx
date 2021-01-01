@@ -1,50 +1,38 @@
-import Badge from 'material-ui/Badge';
+import Badge from '@material-ui/core/Badge';
 import * as React from 'react';
-
-import { inBrowser } from '../../util/browser';
 
 interface CardCostBadgeProps {
   children: JSX.Element
   cost: number
   baseCost: number
   scale: number
-  margin: number
-  zIndex: number
-  transform: string
 }
 
 export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
   get badgeContent(): JSX.Element {
     return (
-      <div style={this.badgeContentStyle}>
-        {this.props.cost}
+      <div style={this.badgeStyle}>
+        <div style={{ marginTop: 5 * this.props.scale }}>
+          {this.props.cost}
+        </div>
       </div>
     );
   }
 
-  get badgeContentStyle(): React.CSSProperties {
-    if (inBrowser()) {
-      return {};
-    } else {
-      return {
-        paddingTop: 8,
-        textAlign: 'center',
-        fontFamily: 'Carter One, Arial',
-        fontWeight: 'bold'
-      };
-    }
-  }
-
-  get badgeContainerStyle(): React.CSSProperties {
-    const baseStyle = {
-      top: 12,
-      right: -4,
+  get badgeStyle(): React.CSSProperties {
+    const baseStyle: React.CSSProperties = {
+      position: 'relative',
+      top: 8 * this.props.scale,
+      right: 15 * this.props.scale,
       width: 36 * this.props.scale,
       height: 36 * this.props.scale,
       backgroundColor: '#00bcd4',
-      fontFamily: 'Carter One',
+      fontFamily: 'Carter One, Arial',
       color: 'white',
-      fontSize: 16 * this.props.scale
+      fontSize: 16 * this.props.scale,
+      textAlign: 'center',
+      fontWeight: 700,
+      borderRadius: '50%',
     };
 
     if (this.props.cost < this.props.baseCost) {
@@ -64,23 +52,9 @@ export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
     }
   }
 
-  get rootStyle(): React.CSSProperties {
-    return {
-      paddingLeft: 0,
-      paddingRight: 0,
-      marginRight: this.props.margin,
-      zIndex: this.props.zIndex || 0,
-      transform: this.props.transform
-    };
-  }
-
   public render(): JSX.Element {
     return (
-      <Badge
-        badgeContent={this.badgeContent}
-        badgeStyle={this.badgeContainerStyle}
-        style={this.rootStyle}
-      >
+      <Badge badgeContent={this.badgeContent}>
         {this.props.children}
       </Badge>
     );

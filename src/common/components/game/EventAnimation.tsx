@@ -3,7 +3,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { EVENT_ANIMATION_TIME_MS, MAX_Z_INDEX } from '../../constants';
 import * as w from '../../types';
-import Card from '../card/Card';
+import { Card } from '../card/Card';
 
 interface EventAnimationProps {
   currentTurn: w.PlayerColor

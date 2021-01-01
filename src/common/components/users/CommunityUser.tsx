@@ -3,7 +3,7 @@ import { DoubleBounce } from 'better-react-spinkit';
 import { History } from 'history';
 import * as React from 'react';
 
-import Card from '../card/Card';
+import { Card } from '../card/Card';
 import ProfileLink from '../users/ProfileLink';
 import * as w from '../../types';
 import { mostRecentCards } from '../../util/firebase';

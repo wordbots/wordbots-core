@@ -3,9 +3,9 @@ import { DoubleBounce } from 'better-react-spinkit';
 import { History } from 'history';
 import * as React from 'react';
 
-import * as w from '../../types';
 import Card from '../card/Card';
 import ProfileLink from '../users/ProfileLink';
+import * as w from '../../types';
 import { mostRecentCards } from '../../util/firebase';
 
 interface CommunityUserProps {

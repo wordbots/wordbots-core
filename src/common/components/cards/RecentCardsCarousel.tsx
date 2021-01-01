@@ -97,7 +97,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private initializeCarousel = async (userId?: string) => {
-    let recentCards = await mostRecentCards(userId, 15);
+    let recentCards = await mostRecentCards(userId || null, 15);
 
     if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
       while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {

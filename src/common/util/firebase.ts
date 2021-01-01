@@ -179,8 +179,8 @@ export async function getCardById(cardId: string): Promise<w.CardInStore> {
   return snapshot.val() as w.CardInStore;
 }
 
-export async function mostRecentCards(uid: w.UserId | undefined, limit: number): Promise<w.CardInStore[]> {
-  const cards = await getCards(uid || null);
+export async function mostRecentCards(uid: w.UserId | null, limit: number): Promise<w.CardInStore[]> {
+  const cards = await getCards(uid);
 
   return flow(
     uniqBy((c: w.CardInStore) => c.name),

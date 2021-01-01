@@ -18,26 +18,26 @@ import ProfileLink from '../ProfileLink';
 import { styles } from './PlayerInfo';
 
 interface RecentGamesProps {
-  recentGames?: w.SavedGame[]
+  games?: w.SavedGame[]
   playerNames?: Record<string, string>
   userId: string
 }
 
 class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
   public render(): JSX.Element {
-    const { recentGames, classes } = this.props;
+    const { games, classes } = this.props;
 
     return (
       <div className={classes.root}>
         <Title text="Recent Games" small />
-        { isNil(recentGames) ?
+        { isNil(games) ?
           <div className={classes.progressContainer}>
             <CircularProgress />
           </div> :
             (
-              recentGames.length > 0 ?
+              games.length > 0 ?
                 <List>
-                  {recentGames.map(this.renderRecentGame)}
+                  {games.map(this.renderRecentGame)}
                 </List> :
                 <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
             )

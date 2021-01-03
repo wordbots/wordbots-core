@@ -4,7 +4,7 @@ import { object } from 'prop-types';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Action, Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';

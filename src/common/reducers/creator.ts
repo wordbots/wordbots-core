@@ -73,6 +73,9 @@ export default function creator(oldState: State = defaultState, { type, payload 
         spriteID: id()
       };
 
+    case creatorActions.SAVE_TEMP_VERSION:
+      return {...state, tempSavedVersion: payload.card };
+
     case collectionActions.OPEN_CARD_FOR_EDITING:
       return c.openCardForEditing(state, payload.card);
 

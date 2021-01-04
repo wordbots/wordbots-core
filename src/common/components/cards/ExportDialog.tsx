@@ -1,6 +1,6 @@
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import { History } from 'history';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 
@@ -19,6 +19,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
   public state = {
     status: ''
   };
+  private textField = React.createRef<any>();
 
   get actions(): JSX.Element[] {
     return [
@@ -29,31 +30,33 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       ),
       (
         <CopyToClipboard
-          text={this.props.text || ''}
           key="copy"
+          text={this.props.text || ''}
           onCopy={this.handleCopyText}
         >
-          <RaisedButton
-            secondary
-            label="Copy to Clipboard"
+          <Button
+            variant="outlined"
+            color="secondary"
             style={{marginRight: 10}}
-          />
+          >
+            Copy to Clipboard
+          </Button>
         </CopyToClipboard>
       ),
       (
-        <RaisedButton
-          primary
-          label="Close"
+        <Button
           key="close"
+          variant="outlined"
+          color="primary"
           onClick={this.close}
-        />
+        >
+          Close
+        </Button>
       )
     ];
   }
 
   public render(): JSX.Element {
-    const TextFieldUntyped = TextField as any;  // Remove type checking from TextField because we want to pass it an onClick prop.
-
     return (
       <RouterDialog
         path="export"
@@ -61,15 +64,16 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
         history={this.props.history}
         actions={this.actions}
       >
-        <TextFieldUntyped
-          id="tf"
-          ref={(textField: TextField) => { (this as any).textField = textField; /* TODO better ref typing */ }}
-          multiLine
-          rowsMax={10}
-          style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
-          value={this.props.text}
-          onClick={this.selectText}
-        />
+        <div onClick={this.selectText}>
+          <TextField
+            id="tf"
+            inputRef={this.textField}
+            multiline
+            rowsMax={10}
+            style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
+            value={this.props.text || ''}
+          />
+        </div>
       </RouterDialog>
     );
   }
@@ -81,7 +85,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
   }
 
   private selectText = () => {
-    (this as any).textField.select();
+    this.textField.current.select();
   }
 
   private handleCopyText = () => {

@@ -19,7 +19,7 @@ interface DeckCreationSidebarControlsProps {
  * Sidebar containing search, layout, sort, and filter controls.
  * Used by the Deck and NewSet containers.
  */
-export default class DeckCreationSidebarControls extends React.Component<DeckCreationSidebarControlsProps> {
+export default class DeckCreationSidebarControls extends React.PureComponent<DeckCreationSidebarControlsProps> {
   public render(): JSX.Element {
     const { layout, sortCriteria, sortOrder, onSetField, onToggleFilter } = this.props;
     return (

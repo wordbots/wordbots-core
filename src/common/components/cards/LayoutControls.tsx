@@ -1,4 +1,4 @@
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import { Layout } from './types.enums';
@@ -59,7 +59,7 @@ export default class LayoutControls extends React.Component<LayoutControlsProps>
   private renderButton(layout: Layout, iconName: string): JSX.Element {
     const selected = (this.props.layout === layout);
     return (
-      <FontIcon
+      <Icon
         className="material-icons"
         style={{
           ...this.baseIconStyle,
@@ -69,7 +69,7 @@ export default class LayoutControls extends React.Component<LayoutControlsProps>
         onClick={this.handleSetLayout(layout)}
       >
         {iconName}
-      </FontIcon>
+      </Icon>
     );
   }
 

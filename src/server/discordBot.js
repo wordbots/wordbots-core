@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 
 export default function launch() {
-  console.log(process.env);
   if (process.env.DISCORD_API_TOKEN) {
     const client = new Discord.Client();
 

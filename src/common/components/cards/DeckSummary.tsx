@@ -36,17 +36,6 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
         display: 'flex',
         alignItems: 'stretch'
       },
-      cardBadgeStyle: {
-        backgroundColor: '#00bcd4',
-        fontFamily: 'Carter One',
-        color: 'white',
-        marginRight: 10
-      },
-      cardBadge: {
-        padding: 0,
-        width: 24,
-        height: 24
-      },
       cardName: {
         display: 'flex',
         alignItems: 'center',

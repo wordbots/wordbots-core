@@ -12,7 +12,7 @@ export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
   get badgeContent(): JSX.Element {
     return (
       <div style={this.badgeStyle}>
-        <div style={{ marginTop: 5 * this.props.scale }}>
+        <div style={{ lineHeight: 2.4 }}>
           {this.props.cost}
         </div>
       </div>
@@ -22,8 +22,8 @@ export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
   get badgeStyle(): React.CSSProperties {
     const baseStyle: React.CSSProperties = {
       position: 'relative',
-      top: 8 * this.props.scale,
-      right: 15 * this.props.scale,
+      top: 6 * this.props.scale,
+      right: 14 * this.props.scale,
       width: 36 * this.props.scale,
       height: 36 * this.props.scale,
       backgroundColor: '#00bcd4',
@@ -31,7 +31,7 @@ export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
       color: 'white',
       fontSize: 16 * this.props.scale,
       textAlign: 'center',
-      fontWeight: 700,
+      fontWeight: 500,
       borderRadius: '50%',
     };
 

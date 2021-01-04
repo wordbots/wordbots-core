@@ -11,7 +11,6 @@ import Textfit from 'react-textfit';
 import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import { isCardVisible } from '../../guards';
 import * as w from '../../types';
-import { inBrowser } from '../../util/browser';
 import { compareCertainKeys } from '../../util/common';
 
 import CardBack from './CardBack';
@@ -65,12 +64,10 @@ interface CardState {
 export class Card extends React.Component<CardProps & WithStyles, CardState> {
   public static styles: Record<string, CSSProperties> = {
     headerTitle: {
-      lineHeight: '1em',
-      marginTop: -2,
-      marginBottom: 2
+      lineHeight: 'normal'
     },
     headerSubtitle: {
-      lineHeight: '1em'
+      lineHeight: 'normal'
     }
   }
 
@@ -126,7 +123,6 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
 
     const compactStyle = {
       height: 96 * (scale || 1),
-      marginTop: (inBrowser() ? 0 : 20) * (scale || 1),
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
@@ -231,7 +227,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   }}
                 />
 
-                <Divider/>
+                <Divider style={{ margin: '-1px 0px 0px' }} />
 
                 <CardImage
                   type={type}
@@ -243,7 +239,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   onSpriteClick={onSpriteClick || noop}
                 />
 
-                <Divider/>
+                <Divider style={{ margin: '-1px 0px 0px' }} />
 
                 <div style={this.textAreaStyle}>
                   {this.renderText()}
@@ -283,66 +279,34 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   private renderTitle(): JSX.Element {
     const { name, scale } = this.props;
 
-    if (!inBrowser()) {
-      // Textfit won't work without a DOM, so just estimate something reasonable.
-      const maxFontSize = Math.round(180 / name.length);
-      return (
-        <div
-          style={{
-            width: 105 * (scale || 1),
-            height: 20 * (scale || 1),
-            fontSize: Math.min(maxFontSize, 16) * (scale || 1)
-          }}
-        >
-          {name}
-        </div>
-      );
-    } else {
-      return (
-        <Textfit
-          mode="single"
-          autoResize={false}
-          min={8 * (scale || 1)}
-          max={16 * (scale || 1)}
-          style={{
-            width: 105 * (scale || 1),
-            height: 23 * (scale || 1)
-          }}
-        >
-          {name}
-        </Textfit>
-      );
-    }
+    return (
+      <Textfit
+        mode="single"
+        autoResize={false}
+        max={16 * (scale || 1)}
+        style={{
+          width: 105 * (scale || 1),
+          height: 23 * (scale || 1)
+        }}
+      >
+        {name}
+      </Textfit>
+    );
   }
 
   private renderText(): JSX.Element {
-    const { type, text, scale } = this.props;
+    const { text, scale } = this.props;
 
-    if (!inBrowser()) {
-      // Textfit won't work without a DOM, so just estimate something reasonable.
-      const maxFontSize = Math.round((type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
-      return (
-        <div
-          style={{
-            ...this.textFitStyle,
-            fontSize: Math.min(maxFontSize, 14)
-          }}
-        >
-          {text}
-        </div>
-      );
-    } else {
-      return (
-        <Textfit
-          autoResize={false}
-          mode="multi"
-          max={14 * (scale || 1)}
-          style={this.textFitStyle}
-        >
-          {text}
-        </Textfit>
-      );
-    }
+    return (
+      <Textfit
+        autoResize={false}
+        mode="multi"
+        max={14 * (scale || 1)}
+        style={this.textFitStyle}
+      >
+        {text}
+      </Textfit>
+    );
   }
 
   private renderStat(type: w.Attribute): JSX.Element {

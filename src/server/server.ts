@@ -4,6 +4,7 @@ import * as webpack from 'webpack';
 
 import webpackConfig from '../../webpack.config';
 
+import launchDiscordBot from './discordBot';
 import handleRequest from './handleRequest';
 import launchWebsocketServer from './multiplayer/socket';
 
@@ -55,4 +56,7 @@ const server = app.listen(PORT || 3000, (): void => {
   console.log(`App listening at http://${address.address}:${address.port}`);
   /* eslint-enable no-console */
 });
+
 launchWebsocketServer(server, '/socket');
+
+launchDiscordBot();

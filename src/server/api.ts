@@ -42,7 +42,13 @@ function renderCard(response: express.Response, query: ParsedUrlQuery): void {
     props,
     width: 170,
     height: 250,
-    css: '.MuiPaper-root-1 { background: white; }'
+    css: '.MuiPaper-root-1 { background: white; }',
+    puppeteer: {
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+      ],
+    }
   }).then((img: Buffer) => {
     response.writeHead(200, {
       'Content-Type': 'image/png',
@@ -50,9 +56,7 @@ function renderCard(response: express.Response, query: ParsedUrlQuery): void {
     });
     response.end(img);
   }).catch((error: any) => {
-    console.error(error.message);
     console.error(error.stack);
-
     response
       .status(500)
       .end(error.message);

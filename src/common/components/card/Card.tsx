@@ -281,7 +281,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
 
     return (
       <Textfit
-        mode="single"
+        mode="multi"
         autoResize={false}
         max={16 * (scale || 1)}
         style={{

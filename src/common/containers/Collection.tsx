@@ -4,9 +4,6 @@ import { History } from 'history';
 import { find, noop } from 'lodash';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { object } from 'prop-types';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -84,11 +81,6 @@ export function mapDispatchToProps(dispatch: Dispatch): CollectionDispatchProps 
 }
 
 export class Collection extends React.Component<CollectionProps, CollectionState> {
-  // For testing.
-  public static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-
   public state: CollectionState = {
     filters: {
       robots: true,
@@ -122,9 +114,6 @@ export class Collection extends React.Component<CollectionProps, CollectionState
 
     return false;
   }
-
-  // For testing.
-  public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element {
     const { exportedJson, history, loggedIn, onImportCards } = this.props;

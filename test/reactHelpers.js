@@ -1,15 +1,24 @@
-import * as React from 'react';
-import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
-import { createRenderer } from 'react-test-renderer/shallow';
 import { noop } from 'lodash';
+import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import * as React from 'react';
+import { findRenderedComponentWithType, renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
+import { createRenderer } from 'react-test-renderer/shallow';
 
 import * as coll from '../src/common/containers/Collection.tsx';
 import * as creator from '../src/common/containers/Creator.tsx';
 import * as gameArea from '../src/common/containers/GameAreaContainer.tsx';
+import wordbotsTheme from '../src/common/themes/personal';
 
-export function renderElement(elt, deep = false) {
+export function renderElement(elt, deep = false, unwrap = true) {
   if (deep) {
-    return renderIntoDocument(elt);
+    // TODO this wrapping/unwrapping may not be necessary anymore once our theming moves to MUI v1 (which provides a default theme)
+    const wrappedElt = (
+      <MuiThemeProvider muiTheme={getMuiTheme(wordbotsTheme)}>
+        {elt}
+      </MuiThemeProvider>
+    );
+    const rendered = renderIntoDocument(wrappedElt);
+    return unwrap ? findRenderedComponentWithType(rendered, elt.type) : rendered;
   } else {
     const renderer = createRenderer();
     renderer.render(elt);
@@ -34,7 +43,7 @@ export function createCollection(state, dispatch = noop) {
 /* eslint-enable react/no-multi-comp */
 
 export function getComponent(type, componentClass, state, dispatch = noop, predicate = noop) {
-  const elt = renderElement(instantiator(type)(state, dispatch), true);
+  const elt = renderElement(instantiator(type)(state, dispatch), true, false);
   const components = scryRenderedComponentsWithType(elt, componentClass);
   return (components.length === 1) ? components[0] : components.find(predicate);
 }

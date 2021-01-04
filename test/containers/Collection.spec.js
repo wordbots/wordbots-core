@@ -1,5 +1,5 @@
+import Button from '@material-ui/core/Button';
 import { scryRenderedComponentsWithType } from 'react-dom/test-utils';
-import RaisedButton from 'material-ui/RaisedButton';
 import { cloneDeep } from 'lodash';
 
 import { combineState } from '../testHelpers.ts';
@@ -114,8 +114,8 @@ describe('Collection container', () => {
 
     component(CardGrid).props.onCardClick(customCardId);
 
-    component(RaisedButton)
-      .find(b => b.props.label === 'Delete Selected')
+    component(Button)
+      .find(b => b.props.children[1] === 'Delete Selected')
       .props.onClick();
 
     expect(state.collection.cards.length).toEqual(numCards - 1);

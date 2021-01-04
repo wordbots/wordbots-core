@@ -10,8 +10,6 @@ import App from '../common/containers/App.tsx';
 import configureStore from '../common/store/configureStore.ts';
 import * as packagejson from '../../package.json';
 
-import produceApiResponse from './api.ts';
-
 export default function handleRequest(request, response) {
   produceResponse(response, request.url);
 }
@@ -23,28 +21,24 @@ function getVersionWithSha() {
 }
 
 function produceResponse(response, location) {
-  if (location.startsWith('/api')) {
-    return produceApiResponse(response, location);
-  } else {
-    const context = {};
-    const html = ReactDOMServer.renderToString(
-      <Provider store={configureStore()}>
-        <StaticRouter location={location} context={context}>
-          <App />
-        </StaticRouter>
-      </Provider>
-    );
+  const context = {};
+  const html = ReactDOMServer.renderToString(
+    <Provider store={configureStore()}>
+      <StaticRouter location={location} context={context}>
+        <App />
+      </StaticRouter>
+    </Provider>
+  );
 
-    if (context.url) {
-      response
-        .writeHead(301, { Location: context.url })
-        .end();
-    } else {
-      const head = Helmet.rewind();
-      response
-        .status(200)
-        .end(renderFullPage(html, head));
-    }
+  if (context.url) {
+    response
+      .writeHead(301, { Location: context.url })
+      .end();
+  } else {
+    const head = Helmet.rewind();
+    response
+      .status(200)
+      .end(renderFullPage(html, head));
   }
 }
 

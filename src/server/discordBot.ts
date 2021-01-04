@@ -10,7 +10,7 @@ export default function launch(): void {
 
     client.on('ready', () => {
       // eslint-disable-next-line no-console
-      console.log(`Discord bot logged in as ${client.user.tag}`);
+      console.log(`Discord bot logged in as ${client.user!.tag}`);
     });
 
     const prefixTriggers = ['[{"id":"', '{"id":"', '[{"name":"'];

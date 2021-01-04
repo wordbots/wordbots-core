@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import * as w from '../../types';
-import { inBrowser } from '../../util/browser';
 import { id } from '../../util/common';
 import Tooltip from '../Tooltip';
 
@@ -22,19 +21,11 @@ export default class Word extends React.Component<WordProps> {
         </span>
       );
     } else if (keywords[word]) {
-      if (inBrowser()) {
-        return (
-          <span key={id()}>
-            {' '}<Tooltip inline text={keywords[word]}><b>{word}</b></Tooltip>
-          </span>
-        );
-      } else {
-        return (
-          <span key={id()}>
-            {' '}<b>{word}</b>
-          </span>
-        );
-      }
+      return (
+        <span key={id()}>
+          {' '}<Tooltip inline text={keywords[word]}><b>{word}</b></Tooltip>
+        </span>
+      );
     } else {
       return (
         <span key={id()}>

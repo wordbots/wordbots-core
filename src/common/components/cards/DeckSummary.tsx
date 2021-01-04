@@ -1,6 +1,5 @@
 import Paper from '@material-ui/core/Paper';
 import { filter, sortBy } from 'lodash';
-import Badge from 'material-ui/Badge';
 import * as React from 'react';
 
 import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
@@ -179,11 +178,24 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
       >
         <CardTooltip card={card}>
           <div style={this.styles.cardItem}>
-            <Badge
-              badgeContent={card.cost}
-              badgeStyle={this.styles.cardBadgeStyle}
-              style={this.styles.cardBadge}
-            />
+            <span style={{
+              position: 'relative',
+              left: -10,
+              display: 'flex',
+              flexFlow: 'row wrap',
+              placeContent: 'center',
+              alignItems: 'center',
+              fontWeight: 500,
+              fontSize: 12,
+              width: 28,
+              height: 24,
+              borderRadius: '50%',
+              backgroundColor: 'rgb(0, 188, 212)',
+              color: 'white',
+              fontFamily: 'Carter One'
+            }}>
+              {card.cost}
+            </span>
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
           </div>

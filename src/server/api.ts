@@ -4,7 +4,6 @@ import { parse as urlparse } from 'url';
 import * as express from 'express';
 import * as repng from 'repng';
 
-
 import Card, { CardProps } from '../common/components/card/Card';
 import Sentence from '../common/components/card/Sentence';
 
@@ -51,8 +50,11 @@ function renderCard(response: express.Response, query: ParsedUrlQuery): void {
     });
     response.end(img);
   }).catch((error: any) => {
+    console.error(error.message);
+    console.error(error.stack);
+
     response
       .status(500)
-      .end(error);
+      .end(error.message);
   });
 }

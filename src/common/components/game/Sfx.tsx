@@ -3,7 +3,7 @@ import * as React from 'react';
 import { inBrowser, isFlagSet } from '../../util/browser';
 
 const Sound = inBrowser() ? require('react-sound').default : null;
-const soundManager = inBrowser() ? require('soundmanager2').soundManager : null;
+const soundManager = inBrowser() ? require('soundmanager2/script/soundmanager2-nodebug').soundManager : null;
 
 interface SfxProps {
   queue: string[]

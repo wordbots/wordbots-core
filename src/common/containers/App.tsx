@@ -1,6 +1,7 @@
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import * as fb from 'firebase';
 import { History, Location } from 'history';
-import { MuiThemeProvider } from 'material-ui/styles';
+import { MuiThemeProvider as MuiV0ThemeProvider } from 'material-ui/styles';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -18,7 +19,8 @@ import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
 import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
-import wordbotsTheme from '../themes/personal';
+import muiV0Theme from '../themes/muiV0';
+import muiV1Theme from '../themes/muiV1';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
@@ -224,16 +226,18 @@ class App extends React.Component<AppProps, AppState> {
 
   public render(): JSX.Element {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(wordbotsTheme)}>
-        <div>
-          <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
-          <TitleBar />
+      <MuiThemeProvider theme={createMuiTheme(muiV1Theme)}>
+        <MuiV0ThemeProvider muiTheme={getMuiTheme(muiV0Theme)}>
           <div>
-            {this.sidebar}
-            {this.isLoading ? this.loadingMessage : this.content}
+            <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
+            <TitleBar />
+            <div>
+              {this.sidebar}
+              {this.isLoading ? this.loadingMessage : this.content}
+            </div>
+            {this.dialogs}
           </div>
-          {this.dialogs}
-        </div>
+        </MuiV0ThemeProvider>
       </MuiThemeProvider>
     );
   }

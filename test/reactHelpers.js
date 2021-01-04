@@ -7,7 +7,7 @@ import { createRenderer } from 'react-test-renderer/shallow';
 import * as coll from '../src/common/containers/Collection.tsx';
 import * as creator from '../src/common/containers/Creator.tsx';
 import * as gameArea from '../src/common/containers/GameAreaContainer.tsx';
-import wordbotsTheme from '../src/common/themes/personal';
+import wordbotsTheme from '../src/common/themes/muiV0';
 
 export function renderElement(elt, deep = false, unwrap = true) {
   if (deep) {

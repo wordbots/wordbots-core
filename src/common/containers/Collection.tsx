@@ -265,7 +265,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         <RaisedButton
           label="New Card"
           labelPosition="after"
-          primary
+          secondary
           icon={<FontIcon style={iconStyle} className="material-icons">queue</FontIcon>}
           style={style}
           buttonStyle={{textAlign: 'left'}}
@@ -274,7 +274,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         <RaisedButton
           label={compact ? 'Edit' : 'Edit Selected'}
           labelPosition="after"
-          secondary
+          primary
           disabled={!this.canEditSelectedCard}
           icon={<FontIcon style={iconStyle} className="material-icons">edit</FontIcon>}
           style={style}
@@ -284,7 +284,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         <RaisedButton
           label={compact ? 'Duplicate' : 'Duplicate Selected'}
           labelPosition="after"
-          secondary
+          primary
           disabled={this.state.selectedCardIds.length !== 1}
           icon={<FontIcon style={iconStyle} className="material-icons">file_copy</FontIcon>}
           style={style}
@@ -294,7 +294,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         <RaisedButton
           label={compact ? 'Delete' : 'Delete Selected'}
           labelPosition="after"
-          secondary
+          primary
           disabled={this.state.selectedCardIds.length === 0}
           icon={<FontIcon style={iconStyle} className="material-icons">delete</FontIcon>}
           style={style}
@@ -304,7 +304,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         {compact ? null : <RaisedButton
           label="Export Selected"
           labelPosition="after"
-          secondary
+          primary
           disabled={this.state.selectedCardIds.length === 0}
           icon={<FontIcon style={iconStyle} className="material-icons">file_download</FontIcon>}
           style={style}
@@ -314,7 +314,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         {compact ? null : <RaisedButton
           label="Import Cards"
           labelPosition="after"
-          secondary
+          primary
           icon={<FontIcon style={iconStyle} className="material-icons">file_upload</FontIcon>}
           style={style}
           buttonStyle={{textAlign: 'left'}}

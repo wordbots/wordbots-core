@@ -10,7 +10,7 @@ interface WordProps {
   result: w.ParseResult | null
 }
 
-export default class Word extends React.Component<WordProps> {
+export default class Word extends React.PureComponent<WordProps> {
   public render(): JSX.Element {
     const { word, keywords, result } = this.props;
 

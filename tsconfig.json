@@ -7,6 +7,7 @@
     "lib": ["es2015", "es2017", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "outDir": "./dist",
     "rootDir": ".",
     "sourceMap": true,

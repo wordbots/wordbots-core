@@ -1,5 +1,4 @@
 import { History } from 'history';
-import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
 declare const window: {

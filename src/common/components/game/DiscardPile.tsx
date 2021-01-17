@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import * as w from '../../types';
-import Card from '../card/Card';
+import { Card } from '../card/Card';
 
 interface DiscardPileProps {
   cards: w.PossiblyObfuscatedCard[]

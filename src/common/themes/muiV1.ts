@@ -23,7 +23,7 @@ const theme: ThemeOptions = {
       main: cyan[500],
       contrastText: white
     },
-    divider: grey[300]
+    divider: grey[500]
   }
 };
 

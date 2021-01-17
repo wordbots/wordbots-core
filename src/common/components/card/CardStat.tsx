@@ -11,6 +11,7 @@ interface CardStatProps {
   current?: number
   scale?: number
   noTooltip?: boolean
+  style?: React.CSSProperties
 }
 
 export default class CardStat extends React.Component<CardStatProps> {
@@ -86,7 +87,8 @@ export default class CardStat extends React.Component<CardStatProps> {
       fontFamily: 'Carter One',
       fontSize: 18 * (this.props.scale || 1),
       textAlign: 'center',
-      paddingBottom: 6 * (this.props.scale || 1)
+      paddingBottom: 6 * (this.props.scale || 1),
+      ...this.props.style
     };
 
     if (this.props.noTooltip) {

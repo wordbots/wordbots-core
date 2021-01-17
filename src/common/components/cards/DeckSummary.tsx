@@ -7,6 +7,7 @@ import * as w from '../../types';
 import { groupCards } from '../../util/cards';
 import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
+import InlineCardCostBadge from '../card/InlineCardCostBadge';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import DeckValidationIndicator from './DeckValidationIndicator';
@@ -167,24 +168,7 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
       >
         <CardTooltip card={card}>
           <div style={this.styles.cardItem}>
-            <span style={{
-              position: 'relative',
-              left: -10,
-              display: 'flex',
-              flexFlow: 'row wrap',
-              placeContent: 'center',
-              alignItems: 'center',
-              fontWeight: 500,
-              fontSize: 12,
-              width: 28,
-              height: 24,
-              borderRadius: '50%',
-              backgroundColor: 'rgb(0, 188, 212)',
-              color: 'white',
-              fontFamily: 'Carter One'
-            }}>
-              {card.cost}
-            </span>
+            <InlineCardCostBadge cost={card.cost} style={{ position: 'relative', left: -10 }} />
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
           </div>

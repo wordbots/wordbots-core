@@ -52,6 +52,7 @@ export default class ImportDialog extends React.Component<ImportDialogProps, Imp
         title="Import Cards"
         history={this.props.history}
         actions={this.actions}
+        style={{ width: 700 }}
       >
         <TextField
           id="tf"

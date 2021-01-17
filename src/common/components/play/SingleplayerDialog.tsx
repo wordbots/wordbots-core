@@ -23,7 +23,7 @@ export default class SingleplayerDialog extends React.Component<SingleplayerDial
         <RouterDialog
           path="singleplayer"
           history={history}
-          style={{ maxWidth: 700 }}
+          style={{ width: 700 }}
         >
           <SingleplayerModeSelection onSelectMode={this.handleSelectMode} />
         </RouterDialog>

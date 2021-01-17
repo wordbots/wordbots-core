@@ -63,6 +63,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
         title="Exported Cards"
         history={this.props.history}
         actions={this.actions}
+        style={{ width: 700 }}
       >
         <div onClick={this.selectText}>
           <TextField

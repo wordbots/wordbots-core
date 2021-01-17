@@ -16,11 +16,10 @@ export default class CreatorHelpDialog extends React.Component<{ history: Histor
     const { history, location } = this.props;
     return (
       <RouterDialog
-        scroll
         path="help"
         title="How to Write a Card"
         history={history}
-        style={{width: 800}}
+        style={{ width: 800, overflowY: 'auto' }}
         actions={[
           <RaisedButton
             primary

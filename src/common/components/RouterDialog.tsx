@@ -1,9 +1,10 @@
+import { DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
 import { History } from 'history';
-import Dialog from 'material-ui/Dialog';
 import * as React from 'react';
 import { Route } from 'react-router';
 
-import { DIALOG_BODY_Z_INDEX, DIALOG_MAIN_Z_INDEX, DIALOG_OVERLAY_Z_INDEX } from '../constants';
+import { DIALOG_Z_INDEX } from '../constants';
 import { transformHistory } from '../util/browser';
 
 interface RouterDialogProps {
@@ -11,11 +12,8 @@ interface RouterDialogProps {
   title?: string
   children: React.ReactNode
   history: History
-  bodyStyle?: React.CSSProperties
-  style?: React.CSSProperties
+  style: React.CSSProperties
   actions?: JSX.Element[]
-  modal?: boolean
-  scroll?: boolean
 }
 
 export default class RouterDialog extends React.Component<RouterDialogProps> {
@@ -42,18 +40,20 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
   private renderDialog = () => (
     <Dialog
       open
-      repositionOnUpdate={false}
-      modal={this.props.modal || false}
-      bodyStyle={{ zIndex: DIALOG_BODY_Z_INDEX, ...(this.props.bodyStyle || {}) }}
-      style={{ zIndex: DIALOG_MAIN_Z_INDEX }}
-      autoScrollBodyContent={this.props.scroll}
-      title={this.props.title}
-      contentStyle={this.props.style}
-      actions={this.props.actions}
-      onRequestClose={this.handleCloseDialog}
-      overlayStyle={{ zIndex: DIALOG_OVERLAY_Z_INDEX }}
+      PaperProps={{
+        style: {
+          zIndex: DIALOG_Z_INDEX,
+          width: 'auto',
+          maxWidth: 'none',
+          maxHeight: 'calc(100% - 120px)',
+          ...this.props.style
+        }
+      }}
+      onClose={this.handleCloseDialog}
     >
-      {this.props.children}
+      <DialogTitle>{this.props.title}</DialogTitle>
+      <DialogContent>{this.props.children}</DialogContent>
+      <DialogActions>{this.props.actions}</DialogActions>
     </Dialog>
   )
 }

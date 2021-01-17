@@ -122,8 +122,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
       <RouterDialog
         path="dictionary"
         history={history}
-        bodyStyle={{padding: 0}}
-        style={{width: '80%', maxWidth: 'none'}}
+        style={{ width: '80%' }}
       >
         {this.renderDictionary()}
       </RouterDialog>

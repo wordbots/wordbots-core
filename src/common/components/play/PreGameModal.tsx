@@ -125,41 +125,40 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
 
     return (
       <RouterDialog
-        modal
         path={mode}
         title={title}
         history={history}
-        style={{
-          width: 450
-        }}
+        style={{ width: 450 }}
         actions={this.actions}
       >
-        {children}
-        {format ? null : <FormatPicker
-          availableFormats={this.availableFormats}
-          selectedFormatName={selectedFormatName}
-          onChooseFormat={this.handleChooseFormat}
-        />}
-        {this.options.passwordToJoin && <TextField
-          key="passwordToJoin"
-          error={!enteredPassword || isPasswordInvalid}
-          helperText={
-            enteredPassword === ''
-              ? 'This game requires a password to join!'
-              : (isPasswordInvalid ? 'Invalid password!' : '')
-          }
-          style={{ width: '100%', marginBottom: 10 }}
-          value={enteredPassword}
-          label="Game password"
-          onChange={this.handleSetPassword}
-        />}
-        <DeckPicker
-          cards={cards}
-          availableDecks={this.validDecks}
-          sets={sets}
-          selectedDeck={this.deck}
-          onChooseDeck={this.handleChooseDeck}
-        />
+        <div>
+          {children}
+          {format ? null : <FormatPicker
+            availableFormats={this.availableFormats}
+            selectedFormatName={selectedFormatName}
+            onChooseFormat={this.handleChooseFormat}
+          />}
+          {this.options.passwordToJoin && <TextField
+            key="passwordToJoin"
+            error={!enteredPassword || isPasswordInvalid}
+            helperText={
+              enteredPassword === ''
+                ? 'This game requires a password to join!'
+                : (isPasswordInvalid ? 'Invalid password!' : '')
+            }
+            style={{ width: '100%', marginBottom: 10 }}
+            value={enteredPassword}
+            label="Game password"
+            onChange={this.handleSetPassword}
+          />}
+          <DeckPicker
+            cards={cards}
+            availableDecks={this.validDecks}
+            sets={sets}
+            selectedDeck={this.deck}
+            onChooseDeck={this.handleChooseDeck}
+          />
+        </div>
       </RouterDialog>
     );
   }

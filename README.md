@@ -29,6 +29,13 @@ $ yarn run build
 $ yarn run start-prod
 ```
 
+### Deploying to Heroku
+
+Prerequisite:
+```
+heroku labs:enable runtime-dyno-metadata
+```
+
 Then visit `http://localhost:3000`.
 
 ## Lint and test

@@ -12,7 +12,7 @@ import { AnyAction, Dispatch } from 'redux';
 import 'whatwg-fetch';  // eslint-disable-line import/no-unassigned-import
 
 import * as actions from '../actions/global';
-import DictionaryDialog from '../components/cards/DictionaryDialog';
+import DictionaryDialog from '../components/help/DictionaryDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
 import CreatorHelpDialog from '../components/help/CreatorHelpDialog';
 import NewHereDialog from '../components/help/NewHereDialog';

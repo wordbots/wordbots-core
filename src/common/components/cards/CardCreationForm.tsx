@@ -67,11 +67,11 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   private static styles: Record<string, React.CSSProperties> = {
     paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
 
-    section: {display: 'flex', justifyContent: 'space-between'},
+    section: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 },
 
     leftCol: {width: '70%', marginRight: 25},
     rightColContainer: {display: 'flex', alignItems: 'center'},
-    rightCol: {width: 210},
+    rightCol: {width: 210, marginTop: -16 /* gross hack - TODO figure out what's really going on here */},
     attribute: {width: '100%', marginRight: 25},
     buttonText: {
       fontSize: 14,
@@ -346,7 +346,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               <MustBeLoggedIn loggedIn={this.props.loggedIn}>
                 <Button
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   fullWidth
                   disabled={!this.isValid}
                   style={CardCreationForm.styles.saveButton}
@@ -359,7 +359,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             {!isReadonly && <FormControlLabel
               style={CardCreationForm.styles.createAnotherCheckbox}
               control={
-                <Checkbox checked={willCreateAnother} onChange={onToggleWillCreateAnother} color="primary" />
+                <Checkbox checked={willCreateAnother} onChange={onToggleWillCreateAnother} color="secondary" />
               }
               label="Create another?"
             />}

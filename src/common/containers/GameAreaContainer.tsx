@@ -1,6 +1,3 @@
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { object } from 'prop-types';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -204,11 +201,6 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): GameAreaDispatchPro
 
 // GameAreaContainer handles all dispatch and routing logic for the GameArea component.
 export class GameAreaContainer extends React.Component<GameAreaContainerProps, GameAreaContainerState> {
-  // For testing.
-  public static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-
   constructor(props: GameAreaContainerProps) {
     super(props);
     this.state = {
@@ -216,9 +208,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
       message: null
     };
   }
-
-  // For testing.
-  public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public componentDidMount(): void {
     this.tryToStartGame();

@@ -4,9 +4,6 @@ import Select from '@material-ui/core/Select';
 import { find } from 'lodash';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { object } from 'prop-types';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -144,11 +141,6 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): CreatorDispatchProp
 }
 
 export class Creator extends React.Component<CreatorProps, CreatorState> {
-  // For testing.
-  public static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-
   public state: CreatorState = {
     loaded: false,
     isPermalinkCopied: false
@@ -172,9 +164,6 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   public componentDidMount(): void {
     this.maybeLoadCard();
   }
-
-    // For testing.
-  public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element | null {
     const { cardOpenedForEditing, isPermalinkCopied, loaded } = this.state;

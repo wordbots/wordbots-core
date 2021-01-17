@@ -1,4 +1,4 @@
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import * as w from '../../types';
@@ -36,8 +36,8 @@ export default class DeckValidationIndicator extends React.Component<DeckValidat
     const { set } = this.props;
     const redX = '<span style="color: red;">X</span>';
     const greenCheck = '<span style="color: green;">✓</span>';
-    const setFormatHTML = this.isValidInSetFormat
-      ? `${greenCheck} valid in the '${set!.name}' set (by ${set!.metadata.authorName}) format`
+    const setFormatHTML = set && this.isValidInSetFormat
+      ? `${greenCheck} valid in the '${set.name}' set (by ${set.metadata.authorName}) format`
       : `${redX} not valid in any Set formats`;
 
     return BUILTIN_FORMATS.map((format) =>
@@ -62,12 +62,12 @@ export default class DeckValidationIndicator extends React.Component<DeckValidat
         }}
       >
         <Tooltip inline html text={this.validFormatsHTML} style={{textAlign: 'left'}} additionalStyles={{cursor: 'help'}}>
-          <FontIcon
+          <Icon
             className="material-icons"
             style={{paddingRight: 5, color: (this.isValid ? 'green' : 'red') }}
           >
             {this.isValid ? 'done' : 'warning'}
-          </FontIcon>
+          </Icon>
           <sup
             style={{
               fontSize: '0.5em',

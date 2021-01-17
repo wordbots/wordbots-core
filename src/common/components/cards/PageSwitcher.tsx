@@ -1,5 +1,5 @@
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 interface PageSwitcherProps {
@@ -9,7 +9,7 @@ interface PageSwitcherProps {
   nextPage: () => void
 }
 
-export default class PageSwitcher extends React.Component<PageSwitcherProps> {
+export default class PageSwitcher extends React.PureComponent<PageSwitcherProps> {
   public render(): JSX.Element {
     const { page, maxPages, prevPage, nextPage } = this.props;
     return (
@@ -21,17 +21,21 @@ export default class PageSwitcher extends React.Component<PageSwitcherProps> {
           width: 'calc(100% - 40px)'
         }}
       >
-        <RaisedButton
-          icon={<FontIcon className="material-icons">arrow_back</FontIcon>}
+        <Button
+          variant="outlined"
           disabled={page <= 1}
           onClick={prevPage}
-        />
+        >
+          <Icon className="material-icons">arrow_back</Icon>
+        </Button>
         <div>{`${page} / ${maxPages}`}</div>
-        <RaisedButton
-          icon={<FontIcon className="material-icons">arrow_forward</FontIcon>}
+        <Button
+          variant="outlined"
           disabled={page >= maxPages}
           onClick={nextPage}
-        />
+        >
+          <Icon className="material-icons">arrow_forward</Icon>
+        </Button>
       </div>
     );
   }

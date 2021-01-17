@@ -1,5 +1,5 @@
 import Button from '@material-ui/core/Button';
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import Tooltip from './Tooltip';
@@ -25,14 +25,13 @@ export default class ButtonInRow extends React.PureComponent<ButtonInRowProps> {
         onClick={onClick}
         disabled={disabled}
       >
-        <Tooltip inline text={tooltip} disable={disabled}>
-          <FontIcon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
+        <Tooltip inline text={tooltip} disable={disabled} style={{ textTransform: 'none' }}>
+          <Icon className="material-icons" style={{verticalAlign: 'middle', color: 'white'}}>
             {icon}
-          </FontIcon>
+          </Icon>
           <span
             style={{
               fontSize: 14,
-              textTransform: 'uppercase',
               fontWeight: 500,
               userSelect: 'none',
               paddingLeft: 8,

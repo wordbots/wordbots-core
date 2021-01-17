@@ -13,6 +13,7 @@ const defaultCreatorState: w.CreatorState = {
   health: 1,
   cost: 1,
   parserVersion: null,
+  tempSavedVersion: null,
   willCreateAnother: false,
   isPrivate: false
 };

@@ -11,6 +11,7 @@ export const TOGGLE_PRIVATE = 'TOGGLE_PRIVATE';
 export const SAVE_CARD = 'SAVE_CARD';
 export const ADD_EXISTING_CARD_TO_COLLECTION = 'ADD_EXISTING_CARD_TO_COLLECTION';
 export const RESET_CREATOR = 'RESET_CREATOR';
+export const SAVE_TEMP_VERSION = 'SAVE_TEMP_VERSION';
 
 export function setName(name: string): w.Action {
   return {
@@ -85,5 +86,12 @@ export function addExistingCardToCollection(card: w.CardInStore): w.Action {
 export function resetCreator(): w.Action {
   return {
     type: RESET_CREATOR
+  };
+}
+
+export function saveTempVersion(card: w.CardInStore | null): w.Action {
+  return {
+    type: SAVE_TEMP_VERSION,
+    payload: { card }
   };
 }

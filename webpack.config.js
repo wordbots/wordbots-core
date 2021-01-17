@@ -26,7 +26,7 @@ const webpackConfig = {
             loader: 'babel-loader',
             options: {
               babelrc: false,
-              plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import']
+              plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import', 'babel-plugin-lodash']
             }
           },
           {
@@ -56,10 +56,10 @@ const webpackConfig = {
   },
   plugins: compact([
     !isProduction && new webpack.HotModuleReplacementPlugin(),
+    new webpack.EnvironmentPlugin({ NODE_ENV: 'development', PARSER: null, FIREBASE_DB: null }),
     new CopyWebpackPlugin([{from: 'static'}]),
     new webpack.IgnorePlugin(/^canvas$/),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),  // Ignore all locale files of moment.js
-    new webpack.EnvironmentPlugin({ NODE_ENV: 'development', PARSER: null, FIREBASE_DB: null })
   ]),
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']

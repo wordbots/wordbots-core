@@ -44,6 +44,7 @@ interface CreatorStateProps {
   willCreateAnother: boolean
   isPrivate?: boolean
   cards: w.CardInStore[]
+  tempSavedVersion: w.CardInStore | null
 }
 
 interface CreatorDispatchProps {
@@ -60,6 +61,7 @@ interface CreatorDispatchProps {
   onToggleWillCreateAnother: () => void
   onToggleIsPrivate: () => void
   onStartSandbox: (card: w.CardInStore) => void
+  onClearTempVersion: () => void
 }
 
 type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentProps;
@@ -86,11 +88,12 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
     loggedIn: state.global.user !== null,
     willCreateAnother: state.creator.willCreateAnother,
     isPrivate: state.creator.isPrivate,
-    cards: state.collection.cards
+    cards: state.collection.cards,
+    tempSavedVersion: state.creator.tempSavedVersion
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
+export function mapDispatchToProps(dispatch: Dispatch<any>): CreatorDispatchProps {
   return {
     onOpenCard: (card: w.CardInStore) => {
       dispatch(collectionActions.openForEditing(card));
@@ -129,7 +132,13 @@ export function mapDispatchToProps(dispatch: Dispatch): CreatorDispatchProps {
       dispatch(creatorActions.togglePrivate());
     },
     onStartSandbox: (card: w.CardInStore) => {
-      dispatch(gameActions.startSandbox(card));
+      dispatch([
+        gameActions.startSandbox(card),
+        creatorActions.saveTempVersion(card)
+      ]);
+    },
+    onClearTempVersion: () => {
+      dispatch(creatorActions.saveTempVersion(null));
     }
   };
 }
@@ -189,7 +198,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         />
 
         {
-          cardOpenedForEditing && 
+          cardOpenedForEditing &&
           <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
             <RaisedButton
               label={isPermalinkCopied ? 'Copied!' : 'Copy Permalink'}
@@ -279,26 +288,32 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   /** If there is a cardId in the URL, try to load the desired card. */
   private maybeLoadCard = async () => {
-    const { cards, history, location, match, onOpenCard } = this.props;
+    const { cards, tempSavedVersion, history, location, match, onOpenCard, onClearTempVersion } = this.props;
     const params = (match ? match.params : {}) as Record<string, string | undefined>;
     const { cardId } = params;
 
     if (match) {
       if (cardId && cardId !== 'new') {
         // Search for the card in these locations, in order:
-        // 1. location state (passed through the router, if a link was just followed)
-        // 2. redux state (if the card is in the player's collection)
-        // 3. firebase (async lookup)
-        const cardFromRouter = location.state?.card?.id === cardId ? location.state.card as w.CardInStore : undefined;
-        const card: w.CardInStore | undefined = cardFromRouter || find(cards, { id: cardId }) || await getCardById(cardId);
-
-        if (card) {
-          this.setState({ cardOpenedForEditing: card }, () => {
-            onOpenCard(card);
-          });
+        // 1. tempSavedVersion prop from redux (if the card was temporarily saved previously, e.g. before testing in sandbox)
+        // 2. location state (passed through the router, if a link was just followed)
+        // 3. redux state (if the card is in the player's collection)
+        // 4. firebase (async lookup)
+        if (tempSavedVersion && tempSavedVersion.id === cardId) {
+          onOpenCard(tempSavedVersion);
+          onClearTempVersion();
         } else {
-          // If card not found, redirect to the new card URL.
-          history.replace('/card/new');
+          const cardFromRouter = location.state?.card?.id === cardId ? location.state.card as w.CardInStore : undefined;
+          const card: w.CardInStore | undefined = cardFromRouter || find(cards, { id: cardId }) || await getCardById(cardId);
+
+          if (card) {
+            this.setState({ cardOpenedForEditing: card }, () => {
+              onOpenCard(card);
+            });
+          } else {
+            // If card not found, redirect to the new card URL.
+            history.replace('/card/new');
+          }
         }
       }
     }

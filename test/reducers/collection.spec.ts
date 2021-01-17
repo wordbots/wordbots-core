@@ -104,7 +104,8 @@ describe('Collection reducer', () => {
       spriteID: '',
       text: '',
       type: TYPE_ROBOT,
-      willCreateAnother: false
+      willCreateAnother: false,
+      tempSavedVersion: null
     };
     const testBotCard: w.CardInStore = createCardFromProps(testBotCreatorState);
 

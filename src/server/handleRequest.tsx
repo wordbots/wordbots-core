@@ -1,54 +1,41 @@
-import { execSync } from 'child_process';
-
+import { Request, Response } from 'express';
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
-import { StaticRouter } from 'react-router';
+import Helmet, { HelmetData } from 'react-helmet';
 import { Provider } from 'react-redux';
-import Helmet from 'react-helmet';
+import { StaticRouter, StaticRouterContext } from 'react-router';
 
-import App from '../common/containers/App.tsx';
-import configureStore from '../common/store/configureStore.ts';
+import App from '../common/containers/App';
+import configureStore from '../common/store/configureStore';
 import * as packagejson from '../../package.json';
 
-import produceApiResponse from './api.ts';
-
-export default function handleRequest(request, response) {
+export default function handleRequest(request: Request, response: Response): void {
   produceResponse(response, request.url);
 }
 
-function getVersionWithSha() {
-  const shaCommand = 'echo ${HEAD_HASH:-$(git rev-parse HEAD)}';
-  const sha = execSync(shaCommand).toString().trim().slice(0, 7);
-  return `${packagejson.version}+${sha}`;
-}
+function produceResponse(response: Response, location: string) {
+  const context: StaticRouterContext = {};
+  const html = ReactDOMServer.renderToString(
+    <Provider store={configureStore({})}>
+      <StaticRouter location={location} context={context}>
+        <App />
+      </StaticRouter>
+    </Provider>
+  );
 
-function produceResponse(response, location) {
-  if (location.startsWith('/api')) {
-    return produceApiResponse(response, location);
+  if (context.url) {
+    response
+      .writeHead(301, { Location: context.url })
+      .end();
   } else {
-    const context = {};
-    const html = ReactDOMServer.renderToString(
-      <Provider store={configureStore()}>
-        <StaticRouter location={location} context={context}>
-          <App />
-        </StaticRouter>
-      </Provider>
-    );
-
-    if (context.url) {
-      response
-        .writeHead(301, { Location: context.url })
-        .end();
-    } else {
-      const head = Helmet.rewind();
-      response
-        .status(200)
-        .end(renderFullPage(html, head));
-    }
+    const head = Helmet.rewind();
+    response
+      .status(200)
+      .end(renderFullPage(html, head));
   }
 }
 
-function renderFullPage(html, head) {
+function renderFullPage(html: string, head: HelmetData): string {
   return `
     <!doctype html>
     <html>
@@ -94,7 +81,7 @@ function renderFullPage(html, head) {
       <body style="margin: 0;">
           <div id="root">${html}</div>
           <script>
-            window.VERSION = '${getVersionWithSha()}';
+            window.VERSION = '${packagejson.version}+${process.env.HEROKU_SLUG_COMMIT || 'local'}';
           </script>
           <script src="/static/bundle.js"></script>
       </body>

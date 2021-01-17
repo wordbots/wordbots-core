@@ -205,6 +205,7 @@ export interface CreatorState {
   sentences: Sentence[]
   speed: number
   spriteID: string
+  tempSavedVersion: CardInStore | null
   text: string
   type: CardType
   willCreateAnother: boolean

@@ -14,6 +14,7 @@ const theme: ThemeOptions = {
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
+    useNextVariants: true,
   },
   palette: {
     primary: {

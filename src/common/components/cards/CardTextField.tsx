@@ -1,5 +1,5 @@
 import { flatMap, flow, slice, sortBy } from 'lodash/fp';
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
 
@@ -46,10 +46,10 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div style={{width: '100%'}}>
             <TextField
-              multiLine
+              multiline
               disabled={this.props.readonly}
               value={this.props.text}
-              floatingLabelText="Card Text"
+              label="Card Text"
               style={{width: '100%'}}
               rows={1}
               onChange={this.handleUpdateText}
@@ -67,8 +67,8 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
     onUpdateText(text.replace(original, suggestion));
   }
 
-  private handleUpdateText = (_e: React.SyntheticEvent<HTMLElement>, newValue: string) => {
-    this.props.onUpdateText(newValue);
+  private handleUpdateText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.props.onUpdateText(e.currentTarget.value);
   }
 
   private renderDidYouMean = () => {

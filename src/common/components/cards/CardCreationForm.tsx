@@ -1,12 +1,15 @@
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Icon from '@material-ui/core/Icon';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
+import Select from '@material-ui/core/Select';
+import Snackbar from '@material-ui/core/Snackbar';
+import TextField from '@material-ui/core/TextField';
 import { capitalize, compact, isEmpty } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
-import SelectField from 'material-ui/SelectField';
-import Snackbar from 'material-ui/Snackbar';
-import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
 
@@ -64,11 +67,11 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   private static styles: Record<string, React.CSSProperties> = {
     paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
 
-    section: {display: 'flex', justifyContent: 'space-between'},
+    section: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 },
 
     leftCol: {width: '70%', marginRight: 25},
     rightColContainer: {display: 'flex', alignItems: 'center'},
-    rightCol: {width: 210},
+    rightCol: {width: 210, marginTop: -16 /* gross hack - TODO figure out what's really going on here */},
     attribute: {width: '100%', marginRight: 25},
     buttonText: {
       fontSize: 14,
@@ -253,9 +256,10 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             <TextField
               disabled={isReadonly}
               value={this.props.name}
-              floatingLabelText="Card Name"
+              label="Card Name"
               style={CardCreationForm.styles.leftCol}
-              errorText={this.nameError}
+              error={!!this.nameError}
+              helperText={this.nameError}
               onChange={this.handleSetName}
             />
             <NumberField
@@ -270,29 +274,31 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           </div>
 
           <div style={CardCreationForm.styles.section}>
-            <SelectField
-              disabled={isReadonly}
-              value={this.props.type}
-              floatingLabelText="Card Type"
-              style={{width: 'calc(100% - 60px)'}}
-              onChange={this.handleSetType}
-            >
-              {
-                CREATABLE_TYPES.map((type) =>
-                  <MenuItem key={type} value={type} primaryText={typeToString(type)} />
-                )
-              }
-            </SelectField>
+            <FormControl style={{width: 'calc(100% - 60px)'}}>
+              <InputLabel>Card Type</InputLabel>
+              <Select
+                disabled={isReadonly}
+                value={this.props.type}
+                onChange={this.handleSetType}
+              >
+                {
+                  CREATABLE_TYPES.map((type) =>
+                    <MenuItem key={type} value={type}>{typeToString(type)}</MenuItem>
+                  )
+                }
+              </Select>
+            </FormControl>
             <div style={CardCreationForm.styles.rightColContainer}>
               <Tooltip text="Generate a new image">
-                <RaisedButton
+                <Button
+                  variant="contained"
+                  color="secondary"
                   disabled={isReadonly}
-                  primary
                   style={{width: 40, minWidth: 40}}
                   onClick={this.props.onSpriteClick}
                 >
-                  <FontIcon className="material-icons" style={CardCreationForm.styles.icon}>refresh</FontIcon>
-                </RaisedButton>
+                  <Icon className="material-icons" style={CardCreationForm.styles.icon}>refresh</Icon>
+                </Button>
               </Tooltip>
             </div>
           </div>
@@ -310,20 +316,21 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             </div>
             <div style={CardCreationForm.styles.rightColContainer}>
               <Tooltip text="Having issues getting your card to work? Click here to submit it to us.">
-                <RaisedButton
-                  secondary
+                <Button
+                  variant="contained"
+                  color="secondary"
                   style={{width: 40, minWidth: 40}}
                   disabled={!this.hasTextError || !isEmpty(submittedParseIssue)}
                   onClick={this.handleClickReportParseIssue}
                 >
-                  <FontIcon className="material-icons" style={CardCreationForm.styles.icon}>report_problem</FontIcon>
-                </RaisedButton>
+                  <Icon className="material-icons" style={CardCreationForm.styles.icon}>report_problem</Icon>
+                </Button>
               </Tooltip>
               <Snackbar
                 open={submittedParseIssueConfirmationOpen}
                 message={`Reported issue parsing '${submittedParseIssue}'. Thanks for the feedback!`}
                 autoHideDuration={4000}
-                onRequestClose={this.handleCloseReportParseIssueSnackbar}
+                onClose={this.handleCloseReportParseIssueSnackbar}
               />
             </div>
           </div>
@@ -337,20 +344,22 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           <div style={CardCreationForm.styles.section}>
             <div style={{ flex: 1 }}>
               <MustBeLoggedIn loggedIn={this.props.loggedIn}>
-                <RaisedButton
-                  primary
+                <Button
+                  variant="contained"
+                  color="secondary"
                   fullWidth
-                  label={isReadonly ? 'Add to Collection' : 'Save Card'}
                   disabled={!this.isValid}
                   style={CardCreationForm.styles.saveButton}
                   onClick={this.handleSaveCard}
-                />
+                >
+                  {isReadonly ? 'Add to Collection' : 'Save Card'}
+                </Button>
               </MustBeLoggedIn>
             </div>
             {!isReadonly && <FormControlLabel
               style={CardCreationForm.styles.createAnotherCheckbox}
               control={
-                <Checkbox checked={willCreateAnother} onChange={onToggleWillCreateAnother} color="primary" />
+                <Checkbox checked={willCreateAnother} onChange={onToggleWillCreateAnother} color="secondary" />
               }
               label="Create another?"
             />}
@@ -365,13 +374,15 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     this.props.onSetAttribute(key, value);
   }
 
-  private handleSetName = (_e: React.FormEvent<HTMLElement>, value: string) => {
+  private handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.isReadonly) { return; }
-    this.props.onSetName(value);
+    this.props.onSetName(e.currentTarget.value);
   }
 
-  private handleSetType = (_e: React.SyntheticEvent<any>, _i: number, value: w.CardType) => {
+  private handleSetType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (this.props.isReadonly) { return; }
+
+    const value: w.CardType = parseInt(e.target.value) as w.CardType;
     this.props.onSetType(value);
     // Re-parse card text because different card types now have different validations.
     this.onUpdateText(this.props.text, value);

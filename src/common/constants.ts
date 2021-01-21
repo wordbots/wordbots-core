@@ -73,8 +73,8 @@ export const SHOW_TOOLTIP_TIMEOUT_MS = 500;
 // Layout.
 
 export const HEADER_HEIGHT = 64;
-export const SIDEBAR_WIDTH = 225;
-export const SIDEBAR_COLLAPSED_WIDTH = 64;
+export const SIDEBAR_WIDTH = 180;
+export const SIDEBAR_COLLAPSED_WIDTH = 58;
 export const MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR = 1200;
 export const CHAT_WIDTH = 256;
 export const CHAT_NARROW_WIDTH = 200;
@@ -87,9 +87,7 @@ export const DICTIONARY_TAB_Z_INDEX = 10;
 export const BACKGROUND_Z_INDEX = 900;
 export const SIDEBAR_Z_INDEX = 920;
 export const CHAT_Z_INDEX = 920;
-export const DIALOG_OVERLAY_Z_INDEX = 950;
-export const DIALOG_MAIN_Z_INDEX = 960;
-export const DIALOG_BODY_Z_INDEX = 970;
+export const DIALOG_Z_INDEX = 970;
 export const BOARD_Z_INDEX = 1000;
 export const HAND_Z_INDEX = 1100;
 export const STATUS_Z_INDEX = 2000;

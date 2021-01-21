@@ -90,7 +90,6 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
           onClose={this.handleSnackbarClose}
         />
         <RouterDialog
-          modal
           path="login"
           title={this.state.register ? 'Register' : 'Login'}
           history={history}

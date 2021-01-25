@@ -1,5 +1,5 @@
-import FontIcon from 'material-ui/FontIcon';
-import IconButton from 'material-ui/IconButton';
+import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 import * as screenfull from 'screenfull';
 
@@ -25,12 +25,9 @@ export default class FullscreenToggle extends React.Component<FullscreenTogglePr
           }}
           onClick={this.handleClick}
         >
-          <FontIcon
-            className="material-icons"
-            color="#FFF"
-          >
+          <Icon className="material-icons white">
             {!screenfull.isFullscreen ? 'fullscreen' : 'fullscreen_exit'}
-          </FontIcon>
+          </Icon>
         </IconButton>
       </Tooltip>
     );

@@ -1,5 +1,5 @@
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import { BLUE_PLAYER_COLOR, ORANGE_PLAYER_COLOR } from '../../constants';
@@ -44,39 +44,30 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
         onNextStep={onNextTutorialStep}
         onPrevStep={onPrevTutorialStep}
       >
-        <RaisedButton
+        <Button
           className="end-turn-button"
-          backgroundColor={player ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player] : undefined}
-          buttonStyle={{
-            height,
-            lineHeight: height
-          }}
+          variant="contained"
           style={{
+            backgroundColor: player ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player] : undefined,
+            border: '2px solid #eee',
             borderRadius: 5,
-            border: '2px solid #AAA'
-          }}
-          label="End Turn"
-          labelStyle={{
             color: '#FFF',
-            fontSize: compact ? 22 : 32,
             fontFamily: 'Carter One',
-            top: compact ? '-3px' : 0
+            fontSize: compact ? 22 : 32,
+            height,
+            padding: compact ? '0 5px' : '0 15px'
           }}
-          overlayStyle={{ height }}
           onClick={this.handleClick}
-          icon={
-            <FontIcon
-              className="material-icons"
-              style={{
-                lineHeight: height,
-                verticalAlign: 'none'
-              }}
-            >
-              timer
-            </FontIcon>
-          }
           disabled={!this.buttonEnabled}
-        />
+        >
+          <Icon
+            className="material-icons"
+            style={{ paddingRight: 4 }}
+          >
+            timer
+          </Icon>
+          End Turn
+        </Button>
       </TutorialTooltip>
     );
   }

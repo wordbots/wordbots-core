@@ -1,4 +1,4 @@
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 
 interface NumberFieldProps {
@@ -16,19 +16,22 @@ export default class NumberField extends React.Component<NumberFieldProps> {
     return (
       <TextField
         value={this.props.value}
-        floatingLabelText={this.props.label}
+        label={this.props.label}
         style={this.props.style}
         type="number"
-        min={0}
-        max={this.props.maxValue || 10}
+        inputProps={{
+          min: 0,
+          max: this.props.maxValue || 10
+        }}
         disabled={this.props.disabled}
-        errorText={this.props.errorText}
+        error={!!this.props.errorText}
+        helperText={this.props.errorText}
         onChange={this.handleChange}
       />
     );
   }
 
-  private handleChange = (_e: React.SyntheticEvent<HTMLElement>, newValue: string) => {
-    this.props.onChange(parseInt(newValue, 10));
+  private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.onChange(parseInt(e.target.value, 10));
   }
 }

@@ -1,6 +1,6 @@
 import { History } from 'history';
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import { MAX_Z_INDEX } from '../../constants';
@@ -25,34 +25,28 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
 
     return (
       <Tooltip text="Forfeit" place="top" style={{ zIndex: MAX_Z_INDEX }}>
-        <RaisedButton
-          backgroundColor="black"
-          buttonStyle={{
-            height,
-            lineHeight: height
-          }}
+        <Button
+          className="forfeit-button"
+          variant="contained"
           style={{
-            borderRadius: 5,
+            backgroundColor: 'black',
             border: '2px solid white',
+            borderRadius: 5,
+            height,
+            marginLeft: 10,
             minWidth: 48,
-            marginLeft: 10
+            padding: 10
           }}
-          overlayStyle={{ height }}
           onClick={this.handleClick}
-          icon={
-            <FontIcon
-              className="material-icons"
-              style={{
-                lineHeight: height,
-                verticalAlign: 'none',
-                color: '#ffffff'
-              }}
-            >
-              flag
-            </FontIcon>
-          }
           disabled={isSpectator || gameOver}
-        />
+        >
+          <Icon
+            className="material-icons"
+            style={{ color: '#ffffff' }}
+          >
+            flag
+          </Icon>
+        </Button>
       </Tooltip>
     );
   }

@@ -25,7 +25,7 @@ export default class FullscreenToggle extends React.Component<FullscreenTogglePr
           }}
           onClick={this.handleClick}
         >
-          <Icon className="material-icons white">
+          <Icon className="material-icons" style={{ color: 'white '}}>
             {!screenfull.isFullscreen ? 'fullscreen' : 'fullscreen_exit'}
           </Icon>
         </IconButton>

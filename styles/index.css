@@ -178,10 +178,6 @@ a.topLink:hover {
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }
 
-.material-icons.white {
-  color: white;
-}
-
 /* based on https://leaverou.github.io/bubbly/ */
 .speech-bubble {
   position: relative;

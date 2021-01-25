@@ -1,7 +1,7 @@
+import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
+import TextField from '@material-ui/core/TextField';
 import { History } from 'history';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
 import * as React from 'react';
 
 import { login, register, resetPassword } from '../../util/firebase';
@@ -46,30 +46,33 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
     const { history } = this.props;
     const actions = [
       (
-        <FlatButton
-          label="Cancel"
+        <Button
           key="Cancel"
-          primary
+          color="primary"
           onClick={this.handleClose}
-        />
+        >
+          Cancel
+        </Button>
       ),
       (
-        <FlatButton
-          label="Forgot Password?"
+        <Button
           key="Forgot Password?"
-          primary
+          color="primary"
           disabled={!this.notEmpty([this.state.email])}
           onClick={this.handleClickForgotPassword}
-        />
+        >
+          Forgot Password?
+        </Button>
       ),
       (
-        <FlatButton
-          label={this.state.register ? 'Register' : 'Login'}
+        <Button
           key="Register/Login"
-          primary
+          color="primary"
           disabled={this.submitDisabled}
           onClick={this.handleSubmit}
-        />
+        >
+          {this.state.register ? 'Register' : 'Login'}
+        </Button>
       )
     ];
 
@@ -148,7 +151,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
       .catch(() => { this.setState({error: 'Error: Email address not found.'}); });
   }
 
-  private handleKeyPress = (e: React.KeyboardEvent<any>) => {
+  private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.charCode === 13 && !this.submitDisabled) {
       this.handleSubmit();
     }
@@ -162,20 +165,20 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
     this.resetPassword(this.state.email);
   }
 
-  private handleChangeEmail = (_e: React.FormEvent<any>, value: string) => {
-    this.setState({email: value});
+  private handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({email: e.currentTarget.value});
   }
 
-  private handleChangeUsername = (_e: React.FormEvent<any>, value: string) => {
-    this.setState({username: value});
+  private handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({username: e.currentTarget.value});
   }
 
-  private handleChangePassword = (_e: React.FormEvent<any>, value: string) => {
-    this.setState({password: value});
+  private handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({password: e.currentTarget.value});
   }
 
-  private handleChangeConfirmPassword = (_e: React.FormEvent<any>, value: string) => {
-    this.setState({confirmPassword: value});
+  private handleChangeConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({confirmPassword: e.currentTarget.value});
   }
 
   private handleSubmit = () => {
@@ -201,7 +204,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
           <TextField
             value={this.state.email}
             style={{width: '100%'}}
-            floatingLabelText="Email address"
+            label="Email address"
             onKeyPress={this.handleKeyPress}
             onChange={this.handleChangeEmail}
           />
@@ -213,7 +216,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
             <TextField
               value={this.state.username}
               style={{width: '100%'}}
-              floatingLabelText="Username"
+              label="Username"
               onKeyPress={this.handleKeyPress}
               onChange={this.handleChangeUsername}
             />
@@ -223,8 +226,8 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
         <div>
           <TextField
             value={this.state.password}
-            style={{width: '100%'}}
-            floatingLabelText="Password"
+            style={{ width: '100%', marginTop: 10 }}
+            label="Password"
             type="password"
             onKeyPress={this.handleKeyPress}
             onChange={this.handleChangePassword}
@@ -233,8 +236,8 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
             this.state.register &&
             <TextField
               value={this.state.confirmPassword}
-              style={{width: '100%'}}
-              floatingLabelText="Confirm Password"
+              style={{ width: '100%', marginTop: 10 }}
+              label="Confirm Password"
               type="password"
               onKeyPress={this.handleKeyPress}
               onChange={this.handleChangeConfirmPassword}

@@ -11,6 +11,7 @@ import Textfit from 'react-textfit';
 import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString } from '../../constants';
 import { isCardVisible } from '../../guards';
 import * as w from '../../types';
+import { inBrowser } from '../../util/browser';
 import { compareCertainKeys } from '../../util/common';
 
 import CardBack from './CardBack';
@@ -276,8 +277,12 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     }
   }
 
-  private renderTitle(): JSX.Element {
+  private renderTitle(): React.ReactNode {
     const { name, scale } = this.props;
+
+    if (!inBrowser()) {
+      return name;
+    }
 
     return (
       <Textfit
@@ -294,8 +299,12 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     );
   }
 
-  private renderText(): JSX.Element {
+  private renderText(): React.ReactNode {
     const { text, scale } = this.props;
+
+    if (!inBrowser()) {
+      return text;
+    }
 
     return (
       <Textfit

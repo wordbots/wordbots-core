@@ -1,9 +1,9 @@
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
+import { DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
 import * as React from 'react';
 
-import { STATUS_Z_INDEX } from '../../constants';
+import { MAX_Z_INDEX, STATUS_Z_INDEX } from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import * as w from '../../types';
 
@@ -140,43 +140,57 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
           className="background"
           style={this.styles.discardContainer}
         >
-          <RaisedButton
-            secondary
-            buttonStyle={{
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              ...this.styles.discard,
               lineHeight: 0
             }}
-            label={<span>Open Discard Pile&nbsp;&nbsp;(<b>{this.discardPile.length}</b>)</span>}
-            labelStyle={{
-              height: '100%',
-              writingMode: 'vertical-rl'
-            }}
             onClick={this.handleOpenDiscardPile}
-            style={this.styles.discard}
-          />
+          >
+            <span
+              style={{
+                height: '100%',
+                writingMode: 'vertical-rl'
+              }}
+            >
+              Open Discard Pile&nbsp;&nbsp;(<b>{this.discardPile.length}</b>)
+            </span>
+          </Button>
           <Deck deck={this.deck} />
         </div>
 
         <Dialog
-          title="Discard Pile"
-          modal={false}
           open={this.state.discardOpen}
-          contentStyle={{ width: 700 }}
-          bodyStyle={{ overflow: 'auto' }}
-          onRequestClose={this.handleCloseDiscardPile}
-          actions={[
-            <FlatButton
-              key="Close"
-              label="Close"
-              primary
-              onClick={this.handleCloseDiscardPile}
-            />
-          ]}
+          PaperProps={{
+            style: {
+              width: 700,
+              overflow: 'auto',
+            }
+          }}
+          style={{ zIndex: MAX_Z_INDEX }}
+          onClose={this.handleCloseDiscardPile}
         >
-          <DiscardPile
-            cards={this.discardPile}
-            targetableCards={gameProps.target.possibleCardsInDiscardPile}
-            onSelectCard={this.handleSelectCardInDiscardPile}
-          />
+          <DialogTitle>
+            Discard Pile
+          </DialogTitle>
+          <DialogContent>
+            <DiscardPile
+              cards={this.discardPile}
+              targetableCards={gameProps.target.possibleCardsInDiscardPile}
+              onSelectCard={this.handleSelectCardInDiscardPile}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              key="Close"
+              color="primary"
+              onClick={this.handleCloseDiscardPile}
+            >
+              Close
+            </Button>
+          </DialogActions>
         </Dialog>
       </div>
     );

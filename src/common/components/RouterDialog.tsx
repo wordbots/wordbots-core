@@ -51,9 +51,9 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
       }}
       onClose={this.handleCloseDialog}
     >
-      <DialogTitle>{this.props.title}</DialogTitle>
+      {this.props.title && <DialogTitle>{this.props.title}</DialogTitle>}
       <DialogContent>{this.props.children}</DialogContent>
-      <DialogActions>{this.props.actions}</DialogActions>
+      {this.props.actions && <DialogActions>{this.props.actions}</DialogActions>}
     </Dialog>
   )
 }

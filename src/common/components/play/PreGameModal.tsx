@@ -105,7 +105,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
         <Button
           key="start"
           variant="contained"
-          color="secondary"
+          color="primary"
           disabled={gameName === '' && mode === 'host'}
           onClick={this.handleStartGame}
         >

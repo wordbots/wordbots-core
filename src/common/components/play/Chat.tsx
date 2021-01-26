@@ -1,12 +1,13 @@
-import Icon from '@material-ui/core/Icon';
-import { isEqual } from 'lodash';
-import { flow, groupBy, map, sortBy } from 'lodash/fp';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
+import { isEqual } from 'lodash';
+import { flow, groupBy, map, sortBy } from 'lodash/fp';
 import * as React from 'react';
 
 import { CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../constants';
@@ -14,7 +15,6 @@ import * as w from '../../types';
 import { id } from '../../util/common';
 
 import ChatMessage from './ChatMessage';
-import { FormControlLabel } from '@material-ui/core';
 
 interface ChatProps {
   roomName: string | null

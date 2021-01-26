@@ -1,6 +1,6 @@
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import * as fb from 'firebase';
-import Paper from 'material-ui/Paper';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 
 import * as m from '../../../server/multiplayer/multiplayer';
@@ -37,24 +37,18 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
 
   public render(): JSX.Element {
     return (
-      <Paper
-        style={{ marginBottom: 20 }}
-      >
-        <Table fixedHeader>
-          <TableHeader displaySelectAll={false}>
+      <Paper style={{ marginBottom: 20 }}>
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableHeaderColumn>Game Name</TableHeaderColumn>
-              <TableHeaderColumn>Format</TableHeaderColumn>
-              <TableHeaderColumn>Players</TableHeaderColumn>
-              <TableHeaderColumn>Spectators</TableHeaderColumn>
-              <TableHeaderColumn />
+              <TableCell>Game Name</TableCell>
+              <TableCell>Format</TableCell>
+              <TableCell>Players</TableCell>
+              <TableCell>Spectators</TableCell>
+              <TableCell />
             </TableRow>
-          </TableHeader>
-          <TableBody
-            showRowHover
-            stripedRows={false}
-            displayRowCheckbox={false}
-          >
+          </TableHead>
+          <TableBody>
             {this.renderTableRows()}
           </TableBody>
         </Table>
@@ -67,8 +61,9 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
 
     if (this.games.length > 0) {
       return (
-        this.games.map((game) => (
+        this.games.map((game, idx) => (
           <GameRow
+            idx={idx}
             key={game.id}
             game={game}
             user={user}
@@ -84,18 +79,18 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
     } else {
       return (
         <TableRow>
-          <TableRowColumn
-            colSpan={3}
+          <TableCell
+            colSpan={4}
             style={{
-              fontSize: 32,
+              fontSize: 26,
               fontStyle: 'italic',
               fontWeight: 300,
               textAlign: 'center',
-              padding: 24
+              padding: 20
             }}
           >
             No open games.
-          </TableRowColumn>
+          </TableCell>
         </TableRow>
       );
     }

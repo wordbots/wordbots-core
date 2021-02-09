@@ -83,7 +83,6 @@ export const MAX_BOARD_SIZE = 700;
 
 // Z Indices
 
-export const DICTIONARY_TAB_Z_INDEX = 10;
 export const BACKGROUND_Z_INDEX = 900;
 export const SIDEBAR_Z_INDEX = 920;
 export const CHAT_Z_INDEX = 920;

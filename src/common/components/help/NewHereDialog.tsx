@@ -1,5 +1,5 @@
+import Button from '@material-ui/core/Button';
 import { History } from 'history';
-import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 
 import * as w from '../../types';
@@ -58,12 +58,14 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
           >
             <a className="underline">Don&rsquo;t show this dialog again</a>
           </span>,
-          <RaisedButton
-            primary
-            label="Close"
+          <Button
             key="Close"
+            color="primary"
+            variant="contained"
             onClick={this.handleClose}
-          />
+          >
+            Close
+          </Button>
         ]}
       >
         <div>

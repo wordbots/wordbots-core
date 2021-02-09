@@ -1,5 +1,5 @@
+import Button from '@material-ui/core/Button';
 import { History } from 'history';
-import RaisedButton from 'material-ui/RaisedButton';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -68,13 +68,14 @@ class Decks extends React.Component<DecksProps> {
 
         <div style={{margin: 20}}>
           <MustBeLoggedIn loggedIn={loggedIn}>
-            <RaisedButton
-              label="New Deck"
-              secondary
-              style={{marginBottom: 20}}
-              labelStyle={{fontFamily: 'Carter One'}}
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ marginBottom: 20, fontFamily: 'Carter One' }}
               onClick={this.handleCreateDeck}
-            />
+            >
+              New Deck
+            </Button>
           </MustBeLoggedIn>
 
           <div

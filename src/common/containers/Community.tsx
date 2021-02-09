@@ -1,6 +1,6 @@
+import Paper from '@material-ui/core/Paper';
 import { sum } from 'lodash';
 import { filter, flow, orderBy, slice } from 'lodash/fp';
-import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';

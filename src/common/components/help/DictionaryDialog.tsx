@@ -166,7 +166,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
       const tabIdx = 'dtk'.indexOf(type);
 
       this.setState({ tabIdx }, () => {
-        this.selectTerm(term);
+        this.selectTerm(term.replace(/%20/g, ' '));
       });
     }
   }

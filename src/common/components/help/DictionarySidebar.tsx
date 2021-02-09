@@ -1,5 +1,5 @@
+import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
-import { List } from 'material-ui/List';
 import * as React from 'react';
 
 import DictionaryTerm from './DictionaryTerm';

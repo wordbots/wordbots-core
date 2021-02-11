@@ -46,7 +46,6 @@
     "express": "^4.16.1",
     "firebase": "^7.24.0",
     "lodash": "^4.17.19",
-    "material-ui": "^0.20.0",
     "moment": "2.23.0",
     "object.values": "^1.1.0",
     "qs": "^6.6.0",

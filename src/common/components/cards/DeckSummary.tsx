@@ -83,6 +83,8 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           <ButtonInRow
             label="Edit"
             icon="edit"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Edit the cards in this deck."
             onClick={this.handleClickEdit}
             disabled={this.isDefaultDeck}
@@ -90,12 +92,16 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           <ButtonInRow
             label="Duplicate"
             icon="add_circle"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Create a copy of this deck."
             onClick={this.handleClickDuplicate}
           />
           <ButtonInRow
             label="Delete"
             icon="delete"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Delete this deck. This operation cannot be undone!"
             onClick={this.handleClickDelete}
             disabled={this.isDefaultDeck}
@@ -103,6 +109,8 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           <ButtonInRow
             label="Try"
             icon="videogame_asset"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Try this deck in a practice game."
             onClick={this.handleClickTry}
           />

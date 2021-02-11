@@ -1,9 +1,9 @@
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import { find } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -177,25 +177,27 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         <Helmet title="Creator" />
         <Title text="Creator" />
 
-        <RaisedButton
-          label="New Card"
-          labelPosition="after"
-          primary
-          icon={<FontIcon style={{ margin: '0 5px 0 15px' }} className="material-icons">queue</FontIcon>}
+        <Button
+          color="secondary"
+          variant="contained"
           style={{ marginLeft: 40, marginTop: 9 }}
           onClick={this.handleClickNewCard}
-        />
+        >
+          <Icon style={{ marginRight: 10 }} className="material-icons">queue</Icon>
+          New Card
+        </Button>
 
         {
           cardOpenedForEditing &&
           <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
-            <RaisedButton
-              label={isPermalinkCopied ? 'Copied!' : 'Copy Permalink'}
-              labelPosition="after"
-              primary
-              icon={<FontIcon style={{ margin: '0 5px 0 15px' }} className="material-icons">link</FontIcon>}
+            <Button
+              color="secondary"
+              variant="contained"
               style={{ marginLeft: 10, marginTop: 9 }}
-            />
+            >
+              <Icon style={{ marginRight: 10 }} className="material-icons">link</Icon>
+              {isPermalinkCopied ? 'Copied!' : 'Copy Permalink'}
+            </Button>
           </CopyToClipboard>
         }
 
@@ -269,7 +271,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           inline
           text="Private cards won't show up on your profile page or on the Recent Cards carousel on the homepage."
         >
-          <FontIcon className="material-icons" style={{ position: 'relative', top: 6 }}>help</FontIcon>
+          <Icon className="material-icons" style={{ position: 'relative', top: 6 }}>help</Icon>
         </Tooltip>
       </div>
     );

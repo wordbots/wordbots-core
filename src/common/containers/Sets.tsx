@@ -1,10 +1,11 @@
-import { Button, Paper } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { orderBy } from 'lodash';
-import { FontIcon } from 'material-ui';
 import * as qs from 'qs';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -142,10 +143,10 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
         {showHelpText && <div>
           <Paper className={classes.helpPaper}>
-            <Button variant="text" color="secondary" onClick={this.handleHideHelpText}>
-              <FontIcon className="material-icons">
+            <Button variant="text" style={{ color: '#333' }} onClick={this.handleHideHelpText}>
+              <Icon className="material-icons">
                 close
-              </FontIcon>
+              </Icon>
             </Button>
             <p><b>Sets</b> offer a way for you to play games of Wordbots in which both players use the same pool of cards.</p>
             <p>You can take a popular set, make a deck from it, and play against other players who&rsquo;ve made decks using that set.</p>
@@ -157,7 +158,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
           <MustBeLoggedIn loggedIn={!!user}>
             <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               classes={{ label: classes.buttonLabel }}
               onClick={this.handleCreateSet}
             >

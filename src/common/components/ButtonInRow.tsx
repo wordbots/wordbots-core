@@ -1,5 +1,6 @@
-import Button from '@material-ui/core/Button';
+import Button, { ButtonProps } from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as React from 'react';
 
 import Tooltip from './Tooltip';
@@ -9,19 +10,21 @@ interface ButtonInRowProps {
   icon: string
   tooltip: string
   onClick: (e: React.MouseEvent<HTMLElement>) => void
+  color?: ButtonProps['color']
   disabled?: boolean
   width?: string
+  style?: CSSProperties
 }
 
 export default class ButtonInRow extends React.PureComponent<ButtonInRowProps> {
   public render(): JSX.Element {
-    const { label, icon, tooltip, onClick, disabled, width } = this.props;
+    const { label, icon, tooltip, onClick, color, disabled, width, style } = this.props;
     return (
       <Button
         variant="contained"
-        color="secondary"
+        color={color || "secondary"}
         className="button-in-row"
-        style={width ? { width, padding: '5px 0' } : { margin: '0 5px', padding: '0 10px' }}
+        style={width ? { width, padding: '5px 0', ...style } : { margin: '0 5px', padding: '0 10px', ...style }}
         onClick={onClick}
         disabled={disabled}
       >

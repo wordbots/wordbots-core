@@ -10,7 +10,13 @@ import configureStore from '../common/store/configureStore';
 import * as packagejson from '../../package.json';
 
 export default function handleRequest(request: Request, response: Response): void {
-  produceResponse(response, request.url);
+  console.log(process.env.NODE_ENV);
+  if (request.secure || process.env.NODE_ENV !== 'production') {
+    produceResponse(response, request.url);
+  } else {
+    // request was via HTTP, so redirect to HTTPS
+    response.redirect(`https://${request.headers.host}${request.url}`);
+  }
 }
 
 function produceResponse(response: Response, location: string) {

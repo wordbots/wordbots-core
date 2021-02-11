@@ -1,4 +1,4 @@
-import { ListItem } from 'material-ui/List';
+import ListItem from '@material-ui/core/List';
 import * as React from 'react';
 
 interface DictionaryTermProps {
@@ -15,13 +15,15 @@ export default class DictionaryTerm extends React.Component<DictionaryTermProps>
   public render(): JSX.Element {
     return (
       <ListItem
-        primaryText={this.props.token}
         onClick={this.handleClick}
         style={{
+          padding: 12,
           cursor: 'pointer',
           backgroundColor: this.props.selected ? '#ddd' : '#fff'
         }}
-      />
+      >
+        {this.props.token}
+      </ListItem>
     );
   }
 

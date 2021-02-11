@@ -1,5 +1,5 @@
 import { History, Location } from 'history';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 import * as React from 'react';
 import IFrame from 'react-iframe';
 
@@ -19,14 +19,16 @@ export default class CreatorHelpDialog extends React.Component<{ history: Histor
         path="help"
         title="How to Write a Card"
         history={history}
-        style={{ width: 800, overflowY: 'auto' }}
+        style={{ width: 800, overflowY: 'auto', top: 10 }}
         actions={[
-          <RaisedButton
-            primary
-            label="Close"
+          <Button
             key="Close"
+            color="primary"
+            variant="contained"
             onClick={this.handleClose}
-          />
+          >
+            Close
+          </Button>
         ]}
       >
         <div className="markdownBlock">

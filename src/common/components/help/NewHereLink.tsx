@@ -1,7 +1,7 @@
+import Icon from '@material-ui/core/Icon';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import FontIcon from 'material-ui/FontIcon';
-import { red500 } from 'material-ui/styles/colors';
+import { red } from '@material-ui/core/colors';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -21,8 +21,8 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
       margin: 2,
       padding: 5,
       '&:hover': {
-        background: red500,
-        borderColor: red500,
+        background: red[500],
+        borderColor: red[500],
         color: '#eee'
       }
     },
@@ -66,9 +66,9 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
         <div className={classes.text}>{text}</div>
         {
           accomplished &&
-            <FontIcon className={`material-icons ${classes.checkmark}`} style={{ position: 'absolute' }}>
+            <Icon className={`material-icons ${classes.checkmark}`} style={{ position: 'absolute' }}>
               check_circle
-            </FontIcon>
+            </Icon>
         }
       </div>
     );

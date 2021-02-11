@@ -14,6 +14,7 @@ interface RouterDialogProps {
   history: History
   style: React.CSSProperties
   actions?: JSX.Element[]
+  contentStyle?: React.CSSProperties
 }
 
 export default class RouterDialog extends React.Component<RouterDialogProps> {
@@ -37,23 +38,26 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
     RouterDialog.closeDialog(this.props.history);
   }
 
-  private renderDialog = () => (
-    <Dialog
-      open
-      PaperProps={{
-        style: {
-          zIndex: DIALOG_Z_INDEX,
-          width: 'auto',
-          maxWidth: 'none',
-          maxHeight: 'calc(100% - 120px)',
-          ...this.props.style
-        }
-      }}
-      onClose={this.handleCloseDialog}
-    >
-      {this.props.title && <DialogTitle>{this.props.title}</DialogTitle>}
-      <DialogContent>{this.props.children}</DialogContent>
-      {this.props.actions && <DialogActions>{this.props.actions}</DialogActions>}
-    </Dialog>
-  )
+  private renderDialog = () => {
+    const { actions, children, contentStyle, style, title } = this.props;
+    return (
+      <Dialog
+        open
+        PaperProps={{
+          style: {
+            zIndex: DIALOG_Z_INDEX,
+            width: 'auto',
+            maxWidth: 'none',
+            maxHeight: 'calc(100% - 120px)',
+            ...style
+          }
+        }}
+        onClose={this.handleCloseDialog}
+      >
+        {title && <DialogTitle>{title}</DialogTitle>}
+        <DialogContent style={contentStyle}>{children}</DialogContent>
+        {actions && <DialogActions>{actions}</DialogActions>}
+      </Dialog>
+    );
+  }
 }

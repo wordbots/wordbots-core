@@ -49,7 +49,8 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
       <RouterDialog
         path="new-here"
         history={history}
-        style={{width: 650}}
+        style={{ width: 700, marginTop: 65 }}
+        contentStyle={{ padding: '4px 12px', fontSize: '0.95em' }}
         actions={[
           <span
             key="don't-show-again"
@@ -71,23 +72,22 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
         <div>
           <p>Welcome! <b>Wordbots</b> is a new kind of card game, where players <i>– like you –</i> get to write the cards.</p>
           <p>There&rsquo;s a lot to take in, so here&rsquo;s the order we&rsquo;d suggest checking things out to get a feel for how Wordbots works (or, ignore this and just go exploring!):</p>
-          {!uid && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
         </div>
 
-        <table style={{ margin: '0 auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             <tr>
-              <td>
+              <td style={{ width: '33%' }}>
                 <NewHereLink idx={1} href="/play/tutorial" accomplished={achievements.includes('finishedTutorial')}>
                   Play through the interactive gameplay tutorial.
                 </NewHereLink>
               </td>
-              <td>
+              <td style={{ width: '33%' }}>
                 <NewHereLink idx={2} href="/play//practice" accomplished={achievements.includes('playedPracticeGame')}>
                   Try an AI practice game using one of the built-in decks.
                 </NewHereLink>
               </td>
-              <td>
+              <td style={{ width: '33%' }}>
                 <NewHereLink idx={3} href="/sets" accomplished={this.decks.filter((d) => d.setId).length > 0}>
                   Find a custom set that looks cool, build a deck, and challenge other players with it.
                 </NewHereLink>
@@ -113,7 +113,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             <tr>
               <td>
                 <NewHereLink idx={7} href="/decks" accomplished={this.decks.filter((d) => !d.setId).length > 0}>
-                  Build a deck, using a combination of your own, built-in, and/or other players&rsquo; cards.
+                  Build a deck.<br />You can use your own, built-in, and/or other players&rsquo; cards.
                 </NewHereLink>
               </td>
               <td>
@@ -124,12 +124,14 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
               <td>
                 <NewHereLink idx={9}>
                   Now the world of Wordbots is your oyster!
-                  <div style={{ marginTop: 5 }}><em>(Bonus points: make your own set!)</em></div>
+                  <div style={{ marginTop: 5 }}><em>(Bonus points: create a set!)</em></div>
                 </NewHereLink>
               </td>
             </tr>
           </tbody>
         </table>
+
+        {!uid && <p><i>A <a onClick={this.handleClickLogin} className="underline">user account</a> is required to save cards or play against other players.</i></p>}
       </RouterDialog>
     );
   }

@@ -1,4 +1,5 @@
 import Paper from '@material-ui/core/Paper';
+import { truncate } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -21,6 +22,7 @@ export function mapStateToProps(state: w.State): AboutProps {
 class About extends React.Component<AboutProps> {
   public render(): JSX.Element {
     const [version, sha] = this.props.version.split('+');
+    const versionTrunc = truncate(version, { length: 10, omission: '' });
 
     return (
       <div>
@@ -30,7 +32,7 @@ class About extends React.Component<AboutProps> {
         <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
           <div style={{width: '50%', marginRight: 20}}>
             <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={whatIsWordbots(version, sha)} />
+              <MarkdownBlock source={whatIsWordbots(versionTrunc, sha)} />
             </Paper>
 
             <Paper style={{padding: '5px 20px', marginTop: 20}}>

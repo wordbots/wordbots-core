@@ -39,8 +39,7 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             justifyContent: 'center',
             alignItems: 'center',
             paddingRight: 32,
-            paddingLeft: 20,
-            paddingTop: 40
+            paddingLeft: 20
           }}
         >
           <Card
@@ -56,7 +55,7 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
             source={{ type: 'user' }}
             parseResults={JSON.stringify(this.props.sentences.map((s) => s.result))}
-            scale={3}
+            scale={2.5}
             onSpriteClick={this.props.onSpriteClick}
           />
         </div>

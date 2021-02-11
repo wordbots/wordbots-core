@@ -210,8 +210,20 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           </CopyToClipboard>
         }
 
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <div style={{width: '60%', flex: 1, paddingTop: 64, paddingLeft: 48, paddingRight: 32}}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          maxHeight: 'calc(100vh - 115px)',
+          marginTop: 5
+        }}>
+          <div style={{
+            width: '60%',
+            flex: 1,
+            paddingTop: 32,
+            paddingLeft: 48,
+            paddingRight: 32,
+            overflowY: 'auto'
+          }}>
             <CardCreationTutorial />
             <CardCreationForm
               key={this.props.id || 'newCard'}

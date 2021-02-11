@@ -209,7 +209,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div
         style={{
-          margin: '200px auto',
+          margin: '260px auto',
           textAlign: 'center',
           fontFamily: 'Carter One',
           fontSize: '2em',
@@ -226,7 +226,7 @@ class App extends React.Component<AppProps, AppState> {
       <MuiThemeProvider theme={createMuiTheme(muiV1Theme)}>
         <div>
           <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
-          <TitleBar />
+          <TitleBar isAppLoading={this.isLoading} />
           <div>
             {this.sidebar}
             {this.isLoading ? this.loadingMessage : this.content}

@@ -20,7 +20,11 @@ import { MAX_Z_INDEX } from '../constants';
 import * as w from '../types';
 import { logout } from '../util/firebase';
 
-interface TitleBarProps {
+interface TitleBarProps extends TitleBarReduxProps {
+  isAppLoading: boolean
+}
+
+interface TitleBarReduxProps {
   user: fb.User | null
 }
 
@@ -29,7 +33,7 @@ interface TitleBarState {
   anchorEl: HTMLElement | undefined
 }
 
-function mapStateToProps(state: w.State): TitleBarProps {
+function mapStateToProps(state: w.State): TitleBarReduxProps {
   return {
     user: state.global.user
   };
@@ -46,7 +50,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
       return (
         <div style={{marginTop: 4}}>
           <Button
-            style={{color: 'white'}}
+            style={{ color: 'white' }}
             onClick={this.openUserMenu}
           >
             {this.props.user.displayName}
@@ -79,6 +83,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
     } else {
       return (
         <Button
+          style={{ color: 'white' }}
           onClick={this.openLoginDialog}
         >
           Login / Register
@@ -88,30 +93,54 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
     }
   }
 
-  public render(): JSX.Element {
+  public renderStaticTitleBar(): JSX.Element {
     return (
-      <div style={{height: 64}}>
-        <AppBar
-          position="fixed"
-          style={{
-            boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)'
-          }}
-        >
-          <Toolbar
-            disableGutters
+      <header style={{
+        height: 64,
+        backgroundColor: '#f44336',
+        boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)',
+      }}>
+        <div style={{
+          paddingLeft: 15,
+          paddingTop: 7,
+          fontFamily: 'Carter One',
+          fontSize: 32,
+          color: 'white',
+        }}>
+          WORDBOTS
+        </div>
+      </header>
+    );
+  }
+
+  public render(): JSX.Element {
+    if (this.props.isAppLoading) {
+      return this.renderStaticTitleBar();
+    } else {
+      return (
+        <div style={{height: 64}}>
+          <AppBar
+            position="fixed"
             style={{
-              padding: '0 7px 0 15px',
-              justifyContent: 'space-between'
+              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)'
             }}
           >
-            <Typography style={{ fontFamily: 'Carter One', fontSize: 32 }}>
-              <Link to="/" style={{ color: 'white' }}>WORDBOTS</Link>
-            </Typography>
-            {this.userMenu}
-          </Toolbar>
-        </AppBar>
-      </div>
-    );
+            <Toolbar
+              disableGutters
+              style={{
+                padding: '0 7px 0 15px',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Typography style={{ fontFamily: 'Carter One', fontSize: 32 }}>
+                <Link style={{ color: 'white' }} to="/">WORDBOTS</Link>
+              </Typography>
+              {this.userMenu}
+            </Toolbar>
+          </AppBar>
+        </div>
+      );
+    }
   }
 
   private openLoginDialog = () => {

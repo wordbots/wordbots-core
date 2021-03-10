@@ -1,20 +1,30 @@
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Popover from '@material-ui/core/Popover';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import * as fb from 'firebase';
 import { History } from 'history';
-import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import FontIcon from 'material-ui/FontIcon';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import Popover from 'material-ui/Popover';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import RouterDialog from '../components/RouterDialog';
+import { MAX_Z_INDEX } from '../constants';
 import * as w from '../types';
 import { logout } from '../util/firebase';
 
-interface TitleBarProps {
+interface TitleBarProps extends TitleBarReduxProps {
+  isAppLoading: boolean
+}
+
+interface TitleBarReduxProps {
   user: fb.User | null
 }
 
@@ -23,7 +33,7 @@ interface TitleBarState {
   anchorEl: HTMLElement | undefined
 }
 
-function mapStateToProps(state: w.State): TitleBarProps {
+function mapStateToProps(state: w.State): TitleBarReduxProps {
   return {
     user: state.global.user
   };
@@ -38,66 +48,99 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   get userMenu(): JSX.Element {
     if (this.props.user) {
       return (
-        <div style={{marginTop: 7}}>
-          <FlatButton
-            style={{color: 'white'}}
-            label={this.props.user.displayName}
-            labelPosition="before"
+        <div style={{marginTop: 4}}>
+          <Button
+            style={{ color: 'white' }}
             onClick={this.openUserMenu}
-            icon={<FontIcon className="material-icons">account_circle</FontIcon>}
-          />
+          >
+            {this.props.user.displayName}
+            <Icon className="material-icons" style={{ margin: '0 5px 0 8px' }}>account_circle</Icon>
+          </Button>
           <Popover
             open={this.state.userOpen}
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            onRequestClose={this.closeUserMenu}
+            onClose={this.closeUserMenu}
+            style={{ zIndex: MAX_Z_INDEX, marginTop: 5 }}
           >
-            <Menu>
-              <MenuItem
-                primaryText="Profile"
-                onClick={this.handleClickProfile}
-                leftIcon={<FontIcon className="material-icons">account_circle</FontIcon>}
-              />
-              <MenuItem
-                primaryText="Logout"
-                onClick={this.handleClickLogout}
-                leftIcon={<FontIcon className="material-icons">exit_to_app</FontIcon>}
-              />
-            </Menu>
+            <MenuList>
+              <MenuItem onClick={this.handleClickProfile}>
+                <ListItemIcon>
+                  <Icon className="material-icons">account_circle</Icon>
+                </ListItemIcon>
+                <ListItemText>Profile</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={this.handleClickLogout}>
+                <ListItemIcon>
+                  <Icon className="material-icons">exit_to_app</Icon>
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </MenuItem>
+            </MenuList>
           </Popover>
         </div>
       );
     } else {
       return (
-        <FlatButton
-          label="Login / Register"
-          labelPosition="before"
+        <Button
+          style={{ color: 'white' }}
           onClick={this.openLoginDialog}
-          icon={<FontIcon className="material-icons">person</FontIcon>}
-        />
+        >
+          Login / Register
+          <Icon className="material-icons" style={{ margin: '0 5px 0 10px' }}>person</Icon>
+        </Button>
       );
     }
   }
 
-  public render(): JSX.Element {
+  public renderStaticTitleBar(): JSX.Element {
     return (
-      <div style={{height: 64}}>
-        <AppBar
-          title={
-            <div style={{fontFamily: 'Carter One', fontSize: 32}}>
-              WORDBOTS
-            </div>
-          }
-          style={{
-            position: 'fixed',
-            top: 0
-          }}
-          iconElementLeft={<span />}
-          iconElementRight={this.userMenu}
-        />
-      </div>
+      <header style={{
+        height: 64,
+        backgroundColor: '#f44336',
+        boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)',
+      }}>
+        <div style={{
+          paddingLeft: 15,
+          paddingTop: 7,
+          fontFamily: 'Carter One',
+          fontSize: 32,
+          color: 'white',
+        }}>
+          WORDBOTS
+        </div>
+      </header>
     );
+  }
+
+  public render(): JSX.Element {
+    if (this.props.isAppLoading) {
+      return this.renderStaticTitleBar();
+    } else {
+      return (
+        <div style={{height: 64}}>
+          <AppBar
+            position="fixed"
+            style={{
+              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)'
+            }}
+          >
+            <Toolbar
+              disableGutters
+              style={{
+                padding: '0 7px 0 15px',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Typography style={{ fontFamily: 'Carter One', fontSize: 32 }}>
+                <Link style={{ color: 'white' }} to="/">WORDBOTS</Link>
+              </Typography>
+              {this.userMenu}
+            </Toolbar>
+          </AppBar>
+        </div>
+      );
+    }
   }
 
   private openLoginDialog = () => {

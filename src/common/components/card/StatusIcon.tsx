@@ -1,4 +1,4 @@
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import { PARSER_URL } from '../../constants';
@@ -22,7 +22,7 @@ export default class StatusIcon extends React.Component<StatusIconProps> {
           inline
           text={isParsed ? 'Click to view parse tree' : (result.error || 'Parsing ...')}
         >
-          <FontIcon
+          <Icon
             className="material-icons"
             style={{
               fontSize: '0.7em',
@@ -31,7 +31,7 @@ export default class StatusIcon extends React.Component<StatusIconProps> {
             }
           >
             {isParsed ? 'code' : (result.error ? 'error_outline' : 'more_horiz')}
-          </FontIcon>
+          </Icon>
         </Tooltip>
       );
 

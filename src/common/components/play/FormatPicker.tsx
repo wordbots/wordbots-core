@@ -1,8 +1,8 @@
 import FormControl from '@material-ui/core/FormControl';
+import Icon from '@material-ui/core/Icon';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import FontIcon from 'material-ui/FontIcon';
 import * as React from 'react';
 
 import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
@@ -60,7 +60,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
           className="formats-tooltip"
           text={this.formatsTooltip}
         >
-          <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
+          <Icon className="material-icons" style={this.styles.helpIcon}>help</Icon>
         </Tooltip>
       </div>
     );

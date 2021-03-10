@@ -1,6 +1,5 @@
 import Paper from '@material-ui/core/Paper';
 import { filter, sortBy } from 'lodash';
-import Badge from 'material-ui/Badge';
 import * as React from 'react';
 
 import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
@@ -8,6 +7,7 @@ import * as w from '../../types';
 import { groupCards } from '../../util/cards';
 import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
+import InlineCardCostBadge from '../card/InlineCardCostBadge';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
 import DeckValidationIndicator from './DeckValidationIndicator';
@@ -36,17 +36,6 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
       cardItem: {
         display: 'flex',
         alignItems: 'stretch'
-      },
-      cardBadgeStyle: {
-        backgroundColor: '#00bcd4',
-        fontFamily: 'Carter One',
-        color: 'white',
-        marginRight: 10
-      },
-      cardBadge: {
-        padding: 0,
-        width: 24,
-        height: 24
       },
       cardName: {
         display: 'flex',
@@ -94,6 +83,8 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           <ButtonInRow
             label="Edit"
             icon="edit"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Edit the cards in this deck."
             onClick={this.handleClickEdit}
             disabled={this.isDefaultDeck}
@@ -101,12 +92,16 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           <ButtonInRow
             label="Duplicate"
             icon="add_circle"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Create a copy of this deck."
             onClick={this.handleClickDuplicate}
           />
           <ButtonInRow
             label="Delete"
             icon="delete"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Delete this deck. This operation cannot be undone!"
             onClick={this.handleClickDelete}
             disabled={this.isDefaultDeck}
@@ -114,6 +109,8 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           <ButtonInRow
             label="Try"
             icon="videogame_asset"
+            color="primary"
+            style={{ padding: '5px 10px' }}
             tooltip="Try this deck in a practice game."
             onClick={this.handleClickTry}
           />
@@ -179,11 +176,7 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
       >
         <CardTooltip card={card}>
           <div style={this.styles.cardItem}>
-            <Badge
-              badgeContent={card.cost}
-              badgeStyle={this.styles.cardBadgeStyle}
-              style={this.styles.cardBadge}
-            />
+            <InlineCardCostBadge cost={card.cost} style={{ position: 'relative', left: -10 }} />
             <div style={this.styles.cardName}>{card.name}</div>
             <div style={this.styles.cardCount}>{card.count > 1 ? `${card.count}x` : ''}</div>
           </div>

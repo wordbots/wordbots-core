@@ -1,7 +1,6 @@
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import * as fb from 'firebase';
 import { History, Location } from 'history';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { object } from 'prop-types';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { hot } from 'react-hot-loader';
@@ -18,7 +17,7 @@ import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
 import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
-import PersonalTheme from '../themes/personal';
+import muiV1Theme from '../themes/muiV1';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
@@ -93,10 +92,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
 }
 
 class App extends React.Component<AppProps, AppState> {
-  public static childContextTypes = {
-    muiTheme: object
-  };
-
   public state = {
     loadedCards: false,
     loadedDecks: false,
@@ -130,12 +125,6 @@ class App extends React.Component<AppProps, AppState> {
 
   public componentDidUpdate(): void {
     logAnalytics();
-  }
-
-  public getChildContext(): any {
-    return {
-      muiTheme: getMuiTheme(PersonalTheme)
-    };
   }
 
   get isLoading(): boolean {
@@ -220,7 +209,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div
         style={{
-          margin: '200px auto',
+          margin: '260px auto',
           textAlign: 'center',
           fontFamily: 'Carter One',
           fontSize: '2em',
@@ -234,15 +223,17 @@ class App extends React.Component<AppProps, AppState> {
 
   public render(): JSX.Element {
     return (
-      <div>
-        <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
-        <TitleBar />
+      <MuiThemeProvider theme={createMuiTheme(muiV1Theme)}>
         <div>
-          {this.sidebar}
-          {this.isLoading ? this.loadingMessage : this.content}
+          <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
+          <TitleBar isAppLoading={this.isLoading} />
+          <div>
+            {this.sidebar}
+            {this.isLoading ? this.loadingMessage : this.content}
+          </div>
+          {this.dialogs}
         </div>
-        {this.dialogs}
-      </div>
+      </MuiThemeProvider>
     );
   }
 

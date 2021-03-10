@@ -1,7 +1,7 @@
+import { TableCell, TableRow } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import * as fb from 'firebase';
-import FontIcon from 'material-ui/FontIcon';
-import { TableRow, TableRowColumn } from 'material-ui/Table';
 import * as React from 'react';
 
 import * as m from '../../../server/multiplayer/multiplayer';
@@ -12,6 +12,7 @@ import { guestUID } from '../../util/multiplayer';
 import { DisplayedGame } from './GameBrowser';
 
 interface GameRowProps {
+  idx: number
   game: DisplayedGame
   user: fb.User | null
   clientId: m.ClientID
@@ -59,16 +60,20 @@ export default class GameRow extends React.Component<GameRowProps> {
   }
 
   public render(): JSX.Element {
-    const { game } = this.props;
+    const { idx, game } = this.props;
     return (
-      <TableRow key={game.id} selected={this.isMyGame}>
-        <TableRowColumn>{game.name}</TableRowColumn>
-        <TableRowColumn>{GameFormat.decode(game.format).rendered()}</TableRowColumn>
-        <TableRowColumn>{game.players.map(this.renderPlayerName).join(', ')}</TableRowColumn>
-        <TableRowColumn>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableRowColumn>
-        <TableRowColumn style={{textAlign: 'right'}} {...{title: this.buttonTooltip}}>
+      <TableRow
+        key={game.id}
+        selected={this.isMyGame}
+        style={{ backgroundColor: idx % 2 === 0 ? '#ddd' : 'white' }}
+      >
+        <TableCell>{game.name}</TableCell>
+        <TableCell>{GameFormat.decode(game.format).rendered()}</TableCell>
+        <TableCell>{game.players.map(this.renderPlayerName).join(', ')}</TableCell>
+        <TableCell>{(game.spectators || []).map(this.renderPlayerName).join(', ')}</TableCell>
+        <TableCell title={this.buttonTooltip} style={{textAlign: 'right'}}>
           {this.renderButtons()}
-        </TableRowColumn>
+        </TableCell>
       </TableRow>
     );
   }
@@ -100,25 +105,24 @@ export default class GameRow extends React.Component<GameRowProps> {
       return (game.players.length === 1) ? (
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             onClick={this.handleJoinGame}
             disabled={!this.anyValidDecks}
           >
             Join Game
             {game.options.passwordToJoin &&
-              <FontIcon
+              <Icon
                 className="material-icons"
-                color="white"
-                style={{ marginLeft: 5 }}
+                style={{ marginLeft: 5, color: 'white' }}
               >
                 vpn_key
-              </FontIcon>
+              </Icon>
             }
           </Button>
         ) : (
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             onClick={this.handleSpectateGame}
           >
             Spectate Game
@@ -128,7 +132,7 @@ export default class GameRow extends React.Component<GameRowProps> {
       return (
         <Button
           variant="outlined"
-          color="secondary"
+          color="primary"
           onClick={this.props.onCancelHostGame}
         >
           Cancel Game

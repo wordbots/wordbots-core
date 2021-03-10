@@ -1,11 +1,13 @@
-import Drawer from 'material-ui/Drawer';
-import FontIcon from 'material-ui/FontIcon';
-import MenuItem from 'material-ui/MenuItem';
+import { withStyles, WithStyles } from '@material-ui/core';
+import Drawer from '@material-ui/core/Drawer';
+import Icon from '@material-ui/core/Icon';
+import MenuItem from '@material-ui/core/MenuItem';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH, SIDEBAR_Z_INDEX } from '../constants';
-import { isFlagSet, toggleFlag, zeroWidthJoin } from '../util/browser';
+import { isFlagSet, toggleFlag } from '../util/browser';
 
 import Tooltip from './Tooltip';
 
@@ -16,23 +18,37 @@ interface NavMenuProps {
   onRerender: () => void
 }
 
-export default class NavMenu extends React.Component<NavMenuProps> {
+class NavMenu extends React.Component<NavMenuProps & WithStyles> {
+  public static styles: Record<string, CSSProperties> = {
+    drawerPaper: {
+      top: 54,
+      paddingTop: 10,
+      transition: 'width 200ms ease-in-out',
+      height: 'calc(100% - 54px)',
+      overflow: 'visible',
+      zIndex: SIDEBAR_Z_INDEX,
+      '& .material-icons': {
+        color: '#666'
+      },
+      '& li .material-icons': {
+        marginRight: 20
+      }
+    },
+    expanded: {
+      width: SIDEBAR_WIDTH
+    },
+    collapsed: {
+      width: SIDEBAR_COLLAPSED_WIDTH
+    },
+  };
+
   public render(): JSX.Element {
-    const { canExpand, isExpanded, cardIdBeingEdited } = this.props;
-    const width = isExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
+    const { canExpand, cardIdBeingEdited, isExpanded, classes } = this.props;
     return (
       <Drawer
         open
-        width={width}
-        containerStyle={{
-          top: 54,
-          paddingTop: 10,
-          width,
-          transition: 'width 200ms ease-in-out',
-          height: 'calc(100% - 54px)',
-          overflow: 'visible',
-          zIndex: SIDEBAR_Z_INDEX
-        }}
+        variant="permanent"
+        classes={{ paper: `${classes.drawerPaper} ${isExpanded ? classes.expanded : classes.collapsed}` }}
       >
         {this.renderLink('/', 'Home', 'home')}
         {this.renderLink('/collection', 'Collection', 'view_module')}
@@ -53,14 +69,12 @@ export default class NavMenu extends React.Component<NavMenuProps> {
   }
 
   private renderIcon = (icon: string) => (
-    <FontIcon
+    <Icon
       className="material-icons"
-      style={{
-        left: this.props.isExpanded ? 4 : 8
-      }}
+      style={{ left: this.props.isExpanded ? 4 : 8 }}
     >
       {icon}
-    </FontIcon>
+    </Icon>
   )
 
   private renderLink = (path: string, text: string, icon: string) => (
@@ -69,14 +83,12 @@ export default class NavMenu extends React.Component<NavMenuProps> {
         disable={this.props.isExpanded}
         text={text}
         place="right"
-        style={{
-          zIndex: MAX_Z_INDEX
-        }}
+        style={{ zIndex: MAX_Z_INDEX }}
       >
-        <MenuItem
-          primaryText={this.props.isExpanded ? text : ''}
-          leftIcon={this.renderIcon(icon)}
-        />
+        <MenuItem>
+          {this.renderIcon(icon)}
+          {this.props.isExpanded ? text : ''}
+        </MenuItem>
       </Tooltip>
     </NavLink>
   )
@@ -93,18 +105,19 @@ export default class NavMenu extends React.Component<NavMenuProps> {
         text={isFlagSet('sidebarCollapsed') ? 'Expand' : 'Collapse'}
         place="right"
       >
-        <FontIcon
-          className="material-icons"
-          style={{
-            fontSize: '0.6em',
-            color: '#666'
-          }}
-        >
-          <span>
-            {this.props.isExpanded ? zeroWidthJoin('arrow_forward', 'arrow_back') : zeroWidthJoin('arrow_back', 'arrow_forward')}
-          </span>
-        </FontIcon>
+        {this.props.isExpanded
+          ? <React.Fragment>
+              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_forward</Icon>
+              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_back</Icon>
+            </React.Fragment>
+          : <React.Fragment>
+              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_back</Icon>
+              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_forward</Icon>
+            </React.Fragment>
+        }
       </Tooltip>
     </div>
   )
 }
+
+export default withStyles(NavMenu.styles)(NavMenu);

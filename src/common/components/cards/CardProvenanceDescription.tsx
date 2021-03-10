@@ -4,7 +4,10 @@ import * as React from 'react';
 import * as w from '../../types';
 import ProfileLink from '../users/ProfileLink';
 
-export default class CardProvenanceDescription extends React.Component<{card: w.CardInStore, style?: React.CSSProperties}> {
+export default class CardProvenanceDescription extends React.PureComponent<{
+  card: w.CardInStore
+  style?: React.CSSProperties
+}> {
   public render(): React.ReactNode {
     const { source, updated } = this.props.card.metadata;
     if (source) {

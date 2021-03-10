@@ -6,7 +6,7 @@ import * as w from '../../types';
 import { id } from '../../util/common';
 import Popover from '../Popover';
 
-import Card from './Card';
+import { Card } from './Card';
 
 interface CardTooltipProps {
   card: w.CardInStore

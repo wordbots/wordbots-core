@@ -1,4 +1,4 @@
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 
 interface SearchControlsProps {
@@ -24,7 +24,7 @@ export default class SearchControls extends React.Component<SearchControlsProps>
         </div>
 
         <TextField
-          hintText="Enter card name or text"
+          placeholder="Enter card name or text"
           style={{ width: '100%', marginBottom: 10 }}
           onChange={this.handleChangeText}
         />
@@ -32,5 +32,7 @@ export default class SearchControls extends React.Component<SearchControlsProps>
     );
   }
 
-  private handleChangeText = (_e: React.SyntheticEvent<any>, newValue: string) => { this.props.onChange(newValue); };
+  private handleChangeText = (e: React.SyntheticEvent<any>) => {
+    this.props.onChange(e.currentTarget.value);
+  };
 }

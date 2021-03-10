@@ -1,10 +1,10 @@
 import Paper from '@material-ui/core/Paper';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { isEqual, noop } from 'lodash';
-import { CardHeader, CardText } from 'material-ui/Card';
-import Divider from 'material-ui/Divider';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { object } from 'prop-types';
 import * as React from 'react';
 import Textfit from 'react-textfit';
 
@@ -62,16 +62,20 @@ interface CardState {
   shadow: number
 }
 
-export default class Card extends React.Component<CardProps, CardState> {
-  // (For server-side rendering via /api/card.png)
-  public static childContextTypes = {
-    muiTheme: object.isRequired
-  };
+export class Card extends React.Component<CardProps & WithStyles, CardState> {
+  public static styles: Record<string, CSSProperties> = {
+    headerTitle: {
+      lineHeight: 'normal'
+    },
+    headerSubtitle: {
+      lineHeight: 'normal'
+    }
+  }
 
-  public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}) => (
+  public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}): JSX.Element => (
     isCardVisible(card)
       ? (
-      <Card
+      <CardWithStyles
         visible
         id={card.id}
         name={card.name}
@@ -95,9 +99,6 @@ export default class Card extends React.Component<CardProps, CardState> {
   public state = {
     shadow: 2
   };
-
-  // (For server-side rendering via /api/card.png)
-  public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public shouldComponentUpdate(nextProps: CardProps, nextState: CardState): boolean {
     const trackedProps = [
@@ -123,7 +124,6 @@ export default class Card extends React.Component<CardProps, CardState> {
 
     const compactStyle = {
       height: 96 * (scale || 1),
-      marginTop: (inBrowser() ? 0 : 20) * (scale || 1),
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'
@@ -163,8 +163,8 @@ export default class Card extends React.Component<CardProps, CardState> {
     const {
       name, spriteID, spriteV, type, img, cost, baseCost, source, collection,
       status, visible, selected, targetable,
-      scale, margin, rotation, yTranslation, zIndex,
-      onSpriteClick
+      scale, margin, rotation, yTranslation,
+      onSpriteClick, classes
     } = this.props;
     const redShadow = 'rgba(255, 35, 35, 0.45)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
@@ -187,14 +187,17 @@ export default class Card extends React.Component<CardProps, CardState> {
       );
     } else {
       return (
-        <div>
+        <div
+          style={{
+            padding: '24px 0 12px 0',
+            marginRight: margin,
+            transform
+          }}
+        >
           <CardCostBadge
             cost={cost}
             baseCost={baseCost || cost}
             scale={scale || 1}
-            margin={margin || 0}
-            zIndex={zIndex || 0}
-            transform={transform}
           >
             <div
               onClick={this.handleClick}
@@ -218,12 +221,14 @@ export default class Card extends React.Component<CardProps, CardState> {
                 <CardHeader
                   style={{padding: 8 * (scale || 1), height: 'auto'}}
                   title={this.renderTitle()}
-                  titleStyle={{fontSize: 15 * (scale || 1)}}
-                  subtitle={typeToString(type)}
-                  subtitleStyle={{fontSize: 14 * (scale || 1)}}
+                  subheader={<span style={{fontSize: 14 * (scale || 1)}}>{typeToString(type)}</span>}
+                  classes={{
+                    title: classes.headerTitle,
+                    subheader: classes.headerSubtitle
+                  }}
                 />
 
-                <Divider/>
+                <Divider style={{ margin: '-1px 0px 0px' }} />
 
                 <CardImage
                   type={type}
@@ -235,7 +240,7 @@ export default class Card extends React.Component<CardProps, CardState> {
                   onSpriteClick={onSpriteClick || noop}
                 />
 
-                <Divider/>
+                <Divider style={{ margin: '-1px 0px 0px' }} />
 
                 <div style={this.textAreaStyle}>
                   {this.renderText()}
@@ -272,68 +277,45 @@ export default class Card extends React.Component<CardProps, CardState> {
     }
   }
 
-  private renderTitle(): JSX.Element {
+  private renderTitle(): React.ReactNode {
     const { name, scale } = this.props;
 
     if (!inBrowser()) {
-      // Textfit won't work without a DOM, so just estimate something reasonable.
-      const maxFontSize = Math.round(180 / name.length);
-      return (
-        <div
-          style={{
-            width: 105 * (scale || 1),
-            height: 20 * (scale || 1),
-            fontSize: Math.min(maxFontSize, 16) * (scale || 1)
-          }}
-        >
-          {name}
-        </div>
-      );
-    } else {
-      return (
-        <Textfit
-          mode="multi"
-          autoResize={false}
-          max={16 * (scale || 1)}
-          style={{
-            width: 105 * (scale || 1),
-            height: 23 * (scale || 1)
-          }}
-        >
-          {name}
-        </Textfit>
-      );
+      return name;
     }
+
+    return (
+      <Textfit
+        mode="multi"
+        autoResize={false}
+        max={16 * (scale || 1)}
+        style={{
+          width: 105 * (scale || 1),
+          height: 23 * (scale || 1)
+        }}
+      >
+        {name}
+      </Textfit>
+    );
   }
 
-  private renderText(): JSX.Element {
-    const { type, text, scale } = this.props;
+  private renderText(): React.ReactNode {
+    const { text, scale } = this.props;
 
     if (!inBrowser()) {
-      // Textfit won't work without a DOM, so just estimate something reasonable.
-      const maxFontSize = Math.round((type !== TYPE_EVENT ? 90 : 105) / Math.sqrt(this.numChars));
-      return (
-        <div
-          style={{
-            ...this.textFitStyle,
-            fontSize: Math.min(maxFontSize, 14)
-          }}
-        >
-          {text}
-        </div>
-      );
-    } else {
-      return (
-        <Textfit
-          autoResize={false}
-          mode="multi"
-          max={14 * (scale || 1)}
-          style={this.textFitStyle}
-        >
-          {text}
-        </Textfit>
-      );
+      return text;
     }
+
+    return (
+      <Textfit
+        autoResize={false}
+        mode="multi"
+        max={14 * (scale || 1)}
+        style={this.textFitStyle}
+      >
+        {text}
+      </Textfit>
+    );
   }
 
   private renderStat(type: w.Attribute): JSX.Element {
@@ -354,18 +336,22 @@ export default class Card extends React.Component<CardProps, CardState> {
 
     if (type === TYPE_ROBOT) {
       return (
-        <CardText style={style}>
+        <CardContent style={style}>
           {this.renderStat('attack')}
           {this.renderStat('health')}
           {this.renderStat('speed')}
-        </CardText>
+        </CardContent>
       );
     } else if (type === TYPE_CORE || type === TYPE_STRUCTURE) {
       return (
-        <CardText style={{...style, marginLeft: '31%'}}>
+        <CardContent style={{...style, marginLeft: '31%'}}>
           {this.renderStat('health')}
-        </CardText>
+        </CardContent>
       );
     }
   }
 }
+
+const CardWithStyles = withStyles(Card.styles)(Card);
+
+export default CardWithStyles;

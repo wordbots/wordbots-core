@@ -1,5 +1,4 @@
 import { History } from 'history';
-import * as React from 'react';
 import * as ReactGA from 'react-ga';
 
 declare const window: {
@@ -63,8 +62,4 @@ export function toggleFlag(flag: string): void {
 
 export function getGameAreaNode(): HTMLElement {
   return document.querySelector('#gameArea') || document.body;
-}
-
-export function zeroWidthJoin(...items: React.ReactNode[]): React.ReactNode {
-  return items.reduce((a, b) => <span>{a}&zwnj;{b}</span>);
 }

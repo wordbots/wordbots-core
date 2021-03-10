@@ -1,6 +1,6 @@
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import { History } from 'history';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import * as React from 'react';
 
 import RouterDialog from '../RouterDialog';
@@ -22,21 +22,25 @@ export default class ImportDialog extends React.Component<ImportDialogProps, Imp
   get actions(): JSX.Element[] {
     return [
       (
-        <RaisedButton
-          primary
-          label="Close"
+        <Button
           key="Close"
+          variant="outlined"
+          color="primary"
           onClick={this.close}
           style={{marginRight: 10}}
-        />
+        >
+          Close
+        </Button>
       ),
       (
-        <RaisedButton
-          secondary
-          label="Import"
+        <Button
           key="Import"
+          variant="outlined"
+          color="secondary"
           onClick={this.handleImport}
-        />
+        >
+          Import
+        </Button>
       )
     ];
   }
@@ -48,11 +52,12 @@ export default class ImportDialog extends React.Component<ImportDialogProps, Imp
         title="Import Cards"
         history={this.props.history}
         actions={this.actions}
+        style={{ width: 700 }}
       >
         <TextField
           id="tf"
-          multiLine
-          floatingLabelText="Exported card JSON"
+          multiline
+          label="Exported card JSON"
           style={{width: '100%', wordBreak: 'break-all', wordWrap: 'break-word'}}
           onChange={this.handleChangeText}
         />
@@ -64,8 +69,8 @@ export default class ImportDialog extends React.Component<ImportDialogProps, Imp
     RouterDialog.closeDialog(this.props.history);
   }
 
-  private handleChangeText = (_e: React.SyntheticEvent<HTMLElement>, newText: string) => {
-    this.setState({importedJson: newText});
+  private handleChangeText = (e: React.SyntheticEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    this.setState({ importedJson: e.currentTarget.value });
   }
 
   private handleImport = () => {

@@ -1,16 +1,18 @@
 /* eslint-disable react/no-unused-state */
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
+import { TabIndicatorProps } from '@material-ui/core/Tabs/TabIndicator';
 import { History } from 'history';
-import { capitalize, mapKeys, noop, uniq } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
-import IconButton from 'material-ui/IconButton';
-import { Tab, Tabs } from 'material-ui/Tabs';
-import Toggle from 'material-ui/Toggle';
-import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
+import { capitalize, isEqual, mapKeys, noop, uniq } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 
-import { DICTIONARY_TAB_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { getHash, setHash } from '../../util/browser';
 import { allKeywords, contractKeywords } from '../../util/cards';
@@ -22,6 +24,8 @@ import DictionarySearchBar from './DictionarySearchBar';
 import DictionarySidebar from './DictionarySidebar';
 
 type DictionaryTab = 'dictionary' | 'thesaurus' | 'keywords';
+type TabTerm = 'dictionaryTerm' | 'thesaurusTerm' | 'keywordsTerm';
+const DICTIONARY_TABS: DictionaryTab[] = ['dictionary', 'thesaurus', 'keywords'];
 
 interface DictionaryState {
   dictionary: w.Dictionary
@@ -34,7 +38,7 @@ interface DictionaryState {
 }
 
 export default class DictionaryDialog extends React.Component<{ history: History }, DictionaryState> {
-  public state = {
+  public state: DictionaryState = {
     dictionary: {
       definitions: {},
       examplesByToken: {},
@@ -60,6 +64,10 @@ export default class DictionaryDialog extends React.Component<{ history: History
     }));
   }
 
+  public shouldComponentUpdate(_nextProps: { history: History }, nextState: DictionaryState): boolean {
+    return !isEqual(nextState, this.state);
+  }
+
   public componentDidUpdate(): void {
     const { tabIdx } = this.state;
     if (tabIdx === 0) {
@@ -74,13 +82,13 @@ export default class DictionaryDialog extends React.Component<{ history: History
   }
 
   get currentTab(): DictionaryTab {
-    return (['dictionary', 'thesaurus', 'keywords'] as DictionaryTab[])[this.state.tabIdx];
+    return DICTIONARY_TABS[this.state.tabIdx];
   }
   get currentTabTerms(): string[] {
-    return (this as any)[`${this.currentTab}Terms`];
+    return this[`${this.currentTab}Terms` as keyof DictionaryDialog];
   }
   get selectedTerm(): string {
-    return ((this.state as any)[`${this.currentTab}Term`] || this.currentTabTerms[0]);
+    return this.state[`${this.currentTab}Term` as TabTerm] || this.currentTabTerms[0];
   }
 
   get hash(): string {
@@ -94,10 +102,12 @@ export default class DictionaryDialog extends React.Component<{ history: History
                  .sort();
   }
   get dictionaryDefinitions(): Record<string, Array<{ syntax: string, semantics: string }>> {
-    return this.cleanupTerms(this.state.dictionary.definitions);
+    const { dictionary } = this.state;
+    return this.cleanupTerms(dictionary.definitions || {});
   }
   get dictionaryExamples(): Record<string, string[]> {
-    return this.cleanupTerms(this.state.dictionary.examplesByToken);
+    const { dictionary } = this.state;
+    return this.cleanupTerms<string[]>(dictionary.examplesByToken || {});
   }
 
   get thesaurusTerms(): string[] {
@@ -106,7 +116,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
                  .sort();
   }
   get thesaurusExamples(): Record<string, string[]> {
-    return this.state.dictionary.examplesByNode;
+    return this.state.dictionary.examplesByNode || {};
   }
 
   get keywordsTerms(): string[] {
@@ -122,17 +132,17 @@ export default class DictionaryDialog extends React.Component<{ history: History
       <RouterDialog
         path="dictionary"
         history={history}
-        bodyStyle={{padding: 0}}
-        style={{width: '80%', maxWidth: 'none'}}
+        style={{ width: '80%' }}
+        contentStyle={{ padding: 0 }}
       >
         {this.renderDictionary()}
       </RouterDialog>
     );
   }
 
-  private cleanupTerms = <V extends Record<string, any>>(obj: Record<string, V>): Record<string, V> => (
-    mapKeys(obj, (_value, term) => term.replace(' \'', '\''))
-  )
+  private cleanupTerms<T>(obj: Record<string, T>): Record<string, T> {
+    return mapKeys(obj, (_value, term) => term.replace(' \'', '\''));
+  }
   private cleanupExample = (example: string) => (
     capitalize(contractKeywords(example).trim())
       .replace(/,$/, '')
@@ -143,9 +153,10 @@ export default class DictionaryDialog extends React.Component<{ history: History
   )
 
   private selectTerm = (term: string, callback: () => void = noop) => {
-    this.setState({
-      [`${this.currentTab}Term`]: term
-    } as any, callback);
+    this.setState(
+      {[`${this.currentTab}Term`]: term} as Pick<DictionaryState, TabTerm>,
+      callback
+    );
   }
 
   private checkHash = () => {
@@ -155,7 +166,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
       const tabIdx = 'dtk'.indexOf(type);
 
       this.setState({ tabIdx }, () => {
-        this.selectTerm(term);
+        this.selectTerm(term.replace(/%20/g, ' '));
       });
     }
   }
@@ -164,7 +175,9 @@ export default class DictionaryDialog extends React.Component<{ history: History
     setHash(this.props.history, this.hash);
   }
 
-  private handleChangeTab = (tabIdx: 0 | 1 | 2) => { this.setState({ tabIdx }, this.updateHash); };
+  private handleChangeTab = (_evt: React.ChangeEvent<unknown>, tabIdx: 0 | 1 | 2) => {
+    this.setState({ tabIdx }, this.updateHash);
+  };
   private handleCloseDialog = () => { RouterDialog.closeDialog(this.props.history); };
   private handleSelectTerm = (term: string) => { this.selectTerm(term, this.updateHash); };
   private handleSetSearchTerm = (searchText: string) => this.setState({ searchText });
@@ -175,13 +188,26 @@ export default class DictionaryDialog extends React.Component<{ history: History
     return (
       <div>
         <Helmet title={`${capitalize(this.currentTab)} : ${this.selectedTerm}`} />
-        <Toolbar>
-          <ToolbarGroup>
-            <ToolbarTitle text={this.selectedTerm} />
-          </ToolbarGroup>
-          <ToolbarGroup>
-            <Toggle label="Advanced" onToggle={this.handleToggleDefinitions} toggled={this.state.showDefinitions}/>
-          </ToolbarGroup>
+        <Toolbar
+          disableGutters
+          style={{
+            backgroundColor: '#e4e4e4',
+            minHeight: 56,
+            paddingLeft: 10,
+            paddingRight: 20,
+            justifyContent: 'space-between'
+          }}
+        >
+          <div style={{ marginLeft: '0.75em', fontSize: '1.25em', color: '#888' }}>
+            {this.selectedTerm}
+          </div>
+          <FormControlLabel
+            control={
+              <Switch onChange={this.handleToggleDefinitions} checked={this.state.showDefinitions} />
+            }
+            label="Advanced"
+            labelPlacement="start"
+          />
         </Toolbar>
       </div>
     );
@@ -189,15 +215,19 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
   private renderTabs(): JSX.Element {
     const tabColor = 'rgb(0, 188, 212)';
-    const tabStyle = {backgroundColor: tabColor, borderRadius: 0};
+    const tabStyle = { color: 'white', fontSize: '0.85em' };
 
     return (
       <div style={{display: 'flex', backgroundColor: tabColor}}>
         <Tabs
+          variant="fullWidth"
           value={this.state.tabIdx}
           onChange={this.handleChangeTab}
           style={{width: '100%'}}
-          inkBarStyle={{ height: 7, marginTop: -7, zIndex: DICTIONARY_TAB_Z_INDEX }}
+          TabIndicatorProps={{
+            color: 'primary',
+            style: { height: 5 } as unknown as TabIndicatorProps['style']
+          }}
         >
           <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
           <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>
@@ -206,8 +236,9 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
         <IconButton
           onClick={this.handleCloseDialog}
+          style={{ color: 'white' }}
         >
-          <FontIcon className="material-icons" color="white">close</FontIcon>
+          <Icon className="material-icons">close</Icon>
         </IconButton>
       </div>
     );

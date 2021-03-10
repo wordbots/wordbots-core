@@ -1,12 +1,13 @@
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import Switch from '@material-ui/core/Switch';
+import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
 import { isEqual } from 'lodash';
 import { flow, groupBy, map, sortBy } from 'lodash/fp';
-import Divider from 'material-ui/Divider';
-import Drawer from 'material-ui/Drawer';
-import FontIcon from 'material-ui/FontIcon';
-import IconButton from 'material-ui/IconButton';
-import TextField from 'material-ui/TextField';
-import Toggle from 'material-ui/Toggle';
-import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar';
 import * as React from 'react';
 
 import { CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../constants';
@@ -63,21 +64,22 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   public render(): JSX.Element {
-    const containerStyle: React.CSSProperties = {
-      paddingTop: this.props.fullscreen ? 0 : 64,
-      marginTop: 0,
-      height: '100%',
-      overflow: 'visible',
-      boxSizing: 'border-box',
-      zIndex: CHAT_Z_INDEX
-    };
-
     return (
       <Drawer
-        openSecondary
-        docked
-        containerStyle={containerStyle}
-        width={this.isClosed ? CHAT_COLLAPSED_WIDTH : (this.props.compact ? CHAT_NARROW_WIDTH : CHAT_WIDTH)}
+        open
+        variant="permanent"
+        anchor="right"
+        PaperProps={{
+          style: {
+            paddingTop: this.props.fullscreen ? 0 : 64,
+            marginTop: 0,
+            height: '100%',
+            overflow: 'visible',
+            boxSizing: 'border-box',
+            zIndex: CHAT_Z_INDEX,
+            width: this.isClosed ? CHAT_COLLAPSED_WIDTH : (this.props.compact ? CHAT_NARROW_WIDTH : CHAT_WIDTH)
+          }
+        }}
       >
         {this.isClosed ? this.renderClosedChat() : this.renderOpenChat()}
       </Drawer>
@@ -133,14 +135,14 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     this.setState((state) => ({ optionsVisible: !state.optionsVisible }));
   }
 
-  private toggleServerMessages = (_e: React.MouseEvent<HTMLElement>, value: boolean) => {
-    this.setState({showServerMsgs: value});
+  private toggleServerMessages = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ showServerMsgs: checked });
   }
-  private toggleGameMessages = (_e: React.MouseEvent<HTMLElement>, value: boolean) => {
-    this.setState({showGameMsgs: value});
+  private toggleGameMessages = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ showGameMsgs: checked });
   }
-  private togglePlayerChat = (_e: React.MouseEvent<HTMLElement>, value: boolean) => {
-    this.setState({showChatMsgs: value});
+  private togglePlayerChat = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ showChatMsgs: checked });
   }
 
   private renderClosedChat(): JSX.Element {
@@ -155,17 +157,18 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             justifyContent: 'center',
             cursor: 'pointer'
           }}
-          onClick={this.props.toggleChat}
         >
-          <FontIcon
-            className="material-icons"
-            style={{
-              color: 'rgba(0, 0, 0, 0.4)',
-              fontSize: 24
-            }}
-          >
-            chevron_left
-          </FontIcon>
+          <IconButton onClick={this.props.toggleChat}>
+            <Icon
+              className="material-icons"
+              style={{
+                color: 'rgba(0, 0, 0, 0.4)',
+                fontSize: 24
+              }}
+            >
+              chevron_left
+            </Icon>
+          </IconButton>
         </div>
         <div
           style={{
@@ -192,20 +195,28 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     return (
       <div style={{height: '100%'}}>
-        <Toolbar noGutter>
-          <ToolbarGroup>
-            <ToolbarTitle text={chatTitle} style={{ marginLeft: '0.75em' }} />
-          </ToolbarGroup>
-          <ToolbarGroup>
+        <Toolbar
+          disableGutters
+          style={{
+            backgroundColor: '#e4e4e4',
+            minHeight: 56,
+            padding: 0,
+            justifyContent: 'space-between'
+          }}
+        >
+          <div style={{ marginLeft: '0.75em', fontSize: '1.25em', color: '#888' }}>
+            {chatTitle}
+          </div>
+          <div>
             <IconButton onClick={this.toggleOptionsVisibility} title="Toggle settings panel">
-              <FontIcon color="#888" className="material-icons">settings</FontIcon>
+              <Icon style={{ color: "#888" }} className="material-icons">settings</Icon>
             </IconButton>
             {inGame && (
               <IconButton onClick={toggleChat} title="Hide chat">
-                <FontIcon color="#888" className="material-icons">chevron_right</FontIcon>
+                <Icon style={{ color: "#888" }} className="material-icons">chevron_right</Icon>
               </IconButton>
             )}
-          </ToolbarGroup>
+          </div>
         </Toolbar>
 
         <div
@@ -214,9 +225,24 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
           }}
         >
           <div style={{padding: 10, fontSize: compact ? '0.8em' : '1em' }}>
-            <Toggle label="Show server messages" defaultToggled onToggle={this.toggleServerMessages} />
-            <Toggle label="Show game messages" defaultToggled onToggle={this.toggleGameMessages} />
-            <Toggle label="Show player chat" defaultToggled onToggle={this.togglePlayerChat} />
+            <FormControlLabel
+              control={<Switch defaultChecked color="primary" onChange={this.toggleServerMessages} />}
+              label="Show server messages"
+              labelPlacement="start"
+              style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}
+            />
+            <FormControlLabel
+              control={<Switch defaultChecked color="primary" onChange={this.toggleGameMessages} />}
+              label="Show game messages"
+              labelPlacement="start"
+              style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}
+            />
+            <FormControlLabel
+              control={<Switch defaultChecked color="primary" onChange={this.togglePlayerChat} />}
+              label="Show player chat"
+              labelPlacement="start"
+              style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}
+            />
           </div>
           <Divider />
         </div>
@@ -240,7 +266,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
           <Divider />
           <TextField
             id="chat"
-            hintText="Chat"
+            placeholder="Chat"
             autoComplete="off"
             style={{margin: 10, width: 236}}
             value={this.state.chatFieldValue}

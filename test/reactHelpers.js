@@ -1,7 +1,7 @@
+import { noop } from 'lodash';
 import * as React from 'react';
 import { renderIntoDocument, scryRenderedComponentsWithType } from 'react-dom/test-utils';
 import { createRenderer } from 'react-test-renderer/shallow';
-import { noop } from 'lodash';
 
 import * as coll from '../src/common/containers/Collection.tsx';
 import * as creator from '../src/common/containers/Creator.tsx';

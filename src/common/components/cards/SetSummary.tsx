@@ -9,7 +9,7 @@ import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
 import { sortCards } from '../../util/cards';
-import Card from '../card/Card';
+import { Card } from '../card/Card';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import ProfileLink from '../users/ProfileLink';
 
@@ -175,7 +175,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         </DialogContent>
         <DialogActions>
           <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             className={classes.dialogButton}
             onClick={this.handlePublishSet}
@@ -183,7 +183,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             Publish
           </Button>
           <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             className={classes.dialogButton}
             onClick={this.handleClosePublishConfirmation}
@@ -208,7 +208,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </span>
         );
       } else {
-        return this.renderButton('Delete', this.handleOpenDeleteConfirmation, { color: 'secondary' });
+        return this.renderButton('Delete', this.handleOpenDeleteConfirmation, { color: 'primary' });
       }
     } else {
       return null;
@@ -219,7 +219,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     <Button
       variant="outlined"
       size="small"
-      color="primary"
+      color="secondary"
       classes={{ outlined: this.props.classes.controlsButton }}
       onClick={action}
       {...additionalProps}

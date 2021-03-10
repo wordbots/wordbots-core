@@ -128,7 +128,7 @@ export interface SetFormat {
 }
 
 export interface Dictionary {
-  definitions?: { [token: string]: any } // TODO more precise
+  definitions?: { [token: string]: Array<{ syntax: string, semantics: string }> }
   examplesByToken?: { [token: string]: string[] }
   examplesByNode?: { [token: string]: string[] }
 }

@@ -98,7 +98,11 @@ class Home extends React.Component<HomeProps> {
             position: 'fixed',
             bottom: 10,
             right: 10,
-            fontSize: '0.7em'
+            padding: 5,
+            opacity: 0.8,
+            backgroundColor: 'white',
+            color: '#333',
+            fontSize: '0.7em',
           }}
         >
           v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{sha}

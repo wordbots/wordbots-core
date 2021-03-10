@@ -1,6 +1,6 @@
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { capitalize } from 'lodash';
-import MenuItem from 'material-ui/MenuItem';
-import SelectField from 'material-ui/SelectField';
 import * as React from 'react';
 
 import { SortCriteria, SortOrder } from './types.enums';
@@ -23,13 +23,7 @@ export default class SortControls extends React.Component<SortControlsProps> {
 
     return (
       <div style={{ marginBottom: 10 }}>
-        <div
-          style={{
-            marginBottom: 5,
-            fontWeight: 700,
-            fontSize: 14
-          }}
-        >
+        <div style={{ marginBottom: 5, fontWeight: 700, fontSize: 14 }}>
           Sorting
         </div>
 
@@ -41,20 +35,20 @@ export default class SortControls extends React.Component<SortControlsProps> {
 
   private renderSelectField(field: 'criteria' | 'order', items: string[]): JSX.Element {
     return (
-      <SelectField
-        style={{ display: 'block', width: '100%' }}
+      <Select
+        style={{ width: '100%', marginBottom: 10 }}
         value={this.props[field]}
         onChange={this.handleSetField(field)}
       >
         {items.map((item, idx) => (
-          <MenuItem key={idx} value={idx} primaryText={item}/>
+          <MenuItem key={idx} value={idx}>{item}</MenuItem>
         ))}
-      </SelectField>
+      </Select>
     );
   }
 
-  private handleSetField = (field: 'criteria' | 'order') => (_e: React.SyntheticEvent<any>, _i: number, value: number) => {
+  private handleSetField = (field: 'criteria' | 'order') => (e: React.ChangeEvent<HTMLSelectElement>) => {
     const setter = this.props[`onSet${capitalize(field)}` as 'onSetCriteria' | 'onSetOrder'] as (val: number) => void;
-    setter(value);
+    setter(parseInt(e.target.value));
   }
 }

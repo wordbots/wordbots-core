@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 
 import { MAX_Z_INDEX, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
@@ -54,12 +54,11 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   private styles: Record<string, React.CSSProperties> = {
     baseIcon: {
       fontSize: 36,
-      padding: 10,
+      padding: '10px 0',
       borderRadius: 3,
       boxShadow: '1px 1px 3px #CCC',
       cursor: 'pointer',
       width: '100%',
-      boxSizing: 'border-box',
       textAlign: 'center'
     },
     cardGroupHeading: {
@@ -107,7 +106,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
                   text="15 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
                 >
                   <sup>
-                    <FontIcon className="material-icons" style={this.styles.helpIcon}>help</FontIcon>
+                    <Icon className="material-icons" style={this.styles.helpIcon}>help</Icon>
                   </sup>
                 </Tooltip>
               </span> :
@@ -125,14 +124,14 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
 
         <TextField
           value={name}
-          floatingLabelText={`${isASet ? 'Set' : 'Deck'} name`}
+          label={`${isASet ? 'Set' : 'Deck'} name`}
           style={{width: '100%', marginBottom: 10}}
           onChange={this.handleChangeName}
         />
 
         {isASet && <TextField
           value={description}
-          floatingLabelText="Description"
+          label="Description"
           style={{width: '100%', marginBottom: 10, marginTop: -20}}
           onChange={this.handleChangeDescription}
         />}
@@ -141,7 +140,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           setForDeck &&
             <TextField
               disabled
-              floatingLabelText="For the set:"
+              label="For the set:"
               value={`${setForDeck.name} by ${setForDeck.metadata.authorName}`}
               style={{width: '100%', marginBottom: 10, marginTop: -20}}
             />
@@ -160,9 +159,17 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           </div>
         </div>
 
-        {this.renderSaveButton({ marginBottom: 20 })}
-        {this.renderCardList()}
-        {this.renderSaveButton({ marginTop: 20 })}
+        {
+          cards.length > 0
+            ? <React.Fragment>
+                {this.renderSaveButton()}
+                <div style={{ margin: '20px auto' }}>
+                  {this.renderCardList()}
+                </div>
+                {this.renderSaveButton()}
+              </React.Fragment>
+            : this.renderSaveButton()
+        }
       </div>
     );
   }
@@ -179,21 +186,22 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     onSave(id, name, cards.map((c) => c.id), isASet ? description : undefined);
   }
 
-  private renderSaveButton(style: React.CSSProperties = {}): JSX.Element {
+  private renderSaveButton(): JSX.Element {
     const { isASet, loggedIn } = this.props;
     const { name } = this.state;
 
     return (
       <MustBeLoggedIn loggedIn={loggedIn}>
-        <RaisedButton
-          label={`Save ${isASet ? 'Set' : 'Deck'}`}
-          labelPosition="before"
-          secondary
+        <Button
+          variant="contained"
+          color="secondary"
           disabled={!name}
-          icon={<FontIcon className="material-icons">save</FontIcon>}
-          style={{ width: '100%', ...style }}
+          style={{ width: '100%' }}
           onClick={this.handleSave}
-        />
+        >
+          <Icon className="material-icons">save</Icon>
+          {`Save ${isASet ? 'Set' : 'Deck'}`}
+        </Button>
       </MustBeLoggedIn>
     );
   }
@@ -205,7 +213,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     return (
       <div style={{width: '47.5%'}}>
         <Tooltip text={tooltip} place="top" style={{ zIndex: MAX_Z_INDEX }}>
-          <FontIcon
+          <Icon
             className="material-icons"
             style={{
               ...this.styles.baseIcon,
@@ -215,7 +223,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
             onClick={handleClick}
           >
             {iconName}
-          </FontIcon>
+          </Icon>
         </Tooltip>
       </div>
     );

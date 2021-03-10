@@ -1,12 +1,9 @@
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import Paper from '@material-ui/core/Paper';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { find, noop } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { object } from 'prop-types';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -84,11 +81,6 @@ export function mapDispatchToProps(dispatch: Dispatch): CollectionDispatchProps 
 }
 
 export class Collection extends React.Component<CollectionProps, CollectionState> {
-  // For testing.
-  public static childContextTypes = {
-    muiTheme: object.isRequired
-  };
-
   public state: CollectionState = {
     filters: {
       robots: true,
@@ -122,9 +114,6 @@ export class Collection extends React.Component<CollectionProps, CollectionState
 
     return false;
   }
-
-  // For testing.
-  public getChildContext = () => ({muiTheme: getMuiTheme(baseTheme)});
 
   public render(): JSX.Element {
     const { exportedJson, history, loggedIn, onImportCards } = this.props;
@@ -194,7 +183,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     this.setState({[key]: value} as Pick<CollectionState, keyof CollectionState>, callback);
   }
 
-  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.MouseEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.ChangeEvent<any>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }), this.refreshSelection);
@@ -268,69 +257,73 @@ export class Collection extends React.Component<CollectionProps, CollectionState
 
   private renderButtons = (compact: boolean) => {
     const { loggedIn } = this.props;
-    const style = compact ? { marginLeft: 10 } : { width: '100%', marginTop: 10, height: 48 };
-    const iconStyle = compact ? { margin: '0 5px 0 15px' } : { margin: '0 20px' };
+    const style = compact ? { marginLeft: 10, padding: '5px 15px' } : { width: '100%', height: 48, marginTop: 10 };
+    const iconStyle = compact ? { marginRight: 10 } : { margin: '0 20px' };
 
     return (
       <MustBeLoggedIn loggedIn={loggedIn}>
-        <RaisedButton
-          label="New Card"
-          labelPosition="after"
-          primary
-          icon={<FontIcon style={iconStyle} className="material-icons">queue</FontIcon>}
+        <Button
+          variant="contained"
+          color="secondary"
+          size={compact ? "small" : "medium"}
           style={style}
-          buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickNewCard}
-        />
-        <RaisedButton
-          label={compact ? 'Edit' : 'Edit Selected'}
-          labelPosition="after"
-          secondary
+        >
+          <Icon style={iconStyle} className="material-icons">queue</Icon>
+          New Card
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size={compact ? "small" : "medium"}
           disabled={!this.canEditSelectedCard}
-          icon={<FontIcon style={iconStyle} className="material-icons">edit</FontIcon>}
           style={style}
-          buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickEdit}
-        />
-        <RaisedButton
-          label={compact ? 'Duplicate' : 'Duplicate Selected'}
-          labelPosition="after"
-          secondary
+        >
+          <Icon style={iconStyle} className="material-icons">edit</Icon>
+          {compact ? 'Edit' : 'Edit Selected'}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size={compact ? "small" : "medium"}
           disabled={this.state.selectedCardIds.length !== 1}
-          icon={<FontIcon style={iconStyle} className="material-icons">file_copy</FontIcon>}
           style={style}
-          buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickDuplicate}
-        />
-        <RaisedButton
-          label={compact ? 'Delete' : 'Delete Selected'}
-          labelPosition="after"
-          secondary
+        >
+          <Icon style={iconStyle} className="material-icons">file_copy</Icon>
+          {compact ? 'Duplicate' : 'Duplicate Selected'}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size={compact ? "small" : "medium"}
           disabled={this.state.selectedCardIds.length === 0}
-          icon={<FontIcon style={iconStyle} className="material-icons">delete</FontIcon>}
           style={style}
-          buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickDelete}
-        />
-        {compact ? null : <RaisedButton
-          label="Export Selected"
-          labelPosition="after"
-          secondary
+        >
+          <Icon style={iconStyle} className="material-icons">delete</Icon>
+          {compact ? 'Delete' : 'Delete Selected'}
+        </Button>
+        {compact ? null : <Button
+          variant="contained"
+          color="primary"
           disabled={this.state.selectedCardIds.length === 0}
-          icon={<FontIcon style={iconStyle} className="material-icons">file_download</FontIcon>}
           style={style}
-          buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickExport}
-        />}
-        {compact ? null : <RaisedButton
-          label="Import Cards"
-          labelPosition="after"
-          secondary
-          icon={<FontIcon style={iconStyle} className="material-icons">file_upload</FontIcon>}
+        >
+          <Icon style={iconStyle} className="material-icons">file_download</Icon>
+          Export Selected
+        </Button>}
+        {compact ? null : <Button
+          variant="contained"
+          color="primary"
           style={style}
-          buttonStyle={{textAlign: 'left'}}
           onClick={this.handleClickImport}
-        />}
+        >
+          <Icon style={iconStyle} className="material-icons">file_upload</Icon>
+          Import Cards
+        </Button>}
       </MustBeLoggedIn>
     );
   }

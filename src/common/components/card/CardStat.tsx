@@ -1,10 +1,8 @@
-import Paper from '@material-ui/core/Paper';
 import { capitalize } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
+import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import * as w from '../../types';
-import { inBrowser } from '../../util/browser';
 import Tooltip from '../Tooltip';
 
 interface CardStatProps {
@@ -13,6 +11,7 @@ interface CardStatProps {
   current?: number
   scale?: number
   noTooltip?: boolean
+  style?: React.CSSProperties
 }
 
 export default class CardStat extends React.Component<CardStatProps> {
@@ -43,12 +42,13 @@ export default class CardStat extends React.Component<CardStatProps> {
 
   get icon(): JSX.Element {
     return (
-      <FontIcon
+      <Icon
         className={`ra ra-${this.iconClass}`}
         style={{
           fontSize: 14 * (this.props.scale || 1),
           color: this.textColor,
-          marginRight: 4 * (this.props.scale || 1)
+          marginRight: 4 * (this.props.scale || 1),
+          lineHeight: 1.2
         }}
       />
     );
@@ -79,10 +79,6 @@ export default class CardStat extends React.Component<CardStatProps> {
   }
 
   public render(): JSX.Element {
-    return inBrowser() ? this.renderNewStyle() : this.renderOldStyle();
-  }
-
-  private renderNewStyle(): JSX.Element {
     const style: React.CSSProperties = {
       float: 'left',
       width: '33%',
@@ -91,7 +87,8 @@ export default class CardStat extends React.Component<CardStatProps> {
       fontFamily: 'Carter One',
       fontSize: 18 * (this.props.scale || 1),
       textAlign: 'center',
-      paddingBottom: 6 * (this.props.scale || 1)
+      paddingBottom: 6 * (this.props.scale || 1),
+      ...this.props.style
     };
 
     if (this.props.noTooltip) {
@@ -111,42 +108,5 @@ export default class CardStat extends React.Component<CardStatProps> {
         </Tooltip>
       );
     }
-  }
-
-  private renderOldStyle(): JSX.Element {
-    function backgroundColor(type: w.Attribute): string {
-      switch (type) {
-        case 'attack':
-          return '#E57373';
-        case 'speed':
-          return '#03A9F4';
-        case 'health':
-          return '#81C784';
-      }
-    }
-
-    return (
-      <div style={{float: 'left', width: '33%'}}>
-        <Paper
-          elevation={1}
-          style={{
-            width: 32,
-            height: 32,
-            backgroundColor: backgroundColor(this.props.type),
-            textAlign: 'center',
-            fontFamily: 'Carter One, Arial',
-            fontWeight: 'bold',
-            fontSize: 18,
-            margin: 8,
-            marginBottom: 4,
-            paddingTop: 4
-          }}
-        >
-          <span style={{color: '#fff'}}>
-            {this.props.current || this.props.base}
-          </span>
-        </Paper>
-      </div>
-    );
   }
 }

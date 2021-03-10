@@ -1,7 +1,8 @@
 import { noop } from 'lodash';
-import FontIcon from 'material-ui/FontIcon';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as React from 'react';
 import * as ReactPopover from 'react-popover';
 
@@ -32,7 +33,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
     hidden: false
   };
 
-  get styles(): Record<string, React.CSSProperties> {
+  get styles(): Record<string, CSSProperties> {
     return {
       container: {
         zIndex: TUTORIAL_Z_INDEX,
@@ -60,7 +61,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
       },
       nextButton: {
         width: 100,
-        float: 'right'
+        float: 'right',
       }
     };
   }
@@ -82,14 +83,20 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
   }
 
   get backButton(): JSX.Element | null {
+    const disabled = (this.step && this.step.idx === 0 || this.isComplete);
     return this.step ? (
       <Tooltip inline text="Go back a step">
         <IconButton
           onClick={this.props.onPrevStep}
-          disabled={this.step.idx === 0 || this.isComplete}
+          disabled={disabled}
           style={this.styles.backButton}
         >
-          <FontIcon className="material-icons" color="#666" style={{width: 5, height: 5}}>arrow_back</FontIcon>
+          <Icon
+            className="material-icons"
+            style={{ color: disabled ? '#eee' : '#666' }}
+          >
+            arrow_back
+          </Icon>
         </IconButton>
       </Tooltip>
     ) : null;
@@ -100,22 +107,26 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
       return null;  // Only display the Next button if there is no other action to perform.
     } else {
       return (
-        <RaisedButton
-          label={this.isComplete ? 'FINISH' : 'NEXT'}
+        <Button
+          variant="contained"
           style={this.styles.nextButton}
           onClick={this.isComplete ? (this.props.onEndTutorial || noop) : this.props.onNextStep}
-        />
+        >
+          {this.isComplete ? 'FINISH' : 'NEXT'}
+        </Button>
       );
     }
   }
 
   get hideButton(): JSX.Element {
     return (
-      <RaisedButton
-        label="CLOSE"
+      <Button
+        variant="contained"
         style={this.styles.nextButton}
         onClick={this.hide}
-      />
+      >
+        CLOSE
+      </Button>
     );
   }
 

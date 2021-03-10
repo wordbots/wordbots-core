@@ -13,10 +13,10 @@
     "not op_mini all"
   ],
   "scripts": {
-    "analyze": "npm run prebuild && yarn run webpack -p --config webpack.build.config.js --progress --devtool source-map --display minimal && yarn source-map-explorer dist/bundle.js",
-    "build": "npm run clean && npm run prebuild && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
-    "build:stats": "npm run prebuild && node_modules/.bin/webpack -p --config webpack.build.config.js --json > stats.json",
-    "build-prod": "npm run clean && npm run prebuild && set NODE_ENV=production && npm run tsc && webpack -p --config webpack.build.config.js --progress --colors --profile",
+    "analyze": "yarn prebuild && yarn webpack -p --config webpack.build.config.js --progress --devtool source-map --display minimal && yarn source-map-explorer dist/bundle.js",
+    "build": "yarn clean && yarn prebuild && set NODE_ENV=production && webpack -p --config webpack.build.config.js --progress --colors --profile",
+    "build:stats": "yarn prebuild && node_modules/.bin/webpack -p --config webpack.build.config.js --json > stats.json",
+    "build-prod": "yarn clean && yarn prebuild && set NODE_ENV=production && yarn tsc && webpack -p --config webpack.build.config.js --progress --colors --profile",
     "clean": "node bin/clean.js dist",
     "heroku-postbuild": "build-prod",
     "prebuild": "sed 's/export default webpackConfig;/module.exports = webpackConfig;/' <webpack.config.js >webpack.build.config.js",

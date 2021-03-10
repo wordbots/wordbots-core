@@ -18,7 +18,7 @@
     "build:stats": "yarn prebuild && node_modules/.bin/webpack -p --config webpack.build.config.js --json > stats.json",
     "build-prod": "yarn clean && yarn prebuild && set NODE_ENV=production && yarn tsc && webpack -p --config webpack.build.config.js --progress --colors --profile",
     "clean": "node bin/clean.js dist",
-    "heroku-postbuild": "build-prod",
+    "heroku-postbuild": "yarn build-prod",
     "prebuild": "sed 's/export default webpackConfig;/module.exports = webpackConfig;/' <webpack.config.js >webpack.build.config.js",
     "slate": "node bin/clean.js node_modules",
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --transpile-only",

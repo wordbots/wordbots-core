@@ -8,6 +8,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "outDir": "./dist",
     "rootDir": ".",
     "sourceMap": true,

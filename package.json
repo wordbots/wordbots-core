@@ -45,6 +45,7 @@
     "discord.js": "^12.5.1",
     "express": "^4.16.1",
     "firebase": "^7.24.0",
+    "heroku-ssl-redirect": "^0.1.1",
     "lodash": "^4.17.19",
     "moment": "2.23.0",
     "object.values": "^1.1.0",

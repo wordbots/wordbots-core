@@ -1,5 +1,6 @@
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
+import sslRedirect from 'heroku-ssl-redirect';
 import * as webpack from 'webpack';
 
 import webpackConfig from '../../webpack.config';
@@ -45,6 +46,7 @@ if (NODE_ENV !== 'production') {
   app.use('/static', express.static(`${__dirname}/../../dist`));
 }
 
+app.use(sslRedirect());
 app.use(cookieParser());
 app.use(userAgentMiddleware);
 

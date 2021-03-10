@@ -9,18 +9,8 @@ import App from '../common/containers/App';
 import configureStore from '../common/store/configureStore';
 import * as packagejson from '../../package.json';
 
-function shouldRedirectToHTTPS(request: Request) {
-  return !request.secure &&
-    process.env.NODE_ENV === 'production' &&
-    !request.headers.host?.includes('staging');
-}
-
 export default function handleRequest(request: Request, response: Response): void {
-  if (shouldRedirectToHTTPS(request)) {
-    response.redirect(`https://${request.headers.host}${request.url}`);
-  } else {
-    produceResponse(response, request.url);
-  }
+  produceResponse(response, request.url);
 }
 
 function produceResponse(response: Response, location: string) {

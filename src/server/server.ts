@@ -43,7 +43,7 @@ if (NODE_ENV !== 'production') {
   app.use(webpackDevMiddleware(compiler, { logLevel: 'warn', publicPath }));
   app.use(webpackHotMiddleware(compiler));
 } else {
-  app.use('/static', express.static(`${__dirname}/../../dist`));
+  app.use('/static', express.static(`${__dirname}/../..`));
 }
 
 app.use(sslRedirect());

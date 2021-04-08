@@ -57,6 +57,7 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
         {this.renderLink('/sets', 'Sets', 'layers')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}
         {this.renderLink('/community', 'Community', 'people')}
+        {this.renderLink('/help', 'Help', 'help_outline')}
         {this.renderLink('/about', 'About', 'info_outline')}
         {canExpand && this.renderExpandCollapseButton()}
       </Drawer>

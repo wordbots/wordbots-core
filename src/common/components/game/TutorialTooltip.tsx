@@ -108,7 +108,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
     } else {
       return (
         <Button
-          variant="contained"
+          variant="outlined"
           style={this.styles.nextButton}
           onClick={this.isComplete ? (this.props.onEndTutorial || noop) : this.props.onNextStep}
         >
@@ -121,7 +121,7 @@ export default class TutorialTooltip extends React.Component<TutorialTooltipProp
   get hideButton(): JSX.Element {
     return (
       <Button
-        variant="contained"
+        variant="outlined"
         style={this.styles.nextButton}
         onClick={this.hide}
       >

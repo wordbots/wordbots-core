@@ -29,14 +29,13 @@ export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
 export type PerPlayer<T> = Record<PlayerColor, T>;
-export type Returns<T> = (...args: any[]) => T;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type StringRepresentationOf<T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
+export type Returns<T> = (...args: unknown[]) => T;
+export type StringRepresentationOf<_T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
 // Library types
 
 export type ActionType = string;
-export type ActionPayload = any;
+export type ActionPayload = unknown;
 
 export interface Action {
   type: ActionType
@@ -83,7 +82,7 @@ export interface CardInStore {
   }
   text?: string
   abilities?: string[]
-  command?: StringRepresentationOf<(state: GameState) => any> | Array<StringRepresentationOf<(state: GameState) => any>>
+  command?: StringRepresentationOf<(state: GameState) => unknown> | Array<StringRepresentationOf<(state: GameState) => unknown>>
   spriteV?: number
   parserV?: number | null
   metadata: CardMetadata
@@ -143,7 +142,7 @@ export interface TutorialStepInScript {
   highlight?: boolean
   responses?: Action[]
   tooltip: {
-    backButton?: React.ReactElement<any>
+    backButton?: React.ReactElement<unknown>
     card?: string
     hex?: HexId
     location?: string
@@ -217,7 +216,7 @@ export interface GameState {
   currentTurn: PlayerColor
   eventQueue: CardInGame[]
   gameFormat: Format
-  memory: Record<string, any>
+  memory: Record<string, unknown>
   objectsDestroyedThisTurn: Record<string, HexId>  // object id -> last hex id
   options: GameOptions
   player: PlayerColor | 'neither'
@@ -360,12 +359,12 @@ export interface StatAdjustment {
 export interface Effect {
   aid: AbilityId
   effect: EffectType
-  props: any
+  props: unknown
 }
 
 export interface ActivatedAbility {
   aid: AbilityId
-  cmd: StringRepresentationOf<(state: GameState) => any>
+  cmd: StringRepresentationOf<(state: GameState) => unknown>
   text: string
 }
 
@@ -382,7 +381,7 @@ export interface PassiveAbility {
 }
 
 export interface TriggeredAbility {
-  action: (state: GameState) => any
+  action: (state: GameState) => unknown
   duration?: number
   object?: _Object
   source?: AbilityId

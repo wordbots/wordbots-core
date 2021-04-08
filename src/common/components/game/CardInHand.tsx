@@ -42,7 +42,7 @@ export default class CardInHand extends React.Component<CardInHandProps> {
           onNextStep={this.handleClickNextStep}
           onPrevStep={this.handleClickPrevStep}
         >
-          <div>
+          <div style={{ zIndex }}>
             <Card
               {...{ id, baseCost, img, name, spriteID, spriteV, type }}
 

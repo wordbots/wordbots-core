@@ -201,7 +201,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
           >
             <div
               onClick={this.handleClick}
-              onMouseEnter={this.handleMouseEnter}
+              onMouseOver={this.handleMouseEnter}
               onMouseLeave={this.handleMouseLeave}
             >
               <Paper
@@ -265,6 +265,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     const { onCardHover } = this.props;
     this.setState({ shadow: 3 });
     if (onCardHover) {
+      console.log('hover');
       onCardHover(true);
     }
   }
@@ -273,6 +274,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     const { onCardHover } = this.props;
     this.setState({ shadow: 2 });
     if (onCardHover) {
+      console.log('leave');
       onCardHover(false);
     }
   }

@@ -1,4 +1,5 @@
 import { History } from 'history';
+import { truncate } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -41,6 +42,7 @@ class Home extends React.Component<HomeProps> {
   public render(): JSX.Element {
     const { history, onStartTutorial, version: versionAndSha } = this.props;
     const [version, sha] = versionAndSha.split('+');
+    const shaTruncated = truncate(sha, { length: 8, omission: '' });
 
     return (
       <div style={{margin: '48px 72px'}}>
@@ -105,7 +107,7 @@ class Home extends React.Component<HomeProps> {
             fontSize: '0.7em',
           }}
         >
-          v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{sha}
+          v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{shaTruncated}
           {onLocalhost() && <span> [ <em>parser:</em> {PARSER_URL}, <em>db:</em> {FIREBASE_CONFIG.databaseURL} ]</span>}
         </div>
       </div>

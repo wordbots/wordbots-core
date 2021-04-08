@@ -22,7 +22,7 @@ export function mapStateToProps(state: w.State): AboutProps {
 class About extends React.Component<AboutProps> {
   public render(): JSX.Element {
     const [version, sha] = this.props.version.split('+');
-    const versionTrunc = truncate(version, { length: 10, omission: '' });
+    const shaTruncated = truncate(sha, { length: 8, omission: '' });
 
     return (
       <div>
@@ -32,7 +32,7 @@ class About extends React.Component<AboutProps> {
         <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
           <div style={{width: '50%', marginRight: 20}}>
             <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={whatIsWordbots(versionTrunc, sha)} />
+              <MarkdownBlock source={whatIsWordbots(version, shaTruncated)} />
             </Paper>
 
             <Paper style={{padding: '5px 20px', marginTop: 20}}>

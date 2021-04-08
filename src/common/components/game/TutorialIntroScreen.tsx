@@ -37,11 +37,11 @@ class TutorialIntroScreen extends React.Component<TutorialIntroScreenProps & Wit
           <p>When prompted, hit the <b>Next</b> button to continue to the next step. To leave at any point during the tutorial hit the <b>Forfeit</b> (🏳️) button.</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleGoBack} color="primary">
+          <Button variant="outlined" onClick={this.handleGoBack}>
             Go Back
           </Button>
-          <Button onClick={this.handleContinue} color="primary" autoFocus>
-            Continue
+          <Button variant="outlined" onClick={this.handleContinue} autoFocus>
+            Next
           </Button>
         </DialogActions>
       </Dialog>

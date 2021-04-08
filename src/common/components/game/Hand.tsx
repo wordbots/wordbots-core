@@ -71,10 +71,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
     }
   }
 
-  private handleHoverCard = (hoveredCardIdx: number | null) => {
-    console.log(hoveredCardIdx);
-    this.setState({ hoveredCardIdx });
-  };
+  private handleHoverCard = (hoveredCardIdx: number | null) => { this.setState({ hoveredCardIdx }); };
 
   private renderCards(): JSX.Element[] {
     const {
@@ -98,8 +95,6 @@ export default class Hand extends React.Component<HandProps, HandState> {
       const rotationDegs = (idx - (numCards - 1) / 2) * 5;
       const translationPx = Math.sin(Math.abs(rotationDegs) * Math.PI / 180) * adjustedWidth / 5;
 
-      const zIndex = isNull(hoveredCardIdx) ? 0 : (1000 - Math.abs(hoveredCardIdx! - idx) * 10);
-
       return (
         <CSSTransition
           key={card.id === 'obfuscated' ? `obfuscated-${idx}` : card.id}
@@ -118,7 +113,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
             tutorialStep={tutorialStep}
             visible={!!isActivePlayer || !!sandbox}
             yTranslation={curved ? translationPx : 0}
-            zIndex={zIndex}
+            zIndex={isNull(hoveredCardIdx) ? 0 : (1000 - Math.abs(hoveredCardIdx! - idx) * 10)}
             onSelectCard={onSelectCard}
             onHoverCard={this.handleHoverCard}
             onTutorialStep={onTutorialStep}

@@ -133,8 +133,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get isSidebarExpanded(): boolean {
-    const { inSandbox } = this.props;
-    return this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed') && !inSandbox;
+    return this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed') && !this.inSandbox;
   }
 
   get inGame(): boolean {
@@ -142,8 +141,13 @@ class App extends React.Component<AppProps, AppState> {
     return (inGame || isInGameUrl(location.pathname)) && !inSandbox;
   }
 
+  get inSandbox(): boolean {
+    const { location, inGame, inSandbox } = this.props;
+    return (inGame || isInGameUrl(location.pathname)) && inSandbox;
+  }
+
   get sidebar(): JSX.Element | null {
-    const { cardIdBeingEdited, inSandbox, onRerender } = this.props;
+    const { cardIdBeingEdited, onRerender } = this.props;
     const { canSidebarExpand } = this.state;
 
     if (this.isLoading || this.inGame) {
@@ -151,7 +155,7 @@ class App extends React.Component<AppProps, AppState> {
     } else {
       return (
         <NavMenu
-          canExpand={canSidebarExpand && !inSandbox}
+          canExpand={canSidebarExpand && !this.inSandbox}
           isExpanded={this.isSidebarExpanded}
           cardIdBeingEdited={cardIdBeingEdited}
           onRerender={onRerender}

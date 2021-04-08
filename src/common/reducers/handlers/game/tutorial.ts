@@ -145,15 +145,8 @@ const tutorialExclusiveCards: Record<string, w.CardInStore> = {
 const tutorialScript: w.TutorialStepInScript[] = [
   {
     tooltip: {
-      hex: '0,0,0',
-      text: 'Welcome to Wordbots! This tutorial will teach you the basics. Click NEXT to continue.'
-    },
-    responses: [actions.setSelectedTile('3,0,-3', 'orange')]
-  },
-  {
-    tooltip: {
       hex: '3,0,-3',
-      text: 'This blocky guy here is your kernel. When its health goes to zero, you lose the game.'
+      text: 'Welcome to Wordbots! This blocky guy here is your kernel. When its health goes to zero, you lose the game. (Click NEXT to continue.)'
     },
     responses: [actions.setSelectedTile('-3,0,3', 'orange')]
   },

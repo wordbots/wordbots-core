@@ -28,6 +28,7 @@ type TabTerm = 'dictionaryTerm' | 'thesaurusTerm' | 'keywordsTerm';
 const DICTIONARY_TABS: DictionaryTab[] = ['dictionary', 'thesaurus', 'keywords'];
 
 interface DictionaryState {
+  currentPath: string
   dictionary: w.Dictionary
   tabIdx: number
   dictionaryTerm: string | null
@@ -39,6 +40,7 @@ interface DictionaryState {
 
 export default class DictionaryDialog extends React.Component<{ history: History }, DictionaryState> {
   public state: DictionaryState = {
+    currentPath: '',
     dictionary: {
       definitions: {},
       examplesByToken: {},
@@ -64,12 +66,19 @@ export default class DictionaryDialog extends React.Component<{ history: History
     }));
   }
 
-  public shouldComponentUpdate(_nextProps: { history: History }, nextState: DictionaryState): boolean {
-    return !isEqual(nextState, this.state);
+  public shouldComponentUpdate(nextProps: { history: History }, nextState: DictionaryState): boolean {
+    return (
+      !isEqual(nextState, this.state) ||
+        // can't do `!== this.props.history.location.pathname` because History gets mutated by react-router -AN
+        (nextProps.history.location.pathname !== this.state.currentPath)
+    );
   }
 
   public componentDidUpdate(): void {
     const { tabIdx } = this.state;
+
+    this.setState({ currentPath: this.props.history.location.pathname });
+
     if (tabIdx === 0) {
       markAchievement('openedDictionary');
     } else if (tabIdx === 1) {

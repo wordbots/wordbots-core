@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { EVENT_ANIMATION_TIME_MS, MAX_Z_INDEX } from '../../constants';
+import { EVENT_ANIMATION_TIME_MS, EVENT_ANIMATION_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { Card } from '../card/Card';
 
@@ -43,7 +43,7 @@ export default class EventAnimation extends React.Component<EventAnimationProps,
             top: 0,
             bottom: 0,
             right: 0,
-            zIndex: MAX_Z_INDEX
+            zIndex: EVENT_ANIMATION_Z_INDEX
           }}
         >
           <TransitionGroup>

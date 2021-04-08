@@ -90,9 +90,10 @@ export const DIALOG_Z_INDEX = 970;
 export const BOARD_Z_INDEX = 1000;
 export const STATUS_Z_INDEX = 2000;
 export const HAND_Z_INDEX = 50000;
-export const MAX_Z_INDEX = 99999;
-export const TUTORIAL_Z_INDEX = 999998;
-export const TUTORIAL_INTRO_Z_INDEX = 999999;
+export const MAX_Z_INDEX = 99910;
+export const TUTORIAL_Z_INDEX = 99920;
+export const EVENT_ANIMATION_Z_INDEX = 99930;
+export const TUTORIAL_INTRO_Z_INDEX = 99940;
 
 // Board.
 

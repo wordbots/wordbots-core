@@ -62,7 +62,7 @@ You start the game with a **kernel** with 20 **health**, 2 cards in your hand, a
 
 You win the game by **destroying** your opponent's **kernel**. You lose the game if your own kernel gets destroyed. If both player's kernels are destroyed at the same time (e.g. by a card's ability), the game ends in a draw.
 
-At the start of each of your turns, you:
+At the start of your turn, you:
 
 - draw one card (up to a max of 7)
 - increase your **maximum energy** by 1 (up to a max of 10),

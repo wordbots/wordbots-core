@@ -29,13 +29,13 @@ export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
 export type PerPlayer<T> = Record<PlayerColor, T>;
-export type Returns<T> = (...args: unknown[]) => T;
+export type Returns<T> = (...args: any[]) => T;
 export type StringRepresentationOf<_T> = string;  // Not actually typechecked but can be useful documentation for stringified functions.
 
 // Library types
 
 export type ActionType = string;
-export type ActionPayload = unknown;
+export type ActionPayload = any;
 
 export interface Action {
   type: ActionType

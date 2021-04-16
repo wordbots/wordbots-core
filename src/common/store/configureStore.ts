@@ -1,7 +1,7 @@
 import { compact } from 'lodash';
 import {
   AnyAction, applyMiddleware, compose,
-  createStore, Middleware, Store, StoreEnhancer
+  createStore, DeepPartial, Middleware, Store, StoreEnhancer
 } from 'redux';
 
 import * as gameActions from '../actions/game';
@@ -49,7 +49,7 @@ const selectStoreEnhancers = (): StoreEnhancer[] => {
   }
 };
 
-export default function configureStore(initialState: Partial<w.State>): Store<w.State, AnyAction> {
+export default function configureStore(initialState: DeepPartial<w.State>): Store<w.State, AnyAction> {
   const enhancers = compact(selectStoreEnhancers());
   const store: Store<w.State> = createStore(rootReducer, initialState, compose(...enhancers));
 

@@ -1,18 +1,4 @@
-<<<<<<< Updated upstream
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Icon from '@material-ui/core/Icon';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import Select from '@material-ui/core/Select';
-import Snackbar from '@material-ui/core/Snackbar';
-import TextField from '@material-ui/core/TextField';
-=======
 import { Button, Checkbox, FormControl, FormControlLabel, Icon, InputAdornment, InputLabel, MenuItem, Paper, Select, Snackbar, TextField } from '@material-ui/core';
->>>>>>> Stashed changes
 import { capitalize, compact, isEmpty } from 'lodash';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';

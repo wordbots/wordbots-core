@@ -13,6 +13,7 @@ import { isCardVisible } from '../../guards';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import { compareCertainKeys } from '../../util/common';
+import SpinningGears from '../SpinningGears';
 
 import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';
@@ -31,6 +32,7 @@ export interface CardProps {
   text: string | Array<JSX.Element | null>
   rawText: string
   parseResults?: string
+  showSpinner?: boolean
   img?: string
   cardStats: Partial<Record<w.Attribute, number | undefined>>
   stats: Partial<Record<w.Attribute, number | undefined>>
@@ -102,7 +104,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
 
   public shouldComponentUpdate(nextProps: CardProps, nextState: CardState): boolean {
     const trackedProps = [
-      'name', 'spriteID', 'type', 'rawText', 'parseResults',
+      'name', 'spriteID', 'type', 'rawText', 'parseResults', 'showSpinner',
       'cardStats', 'stats', 'image', 'cost', 'baseCost',
       'status', 'visible', 'selected', 'targetable',
       'margin', 'zIndex'
@@ -119,14 +121,15 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   get textAreaStyle(): React.CSSProperties {
     const { scale, type } = this.props;
     const baseStyle = {
+      position: 'relative',
       height: 106 * (scale || 1)
-    };
+    } as React.CSSProperties;
 
     const compactStyle = {
       height: 96 * (scale || 1),
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
     };
 
     if (type === TYPE_EVENT && this.numChars < 30) {
@@ -162,7 +165,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   public render(): JSX.Element {
     const {
       name, spriteID, spriteV, type, img, cost, baseCost, source, collection,
-      status, visible, selected, targetable,
+      showSpinner, status, visible, selected, targetable,
       scale, margin, rotation, yTranslation,
       onSpriteClick, classes
     } = this.props;
@@ -243,6 +246,21 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                 <Divider style={{ margin: '-1px 0px 0px' }} />
 
                 <div style={this.textAreaStyle}>
+                  {showSpinner && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      zIndex: 0,
+                      opacity: 0.5
+                    }}>
+                      <div style={{ margin: 'auto', marginTop: 10 * (scale || 1), width: 150, height: 150 }}>
+                        <SpinningGears />
+                      </div>
+                    </div>
+                  )}
                   {this.renderText()}
                   {this.renderStatsArea()}
                 </div>

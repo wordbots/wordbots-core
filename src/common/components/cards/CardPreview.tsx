@@ -29,6 +29,8 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
   }
 
   public render(): JSX.Element | null {
+    const { name, spriteID, type, energy, sentences, onSpriteClick } = this.props;
+
     if (inBrowser()) {
       return (
         <div
@@ -41,19 +43,20 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
         >
           <Card
             visible
-            name={this.props.name || '[Unnamed]'}
-            spriteID={this.props.spriteID}
+            name={name || '[Unnamed]'}
+            spriteID={spriteID}
             spriteV={SPRITE_VERSION}
-            type={this.props.type}
-            cost={this.props.energy}
+            type={type}
+            cost={energy}
             stats={this.stats}
             cardStats={this.stats}
-            text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
-            rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
+            text={sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
+            rawText={sentences.map((s) => s.sentence).join('. ')}
             source={{ type: 'user' }}
-            parseResults={JSON.stringify(this.props.sentences.map((s) => s.result))}
+            parseResults={JSON.stringify(sentences.map((s) => s.result))}
+            showSpinner={sentences.some((s) => !s.result.js && !s.result.error)}
             scale={2.5}
-            onSpriteClick={this.props.onSpriteClick}
+            onSpriteClick={onSpriteClick}
           />
         </div>
       );

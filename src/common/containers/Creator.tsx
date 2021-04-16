@@ -174,8 +174,8 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
     return (
       <div style={{position: 'relative'}}>
-        <Helmet title="Creator" />
-        <Title text="Creator" />
+        <Helmet title="Workshop" />
+        <Title text="Workshop" />
 
         <Button
           color="secondary"

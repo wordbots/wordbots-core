@@ -82,7 +82,7 @@ class Home extends React.Component<HomeProps> {
           {this.renderButton('Tutorial', () => { history.push('play/tutorial'); onStartTutorial(); })}
           {this.renderButton('Play', () => { history.push('play'); })}
           {this.renderButton('Your Cards', () => { history.push('collection'); })}
-          {this.renderButton('Card Creator', () => { history.push('card/new'); })}
+          {this.renderButton('Workshop', () => { history.push('card/new'); })}
         </div>
 
         <RecentCardsCarousel history={history} />

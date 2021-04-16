@@ -96,7 +96,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
             <tr>
               <td>
                 <NewHereLink idx={4} href="/card/new//help" accomplished={achievements.includes('openedCardCreatorHelp')}>
-                  Watch the tutorial on how to use the Card Creator.
+                  Watch the tutorial on how to use the Workshop.
                 </NewHereLink>
               </td>
               <td>

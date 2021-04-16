@@ -212,7 +212,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             flex: 1,
             paddingTop: 32,
             paddingLeft: 48,
-            paddingRight: 32,
+            paddingRight: 20,
             overflowY: 'auto'
           }}>
             <CardCreationTutorial />
@@ -249,6 +249,9 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
                   : this.renderCardCreationOptionsControls()
               }
             </Paper>
+          </div>
+          <div style={{ width: 50, margin: 'auto' }}>
+            <Icon style={{ fontSize: 100, color: '#ddd' }} className="material-icons">forward</Icon>
           </div>
           <CardPreview
             name={this.props.name}

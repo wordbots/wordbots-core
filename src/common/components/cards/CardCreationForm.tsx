@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
@@ -9,6 +10,9 @@ import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import Snackbar from '@material-ui/core/Snackbar';
 import TextField from '@material-ui/core/TextField';
+=======
+import { Button, Checkbox, FormControl, FormControlLabel, Icon, InputAdornment, InputLabel, MenuItem, Paper, Select, Snackbar, TextField } from '@material-ui/core';
+>>>>>>> Stashed changes
 import { capitalize, compact, isEmpty } from 'lodash';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
@@ -69,10 +73,27 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     section: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 },
 
+<<<<<<< Updated upstream
     leftCol: {width: '70%', marginRight: 25},
     rightColContainer: {display: 'flex', alignItems: 'center'},
     rightCol: {width: 210, marginTop: -16 /* gross hack - TODO figure out what's really going on here */},
     attribute: {width: '100%', marginRight: 25},
+=======
+    leftCol: {width: 'calc(100% - 65px)', marginRight: 25},
+    rightColContainer: { display: 'flex', alignItems: 'center' },
+    energyCost: {
+      marginTop: -20,
+      marginRight: -20,
+      width: 65,
+      height: 60,
+      borderRadius: 60,
+      backgroundColor: 'rgb(0 188 212 / 30%)',
+      padding: 5
+    },
+    fullWidth: {width: '100%'},
+    attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
+    attribute: { width: 50 },
+>>>>>>> Stashed changes
     buttonText: {
       fontSize: 14,
       textTransform: 'uppercase',
@@ -264,10 +285,14 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             />
             <NumberField
               disabled={isReadonly}
-              label="Energy Cost"
+              label={<div style={{ marginLeft: 30, marginTop: 5 }}>Cost</div>}
               value={this.props.cost}
               maxValue={20}
-              style={CardCreationForm.styles.rightCol}
+              style={CardCreationForm.styles.energyCost}
+              inputProps={{
+                style: { textAlign: 'center', marginLeft: 8, fontSize: 20 },
+                disableUnderline: true
+              }}
               errorText={this.costError}
               onChange={this.setAttribute('cost')}
             />
@@ -443,16 +468,34 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   private renderAttributeField(attribute: 'attack' | 'health' | 'speed', enabled = true, opts: { max?: number } = {}): JSX.Element {
+    const iconClasses = {
+      attack: 'crossed-swords',
+      speed: 'shoe-prints',
+      health: 'health'
+    };
+
     return (
-      <NumberField
-        label={capitalize(attribute)}
-        value={this.props[attribute]}
-        maxValue={opts.max || 10}
-        style={CardCreationForm.styles.attribute}
-        disabled={!enabled}
-        errorText={(this as any as Record<string, string | undefined>)[`${attribute}Error`] || null}
-        onChange={this.setAttribute(attribute)}
-      />
+      <div style={CardCreationForm.styles.attributeContainer}>
+        <NumberField
+          label={capitalize(attribute)}
+          value={this.props[attribute]}
+          maxValue={opts.max || 10}
+          style={CardCreationForm.styles.attribute}
+          disabled={!enabled}
+          errorText={(this as any as Record<string, string | undefined>)[`${attribute}Error`] || null}
+          onChange={this.setAttribute(attribute)}
+          inputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Icon
+                  className={`ra ra-${iconClasses[attribute]}`}
+                  style={{ fontSize: 14, marginRight: 4, lineHeight: 1.2 }}
+                />
+              </InputAdornment>
+            )
+          }}
+        />
+      </div>
     );
   }
 

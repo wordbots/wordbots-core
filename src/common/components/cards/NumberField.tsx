@@ -24,8 +24,8 @@ export default class NumberField extends React.Component<NumberFieldProps> {
         inputProps={{
           min: 0,
           max: this.props.maxValue || 10,
-          ...this.props.inputProps
-        } as any}
+          style: this.props.inputProps?.style || {}
+        }}
         InputProps={this.props.inputProps}
         disabled={this.props.disabled}
         error={!!this.props.errorText}

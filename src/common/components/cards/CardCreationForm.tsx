@@ -73,12 +73,6 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     section: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 },
 
-<<<<<<< Updated upstream
-    leftCol: {width: '70%', marginRight: 25},
-    rightColContainer: {display: 'flex', alignItems: 'center'},
-    rightCol: {width: 210, marginTop: -16 /* gross hack - TODO figure out what's really going on here */},
-    attribute: {width: '100%', marginRight: 25},
-=======
     leftCol: {width: 'calc(100% - 65px)', marginRight: 25},
     rightColContainer: { display: 'flex', alignItems: 'center' },
     energyCost: {
@@ -91,9 +85,10 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       padding: 5
     },
     fullWidth: {width: '100%'},
+
     attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
     attribute: { width: 50 },
->>>>>>> Stashed changes
+
     buttonText: {
       fontSize: 14,
       textTransform: 'uppercase',

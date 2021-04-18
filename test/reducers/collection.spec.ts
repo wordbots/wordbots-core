@@ -95,6 +95,7 @@ describe('Collection reducer', () => {
     const testBotCreatorState: w.CreatorState = {
       attack: 1,
       cost: 1,
+      flavorText: '',
       health: 1,
       id: null,
       name: 'Test Bot',

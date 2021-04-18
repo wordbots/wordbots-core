@@ -81,6 +81,7 @@ export interface CardInStore {
     speed?: number
   }
   text?: string
+  flavorText?: string
   abilities?: string[]
   command?: StringRepresentationOf<(state: GameState) => unknown> | Array<StringRepresentationOf<(state: GameState) => unknown>>
   spriteV?: number
@@ -196,6 +197,7 @@ export interface CollectionState {
 export interface CreatorState {
   attack: number
   cost: number
+  flavorText: string
   health: number
   id: string | null
   isPrivate?: boolean

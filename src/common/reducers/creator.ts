@@ -42,6 +42,9 @@ export default function creator(oldState: State = defaultState, { type, payload 
       }));
       return state;
     }
+    case creatorActions.SET_FLAVOR_TEXT:
+      state.flavorText = payload.flavorText;
+      return state;
 
     case creatorActions.PARSE_COMPLETE:
       state.parserVersion = payload.result.version;

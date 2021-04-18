@@ -4,6 +4,7 @@ export const SET_NAME = 'SET_NAME';
 export const SET_TYPE = 'SET_TYPE';
 export const SET_ATTRIBUTE = 'SET_ATTRIBUTE';
 export const SET_TEXT = 'SET_TEXT';
+export const SET_FLAVOR_TEXT = 'SET_FLAVOR_TEXT';
 export const PARSE_COMPLETE = 'PARSE_COMPLETE';
 export const REGENERATE_SPRITE = 'REGENERATE_SPRITE';
 export const TOGGLE_WILL_CREATE_ANOTHER = 'TOGGLE_WILL_CREATE_ANOTHER';
@@ -38,6 +39,13 @@ export function setText(text: string): w.Action {
   return {
     type: SET_TEXT,
     payload: { text }
+  };
+}
+
+export function setFlavorText(flavorText: string): w.Action {
+  return {
+    type: SET_FLAVOR_TEXT,
+    payload: { flavorText }
   };
 }
 

@@ -95,7 +95,7 @@ and attack with your robots on the board.
 
 ### Create Your Cards
 Check out the built-in cards in your [collection](/collection),
-then make your own custom cards using the [card creator](/creator).
+then make your own custom cards in the [workshop](/card/new).
 
 ### Make a Deck
 Use the [deck builder](/decks) to create a deck of 30 cards.

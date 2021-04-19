@@ -51,8 +51,8 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
         classes={{ paper: `${classes.drawerPaper} ${isExpanded ? classes.expanded : classes.collapsed}` }}
       >
         {this.renderLink('/', 'Home', 'home')}
+        {this.renderLink(`/card/${cardIdBeingEdited || 'new'}`, 'Workshop', 'build')}
         {this.renderLink('/collection', 'Collection', 'view_module')}
-        {this.renderLink(`/card/${cardIdBeingEdited || 'new'}`, 'Creator', 'add_circle_outline')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/sets', 'Sets', 'layers')}
         {this.renderLink('/play', 'Play', 'videogame_asset')}

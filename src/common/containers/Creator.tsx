@@ -30,6 +30,7 @@ interface CreatorStateProps {
   name: string
   type: w.CardType
   text: string
+  flavorText: string
   sentences: w.Sentence[]
   spriteID: string
   attack: number
@@ -49,6 +50,7 @@ interface CreatorDispatchProps {
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
   onSetText: (text: string) => void
+  onSetFlavorText: (flavorText: string) => void
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
@@ -81,6 +83,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
+    flavorText: state.creator.flavorText,
     parserVersion: state.creator.parserVersion,
     loggedIn: state.global.user !== null,
     willCreateAnother: state.creator.willCreateAnother,
@@ -103,6 +106,9 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): CreatorDispatchProp
     },
     onSetText: (text: string) => {
       dispatch(creatorActions.setText(text));
+    },
+    onSetFlavorText: (flavorText: string) => {
+      dispatch(creatorActions.setFlavorText(flavorText));
     },
     onSetAttribute: (attr: w.Attribute | 'cost', value: number) => {
       dispatch(creatorActions.setAttribute(attr, value));
@@ -228,12 +234,14 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               cost={this.props.cost}
               text={this.props.text}
               sentences={this.props.sentences}
+              flavorText={this.props.flavorText}
               isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
               isReadonly={!this.isCardEditable}
               willCreateAnother={this.props.willCreateAnother}
               onSetName={this.props.onSetName}
               onSetType={this.props.onSetType}
               onSetText={this.props.onSetText}
+              onSetFlavorText={this.props.onSetFlavorText}
               onSetAttribute={this.props.onSetAttribute}
               onParseComplete={this.props.onParseComplete}
               onSpriteClick={this.props.onSpriteClick}
@@ -262,6 +270,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             speed={this.props.speed}
             health={this.props.health}
             energy={this.props.cost}
+            flavorText={this.props.flavorText}
             onSpriteClick={this.props.onSpriteClick}
           />
         </div>
@@ -350,8 +359,8 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     const { onAddExistingCardToCollection, onAddNewCardToCollection, history } = this.props;
     const { cardOpenedForEditing } = this.state;
 
-    if (!this.isCardEditable) {
-      onAddExistingCardToCollection(cardOpenedForEditing!);
+    if (!this.isCardEditable && cardOpenedForEditing) {
+      onAddExistingCardToCollection(cardOpenedForEditing);
     } else {
       onAddNewCardToCollection(this.props);
     }

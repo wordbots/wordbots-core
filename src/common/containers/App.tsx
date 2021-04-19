@@ -28,6 +28,7 @@ import Community from './Community';
 import Creator from './Creator';
 import Deck from './Deck';
 import Decks from './Decks';
+import Help from './Help';
 import Home from './Home';
 import Play, { isInGameUrl } from './Play';
 import Profile from './Profile';
@@ -185,6 +186,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/play" component={Play} />
             <Route path="/community" component={Community} />
             <Route path="/about" component={About} />
+            <Route path="/help" component={Help} />
             <Route path="/profile/:userId" component={Profile} />
             <Route render={this.redirectToRoot} />
           </Switch>

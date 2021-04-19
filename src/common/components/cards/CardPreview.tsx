@@ -11,6 +11,7 @@ interface CardPreviewProps {
   spriteID: string
   type: w.CardType
   sentences: w.Sentence[]
+  flavorText?: string
   attack: number
   speed: number
   health: number
@@ -50,8 +51,9 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             cost={energy}
             stats={this.stats}
             cardStats={this.stats}
-            text={sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
-            rawText={sentences.map((s) => s.sentence).join('. ')}
+            flavorText={this.props.flavorText}
+            text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
+            rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
             source={{ type: 'user' }}
             parseResults={JSON.stringify(sentences.map((s) => s.result))}
             showSpinner={sentences.some((s) => !s.result.js && !s.result.error)}

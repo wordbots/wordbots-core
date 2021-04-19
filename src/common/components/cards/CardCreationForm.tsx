@@ -25,6 +25,7 @@ interface CardCreationFormProps {
   type: w.CardType
   text: string
   sentences: w.Sentence[]
+  flavorText: string
   attack: number
   speed: number
   health: number
@@ -37,6 +38,7 @@ interface CardCreationFormProps {
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
   onSetText: (text: string) => void
+  onSetFlavorText: (flavorText: string) => void
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
@@ -74,7 +76,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
     attribute: { width: 50 },
-
+        
     buttonText: {
       fontSize: 14,
       textTransform: 'uppercase',
@@ -342,6 +344,16 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           </div>
 
           <div style={CardCreationForm.styles.section}>
+            <TextField
+              disabled={isReadonly}
+              value={this.props.flavorText}
+              label="Flavor Text (optional)"
+              style={CardCreationForm.styles.fullWidth}
+              onChange={this.handleSetFlavorText}
+            />
+          </div>
+
+          <div style={CardCreationForm.styles.section}>
             {this.renderAttributeField('attack', this.robot && !isReadonly)}
             {this.renderAttributeField('health', !this.event && !isReadonly)}
             {this.renderAttributeField('speed', this.robot && !isReadonly, {max: 3})}
@@ -383,6 +395,11 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   private handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.isReadonly) { return; }
     this.props.onSetName(e.currentTarget.value);
+  }
+
+  private handleSetFlavorText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (this.props.isReadonly) { return; }
+    this.props.onSetFlavorText(e.currentTarget.value);
   }
 
   private handleSetType = (e: React.ChangeEvent<HTMLSelectElement>) => {

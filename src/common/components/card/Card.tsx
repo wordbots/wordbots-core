@@ -4,6 +4,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import Icon from '@material-ui/core/Icon';
 import { isEqual, noop } from 'lodash';
 import * as React from 'react';
 import Textfit from 'react-textfit';
@@ -14,6 +15,7 @@ import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import { compareCertainKeys } from '../../util/common';
 import SpinningGears from '../SpinningGears';
+import Tooltip from '../Tooltip';
 
 import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';
@@ -33,6 +35,7 @@ export interface CardProps {
   rawText: string
   parseResults?: string
   showSpinner?: boolean
+  flavorText?: string
   img?: string
   cardStats: Partial<Record<w.Attribute, number | undefined>>
   stats: Partial<Record<w.Attribute, number | undefined>>
@@ -87,6 +90,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         type={card.type}
         text={Sentence.fromText(card.text)}
         rawText={card.text || ''}
+        flavorText={card.flavorText}
         stats={card.stats || {}}
         cardStats={card.stats || {}}
         cost={card.cost}
@@ -164,7 +168,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
 
   public render(): JSX.Element {
     const {
-      name, spriteID, spriteV, type, img, cost, baseCost, source, collection,
+      name, spriteID, spriteV, type, img, cost, baseCost, source, collection, flavorText,
       showSpinner, status, visible, selected, targetable,
       scale, margin, rotation, yTranslation,
       onSpriteClick, classes
@@ -224,7 +228,20 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                 <CardHeader
                   style={{padding: 8 * (scale || 1), height: 'auto'}}
                   title={this.renderTitle()}
-                  subheader={<span style={{fontSize: 14 * (scale || 1)}}>{typeToString(type)}</span>}
+                  subheader={
+                    <span style={{fontSize: 14 * (scale || 1)}}>
+                      {typeToString(type)}
+                      {flavorText && <Tooltip inline text={flavorText}>
+                        <Icon className="material-icons" style={{
+                          fontSize: 16 * (scale || 1),
+                          color: '#999',
+                          float: 'right'
+                        }}>
+                          menu_book
+                        </Icon>
+                      </Tooltip>}
+                    </span>
+                  }
                   classes={{
                     title: classes.headerTitle,
                     subheader: classes.headerSubtitle

@@ -43,14 +43,16 @@ function renderFullPage(html: string, head: HelmetData): string {
         <meta charset="utf-8">
         ${head.title.toString()}
 
+        <style type="text/css">
+          ${loaderCss}
+        </style>
+
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
 
-        <link rel="stylesheet" type="text/css" href="/static/app.css" />
-
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
         <meta property="og:url" content="http://app.wordbots.io" />
@@ -88,3 +90,120 @@ function renderFullPage(html: string, head: HelmetData): string {
     </html>
   `;
 }
+
+const loaderCss = `
+  body {
+    height: 100%;
+    background-color: #EEE;
+  }
+
+  .spinning-gears {
+    height: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center; }
+
+  .spinning-gears .machine {
+    width: 60vmin;
+    fill: #bbb; }
+
+  .spinning-gears .small-shadow, .spinning-gears .medium-shadow, .spinning-gears .large-shadow {
+    fill: rgba(0, 0, 0, 0.05); }
+
+  .spinning-gears .small {
+    -webkit-animation: counter-rotation 2.5s infinite linear;
+      -moz-animation: counter-rotation 2.5s infinite linear;
+        -o-animation: counter-rotation 2.5s infinite linear;
+            animation: counter-rotation 2.5s infinite linear;
+    -webkit-transform-origin: 100.136px 225.345px;
+        -ms-transform-origin: 100.136px 225.345px;
+            transform-origin: 100.136px 225.345px; }
+
+  .spinning-gears .small-shadow {
+    -webkit-animation: counter-rotation 2.5s infinite linear;
+      -moz-animation: counter-rotation 2.5s infinite linear;
+        -o-animation: counter-rotation 2.5s infinite linear;
+            animation: counter-rotation 2.5s infinite linear;
+    -webkit-transform-origin: 110.136px 235.345px;
+        -ms-transform-origin: 110.136px 235.345px;
+            transform-origin: 110.136px 235.345px; }
+
+  .spinning-gears .medium {
+    -webkit-animation: rotation 3.75s infinite linear;
+      -moz-animation: rotation 3.75s infinite linear;
+        -o-animation: rotation 3.75s infinite linear;
+            animation: rotation 3.75s infinite linear;
+    -webkit-transform-origin: 254.675px 379.447px;
+        -ms-transform-origin: 254.675px 379.447px;
+            transform-origin: 254.675px 379.447px; }
+
+  .spinning-gears .medium-shadow {
+    -webkit-animation: rotation 3.75s infinite linear;
+      -moz-animation: rotation 3.75s infinite linear;
+        -o-animation: rotation 3.75s infinite linear;
+            animation: rotation 3.75s infinite linear;
+    -webkit-transform-origin: 264.675px 389.447px;
+        -ms-transform-origin: 264.675px 389.447px;
+            transform-origin: 264.675px 389.447px; }
+
+  .spinning-gears .large {
+    -webkit-animation: counter-rotation 5s infinite linear;
+      -moz-animation: counter-rotation 5s infinite linear;
+        -o-animation: counter-rotation 5s infinite linear;
+            animation: counter-rotation 5s infinite linear;
+    -webkit-transform-origin: 461.37px 173.694px;
+        -ms-transform-origin: 461.37px 173.694px;
+            transform-origin: 461.37px 173.694px; }
+
+  .spinning-gears .large-shadow {
+    -webkit-animation: counter-rotation 5s infinite linear;
+      -moz-animation: counter-rotation 5s infinite linear;
+        -o-animation: counter-rotation 5s infinite linear;
+            animation: counter-rotation 5s infinite linear;
+    -webkit-transform-origin: 471.37px 183.694px;
+        -ms-transform-origin: 471.37px 183.694px;
+            transform-origin: 471.37px 183.694px; }
+
+  @-webkit-keyframes rotation {
+      from {-webkit-transform: rotate(0deg);}
+      to   {-webkit-transform: rotate(359deg);}
+  }
+  @-moz-keyframes rotation {
+      from {-moz-transform: rotate(0deg);}
+      to   {-moz-transform: rotate(359deg);}
+  }
+  @-o-keyframes rotation {
+      from {-o-transform: rotate(0deg);}
+      to   {-o-transform: rotate(359deg);}
+  }
+  @keyframes rotation {
+      from {transform: rotate(0deg);}
+      to   {transform: rotate(359deg);}
+  }
+
+  @-webkit-keyframes counter-rotation {
+      from {-webkit-transform: rotate(359deg);}
+      to   {-webkit-transform: rotate(0deg);}
+  }
+  @-moz-keyframes counter-rotation {
+      from {-moz-transform: rotate(359deg);}
+      to   {-moz-transform: rotate(0deg);}
+  }
+  @-o-keyframes counter-rotation {
+      from {-o-transform: rotate(359deg);}
+      to   {-o-transform: rotate(0deg);}
+  }
+  @keyframes counter-rotation {
+      from {transform: rotate(359deg);}
+      to   {transform: rotate(0deg);}
+  }
+`;

@@ -16,6 +16,7 @@ import CreatorHelpDialog from '../components/help/CreatorHelpDialog';
 import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
+import SpinningGears from '../components/SpinningGears';
 import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
 import muiV1Theme from '../themes/muiV1';
 import * as w from '../types';
@@ -215,7 +216,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div
         style={{
-          margin: '260px auto',
+          margin: '100px auto',
           textAlign: 'center',
           fontFamily: 'Carter One',
           fontSize: '2em',
@@ -223,6 +224,7 @@ class App extends React.Component<AppProps, AppState> {
         }}
       >
         Connecting to server ...
+        <SpinningGears />
       </div>
     );
   }

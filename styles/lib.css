@@ -2768,7 +2768,7 @@
 
 .gear > .body {
   position: absolute;
-  background-color: #999;
+  background-color: #aaa;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -2789,10 +2789,10 @@
   left: 11px;
   width: 4px;
   height: 26px;
-  background-color: #999;
-}
-.gear.forward > .tooth {
   background-color: #aaa;
+}
+.gear.forward > .body, .gear.forward > .tooth {
+  background-color: #bbb;
 }
 .gear > .tooth.rotate-45 {
   transform: rotate(45deg);

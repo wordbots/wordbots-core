@@ -2750,6 +2750,8 @@
   transform: scale(0.5);
   -webkit-animation: 'clockwise' 2s infinite linear;
   animation: 'clockwise' 2s infinite linear;
+  margin-left: -6px;
+  margin-right: -4px;
 }
 .gear.reverse {
   -webkit-animation: 'reverse' 2s infinite linear;
@@ -2788,6 +2790,9 @@
   width: 4px;
   height: 26px;
   background-color: #999;
+}
+.gear.forward > .tooth {
+  background-color: #aaa;
 }
 .gear > .tooth.rotate-45 {
   transform: rotate(45deg);

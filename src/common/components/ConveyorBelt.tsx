@@ -1,10 +1,13 @@
 import { times } from 'lodash';
 import * as React from 'react';
 
+const GEAR_PAIR_WIDTH = 41;
+
 interface ConveyorBeltProps {
   width: number
   paused?: boolean
 }
+
 
 // Based on https://codepen.io/adgllorente/pen/eZpPwm
 // (CSS is in lib.css)
@@ -12,7 +15,7 @@ interface ConveyorBeltProps {
 export default class ConveyorBelt extends React.Component<ConveyorBeltProps> {
   public render(): JSX.Element {
     const { width, paused } = this.props;
-    const numGearPairs = Math.ceil(width / 50);
+    const numGearPairs = Math.ceil(width / GEAR_PAIR_WIDTH);
 
     return (
       <div

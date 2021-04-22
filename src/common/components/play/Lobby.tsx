@@ -113,7 +113,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
           />
         </div>
 
-        <Title text="Play" />
+        <Title text="Arena" />
         <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
           <LobbyStatus
             connecting={connecting}

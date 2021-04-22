@@ -15,6 +15,7 @@ interface RouterDialogProps {
   style: React.CSSProperties
   actions?: JSX.Element[]
   contentStyle?: React.CSSProperties
+  actionsStyle?: React.CSSProperties
 }
 
 export default class RouterDialog extends React.Component<RouterDialogProps> {
@@ -39,7 +40,7 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
   }
 
   private renderDialog = () => {
-    const { actions, children, contentStyle, style, title } = this.props;
+    const { actions, actionsStyle, children, contentStyle, style, title } = this.props;
     return (
       <Dialog
         open
@@ -56,7 +57,7 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
       >
         {title && <DialogTitle>{title}</DialogTitle>}
         <DialogContent style={contentStyle}>{children}</DialogContent>
-        {actions && <DialogActions>{actions}</DialogActions>}
+        {actions && <DialogActions style={actionsStyle}>{actions}</DialogActions>}
       </Dialog>
     );
   }

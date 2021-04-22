@@ -33,8 +33,9 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
   }
 
   get formatsTooltip(): string {
+    const headerMsg = 'Wordbots offers your choice of different game formats based on the kind of game you want to play:';
     const builtinFormatRows = BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
-    return `${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}`;
+    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}`;
   }
 
   public render(): JSX.Element {

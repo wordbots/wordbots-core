@@ -51,11 +51,11 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
         classes={{ paper: `${classes.drawerPaper} ${isExpanded ? classes.expanded : classes.collapsed}` }}
       >
         {this.renderLink('/', 'Home', 'home')}
+        {this.renderLink('/play', 'Arena', 'crossed-swords', 'ra')}
         {this.renderLink(`/card/${cardIdBeingEdited || 'new'}`, 'Workshop', 'build')}
         {this.renderLink('/collection', 'Collection', 'view_module')}
         {this.renderLink('/decks', 'Decks', 'view_list')}
         {this.renderLink('/sets', 'Sets', 'layers')}
-        {this.renderLink('/play', 'Play', 'videogame_asset')}
         {this.renderLink('/community', 'Community', 'people')}
         {this.renderLink('/help', 'Help', 'help_outline')}
         {this.renderLink('/about', 'About', 'info_outline')}
@@ -69,16 +69,30 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
     this.props.onRerender();
   }
 
-  private renderIcon = (icon: string) => (
-    <Icon
-      className="material-icons"
-      style={{ left: this.props.isExpanded ? 4 : 8 }}
-    >
-      {icon}
-    </Icon>
-  )
+  private renderIcon = (icon: string, iconFont: 'material' | 'ra'): React.ReactNode => {
+    if (iconFont === 'material') {
+      return (
+        <Icon
+          className="material-icons"
+          style={{ left: this.props.isExpanded ? 4 : 8 }}
+        >
+          {icon}
+        </Icon>
+      );
+    } else if (iconFont === 'ra') {
+      return (
+        <Icon
+          className={`ra ra-${icon}`}
+          style={{
+            left: this.props.isExpanded ? 4 : 8,
+            lineHeight: 1.2
+          }}
+        />
+      );
+    }
+  }
 
-  private renderLink = (path: string, text: string, icon: string) => (
+  private renderLink = (path: string, text: string, icon: string, iconFont: 'material' | 'ra' = 'material') => (
     <NavLink exact to={path} activeClassName="activeNavLink">
       <Tooltip
         disable={this.props.isExpanded}
@@ -87,7 +101,7 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
         style={{ zIndex: MAX_Z_INDEX }}
       >
         <MenuItem>
-          {this.renderIcon(icon)}
+          {this.renderIcon(icon, iconFont)}
           {this.props.isExpanded ? text : ''}
         </MenuItem>
       </Tooltip>

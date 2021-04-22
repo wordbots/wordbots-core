@@ -115,7 +115,7 @@ export class Play extends React.Component<PlayProps> {
   public render(): JSX.Element {
     return (
       <div>
-        <Helmet title="Play"/>
+        <Helmet title="Arena"/>
 
         <Switch>
           <Route path={urlForGameMode('tutorial')} component={GameAreaContainer} />

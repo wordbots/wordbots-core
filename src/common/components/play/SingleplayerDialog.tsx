@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import { History } from 'history';
 import * as React from 'react';
 
@@ -23,7 +24,9 @@ export default class SingleplayerDialog extends React.Component<SingleplayerDial
         <RouterDialog
           path="singleplayer"
           history={history}
-          style={{ width: 700 }}
+          actions={this.actions}
+          style={{ width: 600 }}
+          actionsStyle={{ marginTop: -20 }}
         >
           <SingleplayerModeSelection onSelectMode={this.handleSelectMode} />
         </RouterDialog>
@@ -38,6 +41,24 @@ export default class SingleplayerDialog extends React.Component<SingleplayerDial
         />
       </React.Fragment>
     );
+  }
+
+  get actions(): JSX.Element[] {
+    return [
+      (
+        <Button
+          key="close"
+          variant="outlined"
+          onClick={this.handleClose}
+        >
+          Close
+        </Button>
+      )
+    ];
+  }
+
+  private handleClose = () => {
+    RouterDialog.closeDialog(this.props.history);
   }
 
   private handleSelectMode = (mode: string) => {

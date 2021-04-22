@@ -80,7 +80,7 @@ class Home extends React.Component<HomeProps> {
           }}
         >
           {this.renderButton('Tutorial', () => { history.push('play/tutorial'); onStartTutorial(); })}
-          {this.renderButton('Play', () => { history.push('play'); })}
+          {this.renderButton('Arena', () => { history.push('play'); })}
           {this.renderButton('Your Cards', () => { history.push('collection'); })}
           {this.renderButton('Workshop', () => { history.push('card/new'); })}
         </div>

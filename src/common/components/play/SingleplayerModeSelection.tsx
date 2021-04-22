@@ -9,33 +9,24 @@ interface SinglePlayerModeSelectionProps {
 export default class SinglePlayerModeSelection extends React.Component<SinglePlayerModeSelectionProps> {
   public render(): JSX.Element {
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          marginBottom: '-10px'
-        }}
-      >
+      <div>
         <GameMode
           name="Tutorial"
           imagePath="/static/tutorial.png"
+          explanation="Follow the interactive tutorial to learn how to play Wordbots."
           onSelect={this.handleClickTutorial}
         />
         <GameMode
           name="Practice"
           imagePath="/static/practice.png"
+          explanation="Pick a deck and play a practice game against the computer."
           onSelect={this.handleClickPractice}
         />
         <GameMode
           name="Sandbox"
           imagePath="/static/casual.png"
+          explanation="Try out any card while controlling both players in sandbox mode."
           onSelect={this.handleClickSandbox}
-        />
-        <GameMode
-          name="Puzzle (Coming Soon)"
-          disabled
         />
       </div>
     );

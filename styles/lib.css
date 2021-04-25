@@ -2724,7 +2724,6 @@
 }
 
 /** ConveyorBelt.tsx */
-
 /** Adapted from: https://codepen.io/adgllorente/pen/eZpPwm
  * Gears made with just CSS.
  * @author: Adrán Gómez Llorente
@@ -2737,7 +2736,6 @@
   margin: -3px;
   margin-left: -2px;
   margin-right: 0;
-  /* visibility: hidden; */
 }
 .gear:first-of-type {
   margin-left: -3px;

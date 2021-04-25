@@ -42,7 +42,7 @@ export default class ConveyorBelt extends React.Component<ConveyorBeltProps> {
               </span>
               {
                 !last &&
-                  <span key={`${i}.2`} className={`gear forward`}>
+                  <span key={`${i}.2`} className="gear forward">
                     <span className="body" />
                     <span className="tooth" />
                     <span className="tooth rotate-45" />

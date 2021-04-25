@@ -80,6 +80,10 @@ a.topLink:hover {
   outline: none;
 }
 
+.recentCardsCarousel .slick-track {
+  height: 300px;
+}
+
 .profile-link {
   color: inherit;
   transition: color 300ms ease-in-out;

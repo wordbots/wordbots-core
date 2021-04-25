@@ -2722,3 +2722,114 @@
     from {transform: rotate(359deg);}
     to   {transform: rotate(0deg);}
 }
+
+/** ConveyorBelt.tsx */
+/** Adapted from: https://codepen.io/adgllorente/pen/eZpPwm
+ * Gears made with just CSS.
+ * @author: Adrán Gómez Llorente
+ * @website: http://adgomez.com
+ */
+.gear {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  margin: -3px;
+  margin-left: -2px;
+  margin-right: 0;
+}
+.gear:first-of-type {
+  margin-left: -3px;
+}
+.gear:last-of-type {
+  margin-right: -6px;
+}
+
+.gear.forward {
+  transform: scale(0.5);
+  -webkit-animation: 'clockwise' 2s infinite linear;
+  animation: 'clockwise' 2s infinite linear;
+  margin-left: -6px;
+  margin-right: -4px;
+}
+.gear.reverse {
+  -webkit-animation: 'reverse' 2s infinite linear;
+          animation: 'reverse' 2s infinite linear;
+}
+.paused .gear {
+  -webkit-animation: none;
+  animation: none;
+  transform: scale(0.5) rotate(0deg);
+}
+.paused .gear.reverse {
+  transform: rotate(-24deg);
+}
+
+.gear > .body {
+  position: absolute;
+  background-color: #aaa;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+}
+.gear > .hole {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  background-color: #eee;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.gear > .tooth {
+  position: absolute;
+  left: 11px;
+  width: 4px;
+  height: 26px;
+  background-color: #aaa;
+}
+.gear.forward > .body, .gear.forward > .tooth {
+  background-color: #bbb;
+}
+.gear > .tooth.rotate-45 {
+  transform: rotate(45deg);
+}
+.gear > .tooth.rotate-90 {
+  transform: rotate(90deg);
+}
+.gear > .tooth.rotate-135 {
+  transform: rotate(135deg);
+}
+@-webkit-keyframes clockwise {
+  from {
+    transform: scale(0.5) rotate(0deg);
+  }
+  to {
+    transform: scale(0.5) rotate(359deg);
+  }
+}
+@keyframes clockwise {
+  from {
+    transform: scale(0.5) rotate(0deg);
+  }
+  to {
+    transform: scale(0.5) rotate(359deg);
+  }
+}
+@-webkit-keyframes reverse {
+  from {
+    transform: rotate(345deg);
+  }
+  to {
+    transform: rotate(-14deg);
+  }
+}
+@keyframes reverse {
+  from {
+    transform: rotate(337deg);
+  }
+  to {
+    transform: rotate(-24deg);
+  }
+}

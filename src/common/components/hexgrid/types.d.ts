@@ -39,4 +39,5 @@ export interface PieceOnBoard {
     movesAvailable?: number
   }
   attacking: w.HexId | null
+  isDamaged: boolean
 }

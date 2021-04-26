@@ -7,7 +7,7 @@ import defaultState from '../store/defaultGameState';
 import * as w from '../types';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
-import { triggerSound } from '../util/game';
+import { cleanUpAnimations, triggerSound } from '../util/game';
 
 import g from './handlers/game';
 
@@ -35,11 +35,11 @@ export function handleAction(
   oldState: State,
   { type, payload }: w.Action = { type: '' }
 ): State {
-  let state: State = {...oldState};
+  // First, clone state and clean up any currently running animation (e.g. objects turning red because they took damage).
+  let state: State = cleanUpAnimations({...oldState});
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
-    state = {...state,
-      actionId: id()};
+    state = {...state, actionId: id()};
   }
 
   switch (type) {

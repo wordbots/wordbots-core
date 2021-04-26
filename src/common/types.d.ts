@@ -338,6 +338,7 @@ interface _Object { // eslint-disable-line @typescript-eslint/naming-convention
   attackedLastTurn?: boolean
   movedThisTurn?: boolean
   movedLastTurn?: boolean
+  tookDamageThisTurn?: boolean
   beingDestroyed?: boolean
   isDestroyed?: boolean
   mostRecentlyInCombatWith?: _Object

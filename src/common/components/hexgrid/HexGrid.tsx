@@ -99,7 +99,7 @@ export default class HexGrid extends React.Component<HexShapeProps> {
               <CSSTransition
                 key={piece.id}
                 classNames="hex-piece"
-                timeout={ANIMATION_TIME_MS}
+                timeout={{ enter: 0, exit: ANIMATION_TIME_MS }}
               >
                 <HexPiece
                   hex={HexUtils.IDToHex(hex)}

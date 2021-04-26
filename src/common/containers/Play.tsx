@@ -92,7 +92,7 @@ export const urlForGameMode = (mode: string, format: w.BuiltInFormat | null = nu
 
 export class Play extends React.Component<PlayProps> {
   get rightMenu(): React.ReactNode {
-    if (this.props.started) {
+    if (this.props.started || this.urlMatchesGameMode('sandbox')) {
       return null;  // If a game is in progress, it will render its own <Chat>.
     } else {
       return (
@@ -159,6 +159,8 @@ export class Play extends React.Component<PlayProps> {
   private navigateToMode = (mode: string, format: w.BuiltInFormat | null = null, deck: w.DeckInStore | null = null) => {
     this.props.history.push(urlForGameMode(mode, format, deck));
   }
+
+  private urlMatchesGameMode = (mode: string) => this.props.history.location.pathname.startsWith(urlForGameMode(mode));
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Play));

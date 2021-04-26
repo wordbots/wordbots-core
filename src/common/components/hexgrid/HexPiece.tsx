@@ -1,7 +1,7 @@
 import { isUndefined, times } from 'lodash';
 import * as React from 'react';
 
-import { ANIMATION_TIME_MS } from '../../constants';
+import { ANIMATION_TIME_MS, TYPE_CORE } from '../../constants';
 
 import Hex from './Hex';
 import HexUtils from './HexUtils';
@@ -19,23 +19,33 @@ interface HexPieceProps {
 
 export default class HexPiece extends React.Component<HexPieceProps> {
   get points(): string {
-    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
-
     if (this.props.piece.image) {
-      // Old hex coords - for kernels & other things with static art.
-
-      points[4].y = points[4].y * 1.5;
-      points[5].y = points[5].y * 1.5;
-
-      return points.map((point) => `${point.x},${point.y}`).join(' ');
+      return this.oldStyleHexCoords;
     } else {
-      // New hex coords - for sprites.
-
-      points[4].y = points[4].y + 2;
-      points[5].y = points[5].y + 2;
-
-      return points.map((point) => `${point.x},${point.y - 2}`).join(' ');
+      return this.newStyleHexCoords;
     }
+  }
+
+  // Exact hex coords of the underlying polygon - used for rendering red tint indicating pieces being damaged
+  get rawHexCoords(): string {
+    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
+    return points.map((point) => `${point.x},${point.y}`).join(' ');
+  }
+
+  // Old hex piece coords - for kernels & other things with static art.
+  get oldStyleHexCoords(): string {
+    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
+    points[4].y = points[4].y * 1.5;
+    points[5].y = points[5].y * 1.5;
+    return points.map((point) => `${point.x},${point.y}`).join(' ');
+  }
+
+  // New hex piece coords - for sprites.
+  get newStyleHexCoords(): string {
+    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
+    points[4].y = points[4].y + 2;
+    points[5].y = points[5].y + 2;
+    return points.map((point) => `${point.x},${point.y - 2}`).join(' ');
   }
 
   get translate(): string {
@@ -54,6 +64,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
   }
 
   public render(): JSX.Element {
+    const { piece } = this.props;
     return (
       <g
         transform={this.translate}
@@ -64,8 +75,16 @@ export default class HexPiece extends React.Component<HexPieceProps> {
           transition: `transform ${ANIMATION_TIME_MS}ms ease-in-out, opacity ${ANIMATION_TIME_MS}ms ease-in-out`
         }}
       >
-        <PiecePattern piece={this.props.piece} />
-        <polygon key="p2" points={this.points} style={this.styles} />
+        <PiecePattern piece={piece} />
+        {piece.isDamaged &&
+          <polygon key="p2tint" points={this.rawHexCoords} className="piece-tint-damage" />
+        }
+        <polygon
+          key="p2"
+          points={this.points}
+          style={this.styles}
+          className={`hex-piece ${piece.type === TYPE_CORE && 'kernel'} ${piece.isDamaged && 'piece-damage'}`}
+        />
         {this.renderPieceStats()}
       </g>
     );

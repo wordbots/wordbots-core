@@ -73,7 +73,7 @@ export default class GameMode extends React.Component<GameModeProps> {
             justifyContent: 'center',
             alignItems: 'center',
             width: compact ? '100%' : 'calc(100% - 220px)',
-            height: (compact || imagePath) ? 'auto' : 150,
+            height: 'auto',
             cursor: disabled ? 'not-allowed' : 'pointer',
           }}
         >

@@ -6,17 +6,19 @@ import PaperButton from '../PaperButton';
 interface GameModeProps {
   name: string
   imagePath?: string
+  explanation?: string
   modesPerRow?: number
   compact?: boolean
   disabled?: boolean
+  wrapper?: (inner: JSX.Element) => JSX.Element
   onSelect?: () => void
 }
 
 export default class GameMode extends React.Component<GameModeProps> {
   public render(): JSX.Element {
-    const { modesPerRow, compact, disabled, onSelect } = this.props;
-    const widthPercent = `${100 / (modesPerRow || 2)}%`;
-    const widthPadding = (((modesPerRow || 2) - 1) * 20) / (modesPerRow || 2);
+    const { modesPerRow, compact, disabled, wrapper, onSelect } = this.props;
+    const widthPercent = `${100 / (modesPerRow || 1)}%`;
+    const widthPadding = (((modesPerRow || 1) - 1) * 20) / (modesPerRow || 1);
 
     return (
       <PaperButton
@@ -24,34 +26,34 @@ export default class GameMode extends React.Component<GameModeProps> {
         onClick={onSelect || noop}
         style={{
           width: `calc(${widthPercent} - ${widthPadding}px)`,
-          height: compact ? 'auto' : 230,
+          height: compact ? 'auto' : 100,
           position: 'relative',
-          marginBottom: 20
+          marginBottom: 20,
+          padding: compact ? 0 : '20px 0'
         }}
       >
-        {this.renderInner()}
+        {wrapper ? wrapper(this.renderInner()) : this.renderInner()}
       </PaperButton>
     );
   }
 
   private renderInner(): JSX.Element {
-    const { name, compact, disabled, imagePath } = this.props;
+    const { name, imagePath, explanation, compact, disabled } = this.props;
     return (
       <div
         style={{
-          filter: disabled ? 'blur(2px)' : undefined,
           padding: compact ? 15 : '0 20px',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         {imagePath && (
           <div
             style={{
-              height: 165,
-              width: '100%',
+              width: 200,
+              height: 100,
               color: 'grey',
               display: 'flex',
               alignItems: 'center',
@@ -68,18 +70,37 @@ export default class GameMode extends React.Component<GameModeProps> {
         )}
         <div
           style={{
-            display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: (compact || imagePath) ? 'auto' : 250,
-            textAlign: 'center',
-            fontSize: 24,
-            fontFamily: 'Carter One',
-            color: '#f44336',
-            WebkitTextStroke: '1px black'
+            width: compact ? '100%' : 'calc(100% - 220px)',
+            height: 'auto',
+            cursor: disabled ? 'not-allowed' : 'pointer',
           }}
         >
-          {name}
+          <div
+            style={{
+              textAlign: 'center',
+              fontSize: 24,
+              fontFamily: 'Carter One',
+              color: disabled ? '#ccc' : '#f44336',
+              WebkitTextStroke: disabled ? '1px #999' : '1px black'
+            }}
+          >
+            {name}
+          </div>
+          {explanation &&
+            <div
+              style={{
+                margin: '5px auto',
+                width: 300,
+                textAlign: 'center',
+                fontSize: 14,
+                color: '#666'
+              }}
+            >
+              {explanation}
+            </div>
+          }
         </div>
       </div>
     );

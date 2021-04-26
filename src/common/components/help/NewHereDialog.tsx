@@ -118,7 +118,7 @@ export default class NewHereDialog extends React.Component<NewHereDialogProps, N
               </td>
               <td>
                 <NewHereLink idx={8} href="/play//host" accomplished={games.length >= 2}>
-                  Challenge other players with your deck, in either the &ldquo;Anything&nbsp;Goes&rdquo; or &ldquo;Shared&nbsp;Deck&rdquo; format.
+                  Challenge other players with your deck, in either the &ldquo;Anything&nbsp;Goes&rdquo; or &ldquo;Mash-Up&rdquo; format.
                 </NewHereLink>
               </td>
               <td>

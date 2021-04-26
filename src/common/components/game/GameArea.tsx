@@ -150,7 +150,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
         }}
       >
         <div>
-          <Helmet title="Play" />
+          <Helmet title="Arena" />
           <GameNotification text="It's your turn!" enabled={currentTurn === player} />
           <Sfx queue={sfxQueue} volume={volume} />
           {(isMyTurn || isSandbox) && <Status type={status.type} message={status.message} />}

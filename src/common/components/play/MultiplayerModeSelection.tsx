@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import MustBeLoggedIn from '../users/MustBeLoggedIn';
+
 import GameMode from './GameMode';
 
 interface MultiplayerModeSelectionProps {
@@ -39,10 +41,15 @@ export default class MultiplayerModeSelection extends React.Component<Multiplaye
           disabled={disabled || isGuest}
           onSelect={this.handleClickMatchmaking}
           modesPerRow={3}
+          wrapper={this.wrapInMustBeLoggedIn}
         />
       </div>
     );
   }
+
+  private wrapInMustBeLoggedIn = (elt: JSX.Element): JSX.Element => (
+    <MustBeLoggedIn loggedIn={!this.props.isGuest}>{elt}</MustBeLoggedIn>
+  );
 
   private handleClickSingleplayer = () => {
     this.props.onSelectMode('singleplayer');

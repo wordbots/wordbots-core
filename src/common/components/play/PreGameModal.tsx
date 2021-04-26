@@ -38,7 +38,7 @@ interface PreGameModalState {
 export default class PreGameModal extends React.Component<PreGameModalProps, PreGameModalState> {
   public state: PreGameModalState = {
     selectedDeckId: null,
-    selectedFormatName: 'normal',
+    selectedFormatName: 'sharedDeck',
     enteredPassword: '',
     isPasswordInvalid: false
   };

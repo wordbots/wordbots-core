@@ -361,10 +361,10 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   }
 
   private renderStatsArea(): JSX.Element | undefined {
-    const { type } = this.props;
+    const { scale, type } = this.props;
     const style: React.CSSProperties = {
       position: 'absolute',
-      bottom: 0,
+      bottom: 4 * (scale || 1),
       width: '100%',
       padding: 0
     };

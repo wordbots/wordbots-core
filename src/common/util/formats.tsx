@@ -84,7 +84,7 @@ export class GameFormat {
 export const NormalGameFormat = new (class extends GameFormat {
   public name = 'normal';
   public displayName = 'Anything Goes';
-  public description = 'Each player has a 30-card deck. No restrictions on cards.';
+  public description = 'The truly wild and crazy format for casual games with friends. Each player has a 30-card deck that has whatever cards they want, with no restrictions.';
 
   public isDeckValid = (deck: w.DeckInGame): boolean => deckHasNCards(deck, DECK_SIZE)
 
@@ -104,10 +104,10 @@ export const NormalGameFormat = new (class extends GameFormat {
 export const BuiltinOnlyGameFormat = new (class extends GameFormat {
   public name = 'builtinOnly';
   public displayName = 'Builtins Only';
-  public description = 'Normal game with only built-in cards allowed.';
+  public description = 'Each player has a 30-card deck composed of only built-in cards (no custom cards allowed), with no more than two copies of each card per deck.';
 
   public isDeckValid = (deck: w.DeckInGame): boolean => (
-    deckHasNCards(deck, DECK_SIZE) && deckHasOnlyBuiltinCards(deck)
+    deckHasNCards(deck, DECK_SIZE) && deckHasOnlyBuiltinCards(deck) && deckHasAtMostNCopiesPerCard(deck, 2)
   )
 
   public startGame(
@@ -120,8 +120,8 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
 
 export const SharedDeckGameFormat = new (class extends GameFormat {
   public name = 'sharedDeck';
-  public displayName = 'Shared Deck';
-  public description = 'Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards.';
+  public displayName = 'Mash-Up';
+  public description = 'Unexpected but balanced fun. Each player\'s 30-card deck is shuffled together into a shared 60-card deck. No restrictions on cards – bring whatever deck you want.';
 
   public isDeckValid = (deck: w.DeckInGame): boolean => deckHasNCards(deck, DECK_SIZE);
 
@@ -144,7 +144,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
 });
 
 export class SetFormat extends GameFormat {
-  public static description = 'Only cards from a given set are allowed, and no more than two per deck.';
+  public static description = 'Only cards from a given set are allowed, with no more than two copies of each card per deck.';
 
   public name: string;
   public displayName: string;
@@ -193,7 +193,7 @@ export class SetFormat extends GameFormat {
 }
 
 export const BUILTIN_FORMATS = [
-  NormalGameFormat,
+  SharedDeckGameFormat,
   BuiltinOnlyGameFormat,
-  SharedDeckGameFormat
+  NormalGameFormat,
 ];

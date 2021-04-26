@@ -36,7 +36,8 @@ describe('Board component', () => {
           'health': STARTING_PLAYER_HEALTH
         },
         'type': TYPE_CORE,
-        'attacking': null
+        'attacking': null,
+        isDamaged: false
       },
       '3,0,-3': {
         'id': 'orangeCore',
@@ -48,7 +49,8 @@ describe('Board component', () => {
           'health': STARTING_PLAYER_HEALTH
         },
         'type': TYPE_CORE,
-        'attacking': null
+        'attacking': null,
+        isDamaged: false
       }
     });
   });

@@ -53,7 +53,7 @@ describe('[vocabulary.actions]', () => {
     expect(state.players.orange.discardPile.length).toEqual(1);
 
     // Let's also test filtering on cardsInDiscardPile while we're at it ...
-    state = playEvent(state, 'orange', event("Move all event cards from your discard pile that costs 0 or more energy to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'event', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
+    state = playEvent(state, 'orange', event("Move all action cards from your discard pile that costs 0 or more energy to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'action', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
     expect(state.players.orange.hand.length).toEqual(startingHandSize + 1);
     expect(state.players.orange.discardPile.length).toEqual(1);
   });

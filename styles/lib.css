@@ -2746,14 +2746,14 @@
 
 .gear.forward {
   transform: scale(0.5);
-  -webkit-animation: 'clockwise' 2s infinite linear;
-  animation: 'clockwise' 2s infinite linear;
+  -webkit-animation: clockwise 2s infinite linear;
+  animation: clockwise 2s infinite linear;
   margin-left: -6px;
   margin-right: -4px;
 }
 .gear.reverse {
-  -webkit-animation: 'reverse' 2s infinite linear;
-          animation: 'reverse' 2s infinite linear;
+  -webkit-animation: reverse 2s infinite linear;
+          animation: reverse 2s infinite linear;
 }
 .paused .gear {
   -webkit-animation: none;

@@ -1,5 +1,5 @@
 import * as cards from '../../src/common/store/cards';
-import { event, getDefaultState, newTurn, playEvent, playObject, startingHandSize } from '../testHelpers';
+import { action, getDefaultState, newTurn, playEvent, playObject, startingHandSize } from '../testHelpers';
 
 describe('[vocabulary.numbers]', () => {
   it('count', () => {
@@ -12,7 +12,7 @@ describe('[vocabulary.numbers]', () => {
 
   it('energyAmount', () => {
     let state = getDefaultState();
-    state = playEvent(state, 'orange', event("Draw cards equal to your energy.", "(function () { actions['draw'](targets['self'](), energyAmount(targets['self']())); })"));
+    state = playEvent(state, 'orange', action("Draw cards equal to your energy.", "(function () { actions['draw'](targets['self'](), energyAmount(targets['self']())); })"));
     expect(state.players.orange.hand.length).toEqual(startingHandSize + 1);
   });
 
@@ -21,7 +21,7 @@ describe('[vocabulary.numbers]', () => {
     state = newTurn(state, 'orange');
     state.players.orange.energy.available = 1;  // Orange player now has 1/2 energy
     const handSize = state.players.orange.hand.length;
-    state = playEvent(state, 'orange', event("Draw cards equal to your maximum energy.", "(function () { actions['draw'](targets['self'](), maximumEnergyAmount(targets['self']())); })"));
+    state = playEvent(state, 'orange', action("Draw cards equal to your maximum energy.", "(function () { actions['draw'](targets['self'](), maximumEnergyAmount(targets['self']())); })"));
     expect(state.players.orange.hand.length).toEqual(handSize + 2);
   });
 });

@@ -5,7 +5,7 @@ import * as cards from '../../src/common/store/cards';
 import { allObjectsOnBoard } from '../../src/common/util/game';
 import * as testCards from '../data/cards';
 import {
-  attack, event, getDefaultState, objectsOnBoardOfType,
+  attack, action, getDefaultState, objectsOnBoardOfType,
   playEvent, playObject, queryPlayerHealth, queryRobotAttributes, setUpBoardState, startingHandSize
 } from '../testHelpers';
 
@@ -18,7 +18,7 @@ describe('[vocabulary.actions]', () => {
 
     state = attack(state, '0,0,0', '-1,0,1', true);  // Both Two Bots should now be down to 4-2=2 health.
     expect(size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(2);
-    state = playEvent(state, 'orange', event("All robots can attack again.", "(function () { actions['canAttackAgain'](objectsMatchingConditions('robot', [])); })"));
+    state = playEvent(state, 'orange', action("All robots can attack again.", "(function () { actions['canAttackAgain'](objectsMatchingConditions('robot', [])); })"));
     state = attack(state, '0,0,0', '-1,0,1');  // Both Two Bots should now be destroyed.
     expect(size(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(0);
   });
@@ -41,19 +41,19 @@ describe('[vocabulary.actions]', () => {
     let state = getDefaultState();
     state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
     state = playObject(state, 'orange', cards.oneBotCard, '2,1,-3');
-    state = playEvent(state, 'orange', event("Deal 3 damage to your kernel for each robot in play", "(function () { actions['forEach'](objectsMatchingConditions('robot', []), (function () { actions['dealDamage'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })); })"));
+    state = playEvent(state, 'orange', action("Deal 3 damage to your kernel for each robot in play", "(function () { actions['forEach'](objectsMatchingConditions('robot', []), (function () { actions['dealDamage'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), 3); })); })"));
     expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 6);
   });
 
   it('moveCardsToHand', () => {
     let state = getDefaultState();
 
-    state = playEvent(state, 'orange', event("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+    state = playEvent(state, 'orange', action("Move all cards from your discard pile to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
     expect(state.players.orange.hand.length).toEqual(startingHandSize);
     expect(state.players.orange.discardPile.length).toEqual(1);
 
     // Let's also test filtering on cardsInDiscardPile while we're at it ...
-    state = playEvent(state, 'orange', event("Move all action cards from your discard pile that costs 0 or more energy to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'action', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
+    state = playEvent(state, 'orange', action("Move all action cards from your discard pile that costs 0 or more energy to your hand", "(function () { actions['moveCardsToHand'](targets['all'](cardsInDiscardPile(targets['self'](), 'action', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
     expect(state.players.orange.hand.length).toEqual(startingHandSize + 1);
     expect(state.players.orange.discardPile.length).toEqual(1);
   });
@@ -74,12 +74,12 @@ describe('[vocabulary.actions]', () => {
 
     state = playEvent(
       state, 'orange',
-      event("Restore 1 health to a robot", "(function () { actions['restoreHealth'](targets['choose'](objectsMatchingConditions('robot', [])), 1); })"),
+      action("Restore 1 health to a robot", "(function () { actions['restoreHealth'](targets['choose'](objectsMatchingConditions('robot', [])), 1); })"),
       { hex: '3,-1,-2' }
     );
     expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/6/1');
 
-    state = playEvent(state, 'orange', event("Restore all robots' health", "(function () { actions['restoreHealth'](objectsMatchingConditions('robot', [])); })"));
+    state = playEvent(state, 'orange', action("Restore all robots' health", "(function () { actions['restoreHealth'](objectsMatchingConditions('robot', [])); })"));
     expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/8/1');
   });
 
@@ -88,7 +88,7 @@ describe('[vocabulary.actions]', () => {
     state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
     state = playEvent(
       state, 'orange',
-      event("Return a robot to its owner's hand", "(function () { actions['returnToHand'](targets['choose'](objectsMatchingConditions('robot', []))); })"),
+      action("Return a robot to its owner's hand", "(function () { actions['returnToHand'](targets['choose'](objectsMatchingConditions('robot', []))); })"),
       { hex: '3,-1,-2' }
     );
     expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
@@ -98,16 +98,16 @@ describe('[vocabulary.actions]', () => {
   it('shuffleCardsIntoDeck', () => {
     let state = getDefaultState();
 
-    state = playEvent(state, 'orange', event("Shuffle all cards from your discard pile into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+    state = playEvent(state, 'orange', action("Shuffle all cards from your discard pile into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
     expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length);
     expect(state.players.orange.discardPile.length).toEqual(1);
 
-    state = playEvent(state, 'orange', event("Shuffle all cards from your discard pile into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
+    state = playEvent(state, 'orange', action("Shuffle all cards from your discard pile into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })"));
     expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1);
     expect(state.players.orange.discardPile.length).toEqual(1);
 
     // "the 0 or more energy" part is unnecessary but lets us test out applying conditions to cardsInHand()
-    state = playEvent(state, 'orange', event("Shuffle all cards from your hand that costs 0 or more energy into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['self'](), 'anycard', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
+    state = playEvent(state, 'orange', action("Shuffle all cards from your hand that costs 0 or more energy into your deck", "(function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['self'](), 'anycard', [conditions['attributeComparison']('cost', (function (x) { return x >= 0; }))])), targets['self']()); })"));
     expect(state.players.orange.deck.length).toEqual(getDefaultState().players.orange.deck.length + 1 + startingHandSize);
   });
 
@@ -129,7 +129,7 @@ describe('[vocabulary.actions]', () => {
     state = playEvent(state, 'orange', testCards.wrathOfRobotGodCard);  // "Destroy all robots."
     expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
     expect(state.players.orange.discardPile.filter((c) => c.type === TYPE_ROBOT).length).toEqual(1);
-    state = playEvent(state, 'orange', event("Play a random robot from your discard pile on a random tile adjacent to your kernel.", "(function () { actions['spawnObject'](targets['random'](1, cardsInDiscardPile(targets['self'](), 'robot', [])), targets['random'](1, tilesMatchingConditions([conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))])), targets['self']()); })"));
+    state = playEvent(state, 'orange', action("Play a random robot from your discard pile on a random tile adjacent to your kernel.", "(function () { actions['spawnObject'](targets['random'](1, cardsInDiscardPile(targets['self'](), 'robot', [])), targets['random'](1, tilesMatchingConditions([conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))])), targets['self']()); })"));
     expect(Object.values(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(["Attack Bot"]);
     expect(state.players.orange.discardPile.filter((c) => c.type === TYPE_ROBOT).length).toEqual(0);
   });
@@ -137,7 +137,7 @@ describe('[vocabulary.actions]', () => {
   it('swapAttributes', () => {
     let state = getDefaultState();
     state = playObject(state, 'orange', cards.blueBotCard, '3,-1,-2');  // 2/8/1
-    state = playEvent(state, 'orange', event("Swap all robots' attack and health.", "(function () { actions['swapAttributes'](objectsMatchingConditions('robot', []), 'attack', 'health'); })"));
+    state = playEvent(state, 'orange', action("Swap all robots' attack and health.", "(function () { actions['swapAttributes'](objectsMatchingConditions('robot', []), 'attack', 'health'); })"));
     expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('8/2/1');
   });
 });

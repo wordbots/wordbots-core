@@ -143,7 +143,7 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
                 margin: '20px 0 20px -10px'
               }}
             >
-              Events ({events.length})
+              Actions ({events.length})
             </h4>
             {this.renderCards(events)}
           </div>

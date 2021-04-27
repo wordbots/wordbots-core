@@ -5,6 +5,7 @@ import * as React from 'react';
 interface NumberFieldProps {
   label: React.ReactNode
   value: number
+  minValue: number
   maxValue: number
   style?: React.CSSProperties
   disabled?: boolean
@@ -22,8 +23,8 @@ export default class NumberField extends React.Component<NumberFieldProps> {
         style={this.props.style || {}}
         type="number"
         inputProps={{
-          min: 0,
-          max: this.props.maxValue || 10,
+          min: this.props.minValue,
+          max: this.props.maxValue,
           style: this.props.inputProps?.style || {}
         }}
         InputProps={this.props.inputProps}

@@ -76,7 +76,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
     attribute: { width: 50 },
-        
+
     buttonText: {
       fontSize: 14,
       textTransform: 'uppercase',
@@ -166,7 +166,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
   get textError(): string | null {
     if (this.event && !this.hasCardText) {
-      return 'Events must have card text.';
+      return 'Actions must have card text.';
     } else if (this.parseErrors.length > 0) {
       return this.parseErrors.join(' ');
     } else if (this.nonEmptySentences.find((s) => !s.result.js)) {
@@ -270,6 +270,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               disabled={isReadonly}
               label={<div style={{ marginLeft: 30, marginTop: 5 }}>Cost</div>}
               value={this.props.cost}
+              minValue={0}
               maxValue={20}
               style={CardCreationForm.styles.energyCost}
               inputProps={{
@@ -355,7 +356,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
           <div style={CardCreationForm.styles.section}>
             {this.renderAttributeField('attack', this.robot && !isReadonly)}
-            {this.renderAttributeField('health', !this.event && !isReadonly)}
+            {this.renderAttributeField('health', !this.event && !isReadonly, {min: 1})}
             {this.renderAttributeField('speed', this.robot && !isReadonly, {max: 3})}
           </div>
 
@@ -465,7 +466,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     }).catch(console.error);
   }
 
-  private renderAttributeField(attribute: 'attack' | 'health' | 'speed', enabled = true, opts: { max?: number } = {}): JSX.Element {
+  private renderAttributeField(attribute: 'attack' | 'health' | 'speed', enabled = true, opts: { min?: number, max?: number } = {}): JSX.Element {
     const iconClasses = {
       attack: 'crossed-swords',
       speed: 'shoe-prints',
@@ -477,6 +478,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
         <NumberField
           label={capitalize(attribute)}
           value={this.props[attribute]}
+          minValue={opts.min || 0}
           maxValue={opts.max || 10}
           style={CardCreationForm.styles.attribute}
           disabled={!enabled}

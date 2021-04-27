@@ -26,7 +26,7 @@ export const aggro: w.CardInStore[] = createDeck([
   [cards.leapFrogBotCard, 2],
   [cards.generalBotCard, 1],
 
-  // Events (8)
+  // Actions (8)
   [cards.gustOfWindCard, 2],
   [cards.concentrationCard, 2],
   [cards.rampageCard, 2],
@@ -47,7 +47,7 @@ export const healing: w.CardInStore[] = createDeck([
   [cards.calmMonkCard, 1],
   [cards.effectiveTrollCard, 1],
 
-  // Events (10)
+  // Actions (10)
   [cards.concentrationCard, 2],
   [cards.vampirePotionCard, 1],
   [cards.equalizeCard, 2],

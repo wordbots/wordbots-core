@@ -48,7 +48,7 @@ export default class FilterControls extends React.Component<FilterControlsProps>
                   onChange={this.props.onToggleFilter('events')}
                 />
               }
-              label="Events"
+              label="Actions"
               labelPlacement="start"
               style={{ justifyContent: 'space-between', marginBottom: -12 }}
             />

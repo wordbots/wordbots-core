@@ -240,14 +240,14 @@ const tutorialScript: w.TutorialStepInScript[] = [
   {
     tooltip: {
       card: 'Upgrade',
-      text: 'Events are cards whose effects happen immediately. Click on this here event card.'
+      text: 'Actions are cards whose effects happen immediately. Click on this here action card.'
     },
     action: actions.setSelectedCard(0, 'orange')
   },
   {
     tooltip: {
       hex: '0,1,-1',
-      text: 'Now click our One Bot to apply the Upgrade event to it. Let\'s see what happens!'
+      text: 'Now click our One Bot to apply the Upgrade action to it. Let\'s see what happens!'
     },
     action: actions.setSelectedTile('0,1,-1', 'orange')
   },
@@ -306,14 +306,14 @@ const tutorialScript: w.TutorialStepInScript[] = [
   {
     tooltip: {
       card: 'Recharge',
-      text: 'We can recharge our robot to use it again this turn! You know the drill. Click the event card.'
+      text: 'We can recharge our robot to use it again this turn! You know the drill. Click the action card.'
     },
     action: actions.setSelectedCard(0, 'orange')
   },
   {
     tooltip: {
       card: 'Recharge',
-      text: 'This event affects the whole board, so click anywhere on the board to play it.'
+      text: 'This action affects the whole board, so click anywhere on the board to play it.'
     },
     action: actions.SET_SELECTED_TILE
   },

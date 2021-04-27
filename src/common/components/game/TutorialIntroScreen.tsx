@@ -33,7 +33,7 @@ class TutorialIntroScreen extends React.Component<TutorialIntroScreenProps & Wit
         <DialogTitle>Wordbots Gameplay Tutorial</DialogTitle>
         <DialogContent>
           <p>Welcome to the Wordbots Tutorial!</p>
-          <p>This tutorial should take just 3 to 5 minutes to complete and will teach you all the basic gameplay mechanics required to play the game of Wordbots, including how to place robots onto the board, how to use events to tilt the game in your favor, and the basic steps that go into each turn.</p>
+          <p>This tutorial should take just 3 to 5 minutes to complete and will teach you all the basic gameplay mechanics required to play the game of Wordbots, including how to place robots onto the board, how to play action cards to tilt the game in your favor, and the basic steps that go into each turn.</p>
           <p>When prompted, hit the <b>Next</b> button to continue to the next step. To leave at any point during the tutorial hit the <b>Forfeit</b> (🏳️) button.</p>
         </DialogContent>
         <DialogActions>

@@ -54,9 +54,9 @@ export default class CreatorHelpDialog extends React.Component<{ history: Histor
 const helpText = (location: Location) => `
 ## Types of Cards
 
-* A **robot** must played adjacent to your kernel, and can move, attack, and activate.
-* A **structure** can be played adjacent to your kernel, robots, or structures, and can activate but not move or attack.
-* An **event** performs an action and is immediately discarded.
+* A **robot** card must played adjacent to your kernel, and can move, attack, and activate.
+* A **structure** card can be played adjacent to your kernel, robots, or structures, and can activate but not move or attack.
+* An **action** card performs some action and is immediately discarded.
 
 ## Types of Sentences
 
@@ -67,7 +67,7 @@ In a nutshell:
 * **Triggered ability**: "Whenever this robot attacks, your adjacent robots get +1 health."
 * **Activated ability**: "Activate: Give a robot +1 health."
 
-There are two types of sentences: _actions_ and _abilities_. Events have actions; robots and structures have abilities.
+There are two types of sentences: _actions_ and _abilities_. Action cards have actions; robot and structure cards have abilities.
 
 There are three types of abilities: _passive_, _triggered_, and _activated_.
 
@@ -89,7 +89,7 @@ If any words are underlined in red in the card preview, that means that the pars
 
 **2. Are you writing the right kind of sentence for the card type?**
 
-Remember that events must have actions, while robots/structures must have abilities. For example, if you’re making an event, you can’t say "All robots have +1 attack" – because “have” indicates a passive ability, not an action. (You’d need to say “Give all robots +1 attack” instead.)
+Remember that action cards must perform one-time actions, while robots/structures must have recurring abilities. For example, if you’re making an action, you can’t say "All robots have +1 attack" – because “have” indicates a passive ability, not an action. (You’d need to say “Give all robots +1 attack” instead.)
 
 **3. Is your phrasing incorrect?**
 

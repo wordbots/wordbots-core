@@ -77,9 +77,9 @@ There are two things you can do on your turn:
 
 ### Playing Cards
 
-There are three types of cards: **events**, **robots**, and **structures**. Events are one-time effects that trigger instantly, while robots and structures are objects that get placed on the board.
+There are three types of cards: **actions**, **robots**, and **structures**. Actions are one-time effects that trigger instantly, while robots and structures are objects that get placed on the board.
 
-To play an **event** card, click on the card in your hand, then click on the board. Some event cards require you to select one or more objects or tiles on the board for their ability. Other event cards just need you to click anywhere on the board to confirm that you want to play them.
+To play an **action** card, click on the card in your hand, then click on the board. Some action cards require you to select one or more objects or tiles on the board for their ability. Other action cards just need you to click anywhere on the board to confirm that you want to play them.
 
 To play a **robot** or **structure** card, click on the card in your hand, then click on where you want to place that robot or structure.
 
@@ -109,6 +109,12 @@ const terminology = `
 
 ---
 
+**action**
+
+A one-time-use card whose effect immediately happens when you play it.
+
+---
+
 **activate**
 
 Some **robots** and **structures** have an "Activate" ability _(for example: "**Activate**: Draw a card")_. Each robot or structure's Activate ability can be used once per turn, but a robot cannot activate and attack on the same turn.
@@ -135,19 +141,13 @@ An **object** can be destroyed when its **health** goes to 0, or when a card is 
 
 **discard pile**
 
-Your discard pile holds **event** cards that you've played and your **objects** that have been **destroyed**.
+Your discard pile holds **action** cards that you've played and your **objects** that have been **destroyed**.
 
 ---
 
 **energy**
 
 The resource used to play cards. Every turn, your energy recharges up to your **maximum energy** level.
-
----
-
-**event**
-
-A one-time-use card whose effect immediately happens when you play it.
 
 ---
 

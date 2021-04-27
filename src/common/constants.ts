@@ -128,7 +128,7 @@ export const CREATABLE_TYPES: CardType[] = [TYPE_ROBOT, TYPE_EVENT, TYPE_STRUCTU
 
 const typeToStringMapping: Record<string, string> = {
   [TYPE_ROBOT]: 'robot',
-  [TYPE_EVENT]: 'event',
+  [TYPE_EVENT]: 'action',
   [TYPE_CORE]: 'kernel',
   [TYPE_STRUCTURE]: 'structure'
 };
@@ -185,6 +185,7 @@ export const SYNONYMS = {
   'can\'t': 'cannot',
   'it is': 'it\'s',
 
+  'action': ['event'],
   'robot': ['creature', 'minion'],
   'startup': ['start up', 'start-up'],
   'shutdown': ['shut down', 'shut-down']

@@ -2,7 +2,7 @@ import * as actions from '../../src/common/actions/game';
 import { DECK_SIZE, TYPE_ROBOT } from '../../src/common/constants';
 import game from '../../src/common/reducers/game';
 import * as cards from '../../src/common/store/cards';
-import { event, getDefaultState, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, setUpBoardState } from '../testHelpers';
+import { action, getDefaultState, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, setUpBoardState } from '../testHelpers';
 
 describe('[vocabulary.targets]', () => {
   describe('choose', () => {
@@ -14,7 +14,7 @@ describe('[vocabulary.targets]', () => {
       state = playEvent(state, 'orange', cards.superchargeCard);
       const superchargeCardId = state.players.orange.discardPile[0].id;
 
-      const returnCardToHandCard = event('Return a card in your discard pile to your hand', "(function () { actions['moveCardsToHand'](targets['choose'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })");
+      const returnCardToHandCard = action('Return a card in your discard pile to your hand', "(function () { actions['moveCardsToHand'](targets['choose'](cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })");
       state = playEvent(state, 'orange', returnCardToHandCard, []);
       state = game(state, actions.setSelectedCardInDiscardPile(superchargeCardId, 'orange'));
       expect(state.players.orange.discardPile.map((card) => card.name)).toEqual([returnCardToHandCard.name]);
@@ -30,7 +30,7 @@ describe('[vocabulary.targets]', () => {
       state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
       state = playObject(state, 'orange', cards.oneBotCard, '2,-1,-3');
 
-      const fragGrenadeCard = event(
+      const fragGrenadeCard = action(
         'Deal 3 damage to a robot, then deal 3 damage to all robots adjacent to that robot.',
         "(function () { (function () { actions['dealDamage'](targets['choose'](objectsMatchingConditions('robot', [])), 3); })(); (function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['that']())]), 3); })(); })"
       );
@@ -55,7 +55,7 @@ describe('[vocabulary.targets]', () => {
     it('handle case where there\'s nothing to iterate over', () => {
       let state = setUpBoardState(initialStateSetup);
       state = playEvent(state, 'orange',
-        event("Set a robot's attack equal to their health", "(function () { actions['setAttribute'](targets['choose'](objectsMatchingConditions('robot', [])), 'attack', \"(function () { return attributeValue(targets['they'](), 'health'); })\"); })"),
+        action("Set a robot's attack equal to their health", "(function () { actions['setAttribute'](targets['choose'](objectsMatchingConditions('robot', [])), 'attack', \"(function () { return attributeValue(targets['they'](), 'health'); })\"); })"),
         { hex: '0,0,0' }
       );
       expect(queryObjectAttribute(state, '0,0,0', 'attack')).toEqual(2);
@@ -66,7 +66,7 @@ describe('[vocabulary.targets]', () => {
   describe('theyP', () => {
     it('handles iterating over players', () => {
       let state = getDefaultState();
-      state = playEvent(state, 'orange', event('Each player shuffles all cards from their hand into their deck', "(function () { actions['forEach'](targets['allPlayers'](), (function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['theyP'](), 'anycard', [])), targets['theyP']()); })); })"));
+      state = playEvent(state, 'orange', action('Each player shuffles all cards from their hand into their deck', "(function () { actions['forEach'](targets['allPlayers'](), (function () { actions['shuffleCardsIntoDeck'](targets['all'](cardsInHand(targets['theyP'](), 'anycard', [])), targets['theyP']()); })); })"));
       expect(state.players.orange.hand.length).toEqual(0);
       expect(state.players.blue.hand.length).toEqual(0);
       expect(state.players.orange.deck.length).toEqual(DECK_SIZE);
@@ -78,7 +78,7 @@ describe('[vocabulary.targets]', () => {
       state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
       state = playEvent(state, 'blue', cards.shockCard, { hex: '3,-1,-2' });
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
-      state = playEvent(state, 'blue', event('Your opponent returns a random robot from their discard pile to a random tile', "(function () { actions['spawnObject'](targets['random'](1, cardsInDiscardPile(targets['theyP'](), 'robot', [])), targets['random'](1, allTiles()), targets['opponent']()); })"));
+      state = playEvent(state, 'blue', action('Your opponent returns a random robot from their discard pile to a random tile', "(function () { actions['spawnObject'](targets['random'](1, cardsInDiscardPile(targets['theyP'](), 'robot', [])), targets['random'](1, allTiles()), targets['opponent']()); })"));
       expect(state.players.orange.discardPile.length).toEqual(0);
       expect(
         Object.values(state.players.orange.objectsOnBoard).filter((o) => o.type === TYPE_ROBOT).map((o) => o.card.name)
@@ -92,7 +92,7 @@ describe('[vocabulary.targets]', () => {
       state = playObject(state, 'orange', cards.oneBotCard, '3,-1,-2');
       state = playObject(state, 'orange', cards.oneBotCard, '2,-1,-3');
 
-      const fragGrenadeAltCard = event(
+      const fragGrenadeAltCard = action(
         "Deal 3 damage to a robot and all adjacent robots",
         "(function () { actions['dealDamage'](targets['union']([ targets['choose'](objectsMatchingConditions('robot', [])), objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())]) ]), 3); })"
       );

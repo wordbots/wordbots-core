@@ -166,7 +166,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
   get textError(): string | null {
     if (this.event && !this.hasCardText) {
-      return 'Actions must have card text.';
+      return 'Action cards must have card text.';
     } else if (this.parseErrors.length > 0) {
       return this.parseErrors.join(' ');
     } else if (this.nonEmptySentences.find((s) => !s.result.js)) {

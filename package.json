@@ -10,7 +10,12 @@
     "last 4 versions",
     "not ie <= 11",
     "not dead",
-    "not op_mini all"
+    "not op_mini all",
+    "chrome >= 53",
+    "firefox >= 49",
+    "safari >= 9.1",
+    "edge >= 79",
+    "opera >= 40"
   ],
   "scripts": {
     "analyze": "yarn prebuild && yarn webpack -p --config webpack.build.config.js --progress --devtool source-map --display minimal && yarn source-map-explorer dist/bundle.js",
@@ -126,7 +131,7 @@
     "enzyme-adapter-react-16": "1.12.1",
     "eslint": "7.14.0",
     "eslint-import-resolver-typescript": "^2.3.0",
-    "eslint-plugin-compat": "^3.8.0",
+    "eslint-plugin-compat": "^3.9.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^22.0.0",
     "eslint-plugin-lodash": "^5.1.0",

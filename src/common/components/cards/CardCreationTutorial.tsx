@@ -40,7 +40,7 @@ export default class CardCreationTutorial extends React.Component<Record<string,
           </DialogTitle>
           <DialogContent style={{ overflowY: 'hidden' }}>
             <div>This video tutorial explains how to create cards in the workshop.</div>
-            <div><em>(You can re-watch it at any time by clicking the Help button at the top of the page.)</em></div>
+            <div><em>(You can re-watch it at any time by clicking the <b>Help</b> button at the top of the page.)</em></div>
 
             <div style={{ margin: 'auto', width: 622, height: 350, padding: 20, boxSizing: 'border-box' }}>
               <IFrame

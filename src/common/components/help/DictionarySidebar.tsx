@@ -24,7 +24,7 @@ export default class DictionarySidebar extends React.Component<DictionarySidebar
             height: '65vh'
           }}
         >
-          <List style={{padding: 0}}>
+          <List style={{padding: 0, paddingRight: 1 }}>
             {this.props.terms.map(this.renderTerm)}
           </List>
         </Paper>

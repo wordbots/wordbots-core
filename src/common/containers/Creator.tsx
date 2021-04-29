@@ -1,16 +1,15 @@
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
-import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import Select from '@material-ui/core/Select';
-import { find } from 'lodash';
+import { Button, Icon, MenuItem, Paper, Select, Snackbar } from '@material-ui/core';
+import { compact, find } from 'lodash';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
+import { BigramProbs } from 'word-ngrams';
 
+import * as w from '../types';
+import { CREATABLE_TYPES, TYPE_EVENT, TYPE_ROBOT } from '../constants';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
@@ -21,9 +20,11 @@ import CardProvenanceDescription from '../components/cards/CardProvenanceDescrip
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
-import * as w from '../types';
-import { createCardFromProps } from '../util/cards';
-import { getCardById, lookupCurrentUser } from '../util/firebase';
+import { createCardFromProps, getSentencesFromInput, requestParse } from '../util/cards';
+import CardTextExampleStore from '../util/CardTextExampleStore';
+import { getCardById, getCardTextCorpus, lookupCurrentUser } from '../util/firebase';
+import { prepareBigramProbs } from '../util/language';
+import { ensureInRange } from '../util/common';
 
 interface CreatorStateProps {
   id: string | null
@@ -66,10 +67,16 @@ interface CreatorDispatchProps {
 type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentProps;
 
 interface CreatorState {
+  bigramProbs?: BigramProbs
   cardOpenedForEditing?: w.CardInStore
+  examplesLoaded: boolean
   isPermalinkCopied: boolean
   loaded: boolean
+  submittedParseIssue: string | null
+  submittedParseIssueConfirmationOpen: boolean
 }
+
+const exampleStore = new CardTextExampleStore();
 
 export function mapStateToProps(state: w.State): CreatorStateProps {
   return {
@@ -148,9 +155,15 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): CreatorDispatchProp
 
 export class Creator extends React.Component<CreatorProps, CreatorState> {
   public state: CreatorState = {
+    examplesLoaded: false,
+    isPermalinkCopied: false,
     loaded: false,
-    isPermalinkCopied: false
+    submittedParseIssue: null,
+    submittedParseIssueConfirmationOpen: false
   };
+
+  get robot(): boolean { return this.props.type === TYPE_ROBOT; }
+  get event(): boolean { return this.props.type === TYPE_EVENT; }
 
   get isCardEditable(): boolean {
     const { cardOpenedForEditing } = this.state;
@@ -167,12 +180,96 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     return window.location.href;
   }
 
+  get parserMode(): 'event' | 'object' {
+    return this.props.type === TYPE_EVENT ? 'event' : 'object';
+  }
+
+  get nonEmptySentences(): w.Sentence[] {
+    return this.props.sentences.filter((s) => /\S/.test(s.sentence));
+  }
+
+  get hasCardText(): boolean {
+    return this.nonEmptySentences.length > 0;
+  }
+
+  get parseErrors(): string[] {
+    return compact(this.nonEmptySentences.map((s) => s.result.error)).map((error) =>
+      (`${error}.`)
+        .replace('..', '.')
+        .replace('Parser did not produce a valid expression', 'Parser error')
+    );
+  }
+
+  get nameError(): string | null {
+    if (!this.props.name || this.props.name === '[Unnamed]') {
+      return 'This card needs a name!';
+    }
+    return null;
+  }
+
+  get typeError(): string | null {
+    if (!CREATABLE_TYPES.includes(this.props.type)) {
+      return 'Invalid type.';
+    }
+    return null;
+  }
+
+  get costError(): string | null {
+    return ensureInRange('cost', this.props.cost, 0, 20);
+  }
+
+  get attackError(): string | null {
+    if (this.robot) {
+      return ensureInRange('attack', this.props.attack, 0, 10);
+    }
+    return null;
+  }
+
+  get healthError(): string | null {
+    if (!this.event) {
+      return ensureInRange('health', this.props.health, 1, 10);
+    }
+    return null;
+  }
+
+  get speedError(): string | null {
+    if (this.robot) {
+      return ensureInRange('speed', this.props.speed, 0, 3);
+    }
+    return null;
+  }
+
+  get textError(): string | null {
+    if (this.event && !this.hasCardText) {
+      return 'Action cards must have card text.';
+    } else if (this.parseErrors.length > 0) {
+      return this.parseErrors.join(' ');
+    } else if (this.nonEmptySentences.find((s) => !s.result.js)) {
+      return 'Sentences are still being parsed ...';
+    } else {
+      return null;
+    }
+  }
+
+  get hasTextError(): boolean {
+    return this.parseErrors.length > 0;
+  }
+
+  get isValid(): boolean {
+    return !this.nameError && !this.typeError && !this.costError && !this.attackError &&
+      !this.healthError && !this.speedError && !this.textError;
+  }
+
   public componentDidMount(): void {
     this.maybeLoadCard();
+    this.loadExampleCards();
   }
 
   public render(): JSX.Element | null {
-    const { cardOpenedForEditing, isPermalinkCopied, loaded } = this.state;
+    const {
+      bigramProbs, cardOpenedForEditing, examplesLoaded, isPermalinkCopied,
+      loaded, submittedParseIssue, submittedParseIssueConfirmationOpen
+    } = this.state;
 
     if (!loaded) {
       return null;
@@ -183,29 +280,70 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         <Helmet title="Workshop" />
         <Title text="Workshop" />
 
-        <Button
-          color="secondary"
-          variant="contained"
-          style={{ marginLeft: 40, marginTop: 9 }}
-          onClick={this.handleClickNewCard}
-        >
-          <Icon style={{ marginRight: 10 }} className="material-icons">queue</Icon>
-          New Card
-        </Button>
-
-        {
-          cardOpenedForEditing &&
-          <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
-            <Button
-              color="secondary"
-              variant="contained"
-              style={{ marginLeft: 10, marginTop: 9 }}
+        <div style={{ display: 'inline' }}>
+          <Button
+            color="secondary"
+            variant="contained"
+            style={{ marginLeft: 20, marginTop: 9 }}
+            onClick={this.handleClickNewCard}
+          >
+            <Icon style={{ marginRight: 10 }} className="material-icons">queue</Icon>
+            <Tooltip inline text="Reset the workshop and start a new card from scratch." place="bottom" style={{ textTransform: 'none' }}>
+              New Card
+            </Tooltip>
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            style={{ marginLeft: 10, marginTop: 9 }}
+            onClick={this.handleClickHelp}
+          >
+            <Icon style={{ marginRight: 10 }} className="material-icons">help_outline</Icon>
+            <Tooltip inline text="Learn more about creating a card." place="bottom" style={{ textTransform: 'none' }}>
+              Help
+            </Tooltip>
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            style={{ marginLeft: 10, marginTop: 9 }}
+            onClick={this.handleClickDictionary}
+          >
+            <Icon style={{ marginRight: 10 }} className="material-icons">book</Icon>
+            <Tooltip inline text="Check out all of the terms and actions that the parser supports." place="bottom" style={{ textTransform: 'none' }}>
+              Dictionary
+            </Tooltip>
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            style={{ marginLeft: 10, marginTop: 9 }}
+            onClick={this.handleClickRandomize}
+            disabled={!examplesLoaded || !this.isCardEditable}
+          >
+            <Icon style={{ marginRight: 10 }} className="material-icons">refresh</Icon>
+            <Tooltip
+              inline
+              text={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
+              place="bottom"
+              style={{ textTransform: 'none' }}
             >
-              <Icon style={{ marginRight: 10 }} className="material-icons">link</Icon>
-              {isPermalinkCopied ? 'Copied!' : 'Copy Permalink'}
-            </Button>
-          </CopyToClipboard>
-        }
+              Randomize
+            </Tooltip>
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            style={{ marginLeft: 10, marginTop: 9 }}
+            onClick={this.testCard}
+            disabled={!this.isValid}
+          >
+            <Icon style={{ marginRight: 10 }} className="material-icons">videogame_asset</Icon>
+            <Tooltip inline text="Test out this card in sandbox mode." place="bottom" style={{ textTransform: 'none' }}>
+              Test
+            </Tooltip>
+          </Button>
+        </div>
 
         <div style={{
           display: 'flex',
@@ -238,9 +376,22 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
               isReadonly={!this.isCardEditable}
               willCreateAnother={this.props.willCreateAnother}
+              submittedParseIssue={submittedParseIssue}
+              isValid={this.isValid}
+              parseErrors={this.parseErrors}
+              validationErrors={{
+                name: this.nameError,
+                cost: this.costError,
+                type: this.typeError,
+                text: this.textError,
+                attack: this.attackError,
+                health: this.healthError,
+                speed: this.speedError
+              }}
+              bigramProbs={bigramProbs}
               onSetName={this.props.onSetName}
               onSetType={this.props.onSetType}
-              onSetText={this.props.onSetText}
+              onUpdateText={this.onUpdateText}
               onSetFlavorText={this.props.onSetFlavorText}
               onSetAttribute={this.props.onSetAttribute}
               onParseComplete={this.props.onParseComplete}
@@ -253,13 +404,19 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             <Paper style={{ padding: 10, margin: '15px auto', maxWidth: 840, paddingTop: cardOpenedForEditing ? 10 : 0 }}>
               {
                 cardOpenedForEditing
-                  ? <CardProvenanceDescription card={cardOpenedForEditing} style={{ color: '#666', fontSize: '0.85em' }} />
-                  : this.renderCardCreationOptionsControls()
+                  ? (
+                  <div style={{ fontSize: '0.85em', color: '#666' }}>
+                    <CardProvenanceDescription card={cardOpenedForEditing} style={{ display: 'inline' }} />{' '}
+                    <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
+                      <a className="underline">{isPermalinkCopied ? 'Copied!' : '[Copy permalink]'}</a>
+                    </CopyToClipboard>
+                  </div>
+                ) : this.renderCardCreationOptionsControls()
               }
             </Paper>
           </div>
-          <div style={{ width: 50, margin: 'auto' }}>
-            <Icon style={{ fontSize: 100, color: '#ddd' }} className="material-icons">forward</Icon>
+          <div className="workshop-arrow" style={{ width: 50, margin: 'auto' }}>
+            <Icon style={{ marginLeft: -5, fontSize: 100, color: '#ddd' }} className="material-icons">forward</Icon>
           </div>
           <CardPreview
             name={this.props.name}
@@ -274,6 +431,13 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             onSpriteClick={this.props.onSpriteClick}
           />
         </div>
+
+        <Snackbar
+          open={submittedParseIssueConfirmationOpen}
+          message={`Reported issue parsing '${submittedParseIssue}'. Thanks for the feedback!`}
+          autoHideDuration={4000}
+          onClose={this.handleCloseReportParseIssueSnackbar}
+        />
       </div>
     );
   }
@@ -336,6 +500,15 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     this.setState({ loaded: true });
   }
 
+  private onUpdateText = (text: string, cardType: w.CardType = this.props.type, dontIndex = false) => {
+    const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
+    const sentences = getSentencesFromInput(text);
+
+    this.props.onSetText(text);
+    this.setState({ submittedParseIssue: null });
+    requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
+  }
+
   private openDialog = (dialogPath: string) => {
     RouterDialog.openDialog(this.props.history, dialogPath);
   }
@@ -347,6 +520,26 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
       this.props.onResetCreator();
       this.props.history.push('/card/new');
     });
+  }
+
+  private handleClickHelp = () => {
+    this.openDialog('help');
+  }
+
+  private handleClickDictionary = () => {
+    this.openDialog('dictionary');
+  }
+
+  private handleClickRandomize = () => {
+    if (!this.isCardEditable) { return; }
+    const example: string | null = exampleStore.getExample(this.parserMode);
+    if (example) {
+      this.onUpdateText(example, this.props.type, true);
+    }
+  }
+
+  private handleCloseReportParseIssueSnackbar = () => {
+    this.setState({ submittedParseIssueConfirmationOpen: false });
   }
 
   private testCard = () => {
@@ -372,6 +565,17 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   private afterCopyPermalink = () => {
     this.setState({ isPermalinkCopied: true });
+  }
+
+  private loadExampleCards = async () => {
+    const { corpus, examples } = await getCardTextCorpus();
+
+    const bigramProbs = prepareBigramProbs(corpus);
+    this.setState({ bigramProbs });
+
+    exampleStore.loadExamples(examples, 100).then(() => {
+      this.setState({ examplesLoaded: true });
+    }).catch(console.error);
   }
 }
 

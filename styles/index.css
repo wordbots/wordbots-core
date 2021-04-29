@@ -219,3 +219,15 @@ a.topLink:hover {
     display: none !important;
   }
 }
+
+@media only screen and (max-width: 1300px) {
+  .workshop-arrow .material-icons {
+    font-size: 75px !important;
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  .workshop-arrow .material-icons {
+    font-size: 50px !important;
+  }
+}

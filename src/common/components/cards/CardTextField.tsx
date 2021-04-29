@@ -1,5 +1,6 @@
-import { flatMap, flow, slice, sortBy } from 'lodash/fp';
 import TextField from '@material-ui/core/TextField';
+import { debounce } from 'lodash';
+import { flatMap, flow, slice, sortBy } from 'lodash/fp';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
 
@@ -15,10 +16,21 @@ interface CardTextFieldProps {
   error: string | null
   readonly?: boolean
   bigramProbs?: BigramProbs
+  debounceMs: number
   onUpdateText: (text: string) => void
 }
 
-export default class CardTextField extends React.Component<CardTextFieldProps> {
+interface CardTextFieldState {
+  currentText: string
+  debouncedUpdateFn: (text: string) => void
+}
+
+export default class CardTextField extends React.Component<CardTextFieldProps, CardTextFieldState> {
+  state = {
+    currentText: this.props.text,
+    debouncedUpdateFn: debounce(this.props.onUpdateText, this.props.debounceMs)
+  };
+
   get textSuggestions(): Array<{ original: string, suggestion: string }> {
     const { bigramProbs, sentences } = this.props;
 
@@ -47,11 +59,12 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
           <div style={{width: '100%'}}>
             <TextField
               multiline
+              variant="outlined"
               disabled={this.props.readonly}
-              value={this.props.text}
+              value={this.state.currentText}
               label="Card Text"
               style={{width: '100%'}}
-              rows={1}
+              rows={2}
               onChange={this.handleUpdateText}
             />
           </div>
@@ -68,7 +81,10 @@ export default class CardTextField extends React.Component<CardTextFieldProps> {
   }
 
   private handleUpdateText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    this.props.onUpdateText(e.currentTarget.value);
+    const currentText = e.currentTarget.value;
+    this.setState({ currentText }, () => {
+      this.state.debouncedUpdateFn(currentText);
+    });
   }
 
   private renderDidYouMean = () => {

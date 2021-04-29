@@ -7,7 +7,7 @@ import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH, SIDEBAR_Z_INDEX } from '../constants';
-import { isFlagSet, toggleFlag } from '../util/browser';
+import { isFlagSet, isSupportedBrowser, toggleFlag } from '../util/browser';
 
 import Tooltip from './Tooltip';
 
@@ -40,6 +40,9 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
     collapsed: {
       width: SIDEBAR_COLLAPSED_WIDTH
     },
+    unsupportedBrowser: {
+      top: 54 + 50
+    }
   };
 
   public render(): JSX.Element {
@@ -48,7 +51,7 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
       <Drawer
         open
         variant="permanent"
-        classes={{ paper: `${classes.drawerPaper} ${isExpanded ? classes.expanded : classes.collapsed}` }}
+        classes={{ paper: `${classes.drawerPaper} ${isExpanded ? classes.expanded : classes.collapsed} ${!isSupportedBrowser() && classes.unsupportedBrowser}` }}
       >
         {this.renderLink('/', 'Home', 'home')}
         {this.renderLink('/play', 'Arena', 'crossed-swords', 'ra')}

@@ -18,10 +18,12 @@ import { Link } from 'react-router-dom';
 import RouterDialog from '../components/RouterDialog';
 import { MAX_Z_INDEX } from '../constants';
 import * as w from '../types';
+import { isSupportedBrowser, toggleFlag } from '../util/browser';
 import { logout } from '../util/firebase';
 
 interface TitleBarProps extends TitleBarReduxProps {
   isAppLoading: boolean
+  onRerender: () => void
 }
 
 interface TitleBarReduxProps {
@@ -113,6 +115,34 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
     );
   }
 
+  public renderUnsupportedBrowserMessage(): JSX.Element | undefined {
+    if (!isSupportedBrowser()) {
+      return (
+        <div style={{
+          display: 'flex',
+          width: '100%',
+          height: 30,
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          background: 'yellow',
+          padding: 10,
+          color: 'black',
+          fontSize: '0.85em'
+        }}>
+          <span>
+            It appears that you are using an unsupported browser.
+            Wordbots requires Firefox 49+, Chrome 53+, Safari 10+, Edge 79+, or a similar browser for optimal performance.{' '}
+            <a
+              style={{ cursor: 'pointer', color: '#666', textDecoration: 'underline' }}
+              onClick={this.handleClickHideUnsupportedBrowserMessage}
+            >[hide this message]</a>
+          </span>
+        </div>
+      );
+    }
+  }
+
   public render(): JSX.Element {
     if (this.props.isAppLoading) {
       return this.renderStaticTitleBar();
@@ -125,6 +155,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
               boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)'
             }}
           >
+            {this.renderUnsupportedBrowserMessage()}
             <Toolbar
               disableGutters
               style={{
@@ -172,6 +203,11 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   private handleClickLogout = () => {
     logout();
     this.closeUserMenu();
+  }
+
+  private handleClickHideUnsupportedBrowserMessage = () => {
+    toggleFlag("hideUnsupportedBrowserMessage");
+    this.props.onRerender();
   }
 }
 

@@ -2746,14 +2746,14 @@
 
 .gear.forward {
   transform: scale(0.5);
-  -webkit-animation: clockwise 2s infinite linear;
-  animation: clockwise 2s infinite linear;
+  -webkit-animation: gear-clockwise 2s infinite linear;
+  animation: gear-clockwise 2s infinite linear;
   margin-left: -6px;
   margin-right: -4px;
 }
 .gear.reverse {
-  -webkit-animation: reverse 2s infinite linear;
-          animation: reverse 2s infinite linear;
+  -webkit-animation: gear-reverse 2s infinite linear;
+          animation: gear-reverse 2s infinite linear;
 }
 .paused .gear {
   -webkit-animation: none;
@@ -2801,7 +2801,7 @@
 .gear > .tooth.rotate-135 {
   transform: rotate(135deg);
 }
-@-webkit-keyframes clockwise {
+@-webkit-keyframes gear-clockwise {
   from {
     transform: scale(0.5) rotate(0deg);
   }
@@ -2809,7 +2809,7 @@
     transform: scale(0.5) rotate(359deg);
   }
 }
-@keyframes clockwise {
+@keyframes gear-clockwise {
   from {
     transform: scale(0.5) rotate(0deg);
   }
@@ -2817,7 +2817,7 @@
     transform: scale(0.5) rotate(359deg);
   }
 }
-@-webkit-keyframes reverse {
+@-webkit-keyframes gear-reverse {
   from {
     transform: rotate(345deg);
   }
@@ -2825,7 +2825,7 @@
     transform: rotate(-14deg);
   }
 }
-@keyframes reverse {
+@keyframes gear-reverse {
   from {
     transform: rotate(337deg);
   }

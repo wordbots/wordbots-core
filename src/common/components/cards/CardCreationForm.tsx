@@ -5,6 +5,7 @@ import { BigramProbs } from 'word-ngrams';
 
 import { CREATABLE_TYPES, TYPE_EVENT, TYPE_ROBOT, typeToString } from '../../constants';
 import * as w from '../../types';
+import { CardValidationResults } from '../../util/cards';
 import { saveReportedParseIssue } from '../../util/firebase';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
@@ -28,10 +29,8 @@ interface CardCreationFormProps {
   isReadonly: boolean
   willCreateAnother: boolean
   submittedParseIssue: string | null
+  validationResults: CardValidationResults
   bigramProbs?: BigramProbs
-  isValid: boolean
-  parseErrors: string[]
-  validationErrors: Record<string, string | null>
 
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
@@ -91,7 +90,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   get hasTextError(): boolean {
-    return this.props.parseErrors.length > 0;
+    return this.props.validationResults.parseErrors.length > 0;
   }
 
   public componentDidMount(): void {
@@ -107,7 +106,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
   }
 
   public render(): JSX.Element {
-    const { isReadonly, isValid, validationErrors, willCreateAnother, onToggleWillCreateAnother } = this.props;
+    const { isReadonly, validationResults, willCreateAnother, onToggleWillCreateAnother } = this.props;
 
     return (
       <div>
@@ -118,8 +117,8 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               value={this.props.name}
               label="Card Name"
               style={CardCreationForm.styles.leftCol}
-              error={!!validationErrors.name}
-              helperText={validationErrors.name}
+              error={!!validationResults.nameError}
+              helperText={validationResults.nameError}
               onChange={this.handleSetName}
             />
             <NumberField
@@ -133,7 +132,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                 style: { textAlign: 'center', marginLeft: 8, fontSize: 20 },
                 disableUnderline: true
               }}
-              errorText={validationErrors.cost}
+              errorText={validationResults.costError}
               onChange={this.setAttribute('cost')}
             />
           </div>
@@ -174,7 +173,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                 readonly={isReadonly}
                 text={this.props.text}
                 sentences={this.nonEmptySentences}
-                error={validationErrors.text}
+                error={validationResults.textError}
                 bigramProbs={this.props.bigramProbs}
                 onUpdateText={this.props.onUpdateText}
                 debounceMs={150}
@@ -221,7 +220,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                   variant="contained"
                   color="secondary"
                   fullWidth
-                  disabled={!isValid}
+                  disabled={!validationResults.isValid}
                   style={CardCreationForm.styles.saveButton}
                   onClick={this.handleSaveCard}
                 >
@@ -296,7 +295,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           maxValue={opts.max || 10}
           style={CardCreationForm.styles.attribute}
           disabled={!enabled}
-          errorText={this.props.validationErrors[attribute]}
+          errorText={this.props.validationResults[`${attribute}Error` as 'attackError' | 'healthError' | 'speedError']}
           onChange={this.setAttribute(attribute)}
           inputProps={{
             startAdornment: (

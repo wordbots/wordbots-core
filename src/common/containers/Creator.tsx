@@ -1,5 +1,5 @@
 import { Button, Icon, MenuItem, Paper, Select, Snackbar } from '@material-ui/core';
-import { compact, find } from 'lodash';
+import { find } from 'lodash';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -9,7 +9,7 @@ import { Dispatch } from 'redux';
 import { BigramProbs } from 'word-ngrams';
 
 import * as w from '../types';
-import { CREATABLE_TYPES, TYPE_EVENT, TYPE_ROBOT } from '../constants';
+import { TYPE_EVENT } from '../constants';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
@@ -20,13 +20,12 @@ import CardProvenanceDescription from '../components/cards/CardProvenanceDescrip
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
-import { createCardFromProps, getSentencesFromInput, requestParse } from '../util/cards';
+import { CardValidationResults, createCardFromProps, getSentencesFromInput, requestParse, validateCardInCreator } from '../util/cards';
 import CardTextExampleStore from '../util/CardTextExampleStore';
 import { getCardById, getCardTextCorpus, lookupCurrentUser } from '../util/firebase';
 import { prepareBigramProbs } from '../util/language';
-import { ensureInRange } from '../util/common';
 
-interface CreatorStateProps {
+export interface CreatorStateProps {
   id: string | null
   name: string
   type: w.CardType
@@ -162,9 +161,6 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     submittedParseIssueConfirmationOpen: false
   };
 
-  get robot(): boolean { return this.props.type === TYPE_ROBOT; }
-  get event(): boolean { return this.props.type === TYPE_EVENT; }
-
   get isCardEditable(): boolean {
     const { cardOpenedForEditing } = this.state;
     if (cardOpenedForEditing) {
@@ -184,80 +180,8 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     return this.props.type === TYPE_EVENT ? 'event' : 'object';
   }
 
-  get nonEmptySentences(): w.Sentence[] {
-    return this.props.sentences.filter((s) => /\S/.test(s.sentence));
-  }
-
-  get hasCardText(): boolean {
-    return this.nonEmptySentences.length > 0;
-  }
-
-  get parseErrors(): string[] {
-    return compact(this.nonEmptySentences.map((s) => s.result.error)).map((error) =>
-      (`${error}.`)
-        .replace('..', '.')
-        .replace('Parser did not produce a valid expression', 'Parser error')
-    );
-  }
-
-  get nameError(): string | null {
-    if (!this.props.name || this.props.name === '[Unnamed]') {
-      return 'This card needs a name!';
-    }
-    return null;
-  }
-
-  get typeError(): string | null {
-    if (!CREATABLE_TYPES.includes(this.props.type)) {
-      return 'Invalid type.';
-    }
-    return null;
-  }
-
-  get costError(): string | null {
-    return ensureInRange('cost', this.props.cost, 0, 20);
-  }
-
-  get attackError(): string | null {
-    if (this.robot) {
-      return ensureInRange('attack', this.props.attack, 0, 10);
-    }
-    return null;
-  }
-
-  get healthError(): string | null {
-    if (!this.event) {
-      return ensureInRange('health', this.props.health, 1, 10);
-    }
-    return null;
-  }
-
-  get speedError(): string | null {
-    if (this.robot) {
-      return ensureInRange('speed', this.props.speed, 0, 3);
-    }
-    return null;
-  }
-
-  get textError(): string | null {
-    if (this.event && !this.hasCardText) {
-      return 'Action cards must have card text.';
-    } else if (this.parseErrors.length > 0) {
-      return this.parseErrors.join(' ');
-    } else if (this.nonEmptySentences.find((s) => !s.result.js)) {
-      return 'Sentences are still being parsed ...';
-    } else {
-      return null;
-    }
-  }
-
-  get hasTextError(): boolean {
-    return this.parseErrors.length > 0;
-  }
-
-  get isValid(): boolean {
-    return !this.nameError && !this.typeError && !this.costError && !this.attackError &&
-      !this.healthError && !this.speedError && !this.textError;
+  get validationResults(): CardValidationResults {
+    return validateCardInCreator(this.props);
   }
 
   public componentDidMount(): void {
@@ -336,7 +260,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             variant="contained"
             style={{ marginLeft: 10, marginTop: 9 }}
             onClick={this.testCard}
-            disabled={!this.isValid}
+            disabled={!this.validationResults.isValid}
           >
             <Icon style={{ marginRight: 10 }} className="material-icons">videogame_asset</Icon>
             <Tooltip inline text="Test out this card in sandbox mode." place="bottom" style={{ textTransform: 'none' }}>
@@ -377,17 +301,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               isReadonly={!this.isCardEditable}
               willCreateAnother={this.props.willCreateAnother}
               submittedParseIssue={submittedParseIssue}
-              isValid={this.isValid}
-              parseErrors={this.parseErrors}
-              validationErrors={{
-                name: this.nameError,
-                cost: this.costError,
-                type: this.typeError,
-                text: this.textError,
-                attack: this.attackError,
-                health: this.healthError,
-                speed: this.speedError
-              }}
+              validationResults={this.validationResults}
               bigramProbs={bigramProbs}
               onSetName={this.props.onSetName}
               onSetType={this.props.onSetType}

@@ -122,6 +122,7 @@ class App extends React.Component<AppProps, AppState> {
     onLogout(() => {
       onLoggedOut();
       this.loadUserCardsAndDecks(null);
+      this.loadSets();
     });
   }
 

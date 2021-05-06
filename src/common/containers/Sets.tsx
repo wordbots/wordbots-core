@@ -155,7 +155,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
         </div>}
 
         <div style={{ margin: 20 }}>
-          <MustBeLoggedIn loggedIn={!!user}>
+          <MustBeLoggedIn loggedIn={!!user} style={{ display: 'inline-block' }}>
             <Button
               variant="contained"
               color="primary"
@@ -211,15 +211,17 @@ class Sets extends React.Component<SetsProps, SetsState> {
     }
   }
 
-  private renderSetSummary = (set: w.Set, extraProps: Record<string, any> = {}): JSX.Element => {
+  private renderSetSummary = (set: w.Set, extraProps: Record<string, unknown> = {}): JSX.Element => {
+    const { user, history } = this.props;
     const { numDecksBySet } = this.state;
     return (
       <SetSummary
         key={set.id}
         set={set}
-        user={this.props.user}
+        user={user}
         numDecksCreated={numDecksBySet ? numDecksBySet[set.id] || 0 : undefined}
         isSingleSet={!!this.singleSet}
+        history={history}
         onCreateDeckFromSet={this.handleCreateDeckFromSet(set.id)}
         onDeleteSet={this.handleDeleteSet(set.id)}
         onDuplicateSet={this.handleDuplicateSet(set.id)}

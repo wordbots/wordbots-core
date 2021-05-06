@@ -146,9 +146,9 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   get textFitStyle(): React.CSSProperties {
     const { type, scale } = this.props;
     const baseStyle: React.CSSProperties = {
-      padding: 6 * (scale || 1),
+      padding: Math.floor(6 * (scale || 1)),
       paddingBottom: 0,
-      height: (type !== TYPE_EVENT ? 70 : 96) * (scale || 1),
+      height: Math.floor((type !== TYPE_EVENT ? 70 : 90) * (scale || 1)),
       width: '100%',
       boxSizing: 'border-box'
     };

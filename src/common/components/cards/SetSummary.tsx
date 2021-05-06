@@ -3,6 +3,7 @@ import { ButtonProps } from '@material-ui/core/Button';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
+import { History } from 'history';
 import { isUndefined } from 'lodash';
 import * as React from 'react';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
@@ -13,9 +14,12 @@ import { Card } from '../card/Card';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import ProfileLink from '../users/ProfileLink';
 
+import { SortCriteria } from './types.enums';
+
 interface SetSummaryBaseProps {
   set: w.Set
   user: fb.User | null
+  history: History
   inPublishedSetsList?: boolean
   isSingleSet?: boolean
   numDecksCreated?: number
@@ -143,10 +147,10 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         {isCardListExpanded && <div>
           {
             cards
-              .sort((c1, c2) => sortCards(c1, c2, 0))
+              .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
               .map((card, idx) => (
                 <div key={idx} style={{float: 'left'}}>
-                  {Card.fromObj(card, { scale: 0.7 })}
+                  {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
                 </div>
               ))
           }
@@ -227,6 +231,10 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       {text}
     </Button>
   )
+
+  private handleClickCard = (card: w.CardInStore) => {
+    this.props.history.push(`/card/${card.id}`, { card });
+  }
 
   private afterCopyPermalink = () => {
     this.setState({ isPermalinkCopied: true });

@@ -3,17 +3,18 @@ import {
   isArray, mapValues, omit, pick, reduce, shuffle, uniqBy
 } from 'lodash';
 
+import * as w from '../types';
+import * as g from '../guards';
 import {
   CARD_SCHEMA_VERSION,
   HINT_REGEXES, HINTS, KEEP_DECKS_UNSHUFFLED, KEYWORD_REGEXES,
   KEYWORDS, PARSE_DEBOUNCE_MS, PARSER_URL, SPRITE_VERSION,
-  SYNONYMS, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString
+  SYNONYMS, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString, CREATABLE_TYPES
 } from '../constants';
-import * as g from '../guards';
 import defaultState from '../store/defaultCollectionState';
-import * as w from '../types';
+import { CreatorStateProps } from '../containers/Creator';
 
-import { id as generateId } from './common';
+import { ensureInRange, id as generateId } from './common';
 import { indexParsedSentence, lookupCurrentUser } from './firebase';
 
 //
@@ -196,6 +197,53 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 
   } else {
     return 0;
   }
+}
+
+export interface CardValidationResults {
+  isValid: boolean
+  parseErrors: string[]
+  nameError: string | null
+  costError: string | null
+  typeError: string | null
+  textError: string | null
+  attackError: string | null
+  healthError: string | null
+  speedError: string | null
+}
+export function validateCardInCreator(props: CreatorStateProps): CardValidationResults {
+  const { name, cost, type, sentences, attack, health, speed } = props;
+
+  const nonEmptySentences: w.Sentence[] = sentences.filter((s) => /\S/.test(s.sentence));
+  const hasCardText: boolean = nonEmptySentences.length > 0;
+
+  const parseErrors: string[] = compact(nonEmptySentences.map((s) => s.result.error)).map((error) =>
+    (`${error}.`)
+      .replace('..', '.')
+      .replace('Parser did not produce a valid expression', 'Parser error')
+  );
+
+  const nameError: string | null = (!name || name === '[Unnamed]') ? 'This card needs a name!' : null;
+  const typeError: string | null = !CREATABLE_TYPES.includes(type) ? 'Invalid type.' : null;
+  const costError: string | null = ensureInRange('cost', cost, 0, 20);
+  const attackError: string | null = (type === TYPE_ROBOT) ? ensureInRange('attack', attack, 0, 10) : null;
+  const healthError: string | null = (type !== TYPE_EVENT) ? ensureInRange('health', health, 1, 10) : null;
+  const speedError: string | null = (type === TYPE_ROBOT) ? ensureInRange('speed', speed, 0, 3) : null;
+
+  const textError: string | null = (() => {
+    if (type === TYPE_EVENT && !hasCardText) {
+      return 'Action cards must have card text.';
+    } else if (parseErrors.length > 0) {
+      return parseErrors.join(' ');
+    } else if (nonEmptySentences.find((s) => !s.result.js)) {
+      return 'Sentences are still being parsed ...';
+    } else {
+      return null;
+    }
+  })();
+
+  const isValid = !nameError && !typeError && !costError && !attackError && !healthError && !speedError && !textError;
+
+  return { isValid, parseErrors, nameError, typeError, costError, attackError, healthError, speedError, textError };
 }
 
 //

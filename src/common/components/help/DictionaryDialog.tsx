@@ -171,7 +171,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
   private checkHash = () => {
     const hash = getHash(this.props.history);
     if (hash && hash !== this.hash) {
-      const [ type, term ] = hash.split(':');
+      const [ type, term ] = hash.split(/:(.+)/); // https://stackoverflow.com/a/4607799
       const tabIdx = 'dtk'.indexOf(type);
 
       this.setState({ tabIdx }, () => {

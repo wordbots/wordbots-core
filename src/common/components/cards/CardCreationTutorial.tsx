@@ -1,4 +1,4 @@
-import { Icon, IconButton, Paper } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Icon, IconButton } from '@material-ui/core';
 import * as React from 'react';
 import IFrame from 'react-iframe';
 
@@ -18,46 +18,43 @@ export default class CardCreationTutorial extends React.Component<Record<string,
 
     if (visible) {
       return (
-        <Paper
-          style={{
-            maxWidth: 860,
-            height: 550,
-            margin: '0 auto 15px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+        <Dialog
+          open
+          onClose={this.handleClose}
+          PaperProps={{
+            style: {
+              width: 650,
+              maxWidth: 650,
+              height: 500
+            }
           }}
         >
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-            <Paper
-              style={{
-                fontSize: 18,
-                backgroundColor: '#f3645e',
-                color: 'white',
-                fontFamily: 'Carter One',
-                padding: '10px 15px',
-                borderBottomRightRadius: 5
-              }}
+          <DialogTitle style={{ position: 'relative' }}>
+            First time at the workshop?
+            <IconButton
+              onClick={this.handleClose}
+              style={{ position: 'absolute', top: -2, right: -2, width: 24, height: 24, margin: 10, padding: 0 }}
             >
-              First time here? Watch this tutorial!
-            </Paper>
-            <IconButton onClick={this.handleClose} style={{ width: 24, height: 24, margin: 10, padding: 0 }}>
               <Icon>close</Icon>
             </IconButton>
-          </div>
-          <div style={{ margin: 10, width: '100%', height: '100%', padding: 20, boxSizing: 'border-box' }}>
-            <IFrame
-              position="relative"
-              url="https://www.youtube.com/embed/GeZwKIOKc1c?rel=0"
-              width="100%"
-              height="100%"
-              frameborder="0"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-            />
-          </div>
-        </Paper>
+          </DialogTitle>
+          <DialogContent style={{ overflowY: 'hidden' }}>
+            <div>This video tutorial explains how to create cards in the workshop.</div>
+            <div><em>(You can re-watch it at any time by clicking the <b>Help</b> button at the top of the page.)</em></div>
+
+            <div style={{ margin: 'auto', width: 622, height: 350, padding: 20, boxSizing: 'border-box' }}>
+              <IFrame
+                position="relative"
+                url="https://www.youtube.com/embed/GeZwKIOKc1c?rel=0"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       );
     } else {
       return null;

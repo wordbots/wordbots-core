@@ -205,11 +205,10 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         <Helmet title="Workshop" />
         <Title text="Workshop" />
 
-        <div style={{ display: 'inline' }}>
+        <div style={{ display: 'inline', paddingLeft: 10 }}>
           <CreatorToolbarButton
             icon="queue"
             tooltip="Reset the workshop and start a new card from scratch."
-            style={{ marginLeft: 20 }}
             onClick={this.handleClickNewCard}
           >
             New Card

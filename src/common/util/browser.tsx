@@ -1,3 +1,4 @@
+import { detect, Browser } from 'detect-browser';
 import { History } from 'history';
 import * as ReactGA from 'react-ga';
 
@@ -62,4 +63,35 @@ export function toggleFlag(flag: string): void {
 
 export function getGameAreaNode(): HTMLElement {
   return document.querySelector('#gameArea') || document.body;
+}
+
+// Wordbots requires full SVG support, as well as flexbox, webkit-text-stroke, etc
+// (In practice, most modern browsers from 2017+ support all of these features, except pre-Chromium Edge)
+const SUPPORTED_BROWSER_VERSIONS: Partial<Record<Browser, number>> = {
+  // Major desktop browsers
+  chrome: 53,
+  firefox: 49,
+  safari: 10,
+  edge: 79, // (only Chromium-based Edge supported)
+  opera: 40,
+  // Other browsers
+  samsung: 13,
+};
+
+export function isSupportedBrowser(): boolean {
+  if (isFlagSet('hideUnsupportedBrowserMessage')) {
+    return true;
+  }
+
+  const browserInfo = detect();
+  if (browserInfo?.type === 'browser') {
+    const { name, version } = browserInfo;
+    const requiredVersion = SUPPORTED_BROWSER_VERSIONS[name];
+    const majorVersion = parseInt(version.split('.')[0]);
+    if (requiredVersion && majorVersion && majorVersion >= requiredVersion) {
+      return true;
+    }
+  }
+
+  return false;
 }

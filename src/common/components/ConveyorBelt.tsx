@@ -31,7 +31,7 @@ export default class ConveyorBelt extends React.Component<ConveyorBeltProps> {
         {times(numGearPairs, (i: number) => {
           const last = i === numGearPairs - 1;
           return (
-            <React.Fragment>
+            <React.Fragment key={i}>
               <span key={`${i}.1`} className={`gear reverse ${last ? 'last' : ''}`}>
                 <span className="body" />
                 <span className="tooth" />

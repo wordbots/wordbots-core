@@ -234,7 +234,7 @@ class App extends React.Component<AppProps, AppState> {
       <MuiThemeProvider theme={createMuiTheme(muiV1Theme)}>
         <div>
           <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
-          <TitleBar isAppLoading={this.isLoading} />
+          <TitleBar isAppLoading={this.isLoading} onRerender={this.props.onRerender} />
           <div>
             {this.sidebar}
             {this.isLoading ? this.loadingMessage : this.content}

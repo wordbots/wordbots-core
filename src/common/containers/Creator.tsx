@@ -1,4 +1,4 @@
-import { Button, Icon, MenuItem, Paper, Select, Snackbar } from '@material-ui/core';
+import { Icon, MenuItem, Paper, Select, Snackbar } from '@material-ui/core';
 import { find } from 'lodash';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
@@ -17,6 +17,7 @@ import CardCreationForm from '../components/cards/CardCreationForm';
 import CardCreationTutorial from '../components/cards/CardCreationTutorial';
 import CardPreview from '../components/cards/CardPreview';
 import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
+import CreatorToolbarButton from '../components/cards/CreatorToolbarButton';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
@@ -205,68 +206,44 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         <Title text="Workshop" />
 
         <div style={{ display: 'inline' }}>
-          <Button
-            color="secondary"
-            variant="contained"
-            style={{ marginLeft: 20, marginTop: 9 }}
+          <CreatorToolbarButton
+            icon="queue"
+            tooltip="Reset the workshop and start a new card from scratch."
+            style={{ marginLeft: 20 }}
             onClick={this.handleClickNewCard}
           >
-            <Icon style={{ marginRight: 10 }} className="material-icons">queue</Icon>
-            <Tooltip inline text="Reset the workshop and start a new card from scratch." place="bottom" style={{ textTransform: 'none' }}>
-              New Card
-            </Tooltip>
-          </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            style={{ marginLeft: 10, marginTop: 9 }}
+            New Card
+          </CreatorToolbarButton>
+          <CreatorToolbarButton
+            icon="help_outline"
+            tooltip="Learn more about creating a card."
             onClick={this.handleClickHelp}
           >
-            <Icon style={{ marginRight: 10 }} className="material-icons">help_outline</Icon>
-            <Tooltip inline text="Learn more about creating a card." place="bottom" style={{ textTransform: 'none' }}>
-              Help
-            </Tooltip>
-          </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            style={{ marginLeft: 10, marginTop: 9 }}
+            Help
+          </CreatorToolbarButton>
+          <CreatorToolbarButton
+            icon="book"
+            tooltip="Check out all of the terms and actions that the parser supports."
             onClick={this.handleClickDictionary}
           >
-            <Icon style={{ marginRight: 10 }} className="material-icons">book</Icon>
-            <Tooltip inline text="Check out all of the terms and actions that the parser supports." place="bottom" style={{ textTransform: 'none' }}>
-              Dictionary
-            </Tooltip>
-          </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            style={{ marginLeft: 10, marginTop: 9 }}
+            Dictionary
+          </CreatorToolbarButton>
+          <CreatorToolbarButton
+            icon="refresh"
+            tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
             onClick={this.handleClickRandomize}
             disabled={!examplesLoaded || !this.isCardEditable}
           >
-            <Icon style={{ marginRight: 10 }} className="material-icons">refresh</Icon>
-            <Tooltip
-              inline
-              text={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
-              place="bottom"
-              style={{ textTransform: 'none' }}
-            >
-              Randomize
-            </Tooltip>
-          </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            style={{ marginLeft: 10, marginTop: 9 }}
+            Randomize
+          </CreatorToolbarButton>
+          <CreatorToolbarButton
+            icon="videogame_asset"
+            tooltip="Test out this card in sandbox mode."
             onClick={this.testCard}
             disabled={!this.validationResults.isValid}
           >
-            <Icon style={{ marginRight: 10 }} className="material-icons">videogame_asset</Icon>
-            <Tooltip inline text="Test out this card in sandbox mode." place="bottom" style={{ textTransform: 'none' }}>
-              Test
-            </Tooltip>
-          </Button>
+            Test
+          </CreatorToolbarButton>
         </div>
 
         <div style={{

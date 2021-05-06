@@ -73,6 +73,7 @@ export const SHOW_TOOLTIP_TIMEOUT_MS = 500;
 // Layout.
 
 export const HEADER_HEIGHT = 64;
+export const UNSUPPORTED_BROWSER_MESSAGE_HEIGHT = 50;
 export const SIDEBAR_WIDTH = 180;
 export const SIDEBAR_COLLAPSED_WIDTH = 58;
 export const MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR = 1200;

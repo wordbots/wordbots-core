@@ -6,7 +6,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH, SIDEBAR_Z_INDEX } from '../constants';
+import { HEADER_HEIGHT, MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH, SIDEBAR_Z_INDEX, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 import { isFlagSet, isSupportedBrowser, toggleFlag } from '../util/browser';
 
 import Tooltip from './Tooltip';
@@ -21,8 +21,7 @@ interface NavMenuProps {
 class NavMenu extends React.Component<NavMenuProps & WithStyles> {
   public static styles: Record<string, CSSProperties> = {
     drawerPaper: {
-      top: 54,
-      paddingTop: 10,
+      top: HEADER_HEIGHT,
       transition: 'width 200ms ease-in-out',
       height: 'calc(100% - 54px)',
       overflow: 'visible',
@@ -41,7 +40,7 @@ class NavMenu extends React.Component<NavMenuProps & WithStyles> {
       width: SIDEBAR_COLLAPSED_WIDTH
     },
     unsupportedBrowser: {
-      top: 54 + 50
+      top: HEADER_HEIGHT + UNSUPPORTED_BROWSER_MESSAGE_HEIGHT
     }
   };
 

@@ -37,7 +37,7 @@ describe('Board component', () => {
         },
         'type': TYPE_CORE,
         'attacking': null,
-        isDamaged: false
+        'isDamaged': false
       },
       '3,0,-3': {
         'id': 'orangeCore',
@@ -50,7 +50,7 @@ describe('Board component', () => {
         },
         'type': TYPE_CORE,
         'attacking': null,
-        isDamaged: false
+        'isDamaged': false
       }
     });
   });

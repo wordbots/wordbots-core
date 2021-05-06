@@ -14,12 +14,19 @@
   transition: background-color 500ms ease-in-out;
 }
 
-.hex-piece-enter {
-  opacity: 0;
-}
-.hex-piece-enter-active {
+.hex-piece {
   opacity: 1;
+  animation: FadeIn 400ms ease-in-out;
 }
+.hex-piece.kernel {
+  opacity: 1;
+  animation: FadeIn 1200ms ease-in-out;
+}
+@keyframes FadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 .hex-piece-exit {
   opacity: 1;
 }
@@ -27,15 +34,22 @@
   opacity: 0;
 }
 
-.event-animation-orange-appear {
-  transform: translateY(500%);
-}
-.event-animation-blue-appear {
-  transform: translateY(-500%);
-}
-.event-animation-orange-appear-active, .event-animation-blue-appear-active {
+.event-animation-orange {
   transform: translateY(0%);
-  transition: transform 500ms ease-in-out;
+  animation: AppearFromBottom 500ms ease-in-out;
+}
+@keyframes AppearFromBottom {
+  0% { transform: translateY(500%); }
+  100% { transform: translateY(0%); }
+}
+
+.event-animation-blue {
+  transform: translateY(0%);
+  animation: AppearFromTop 500ms ease-in-out;
+}
+@keyframes AppearFromTop {
+  0% { transform: translateY(-500%); }
+  100% { transform: translateY(0%); }
 }
 
 .new-here-robot {
@@ -45,13 +59,11 @@
   right: -30px;
   cursor: pointer;
 }
-
 .new-here-robot:hover {
   animation: none;
   right: -24px;
   top: 114px;
 }
-
 @keyframes SlowShake {
   0%, 40% {
     right: -30px;
@@ -61,4 +73,23 @@
     right: -38px;
     top: 128px;
   }
+}
+
+.piece-damage {
+  animation: FadeToWhiteAndBack 1.7s linear;
+  filter: brightness(1);
+}
+@keyframes FadeToWhiteAndBack {
+  0%, 100% { filter: brightness(1); }
+  30%, 60% { filter: brightness(10); }
+}
+
+.piece-tint-damage {
+  animation: FadeInThenOut 1.7s linear;
+  fill: red;
+  opacity: 0;
+}
+@keyframes FadeInThenOut {
+  0%, 100% { opacity: 0; }
+  30%, 60% { opacity: 0.7; }
 }

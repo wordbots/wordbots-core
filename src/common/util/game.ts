@@ -397,6 +397,7 @@ function endTurn(state: w.GameState): w.GameState {
     movedThisTurn: false,
     attackedLastTurn: ('attackedThisTurn' in obj) ? obj.attackedThisTurn : undefined,
     movedLastTurn: ('movedThisTurn' in obj) ? obj.movedThisTurn : undefined,
+    tookDamageThisTurn: false,
     mostRecentlyInCombatWith: undefined,
 
     abilities: obj.abilities ? compact(obj.abilities.map(decrementDuration) as w.PassiveAbility[]) : [],
@@ -507,6 +508,7 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
 
   if (!object.beingDestroyed) {
     object.stats.health -= amount;
+    object.tookDamageThisTurn = true;
     state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
     state = triggerEvent(state, 'afterDamageReceived', {object});
   }
@@ -587,6 +589,14 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);
+  return state;
+}
+
+export function cleanUpAnimations(state: w.GameState): w.GameState {
+  const cleanup = (obj: w.Object): w.Object => ({ ...obj, tookDamageThisTurn: false });
+
+  state.players['blue'].objectsOnBoard = mapValues(state.players['blue'].objectsOnBoard, cleanup);
+  state.players['blue'].objectsOnBoard = mapValues(state.players['blue'].objectsOnBoard, cleanup);
   return state;
 }
 

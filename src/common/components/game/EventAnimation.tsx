@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { EVENT_ANIMATION_TIME_MS, EVENT_ANIMATION_Z_INDEX } from '../../constants';
 import * as w from '../../types';
@@ -46,15 +45,9 @@ export default class EventAnimation extends React.Component<EventAnimationProps,
             zIndex: EVENT_ANIMATION_Z_INDEX
           }}
         >
-          <TransitionGroup>
-            <CSSTransition
-              appear
-              classNames={`event-animation-${this.props.currentTurn}`}
-              timeout={500}
-            >
-              {this.renderEvent()}
-            </CSSTransition>
-          </TransitionGroup>
+          <div className={`event-animation-${this.props.currentTurn}`}>
+            {this.renderEvent()}
+          </div>
         </div>
       );
     } else {

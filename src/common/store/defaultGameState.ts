@@ -44,7 +44,8 @@ function playerState(
         stats: {...coreCard.stats} as { health: number },
         movesMade: 0,
         triggers: [],
-        abilities: []
+        abilities: [],
+        tookDamageThisTurn: false
       }
     },
     selectedCard: null,

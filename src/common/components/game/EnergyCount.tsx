@@ -56,9 +56,9 @@ export default class EnergyCount extends React.Component<EnergyCountProps> {
         key={id()}
         style={{
           height: 64,
-          width: 18,
+          width: 16,
           backgroundColor: filled ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[color] : 'transparent',
-          marginLeft: 8,
+          marginLeft: 6,
           border: '3px solid white',
           borderRadius: 4
         }}

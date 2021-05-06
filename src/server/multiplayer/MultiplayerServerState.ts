@@ -200,7 +200,7 @@ export default class MultiplayerServerState {
       const { name, format, options } = waitingPlayer;
       const decks = { orange: waitingPlayer.deck.cards.map(instantiateCard), blue: deck.cards.map(instantiateCard) };
       const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
-      const seed = generateID();
+      const seed = Math.random();
 
       const initialGameState: m.GameState = formatObj!.startGame(defaultGameState, 'orange', usernames, decks, options, seed);
 

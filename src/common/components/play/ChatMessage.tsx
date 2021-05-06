@@ -44,7 +44,7 @@ export default class ChatMessage extends React.Component<ChatMessageProps> {
       return (
         <CardTooltip key={key} card={card}>
           <span style={{fontWeight: 'bold', cursor: 'pointer'}}>
-            {phrase}
+            {card.name}
           </span>
         </CardTooltip>
       );

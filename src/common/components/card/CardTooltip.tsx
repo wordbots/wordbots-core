@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import * as ReactTooltip from 'react-tooltip';
 
 import { MAX_Z_INDEX } from '../../constants';
@@ -39,15 +40,19 @@ export default class CardTooltip extends React.Component<CardTooltipProps> {
           <span data-tip="" data-for={this.tooltipId}>
             {this.props.children}
           </span>
-          <span style={{ zIndex: MAX_Z_INDEX, backgroundColor: 'transparent' }}>
-            <ReactTooltip
-              id={this.tooltipId}
-              className="hovered-card"
-              place="top"
-            >
-              {Card.fromObj(this.props.card)}
-            </ReactTooltip>
-          </span>
+          {
+            ReactDOM.createPortal(
+              <ReactTooltip
+                id={this.tooltipId}
+                className="hovered-card"
+                place="top"
+                style={{ zIndex: MAX_Z_INDEX }}
+              >
+                {Card.fromObj(this.props.card)}
+              </ReactTooltip>,
+              document.querySelector('#modal-root')!
+            )
+          }
         </span>
       );
     }

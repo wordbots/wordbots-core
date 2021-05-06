@@ -293,7 +293,7 @@ export function logAction(
   state: w.GameState,
   player: w.PlayerInGameState | null,
   action: string,
-  cards: Record<string, w.CardInGame> = {},
+  cards: Record<w.CardId, w.CardInGame> = {},
   timestamp: number | null = null,
   target: w.Targetable | null = null
 ): w.GameState {
@@ -304,8 +304,8 @@ export function logAction(
     '';
 
   target = determineTargetCard(state, target);
-  const targetStr = target ? `, targeting |${target.name}|` : '';
-  const targetCards = target ? {[target.name]: target} : {};
+  const targetStr = target ? `, targeting |${target.id}|` : '';
+  const targetCards = target ? {[target.id]: target} : {};
 
   const message = {
     id: state.actionId!,
@@ -325,7 +325,7 @@ export function newGame(
   player: w.PlayerColor,
   usernames: w.PerPlayer<string>,
   decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>,
-  seed = '0',
+  seed = 0,
   gameFormat: w.Format = DEFAULT_GAME_FORMAT,
   gameOptions: w.GameOptions = {}
 ): w.GameState {
@@ -509,7 +509,7 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   if (!object.beingDestroyed) {
     object.stats.health -= amount;
     object.tookDamageThisTurn = true;
-    state = logAction(state, null, `|${object.card.name}| received ${amount} damage`, {[object.card.name]: object.card});
+    state = logAction(state, null, `|${object.card.id}| received ${amount} damage`, {[object.card.id]: object.card});
     state = triggerEvent(state, 'afterDamageReceived', {object});
   }
 
@@ -537,7 +537,7 @@ export function updateOrDeleteObjectAtHex(
     object.beingDestroyed = true;
 
     state = triggerSound(state, 'destroyed.wav');
-    state = logAction(state, null, `|${object.card.name}| was destroyed`, {[object.card.name]: object.card});
+    state = logAction(state, null, `|${object.card.id}| was destroyed`, {[object.card.id]: object.card});
     state = triggerEvent(state, 'afterDestroyed', {object, condition: ((t: w.Trigger) => (t.cause === cause || t.cause === 'anyevent'))});
     if (cause === 'combat' && object.mostRecentlyInCombatWith) {
       state = triggerEvent(state, 'afterDestroysOtherObject', {

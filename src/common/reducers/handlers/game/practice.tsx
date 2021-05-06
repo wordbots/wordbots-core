@@ -27,7 +27,7 @@ export function startPractice(state: State, format: w.Format, deck: w.CardInGame
     blue: shuffle(aiDeck)
   };
 
-  state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks, '0', format);
+  state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks, 0, format);
   state.practice = true;
 
   return state;

@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
 import {
-  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
+  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, LEFT_CONTROLS_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
   CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE, SIDEBAR_COLLAPSED_WIDTH
 } from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
@@ -185,7 +185,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginLeft: 20,
-                zIndex: BACKGROUND_Z_INDEX
+                zIndex: LEFT_CONTROLS_Z_INDEX
               }}
             >
               <Timer
@@ -211,9 +211,9 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             <div
               className="background"
               style={{
-                display: 'flex',
-                justifyContent: 'center',
                 marginRight: 20,
+                maxWidth: 220,
+                textAlign: 'right',
                 zIndex: BACKGROUND_Z_INDEX
               }}
             >
@@ -306,8 +306,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     const navSidebarWidth = this.urlMatchesGameMode('sandbox') ? SIDEBAR_COLLAPSED_WIDTH : 0;
 
     const topBottomMargin = 80;
-    const leftMargin = 80;
-    const rightMargin = compactControls ? 270 : 310;
+    const leftRightMargin = 200;
 
     this.setState(({ chatOpen }) => {
       const chatWidth = !chatOpen ? CHAT_COLLAPSED_WIDTH : (compactControls ? CHAT_NARROW_WIDTH : CHAT_WIDTH);
@@ -316,7 +315,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
       const areaWidth = window.innerWidth - chatWidth - navSidebarWidth;
 
       const maxBoardHeight = areaHeight - topBottomMargin * 2;
-      const maxBoardWidth = areaWidth - leftMargin - rightMargin;
+      const maxBoardWidth = areaWidth - (2 * leftRightMargin);
       const boardSize = Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE);
 
       return {
@@ -326,7 +325,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           // On a large enough screen (areaWidth > 1300), center the board in the exact middle of the game area.
           // On smaller screens (areaWidth < 1300), position the board halfway between the controls on the left and right sides.
           // (This moves the board closer to the left because the left controls (volume, &c) are much narrower than the right (End Turn, &c))
-          left: areaWidth > 1300 ? (areaWidth - boardSize) / 2 : leftMargin + (maxBoardWidth - boardSize) / 2,
+          left: areaWidth > 1300 ? (areaWidth - boardSize) / 2 : leftRightMargin + (maxBoardWidth - boardSize) / 2,
           top: topBottomMargin + (maxBoardHeight - boardSize) / 2
         },
         compactControls,

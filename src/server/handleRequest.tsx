@@ -82,6 +82,7 @@ function renderFullPage(html: string, head: HelmetData): string {
       </head>
       <body style="margin: 0;">
           <div id="root">${html}</div>
+          <div id="modal-root"></div>
           <script>
             window.VERSION = '${packagejson.version}+${process.env.HEROKU_SLUG_COMMIT || 'local'}';
           </script>

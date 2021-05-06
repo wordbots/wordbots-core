@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import * as ReactTooltip from 'react-tooltip';
 
 import { MAX_Z_INDEX } from '../../constants';
 import * as w from '../../types';
+import { createSafePortal } from '../../util/browser';
 import { id } from '../../util/common';
 import Popover from '../Popover';
 
@@ -41,7 +41,7 @@ export default class CardTooltip extends React.Component<CardTooltipProps> {
             {this.props.children}
           </span>
           {
-            ReactDOM.createPortal(
+            createSafePortal(
               <ReactTooltip
                 id={this.tooltipId}
                 className="hovered-card"

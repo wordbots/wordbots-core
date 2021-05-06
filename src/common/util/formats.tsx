@@ -131,10 +131,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, options, seed);
 
-    console.log(seed);
-
     const deck = shuffle([...decks.blue, ...decks.orange], seed);
-    console.log(deck);
     // Give blue the top two cards, orange the next two (to form their starting hands),
     // and both players the rest of the deck.
     const [topTwo, nextTwo, restOfDeck] = [deck.slice(0, 2), deck.slice(2, 4), deck.slice(4)];

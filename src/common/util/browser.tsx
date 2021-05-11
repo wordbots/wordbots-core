@@ -1,6 +1,8 @@
 import { detect, Browser } from 'detect-browser';
 import { History } from 'history';
 import * as ReactGA from 'react-ga';
+import * as ReactDOM from 'react-dom';
+import { ReactNode, ReactPortal } from 'react';
 
 declare const window: {
   location: { pathname: string, hostname: string }
@@ -94,4 +96,12 @@ export function isSupportedBrowser(): boolean {
   }
 
   return false;
+}
+
+export function createSafePortal(children: ReactNode, container: Element): ReactPortal | null {
+  if (inBrowser()) {
+    return ReactDOM.createPortal(children, container);
+  } else {
+    return null;
+  }
 }

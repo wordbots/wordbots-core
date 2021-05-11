@@ -32,8 +32,7 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
   }
 
   public render(): JSX.Element {
-    const { player, compact, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
-    const height = compact ? '40px' : '64px';
+    const { player, isMyTurn, compact, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
 
     return (
       <TutorialTooltip
@@ -45,7 +44,7 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
         onPrevStep={onPrevTutorialStep}
       >
         <Button
-          className="end-turn-button"
+          className={`end-turn-button ${player} ${!isMyTurn && 'waiting'}`}
           variant="contained"
           style={{
             backgroundColor: player ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player] : undefined,
@@ -54,7 +53,8 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
             color: '#FFF',
             fontFamily: 'Carter One',
             fontSize: compact ? 22 : 32,
-            height,
+            width: compact ? 150 : 220,
+            height: compact ? 40 : 64,
             padding: compact ? '0 5px' : '0 15px'
           }}
           onClick={this.handleClick}
@@ -66,7 +66,7 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
           >
             timer
           </Icon>
-          End Turn
+          {isMyTurn ? 'End Turn' : 'Waiting'}
         </Button>
       </TutorialTooltip>
     );

@@ -178,6 +178,22 @@ a.topLink:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
+.end-turn-button.orange:enabled:hover {
+  background-color: #d99237 !important;
+}
+
+.end-turn-button.blue:enabled:hover {
+  background-color: #94b5d9 !important;
+}
+
+.end-turn-button.waiting {
+  opacity: 0.7;
+}
+
+.forfeit-button:enabled:hover {
+  background-color: #333 !important;
+}
+
 .volume-slider {
   transition: visibility 100ms ease-in-out, opacity 100ms ease-in-out;
 }

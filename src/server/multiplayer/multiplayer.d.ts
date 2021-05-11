@@ -38,7 +38,7 @@ export interface Game {
   state: GameState
   decks: { blue: ObfuscatedCard[], orange: ObfuscatedCard[] }
   usernames: { blue: string, orange: string }
-  startingSeed: string
+  startingSeed: number
   winner: w.PlayerColor | null
   options: GameOptions
 }

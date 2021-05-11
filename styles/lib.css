@@ -57,6 +57,7 @@
 
 .hovered-card.__react_component_tooltip {
   background-color: transparent !important;
+  z-index: 999999;
 }
 
 .hovered-card.__react_component_tooltip.show {

@@ -7,7 +7,7 @@ import * as React from 'react';
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
 import { sortDecks } from '../../util/decks';
-import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
+import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -38,7 +38,7 @@ interface PreGameModalState {
 export default class PreGameModal extends React.Component<PreGameModalProps, PreGameModalState> {
   public state: PreGameModalState = {
     selectedDeckId: null,
-    selectedFormatName: 'sharedDeck',
+    selectedFormatName: this.props.mode === 'practice' ? 'normal' : 'sharedDeck',
     enteredPassword: '',
     isPasswordInvalid: false
   };
@@ -52,20 +52,25 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     return format || formats.find((f) => f.name === selectedFormatName)!;
   }
 
-  // The full list of formats that are available to the player.
+  // The full list of formats that are available to the player (given the game mode).
   get availableFormats(): GameFormat[] {
-    const { sets } = this.props;
-    const setFormats = uniqBy(compact(this.decks.map((deck) => {
-      const set = sets.find((s) => s.id === deck.setId);
-      if (set) {
-        const setFormat = new SetFormat(set);
-        if (setFormat.isDeckValid(deck)) {
-          return setFormat;
-        }
-      }
-    })), 'name');
+    const { mode, sets } = this.props;
 
-    return [...BUILTIN_FORMATS, ...setFormats];
+    if (mode === 'practice') {
+      return [NormalGameFormat, BuiltinOnlyGameFormat];
+    } else {
+      const setFormats = uniqBy(compact(this.decks.map((deck) => {
+        const set = sets.find((s) => s.id === deck.setId);
+        if (set) {
+          const setFormat = new SetFormat(set);
+          if (setFormat.isDeckValid(deck)) {
+            return setFormat;
+          }
+        }
+      })), 'name');
+
+      return [...BUILTIN_FORMATS, ...setFormats];
+    }
   }
 
   // All of the player's decks, in an unpacked format ready to start the game with.

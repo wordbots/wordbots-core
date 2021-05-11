@@ -64,14 +64,14 @@ export class GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
+    _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
   ): w.GameState {
     state = {
       ...state,
       ...cloneDeep(defaultState),
       gameFormat: this.serialized(),
       player,
-      rng: seededRNG(seed),
+      rng: seededRNG(seed.toString()),
       started: true,
       usernames,
       options};
@@ -90,7 +90,7 @@ export const NormalGameFormat = new (class extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, options, seed);
 
@@ -112,7 +112,7 @@ export const BuiltinOnlyGameFormat = new (class extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
   ): w.GameState {
     return NormalGameFormat.startGame(state, player, usernames, decks, options, seed);
   }
@@ -127,7 +127,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
   ): w.GameState {
     state = super.startGame(state, player, usernames, decks, options, seed);
 
@@ -186,7 +186,7 @@ export class SetFormat extends GameFormat {
 
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
-    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: string
+    decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
   ): w.GameState {
     return NormalGameFormat.startGame(state, player, usernames, decks, options, seed);
   }

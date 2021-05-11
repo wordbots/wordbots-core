@@ -69,7 +69,7 @@ export function moveRobot(state: State, fromHex: w.HexId, toHex: w.HexId): State
     movingRobot.movedThisTurn = true;
 
     state = triggerSound(state, 'move.wav');
-    state = logAction(state, player, `moved |${movingRobot.card.name}|`, {[movingRobot.card.name]: movingRobot.card});
+    state = logAction(state, player, `moved |${movingRobot.card.id}|`, {[movingRobot.card.id]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = triggerEvent(state, 'afterMove', {object: movingRobot});
     state = applyAbilities(state);
@@ -87,7 +87,7 @@ export function moveObjectUsingAbility(state: State, fromHex: w.HexId, toHex: w.
   if (!allObjectsOnBoard(state)[toHex]) {
     const movingRobot: w.Object = allObjectsOnBoard(state)[fromHex];
 
-    state = logAction(state, null, `|${movingRobot.card.name}| was moved`, {[movingRobot.card.name]: movingRobot.card});
+    state = logAction(state, null, `|${movingRobot.card.id}| was moved`, {[movingRobot.card.id]: movingRobot.card});
     state = transportObject(state, fromHex, toHex);
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
@@ -122,9 +122,9 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
       attacker.attackedThisTurn = true;
 
       state = triggerSound(state, 'attack.wav');
-      state = logAction(state, player, `attacked |${defender.card.name}| with |${attacker.card.name}|`, {
-        [defender.card.name]: defender.card,
-        [attacker.card.name]: attacker.card
+      state = logAction(state, player, `attacked |${defender.card.id}| with |${attacker.card.id}|`, {
+        [defender.card.id]: defender.card,
+        [attacker.card.id]: attacker.card
       });
       state.attack = {from: source, to: target};
       state = deselect(state);
@@ -196,11 +196,11 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
     const player: PlayerState = currentPlayer(tempState);
     const ability: w.ActivatedAbility = object.activatedAbilities![abilityIdx];
 
-    const logMsg = `activated |${object.card.name}|'s "${ability.text}" ability`;
+    const logMsg = `activated |${object.card.id}|'s "${ability.text}" ability`;
     const target: w.Targetable | null = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
-    tempState = logAction(tempState, player, logMsg, {[object.card.name]: object.card}, null, target);
+    tempState = logAction(tempState, player, logMsg, {[object.card.id]: object.card}, null, target);
 
     executeCmd(tempState, ability.cmd, object);
 

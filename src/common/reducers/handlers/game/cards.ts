@@ -95,12 +95,12 @@ export function instantiateObject(card: w.CardInGame): w.Object {
 // Handles things that should happen after an object is played or spawned (using actions.spawnObject).
 export function afterObjectPlayed(state: State, playedObject: w.Object): State {
   const player: PlayerState = currentPlayer(state);
-  const target = player.target.chosen ? player.target.chosen[0] : null;
+  const target = (player.target.choosing && player.target.chosen) ? player.target.chosen[0] : null;
   const { card } = playedObject;
   const timestamp = Date.now();
 
   state = triggerSound(state, 'spawn.wav');
-  state = logAction(state, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+  state = logAction(state, player, `played |${card.id}|`, {[card.id]: card}, timestamp, target);
 
   if (card.abilities && card.abilities.length > 0) {
     card.abilities.forEach((cmd, idx) => {
@@ -183,7 +183,7 @@ function playEvent(state: State, cardIdx: number): State {
     const target = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
-    tempState = logAction(tempState, player, `played |${card.name}|`, {[card.name]: card}, timestamp, target);
+    tempState = logAction(tempState, player, `played |${card.id}|`, {[card.id]: card}, timestamp, player.target.choosing && target || null);
     tempState.eventExecuting = true;
 
     const commands: string[] = compact(isArray(card.command) ? card.command : [card.command]);

@@ -67,7 +67,7 @@ class Decks extends React.Component<DecksProps> {
         <Title text="Decks" />
 
         <div style={{margin: 20}}>
-          <MustBeLoggedIn loggedIn={loggedIn}>
+          <MustBeLoggedIn loggedIn={loggedIn} style={{ display: 'inline-block' }}>
             <Button
               color="primary"
               variant="contained"

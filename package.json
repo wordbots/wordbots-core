@@ -73,7 +73,7 @@
     "react-router-dom": "^4.2.2",
     "react-slick": "^0.23.0",
     "react-sound": "1.2.0",
-    "react-textfit": "^1.0.1",
+    "react-textfit": "1.1.1",
     "react-tooltip": "^3.3.0",
     "react-transition-group": "^2.2.1",
     "react-web-notification": "^0.5.0",

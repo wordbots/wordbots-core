@@ -173,10 +173,11 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
       scale, margin, rotation, yTranslation,
       onSpriteClick, classes
     } = this.props;
+    const blueShadow = 'rgba(0, 120, 135, 0.45)';
     const redShadow = 'rgba(255, 35, 35, 0.45)';
     const greenShadow = 'rgba(27, 134, 27, 0.95)';
     const selectedStyle = {
-      boxShadow: `${(status && status.type === 'error') || collection ? redShadow : greenShadow  } 0px 0px 20px 5px`
+      boxShadow: `${collection ? blueShadow : ((status?.type === 'error') ? redShadow : greenShadow)} 0px 0px 5px 5px`
     };
     const transform = `rotate(${rotation || 0}deg) translate(0px, ${yTranslation || 0}px)`;
 
@@ -220,7 +221,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   borderRadius: 5 * (scale || 1),
                   userSelect: 'none',
                   cursor: 'pointer',
-                  border: source?.type === 'builtin' ? '3px solid #888' : '3px solid #f44336',
+                  border: source?.type === 'builtin' ? '3px solid #aaa' : '3px solid #007887',
                   position: 'relative',
                   ...(selected || targetable ? selectedStyle : {})
                 } as React.CSSProperties}

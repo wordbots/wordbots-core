@@ -182,7 +182,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/collection" component={Collection} />
             <Route path="/card/:cardId" component={Creator} />
             <Route path="/decks" component={Decks as any} />
-            <Route path="/deck" component={Deck as any} />
+            <Route path="/deck/:deckId" component={Deck as any} />
             <Route path="/sets/:setId" component={Set as any} />
             <Route path="/sets" component={Sets as any} />
             <Route path="/play" component={Play} />

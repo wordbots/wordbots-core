@@ -51,7 +51,7 @@ export default class CardCollection extends React.Component<CardCollectionProps,
       <div style={{width: '100%'}}>
         {this.renderPageControls()}
         <GridOrTable
-          selectable={!this.props.allowMultipleSelection}
+          selectable
           cards={this.cards}
           selectedCardIds={this.props.selectedCardIds}
           onCardClick={this.onCardClick}

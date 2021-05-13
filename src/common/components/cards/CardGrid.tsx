@@ -14,7 +14,7 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
     return (
       <div
         style={{
-          width: 'calc(100% - 40px)',
+          width: '100%',
           margin: '0 20px'
         }}
       >

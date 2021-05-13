@@ -43,7 +43,7 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
       marginLeft: 5,
       display: 'flex',
       alignItems: 'center',
-      fontSize: '0.9em'
+      fontSize: '0.8em'
     },
     cardCount: {
       width: 65,
@@ -69,7 +69,7 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
         </span>
         <div style={this.styles.outerCard}>
           <div style={this.styles.cardCost}>{card.cost}</div>
-          <div style={this.styles.cardName}>{truncate(card.name, { length: 17 })}</div>
+          <div style={this.styles.cardName}>{truncate(card.name, { length: 20 })}</div>
           {showCount && <div style={this.styles.cardCount}>
             <span onClick={this.handleDecreaseCardCount}>
               &nbsp;&ndash;&nbsp;

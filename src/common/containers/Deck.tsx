@@ -173,25 +173,26 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     );
   }
 
-  /** If there is a deckId in the URL, try to load the desired card. */
+  /** If there is a deckId in the URL, try to load the desired deck. */
   private maybeLoadDeck = async () => {
     const { decks, history, match, editDeck } = this.props;
     const { pathname } = history.location;
 
+    // check for /deck/for/set/[setId] URL first
     if (pathname.startsWith('/deck/for/set/')) {
       const setId = pathname.split('for/set/')[1];
       this.setState({ setId });
     } else if (match) {
-      const params = (match ? match.params : {}) as Record<string, string | undefined>;
-      const { deckId } = params;
+      // then check for /deck/[deckId] URL
+      const { deckId } = (match ? match.params : {}) as Record<string, string | undefined>;
       if (deckId && deckId !== 'new') {
-        const deck = find(decks, { id: deckId });
+        const deck: w.DeckInStore | undefined = find(decks, { id: deckId });
         if (deck) {
           editDeck(deckId);
           this.setState({ selectedCardIds: deck.cardIds });
         } else {
-          // If card not found, redirect to the new card URL.
-          history.replace('/card/new');
+          // If deck not found, redirect to the new deck URL.
+          history.replace('/deck/new');
         }
       }
     }

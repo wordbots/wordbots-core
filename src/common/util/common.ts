@@ -33,15 +33,15 @@ export function compareCertainKeys(obj1: any, obj2: any, keys: string[]): boolea
   return !some(keys, (key) => !isEqual(obj1[key], obj2[key]));
 }
 
-export function clamp(func: ((x?: number) => number) | w.StringRepresentationOf<(x: number) => number>): (x?: number) => number {
+export function clamp(func: ((x: number) => number) | w.StringRepresentationOf<(x: number) => number>): (x?: number) => number {
   return ((x) => _clamp((isString(func) ? eval(func) : func)(x || 0), 0, 99));  // eslint-disable-line  no-eval
 }
 
-export function applyFuncToField(obj: any, func: ((x?: number) => number) | w.StringRepresentationOf<(x?: number) => number>, field: string): any {
+export function applyFuncToField(obj: any, func: ((x: number) => number) | w.StringRepresentationOf<(x?: number) => number>, field: string): any {
   return applyFuncToFields(obj, func, [field]);
 }
 
-export function applyFuncToFields(obj: any, func: ((x?: number) => number) | w.StringRepresentationOf<(x?: number) => number>, fields: string[]): any {
+export function applyFuncToFields(obj: any, func: ((x: number) => number) | w.StringRepresentationOf<(x?: number) => number>, fields: string[]): any {
   return {
     ...obj,
     ...fromPairs(fields.map((field) => [field, clamp(func)(obj[field])]))

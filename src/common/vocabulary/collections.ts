@@ -66,7 +66,7 @@ export function other(_: w.GameState, currentObject: w.Object | null): w.Returns
   return (collection) => ({
       type: 'objects',
       entries: collection.entries.filter((obj: w.Object) =>
-        obj.id !== currentObject!.id
+        obj.id !== currentObject?.id
       )
     });
 }

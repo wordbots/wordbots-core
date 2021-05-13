@@ -1,4 +1,4 @@
 #!/bin/sh
-git checkout master
-git pull origin master
-git push -f origin master:staging
+git checkout main
+git pull origin main
+git push -f origin main:staging

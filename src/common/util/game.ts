@@ -507,10 +507,11 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   const object = allObjectsOnBoard(state)[hex];
 
   if (!object.beingDestroyed) {
-    object.stats.health -= amount;
-    object.tookDamageThisTurn = true;
-    state = logAction(state, null, `|${object.card.id}| received ${amount} damage`, {[object.card.id]: object.card});
-    state = triggerEvent(state, 'afterDamageReceived', {object});
+    state = triggerEvent(state, 'afterDamageReceived', { object }, (s) => {
+      object.stats.health -= amount;
+      object.tookDamageThisTurn = true;
+      return logAction(s, null, `|${object.card.id}| received ${amount} damage`, {[object.card.id]: object.card});
+    });
   }
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);

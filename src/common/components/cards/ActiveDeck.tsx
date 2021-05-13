@@ -125,14 +125,14 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         <TextField
           value={name}
           label={`${isASet ? 'Set' : 'Deck'} name`}
-          style={{width: '100%', marginBottom: 10}}
+          style={{ width: '100%', marginBottom: 10 }}
           onChange={this.handleChangeName}
         />
 
         {isASet && <TextField
           value={description}
           label="Description"
-          style={{width: '100%', marginBottom: 10, marginTop: -20}}
+          style={{ width: '100%', marginBottom: 10 }}
           onChange={this.handleChangeDescription}
         />}
 
@@ -142,7 +142,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
               disabled
               label="For the set:"
               value={`${setForDeck.name} by ${setForDeck.metadata.authorName}`}
-              style={{width: '100%', marginBottom: 10, marginTop: -20}}
+              style={{ width: '100%', marginBottom: 10 }}
             />
         }
 

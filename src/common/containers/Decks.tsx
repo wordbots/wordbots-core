@@ -109,12 +109,12 @@ class Decks extends React.Component<DecksProps> {
 
   private handleCreateDeck = () => {
     this.props.onCreateDeck();
-    this.props.history.push('/deck');
+    this.props.history.push('/deck/new');
   }
 
   private handleEditDeck = (deckId: string) => {
     this.props.onEditDeck(deckId);
-    this.props.history.push('/deck');
+    this.props.history.push(`/deck/${deckId}`);
   }
 
   private handleTryDeck = (deck: w.DeckInStore) => {

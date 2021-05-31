@@ -101,6 +101,7 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
 
   state = triggerSound(state, 'spawn.wav');
   state = logAction(state, player, `played |${card.id}|`, {[card.id]: card}, timestamp, target);
+  state.memory = {};  // Clear any previously set memory in the state.
 
   if (card.abilities && card.abilities.length > 0) {
     card.abilities.forEach((cmd, idx) => {
@@ -185,6 +186,7 @@ function playEvent(state: State, cardIdx: number): State {
     tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, `played |${card.id}|`, {[card.id]: card}, timestamp, player.target.choosing && target || null);
     tempState.eventExecuting = true;
+    tempState.memory = {};  // Clear any previously set memory in the state.
 
     const commands: string[] = compact(isArray(card.command) ? card.command : [card.command]);
     commands.forEach((cmd, idx) => {

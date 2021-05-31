@@ -109,7 +109,7 @@ export function hasEffect(object: w.Object, effect: w.EffectType): boolean {
   return some((object.effects || []), ['effect', effect]);
 }
 
-function getEffect(object: w.Object, effect: w.EffectType): any {
+function getEffect(object: w.Object, effect: w.EffectType): any[] {
   return (object.effects || new Array<w.Effect>())
             .filter((eff: w.Effect) => eff.effect === effect)
             .map((eff: w.Effect) => eff.props);
@@ -232,11 +232,14 @@ export function validMovementHexes(state: w.GameState, startHex: Hex): Hex[] {
     return [];
   }
 
+  const impassableHexIds: w.HexId[] = flatMap(getEffect(object, 'cannotmoveto'), 'tiles.entries');
+
   let potentialMovementHexes = [startHex];
 
   times(movesLeft(object), () => {
-    const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter((hex) =>
-      hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex))
+    const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter((hex: Hex) =>
+      !(impassableHexIds.includes(HexUtils.getID(hex))) &&
+        (hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex)))
     );
 
     potentialMovementHexes = uniqBy(potentialMovementHexes.concat(newHexes), HexUtils.getID);
@@ -507,6 +510,7 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   const object = allObjectsOnBoard(state)[hex];
 
   if (!object.beingDestroyed) {
+    state.memory['amount'] = amount;
     state = triggerEvent(state, 'afterDamageReceived', { object }, (s) => {
       object.stats.health -= amount;
       object.tookDamageThisTurn = true;

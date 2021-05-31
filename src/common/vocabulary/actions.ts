@@ -3,7 +3,7 @@ import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
 import * as g from '../guards';
-import { moveObjectUsingAbility } from '../reducers/handlers/game/board';
+import { moveObjectUsingAbility, swapObjectPositions } from '../reducers/handlers/game/board';
 import { afterObjectPlayed, instantiateObject } from '../reducers/handlers/game/cards';
 import * as w from '../types';
 import { splitSentences } from '../util/cards';
@@ -70,7 +70,8 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
             card: cloneDeep(card),
             stats: cloneDeep(card.stats),
             abilities: [],
-            triggers: []
+            triggers: [],
+            temporaryStatAdjustments: null
           });
         });
 
@@ -289,6 +290,18 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         object.stats[attr1] = savedAttr2!;
         updateOrDeleteObjectAtHex(state, object, getHex(state, object)!);
       });
+    },
+
+    swapPositions: (target1: w.ObjectCollection, target2: w.ObjectCollection): void => {
+      // Unpack.
+      const object1: w.Object = target1.entries[0];
+      const object2: w.Object = target2.entries[0];
+
+      const hex1 = getHex(state, object1);
+      const hex2 = getHex(state, object2);
+      if (hex1 && hex2) {
+        swapObjectPositions(state, hex1, hex2);
+      }
     },
 
     takeControl: (players: w.PlayerCollection, objects: w.ObjectCollection): void => {

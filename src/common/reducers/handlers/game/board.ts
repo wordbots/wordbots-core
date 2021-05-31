@@ -201,6 +201,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
 
     tempState = triggerSound(tempState, 'event.wav');
     tempState = logAction(tempState, player, logMsg, {[object.card.id]: object.card}, null, target);
+    tempState.memory = {};  // Clear any previously set memory in the state.
 
     executeCmd(tempState, ability.cmd, object);
 
@@ -236,6 +237,8 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
   }
 }
 
+// TODO move the below methods to util/game.ts ?
+
 // Low-level "move" of an object.
 // Used by moveRobot(), attack(), and in tests.
 export function transportObject(state: State, fromHex: w.HexId, toHex: w.HexId): State {
@@ -245,6 +248,25 @@ export function transportObject(state: State, fromHex: w.HexId, toHex: w.HexId):
   if (object && owner) {
     owner.objectsOnBoard[toHex] = object;
     delete owner.objectsOnBoard[fromHex];
+  }
+
+  return state;
+}
+
+// Low-level swap of two object positions, used by the 'swapPositions' action.
+export function swapObjectPositions(state: State, hex1: w.HexId, hex2: w.HexId): State {
+  const object1 = allObjectsOnBoard(state)[hex1];
+  const owner1 = ownerOf(state, object1);
+
+  const object2 = allObjectsOnBoard(state)[hex2];
+  const owner2 = ownerOf(state, object2);
+
+  if (object1 && owner1 && object2 && owner2) {
+    delete owner1.objectsOnBoard[hex1];
+    delete owner2.objectsOnBoard[hex2];
+
+    owner1.objectsOnBoard[hex2] = object1;
+    owner2.objectsOnBoard[hex1] = object2;
   }
 
   return state;

@@ -215,7 +215,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     //     Whenever this robot attacks a robot, destroy that robot.
     //     ("that robot" clearly refers to the object)
     that: (): w.ObjectCollection | w.CardInHandCollection => {
-      if (state.that) {
+      if (state.memory['target']) {
+        return state.memory['target'] as w.ObjectCollection | w.CardInHandCollection;
+      } if (state.that) {
         return { type: 'objects', entries: [state.that] };
       } else {
         return it();

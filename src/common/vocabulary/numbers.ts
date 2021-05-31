@@ -1,4 +1,4 @@
-import { size, sum } from 'lodash';
+import { isNumber, size, sum } from 'lodash';
 
 import * as w from '../types';
 import { getAttribute } from '../util/game';
@@ -33,4 +33,15 @@ export function energyAmount(_: w.GameState): w.Returns<number> {
 
 export function maximumEnergyAmount(_: w.GameState): w.Returns<number> {
   return (players: w.PlayerCollection) => players.entries[0].energy.total;
+}
+
+export function thatMuch(state: w.GameState): w.Returns<number> {
+  return () => {
+    const amount = state.memory['amount'];
+    if (amount && isNumber(amount)) {
+      return amount;
+    } else {
+      throw new Error("Can't resolve thatMuch() because there is no salient amount");
+    }
+  };
 }

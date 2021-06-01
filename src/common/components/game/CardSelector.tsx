@@ -13,7 +13,7 @@ import Tooltip from '../Tooltip';
 import CardSelectorCard from './CardSelectorCard';
 
 interface CardSelectorBaseProps {
-  onaddCardToHand: (player: string, card: w.CardInStore) => void
+  onAddCardToHand: (player: string, card: w.CardInStore) => void
   cardCollection: w.CardInStore[]
 }
 
@@ -128,7 +128,7 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
   private handleGiveCard = (player: string): () => void => (): void => {
     const { selectedCard } = this.state;
     if (selectedCard) {
-      this.props.onaddCardToHand(player, selectedCard);
+      this.props.onAddCardToHand(player, selectedCard);
       this.setState({ selectedCard: undefined });
     }
   }

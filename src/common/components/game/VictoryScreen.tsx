@@ -4,12 +4,12 @@ import { BLUE_PLAYER_COLOR, MAX_Z_INDEX, ORANGE_PLAYER_COLOR } from '../../const
 import * as w from '../../types';
 
 interface VictoryScreenProps {
-  winner: w.GameWinner  // 'blue', 'orange', 'draw' or null (null indicates game still in progress)
+  winner: w.GameWinner  // 'blue', 'orange', 'draw', 'aborted' or null (null indicates game still in progress)
   winnerName: string | null
   onClick: () => void
 }
 
-export default class VictoryScreen extends React.Component<VictoryScreenProps> {
+export default class VictoryScreen extends React.PureComponent<VictoryScreenProps> {
   public render(): JSX.Element {
     const { winner, winnerName, onClick } = this.props;
     const colors = {
@@ -32,14 +32,16 @@ export default class VictoryScreen extends React.Component<VictoryScreenProps> {
           right: 0,
           fontFamily: 'Carter One',
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          color: (winner && winner !== 'draw') ? colors[winner] : 'white',
+          color: (winner && winner !== 'draw' && winner !== 'aborted') ? colors[winner] : 'white',
           borderRadius: 2,
           zIndex: MAX_Z_INDEX
         }}
       >
         <div>
           <div style={{fontSize: 96}}>
-            {winnerName ? `${winnerName} ${winnerName === 'You' ? 'win' : 'wins'}!` : (winner === 'draw' ? 'Draw game!' : '')}
+            {winnerName
+              ? `${winnerName} ${winnerName === 'You' ? 'win' : 'wins'}!`
+              : (winner === 'draw' ? 'Draw game!' : (winner === 'aborted' ? 'Game aborted' : ''))}
           </div>
           <div>Click anywhere to leave the game.</div>
         </div>

@@ -1,7 +1,7 @@
 import { newGame, passTurn } from '../../util/game';
 
 import { activateObject, attack, attackComplete, deselect, moveRobot, setSelectedTile } from './game/board';
-import { placeCard, setSelectedCard, setSelectedCardInDiscardPile } from './game/cards';
+import { placeCard, setSelectedCard, setSelectedCardInDiscardPile, draftCards } from './game/cards';
 import { aiResponse, startPractice, startSandbox } from './game/practice';
 import { handleTutorialAction, startTutorial } from './game/tutorial';
 
@@ -13,6 +13,7 @@ const game = {
   setSelectedCard,
   setSelectedCardInDiscardPile,
   placeCard,
+  draftCards,
 
   deselect,
   setSelectedTile,

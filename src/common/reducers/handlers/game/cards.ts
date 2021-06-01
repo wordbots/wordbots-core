@@ -1,8 +1,10 @@
 import { cloneDeep, compact, isArray } from 'lodash';
+import { shuffle } from 'seed-shuffle';
 
 import HexUtils from '../../../components/hexgrid/HexUtils';
 import { TYPE_EVENT } from '../../../constants';
 import * as g from '../../../guards';
+import { bluePlayerState, orangePlayerState } from '../../../store/defaultGameState';
 import * as w from '../../../types';
 import { assertCardVisible, splitSentences } from '../../../util/cards';
 import { id } from '../../../util/common';
@@ -244,6 +246,28 @@ function playEvent(state: State, cardIdx: number): State {
       tempState.eventQueue = [...tempState.eventQueue, card];
 
       return tempState;
+    }
+  }
+
+  return state;
+}
+
+export function draftCards(state: w.GameState, player: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
+  if (state.draft) {
+    state.draft[player] = {
+      cardsDrafted: [...state.draft[player].cardsDrafted, ...cards],
+      cardGroupsToShow: state.draft[player].cardGroupsToShow.slice(1)
+    };
+
+    // Are both players done drafting?
+    if (state.draft.blue.cardGroupsToShow.length === 0 && state.draft.orange.cardGroupsToShow.length === 0) {
+      const seed = state.rng();
+      const blueDeck: w.CardInGame[] = shuffle(state.draft.blue.cardsDrafted, seed);
+      const orangeDeck: w.CardInGame[] = shuffle(state.draft.blue.cardsDrafted, seed);
+
+      state.players.blue = bluePlayerState(blueDeck);
+      state.players.orange = orangePlayerState(orangeDeck);
+      state.draft = null;
     }
   }
 

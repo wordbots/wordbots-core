@@ -16,6 +16,7 @@ import Chat from '../play/Chat';
 
 import Board from './Board';
 import CardSelector from './CardSelector';
+import DraftArea from './DraftArea';
 import EndTurnButton from './EndTurnButton';
 import EventAnimation from './EventAnimation';
 import ForfeitButton from './ForfeitButton';
@@ -37,6 +38,7 @@ export interface GameProps {
   usernames: w.PerPlayer<string>
   winner: w.GameWinner
   gameOptions: w.GameOptions
+  draft: w.DraftState | null
 
   selectedTile: w.HexId | null
   playingCardType: w.CardType | null
@@ -90,7 +92,8 @@ type GameAreaProps = GameProps & RouteComponentProps & {
   onNextTutorialStep: () => void
   onPrevTutorialStep: () => void
   onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHexId?: w.HexId | null) => void
-  onaddCardToHand: (player: w.PlayerColor, card: w.Card) => void
+  onAddCardToHand: (player: w.PlayerColor, card: w.Card) => void
+  onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
   onSetVolume: (volume: number) => void
 };
 
@@ -127,13 +130,9 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
   public render(): JSX.Element {
     const {
-      attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
-      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner, volume,
-      onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
-      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onSetVolume
+      currentTurn, isMyTurn, isSandbox, message, player, sfxQueue, status, volume, onClickGameArea
     } = this.props;
-    const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls } = this.state;
+    const { areaHeight, chatOpen, chatWidth } = this.state;
 
     if (message) {
       return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
@@ -168,6 +167,85 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           onClick={onClickGameArea}
           square
         >
+          {this.renderGamContents()}
+        </Paper>
+
+        {this.renderSidebar()}
+      </div>
+    );
+  }
+
+  private urlMatchesGameMode = (mode: string) => {
+    const { location } = this.props;
+    return location?.pathname.startsWith(urlForGameMode(mode));
+  }
+
+  private handleToggleFullScreen = () => {
+    screenfull.toggle((this as any).gameArea);
+  }
+
+  private handleToggleChat = () => {
+    this.setState((state) => ({ chatOpen: !state.chatOpen }), this.calculateDimensions);
+  }
+
+  private loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
+
+  private calculateDimensions = () => {
+    const compactControls: boolean = window.innerWidth < 1200;
+    const navSidebarWidth = this.urlMatchesGameMode('sandbox') ? SIDEBAR_COLLAPSED_WIDTH : 0;
+
+    const topBottomMargin = 80;
+    const leftRightMargin = 200;
+
+    this.setState(({ chatOpen }) => {
+      const chatWidth = !chatOpen ? CHAT_COLLAPSED_WIDTH : (compactControls ? CHAT_NARROW_WIDTH : CHAT_WIDTH);
+
+      const areaHeight = window.innerHeight - HEADER_HEIGHT;
+      const areaWidth = window.innerWidth - chatWidth - navSidebarWidth;
+
+      const maxBoardHeight = areaHeight - topBottomMargin * 2;
+      const maxBoardWidth = areaWidth - (2 * leftRightMargin);
+      const boardSize = Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE);
+
+      return {
+        areaHeight,
+        boardSize,
+        boardMargin: {
+          // On a large enough screen (areaWidth > 1300), center the board in the exact middle of the game area.
+          // On smaller screens (areaWidth < 1300), position the board halfway between the controls on the left and right sides.
+          // (This moves the board closer to the left because the left controls (volume, &c) are much narrower than the right (End Turn, &c))
+          left: areaWidth > 1300 ? (areaWidth - boardSize) / 2 : leftRightMargin + (maxBoardWidth - boardSize) / 2,
+          top: topBottomMargin + (maxBoardHeight - boardSize) / 2
+        },
+        compactControls,
+        chatWidth
+      };
+    });
+  }
+
+  private renderGamContents = () => {
+    const {
+      attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, history, isAttackHappening,
+      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, orangePieces, player, playingCardType,
+      selectedTile, target, tutorialStep, usernames, winner, volume,
+      onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
+      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume
+    } = this.props;
+    const { boardSize, boardMargin, compactControls } = this.state;
+
+    if (draft) {
+      return (
+        <DraftArea
+          player={player}
+          usernames={usernames}
+          draft={draft}
+          onDraftCards={onDraftCards}
+          onForfeit={onForfeit}
+        />
+      );
+    } else {
+      return (
+        <React.Fragment>
           <div
             className="background"
             style={{
@@ -276,74 +354,24 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
           <VictoryScreen
             winner={winner}
-            winnerName={(winner && winner !== 'draw') ? usernames[winner] : null}
+            winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
           {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
-        </Paper>
-
-        {this.renderSidebar()}
-      </div>
-    );
-  }
-
-  private urlMatchesGameMode = (mode: string) => {
-    const { location } = this.props;
-    return location?.pathname.startsWith(urlForGameMode(mode));
-  }
-
-  private handleToggleFullScreen = () => {
-    screenfull.toggle((this as any).gameArea);
-  }
-
-  private handleToggleChat = () => {
-    this.setState((state) => ({ chatOpen: !state.chatOpen }), this.calculateDimensions);
-  }
-
-  private loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
-
-  private calculateDimensions = () => {
-    const compactControls: boolean = window.innerWidth < 1200;
-    const navSidebarWidth = this.urlMatchesGameMode('sandbox') ? SIDEBAR_COLLAPSED_WIDTH : 0;
-
-    const topBottomMargin = 80;
-    const leftRightMargin = 200;
-
-    this.setState(({ chatOpen }) => {
-      const chatWidth = !chatOpen ? CHAT_COLLAPSED_WIDTH : (compactControls ? CHAT_NARROW_WIDTH : CHAT_WIDTH);
-
-      const areaHeight = window.innerHeight - HEADER_HEIGHT;
-      const areaWidth = window.innerWidth - chatWidth - navSidebarWidth;
-
-      const maxBoardHeight = areaHeight - topBottomMargin * 2;
-      const maxBoardWidth = areaWidth - (2 * leftRightMargin);
-      const boardSize = Math.min(maxBoardWidth, maxBoardHeight, MAX_BOARD_SIZE);
-
-      return {
-        areaHeight,
-        boardSize,
-        boardMargin: {
-          // On a large enough screen (areaWidth > 1300), center the board in the exact middle of the game area.
-          // On smaller screens (areaWidth < 1300), position the board halfway between the controls on the left and right sides.
-          // (This moves the board closer to the left because the left controls (volume, &c) are much narrower than the right (End Turn, &c))
-          left: areaWidth > 1300 ? (areaWidth - boardSize) / 2 : leftRightMargin + (maxBoardWidth - boardSize) / 2,
-          top: topBottomMargin + (maxBoardHeight - boardSize) / 2
-        },
-        compactControls,
-        chatWidth
-      };
-    });
+        </React.Fragment>
+      );
+    }
   }
 
   private renderSidebar = () => {
-    const { actionLog, collection, isSandbox, socket, onaddCardToHand, onSendChatMessage } = this.props;
+    const { actionLog, collection, isSandbox, socket, onAddCardToHand, onSendChatMessage } = this.props;
     const { chatOpen, compactControls } = this.state;
 
     if (isSandbox) {
       return (
         <CardSelector
           cardCollection={collection.cards}
-          onaddCardToHand={onaddCardToHand}
+          onAddCardToHand={onAddCardToHand}
         />
       );
     } else {

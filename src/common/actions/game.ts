@@ -18,6 +18,7 @@ export const SET_SELECTED_CARD_IN_DISCARD_PILE = 'SET_SELECTED_CARD_IN_DISCARD_P
 export const SET_SELECTED_TILE = 'SET_SELECTED_TILE';
 export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_HAND = 'ADD_CARD_TO_HAND';
+export const DRAFT_CARDS = 'DRAFT_CARDS';
 export const SET_VOLUME = 'SET_VOLUME';
 
 export function startPractice(format: w.BuiltInFormat, deck: w.CardInStore[]): w.Action {
@@ -139,6 +140,14 @@ export function addCardToHand(player: w.PlayerColor, card: w.Card): w.Action {
   return {
     type: ADD_CARD_TO_HAND,
     payload: { player, card }
+  };
+}
+
+// (only used in draft format)
+export function draftCards(player: w.PlayerColor, cards: w.CardInGame[]): w.Action {
+  return {
+    type: DRAFT_CARDS,
+    payload: { player, cards }
   };
 }
 

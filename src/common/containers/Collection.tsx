@@ -11,6 +11,7 @@ import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import * as gameActions from '../actions/game';
 import CardCollection from '../components/cards/CardCollection';
 import ExportDialog from '../components/cards/ExportDialog';
 import FilterControls from '../components/cards/FilterControls';
@@ -37,6 +38,7 @@ interface CollectionDispatchProps {
   onExportCards: (cards: w.CardInStore[]) => void
   onImportCards: (json: string) => void
   onRemoveFromCollection: (cards: w.CardId[]) => void
+  onStartSandbox: (card: w.CardInStore) => void
 }
 
 type CollectionProps = CollectionStateProps & CollectionDispatchProps & { history: History };
@@ -76,7 +78,10 @@ export function mapDispatchToProps(dispatch: Dispatch): CollectionDispatchProps 
     },
     onRemoveFromCollection: (cardIds: w.CardId[]) => {
       dispatch(collectionActions.removeFromCollection(cardIds));
-    }
+    },
+    onStartSandbox: (card: w.CardInStore) => {
+      dispatch(gameActions.startSandbox(card));
+    },
   };
 }
 
@@ -232,6 +237,14 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     });
   }
 
+  private handleClickTest = () => {
+    const card = this.props.cards.find((c) => this.state.selectedCardIds.includes(c.id));
+    if (card) {
+      this.props.onStartSandbox(card);
+      this.props.history.push('/play/sandbox', { previous: this.props.history.location });
+    }
+  }
+
   private renderSidebarControls = () => (
     <Paper style={{padding: 20, marginBottom: 10}}>
       <SearchControls onChange={this.set('searchText')} />
@@ -305,6 +318,16 @@ export class Collection extends React.Component<CollectionProps, CollectionState
           <Icon style={iconStyle} className="material-icons">delete</Icon>
           {compact ? 'Delete' : 'Delete Selected'}
         </Button>
+        {!compact ? null : <Button
+          variant="contained"
+          color="primary"
+          disabled={this.state.selectedCardIds.length === 0}
+          style={style}
+          onClick={this.handleClickTest}
+        >
+          <Icon style={iconStyle} className="material-icons">videogame_asset</Icon>
+          Test
+        </Button>}
         {compact ? null : <Button
           variant="contained"
           color="primary"

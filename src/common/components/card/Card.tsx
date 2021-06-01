@@ -227,6 +227,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                 } as React.CSSProperties}
               >
                 <CardHeader
+                  key={`${name}_${type}_${flavorText}`}
                   style={{padding: 8 * (scale || 1), height: 'auto'}}
                   title={this.renderTitle()}
                   subheader={

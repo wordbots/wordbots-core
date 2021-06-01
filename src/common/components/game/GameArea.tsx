@@ -235,6 +235,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
                 gameOver={gameOver}
                 isSpectator={isSpectator}
                 isTutorial={isTutorial}
+                isSandbox={isSandbox}
                 onForfeit={isSandbox ? onClickEndGame : onForfeit}
               />
             </div>

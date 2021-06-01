@@ -40,9 +40,11 @@ export function startSandbox(state: State, cardToTest: w.CardInStore | null = nu
   };
 
   if (cardToTest) {
-    // If we're entering sandbox mode to test a card, add two copies of it to the top of the orange deck.
+    // If we're entering sandbox mode to test a card, add two copies of it to the top of each deck.
     decks.orange.unshift(instantiateCard(cardToTest));
     decks.orange.unshift(instantiateCard(cardToTest));
+    decks.blue.unshift(instantiateCard(cardToTest));
+    decks.blue.unshift(instantiateCard(cardToTest));
   }
 
   state = newGame(state, 'orange', {orange: lookupUsername('Orange'), blue: lookupUsername('Blue')}, decks);

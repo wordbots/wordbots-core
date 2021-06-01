@@ -53,6 +53,8 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
   }
 
   public render(): JSX.Element {
+    const { error } = this.props;
+
     return (
       <div>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -60,6 +62,7 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
             <TextField
               multiline
               variant="outlined"
+              className={`card-creator-text-field ${error && 'error'}`}
               disabled={this.props.readonly}
               value={this.state.currentText}
               label="Card Text"

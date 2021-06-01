@@ -13,6 +13,7 @@ interface ForfeitButtonProps {
   gameOver?: boolean
   isSpectator?: boolean
   isTutorial?: boolean
+  isSandbox?: boolean
   onForfeit: (player: w.PlayerColor) => void
 }
 
@@ -50,12 +51,14 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   }
 
   private handleClick = () => {
-    const { player, isTutorial, history, onForfeit } = this.props;
+    const { player, isSandbox, isTutorial, history, onForfeit } = this.props;
 
     if (player) {
       if (isTutorial) {
         onForfeit(opponent(player));
         history.push('/play');
+      } else if (isSandbox) {
+        onForfeit(opponent(player));
       } else {
         if (confirm('Are you sure you want to forfeit?')) {
           onForfeit(opponent(player));

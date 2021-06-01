@@ -1,12 +1,11 @@
 import { Button, Checkbox, FormControl, FormControlLabel, Icon, InputAdornment, InputLabel, MenuItem, Paper, Select, TextField } from '@material-ui/core';
-import { capitalize, isEmpty } from 'lodash';
+import { capitalize, debounce, isEmpty } from 'lodash';
 import * as React from 'react';
 import { BigramProbs } from 'word-ngrams';
 
 import { CREATABLE_TYPES, TYPE_EVENT, TYPE_ROBOT, typeToString } from '../../constants';
 import * as w from '../../types';
 import { CardValidationResults } from '../../util/cards';
-import { saveReportedParseIssue } from '../../util/firebase';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -43,9 +42,14 @@ interface CardCreationFormProps {
   onOpenDialog: (dialog: string) => void
   onTestCard: () => void
   onToggleWillCreateAnother: () => void
+  onSubmitParseIssue: () => void
 }
 
-export default class CardCreationForm extends React.Component<CardCreationFormProps> {
+interface CardCreationFormState {
+  flavorText: string
+}
+
+export default class CardCreationForm extends React.Component<CardCreationFormProps, CardCreationFormState> {
   private static styles: Record<string, React.CSSProperties> = {
     paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
 
@@ -80,6 +84,10 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     createAnotherCheckbox: { margin: '15px 5px 0' },
 
     icon: {verticalAlign: 'middle', color: 'white'}
+  };
+
+  state = {
+    flavorText: this.props.flavorText
   };
 
   get robot(): boolean { return this.props.type === TYPE_ROBOT; }
@@ -186,7 +194,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                   color="secondary"
                   style={{width: 40, minWidth: 40}}
                   disabled={!this.hasTextError || !isEmpty(this.props.submittedParseIssue)}
-                  onClick={this.handleClickReportParseIssue}
+                  onClick={this.props.onSubmitParseIssue}
                 >
                   <Icon className="material-icons" style={CardCreationForm.styles.icon}>report_problem</Icon>
                 </Button>
@@ -198,9 +206,10 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
             <TextField
               multiline
               variant="outlined"
+              className="card-creator-text-field"
               disabled={isReadonly}
               rows={2}
-              value={this.props.flavorText}
+              value={this.state.flavorText}
               label="Flavor Text (optional)"
               style={CardCreationForm.styles.fullWidth}
               onChange={this.handleSetFlavorText}
@@ -251,9 +260,11 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     this.props.onSetName(e.currentTarget.value);
   }
 
+  private setFlavorTextDebounced = debounce(this.props.onSetFlavorText, 100);
   private handleSetFlavorText = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.isReadonly) { return; }
-    this.props.onSetFlavorText(e.currentTarget.value);
+    this.setState({ flavorText: e.currentTarget.value });
+    this.setFlavorTextDebounced(e.currentTarget.value);
   }
 
   private handleSetType = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -263,16 +274,6 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     this.props.onSetType(value);
     // Re-parse card text because different card types now have different validations.
     this.props.onUpdateText(this.props.text, value);
-  }
-
-  private handleClickReportParseIssue = () => {
-    if (this.hasTextError) {
-      saveReportedParseIssue(this.props.text);
-      this.setState({
-        submittedParseIssue: this.props.text,
-        submittedParseIssueConfirmationOpen: true
-      });
-    }
   }
 
   private handleSaveCard = () => {

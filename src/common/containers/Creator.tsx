@@ -23,7 +23,7 @@ import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
 import { CardValidationResults, createCardFromProps, getSentencesFromInput, requestParse, validateCardInCreator } from '../util/cards';
 import CardTextExampleStore from '../util/CardTextExampleStore';
-import { getCardById, getCardTextCorpus, lookupCurrentUser } from '../util/firebase';
+import { getCardById, getCardTextCorpus, lookupCurrentUser, saveReportedParseIssue } from '../util/firebase';
 import { prepareBigramProbs } from '../util/language';
 
 export interface CreatorStateProps {
@@ -290,6 +290,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onTestCard={this.testCard}
               onAddToCollection={this.addToCollection}
               onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
+              onSubmitParseIssue={this.handleClickReportParseIssue}
             />
             <Paper style={{ padding: 10, margin: '15px auto', maxWidth: 840, paddingTop: cardOpenedForEditing ? 10 : 0 }}>
               {
@@ -425,6 +426,16 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     const example: string | null = exampleStore.getExample(this.parserMode);
     if (example) {
       this.onUpdateText(example, this.props.type, true);
+    }
+  }
+
+  private handleClickReportParseIssue = () => {
+    if (this.validationResults.textError) {
+      saveReportedParseIssue(this.props.text);
+      this.setState({
+        submittedParseIssue: this.props.text,
+        submittedParseIssueConfirmationOpen: true
+      });
     }
   }
 

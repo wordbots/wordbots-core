@@ -228,6 +228,18 @@ a.topLink:hover {
   filter: drop-shadow(1px 2px 0px rgb(244, 67, 54));
 }
 
+.card-creator-text-field label {
+  color: rgb(0, 120, 135) !important;
+}
+
+.card-creator-text-field fieldset {
+  border-color: rgb(0, 120, 135) !important;
+}
+
+.card-creator-text-field.error fieldset {
+  border-color: rgb(244, 67, 54) !important;
+}
+
 /* Media queries */
 
 @media only screen and (max-width: 1400px) {

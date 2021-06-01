@@ -167,7 +167,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           onClick={onClickGameArea}
           square
         >
-          {this.renderGamContents()}
+          {this.renderGameContents()}
         </Paper>
 
         {this.renderSidebar()}
@@ -223,7 +223,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     });
   }
 
-  private renderGamContents = () => {
+  private renderGameContents = () => {
     const {
       attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, history, isAttackHappening,
       isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, orangePieces, player, playingCardType,

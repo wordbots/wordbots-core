@@ -15,14 +15,14 @@ import gameReducer from '../../src/common/reducers/game.ts';
 
 describe('GameArea container', () => {
   const getCommonGameAreaComponents = (state, gameInner, dom, tutorialStep) => {
-    const paper = dom.props.children[1];
-    const mainDiv = paper.props.children[2];
+    const fragment = dom.props.children[1].props.children;
+    const mainDiv = fragment.props.children[2];
     const board = mainDiv.props.children;
-    const victoryScreen = paper.props.children[5];
+    const victoryScreen = fragment.props.children[5];
 
     /* eslint-disable react/jsx-key */
     return [
-      paper.props.children[0],
+      fragment.props.children[0],
       <PlayerArea opponent gameProps={gameInner.props} />,
       <div
         className="background"
@@ -65,9 +65,9 @@ describe('GameArea container', () => {
     // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
     const gameInner = renderElement(game);
     const dom = renderElement(gameInner);
-    const paper = dom.props.children[1];
+    const fragment = dom.props.children[1].props.children;
 
-    expect(paper.props.children).toEqual([
+    expect(fragment.props.children).toEqual([
       ...getCommonGameAreaComponents(state, gameInner, dom),
       null
     ]);
@@ -83,12 +83,12 @@ describe('GameArea container', () => {
     const gameInner = renderElement(game);
     const dom = renderElement(gameInner);
 
-    const paper = dom.props.children[1];
+    const fragment = dom.props.children[1].props.children;
     // eslint-disable-next-line no-magic-numbers
-    const tutorialIntroScreen = paper.props.children[6];
+    const tutorialIntroScreen = fragment.props.children[6];
 
     /* eslint-disable react/jsx-key */
-    expect(paper.props.children).toEqual([
+    expect(fragment.props.children).toEqual([
       ...getCommonGameAreaComponents(state, gameInner, dom, testTutorialStep),
       <TutorialIntroScreen onClickEndGame={tutorialIntroScreen.props.onClickEndGame} />
     ]);

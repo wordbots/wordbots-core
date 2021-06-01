@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
 import {
-  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, LEFT_CONTROLS_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
+  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
   CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE, SIDEBAR_COLLAPSED_WIDTH
 } from '../../constants';
 import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
@@ -21,13 +21,11 @@ import EndTurnButton from './EndTurnButton';
 import EventAnimation from './EventAnimation';
 import ForfeitButton from './ForfeitButton';
 import FullscreenMessage from './FullscreenMessage';
-import FullscreenToggle from './FullscreenToggle';
 import GameNotification from './GameNotification';
+import LeftControls from './LeftControls';
 import PlayerArea from './PlayerArea';
 import Sfx from './Sfx';
-import SoundToggle from './SoundToggle';
 import Status from './Status';
-import Timer from './Timer';
 import TutorialIntroScreen from './TutorialIntroScreen';
 import VictoryScreen from './VictoryScreen';
 
@@ -235,13 +233,24 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
     if (draft) {
       return (
-        <DraftArea
-          player={player}
-          usernames={usernames}
-          draft={draft}
-          onDraftCards={onDraftCards}
-          onForfeit={onForfeit}
-        />
+        <React.Fragment>
+          <DraftArea
+            player={player}
+            usernames={usernames}
+            draft={draft}
+            isGameOver={gameOver}
+            volume={volume}
+            onDraftCards={onDraftCards}
+            onForfeit={onForfeit}
+            onSetVolume={onSetVolume}
+            onToggleFullscreen={this.handleToggleFullScreen}
+          />
+          <VictoryScreen
+            winner={winner}
+            winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
+            onClick={onClickEndGame}
+          />
+        </React.Fragment>
       );
     } else {
       return (
@@ -255,37 +264,19 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
               justifyContent: 'space-between'
             }}
           >
-            <div
-              className="background"
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 20,
-                zIndex: LEFT_CONTROLS_Z_INDEX
-              }}
-            >
-              <Timer
-                player={player}
-                currentTurn={currentTurn}
-                enabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
-                isMyTurn={isMyTurn}
-                isAttackHappening={isAttackHappening}
-                onPassTurn={onPassTurn}
-              />
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-around',
-                  paddingLeft: 10
-                }}
-              >
-                <SoundToggle onSetVolume={onSetVolume} volume={volume} />
-                <FullscreenToggle onClick={this.handleToggleFullScreen} />
-              </div>
-            </div>
+            <LeftControls
+              player={player}
+              currentTurn={currentTurn}
+              draft={draft}
+              isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
+              isMyTurn={isMyTurn}
+              isAttackHappening={isAttackHappening}
+              volume={volume}
+              onPassTurn={onPassTurn}
+              onSetVolume={onSetVolume}
+              onToggleFullscreen={this.handleToggleFullScreen}
+            />
+
             <div
               className="background"
               style={{

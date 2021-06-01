@@ -4,8 +4,10 @@ import { BLUE_PLAYER_COLOR, DISABLE_TURN_TIMER, ORANGE_PLAYER_COLOR } from '../.
 import * as w from '../../types';
 
 interface TimerProps {
+  minutes: number
+  seconds: number
   player: w.PlayerColor | 'neither'
-  currentTurn: w.PlayerColor
+  currentTurn: w.PlayerColor | 'draft'
   enabled?: boolean
   isMyTurn?: boolean
   isAttackHappening?: boolean
@@ -24,7 +26,7 @@ function padDigits(seconds: number): string {
 
 export default class Timer extends React.Component<TimerProps, TimerState> {
   public state: TimerState = {
-    timer: '1:30',
+    timer: `${this.props.minutes}:${this.props.seconds}`,
     timerStyle: {}
   };
 
@@ -84,14 +86,19 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
   }
 
   private resetTimer(): void {
-    this.setTimer(1, 30, 'white');
+    this.setTimer(this.props.minutes, this.props.seconds, 'white');
   }
 
   private setTimer(minutes: number, seconds: number, color: 'red' | 'white'): void {
+    const { player, currentTurn } = this.props;
     this.setState({
       timer: `${minutes}:${padDigits(seconds)}`,
       timerStyle: {
-        color: {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[this.props.currentTurn],
+        color: {
+          orange: ORANGE_PLAYER_COLOR,
+          blue: BLUE_PLAYER_COLOR,
+          draft: ({ orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR, neither: 'white' })[player]
+        }[currentTurn],
         fontWeight: color === 'red' ? 'bold' : 'normal'
       }
     });
@@ -100,11 +107,11 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
   private tickTimer(): void {
     const [, minutes, seconds] = this.state.timer.match(/(.):(..)/)!.map((num) => parseInt(num, 10));
 
-    if (minutes === 1) {
+    if (minutes >= 1) {
       if (seconds === 0) {
-        this.setTimer(0, 59, 'white');
+        this.setTimer(minutes - 1, 59, 'white');
       } else {
-        this.setTimer(1, seconds - 1, 'white');
+        this.setTimer(minutes, seconds - 1, 'white');
       }
     } else if (seconds > 0 && seconds <= 6) {
       this.setTimer(0, seconds - 1, 'red');

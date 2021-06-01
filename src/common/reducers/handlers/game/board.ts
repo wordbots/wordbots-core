@@ -142,18 +142,23 @@ export function attackComplete(state: State): State {
     const attacker: w.Object = currentPlayer(state).objectsOnBoard[source];
     const defender: w.Object = opponentPlayer(state).objectsOnBoard[target];
 
+    // Get attacker and defender's Attack stats now in case they change over the course of combat.
+    // (Conceptually, the two objects damage each other simultaneously.)
+    const attackerAttack: number = getAttribute(attacker, 'attack') || 0;
+    const defenderAttack: number = getAttribute(defender, 'attack') || 0;
+
     state = triggerEvent(state, 'afterAttack', {
       object: attacker,
       condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
       undergoer: defender
     }, () => {
       defender.mostRecentlyInCombatWith = attacker;
-      return dealDamageToObjectAtHex(state, getAttribute(attacker, 'attack') || 0, target, 'combat');
+      return dealDamageToObjectAtHex(state, attackerAttack, target, 'combat');
     });
 
-    if (!hasEffect(defender, 'cannotfightback') && getAttribute(defender, 'attack')! > 0) {
+    if (!hasEffect(defender, 'cannotfightback') && defenderAttack > 0) {
       attacker.mostRecentlyInCombatWith = defender;
-      state = dealDamageToObjectAtHex(state, getAttribute(defender, 'attack') || 0, source, 'combat');
+      state = dealDamageToObjectAtHex(state, defenderAttack, source, 'combat');
     }
 
     // Move attacker to defender's space (if possible).

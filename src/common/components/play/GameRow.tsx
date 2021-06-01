@@ -46,7 +46,11 @@ export default class GameRow extends React.Component<GameRowProps> {
 
   get anyValidDecks(): boolean {
     const { availableDecks } = this.props;
-    return availableDecks.some(this.format.isDeckValid);
+    if (this.format.requiresDeck) {
+      return availableDecks.some(this.format.isDeckValid);
+    } else {
+      return true;
+    }
   }
 
   get buttonTooltip(): string {

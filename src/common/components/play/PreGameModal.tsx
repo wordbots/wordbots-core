@@ -7,7 +7,7 @@ import * as React from 'react';
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
 import { sortDecks } from '../../util/decks';
-import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetFormat } from '../../util/formats';
+import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -69,7 +69,9 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
         }
       })), 'name');
 
-      return [...BUILTIN_FORMATS, ...setFormats];
+      const setDraftFormats = sets.filter((set) => set.metadata.isPublished).map((set) => new SetDraftFormat(set));
+
+      return [...BUILTIN_FORMATS, ...setFormats, ...setDraftFormats];
     }
   }
 
@@ -91,6 +93,11 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     } else {
       return null;
     }
+  }
+
+  get noDeckRequired(): boolean {
+    const { format } = this.props;
+    return format ? !format.requiresDeck : this.state.selectedFormatName.startsWith('setDraft('); // TODO better
   }
 
   get actions(): JSX.Element[] {
@@ -156,13 +163,13 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
             label="Game password"
             onChange={this.handleSetPassword}
           />}
-          <DeckPicker
+          {!this.noDeckRequired && <DeckPicker
             cards={cards}
             availableDecks={this.validDecks}
             sets={sets}
             selectedDeck={this.deck}
             onChooseDeck={this.handleChooseDeck}
-          />
+          />}
         </div>
       </RouterDialog>
     );
@@ -175,7 +182,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   private handleChooseFormat = (selectedFormatName: string) => {
     this.setState({
       selectedFormatName,
-      selectedDeckId: this.validDecks[0].id
+      selectedDeckId: this.validDecks[0]?.id || null
     });
   }
 
@@ -201,7 +208,11 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       return;
     }
 
-    if (this.deck) {
+    if (this.noDeckRequired) {
+      const dummyDeck: w.DeckInGame = { id: 'na', authorId: 'na', name: 'na', cardIds: [], cards: [], setId: null };
+      onStartGame(this.format.serialized(), dummyDeck);
+      this.close();
+    } else if (this.deck) {
       onStartGame(this.format.serialized(), this.deck);
       this.close();
     }

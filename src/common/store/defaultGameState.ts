@@ -69,6 +69,7 @@ const defaultGameState: w.GameState = {
   tutorial: false,
   practice: false,
   sandbox: false,
+  draft: null,
   winner: null,
   options: {},
   currentTurn: STARTING_PLAYER_COLOR,

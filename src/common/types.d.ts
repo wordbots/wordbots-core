@@ -24,7 +24,7 @@ export type PlayerColor = 'blue' | 'orange';
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type Card = CardInGame | CardInStore | ObfuscatedCard;
-export type Format = BuiltInFormat | SetFormat;
+export type Format = BuiltInFormat | SetFormat | SetDraftFormat;
 export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
@@ -127,6 +127,11 @@ export interface SetFormat {
   set: Set
 }
 
+export interface SetDraftFormat {
+  _type: 'setDraft'
+  set: Set
+}
+
 export interface Dictionary {
   definitions?: { [token: string]: Array<{ syntax: string, semantics: string }> }
   examplesByToken?: { [token: string]: string[] }
@@ -216,6 +221,7 @@ export interface GameState {
   actionLog: LoggedAction[]
   attack: Attack | null
   currentTurn: PlayerColor
+  draft: DraftState | null
   eventQueue: CardInGame[]
   gameFormat: Format
   memory: Record<string, unknown>
@@ -414,6 +420,11 @@ export interface LoggedAction extends ChatMessage {
   timestamp: timestamp
   cards: Record<string, CardInGame>
 }
+
+export type DraftState = PerPlayer<{
+  cardsDrafted: CardInGame[]
+  cardGroupsToShow: CardInGame[][]
+}>;
 
 // Creator state subcomponents
 

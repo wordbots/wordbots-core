@@ -187,11 +187,19 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function spectateGame(clientID: m.ClientID, gameID: m.ClientID): void {
-    const game = state.spectateGame(clientID, gameID);
+    const game: m.Game | undefined = state.spectateGame(clientID, gameID);
     if (game) {
-      const { actions, decks, name, startingSeed, usernames } = game;
+      const { actions, decks, format, name, startingSeed, usernames } = game;
 
-      sendMessage('ws:GAME_START', { player: 'neither', decks, usernames, seed: startingSeed }, [clientID]);
+      const gameStartPayload = {
+        player: 'neither',
+        decks,
+        usernames,
+        format,
+        seed: startingSeed
+      };
+
+      sendMessage('ws:GAME_START', gameStartPayload, [clientID]);
       sendMessage('ws:CURRENT_STATE', {actions}, [clientID]);
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
       sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));

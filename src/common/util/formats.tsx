@@ -249,22 +249,24 @@ export class SetDraftFormat extends GameFormat {
       started: true,
       usernames,
       options,
-      draft: {
-        blue: {
-          cardsDrafted: [],
-          cardGroupsToShow: this.buildCardDraftGroups(seed)
-        },
-        orange: {
-          cardsDrafted: [],
-          cardGroupsToShow: this.buildCardDraftGroups(seed * 2)
-        }
-      }
+      draft: this.initialDraftState(seed)
     };
 
     return state;
   }
 
-  private buildCardDraftGroups = (seed: number): w.CardInGame[][] => (
+  initialDraftState = (seed: number): w.DraftState => ({
+    blue: {
+      cardsDrafted: [],
+      cardGroupsToShow: this.buildCardDraftGroups(seed)
+    },
+    orange: {
+      cardsDrafted: [],
+      cardGroupsToShow: this.buildCardDraftGroups(seed * 2)
+    }
+  })
+
+  buildCardDraftGroups = (seed: number): w.CardInGame[][] => (
     times(15, (i) =>
       (shuffle(this.set.cards, seed + i * 0.01) as w.CardInStore[])
         .slice(0, 4)

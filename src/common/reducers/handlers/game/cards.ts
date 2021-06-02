@@ -263,7 +263,7 @@ export function draftCards(state: w.GameState, player: w.PlayerColor, cards: w.C
     if (state.draft.blue.cardGroupsToShow.length === 0 && state.draft.orange.cardGroupsToShow.length === 0) {
       const seed = state.rng();
       const blueDeck: w.CardInGame[] = shuffle(state.draft.blue.cardsDrafted, seed);
-      const orangeDeck: w.CardInGame[] = shuffle(state.draft.blue.cardsDrafted, seed);
+      const orangeDeck: w.CardInGame[] = shuffle(state.draft.orange.cardsDrafted, seed);
 
       state.players.blue = bluePlayerState(blueDeck);
       state.players.orange = orangePlayerState(orangeDeck);

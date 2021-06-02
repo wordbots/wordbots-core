@@ -285,9 +285,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     if (deck) {
       onStartPractice(formatName, shuffleCardsInDeck(deck, cards, sets));
     } else {
-      // TODO remove
-      onStartPractice(formatName, []);
-
       history.push(baseGameUrl);
     }
   }

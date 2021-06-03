@@ -12,7 +12,6 @@ interface GameCreationModalProps {
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
   sets: w.Set[]
-  path: string
   title: string
   onCreateGame: (gameName: string, formatName: w.Format, deck: w.DeckInGame, options: w.GameOptions) => void
   history: History
@@ -33,12 +32,12 @@ export default class GameCreationModal extends React.Component<GameCreationModal
   };
 
   public render(): JSX.Element {
-    const { availableDecks, cards, sets, history, path, title } = this.props;
+    const { availableDecks, cards, sets, history, title } = this.props;
     const { gameName } = this.state;
 
     return (
       <PreGameModal
-        mode={path}
+        mode="host"
         title={title}
         availableDecks={availableDecks}
         cards={cards}

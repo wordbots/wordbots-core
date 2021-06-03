@@ -34,6 +34,27 @@ function deckBelongsToSet(deck: w.DeckInGame, set: w.Set): boolean {
   return deck.setId === set.id && deck.cardIds.every((id) => cardIdsInSet.includes(id));
 }
 
+function renderSetForFormatDescription(set: w.Set): React.ReactFragment {
+  return (
+    <React.Fragment>
+      <a
+        href={`/sets?set=${set.id}`}
+        style={{
+          fontStyle: 'italic',
+          textDecoration: 'underline',
+          color: '#666'
+        }}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {set.name}
+      </a>
+      {' '}set by{' '}
+      <ProfileLink uid={set.metadata.authorId} username={set.metadata.authorName} />
+    </React.Fragment>
+  )
+}
+
 export class GameFormat {
   public static decode(encodedFormat: w.Format): GameFormat {
     let format: GameFormat | undefined;
@@ -166,20 +187,7 @@ export class SetFormat extends GameFormat {
 
   public rendered = (): React.ReactNode => (
     <div>
-      <a
-        href={`/sets?set=${this.set.id}`}
-        style={{
-          fontStyle: 'italic',
-          textDecoration: 'underline',
-          color: '#666'
-        }}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {this.set.name}
-      </a>
-      {' '}set by{' '}
-      <ProfileLink uid={this.set.metadata.authorId} username={this.set.metadata.authorName} />
+      {renderSetForFormatDescription(this.set)}
     </div>
   )
 
@@ -198,7 +206,7 @@ export class SetFormat extends GameFormat {
 }
 
 export class SetDraftFormat extends GameFormat {
-  public static description = 'TODO.';
+  public static description = 'Each player builds their deck at the start of the game by choosing from a random pool of cards in a given set.';
 
   public name: string;
   public displayName: string;
@@ -213,24 +221,10 @@ export class SetDraftFormat extends GameFormat {
 
   public serialized = (): w.SetDraftFormat => ({ _type: 'setDraft', set: this.set });
 
-  // TODO factor our shared code with SetFormat.rendered
   public rendered = (): React.ReactNode => (
     <div>
-      draft:{' '}
-      <a
-        href={`/sets?set=${this.set.id}`}
-        style={{
-          fontStyle: 'italic',
-          textDecoration: 'underline',
-          color: '#666'
-        }}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {this.set.name}
-      </a>
-      {' '}set by{' '}
-      <ProfileLink uid={this.set.metadata.authorId} username={this.set.metadata.authorName} />
+      <span>draft: </span>
+      {renderSetForFormatDescription(this.set)}
     </div>
   )
 

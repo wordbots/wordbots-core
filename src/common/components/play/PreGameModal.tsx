@@ -75,6 +75,10 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     }
   }
 
+  get noDeckRequired(): boolean {
+    return !this.format.requiresDeck;
+  }
+
   // All of the player's decks, in an unpacked format ready to start the game with.
   get decks(): w.DeckInGame[] {
     const { availableDecks, cards, sets } = this.props;
@@ -93,11 +97,6 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     } else {
       return null;
     }
-  }
-
-  get noDeckRequired(): boolean {
-    const { format } = this.props;
-    return format ? !format.requiresDeck : this.state.selectedFormatName.startsWith('setDraft('); // TODO better
   }
 
   get actions(): JSX.Element[] {

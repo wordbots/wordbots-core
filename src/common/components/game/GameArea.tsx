@@ -5,29 +5,20 @@ import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
 import {
-  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
+  CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
   CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE, SIDEBAR_COLLAPSED_WIDTH
 } from '../../constants';
-import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import { urlForGameMode } from '../../containers/Play';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import Chat from '../play/Chat';
 
-import Board from './Board';
 import CardSelector from './CardSelector';
-import DraftArea from './DraftArea';
-import EndTurnButton from './EndTurnButton';
-import EventAnimation from './EventAnimation';
-import ForfeitButton from './ForfeitButton';
 import FullscreenMessage from './FullscreenMessage';
+import GameAreaContents from './GameAreaContents';
 import GameNotification from './GameNotification';
-import LeftControls from './LeftControls';
-import PlayerArea from './PlayerArea';
 import Sfx from './Sfx';
 import Status from './Status';
-import TutorialIntroScreen from './TutorialIntroScreen';
-import VictoryScreen from './VictoryScreen';
 
 // Props shared by GameArea and GameAreaContainer.
 export interface GameProps {
@@ -39,6 +30,7 @@ export interface GameProps {
   draft: w.DraftState | null
 
   selectedTile: w.HexId | null
+  selectedCard: number | null
   playingCardType: w.CardType | null
 
   status: w.PlayerStatus
@@ -78,8 +70,7 @@ export interface GameProps {
   socket: w.SocketState
 }
 
-type GameAreaProps = GameProps & RouteComponentProps & {
-  message: string | null
+export interface GameAreaHandlerProps {
   onPassTurn: (player: w.PlayerColor) => void
   onForfeit: (winner: w.PlayerColor) => void
   onTutorialStep: (back?: boolean) => void
@@ -89,10 +80,16 @@ type GameAreaProps = GameProps & RouteComponentProps & {
   onClickEndGame: () => void
   onNextTutorialStep: () => void
   onPrevTutorialStep: () => void
+  onSelectCard: (index: number, player: w.PlayerColor) => void
+  onSelectCardInDiscardPile: (cardId: w.CardId, player: w.PlayerColor) => void
   onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHexId?: w.HexId | null) => void
   onAddCardToHand: (player: w.PlayerColor, card: w.Card) => void
   onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
   onSetVolume: (volume: number) => void
+}
+
+type GameAreaProps = GameProps & GameAreaHandlerProps & RouteComponentProps & {
+  message: string | null
 };
 
 interface GameAreaState {
@@ -130,7 +127,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     const {
       currentTurn, isMyTurn, isSandbox, message, player, sfxQueue, status, volume, onClickGameArea
     } = this.props;
-    const { areaHeight, chatOpen, chatWidth } = this.state;
+    const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls } = this.state;
 
     if (message) {
       return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
@@ -165,7 +162,14 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           onClick={onClickGameArea}
           square
         >
-          {this.renderGameContents()}
+          <GameAreaContents
+            {...this.props}
+            actualPlayer={this.actualPlayer}
+            boardSize={boardSize}
+            boardMargin={boardMargin}
+            compactControls={compactControls}
+            onToggleFullscreen={this.handleToggleFullScreen}
+          />
         </Paper>
 
         {this.renderSidebar()}
@@ -219,139 +223,6 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
         chatWidth
       };
     });
-  }
-
-  private renderGameContents = () => {
-    const {
-      attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, history, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, orangePieces, player, playingCardType,
-      selectedTile, target, tutorialStep, usernames, winner, volume,
-      onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
-      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume
-    } = this.props;
-    const { boardSize, boardMargin, compactControls } = this.state;
-
-    if (draft) {
-      return (
-        <React.Fragment>
-          <DraftArea
-            player={player}
-            usernames={usernames}
-            draft={draft}
-            isGameOver={gameOver}
-            volume={volume}
-            onDraftCards={onDraftCards}
-            onForfeit={onForfeit}
-            onSetVolume={onSetVolume}
-            onToggleFullscreen={this.handleToggleFullScreen}
-          />
-          <VictoryScreen
-            winner={winner}
-            winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
-            onClick={onClickEndGame}
-          />
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <div
-            className="background"
-            style={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <LeftControls
-              player={player}
-              currentTurn={currentTurn}
-              draft={draft}
-              isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
-              isMyTurn={isMyTurn}
-              isAttackHappening={isAttackHappening}
-              volume={volume}
-              onPassTurn={onPassTurn}
-              onSetVolume={onSetVolume}
-              onToggleFullscreen={this.handleToggleFullScreen}
-            />
-
-            <div
-              className="background"
-              style={{
-                marginRight: 20,
-                maxWidth: 220,
-                textAlign: 'right',
-                zIndex: BACKGROUND_Z_INDEX
-              }}
-            >
-              <EndTurnButton
-                player={this.actualPlayer}
-                compact={compactControls}
-                gameOver={gameOver}
-                isMyTurn={isMyTurn || isSandbox}
-                isAttackHappening={isAttackHappening}
-                tutorialStep={tutorialStep}
-                onPassTurn={onPassTurn}
-                onNextTutorialStep={onNextTutorialStep}
-                onPrevTutorialStep={onPrevTutorialStep}
-              />
-              <ForfeitButton
-                player={this.actualPlayer}
-                compact={compactControls}
-                history={history}
-                gameOver={gameOver}
-                isSpectator={isSpectator}
-                isTutorial={isTutorial}
-                isSandbox={isSandbox}
-                onForfeit={isSandbox ? onClickEndGame : onForfeit}
-              />
-            </div>
-          </div>
-          <PlayerArea opponent gameProps={this.props as any as GameAreaContainerProps} />
-          <div
-            className="background"
-            style={{
-              position: 'absolute',
-              left: boardMargin.left,
-              top: boardMargin.top,
-              margin: 0,
-              zIndex: BOARD_Z_INDEX,
-              width: boardSize,
-              height: boardSize
-              // border: '5px solid white'  /* (useful for debugging layout) */
-            }}
-          >
-            <Board
-              size={this.state.boardSize}
-              player={this.actualPlayer}
-              currentTurn={currentTurn}
-              selectedTile={selectedTile}
-              target={target}
-              bluePieces={bluePieces}
-              orangePieces={orangePieces}
-              playingCardType={playingCardType}
-              tutorialStep={tutorialStep}
-              attack={attack}
-              isGameOver={!!winner}
-              onSelectTile={onSelectTile}
-              onActivateAbility={onActivateObject}
-              onTutorialStep={onTutorialStep}
-              onEndGame={onClickEndGame}
-            />
-          </div>
-          <PlayerArea gameProps={this.props as any as GameAreaContainerProps} />
-          <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
-          <VictoryScreen
-            winner={winner}
-            winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
-            onClick={onClickEndGame}
-          />
-          {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
-        </React.Fragment>
-      );
-    }
   }
 
   private renderSidebar = () => {

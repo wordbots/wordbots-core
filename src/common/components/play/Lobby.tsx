@@ -97,7 +97,6 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
             onStartGame={this.handleJoinQueue}
           />
           <GameCreationModal
-            path="host"
             title="Host a Multiplayer Game"
             availableDecks={availableDecks}
             cards={cards}

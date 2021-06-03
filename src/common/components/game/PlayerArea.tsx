@@ -4,17 +4,21 @@ import Dialog from '@material-ui/core/Dialog';
 import * as React from 'react';
 
 import { MAX_Z_INDEX, STATUS_Z_INDEX } from '../../constants';
-import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import * as w from '../../types';
 
 import Deck from './Deck';
 import DiscardPile from './DiscardPile';
 import EnergyCount from './EnergyCount';
+import { GameProps } from './GameArea';
 import Hand from './Hand';
 import PlayerName from './PlayerName';
 
 interface PlayerAreaProps {
-  gameProps: GameAreaContainerProps
+  gameProps: GameProps & {
+    onSelectCard: (index: number, player: w.PlayerColor) => void
+    onSelectCardInDiscardPile: (cardId: w.CardId, player: w.PlayerColor) => void
+    onTutorialStep: (back?: boolean) => void
+  }
   opponent?: boolean
 }
 

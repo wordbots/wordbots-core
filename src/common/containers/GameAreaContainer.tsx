@@ -17,7 +17,6 @@ import { currentTutorialStep } from '../util/game';
 import { baseGameUrl, urlForGameMode } from './Play';
 
 type GameAreaStateProps = GameProps & {
-  selectedCard: number | null
   started: boolean
 };
 

@@ -52,7 +52,7 @@ function renderSetForFormatDescription(set: w.Set): React.ReactFragment {
       {' '}set by{' '}
       <ProfileLink uid={set.metadata.authorId} username={set.metadata.authorName} />
     </React.Fragment>
-  )
+  );
 }
 
 export class GameFormat {

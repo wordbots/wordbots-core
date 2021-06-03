@@ -19,7 +19,7 @@ interface PreGameModalProps {
   sets: w.Set[]
   format?: GameFormat
   options?: w.GameOptions
-  mode: string
+  mode: 'casual' | 'host' | 'matchmaking' | 'practice'
   startButtonText?: string
   title: string
   gameName?: string
@@ -57,7 +57,12 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     const { mode, sets } = this.props;
 
     if (mode === 'practice') {
+      // Only "anything goes" (normal) and built-in format allowed in practice mode,
+      // because the AI can't deal with arbitrary player cards.
       return [NormalGameFormat, BuiltinOnlyGameFormat];
+    } else if (mode === 'matchmaking') {
+      // Disallow set formats in matchmaking mode, because it's unlikely that those players would get matched.
+      return BUILTIN_FORMATS;
     } else {
       const setFormats = uniqBy(compact(this.decks.map((deck) => {
         const set = sets.find((s) => s.id === deck.setId);

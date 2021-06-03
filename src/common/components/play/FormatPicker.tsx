@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import * as React from 'react';
 
-import { BUILTIN_FORMATS, GameFormat, SetFormat } from '../../util/formats';
+import { BUILTIN_FORMATS, GameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
 interface FormatPickerProps {
@@ -35,7 +35,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
   get formatsTooltip(): string {
     const headerMsg = 'Wordbots offers your choice of different game formats based on the kind of game you want to play:';
     const builtinFormatRows = BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
-    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}`;
+    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}`;
   }
 
   public render(): JSX.Element {

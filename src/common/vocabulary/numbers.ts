@@ -41,6 +41,7 @@ export function thatMuch(state: w.GameState): w.Returns<number> {
     if (amount && isNumber(amount)) {
       return amount;
     } else {
+      /* istanbul ignore next: this is a fallback that should be rarely hit */
       throw new Error("Can't resolve thatMuch() because there is no salient amount");
     }
   };

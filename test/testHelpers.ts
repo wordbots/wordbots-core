@@ -1,4 +1,4 @@
-import { cloneDeep, findIndex, forOwn, has, isArray, isObject, mapValues, pickBy } from 'lodash';
+import { cloneDeep, findIndex, has, isArray, isObject, mapValues, pickBy } from 'lodash';
 
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
@@ -242,7 +242,7 @@ export function setUpBoardState(players: Record<string, Record<w.HexId, w.CardIn
   ['blue', 'orange'].forEach((playerName) => {
     const player: Record<w.HexId, w.CardInStore> = players[playerName as w.PlayerColor];
     if (player) {
-      forOwn(player, (card, hex) => {
+      Object.entries(player).forEach(([hex, card]) => {
         const placementHex = HexUtils.getID(validPlacementHexes(state, playerName as w.PlayerColor, card.type)[0]);
         state = playObject(state, playerName as w.PlayerColor, card, placementHex);
         state = transportObject(state, placementHex, hex);

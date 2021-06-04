@@ -388,7 +388,7 @@ export function contractKeywords(sentence: string): string {
   ), sentence);
 }
 
-// e.g. 'All robots have Jump' => 'All robots have "Jump";
+// e.g. 'All robots have Jump' => 'All robots have "Jump"';
 export function quoteKeywords(sentence: string): string {
   return contractKeywords(expandKeywords(sentence, true));
 }

@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import { flatMap, times } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../types';
@@ -11,26 +11,35 @@ import Word from './Word';
 interface SentenceProps {
   text: string
   result: w.ParseResult | null
+  color?: 'green' | 'red' | 'black'
 }
 
 export default class Sentence extends React.Component<SentenceProps> {
-  public static fromText = (text?: string): JSX.Element[] => (
-    splitSentences(text || '').map((sentence, idx) =>
-      <Sentence key={idx} text={sentence} result={null} />
-    )
-  )
+  public static fromText = (text?: string): JSX.Element[] => Sentence.fromTextChunks([{ text }]);
+
+  public static fromTextChunks = (chunks: Array<{ text?: string, color?: 'green' | 'red' | 'black' }>): JSX.Element[] => (
+    flatMap(chunks, (({ text, color }, i) =>
+      splitSentences(text || '').map((sentence, j) =>
+        <Sentence key={`${i}-${j}`} text={sentence} result={null} color={color} />
+      )
+    ))
+  );
 
   public render(): JSX.Element | null {
-    const { text, result } = this.props;
+    const { color, text, result } = this.props;
     const keywords = keywordsInSentence(text, true);
-    const color = result?.js ? 'green' : (result?.error ? 'red' : 'black');
 
     if (/\S/.test(text)) {
       const phrases = text.trim().split(',');
       const numInitialNewlines = (text.split(/\w/)[0].match(/\n/g) || []).length;
 
       return (
-        <span key={id()} style={{ color }}>
+        <span
+          key={id()}
+          style={{
+            color: color || (result?.js ? 'green' : (result?.error ? 'red' : 'black'))
+          }}
+        >
           {times(numInitialNewlines, (i) => <br key={i} />)}
           {phrases.map((p) =>
             p.split(' ').map((word) => <Word key={id()} word={word} keywords={keywords} result={result} />)

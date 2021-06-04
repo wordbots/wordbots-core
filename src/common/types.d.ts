@@ -380,14 +380,17 @@ export interface PassiveAbility {
   onlyExecuteOnce?: boolean
   source?: AbilityId
   targets: StringRepresentationOf<(state: GameState) => Target>
+  text: string | null
   unapply: (target: Targetable) => void
 }
 
 export interface TriggeredAbility {
-  action: (state: GameState) => unknown
+  action: ((state: GameState) => unknown) | StringRepresentationOf<(state: GameState) => unknown>
   duration?: number
+  override?: boolean
   object?: _Object
   source?: AbilityId
+  text: string | null
   trigger: Trigger
 }
 

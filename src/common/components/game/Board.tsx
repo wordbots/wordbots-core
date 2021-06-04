@@ -84,9 +84,12 @@ export default class Board extends React.Component<BoardProps, BoardState> {
       stats: {
         health: getAttribute(piece, 'health')!,
         attack: getAttribute(piece, 'attack'),
+        speed: getAttribute(piece, 'speed'),
         movesUsed: (piece && getAttribute(piece, 'speed') !== undefined) ? (getAttribute(piece, 'speed')! - movesLeft(piece as w.Robot)) : undefined,
         movesAvailable: (piece && getAttribute(piece, 'speed') !== undefined) ? movesLeft(piece as w.Robot) : undefined
       },
+      abilities: piece.abilities,
+      triggers: piece.triggers,
       attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null,
       isDamaged: !!piece.tookDamageThisTurn
     }));

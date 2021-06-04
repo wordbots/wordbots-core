@@ -375,9 +375,9 @@ export function keywordsInSentence(sentence: string, hintsToo = false): { [keywo
   }
 }
 
-export function expandKeywords(sentence: string): string {
+export function expandKeywords(sentence: string, quote = false): string {
   const keywords = keywordsInSentence(sentence);
-  return reduce(keywords, (str, def, keyword) => str.replace(keyword, def), sentence);
+  return reduce(keywords, (str, def, keyword) => str.replace(keyword, quote ? `"${def}"` : def), sentence);
 }
 
 export function contractKeywords(sentence: string): string {
@@ -386,6 +386,11 @@ export function contractKeywords(sentence: string): string {
     str.replace(`"${def}"`, capitalize(keyword))
        .replace(def, capitalize(keyword))
   ), sentence);
+}
+
+// e.g. 'All robots have Jump' => 'All robots have "Jump";
+export function quoteKeywords(sentence: string): string {
+  return contractKeywords(expandKeywords(sentence, true));
 }
 
 //

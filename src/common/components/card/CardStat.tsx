@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash';
+import { capitalize, isNumber } from 'lodash';
 import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
@@ -31,9 +31,9 @@ export default class CardStat extends React.Component<CardStatProps> {
 
   get textColor(): string {
     const { base, current } = this.props;
-    if (current && base && current > base) {
+    if (isNumber(current) && isNumber(base) && current > base) {
       return '#81C784';
-    } else if (current && base && current < base) {
+    } else if (isNumber(current) && isNumber(base) && current < base) {
       return '#E57373';
     } else {
       return '#444';
@@ -55,22 +55,23 @@ export default class CardStat extends React.Component<CardStatProps> {
   }
 
   get statText(): JSX.Element {
+    const { base, current, scale } = this.props;
     const baseStatStyle: React.CSSProperties = {
       position: 'absolute',
       top: -5,
       left: -10,
       color: 'black',
-      fontSize: 10 * (this.props.scale || 1),
+      fontSize: 10 * (scale || 1),
       textDecoration: 'line-through'
     };
 
-    if (this.props.current && this.props.current !== this.props.base) {
+    if (current && current !== base) {
       return (
         <span style={{position: 'relative'}}>
           <span style={baseStatStyle}>
-            &nbsp;{this.props.base}&nbsp;
+            &nbsp;{base}&nbsp;
           </span>
-          {this.props.current}
+          {current}
         </span>
       );
     } else {

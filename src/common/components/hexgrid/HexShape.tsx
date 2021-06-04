@@ -19,8 +19,15 @@ interface HexShapeProps {
 
   fill?: string
   card?: w.CardInGame
-  tutorialStep?: w.TutorialStep
+  stats?: {
+    attack?: number
+    health: number
+    speed?: number
+  }
+  abilities?: w.PassiveAbility[]
+  triggers?: w.TriggeredAbility[]
   activatedAbilities?: w.ActivatedAbility[]
+  tutorialStep?: w.TutorialStep
   selected?: boolean
   hovered?: boolean
   isGameOver?: boolean
@@ -84,7 +91,7 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
   }
 
   public render(): JSX.Element {
-    const { actions, activatedAbilities, card, isGameOver, tutorialStep } = this.props;
+    const { actions, activatedAbilities, card, stats, abilities, triggers, isGameOver, tutorialStep } = this.props;
     const { displayTooltip } = this.state;
 
     if (this.shouldRenderTutorialTooltip) {
@@ -111,8 +118,15 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
         </AbilitiesTooltip>
       );
     } else if (card) {
-     return (
-        <CardTooltip popover card={card} isOpen={displayTooltip}>
+      return (
+        <CardTooltip
+          popover
+          isOpen={displayTooltip}
+          card={card}
+          stats={stats}
+          abilities={abilities}
+          triggers={triggers}
+        >
           {this.renderHex()}
         </CardTooltip>
       );

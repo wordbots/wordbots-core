@@ -1,4 +1,4 @@
-import {clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, some} from 'lodash';
+import {clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, last, some} from 'lodash';
 
 import * as w from '../types';
 
@@ -87,4 +87,12 @@ export function withoutEmptyFields<T extends Record<string, any>>(obj: T): T {
       (newObjSoFar, [k, v]) => Object.assign({}, newObjSoFar , { [k]: isObject(v) ? withoutEmptyFields(v) : v }),
       {} as T
     );
+}
+
+export function withTrailingPeriod(sentence: string | null): string {
+  if (sentence && sentence.length > 0 && last(sentence) !== '.') {
+    return `${sentence}.`;
+  } else {
+    return sentence || '';
+  }
 }

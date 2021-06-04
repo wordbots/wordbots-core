@@ -6,15 +6,16 @@ import { id } from '../util/common';
 import { executeCmd, reversedCmd } from '../util/game';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
-  return (ability) => {
+  return (ability: Omit<w.PassiveAbility, 'text'>) => {
     if (currentObject && (!source || !currentObject.abilities.find((a) => a.source === source))) {
-      ability = {
+      const finalizedAbility: w.PassiveAbility = {
         ...ability,
-        source,
-        duration: state.memory.duration || null
+        source: source || undefined,
+        duration: (state.memory.duration as number | undefined) || undefined,
+        text: state.currentCmdText || null
       };
 
-      currentObject.abilities = currentObject.abilities.concat([ability]);
+      currentObject.abilities = currentObject.abilities.concat([finalizedAbility]);
     }
   };
 }
@@ -37,7 +38,7 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
 //   onlyExecuteOnce => if true, the given ability will be disabled after executing once
 
-export function abilities(state: w.GameState): Record<string, w.Returns<w.PassiveAbility>> {
+export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.PassiveAbility, 'text'>>> {
   return {
     activated: (targetFunc: (s: w.GameState) => w.Target[], action) => {
       const aid: w.AbilityId = id();

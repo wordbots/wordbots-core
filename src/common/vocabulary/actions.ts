@@ -140,13 +140,13 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       state.callbackAfterExecution = (s: w.GameState) => passTurn(s, s.currentTurn);
     },
 
-    forEach: (collection: w.Collection, cmd: (s: w.GameState) => any): void => {
+    forEach: (collection: w.Collection, cmd: (s: w.GameState) => unknown): void => {
       iterateOver(collection, false)((elt: w.Targetable) => {
         executeCmd(state, cmd, g.isObject(elt) ? elt : currentObject);
       });
     },
 
-    giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(s: w.GameState) => any>): void => {
+    giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(s: w.GameState) => unknown>): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         executeCmd(state, abilityCmd, object);
       });

@@ -231,3 +231,18 @@ export const countdownClockCard: w.CardInStore = {
     health: 1,
   },
 };
+
+export const rageCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Rage',
+  name: 'Rage',
+  text: 'Whenever a robot takes damage, it gains that much attack.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterDamageReceived'](function () { return targets['all'](objectsMatchingConditions('robot', [])); }), (function () { actions['modifyAttribute'](targets['it'](), 'attack', function (x) { return x + thatMuch(); }); })); })"
+  ],
+  cost: 3,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 3,
+  },
+};

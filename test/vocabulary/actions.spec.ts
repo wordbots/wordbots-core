@@ -1,6 +1,6 @@
 import { size } from 'lodash';
 
-import { STARTING_PLAYER_HEALTH, TYPE_ROBOT } from '../../src/common/constants';
+import { BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, TYPE_ROBOT } from '../../src/common/constants';
 import * as cards from '../../src/common/store/cards';
 import { allObjectsOnBoard } from '../../src/common/util/game';
 import * as testCards from '../data/cards';
@@ -139,5 +139,14 @@ describe('[vocabulary.actions]', () => {
     state = playObject(state, 'orange', cards.blueBotCard, '3,-1,-2');  // 2/8/1
     state = playEvent(state, 'orange', action("Swap all robots' attack and health.", "(function () { actions['swapAttributes'](objectsMatchingConditions('robot', []), 'attack', 'health'); })"));
     expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('8/2/1');
+  });
+
+  it('swapPositions', () => {
+    let state = getDefaultState();
+    state = playEvent(state, 'orange', action("Swap the positions of your kernel and your opponent's kernel", "(function () { actions['swapPositions'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]), objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['opponent']())])); })"));
+    expect(state.players.orange.objectsOnBoard[BLUE_CORE_HEX]).toBeDefined();
+    expect(state.players.blue.objectsOnBoard[ORANGE_CORE_HEX]).toBeDefined();
+    expect(state.players.orange.objectsOnBoard[ORANGE_CORE_HEX]).toBeUndefined();
+    expect(state.players.blue.objectsOnBoard[BLUE_CORE_HEX]).toBeUndefined();
   });
 });

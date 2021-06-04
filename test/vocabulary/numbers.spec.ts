@@ -1,5 +1,6 @@
 import * as cards from '../../src/common/store/cards';
-import { action, getDefaultState, newTurn, playEvent, playObject, startingHandSize } from '../testHelpers';
+import * as testCards from '../data/cards';
+import { action, attack, getDefaultState, newTurn, playEvent, playObject, queryRobotAttributes, setUpBoardState, startingHandSize } from '../testHelpers';
 
 describe('[vocabulary.numbers]', () => {
   it('count', () => {
@@ -23,5 +24,15 @@ describe('[vocabulary.numbers]', () => {
     const handSize = state.players.orange.hand.length;
     state = playEvent(state, 'orange', action("Draw cards equal to your maximum energy.", "(function () { actions['draw'](targets['self'](), maximumEnergyAmount(targets['self']())); })"));
     expect(state.players.orange.hand.length).toEqual(handSize + 2);
+  });
+
+  it('thatMuch', () => {
+    let state = setUpBoardState({
+      // Rage: 'Whenever a robot takes damage, it gains that much attack.'
+      orange: { '3,-1,-2': testCards.rageCard, '0,0,0': cards.twoBotCard },  // two bot: 2/4/1
+      blue: { '-1,0,1': cards.oneBotCard }  // one bot: 1/2/2
+    });
+    state = attack(state, '0,0,0', '-1,0,1', true);  // Two Bot should destroy the One Bot and move to -1,0,1, taking 1 damage and gaining +1 attack in the process.
+    expect(queryRobotAttributes(state, '-1,0,1')).toEqual('3/3/1');
   });
 });

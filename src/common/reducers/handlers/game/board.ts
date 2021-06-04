@@ -250,7 +250,7 @@ export function transportObject(state: State, fromHex: w.HexId, toHex: w.HexId):
   const object = allObjectsOnBoard(state)[fromHex];
   const owner = ownerOf(state, object);
 
-  if (object && owner) {
+  if (object && owner && fromHex !== toHex) {
     owner.objectsOnBoard[toHex] = object;
     delete owner.objectsOnBoard[fromHex];
   }

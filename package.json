@@ -29,6 +29,7 @@
     "start": "set NODE_ENV=development && ts-node src/server/index.ts --transpile-only",
     "start-prod": "set NODE_ENV=production && node --max-old-space-size=4096 dist/src/server/index.js",
     "test": "run-s test:lint test:types test:unit",
+    "test:ci": "run-s test:lint test:types test:unit:coverage test:integration",
     "test:lint": "eslint src test --quiet",
     "test:types": "tsc --skipLibCheck --noEmit",
     "test:integration": "jest integration",

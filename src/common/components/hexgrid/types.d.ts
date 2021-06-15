@@ -35,9 +35,12 @@ export interface PieceOnBoard {
   stats: {
     health: number
     attack?: number
+    speed?: number
     movesUsed?: number
     movesAvailable?: number
   }
+  abilities: w.PassiveAbility[]
+  triggers: w.TriggeredAbility[]
   attacking: w.HexId | null
   isDamaged: boolean
 }

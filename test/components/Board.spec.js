@@ -36,6 +36,8 @@ describe('Board component', () => {
           'health': STARTING_PLAYER_HEALTH
         },
         'type': TYPE_CORE,
+        'abilities': [],
+        'triggers': [],
         'attacking': null,
         'isDamaged': false
       },
@@ -49,6 +51,8 @@ describe('Board component', () => {
           'health': STARTING_PLAYER_HEALTH
         },
         'type': TYPE_CORE,
+        'abilities': [],
+        'triggers': [],
         'attacking': null,
         'isDamaged': false
       }

@@ -4,7 +4,7 @@ import HexUtils from '../../../components/hexgrid/HexUtils';
 import { TYPE_EVENT } from '../../../constants';
 import * as g from '../../../guards';
 import * as w from '../../../types';
-import { assertCardVisible, splitSentences } from '../../../util/cards';
+import { assertCardVisible, quoteKeywords, splitSentences } from '../../../util/cards';
 import { id } from '../../../util/common';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
@@ -105,7 +105,7 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
 
   if (card.abilities && card.abilities.length > 0) {
     card.abilities.forEach((cmd, idx) => {
-      const cmdText = splitSentences(card.text || '')[idx];
+      const cmdText = quoteKeywords(splitSentences(card.text || '')[idx]);
       state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
       executeCmd(state, cmd, playedObject);
     });

@@ -21,8 +21,8 @@ export default class CardTextExampleStore {
     }
   }
 
-  public loadExamples = (sentences: string[], numToTry: number): Promise<any> => {
-    const candidates = shuffle(sentences).map(capitalize).map(expandKeywords).slice(0, numToTry);
+  public loadExamples = (sentences: string[], numToTry: number): Promise<void[]> => {
+    const candidates = shuffle(sentences).map(capitalize).map((s) => expandKeywords(s)).slice(0, numToTry);
     const modes = Object.keys(this.examples);
 
     return Promise.all(modes.map(async (mode) => {

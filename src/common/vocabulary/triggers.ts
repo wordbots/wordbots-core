@@ -8,13 +8,14 @@ export function setTrigger(state: w.GameState, currentObject: w.Object | null, s
       isEqual(omit(t1.trigger, ['targets']), omit(t2.trigger, ['targets']));
   }
 
-  return (trigger: w.Trigger, action: w.Returns<void>, props = {}): void => {
+  return (trigger: w.Trigger, action: w.Returns<void>, props: Partial<w.TriggeredAbility> = {}): void => {
     const triggerObj: w.TriggeredAbility = {
       trigger,
       action: `(${action.toString()})`,
       override: false,
-      source,
-      duration: state.memory.duration || null,
+      source: source || undefined,
+      duration: (state.memory.duration as number | undefined) || undefined,
+      text: state.currentCmdText || null,
       ...props
     };
 

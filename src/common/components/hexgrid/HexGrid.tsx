@@ -73,19 +73,26 @@ export default class HexGrid extends React.Component<HexShapeProps> {
   }
 
   private renderHexes(): JSX.Element[] {
-    return this.props.hexagons.map((hex, index) => (
-      <HexShape
-        key={index}
-        hex={hex}
-        card={(this.props.pieces[HexUtils.getID(hex)] || {}).card}
-        layout={this.props.layout}
-        actions={this.props.actions}
-        fill={this.props.hexColors[HexUtils.getID(hex)]}
-        tutorialStep={this.props.tutorialStep}
-        hovered={this.props.hoveredHexId === HexUtils.getID(hex)}
-        isGameOver={this.props.isGameOver}
-      />
-    ));
+    const { actions, hexColors, hoveredHexId, isGameOver, layout, pieces, tutorialStep } = this.props;
+    return this.props.hexagons.map((hex, index) => {
+      const hexID = HexUtils.getID(hex);
+      return (
+        <HexShape
+          key={index}
+          hex={hex}
+          card={pieces[hexID]?.card}
+          stats={pieces[hexID]?.stats}
+          abilities={pieces[hexID]?.abilities}
+          triggers={pieces[hexID]?.triggers}
+          layout={layout}
+          actions={actions}
+          fill={hexColors[hexID]}
+          tutorialStep={tutorialStep}
+          hovered={hoveredHexId === hexID}
+          isGameOver={isGameOver}
+        />
+      );
+    });
   }
 
   private renderPieces(): JSX.Element {

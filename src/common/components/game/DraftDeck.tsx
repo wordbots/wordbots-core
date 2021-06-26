@@ -14,7 +14,7 @@ export default class DraftDeck extends React.PureComponent<DraftDeckProps> {
     const { cards } = this.props;
 
     return (
-      <div style={{  }}>
+      <div>
         {
           sortBy(cards, ['cost', 'name']).map((card, idx) =>
             <div

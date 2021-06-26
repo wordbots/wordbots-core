@@ -17,7 +17,6 @@ import { currentTutorialStep } from '../util/game';
 import { baseGameUrl, urlForGameMode } from './Play';
 
 type GameAreaStateProps = GameProps & {
-  selectedCard: number | null
   started: boolean
 };
 
@@ -43,7 +42,8 @@ interface GameAreaDispatchProps {
   onStartPractice: (format: w.BuiltInFormat, deck: w.CardInStore[]) => void
   onAIResponse: () => void
   onSendChatMessage: (msg: string) => void
-  onaddCardToHand: (player: w.PlayerColor, card: w.Card) => void
+  onAddCardToHand: (player: w.PlayerColor, card: w.Card) => void
+  onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
   onSetVolume: (volume: number) => void
 }
 
@@ -70,6 +70,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     usernames: game.usernames,
     winner: game.winner,
     gameOptions: game.options,
+    draft: game.draft,
 
     selectedTile: activePlayer?.selectedTile || null,
     selectedCard: activePlayer ? activePlayer.selectedCard : null,
@@ -190,8 +191,11 @@ export function mapDispatchToProps(dispatch: Dispatch<any>): GameAreaDispatchPro
     onSendChatMessage: (msg: string) => {
       dispatch(socketActions.chat(msg));
     },
-    onaddCardToHand: (player: w.PlayerColor, card: w.Card) => {
+    onAddCardToHand: (player: w.PlayerColor, card: w.Card) => {
       dispatch(gameActions.addCardToHand(player, card));
+    },
+    onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => {
+      dispatch(gameActions.draftCards(player, cards));
     },
     onSetVolume: (volume: number) => {
       dispatch(gameActions.setVolume(volume));

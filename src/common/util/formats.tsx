@@ -1,4 +1,4 @@
-import { cloneDeep, groupBy, isString } from 'lodash';
+import { cloneDeep, groupBy, isString, times } from 'lodash';
 import * as React from 'react';
 import * as seededRNG from 'seed-random';
 import { shuffle } from 'seed-shuffle';
@@ -8,6 +8,7 @@ import { DECK_SIZE } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
 import * as w from '../types';
 
+import { instantiateCard } from './cards';
 import { triggerSound } from './game';
 
 export function renderFormatDisplayName(format: w.Format): string {
@@ -33,13 +34,36 @@ function deckBelongsToSet(deck: w.DeckInGame, set: w.Set): boolean {
   return deck.setId === set.id && deck.cardIds.every((id) => cardIdsInSet.includes(id));
 }
 
+function renderSetForFormatDescription(set: w.Set): React.ReactFragment {
+  return (
+    <React.Fragment>
+      <a
+        href={`/sets?set=${set.id}`}
+        style={{
+          fontStyle: 'italic',
+          textDecoration: 'underline',
+          color: '#666'
+        }}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {set.name}
+      </a>
+      {' '}set by{' '}
+      <ProfileLink uid={set.metadata.authorId} username={set.metadata.authorName} />
+    </React.Fragment>
+  );
+}
+
 export class GameFormat {
   public static decode(encodedFormat: w.Format): GameFormat {
     let format: GameFormat | undefined;
     if (isString(encodedFormat)) {
       format = BUILTIN_FORMATS.find((m) => m.name === encodedFormat);
     } else if (encodedFormat && encodedFormat._type === 'set') {
-      format = new SetFormat((encodedFormat ).set);
+      format = new SetFormat((encodedFormat).set);
+    } else if (encodedFormat && encodedFormat._type === 'setDraft') {
+      format = new SetDraftFormat((encodedFormat).set);
     }
 
     if (!format) {
@@ -57,6 +81,7 @@ export class GameFormat {
   public rendered = (): React.ReactNode => this.displayName;
 
   public isDeckValid = (_deck: w.DeckInGame): boolean => false;
+  public requiresDeck = true;
 
   public isActive(state: w.GameState): boolean {
     return state.gameFormat === this.serialized();
@@ -74,7 +99,8 @@ export class GameFormat {
       rng: seededRNG(seed.toString()),
       started: true,
       usernames,
-      options};
+      options
+    };
     state = triggerSound(state, 'yourmove.wav');
 
     return state;
@@ -161,20 +187,7 @@ export class SetFormat extends GameFormat {
 
   public rendered = (): React.ReactNode => (
     <div>
-      <a
-        href={`/sets?set=${this.set.id}`}
-        style={{
-          fontStyle: 'italic',
-          textDecoration: 'underline',
-          color: '#666'
-        }}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {this.set.name}
-      </a>
-      {' '}set by{' '}
-      <ProfileLink uid={this.set.metadata.authorId} username={this.set.metadata.authorName} />
+      {renderSetForFormatDescription(this.set)}
     </div>
   )
 
@@ -190,6 +203,70 @@ export class SetFormat extends GameFormat {
   ): w.GameState {
     return NormalGameFormat.startGame(state, player, usernames, decks, options, seed);
   }
+}
+
+export class SetDraftFormat extends GameFormat {
+  public static description = 'Each player builds their deck at the start of the game by choosing from a random pool of cards in a given set.';
+
+  public name: string;
+  public displayName: string;
+  private set: w.Set;
+
+  constructor(set: w.Set) {
+    super();
+    this.set = set;
+    this.name = `setDraft(${set.id})`;
+    this.displayName = `Set Draft: ${set.name} (by ${set.metadata.authorName})`;
+  }
+
+  public serialized = (): w.SetDraftFormat => ({ _type: 'setDraft', set: this.set });
+
+  public rendered = (): React.ReactNode => (
+    <div>
+      <span>draft: </span>
+      {renderSetForFormatDescription(this.set)}
+    </div>
+  )
+
+  public requiresDeck = false;
+
+  public startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
+  ): w.GameState {
+    state = {
+      ...state,
+      ...cloneDeep(defaultState),
+      gameFormat: this.serialized(),
+      player,
+      rng: seededRNG(seed.toString()),
+      started: true,
+      usernames,
+      options,
+      draft: this.initialDraftState(seed)
+    };
+
+    return state;
+  }
+
+  initialDraftState = (seed: number): w.DraftState => ({
+    blue: {
+      cardsDrafted: [],
+      cardGroupsToShow: this.buildCardDraftGroups(seed)
+    },
+    orange: {
+      cardsDrafted: [],
+      cardGroupsToShow: this.buildCardDraftGroups(seed * 2)
+    }
+  })
+
+  buildCardDraftGroups = (seed: number): w.CardInGame[][] => (
+    times(15, (i) =>
+      (shuffle(this.set.cards, seed + i * 0.01) as w.CardInStore[])
+        .slice(0, 4)
+        .map(instantiateCard)
+    )
+  )
 }
 
 export const BUILTIN_FORMATS = [

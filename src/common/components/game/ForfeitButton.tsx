@@ -9,7 +9,9 @@ import { opponent } from '../../util/game';
 interface ForfeitButtonProps {
   player: w.PlayerColor | null
   compact?: boolean
-  history: History
+  text?: string
+  width?: number
+  history?: History
   gameOver?: boolean
   isSpectator?: boolean
   isTutorial?: boolean
@@ -19,7 +21,7 @@ interface ForfeitButtonProps {
 
 export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   public render(): JSX.Element {
-    const { compact, gameOver, isSpectator } = this.props;
+    const { compact, gameOver, isSpectator, text, width } = this.props;
 
     return (
       <Button
@@ -29,7 +31,7 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
           backgroundColor: 'black',
           border: '1px solid white',
           borderRadius: 5,
-          width: compact ? 150 : 220,
+          width: width || (compact ? 150 : 220),
           height: compact ? 26 : 36,
           marginTop: 5,
           padding: compact ? 5 : 10,
@@ -45,22 +47,22 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
         >
           flag
         </Icon>
-        Forfeit
+        {text || 'Forfeit'}
       </Button>
     );
   }
 
   private handleClick = () => {
-    const { player, isSandbox, isTutorial, history, onForfeit } = this.props;
+    const { player, isSandbox, isTutorial, text, history, onForfeit } = this.props;
 
     if (player) {
       if (isTutorial) {
         onForfeit(opponent(player));
-        history.push('/play');
+        history!.push('/play');
       } else if (isSandbox) {
         onForfeit(opponent(player));
       } else {
-        if (confirm('Are you sure you want to forfeit?')) {
+        if (confirm(`Are you sure you want to ${text || 'forfeit'}?`)) {
           onForfeit(opponent(player));
         }
       }

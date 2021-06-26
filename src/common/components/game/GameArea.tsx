@@ -5,30 +5,20 @@ import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
 import {
-  BACKGROUND_Z_INDEX, BOARD_Z_INDEX, LEFT_CONTROLS_Z_INDEX, CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
+  CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
   CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE, SIDEBAR_COLLAPSED_WIDTH
 } from '../../constants';
-import { GameAreaContainerProps } from '../../containers/GameAreaContainer';
 import { urlForGameMode } from '../../containers/Play';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import Chat from '../play/Chat';
 
-import Board from './Board';
 import CardSelector from './CardSelector';
-import EndTurnButton from './EndTurnButton';
-import EventAnimation from './EventAnimation';
-import ForfeitButton from './ForfeitButton';
 import FullscreenMessage from './FullscreenMessage';
-import FullscreenToggle from './FullscreenToggle';
+import GameAreaContents from './GameAreaContents';
 import GameNotification from './GameNotification';
-import PlayerArea from './PlayerArea';
 import Sfx from './Sfx';
-import SoundToggle from './SoundToggle';
 import Status from './Status';
-import Timer from './Timer';
-import TutorialIntroScreen from './TutorialIntroScreen';
-import VictoryScreen from './VictoryScreen';
 
 // Props shared by GameArea and GameAreaContainer.
 export interface GameProps {
@@ -37,8 +27,10 @@ export interface GameProps {
   usernames: w.PerPlayer<string>
   winner: w.GameWinner
   gameOptions: w.GameOptions
+  draft: w.DraftState | null
 
   selectedTile: w.HexId | null
+  selectedCard: number | null
   playingCardType: w.CardType | null
 
   status: w.PlayerStatus
@@ -78,8 +70,7 @@ export interface GameProps {
   socket: w.SocketState
 }
 
-type GameAreaProps = GameProps & RouteComponentProps & {
-  message: string | null
+export interface GameAreaHandlerProps {
   onPassTurn: (player: w.PlayerColor) => void
   onForfeit: (winner: w.PlayerColor) => void
   onTutorialStep: (back?: boolean) => void
@@ -89,9 +80,16 @@ type GameAreaProps = GameProps & RouteComponentProps & {
   onClickEndGame: () => void
   onNextTutorialStep: () => void
   onPrevTutorialStep: () => void
+  onSelectCard: (index: number, player: w.PlayerColor) => void
+  onSelectCardInDiscardPile: (cardId: w.CardId, player: w.PlayerColor) => void
   onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHexId?: w.HexId | null) => void
-  onaddCardToHand: (player: w.PlayerColor, card: w.Card) => void
+  onAddCardToHand: (player: w.PlayerColor, card: w.Card) => void
+  onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
   onSetVolume: (volume: number) => void
+}
+
+type GameAreaProps = GameProps & GameAreaHandlerProps & RouteComponentProps & {
+  message: string | null
 };
 
 interface GameAreaState {
@@ -127,11 +125,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
   public render(): JSX.Element {
     const {
-      attack, bluePieces, currentTurn, eventQueue, gameOptions, gameOver, history, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, message, orangePieces, player, playingCardType,
-      selectedTile, sfxQueue, status, target, tutorialStep, usernames, winner, volume,
-      onActivateObject, onClickEndGame, onClickGameArea, onForfeit, onNextTutorialStep,
-      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onSetVolume
+      currentTurn, isMyTurn, isSandbox, message, player, sfxQueue, status, volume, onClickGameArea
     } = this.props;
     const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls } = this.state;
 
@@ -168,118 +162,14 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           onClick={onClickGameArea}
           square
         >
-          <div
-            className="background"
-            style={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <div
-              className="background"
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 20,
-                zIndex: LEFT_CONTROLS_Z_INDEX
-              }}
-            >
-              <Timer
-                player={player}
-                currentTurn={currentTurn}
-                enabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
-                isMyTurn={isMyTurn}
-                isAttackHappening={isAttackHappening}
-                onPassTurn={onPassTurn}
-              />
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-around',
-                  paddingLeft: 10
-                }}
-              >
-                <SoundToggle onSetVolume={onSetVolume} volume={volume} />
-                <FullscreenToggle onClick={this.handleToggleFullScreen} />
-              </div>
-            </div>
-            <div
-              className="background"
-              style={{
-                marginRight: 20,
-                maxWidth: 220,
-                textAlign: 'right',
-                zIndex: BACKGROUND_Z_INDEX
-              }}
-            >
-              <EndTurnButton
-                player={this.actualPlayer}
-                compact={compactControls}
-                gameOver={gameOver}
-                isMyTurn={isMyTurn || isSandbox}
-                isAttackHappening={isAttackHappening}
-                tutorialStep={tutorialStep}
-                onPassTurn={onPassTurn}
-                onNextTutorialStep={onNextTutorialStep}
-                onPrevTutorialStep={onPrevTutorialStep}
-              />
-              <ForfeitButton
-                player={this.actualPlayer}
-                compact={compactControls}
-                history={history}
-                gameOver={gameOver}
-                isSpectator={isSpectator}
-                isTutorial={isTutorial}
-                isSandbox={isSandbox}
-                onForfeit={isSandbox ? onClickEndGame : onForfeit}
-              />
-            </div>
-          </div>
-          <PlayerArea opponent gameProps={this.props as any as GameAreaContainerProps} />
-          <div
-            className="background"
-            style={{
-              position: 'absolute',
-              left: boardMargin.left,
-              top: boardMargin.top,
-              margin: 0,
-              zIndex: BOARD_Z_INDEX,
-              width: boardSize,
-              height: boardSize
-              // border: '5px solid white'  /* (useful for debugging layout) */
-            }}
-          >
-            <Board
-              size={this.state.boardSize}
-              player={this.actualPlayer}
-              currentTurn={currentTurn}
-              selectedTile={selectedTile}
-              target={target}
-              bluePieces={bluePieces}
-              orangePieces={orangePieces}
-              playingCardType={playingCardType}
-              tutorialStep={tutorialStep}
-              attack={attack}
-              isGameOver={!!winner}
-              onSelectTile={onSelectTile}
-              onActivateAbility={onActivateObject}
-              onTutorialStep={onTutorialStep}
-              onEndGame={onClickEndGame}
-            />
-          </div>
-          <PlayerArea gameProps={this.props as any as GameAreaContainerProps} />
-          <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />
-          <VictoryScreen
-            winner={winner}
-            winnerName={(winner && winner !== 'draw') ? usernames[winner] : null}
-            onClick={onClickEndGame}
+          <GameAreaContents
+            {...this.props}
+            actualPlayer={this.actualPlayer}
+            boardSize={boardSize}
+            boardMargin={boardMargin}
+            compactControls={compactControls}
+            onToggleFullscreen={this.handleToggleFullScreen}
           />
-          {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
         </Paper>
 
         {this.renderSidebar()}
@@ -336,14 +226,14 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
   }
 
   private renderSidebar = () => {
-    const { actionLog, collection, isSandbox, socket, onaddCardToHand, onSendChatMessage } = this.props;
+    const { actionLog, collection, isSandbox, socket, onAddCardToHand, onSendChatMessage } = this.props;
     const { chatOpen, compactControls } = this.state;
 
     if (isSandbox) {
       return (
         <CardSelector
           cardCollection={collection.cards}
-          onaddCardToHand={onaddCardToHand}
+          onAddCardToHand={onAddCardToHand}
         />
       );
     } else {

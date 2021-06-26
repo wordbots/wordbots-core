@@ -110,6 +110,10 @@ export function handleAction(
       return state;
     }
 
+    case actions.DRAFT_CARDS: {
+      return g.draftCards(state, payload.player, payload.cards);
+    }
+
     case actions.SET_VOLUME:
       return { ...state, volume: payload.volume };
 
@@ -130,9 +134,14 @@ export function handleAction(
     }
 
     case socketActions.FORFEIT: {
-      state = {...state, winner: payload.winner};
-      state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
-      return state;
+      if (state.draft) {
+        // If still drafting, there's no notion of 'forfeiting' - the game just gets aborted
+        return { ...state, winner: 'aborted' };
+      } else {
+        state = {...state, winner: payload.winner};
+        state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
+        return state;
+      }
     }
 
     default:

@@ -7,7 +7,7 @@ import * as React from 'react';
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
 import { sortDecks } from '../../util/decks';
-import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetFormat } from '../../util/formats';
+import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -19,7 +19,7 @@ interface PreGameModalProps {
   sets: w.Set[]
   format?: GameFormat
   options?: w.GameOptions
-  mode: string
+  mode: 'casual' | 'host' | 'matchmaking' | 'practice'
   startButtonText?: string
   title: string
   gameName?: string
@@ -57,7 +57,12 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     const { mode, sets } = this.props;
 
     if (mode === 'practice') {
+      // Only "anything goes" (normal) and built-in format allowed in practice mode,
+      // because the AI can't deal with arbitrary player cards.
       return [NormalGameFormat, BuiltinOnlyGameFormat];
+    } else if (mode === 'matchmaking') {
+      // Disallow set formats in matchmaking mode, because it's unlikely that those players would get matched.
+      return BUILTIN_FORMATS;
     } else {
       const setFormats = uniqBy(compact(this.decks.map((deck) => {
         const set = sets.find((s) => s.id === deck.setId);
@@ -69,8 +74,14 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
         }
       })), 'name');
 
-      return [...BUILTIN_FORMATS, ...setFormats];
+      const setDraftFormats = sets.filter((set) => set.metadata.isPublished).map((set) => new SetDraftFormat(set));
+
+      return [...BUILTIN_FORMATS, ...setFormats, ...setDraftFormats];
     }
+  }
+
+  get noDeckRequired(): boolean {
+    return !this.format.requiresDeck;
   }
 
   // All of the player's decks, in an unpacked format ready to start the game with.
@@ -156,13 +167,13 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
             label="Game password"
             onChange={this.handleSetPassword}
           />}
-          <DeckPicker
+          {!this.noDeckRequired && <DeckPicker
             cards={cards}
             availableDecks={this.validDecks}
             sets={sets}
             selectedDeck={this.deck}
             onChooseDeck={this.handleChooseDeck}
-          />
+          />}
         </div>
       </RouterDialog>
     );
@@ -175,7 +186,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   private handleChooseFormat = (selectedFormatName: string) => {
     this.setState({
       selectedFormatName,
-      selectedDeckId: this.validDecks[0].id
+      selectedDeckId: this.validDecks[0]?.id || null
     });
   }
 
@@ -201,7 +212,11 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       return;
     }
 
-    if (this.deck) {
+    if (this.noDeckRequired) {
+      const dummyDeck: w.DeckInGame = { id: 'na', authorId: 'na', name: 'na', cardIds: [], cards: [], setId: null };
+      onStartGame(this.format.serialized(), dummyDeck);
+      this.close();
+    } else if (this.deck) {
       onStartGame(this.format.serialized(), this.deck);
       this.close();
     }

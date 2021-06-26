@@ -15,15 +15,16 @@ import gameReducer from '../../src/common/reducers/game.ts';
 
 describe('GameArea container', () => {
   const getCommonGameAreaComponents = (state, gameInner, dom, tutorialStep) => {
-    const paper = dom.props.children[1];
-    const mainDiv = paper.props.children[2];
+    const gameContents = renderElement(dom.props.children[1].props.children);
+    const mainDiv = gameContents.props.children[2];
     const board = mainDiv.props.children;
-    const victoryScreen = paper.props.children[5];
+    const playerArea = gameContents.props.children[1];
+    const victoryScreen = gameContents.props.children[5];
 
     /* eslint-disable react/jsx-key */
     return [
-      paper.props.children[0],
-      <PlayerArea opponent gameProps={gameInner.props} />,
+      gameContents.props.children[0],
+      <PlayerArea opponent gameProps={playerArea.props.gameProps} />,
       <div
         className="background"
         ref={mainDiv.ref}
@@ -47,7 +48,7 @@ describe('GameArea container', () => {
           tutorialStep={tutorialStep}
           />
       </div>,
-      <PlayerArea gameProps={gameInner.props} />,
+      <PlayerArea gameProps={playerArea.props.gameProps} />,
       <EventAnimation eventQueue={[]} currentTurn="orange" />,
       <VictoryScreen
         winner={null}
@@ -65,9 +66,10 @@ describe('GameArea container', () => {
     // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
     const gameInner = renderElement(game);
     const dom = renderElement(gameInner);
-    const paper = dom.props.children[1];
 
-    expect(paper.props.children).toEqual([
+    const gameContents = renderElement(dom.props.children[1].props.children);
+
+    expect(gameContents.props.children).toEqual([
       ...getCommonGameAreaComponents(state, gameInner, dom),
       null
     ]);
@@ -83,12 +85,13 @@ describe('GameArea container', () => {
     const gameInner = renderElement(game);
     const dom = renderElement(gameInner);
 
-    const paper = dom.props.children[1];
+    const gameContents = renderElement(dom.props.children[1].props.children);
+
     // eslint-disable-next-line no-magic-numbers
-    const tutorialIntroScreen = paper.props.children[6];
+    const tutorialIntroScreen = gameContents.props.children[6];
 
     /* eslint-disable react/jsx-key */
-    expect(paper.props.children).toEqual([
+    expect(gameContents.props.children).toEqual([
       ...getCommonGameAreaComponents(state, gameInner, dom, testTutorialStep),
       <TutorialIntroScreen onClickEndGame={tutorialIntroScreen.props.onClickEndGame} />
     ]);

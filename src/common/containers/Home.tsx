@@ -4,12 +4,10 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Dispatch } from 'redux';
 
-import * as gameActions from '../actions/game';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
-import PaperButton from '../components/PaperButton';
 import RouterDialog from '../components/RouterDialog';
+import SplashSection from '../components/SplashSection';
 import { FIREBASE_CONFIG, PARSER_URL } from '../constants';
 import * as w from '../types';
 import { isFlagSet, onLocalhost } from '../util/browser';
@@ -18,46 +16,34 @@ interface HomeStateProps {
   version: string
 }
 
-interface HomeDispatchProps {
-  onStartTutorial: () => void
-}
-
 export function mapStateToProps(state: w.State): HomeStateProps {
   return {
     version: state.version
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch): HomeDispatchProps {
-  return {
-    onStartTutorial: () => {
-      dispatch(gameActions.startTutorial());
-    }
-  };
-}
-
-type HomeProps = HomeStateProps & HomeDispatchProps & { history: History };
+type HomeProps = HomeStateProps & { history: History };
 
 class Home extends React.Component<HomeProps> {
   public render(): JSX.Element {
-    const { history, onStartTutorial, version: versionAndSha } = this.props;
+    const { history, version: versionAndSha } = this.props;
     const [version, sha] = versionAndSha.split('+');
     const shaTruncated = truncate(sha, { length: 8, omission: '' });
 
     return (
-      <div style={{margin: '48px 72px'}}>
+      <div style={{margin: '24px 72px 36px'}}>
         <Helmet title="Home"/>
 
         <div
           style={{
-            margin: '10px auto',
-            maxWidth: 600,
+            margin: '20px auto',
+            maxWidth: 680,
             textAlign: 'center',
             fontSize: 24,
             color: '#666'
           }}
         >
-          <p>
+          <div>
             Welcome to
             <span
               style={{
@@ -66,23 +52,37 @@ class Home extends React.Component<HomeProps> {
                 WebkitTextStroke: '1px black',
                 fontSize: 28
               }}
-            >
-              Wordbots
-            </span>
-            , the customizable card game where <i><b>you</b></i>, the player, get to create the cards!</p>
+            >&nbsp;Wordbots</span>
+            , a tactical card game where you craft your own cards and use them fight in fast-paced arena battles.
+          </div>
+          <div style={{ marginTop: 10, fontSize: '0.85em' }}>
+            All cards are player-made and no two games are the same!
+          </div>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            flexDirection: 'row'
-          }}
-        >
-          {this.renderButton('Tutorial', () => { history.push('play/tutorial'); onStartTutorial(); })}
-          {this.renderButton('Arena', () => { history.push('play'); })}
-          {this.renderButton('Your Cards', () => { history.push('collection'); })}
-          {this.renderButton('Workshop', () => { history.push('card/new'); })}
+        <div id="homePageSplash">
+          <SplashSection
+            title="Craft Cards!"
+            imgPath="/static/splash-workshop.png"
+            onClick={this.handleClickWorkshop}
+          >
+            Making cards in the Workshop is as easy as writing text. A magical algorithm will turn it into code for you.
+          </SplashSection>
+          <SplashSection
+            title="Build Decks!"
+            imgPath="/static/splash-decks.png"
+            onClick={this.handleClickDecks}
+          >
+            Put together decks of 30 cards to bring to the Arena.<br />
+            Or, assemble your deck on the spot in Draft mode.
+          </SplashSection>
+          <SplashSection
+            title="Battle it Out!"
+            imgPath="/static/splash-play.png"
+            onClick={this.handleClickArena}
+          >
+            {"The cards take life in fast-paced positional battles in the Arena. Destroy your opponent's Kernel to win!"}
+          </SplashSection>
         </div>
 
         <RecentCardsCarousel history={history} />
@@ -114,33 +114,21 @@ class Home extends React.Component<HomeProps> {
     );
   }
 
-  private renderButton = (title: string, onClick: () => void) => (
-    <PaperButton
-      onClick={onClick}
-      style={{
-        flexBasis: 'calc(50% - 60px)',
-        height: 80,
-        margin: '15px 30px'
-      }}
-    >
-      <div
-        style={{
-          textAlign: 'center',
-          fontSize: 32,
-          marginTop: 15,
-          fontFamily: 'Carter One',
-          color: '#f44336',
-          WebkitTextStroke: '1px black'
-        }}
-      >
-        {title}
-      </div>
-    </PaperButton>
-  )
-
   private handleClickNewHere = () => {
     RouterDialog.openDialog(this.props.history, 'new-here');
   }
+
+  private handleClickWorkshop = () => {
+    this.props.history.push('card/new');
+  }
+
+  private handleClickDecks = () => {
+    this.props.history.push('decks');
+  }
+
+  private handleClickArena = () => {
+    this.props.history.push('play');
+  }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
+export default withRouter(connect(mapStateToProps)(Home));

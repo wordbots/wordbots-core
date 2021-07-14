@@ -3,7 +3,7 @@ import * as React from 'react';
 // Source: https://codepen.io/gareys/pen/meRgLG
 // (CSS is in lib.css)
 // eslint-disable-next-line react/prefer-stateless-function
-export default class SpinningGears extends React.Component {
+export default class SpinningGears extends React.PureComponent {
   public render(): JSX.Element {
     return (
       <div className="spinning-gears">

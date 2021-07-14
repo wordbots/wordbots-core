@@ -259,3 +259,15 @@ a.topLink:hover {
     font-size: 50px !important;
   }
 }
+
+@media only screen and (min-width: 1200px) {
+  #homePageSplash > :first-child {
+    position: relative;
+    left: -200px;
+  }
+
+  #homePageSplash > :last-child {
+    position: relative;
+    left: 200px;
+  }
+}

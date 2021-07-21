@@ -11,8 +11,7 @@ interface ConveyorBeltProps {
 
 // Based on https://codepen.io/adgllorente/pen/eZpPwm
 // (CSS is in lib.css)
-// eslint-disable-next-line react/prefer-stateless-function
-export default class ConveyorBelt extends React.Component<ConveyorBeltProps> {
+export default class ConveyorBelt extends React.PureComponent<ConveyorBeltProps> {
   public render(): JSX.Element {
     const { width, paused } = this.props;
     const numGearPairs = Math.ceil(width / GEAR_PAIR_WIDTH);

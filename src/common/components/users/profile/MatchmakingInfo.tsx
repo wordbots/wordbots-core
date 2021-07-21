@@ -22,8 +22,7 @@ interface MatchmakingInfoProps {
   userId: string
 }
 
-// eslint-disable-next-line react/prefer-stateless-function
-class MatchmakingInfo extends React.Component<MatchmakingInfoProps & WithStyles> {
+class MatchmakingInfo extends React.PureComponent<MatchmakingInfoProps & WithStyles> {
   get resultsByFormat(): FormatResults[] {
     const { games, userId } = this.props;
 

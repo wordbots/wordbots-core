@@ -1,35 +1,127 @@
 import { Icon } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+import { Location } from 'history';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 
+import { HEADER_HEIGHT } from '../constants';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
+import { helpText as parserHelpText } from '../components/help/CreatorHelpDialog';
+import { BUILTIN_FORMATS, GameFormat, SetFormat, SetDraftFormat } from '../util/formats';
 
 const Help = (): JSX.Element => (
-  <div>
+  <div className="helpPage">
     <Helmet title="Help"/>
-    <Title text="Help" />
+    <Title text="Help" style={{ position: 'sticky', top: HEADER_HEIGHT, zIndex: 100 }} />
+    <div style={{
+      position: 'sticky',
+      top: HEADER_HEIGHT,
+      zIndex: 90,
+      width: '100%',
+      margin: '-50px 5px 0',
+      padding: 10,
+      backgroundColor: '#eee',
+      boxShadow: 'rgb(238 238 238) 0px 5px 5px 3px'
+    }}>
+      <Paper style={{
+        width: 'fit-content',
+        margin: '0 auto',
+        padding: '10px 20px'
+      }}>
+      <em>Contents:</em>&nbsp;&nbsp;
+      <AnchorLink id="rules">Rules</AnchorLink>
+      &nbsp;&bull;&nbsp;
+      <AnchorLink id="terminology">Terminology</AnchorLink>
+      &nbsp;&bull;&nbsp;
+      <AnchorLink id="formats">Formats</AnchorLink>
+      &nbsp;&bull;&nbsp;
+      <AnchorLink id="modes">Modes</AnchorLink>
+      &nbsp;&bull;&nbsp;
+      <AnchorLink id="parser-help">Parser Help</AnchorLink>
+    </Paper>
+    </div>
+
     <div style={{ display: 'flex', justifyContent: 'stretch', margin: 20 }}>
       <div style={{ width: '50%', marginRight: 20 }}>
-        <Paper style={{padding: '5px 20px'}}>
+        <HelpSection id="rules" title="Game Rules">
           <MarkdownBlock
             source={gameRules}
             renderers={{ thematicBreak: RulesHr, inlineCode: InlineIcon }}
           />
-        </Paper>
+        </HelpSection>
+        <HelpSection id="formats" title="Game Formats">
+          <p>Wordbots offers {BUILTIN_FORMATS.length + 2} different game formats for different gameplay styles, with each format determining the cards that you can bring to a game. The formats are:</p>
+          <ul>
+            {BUILTIN_FORMATS.map((format: GameFormat) => (
+              <li key={format.displayName}><b>{format.displayName}:</b> {format.description}</li>
+            ))}
+            <li><b>Set formats:</b> {SetFormat.description}</li>
+            <li><b>Set Draft formats:</b> {SetDraftFormat.description}</li>
+          </ul>
+        </HelpSection>
+        <HelpSection id="modes" title="Game Modes">
+          <p>The <b>multiplayer</b> game modes available in Wordbots are:</p>
+          <ul>
+            <li>
+              <b>Casual: </b>
+              Host a game in a format of your choice, or join an open game in the arena.
+              Casual games can be password-protected if you want to play a friend.
+              Spectators can also join to watch the game being played.
+            </li>
+            <li>
+              <b>Matchmaking: </b>
+              Select a format and wait in a queue to be matched against another player.
+            </li>
+          </ul>
+          <p>The <b>single-player</b> game modes available in Wordbots are:</p>
+          <ul>
+            <li><b>Tutorial:</b> Play through an interactive tutorial to learn how to play Wordbots.</li>
+            <li><b>Practice:</b> Select a deck and play a practice game against a computer player.</li>
+            <li>
+              <b>Sandbox: </b>
+              Control both players and play any Wordbots card you&rsquo;d like.
+              Sandbox mode is especially useful for testing out cards you&rsquo;re building in the Workshop.
+            </li>
+          </ul>
+        </HelpSection>
       </div>
       <div style={{ width: '50%' }}>
-        <Paper style={{padding: '5px 20px'}}>
+        <HelpSection id="terminology" title="Terminology">
           <MarkdownBlock
             source={terminology}
             renderers={{ thematicBreak: RulesHr, inlineCode: InlineIcon, paragraph: TerminologyParagraph }}
           />
-        </Paper>
+        </HelpSection>
+        <HelpSection id="parser-help" title="Parser Help">
+          <MarkdownBlock source={parserHelpText({ pathname: '/card/new' } as Location)} />
+        </HelpSection>
       </div>
     </div>
   </div>
 );
+
+// eslint-disable-next-line react/no-multi-comp
+const HelpSection = (props: { id: string, title: string, children: JSX.Element | JSX.Element[] }) => (
+  <Paper id={props.id} style={{ position: 'relative', marginBottom: 20, padding: '5px 20px' }}>
+    <div id={`${props.id}-anchor`} style={{ position: 'absolute', top: -(HEADER_HEIGHT + 70) }} />
+    <h2>{props.title}</h2>
+    {props.children}
+  </Paper>
+);
+
+// eslint-disable-next-line react/no-multi-comp
+const AnchorLink = (props: { id: string, children: string }): JSX.Element => {
+  const onClick = () => {
+    document.querySelector(`#${props.id}-anchor`)!.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <a className="underline" onClick={onClick}>
+      {props.children}
+    </a>
+  );
+};
 
 // eslint-disable-next-line react/no-multi-comp
 const TerminologyParagraph = (props: { children: JSX.Element[] }): JSX.Element => (
@@ -52,8 +144,6 @@ const InlineIcon = (props: { children: string }): JSX.Element => (
 export default Help;
 
 const gameRules = `
-## Game Rules
-
 ---
 
 ### The Basics
@@ -105,8 +195,6 @@ To **activate** an object's ability, click on the object and then click on the a
 `;
 
 const terminology = `
-## Terminology
-
 ---
 
 **action**

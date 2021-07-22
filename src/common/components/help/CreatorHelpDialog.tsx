@@ -51,7 +51,7 @@ export default class CreatorHelpDialog extends React.Component<{ history: Histor
   private handleClose = () => { RouterDialog.closeDialog(this.props.history); };
 }
 
-const helpText = (location: Location) => `
+export const helpText = (location: Location): string => `
 ## Types of Cards
 
 * A **robot** card must played adjacent to your kernel, and can move, attack, and activate.

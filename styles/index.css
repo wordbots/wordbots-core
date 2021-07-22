@@ -49,9 +49,13 @@ th {
   margin-bottom: 0;
 }
 
-.markdownBlock h2 {
+.markdownBlock h2, .helpPage h2 {
   font-size: 24px;
   font-weight: 100;
+}
+
+.helpPage #parser-help .markdownBlock h2 {
+  font-size: 19px;
 }
 
 .markdownBlock h3 {
@@ -61,6 +65,14 @@ th {
 
 .markdownBlock a:hover {
   text-decoration: underline;
+}
+
+.helpPage li {
+  margin-left: -5px;
+}
+
+.helpPage li + li {
+  margin-top: 7px;
 }
 
 .notAllowed button {

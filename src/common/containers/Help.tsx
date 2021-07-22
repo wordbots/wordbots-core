@@ -18,9 +18,10 @@ const Help = (): JSX.Element => (
       position: 'sticky',
       top: HEADER_HEIGHT,
       zIndex: 90,
-      width: '100%',
-      margin: '-50px 5px 0',
-      padding: 10,
+      width: 'calc(100% - 20px)',
+      margin: '-50px auto 0',
+      paddingTop: 16,
+      paddingBottom: 14,
       backgroundColor: '#eee',
       boxShadow: 'rgb(238 238 238) 0px 5px 5px 3px'
     }}>
@@ -42,7 +43,7 @@ const Help = (): JSX.Element => (
     </Paper>
     </div>
 
-    <div style={{ display: 'flex', justifyContent: 'stretch', margin: 20 }}>
+    <div style={{ display: 'flex', justifyContent: 'stretch', margin: 20, marginTop: 13 }}>
       <div style={{ width: '50%', marginRight: 20 }}>
         <HelpSection id="rules" title="Game Rules">
           <MarkdownBlock
@@ -104,7 +105,7 @@ const Help = (): JSX.Element => (
 // eslint-disable-next-line react/no-multi-comp
 const HelpSection = (props: { id: string, title: string, children: JSX.Element | JSX.Element[] }) => (
   <Paper id={props.id} style={{ position: 'relative', marginBottom: 20, padding: '5px 20px' }}>
-    <div id={`${props.id}-anchor`} style={{ position: 'absolute', top: -(HEADER_HEIGHT + 70) }} />
+    <div id={`${props.id}-anchor`} style={{ position: 'absolute', top: -(HEADER_HEIGHT + 76) }} />
     <h2>{props.title}</h2>
     {props.children}
   </Paper>

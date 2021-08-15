@@ -8,6 +8,7 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 import { Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
@@ -55,6 +56,7 @@ interface CollectionState {
   searchText: string
   selectedCardIds: w.CardId[]
   layout: 0 | 1
+  isPermalinkCopied: boolean
 }
 
 export function mapStateToProps(state: w.State): CollectionStateProps {
@@ -97,7 +99,8 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     sortOrder: SortOrder.Ascending,
     searchText: '',
     selectedCardIds: [],
-    layout: 0
+    layout: 0,
+    isPermalinkCopied: false
   };
 
   get displayedCards(): w.CardInStore[] {
@@ -179,7 +182,8 @@ export class Collection extends React.Component<CollectionProps, CollectionState
       selectedCardIds: state.selectedCardIds.filter((id) => {
         const card = find(this.props.cards, { id });
         return card && isCardVisible(card, state.filters, state.costRange);
-      })
+      }),
+      isPermalinkCopied: false
     }));
   }
 
@@ -195,7 +199,10 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   }
 
   private handleSelectCards = (selectedCardIds: w.CardId[]) => {
-    this.setState({ selectedCardIds });
+    this.setState({
+      selectedCardIds,
+      isPermalinkCopied: false
+    });
   }
 
   private handleClickNewCard = () => {
@@ -214,25 +221,25 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     const card = this.props.cards.find((c) => this.state.selectedCardIds.includes(c.id));
     if (card) {
       this.props.onDuplicateCard(card);
-      this.setState({selectedCardIds: []});
+      this.setState({ selectedCardIds: [], isPermalinkCopied: false });
     }
   }
 
   private handleClickDelete = () => {
     this.props.onRemoveFromCollection(this.state.selectedCardIds);
-    this.setState({selectedCardIds: []});
+    this.setState({ selectedCardIds: [], isPermalinkCopied: false });
   }
 
   private handleClickExport = () => {
     const cards = this.props.cards.filter((c) => this.state.selectedCardIds.includes(c.id));
-    this.setState({selectedCardIds: []}, () => {
+    this.setState({ selectedCardIds: [], isPermalinkCopied: false }, () => {
       this.props.onExportCards(cards);
       RouterDialog.openDialog(this.props.history, 'export');
     });
   }
 
   private handleClickImport = () => {
-    this.setState({selectedCardIds: []}, () => {
+    this.setState({ selectedCardIds: [], isPermalinkCopied: false }, () => {
       RouterDialog.openDialog(this.props.history, 'import');
     });
   }
@@ -243,6 +250,10 @@ export class Collection extends React.Component<CollectionProps, CollectionState
       this.props.onStartSandbox(card);
       this.props.history.push('/play/sandbox', { previous: this.props.history.location });
     }
+  }
+
+  private afterCopyPermalink = () => {
+    this.setState({ isPermalinkCopied: true });
   }
 
   private renderSidebarControls = () => (
@@ -268,17 +279,20 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     </Paper>
   )
 
-  private renderButtons = (compact: boolean) => {
+  /** render Collection buttons on top bar or sidebar */
+  private renderButtons = (onTopBar: boolean) => {
     const { loggedIn } = this.props;
-    const style = compact ? { marginLeft: 10, padding: '5px 15px' } : { width: '100%', height: 48, marginTop: 10 };
-    const iconStyle = compact ? { marginRight: 10 } : { margin: '0 20px' };
+    const { isPermalinkCopied, selectedCardIds } = this.state;
+
+    const style = onTopBar ? { marginLeft: 10, padding: '5px 15px' } : { width: '100%', height: 48, marginTop: 10 };
+    const iconStyle = onTopBar ? { marginRight: 10 } : { margin: '0 20px' };
 
     return (
       <MustBeLoggedIn loggedIn={loggedIn}>
         <Button
           variant="contained"
           color="secondary"
-          size={compact ? "small" : "medium"}
+          size={onTopBar ? "small" : "medium"}
           style={style}
           onClick={this.handleClickNewCard}
         >
@@ -288,57 +302,76 @@ export class Collection extends React.Component<CollectionProps, CollectionState
         <Button
           variant="contained"
           color="primary"
-          size={compact ? "small" : "medium"}
+          size={onTopBar ? "small" : "medium"}
           disabled={!this.canEditSelectedCard}
           style={style}
           onClick={this.handleClickEdit}
         >
           <Icon style={iconStyle} className="material-icons">edit</Icon>
-          {compact ? 'Edit' : 'Edit Selected'}
+          {onTopBar ? 'Edit' : 'Edit Selected'}
         </Button>
         <Button
           variant="contained"
           color="primary"
-          size={compact ? "small" : "medium"}
-          disabled={this.state.selectedCardIds.length !== 1}
+          size={onTopBar ? "small" : "medium"}
+          disabled={selectedCardIds.length !== 1}
           style={style}
           onClick={this.handleClickDuplicate}
         >
           <Icon style={iconStyle} className="material-icons">file_copy</Icon>
-          {compact ? 'Duplicate' : 'Duplicate Selected'}
+          {onTopBar ? 'Duplicate' : 'Duplicate Selected'}
         </Button>
         <Button
           variant="contained"
           color="primary"
-          size={compact ? "small" : "medium"}
-          disabled={this.state.selectedCardIds.length === 0}
+          size={onTopBar ? "small" : "medium"}
+          disabled={selectedCardIds.length === 0}
           style={style}
           onClick={this.handleClickDelete}
         >
           <Icon style={iconStyle} className="material-icons">delete</Icon>
-          {compact ? 'Delete' : 'Delete Selected'}
+          {onTopBar ? 'Delete' : 'Delete Selected'}
         </Button>
-        {!compact ? null : <Button
+        {!onTopBar ? null : <Button
           variant="contained"
           color="primary"
-          disabled={this.state.selectedCardIds.length === 0}
+          disabled={selectedCardIds.length !== 1}
           style={style}
           onClick={this.handleClickTest}
         >
           <Icon style={iconStyle} className="material-icons">videogame_asset</Icon>
           Test
         </Button>}
-        {compact ? null : <Button
+        {!onTopBar ? null :
+        <CopyToClipboard
+          text={`${location.origin}/card/${selectedCardIds[0]}`}
+          onCopy={this.afterCopyPermalink}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={selectedCardIds.length !== 1 || isPermalinkCopied}
+            style={style}
+          >
+            {
+              isPermalinkCopied
+                ? 'Copied!'
+                : <React.Fragment><Icon style={iconStyle} className="material-icons">link</Icon> permalink</React.Fragment>
+            }
+          </Button>
+        </CopyToClipboard>}
+
+        {onTopBar ? null : <Button
           variant="contained"
           color="primary"
-          disabled={this.state.selectedCardIds.length === 0}
+          disabled={selectedCardIds.length === 0}
           style={style}
           onClick={this.handleClickExport}
         >
           <Icon style={iconStyle} className="material-icons">file_download</Icon>
           Export Selected
         </Button>}
-        {compact ? null : <Button
+        {onTopBar ? null : <Button
           variant="contained"
           color="primary"
           style={style}

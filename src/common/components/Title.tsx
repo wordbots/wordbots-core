@@ -4,11 +4,12 @@ import * as React from 'react';
 interface TitleProps {
   text: string
   small?: boolean
+  style?: React.CSSProperties
 }
 
-export default class Title extends React.Component<TitleProps> {
+export default class Title extends React.PureComponent<TitleProps> {
   public render(): JSX.Element {
-    const { text, small } = this.props;
+    const { text, small, style } = this.props;
     return (
       <Paper
         style={{
@@ -20,7 +21,8 @@ export default class Title extends React.Component<TitleProps> {
           backgroundColor: '#f44336',
           opacity: 0.8,
           borderTopRightRadius: 0,
-          borderBottomLeftRadius: 0
+          borderBottomLeftRadius: 0,
+          ...style
         }}
       >
         {text}

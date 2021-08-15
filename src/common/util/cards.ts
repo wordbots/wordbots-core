@@ -445,7 +445,6 @@ export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource
     ownerId: card.metadata?.ownerId || explicitSource?.uid || source.uid,
     source,
     updated: (card.metadata?.updated) || (card as any).timestamp,
-    duplicatedFrom: (card.metadata?.duplicatedFrom) || (source as any).duplicatedFrom,
     isPrivate: (card.metadata?.isPrivate) || false
   };
 

@@ -98,9 +98,13 @@ export interface CardMetadata {
   source: CardSource
   created?: timestamp
   updated?: timestamp
-  duplicatedFrom?: CardId
   isPrivate?: boolean
   importedFromJson?: timestamp  // undefined if the card wasn't imported from JSON, otherwise the timestamp that the import happened
+  duplicatedFromCard?: {
+    id: CardId
+    name: string
+    metadata: CardMetadata
+  }
 }
 
 export interface CardSource {

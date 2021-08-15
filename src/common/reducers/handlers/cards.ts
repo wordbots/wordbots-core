@@ -44,7 +44,11 @@ const cardsHandlers = {
           source: { type: 'user', uid: currentUser.uid, username: currentUser.displayName! },
           created: Date.now(),
           updated: Date.now(),
-          duplicatedFrom: originalCard.id,
+          duplicatedFromCard: {
+            id: originalCard.id,
+            name: originalCard.name,
+            metadata: originalCard.metadata
+          },
           isPrivate: false
         }
       };
@@ -228,11 +232,32 @@ function saveCard(state: State, card: w.CardInStore): State {
   // Is there already a card with the same ID (i.e. we're currently editing it)?
   const existingCard = state.cards.find((c) => c.id === card.id);
 
+  // (Users cannot have two different cards with the same name.)
+  if (state.cards.find((c) => c.name.trim() === card.name.trim() && c.id !== existingCard?.id)) {
+    alert(`Can't save a card with the name '${card.name.trim()}' because you already have a card with that name!`);
+    return state;
+  }
+
   if (existingCard) {
     // Editing an existing card.
-    const { source } = existingCard.metadata;
-    if (source && source.type !== 'builtin' && source.uid === firebase.lookupCurrentUser()!.uid) {
-      Object.assign(existingCard, card, { id: existingCard.id });
+    const { source, duplicatedFromCard } = existingCard.metadata;
+
+    // (Cards that are duplicates can't be named back to the original name (e.g. "Copy of A" => "A")
+    // because that would be confusing / make misattribution too easy.)
+    if (duplicatedFromCard && card.name.trim() === duplicatedFromCard.name.trim()) {
+      alert(`Can't save this card with the name '${card.name.trim()}' because it is a copy of a card with that name!`);
+      return state;
+    }
+
+    if (source?.type !== 'builtin' && source?.uid === firebase.lookupCurrentUser()!.uid) {
+      card = {
+        ...card,
+        id: existingCard.id,
+        // Only the 'updated' property in card metadata can be overwritten by editing a card
+        metadata: { ...existingCard.metadata, updated: Date.now() }
+      };
+
+      Object.assign(existingCard, card);
     } else {
       alert('Can\'t edit this card! Maybe it\'s a built-in card or a card that doesn\'t belong to you?');
       return state;

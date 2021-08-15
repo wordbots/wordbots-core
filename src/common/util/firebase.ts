@@ -189,7 +189,7 @@ export async function mostRecentCards(uid: w.UserId | null, limit: number): Prom
         && !!c.metadata.updated  // cards without timestamp (can't order them)
         && c.metadata.source.type === 'user'  // built-in cards
         && !c.metadata.isPrivate  // private cards
-        && !c.metadata.duplicatedFrom  // duplicated cards
+        && !c.metadata.duplicatedFromCard  // duplicated cards
         && !c.metadata.importedFromJson  // cards imported from JSON
         && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
     ),

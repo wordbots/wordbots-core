@@ -1,7 +1,8 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, mapValues, uniq } from 'lodash';
-import { filter, flow, orderBy, slice, uniqBy } from 'lodash/fp';
+import { capitalize, concat, flatMap, fromPairs, identity, mapValues, uniq } from 'lodash';
+import * as _ from 'lodash/fp';
+import { flow } from 'lodash/fp';
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
 import 'firebase/database';  // eslint-disable-line import/no-unassigned-import
 
@@ -153,8 +154,8 @@ export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
   const blueGames = await queryObjects<w.SavedGame>('games', 'players/blue', userId);
   const orangeGames = await queryObjects<w.SavedGame>('games', 'players/orange', userId);
   return flow(
-    uniqBy((g: w.SavedGame) => g.id),
-    orderBy('timestamp', 'desc')
+    _.uniqBy((g: w.SavedGame) => g.id),
+    _.orderBy('timestamp', 'desc')
   )([...blueGames, ...orangeGames]) as w.SavedGame[];
 }
 
@@ -183,8 +184,8 @@ export async function mostRecentCards(uid: w.UserId | null, limit: number): Prom
   const cards = await getCards(uid);
 
   return flow(
-    uniqBy((c: w.CardInStore) => c.name),
-    filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
+    _.uniqBy((c: w.CardInStore) => c.name),
+    _.filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
       !!c.text  // cards without text (uninteresting)
         && !!c.metadata.updated  // cards without timestamp (can't order them)
         && c.metadata.source.type === 'user'  // built-in cards
@@ -193,8 +194,8 @@ export async function mostRecentCards(uid: w.UserId | null, limit: number): Prom
         && !c.metadata.importedFromJson  // cards imported from JSON
         && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
     ),
-    orderBy((c: w.CardInStore) => c.metadata.updated, ['desc']),
-    slice(0, limit)
+    _.orderBy((c: w.CardInStore) => c.metadata.updated, ['desc']),
+    _.slice(0, limit)
   )(cards) as w.CardInStore[];
 }
 
@@ -232,6 +233,30 @@ export async function getNumCardsCreatedCountByUserId(userId: w.UserId): Promise
 // Returns all decks belonging to a given user.
 export async function getDecks(uid: w.UserId): Promise<w.DeckInStore[]> {
   return queryObjects<w.DeckInStore>('decks', 'authorId', uid);
+}
+
+/** Returns ALL decks.
+  * TODO: This is potentially slow and its uses should be deprecated at some point. */
+async function getAllDecks_SLOW(): Promise<w.DeckInStore[]> {
+  const snapshot = await fb.database().ref('decks').once('value');
+  return Object.values(snapshot.val() || {});
+}
+
+/** Returns the N cards that are in the most decks. */
+export async function getMostUsedCards(n: number): Promise<w.CardInStore[]> {
+  const decks: w.DeckInStore[] = await getAllDecks_SLOW();
+  const mostPopularCardIds: string[] = flow(
+    _.flatMap((d: w.DeckInStore) => uniq(d.cardIds)),
+    _.filter((id) => !id.startsWith('builtin/')),
+    _.countBy(identity),
+    _.toPairs,
+    _.orderBy(([_id, count]) => count, 'desc'),
+    _.fromPairs,
+    _.keys,
+    _.slice(0, n),
+  )(decks);
+
+  return await Promise.all(mostPopularCardIds.map(getCardById));
 }
 
 export async function saveDeck(deck: w.DeckInStore): Promise<void> {

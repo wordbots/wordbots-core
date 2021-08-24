@@ -14,6 +14,7 @@ import CardProvenanceDescription from './CardProvenanceDescription';
 interface RecentCardsCarouselProps {
   history: History
   userId?: string
+  cardsToShow?: w.CardInStore[]  // if set, override the carousel's lookup behavior
 }
 
 interface RecentCardsCarouselState {
@@ -26,13 +27,15 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   public static MAX_CARDS_TO_SHOW = 8;
 
   public state: RecentCardsCarouselState = {
-    recentCards: [],
+    recentCards: this.props.cardsToShow || [],
     paused: false
   };
 
   public constructor(props: RecentCardsCarouselProps) {
     super(props);
-    this.initializeCarousel(props.userId);
+    if (!props.cardsToShow) {
+      this.initializeCarousel(props.userId);
+    }
   }
 
 
@@ -65,18 +68,20 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     if (recentCards.length > 0) {
       return (
         <div>
-          <div
-            style={{
-              marginTop: 10,
-              color: '#999',
-              fontSize: 20,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              textAlign: 'center'
-            }}
-          >
-            Most recently created cards
-          </div>
+          {!this.props.cardsToShow && (
+            <div
+              style={{
+                marginTop: 10,
+                color: '#999',
+                fontSize: 20,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                textAlign: 'center'
+              }}
+            >
+              Most recently created cards
+            </div>
+          )}
           <div
             className="recentCardsCarousel"
             onMouseOver={this.handleMouseOver}

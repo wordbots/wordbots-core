@@ -76,6 +76,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
       display: 'inline-block',
       marginLeft: 20,
       marginTop: 15,
+      maxWidth: 700,
       padding: 10,
       '& button': {
         float: 'right',
@@ -149,8 +150,8 @@ class Sets extends React.Component<SetsProps, SetsState> {
               </Icon>
             </Button>
             <p><b>Sets</b> offer a way for you to play games of Wordbots in which both players use the same pool of cards.</p>
-            <p>You can take a popular set, make a deck from it, and play against other players who&rsquo;ve made decks using that set.</p>
-            <p>If you&rsquo;re feeling creative, create your own set (using your own cards and/or cards you&rsquo;ve found),<br />share it with your friends to challenge them, or publish it for the world to see!</p>
+            <p>You can take a popular set, make a deck from it, and play against other players who&rsquo;ve made decks using that set in the <b>Set format</b>. Or, play a game in the <b>Set Draft format</b>, where both players must  create decks from scratch using cards from a given set at the start of the game.</p>
+            <p>If you&rsquo;re feeling creative, <i>create your own set</i> (using your own cards and/or cards you&rsquo;ve discovered), share it with your friends to challenge them, or publish it for the world to see!</p>
           </Paper>
         </div>}
 

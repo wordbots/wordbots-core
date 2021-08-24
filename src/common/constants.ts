@@ -62,6 +62,7 @@ export const STARTING_PLAYER_COLOR: PlayerColor = 'orange';
 export const STARTING_PLAYER_HEALTH = 20;
 export const DECK_SIZE = 30;
 export const MAX_HAND_SIZE = 7;
+export const MAX_EXECUTION_STACK_SIZE = 50; // in practice, stack overflow gets triggered around ~450 - we want to be well below that level
 
 // Animations.
 

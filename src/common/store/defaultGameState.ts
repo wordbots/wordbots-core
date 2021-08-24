@@ -78,6 +78,7 @@ const defaultGameState: w.GameState = {
   actionLog: [],
   attack: null,
   objectsDestroyedThisTurn: {},
+  executionStackDepth: 0,
   memory: {},
   sfxQueue: [],
   eventQueue: [],

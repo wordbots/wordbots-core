@@ -216,6 +216,23 @@ export const thresholderCard: w.CardInStore = {
   },
 };
 
+export const infiniteLoopBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Infinite Loop Bot',
+  name: 'Infinite Loop Bot',
+  text: 'Whenever you draw a card, shuffle a random card from your discard pile to your deck and discard a random card and draw a card.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterCardDraw'](function () { return targets['self'](); }, 'anycard'), (function () { (function () { actions['shuffleCardsIntoDeck'](targets['random'](1, cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })(); (function () { (function () { actions['discard'](targets['random'](1, cardsInHand(targets['self'](), 'anycard', []))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })(); })); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
 export const countdownClockCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Countdown Clock',

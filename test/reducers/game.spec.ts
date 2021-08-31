@@ -638,6 +638,20 @@ describe('Game reducer', () => {
     });
   });
 
+  describe('[Exceptions]', () => {
+    it('should be able to detect when an infinite loop will occur and end the game in a draw', () => {
+      let state = setUpBoardState({
+        blue: {
+          '1,1,-2': testCards.infiniteLoopBotCard  // Causes an infinite loop at the start of blue's turn
+        }
+      });
+      expect(state.winner).toBeNull();
+
+      state = newTurn(state, 'blue');
+      expect(state.winner).toEqual('draw');
+    });
+  });
+
   describe('[Obfuscated cards]', () => {
     it('should be able to handle revealed cards that have been affected by abilities in play', () => {
       let state = game(getDefaultState(), [

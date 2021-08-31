@@ -7,7 +7,7 @@ import GridGenerator from '../components/hexgrid/GridGenerator';
 import Hex from '../components/hexgrid/Hex';
 import HexUtils from '../components/hexgrid/HexUtils';
 import {
-  BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES,
+  BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, MAX_EXECUTION_STACK_SIZE, MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES,
   stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE
 } from '../constants';
 import * as g from '../guards';
@@ -652,16 +652,37 @@ export function executeCmd(
 
   state.callbackAfterExecution = undefined;
 
+  state.executionStackDepth += 1;
+  if (state.executionStackDepth >= MAX_EXECUTION_STACK_SIZE) {
+    throw new Error('EXECUTION_STACK_DEPTH_EXCEEDED');
+  }
+
   const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
 
   try {
-    return eval(wrappedCmd)(...definitions);  // eslint-disable-line no-eval
+    const result = eval(wrappedCmd)(...definitions);  // eslint-disable-line no-eval
+    state.executionStackDepth -= 1;
+    return result;
   } catch (error) {
-    // TODO better error handling: throw a custom Error object that we handle in the game reducer?
-    alert(`Oops!\n\n${error}`);
-    throw error;
+    if (error.message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
+      // Propagate the error up the stack to the original invocation of executeCmd() (executionStackDepth === 1).
+      if (state.executionStackDepth > 1) {
+        throw error;
+      } else {
+        // Once we've reached the top of the stack, log the error and end the game in a draw (because ¯\_(ツ)_/¯ ).
+        console.error('Execution stack depth exceeded!');
+        state.winner = 'draw';
+        state = triggerSound(state, 'game-over.wav');
+        state = logAction(state, null, 'Infinite loop detected - the game ends in a draw.');
+        return state;
+      }
+    } else {
+      // TODO better error handling: throw a custom Error object that we handle in the game reducer?
+      alert(`Oops!\n\n${error}`);
+      throw error;
+    }
   }
 }
 

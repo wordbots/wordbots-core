@@ -227,6 +227,7 @@ export interface GameState {
   currentTurn: PlayerColor
   draft: DraftState | null
   eventQueue: CardInGame[]
+  executionStackDepth: number
   gameFormat: Format
   memory: Record<string, unknown>
   objectsDestroyedThisTurn: Record<string, HexId>  // object id -> last hex id

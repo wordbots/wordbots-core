@@ -6,11 +6,13 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import Title from '../components/Title';
+import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import CommunityUser from '../components/users/CommunityUser';
 import * as w from '../types';
-import { getUsers } from '../util/firebase';
+import { getMostUsedCards, getUsers } from '../util/firebase';
 
 interface CommunityState {
+  mostPopularCards?: w.CardInStore[]
   users: w.User[]
 }
 
@@ -25,7 +27,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
 
   public render(): JSX.Element {
     const { history } = this.props;
-    const { users } = this.state;
+    const { mostPopularCards, users } = this.state;
 
     return (
       <div>
@@ -33,6 +35,25 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
         <Title text="Community" />
 
         <div style={{ margin: 20 }}>
+          {mostPopularCards && (
+            <div>
+              <div>
+                <Paper
+                  style={{
+                    display: 'inline-block',
+                    padding: '5px 15px',
+                    fontSize: 20,
+                    fontFamily: 'Carter One'
+                  }}
+                >
+                  Most popular cards
+                </Paper>
+              </div>
+
+              <RecentCardsCarousel cardsToShow={mostPopularCards} history={history} />
+            </div>
+          )}
+
           <div>
             <Paper
               style={{
@@ -71,7 +92,13 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
       slice(0, 10)
     )(allUsers);
 
-    this.setState({ users });
+    // Look up the 15 cards that are in the most decks (and filter out any that are so old they have incomplete metadata).
+    const mostPopularCards = (await getMostUsedCards(15)).filter((c) => c.metadata.updated);
+
+    this.setState({
+      users,
+      mostPopularCards
+    });
   }
 }
 

@@ -4,7 +4,7 @@
   "description": "A card-and-board game that showcases card game semantic parsing",
   "license": "MIT",
   "engines": {
-    "node": ">= 12.x"
+    "node": ">= 12.x && < 17.x"
   },
   "browserslist": [
     "last 4 versions",

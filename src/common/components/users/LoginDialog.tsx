@@ -5,6 +5,7 @@ import { History } from 'history';
 import * as React from 'react';
 
 import { login, register, resetPassword } from '../../util/firebase';
+import { filterProfanity } from '../../util/language';
 import RouterDialog from '../RouterDialog';
 
 interface LoginDialogProps {
@@ -170,7 +171,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
   }
 
   private handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({username: e.currentTarget.value});
+    this.setState({username: filterProfanity(e.currentTarget.value) });
   }
 
   private handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {

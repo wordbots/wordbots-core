@@ -6,6 +6,7 @@ import { BigramProbs } from 'word-ngrams';
 import { CREATABLE_TYPES, TYPE_EVENT, TYPE_ROBOT, typeToString } from '../../constants';
 import * as w from '../../types';
 import { CardValidationResults } from '../../util/cards';
+import { filterProfanity } from '../../util/language';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
@@ -257,14 +258,15 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
   private handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.isReadonly) { return; }
-    this.props.onSetName(e.currentTarget.value);
+    this.props.onSetName(filterProfanity(e.currentTarget.value));
   }
 
   private setFlavorTextDebounced = debounce(this.props.onSetFlavorText, 100);
   private handleSetFlavorText = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.isReadonly) { return; }
-    this.setState({ flavorText: e.currentTarget.value });
-    this.setFlavorTextDebounced(e.currentTarget.value);
+    const flavorText = filterProfanity(e.currentTarget.value);
+    this.setState({ flavorText });
+    this.setFlavorTextDebounced(flavorText);
   }
 
   private handleSetType = (e: React.ChangeEvent<HTMLSelectElement>) => {

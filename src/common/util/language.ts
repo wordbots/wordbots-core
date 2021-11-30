@@ -1,5 +1,8 @@
 import { mapValues, sum } from 'lodash';
 import { BigramProbs, buildNGrams, listAllNGrams, UnigramProbs } from 'word-ngrams';
+import BadWordsFilter = require('bad-words'); // bad-words isn't an ES6 import
+
+const ProfanityFilter: BadWordsFilter = new (require('bad-words'));
 
 const DISALLOWED_PHRASES = ['all a'];
 
@@ -35,4 +38,13 @@ export function bigramNLL(phrase: string, bigramProbs: BigramProbs): number {
   });
 
   return logLikelihood;
+}
+
+export function filterProfanity(text: string): string {
+  try {
+    return ProfanityFilter.clean(text);
+  } catch (_) {
+    // probably text is empty
+    return text;
+  }
 }

@@ -13,6 +13,7 @@ import * as React from 'react';
 import { CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH, CHAT_WIDTH, CHAT_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { id } from '../../util/common';
+import { filterProfanity } from '../../util/language';
 
 import ChatMessage from './ChatMessage';
 
@@ -125,7 +126,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
   private handleChatKeypress = (evt: React.KeyboardEvent<HTMLInputElement>) => {
     if (evt.charCode === 13) {
-      this.props.onSendMessage(this.state.chatFieldValue);
+      this.props.onSendMessage(filterProfanity(this.state.chatFieldValue));
       this.scrollToBottom();
       this.setState({ chatFieldValue: '' });
     }

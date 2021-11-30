@@ -4,8 +4,8 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Background from '../components/Background';
 
+import Background from '../components/Background';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import RouterDialog from '../components/RouterDialog';
 import SplashSection from '../components/SplashSection';

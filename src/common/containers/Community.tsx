@@ -10,6 +10,7 @@ import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import CommunityUser from '../components/users/CommunityUser';
 import * as w from '../types';
 import { getMostUsedCards, getUsers } from '../util/firebase';
+import Background from '../components/Background';
 
 interface CommunityState {
   mostPopularCards?: w.CardInStore[]
@@ -31,6 +32,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
 
     return (
       <div>
+        <Background asset="IMG_3006.PNG" opacity={0.25} />
         <Helmet title="Community"/>
         <Title text="Community" />
 

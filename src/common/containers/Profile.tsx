@@ -8,6 +8,7 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
+import Background from '../components/Background';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import Title from '../components/Title';
 import MatchmakingInfo from '../components/users/profile/MatchmakingInfo';
@@ -86,6 +87,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
 
     return (
       <div>
+        <Background asset="IMG_3006.PNG" opacity={0.15} />
         <Helmet title="Profile"/>
         <Title text={title} />
 

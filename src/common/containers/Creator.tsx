@@ -13,6 +13,7 @@ import { TYPE_EVENT } from '../constants';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
+import Background from '../components/Background';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardCreationTutorial from '../components/cards/CardCreationTutorial';
 import CardPreview from '../components/cards/CardPreview';
@@ -202,6 +203,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
     return (
       <div style={{position: 'relative'}}>
+        <Background asset="IMG_3005.PNG" opacity={0.1} style={{ backgroundSize: 'contain' }} />
         <Helmet title="Workshop" />
         <Title text="Workshop" />
 
@@ -307,7 +309,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             </Paper>
           </div>
           <div className="workshop-arrow" style={{ width: 50, margin: 'auto' }}>
-            <Icon style={{ marginLeft: -5, fontSize: 100, color: '#ddd' }} className="material-icons">forward</Icon>
+            <Icon style={{ marginLeft: -5, fontSize: 100, color: '#bbb' }} className="material-icons">forward</Icon>
           </div>
           <CardPreview
             name={this.props.name}

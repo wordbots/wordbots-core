@@ -9,7 +9,7 @@ import Background from '../components/Background';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import RouterDialog from '../components/RouterDialog';
 import SplashSection from '../components/SplashSection';
-import { FIREBASE_CONFIG, PARSER_URL } from '../constants';
+import { FIREBASE_CONFIG, HEADER_HEIGHT, PARSER_URL } from '../constants';
 import * as w from '../types';
 import { isFlagSet, onLocalhost } from '../util/browser';
 
@@ -34,7 +34,7 @@ class Home extends React.Component<HomeProps> {
     return (
       <div>
         <Helmet title="Home"/>
-        <Background asset="arena_draft.png" opacity={0.06} style={{ top: -10, height: 'calc(100% + 10px)' } /* not sure where the missing 10px at the top went? */} />
+        <Background asset="arena_draft.png" opacity={0.06} style={{ top: HEADER_HEIGHT }} />
 
         <div style={{margin: '24px 72px 36px'}}>
           <div

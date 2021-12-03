@@ -5,6 +5,7 @@ import * as socketActions from '../actions/socket';
 import { DEFAULT_GAME_FORMAT } from '../constants';
 import defaultState from '../store/defaultGameState';
 import * as w from '../types';
+import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
 import { cleanUpAnimations, triggerSound } from '../util/game';
@@ -115,7 +116,7 @@ export function handleAction(
     }
 
     case actions.SET_VOLUME: {
-      localStorage[`wb$volume`] = payload.volume;
+      saveToLocalStorage('volume', payload.volume);
       return { ...state, volume: payload.volume };
     }
 

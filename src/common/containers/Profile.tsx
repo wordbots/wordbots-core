@@ -1,13 +1,14 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { compact, flatten, identity, uniq, zipObject } from 'lodash';
+import { compact, flatten, identity, noop, uniq, zipObject } from 'lodash';
 import { countBy, filter, flatMap, flow, map, sortBy, toPairs } from 'lodash/fp';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
+import CardGrid from '../components/cards/CardGrid';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import Title from '../components/Title';
 import MatchmakingInfo from '../components/users/profile/MatchmakingInfo';
@@ -21,15 +22,18 @@ import {
   getNumSetsCreatedCountByUserId,
   getGamesByUser,
   getUserNamesByIds,
-  setStatistic
+  setStatistic,
+  mostRecentCards
 } from '../util/firebase';
 
 type ProfileProps = RouteComponentProps<{ userId: string }> & WithStyles;
 
 interface ProfileState {
+  cardsDisplayMode: 'recent' | 'all'
   userId?: string
   userName?: string
   games?: w.SavedGame[]
+  cards?: w.CardInStore[]
   playerNames?: Record<string, string>
   playerInfo?: {
     cardsCreated: number
@@ -59,7 +63,9 @@ const styles: Record<string, CSSProperties> = {
 };
 
 class Profile extends React.Component<ProfileProps, ProfileState> {
-  public state: ProfileState = {};
+  public state: ProfileState = {
+    cardsDisplayMode: 'recent'
+  };
 
   public async componentDidMount(): Promise<void> {
     this.loadProfileData();
@@ -79,8 +85,8 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 
   public render(): JSX.Element {
-    const { classes } = this.props;
-    const { games, playerNames, playerInfo, userId, userName } = this.state;
+    const { classes, history } = this.props;
+    const { cardsDisplayMode, games, cards, playerNames, playerInfo, userId, userName } = this.state;
 
     const title = userName ? `${userName}'s Profile` : 'Profile';
 
@@ -108,12 +114,53 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               />
             </Paper>
           </div>
-          <div className={classes.recentCardsContainer}>
-            {userId && <RecentCardsCarousel key={userId} userId={userId} history={this.props.history} />}
-          </div>
+          {(userId && cards) && (
+            <div key={userId} className={classes.recentCardsContainer}>
+              <div
+                style={{
+                  margin: 10,
+                  color: '#999',
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                  textAlign: 'center'
+                }}
+              >
+                { cardsDisplayMode === 'recent' ? 'Most recently created cards ' : 'All created cards ' }
+                <a
+                  className="underline"
+                  onClick={this.toggleCardsDisplayMode}
+                  style={{
+                    fontSize: 14,
+                    textTransform: 'none'
+                  }}
+                >
+                  { cardsDisplayMode === 'recent' ? '[show all cards]' : '[show most recent cards]' }
+                </a>
+              </div>
+              {
+                cardsDisplayMode === 'recent'
+                ? <RecentCardsCarousel hideTitle userId={userId} history={history} />
+                : (
+                  <CardGrid
+                    cards={cards || []}
+                    selectedCardIds={[]}
+                    selectable={false}
+                    onCardClick={noop}
+                  />
+                )
+              }
+            </div>
+          )}
         </div>
       </div>
     );
+  }
+
+  private toggleCardsDisplayMode = (): void => {
+    this.setState(({ cardsDisplayMode }) => ({
+      cardsDisplayMode: cardsDisplayMode === 'all' ? 'recent' : 'all'
+    }));
   }
 
   private async loadProfileData(): Promise<void> {
@@ -129,6 +176,10 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       const games = await getGamesByUser(userId);
       this.loadGamesData(games);
       this.loadPlayerInfoData(userId, games);
+
+      this.setState({
+        cards: await mostRecentCards(userId)
+      });
     } catch (error) {
       // Most likely reason is that userId is undefined or that user doesn't exist.
       console.error(error); // eslint-disable-line  no-console

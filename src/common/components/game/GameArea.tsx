@@ -1,4 +1,4 @@
-import Paper from '@material-ui/core/Paper';
+import { Paper, Tab, Tabs } from '@material-ui/core';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
@@ -99,16 +99,18 @@ interface GameAreaState {
   chatOpen: boolean
   chatWidth: number
   compactControls: boolean
+  sidebarMode: 'chat' | 'cardSelector'
 }
 
 export default class GameArea extends React.Component<GameAreaProps, GameAreaState> {
-  public state = {
+  public state: GameAreaState = {
     areaHeight: 1000,
     boardSize: 1000,
     boardMargin: { left: 0, top: 0 },
     chatOpen: true,
     chatWidth: CHAT_WIDTH,
-    compactControls: false
+    compactControls: false,
+    sidebarMode: 'cardSelector' // (this property is only read in sandbox mode - other modes have only a chat sidebar)
   };
 
   public componentWillMount(): void {
@@ -227,12 +229,29 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
 
   private renderSidebar = () => {
     const { actionLog, collection, isSandbox, socket, onAddCardToHand, onSendChatMessage } = this.props;
-    const { chatOpen, compactControls } = this.state;
+    const { chatOpen, compactControls, sidebarMode } = this.state;
 
-    if (isSandbox) {
+    const tabs: JSX.Element | null = (
+      isSandbox
+        ? (
+          <Tabs
+            variant="fullWidth"
+            value={this.state.sidebarMode}
+            onChange={(_evt, value) => { this.setState({ sidebarMode: value }); }}
+            style={{ height: 36, minHeight: 36 }}
+          >
+            <Tab value="cardSelector" label="Cards" style={{ height: 36, minHeight: 36, minWidth: '50%' }} />
+            <Tab value="chat" label="Log" style={{ height: 36, minHeight: 36, minWidth: '50%' }} />
+          </Tabs>
+        )
+        : null
+    );
+
+    if (isSandbox && sidebarMode === 'cardSelector') {
       return (
         <CardSelector
           cardCollection={collection.cards}
+          header={tabs}
           onAddCardToHand={onAddCardToHand}
         />
       );
@@ -246,6 +265,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
           toggleChat={this.handleToggleChat}
           roomName={socket.hosting ? null : socket.gameName}
           messages={socket.chatMessages.concat(actionLog)}
+          header={tabs}
           onSendMessage={onSendChatMessage}
         />
       );

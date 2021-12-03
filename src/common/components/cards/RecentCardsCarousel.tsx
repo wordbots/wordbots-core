@@ -15,7 +15,6 @@ interface RecentCardsCarouselProps {
   history: History
   userId?: string
   cardsToShow?: w.CardInStore[]  // if set, override the carousel's lookup behavior
-  hideTitle?: boolean
 }
 
 interface RecentCardsCarouselState {
@@ -73,26 +72,11 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private renderInner(): JSX.Element | null {
-    const { hideTitle } = this.props;
     const { recentCards, paused, width } = this.state;
 
     if (recentCards.length > 0) {
       return (
         <div>
-          {!hideTitle && (
-            <div
-              style={{
-                marginTop: 10,
-                color: '#999',
-                fontSize: 20,
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                textAlign: 'center'
-              }}
-            >
-              Most recently created cards
-            </div>
-          )}
           <div
             className="recentCardsCarousel"
             onMouseOver={this.handleMouseOver}

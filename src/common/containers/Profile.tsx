@@ -140,7 +140,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               </div>
               {
                 cardsDisplayMode === 'recent'
-                ? <RecentCardsCarousel hideTitle cardsToShow={cards.slice(0, 15)} history={history} />
+                ? <RecentCardsCarousel cardsToShow={cards.slice(0, 15)} history={history} />
                 : (
                   <CardGrid
                     cards={cards || []}

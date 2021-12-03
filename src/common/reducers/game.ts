@@ -115,7 +115,10 @@ export function handleAction(
     }
 
     case actions.SET_VOLUME: {
-      localStorage[`wb$volume`] = payload.volume;
+      if (localStorage) {
+        localStorage[`wb$volume`] = payload.volume;
+      }
+
       return { ...state, volume: payload.volume };
     }
 

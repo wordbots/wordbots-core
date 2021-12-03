@@ -50,7 +50,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
                 </Paper>
               </div>
 
-              <RecentCardsCarousel cardsToShow={mostPopularCards} history={history} />
+              <RecentCardsCarousel hideTitle cardsToShow={mostPopularCards} history={history} />
             </div>
           )}
 

@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { compact, flatten, identity, noop, uniq, zipObject } from 'lodash';
+import { compact, flatten, identity, uniq, zipObject } from 'lodash';
 import { countBy, filter, flatMap, flow, map, sortBy, toPairs } from 'lodash/fp';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -140,13 +140,13 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               </div>
               {
                 cardsDisplayMode === 'recent'
-                ? <RecentCardsCarousel hideTitle userId={userId} history={history} />
+                ? <RecentCardsCarousel hideTitle cardsToShow={cards.slice(0, 15)} history={history} />
                 : (
                   <CardGrid
                     cards={cards || []}
                     selectedCardIds={[]}
                     selectable={false}
-                    onCardClick={noop}
+                    onCardClick={this.handleClickCard}
                   />
                 )
               }
@@ -161,6 +161,10 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     this.setState(({ cardsDisplayMode }) => ({
       cardsDisplayMode: cardsDisplayMode === 'all' ? 'recent' : 'all'
     }));
+  }
+
+  private handleClickCard = (cardId: w.CardId) => {
+    this.props.history.push(`/card/${cardId}`);
   }
 
   private async loadProfileData(): Promise<void> {

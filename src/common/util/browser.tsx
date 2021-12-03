@@ -55,13 +55,28 @@ export function setHash(history: History, hash: string): void {
   transformHistory(history, (path) => `${path}#${hash}`);
 }
 
+export function loadFromLocalStorage(key: string): string | undefined {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage[`wb$${key}`];
+  } else {
+    return undefined;
+  }
+}
+
+export function saveToLocalStorage(key: string, value: string): void {
+  if (typeof localStorage !== 'undefined') {
+    localStorage[`wb$${key}`] === value;
+  }
+}
+
 export function isFlagSet(flag: string): boolean {
-  return typeof localStorage !== 'undefined' && localStorage[`wb$${flag}`] === 'true';
+  return loadFromLocalStorage(flag) === 'true';
 }
 
 export function toggleFlag(flag: string): void {
-  localStorage[`wb$${flag}`] = !isFlagSet(flag);
+  saveToLocalStorage(flag, isFlagSet(flag) ? 'false' : 'true');
 }
+
 
 export function getGameAreaNode(): HTMLElement {
   return document.querySelector('#gameArea') || document.body;

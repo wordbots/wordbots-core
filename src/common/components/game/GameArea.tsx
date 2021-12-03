@@ -192,6 +192,10 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     this.setState((state) => ({ chatOpen: !state.chatOpen }), this.calculateDimensions);
   }
 
+  private handleSelectSidebarTab = (_evt: React.ChangeEvent<unknown>, value: string) => {
+    this.setState({ sidebarMode: value as 'chat' | 'cardSelector' });
+  }
+
   private loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
 
   private calculateDimensions = () => {
@@ -231,20 +235,20 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     const { actionLog, collection, isSandbox, socket, onAddCardToHand, onSendChatMessage } = this.props;
     const { chatOpen, compactControls, sidebarMode } = this.state;
 
-    const tabs: JSX.Element | null = (
+    const tabs: JSX.Element | undefined = (
       isSandbox
         ? (
           <Tabs
             variant="fullWidth"
             value={this.state.sidebarMode}
-            onChange={(_evt, value) => { this.setState({ sidebarMode: value }); }}
+            onChange={this.handleSelectSidebarTab}
             style={{ height: 36, minHeight: 36 }}
           >
             <Tab value="cardSelector" label="Cards" style={{ height: 36, minHeight: 36, minWidth: '50%' }} />
             <Tab value="chat" label="Log" style={{ height: 36, minHeight: 36, minWidth: '50%' }} />
           </Tabs>
         )
-        : null
+        : undefined
     );
 
     if (isSandbox && sidebarMode === 'cardSelector') {

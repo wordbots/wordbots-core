@@ -14,7 +14,7 @@ import CardSelectorCard from './CardSelectorCard';
 
 interface CardSelectorBaseProps {
   cardCollection: w.CardInStore[]
-  header: JSX.Element;
+  header: JSX.Element
   onAddCardToHand: (player: string, card: w.CardInStore) => void
 }
 

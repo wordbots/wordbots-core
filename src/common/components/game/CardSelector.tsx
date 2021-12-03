@@ -13,8 +13,9 @@ import Tooltip from '../Tooltip';
 import CardSelectorCard from './CardSelectorCard';
 
 interface CardSelectorBaseProps {
-  onAddCardToHand: (player: string, card: w.CardInStore) => void
   cardCollection: w.CardInStore[]
+  header: JSX.Element
+  onAddCardToHand: (player: string, card: w.CardInStore) => void
 }
 
 interface CardSelectorState {
@@ -41,7 +42,8 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
       width: 232
     },
     cardsContainer: {
-      height: 'calc(100% - 64px - 48px)',
+      // 64px for bottom buttons, 48px for search bar, 36px for header tabs (to switch between card selector & game log)
+      height: 'calc(100% - 64px - 48px - 36px)',
       overflowY: 'scroll',
       width: '100%'
     },
@@ -93,11 +95,12 @@ class CardSelector extends React.Component<CardSelectorProps, CardSelectorState>
   }
 
   public render(): JSX.Element {
-    const { classes } = this.props;
+    const { classes, header } = this.props;
     const { searchText } = this.state;
 
     return (
       <div className={classes.container}>
+        {header}
         <TextField
           className={classes.searchBar}
           InputProps={{ classes: { root: classes.searchBarInner }}}

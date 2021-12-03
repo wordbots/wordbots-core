@@ -24,6 +24,7 @@ interface ChatProps {
   open?: boolean
   compact?: boolean
   fullscreen?: boolean
+  header?: JSX.Element
   onSendMessage: (message: string) => void
   toggleChat?: () => void
 }
@@ -48,7 +49,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   private chat: any = null;  // TODO type this ref correctly
 
   get isClosed(): boolean {
-    return !!this.props.inGame && !this.props.open;
+    return !!this.props.inGame && !this.props.open && !this.props.header;
   }
 
   public shouldComponentUpdate(nextProps: ChatProps, nextState: ChatState): boolean {
@@ -191,11 +192,13 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private renderOpenChat(): JSX.Element {
-    const { compact, inGame, messages, roomName, toggleChat } = this.props;
+    const { compact, header, inGame, messages, roomName, toggleChat } = this.props;
+    const { optionsVisible } = this.state;
     const chatTitle = inGame ? 'Chat' : (roomName || 'Lobby');
 
     return (
       <div style={{height: '100%'}}>
+        {header}
         <Toolbar
           disableGutters
           style={{
@@ -212,7 +215,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             <IconButton onClick={this.toggleOptionsVisibility} title="Toggle settings panel">
               <Icon style={{ color: "#888" }} className="material-icons">settings</Icon>
             </IconButton>
-            {inGame && (
+            {(inGame && !header) && (
               <IconButton onClick={toggleChat} title="Hide chat">
                 <Icon style={{ color: "#888" }} className="material-icons">chevron_right</Icon>
               </IconButton>
@@ -252,7 +255,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
           ref={(el) => {this.chat = el; }}
           style={{
             padding: 10,
-            height: this.state.optionsVisible ? 'calc(100% - 92px - 144px)' : 'calc(100% - 144px)',
+            height: `calc(100% - 144px ${optionsVisible ? '- 92px' : ''} ${header ? '- 36px' : ''})`,
             overflowY: 'scroll'
           }}
         >

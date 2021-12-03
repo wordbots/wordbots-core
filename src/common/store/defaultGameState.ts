@@ -1,5 +1,6 @@
 import { BLUE_CORE_HEX, ORANGE_CORE_HEX, STARTING_PLAYER_COLOR, TYPE_CORE } from '../constants';
 import * as w from '../types';
+import { loadFromLocalStorage } from '../util/browser';
 
 import * as cards from './cards';
 
@@ -83,7 +84,7 @@ const defaultGameState: w.GameState = {
   sfxQueue: [],
   eventQueue: [],
   rng: Math.random,
-  volume: 25
+  volume: parseInt(loadFromLocalStorage('volume') || '25')
 };
 
 export default defaultGameState;

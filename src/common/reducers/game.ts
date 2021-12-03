@@ -5,6 +5,7 @@ import * as socketActions from '../actions/socket';
 import { DEFAULT_GAME_FORMAT } from '../constants';
 import defaultState from '../store/defaultGameState';
 import * as w from '../types';
+import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
 import { cleanUpAnimations, triggerSound } from '../util/game';
@@ -114,8 +115,10 @@ export function handleAction(
       return g.draftCards(state, payload.player, payload.cards);
     }
 
-    case actions.SET_VOLUME:
+    case actions.SET_VOLUME: {
+      saveToLocalStorage('volume', payload.volume);
       return { ...state, volume: payload.volume };
+    }
 
     case socketActions.CONNECTING:
       return {...state, started: state.practice ? state.started : false};

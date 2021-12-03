@@ -88,7 +88,21 @@ class Home extends React.Component<HomeProps> {
             </SplashSection>
           </div>
 
-          <RecentCardsCarousel history={history} />
+          <div>
+            <div
+              style={{
+                marginTop: 20,
+                color: '#999',
+                fontSize: 20,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                textAlign: 'center'
+              }}
+            >
+              Most recently created cards
+            </div>
+            <RecentCardsCarousel history={history} />
+          </div>
 
           {
             !isFlagSet('skipNewHere') &&

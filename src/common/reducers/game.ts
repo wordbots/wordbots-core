@@ -114,8 +114,10 @@ export function handleAction(
       return g.draftCards(state, payload.player, payload.cards);
     }
 
-    case actions.SET_VOLUME:
+    case actions.SET_VOLUME: {
+      localStorage[`wb$volume`] = payload.volume;
       return { ...state, volume: payload.volume };
+    }
 
     case socketActions.CONNECTING:
       return {...state, started: state.practice ? state.started : false};

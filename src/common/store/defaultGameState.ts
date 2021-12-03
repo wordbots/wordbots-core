@@ -83,7 +83,7 @@ const defaultGameState: w.GameState = {
   sfxQueue: [],
   eventQueue: [],
   rng: Math.random,
-  volume: 25
+  volume: parseInt(localStorage[`wb$volume`] || 25)
 };
 
 export default defaultGameState;

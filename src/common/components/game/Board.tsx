@@ -147,6 +147,12 @@ export default class Board extends React.Component<BoardProps, BoardState> {
         color(this.getValidMovementHexes(this.selectedHex), 'green');
         color(this.getValidAttackHexes(this.selectedHex), 'red');
       }
+    } else {
+      // Also allow visualising movement range for (e.g. enemy) robots on your opponent's turn.
+      if (this.selectedHex) {
+        color(this.getValidMovementHexes(this.selectedHex), 'green');
+        color(this.getValidAttackHexes(this.selectedHex), 'red');
+      }
     }
 
     return hexColors;

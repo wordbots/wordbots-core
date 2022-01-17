@@ -26,7 +26,7 @@ const theme: ThemeOptions = {
     },
     divider: grey[500],
     action: {
-      disabledBackground: '#bfbfbf', // defaults to rgba(0, 0, 0, 0.12)
+      disabledBackground: '#ccc', // defaults to rgba(0, 0, 0, 0.12)
     }
   }
 };

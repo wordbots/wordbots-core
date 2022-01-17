@@ -65,7 +65,7 @@ export function loadFromLocalStorage(key: string): string | undefined {
 
 export function saveToLocalStorage(key: string, value: string): void {
   if (typeof localStorage !== 'undefined') {
-    localStorage[`wb$${key}`] === value;
+    localStorage[`wb$${key}`] = value;
   }
 }
 

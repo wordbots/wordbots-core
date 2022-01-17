@@ -27,6 +27,7 @@ import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { getDisplayedCards, isCardVisible } from '../util/cards';
 import { lookupCurrentUser } from '../util/firebase';
+import Background from '../components/Background';
 
 interface CollectionStateProps {
   cards: w.CardInStore[]
@@ -129,6 +130,8 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     return (
       <div>
         <Helmet title="Collection" />
+        <Background asset="image2.png" opacity={0.35} style={{ backgroundSize: 'contain' }} />
+
         <div style={{ display: 'flex' }}>
           <Title text="Collection" />
           <div style={{ marginLeft: 30, marginTop: 12 }}>

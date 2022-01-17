@@ -4,6 +4,7 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Background from '../components/Background';
 
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
@@ -19,7 +20,7 @@ export function mapStateToProps(state: w.State): AboutProps {
   };
 }
 
-class About extends React.Component<AboutProps> {
+class About extends React.PureComponent<AboutProps> {
   public render(): JSX.Element {
     const [version, sha] = this.props.version.split('+');
     const shaTruncated = truncate(sha, { length: 8, omission: '' });
@@ -27,6 +28,8 @@ class About extends React.Component<AboutProps> {
     return (
       <div>
         <Helmet title="About"/>
+        <Background asset="image1.png" opacity={1} style={{ backgroundSize: 'contain' }} />
+
         <Title text="About" />
 
         <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>

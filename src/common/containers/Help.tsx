@@ -9,11 +9,15 @@ import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import { helpText as parserHelpText } from '../components/help/CreatorHelpDialog';
 import { BUILTIN_FORMATS, GameFormat, SetFormat, SetDraftFormat } from '../util/formats';
+import Background from '../components/Background';
 
 const Help = (): JSX.Element => (
   <div className="helpPage">
     <Helmet title="Help"/>
+    <Background asset="image1.png" opacity={1} style={{ backgroundSize: 'contain' }} />
+
     <Title text="Help" style={{ position: 'sticky', top: HEADER_HEIGHT, zIndex: 100 }} />
+
     <div style={{
       position: 'sticky',
       top: HEADER_HEIGHT,
@@ -21,15 +25,16 @@ const Help = (): JSX.Element => (
       width: 'calc(100% - 20px)',
       margin: '-50px auto 0',
       paddingTop: 16,
-      paddingBottom: 14,
-      backgroundColor: '#eee',
-      boxShadow: 'rgb(238 238 238) 0px 5px 5px 3px'
+      paddingBottom: 14
     }}>
-      <Paper style={{
-        width: 'fit-content',
-        margin: '0 auto',
-        padding: '10px 20px'
-      }}>
+      <Paper
+        elevation={5}
+        style={{
+          width: 'fit-content',
+          margin: '0 auto',
+          padding: '10px 20px'
+        }}
+      >
       <em>Contents:</em>&nbsp;&nbsp;
       <AnchorLink id="rules">Rules</AnchorLink>
       &nbsp;&bull;&nbsp;

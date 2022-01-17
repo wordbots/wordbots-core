@@ -24,7 +24,10 @@ const theme: ThemeOptions = {
       main: cyan[500],
       contrastText: white
     },
-    divider: grey[500]
+    divider: grey[500],
+    action: {
+      disabledBackground: '#bfbfbf', // defaults to rgba(0, 0, 0, 0.12)
+    }
   }
 };
 

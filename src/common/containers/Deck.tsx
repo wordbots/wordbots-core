@@ -9,6 +9,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
@@ -125,6 +126,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     return (
       <div>
         <Helmet title="Building Deck"/>
+        <Background asset="image2.png" opacity={0.35} style={{ backgroundSize: 'contain' }} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>

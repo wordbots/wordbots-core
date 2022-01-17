@@ -7,6 +7,7 @@ import { withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
 import DeckSummary from '../components/cards/DeckSummary';
 import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
@@ -64,6 +65,8 @@ class Decks extends React.Component<DecksProps> {
     return (
       <div>
         <Helmet title="Decks" />
+        <Background asset="image2.png" opacity={0.35} style={{ backgroundSize: 'contain' }} />
+
         <Title text="Decks" />
 
         <div style={{margin: 20}}>

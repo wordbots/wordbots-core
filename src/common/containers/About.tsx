@@ -4,8 +4,8 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Background from '../components/Background';
 
+import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import * as w from '../types';

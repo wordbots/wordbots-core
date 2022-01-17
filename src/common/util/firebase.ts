@@ -180,7 +180,7 @@ export async function getCardById(cardId: string): Promise<w.CardInStore> {
   return snapshot.val() as w.CardInStore;
 }
 
-export async function mostRecentCards(uid: w.UserId | null, limit: number): Promise<w.CardInStore[]> {
+export async function mostRecentCards(uid: w.UserId | null, limit = 9999): Promise<w.CardInStore[]> {
   const cards = await getCards(uid);
 
   return flow(

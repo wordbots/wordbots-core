@@ -23,11 +23,20 @@ interface RecentCardsCarouselState {
   width?: number
 }
 
+const duplicateCardsUntilCarouselFull = (cards: w.CardInStore[]): w.CardInStore[] => {
+  if (cards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && cards.length > 0) {
+    while (cards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
+      cards = [...cards, ...cards];
+    }
+  }
+  return cards;
+};
+
 export default class RecentCardsCarousel extends React.Component<RecentCardsCarouselProps, RecentCardsCarouselState> {
   public static MAX_CARDS_TO_SHOW = 8;
 
   public state: RecentCardsCarouselState = {
-    recentCards: this.props.cardsToShow || [],
+    recentCards: this.props.cardsToShow ? duplicateCardsUntilCarouselFull(this.props.cardsToShow) : [],
     paused: false
   };
 
@@ -68,20 +77,6 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
     if (recentCards.length > 0) {
       return (
         <div>
-          {!this.props.cardsToShow && (
-            <div
-              style={{
-                marginTop: 10,
-                color: '#999',
-                fontSize: 20,
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                textAlign: 'center'
-              }}
-            >
-              Most recently created cards
-            </div>
-          )}
           <div
             className="recentCardsCarousel"
             onMouseOver={this.handleMouseOver}
@@ -132,15 +127,11 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private initializeCarousel = async (userId?: string) => {
-    let recentCards = await mostRecentCards(userId || null, 15);
+    const recentCards = await mostRecentCards(userId || null, 15);
 
-    if (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW && recentCards.length > 0) {
-      while (recentCards.length < RecentCardsCarousel.MAX_CARDS_TO_SHOW) {
-        recentCards = [...recentCards, ...recentCards];
-      }
-    }
-
-    this.setState({ recentCards });
+    this.setState({
+      recentCards: duplicateCardsUntilCarouselFull(recentCards)
+    });
   }
 
   private handleClickCard = (card: w.CardInStore) => {

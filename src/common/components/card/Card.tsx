@@ -171,7 +171,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     const {
       name, spriteID, spriteV, type, img, cost, baseCost, source, collection, flavorText,
       showSpinner, status, visible, selected, targetable,
-      scale, margin, rotation, yTranslation, overrideContainerStyles
+      scale, margin, rotation, yTranslation, overrideContainerStyles,
       onSpriteClick, classes
     } = this.props;
     const blueShadow = 'rgba(0, 120, 135, 0.45)';

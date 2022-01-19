@@ -10,6 +10,7 @@ import { withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
@@ -92,6 +93,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     return (
       <div>
         <Helmet title={setBeingEdited ? 'Editing Set' : 'Creating Set'} />
+        <Background asset="image2-1.png" opacity={0.35} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>

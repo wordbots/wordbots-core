@@ -28,7 +28,7 @@ class About extends React.PureComponent<AboutProps> {
     return (
       <div>
         <Helmet title="About"/>
-        <Background asset="image1.png" opacity={1} style={{ backgroundSize: 'contain' }} />
+        <Background asset="image1-1.png" opacity={1} style={{ backgroundSize: 'contain' }} />
 
         <Title text="About" />
 

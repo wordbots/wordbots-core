@@ -141,7 +141,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
     return (
       <div>
         <Helmet title="Sets" />
-        <Background asset="image2.png" opacity={0.35} style={{ backgroundSize: 'contain' }} />
+        <Background asset="image2-1.png" opacity={0.35} />
 
         <Title text="Sets" />
 

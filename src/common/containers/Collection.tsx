@@ -130,7 +130,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     return (
       <div>
         <Helmet title="Collection" />
-        <Background asset="image2.png" opacity={0.35} style={{ backgroundSize: 'contain' }} />
+        <Background asset="image2-1.png" opacity={0.35} />
 
         <div style={{ display: 'flex' }}>
           <Title text="Collection" />

@@ -18,7 +18,7 @@ import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
 import SpinningGears from '../components/SpinningGears';
 import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
-import muiV1Theme from '../themes/muiV1';
+import theme from '../themes/theme';
 import * as w from '../types';
 import { isFlagSet, logAnalytics } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
@@ -232,7 +232,7 @@ class App extends React.Component<AppProps, AppState> {
 
   public render(): JSX.Element {
     return (
-      <MuiThemeProvider theme={createMuiTheme(muiV1Theme)}>
+      <MuiThemeProvider theme={createMuiTheme(theme)}>
         <div>
           <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
           <TitleBar isAppLoading={this.isLoading} onRerender={this.props.onRerender} />

@@ -42,24 +42,51 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             paddingRight: 32
           }}
         >
-          <Card
-            visible
-            name={name || '[Unnamed]'}
-            spriteID={spriteID}
-            spriteV={SPRITE_VERSION}
-            type={type}
-            cost={energy}
-            stats={this.stats}
-            cardStats={this.stats}
-            flavorText={this.props.flavorText}
-            text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
-            rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
-            source={{ type: 'user' }}
-            parseResults={JSON.stringify(sentences.map((s) => s.result))}
-            showSpinner={sentences.some((s) => !s.result.js && !s.result.error)}
-            scale={2.5}
-            onSpriteClick={onSpriteClick}
-          />
+          <div
+            style={{
+              textAlign: 'center',
+              border: '2px solid white',
+              padding: '0 15px',
+              borderRadius: 30,
+              background: 'repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1) 10px, rgba(128, 128, 128, 0.1) 10px, rgba(128, 128, 128, 0.1) 20px)'
+            }}
+          >
+            <div
+              style={{
+                position: 'relative',
+                top: -22,
+                fontFamily: '"Carter One"',
+                backgroundColor: 'rgb(0, 188, 212)',
+                display: 'inline',
+                padding: '2px 12px',
+                fontSize: '1.5em',
+                color: 'white',
+                borderRadius: 30,
+                textTransform: 'uppercase',
+              }}
+            >
+              Preview
+            </div>
+            <Card
+              visible
+              name={name || '[Unnamed]'}
+              spriteID={spriteID}
+              spriteV={SPRITE_VERSION}
+              type={type}
+              cost={energy}
+              stats={this.stats}
+              cardStats={this.stats}
+              flavorText={this.props.flavorText}
+              text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
+              rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
+              source={{ type: 'user' }}
+              parseResults={JSON.stringify(sentences.map((s) => s.result))}
+              showSpinner={sentences.some((s) => !s.result.js && !s.result.error)}
+              scale={2.5}
+              onSpriteClick={onSpriteClick}
+              overrideContainerStyles={{ padding: 0 }}
+            />
+          </div>
         </div>
       );
     } else {

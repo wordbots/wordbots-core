@@ -52,7 +52,15 @@ interface CardCreationFormState {
 
 export default class CardCreationForm extends React.Component<CardCreationFormProps, CardCreationFormState> {
   private static styles: Record<string, React.CSSProperties> = {
-    paper: {padding: 30, maxWidth: 800, margin: '0 auto'},
+    paper: {
+      padding: 30,
+      maxWidth: 800,
+      margin: '0 auto',
+      // below adapted from https://codetea.com/pure-css-blueprint-pattern-using-css3-linear-gradients/
+      backgroundImage: 'linear-gradient(rgba(34, 102, 153, .07) 2px, transparent 2px), linear-gradient(90deg, rgba(34, 102, 153, .07) 2px, transparent 2px), linear-gradient(rgba(34, 102, 153, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 102, 153, .05) 1px, transparent 1px)',
+      backgroundSize: '100px 100px, 100px 100px, 20px 20px, 20px 20px',
+      backgroundPosition: '-2px -2px, -2px -2px, -1px -1px, -1px -1px'
+    },
 
     section: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 },
 
@@ -67,7 +75,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       backgroundColor: 'rgb(0 188 212 / 30%)',
       padding: 5
     },
-    fullWidth: {width: '100%'},
+    fullWidth: {width: '100%', background: 'white'},
 
     attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
     attribute: { width: 50 },
@@ -118,7 +126,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     const { isReadonly, validationResults, willCreateAnother, onToggleWillCreateAnother } = this.props;
 
     return (
-      <div>
+      <div style={{ backgroundColor: 'white' }}>
         <Paper style={CardCreationForm.styles.paper}>
           <div style={CardCreationForm.styles.section}>
             <TextField
@@ -177,7 +185,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           </div>
 
           <div style={CardCreationForm.styles.section}>
-            <div style={{flex: 1, marginRight: 20}}>
+            <div style={{flex: 1, marginRight: 20, background: 'white'}}>
               <CardTextField
                 readonly={isReadonly}
                 text={this.props.text}

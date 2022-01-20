@@ -198,7 +198,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               />
             </div>
             <div style={CardCreationForm.styles.rightColContainer}>
-              <Tooltip text="Having issues getting your card to work? Click here to submit it to us.">
+              <Tooltip text="Having issues getting your card to work? Click here to let us know!">
                 <Button
                   variant="contained"
                   color="secondary"

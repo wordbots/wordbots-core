@@ -164,7 +164,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
               }}
             >
               <Typography style={{ fontFamily: 'Carter One', fontSize: 32 }}>
-                <Link style={{ color: 'white' }} to="/">WORDBOTS</Link>
+                <Link className="wordbotsAppBarLink" to="/">WORDBOTS</Link>
               </Typography>
               {this.userMenu}
             </Toolbar>

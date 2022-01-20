@@ -17,10 +17,10 @@ import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
 import SpinningGears from '../components/SpinningGears';
-import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
+import { SIDEBAR_COLLAPSED_WIDTH } from '../constants';
 import theme from '../themes/theme';
 import * as w from '../types';
-import { isFlagSet, logAnalytics } from '../util/browser';
+import { logAnalytics } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
@@ -62,7 +62,6 @@ interface AppState {
   loadedCards: boolean
   loadedDecks: boolean
   loadedSets: boolean
-  canSidebarExpand: boolean
 }
 
 function mapStateToProps(state: w.State): AppStateProps {
@@ -97,8 +96,7 @@ class App extends React.Component<AppProps, AppState> {
   public state = {
     loadedCards: false,
     loadedDecks: false,
-    loadedSets: false,
-    canSidebarExpand: true
+    loadedSets: false
   };
 
   constructor(props: AppProps) {
@@ -108,9 +106,6 @@ class App extends React.Component<AppProps, AppState> {
 
   public componentDidMount(): void {
     const { onLoggedIn, onLoggedOut } = this.props;
-
-    this.calculateDimensions();
-    window.addEventListener('resize', this.calculateDimensions);
 
     this.loadSets();
 
@@ -135,10 +130,6 @@ class App extends React.Component<AppProps, AppState> {
     return !(loadedCards && loadedDecks && loadedSets);
   }
 
-  get isSidebarExpanded(): boolean {
-    return this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed') && !this.inSandbox;
-  }
-
   get inGame(): boolean {
     const { location, inGame, inSandbox } = this.props;
     return (inGame || isInGameUrl(location.pathname)) && !inSandbox;
@@ -150,30 +141,20 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get sidebar(): JSX.Element | null {
-    const { cardIdBeingEdited, onRerender } = this.props;
-    const { canSidebarExpand } = this.state;
+    const { cardIdBeingEdited } = this.props;
 
     if (this.isLoading || this.inGame) {
       return null;
     } else {
-      return (
-        <NavMenu
-          canExpand={canSidebarExpand && !this.inSandbox}
-          isExpanded={this.isSidebarExpanded}
-          cardIdBeingEdited={cardIdBeingEdited}
-          onRerender={onRerender}
-        />
-      );
+      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} />;
     }
   }
 
   get content(): JSX.Element {
-    const sidebarWidth = this.isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
-
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
     return (
-      <div style={{paddingLeft: this.inGame ? 0 : sidebarWidth}}>
+      <div style={{ paddingLeft: this.inGame ? 0 : SIDEBAR_COLLAPSED_WIDTH }}>
         <ErrorBoundary>
           <Switch>
             <Route exact path="/" component={Home} />
@@ -249,12 +230,6 @@ class App extends React.Component<AppProps, AppState> {
   private redirectToRoot = (): JSX.Element => (
     <Redirect to="/"/>
   )
-
-  private calculateDimensions = (): void => {
-    this.setState({
-      canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
-    });
-  }
 
   private loadUserCardsAndDecks = async (uid: w.UserId | null): Promise<void> => {
     const { onReceiveFirebaseData } = this.props;

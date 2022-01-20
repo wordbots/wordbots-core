@@ -44,7 +44,6 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
         >
           <div
             style={{
-              textAlign: 'center',
               border: '2px solid white',
               padding: '0 15px',
               borderRadius: 30,
@@ -54,19 +53,27 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
             <div
               style={{
                 position: 'relative',
-                top: -22,
-                fontFamily: '"Carter One"',
-                backgroundColor: 'rgb(0, 188, 212)',
-                display: 'inline',
-                padding: '2px 12px',
-                fontSize: '1.5em',
-                color: 'white',
-                borderRadius: 30,
-                textTransform: 'uppercase',
+                top: -15,
+                width: '100%',
+                textAlign: 'center'
               }}
             >
-              Preview
+              <div
+                style={{
+                  fontFamily: '"Space Age"',
+                  backgroundColor: 'rgb(0, 188, 212)',
+                  display: 'inline',
+                  padding: '2px 12px',
+                  fontSize: '1.5em',
+                  color: 'white',
+                  borderRadius: 30,
+                  textTransform: 'uppercase',
+                }}
+              >
+                Preview
+              </div>
             </div>
+
             <Card
               visible
               name={name || '[Unnamed]'}

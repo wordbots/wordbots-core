@@ -15,6 +15,7 @@ export default class Background extends React.PureComponent<BackgroundProps> {
           position: 'fixed',
           width: '100%',
           height: '100%',
+          left: 0,
           zIndex: -1,
           background: `url('/static/artAssets/${asset}')`,
           backgroundSize: 'cover',

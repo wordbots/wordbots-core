@@ -1,5 +1,15 @@
 @font-face {
-  font-family: 'SpacePatrol';
+  font-family: 'RocketScript';
+  src: url("../fonts/rocket-script.regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Space Age';
+  src: url("../fonts/space age.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Space Patrol';
   src: url("../fonts/SpacePatrol.ttf?v=0.1.0") format("truetype");
 }
 
@@ -37,9 +47,18 @@ th {
   font-size: 1em !important;
 }
 
-.activeNavLink > div {
-  box-shadow: inset 4px 0 0 red;
-  background-color: #EEEEEE;
+.wordbotsAppBarLink {
+  color: white;
+}
+
+.wordbotsAppBarLink:hover {
+  color: #eee;
+  -webkit-text-stroke: 0.5px #666;
+}
+
+.activeNavLink {
+  border-left-width: 4px !important;
+  background-color: #EEEEEE !important;
 }
 
 .markdownBlock img {

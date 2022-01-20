@@ -57,6 +57,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       maxWidth: 800,
       margin: '0 auto',
       // below adapted from https://codetea.com/pure-css-blueprint-pattern-using-css3-linear-gradients/
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
       backgroundImage: 'linear-gradient(rgba(34, 102, 153, .07) 2px, transparent 2px), linear-gradient(90deg, rgba(34, 102, 153, .07) 2px, transparent 2px), linear-gradient(rgba(34, 102, 153, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 102, 153, .05) 1px, transparent 1px)',
       backgroundSize: '100px 100px, 100px 100px, 20px 20px, 20px 20px',
       backgroundPosition: '-2px -2px, -2px -2px, -1px -1px, -1px -1px'
@@ -126,7 +127,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     const { isReadonly, validationResults, willCreateAnother, onToggleWillCreateAnother } = this.props;
 
     return (
-      <div style={{ backgroundColor: 'white' }}>
+      <div>
         <Paper style={CardCreationForm.styles.paper}>
           <div style={CardCreationForm.styles.section}>
             <TextField

@@ -250,7 +250,6 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
-          maxHeight: 'calc(100vh - 115px)',
           marginTop: 5
         }}>
           <div style={{

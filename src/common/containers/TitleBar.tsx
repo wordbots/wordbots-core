@@ -4,19 +4,18 @@ import Icon from '@material-ui/core/Icon';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
 import Popover from '@material-ui/core/Popover';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import * as fb from 'firebase';
 import { History } from 'history';
+import { red } from '@material-ui/core/colors';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import RouterDialog from '../components/RouterDialog';
-import { MAX_Z_INDEX } from '../constants';
 import * as w from '../types';
 import { isSupportedBrowser, toggleFlag } from '../util/browser';
 import { logout } from '../util/firebase';
@@ -53,7 +52,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
         <div style={{marginTop: 4}}>
           <Button
             style={{ color: 'white' }}
-            onClick={this.openUserMenu}
+            onClick={this.toggleUserMenu}
           >
             {this.props.user.displayName}
             <Icon className="material-icons" style={{ margin: '0 5px 0 8px' }}>account_circle</Icon>
@@ -63,22 +62,55 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             onClose={this.closeUserMenu}
-            style={{ zIndex: MAX_Z_INDEX, marginTop: 5 }}
+            style={{ marginLeft: 15, marginTop: 12 }}
+            PaperProps={{
+              style: { borderRadius: 0 }
+            }}
           >
-            <MenuList>
-              <MenuItem onClick={this.handleClickProfile}>
+            <div>
+              <MenuItem
+                style={{
+                  marginTop: 1,
+                  border: `1px solid ${red[500]}`,
+                  borderRight: 0,
+                  boxShadow: '1px 1px 5px #666b'
+                }}
+                onClick={this.handleClickProfile}
+              >
                 <ListItemIcon>
                   <Icon className="material-icons">account_circle</Icon>
                 </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
+                <ListItemText
+                  style={{ padding: '0 8px' }}
+                  primaryTypographyProps={{
+                    style: { fontFamily: '"Carter One"', color: '#666', textTransform: 'uppercase' }
+                  }}
+                >
+                  Profile
+                </ListItemText>
               </MenuItem>
-              <MenuItem onClick={this.handleClickLogout}>
+              <MenuItem
+                style={{
+                  marginTop: 1,
+                  border: `1px solid ${red[500]}`,
+                  borderRight: 0,
+                  boxShadow: '1px 1px 5px #666b'
+                }}
+                onClick={this.handleClickLogout}
+              >
                 <ListItemIcon>
                   <Icon className="material-icons">exit_to_app</Icon>
                 </ListItemIcon>
-                <ListItemText>Logout</ListItemText>
+                <ListItemText
+                  style={{ padding: '0 8px' }}
+                  primaryTypographyProps={{
+                    style: { fontFamily: '"Carter One"', color: '#666', textTransform: 'uppercase' }
+                  }}
+                >
+                  Logout
+                </ListItemText>
               </MenuItem>
-            </MenuList>
+            </div>
           </Popover>
         </div>
       );
@@ -178,13 +210,17 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
     RouterDialog.openDialog(this.props.history, 'login');
   }
 
-  private openUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  private toggleUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
-    this.setState({
-      userOpen: true,
-      anchorEl: event.currentTarget
-    });
+    if (this.state.userOpen) {
+      this.closeUserMenu();
+    } else {
+      this.setState({
+        userOpen: true,
+        anchorEl: event.currentTarget
+      });
+    }
   }
 
   private closeUserMenu = () => {

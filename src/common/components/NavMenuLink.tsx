@@ -34,7 +34,7 @@ class NavMenuLink extends React.Component<NavMenuLinkProps, NavMenuLinkState> {
         style={{
           transform: `skewY(20deg)`,
           transformOrigin: '0% 0%',
-          width: isHovered ? 168 : 64,
+          width: isHovered ? 168 : 58,
           border: `1px solid ${red[500]}`,
           borderLeftWidth: 0,
           marginBottom: 5,

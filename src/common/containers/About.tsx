@@ -110,7 +110,7 @@ The Wordbots frontend incorporates the following (MIT- and WTFPL-licensed) proje
 * [\`spritegen\`](https://gitlab.com/not_surt/spritegen) by [Carl Olsson](https://gitlab.com/not_surt)
 * [\`identicons-react\`](https://github.com/gimenete/identicons-react) by [Alberto Gimeno](https://github.com/gimenete)
 
-Wordbot uses the following fonts and icon fonts:
+Wordbots uses the following fonts and icon fonts:
 
 * [Carter One](https://fonts.google.com/specimen/Carter+One) by
 [Vernon Adams](https://fonts.google.com/?query=Vernon%20Adams), courtesy of Google Fonts

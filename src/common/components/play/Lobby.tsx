@@ -74,7 +74,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
 
     return (
       <div>
-        <Background asset="compressed/IMG_2997.JPG" opacity={0.25} style={{ width: 'calc(100% - 256px)' }} />
+        <Background asset="compressed/IMG_2997.jpg" opacity={0.25} style={{ width: 'calc(100% - 256px)' }} />
 
         <div>
           {casualGameBeingJoined && <PreGameModal

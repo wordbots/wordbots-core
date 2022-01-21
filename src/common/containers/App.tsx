@@ -1,4 +1,4 @@
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core';
 import * as fb from 'firebase';
 import { History, Location } from 'history';
 import * as React from 'react';
@@ -194,7 +194,7 @@ class App extends React.Component<AppProps, AppState> {
   public render(): JSX.Element {
     const { isUnsupportedBrowser } = this.state;
     return (
-      <MuiThemeProvider theme={createMuiTheme(theme)}>
+      <MuiThemeProvider theme={theme}>
         <div>
           <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
           <TitleBar

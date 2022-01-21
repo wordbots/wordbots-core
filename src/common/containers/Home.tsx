@@ -41,7 +41,7 @@ class Home extends React.Component<HomeProps> {
           <div
             style={{
               margin: '20px auto',
-              maxWidth: 680,
+              maxWidth: 700,
               textAlign: 'center',
               fontSize: 24,
               color: '#666'

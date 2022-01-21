@@ -22,15 +22,19 @@ class NavMenuLink extends React.Component<NavMenuLinkProps, NavMenuLinkState> {
     isHovered: false
   };
 
-  public render(): JSX.Element {
-    const { path, text, icon, location } = this.props;
-    const { isHovered } = this.state;
+  get isActive(): boolean {
+    const { path, location } = this.props;
 
-    const isActive: boolean = (
-      path === '/'
-        ? (location.pathname === '/' || location.pathname.startsWith('/home'))
-        : location.pathname.startsWith(path)
-    );
+    if (path === '/') {
+      return location.pathname === '/' || location.pathname.startsWith('/home');
+    } else {
+      return location.pathname.startsWith(path);
+    }
+  }
+
+  public render(): JSX.Element {
+    const { path, text, icon } = this.props;
+    const { isHovered } = this.state;
 
     return (
       <NavLink
@@ -40,8 +44,8 @@ class NavMenuLink extends React.Component<NavMenuLinkProps, NavMenuLinkState> {
           transformOrigin: '0% 0%',
           width: isHovered ? 168 : 58,
           border: `1px solid ${red[500]}`,
-          borderLeftWidth: isActive ? 4 : 0,
-          backgroundColor: isActive ? '#eee' : 'default',
+          borderLeftWidth: this.isActive ? 4 : 0,
+          backgroundColor: this.isActive ? '#eee' : 'default',
           marginBottom: 5,
           background: 'white',
           zIndex: MAX_Z_INDEX,
@@ -51,11 +55,9 @@ class NavMenuLink extends React.Component<NavMenuLinkProps, NavMenuLinkState> {
       >
         <MenuItem onMouseOver={this.onHover} onMouseLeave={this.onUnhover}>
           {icon}
-          {this.state.isHovered &&
-            <span style={{ fontFamily: '"Carter One"', textTransform: 'uppercase', color: '#666' }}>
-              {text}
-            </span>
-          }
+          {isHovered && <span style={{ fontFamily: '"Carter One"', textTransform: 'uppercase', color: '#666' }}>
+            {text}
+          </span>}
         </MenuItem>
       </NavLink>
     );

@@ -14,7 +14,7 @@ import Background from '../components/Background';
 const Help = (): JSX.Element => (
   <div className="helpPage">
     <Helmet title="Help"/>
-    <Background asset="image1-1.png" opacity={1} style={{ backgroundSize: 'contain' }} />
+    <Background asset="compressed/image1-1.jpg" opacity={1} style={{ backgroundSize: 'contain' }} />
 
     <Title text="Help" />
 

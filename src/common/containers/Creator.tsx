@@ -203,7 +203,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
     return (
       <div style={{position: 'relative'}}>
-        <Background asset="IMG_3005.PNG" opacity={0.1} style={{ backgroundSize: 'contain' }} />
+        <Background asset="compressed/IMG_3005.jpg" opacity={0.1} style={{ backgroundSize: 'contain' }} />
         <Helmet title="Workshop" />
         <Title text="Workshop" />
 

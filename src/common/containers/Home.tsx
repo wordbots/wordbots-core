@@ -9,6 +9,7 @@ import Background from '../components/Background';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import RouterDialog from '../components/RouterDialog';
 import SplashSection from '../components/SplashSection';
+import Tooltip from '../components/Tooltip';
 import { FIREBASE_CONFIG, HEADER_HEIGHT, PARSER_URL } from '../constants';
 import * as w from '../types';
 import { isFlagSet, onLocalhost } from '../util/browser';
@@ -59,7 +60,8 @@ class Home extends React.Component<HomeProps> {
               , a tactical card game where you craft your own cards and use them fight in fast-paced arena battles.
             </div>
             <div style={{ marginTop: 10, fontSize: '0.85em' }}>
-              All cards are player-made and no two games are the same!
+              All<Tooltip inline text="OK, technically, there are some built-in cards provided to start with.">*</Tooltip>
+              {' '}cards are player-made and no two games are the same!
             </div>
           </div>
 

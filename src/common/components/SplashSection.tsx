@@ -18,6 +18,7 @@ export default class SplashSection extends React.PureComponent<SplashSectionProp
         onClick={onClick}
         style={{
           width: 600,
+          minHeight: 112,
           margin: '15px auto',
           padding: 5,
           display: 'flex',

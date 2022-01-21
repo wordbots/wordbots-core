@@ -93,7 +93,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
 
     return (
       <div>
-        <Background asset="IMG_3006.PNG" opacity={0.15} />
+        <Background asset="compressed/IMG_3006.jpg" opacity={0.15} />
         <Helmet title="Profile"/>
         <Title text={title} />
 

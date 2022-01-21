@@ -61,11 +61,6 @@ th {
   -webkit-text-stroke: 0.5px #666;
 }
 
-.activeNavLink {
-  border-left-width: 4px !important;
-  background-color: #EEEEEE !important;
-}
-
 .markdownBlock img {
   display: block;
   width: 300px;

@@ -32,7 +32,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
 
     return (
       <div>
-        <Background asset="IMG_3006.PNG" opacity={0.25} />
+        <Background asset="compressed/IMG_3006.jpg" opacity={0.25} />
         <Helmet title="Community"/>
         <Title text="Community" />
 

@@ -10,6 +10,7 @@ import { AnyAction, Dispatch } from 'redux';
 import 'whatwg-fetch';  // eslint-disable-line import/no-unassigned-import
 
 import * as actions from '../actions/global';
+import Background from '../components/Background';
 import DictionaryDialog from '../components/help/DictionaryDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
 import CreatorHelpDialog from '../components/help/CreatorHelpDialog';
@@ -193,17 +194,20 @@ class App extends React.Component<AppProps, AppState> {
 
   get loadingMessage(): JSX.Element {
     return (
-      <div
-        style={{
-          margin: '100px auto',
-          textAlign: 'center',
-          fontFamily: 'Carter One',
-          fontSize: '2em',
-          color: '#999'
-        }}
-      >
-        Connecting to server ...
-        <SpinningGears />
+      <div>
+        <Background asset="compressed/433145.jpg" opacity={0.08} style={{ top: 0 }} />
+        <div
+          style={{
+            margin: '100px auto',
+            textAlign: 'center',
+            fontFamily: 'Carter One',
+            fontSize: '2em',
+            color: '#999'
+          }}
+        >
+          Connecting to server ...
+          <SpinningGears />
+        </div>
       </div>
     );
   }

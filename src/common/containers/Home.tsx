@@ -34,7 +34,7 @@ class Home extends React.Component<HomeProps> {
     return (
       <div>
         <Helmet title="Home"/>
-        <Background asset="arena_draft.png" opacity={0.06} style={{ top: HEADER_HEIGHT }} />
+        <Background asset="compressed/arena_draft.jpg" opacity={0.06} style={{ top: HEADER_HEIGHT }} />
 
         <div style={{margin: '24px 72px 36px'}}>
           <div

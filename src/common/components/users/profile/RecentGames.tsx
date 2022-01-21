@@ -81,6 +81,7 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
         <ListItemText
           primaryTypographyProps={{ className: classes[outcome] }}
           primary={toUpper(outcome)}
+          style={{ minWidth: 58 }}
         />
       </ListItem>
     );

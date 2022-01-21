@@ -133,7 +133,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </MustBeLoggedIn>
         </div>
         <div>
-        {description}
+          {description && <span><i>Description:</i> {description}</span>}
         </div>
         <div>
           <a className={classes.link} onClick={this.toggleCardList}>

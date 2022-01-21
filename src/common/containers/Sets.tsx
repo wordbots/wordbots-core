@@ -1,8 +1,10 @@
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { orderBy } from 'lodash';
@@ -17,8 +19,10 @@ import * as collectionActions from '../actions/collection';
 import Background from '../components/Background';
 import SetSummary from '../components/cards/SetSummary';
 import Title from '../components/Title';
+import Tooltip from '../components/Tooltip';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
+import { isFlagSet, toggleFlag } from '../util/browser';
 import { getNumDecksCreatedCountBySetId } from '../util/firebase';
 
 interface SetsStateProps {
@@ -96,7 +100,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
   };
 
   public state: SetsState = {
-    showHelpText: true
+    showHelpText: !isFlagSet('wb$hideSetsHelpText')
   };
 
   /**
@@ -144,6 +148,14 @@ class Sets extends React.Component<SetsProps, SetsState> {
         <Background asset="compressed/image2-1.jpg" opacity={0.35} />
 
         <Title text="Sets" />
+
+        {!showHelpText &&
+          <IconButton onClick={this.handleShowHelpText}>
+            <Tooltip place="right" text="Click to show help text.">
+              <HelpOutlineIcon />
+            </Tooltip>
+          </IconButton>
+        }
 
         {showHelpText && <div>
           <Paper className={classes.helpPaper}>
@@ -277,7 +289,13 @@ class Sets extends React.Component<SetsProps, SetsState> {
     this.props.history.push('/sets');
   }
 
+  private handleShowHelpText = () => {
+    toggleFlag('wb$hideSetsHelpText');
+    this.setState({ showHelpText: true });
+  }
+
   private handleHideHelpText = () => {
+    toggleFlag('wb$hideSetsHelpText');
     this.setState({ showHelpText: false });
   }
 }

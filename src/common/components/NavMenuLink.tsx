@@ -26,7 +26,11 @@ class NavMenuLink extends React.Component<NavMenuLinkProps, NavMenuLinkState> {
     const { path, text, icon, location } = this.props;
     const { isHovered } = this.state;
 
-    const isActive: boolean = path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+    const isActive: boolean = (
+      path === '/'
+        ? (location.pathname === '/' || location.pathname.startsWith('/home'))
+        : location.pathname.startsWith(path)
+    );
 
     return (
       <NavLink

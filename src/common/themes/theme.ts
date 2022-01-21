@@ -1,13 +1,13 @@
 import { cyan, grey, red } from '@material-ui/core/colors';
 // import { fade } from '@material-ui/core/styles/colorManipulator';
-import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
+import createMuiTheme, { Theme, ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
 import zIndex from '@material-ui/core/styles/zIndex';
 
 const white = '#ffffff';
 // const lightBlack = 'rgba(0, 0, 0, 0.54)';
 // const darkBlack = 'rgba(0, 0, 0, 0.87)';
 
-const theme: ThemeOptions = {
+const themeOptions: ThemeOptions = {
   zIndex: {
     ...zIndex,
     appBar: 2000
@@ -30,5 +30,7 @@ const theme: ThemeOptions = {
     },
   }
 };
+
+const theme: Theme = createMuiTheme(themeOptions);
 
 export default theme;

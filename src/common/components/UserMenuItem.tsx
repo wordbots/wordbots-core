@@ -1,4 +1,3 @@
-import Icon from '@material-ui/core/Icon';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -6,7 +5,7 @@ import { red } from '@material-ui/core/colors';
 import * as React from 'react';
 
 interface UserMenuItemProps {
-  icon: string
+  icon: JSX.Element
   text: string
   onClick: () => void
 }
@@ -26,7 +25,7 @@ export default class UserMenuItem extends React.PureComponent<UserMenuItemProps>
         }}
       >
         <ListItemIcon>
-          <Icon className="material-icons">{icon}</Icon>
+          {icon}
         </ListItemIcon>
         <ListItemText
           style={{ padding: '0 8px' }}

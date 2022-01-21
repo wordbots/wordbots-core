@@ -5,6 +5,7 @@ import Icon from '@material-ui/core/Icon';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import * as fb from 'firebase';
 import { History } from 'history';
 import * as React from 'react';
@@ -67,8 +68,8 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
                   right: 0,
                   background: 'white'
                 }}>
-                <UserMenuItem text="Profile" icon="account_circle" onClick={this.handleClickProfile} />
-                <UserMenuItem text="Logout" icon="exit_to_app" onClick={this.handleClickLogout} />
+                <UserMenuItem text="Profile" icon={<AccountCircleIcon />} onClick={this.handleClickProfile} />
+                <UserMenuItem text="Logout" icon={<ExitToAppIcon />} onClick={this.handleClickLogout} />
               </div>
             </>
           }

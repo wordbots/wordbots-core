@@ -50,14 +50,6 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
     const { isUnsupportedBrowser } = this.props;
     const { isUserMenuOpen } = this.state;
 
-    const menuItemStyle = {
-      marginTop: -1,
-      border: `1px solid ${red[500]}`,
-      borderRight: 0,
-      boxShadow: '1px 1px 5px #6666',
-    };
-    const menuItemTypographyStyle: React.CSSProperties = { fontFamily: '"Carter One"', color: '#666', textTransform: 'uppercase' };
-
     if (this.props.user) {
       return (
         <div style={{marginTop: 4}}>
@@ -78,28 +70,8 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
                   right: 0,
                   background: 'white'
                 }}>
-                <MenuItem style={menuItemStyle} onClick={this.handleClickProfile}>
-                  <ListItemIcon>
-                    <Icon className="material-icons">account_circle</Icon>
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ padding: '0 8px' }}
-                    primaryTypographyProps={{ style: menuItemTypographyStyle }}
-                  >
-                    Profile
-                  </ListItemText>
-                </MenuItem>
-                <MenuItem style={menuItemStyle} onClick={this.handleClickLogout}>
-                  <ListItemIcon>
-                    <Icon className="material-icons">exit_to_app</Icon>
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{ padding: '0 8px' }}
-                    primaryTypographyProps={{ style: menuItemTypographyStyle }}
-                  >
-                    Logout
-                  </ListItemText>
-                </MenuItem>
+                <UserMenuItem text="Profile" icon="account_circle" onClick={this.handleClickProfile} />
+                <UserMenuItem text="Logout" icon="exit_to_app" onClick={this.handleClickLogout} />
               </div>
             </>
           }

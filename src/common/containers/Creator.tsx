@@ -18,7 +18,7 @@ import CardCreationForm from '../components/cards/CardCreationForm';
 import CardCreationTutorial from '../components/cards/CardCreationTutorial';
 import CardPreview from '../components/cards/CardPreview';
 import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
-import CreatorToolbarButton from '../components/cards/CreatorToolbarButton';
+import ToolbarButton from '../components/ToolbarButton';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
@@ -208,43 +208,43 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         <Title text="Workshop" />
 
         <div style={{ display: 'inline', paddingLeft: 10 }}>
-          <CreatorToolbarButton
+          <ToolbarButton
             icon="queue"
             tooltip="Reset the workshop and start a new card from scratch."
             onClick={this.handleClickNewCard}
           >
             New Card
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="help_outline"
             tooltip="Learn more about creating a card."
             onClick={this.handleClickHelp}
           >
             Help
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="book"
             tooltip="Check out all of the terms and actions that the parser supports."
             onClick={this.handleClickDictionary}
           >
             Dictionary
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="refresh"
             tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
             onClick={this.handleClickRandomize}
             disabled={!examplesLoaded || !this.isCardEditable}
           >
             Randomize
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="videogame_asset"
             tooltip="Test out this card in sandbox mode."
             onClick={this.testCard}
             disabled={!this.validationResults.isValid}
           >
             Test
-          </CreatorToolbarButton>
+          </ToolbarButton>
         </div>
 
         <div style={{

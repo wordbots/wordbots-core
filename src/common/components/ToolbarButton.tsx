@@ -1,9 +1,9 @@
 import { Button, Icon } from '@material-ui/core';
 import * as React from 'react';
 
-import Tooltip from '../Tooltip';
+import Tooltip from './Tooltip';
 
-interface CreatorToolbarButtonProps {
+interface ToolbarButtonProps {
   icon: string
   tooltip: string
   children: string
@@ -11,8 +11,7 @@ interface CreatorToolbarButtonProps {
   disabled?: boolean
 }
 
-/* eslint-disable react/no-multi-comp */
-const CreatorToolbarButton: React.SFC<CreatorToolbarButtonProps> = (props: CreatorToolbarButtonProps) => {
+const ToolbarButton: React.SFC<ToolbarButtonProps> = (props: ToolbarButtonProps) => {
   const { icon, tooltip, children, onClick, disabled } = props;
   return (
     <Tooltip inline text={tooltip} place="bottom" style={{ textTransform: 'none' }}>
@@ -30,4 +29,4 @@ const CreatorToolbarButton: React.SFC<CreatorToolbarButtonProps> = (props: Creat
   );
 };
 
-export default CreatorToolbarButton;
+export default ToolbarButton;

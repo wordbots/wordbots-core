@@ -17,6 +17,7 @@ import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
 import Background from '../components/Background';
+import ToolbarButton from '../components/ToolbarButton';
 import SetSummary from '../components/cards/SetSummary';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
@@ -78,8 +79,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
       fontFamily: 'Carter One'
     },
     helpPaper: {
-      display: 'inline-block',
-      marginLeft: 20,
+      margin: '0 auto',
       marginTop: 15,
       maxWidth: 700,
       padding: 10,
@@ -149,12 +149,24 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
         <Title text="Sets" />
 
+        <div style={{ display: 'inline', paddingLeft: 10 }}>
+          <MustBeLoggedIn loggedIn={!!user} style={{ display: 'inline-block' }}>
+            <ToolbarButton
+              icon="add_circle_outline"
+              tooltip="Create a new set out of cards in your collection."
+              onClick={this.handleCreateSet}
+            >
+              New Set
+            </ToolbarButton>
+          </MustBeLoggedIn>
+        </div>
+
         {!showHelpText &&
-          <IconButton onClick={this.handleShowHelpText}>
-            <Tooltip place="right" text="Click to show help text.">
+          <Tooltip inline place="right" text="Click to show help text for this page.">
+            <IconButton onClick={this.handleShowHelpText} style={{ float: 'right', top: 10, right: 10 }}>
               <HelpOutlineIcon />
-            </Tooltip>
-          </IconButton>
+            </IconButton>
+          </Tooltip>
         }
 
         {showHelpText && <div>
@@ -171,16 +183,6 @@ class Sets extends React.Component<SetsProps, SetsState> {
         </div>}
 
         <div style={{ margin: 20 }}>
-          <MustBeLoggedIn loggedIn={!!user} style={{ display: 'inline-block' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              classes={{ label: classes.buttonLabel }}
-              onClick={this.handleCreateSet}
-            >
-              New Set
-            </Button>
-          </MustBeLoggedIn>
           {this.renderSets()}
         </div>
       </div>
@@ -210,15 +212,27 @@ class Sets extends React.Component<SetsProps, SetsState> {
         <div>
           {
             this.publishedSets.length > 0 &&
-              <div>
-                <h2>Top published sets <i>({this.publishedSets.length})</i></h2>
+              <div style={{ textAlign: 'center' }}>
+                <h2>
+                  <span style={{ fontFamily: 'Carter One' }}>Published sets </span>
+                  <i>({this.publishedSets.length})</i>
+                </h2>
+                <div style={{ marginTop: -15, marginBottom: 15 }}>
+                  These are sets that have been made public by their creators.
+                </div>
                 {this.publishedSets.map((set) => this.renderSetSummary(set, { inPublishedSetsList: true }))}
               </div>
           }
           {
             this.userSets.length > 0 &&
-              <div>
-                <h2>Your sets <i>({this.userSets.length})</i></h2>
+              <div style={{ textAlign: 'center' }}>
+                <h2>
+                  <span style={{ fontFamily: 'Carter One' }}>Your sets </span>
+                  <i>({this.userSets.length})</i>
+                </h2>
+                <div style={{ marginTop: -15, marginBottom: 15 }}>
+                  These are sets that you created! You can share them with your friends or publish them to the wider world.
+                </div>
                 {this.userSets.map((set) => this.renderSetSummary(set))}
               </div>
           }

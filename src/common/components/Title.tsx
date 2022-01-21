@@ -2,7 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 
 interface TitleProps {
-  text: string
+  text: string | JSX.Element
   small?: boolean
   style?: React.CSSProperties
 }

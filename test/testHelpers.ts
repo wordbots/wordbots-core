@@ -51,7 +51,6 @@ export function combineState(gameState: w.GameState = defaultGameState): w.State
     socket: defaultSocketState,
 
     global: {
-      renderId: 0,
       user: null
     },
     version: '0'

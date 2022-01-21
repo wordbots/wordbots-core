@@ -17,10 +17,10 @@ import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
 import SpinningGears from '../components/SpinningGears';
-import { SIDEBAR_COLLAPSED_WIDTH } from '../constants';
+import { SIDEBAR_COLLAPSED_WIDTH, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 import theme from '../themes/theme';
 import * as w from '../types';
-import { logAnalytics } from '../util/browser';
+import { isSupportedBrowser, logAnalytics, toggleFlag } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
@@ -42,7 +42,6 @@ interface AppStateProps {
   collection: w.CollectionState
   inGame: boolean
   inSandbox: boolean
-  renderId: number
   uid: w.UserId | null
 }
 
@@ -50,7 +49,6 @@ interface AppDispatchProps {
   onLoggedIn: (user: fb.User) => void
   onLoggedOut: () => void
   onReceiveFirebaseData: (data: any) => void
-  onRerender: () => void
 }
 
 type AppProps = AppStateProps & AppDispatchProps & {
@@ -59,6 +57,7 @@ type AppProps = AppStateProps & AppDispatchProps & {
 };
 
 interface AppState {
+  isUnsupportedBrowser: boolean
   loadedCards: boolean
   loadedDecks: boolean
   loadedSets: boolean
@@ -70,7 +69,6 @@ function mapStateToProps(state: w.State): AppStateProps {
     collection: state.collection,
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
-    renderId: state.global.renderId,
     uid: state.global.user ? state.global.user.uid : null
   };
 }
@@ -85,15 +83,13 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
     },
     onReceiveFirebaseData: (data: any) => {
       dispatch(actions.firebaseData(data));
-    },
-    onRerender: () => {
-      dispatch(actions.rerender());
     }
   };
 }
 
 class App extends React.Component<AppProps, AppState> {
   public state = {
+    isUnsupportedBrowser: !isSupportedBrowser(),
     loadedCards: false,
     loadedDecks: false,
     loadedSets: false
@@ -142,11 +138,12 @@ class App extends React.Component<AppProps, AppState> {
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited } = this.props;
+    const { isUnsupportedBrowser } = this.state;
 
     if (this.isLoading || this.inGame) {
       return null;
     } else {
-      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} />;
+      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} isUnsupportedBrowser={isUnsupportedBrowser} />;
     }
   }
 
@@ -212,12 +209,17 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public render(): JSX.Element {
+    const { isUnsupportedBrowser } = this.state;
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>
         <div>
           <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
-          <TitleBar isAppLoading={this.isLoading} onRerender={this.props.onRerender} />
-          <div>
+          <TitleBar
+            isAppLoading={this.isLoading}
+            isUnsupportedBrowser={isUnsupportedBrowser}
+            onHideUnsupportedBrowserMessage={this.handleHideUnsupportedBrowserMessage}
+          />
+          <div style={isUnsupportedBrowser ? { position: 'relative', top: UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } : {}}>
             {this.sidebar}
             {this.isLoading ? this.loadingMessage : this.content}
           </div>
@@ -250,6 +252,11 @@ class App extends React.Component<AppProps, AppState> {
     const sets = await getSets();
     onReceiveFirebaseData({ sets });
     this.setState({ loadedSets: true });
+  }
+
+  private handleHideUnsupportedBrowserMessage = () => {
+    this.setState({ isUnsupportedBrowser: false });
+    toggleFlag('hideUnsupportedBrowserMessage');
   }
 }
 

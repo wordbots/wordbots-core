@@ -13,6 +13,11 @@
   src: url("../fonts/SpacePatrol.ttf?v=0.1.0") format("truetype");
 }
 
+@font-face {
+  font-family: 'Material Icons';
+  font-display: block;
+}
+
 html {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;

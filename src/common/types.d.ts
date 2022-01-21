@@ -262,7 +262,6 @@ export interface GameState {
 
 export interface GlobalState {
   dictionary?: Dictionary
-  renderId: number
   user: fb.User | null
 }
 

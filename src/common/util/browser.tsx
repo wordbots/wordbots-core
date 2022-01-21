@@ -100,6 +100,9 @@ export function isSupportedBrowser(): boolean {
     return true;
   }
 
+  // To debug this message, uncomment the following line:
+  // return false;
+
   const browserInfo = detect();
   if (browserInfo?.type === 'browser') {
     const { name, version } = browserInfo;

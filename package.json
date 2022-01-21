@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@material-ui/core": "3.9.1",
+    "@material-ui/icons": "^3.0.2",
     "@material-ui/lab": "^3.0.0-alpha.30",
     "@wordbots/trianglify-no-canvas": "1.3.0",
     "bad-words": "^3.0.4",

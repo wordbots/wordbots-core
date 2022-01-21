@@ -17,9 +17,6 @@ export default function global(state: w.GlobalState = defaultState, action: w.Ac
     case ga.LOGGED_OUT:
       return {...state, user: null};
 
-    case ga.RE_RENDER:
-      return {...state, renderId: state.renderId + 1};
-
     default:
       return state;
   }

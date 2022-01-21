@@ -1,12 +1,13 @@
 import AppBar from '@material-ui/core/AppBar';
+import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
-import Popover from '@material-ui/core/Popover';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { red } from '@material-ui/core/colors';
@@ -17,12 +18,13 @@ import { Link } from 'react-router-dom';
 
 import RouterDialog from '../components/RouterDialog';
 import * as w from '../types';
-import { isSupportedBrowser, toggleFlag } from '../util/browser';
 import { logout } from '../util/firebase';
+import { HEADER_HEIGHT, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 
 interface TitleBarProps extends TitleBarReduxProps {
   isAppLoading: boolean
-  onRerender: () => void
+  isUnsupportedBrowser: boolean
+  onHideUnsupportedBrowserMessage: () => void
 }
 
 interface TitleBarReduxProps {
@@ -30,8 +32,7 @@ interface TitleBarReduxProps {
 }
 
 interface TitleBarState {
-  userOpen: boolean
-  anchorEl: HTMLElement | undefined
+  isUserMenuOpen: boolean
 }
 
 function mapStateToProps(state: w.State): TitleBarReduxProps {
@@ -42,11 +43,21 @@ function mapStateToProps(state: w.State): TitleBarReduxProps {
 
 class TitleBar extends React.Component<TitleBarProps & { history: History }, TitleBarState> {
   public state = {
-    userOpen: false,
-    anchorEl: undefined
+    isUserMenuOpen: false,
   };
 
   get userMenu(): JSX.Element {
+    const { isUnsupportedBrowser } = this.props;
+    const { isUserMenuOpen } = this.state;
+
+    const menuItemStyle = {
+      marginTop: -1,
+      border: `1px solid ${red[500]}`,
+      borderRight: 0,
+      boxShadow: '1px 1px 5px #6666',
+    };
+    const menuItemTypographyStyle: React.CSSProperties = { fontFamily: '"Carter One"', color: '#666', textTransform: 'uppercase' };
+
     if (this.props.user) {
       return (
         <div style={{marginTop: 4}}>
@@ -55,63 +66,43 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
             onClick={this.toggleUserMenu}
           >
             {this.props.user.displayName}
-            <Icon className="material-icons" style={{ margin: '0 5px 0 8px' }}>account_circle</Icon>
+            <AccountCircleIcon style={{ margin: '0 5px 0 8px' }} />
           </Button>
-          <Popover
-            open={this.state.userOpen}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            onClose={this.closeUserMenu}
-            style={{ marginLeft: 15, marginTop: 12 }}
-            PaperProps={{
-              style: { borderRadius: 0 }
-            }}
-          >
-            <div>
-              <MenuItem
+          {isUserMenuOpen &&
+            <>
+              <Backdrop open invisible onClick={this.closeUserMenu} />
+              <div
                 style={{
-                  marginTop: 1,
-                  border: `1px solid ${red[500]}`,
-                  borderRight: 0,
-                  boxShadow: '1px 1px 5px #666b'
-                }}
-                onClick={this.handleClickProfile}
-              >
-                <ListItemIcon>
-                  <Icon className="material-icons">account_circle</Icon>
-                </ListItemIcon>
-                <ListItemText
-                  style={{ padding: '0 8px' }}
-                  primaryTypographyProps={{
-                    style: { fontFamily: '"Carter One"', color: '#666', textTransform: 'uppercase' }
-                  }}
-                >
-                  Profile
-                </ListItemText>
-              </MenuItem>
-              <MenuItem
-                style={{
-                  marginTop: 1,
-                  border: `1px solid ${red[500]}`,
-                  borderRight: 0,
-                  boxShadow: '1px 1px 5px #666b'
-                }}
-                onClick={this.handleClickLogout}
-              >
-                <ListItemIcon>
-                  <Icon className="material-icons">exit_to_app</Icon>
-                </ListItemIcon>
-                <ListItemText
-                  style={{ padding: '0 8px' }}
-                  primaryTypographyProps={{
-                    style: { fontFamily: '"Carter One"', color: '#666', textTransform: 'uppercase' }
-                  }}
-                >
-                  Logout
-                </ListItemText>
-              </MenuItem>
-            </div>
-          </Popover>
+                  position: 'fixed',
+                  top: HEADER_HEIGHT + (isUnsupportedBrowser ? UNSUPPORTED_BROWSER_MESSAGE_HEIGHT : 0),
+                  right: 0,
+                  background: 'white'
+                }}>
+                <MenuItem style={menuItemStyle} onClick={this.handleClickProfile}>
+                  <ListItemIcon>
+                    <Icon className="material-icons">account_circle</Icon>
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ padding: '0 8px' }}
+                    primaryTypographyProps={{ style: menuItemTypographyStyle }}
+                  >
+                    Profile
+                  </ListItemText>
+                </MenuItem>
+                <MenuItem style={menuItemStyle} onClick={this.handleClickLogout}>
+                  <ListItemIcon>
+                    <Icon className="material-icons">exit_to_app</Icon>
+                  </ListItemIcon>
+                  <ListItemText
+                    style={{ padding: '0 8px' }}
+                    primaryTypographyProps={{ style: menuItemTypographyStyle }}
+                  >
+                    Logout
+                  </ListItemText>
+                </MenuItem>
+              </div>
+            </>
+          }
         </div>
       );
     } else {
@@ -148,7 +139,8 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   }
 
   public renderUnsupportedBrowserMessage(): JSX.Element | undefined {
-    if (!isSupportedBrowser()) {
+    const { isUnsupportedBrowser, onHideUnsupportedBrowserMessage } = this.props;
+    if (isUnsupportedBrowser) {
       return (
         <div style={{
           display: 'flex',
@@ -167,7 +159,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
             Wordbots requires Firefox 49+, Chrome 53+, Safari 10+, Edge 79+, or a similar browser for optimal performance.{' '}
             <a
               style={{ cursor: 'pointer', color: '#666', textDecoration: 'underline' }}
-              onClick={this.handleClickHideUnsupportedBrowserMessage}
+              onClick={onHideUnsupportedBrowserMessage}
             >[hide this message]</a>
           </span>
         </div>
@@ -213,18 +205,15 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   private toggleUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
-    if (this.state.userOpen) {
+    if (this.state.isUserMenuOpen) {
       this.closeUserMenu();
     } else {
-      this.setState({
-        userOpen: true,
-        anchorEl: event.currentTarget
-      });
+      this.setState({ isUserMenuOpen: true });
     }
   }
 
   private closeUserMenu = () => {
-    this.setState({userOpen: false});
+    this.setState({ isUserMenuOpen: false });
   }
 
   private handleClickProfile = () => {
@@ -239,11 +228,6 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   private handleClickLogout = () => {
     logout();
     this.closeUserMenu();
-  }
-
-  private handleClickHideUnsupportedBrowserMessage = () => {
-    toggleFlag("hideUnsupportedBrowserMessage");
-    this.props.onRerender();
   }
 }
 

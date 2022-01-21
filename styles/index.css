@@ -1,21 +1,6 @@
 @font-face {
-  font-family: 'RocketScript';
-  src: url("../fonts/rocket-script.regular.ttf") format("truetype");
-}
-
-@font-face {
   font-family: 'Space Age';
   src: url("../fonts/space age.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: 'Space Patrol';
-  src: url("../fonts/SpacePatrol.ttf?v=0.1.0") format("truetype");
-}
-
-@font-face {
-  font-family: 'Material Icons';
-  font-display: block;
 }
 
 html {

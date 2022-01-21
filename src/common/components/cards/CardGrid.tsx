@@ -66,7 +66,6 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
           padding: '1px 3px',
           background: `rgba(255, 255, 255, 0.8)`,
           borderRadius: 5
-
         }}
       />
     </div>

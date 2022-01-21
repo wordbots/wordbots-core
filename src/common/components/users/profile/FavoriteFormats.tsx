@@ -17,12 +17,12 @@ interface FormatResults {
   numLosses: number
 }
 
-interface MatchmakingInfoProps {
+interface FavoriteFormatsProps {
   games?: w.SavedGame[]
   userId: string
 }
 
-class MatchmakingInfo extends React.PureComponent<MatchmakingInfoProps & WithStyles> {
+class FavoriteFormats extends React.PureComponent<FavoriteFormatsProps & WithStyles> {
   get resultsByFormat(): FormatResults[] {
     const { games, userId } = this.props;
 
@@ -64,7 +64,7 @@ class MatchmakingInfo extends React.PureComponent<MatchmakingInfoProps & WithSty
   private renderResults = () => {
     const { classes } = this.props;
     return this.resultsByFormat.map(({ format, numWins, numLosses }) => (
-        <div key={format.name} className={classes.playerInfoItem} style={{ margin: 13 }}>
+        <div key={format.name} className={classes.playerInfoItem} style={{ margin: '8px 0' }}>
           <div className={classes.playerInfoKey}>{format.rendered()}</div>
           <div className={classes.playerInfoValue}>{numWins} W • {numLosses} L • {(numWins / (numWins + numLosses) * 100).toFixed(1)}%</div>
         </div>
@@ -72,4 +72,4 @@ class MatchmakingInfo extends React.PureComponent<MatchmakingInfoProps & WithSty
   }
 }
 
-export default withStyles(styles)(MatchmakingInfo);
+export default withStyles(styles)(FavoriteFormats);

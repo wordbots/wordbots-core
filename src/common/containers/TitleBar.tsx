@@ -2,15 +2,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import * as fb from 'firebase';
 import { History } from 'history';
-import { red } from '@material-ui/core/colors';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -20,6 +16,7 @@ import RouterDialog from '../components/RouterDialog';
 import * as w from '../types';
 import { logout } from '../util/firebase';
 import { HEADER_HEIGHT, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
+import UserMenuItem from '../components/UserMenuItem';
 
 interface TitleBarProps extends TitleBarReduxProps {
   isAppLoading: boolean

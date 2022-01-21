@@ -10,14 +10,12 @@ import { AnyAction, Dispatch } from 'redux';
 import 'whatwg-fetch';  // eslint-disable-line import/no-unassigned-import
 
 import * as actions from '../actions/global';
-import Background from '../components/Background';
 import DictionaryDialog from '../components/help/DictionaryDialog';
 import ErrorBoundary from '../components/ErrorBoundary';
 import CreatorHelpDialog from '../components/help/CreatorHelpDialog';
 import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
-import SpinningGears from '../components/SpinningGears';
 import { SIDEBAR_COLLAPSED_WIDTH, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 import theme from '../themes/theme';
 import * as w from '../types';
@@ -37,6 +35,7 @@ import Profile from './Profile';
 import Set from './Set';
 import Sets from './Sets';
 import TitleBar from './TitleBar';
+import Loading from './Loading';
 
 interface AppStateProps {
   cardIdBeingEdited: string | null
@@ -192,26 +191,6 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  get loadingMessage(): JSX.Element {
-    return (
-      <div>
-        <Background asset="compressed/433145.jpg" opacity={0.08} style={{ top: 0 }} />
-        <div
-          style={{
-            margin: '100px auto',
-            textAlign: 'center',
-            fontFamily: 'Carter One',
-            fontSize: '2em',
-            color: '#999'
-          }}
-        >
-          Connecting to server ...
-          <SpinningGears />
-        </div>
-      </div>
-    );
-  }
-
   public render(): JSX.Element {
     const { isUnsupportedBrowser } = this.state;
     return (
@@ -225,7 +204,7 @@ class App extends React.Component<AppProps, AppState> {
           />
           <div style={isUnsupportedBrowser ? { position: 'relative', top: UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } : {}}>
             {this.sidebar}
-            {this.isLoading ? this.loadingMessage : this.content}
+            {this.isLoading ? <Loading /> : this.content}
           </div>
           {this.dialogs}
         </div>

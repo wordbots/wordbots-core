@@ -57,7 +57,7 @@ class Home extends React.Component<HomeProps> {
                   fontSize: 28
                 }}
               >&nbsp;Wordbots</span>
-              , a tactical card game where you craft your own cards and use them fight in fast-paced arena battles.
+              , a tactical card game where you craft your own cards and use them to fight in fast-paced arena battles.
             </div>
             <div style={{ marginTop: 10, fontSize: '0.85em' }}>
               All<Tooltip inline text="OK, technically, there are some built-in cards provided to start with.">*</Tooltip>

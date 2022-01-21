@@ -91,6 +91,10 @@ th {
   text-decoration: underline;
 }
 
+.markdownBlock code {
+  font-size: 1.2em;
+}
+
 .helpPage li {
   margin-left: -5px;
 }

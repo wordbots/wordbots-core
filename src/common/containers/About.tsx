@@ -45,7 +45,7 @@ class About extends React.PureComponent<AboutProps> {
 
           <div style={{width: '50%'}}>
             <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={howToPlay} />
+              <MarkdownBlock source={credits} />
             </Paper>
           </div>
         </div>
@@ -86,6 +86,43 @@ Feel free to add issues or even make a pull request if you're feeling brave.
 [send a dollar or two our way on Patreon](https://www.patreon.com/wordbots).
 `;
 
+const credits = `
+## Credits
+
+Wordbots was created by:
+
+* [**Alex Nisnevich**](https://alex.nisnevich.com/) – concept, parser, frontend
+* [**Jacob Nisnevich**](https://github.com/jacobnisnevich) – frontend, design
+
+with help from:
+
+* [Chris Wooten](https://www.artstation.com/christopherwooten) – art
+* [John Patterson](https://www.johnppatterson.com/) - consultation, code contributions, voice acting
+* [Danny Burt](http://dbz.rocks/), [Bryan Hoyt](https://github.com/bryanftw), [Michael Ebert](https://github.com/MichaelEbert), [Tim Hwang](https://timhwang21.gitbook.io/index/) – consultation, [code contributions](https://github.com/wordbots/wordbots-core/graphs/contributors)
+* Asali Echols, James Silvey, Annie Nisnevich – extensive playtesting
+* Adam B, Honza H, Drew T, Greg S, Liam D, Erik K, John B, Alex B – playtesting
+
+The Wordbots parser is built on top of the [\`Montague\` semantic parsing engine](https://github.com/Workday/upshot-montague).
+
+The Wordbots frontend incorporates the following (MIT- and WTFPL-licensed) projects:
+
+* [\`react-hexgrid\`](https://github.com/hellenic/react-hexgrid) by [Hannu Kärkkäinen](https://github.com/Hellenic)
+* [\`spritegen\`](https://gitlab.com/not_surt/spritegen) by [Carl Olsson](https://gitlab.com/not_surt)
+* [\`identicons-react\`](https://github.com/gimenete/identicons-react) by [Alberto Gimeno](https://github.com/gimenete)
+
+Wordbot uses the following fonts and icon fonts:
+
+* [Carter One](https://fonts.google.com/specimen/Carter+One) by
+[Vernon Adams](https://fonts.google.com/?query=Vernon%20Adams), courtesy of Google Fonts
+* [VT323](https://fonts.google.com/specimen/VT323) by [Peter Hull](https://fonts.google.com/?query=Peter%20Hull), courtesy of Google Fonts
+* [Roboto](https://fonts.google.com/specimen/Roboto) by [Christian Robertson](https://fonts.google.com/?query=Christian%20Robertson), courtesy of Google Fonts
+* [Space Age](https://www.1001fonts.com/space-age-font.html) by [Justin Callaghan](https://www.1001fonts.com/users/jcmagic/), courtesy of [1001 Fonts](https://www.1001fonts.com/)
+* [Material Icons](https://mui.com/components/material-icons/) by Google
+* [RPG-Awesome Icons](https://nagoshiashumari.github.io/Rpg-Awesome/) by [Game-Icons.net](https://game-icons.net/), [Daniela Howe](https://github.com/nagoshiashumari), and [Ivan Montiel](https://github.com/idmontie)
+
+`;
+
+/* (No longer needed now that we have the New Here? widget on the homepage? -AN)
 const howToPlay = `
 ## How to Play
 
@@ -112,3 +149,4 @@ Go to the [lobby](/play), choose your deck, and host or join a game.
 
 Destroy your opponent's kernel to win!
 `;
+*/

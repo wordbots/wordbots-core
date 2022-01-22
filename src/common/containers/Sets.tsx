@@ -2,7 +2,6 @@ import Button from '@material-ui/core/Button';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { orderBy } from 'lodash';
-import * as qs from 'qs';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -18,6 +17,7 @@ import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { getNumDecksCreatedCountBySetId } from '../util/firebase';
 import PageHelp from '../components/PageHelp';
+import { getQueryString } from '../util/browser';
 
 interface SetsStateProps {
   sets: w.Set[]
@@ -73,8 +73,8 @@ class Sets extends React.Component<SetsProps, SetsState> {
    * or null to display all published and user sets.
    */
   get singleSet(): w.Set | null {
-    const { history: { location: { search }}, sets } = this.props;
-    const setId: string | undefined = qs.parse(search.replace('?', '')).set;
+    const { history, sets } = this.props;
+    const setId: string | undefined = getQueryString(history, 'set');
     if (setId) {
       return sets.find((set) => set.id === setId) || null;
     }

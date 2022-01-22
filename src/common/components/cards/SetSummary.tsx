@@ -12,6 +12,7 @@ import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
 import { sortCards } from '../../util/cards';
+import { SetDraftFormat } from '../../util/formats';
 import { Card } from '../card/Card';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
@@ -149,6 +150,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         </div>
         <div className={classes.controls}>
           <MustBeLoggedIn loggedIn={!!user}>
+            {inPublishedSetsList ? this.renderButton('Draft!', this.handleDraftFromSet) : null}
             {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
             {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}
             {canEditSet ? this.renderButton('Edit', onEditSet) : null}
@@ -275,6 +277,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   private handlePublishSet = () => {
     this.handleClosePublishConfirmation();
     this.props.onPublishSet();
+  }
+
+  private handleDraftFromSet = () => {
+    const { set, history } = this.props;
+    history.push(`/play//host?format=${(new SetDraftFormat(set)).name}`);
   }
 
   private handleOpenDeleteConfirmation = () => { this.setState({ isDeleteConfirmationOpen: true }); };

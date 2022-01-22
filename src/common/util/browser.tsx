@@ -3,6 +3,7 @@ import { History } from 'history';
 import * as ReactGA from 'react-ga';
 import * as ReactDOM from 'react-dom';
 import { ReactNode, ReactPortal } from 'react';
+import * as qs from 'qs';
 
 declare const window: {
   location: { pathname: string, hostname: string }
@@ -53,6 +54,10 @@ export function getHash(history: History): string {
 
 export function setHash(history: History, hash: string): void {
   transformHistory(history, (path) => `${path}#${hash}`);
+}
+
+export function getQueryString(history: History, key: string): string | undefined {
+  return qs.parse(history.location.search.replace('?', ''))[key];
 }
 
 export function loadFromLocalStorage(key: string): string | undefined {

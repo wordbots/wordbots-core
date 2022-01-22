@@ -65,7 +65,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
             {this.nonSetDraftFormats.map((format, idx) =>
               <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
             )}
-            <MenuItem key="setDraft" value="setDraft">Set Draft</MenuItem>
+            {this.setDraftFormats.length > 0 && <MenuItem key="setDraft" value="setDraft">Set Draft</MenuItem>}
           </Select>
         </FormControl>
         {this.isSetDraftFormatSelected && <FormControl style={{ width: '100%', marginBottom: 15 }}>

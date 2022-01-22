@@ -93,7 +93,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     return (
       <div>
         <Helmet title={setBeingEdited ? 'Editing Set' : 'Creating Set'} />
-        <Background asset="compressed/image2-1.jpg" opacity={0.35} />
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>

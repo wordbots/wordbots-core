@@ -1,4 +1,4 @@
-import { compact, isArray, isObject, pick } from 'lodash';
+import { compact, isArray, isObject, isString, pick } from 'lodash';
 import * as React from 'react';
 
 import Tooltip from '../Tooltip';
@@ -26,7 +26,7 @@ export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps>
     } else {
       return (
         <div className="notAllowed" style={style}>
-          {React.Children.map(this.children, this.renderDisabledChild)}
+          {React.Children.map(this.children, this.renderDisabledChild.bind(this))}
         </div>
       );
     }

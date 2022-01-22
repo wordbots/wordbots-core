@@ -126,7 +126,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     return (
       <div>
         <Helmet title="Building Deck"/>
-        <Background asset="compressed/image2-1.jpg" opacity={0.35} />
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>

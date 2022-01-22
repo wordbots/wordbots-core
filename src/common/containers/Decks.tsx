@@ -65,7 +65,7 @@ class Decks extends React.Component<DecksProps> {
     return (
       <div>
         <Helmet title="Decks" />
-        <Background asset="compressed/image2-1.jpg" opacity={0.35} />
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
 
         <Title text="Decks" />
 

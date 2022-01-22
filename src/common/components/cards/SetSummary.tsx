@@ -149,7 +149,14 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </CopyToClipboard>
         </div>
         <div className={classes.controls}>
-          <MustBeLoggedIn loggedIn={!!user}>
+          <MustBeLoggedIn
+            loggedIn={!!user}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%'
+            }}
+          >
             {inPublishedSetsList ? this.renderButton('Draft!', this.handleDraftFromSet) : null}
             {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
             {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}

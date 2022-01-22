@@ -64,6 +64,10 @@ th {
   font-weight: 100;
 }
 
+.helpPage h1, .helpPage h2 {
+  font-family: 'Carter One';
+}
+
 .helpPage #parser-help .markdownBlock h2 {
   font-size: 19px;
 }

@@ -43,7 +43,8 @@ const Help = (): JSX.Element => (
       style={{
         height: `calc(100vh - ${HEADER_HEIGHT + 70}px)`,
         overflowY: 'scroll',
-        margin: '0 20px'
+        width: '84%',
+        margin: '0 auto'
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'stretch' }}>
@@ -108,7 +109,11 @@ const Help = (): JSX.Element => (
 
 // eslint-disable-next-line react/no-multi-comp
 const HelpSection = (props: { id: string, title: string, children: JSX.Element | JSX.Element[] }) => (
-  <Paper id={props.id} style={{ position: 'relative', marginBottom: 20, padding: '5px 20px' }}>
+  <Paper
+    id={props.id}
+    elevation={3}
+    style={{ position: 'relative', marginBottom: 20, padding: '5px 20px' }}
+  >
     <div id={`${props.id}-anchor`} style={{ position: 'absolute', top: -(HEADER_HEIGHT + 76) }} />
     <h2>{props.title}</h2>
     {props.children}
@@ -135,7 +140,7 @@ const TerminologyParagraph = (props: { children: JSX.Element[] }): JSX.Element =
 
 // eslint-disable-next-line react/no-multi-comp
 const RulesHr = (): JSX.Element => (
-  <hr style={{ border: '0.5px solid #ddd', margin: '4px 0' }} />
+  <hr style={{ border: '0.5px solid rgb(0, 188, 212)', margin: '4px 0' }} />
 );
 
 // eslint-disable-next-line react/no-multi-comp

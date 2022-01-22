@@ -12,7 +12,7 @@ const MarkdownBlock = (props: MarkdownBlockProps): JSX.Element => (
   <ReactMarkdown
     source={props.source}
     className="markdownBlock"
-    renderers={{ Link: SmartLink, ...(props.renderers || {}) }}
+    renderers={{ link: SmartLink, ...(props.renderers || {}) }}
   />
 );
 

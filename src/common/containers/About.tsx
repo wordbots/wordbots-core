@@ -26,13 +26,13 @@ class About extends React.PureComponent<AboutProps> {
     const shaTruncated = truncate(sha, { length: 8, omission: '' });
 
     return (
-      <div>
+      <div className="helpPage">
         <Helmet title="About"/>
         <Background asset="compressed/image1-1.jpg" opacity={1} style={{ backgroundSize: 'contain' }} />
 
         <Title text="About" />
 
-        <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
+        <div style={{display: 'flex', justifyContent: 'stretch', margin: '20px auto', width: '84%' }}>
           <div style={{width: '50%', marginRight: 20}}>
             <Paper style={{padding: '5px 20px'}}>
               <MarkdownBlock source={whatIsWordbots(version, shaTruncated)} />
@@ -57,7 +57,7 @@ class About extends React.PureComponent<AboutProps> {
 export default withRouter(connect(mapStateToProps)(About));
 
 const whatIsWordbots = (version: string, sha: string) => (`
-# Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
+## Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
 ![](http://app.wordbots.io/static/screenshot_mini.png)
 **Wordbots** is a customizable hex-based card game with a twist – _you_, the player,
 get to create the cards!

@@ -1,17 +1,18 @@
 import * as React from 'react';
 
-import { BLUE_PLAYER_COLOR, ORANGE_PLAYER_COLOR } from '../../constants';
+import { BLUE_PLAYER_COLOR, ORANGE_PLAYER_COLOR, SIDEBAR_COLLAPSED_WIDTH } from '../../constants';
 import * as w from '../../types';
 
 interface PlayerNameProps {
   color: w.PlayerColor
   playerName: string
   opponent?: boolean
+  isSandbox?: boolean
 }
 
-export default class PlayerName extends React.Component<PlayerNameProps> {
+export default class PlayerName extends React.PureComponent<PlayerNameProps> {
   public render(): JSX.Element {
-    const { color, playerName, opponent } = this.props;
+    const { color, playerName, opponent, isSandbox } = this.props;
     return (
       <div
         style={{
@@ -20,7 +21,7 @@ export default class PlayerName extends React.Component<PlayerNameProps> {
           color: 'white',
           fontFamily: 'Carter One',
           fontSize: 32,
-          left: 0,
+          left: isSandbox ? (SIDEBAR_COLLAPSED_WIDTH + 5) : 0,
           top: opponent ? 0 : 'auto',
           bottom: opponent ? 'auto' : 0,
           padding: '8px 10px',

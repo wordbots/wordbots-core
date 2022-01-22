@@ -127,20 +127,19 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get inGame(): boolean {
-    const { location, inGame, inSandbox } = this.props;
-    return (inGame || isInGameUrl(location.pathname)) && !inSandbox;
+    const { location, inGame } = this.props;
+    return (inGame || isInGameUrl(location.pathname));
   }
 
   get inSandbox(): boolean {
-    const { location, inGame, inSandbox } = this.props;
-    return (inGame || isInGameUrl(location.pathname)) && inSandbox;
+    return this.inGame && this.props.inSandbox;
   }
 
   get sidebar(): JSX.Element | null {
     const { cardIdBeingEdited } = this.props;
     const { isUnsupportedBrowser } = this.state;
 
-    if (this.isLoading || this.inGame) {
+    if (this.isLoading || (this.inGame && !this.inSandbox)) {
       return null;
     } else {
       return <NavMenu cardIdBeingEdited={cardIdBeingEdited} isUnsupportedBrowser={isUnsupportedBrowser} />;
@@ -150,6 +149,7 @@ class App extends React.Component<AppProps, AppState> {
   get content(): JSX.Element {
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
+    console.log(this.inGame);
     return (
       <div style={{ paddingLeft: this.inGame ? 0 : SIDEBAR_COLLAPSED_WIDTH }}>
         <ErrorBoundary>

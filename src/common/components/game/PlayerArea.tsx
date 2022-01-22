@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import * as React from 'react';
 
-import { MAX_Z_INDEX, STATUS_Z_INDEX } from '../../constants';
+import { MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH, STATUS_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 
 import Deck from './Deck';
@@ -115,12 +115,16 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
     return (
       <div
         className="background"
-        style={this.styles.container}
+        style={{
+          ...this.styles.container,
+          paddingLeft: gameProps.isSandbox ? (SIDEBAR_COLLAPSED_WIDTH + 5) : 0
+        }}
       >
         <PlayerName
           opponent={opponent}
           color={color}
           playerName={gameProps.usernames[color]}
+          isSandbox={gameProps.isSandbox}
         />
         <EnergyCount
           color={color}

@@ -17,7 +17,6 @@ export default class Loading extends React.PureComponent {
             color: '#999'
           }}
         >
-          Connecting to server ...
           <SpinningGears />
         </div>
       </div>

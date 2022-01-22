@@ -50,6 +50,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       padding: 10,
       margin: '5px 15px',
       textAlign: 'left',
+      maxWidth: '95%',
       transition: 'width 250ms ease-in-out'
     },
     confirmDeleteControl: {
@@ -74,6 +75,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     },
     dialogButton: {
       marginLeft: 10
+    },
+    description: {
+      margin: '15px 100px 0 48px',
+      color: '#333',
+      fontSize: '0.9em'
     },
     link: {
       fontSize: '0.9em',
@@ -126,13 +132,20 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     const canEditSet = this.doesSetBelongToUser && !metadata.isPublished;
 
     return (
-      <Paper className={classes.paper} style={{ width: isCardListExpanded ? '95%' : 800 }}>
+      <Paper className={classes.paper} style={{ width: isCardListExpanded ? '95%' : 850 }}>
         <IconButton style={{ float: 'left' }} onClick={this.toggleCardList}>
           {isCardListExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
         <div>
-          <strong>{name}</strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
+          <strong><a className="underline" href={this.permalinkUrl}>{name}</a></strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
           {!inPublishedSetsList && metadata.isPublished && <i> (published)</i>}
+          <a className={classes.link} style={{ marginLeft: 10 }} onClick={this.toggleCardList}>
+            [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
+          </a>
+          {' '}
+          <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
+            <a className={classes.link}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
+          </CopyToClipboard>
         </div>
         <div className={classes.controls}>
           <MustBeLoggedIn loggedIn={!!user}>
@@ -143,17 +156,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             {this.renderDeleteControl()}
           </MustBeLoggedIn>
         </div>
-        <div>
-          {description && <i>Description: &rdquo;{description}&ldquo;</i>}
-        </div>
-        <div>
-          <a className={classes.link} onClick={this.toggleCardList}>
-            [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
-          </a>
-          {' '}
-          <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
-            <a className={classes.link}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
-          </CopyToClipboard>
+        <div className={classes.description}>
+          {description}
         </div>
         {isCardListExpanded &&
           <div>

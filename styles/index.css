@@ -19,6 +19,7 @@ a {
 }
 
 a.underline {
+  color: inherit;
   cursor: pointer;
   text-decoration: underline !important;
 }

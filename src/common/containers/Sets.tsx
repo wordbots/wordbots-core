@@ -142,7 +142,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
     if (this.singleSet) {
       return (
         <div>
-          <div style={{ margin: '20px 0' }}>
+          <div style={{ margin: '20px 0', textAlign: 'center' }}>
             {this.renderSetSummary(this.singleSet)}
           </div>
           <Button

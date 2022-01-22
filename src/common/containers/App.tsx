@@ -149,7 +149,6 @@ class App extends React.Component<AppProps, AppState> {
   get content(): JSX.Element {
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
-    console.log(this.inGame);
     return (
       <div style={{ paddingLeft: this.inGame ? 0 : SIDEBAR_COLLAPSED_WIDTH }}>
         <ErrorBoundary>

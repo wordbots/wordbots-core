@@ -20,6 +20,8 @@ interface TooltipState {
 }
 
 export default class Tooltip extends React.Component<TooltipProps, TooltipState> {
+  public static displayName = 'Tooltip';
+
   public state = {
     tooltipId: id()
   };

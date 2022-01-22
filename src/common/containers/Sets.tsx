@@ -117,7 +117,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
           <MustBeLoggedIn loggedIn={!!user} style={{ display: 'inline-block' }}>
             <ToolbarButton
               icon="add_circle_outline"
-              tooltip="Create a new set out of cards in your collection."
+              tooltip={user ? "Create a new set out of cards in your collection." : undefined}
               onClick={this.handleCreateSet}
             >
               New Set

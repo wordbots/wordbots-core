@@ -1,4 +1,4 @@
-import { compact, isArray, isObject, isString, pick } from 'lodash';
+import { compact, isArray, isObject, pick } from 'lodash';
 import * as React from 'react';
 
 import Tooltip from '../Tooltip';

@@ -46,11 +46,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   public static styles: Record<string, CSSProperties> = {
     paper: {
       display: 'inline-block',
-      minWidth: 800,
       position: 'relative',
       padding: 10,
-      marginBottom: 5,
-      textAlign: 'left'
+      margin: '5px 15px',
+      textAlign: 'left',
+      transition: 'width 250ms ease-in-out'
     },
     confirmDeleteControl: {
       fontSize: '13px',
@@ -126,7 +126,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     const canEditSet = this.doesSetBelongToUser && !metadata.isPublished;
 
     return (
-      <Paper className={classes.paper} style={{ maxWidth: isCardListExpanded ? undefined : 800 }}>
+      <Paper className={classes.paper} style={{ width: isCardListExpanded ? '95%' : 800 }}>
         <IconButton style={{ float: 'left' }} onClick={this.toggleCardList}>
           {isCardListExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>

@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import RouterDialog from '../components/RouterDialog';
 import * as w from '../types';
 import { logout } from '../util/firebase';
-import { HEADER_HEIGHT, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
+import { DIALOG_Z_INDEX, HEADER_HEIGHT, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 import UserMenuItem from '../components/UserMenuItem';
 
 interface TitleBarProps extends TitleBarReduxProps {
@@ -146,7 +146,8 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
           <AppBar
             position="fixed"
             style={{
-              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)'
+              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)',
+              zIndex: DIALOG_Z_INDEX
             }}
           >
             {this.renderUnsupportedBrowserMessage()}

@@ -63,24 +63,20 @@ class PageHelp extends React.Component<PageHelpProps & WithStyles, PageHelpState
       <div className={classes.container}>
         {
           isOpen
-            ? (
-              <div className={classes.container}>
+            ? <div className={classes.container}>
                 <Paper className={classes.helpPaper}>
                   <IconButton className={classes.closeButton} onClick={this.handleHideHelpText}>
                     <CloseIcon />
                   </IconButton>
                   {children}
                 </Paper>
-                <div style={{clear: 'both'}}/>
+                <div style={{clear: 'both'}} />
               </div>
-            )
-            : (
-              <Tooltip inline place="right" text="Click to show help text for this page.">
+            : <Tooltip inline place="right" text="Click to show help text for this page.">
                 <IconButton className={classes.openButton} onClick={this.handleShowHelpText}>
                   <HelpOutlineIcon />
                 </IconButton>
               </Tooltip>
-            )
         }
       </div>
     );

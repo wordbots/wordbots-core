@@ -86,7 +86,7 @@ export const isInGameUrl = (url: string): boolean => (
   ((url.startsWith(baseGameUrl) && compact(url.split('/')).length > 2)) || (url === '/play/sandbox')
 );
 
-export const urlForGameMode = (mode: string, format: w.BuiltInFormat | null = null, deck: w.DeckInStore | null = null) => {
+export const urlForGameMode = (mode: string, format: w.BuiltInFormat | null = null, deck: w.DeckInStore | null = null): string => {
   const maybeFormatParam = format ? `/${format}` : '';
   const maybeDeckParam = deck ? `/${deck.id}` : '';
   return `${baseGameUrl}/${mode}${maybeFormatParam}${maybeDeckParam}`;

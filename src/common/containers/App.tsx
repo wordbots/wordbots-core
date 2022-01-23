@@ -48,7 +48,7 @@ interface AppStateProps {
 interface AppDispatchProps {
   onLoggedIn: (user: fb.User) => void
   onLoggedOut: () => void
-  onReceiveFirebaseData: (data: any) => void
+  onReceiveFirebaseData: (data: Record<string, unknown> | null) => void
 }
 
 type AppProps = AppStateProps & AppDispatchProps & {
@@ -81,7 +81,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
     onLoggedOut: () => {
       dispatch(actions.loggedOut());
     },
-    onReceiveFirebaseData: (data: any) => {
+    onReceiveFirebaseData: (data: Record<string, unknown> | null) => {
       dispatch(actions.firebaseData(data));
     }
   };

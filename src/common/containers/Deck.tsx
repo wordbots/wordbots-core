@@ -200,11 +200,11 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     }
   }
 
-  private setField = (key: keyof DeckState, callback = noop) => (value: any) => {
-    this.setState({[key]: value} as any, callback);
+  private setField = (key: keyof DeckState, callback = noop) => (value: DeckState[typeof key]) => {
+    this.setState({[key]: value} as Pick<DeckState, keyof DeckState>, callback);
   }
 
-  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }));

@@ -5,7 +5,7 @@ import * as React from 'react';
 import { FilterKey } from './types';
 
 interface FilterControlsProps {
-  onToggleFilter: (filter: FilterKey) => (event: React.ChangeEvent<any>, toggled: boolean) => void
+  onToggleFilter: (filter: FilterKey) => (event: React.ChangeEvent<HTMLInputElement>, toggled: boolean) => void
   onSetCostRange: (values: [number, number]) => void
 }
 

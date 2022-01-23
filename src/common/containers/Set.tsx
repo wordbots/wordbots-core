@@ -139,11 +139,11 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     );
   }
 
-  private setField = (key: keyof NewSetState, callback = noop) => (value: any) => {
-    this.setState({[key]: value} as any, callback);
+  private setField = (key: keyof NewSetState, callback = noop) => (value: NewSetState[typeof key]) => {
+    this.setState({[key]: value} as Pick<NewSetState, keyof NewSetState>, callback);
   }
 
-  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }));

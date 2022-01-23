@@ -5,7 +5,6 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
 import { BigramProbs } from 'word-ngrams';
 
 import * as w from '../types';
@@ -101,7 +100,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>): CreatorDispatchProps {
+export function mapDispatchToProps(dispatch: w.MultiDispatch): CreatorDispatchProps {
   return {
     onOpenCard: (card: w.CardInStore) => {
       dispatch(collectionActions.openForEditing(card));

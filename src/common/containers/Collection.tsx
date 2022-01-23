@@ -188,11 +188,11 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   }
 
   // this.set(key)(value) = this.setState({key: value})
-  private set = (key: keyof CollectionState, callback = noop) => (value: any) => {
+  private set = (key: keyof CollectionState, callback = noop) => (value: CollectionState[typeof key]) => {
     this.setState({[key]: value} as Pick<CollectionState, keyof CollectionState>, callback);
   }
 
-  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.ChangeEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.ChangeEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }), this.refreshSelection);

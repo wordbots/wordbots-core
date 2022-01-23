@@ -11,8 +11,8 @@ interface DeckCreationSidebarControlsProps {
   layout: DeckCreationProperties['layout']
   sortCriteria: DeckCreationProperties['sortCriteria']
   sortOrder: DeckCreationProperties['sortOrder']
-  onSetField: (key: keyof DeckCreationProperties) => (value: any) => void
-  onToggleFilter: (filter: FilterKey) => (event: React.SyntheticEvent<any>, toggled: boolean) => void
+  onSetField: (key: keyof DeckCreationProperties) => (value: DeckCreationProperties[typeof key]) => void
+  onToggleFilter: (filter: FilterKey) => (event: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => void
 }
 
 /**

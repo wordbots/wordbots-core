@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
 
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -114,7 +113,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>): GameAreaDispatchProps {
+export function mapDispatchToProps(dispatch: w.MultiDispatch): GameAreaDispatchProps {
   return {
     onMoveRobot: (fromHexId: w.HexId, toHexId: w.HexId) => {
       dispatch(gameActions.moveRobot(fromHexId, toHexId));
@@ -354,11 +353,11 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     }
   }
 
-  private handleClickGameArea = (evt: React.MouseEvent<HTMLElement>) => {
+  private handleClickGameArea = (evt: React.MouseEvent<HTMLElement | SVGElement>) => {
     const { player, onDeselect } = this.props;
-    const { className } = evt.target as any;
+    const { className } = evt.target as HTMLElement | SVGElement;
 
-    // Not sure why this is necessary ...
+    // Not sure why this is necessary... (maybe SVG elts have className.baseVal and HTML elts don't? -AN)
     const { baseVal } = className;
     const actualClassName = baseVal !== undefined ? baseVal : className;
 

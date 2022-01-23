@@ -1,12 +1,7 @@
 import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
-import Paper from '@material-ui/core/Paper';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { orderBy } from 'lodash';
-import * as qs from 'qs';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -14,11 +9,15 @@ import { withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
+import ToolbarButton from '../components/ToolbarButton';
 import SetSummary from '../components/cards/SetSummary';
 import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { getNumDecksCreatedCountBySetId } from '../util/firebase';
+import PageHelp from '../components/PageHelp';
+import { getQueryString } from '../util/browser';
 
 interface SetsStateProps {
   sets: w.Set[]
@@ -33,11 +32,10 @@ interface SetsDispatchProps {
   onPublishSet: (setId: string) => void
 }
 
-type SetsProps = SetsStateProps & SetsDispatchProps & { history: History } & WithStyles;
+type SetsProps = SetsStateProps & SetsDispatchProps & { history: History };
 
 interface SetsState {
   numDecksBySet?: Record<string, number>
-  showHelpText: boolean
 }
 
 function mapStateToProps(state: w.State): SetsStateProps {
@@ -68,43 +66,15 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetsDispatchProps {
 }
 
 class Sets extends React.Component<SetsProps, SetsState> {
-  public static styles: Record<string, CSSProperties> = {
-    buttonLabel: {
-      fontFamily: 'Carter One'
-    },
-    helpPaper: {
-      display: 'inline-block',
-      marginLeft: 20,
-      marginTop: 15,
-      maxWidth: 700,
-      padding: 10,
-      '& button': {
-        float: 'right',
-        padding: 2
-      },
-      '& p': {
-        marginTop: 0
-      },
-      '& p:last-child': {
-        marginBottom: 0
-      }
-    },
-    singleSetContainer: {
-      margin: '20px 0'
-    }
-  };
-
-  public state: SetsState = {
-    showHelpText: true
-  };
+  public state: SetsState = {};
 
   /**
    * Returns either the single set to focus on (if there is a set=[setId] URL query parameter),
    * or null to display all published and user sets.
    */
   get singleSet(): w.Set | null {
-    const { history: { location: { search }}, sets } = this.props;
-    const setId: string | undefined = qs.parse(search.replace('?', '')).set;
+    const { history, sets } = this.props;
+    const setId: string | undefined = getQueryString(history, 'set');
     if (setId) {
       return sets.find((set) => set.id === setId) || null;
     }
@@ -134,38 +104,34 @@ class Sets extends React.Component<SetsProps, SetsState> {
   }
 
   public render(): JSX.Element {
-    const { user, classes } = this.props;
-    const { showHelpText } = this.state;
+    const { user } = this.props;
 
     return (
       <div>
         <Helmet title="Sets" />
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
+
         <Title text="Sets" />
 
-        {showHelpText && <div>
-          <Paper className={classes.helpPaper}>
-            <Button variant="text" style={{ color: '#333' }} onClick={this.handleHideHelpText}>
-              <Icon className="material-icons">
-                close
-              </Icon>
-            </Button>
-            <p><b>Sets</b> offer a way for you to play games of Wordbots in which both players use the same pool of cards.</p>
-            <p>You can take a popular set, make a deck from it, and play against other players who&rsquo;ve made decks using that set in the <b>Set format</b>. Or, play a game in the <b>Set Draft format</b>, where both players must  create decks from scratch using cards from a given set at the start of the game.</p>
-            <p>If you&rsquo;re feeling creative, <i>create your own set</i> (using your own cards and/or cards you&rsquo;ve discovered), share it with your friends to challenge them, or publish it for the world to see!</p>
-          </Paper>
-        </div>}
-
-        <div style={{ margin: 20 }}>
+        <div style={{ display: 'inline', paddingLeft: 10 }}>
           <MustBeLoggedIn loggedIn={!!user} style={{ display: 'inline-block' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              classes={{ label: classes.buttonLabel }}
+            <ToolbarButton
+              icon="add_circle_outline"
+              tooltip={user ? "Create a new set out of cards in your collection." : undefined}
               onClick={this.handleCreateSet}
             >
               New Set
-            </Button>
+            </ToolbarButton>
           </MustBeLoggedIn>
+        </div>
+
+        <PageHelp openByDefault flagSuffix="sets">
+          <p><b>Sets</b> offer a way for you to play games of Wordbots in which both players use the same pool of cards.</p>
+          <p>You can take a popular set, make a deck from it, and play against other players who&rsquo;ve made decks using that set in the <b>Set format</b>. Or, play a game in the <b>Set Draft format</b>, where both players must  create decks from scratch using cards from a given set at the start of the game.</p>
+          <p>If you&rsquo;re feeling creative, <i>create your own set</i> (using your own cards and/or cards you&rsquo;ve discovered), share it with your friends to challenge them, or publish it for the world to see!</p>
+        </PageHelp>
+
+        <div style={{ margin: 20 }}>
           {this.renderSets()}
         </div>
       </div>
@@ -173,20 +139,18 @@ class Sets extends React.Component<SetsProps, SetsState> {
   }
 
   private renderSets = (): JSX.Element => {
-    const { classes } = this.props;
     if (this.singleSet) {
       return (
         <div>
-          <div className={classes.singleSetContainer}>
+          <div style={{ margin: '20px 0', textAlign: 'center' }}>
             {this.renderSetSummary(this.singleSet)}
           </div>
           <Button
             variant="outlined"
             color="primary"
-            classes={{ label: classes.buttonLabel }}
             onClick={this.handleShowAllSets}
           >
-            Show all sets
+            <span style={{ fontFamily: 'Carter One' }}>Show all sets</span>
           </Button>
         </div>
       );
@@ -195,15 +159,27 @@ class Sets extends React.Component<SetsProps, SetsState> {
         <div>
           {
             this.publishedSets.length > 0 &&
-              <div>
-                <h2>Top published sets <i>({this.publishedSets.length})</i></h2>
+              <div style={{ textAlign: 'center' }}>
+                <h2>
+                  <span style={{ fontFamily: 'Carter One' }}>Published sets </span>
+                  <i>({this.publishedSets.length})</i>
+                </h2>
+                <div style={{ marginTop: -15, marginBottom: 15 }}>
+                  These are sets that have been made public by their creators.
+                </div>
                 {this.publishedSets.map((set) => this.renderSetSummary(set, { inPublishedSetsList: true }))}
               </div>
           }
           {
             this.userSets.length > 0 &&
-              <div>
-                <h2>Your sets <i>({this.userSets.length})</i></h2>
+              <div style={{ textAlign: 'center' }}>
+                <h2>
+                  <span style={{ fontFamily: 'Carter One' }}>Your sets </span>
+                  <i>({this.userSets.length})</i>
+                </h2>
+                <div style={{ marginTop: -15, marginBottom: 15 }}>
+                  These are sets that you created! You can share them with your friends or publish them to the wider world.
+                </div>
                 {this.userSets.map((set) => this.renderSetSummary(set))}
               </div>
           }
@@ -273,14 +249,9 @@ class Sets extends React.Component<SetsProps, SetsState> {
   private handleShowAllSets = () => {
     this.props.history.push('/sets');
   }
-
-  private handleHideHelpText = () => {
-    this.setState({ showHelpText: false });
-  }
 }
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
-  withStyles(Sets.styles)
+  connect(mapStateToProps, mapDispatchToProps)
 )(Sets);

@@ -42,6 +42,11 @@ export interface Action {
   payload?: ActionPayload
 }
 
+// Like Dispatch<AnyAction> but also supports intaking AnyAction[] for multipleDispatchMiddleware
+export interface MultiDispatch {
+  <T extends AnyAction | AnyAction[]>(action: T): T
+}
+
 // General types
 
 export interface DeckInGame extends DeckInStore {
@@ -262,7 +267,6 @@ export interface GameState {
 
 export interface GlobalState {
   dictionary?: Dictionary
-  renderId: number
   user: fb.User | null
 }
 

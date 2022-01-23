@@ -5,7 +5,6 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
 import { BigramProbs } from 'word-ngrams';
 
 import * as w from '../types';
@@ -13,11 +12,12 @@ import { TYPE_EVENT } from '../constants';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
+import Background from '../components/Background';
 import CardCreationForm from '../components/cards/CardCreationForm';
 import CardCreationTutorial from '../components/cards/CardCreationTutorial';
 import CardPreview from '../components/cards/CardPreview';
 import CardProvenanceDescription from '../components/cards/CardProvenanceDescription';
-import CreatorToolbarButton from '../components/cards/CreatorToolbarButton';
+import ToolbarButton from '../components/ToolbarButton';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
@@ -100,7 +100,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>): CreatorDispatchProps {
+export function mapDispatchToProps(dispatch: w.MultiDispatch): CreatorDispatchProps {
   return {
     onOpenCard: (card: w.CardInStore) => {
       dispatch(collectionActions.openForEditing(card));
@@ -202,53 +202,53 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
     return (
       <div style={{position: 'relative'}}>
+        <Background asset="compressed/IMG_3005.jpg" opacity={0.1} style={{ backgroundSize: 'contain' }} />
         <Helmet title="Workshop" />
         <Title text="Workshop" />
 
         <div style={{ display: 'inline', paddingLeft: 10 }}>
-          <CreatorToolbarButton
+          <ToolbarButton
             icon="queue"
             tooltip="Reset the workshop and start a new card from scratch."
             onClick={this.handleClickNewCard}
           >
             New Card
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="help_outline"
             tooltip="Learn more about creating a card."
             onClick={this.handleClickHelp}
           >
             Help
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="book"
             tooltip="Check out all of the terms and actions that the parser supports."
             onClick={this.handleClickDictionary}
           >
             Dictionary
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="refresh"
             tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
             onClick={this.handleClickRandomize}
             disabled={!examplesLoaded || !this.isCardEditable}
           >
             Randomize
-          </CreatorToolbarButton>
-          <CreatorToolbarButton
+          </ToolbarButton>
+          <ToolbarButton
             icon="videogame_asset"
             tooltip="Test out this card in sandbox mode."
             onClick={this.testCard}
             disabled={!this.validationResults.isValid}
           >
             Test
-          </CreatorToolbarButton>
+          </ToolbarButton>
         </div>
 
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
-          maxHeight: 'calc(100vh - 115px)',
           marginTop: 5
         }}>
           <div style={{
@@ -307,7 +307,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             </Paper>
           </div>
           <div className="workshop-arrow" style={{ width: 50, margin: 'auto' }}>
-            <Icon style={{ marginLeft: -5, fontSize: 100, color: '#ddd' }} className="material-icons">forward</Icon>
+            <Icon style={{ marginLeft: -5, fontSize: 100, color: '#bbb' }} className="material-icons">forward</Icon>
           </div>
           <CardPreview
             name={this.props.name}

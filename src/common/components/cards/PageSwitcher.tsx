@@ -28,7 +28,9 @@ export default class PageSwitcher extends React.PureComponent<PageSwitcherProps>
         >
           <Icon className="material-icons">arrow_back</Icon>
         </Button>
-        <div>{`${page} / ${maxPages}`}</div>
+        <div style={{ margin: 'auto' }}>
+          {`${page} / ${maxPages}`}
+        </div>
         <Button
           variant="outlined"
           disabled={page >= maxPages}

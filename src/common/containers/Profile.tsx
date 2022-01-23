@@ -8,10 +8,11 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
+import Background from '../components/Background';
 import CardGrid from '../components/cards/CardGrid';
 import RecentCardsCarousel from '../components/cards/RecentCardsCarousel';
 import Title from '../components/Title';
-import MatchmakingInfo from '../components/users/profile/MatchmakingInfo';
+import FavoriteFormats from '../components/users/profile/FavoriteFormats';
 import PlayerInfo from '../components/users/profile/PlayerInfo';
 import RecentGames from '../components/users/profile/RecentGames';
 import ProfileLink from '../components/users/ProfileLink';
@@ -92,6 +93,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
 
     return (
       <div>
+        <Background asset="compressed/IMG_3006.jpg" opacity={0.15} />
         <Helmet title="Profile"/>
         <Title text={title} />
 
@@ -101,7 +103,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
               <PlayerInfo playerInfo={playerInfo} />
             </Paper>
             <Paper className={classes.gridItem}>
-              <MatchmakingInfo
+              <FavoriteFormats
                 userId={userId}
                 games={games}
               />

@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Space Age';
+  src: url("../fonts/space age.ttf") format("truetype");
+}
+
 html {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -14,6 +19,7 @@ a {
 }
 
 a.underline {
+  color: inherit;
   cursor: pointer;
   text-decoration: underline !important;
 }
@@ -32,9 +38,13 @@ th {
   font-size: 1em !important;
 }
 
-.activeNavLink > div {
-  box-shadow: inset 4px 0 0 red;
-  background-color: #EEEEEE;
+.wordbotsAppBarLink {
+  color: white;
+}
+
+.wordbotsAppBarLink:hover {
+  color: #eee;
+  -webkit-text-stroke: 0.5px #666;
 }
 
 .markdownBlock img {
@@ -54,6 +64,10 @@ th {
   font-weight: 100;
 }
 
+.helpPage h1, .helpPage h2 {
+  font-family: 'Carter One';
+}
+
 .helpPage #parser-help .markdownBlock h2 {
   font-size: 19px;
 }
@@ -65,6 +79,10 @@ th {
 
 .markdownBlock a:hover {
   text-decoration: underline;
+}
+
+.markdownBlock code {
+  font-size: 1.2em;
 }
 
 .helpPage li {

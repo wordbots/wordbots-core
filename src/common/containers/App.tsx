@@ -1,4 +1,4 @@
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core';
 import * as fb from 'firebase';
 import { History, Location } from 'history';
 import * as React from 'react';
@@ -16,11 +16,10 @@ import CreatorHelpDialog from '../components/help/CreatorHelpDialog';
 import NewHereDialog from '../components/help/NewHereDialog';
 import NavMenu from '../components/NavMenu';
 import LoginDialog from '../components/users/LoginDialog';
-import SpinningGears from '../components/SpinningGears';
-import { MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH } from '../constants';
-import muiV1Theme from '../themes/muiV1';
+import { SIDEBAR_COLLAPSED_WIDTH, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
+import theme from '../themes/theme';
 import * as w from '../types';
-import { isFlagSet, logAnalytics } from '../util/browser';
+import { isSupportedBrowser, logAnalytics, toggleFlag } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
@@ -36,21 +35,20 @@ import Profile from './Profile';
 import Set from './Set';
 import Sets from './Sets';
 import TitleBar from './TitleBar';
+import Loading from './Loading';
 
 interface AppStateProps {
   cardIdBeingEdited: string | null
   collection: w.CollectionState
   inGame: boolean
   inSandbox: boolean
-  renderId: number
   uid: w.UserId | null
 }
 
 interface AppDispatchProps {
   onLoggedIn: (user: fb.User) => void
   onLoggedOut: () => void
-  onReceiveFirebaseData: (data: any) => void
-  onRerender: () => void
+  onReceiveFirebaseData: (data: Record<string, unknown> | null) => void
 }
 
 type AppProps = AppStateProps & AppDispatchProps & {
@@ -59,10 +57,10 @@ type AppProps = AppStateProps & AppDispatchProps & {
 };
 
 interface AppState {
+  isUnsupportedBrowser: boolean
   loadedCards: boolean
   loadedDecks: boolean
   loadedSets: boolean
-  canSidebarExpand: boolean
 }
 
 function mapStateToProps(state: w.State): AppStateProps {
@@ -71,7 +69,6 @@ function mapStateToProps(state: w.State): AppStateProps {
     collection: state.collection,
     inGame: state.game.started,
     inSandbox: state.game.sandbox,
-    renderId: state.global.renderId,
     uid: state.global.user ? state.global.user.uid : null
   };
 }
@@ -84,21 +81,18 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
     onLoggedOut: () => {
       dispatch(actions.loggedOut());
     },
-    onReceiveFirebaseData: (data: any) => {
+    onReceiveFirebaseData: (data: Record<string, unknown> | null) => {
       dispatch(actions.firebaseData(data));
-    },
-    onRerender: () => {
-      dispatch(actions.rerender());
     }
   };
 }
 
 class App extends React.Component<AppProps, AppState> {
   public state = {
+    isUnsupportedBrowser: !isSupportedBrowser(),
     loadedCards: false,
     loadedDecks: false,
-    loadedSets: false,
-    canSidebarExpand: true
+    loadedSets: false
   };
 
   constructor(props: AppProps) {
@@ -108,9 +102,6 @@ class App extends React.Component<AppProps, AppState> {
 
   public componentDidMount(): void {
     const { onLoggedIn, onLoggedOut } = this.props;
-
-    this.calculateDimensions();
-    window.addEventListener('resize', this.calculateDimensions);
 
     this.loadSets();
 
@@ -135,45 +126,31 @@ class App extends React.Component<AppProps, AppState> {
     return !(loadedCards && loadedDecks && loadedSets);
   }
 
-  get isSidebarExpanded(): boolean {
-    return this.state.canSidebarExpand && !isFlagSet('sidebarCollapsed') && !this.inSandbox;
-  }
-
   get inGame(): boolean {
-    const { location, inGame, inSandbox } = this.props;
-    return (inGame || isInGameUrl(location.pathname)) && !inSandbox;
+    const { location, inGame } = this.props;
+    return (inGame || isInGameUrl(location.pathname));
   }
 
   get inSandbox(): boolean {
-    const { location, inGame, inSandbox } = this.props;
-    return (inGame || isInGameUrl(location.pathname)) && inSandbox;
+    return this.inGame && this.props.inSandbox;
   }
 
   get sidebar(): JSX.Element | null {
-    const { cardIdBeingEdited, onRerender } = this.props;
-    const { canSidebarExpand } = this.state;
+    const { cardIdBeingEdited } = this.props;
+    const { isUnsupportedBrowser } = this.state;
 
-    if (this.isLoading || this.inGame) {
+    if (this.isLoading || (this.inGame && !this.inSandbox)) {
       return null;
     } else {
-      return (
-        <NavMenu
-          canExpand={canSidebarExpand && !this.inSandbox}
-          isExpanded={this.isSidebarExpanded}
-          cardIdBeingEdited={cardIdBeingEdited}
-          onRerender={onRerender}
-        />
-      );
+      return <NavMenu cardIdBeingEdited={cardIdBeingEdited} isUnsupportedBrowser={isUnsupportedBrowser} />;
     }
   }
 
   get content(): JSX.Element {
-    const sidebarWidth = this.isSidebarExpanded ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
-
     // TODO Figure out how to avoid having to type the Route components as `any`
     // (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13689)
     return (
-      <div style={{paddingLeft: this.inGame ? 0 : sidebarWidth}}>
+      <div style={{ paddingLeft: this.inGame ? 0 : SIDEBAR_COLLAPSED_WIDTH }}>
         <ErrorBoundary>
           <Switch>
             <Route exact path="/" component={Home} />
@@ -213,32 +190,20 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  get loadingMessage(): JSX.Element {
-    return (
-      <div
-        style={{
-          margin: '100px auto',
-          textAlign: 'center',
-          fontFamily: 'Carter One',
-          fontSize: '2em',
-          color: '#999'
-        }}
-      >
-        Connecting to server ...
-        <SpinningGears />
-      </div>
-    );
-  }
-
   public render(): JSX.Element {
+    const { isUnsupportedBrowser } = this.state;
     return (
-      <MuiThemeProvider theme={createMuiTheme(muiV1Theme)}>
+      <MuiThemeProvider theme={theme}>
         <div>
           <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
-          <TitleBar isAppLoading={this.isLoading} onRerender={this.props.onRerender} />
-          <div>
+          <TitleBar
+            isAppLoading={this.isLoading}
+            isUnsupportedBrowser={isUnsupportedBrowser}
+            onHideUnsupportedBrowserMessage={this.handleHideUnsupportedBrowserMessage}
+          />
+          <div style={isUnsupportedBrowser ? { position: 'relative', top: UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } : {}}>
             {this.sidebar}
-            {this.isLoading ? this.loadingMessage : this.content}
+            {this.isLoading ? <Loading /> : this.content}
           </div>
           {this.dialogs}
         </div>
@@ -249,12 +214,6 @@ class App extends React.Component<AppProps, AppState> {
   private redirectToRoot = (): JSX.Element => (
     <Redirect to="/"/>
   )
-
-  private calculateDimensions = (): void => {
-    this.setState({
-      canSidebarExpand: window.innerWidth >= MIN_WINDOW_WIDTH_TO_EXPAND_SIDEBAR
-    });
-  }
 
   private loadUserCardsAndDecks = async (uid: w.UserId | null): Promise<void> => {
     const { onReceiveFirebaseData } = this.props;
@@ -275,6 +234,11 @@ class App extends React.Component<AppProps, AppState> {
     const sets = await getSets();
     onReceiveFirebaseData({ sets });
     this.setState({ loadedSets: true });
+  }
+
+  private handleHideUnsupportedBrowserMessage = () => {
+    this.setState({ isUnsupportedBrowser: false });
+    toggleFlag('hideUnsupportedBrowserMessage');
   }
 }
 

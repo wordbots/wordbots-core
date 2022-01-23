@@ -40,7 +40,7 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
       <Paper style={{ marginBottom: 20 }}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow style={{ height: 46 }}>
               <TableCell>Game Name</TableCell>
               <TableCell>Format</TableCell>
               <TableCell>Players</TableCell>
@@ -82,11 +82,11 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
           <TableCell
             colSpan={4}
             style={{
-              fontSize: 26,
+              fontSize: 18,
               fontStyle: 'italic',
               fontWeight: 300,
               textAlign: 'center',
-              padding: 20
+              padding: 10
             }}
           >
             No open games.

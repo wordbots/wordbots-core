@@ -1,5 +1,3 @@
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
 import Paper from '@material-ui/core/Paper';
 import * as fb from 'firebase';
 import { History } from 'history';
@@ -27,6 +25,8 @@ import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { getDisplayedCards, isCardVisible } from '../util/cards';
 import { lookupCurrentUser } from '../util/firebase';
+import Background from '../components/Background';
+import ToolbarButton from '../components/ToolbarButton';
 
 interface CollectionStateProps {
   cards: w.CardInStore[]
@@ -129,11 +129,11 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     return (
       <div>
         <Helmet title="Collection" />
-        <div style={{ display: 'flex' }}>
-          <Title text="Collection" />
-          <div style={{ marginLeft: 30, marginTop: 12 }}>
-            {loggedIn && this.renderButtons(true)}
-          </div>
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
+
+        <Title text="Collection" />
+        <div style={{ display: 'inline', paddingLeft: 10 }}>
+          {loggedIn && this.renderButtons(true)}
         </div>
 
         <div
@@ -188,11 +188,11 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   }
 
   // this.set(key)(value) = this.setState({key: value})
-  private set = (key: keyof CollectionState, callback = noop) => (value: any) => {
+  private set = (key: keyof CollectionState, callback = noop) => (value: CollectionState[typeof key]) => {
     this.setState({[key]: value} as Pick<CollectionState, keyof CollectionState>, callback);
   }
 
-  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.ChangeEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.ChangeEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }), this.refreshSelection);
@@ -284,102 +284,87 @@ export class Collection extends React.Component<CollectionProps, CollectionState
     const { loggedIn } = this.props;
     const { isPermalinkCopied, selectedCardIds } = this.state;
 
-    const style = onTopBar ? { marginLeft: 10, padding: '5px 15px' } : { width: '100%', height: 48, marginTop: 10 };
-    const iconStyle = onTopBar ? { marginRight: 10 } : { margin: '0 20px' };
-
     return (
-      <MustBeLoggedIn loggedIn={loggedIn}>
-        <Button
-          variant="contained"
-          color="secondary"
-          size={onTopBar ? "small" : "medium"}
-          style={style}
+      <MustBeLoggedIn loggedIn={loggedIn} style={{ display: 'inline' }}>
+        <ToolbarButton
+          vertical={!onTopBar}
+          icon="queue"
           onClick={this.handleClickNewCard}
         >
-          <Icon style={iconStyle} className="material-icons">queue</Icon>
           New Card
-        </Button>
-        <Button
-          variant="contained"
+        </ToolbarButton>
+        <ToolbarButton
           color="primary"
-          size={onTopBar ? "small" : "medium"}
-          disabled={!this.canEditSelectedCard}
-          style={style}
+          vertical={!onTopBar}
+          icon="edit"
           onClick={this.handleClickEdit}
+          disabled={!this.canEditSelectedCard}
         >
-          <Icon style={iconStyle} className="material-icons">edit</Icon>
           {onTopBar ? 'Edit' : 'Edit Selected'}
-        </Button>
-        <Button
-          variant="contained"
+        </ToolbarButton>
+        <ToolbarButton
           color="primary"
-          size={onTopBar ? "small" : "medium"}
-          disabled={selectedCardIds.length !== 1}
-          style={style}
+          vertical={!onTopBar}
+          icon="file_copy"
           onClick={this.handleClickDuplicate}
-        >
-          <Icon style={iconStyle} className="material-icons">file_copy</Icon>
-          {onTopBar ? 'Duplicate' : 'Duplicate Selected'}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          size={onTopBar ? "small" : "medium"}
-          disabled={selectedCardIds.length === 0}
-          style={style}
-          onClick={this.handleClickDelete}
-        >
-          <Icon style={iconStyle} className="material-icons">delete</Icon>
-          {onTopBar ? 'Delete' : 'Delete Selected'}
-        </Button>
-        {!onTopBar ? null : <Button
-          variant="contained"
-          color="primary"
           disabled={selectedCardIds.length !== 1}
-          style={style}
-          onClick={this.handleClickTest}
         >
-          <Icon style={iconStyle} className="material-icons">videogame_asset</Icon>
-          Test
-        </Button>}
-        {!onTopBar ? null :
-        <CopyToClipboard
-          text={`${location.origin}/card/${selectedCardIds[0]}`}
-          onCopy={this.afterCopyPermalink}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={selectedCardIds.length !== 1 || isPermalinkCopied}
-            style={style}
-          >
-            {
-              isPermalinkCopied
-                ? 'Copied!'
-                : <React.Fragment><Icon style={iconStyle} className="material-icons">link</Icon> permalink</React.Fragment>
-            }
-          </Button>
-        </CopyToClipboard>}
-
-        {onTopBar ? null : <Button
-          variant="contained"
+          {onTopBar ? 'Duplicate' : 'Duplicate Selected'}
+        </ToolbarButton>
+        <ToolbarButton
           color="primary"
+          vertical={!onTopBar}
+          icon="delete"
+          onClick={this.handleClickDelete}
           disabled={selectedCardIds.length === 0}
-          style={style}
-          onClick={this.handleClickExport}
         >
-          <Icon style={iconStyle} className="material-icons">file_download</Icon>
-          Export Selected
-        </Button>}
-        {onTopBar ? null : <Button
-          variant="contained"
-          color="primary"
-          style={style}
-          onClick={this.handleClickImport}
-        >
-          <Icon style={iconStyle} className="material-icons">file_upload</Icon>
-          Import Cards
-        </Button>}
+          {onTopBar ? 'Delete' : 'Delete Selected'}
+        </ToolbarButton>
+
+        {onTopBar
+          ? <>
+              <ToolbarButton
+                color="primary"
+                icon="videogame_asset"
+                onClick={this.handleClickTest}
+                disabled={selectedCardIds.length !== 1}
+              >
+                Test
+              </ToolbarButton>
+              <CopyToClipboard
+                text={`${location.origin}/card/${selectedCardIds[0]}`}
+                onCopy={this.afterCopyPermalink}
+              >
+                <ToolbarButton
+                  color="primary"
+                  icon={isPermalinkCopied ? null : 'link'}
+                  onClick={noop}
+                  disabled={selectedCardIds.length !== 1 || isPermalinkCopied}
+                >
+                  {isPermalinkCopied ? 'Copied!' : 'permalink'}
+                </ToolbarButton>
+              </CopyToClipboard>
+            </>
+          : <>
+              <ToolbarButton
+                color="primary"
+                vertical
+                icon="file_download"
+                onClick={this.handleClickExport}
+                disabled={selectedCardIds.length === 0}
+              >
+                Export Selected
+              </ToolbarButton>
+              <ToolbarButton
+                color="primary"
+                vertical
+                icon="file_upload"
+                onClick={this.handleClickImport}
+              >
+                Import Cards
+              </ToolbarButton>
+            </>
+        }
       </MustBeLoggedIn>
     );
   }

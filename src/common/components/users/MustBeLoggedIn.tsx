@@ -1,4 +1,4 @@
-import { compact, isArray, isObject, pick } from 'lodash';
+import { compact, isArray, isObject, isString, pick } from 'lodash';
 import * as React from 'react';
 
 import Tooltip from '../Tooltip';
@@ -26,7 +26,7 @@ export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps>
     } else {
       return (
         <div className="notAllowed" style={style}>
-          {React.Children.map(this.children, this.renderDisabledChild)}
+          {React.Children.map(this.children, this.renderDisabledChild.bind(this))}
         </div>
       );
     }
@@ -35,6 +35,12 @@ export default class MustBeLoggedIn extends React.Component<MustBeLoggedInProps>
   private renderDisabledChild(child: React.ReactChild): React.ReactChild {
     if (!child || !isObject(child)) {
       return child;
+    }
+
+    // black magick to bypass <Tooltip>s in the component chain and dig down further,
+    // so <Tooltip><Button /></Tooltip> functions the same as <Button /> inside a MustBeLoggedIn block.
+    if (!isString(child) && (child.type as React.ComponentClass).displayName === 'Tooltip') {
+      return this.renderDisabledChild((child as React.ReactElement<any>).props.children);
     }
 
     const propagatedStyleKeys = ['float', 'width', 'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft'];

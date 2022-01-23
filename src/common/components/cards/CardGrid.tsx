@@ -57,7 +57,17 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
         selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
         onCardClick={this.props.onCardClick}
       />
-      <CardProvenanceDescription card={card} style={{ fontSize: 11, color: '#888', maxWidth: 155 }} />
+      <CardProvenanceDescription
+        card={card}
+        style={{
+          fontSize: 11,
+          color: '#888',
+          maxWidth: 140,
+          padding: '1px 3px',
+          background: `rgba(255, 255, 255, 0.8)`,
+          borderRadius: 5
+        }}
+      />
     </div>
   )
 }

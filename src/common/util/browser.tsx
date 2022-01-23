@@ -3,6 +3,7 @@ import { History } from 'history';
 import * as ReactGA from 'react-ga';
 import * as ReactDOM from 'react-dom';
 import { ReactNode, ReactPortal } from 'react';
+import * as qs from 'qs';
 
 declare const window: {
   location: { pathname: string, hostname: string }
@@ -55,6 +56,10 @@ export function setHash(history: History, hash: string): void {
   transformHistory(history, (path) => `${path}#${hash}`);
 }
 
+export function getQueryString(history: History, key: string): string | undefined {
+  return qs.parse(history.location.search.replace('?', ''))[key];
+}
+
 export function loadFromLocalStorage(key: string): string | undefined {
   if (typeof localStorage !== 'undefined') {
     return localStorage[`wb$${key}`];
@@ -69,12 +74,17 @@ export function saveToLocalStorage(key: string, value: string): void {
   }
 }
 
-export function isFlagSet(flag: string): boolean {
-  return loadFromLocalStorage(flag) === 'true';
+export function isFlagSet(flag: string, fallbackIfUndefined = false): boolean {
+  const flagValue: string | undefined = loadFromLocalStorage(flag);
+  if (flagValue === undefined) {
+    return fallbackIfUndefined;
+  } else {
+    return flagValue === 'true';
+  }
 }
 
-export function toggleFlag(flag: string): void {
-  saveToLocalStorage(flag, isFlagSet(flag) ? 'false' : 'true');
+export function toggleFlag(flag: string, value?: boolean): void {
+  saveToLocalStorage(flag, value !== undefined ? value.toString() : isFlagSet(flag) ? 'false' : 'true');
 }
 
 
@@ -99,6 +109,9 @@ export function isSupportedBrowser(): boolean {
   if (isFlagSet('hideUnsupportedBrowserMessage')) {
     return true;
   }
+
+  // To debug this message, uncomment the following line:
+  // return false;
 
   const browserInfo = detect();
   if (browserInfo?.type === 'browser') {

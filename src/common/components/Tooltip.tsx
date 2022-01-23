@@ -20,12 +20,14 @@ interface TooltipState {
 }
 
 export default class Tooltip extends React.Component<TooltipProps, TooltipState> {
+  public static displayName = 'Tooltip';
+
   public state = {
     tooltipId: id()
   };
 
   public render(): JSX.Element {
-    const { inline, style, text, children, disable, place, html, className, additionalStyles} = this.props;
+    const { inline, style, text, children, disable, place, html, className, additionalStyles } = this.props;
     const { tooltipId } = this.state;
     const SpanOrDiv = inline ? 'span' : 'div';
 

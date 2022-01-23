@@ -2,7 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import * as React from 'react';
 
 interface TitleProps {
-  text: string
+  text: string | JSX.Element
   small?: boolean
   style?: React.CSSProperties
 }
@@ -14,6 +14,7 @@ export default class Title extends React.PureComponent<TitleProps> {
       <Paper
         style={{
           display: 'inline-block',
+          marginLeft: 20,
           padding: '5px 15px',
           fontSize: small ? 16 : 24,
           fontFamily: 'Carter One',
@@ -21,7 +22,7 @@ export default class Title extends React.PureComponent<TitleProps> {
           backgroundColor: '#f44336',
           opacity: 0.8,
           borderTopRightRadius: 0,
-          borderBottomLeftRadius: 0,
+          borderTopLeftRadius: 0,
           ...style
         }}
       >

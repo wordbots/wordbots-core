@@ -5,6 +5,7 @@ import { compact, uniqBy } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../types';
+import { getQueryString } from '../../util/browser';
 import { unpackDeck } from '../../util/cards';
 import { sortDecks } from '../../util/decks';
 import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
@@ -38,7 +39,7 @@ interface PreGameModalState {
 export default class PreGameModal extends React.Component<PreGameModalProps, PreGameModalState> {
   public state: PreGameModalState = {
     selectedDeckId: null,
-    selectedFormatName: this.props.mode === 'practice' ? 'normal' : 'sharedDeck',
+    selectedFormatName: getQueryString(this.props.history, 'format') || (this.props.mode === 'practice' ? 'normal' : 'sharedDeck'),
     enteredPassword: '',
     isPasswordInvalid: false
   };
@@ -49,7 +50,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     const { selectedFormatName } = this.state;
     const formats = this.availableFormats;
 
-    return format || formats.find((f) => f.name === selectedFormatName)!;
+    return format || formats.find((f) => f.name === selectedFormatName) || formats[0];
   }
 
   // The full list of formats that are available to the player (given the game mode).

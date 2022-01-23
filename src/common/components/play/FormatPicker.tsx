@@ -38,8 +38,20 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
     return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}`;
   }
 
+  get isSetDraftFormatSelected(): boolean {
+    return this.setDraftFormats.map((f) => f.name).includes(this.props.selectedFormatName);
+  }
+
+  get setDraftFormats(): SetDraftFormat[] {
+    return this.props.availableFormats.filter((f) => f.name?.startsWith('setDraft(')) as SetDraftFormat[];
+  }
+
+  get nonSetDraftFormats(): GameFormat[] {
+    return this.props.availableFormats.filter((f) => !f.name?.startsWith('setDraft('));
+  }
+
   public render(): JSX.Element {
-    const { availableFormats, selectedFormatName } = this.props;
+    const { selectedFormatName } = this.props;
     return (
       <div style={this.styles.body}>
         <FormControl style={{ width: '100%', marginBottom: 15 }}>
@@ -47,14 +59,28 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
           <Select
             style={this.styles.select}
             name="formats"
-            value={selectedFormatName}
+            value={this.isSetDraftFormatSelected ? 'setDraft' : selectedFormatName}
             onChange={this.handleSelectFormat}
           >
-            {availableFormats.map((format, idx) =>
+            {this.nonSetDraftFormats.map((format, idx) =>
               <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
             )}
+            {this.setDraftFormats.length > 0 && <MenuItem key="setDraft" value="setDraft">Set Draft</MenuItem>}
           </Select>
         </FormControl>
+        {this.isSetDraftFormatSelected && <FormControl style={{ width: '100%', marginBottom: 15 }}>
+          <InputLabel>Choose a set to draft</InputLabel>
+          <Select
+            style={this.styles.select}
+            name="formats"
+            value={this.isSetDraftFormatSelected ? selectedFormatName : this.setDraftFormats[0].name}
+            onChange={this.handleSelectFormat}
+          >
+            {this.setDraftFormats.map((format, idx) =>
+              <MenuItem key={idx} value={format.name}>{format.set.name} (by {format.set.metadata.authorName})</MenuItem>
+            )}
+          </Select>
+        </FormControl>}
         <Tooltip
           html
           place="left"
@@ -68,6 +94,13 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
   }
 
   private handleSelectFormat = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.onChooseFormat(event.target.value);
+    const formatName = event.target.value;
+    console.log(formatName);
+    if (formatName === 'setDraft') {
+      console.log(this.setDraftFormats[0].name);
+      this.props.onChooseFormat(this.setDraftFormats[0].name);
+    } else {
+      this.props.onChooseFormat(formatName);
+    }
   }
 }

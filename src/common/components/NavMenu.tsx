@@ -1,140 +1,56 @@
-import { withStyles, WithStyles } from '@material-ui/core';
-import Drawer from '@material-ui/core/Drawer';
 import Icon from '@material-ui/core/Icon';
-import MenuItem from '@material-ui/core/MenuItem';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import BuildIcon from '@material-ui/icons/Build';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HomeIcon from '@material-ui/icons/Home';
+import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
+import LayersIcon from '@material-ui/icons/Layers';
+import PeopleIcon from '@material-ui/icons/People';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router';
 
-import { HEADER_HEIGHT, MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_WIDTH, SIDEBAR_Z_INDEX, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
-import { isFlagSet, isSupportedBrowser, toggleFlag } from '../util/browser';
+import { HEADER_HEIGHT, SIDEBAR_COLLAPSED_WIDTH, SIDEBAR_Y_OFFSET, SIDEBAR_Z_INDEX, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 
-import Tooltip from './Tooltip';
+import NavMenuLink from './NavMenuLink';
 
 interface NavMenuProps {
-  canExpand: boolean
-  isExpanded: boolean
   cardIdBeingEdited: string | null
-  onRerender: () => void
+  isUnsupportedBrowser: boolean
 }
 
-class NavMenu extends React.Component<NavMenuProps & WithStyles> {
-  public static styles: Record<string, CSSProperties> = {
-    drawerPaper: {
-      top: HEADER_HEIGHT,
-      transition: 'width 200ms ease-in-out',
-      height: 'calc(100% - 54px)',
-      overflow: 'visible',
-      zIndex: SIDEBAR_Z_INDEX,
-      '& .material-icons': {
-        color: '#666'
-      },
-      '& li .material-icons': {
-        marginRight: 20
-      }
-    },
-    expanded: {
-      width: SIDEBAR_WIDTH
-    },
-    collapsed: {
-      width: SIDEBAR_COLLAPSED_WIDTH
-    },
-    unsupportedBrowser: {
-      top: HEADER_HEIGHT + UNSUPPORTED_BROWSER_MESSAGE_HEIGHT
-    }
-  };
-
+class NavMenu extends React.PureComponent<NavMenuProps & RouteComponentProps> {
   public render(): JSX.Element {
-    const { canExpand, cardIdBeingEdited, isExpanded, classes } = this.props;
+    const { cardIdBeingEdited, isUnsupportedBrowser, history: { location } } = this.props;
+
+    const iconStyle = {
+      transform: 'skewY(-20deg)',
+      marginRight: 15
+    };
+
     return (
-      <Drawer
-        open
-        variant="permanent"
-        classes={{ paper: `${classes.drawerPaper} ${isExpanded ? classes.expanded : classes.collapsed} ${!isSupportedBrowser() && classes.unsupportedBrowser}` }}
+      <div
+        style={{
+          position: 'fixed',
+          display: 'flex',
+          flexDirection: 'column',
+          top: HEADER_HEIGHT + (isUnsupportedBrowser ? UNSUPPORTED_BROWSER_MESSAGE_HEIGHT : 0) + SIDEBAR_Y_OFFSET,
+          zIndex: SIDEBAR_Z_INDEX,
+          width: SIDEBAR_COLLAPSED_WIDTH
+        }}
       >
-        {this.renderLink('/', 'Home', 'home')}
-        {this.renderLink('/play', 'Arena', 'crossed-swords', 'ra')}
-        {this.renderLink(`/card/${cardIdBeingEdited || 'new'}`, 'Workshop', 'build')}
-        {this.renderLink('/collection', 'Collection', 'view_module')}
-        {this.renderLink('/decks', 'Decks', 'view_list')}
-        {this.renderLink('/sets', 'Sets', 'layers')}
-        {this.renderLink('/community', 'Community', 'people')}
-        {this.renderLink('/help', 'Help', 'help_outline')}
-        {this.renderLink('/about', 'About', 'info_outline')}
-        {canExpand && this.renderExpandCollapseButton()}
-      </Drawer>
+        <NavMenuLink location={location} path="/" text="Home" icon={<HomeIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/play" text="Arena" icon={<Icon className={`ra ra-crossed-swords`} style={{ ...iconStyle, lineHeight: 1.2 }} />} />
+        <NavMenuLink location={location} path={`/card/${cardIdBeingEdited || "new"}`} text="Workshop" icon={<BuildIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/collection" text="Collection" icon={<ViewModuleIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/decks" text="Decks" icon={<ViewListIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/sets" text="Sets" icon={<LayersIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/community" text="Community" icon={<PeopleIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/help" text="Help" icon={<HelpOutlineIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/about" text= "About" icon={<InfoOutlineIcon style={iconStyle} />} />
+      </div>
     );
   }
-
-  private toggleExpanded = () => {
-    toggleFlag('sidebarCollapsed');
-    this.props.onRerender();
-  }
-
-  private renderIcon = (icon: string, iconFont: 'material' | 'ra'): React.ReactNode => {
-    if (iconFont === 'material') {
-      return (
-        <Icon
-          className="material-icons"
-          style={{ left: this.props.isExpanded ? 4 : 8 }}
-        >
-          {icon}
-        </Icon>
-      );
-    } else if (iconFont === 'ra') {
-      return (
-        <Icon
-          className={`ra ra-${icon}`}
-          style={{
-            left: this.props.isExpanded ? 4 : 8,
-            lineHeight: 1.2
-          }}
-        />
-      );
-    }
-  }
-
-  private renderLink = (path: string, text: string, icon: string, iconFont: 'material' | 'ra' = 'material') => (
-    <NavLink exact to={path} activeClassName="activeNavLink">
-      <Tooltip
-        disable={this.props.isExpanded}
-        text={text}
-        place="right"
-        style={{ zIndex: MAX_Z_INDEX }}
-      >
-        <MenuItem>
-          {this.renderIcon(icon, iconFont)}
-          {this.props.isExpanded ? text : ''}
-        </MenuItem>
-      </Tooltip>
-    </NavLink>
-  )
-
-  private renderExpandCollapseButton = () => (
-    <div
-      onClick={this.toggleExpanded}
-      style={{
-        textAlign: 'center',
-        cursor: 'pointer'
-      }}
-    >
-      <Tooltip
-        text={isFlagSet('sidebarCollapsed') ? 'Expand' : 'Collapse'}
-        place="right"
-      >
-        {this.props.isExpanded
-          ? <React.Fragment>
-              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_forward</Icon>
-              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_back</Icon>
-            </React.Fragment>
-          : <React.Fragment>
-              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_back</Icon>
-              <Icon className="material-icons" style={{ fontSize: '0.6em' }}>arrow_forward</Icon>
-            </React.Fragment>
-        }
-      </Tooltip>
-    </div>
-  )
 }
 
-export default withStyles(NavMenu.styles)(NavMenu);
+export default withRouter(NavMenu);

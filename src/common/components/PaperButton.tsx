@@ -14,7 +14,7 @@ interface PaperButtonState {
 
 export default class PaperButton extends React.Component<PaperButtonProps, PaperButtonState> {
   public state = {
-    shadow: 1
+    shadow: 3
   };
 
   public render(): JSX.Element {
@@ -39,11 +39,11 @@ export default class PaperButton extends React.Component<PaperButtonProps, Paper
 
   private onMouseOver = () => {
     if (!this.props.disabled) {
-      this.setState({shadow: 5});
+      this.setState({ shadow: 6 });
     }
   }
 
   private onMouseOut = () => {
-    this.setState({shadow: 1});
+    this.setState({ shadow: 3 });
   }
 }

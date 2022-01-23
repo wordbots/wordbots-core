@@ -1,13 +1,11 @@
 import AppBar from '@material-ui/core/AppBar';
+import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Popover from '@material-ui/core/Popover';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import * as fb from 'firebase';
 import { History } from 'history';
 import * as React from 'react';
@@ -16,14 +14,15 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import RouterDialog from '../components/RouterDialog';
-import { MAX_Z_INDEX } from '../constants';
 import * as w from '../types';
-import { isSupportedBrowser, toggleFlag } from '../util/browser';
 import { logout } from '../util/firebase';
+import { DIALOG_Z_INDEX, HEADER_HEIGHT, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
+import UserMenuItem from '../components/UserMenuItem';
 
 interface TitleBarProps extends TitleBarReduxProps {
   isAppLoading: boolean
-  onRerender: () => void
+  isUnsupportedBrowser: boolean
+  onHideUnsupportedBrowserMessage: () => void
 }
 
 interface TitleBarReduxProps {
@@ -31,8 +30,7 @@ interface TitleBarReduxProps {
 }
 
 interface TitleBarState {
-  userOpen: boolean
-  anchorEl: HTMLElement | undefined
+  isUserMenuOpen: boolean
 }
 
 function mapStateToProps(state: w.State): TitleBarReduxProps {
@@ -43,43 +41,38 @@ function mapStateToProps(state: w.State): TitleBarReduxProps {
 
 class TitleBar extends React.Component<TitleBarProps & { history: History }, TitleBarState> {
   public state = {
-    userOpen: false,
-    anchorEl: undefined
+    isUserMenuOpen: false,
   };
 
   get userMenu(): JSX.Element {
+    const { isUnsupportedBrowser } = this.props;
+    const { isUserMenuOpen } = this.state;
+
     if (this.props.user) {
       return (
         <div style={{marginTop: 4}}>
           <Button
             style={{ color: 'white' }}
-            onClick={this.openUserMenu}
+            onClick={this.toggleUserMenu}
           >
             {this.props.user.displayName}
-            <Icon className="material-icons" style={{ margin: '0 5px 0 8px' }}>account_circle</Icon>
+            <AccountCircleIcon style={{ margin: '0 5px 0 8px' }} />
           </Button>
-          <Popover
-            open={this.state.userOpen}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            onClose={this.closeUserMenu}
-            style={{ zIndex: MAX_Z_INDEX, marginTop: 5 }}
-          >
-            <MenuList>
-              <MenuItem onClick={this.handleClickProfile}>
-                <ListItemIcon>
-                  <Icon className="material-icons">account_circle</Icon>
-                </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={this.handleClickLogout}>
-                <ListItemIcon>
-                  <Icon className="material-icons">exit_to_app</Icon>
-                </ListItemIcon>
-                <ListItemText>Logout</ListItemText>
-              </MenuItem>
-            </MenuList>
-          </Popover>
+          {isUserMenuOpen &&
+            <>
+              <Backdrop open invisible onClick={this.closeUserMenu} />
+              <div
+                style={{
+                  position: 'fixed',
+                  top: HEADER_HEIGHT + (isUnsupportedBrowser ? UNSUPPORTED_BROWSER_MESSAGE_HEIGHT : 0),
+                  right: 0,
+                  background: 'white'
+                }}>
+                <UserMenuItem text="Profile" icon={<AccountCircleIcon />} onClick={this.handleClickProfile} />
+                <UserMenuItem text="Logout" icon={<ExitToAppIcon />} onClick={this.handleClickLogout} />
+              </div>
+            </>
+          }
         </div>
       );
     } else {
@@ -116,7 +109,8 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   }
 
   public renderUnsupportedBrowserMessage(): JSX.Element | undefined {
-    if (!isSupportedBrowser()) {
+    const { isUnsupportedBrowser, onHideUnsupportedBrowserMessage } = this.props;
+    if (isUnsupportedBrowser) {
       return (
         <div style={{
           display: 'flex',
@@ -135,7 +129,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
             Wordbots requires Firefox 49+, Chrome 53+, Safari 10+, Edge 79+, or a similar browser for optimal performance.{' '}
             <a
               style={{ cursor: 'pointer', color: '#666', textDecoration: 'underline' }}
-              onClick={this.handleClickHideUnsupportedBrowserMessage}
+              onClick={onHideUnsupportedBrowserMessage}
             >[hide this message]</a>
           </span>
         </div>
@@ -152,7 +146,8 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
           <AppBar
             position="fixed"
             style={{
-              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)'
+              boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)',
+              zIndex: DIALOG_Z_INDEX
             }}
           >
             {this.renderUnsupportedBrowserMessage()}
@@ -164,7 +159,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
               }}
             >
               <Typography style={{ fontFamily: 'Carter One', fontSize: 32 }}>
-                <Link style={{ color: 'white' }} to="/">WORDBOTS</Link>
+                <Link className="wordbotsAppBarLink" to="/">WORDBOTS</Link>
               </Typography>
               {this.userMenu}
             </Toolbar>
@@ -178,17 +173,18 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
     RouterDialog.openDialog(this.props.history, 'login');
   }
 
-  private openUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  private toggleUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
 
-    this.setState({
-      userOpen: true,
-      anchorEl: event.currentTarget
-    });
+    if (this.state.isUserMenuOpen) {
+      this.closeUserMenu();
+    } else {
+      this.setState({ isUserMenuOpen: true });
+    }
   }
 
   private closeUserMenu = () => {
-    this.setState({userOpen: false});
+    this.setState({ isUserMenuOpen: false });
   }
 
   private handleClickProfile = () => {
@@ -203,11 +199,6 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
   private handleClickLogout = () => {
     logout();
     this.closeUserMenu();
-  }
-
-  private handleClickHideUnsupportedBrowserMessage = () => {
-    toggleFlag("hideUnsupportedBrowserMessage");
-    this.props.onRerender();
   }
 }
 

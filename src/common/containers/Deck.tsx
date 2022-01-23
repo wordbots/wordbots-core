@@ -9,6 +9,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
@@ -125,6 +126,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     return (
       <div>
         <Helmet title="Building Deck"/>
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>
@@ -198,11 +200,11 @@ export class Deck extends React.Component<DeckProps, DeckState> {
     }
   }
 
-  private setField = (key: keyof DeckState, callback = noop) => (value: any) => {
-    this.setState({[key]: value} as any, callback);
+  private setField = (key: keyof DeckState, callback = noop) => (value: DeckState[typeof key]) => {
+    this.setState({[key]: value} as Pick<DeckState, keyof DeckState>, callback);
   }
 
-  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }));

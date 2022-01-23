@@ -57,6 +57,7 @@ export interface CardProps {
   rotation?: number
   yTranslation?: number
   zIndex?: number
+  overrideContainerStyles?: CSSProperties
 
   onCardClick?: (id: string) => void
   onCardHover?: (enterOrLeave: boolean) => void
@@ -170,7 +171,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     const {
       name, spriteID, spriteV, type, img, cost, baseCost, source, collection, flavorText,
       showSpinner, status, visible, selected, targetable,
-      scale, margin, rotation, yTranslation,
+      scale, margin, rotation, yTranslation, overrideContainerStyles,
       onSpriteClick, classes
     } = this.props;
     const blueShadow = 'rgba(0, 120, 135, 0.45)';
@@ -199,7 +200,8 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
           style={{
             padding: '24px 0 12px 0',
             marginRight: margin,
-            transform
+            transform,
+            ...(overrideContainerStyles || {})
           }}
         >
           <CardCostBadge

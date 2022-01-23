@@ -2,7 +2,7 @@ import { History } from 'history';
 import * as React from 'react';
 
 import * as w from '../../types';
-import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX } from '../../constants';
+import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH } from '../../constants';
 
 import Board from './Board';
 import DraftArea from './DraftArea';
@@ -67,7 +67,8 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               display: 'flex',
               height: '100%',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              paddingLeft: isSandbox ? SIDEBAR_COLLAPSED_WIDTH : 0
             }}
           >
             <LeftControls

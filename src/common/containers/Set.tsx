@@ -10,6 +10,7 @@ import { withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
 import ActiveDeck from '../components/cards/ActiveDeck';
 import CardCollection from '../components/cards/CardCollection';
 import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebarControls';
@@ -92,6 +93,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     return (
       <div>
         <Helmet title={setBeingEdited ? 'Editing Set' : 'Creating Set'} />
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
 
         <div className={classes.container}>
           <div className={classes.leftSidebar}>
@@ -137,11 +139,11 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     );
   }
 
-  private setField = (key: keyof NewSetState, callback = noop) => (value: any) => {
-    this.setState({[key]: value} as any, callback);
+  private setField = (key: keyof NewSetState, callback = noop) => (value: NewSetState[typeof key]) => {
+    this.setState({[key]: value} as Pick<NewSetState, keyof NewSetState>, callback);
   }
 
-  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<any>, toggled: boolean) => {
+  private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
       filters: {...state.filters, [filter]: toggled}
     }));

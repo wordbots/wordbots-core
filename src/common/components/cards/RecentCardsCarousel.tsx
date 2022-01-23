@@ -107,7 +107,19 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
                     }}
                   >
                     {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); }})}
-                    <CardProvenanceDescription card={card} style={{ position: 'relative', top: 22, fontSize: 11, color: '#888', maxWidth: 155 }} />
+                    <CardProvenanceDescription
+                      card={card}
+                      style={{
+                        position: 'relative',
+                        top: 20,
+                        fontSize: 10.5,
+                        color: '#888',
+                        maxWidth: 140,
+                        padding: '1px 3px',
+                        background: `rgba(255, 255, 255, 0.8)`,
+                        borderRadius: 5
+                      }}
+                    />
                   </div>
                 )
               }

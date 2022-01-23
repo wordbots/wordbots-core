@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import { History } from 'history';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -7,8 +6,10 @@ import { withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
+import Background from '../components/Background';
 import DeckSummary from '../components/cards/DeckSummary';
 import Title from '../components/Title';
+import ToolbarButton from '../components/ToolbarButton';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
 import { cardsInDeck } from '../util/cards';
@@ -64,20 +65,24 @@ class Decks extends React.Component<DecksProps> {
     return (
       <div>
         <Helmet title="Decks" />
+        <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
+
         <Title text="Decks" />
 
-        <div style={{margin: 20}}>
+        <div style={{ display: 'inline', paddingLeft: 10 }}>
           <MustBeLoggedIn loggedIn={loggedIn} style={{ display: 'inline-block' }}>
-            <Button
-              color="primary"
-              variant="contained"
-              style={{ marginBottom: 20, fontFamily: 'Carter One' }}
+            <ToolbarButton
+              icon="add_circle_outline"
+              tooltip={loggedIn ? "Create a new deck using cards in your collection." : undefined}
               onClick={this.handleCreateDeck}
             >
               New Deck
-            </Button>
+            </ToolbarButton>
           </MustBeLoggedIn>
+        </div>
 
+
+        <div style={{margin: 20}}>
           <div
             style={{
               display: 'flex',

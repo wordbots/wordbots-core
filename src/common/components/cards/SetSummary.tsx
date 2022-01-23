@@ -1,7 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, Paper } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, IconButton, Paper } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import * as fb from 'firebase';
 import { History } from 'history';
 import { isUndefined } from 'lodash';
@@ -10,7 +12,9 @@ import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
 import { sortCards } from '../../util/cards';
+import { SetDraftFormat } from '../../util/formats';
 import { Card } from '../card/Card';
+import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import ProfileLink from '../users/ProfileLink';
 
@@ -42,9 +46,13 @@ type SetSummaryProps = SetSummaryBaseProps & WithStyles;
 class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   public static styles: Record<string, CSSProperties> = {
     paper: {
+      display: 'inline-block',
       position: 'relative',
       padding: 10,
-      marginBottom: 5
+      margin: '5px 15px',
+      textAlign: 'left',
+      maxWidth: '95%',
+      transition: 'width 250ms ease-in-out'
     },
     confirmDeleteControl: {
       fontSize: '13px',
@@ -69,7 +77,14 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     dialogButton: {
       marginLeft: 10
     },
+    description: {
+      margin: '15px 100px 0 48px',
+      color: '#333',
+      fontSize: '0.9em'
+    },
     link: {
+      fontSize: '0.9em',
+      color: '#666',
       cursor: 'pointer',
       textDecoration: 'underline',
       '&:hover': {
@@ -118,25 +133,14 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     const canEditSet = this.doesSetBelongToUser && !metadata.isPublished;
 
     return (
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} style={{ width: isCardListExpanded ? '95%' : 850 }}>
+        <IconButton style={{ float: 'left' }} onClick={this.toggleCardList}>
+          {isCardListExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
         <div>
-          <strong>{name}</strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
+          <strong><a className="underline" href={this.permalinkUrl}>{name}</a></strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
           {!inPublishedSetsList && metadata.isPublished && <i> (published)</i>}
-        </div>
-        <div className={classes.controls}>
-          <MustBeLoggedIn loggedIn={!!user}>
-            {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15 })}
-            {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15 }) : null}
-            {canEditSet ? this.renderButton('Edit', onEditSet) : null}
-            {this.doesSetBelongToUser ? this.renderButton('Duplicate', onDuplicateSet) : null}
-            {this.renderDeleteControl()}
-          </MustBeLoggedIn>
-        </div>
-        <div>
-        {description}
-        </div>
-        <div>
-          <a className={classes.link} onClick={this.toggleCardList}>
+          <a className={classes.link} style={{ marginLeft: 10 }} onClick={this.toggleCardList}>
             [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
           </a>
           {' '}
@@ -144,18 +148,41 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             <a className={classes.link}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
           </CopyToClipboard>
         </div>
-        {isCardListExpanded && <div>
-          {
-            cards
-              .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
-              .map((card, idx) => (
-                <div key={idx} style={{float: 'left'}}>
-                  {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
-                </div>
-              ))
-          }
-          <div style={{clear: 'both'}}/>
-        </div>}
+        <div className={classes.controls}>
+          <MustBeLoggedIn
+            loggedIn={!!user}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%'
+            }}
+          >
+            {inPublishedSetsList ? this.renderButton('Draft!', this.handleDraftFromSet) : null}
+            {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
+            {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}
+            {canEditSet ? this.renderButton('Edit', onEditSet) : null}
+            {this.doesSetBelongToUser ? this.renderButton('Duplicate', onDuplicateSet) : null}
+            {this.renderDeleteControl()}
+          </MustBeLoggedIn>
+        </div>
+        <div className={classes.description}>
+          {description}
+        </div>
+        {isCardListExpanded &&
+          <div>
+            <div style={{clear: 'both'}}/>
+            {
+              cards
+                .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
+                .map((card, idx) => (
+                  <div key={idx} style={{float: 'left'}}>
+                    {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
+                  </div>
+                ))
+            }
+            <div style={{clear: 'both'}}/>
+          </div>
+        }
         <div className={classes.numDecksCreated}>
           {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created
         </div>
@@ -212,24 +239,27 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </span>
         );
       } else {
-        return this.renderButton('Delete', this.handleOpenDeleteConfirmation, { color: 'primary' });
+        return this.renderButton('Delete', this.handleOpenDeleteConfirmation, undefined, { color: 'primary' });
       }
     } else {
       return null;
     }
   }
 
-  private renderButton = (text: string, action: () => void, additionalProps?: ButtonProps): JSX.Element => (
-    <Button
-      variant="outlined"
-      size="small"
-      color="secondary"
-      classes={{ outlined: this.props.classes.controlsButton }}
-      onClick={action}
-      {...additionalProps}
-    >
-      {text}
-    </Button>
+  private renderButton = (text: string, action: () => void, disabled?: { disabled: boolean, reason: string }, additionalProps?: ButtonProps): JSX.Element => (
+    <Tooltip inline disable={!(disabled?.disabled)} text={disabled?.reason || ''}>
+      <Button
+        variant="outlined"
+        size="small"
+        color="secondary"
+        classes={{ outlined: this.props.classes.controlsButton }}
+        onClick={action}
+        disabled={disabled?.disabled}
+        {...additionalProps}
+      >
+        {text}
+      </Button>
+    </Tooltip>
   )
 
   private handleClickCard = (card: w.CardInStore) => {
@@ -254,6 +284,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   private handlePublishSet = () => {
     this.handleClosePublishConfirmation();
     this.props.onPublishSet();
+  }
+
+  private handleDraftFromSet = () => {
+    const { set, history } = this.props;
+    history.push(`/play//host?format=${(new SetDraftFormat(set)).name}`);
   }
 
   private handleOpenDeleteConfirmation = () => { this.setState({ isDeleteConfirmationOpen: true }); };

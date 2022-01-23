@@ -5,6 +5,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
+import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import * as w from '../types';
@@ -19,17 +20,19 @@ export function mapStateToProps(state: w.State): AboutProps {
   };
 }
 
-class About extends React.Component<AboutProps> {
+class About extends React.PureComponent<AboutProps> {
   public render(): JSX.Element {
     const [version, sha] = this.props.version.split('+');
     const shaTruncated = truncate(sha, { length: 8, omission: '' });
 
     return (
-      <div>
+      <div className="helpPage">
         <Helmet title="About"/>
+        <Background asset="compressed/image1-1.jpg" opacity={1} style={{ backgroundSize: 'contain' }} />
+
         <Title text="About" />
 
-        <div style={{display: 'flex', justifyContent: 'stretch', margin: 20}}>
+        <div style={{display: 'flex', justifyContent: 'stretch', margin: '20px auto', width: '84%' }}>
           <div style={{width: '50%', marginRight: 20}}>
             <Paper style={{padding: '5px 20px'}}>
               <MarkdownBlock source={whatIsWordbots(version, shaTruncated)} />
@@ -42,7 +45,7 @@ class About extends React.Component<AboutProps> {
 
           <div style={{width: '50%'}}>
             <Paper style={{padding: '5px 20px'}}>
-              <MarkdownBlock source={howToPlay} />
+              <MarkdownBlock source={credits} />
             </Paper>
           </div>
         </div>
@@ -54,7 +57,7 @@ class About extends React.Component<AboutProps> {
 export default withRouter(connect(mapStateToProps)(About));
 
 const whatIsWordbots = (version: string, sha: string) => (`
-# Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
+## Wordbots [${version}](https://github.com/wordbots/wordbots-core/releases/tag/v${version})+${sha}
 ![](http://app.wordbots.io/static/screenshot_mini.png)
 **Wordbots** is a customizable hex-based card game with a twist – _you_, the player,
 get to create the cards!
@@ -83,6 +86,43 @@ Feel free to add issues or even make a pull request if you're feeling brave.
 [send a dollar or two our way on Patreon](https://www.patreon.com/wordbots).
 `;
 
+const credits = `
+## Credits
+
+Wordbots was created by:
+
+* [**Alex Nisnevich**](https://alex.nisnevich.com/) – concept, parser, frontend
+* [**Jacob Nisnevich**](https://github.com/jacobnisnevich) – frontend, design
+
+with help from:
+
+* [Chris Wooten](https://www.artstation.com/christopherwooten) – art
+* [John Patterson](https://www.johnppatterson.com/) - consultation, code contributions, voice acting
+* [Danny Burt](http://dbz.rocks/), [Bryan Hoyt](https://github.com/bryanftw), [Michael Ebert](https://github.com/MichaelEbert), [Tim Hwang](https://timhwang21.gitbook.io/index/) – consultation, [code contributions](https://github.com/wordbots/wordbots-core/graphs/contributors)
+* Asali Echols, James Silvey, Annie Nisnevich – extensive playtesting
+* Adam B, Honza H, Drew T, Greg S, Liam D, Erik K, John B, Alex B – playtesting
+
+The Wordbots parser is built on top of the [\`Montague\` semantic parsing engine](https://github.com/Workday/upshot-montague).
+
+The Wordbots frontend incorporates the following (MIT- and WTFPL-licensed) projects:
+
+* [\`react-hexgrid\`](https://github.com/hellenic/react-hexgrid) by [Hannu Kärkkäinen](https://github.com/Hellenic)
+* [\`spritegen\`](https://gitlab.com/not_surt/spritegen) by [Carl Olsson](https://gitlab.com/not_surt)
+* [\`identicons-react\`](https://github.com/gimenete/identicons-react) by [Alberto Gimeno](https://github.com/gimenete)
+
+Wordbots uses the following fonts and icon fonts:
+
+* [Carter One](https://fonts.google.com/specimen/Carter+One) by
+[Vernon Adams](https://fonts.google.com/?query=Vernon%20Adams), courtesy of Google Fonts
+* [VT323](https://fonts.google.com/specimen/VT323) by [Peter Hull](https://fonts.google.com/?query=Peter%20Hull), courtesy of Google Fonts
+* [Roboto](https://fonts.google.com/specimen/Roboto) by [Christian Robertson](https://fonts.google.com/?query=Christian%20Robertson), courtesy of Google Fonts
+* [Space Age](https://www.1001fonts.com/space-age-font.html) by [Justin Callaghan](https://www.1001fonts.com/users/jcmagic/), courtesy of [1001 Fonts](https://www.1001fonts.com/)
+* [Material Icons](https://mui.com/components/material-icons/) by Google
+* [RPG-Awesome Icons](https://nagoshiashumari.github.io/Rpg-Awesome/) by [Game-Icons.net](https://game-icons.net/), [Daniela Howe](https://github.com/nagoshiashumari), and [Ivan Montiel](https://github.com/idmontie)
+
+`;
+
+/* (No longer needed now that we have the New Here? widget on the homepage? -AN)
 const howToPlay = `
 ## How to Play
 
@@ -109,3 +149,4 @@ Go to the [lobby](/play), choose your deck, and host or join a game.
 
 Destroy your opponent's kernel to win!
 `;
+*/

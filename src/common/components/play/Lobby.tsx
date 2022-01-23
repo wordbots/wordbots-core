@@ -7,6 +7,7 @@ import { CHAT_WIDTH } from '../../constants';
 import * as w from '../../types';
 import { unpackDeck } from '../../util/cards';
 import { GameFormat, renderFormatDisplayName } from '../../util/formats';
+import Background from '../Background';
 import RouterDialog from '../RouterDialog';
 import Title from '../Title';
 
@@ -73,6 +74,8 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
 
     return (
       <div>
+        <Background asset="compressed/IMG_2997.jpg" opacity={0.25} style={{ width: 'calc(100% - 256px)' }} />
+
         <div>
           {casualGameBeingJoined && <PreGameModal
             mode="casual"

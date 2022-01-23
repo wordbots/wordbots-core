@@ -4,6 +4,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { isNil, upperCase } from 'lodash';
 import * as React from 'react';
 
+import theme from '../../../themes/theme';
 import Title from '../../Title';
 
 interface PlayerInfoProps {
@@ -39,18 +40,30 @@ export const styles: Record<string, CSSProperties> = {
   playerInfoItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: 24
+    fontSize: 24,
+    [theme.breakpoints.down('md')]: {
+      display: 'block'
+    },
   },
   playerInfoKey: {
     width: '50%',
     textAlign: 'right',
     fontWeight: 100,
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      textAlign: 'center'
+    },
   },
   playerInfoValue: {
     width: '48%',
     color: '#555',
-    fontWeight: 700
+    fontWeight: 700,
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      textAlign: 'center',
+      marginBottom: '0.5em'
+    },
   },
   victory: {
     color: '#4CAF50',

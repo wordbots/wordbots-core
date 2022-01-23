@@ -48,7 +48,6 @@ $ yarn lint --fix && yarn test --coverage
 
 Some code taken from the following (all MIT licensed):
 
-* [`redux-react-material-boilerplate`](https://github.com/WapGeaR/redux-react-material-boilerplate)
 * [`react-hexgrid`](https://github.com/hellenic/react-hexgrid)
 * notsurt's [`spritegen`](https://github.com/not-surt/spritegen)
 * gimenete's [`identicons-react`](https://github.com/gimenete/identicons-react)

@@ -1,4 +1,4 @@
-import { cloneDeep, findIndex, has, isArray, isObject, mapValues, pickBy } from 'lodash';
+import { cloneDeep, findIndex, has, isArray, isObject, mapValues, noop, pickBy } from 'lodash';
 
 import * as gameActions from '../src/common/actions/game';
 import * as socketActions from '../src/common/actions/socket';
@@ -23,6 +23,14 @@ import { attackBotCard } from './data/cards';
 interface Target {
   hex?: w.HexId
   card?: w.CardInStore | number
+}
+
+/** Run the given block with console.error(...) messages suppressed within it. */
+export function withConsoleErrorsSuppressed(fn: () => void): void {
+  const oldConsoleError = console.error;
+  console.error = noop;
+  fn();
+  console.error = oldConsoleError;
 }
 
 export function getDefaultState(format: string | null = null): w.GameState {

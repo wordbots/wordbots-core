@@ -15,7 +15,7 @@ import * as testCards from '../data/cards';
 import {
   activate, action, attack, drawCardToHand, getDefaultState, moveRobot,
   newTurn, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, queryPlayerHealth, queryRobotAttributes,
-  setUpBoardState, startingHandSize
+  setUpBoardState, startingHandSize, withConsoleErrorsSuppressed
 } from '../testHelpers';
 
 describe('Game reducer', () => {
@@ -647,8 +647,10 @@ describe('Game reducer', () => {
       });
       expect(state.winner).toBeNull();
 
-      state = newTurn(state, 'blue');
-      expect(state.winner).toEqual('draw');
+      withConsoleErrorsSuppressed(() => {
+        state = newTurn(state, 'blue');
+        expect(state.winner).toEqual('draw');
+      });
     });
   });
 

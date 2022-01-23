@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import { History } from 'history';
 import * as React from 'react';
 import Helmet from 'react-helmet';

@@ -42,12 +42,12 @@ class NavMenu extends React.PureComponent<NavMenuProps & RouteComponentProps> {
         <NavMenuLink location={location} path="/" text="Home" icon={<HomeIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/play" text="Arena" icon={<Icon className={`ra ra-crossed-swords`} style={{ ...iconStyle, lineHeight: 1.2 }} />} />
         <NavMenuLink location={location} path={`/card/${cardIdBeingEdited || "new"}`} text="Workshop" icon={<BuildIcon style={iconStyle} />} />
-        <NavMenuLink location={location}path="/collection" text="Collection" icon={<ViewModuleIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/collection" text="Collection" icon={<ViewModuleIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/decks" text="Decks" icon={<ViewListIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/sets" text="Sets" icon={<LayersIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/community" text="Community" icon={<PeopleIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/help" text="Help" icon={<HelpOutlineIcon style={iconStyle} />} />
-        <NavMenuLink location={location}path="/about" text= "About" icon={<InfoOutlineIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/about" text= "About" icon={<InfoOutlineIcon style={iconStyle} />} />
       </div>
     );
   }

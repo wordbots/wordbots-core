@@ -321,14 +321,24 @@ export function parseBatch(
 // Given a card that is complete except for command/abilities,
 // parse the text to fill in command/abilities, then trigger callback.
 // Used only by cardsFromJson() and in integration tests.
-export function parseCard(card: w.CardInStore, callback: (c: w.CardInStore, parseResult: string[]) => any): void {
+// TODO UPDATE DOCSTRING?
+export function parseCard(
+  card: w.CardInStore,
+  callback: (c: w.CardInStore, parseResult: string[]) => void,
+  errorCallback?: (message: string) => void
+): void {
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text || '');
   const parseResults: string[] = [];
 
   parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
     if (response.error) {
-      throw new Error(`Received '${response.error}' while parsing '${sentences[idx]}'`);
+      const errorMsg = `Received '${response.error}' while parsing '${sentences[idx]}'`;
+      if (errorCallback) {
+        errorCallback(errorMsg);
+      } else {
+        throw new Error(errorMsg);
+      }
     }
 
     parseResults[idx] = response.js!;

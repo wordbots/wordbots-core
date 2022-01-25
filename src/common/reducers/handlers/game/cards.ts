@@ -14,6 +14,7 @@ import {
   matchesType, removeCardsFromHand, setTargetAndExecuteQueuedAction,
   triggerEvent, triggerSound, validPlacementHexes
 } from '../../../util/game';
+import { stopWaitingForParses } from '../../../util/rewrite';
 
 type State = w.GameState;
 type PlayerState = w.PlayerInGameState;
@@ -221,6 +222,7 @@ function playEvent(state: State, cardIdx: number): State {
       currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = { choosing: true, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: allHexIds() };
       currentPlayer(state).status = {message: `Click anywhere on the board to play ${card.name}.`, type: 'text'};
+      stopWaitingForParses();
     } else {
       // Everything is good (valid state + no more targets to select), so we can return the new state!
       card.justPlayed = false;

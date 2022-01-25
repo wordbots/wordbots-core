@@ -19,6 +19,7 @@ export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack
 export type DeckId = string;
 export type GameWinner = PlayerColor | 'draw' | 'aborted' | null;  // (null indicates game is still in progress)
 export type HexId = string;
+export type ObjectId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
 
@@ -326,7 +327,7 @@ export interface CurrentTarget {
 // Object is not a valid type name, but we want to export `types.Object`,
 // so define it with the name `_Object` here and export it as `Object`.
 interface _Object { // eslint-disable-line @typescript-eslint/naming-convention
-  id: string
+  id: ObjectId
   type: CardType
   card: CardInGame
   stats: {

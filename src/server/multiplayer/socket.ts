@@ -114,7 +114,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
         socket.send(message);
         console.log(`> ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})}`);
       } catch (error) {
-        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${error.message}`);
+        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${(error as any).message}`);
       }
     });
   }

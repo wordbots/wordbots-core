@@ -40,6 +40,10 @@ export function opponentPlayer(state: w.GameState): w.PlayerInGameState {
   return state.players[opponentName(state)];
 }
 
+export function isMyTurn(state: w.GameState): boolean {
+  return state.currentTurn === state.player;
+}
+
 export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefined {
   if ((state.tutorial || state.sandbox) && state.tutorialSteps) {
     const idx = state.tutorialCurrentStepIdx || 0;
@@ -666,7 +670,7 @@ export function executeCmd(
     state.executionStackDepth -= 1;
     return result;
   } catch (error) {
-    if (error.message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
+    if ((error as any).message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
       // Propagate the error up the stack to the original invocation of executeCmd() (executionStackDepth === 1).
       if (state.executionStackDepth > 1) {
         throw error;

@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "checkJs": false,
     "jsx": "react",
-    "lib": ["es2015", "es2017", "dom"],
+    "lib": ["esnext", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,

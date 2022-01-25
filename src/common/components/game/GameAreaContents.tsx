@@ -1,8 +1,10 @@
+import { red } from '@material-ui/core/colors';
 import { History } from 'history';
 import * as React from 'react';
 
 import * as w from '../../types';
-import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH } from '../../constants';
+import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX, MAX_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH } from '../../constants';
+import SpinningGears from '../SpinningGears';
 
 import Board from './Board';
 import DraftArea from './DraftArea';
@@ -155,6 +157,34 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
+          <div
+            id="parsingIndicator"
+            style={{
+              display: 'none',
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: MAX_Z_INDEX,
+              pointerEvents: 'none'
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '40%',
+              width: '100%',
+              margin: 'auto',
+              textAlign: 'center',
+              fontFamily: 'Carter One',
+              fontSize: '400%',
+              color: red[500],
+              WebkitTextStroke: '1px white'
+            }}>
+              Parsing ...
+            </div>
+            <SpinningGears />
+          </div>
           {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
         </React.Fragment>
       );

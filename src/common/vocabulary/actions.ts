@@ -12,6 +12,7 @@ import {
   allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, opponent, ownerOf, ownerOfCard,
   passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
 } from '../util/game';
+import { tryToRewriteCard } from '../util/rewrite';
 
 export default function actions(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<void>> {
   const iterateOver = <T extends w.Targetable>(collection: w.Collection, shouldReassignPlayerToKernel = true) => (fn: (item: T) => void) => {
@@ -224,6 +225,16 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
         player.hand = player.hand.concat([object.card]);
         removeObjectFromBoard(state, object, getHex(state, object)!);
+      });
+    },
+
+    rewriteText: (targets: w.CardInHandCollection, fromText: string, toText: string): void => {
+      iterateOver<w.CardInGame>(targets)((card: w.CardInGame) => {
+        if (card.text?.includes(fromText)) {
+          // TODO make case insensitive, i.e. with https://github.com/sindresorhus/escape-string-regexp
+          const newCardText: string = card.text.replaceAll(fromText, toText);
+          tryToRewriteCard(state, card, newCardText, toText);
+        }
       });
     },
 

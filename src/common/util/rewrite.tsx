@@ -69,6 +69,7 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
         handleParseFailure(state, card, parseResult.error);
       } else {
         // The parse succeeded! Now we can finally update the card in question.
+        const oldCardText = card.text;
         Object.assign(card, {
           text: newCardText,
           // TODO support highlighting the modified part of the text (maybe using https://www.npmjs.com/package/react-highlight-words)
@@ -76,6 +77,12 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
           command: parseResult.command,
           abilities: parseResult.abilities
         });
+
+        // Log a message for the player performing this action IF it is their own card that just got rewritten
+        // (to prevent leaking information about opponents' cards)
+        if (isMyTurn(state) && ownerOfCard(state, card)?.color === state.currentTurn) {
+          logAction(state, currentPlayer(state), `rewrote |${card.id}|'s text from "${oldCardText}" to "${newCardText}"`, { [card.id]: card });
+        }
       }
     }
 
@@ -84,12 +91,10 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
 }
 
 function handleParseFailure(state: w.GameState, card: w.CardInGame, error: string): void {
-  // Display an error only to the player performing this action
-  // AND only if it is their card that failed parsing
+  // Log a message for the player performing this action IF it is their own card that just failed parsing
   // (to prevent leaking information about opponents' cards)
-  const owner = ownerOfCard(state, card);
-  if (isMyTurn(state) && owner?.color === state.currentTurn) {
-    logAction(state, currentPlayer(state), `Failed to rewrite |${card.id}| card: ${error}`, { [card.id]: card });
+  if (isMyTurn(state) && ownerOfCard(state, card)?.color === state.currentTurn) {
+    logAction(state, currentPlayer(state), `failed to rewrite |${card.id}| card: ${error}`, { [card.id]: card });
     state.players[state.currentTurn].status = {
       type: 'error',
       message: `Failed to rewrite "${card.name}" card: ${error}`

@@ -229,6 +229,8 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     },
 
     rewriteText: (targets: w.CardInHandCollection, fromText: string, toText: string): void => {
+      // TODO figure out some way to test this (maybe with a mock parser?)
+      /* istanbul ignore next */
       iterateOver<w.CardInGame>(targets)((card: w.CardInGame) => {
         tryToRewriteCard(state, card, fromText, toText);
       });

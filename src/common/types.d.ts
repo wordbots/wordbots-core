@@ -190,7 +190,7 @@ export interface User {
 }
 
 /** A bundle returned when an in-game re-parse (i.e. for a card rewrite effect) succeeds or fails. */
-export interface InGameParseResult {
+export interface InGameParseBundle {
   cardId: CardId
   newCardText: string
   parseResult: CardInStore | { error: string }

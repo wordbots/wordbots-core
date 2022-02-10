@@ -159,9 +159,9 @@ export function setVolume(volume: number): w.Action {
   };
 }
 
-export function inGameParseCompleted(result: w.InGameParseResult): w.Action {
+export function inGameParseCompleted(payload: w.InGameParseBundle): w.Action {
   return {
     type: IN_GAME_PARSE_COMPLETED,
-    payload: result
+    payload
   };
 }

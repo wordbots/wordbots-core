@@ -7,9 +7,8 @@ import * as w from '../types';
 import { parseCard } from './cards';
 import { currentPlayer, findCardInHand, isMyTurn, logAction, ownerOfCard } from './game';
 
-
 /** Use the global dispatch pointer to dispatch a bundle of data relating to a parser response. */
-function dispatchParseResult(parseResult: w.InGameParseResult): void {
+function dispatchParseResult(parseResult: w.InGameParseBundle): void {
   globalDispatch(inGameParseCompleted(parseResult));
 }
 
@@ -34,7 +33,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromTex
   if (card.text?.includes(fromText)) {
     // TODO make case insensitive, i.e. with https://github.com/sindresorhus/escape-string-regexp
     const newCardText: string = card.text.replaceAll(fromText, toText);
-    const parseBundle: Omit<w.InGameParseResult, 'parseResult'> = { cardId: card.id, newCardText };
+    const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = { cardId: card.id, newCardText };
 
     incrementParseCounter(state);
 
@@ -52,7 +51,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromTex
  * updating the card if the parse succeeds,
  * or reporting an error if the parse fails.
  */
-export function handleRewriteParseCompleted(state: w.GameState, parsePayload: w.InGameParseResult): w.GameState {
+export function handleRewriteParseCompleted(state: w.GameState, parsePayload: w.InGameParseBundle): w.GameState {
   const { cardId, newCardText, parseResult } = parsePayload;
 
   if (!state.isWaitingForParses) {

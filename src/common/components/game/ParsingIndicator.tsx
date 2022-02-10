@@ -10,8 +10,9 @@ interface ParsingIndicatorProps {
 
 export default class ParsingIndicator extends React.PureComponent<ParsingIndicatorProps> {
   public render(): JSX.Element | null {
-    return this.props.isWaitingForParse ? (
-      <div
+    return this.props.isWaitingForParse
+      ? (
+        <div
           style={{
             position: 'absolute',
             left: 0,
@@ -37,6 +38,7 @@ export default class ParsingIndicator extends React.PureComponent<ParsingIndicat
           </div>
           <SpinningGears />
       </div>
-    ) : null;
+      )
+      : null;
   }
 }

@@ -76,7 +76,6 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
         const oldCardText = card.text;
         Object.assign(card, {
           text: newCardText,
-          // TODO support highlighting the modified part of the text (maybe using https://www.npmjs.com/package/react-highlight-words)
           highlightedText,
           command: parseResult.command,
           abilities: parseResult.abilities

@@ -1,5 +1,6 @@
 /** Utility methods relating to in-game card rewrite effects. (This is a bleeding-edge feature.) */
 
+import { escapeRegExp } from 'lodash';
 import { inGameParseCompleted } from '../actions/game';
 import { globalDispatch } from '../store/globalDispatch';
 import * as w from '../types';
@@ -30,9 +31,16 @@ function decrementParseCounter(state: w.GameState): void {
  * The actual rewrite happens in handleRewriteParseCompleted() if the parse succeeds.
  */
 export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromText: string, toText: string): void {
-  if (card.text?.includes(fromText)) {
-    // TODO make case insensitive, i.e. with https://github.com/sindresorhus/escape-string-regexp
-    const newCardText: string = card.text.replaceAll(fromText, toText);
+  // Turn fromText into a literal global, case-insentive regex (escaping any regex special characters in the string itself)
+  const fromTextRegex = new RegExp(escapeRegExp(fromText), 'gi');
+
+  if (
+    card.text
+      && fromText
+      && fromText !== toText
+      && fromTextRegex.test(fromText)
+  ) {
+    const newCardText: string = card.text.replace(fromTextRegex, toText);
     const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = {
       cardId: card.id,
       newCardText,

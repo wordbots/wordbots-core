@@ -1,6 +1,7 @@
 /** Utility methods relating to in-game card rewrite effects. (This is a bleeding-edge feature.) */
 
 import { escapeRegExp } from 'lodash';
+
 import { inGameParseCompleted } from '../actions/game';
 import { globalDispatch } from '../store/globalDispatch';
 import * as w from '../types';

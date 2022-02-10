@@ -16,8 +16,8 @@ export default function loadImages(): Record<PreLoadedImageName, any> {
       'red_tile': require('../img/red_tile.png'),
       'green_tile': require('../img/green_tile.png'),
 
-      'core_blue': require('../img/core_blue.png'),
-      'core_orange': require('../img/core_orange.png'),
+      'core_blue': require('../img/core_blue_new.png'),
+      'core_orange': require('../img/core_orange_new.png'),
 
       'floor': require('../img/floor.png')
     };

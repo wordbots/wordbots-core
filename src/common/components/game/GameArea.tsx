@@ -10,7 +10,6 @@ import {
 } from '../../constants';
 import { urlForGameMode } from '../../containers/Play';
 import * as w from '../../types';
-import { inBrowser } from '../../util/browser';
 import Chat from '../play/Chat';
 
 import CardSelector from './CardSelector';
@@ -132,7 +131,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls } = this.state;
 
     if (message) {
-      return <FullscreenMessage message={message} height={areaHeight} background={this.loadBackground()} />;
+      return <FullscreenMessage message={message} height={areaHeight} />;
     }
 
     return (
@@ -159,7 +158,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             marginRight: this.props.isSandbox ? 0 : (chatOpen ? chatWidth : CHAT_COLLAPSED_WIDTH),
             width: this.props.isSandbox ? `calc(100% - ${chatOpen ? chatWidth : CHAT_COLLAPSED_WIDTH}px)` : 'auto',
             height: screenfull.isFullscreen ? areaHeight + HEADER_HEIGHT : areaHeight,
-            background: `url(${this.loadBackground()})`
+            background: 'url(/static/black_bg_lodyas.png)'
           }}
           onClick={onClickGameArea}
           square
@@ -195,8 +194,6 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
   private handleSelectSidebarTab = (_evt: React.ChangeEvent<unknown>, value: string) => {
     this.setState({ sidebarMode: value as 'chat' | 'cardSelector' });
   }
-
-  private loadBackground = () => inBrowser() ? require('../img/black_bg_lodyas.png') : '';
 
   private calculateDimensions = () => {
     const compactControls: boolean = window.innerWidth < 1200;

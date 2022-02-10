@@ -54,10 +54,10 @@ export default class CardImage extends React.Component<CardImageProps, CardImage
           style={{
             width,
             height,
-            margin: '3px auto 0'
+            margin: '2px auto 1px'
           }}
         >
-          <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} alt={img} />
+          <img src={(loadImages() as Record<string, string>)[img!]} width={width} height={height} alt={img} style={{ imageRendering: 'pixelated' }} />
         </div>
       );
     } else if (type === TYPE_EVENT) {

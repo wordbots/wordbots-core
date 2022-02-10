@@ -270,6 +270,20 @@ a.topLink:hover {
   border-color: rgb(244, 67, 54) !important;
 }
 
+/** cribbed from https://codepen.io/Mark_Bowley/pen/PozwyP */
+.bubble {
+  position: absolute;
+  background: #00b4ff;
+  opacity: 0.2;
+  width: 106%;
+  height: 106%;
+  left: -3%;
+  top: -3%;
+  pointer-events: none;
+  border-radius: 50%;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 5px rgba(255, 255, 255, 1);
+}
+
 /* Media queries */
 
 @media only screen and (max-width: 1400px) {

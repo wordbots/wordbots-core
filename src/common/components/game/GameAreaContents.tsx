@@ -130,6 +130,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
+            <div className="bubble" />
             <Board
               size={boardSize}
               player={actualPlayer}

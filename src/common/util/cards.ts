@@ -319,10 +319,14 @@ export function parseBatch(
     });
 }
 
-// Given a card that is complete except for command/abilities,
-// parse the text to fill in command/abilities, then trigger callback.
-// Used only by cardsFromJson() and in integration tests.
-// TODO UPDATE DOCSTRING?
+/**
+ * Given a card that is complete except for command/abilities,
+ * parse the text to fill in command/abilities, then trigger callback.
+ * Used only in the following places:
+ *   - cardsFromJson()
+ *   - rewrite.tsx (i.e. card rewrite effects)
+ *   - in integration tests
+ */
 export function parseCard(
   card: w.CardInStore,
   callback: (c: w.CardInStore, parseResult: string[]) => void,

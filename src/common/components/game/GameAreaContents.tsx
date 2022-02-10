@@ -32,8 +32,8 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
   public render = (): JSX.Element => {
     const {
       attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, orangePieces, player, playingCardType,
-      selectedTile, target, tutorialStep, usernames, winner, volume,
+      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse,
+      orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
       actualPlayer, boardSize, boardMargin, compactControls, onToggleFullscreen, history
@@ -157,34 +157,34 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
-          <div
-            id="parsingIndicator"
-            style={{
-              display: 'none',
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: MAX_Z_INDEX,
-              pointerEvents: 'none'
-            }}
-          >
-            <div style={{
-              position: 'absolute',
-              top: '40%',
-              width: '100%',
-              margin: 'auto',
-              textAlign: 'center',
-              fontFamily: 'Carter One',
-              fontSize: '400%',
-              color: red[500],
-              WebkitTextStroke: '1px white'
-            }}>
-              Parsing ...
+          {isWaitingForParse && (
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: MAX_Z_INDEX,
+                pointerEvents: 'none'
+              }}
+            >
+              <div style={{
+                position: 'absolute',
+                top: '40%',
+                width: '100%',
+                margin: 'auto',
+                textAlign: 'center',
+                fontFamily: 'Carter One',
+                fontSize: '400%',
+                color: red[500],
+                WebkitTextStroke: '1px white'
+              }}>
+                Parsing ...
+              </div>
+              <SpinningGears />
             </div>
-            <SpinningGears />
-          </div>
+          )}
           {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
         </React.Fragment>
       );

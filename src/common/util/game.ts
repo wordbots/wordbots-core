@@ -60,6 +60,10 @@ export function allObjectsOnBoard(state: w.GameState): { [hexId: string]: w.Obje
   return {...state.players.blue.objectsOnBoard, ...state.players.orange.objectsOnBoard};
 }
 
+export function findCardInHand(state: w.GameState, cardId: w.CardId): w.PossiblyObfuscatedCard | undefined {
+  return [...state.players.blue.hand, ...state.players.orange.hand].find((c) => c.id === cardId);
+}
+
 export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameState | undefined {
   if (some(state.players.blue.objectsOnBoard, ['id', object.id])) {
     return state.players.blue;

@@ -20,6 +20,7 @@ export const DESELECT = 'DESELECT';
 export const ADD_CARD_TO_HAND = 'ADD_CARD_TO_HAND';
 export const DRAFT_CARDS = 'DRAFT_CARDS';
 export const SET_VOLUME = 'SET_VOLUME';
+export const IN_GAME_PARSE_COMPLETED = 'IN_GAME_PARSE_COMPLETED';
 
 export function startPractice(format: w.BuiltInFormat, deck: w.CardInStore[]): w.Action {
   return {
@@ -155,5 +156,12 @@ export function setVolume(volume: number): w.Action {
   return {
     type: SET_VOLUME,
     payload: { volume }
+  };
+}
+
+export function inGameParseCompleted(result: w.InGameParseResult): w.Action {
+  return {
+    type: IN_GAME_PARSE_COMPLETED,
+    payload: result
   };
 }

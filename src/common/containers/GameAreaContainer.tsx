@@ -106,6 +106,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     isMyTurn: game.currentTurn === game.player,
     isSpectator: game.player === 'neither',
     isAttackHappening: !!game.attack?.from && !!game.attack?.to,
+    isWaitingForParse: game.isWaitingForParses && game.numParsesInFlight > 0,
 
     actionLog: game.actionLog,
     collection: state.collection,

@@ -290,6 +290,7 @@ function parse(
       })
       .catch((error) => {
         // TODO better error handling
+        console.error(error);
         throw new Error((`Parser error: ${error}`));
       });
   });

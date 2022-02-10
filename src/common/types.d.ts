@@ -189,6 +189,13 @@ export interface User {
   statistics?: Record<string, number>
 }
 
+/** A bundle returned when an in-game re-parse (i.e. for a card rewrite effect) succeeds or fails. */
+export interface InGameParseResult {
+  cardId: CardId
+  newCardText: string
+  parseResult: w.CardInStore | { error: string }
+}
+
 // Redux store types
 
 export interface State {
@@ -250,6 +257,8 @@ export interface GameState {
   usernames: PerPlayer<string>
   winner: GameWinner
   volume: number
+  isWaitingForParses: boolean
+  numParsesInFlight: number
 
   actionId?: string
   callbackAfterExecution?: (state: GameState) => GameState

@@ -83,6 +83,8 @@ const defaultGameState: w.GameState = {
   memory: {},
   sfxQueue: [],
   eventQueue: [],
+  isWaitingForParses: false,
+  numParsesInFlight: 0,
   rng: Math.random,
   volume: parseInt(loadFromLocalStorage('volume') || '25')
 };

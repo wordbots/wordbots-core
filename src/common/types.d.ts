@@ -72,6 +72,7 @@ export interface CardInGame extends CardInStore {
     health?: StatAdjustment[]
     speed?: StatAdjustment[]
   }
+  highlightedText?: string  // set when a card has been rewritten in-game by a rewrite effect
 }
 
 export interface CardInStore {
@@ -193,6 +194,7 @@ export interface User {
 export interface InGameParseBundle {
   cardId: CardId
   newCardText: string
+  highlightedText: string
   parseResult: CardInStore | { error: string }
 }
 

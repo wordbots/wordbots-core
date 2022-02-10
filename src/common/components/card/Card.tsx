@@ -7,6 +7,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import Icon from '@material-ui/core/Icon';
 import { isEqual, noop } from 'lodash';
 import * as React from 'react';
+import Highlighter from 'react-highlight-words';
 import Textfit from 'react-textfit';
 
 import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString } from '../../constants';
@@ -33,6 +34,7 @@ export interface CardProps {
   type: w.CardType
   text: string | Array<JSX.Element | null>
   rawText: string
+  highlightedText?: string
   parseResults?: string
   showSpinner?: boolean
   flavorText?: string
@@ -91,6 +93,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         type={card.type}
         text={Sentence.fromText(card.text)}
         rawText={card.text || ''}
+        highlightedText={card.highlightedText}
         flavorText={card.flavorText}
         stats={card.stats || {}}
         cardStats={card.stats || {}}
@@ -339,7 +342,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   }
 
   private renderText(): React.ReactNode {
-    const { text, scale } = this.props;
+    const { highlightedText, rawText, text, scale } = this.props;
 
     if (!inBrowser()) {
       return text;
@@ -352,7 +355,17 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         max={14 * (scale || 1)}
         style={this.textFitStyle}
       >
-        {text}
+        {
+          highlightedText
+            ? <Highlighter
+                autoEscape
+                textToHighlight={rawText}
+                searchWords={[highlightedText]}
+                highlightStyle={{ color: 'green', fontWeight: 'bold', backgroundColor: 'inherit' }}
+                unhighlightStyle={{ color: 'black' }}
+              />
+            : text
+        }
       </Textfit>
     );
   }

@@ -33,7 +33,11 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromTex
   if (card.text?.includes(fromText)) {
     // TODO make case insensitive, i.e. with https://github.com/sindresorhus/escape-string-regexp
     const newCardText: string = card.text.replaceAll(fromText, toText);
-    const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = { cardId: card.id, newCardText };
+    const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = {
+      cardId: card.id,
+      newCardText,
+      highlightedText: toText
+    };
 
     incrementParseCounter(state);
 
@@ -52,7 +56,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromTex
  * or reporting an error if the parse fails.
  */
 export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.InGameParseBundle): w.GameState {
-  const { cardId, newCardText, parseResult } = parseBundle;
+  const { cardId, newCardText, highlightedText, parseResult } = parseBundle;
 
   if (!state.isWaitingForParses) {
     return { ...state, numParsesInFlight: 0 };
@@ -73,15 +77,15 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
         Object.assign(card, {
           text: newCardText,
           // TODO support highlighting the modified part of the text (maybe using https://www.npmjs.com/package/react-highlight-words)
-          // highlightedText: highlightedText
+          highlightedText,
           command: parseResult.command,
           abilities: parseResult.abilities
-        });
+        } as Partial<w.CardInGame>);
 
         // Log a message for the player performing this action IF it is their own card that just got rewritten
         // (to prevent leaking information about opponents' cards)
         if (isMyTurn(state) && ownerOfCard(state, card)?.color === state.currentTurn) {
-          logAction(state, currentPlayer(state), `rewrote |${card.id}|'s text from "${oldCardText}" to "${newCardText}"`, { [card.id]: card });
+          logAction(state, currentPlayer(state), `rewrote |${cardId}|'s text from "${oldCardText}" to "${newCardText}"`, { [cardId]: card });
         }
       }
     }

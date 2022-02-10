@@ -38,7 +38,7 @@ export function handleAction(
   { type, payload }: w.Action = { type: '' }
 ): State {
   // First, clone state and clean up any currently running animation (e.g. objects turning red because they took damage).
-  let state: State = !type.startsWith('@@redux') ? cleanUpAnimations({...oldState}) : {...oldState};
+  let state: State = cleanUpAnimations({...oldState});
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
     state = {...state, actionId: id()};

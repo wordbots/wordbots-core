@@ -10,10 +10,16 @@ let NUM_PARSES_IN_FLIGHT = 0;
 
 // Father forgive me for I have sinned -AN
 function showParsingIndicator() {
-  (window.document.querySelector('#parsingIndicator')! as HTMLElement).style.display = 'block';
+  const parsingIndicator: HTMLElement | null = window.document.querySelector<HTMLElement>('#parsingIndicator');
+  if (parsingIndicator) {
+    parsingIndicator.style.display = 'block';
+  }
 }
 function hideParsingIndicator() {
-  (window.document.querySelector('#parsingIndicator')! as HTMLElement).style.display = 'none';
+  const parsingIndicator: HTMLElement | null = window.document.querySelector<HTMLElement>('#parsingIndicator');
+  if (parsingIndicator) {
+    parsingIndicator.style.display = 'none';
+  }
 }
 
 function updateParsingIndicator() {
@@ -29,7 +35,6 @@ function updateParsingIndicator() {
 }
 
 export function stopWaitingForParses(): void {
-  console.log('stopWaitingForParses');
   WAITING_FOR_PARSES = false;
   NUM_PARSES_IN_FLIGHT = 0;
   hideParsingIndicator();

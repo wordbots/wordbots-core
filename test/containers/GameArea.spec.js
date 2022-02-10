@@ -20,6 +20,7 @@ describe('GameArea container', () => {
     const board = mainDiv.props.children;
     const playerArea = gameContents.props.children[1];
     const victoryScreen = gameContents.props.children[5];
+    const parsingIndicator = gameContents.props.children[6];
 
     /* eslint-disable react/jsx-key */
     return [
@@ -53,7 +54,8 @@ describe('GameArea container', () => {
       <VictoryScreen
         winner={null}
         winnerName={null}
-        onClick={victoryScreen.props.onClick} />
+        onClick={victoryScreen.props.onClick} />,
+      parsingIndicator
     ];
     /* eslint-enable react/jsx-key */
   };
@@ -88,7 +90,7 @@ describe('GameArea container', () => {
     const gameContents = renderElement(dom.props.children[1].props.children);
 
     // eslint-disable-next-line no-magic-numbers
-    const tutorialIntroScreen = gameContents.props.children[6];
+    const tutorialIntroScreen = gameContents.props.children[7];
 
     /* eslint-disable react/jsx-key */
     expect(gameContents.props.children).toEqual([

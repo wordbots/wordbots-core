@@ -5,6 +5,7 @@ import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card.tsx';
 import Board from '../../src/common/components/game/Board.tsx';
 import EventAnimation from '../../src/common/components/game/EventAnimation.tsx';
+import ParsingIndicator from '../../src/common/components/game/ParsingIndicator.tsx';
 import PlayerArea from '../../src/common/components/game/PlayerArea.tsx';
 import TutorialIntroScreen from '../../src/common/components/game/TutorialIntroScreen.tsx';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen.tsx';
@@ -20,7 +21,6 @@ describe('GameArea container', () => {
     const board = mainDiv.props.children;
     const playerArea = gameContents.props.children[1];
     const victoryScreen = gameContents.props.children[5];
-    const parsingIndicator = gameContents.props.children[6];
 
     /* eslint-disable react/jsx-key */
     return [
@@ -56,7 +56,7 @@ describe('GameArea container', () => {
         winner={null}
         winnerName={null}
         onClick={victoryScreen.props.onClick} />,
-      parsingIndicator
+      <ParsingIndicator isWaitingForParse={false} />
     ];
     /* eslint-enable react/jsx-key */
   };

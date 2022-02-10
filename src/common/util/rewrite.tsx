@@ -9,31 +9,22 @@ import { findCardInHand, isMyTurn } from './game';
 
 /** TODO docstring */
 export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, newCardText: string, _highlightedText: string): void {
-  // TODO while the spinner is going, disallow any other game actions
-  // TODO also stop game timer while parsing?
   state.isWaitingForParses = true;
   state.numParsesInFlight = state.numParsesInFlight + 1;
 
+  // TODO update comment
   // Asynchronously request parses and update the state again, and pray that react+redux handles this fine
   // TODO handle parse failures - what should the behavior be?
   parseCard(
     { ...card, text: newCardText },
     (parsedCard: w.CardInStore) => {
       GLOBAL_DISPATCH_DANGEROUS(
-        inGameParseCompleted({
-          cardId: card.id,
-          newCardText,
-          parseResult: parsedCard
-        })
+        inGameParseCompleted({ cardId: card.id, newCardText, parseResult: parsedCard })
       );
     },
     (error: string) => {
       GLOBAL_DISPATCH_DANGEROUS(
-        inGameParseCompleted({
-          cardId: card.id,
-          newCardText,
-          parseResult: { error }
-        })
+        inGameParseCompleted({ cardId: card.id, newCardText, parseResult: { error }})
       );
     }
   );

@@ -14,6 +14,7 @@ interface EndTurnButtonProps {
   isMyTurn?: boolean
   isAttackHappening?: boolean
   tutorialStep?: w.TutorialStep
+  isWaitingForParse: boolean
 
   onPassTurn: (color: w.PlayerColor) => void
   onNextTutorialStep: () => void
@@ -73,8 +74,8 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
   }
 
   private handleClick = () => {
-    const { player, onPassTurn } = this.props;
-    if (player) {
+    const { player, onPassTurn, isWaitingForParse } = this.props;
+    if (player && !isWaitingForParse) {
       onPassTurn(player);
     }
   }

@@ -27,6 +27,7 @@ interface BoardProps {
   tutorialStep?: w.TutorialStep
   attack: w.Attack | null
   isGameOver: boolean
+  isWaitingForParse: boolean
 
   onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHex?: w.HexId | null) => void
   onActivateAbility: (abilityIdx: number) => void
@@ -58,7 +59,7 @@ export default class Board extends React.Component<BoardProps, BoardState> {
   }
 
   get isMyTurn(): boolean {
-    return this.props.currentTurn === this.props.player;
+    return this.props.currentTurn === this.props.player && !this.props.isWaitingForParse;
   }
 
   get playingAnObject(): boolean {
@@ -106,7 +107,8 @@ export default class Board extends React.Component<BoardProps, BoardState> {
   }
 
   get selectedActivatedAbilities(): w.ActivatedAbility[] {
-    if (this.isMyTurn && this.selectedPiece
+    if (this.isMyTurn
+          && this.selectedPiece
           && canActivate(this.selectedPiece)
           && !this.props.target.choosing) {  // Don't display activated abilities popup while choosing a target.
       return this.selectedPiece.activatedAbilities!;

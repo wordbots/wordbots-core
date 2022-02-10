@@ -80,6 +80,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
               isMyTurn={isMyTurn}
               isAttackHappening={isAttackHappening}
+              isWaitingForParse={isWaitingForParse}
               volume={volume}
               onPassTurn={onPassTurn}
               onSetVolume={onSetVolume}
@@ -101,6 +102,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 gameOver={gameOver}
                 isMyTurn={isMyTurn || isSandbox}
                 isAttackHappening={isAttackHappening}
+                isWaitingForParse={isWaitingForParse}
                 tutorialStep={tutorialStep}
                 onPassTurn={onPassTurn}
                 onNextTutorialStep={onNextTutorialStep}
@@ -148,6 +150,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               onActivateAbility={onActivateObject}
               onTutorialStep={onTutorialStep}
               onEndGame={onClickEndGame}
+              isWaitingForParse={isWaitingForParse}
             />
           </div>
           <PlayerArea gameProps={this.props} />

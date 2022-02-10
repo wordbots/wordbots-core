@@ -8,8 +8,8 @@ import { parseCard } from './cards';
 import { currentPlayer, findCardInHand, isMyTurn, logAction, ownerOfCard } from './game';
 
 /** Use the global dispatch pointer to dispatch a bundle of data relating to a parser response. */
-function dispatchParseResult(parseResult: w.InGameParseBundle): void {
-  globalDispatch(inGameParseCompleted(parseResult));
+function dispatchParseResult(parseBundle: w.InGameParseBundle): void {
+  globalDispatch(inGameParseCompleted(parseBundle));
 }
 
 function incrementParseCounter(state: w.GameState): void {
@@ -51,8 +51,8 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromTex
  * updating the card if the parse succeeds,
  * or reporting an error if the parse fails.
  */
-export function handleRewriteParseCompleted(state: w.GameState, parsePayload: w.InGameParseBundle): w.GameState {
-  const { cardId, newCardText, parseResult } = parsePayload;
+export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.InGameParseBundle): w.GameState {
+  const { cardId, newCardText, parseResult } = parseBundle;
 
   if (!state.isWaitingForParses) {
     return { ...state, numParsesInFlight: 0 };

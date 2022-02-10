@@ -8,4 +8,6 @@ export function registerGlobalDispatch(dispatch: Dispatch<AnyAction>): void {
 }
 
 /** TODO docstring */
-export const globalDispatch: Dispatch<AnyAction> = GLOBAL_DISPATCH!;
+export function globalDispatch(action: AnyAction): void {
+  GLOBAL_DISPATCH!(action);
+}

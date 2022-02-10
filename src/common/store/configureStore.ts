@@ -11,7 +11,6 @@ import multipleDispatchMiddleware from '../middleware/multipleDispatchMiddleware
 import createSocketMiddleware from '../middleware/socketMiddleware';
 import rootReducer from '../reducers';
 import * as w from '../types';
-import { inBrowser } from '../util/browser';
 
 declare const module: { dev: any, hot: any };
 declare const process: { browser: any, env: { NODE_ENV: string } };
@@ -64,11 +63,3 @@ export default function configureStore(initialState: DeepPartial<w.State>): Stor
 
   return store;
 }
-
-/** The store that is used by index.tsx */
-export const STORE: Store<any, any> = configureStore({
-  version: inBrowser() ? (window as unknown as { VERSION?: string }).VERSION : undefined
-});
-
-/** TODO DOCSTRING */
-export const GLOBAL_DISPATCH_DANGEROUS = STORE.dispatch;

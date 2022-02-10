@@ -41,6 +41,7 @@ describe('GameArea container', () => {
           attack={null}
           size={board.props.size}
           isGameOver={false}
+          isWaitingForParse={false}
           onSelectTile={board.props.onSelectTile}
           onHoverTile={board.props.onHoverTile}
           onActivateAbility={board.props.onActivateAbility}

@@ -193,7 +193,7 @@ export interface User {
 export interface InGameParseResult {
   cardId: CardId
   newCardText: string
-  parseResult: w.CardInStore | { error: string }
+  parseResult: CardInStore | { error: string }
 }
 
 // Redux store types

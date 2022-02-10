@@ -7,7 +7,8 @@ import '../../styles/animations.css';
 import '../../styles/index.css';
 import '../../styles/lib.css';
 import App from '../common/containers/App';
-import { STORE } from '../common/store/configureStore';
+import configureStore from '../common/store/configureStore';
+import { registerGlobalDispatch } from '../common/store/globalDispatch';
 
 require('object.values').shim();  // TODO remove this shim when Object.values() is no longer used in JS code
 
@@ -23,9 +24,12 @@ if (window.localStorage.profileOnLoad && window.Perf) {
   window.Perf.start();
 }
 
+const store = configureStore({ version: window.VERSION });
+registerGlobalDispatch(store.dispatch);
+
 ReactDOM.hydrate(
   (
-    <Provider store={STORE}>
+    <Provider store={store}>
       <BrowserRouter>
         <App />
       </BrowserRouter>

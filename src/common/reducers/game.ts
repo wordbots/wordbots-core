@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, isObject, reduce } from 'lodash';
+import { cloneDeep, isArray, reduce } from 'lodash';
 
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -9,7 +9,7 @@ import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
 import { cleanUpAnimations, triggerSound } from '../util/game';
-import { handleRewriteParseFailed, handleRewriteParseSucceeded } from '../util/rewrite';
+import { handleRewriteParseCompleted } from '../util/rewrite';
 
 import g from './handlers/game';
 
@@ -25,9 +25,6 @@ export default function game(
   if (isArray(action)) {
     // Allow multiple dispatch - this is primarily useful for simplifying testing.
     return reduce(action, (s: State, a: w.Action) => game(s, a), state);
-  } else if (action?.type.startsWith('@@redux')) {
-    // handle redux meta-actions
-    return state;
   } else if (state.tutorial && action && !allowed) {
     // In tutorial mode, only one specific action is allowed at any given time.
     return g.handleTutorialAction(state, action);
@@ -41,7 +38,7 @@ export function handleAction(
   { type, payload }: w.Action = { type: '' }
 ): State {
   // First, clone state and clean up any currently running animation (e.g. objects turning red because they took damage).
-  let state: State = cleanUpAnimations({...oldState});
+  let state: State = !type.startsWith('@@redux') ? cleanUpAnimations({...oldState}) : {...oldState};
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
     state = {...state, actionId: id()};
@@ -124,13 +121,8 @@ export function handleAction(
       return { ...state, volume: payload.volume };
     }
 
-    case actions.IN_GAME_PARSE_COMPLETED: {
-      if (isObject(payload.parseResult)) {
-        return handleRewriteParseSucceeded(state, payload.cardId, payload.newCardText, payload.parseResult);
-      } else {
-        return handleRewriteParseFailed(state, payload.parseResult);
-      }
-    }
+    case actions.IN_GAME_PARSE_COMPLETED:
+      return handleRewriteParseCompleted(state, payload);
 
     case socketActions.CONNECTING:
       return {...state, started: state.practice ? state.started : false};

@@ -26,36 +26,59 @@ function decrementParseCounter(state: w.GameState): void {
   }
 }
 
+/** TODO doc string */
+/** TODO TEST holy shit */
+function performTextReplacements(oldText: string, textReplacements: Array<[string, string]>): { newText: string, highlightedTextBlocks: string[] } {
+  let text: string = oldText;
+  const highlightedTextBlocks: string[] = [];
+
+  // Simulate multiple "simultaneous" text-replace operations by running two passes (to avoid the replacements otherwise interfering with each other):
+  // 1st pass: replace fromText -> {{$idx}}
+  textReplacements.forEach(([fromText, toText], idx) => {
+    // Turn fromText into a literal global, case-insensitive regex (escaping any regex special characters in the string itself)
+    const fromTextRegex = new RegExp(escapeRegExp(fromText), 'gi');
+
+    if (fromText && fromText !== toText && fromTextRegex.test(text)) {
+      text = text.replace(fromTextRegex, `{{$${idx}}}`);
+      highlightedTextBlocks.push(toText);
+    }
+  });
+
+  // 2nd pass: replace {{$idx}} -> toText
+  textReplacements.forEach(([_fromText, toText], idx) => {
+    text = text.replaceAll(`{{$${idx}}}`, toText);
+  });
+
+  return {
+    newText: text,
+    highlightedTextBlocks
+  };
+}
+
 /**
  * If a card's text matches the search criteria, try to rewrite it by triggering a parser call.
  * When the parser responds, an IN_GAME_PARSE_COMPLETED action is dispatched.
  * The actual rewrite happens in handleRewriteParseCompleted() if the parse succeeds.
  */
-export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromText: string, toText: string): void {
-  // Turn fromText into a literal global, case-insentive regex (escaping any regex special characters in the string itself)
-  const fromTextRegex = new RegExp(escapeRegExp(fromText), 'gi');
+export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textReplacements: Record<string, string>): void {
+  if (card.text) {
+    const { newText, highlightedTextBlocks } = performTextReplacements(card.text, Object.entries(textReplacements));
+    if (newText !== card.text) {
+      const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = {
+        cardId: card.id,
+        newCardText: newText,
+        highlightedTextBlocks
+      };
 
-  if (
-    card.text
-      && fromText
-      && fromText !== toText
-      && fromTextRegex.test(fromText)
-  ) {
-    const newCardText: string = card.text.replace(fromTextRegex, toText);
-    const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = {
-      cardId: card.id,
-      newCardText,
-      highlightedText: toText
-    };
+      incrementParseCounter(state);
 
-    incrementParseCounter(state);
-
-    // Asynchronously request parses and dispatch an IN_GAME_PARSE_COMPLETED action upon parse success/failure
-    parseCard(
-      { ...card, text: newCardText },
-      (parsedCard: w.CardInStore) => dispatchParseResult({ ...parseBundle, parseResult: parsedCard }),
-      (error: string) => dispatchParseResult({ ...parseBundle, parseResult: { error }})
-    );
+      // Asynchronously request parses and dispatch an IN_GAME_PARSE_COMPLETED action upon parse success/failure
+      parseCard(
+        { ...card, text: newText },
+        (parsedCard: w.CardInStore) => dispatchParseResult({ ...parseBundle, parseResult: parsedCard }),
+        (error: string) => dispatchParseResult({ ...parseBundle, parseResult: { error }})
+      );
+    }
   }
 }
 
@@ -65,7 +88,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, fromTex
  * or reporting an error if the parse fails.
  */
 export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.InGameParseBundle): w.GameState {
-  const { cardId, newCardText, highlightedText, parseResult } = parseBundle;
+  const { cardId, newCardText, highlightedTextBlocks, parseResult } = parseBundle;
 
   if (!state.isWaitingForParses) {
     return { ...state, numParsesInFlight: 0 };
@@ -85,7 +108,7 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
         const oldCardText = card.text;
         Object.assign(card, {
           text: newCardText,
-          highlightedText,
+          highlightedTextBlocks,
           command: parseResult.command,
           abilities: parseResult.abilities
         } as Partial<w.CardInGame>);

@@ -34,7 +34,7 @@ export interface CardProps {
   type: w.CardType
   text: string | Array<JSX.Element | null>
   rawText: string
-  highlightedText?: string
+  highlightedTextBlocks?: string[]
   parseResults?: string
   showSpinner?: boolean
   flavorText?: string
@@ -93,7 +93,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         type={card.type}
         text={Sentence.fromText(card.text)}
         rawText={card.text || ''}
-        highlightedText={card.highlightedText}
+        highlightedTextBlocks={card.highlightedTextBlocks}
         flavorText={card.flavorText}
         stats={card.stats || {}}
         cardStats={card.stats || {}}
@@ -342,7 +342,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   }
 
   private renderText(): React.ReactNode {
-    const { highlightedText, rawText, text, scale } = this.props;
+    const { highlightedTextBlocks, rawText, text, scale } = this.props;
 
     if (!inBrowser()) {
       return text;
@@ -356,11 +356,11 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         style={this.textFitStyle}
       >
         {
-          highlightedText
+          highlightedTextBlocks
             ? <Highlighter
                 autoEscape
                 textToHighlight={rawText}
-                searchWords={[highlightedText]}
+                searchWords={highlightedTextBlocks}
                 highlightStyle={{ color: 'green', fontWeight: 'bold', backgroundColor: 'inherit' }}
                 unhighlightStyle={{ color: 'black' }}
               />

@@ -14,38 +14,21 @@ export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
 }
 
 export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
-  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => {
-    const player = players.entries[0]; // Unpack player target.
-    /* istanbul ignore if */
-    if (!player) {  // Unusual case that we should still handle, just in case.
-      return { type: 'cards', entries: [] };
-    }
-
-    return {
-      type: 'cards',
-      entries: (player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
-        matchesType(card, cardType) && !card.justPlayed && conditions.every((cond) => cond(null, card))
-      ),
-      owner: player
-    };
-  };
+  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => ({
+    type: 'cards',
+    entries: players.entries.flatMap((player) => player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
+      matchesType(card, cardType) && !card.justPlayed && conditions.every((cond) => cond(null, card))
+    )
+  });
 }
 
 export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPileCollection> {
-  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => {
-    const player = players.entries[0]; // Unpack player target.
-    /* istanbul ignore if */
-    if (!player) {  // Unusual case that we should still handle, just in case.
-      return { type: 'cardsInDiscardPile', entries: [] };
-    }
-
-    return {
-      type: 'cardsInDiscardPile',
-      entries: (player.discardPile ).filter((card: w.CardInGame) =>
-        matchesType(card, cardType) && conditions.every((cond) => cond(null, card))
-      )
-    };
-  };
+  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => ({
+    type: 'cardsInDiscardPile',
+    entries: players.entries.flatMap((player) => player.discardPile).filter((card: w.CardInGame) =>
+      matchesType(card, cardType) && conditions.every((cond) => cond(null, card))
+    )
+  });
 }
 
 // Included here for backwards compatibility, but no longer outputted by the parser.

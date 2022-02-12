@@ -93,3 +93,20 @@
   0%, 100% { opacity: 0; }
   30%, 60% { opacity: 0.7; }
 }
+
+.boardAnimationContainer {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.boardAnimation {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  animation: BoardFlyIn 1s ease-in-out;
+}
+@keyframes BoardFlyIn {
+  0%, 40% { width: 2px; }
+  100% { width: 100%; }
+}

@@ -126,28 +126,32 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               margin: 0,
               zIndex: BOARD_Z_INDEX,
               width: boardSize,
-              height: boardSize
+              height: boardSize,
               // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
-            <div className="bubble" />
-            <Board
-              size={boardSize}
-              player={actualPlayer}
-              currentTurn={currentTurn}
-              selectedTile={selectedTile}
-              target={target}
-              bluePieces={bluePieces}
-              orangePieces={orangePieces}
-              playingCardType={playingCardType}
-              tutorialStep={tutorialStep}
-              attack={attack}
-              isGameOver={!!winner}
-              onSelectTile={onSelectTile}
-              onActivateAbility={onActivateObject}
-              onTutorialStep={onTutorialStep}
-              onEndGame={onClickEndGame}
-            />
+            <div className="boardAnimationContainer">
+              <div className="boardAnimation">
+                <div className="bubble" />
+                <Board
+                  size={boardSize}
+                  player={actualPlayer}
+                  currentTurn={currentTurn}
+                  selectedTile={selectedTile}
+                  target={target}
+                  bluePieces={bluePieces}
+                  orangePieces={orangePieces}
+                  playingCardType={playingCardType}
+                  tutorialStep={tutorialStep}
+                  attack={attack}
+                  isGameOver={!!winner}
+                  onSelectTile={onSelectTile}
+                  onActivateAbility={onActivateObject}
+                  onTutorialStep={onTutorialStep}
+                  onEndGame={onClickEndGame}
+                />
+              </div>
+            </div>
           </div>
           <PlayerArea gameProps={this.props} />
           <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />

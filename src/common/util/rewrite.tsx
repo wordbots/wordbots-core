@@ -26,8 +26,13 @@ function decrementParseCounter(state: w.GameState): void {
   }
 }
 
-/** TODO doc string */
-/** TODO TEST holy shit */
+/**
+ * Given a string and a list of string->string text replacements to make,
+ * perform all replacements case-insensitively and independently of one another,
+ * and also return all "highlighted" text blocks where replacements were made.
+ *
+ * TODO this logic is a little gnarly - a unit test would be good -AN
+ */
 function performTextReplacements(oldText: string, textReplacements: Array<[string, string]>): { newText: string, highlightedTextBlocks: string[] } {
   let text: string = oldText;
   const highlightedTextBlocks: string[] = [];

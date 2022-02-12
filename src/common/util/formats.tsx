@@ -101,7 +101,7 @@ export class GameFormat {
       usernames,
       options
     };
-    state = triggerSound(state, 'yourmove.wav');
+    state = triggerSound(state, (state.tutorial || state.sandbox) ? 'yourmove.wav' : 'countdown.wav');
 
     return state;
   }

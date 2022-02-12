@@ -25,7 +25,7 @@
   transition: fill-opacity .2s;
 }
 
-#hexgrid svg g polygon:hover {
+#hexgrid svg g.unoccupied polygon:hover {
   fill-opacity: 0.75;
 }
 

@@ -180,6 +180,7 @@ export default class HexShape extends React.Component<HexShapeProps, HexShapeSta
   private renderHex(): JSX.Element {
     return (
       <g
+        className={this.props.card ? 'occupied' : 'unoccupied'}
         transform={this.translate}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}

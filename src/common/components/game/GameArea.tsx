@@ -98,6 +98,7 @@ interface GameAreaState {
   chatOpen: boolean
   chatWidth: number
   compactControls: boolean
+  startAnimationComplete: boolean
   sidebarMode: 'chat' | 'cardSelector'
 }
 
@@ -109,12 +110,20 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     chatOpen: true,
     chatWidth: CHAT_WIDTH,
     compactControls: false,
+    startAnimationComplete: false, // set to true after the initial 5sec start animation finishes
     sidebarMode: 'cardSelector' // (this property is only read in sandbox mode - other modes have only a chat sidebar)
   };
 
   public componentWillMount(): void {
     this.calculateDimensions();
     window.addEventListener('resize', this.calculateDimensions);
+
+    // Since the game start animation ("3 - 2 - 1 - start!") is implemented entirely in CSS,
+    // we can't really track it directly.
+    // But we know it takes 5 sec to complete, so we just have this timeout run in parallel.
+    setTimeout(() => {
+      this.setState({ startAnimationComplete: true });
+    }, 5000);
   }
 
   get actualPlayer(): w.PlayerColor | null {
@@ -128,7 +137,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
     const {
       currentTurn, isMyTurn, isSandbox, message, player, sfxQueue, status, volume, onClickGameArea
     } = this.props;
-    const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls } = this.state;
+    const { areaHeight, boardSize, boardMargin, chatOpen, chatWidth, compactControls, startAnimationComplete } = this.state;
 
     if (message) {
       return <FullscreenMessage message={message} height={areaHeight} />;
@@ -169,6 +178,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             boardSize={boardSize}
             boardMargin={boardMargin}
             compactControls={compactControls}
+            startAnimationComplete={startAnimationComplete}
             onToggleFullscreen={this.handleToggleFullScreen}
           />
         </Paper>

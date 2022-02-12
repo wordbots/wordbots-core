@@ -20,6 +20,7 @@ type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
   boardSize: number
   boardMargin: { left: number, top: number }
   compactControls: boolean
+  startAnimationComplete: boolean
   onToggleFullscreen: () => void
   history: History
 }
@@ -34,7 +35,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
       selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
-      actualPlayer, boardSize, boardMargin, compactControls, onToggleFullscreen, history
+      actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
     } = this.props;
 
     if (draft) {
@@ -75,7 +76,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               player={player}
               currentTurn={currentTurn}
               draft={draft}
-              isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
+              isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer && startAnimationComplete}
               isMyTurn={isMyTurn}
               isAttackHappening={isAttackHappening}
               volume={volume}

@@ -105,14 +105,19 @@
   width: 100%;
   aspect-ratio: 1;
   position: relative;
+}
+.enableCountdown .boardAnimation {
   animation: BoardFlyIn 5s ease-in-out;
+}
+.disableCountdown .boardAnimation {
+  animation: BoardFlyIn 400ms ease-in-out;
 }
 @keyframes BoardFlyIn {
   0%, 80% { width: 0; }
   100% { width: 100%; }
 }
 
-.boardAnimationContainer::after {
+.boardAnimationContainer.enableCountdown::after {
   color: white;
   content: '';
   animation: ThreeTwoOneFight 5s ease-in-out;

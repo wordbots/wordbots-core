@@ -38,6 +38,8 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
       actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
     } = this.props;
 
+    const shouldShowCountdownAnimation = !isTutorial && !isSandbox && !isSpectator;
+
     if (draft) {
       return (
         <React.Fragment>
@@ -131,7 +133,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
-            <div className="boardAnimationContainer">
+            <div className={`boardAnimationContainer ${shouldShowCountdownAnimation ? 'enableCountdown' : 'disableCountdown' }`}>
               <div className="boardAnimation">
                 <div className="bubble" />
                 <Board

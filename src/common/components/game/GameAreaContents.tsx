@@ -21,6 +21,7 @@ type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
   boardSize: number
   boardMargin: { left: number, top: number }
   compactControls: boolean
+  startAnimationComplete: boolean
   onToggleFullscreen: () => void
   history: History
 }
@@ -35,8 +36,10 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
       orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
-      actualPlayer, boardSize, boardMargin, compactControls, onToggleFullscreen, history
+      actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
     } = this.props;
+
+    const shouldShowCountdownAnimation = !isTutorial && !isSandbox && !isSpectator;
 
     if (draft) {
       return (
@@ -76,7 +79,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               player={player}
               currentTurn={currentTurn}
               draft={draft}
-              isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer}
+              isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer && startAnimationComplete}
               isMyTurn={isMyTurn}
               isAttackHappening={isAttackHappening}
               isWaitingForParse={isWaitingForParse}
@@ -129,28 +132,33 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               margin: 0,
               zIndex: BOARD_Z_INDEX,
               width: boardSize,
-              height: boardSize
+              height: boardSize,
               // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
-            <Board
-              size={boardSize}
-              player={actualPlayer}
-              currentTurn={currentTurn}
-              selectedTile={selectedTile}
-              target={target}
-              bluePieces={bluePieces}
-              orangePieces={orangePieces}
-              playingCardType={playingCardType}
-              tutorialStep={tutorialStep}
-              attack={attack}
-              isGameOver={!!winner}
-              onSelectTile={onSelectTile}
-              onActivateAbility={onActivateObject}
-              onTutorialStep={onTutorialStep}
-              onEndGame={onClickEndGame}
-              isWaitingForParse={isWaitingForParse}
-            />
+            <div className={`boardAnimationContainer ${shouldShowCountdownAnimation ? 'enableCountdown' : 'disableCountdown' }`}>
+              <div className="boardAnimation">
+                <div className="bubble" />
+                <Board
+                  size={boardSize}
+                  player={actualPlayer}
+                  currentTurn={currentTurn}
+                  selectedTile={selectedTile}
+                  target={target}
+                  bluePieces={bluePieces}
+                  orangePieces={orangePieces}
+                  playingCardType={playingCardType}
+                  tutorialStep={tutorialStep}
+                  attack={attack}
+                  isGameOver={!!winner}
+                  isWaitingForParse={isWaitingForParse}
+                  onSelectTile={onSelectTile}
+                  onActivateAbility={onActivateObject}
+                  onTutorialStep={onTutorialStep}
+                  onEndGame={onClickEndGame}
+                />
+              </div>
+            </div>
           </div>
           <PlayerArea gameProps={this.props} />
           <EventAnimation eventQueue={eventQueue} currentTurn={currentTurn} />

@@ -5,12 +5,11 @@ import { BACKGROUND_Z_INDEX } from '../../constants';
 interface FullscreenMessageProps {
   message: string
   height: number
-  background: string
 }
 
-export default class FullscreenMessage extends React.Component<FullscreenMessageProps> {
+export default class FullscreenMessage extends React.PureComponent<FullscreenMessageProps> {
   public render(): JSX.Element {
-    const { message, height, background } = this.props;
+    const { message, height } = this.props;
     return (
       <div
         style={{
@@ -19,7 +18,7 @@ export default class FullscreenMessage extends React.Component<FullscreenMessage
           width: '100%',
           height,
           zIndex: BACKGROUND_Z_INDEX,
-          background: `url(${background})`,
+          background: `url(/static/black_bg_lodyas.png)`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

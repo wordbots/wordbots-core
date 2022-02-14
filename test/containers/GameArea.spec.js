@@ -18,7 +18,7 @@ describe('GameArea container', () => {
   const getCommonGameAreaComponents = (state, gameInner, dom, tutorialStep) => {
     const gameContents = renderElement(dom.props.children[1].props.children);
     const mainDiv = gameContents.props.children[2];
-    const board = mainDiv.props.children;
+    const board = mainDiv.props.children.props.children.props.children[1];
     const playerArea = gameContents.props.children[1];
     const victoryScreen = gameContents.props.children[5];
 
@@ -30,25 +30,30 @@ describe('GameArea container', () => {
         className="background"
         ref={mainDiv.ref}
         style={mainDiv.props.style}>
-        <Board
-          selectedTile={null}
-          target={state.game.players.orange.target}
-          bluePieces={state.game.players.blue.objectsOnBoard}
-          orangePieces={state.game.players.orange.objectsOnBoard}
-          player="orange"
-          currentTurn="orange"
-          playingCardType={null}
-          attack={null}
-          size={board.props.size}
-          isGameOver={false}
-          isWaitingForParse={false}
-          onSelectTile={board.props.onSelectTile}
-          onHoverTile={board.props.onHoverTile}
-          onActivateAbility={board.props.onActivateAbility}
-          onTutorialStep={board.props.onTutorialStep}
-          onEndGame={board.props.onEndGame}
-          tutorialStep={tutorialStep}
-          />
+        <div className={`boardAnimationContainer ${tutorialStep ? 'disableCountdown' : 'enableCountdown'}`}>
+          <div className="boardAnimation">
+            <div className="bubble" />
+            <Board
+              selectedTile={null}
+              target={state.game.players.orange.target}
+              bluePieces={state.game.players.blue.objectsOnBoard}
+              orangePieces={state.game.players.orange.objectsOnBoard}
+              player="orange"
+              currentTurn="orange"
+              playingCardType={null}
+              attack={null}
+              size={board.props.size}
+              isGameOver={false}
+              isWaitingForParse={false}
+              onSelectTile={board.props.onSelectTile}
+              onHoverTile={board.props.onHoverTile}
+              onActivateAbility={board.props.onActivateAbility}
+              onTutorialStep={board.props.onTutorialStep}
+              onEndGame={board.props.onEndGame}
+              tutorialStep={tutorialStep}
+              />
+          </div>
+        </div>
       </div>,
       <PlayerArea gameProps={playerArea.props.gameProps} />,
       <EventAnimation eventQueue={[]} currentTurn="orange" />,

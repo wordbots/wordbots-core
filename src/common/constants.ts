@@ -85,11 +85,11 @@ export const MAX_BOARD_SIZE = 700;
 // Z Indices
 
 export const BACKGROUND_Z_INDEX = 900;
-export const SIDEBAR_Z_INDEX = 920;
 export const CHAT_Z_INDEX = 920;
 export const DIALOG_Z_INDEX = 970;
 export const BOARD_Z_INDEX = 1000;
 export const LEFT_CONTROLS_Z_INDEX = 1500;
+export const SIDEBAR_Z_INDEX = 1600;
 export const STATUS_Z_INDEX = 2000;
 export const HAND_Z_INDEX = 50000;
 export const MAX_Z_INDEX = 99910;

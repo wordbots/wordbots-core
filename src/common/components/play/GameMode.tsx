@@ -16,7 +16,7 @@ interface GameModeProps {
 
 export default class GameMode extends React.Component<GameModeProps> {
   public render(): JSX.Element {
-    const { modesPerRow, compact, disabled, wrapper, onSelect } = this.props;
+    const { modesPerRow, disabled, wrapper, onSelect } = this.props;
     const widthPercent = `${100 / (modesPerRow || 1)}%`;
     const widthPadding = (((modesPerRow || 1) - 1) * 20) / (modesPerRow || 1);
 
@@ -26,10 +26,8 @@ export default class GameMode extends React.Component<GameModeProps> {
         onClick={onSelect || noop}
         style={{
           width: `calc(${widthPercent} - ${widthPadding}px)`,
-          height: compact ? 'auto' : 100,
           position: 'relative',
-          marginBottom: 20,
-          padding: compact ? 0 : '20px 0'
+          marginBottom: 20
         }}
       >
         {wrapper ? wrapper(this.renderInner()) : this.renderInner()}
@@ -52,8 +50,9 @@ export default class GameMode extends React.Component<GameModeProps> {
         {imagePath && (
           <div
             style={{
-              width: 200,
-              height: 100,
+              width: 250,
+              height: 125,
+              margin: '7px 0',
               color: 'grey',
               display: 'flex',
               alignItems: 'center',
@@ -63,7 +62,7 @@ export default class GameMode extends React.Component<GameModeProps> {
           >
             <img
               src={imagePath || ''}
-              style={{height: '100%', imageRendering: 'pixelated'}}
+              style={{ height: '100%' }}
               alt={`${name} game mode`}
             />
           </div>
@@ -75,6 +74,7 @@ export default class GameMode extends React.Component<GameModeProps> {
             width: compact ? '100%' : 'calc(100% - 220px)',
             height: 'auto',
             cursor: disabled ? 'not-allowed' : 'pointer',
+            padding: compact ? 0 : '20px 0'
           }}
         >
           <div
@@ -92,7 +92,7 @@ export default class GameMode extends React.Component<GameModeProps> {
             <div
               style={{
                 margin: '5px auto',
-                width: 300,
+                width: 250,
                 textAlign: 'center',
                 fontSize: 14,
                 color: '#666'

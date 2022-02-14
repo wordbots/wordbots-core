@@ -255,7 +255,7 @@ a.topLink:hover {
   border-right: 0;
   margin-left: -4px;
   margin-bottom: -12px;
-  filter: drop-shadow(1px 2px 0px rgb(244, 67, 54));
+  filter: drop-shadow(1px 2px 0 rgb(244, 67, 54));
 }
 
 .card-creator-text-field label {
@@ -268,6 +268,20 @@ a.topLink:hover {
 
 .card-creator-text-field.error fieldset {
   border-color: rgb(244, 67, 54) !important;
+}
+
+/** cribbed from https://codepen.io/Mark_Bowley/pen/PozwyP */
+.bubble {
+  position: absolute;
+  background: #00b4ff;
+  opacity: 0.2;
+  width: 106%;
+  height: 106%;
+  left: -3%;
+  top: -3%;
+  pointer-events: none;
+  border-radius: 50%;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0 10px 30px 5px rgba(255, 255, 255, 1);
 }
 
 /* Media queries */

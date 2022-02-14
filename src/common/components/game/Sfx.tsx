@@ -36,15 +36,20 @@ export default class Sfx extends React.Component<SfxProps, SfxState> {
 
     this.disableDebugMode();
 
-    if (this.enabled && this.currentSound) {
-      return (
-        <Sound
-          url={`/static/sound/${this.currentSound}`}
-          volume={volume}
-          playStatus={Sound.status.PLAYING}
-          onFinishedPlaying={this.proceedToNextSound}
-        />
-      );
+    if (this.currentSound) {
+      if (this.enabled) {
+        return (
+          <Sound
+            url={`/static/sound/${this.currentSound}`}
+            volume={volume}
+            playStatus={Sound.status.PLAYING}
+            onFinishedPlaying={this.proceedToNextSound}
+          />
+        );
+      } else {
+        this.proceedToNextSound();
+        return null;
+      }
     } else {
       return null;
     }

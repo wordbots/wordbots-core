@@ -18,34 +18,18 @@ interface HexPieceProps {
 }
 
 export default class HexPiece extends React.Component<HexPieceProps> {
+  // actual hex coords of the piece
   get points(): string {
-    if (this.props.piece.image) {
-      return this.oldStyleHexCoords;
-    } else {
-      return this.newStyleHexCoords;
-    }
+    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
+    points[4].y = points[4].y + 2;
+    points[5].y = points[5].y + 2;
+    return points.map((point) => `${point.x},${point.y - 2}`).join(' ');
   }
 
   // Exact hex coords of the underlying polygon - used for rendering red tint indicating pieces being damaged
   get rawHexCoords(): string {
     const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
     return points.map((point) => `${point.x},${point.y}`).join(' ');
-  }
-
-  // Old hex piece coords - for kernels & other things with static art.
-  get oldStyleHexCoords(): string {
-    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
-    points[4].y = points[4].y * 1.5;
-    points[5].y = points[5].y * 1.5;
-    return points.map((point) => `${point.x},${point.y}`).join(' ');
-  }
-
-  // New hex piece coords - for sprites.
-  get newStyleHexCoords(): string {
-    const points: Point[] = this.props.layout.getPolygonPoints(this.props.hex);
-    points[4].y = points[4].y + 2;
-    points[5].y = points[5].y + 2;
-    return points.map((point) => `${point.x},${point.y - 2}`).join(' ');
   }
 
   get translate(): string {

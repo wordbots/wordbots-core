@@ -22,13 +22,14 @@ export default class PiecePattern extends React.Component<PiecePatternProps> {
       if (isSpriteImage(image)) {
         return <Sprite id={image.sprite} size={24} spacing={6} output="svg" palette="nes" />;
       } else if (image.img && this.images[image.img]) {
-        return <image xlinkHref={this.images[image.img]} width="0.8" height="0.8" preserveAspectRatio="xMidYMid" />;
+        // (only kernels have static images)
+        return <image xlinkHref={this.images[image.img]} width="0.6" height="0.6" x="0.2" y="0.25" style={{ imageRendering: 'pixelated' }} />;
       }
     }
   }
 
   public render(): JSX.Element | null {
-    const { id, image } = this.props.piece;
+    const { id } = this.props.piece;
     const renderedImage = this.imageElt;
 
     if (renderedImage) {
@@ -39,7 +40,7 @@ export default class PiecePattern extends React.Component<PiecePatternProps> {
             width="100%"
             height="100%"
             patternContentUnits="objectBoundingBox"
-            viewBox={(!!image && isSpriteImage(image)) ? '0 0 1 1' : '-0.1 -0.05 1 1'}
+            viewBox={'0 0 1 1'}
             preserveAspectRatio="xMidYMid"
           >
             {renderedImage}

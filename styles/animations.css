@@ -93,3 +93,49 @@
   0%, 100% { opacity: 0; }
   30%, 60% { opacity: 0.7; }
 }
+
+.boardAnimationContainer {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.boardAnimation {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+}
+.enableCountdown .boardAnimation {
+  animation: BoardFlyIn 5s ease-in-out;
+}
+.disableCountdown .boardAnimation {
+  animation: BoardFlyIn 400ms ease-in-out;
+}
+@keyframes BoardFlyIn {
+  0%, 80% { width: 0; }
+  100% { width: 100%; }
+}
+
+.boardAnimationContainer.enableCountdown::after {
+  color: white;
+  content: '';
+  animation: ThreeTwoOneFight 5s ease-in-out;
+  position: absolute;
+  top: 36%;
+  font-size: 120px;
+  width: 100%;
+  /* height: 100%; */
+  text-align: center;
+  font-family: 'Carter One';
+  -webkit-text-stroke: 5px red;
+}
+@keyframes ThreeTwoOneFight {
+  0%, 100% { content: ''; font-size: 120px; }
+  12%, 28%, 32%, 48%, 52%, 68%, 72% { content: ''; }
+  10%, 30%, 50%, 70% { font-size: 0; }
+  20% { content: '3'; font-size: 120px; }
+  40% { content: '2'; font-size: 120px; }
+  60% { content: '1'; font-size: 120px; }
+  80% { content: 'FIGHT!'; font-size: 120px; }
+}

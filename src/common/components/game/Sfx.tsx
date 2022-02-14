@@ -34,22 +34,19 @@ export default class Sfx extends React.Component<SfxProps, SfxState> {
   public render(): JSX.Element | null {
     const { volume } = this.props;
 
+    if (!inBrowser()) { return null; }
+
     this.disableDebugMode();
 
     if (this.currentSound) {
-      if (this.enabled) {
-        return (
-          <Sound
-            url={`/static/sound/${this.currentSound}`}
-            volume={volume}
-            playStatus={Sound.status.PLAYING}
-            onFinishedPlaying={this.proceedToNextSound}
-          />
-        );
-      } else {
-        this.proceedToNextSound();
-        return null;
-      }
+      return (
+        <Sound
+          url={`/static/sound/${this.currentSound}`}
+          volume={this.enabled ? volume : 0}
+          playStatus={Sound.status.PLAYING}
+          onFinishedPlaying={this.proceedToNextSound}
+        />
+      );
     } else {
       return null;
     }

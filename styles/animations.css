@@ -133,7 +133,7 @@
 @keyframes ThreeTwoOneFight {
   0%, 100% { content: ''; font-size: 120px; }
   12%, 28%, 32%, 48%, 52%, 68%, 72% { content: ''; }
-  10%, 30%, 50%, 70% { font-size: 0px; }
+  10%, 30%, 50%, 70% { font-size: 0; }
   20% { content: '3'; font-size: 120px; }
   40% { content: '2'; font-size: 120px; }
   60% { content: '1'; font-size: 120px; }

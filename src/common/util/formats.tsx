@@ -101,7 +101,7 @@ export class GameFormat {
       usernames,
       options
     };
-    state = triggerSound(state, (state.tutorial || state.sandbox) ? 'yourmove.wav' : 'countdown.wav');
+    state = triggerSound(state, location.pathname.includes('/play/sandbox') ? 'yourmove.wav' : 'countdown.wav');
 
     return state;
   }

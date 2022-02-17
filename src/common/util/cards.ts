@@ -278,7 +278,6 @@ function parse(
   // fast mode does only the bare minimum error analysis (no syntax/semantics suggestions) to speed up parse results
   fastMode = false
 ): void {
-  console.log(fastMode);
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}${fastMode ? '&fast=true' : ''}`;

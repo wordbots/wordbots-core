@@ -6,8 +6,9 @@ import { inGameParseCompleted } from '../actions/game';
 import { globalDispatch } from '../store/globalDispatch';
 import * as w from '../types';
 
+import { inBrowser } from './browser';
 import { parseCard } from './cards';
-import { currentPlayer, isMyTurn, logAction, ownerOfCard } from './game';
+import { currentPlayer, logAction, ownerOfCard } from './game';
 
 /** Use the global dispatch pointer to dispatch a bundle of data relating to a parser response. */
 function dispatchParseResult(parseBundle: w.InGameParseBundle): void {
@@ -47,7 +48,7 @@ function performTextReplacements(oldText: string, textReplacements: Array<[strin
 
   // 2nd pass: replace {{$idx}} -> toText
   textReplacements.forEach(([_fromText, toText], idx) => {
-    text = text.replaceAll(`{{$${idx}}}`, toText);
+    text = text.replace(new RegExp(escapeRegExp(`{{$${idx}}}`), 'g'), toText);
   });
 
   return {
@@ -62,6 +63,14 @@ function performTextReplacements(oldText: string, textReplacements: Array<[strin
  * The actual rewrite happens in handleRewriteParseCompleted() if the parse succeeds.
  */
 export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textReplacements: Record<string, string>): void {
+  // Recall that the server will perform game actions along with the clients,
+  // in order to track game state and check for the winner.
+  // We obviously can't have the server call out to the parser for a bunch of reasons
+  // (no access to fetch or globalDispatch, plus it's slow and insane to do this).
+  // Instead the server will just treat the action['rewriteCard'] operation itself as a no-op,
+  // and will simply process the IN_GAME_PARSE_COMPLETED redux actions so its state is consistent with the clients.
+  if (!inBrowser()) { return; }
+
   if (card.text) {
     const { newText, highlightedTextBlocks } = performTextReplacements(card.text, Object.entries(textReplacements));
     if (newText !== card.text) {
@@ -100,6 +109,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
  */
 export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.InGameParseBundle): w.GameState {
   const { card: { cardOwner, name, oldText }, newCardText, highlightedTextBlocks, parseResult } = parseBundle;
+  const player = currentPlayer(state);
 
   decrementParseCounter(state);
 
@@ -107,13 +117,18 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
   // TODO once we allow rewriting objects, some of this will have to change
   // TODO how would this ever work with obfuscated cards?
   const card: w.CardInGame | undefined = find(state.players[cardOwner].hand as w.CardInGame[], { name, text: oldText });
+
   if (card) {
     if ('error' in parseResult) {
       // The parse failed!
-      handleParseFailure(state, card, parseResult.error);
+      // Log a message for the player performing this action IF it is their own card that failed parsing
+      // (to prevent leaking information about opponents' cards)
+      if (cardOwner === state.player) {
+        logAction(state, player, `failed to rewrite |${card.id}| card: ${parseResult.error}`, { [card.id]: card });
+        state.players[state.currentTurn].status = { type: 'error', message: `Failed to rewrite "${card.name}" card: ${parseResult.error}` };
+      }
     } else {
       // The parse succeeded! Now we can finally update the card in question.
-      const oldCardText = card.text;
       Object.assign(card, {
         text: newCardText,
         highlightedTextBlocks,
@@ -121,25 +136,13 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
         abilities: parseResult.abilities
       } as Partial<w.CardInGame>);
 
-      // Log a message for the player performing this action IF it is their own card that just got rewritten
+      // Log a message for the player performing this action IF it is their own card that got rewritten
       // (to prevent leaking information about opponents' cards)
       if (cardOwner === state.player) {
-        logAction(state, currentPlayer(state), `rewrote |${card.id}|'s text from "${oldCardText}" to "${newCardText}"`, { [card.id]: card });
+        logAction(state, player, `rewrote |${card.id}|'s text from "${oldText}" to "${newCardText}"`, { [card.id]: card });
       }
     }
   }
 
   return state;
-}
-
-function handleParseFailure(state: w.GameState, card: w.CardInGame, error: string): void {
-  // Log a message for the player performing this action IF it is their own card that just failed parsing
-  // (to prevent leaking information about opponents' cards)
-  if (isMyTurn(state) && ownerOfCard(state, card)?.color === state.currentTurn) {
-    logAction(state, currentPlayer(state), `failed to rewrite |${card.id}| card: ${error}`, { [card.id]: card });
-    state.players[state.currentTurn].status = {
-      type: 'error',
-      message: `Failed to rewrite "${card.name}" card: ${error}`
-    };
-  }
 }

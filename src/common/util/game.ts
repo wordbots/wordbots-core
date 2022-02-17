@@ -652,9 +652,7 @@ export function executeCmd(
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  //console.log(cmd);
-  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => any;
-
+  // console.log(cmd);
   state.callbackAfterExecution = undefined;
 
   state.executionStackDepth += 1;
@@ -662,7 +660,7 @@ export function executeCmd(
     throw new Error('EXECUTION_STACK_DEPTH_EXCEEDED');
   }
 
-  const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
+  const vocabulary = buildVocabulary(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
 

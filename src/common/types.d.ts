@@ -192,7 +192,13 @@ export interface User {
 
 /** A bundle returned when an in-game re-parse (i.e. for a card rewrite effect) succeeds or fails. */
 export interface InGameParseBundle {
-  cardId: CardId
+  card: {
+    id: CardId
+    // We have to reference cards in hand by (color, name, text) tuples because cards' ids going to be inconsistent between the two players
+    cardOwner: PlayerColor
+    name: string
+    oldText: string
+  }
   newCardText: string
   highlightedTextBlocks: string[]
   parseResult: CardInStore | { error: string }
@@ -259,7 +265,6 @@ export interface GameState {
   usernames: PerPlayer<string>
   winner: GameWinner
   volume: number
-  isWaitingForParses: boolean
   numParsesInFlight: number
 
   actionId?: string

@@ -62,14 +62,16 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
     return (
       <Paper
         key={deck.name}
-        style={{marginRight: 20, marginBottom: 20, padding: 10}}
+        style={{maxWidth: 490, marginRight: 20, marginBottom: 20, padding: 10}}
       >
         <div style={{display: 'flex', marginBottom: 15}}>
-          <div style={{flex: 1, fontSize: 32, fontWeight: 100}}>
+          <div style={{fontSize: 32, fontWeight: 100}}>
             {deck.name}
           </div>
 
-          <DeckValidationIndicator deck={deck} cards={cards} set={set} />
+          <div style={{ minWidth: 150 }}>
+            <DeckValidationIndicator deck={deck} cards={cards} set={set} />
+          </div>
         </div>
 
         <MustBeLoggedIn

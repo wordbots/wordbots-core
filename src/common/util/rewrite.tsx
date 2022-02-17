@@ -1,13 +1,13 @@
 /** Utility methods relating to in-game card rewrite effects. (This is a bleeding-edge feature.) */
 
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp, find } from 'lodash';
 
 import { inGameParseCompleted } from '../actions/game';
 import { globalDispatch } from '../store/globalDispatch';
 import * as w from '../types';
 
 import { parseCard } from './cards';
-import { currentPlayer, findCardInHand, isMyTurn, logAction, ownerOfCard } from './game';
+import { currentPlayer, isMyTurn, logAction, ownerOfCard } from './game';
 
 /** Use the global dispatch pointer to dispatch a bundle of data relating to a parser response. */
 function dispatchParseResult(parseBundle: w.InGameParseBundle): void {
@@ -15,15 +15,11 @@ function dispatchParseResult(parseBundle: w.InGameParseBundle): void {
 }
 
 function incrementParseCounter(state: w.GameState): void {
-  state.isWaitingForParses = true;
   state.numParsesInFlight = state.numParsesInFlight + 1;
 }
 
 function decrementParseCounter(state: w.GameState): void {
   state.numParsesInFlight = state.numParsesInFlight - 1;
-  if (state.numParsesInFlight === 0) {
-    state.isWaitingForParses = false;
-  }
 }
 
 /**
@@ -69,8 +65,14 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
   if (card.text) {
     const { newText, highlightedTextBlocks } = performTextReplacements(card.text, Object.entries(textReplacements));
     if (newText !== card.text) {
+      const cardOwner: w.PlayerColor = ownerOfCard(state, card)!.color;
       const parseBundle: Omit<w.InGameParseBundle, 'parseResult'> = {
-        cardId: card.id,
+        card: {
+          id: card.id,
+          cardOwner,
+          name: card.name,
+          oldText: card.text
+        },
         newCardText: newText,
         highlightedTextBlocks
       };
@@ -93,41 +95,37 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
  * or reporting an error if the parse fails.
  */
 export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.InGameParseBundle): w.GameState {
-  const { cardId, newCardText, highlightedTextBlocks, parseResult } = parseBundle;
+  const { card: { cardOwner, name, oldText }, newCardText, highlightedTextBlocks, parseResult } = parseBundle;
 
-  if (!state.isWaitingForParses) {
-    return { ...state, numParsesInFlight: 0 };
-  } else {
-    decrementParseCounter(state);
+  decrementParseCounter(state);
 
-    // Find the card being rewritten (if it can't be found, just throw away the parse results)
-    // TODO once we allow rewriting objects, some of this will have to change
-    // TODO how would this ever work with obfuscated cards?
-    const card: w.CardInGame | undefined = findCardInHand(state, cardId) as w.CardInGame | undefined;
-    if (card) {
-      if ('error' in parseResult) {
-        // The parse failed!
-        handleParseFailure(state, card, parseResult.error);
-      } else {
-        // The parse succeeded! Now we can finally update the card in question.
-        const oldCardText = card.text;
-        Object.assign(card, {
-          text: newCardText,
-          highlightedTextBlocks,
-          command: parseResult.command,
-          abilities: parseResult.abilities
-        } as Partial<w.CardInGame>);
+  // Find the card being rewritten
+  // TODO once we allow rewriting objects, some of this will have to change
+  // TODO how would this ever work with obfuscated cards?
+  const card: w.CardInGame | undefined = find(state.players[cardOwner].hand as w.CardInGame[], { name, text: oldText });
+  if (card) {
+    if ('error' in parseResult) {
+      // The parse failed!
+      handleParseFailure(state, card, parseResult.error);
+    } else {
+      // The parse succeeded! Now we can finally update the card in question.
+      const oldCardText = card.text;
+      Object.assign(card, {
+        text: newCardText,
+        highlightedTextBlocks,
+        command: parseResult.command,
+        abilities: parseResult.abilities
+      } as Partial<w.CardInGame>);
 
-        // Log a message for the player performing this action IF it is their own card that just got rewritten
-        // (to prevent leaking information about opponents' cards)
-        if (isMyTurn(state) && ownerOfCard(state, card)?.color === state.currentTurn) {
-          logAction(state, currentPlayer(state), `rewrote |${cardId}|'s text from "${oldCardText}" to "${newCardText}"`, { [cardId]: card });
-        }
+      // Log a message for the player performing this action IF it is their own card that just got rewritten
+      // (to prevent leaking information about opponents' cards)
+      if (cardOwner === state.player) {
+        logAction(state, currentPlayer(state), `rewrote |${card.id}|'s text from "${oldCardText}" to "${newCardText}"`, { [card.id]: card });
       }
     }
-
-    return state;
   }
+
+  return state;
 }
 
 function handleParseFailure(state: w.GameState, card: w.CardInGame, error: string): void {

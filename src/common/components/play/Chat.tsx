@@ -46,7 +46,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     showChatMsgs: true
   };
 
-  private chat: any = null;  // TODO type this ref correctly
+  private chatRef: HTMLDivElement | null = null;
 
   get isClosed(): boolean {
     return !!this.props.inGame && !this.props.open && !this.props.header;
@@ -59,6 +59,10 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
       || this.props.messages.length !== nextProps.messages.length
       || this.props.roomName !== nextProps.roomName
       || !isEqual(this.state, nextState);
+  }
+
+  public componentDidMount(): void {
+    this.scrollToBottom();
   }
 
   public componentDidUpdate(): void {
@@ -89,11 +93,11 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private scrollToBottom(): void {
-    if (this.chat) {
-      const scrollHeight = this.chat.scrollHeight;
-      const height = this.chat.clientHeight;
+    if (this.chatRef) {
+      const scrollHeight = this.chatRef.scrollHeight;
+      const height = this.chatRef.clientHeight;
       const maxScrollTop = scrollHeight - height;
-      this.chat.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+      this.chatRef.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   }
 
@@ -252,7 +256,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         </div>
 
         <div
-          ref={(el) => {this.chat = el; }}
+          ref={(el) => {this.chatRef = el; }}
           style={{
             padding: 10,
             height: `calc(100% - 144px ${optionsVisible ? '- 92px' : ''} ${header ? '- 36px' : ''})`,

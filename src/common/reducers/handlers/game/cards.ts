@@ -225,6 +225,10 @@ function playEvent(state: State, cardIdx: number): State {
       // Everything is good (valid state + no more targets to select), so we can return the new state!
       card.justPlayed = false;
 
+      // Save the callbackAfterExecution from the state (if any), in case it gets messed up (i.e. by triggerEvent()).
+      // We will call it *after* trigger/ability handling.
+      const { callbackAfterExecution } = tempState;
+
       tempState = discardCardsFromHand(tempState, currentPlayer(state).color, [card]);
       tempState = triggerEvent(tempState, 'afterCardPlay', {
         player: true,
@@ -239,8 +243,8 @@ function playEvent(state: State, cardIdx: number): State {
         player.energy.available -= getCost(card);
       }
 
-      if (tempState.callbackAfterExecution) {
-        tempState = tempState.callbackAfterExecution(tempState);
+      if (callbackAfterExecution) {
+        tempState = callbackAfterExecution(tempState);
       }
 
       tempState.eventQueue = [...tempState.eventQueue, card];

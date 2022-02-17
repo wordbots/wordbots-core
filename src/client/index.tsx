@@ -16,7 +16,6 @@ import '../../styles/lib.css';
 require('object.values').shim();  // TODO remove this shim when Object.values() is no longer used in JS code
 
 declare const window: {
-  localStorage: Record<string, string>
   VERSION: string
 };
 

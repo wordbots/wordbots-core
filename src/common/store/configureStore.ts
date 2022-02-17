@@ -33,10 +33,6 @@ const selectStoreEnhancers = (): StoreEnhancer[] => {
       const createLogger: () => Middleware = require('redux-logger').createLogger;
       const DevTools = require('../containers/DevTools').default;
 
-      // react-addons-perf unsupported as of React 16.0.0.
-      // const Perf = require('react-addons-perf');
-      // window.Perf = Perf;
-
       return [
         applyMiddleware(multipleDispatchMiddleware, socketMiddleware, createLogger()),
         ENABLE_REDUX_TIME_TRAVEL ? DevTools.instrument() : null

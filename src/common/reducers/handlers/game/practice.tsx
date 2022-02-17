@@ -12,7 +12,7 @@ import { assertCardVisible, instantiateCard } from '../../../util/cards';
 import { convertRange, id } from '../../../util/common';
 import { lookupUsername } from '../../../util/firebase';
 import {
-  intermediateMoveHexId, newGame, passTurn, validAttackHexes,
+  intermediateMoveHexId, newGame, passTurn, triggerSound, validAttackHexes,
   validMovementHexes, validPlacementHexes
 } from '../../../util/game';
 
@@ -28,6 +28,7 @@ export function startPractice(state: State, format: w.Format, deck: w.CardInGame
   };
 
   state = newGame(state, 'orange', {orange: lookupUsername(), blue: 'Computer'}, decks, 0, format);
+  state = triggerSound(state, 'countdown.wav');
   state.practice = true;
 
   return state;
@@ -48,6 +49,7 @@ export function startSandbox(state: State, cardToTest: w.CardInStore | null = nu
   }
 
   state = newGame(state, 'orange', {orange: lookupUsername('Orange'), blue: lookupUsername('Blue')}, decks);
+  state = triggerSound(state, 'yourmove.wav');
   state.sandbox = true;
 
   if (isFlagSet('skipTooltip:sandbox')) {

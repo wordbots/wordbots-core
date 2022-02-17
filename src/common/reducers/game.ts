@@ -45,8 +45,8 @@ export function handleAction(
   }
 
   switch (type) {
-    case socketActions.GAME_START:
-      return g.newGame(
+    case socketActions.GAME_START: {
+      state = g.newGame(
         state,
         payload.player || 'orange',
         payload.usernames || {},
@@ -55,6 +55,9 @@ export function handleAction(
         payload.format || DEFAULT_GAME_FORMAT,
         payload.options || {}
       );
+      state = triggerSound(state, 'countdown.wav');
+      return state;
+    }
 
     case actions.START_TUTORIAL:
       return g.startTutorial(state);

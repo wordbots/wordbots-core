@@ -9,7 +9,6 @@ import defaultState, { bluePlayerState, orangePlayerState } from '../store/defau
 import * as w from '../types';
 
 import { instantiateCard } from './cards';
-import { triggerSound } from './game';
 
 export function renderFormatDisplayName(format: w.Format): string {
   return GameFormat.decode(format).displayName!;
@@ -101,7 +100,6 @@ export class GameFormat {
       usernames,
       options
     };
-    state = triggerSound(state, location.pathname.includes('/play/sandbox') ? 'yourmove.wav' : 'countdown.wav');
 
     return state;
   }

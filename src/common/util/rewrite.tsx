@@ -83,7 +83,11 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
       parseCard(
         { ...card, text: newText },
         (parsedCard: w.CardInStore) => dispatchParseResult({ ...parseBundle, parseResult: parsedCard }),
-        (error: string) => dispatchParseResult({ ...parseBundle, parseResult: { error }})
+        (error: string) => dispatchParseResult({ ...parseBundle, parseResult: { error }}),
+        {
+          disableIndexing: true,
+          fastMode: true
+        }
       );
     }
   }

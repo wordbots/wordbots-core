@@ -274,11 +274,14 @@ function parse(
   sentences: string[],
   mode: w.ParserMode,
   callback: (idx: number, sentence: string, json: w.ParseResult) => any,
-  index = true
+  index = true,
+  // fast mode does only the bare minimum error analysis (no syntax/semantics suggestions) to speed up parse results
+  fastMode = false
 ): void {
+  console.log(fastMode);
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
-    const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}`;
+    const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}${fastMode ? '&fast=true' : ''}`;
 
     fetch(parseUrl)
       .then((response) => response.json())
@@ -330,30 +333,42 @@ export function parseBatch(
 export function parseCard(
   card: w.CardInStore,
   callback: (c: w.CardInStore, parseResult: string[]) => void,
-  errorCallback?: (message: string) => void
+  errorCallback?: (message: string) => void,
+  opts?: {
+    // disables indexing successful parse results in Firebase
+    disableIndexing?: boolean
+    // does only the bare minimum error analysis (no syntax/semantics suggestions) to speed up parse results
+    fastMode?: boolean
+  }
 ): void {
   const isEvent = card.type === TYPE_EVENT;
   const sentences = getSentencesFromInput(card.text || '');
   const parseResults: string[] = [];
 
-  parse(sentences, isEvent ? 'event' : 'object', (idx, _, response) => {
-    if (response.error) {
-      const errorMsg = `Received '${response.error}' while parsing '${sentences[idx]}'`;
-      if (errorCallback) {
-        errorCallback(errorMsg);
-      } else {
-        throw new Error(errorMsg);
+  parse(
+    sentences,
+    isEvent ? 'event' : 'object',
+    (idx, _, response) => {
+      if (response.error) {
+        const errorMsg = `Received '${response.error}' while parsing '${sentences[idx]}'`;
+        if (errorCallback) {
+          errorCallback(errorMsg);
+        } else {
+          throw new Error(errorMsg);
+        }
       }
-    }
 
-    parseResults[idx] = response.js!;
+      parseResults[idx] = response.js!;
 
-    // Are we done parsing?
-    if (compact(parseResults).length === sentences.length) {
-      card[isEvent ? 'command' : 'abilities'] = parseResults;
-      callback(card, parseResults);
-    }
-  });
+      // Are we done parsing?
+      if (compact(parseResults).length === sentences.length) {
+        card[isEvent ? 'command' : 'abilities'] = parseResults;
+        callback(card, parseResults);
+      }
+    },
+    !opts?.disableIndexing,
+    opts?.fastMode
+  );
 }
 
 //

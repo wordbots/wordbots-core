@@ -167,7 +167,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
-          <ParsingIndicator isWaitingForParse={isWaitingForParse} />
+          <ParsingIndicator isWaitingForParse={isWaitingForParse && !!winner} />
           {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
         </React.Fragment>
       );

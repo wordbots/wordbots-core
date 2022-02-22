@@ -154,6 +154,9 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
 }
 
 export function checkVictoryConditions(state: w.GameState): w.GameState {
+  // Skip check if there's already a winner declared
+  if (state.winner) { return state; }
+
   const blueKernelExists = some(state.players.blue.objectsOnBoard, {card: {type: TYPE_CORE}});
   const orangeKernelExists = some(state.players.orange.objectsOnBoard, {card: {type: TYPE_CORE}});
 

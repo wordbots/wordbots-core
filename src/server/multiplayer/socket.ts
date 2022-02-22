@@ -5,7 +5,6 @@ import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
-import { opponent as opponentOf } from '../../common/util/game';
 
 import * as m from './multiplayer';
 import MultiplayerServerState from './MultiplayerServerState';
@@ -98,23 +97,19 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onDisconnect(clientID: m.ClientID): void {
-    const game = state.lookupGameByClient(clientID);
-    if (game) {
-      sendMessageInGame(clientID, 'ws:FORFEIT', {winner: opponentOf(game.playerColors[clientID])});
-    }
-
-    sendChat(`${state.getClientUsername(clientID)} has left.`);
+    state.leaveGame(clientID);
+    sendChatToLobby(`${state.getClientUsername(clientID)} has left.`);
     state.disconnectClient(clientID);
   }
 
   function sendMessage(type: string, payload: Record<string, any> = {}, recipientIDs: m.ClientID[] | null = null): void {
-    const message = JSON.stringify({type, payload});
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
+        const message = JSON.stringify({type, payload});
         socket.send(message);
         console.log(`> ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})}`);
       } catch (error) {
-        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${(error as any).message}`);
+        console.warn(`Failed to send message of type ${type} to ${recipientIDs}: ${(error as any).message}`);
       }
     });
   }
@@ -136,6 +131,10 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     sendMessage('ws:CHAT', {msg, sender: '[Server]'}, recipientIDs);
   }
 
+  function sendChatToLobby(msg: string): void {
+    sendMessage('ws:CHAT', {msg, sender: '[Server]'}, state.getAllPlayersInLobby());
+  }
+
   function broadcastInfo(): void {
     sendMessage('ws:INFO', state.serialize());
   }
@@ -144,11 +143,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const oldUserData = state.getClientUserData(clientID);
     state.setClientUserData(clientID, userData);
     if (!oldUserData && userData) {
-      sendChat(`${userData.displayName} has entered the lobby.`);
+      sendChatToLobby(`${userData.displayName} has entered the lobby.`);
     } else if (!state.isClientLoggedIn(clientID)) {
-      sendChat(`${state.getClientUsername(clientID)} has entered the lobby.`);
+      sendChatToLobby(`${state.getClientUsername(clientID)} has entered the lobby.`);
     } else if (!userData && oldUserData) {
-      sendChat(`${oldUserData.displayName} has logged out.`);
+      sendChatToLobby(`${oldUserData.displayName} has logged out.`);
     }
     broadcastInfo();
   }

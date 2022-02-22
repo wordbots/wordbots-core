@@ -220,9 +220,13 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   public componentWillUnmount(): void {
     const { interval } = this.state;
 
-    this.handleEndGame();
     if (interval) {
       clearInterval(interval);
+    }
+
+    // Leaving the page ends the game ... unless you are a spectator!
+    if (!this.props.isSpectator) {
+      this.handleEndGame();
     }
   }
 

@@ -132,7 +132,12 @@ export function handleAction(
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
-      return reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state);
+      // But empty the queues so as not to overwhelm the spectator with animations and sounds immediately.
+      return {
+        ...reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state),
+        eventQueue: [],
+        sfxQueue: []
+      };
 
     case socketActions.REVEAL_CARDS: {
       const { blue, orange } = payload;

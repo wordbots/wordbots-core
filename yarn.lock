@@ -1322,6 +1322,11 @@
     "@types/react" "*"
     redux "^3.6.0"
 
+"@types/safe-json-stringify@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/safe-json-stringify/-/safe-json-stringify-1.1.2.tgz#913796617042de2259f62ce82843c239258ca287"
+  integrity sha512-Hj/LZMBXFH3Qj9sNmNu6syBpkZqBaM00HgP7naf9CnZhB3kdxmrenWUD2cY6vvTWjuBM3NPOLknPKDUOQuTWXA==
+
 "@types/screenfull@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@types/screenfull/-/screenfull-4.1.0.tgz#e2f7bbb1d2c32c07e54908e47d00724b7515c2cb"
@@ -4850,6 +4855,11 @@ flat@^4.1.0:
 flatted@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.2.tgz#4575b21e2bcee7434aa9be662f4b7b5f9c2b5138"
+
+flatted@^3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
+  integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
 flush-write-stream@^1.0.0:
   version "1.0.3"
@@ -9808,6 +9818,11 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
+
+safe-json-stringify@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/safe-json-stringify/-/safe-json-stringify-1.2.0.tgz#356e44bc98f1f93ce45df14bcd7c01cda86e0afd"
+  integrity sha512-gH8eh2nZudPQO6TytOvbxnuhYBOvDBBLW52tz5q6X58lJcd/tkmqFR+5Z9adS8aJtURSXWThWy/xJtJwixErvg==
 
 safe-regex@^1.1.0:
   version "1.1.0"

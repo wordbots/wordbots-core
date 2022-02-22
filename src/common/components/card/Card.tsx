@@ -35,7 +35,6 @@ export interface CardProps {
   text: string | Array<JSX.Element | null>
   rawText: string
   highlightedTextBlocks?: string[]
-  parseResults?: string
   showSpinner?: boolean
   flavorText?: string
   img?: string
@@ -100,7 +99,6 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         cost={card.cost}
         baseCost={card.cost}
         source={card.metadata.source}
-        parseResults=""
         {...props}
       />
       ) : <CardBack />
@@ -112,7 +110,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
 
   public shouldComponentUpdate(nextProps: CardProps, nextState: CardState): boolean {
     const trackedProps = [
-      'name', 'spriteID', 'type', 'rawText', 'parseResults', 'showSpinner',
+      'name', 'spriteID', 'type', 'rawText', 'showSpinner',
       'cardStats', 'stats', 'image', 'cost', 'baseCost',
       'status', 'visible', 'selected', 'targetable',
       'margin', 'zIndex'

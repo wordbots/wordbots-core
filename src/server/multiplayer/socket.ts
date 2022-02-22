@@ -1,6 +1,8 @@
 import { Server } from 'http';
 
+import * as Flatted from 'flatted';
 import { noop, truncate } from 'lodash';
+import * as SafeJsonStringify from 'safe-json-stringify';
 import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
@@ -62,7 +64,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onMessage(clientID: m.ClientID, data: string): void {
-    const { type, payload }: m.Action = JSON.parse(data);
+    const { type, payload }: m.Action = Flatted.parse(data);
 
     if (type !== 'ws:KEEPALIVE') {
       console.log(`< ${truncate(data, {length: MAX_DEBUG_MSG_LENGTH})}`);
@@ -108,7 +110,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function sendMessage(type: string, payload: Record<string, any> = {}, recipientIDs: m.ClientID[] | null = null): void {
-    const message = JSON.stringify({type, payload});
+    const message = Flatted.stringify({type, payload});
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
@@ -120,14 +122,14 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function sendMessageInLobby(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
-    console.log(`${clientID} broadcast a message to the lobby: ${type} ${JSON.stringify(payload)}`);
+    console.log(`${clientID} broadcast a message to the lobby: ${type} ${SafeJsonStringify(payload)}`);
     sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
   function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
     const opponentIds = state.getAllOpponents(clientID);
     if (opponentIds.length > 0) {
-      console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${JSON.stringify(payload)}`);
+      console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${SafeJsonStringify(payload)}`);
       sendMessage(type, payload, opponentIds);
     }
   }

@@ -64,9 +64,10 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
           {connected ? connectedSpan : (connecting ? connectingSpan : notConnectedSpan)}
         </span>
 
-        <Paper style={{ padding: 15, marginBottom: 20, maxHeight: '2.4em', overflowY: 'auto' }}>
-          <div style={{position: 'relative'}}>
-            { connected ? <span>
+        { connected &&
+          <Paper style={{ padding: 15, marginBottom: 20, maxHeight: '2.4em', overflowY: 'auto' }}>
+            <div style={{position: 'relative'}}>
+              <span>
                 <b>{playersOnline.length} player{playersOnline.length === 1 ? '' : 's'} online: </b>
                 {
                   playersOnline.map((clientId, idx) =>
@@ -77,12 +78,10 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
                     </div>
                   )
                 }
-              </span> : <span>
-                <b>0 players online: </b>
               </span>
-            }
-          </div>
-        </Paper>
+            </div>
+          </Paper>
+        }
       </div>
     );
   }

@@ -1,3 +1,4 @@
+import * as Flatted from 'flatted';
 import { cloneDeep, findIndex, size, times } from 'lodash';
 
 import * as actions from '../../src/common/actions/game';
@@ -665,7 +666,7 @@ describe('Game reducer', () => {
       ]);
 
       // Reveal and play a Recruiter Bot card, that will affect the cost of the Attack Bot in hand.
-      let revealCardsAction = JSON.parse(JSON.stringify({
+      let revealCardsAction = Flatted.parse(Flatted.stringify({
         type: 'ws:REVEAL_CARDS',
         payload: {
           orange: {
@@ -680,7 +681,7 @@ describe('Game reducer', () => {
       ]);
 
       // Now reveal the Attack Bot ... with the temporaryStatAdjustment from the Recruiter Bot!
-      revealCardsAction = JSON.parse(JSON.stringify({
+      revealCardsAction = Flatted.parse(Flatted.stringify({
         type: 'ws:REVEAL_CARDS',
         payload: {
           orange: {

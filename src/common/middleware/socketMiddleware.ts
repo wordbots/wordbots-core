@@ -1,4 +1,5 @@
 import * as fb from 'firebase';
+import * as Flatted from 'flatted';
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
 import * as ga from '../actions/global';
@@ -72,8 +73,8 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
       if (socket && !action.fromServer && !excludedActions.includes(action.type)) {
         // Either send the action or queue it to send later.
         if (socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify(action));
-          logSocketMsg(`Sent ${JSON.stringify(action)}.`);
+          socket.send(Flatted.stringify(action));
+          logSocketMsg(`Sent ${Flatted.stringify(action)}.`);
           keepaliveNeeded = false;
         } else {
           sendQueue.push(action);
@@ -83,7 +84,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
 
     function receive(event: { data: string }): void {
       const msg = event.data;
-      const action = JSON.parse(msg);
+      const action = Flatted.parse(msg);
 
       logSocketMsg(`Received ${msg}.`);
       store.dispatch({...action, fromServer: true});
@@ -95,7 +96,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
         if (socket.readyState === WebSocket.CLOSED) {
           connect();
         } else if (socket.readyState === WebSocket.OPEN && keepaliveNeeded) {
-          socket.send(JSON.stringify(sa.keepalive()));
+          socket.send(Flatted.stringify(sa.keepalive()));
         }
       }
       keepaliveNeeded = true;

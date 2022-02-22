@@ -87,7 +87,6 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
               text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
               rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
               source={{ type: 'user' }}
-              parseResults={JSON.stringify(sentences.map((s) => s.result))}
               showSpinner={sentences.some((s) => !s.result.js && !s.result.error)}
               scale={2.5}
               onSpriteClick={onSpriteClick}

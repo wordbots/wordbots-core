@@ -1,5 +1,6 @@
 import { cloneDeep, groupBy, isString, times } from 'lodash';
 import * as React from 'react';
+import * as SafeJsonStringify from 'safe-json-stringify';
 import * as seededRNG from 'seed-random';
 import { shuffle } from 'seed-shuffle';
 
@@ -67,7 +68,7 @@ export class GameFormat {
     }
 
     if (!format) {
-      throw new Error(`Unknown game format: ${JSON.stringify(encodedFormat)}`);
+      throw new Error(`Unknown game format: ${isString(encodedFormat) ? encodedFormat : SafeJsonStringify(encodedFormat)}`);
     }
     return format;
   }

@@ -5,6 +5,7 @@ import { renderElement, getComponent, createGameArea } from '../reactHelpers';
 import Card from '../../src/common/components/card/Card.tsx';
 import Board from '../../src/common/components/game/Board.tsx';
 import EventAnimation from '../../src/common/components/game/EventAnimation.tsx';
+import ParsingIndicator from '../../src/common/components/game/ParsingIndicator.tsx';
 import PlayerArea from '../../src/common/components/game/PlayerArea.tsx';
 import TutorialIntroScreen from '../../src/common/components/game/TutorialIntroScreen.tsx';
 import VictoryScreen from '../../src/common/components/game/VictoryScreen.tsx';
@@ -43,6 +44,7 @@ describe('GameArea container', () => {
               attack={null}
               size={board.props.size}
               isGameOver={false}
+              isWaitingForParse={false}
               onSelectTile={board.props.onSelectTile}
               onHoverTile={board.props.onHoverTile}
               onActivateAbility={board.props.onActivateAbility}
@@ -58,7 +60,8 @@ describe('GameArea container', () => {
       <VictoryScreen
         winner={null}
         winnerName={null}
-        onClick={victoryScreen.props.onClick} />
+        onClick={victoryScreen.props.onClick} />,
+      <ParsingIndicator isWaitingForParse={false} />
     ];
     /* eslint-enable react/jsx-key */
   };
@@ -93,7 +96,7 @@ describe('GameArea container', () => {
     const gameContents = renderElement(dom.props.children[1].props.children);
 
     // eslint-disable-next-line no-magic-numbers
-    const tutorialIntroScreen = gameContents.props.children[6];
+    const tutorialIntroScreen = gameContents.props.children[7];
 
     /* eslint-disable react/jsx-key */
     expect(gameContents.props.children).toEqual([

@@ -106,6 +106,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     isMyTurn: game.currentTurn === game.player,
     isSpectator: game.player === 'neither',
     isAttackHappening: !!game.attack?.from && !!game.attack?.to,
+    isWaitingForParse: game.numParsesInFlight > 0,
 
     actionLog: game.actionLog,
     collection: state.collection,
@@ -219,9 +220,13 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   public componentWillUnmount(): void {
     const { interval } = this.state;
 
-    this.handleEndGame();
     if (interval) {
       clearInterval(interval);
+    }
+
+    // Leaving the page ends the game ... unless you are a spectator!
+    if (!this.props.isSpectator) {
+      this.handleEndGame();
     }
   }
 

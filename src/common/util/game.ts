@@ -40,6 +40,10 @@ export function opponentPlayer(state: w.GameState): w.PlayerInGameState {
   return state.players[opponentName(state)];
 }
 
+export function isMyTurn(state: w.GameState): boolean {
+  return state.currentTurn === state.player;
+}
+
 export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefined {
   if ((state.tutorial || state.sandbox) && state.tutorialSteps) {
     const idx = state.tutorialCurrentStepIdx || 0;
@@ -150,6 +154,9 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
 }
 
 export function checkVictoryConditions(state: w.GameState): w.GameState {
+  // Skip check if there's already a winner declared
+  if (state.winner) { return state; }
+
   const blueKernelExists = some(state.players.blue.objectsOnBoard, {card: {type: TYPE_CORE}});
   const orangeKernelExists = some(state.players.orange.objectsOnBoard, {card: {type: TYPE_CORE}});
 
@@ -648,8 +655,7 @@ export function executeCmd(
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  type BuildVocabulary = (s: w.GameState, currentObj: w.Object | null, src: w.AbilityId | null) => any;
-
+  // console.log(cmd);
   state.callbackAfterExecution = undefined;
 
   state.executionStackDepth += 1;
@@ -657,7 +663,7 @@ export function executeCmd(
     throw new Error('EXECUTION_STACK_DEPTH_EXCEEDED');
   }
 
-  const vocabulary = (buildVocabulary as BuildVocabulary)(state, currentObject, source);
+  const vocabulary = buildVocabulary(state, currentObject, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
 
@@ -666,7 +672,7 @@ export function executeCmd(
     state.executionStackDepth -= 1;
     return result;
   } catch (error) {
-    if (error.message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
+    if ((error as any).message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
       // Propagate the error up the stack to the original invocation of executeCmd() (executionStackDepth === 1).
       if (state.executionStackDepth > 1) {
         throw error;

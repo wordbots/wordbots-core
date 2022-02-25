@@ -14,6 +14,7 @@ interface LeftControlsProps {
   isTimerEnabled: boolean
   isMyTurn?: boolean
   isAttackHappening?: boolean
+  isWaitingForParse?: boolean
   volume: number
   style?: React.CSSProperties
   onPassTurn: (player: w.PlayerColor) => void
@@ -24,7 +25,7 @@ interface LeftControlsProps {
 export default class LeftControls extends React.PureComponent<LeftControlsProps> {
   public render(): JSX.Element {
     const {
-      player, currentTurn, draft, isTimerEnabled, isMyTurn, isAttackHappening, volume, style,
+      player, currentTurn, draft, isTimerEnabled, isMyTurn, isAttackHappening, isWaitingForParse, volume, style,
       onPassTurn, onSetVolume, onToggleFullscreen
     } = this.props;
 
@@ -49,6 +50,7 @@ export default class LeftControls extends React.PureComponent<LeftControlsProps>
           enabled={isTimerEnabled}
           isMyTurn={!!draft || isMyTurn}
           isAttackHappening={isAttackHappening}
+          isWaitingForParse={isWaitingForParse}
           onPassTurn={onPassTurn}
         />
         <div

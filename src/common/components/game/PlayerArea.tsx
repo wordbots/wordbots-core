@@ -204,16 +204,17 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
     );
   }
 
-  private handleSelectCard = (idx: number) => this.props.gameProps.onSelectCard(idx, this.color);
+  private handleSelectCard = (idx: number) => {
+    if (this.props.gameProps.isWaitingForParse) { return; }
+    this.props.gameProps.onSelectCard(idx, this.color);
+  }
 
   private handleSelectCardInDiscardPile = (id: w.CardId) => {
+    if (this.props.gameProps.isWaitingForParse) { return; }
     this.props.gameProps.onSelectCardInDiscardPile(id, this.color);
     this.handleCloseDiscardPile();
   }
 
-  private handleOpenDiscardPile = () => {
-    this.setState({ discardOpen: true });
-  }
-
+  private handleOpenDiscardPile = () => this.setState({ discardOpen: true });
   private handleCloseDiscardPile = () => this.setState({ discardOpen: false });
 }

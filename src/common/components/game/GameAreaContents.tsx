@@ -14,6 +14,7 @@ import LeftControls from './LeftControls';
 import PlayerArea from './PlayerArea';
 import TutorialIntroScreen from './TutorialIntroScreen';
 import VictoryScreen from './VictoryScreen';
+import ParsingIndicator from './ParsingIndicator';
 
 type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
   actualPlayer: w.PlayerColor | null
@@ -31,8 +32,8 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
   public render = (): JSX.Element => {
     const {
       attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, orangePieces, player, playingCardType,
-      selectedTile, target, tutorialStep, usernames, winner, volume,
+      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse,
+      orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
       actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
@@ -81,6 +82,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer && startAnimationComplete}
               isMyTurn={isMyTurn}
               isAttackHappening={isAttackHappening}
+              isWaitingForParse={isWaitingForParse}
               volume={volume}
               onPassTurn={onPassTurn}
               onSetVolume={onSetVolume}
@@ -102,6 +104,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 gameOver={gameOver}
                 isMyTurn={isMyTurn || isSandbox}
                 isAttackHappening={isAttackHappening}
+                isWaitingForParse={isWaitingForParse}
                 tutorialStep={tutorialStep}
                 onPassTurn={onPassTurn}
                 onNextTutorialStep={onNextTutorialStep}
@@ -148,6 +151,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                   tutorialStep={tutorialStep}
                   attack={attack}
                   isGameOver={!!winner}
+                  isWaitingForParse={isWaitingForParse}
                   onSelectTile={onSelectTile}
                   onActivateAbility={onActivateObject}
                   onTutorialStep={onTutorialStep}
@@ -163,6 +167,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
+          <ParsingIndicator isWaitingForParse={isWaitingForParse && !!winner} />
           {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
         </React.Fragment>
       );

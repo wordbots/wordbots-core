@@ -68,9 +68,10 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
     } = this.props;
     const {
       clientId, connected, connecting, games,
+      hosting, queuing, queueSize,
       playersOnline, userDataByClientId, waitingPlayers
     } = socket;
-    const { casualGameBeingJoined } = this.state;
+    const { casualGameBeingJoined, queueFormat } = this.state;
 
     return (
       <div>
@@ -126,7 +127,14 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
             onConnect={onConnect}
           />
 
-          {this.renderWaiting()}
+          {(hosting || queuing) &&
+            <Waiting
+              inQueue={queuing}
+              queueFormatName={queueFormat ? renderFormatDisplayName(queueFormat) : ''}
+              queueSize={queueSize}
+              onLeaveQueue={this.handleLeaveQueue}
+            />
+          }
 
           <MultiplayerModeSelection
             disabled={this.isWaiting}
@@ -182,21 +190,5 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
 
   private handleHostGame = (gameName: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => {
     this.props.onHostGame(gameName, format, deck, options);
-  }
-
-  private renderWaiting(): JSX.Element | undefined {
-    const { hosting, queuing, queueSize } = this.props.socket;
-    const { queueFormat } = this.state;
-
-    if (hosting || queuing) {
-      return (
-        <Waiting
-          inQueue={queuing}
-          queueFormatName={queueFormat ? renderFormatDisplayName(queueFormat) : ''}
-          queueSize={queueSize}
-          onLeaveQueue={this.handleLeaveQueue}
-        />
-      );
-    }
   }
 }

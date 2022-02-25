@@ -9,6 +9,7 @@ import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
 import { cleanUpAnimations, triggerSound } from '../util/game';
+import { handleRewriteParseCompleted } from '../util/rewrite';
 
 import g from './handlers/game';
 
@@ -44,8 +45,8 @@ export function handleAction(
   }
 
   switch (type) {
-    case socketActions.GAME_START:
-      return g.newGame(
+    case socketActions.GAME_START: {
+      state = g.newGame(
         state,
         payload.player || 'orange',
         payload.usernames || {},
@@ -54,6 +55,9 @@ export function handleAction(
         payload.format || DEFAULT_GAME_FORMAT,
         payload.options || {}
       );
+      state = triggerSound(state, 'countdown.wav');
+      return state;
+    }
 
     case actions.START_TUTORIAL:
       return g.startTutorial(state);
@@ -120,12 +124,20 @@ export function handleAction(
       return { ...state, volume: payload.volume };
     }
 
+    case actions.IN_GAME_PARSE_COMPLETED:
+      return handleRewriteParseCompleted(state, payload);
+
     case socketActions.CONNECTING:
       return {...state, started: state.practice ? state.started : false};
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
-      return reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state);
+      // But empty the queues so as not to overwhelm the spectator with animations and sounds immediately.
+      return {
+        ...reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state),
+        eventQueue: [],
+        sfxQueue: []
+      };
 
     case socketActions.REVEAL_CARDS: {
       const { blue, orange } = payload;

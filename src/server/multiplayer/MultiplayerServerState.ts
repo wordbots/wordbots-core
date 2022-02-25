@@ -87,13 +87,18 @@ export default class MultiplayerServerState {
     return game ? getPeopleInGame(game).filter((id) => id !== clientID) : [];
   }
 
-  // Returns all *other* players currently in the lobby.
-  public getAllOtherPlayersInLobby = (clientID: m.ClientID): m.ClientID[] => {
+  // Returns all players currently in the lobby.
+  public getAllPlayersInLobby = (): m.ClientID[] => {
     const inGamePlayerIds = this.state.games.reduce((acc: m.ClientID[], game: m.Game) => (
       acc.concat(game.players)
     ), []);
-    return this.state.playersOnline.filter((id) => id !== clientID && !inGamePlayerIds.includes(id));
+    return this.state.playersOnline.filter((id) => !inGamePlayerIds.includes(id));
   }
+
+  // Returns all *other* players currently in the lobby.
+  public getAllOtherPlayersInLobby = (clientID: m.ClientID): m.ClientID[] => (
+    this.getAllPlayersInLobby().filter((id) => id !== clientID)
+  )
 
   // Returns all cards currently visible to a given client in a game.
   // If pendingAction is passed in, reveal any cards about to be played with the given client action.
@@ -254,8 +259,9 @@ export default class MultiplayerServerState {
 
   // Remove a player from any game that they are currently in.
   public leaveGame = (clientID: m.ClientID): void => {
+    // Check if the client is a player (*not a spectator*) in a game
     const game = this.lookupGameByClient(clientID);
-    if (game) {
+    if (game?.players.includes(clientID)) {
       const forfeitAction = {type: 'ws:FORFEIT', payload: {winner: opponentOf(game.playerColors[clientID])}};
       this.appendGameAction(clientID, forfeitAction);  // this will call state.endGame().
     }

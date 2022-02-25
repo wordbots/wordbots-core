@@ -48,6 +48,7 @@ export default class CardInHand extends React.Component<CardInHandProps> {
 
               text={Sentence.fromText(text)}
               rawText={text || ''}
+              highlightedTextBlocks={card.highlightedTextBlocks}
               cost={getCost(card)}
               stats={stats || {}}
               cardStats={stats || {}}

@@ -13,7 +13,7 @@ interface LobbyStatusProps {
   onConnect: () => void
 }
 
-export default class LobbyStatus extends React.Component<LobbyStatusProps> {
+export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
   public render(): JSX.Element {
     const { connecting, connected, playersOnline, myClientId, userDataByClientId, onConnect } = this.props;
 
@@ -59,29 +59,30 @@ export default class LobbyStatus extends React.Component<LobbyStatusProps> {
     );
 
     return (
-      <Paper style={{padding: 20, marginBottom: 20}}>
-        <div style={{position: 'relative'}}>
-          { connected ? <span>
-              <b>{playersOnline.length} player(s) online: </b>
-              {
-                playersOnline.map((clientId, idx) =>
-                  <React.Fragment key={clientId}>
-                    {renderPlayerName(userDataByClientId[clientId], clientId)}
+      <div style={{ position: 'relative' }}>
+        <span style={{position: 'absolute', top: -50, right: 0, fontSize: '0.85em' }}>
+          {connected ? connectedSpan : (connecting ? connectingSpan : notConnectedSpan)}
+        </span>
 
-                    {idx !== playersOnline.length - 1 && <span>,&nbsp;</span>}
-                  </React.Fragment>
-                )
-              }
-            </span> : <span>
-              <b>0 player(s) online: </b>
-            </span>
-          }
+        { connected &&
+          <Paper style={{ padding: 15, marginBottom: 20, maxHeight: '2.4em', overflowY: 'auto' }}>
+            <div style={{position: 'relative'}}>
+              <span>
+                <b>{playersOnline.length} player{playersOnline.length === 1 ? '' : 's'} online: </b>
+                {
+                  playersOnline.map((clientId, idx) =>
+                    <div key={clientId} style={{ display: 'inline-block' }}>
+                      {renderPlayerName(userDataByClientId[clientId], clientId)}
 
-          <span style={{position: 'absolute', right: 0}}>
-            {connected ? connectedSpan : (connecting ? connectingSpan : notConnectedSpan)}
-          </span>
-        </div>
-      </Paper>
+                      {idx !== playersOnline.length - 1 && <span>,&nbsp;</span>}
+                    </div>
+                  )
+                }
+              </span>
+            </div>
+          </Paper>
+        }
+      </div>
     );
   }
 }

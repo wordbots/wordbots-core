@@ -19,6 +19,7 @@ export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack
 export type DeckId = string;
 export type GameWinner = PlayerColor | 'draw' | 'aborted' | null;  // (null indicates game is still in progress)
 export type HexId = string;
+export type ObjectId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
 
@@ -71,6 +72,7 @@ export interface CardInGame extends CardInStore {
     health?: StatAdjustment[]
     speed?: StatAdjustment[]
   }
+  highlightedTextBlocks?: string[]  // set when a card has been rewritten in-game by a rewrite effect
 }
 
 export interface CardInStore {
@@ -188,6 +190,20 @@ export interface User {
   statistics?: Record<string, number>
 }
 
+/** A bundle returned when an in-game re-parse (i.e. for a card rewrite effect) succeeds or fails. */
+export interface InGameParseBundle {
+  card: {
+    id: CardId
+    // We have to reference cards in hand by (color, name, text) tuples because cards' ids going to be inconsistent between the two players
+    cardOwner: PlayerColor
+    name: string
+    oldText: string
+  }
+  newCardText: string
+  highlightedTextBlocks: string[]
+  parseResult: CardInStore | { error: string }
+}
+
 // Redux store types
 
 export interface State {
@@ -249,6 +265,7 @@ export interface GameState {
   usernames: PerPlayer<string>
   winner: GameWinner
   volume: number
+  numParsesInFlight: number
 
   actionId?: string
   callbackAfterExecution?: (state: GameState) => GameState
@@ -326,7 +343,7 @@ export interface CurrentTarget {
 // Object is not a valid type name, but we want to export `types.Object`,
 // so define it with the name `_Object` here and export it as `Object`.
 interface _Object { // eslint-disable-line @typescript-eslint/naming-convention
-  id: string
+  id: ObjectId
   type: CardType
   card: CardInGame
   stats: {

@@ -63,6 +63,7 @@ export interface GameProps {
   isMyTurn: boolean
   isSpectator: boolean
   isAttackHappening: boolean
+  isWaitingForParse: boolean
 
   actionLog: w.LoggedAction[]
   collection: w.CollectionState

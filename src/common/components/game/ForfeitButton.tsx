@@ -53,9 +53,9 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   }
 
   private handleClick = () => {
-    const { player, isSandbox, isTutorial, text, history, onForfeit } = this.props;
+    const { player, isSpectator, isSandbox, isTutorial, text, history, onForfeit } = this.props;
 
-    if (player) {
+    if (player && !isSpectator) {
       if (isTutorial) {
         onForfeit(opponent(player));
         history!.push('/play');

@@ -11,6 +11,7 @@ interface TimerProps {
   enabled?: boolean
   isMyTurn?: boolean
   isAttackHappening?: boolean
+  isWaitingForParse?: boolean
   onPassTurn: (player: w.PlayerColor) => void
 }
 
@@ -31,6 +32,8 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
   };
 
   public componentDidMount(): void {
+    (this as any).isPaused = false;
+
     const interval = setInterval(() => {
       if (this.props.enabled && !DISABLE_TURN_TIMER) {
         this.tickTimer();
@@ -43,6 +46,8 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
   }
 
   public componentDidUpdate(prevProps: TimerProps): void {
+    (this as any).isPaused = this.props.isWaitingForParse;
+
     if (prevProps.currentTurn !== this.props.currentTurn) {
       this.resetTimer();
     }
@@ -106,6 +111,12 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
 
   private tickTimer(): void {
     const [, minutes, seconds] = this.state.timer.match(/(.):(..)/)!.map((num) => parseInt(num, 10));
+
+    // tickTimer() runs inside a setInterval closure, so it can't access updated props.
+    // We use a "ref" (instance variable) to let tickTimer() know when it should be paused.
+    if ((this as any).isPaused) {
+      return;
+    }
 
     if (minutes >= 1) {
       if (seconds === 0) {

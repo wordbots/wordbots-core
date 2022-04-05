@@ -160,15 +160,19 @@ export default class MultiplayerServerState {
 
   // Add an player action to the game that player is in.
   // Also, updates the game state and checks if the game has been won.
-  public appendGameAction = (clientID: m.ClientID, action: m.Action): void => {
+  // Returns whether the game has ended.
+  public appendGameAction = (clientID: m.ClientID, action: m.Action): { gameEnded: boolean } => {
     const game = this.state.games.find((g) => g.players.includes(clientID));
     if (game) {
       game.actions.push(action);
       game.state = gameReducer(game.state, action);
       if (game.state.winner) {
         this.endGame(game);
+        return { gameEnded: true };
       }
     }
+
+    return { gameEnded: false };
   }
 
   // Make a player host a game with the given name and using the given deck.
@@ -273,6 +277,10 @@ export default class MultiplayerServerState {
   public endGame = (game: m.Game): void => {
     if (game.state.winner) {
       this.storeGameResult(game);
+
+      // Remove the ended game from the game list.
+      this.state.games = this.state.games.filter((g) => g.id !== game.id);
+
       // TODO Alter player ratings accordingly.
     }
   }

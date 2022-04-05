@@ -149,6 +149,8 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
             clientId={clientId}
             userDataByClientId={userDataByClientId}
             availableDecks={this.decks}
+            // eslint-disable-next-line react/jsx-no-bind
+            onHostGame={() => this.handleSelectMode('host')}
             onCancelHostGame={onCancelHostGame}
             onJoinGame={this.handleClickJoinCasualGame}
             onSpectateGame={onSpectateGame}

@@ -25,6 +25,7 @@ interface GameBrowserProps {
   clientId: m.ClientID | null
   userDataByClientId: Record<m.ClientID, m.UserData>
   availableDecks: w.DeckInGame[]
+  onHostGame: () => void
   onCancelHostGame: () => void
   onJoinGame: (id: string, name: string, format: GameFormat, options: w.GameOptions) => void
   onSpectateGame: (id: m.ClientID, name: string) => void
@@ -57,7 +58,10 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
   }
 
   private renderTableRows(): React.ReactNode {
-    const { user, clientId, userDataByClientId, availableDecks, onCancelHostGame, onJoinGame, onSpectateGame } = this.props;
+    const {
+      user, clientId, userDataByClientId, availableDecks,
+      onHostGame, onCancelHostGame, onJoinGame, onSpectateGame
+    } = this.props;
 
     if (this.games.length > 0) {
       return (
@@ -89,7 +93,7 @@ export default class GameBrowser extends React.Component<GameBrowserProps> {
               padding: 10
             }}
           >
-            No open games.
+            No open games. <a className="underline" onClick={onHostGame}>Host a game!</a>
           </TableCell>
         </TableRow>
       );

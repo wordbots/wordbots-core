@@ -91,9 +91,15 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{type, payload}, clientID]);
-      state.appendGameAction(clientID, {type, payload});
       sendMessageInGame(clientID, type, payload);
+      const { gameEnded } = state.appendGameAction(clientID, {type, payload});
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!);
+
+      // If the preceding in-game action has caused the game to end, broadcast the new lobby state
+      // (i.e. remove the game from the active games list).
+      if (gameEnded) {
+        broadcastInfo();
+      }
     }
   }
 

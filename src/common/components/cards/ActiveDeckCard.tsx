@@ -46,11 +46,12 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
       fontSize: '0.8em'
     },
     cardCount: {
-      width: 65,
-      fontWeight: 'bold',
+      width: 55,
+      marginRight: 4,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      placeContent: 'space-between',
+      fontSize: '0.9em'
     },
     xButton: {
       position: 'absolute',
@@ -63,24 +64,26 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
   public render(): JSX.Element {
     const { card, showCount } = this.props;
     return (
-      <CardTooltip card={card}>
+      <div>
         <span style={this.styles.xButton} onClick={this.handleRemoveCard}>
           x
         </span>
-        <div style={this.styles.outerCard}>
-          <div style={this.styles.cardCost}>{card.cost}</div>
-          <div style={this.styles.cardName}>{truncate(card.name, { length: 20 })}</div>
-          {showCount && <div style={this.styles.cardCount}>
-            <span onClick={this.handleDecreaseCardCount}>
-              &nbsp;&ndash;&nbsp;
-            </span>
-            {card.count}
-            <span onClick={this.handleIncreaseCardCount}>
-              &nbsp;+&nbsp;
-            </span>
-          </div>}
-        </div>
-      </CardTooltip>
+        <CardTooltip card={card}>
+          <div style={this.styles.outerCard}>
+            <div style={this.styles.cardCost}>{card.cost}</div>
+            <div style={this.styles.cardName}>{truncate(card.name, { length: 20 })}</div>
+            {showCount && <div style={this.styles.cardCount}>
+              <span onClick={this.handleDecreaseCardCount}>
+                &ndash;
+              </span>
+              <b>{card.count}</b>
+              <span onClick={this.handleIncreaseCardCount}>
+                +
+              </span>
+            </div>}
+          </div>
+        </CardTooltip>
+      </div>
     );
   }
 

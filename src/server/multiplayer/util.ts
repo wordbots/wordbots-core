@@ -1,7 +1,17 @@
 // Utility methods related to the multiplayer server go here.
-import { without } from 'lodash';
+import * as Flatted from 'flatted';
+import { truncate, without } from 'lodash';
+import * as SafeJsonStringify from 'safe-json-stringify';
 
 import * as m from './multiplayer';
+
+const MAX_DEBUG_MSG_LENGTH = 500;
+
+/** Given a Flatted-encoded message, safely render it as JSON, truncating the length to MAX_DEBUG_MSG_LENGTH. */
+export function renderMessage(msg: string): string {
+  const jsonMsg: string = SafeJsonStringify(Flatted.parse(msg));
+  return truncate(jsonMsg, { length: MAX_DEBUG_MSG_LENGTH });
+}
 
 // Returns a copy of a game with the given client
 // removed from both the players and spectators lists (if present),

@@ -1,7 +1,7 @@
 import { Server } from 'http';
 
 import * as Flatted from 'flatted';
-import { noop, truncate } from 'lodash';
+import { noop } from 'lodash';
 import * as SafeJsonStringify from 'safe-json-stringify';
 import * as WebSocket from 'ws';
 
@@ -10,9 +10,8 @@ import { id as generateID } from '../../common/util/common';
 
 import * as m from './multiplayer';
 import MultiplayerServerState from './MultiplayerServerState';
-import { getPeopleInGame } from './util';
+import { getPeopleInGame, renderMessage } from './util';
 
-const MAX_DEBUG_MSG_LENGTH = 500;
 const QUEUE_INTERVAL_MSECS = 500;
 
 /* eslint-disable no-console */
@@ -66,7 +65,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const { type, payload }: m.Action = Flatted.parse(data);
 
     if (type !== 'ws:KEEPALIVE') {
-      console.log(`< ${truncate(data, {length: MAX_DEBUG_MSG_LENGTH})}`);
+      console.log(`< ${renderMessage(data)}`);
     }
 
     if (type === 'ws:HOST') {
@@ -109,9 +108,9 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
-        console.log(`> ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})}`);
+        console.log(`> ${renderMessage(message)}`);
       } catch (error) {
-        console.warn(`Failed to send message ${truncate(message, {length: MAX_DEBUG_MSG_LENGTH})} to ${recipientIDs}: ${error.message}`);
+        console.warn(`Failed to send message ${renderMessage(message)} to ${recipientIDs}: ${error.message}`);
       }
     });
   }

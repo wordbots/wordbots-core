@@ -25,6 +25,7 @@ import { CardValidationResults, createCardFromProps, getSentencesFromInput, requ
 import CardTextExampleStore from '../util/CardTextExampleStore';
 import { getCardById, getCardTextCorpus, lookupCurrentUser, saveReportedParseIssue } from '../util/firebase';
 import { prepareBigramProbs } from '../util/language';
+import { id } from '../util/common';
 
 export interface CreatorStateProps {
   id: string | null
@@ -72,6 +73,7 @@ interface CreatorState {
   examplesLoaded: boolean
   isPermalinkCopied: boolean
   loaded: boolean
+  refreshId?: string
   submittedParseIssue: string | null
   submittedParseIssueConfirmationOpen: boolean
 }
@@ -193,7 +195,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   public render(): JSX.Element | null {
     const {
       bigramProbs, cardOpenedForEditing, examplesLoaded, isPermalinkCopied,
-      loaded, submittedParseIssue, submittedParseIssueConfirmationOpen
+      loaded, refreshId, submittedParseIssue, submittedParseIssueConfirmationOpen
     } = this.state;
 
     if (!loaded) {
@@ -261,7 +263,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           }}>
             <CardCreationTutorial />
             <CardCreationForm
-              key={this.props.id || 'newCard'}
+              key={this.props.id || refreshId || 'newCard'}
               loggedIn={this.props.loggedIn}
               id={this.props.id}
               name={this.props.name}
@@ -284,7 +286,6 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onUpdateText={this.onUpdateText}
               onSetFlavorText={this.props.onSetFlavorText}
               onSetAttribute={this.props.onSetAttribute}
-              onParseComplete={this.props.onParseComplete}
               onSpriteClick={this.props.onSpriteClick}
               onOpenDialog={this.openDialog}
               onTestCard={this.testCard}
@@ -461,6 +462,8 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
     if (redirectToCollection) {
       history.push('/collection');
+    } else {
+      this.setState({ refreshId: id() });
     }
   }
 

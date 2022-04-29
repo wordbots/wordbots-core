@@ -133,61 +133,63 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     const canEditSet = this.doesSetBelongToUser && !metadata.isPublished;
 
     return (
-      <Paper className={classes.paper} style={{ width: isCardListExpanded ? '95%' : 850 }}>
-        <IconButton style={{ float: 'left' }} onClick={this.toggleCardList}>
-          {isCardListExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </IconButton>
-        <div>
-          <strong><a className="underline" href={this.permalinkUrl}>{name}</a></strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
-          {!inPublishedSetsList && metadata.isPublished && <i> (published)</i>}
-          <a className={classes.link} style={{ marginLeft: 10 }} onClick={this.toggleCardList}>
-            [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
-          </a>
-          {' '}
-          <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
-            <a className={classes.link}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
-          </CopyToClipboard>
-        </div>
-        <div className={classes.controls}>
-          <MustBeLoggedIn
-            loggedIn={!!user}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              width: '100%'
-            }}
-          >
-            {inPublishedSetsList ? this.renderButton('Draft!', this.handleDraftFromSet) : null}
-            {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
-            {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}
-            {canEditSet ? this.renderButton('Edit', onEditSet) : null}
-            {this.doesSetBelongToUser ? this.renderButton('Duplicate', onDuplicateSet) : null}
-            {this.renderDeleteControl()}
-          </MustBeLoggedIn>
-        </div>
-        <div className={classes.description}>
-          {description}
-        </div>
-        {isCardListExpanded &&
+      <div>
+        <Paper className={classes.paper} style={{ width: isCardListExpanded ? '95%' : 850 }}>
+          <IconButton style={{ float: 'left' }} onClick={this.toggleCardList}>
+            {isCardListExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </IconButton>
           <div>
-            <div style={{clear: 'both'}}/>
-            {
-              cards
-                .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
-                .map((card, idx) => (
-                  <div key={idx} style={{float: 'left'}}>
-                    {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
-                  </div>
-                ))
-            }
-            <div style={{clear: 'both'}}/>
+            <strong><a className="underline" href={this.permalinkUrl}>{name}</a></strong> by <ProfileLink uid={metadata.authorId} username={metadata.authorName} />
+            {!inPublishedSetsList && metadata.isPublished && <i> (published)</i>}
+            <a className={classes.link} style={{ marginLeft: 10 }} onClick={this.toggleCardList}>
+              [{isCardListExpanded ? 'hide' : 'show'} {cards.length} cards]
+            </a>
+            {' '}
+            <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
+              <a className={classes.link}>[{isPermalinkCopied ? 'copied' : 'copy permalink'}]</a>
+            </CopyToClipboard>
           </div>
-        }
-        <div className={classes.numDecksCreated}>
-          {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created
-        </div>
-        {this.renderConfirmPublishDialog()}
-      </Paper>
+          <div className={classes.controls}>
+            <MustBeLoggedIn
+              loggedIn={!!user}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%'
+              }}
+            >
+              {inPublishedSetsList ? this.renderButton('Draft!', this.handleDraftFromSet) : null}
+              {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
+              {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}
+              {canEditSet ? this.renderButton('Edit', onEditSet) : null}
+              {this.doesSetBelongToUser ? this.renderButton('Duplicate', onDuplicateSet) : null}
+              {this.renderDeleteControl()}
+            </MustBeLoggedIn>
+          </div>
+          <div className={classes.description}>
+            {description}
+          </div>
+          {isCardListExpanded &&
+            <div>
+              <div style={{clear: 'both'}}/>
+              {
+                cards
+                  .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
+                  .map((card, idx) => (
+                    <div key={idx} style={{float: 'left'}}>
+                      {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
+                    </div>
+                  ))
+              }
+              <div style={{clear: 'both'}}/>
+            </div>
+          }
+          <div className={classes.numDecksCreated}>
+            {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created
+          </div>
+          {this.renderConfirmPublishDialog()}
+        </Paper>
+      </div>
     );
   }
 

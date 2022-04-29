@@ -242,7 +242,6 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       /* istanbul ignore next */
       state.callbackAfterExecution = (s: w.GameState) => {
         iterateOver<w.CardInGame>(targets)((card: w.CardInGame) => {
-          console.log(card);
           tryToRewriteCard(s, card, textReplacements);
         });
         return s;

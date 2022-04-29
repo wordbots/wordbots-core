@@ -230,10 +230,18 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
       object.cantActivate = true;
       object.cantAttack = true;
 
+      // Save the callbackAfterExecution from the state (if any), in case it gets messed up (i.e. by applyAbilities()).
+      // We will call it *after* ability handling.
+      const { callbackAfterExecution } = tempState;
+
       tempState = applyAbilities(tempState);
       tempState = updateOrDeleteObjectAtHex(tempState, object, hexId);
       tempState = deselect(tempState);
       tempState = checkVictoryConditions(tempState);
+
+      if (callbackAfterExecution) {
+        tempState = callbackAfterExecution(tempState);
+      }
 
       return tempState;
     }

@@ -14,12 +14,18 @@ export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
 }
 
 export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
-  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => ({
-    type: 'cards',
-    entries: players.entries.flatMap((player) => player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
+  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => {
+    console.log({ players, cardType, conditions });
+    console.log(players.entries.flatMap((player) => player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
       matchesType(card, cardType) && !card.justPlayed && conditions.every((cond) => cond(null, card))
-    )
-  });
+    ));
+    return ({
+      type: 'cards',
+      entries: players.entries.flatMap((player) => player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
+        matchesType(card, cardType) && !card.justPlayed && conditions.every((cond) => cond(null, card))
+      )
+    });
+  }
 }
 
 export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPileCollection> {

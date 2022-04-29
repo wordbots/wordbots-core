@@ -200,11 +200,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     },
 
     self: (): w.PlayerCollection => {
-      if (currentObject) {
-        return {type: 'players', entries: [ownerOf(state, currentObject)!]};
-      } else {
-        return {type: 'players', entries: [currentPlayer(state)]};
-      }
+      // Note that currentObject may exist without having an owner, i.e. if the current object just returned itself to its owner's hand.
+      const player: w.PlayerInGameState = currentObject && ownerOf(state, currentObject) || currentPlayer(state);
+      return {type: 'players', entries: [player]};
     },
 
     // Currently salient object (prioritizing object ("undergoer") over subject ("agent")).

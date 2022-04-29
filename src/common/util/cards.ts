@@ -406,7 +406,7 @@ export function keywordsInSentence(sentence: string, hintsToo = false): { [keywo
 
 export function expandKeywords(sentence: string, quote = false): string {
   const keywords = keywordsInSentence(sentence);
-  return reduce(keywords, (str, def, keyword) => str.replace(keyword, quote ? `"${def}"` : def), sentence);
+  return reduce(keywords, (str, def, keyword) => str.replaceAll(keyword, quote ? `"${def}"` : def), sentence);
 }
 
 export function contractKeywords(sentence: string): string {

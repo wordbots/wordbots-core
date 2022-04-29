@@ -295,7 +295,7 @@ export async function getNumDecksCreatedCountBySetId(setId: string): Promise<num
 
 export async function getSets(): Promise<w.Set[]> {
   function deserializeSet(serializedSet: any): w.Set {
-    return { ...serializedSet, cards: Object.values(serializedSet.cards) };
+    return { ...serializedSet, cards: serializedSet.cards ? Object.values(serializedSet.cards) : [] };
   }
 
   const snapshot = await fb.database().ref('sets').once('value');

@@ -42,20 +42,19 @@ export default function creator(oldState: State = defaultState, { type, payload 
       }));
       return state;
     }
+
     case creatorActions.SET_FLAVOR_TEXT:
       state.flavorText = payload.flavorText;
       return state;
 
-    case creatorActions.PARSE_COMPLETE:
+    case creatorActions.PARSE_COMPLETE: {
       state.parserVersion = payload.result.version;
-      state.sentences = state.sentences.map((s, idx) => {
-        if (idx === payload.idx) {
-          return {...s, result: payload.result};
-        } else {
-          return s;
-        }
-      });
+      state.sentences = state.sentences.map((s: w.Sentence, idx) => ({
+        ...s,
+        result: (idx === payload.idx && s.sentence === payload.sentence) ? payload.result : s.result
+      }));
       return state;
+    }
 
     case creatorActions.REGENERATE_SPRITE:
       state.spriteID = id();

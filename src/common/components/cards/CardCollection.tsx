@@ -34,7 +34,7 @@ export default class CardCollection extends React.Component<CardCollectionProps,
   };
 
   get numPages(): number {
-    return Math.ceil(this.props.cards.length / 20);
+    return Math.ceil(this.props.cards.length / 24);
   }
 
   get currentPage(): number {
@@ -42,7 +42,7 @@ export default class CardCollection extends React.Component<CardCollectionProps,
   }
 
   get cards(): w.CardInStore[] {
-    return this.props.cards.slice((this.currentPage - 1) * 20, this.currentPage * 20);
+    return this.props.cards.slice((this.currentPage - 1) * 24, this.currentPage * 24);
   }
 
   public render(): JSX.Element {

@@ -94,6 +94,17 @@ export function instantiateObject(card: w.CardInGame): w.Object {
   };
 }
 
+// This method is used to populate state.currentCmdText
+function getCommandTextForDisplay(cmdText: string) {
+  // If cmdText is of the form `Some object gets "blah blah blah ability"` (i.e. exactly two " characters delimiting an ability),
+  // pull out just the ability text that is quoted.
+  if (cmdText.includes('"') && cmdText.split('"').length === 3) {
+    return cmdText.split('"')[1].replace(/"/g, '');
+  } else {
+    return cmdText;
+  }
+}
+
 // Handles things that should happen after an object is played or spawned (using actions.spawnObject).
 export function afterObjectPlayed(state: State, playedObject: w.Object): State {
   const player: PlayerState = currentPlayer(state);
@@ -108,7 +119,7 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
   if (card.abilities && card.abilities.length > 0) {
     card.abilities.forEach((cmd, idx) => {
       const cmdText = quoteKeywords(splitSentences(card.text || '')[idx]);
-      state.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+      state.currentCmdText = getCommandTextForDisplay(cmdText);
       executeCmd(state, cmd, playedObject);
     });
   }
@@ -194,7 +205,7 @@ function playEvent(state: State, cardIdx: number): State {
     commands.forEach((cmd, idx) => {
       const cmdText = splitSentences(card.text || '')[idx];
       if (!player.target.choosing) {
-        tempState.currentCmdText = cmdText.includes('"') ? cmdText.split('"')[1].replace(/"/g, '') : cmdText;
+        tempState.currentCmdText = getCommandTextForDisplay(cmdText);
         executeCmd(tempState, cmd);
       }
     });

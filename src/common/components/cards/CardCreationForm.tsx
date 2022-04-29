@@ -37,7 +37,6 @@ interface CardCreationFormProps {
   onUpdateText: (text: string, type?: w.CardType) => void
   onSetFlavorText: (flavorText: string) => void
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
-  onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
   onSpriteClick: () => void
   onAddToCollection: (redirectToCollection: boolean) => void
   onOpenDialog: (dialog: string) => void
@@ -79,7 +78,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     fullWidth: {width: '100%', background: 'white'},
 
     attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
-    attribute: { width: 50 },
+    attribute: { width: 60 },
 
     buttonText: {
       fontSize: 14,

@@ -15,14 +15,6 @@ function dispatchParseResult(parseBundle: w.InGameParseBundle): void {
   globalDispatch(inGameParseCompleted(parseBundle));
 }
 
-/** state.numParsesInFlight tracks whether we're waiting on any parser responses - an "Parsing..." indicator displays when numParsesInFlight > 0. */
-function incrementParseCounter(state: w.GameState): void {
-  state.numParsesInFlight = state.numParsesInFlight + 1;
-}
-function decrementParseCounter(state: w.GameState): void {
-  state.numParsesInFlight = state.numParsesInFlight - 1;
-}
-
 /**
  * Given a string and a list of string->string text replacements to make,
  * perform all replacements case-insensitively and independently of one another,
@@ -62,7 +54,7 @@ function performTextReplacements(oldText: string, textReplacements: Array<[strin
  * When the parser responds, an IN_GAME_PARSE_COMPLETED action is dispatched.
  * The actual rewrite happens in handleRewriteParseCompleted() if the parse succeeds.
  */
-export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textReplacements: Record<string, string>): void {
+export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textReplacements: Record<string, string>): w.GameState {
   // Recall that the server will perform game actions along with the clients,
   // in order to track game state and check for the winner.
   // We obviously can't have the server call out to the parser for a bunch of reasons
@@ -72,7 +64,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
   // Similarly, spectators (i.e. state.player === 'neither' should wait for IN_GAME_PARSE_COMPLETED actions,
   //  rather than triggering parses from their own clients.
   if (!inBrowser() || state.player === 'neither') {
-    return;
+    return state;
   }
 
   if (card.text) {
@@ -90,7 +82,7 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
         highlightedTextBlocks
       };
 
-      incrementParseCounter(state);
+      state.numParsesInFlight += 1;
 
       // Asynchronously request parses and dispatch an IN_GAME_PARSE_COMPLETED action upon parse success/failure
       parseCard(
@@ -104,6 +96,8 @@ export function tryToRewriteCard(state: w.GameState, card: w.CardInGame, textRep
       );
     }
   }
+
+  return state;
 }
 
 /**
@@ -115,7 +109,7 @@ export function handleRewriteParseCompleted(state: w.GameState, parseBundle: w.I
   const { card: { cardOwner, name, oldText }, newCardText, highlightedTextBlocks, parseResult } = parseBundle;
   const currentPlayer = getCurrentPlayer(state);
 
-  decrementParseCounter(state);
+  state.numParsesInFlight -= 1;
 
   // Find the card being rewritten
   // TODO once we allow rewriting objects, some of this will have to change

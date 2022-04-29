@@ -111,6 +111,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 onPrevTutorialStep={onPrevTutorialStep}
               />
               <ForfeitButton
+                text={isSandbox ? "Exit Sandbox" : "Forfeit"}
                 player={actualPlayer}
                 compact={compactControls}
                 history={history}
@@ -167,7 +168,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             winnerName={(winner && winner !== 'draw' && winner !== 'aborted') ? usernames[winner] : null}
             onClick={onClickEndGame}
           />
-          <ParsingIndicator isWaitingForParse={isWaitingForParse && !!winner} />
+          <ParsingIndicator isWaitingForParse={isWaitingForParse && !winner} />
           {isTutorial && tutorialStep?.idx === 0 ? <TutorialIntroScreen onClickEndGame={onClickEndGame} /> : null}
         </React.Fragment>
       );

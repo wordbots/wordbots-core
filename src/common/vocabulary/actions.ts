@@ -7,7 +7,7 @@ import { moveObjectUsingAbility, swapObjectPositions } from '../reducers/handler
 import { afterObjectPlayed, instantiateObject } from '../reducers/handlers/game/cards';
 import * as w from '../types';
 import { splitSentences } from '../util/cards';
-import { applyFuncToField, applyFuncToFields, clamp } from '../util/common';
+import { applyFuncToField, applyFuncToFields, clamp, withTrailingPeriod } from '../util/common';
 import {
   allObjectsOnBoard, currentPlayer, dealDamageToObjectAtHex, discardCardsFromHand, drawCards, executeCmd, getHex, opponent, ownerOf, ownerOfCard,
   passTurn, removeCardsFromDiscardPile, removeCardsFromHand, removeObjectFromBoard, updateOrDeleteObjectAtHex
@@ -149,7 +149,16 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
     giveAbility: (objects: w.ObjectOrPlayerCollection, abilityCmd: w.StringRepresentationOf<(s: w.GameState) => unknown>): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
+        // Execute the ability command.
         executeCmd(state, abilityCmd, object);
+
+        // Add the ability text to the object's card display (if we are able to parse the ability text correctly from the original command text).
+        const abilityText = state.currentCmdText;
+        if (abilityText && !abilityText.includes('"')) {
+          const objCurrentText = object.card.text;
+          object.card.text = objCurrentText ? `${withTrailingPeriod(objCurrentText)} ${withTrailingPeriod(abilityText)}` : withTrailingPeriod(abilityText);
+          object.card.highlightedTextBlocks = [...(object.card.highlightedTextBlocks || []), abilityText];
+        }
       });
     },
 
@@ -306,13 +315,16 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
     swapPositions: (target1: w.ObjectCollection, target2: w.ObjectCollection): void => {
       // Unpack.
-      const object1: w.Object = target1.entries[0];
-      const object2: w.Object = target2.entries[0];
+      const object1: w.Object | undefined = target1.entries[0];
+      const object2: w.Object | undefined = target2.entries[0];
 
-      const hex1 = getHex(state, object1);
-      const hex2 = getHex(state, object2);
-      if (hex1 && hex2) {
-        swapObjectPositions(state, hex1, hex2);
+      // (Don't try to do anything if targets don't exist – i.e. aren't selected yet)
+      if (object1 && object2) {
+        const hex1 = getHex(state, object1);
+        const hex2 = getHex(state, object2);
+        if (hex1 && hex2) {
+          swapObjectPositions(state, hex1, hex2);
+        }
       }
     },
 

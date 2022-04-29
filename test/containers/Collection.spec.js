@@ -15,7 +15,7 @@ import gameReducer from '../../src/common/reducers/game.ts';
 import { collection as cards } from '../../src/common/store/cards.ts';
 
 describe('Collection container', () => {
-  const CARDS_IN_PAGE = 20;
+  const CARDS_IN_PAGE = 24;
   const DEFAULT_COST_MAX = 20;
 
   const customCardId = 'customCardId';

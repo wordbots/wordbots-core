@@ -43,8 +43,8 @@ const FIREBASE_STAGING_CONFIG = {
 
 export const FIREBASE_CONFIG = (() => {
   if (inBrowser()) {
-    if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
-      // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
+    if (['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+      // On a production host (wordbots.io, app.wordbots.io, wordbots-game.herokuapp.com are all equivalent), use production DB
       return FIREBASE_PROD_CONFIG;
     } else if (window.location.hostname === 'localhost') {
       // On localhost, default to staging DB unless otherwise specified

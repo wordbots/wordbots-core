@@ -433,7 +433,9 @@ export interface Trigger {
 
   cardType?: string
   cause?: Cause
+  attackerType?: string
   defenderType?: string
+  damageSourceCardType?: string
 }
 
 export interface Attack {

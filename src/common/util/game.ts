@@ -513,12 +513,18 @@ export function removeCardsFromDiscardPile(state: w.GameState, cards: w.CardInGa
   return state;
 }
 
-export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex: w.HexId, cause: w.Cause | null = null): w.GameState {
+export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex: w.HexId, damageSourceObj: w.Object | null = null, cause: w.Cause | null = null): w.GameState {
   const object = allObjectsOnBoard(state)[hex];
 
-  if (!object.beingDestroyed) {
+  if (object && !object.beingDestroyed) {
     state.memory['amount'] = amount;
-    state = triggerEvent(state, 'afterDamageReceived', { object }, (s) => {
+    state = triggerEvent(state, 'afterDamageReceived', {
+      object,
+      condition: ((t) => !t.damageSourceCardType || stringToType(t.damageSourceCardType) === damageSourceObj?.card.type || t.damageSourceCardType === 'allobjects'),
+      // calling the object dealing damage the "undergoer" feels silly semantically, but this is to support correct handling of "that" for things like
+      //   "Whenever a robot deals damage to this object, *that robot* takes that much damage":
+      undergoer: damageSourceObj || undefined
+    }, (s) => {
       object.stats.health -= amount;
       object.tookDamageThisTurn = true;
       return logAction(s, null, `|${object.card.id}| received ${amount} damage`, {[object.card.id]: object.card});
@@ -748,6 +754,8 @@ export function triggerEvent(
     //         "its controller" should = (destroyed robot)
     const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it ) : null);
     const currentObject: w.Object = it || t.object;
+
+    state.currentCmdText = t.text || undefined;
     executeCmd(state, t.action, currentObject);
 
     if (state.callbackAfterExecution) {

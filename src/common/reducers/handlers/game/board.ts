@@ -147,18 +147,24 @@ export function attackComplete(state: State): State {
     const attackerAttack: number = getAttribute(attacker, 'attack') || 0;
     const defenderAttack: number = getAttribute(defender, 'attack') || 0;
 
+    state = triggerEvent(state, 'afterAttackedBy', {
+      object: defender,
+      condition: ((t) => !t.attackerType || stringToType(t.attackerType) === attacker.card.type || t.attackerType === 'allobjects'),
+      undergoer: attacker
+    });
+
     state = triggerEvent(state, 'afterAttack', {
       object: attacker,
       condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
       undergoer: defender
     }, () => {
       defender.mostRecentlyInCombatWith = attacker;
-      return dealDamageToObjectAtHex(state, attackerAttack, target, 'combat');
+      return dealDamageToObjectAtHex(state, attackerAttack, target, attacker, 'combat');
     });
 
     if (!hasEffect(defender, 'cannotfightback') && defenderAttack > 0) {
       attacker.mostRecentlyInCombatWith = defender;
-      state = dealDamageToObjectAtHex(state, defenderAttack, source, 'combat');
+      state = dealDamageToObjectAtHex(state, defenderAttack, source, defender, 'combat');
     }
 
     // Move attacker to defender's space (if possible).

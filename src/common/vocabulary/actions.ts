@@ -51,11 +51,11 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       // Permanent attribute adjustment.
       iterateOver<w.Object | w.CardInGame>(objects)((object: w.Object | w.CardInGame) => {
         if (attr === 'allattributes') {
-          object.stats = mapValues(object.stats, clamp(func)) as {attack?: number, health: number, speed?: number};
+          Object.assign(object.stats, mapValues(object.stats, clamp(func)) as {attack?: number, health: number, speed?: number});
         } else if (attr === 'cost' && !g.isObject(object)) {
-          object.cost = clamp(func)((object ).cost);
+          object.cost = clamp(func)((object).cost);
         } else {
-          object.stats = applyFuncToFields(object.stats, func, isArray(attr) ? attr : [attr]);
+          Object.assign(object.stats, applyFuncToFields(object.stats, func, isArray(attr) ? attr : [attr]));
         }
       });
     }
@@ -111,7 +111,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     dealDamage: (targets: w.ObjectOrPlayerCollection, amount: number): void => {
       iterateOver<w.Object>(targets)((target: w.Object) => {
         const hex = getHex(state, target)!;
-        dealDamageToObjectAtHex(state, amount, hex);
+        dealDamageToObjectAtHex(state, amount, hex, currentObject);
       });
     },
 

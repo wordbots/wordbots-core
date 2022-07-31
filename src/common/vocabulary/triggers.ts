@@ -36,64 +36,71 @@ export function unsetTrigger(_state: w.GameState, currentObject: w.Object | null
 export function triggers(_state: w.GameState): Record<string, w.Returns<w.Trigger>> {
   return {
     afterAttack: (targetFunc: (state: w.GameState) => w.Target[], defenderType: string): w.Trigger => ({
-        type: 'afterAttack',
-        defenderType,
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterAttack',
+      defenderType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
+
+    afterAttackedBy: (targetFunc: (state: w.GameState) => w.Target[], attackerType: string): w.Trigger => ({
+      type: 'afterAttackedBy',
+      attackerType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterCardEntersDiscardPile: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => ({
-        type: 'afterCardEntersDiscardPile',
-        cardType,
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterCardEntersDiscardPile',
+      cardType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterCardDraw: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => ({
-        type: 'afterCardDraw',
-        cardType,
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterCardDraw',
+      cardType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterCardPlay: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => ({
-        type: 'afterCardPlay',
-        cardType,
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterCardPlay',
+      cardType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
-    afterDamageReceived: (targetFunc: (state: w.GameState) => w.Target[]): w.Trigger => ({
-        type: 'afterDamageReceived',
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+    afterDamageReceived: (targetFunc: (state: w.GameState) => w.Target[], damageSourceCardType: string): w.Trigger => ({
+      type: 'afterDamageReceived',
+      damageSourceCardType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterDestroyed: (targetFunc: (state: w.GameState) => w.Target[], cause: w.Cause): w.Trigger => ({
-        type: 'afterDestroyed',
-        cause,
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterDestroyed',
+      cause,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterDestroysOtherObject: (targetFunc: (state: w.GameState) => w.Target[], objectType: string): w.Trigger => ({
-        type: 'afterDestroysOtherObject',
-        cardType: objectType,
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterDestroysOtherObject',
+      cardType: objectType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterMove: (targetFunc: (state: w.GameState) => w.Target[]): w.Trigger => ({
-        type: 'afterMove',
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterMove',
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     afterPlayed: (targetFunc: (state: w.GameState) => w.Target[]): w.Trigger => ({
-        type: 'afterPlayed',
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'afterPlayed',
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     beginningOfTurn: (targetFunc: (state: w.GameState) => w.Target[]): w.Trigger => ({
-        type: 'beginningOfTurn',
-        targetFunc: `(${targetFunc.toString()})`
-      }),
+      type: 'beginningOfTurn',
+      targetFunc: `(${targetFunc.toString()})`
+    }),
 
     endOfTurn: (targetFunc: (state: w.GameState) => w.Target[]): w.Trigger => ({
-        type: 'endOfTurn',
-        targetFunc: `(${targetFunc.toString()})`
-      })
+      type: 'endOfTurn',
+      targetFunc: `(${targetFunc.toString()})`
+    })
   };
 }

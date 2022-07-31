@@ -95,7 +95,7 @@ export function instantiateObject(card: w.CardInGame): w.Object {
 }
 
 // This method is used to populate state.currentCmdText
-function getCommandTextForDisplay(cmdText: string) {
+function getCommandTextForDisplay(cmdText: string): string {
   // If cmdText is of the form `Some object gets "blah blah blah ability"` (i.e. exactly two " characters delimiting an ability),
   // pull out just the ability text that is quoted.
   if (cmdText.includes('"') && cmdText.split('"').length === 3) {

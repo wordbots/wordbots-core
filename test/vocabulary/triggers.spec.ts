@@ -38,6 +38,22 @@ describe('[vocabulary.triggers]', () => {
       expect(queryObjectAttribute(state, '0,-1,1', 'health')).toEqual(2);
     });
 
+    it('should be able to activate afterAttackedBy triggered abilities', () => {
+      // Drawer: "Whenever a robot attacks this structure, draw a card.""
+      let state = setUpBoardState({
+        orange: {
+          '0,0,0': testCards.drawerCard
+        },
+        blue: {
+          '0,-1,1': cards.oneBotCard
+        }
+      });
+      state = newTurn(state, 'blue');
+      const orangeCardsInHand = state.players.orange.hand.length;
+      state = attack(state, '0,-1,1', '0,0,0');
+      expect(state.players.orange.hand.length).toEqual(orangeCardsInHand + 1);
+    });
+
     it('should be able to activate afterDamageReceived triggered abilities', () => {
       // Wisdom Bot: "Whenever this robot takes damage, draw a card."
       let state = setUpBoardState({

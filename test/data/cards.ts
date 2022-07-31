@@ -249,6 +249,21 @@ export const countdownClockCard: w.CardInStore = {
   },
 };
 
+export const drawerCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Drawer',
+  name: 'Drawer',
+  text: 'Whenever a robot attacks this structure, draw a card.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterAttackedBy'](function () { return targets['thisRobot'](); }, 'robot'), (function () { actions['draw'](targets['self'](), 1); })); })"
+  ],
+  cost: 1,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 5,
+  },
+};
+
 export const rageCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Rage',

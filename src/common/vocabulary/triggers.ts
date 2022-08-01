@@ -19,7 +19,11 @@ export function setTrigger(state: w.GameState, currentObject: w.Object | null, s
       ...props
     };
 
-    if (currentObject && !currentObject.triggers.find((t) => areTriggersEqual(t, triggerObj))) {
+    // Add the trigger unless (1) the trigger has a source AND (2) there's an existing identical trigger on the object.
+    // Note that triggers given by passive abilities will generally have a source (and these ones we don't want to stack),
+    // while triggers given by actions (or activated abilities, etc) will NOT have a source (and these ones we DO want to allow to stack).
+    // TODO Is this actually the desired behavior? I wrote the original areTriggersEqual() check so long ago I'm no longer sure -AN
+    if (currentObject && !(source && currentObject.triggers.find((t) => areTriggersEqual(t, triggerObj)))) {
       currentObject.triggers = currentObject.triggers.concat([triggerObj]);
     }
   };

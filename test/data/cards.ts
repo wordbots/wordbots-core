@@ -233,6 +233,23 @@ export const infiniteLoopBotCard: w.CardInStore = {
   }
 };
 
+export const armorerCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Armorer',
+  name: 'Armorer',
+  text: 'Activate: Give an adjacent robot "Whenever this robot takes damage, restore 1 health to this robot"',
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['giveAbility'](targets['choose'](objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']())])), \\\"(function () { setTrigger(triggers['afterDamageReceived'](function () { return targets['thisRobot'](); }, 'anycard'), (function () { actions['restoreHealth'](targets['thisRobot'](), 1); })); })\\\"); })\")); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
 export const countdownClockCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Countdown Clock',

@@ -520,7 +520,7 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
     state.memory['amount'] = amount;
     state = triggerEvent(state, 'afterDamageReceived', {
       object,
-      condition: ((t) => !t.damageSourceCardType || stringToType(t.damageSourceCardType) === damageSourceObj?.card.type || t.damageSourceCardType === 'allobjects'),
+      condition: ((t) => !t.damageSourceCardType || stringToType(t.damageSourceCardType) === damageSourceObj?.card.type || t.damageSourceCardType === 'allobjects' || t.damageSourceCardType === 'anycard'),
       // calling the object dealing damage the "undergoer" feels silly semantically, but this is to support correct handling of "that" for things like
       //   "Whenever a robot deals damage to this object, *that robot* takes that much damage":
       undergoer: damageSourceObj || undefined
@@ -692,6 +692,7 @@ export function executeCmd(
       }
     } else {
       // TODO better error handling: throw a custom Error object that we handle in the game reducer?
+      console.error(error);
       alert(`Oops!\n\n${error}`);
       throw error;
     }

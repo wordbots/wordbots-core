@@ -29,7 +29,7 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
     cardCost: {
       width: 30,
       color: 'white',
-      fontFamily: 'Carter One',
+      fontFamily: '"Carter One", "Carter One-fallback"',
       backgroundColor: '#00bcd4',
       justifyContent: 'center',
       display: 'flex',

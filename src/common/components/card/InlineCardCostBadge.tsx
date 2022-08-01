@@ -15,7 +15,7 @@ export default class InlineCardCostBadge extends React.PureComponent<{ cost: num
         borderRadius: '50%',
         backgroundColor: 'rgb(0, 188, 212)',
         color: 'white',
-        fontFamily: 'Carter One',
+        fontFamily: '"Carter One", "Carter One-fallback"',
         ...this.props.style
       }}>
         {this.props.cost}

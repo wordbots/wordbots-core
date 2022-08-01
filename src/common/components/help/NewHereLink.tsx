@@ -38,7 +38,7 @@ class NewHereLink extends React.Component<NewHereLinkProps & RouteComponentProps
       }
     },
     number: {
-      fontFamily: 'Carter One',
+      fontFamily: '"Carter One", "Carter One-fallback"',
       fontSize: '2em',
       color: '#f44336',
       WebkitTextStroke: '0.5px black',

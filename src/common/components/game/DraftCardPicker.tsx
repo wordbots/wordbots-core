@@ -26,7 +26,7 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
     return (
       <div>
         <div style={{
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           color: 'white',
           textAlign: 'center'
         }}>

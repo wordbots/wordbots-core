@@ -51,7 +51,7 @@ class Home extends React.Component<HomeProps> {
               Welcome to
               <span
                 style={{
-                  fontFamily: 'Carter One',
+                  fontFamily: '"Carter One", "Carter One-fallback"',
                   color: '#f44336',
                   WebkitTextStroke: '1px black',
                   fontSize: 28
@@ -109,7 +109,7 @@ class Home extends React.Component<HomeProps> {
           {
             !isFlagSet('skipNewHere') &&
               <div className="new-here-robot" onClick={this.handleClickNewHere}>
-                <div className="speech-bubble" style={{ fontFamily: 'Carter One', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
+                <div className="speech-bubble" style={{ fontFamily: '"Carter One", "Carter One-fallback"', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
                 <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
               </div>
           }

@@ -33,7 +33,7 @@ export default class CardSelectorCard extends React.Component<CardSelectorCardPr
             backgroundColor: 'rgb(0, 188, 212)',
             color: 'white',
             borderRight: '2px solid black',
-            fontFamily: 'Carter One',
+            fontFamily: '"Carter One", "Carter One-fallback"',
             width: 30,
             height: 30,
             display: 'flex',

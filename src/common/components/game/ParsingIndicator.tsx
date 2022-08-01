@@ -29,7 +29,7 @@ export default class ParsingIndicator extends React.PureComponent<ParsingIndicat
             width: '100%',
             margin: 'auto',
             textAlign: 'center',
-            fontFamily: 'Carter One',
+            fontFamily: '"Carter One", "Carter One-fallback"',
             fontSize: '400%',
             color: red[500],
             WebkitTextStroke: '1px white'

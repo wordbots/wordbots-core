@@ -36,7 +36,7 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
           marginTop: 5,
           padding: compact ? 5 : 10,
           color: '#FFF',
-          fontFamily: 'Carter One'
+          fontFamily: '"Carter One", "Carter One-fallback"'
         }}
         onClick={this.handleClick}
         disabled={isSpectator || gameOver}

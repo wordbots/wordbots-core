@@ -1,12 +1,21 @@
 @font-face {
   font-family: 'Space Age';
-  src: url("../fonts/space age.ttf") format("truetype");
+  src: url("../fonts/space-age.woff2") format("woff2"), url("../fonts/space age.ttf") format("truetype");
+  font-display: block; /** https://iainbean.com/posts/2021/5-steps-to-faster-web-fonts/ */
 }
 
 /* Make a custom fallback font based on the local Arial (https://www.industrialempathy.com/perfect-ish-font-fallback/?font=Carter%20One) */
 @font-face {
   font-family: "Carter One-fallback";
   size-adjust: 109.72%;
+  src: local("Arial");
+}
+
+@font-face {
+  font-family: "Space Age-fallback";
+  size-adjust: 90%;
+  font-stretch: ultra-expanded;
+  font-variant: all-small-caps;
   src: local("Arial");
 }
 

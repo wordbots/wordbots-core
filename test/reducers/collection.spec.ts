@@ -104,6 +104,7 @@ describe('Collection reducer', () => {
       speed: 1,
       spriteID: '',
       text: '',
+      textSource: 'load',
       type: TYPE_ROBOT,
       willCreateAnother: false,
       tempSavedVersion: null

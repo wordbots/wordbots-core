@@ -13,6 +13,7 @@ const defaultCreatorState: w.CreatorState = {
   speed: 1,
   health: 1,
   cost: 1,
+  textSource: 'load',
   parserVersion: null,
   tempSavedVersion: null,
   willCreateAnother: false,

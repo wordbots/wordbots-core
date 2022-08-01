@@ -22,6 +22,7 @@ export type HexId = string;
 export type ObjectId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
+export type TextSource = 'load' | 'input' | 'didYouMean' | 'randomize';
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type Card = CardInGame | CardInStore | ObfuscatedCard;
@@ -238,6 +239,7 @@ export interface CreatorState {
   spriteID: string
   tempSavedVersion: CardInStore | null
   text: string
+  textSource: w.TextSource
   type: CardType
   willCreateAnother: boolean
 }

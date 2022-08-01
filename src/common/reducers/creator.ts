@@ -36,6 +36,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
       )) as Record<string, string>;
 
       state.text = replaceSynonyms(payload.text);
+      state.textSource = payload.textSource;
       state.sentences = sentences.map((sentence: string) => ({
         sentence,
         result: validCurrentParses[sentence] ? {js: validCurrentParses[sentence]} : {}

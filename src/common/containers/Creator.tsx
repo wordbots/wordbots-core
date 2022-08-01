@@ -32,6 +32,7 @@ export interface CreatorStateProps {
   name: string
   type: w.CardType
   text: string
+  textSource: w.TextSource
   flavorText: string
   sentences: w.Sentence[]
   spriteID: string
@@ -51,7 +52,7 @@ interface CreatorDispatchProps {
   onOpenCard: (card: w.CardInStore) => void
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
-  onSetText: (text: string) => void
+  onSetText: (text: string, textSource: w.TextSource) => void
   onSetFlavorText: (flavorText: string) => void
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onParseComplete: (idx: number, sentence: string, result: w.ParseResult) => void
@@ -92,6 +93,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
     text: state.creator.text,
+    textSource: state.creator.textSource,
     flavorText: state.creator.flavorText,
     parserVersion: state.creator.parserVersion,
     loggedIn: state.global.user !== null,
@@ -113,8 +115,8 @@ export function mapDispatchToProps(dispatch: w.MultiDispatch): CreatorDispatchPr
     onSetType: (type: w.CardType) => {
       dispatch(creatorActions.setType(type));
     },
-    onSetText: (text: string) => {
-      dispatch(creatorActions.setText(text));
+    onSetText: (text: string, textSource: w.TextSource) => {
+      dispatch(creatorActions.setText(text, textSource));
     },
     onSetFlavorText: (flavorText: string) => {
       dispatch(creatorActions.setFlavorText(flavorText));
@@ -273,6 +275,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               health={this.props.health}
               cost={this.props.cost}
               text={this.props.text}
+              textSource={this.props.textSource}
               sentences={this.props.sentences}
               flavorText={this.props.flavorText}
               isNewCard={!(this.props.id && this.props.cards.find((card) => card.id === this.props.id))}
@@ -392,11 +395,11 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     this.setState({ loaded: true });
   }
 
-  private onUpdateText = (text: string, cardType: w.CardType = this.props.type, dontIndex = false) => {
+  private onUpdateText = (text: string, textSource: w.TextSource, cardType: w.CardType = this.props.type, dontIndex = false) => {
     const parserMode = cardType === TYPE_EVENT ? 'event' : 'object';
     const sentences = getSentencesFromInput(text);
 
-    this.props.onSetText(text);
+    this.props.onSetText(text, textSource);
     this.setState({ submittedParseIssue: null });
     requestParse(sentences, parserMode, this.props.onParseComplete, !dontIndex);
   }
@@ -426,7 +429,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     if (!this.isCardEditable) { return; }
     const example: string | null = exampleStore.getExample(this.parserMode);
     if (example) {
-      this.onUpdateText(example, this.props.type, true);
+      this.onUpdateText(example, 'randomize', this.props.type, true);
     }
   }
 

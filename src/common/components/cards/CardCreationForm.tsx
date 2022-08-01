@@ -18,6 +18,7 @@ interface CardCreationFormProps {
   name: string
   type: w.CardType
   text: string
+  textSource: w.TextSource
   sentences: w.Sentence[]
   flavorText: string
   attack: number
@@ -34,7 +35,7 @@ interface CardCreationFormProps {
 
   onSetName: (name: string) => void
   onSetType: (type: w.CardType) => void
-  onUpdateText: (text: string, type?: w.CardType) => void
+  onUpdateText: (text: string, textSource: w.TextSource, type?: w.CardType) => void
   onSetFlavorText: (flavorText: string) => void
   onSetAttribute: (attr: w.Attribute | 'cost', value: number) => void
   onSpriteClick: () => void
@@ -118,7 +119,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     // This should only happen when we're loading an existing card (from Collection view).
     if (this.props.text !== '') {
-      this.props.onUpdateText(this.props.text, this.props.type);
+      this.props.onUpdateText(this.props.text, 'load', this.props.type);
     }
   }
 
@@ -189,6 +190,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
               <CardTextField
                 readonly={isReadonly}
                 text={this.props.text}
+                textSource={this.props.textSource}
                 sentences={this.nonEmptySentences}
                 error={validationResults.textError}
                 bigramProbs={this.props.bigramProbs}
@@ -283,7 +285,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
     const value: w.CardType = parseInt(e.target.value) as w.CardType;
     this.props.onSetType(value);
     // Re-parse card text because different card types now have different validations.
-    this.props.onUpdateText(this.props.text, value);
+    this.props.onUpdateText(this.props.text, this.props.textSource, value);
   }
 
   private handleSaveCard = () => {

@@ -623,6 +623,20 @@ describe('Game reducer', () => {
       expect(state.players.orange.energy.available).toEqual(0);
       expect(state.players.orange.hand.length).toEqual(currentHandSize);  // Ability did not execute
     });
+
+    it('should allow triggers bestowed by activated abilities to "stack"', () => {
+      let state = getDefaultState();
+      // Armorer: "Activate: Give an adjacent robot "Whenever this robot takes damage, restore 1 health to this robot" "
+      state = playObject(state, 'orange', testCards.armorerCard, '2,1,-3');
+      state = playObject(state, 'orange', cards.blueBotCard, '1,2,-3'); // 2/8/1
+      // Armorer will use its activated ability *twice* on Blue Bot.
+      state = activate(state, '2,1,-3', 0, { hex: '1,2,-3' }, true);
+      state = activate(state, '2,1,-3', 0, { hex: '1,2,-3' }, true);
+      // Now blue will play Shock, dealing 3 damage to Blue Bot.
+      state = playEvent(state, 'blue', cards.shockCard, { hex: '1,2,-3' });
+      // Since Blue Bot has had Armorer's ability applied twice, it should restore 2 health, thus only losing 1 health.
+      expect(queryObjectAttribute(state, '1,2,-3', 'health')).toBe(cards.blueBotCard.stats!.health - 1);
+    });
   });
 
   describe('[Shared deck mode]', () => {

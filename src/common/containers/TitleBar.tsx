@@ -98,7 +98,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
         <div style={{
           paddingLeft: 15,
           paddingTop: 7,
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           fontSize: 32,
           color: 'white',
         }}>
@@ -158,7 +158,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
                 justifyContent: 'space-between'
               }}
             >
-              <Typography style={{ fontFamily: 'Carter One', fontSize: 32 }}>
+              <Typography style={{ fontFamily: '"Carter One", "Carter One-fallback"', fontSize: 32 }}>
                 <Link className="wordbotsAppBarLink" to="/">WORDBOTS</Link>
               </Typography>
               {this.userMenu}

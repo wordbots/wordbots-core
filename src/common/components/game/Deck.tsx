@@ -16,7 +16,7 @@ export default class Deck extends React.Component<DeckProps> {
       return (
         <Tooltip
           text={`${deck.length} Cards`}
-          style={{fontFamily: 'Carter One'}}
+          style={{fontFamily: '"Carter One", "Carter One-fallback"'}}
         >
           <CardBack deckLength={deck.length} />
         </Tooltip>
@@ -37,7 +37,7 @@ export default class Deck extends React.Component<DeckProps> {
           <div
             style={{
               margin: 'auto',
-              fontFamily: 'Carter One',
+              fontFamily: '"Carter One", "Carter One-fallback"',
               fontSize: 32,
               textAlign: 'center',
               color: '#CCC'

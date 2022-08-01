@@ -52,7 +52,7 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
             border: '2px solid #eee',
             borderRadius: 5,
             color: '#FFF',
-            fontFamily: 'Carter One',
+            fontFamily: '"Carter One", "Carter One-fallback"',
             fontSize: compact ? 22 : 32,
             width: compact ? 150 : 220,
             height: compact ? 40 : 64,

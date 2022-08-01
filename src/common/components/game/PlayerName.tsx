@@ -19,7 +19,7 @@ export default class PlayerName extends React.PureComponent<PlayerNameProps> {
           position: 'absolute',
           backgroundColor: {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[color],
           color: 'white',
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           fontSize: 32,
           left: isSandbox ? (SIDEBAR_COLLAPSED_WIDTH + 5) : 0,
           top: opponent ? 0 : 'auto',

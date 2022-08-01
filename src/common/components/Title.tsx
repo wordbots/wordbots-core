@@ -17,7 +17,7 @@ export default class Title extends React.PureComponent<TitleProps> {
           marginLeft: 20,
           padding: '5px 15px',
           fontSize: small ? 16 : 24,
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           color: 'white',
           backgroundColor: '#f44336',
           opacity: 0.8,

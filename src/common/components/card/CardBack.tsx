@@ -62,7 +62,7 @@ export default class CardBack extends React.Component<CardBackProps, CardBackSta
             style={{
               color: '#fff',
               fontSize: 26 * (scale || 1),
-              fontFamily: 'Carter One'
+              fontFamily: '"Carter One", "Carter One-fallback"'
             }}
           >
             {this.props.customText || 'WORDBOTS'}

@@ -30,7 +30,7 @@ export default class VictoryScreen extends React.PureComponent<VictoryScreenProp
           top: 0,
           bottom: 0,
           right: 0,
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
           color: (winner && winner !== 'draw' && winner !== 'aborted') ? colors[winner] : 'white',
           borderRadius: 2,

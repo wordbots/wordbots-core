@@ -132,7 +132,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
     if (player === 'neither') {
       return (
         <div style={{
-            fontFamily: 'Carter One',
+            fontFamily: '"Carter One", "Carter One-fallback"',
             color: 'white',
             textAlign: 'center',
             fontSize: '2em'
@@ -145,7 +145,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
     } else {
       return (
         <div style={{
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           color: 'white',
           textAlign: 'center',
           fontSize: '2em'

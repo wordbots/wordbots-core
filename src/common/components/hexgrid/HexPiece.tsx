@@ -95,7 +95,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
 
     const xPos = {attack: -3, health: 3}[stat];
     const textStyle = {
-      fontFamily: 'Carter One',
+      fontFamily: '"Carter One", "Carter One-fallback"',
       fontSize: isLargeNumber ? '0.14em' : '0.18em',
       fill: '#FFFFFF',
       fillOpacity: 1

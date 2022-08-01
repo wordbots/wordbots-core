@@ -150,7 +150,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
             color="primary"
             onClick={this.handleShowAllSets}
           >
-            <span style={{ fontFamily: 'Carter One' }}>Show all sets</span>
+            <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Show all sets</span>
           </Button>
         </div>
       );
@@ -161,7 +161,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
             this.publishedSets.length > 0 &&
               <div style={{ textAlign: 'center' }}>
                 <h2>
-                  <span style={{ fontFamily: 'Carter One' }}>Published sets </span>
+                  <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Published sets </span>
                   <i>({this.publishedSets.length})</i>
                 </h2>
                 <div style={{ marginTop: -15, marginBottom: 15 }}>
@@ -174,7 +174,7 @@ class Sets extends React.Component<SetsProps, SetsState> {
             this.userSets.length > 0 &&
               <div style={{ textAlign: 'center' }}>
                 <h2>
-                  <span style={{ fontFamily: 'Carter One' }}>Your sets </span>
+                  <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Your sets </span>
                   <i>({this.userSets.length})</i>
                 </h2>
                 <div style={{ marginTop: -15, marginBottom: 15 }}>

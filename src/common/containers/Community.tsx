@@ -45,7 +45,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
                     display: 'inline-block',
                     padding: '5px 15px',
                     fontSize: 20,
-                    fontFamily: 'Carter One'
+                    fontFamily: '"Carter One", "Carter One-fallback"'
                   }}
                 >
                   Most popular cards
@@ -62,7 +62,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
                 display: 'inline-block',
                 padding: '5px 15px',
                 fontSize: 20,
-                fontFamily: 'Carter One'
+                fontFamily: '"Carter One", "Carter One-fallback"'
               }}
             >
               Most active players

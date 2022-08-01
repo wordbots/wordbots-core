@@ -81,7 +81,7 @@ export default class GameMode extends React.Component<GameModeProps> {
             style={{
               textAlign: 'center',
               fontSize: 24,
-              fontFamily: 'Carter One',
+              fontFamily: '"Carter One", "Carter One-fallback"',
               color: disabled ? '#ccc' : '#f44336',
               WebkitTextStroke: disabled ? '1px #999' : '1px black'
             }}

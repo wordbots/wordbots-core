@@ -3,6 +3,13 @@
   src: url("../fonts/space age.ttf") format("truetype");
 }
 
+/* Make a custom fallback font based on the local Arial (https://www.industrialempathy.com/perfect-ish-font-fallback/?font=Carter%20One) */
+@font-face {
+  font-family: "Carter One-fallback";
+  size-adjust: 109.72%;
+  src: local("Arial");
+}
+
 html {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -65,7 +72,7 @@ th {
 }
 
 .helpPage h1, .helpPage h2 {
-  font-family: 'Carter One';
+  font-family: '"Carter One", "Carter One-fallback"', 'Carter One-fallback';
 }
 
 .helpPage #parser-help .markdownBlock h2 {

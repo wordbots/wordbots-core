@@ -22,7 +22,7 @@ export default class FullscreenMessage extends React.PureComponent<FullscreenMes
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily: 'Carter One',
+          fontFamily: '"Carter One", "Carter One-fallback"',
           fontSize: 32,
           color: 'white'
         }}

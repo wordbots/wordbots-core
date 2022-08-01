@@ -85,7 +85,7 @@ export default class CardStat extends React.Component<CardStatProps> {
       width: '33%',
       lineHeight: '14px',
       color: this.textColor,
-      fontFamily: 'Carter One',
+      fontFamily: '"Carter One", "Carter One-fallback"',
       fontSize: 18 * (this.props.scale || 1),
       textAlign: 'center',
       paddingBottom: 6 * (this.props.scale || 1),

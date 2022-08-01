@@ -33,7 +33,7 @@ export default class SplashSection extends React.PureComponent<SplashSectionProp
             style={{
               textAlign: 'center',
               fontSize: 32,
-              fontFamily: 'Carter One',
+              fontFamily: '"Carter One", "Carter One-fallback"',
               color: '#f44336',
               WebkitTextStroke: '1px black'
             }}

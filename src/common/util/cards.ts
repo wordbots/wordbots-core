@@ -312,9 +312,11 @@ export function parseBatch(
     headers: { 'Content-Type': 'application/json' }
   })
     .then((response) => response.json())
-    .then((results) => (
-      (results as Array<[string, w.ParseResult]>).map(([sentence, result]) => ({ sentence, result }))
-    ))
+    .then((results) =>
+      (results as Array<[string, { SuccessfulParseResponse?: w.ParseResult, FailedParseResponse?: w.ParseResult }]>).map(([sentence, result]) =>
+        ({ sentence, result: (result.SuccessfulParseResponse || result.FailedParseResponse!) })
+      )
+    )
     .catch((error) => {
       // TODO better error handling
       throw new Error((`Parser error: ${error}`));

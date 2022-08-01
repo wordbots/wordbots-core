@@ -52,6 +52,13 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
     )(sentences);
   }
 
+  public UNSAFE_componentWillReceiveProps(nextProps: CardTextFieldProps): void {
+    if (nextProps.text !== this.state.currentText) {
+      this.setState({ currentText: nextProps.text });
+    }
+  }
+
+
   public render(): JSX.Element {
     const { error } = this.props;
 

@@ -12,17 +12,18 @@ import CardTextSuggestion from './CardTextSuggestion';
 
 interface CardTextFieldProps {
   text: string
+  textSource: w.TextSource
   sentences: w.Sentence[]
   error: string | null
   readonly?: boolean
   bigramProbs?: BigramProbs
   debounceMs: number
-  onUpdateText: (text: string) => void
+  onUpdateText: (text: string, textSource: w.TextSource) => void
 }
 
 interface CardTextFieldState {
   currentText: string
-  debouncedUpdateFn: (text: string) => void
+  debouncedUpdateFn: (text: string, textSource: w.TextSource) => void
 }
 
 export default class CardTextField extends React.Component<CardTextFieldProps, CardTextFieldState> {
@@ -53,7 +54,7 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: CardTextFieldProps): void {
-    if (nextProps.text !== this.state.currentText) {
+    if (nextProps.text !== this.state.currentText && nextProps.textSource !== 'input') {
       this.setState({ currentText: nextProps.text });
     }
   }
@@ -87,13 +88,13 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
 
   private handleChooseSuggestion = (original: string, suggestion: string) => {
     const { text, onUpdateText } = this.props;
-    onUpdateText(text.replace(original, suggestion));
+    onUpdateText(text.replace(original, suggestion), 'didYouMean');
   }
 
   private handleUpdateText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const currentText = e.currentTarget.value;
     this.setState({ currentText }, () => {
-      this.state.debouncedUpdateFn(currentText);
+      this.state.debouncedUpdateFn(currentText, 'input');
     });
   }
 

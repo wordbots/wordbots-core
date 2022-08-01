@@ -35,10 +35,10 @@ export function setAttribute(attr: w.Attribute | 'cost', value: number): w.Actio
   };
 }
 
-export function setText(text: string): w.Action {
+export function setText(text: string, textSource: w.TextSource): w.Action {
   return {
     type: SET_TEXT,
-    payload: { text }
+    payload: { text, textSource }
   };
 }
 

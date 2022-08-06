@@ -30,6 +30,7 @@ import Deck from './Deck';
 import Decks from './Decks';
 import Help from './Help';
 import Home from './Home';
+import HowItWorks from './HowItWorks';
 import Play, { isInGameUrl } from './Play';
 import Profile from './Profile';
 import Set from './Set';
@@ -165,6 +166,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/play" component={Play} />
             <Route path="/community" component={Community} />
             <Route path="/about" component={About} />
+            <Route path="/how-it-works" component={HowItWorks} />
             <Route path="/help" component={Help} />
             <Route path="/profile/:userId" component={Profile} />
             <Route render={this.redirectToRoot} />
@@ -195,7 +197,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
-          <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots"/>
+          <Helmet defaultTitle="Wordbots" titleTemplate="%s - Wordbots" />
           <TitleBar
             isAppLoading={this.isLoading}
             isUnsupportedBrowser={isUnsupportedBrowser}
@@ -212,7 +214,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   private redirectToRoot = (): JSX.Element => (
-    <Redirect to="/"/>
+    <Redirect to="/" />
   )
 
   private loadUserCardsAndDecks = async (uid: w.UserId | null): Promise<void> => {

@@ -5,13 +5,14 @@ import SmartLink from './SmartLink';
 
 interface MarkdownBlockProps {
   source: string
+  className?: string
   renderers?: Partial<{ [K in ReactMarkdown.NodeType]: React.ReactType }>
 }
 
 const MarkdownBlock = (props: MarkdownBlockProps): JSX.Element => (
   <ReactMarkdown
     source={props.source}
-    className="markdownBlock"
+    className={`markdownBlock ${props.className || ''}`}
     renderers={{ link: SmartLink, ...(props.renderers || {}) }}
   />
 );

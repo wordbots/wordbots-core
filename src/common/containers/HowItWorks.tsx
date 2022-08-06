@@ -225,7 +225,7 @@ So, we need some way to enforce rules about what kinds of semantic structures ar
 This is where the [\`AstValidator\`](https://github.com/wordbots/wordbots-parser/blob/main/src/main/scala/wordbots/AstValidator.scala) comes into play.
 
 Basically, it takes our semantic expression that the parser produced, and examines it as a tree-structure:
-![ast.png](/static/help/graphviz.png)
+![ast.png](/static/help/ast.png)
 
 Each "validation rule" now traverses the tree and checks for specific disallowed patterns (for example, a \`Choose\` expression inside a \`TriggeredAbility\` block, which would violate the _"no player-chosen targeting during trigger activation"_ rule).
 

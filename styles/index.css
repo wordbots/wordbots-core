@@ -66,7 +66,11 @@ th {
 .markdownBlock img {
   display: block;
   width: 300px;
-  margin: 0 auto 0.5em;
+  margin: 0.5em auto;
+}
+
+.markdownBlock.fullSizeImages img {
+  width: 100%;
 }
 
 .markdownBlock h1 {
@@ -98,6 +102,7 @@ th {
 }
 
 .markdownBlock code {
+  white-space: pre-wrap;
   font-size: 1.2em;
 }
 

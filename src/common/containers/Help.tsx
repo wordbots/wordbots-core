@@ -5,15 +5,17 @@ import * as React from 'react';
 import Helmet from 'react-helmet';
 
 import { HEADER_HEIGHT } from '../constants';
+import AnchorLink, { helpPageScrollerId } from '../components/help/AnchorLink';
+import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import { helpText as parserHelpText } from '../components/help/CreatorHelpDialog';
 import { BUILTIN_FORMATS, GameFormat, SetFormat, SetDraftFormat } from '../util/formats';
-import Background from '../components/Background';
+import HelpSection from '../components/help/HelpSection';
 
 const Help = (): JSX.Element => (
   <div className="helpPage">
-    <Helmet title="Help"/>
+    <Helmet title="Help" />
     <Background asset="compressed/image1-1.jpg" opacity={1} style={{ backgroundSize: 'contain' }} />
 
     <Title text="Help" />
@@ -40,6 +42,7 @@ const Help = (): JSX.Element => (
       </Paper>
     </div>
     <div
+      id={helpPageScrollerId}
       style={{
         height: `calc(100vh - ${HEADER_HEIGHT + 70}px)`,
         overflowY: 'scroll',
@@ -106,32 +109,6 @@ const Help = (): JSX.Element => (
     </div>
   </div>
 );
-
-// eslint-disable-next-line react/no-multi-comp
-const HelpSection = (props: { id: string, title: string, children: JSX.Element | JSX.Element[] }) => (
-  <Paper
-    id={props.id}
-    elevation={3}
-    style={{ position: 'relative', marginBottom: 20, padding: '5px 20px' }}
-  >
-    <div id={`${props.id}-anchor`} style={{ position: 'absolute', top: -(HEADER_HEIGHT + 76) }} />
-    <h2>{props.title}</h2>
-    {props.children}
-  </Paper>
-);
-
-// eslint-disable-next-line react/no-multi-comp
-const AnchorLink = (props: { id: string, children: string }): JSX.Element => {
-  const onClick = () => {
-    document.querySelector(`#${props.id}-anchor`)!.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  return (
-    <a className="underline" onClick={onClick}>
-      {props.children}
-    </a>
-  );
-};
 
 // eslint-disable-next-line react/no-multi-comp
 const TerminologyParagraph = (props: { children: JSX.Element[] }): JSX.Element => (

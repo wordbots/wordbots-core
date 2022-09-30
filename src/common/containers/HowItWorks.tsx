@@ -197,7 +197,7 @@ All is not lost, though! When the parser gives up, the [\`ErrorAnalyzer\`](https
 
 From the Wordbots user's perspective, this error analysis appears as a helpful "Did You Mean?" hint:
 
-![image1.png](https://www.dropbox.com/s/dw0eyq1ejvyrsws/image1.png?dl=0&raw=1)
+!["Did You Mean?" hint](/static/help/party-dude-did-you-mean.png)
 
 So, let's say we've fixed our text, and let's move on to the next stage: validation.
 `;
@@ -231,7 +231,7 @@ Each "validation rule" now traverses the tree and checks for specific disallowed
 
 If a validation rule fails, this also triggers the \`ErrorAnalyzer\`! So, if we had, for example tried to make a robot with just the text \`"Give all your robots Jump"\` (fine for an Action card, but not valid text for a Robot card because it's not an _ability_), we would get this helpful suggestion:
 
-![Screen Shot 2022-07-31 at 9.39.25 PM.png](https://www.dropbox.com/s/czwqmfagrwqogjr/Screen%20Shot%202022-07-31%20at%209.39.25%20PM.png?dl=0&raw=1)
+![validation rule suggestion example](/static/help/party-dude-validation.png)
 `;
 
 const codeGeneration = `
@@ -269,10 +269,10 @@ Well, we just run the generated code (via \`eval()\`, of course), plugging into 
 
 Of course, it's a little more complicated than that:
 * The actual implementations of all of these things – \`actions\` and \`targets\` and \`triggers\` and so on – end up depending on the object performing the action (if any), and sometimes even depending on how the object got the ability in question (if any). So, the vocabulary bundle has to be re-generated every time we need to execute Wordbots code (for example, any time a card is played or an ability is used).
-* Actions and abilities are represented as JavaScript functions, but of course they in turn contain references to _other_ actions and abilities, which have to be represented as functions themselves! _(For example, the "Jump" ability that our robot is bestowing on other robots is itself represented as a function.)_ Usually these become represented as stringified functions, but sometimes they are functions returning stringified functions, depending on exactly what order things need to execute in a given context. Sometimes these things can get nested quite a few levels deep, and become completely unreadable as a result.
+* Actions and abilities are represented as JavaScript functions, but of course they in turn contain references to _other_ actions and abilities, which have to be represented as functions themselves! _(For example, the "Jump" ability that our robot is bestowing on other robots is itself represented as a function.)_ Usually these get represented as stringified functions, but sometimes as functions returning stringified functions, depending on exactly what order things need to execute in a given context. Sometimes these things can get nested quite a few levels deep (and become completely unreadable as a result).
 * The \`CodeGenerator\` acts as a last-ditch bulwark of sanity by trying to execute the JavaScript code produced (using [Mozilla Rhino](https://github.com/mozilla/rhino)), to make sure it's even valid JavaScript. It does the same thing for every function-inside-a-function it can find inside the code too, executing each in turn to make sure it's valid JavaScript functions all the way down.
-* The Wordbots command-execution system is also a little more sophisticated than a simple \`eval()\` statement – among other things, it keeps track of its own execution stack depth in order to detect infinite loops caused by card behavior. _(These typically happens if two triggers manage to trigger one another _ad infinitum_ – it's a rare situation and causes the game to end in a draw – perhaps the most obscure rule in Wordbots.)_
-* And of course things get even more exciting with Wordbots cards that modify the text of other cards, a new mechanic that makes it so cards can now trigger a re-parse of other cards in the middle of execution. It's madness, truly:
+* The Wordbots command-execution system is also a little more sophisticated than a simple \`eval()\` statement – among other things, it keeps track of its own execution stack depth in order to detect infinite loops caused by card behavior. _(These typically happens if two triggers manage to trigger one another ad infinitum – it's a rare situation and causes the game to end in a draw – perhaps Wordbots's most obscure game rule.)_
+* And of course things get even more exciting with Wordbots cards that modify the text of other cards, a new mechanic that makes it so cards can now trigger a re-parse of other cards in the middle of execution. All sorts of madness can now ensue, through cards like this:
 ![polarity-shift.png](/static/help/polarity-shift.png)
 `;
 

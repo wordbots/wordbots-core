@@ -27,24 +27,28 @@ class About extends React.PureComponent<AboutProps> {
 
     return (
       <div className="helpPage">
-        <Helmet title="About"/>
+        <Helmet title="About" />
         <Background asset="compressed/image1-1.jpg" opacity={1} style={{ backgroundSize: 'contain' }} />
 
         <Title text="About" />
 
-        <div style={{display: 'flex', justifyContent: 'stretch', margin: '20px auto', width: '84%' }}>
-          <div style={{width: '50%', marginRight: 20}}>
-            <Paper style={{padding: '5px 20px'}}>
+        <div style={{ display: 'flex', justifyContent: 'stretch', margin: '20px auto', width: '84%' }}>
+          <div style={{ width: '50%', marginRight: 20 }}>
+            <Paper style={{ padding: '5px 20px' }}>
               <MarkdownBlock source={whatIsWordbots(version, shaTruncated)} />
             </Paper>
 
-            <Paper style={{padding: '5px 20px', marginTop: 20}}>
+            <Paper style={{ padding: '5px 20px', marginTop: 20 }}>
+              <MarkdownBlock source={howItWorks} />
+            </Paper>
+
+            <Paper style={{ padding: '5px 20px', marginTop: 20 }}>
               <MarkdownBlock source={getInvolved} />
             </Paper>
           </div>
 
-          <div style={{width: '50%'}}>
-            <Paper style={{padding: '5px 20px'}}>
+          <div style={{ width: '50%' }}>
+            <Paper style={{ padding: '5px 20px' }}>
               <MarkdownBlock source={credits} />
             </Paper>
           </div>
@@ -67,6 +71,12 @@ We _have_ a working (but not fully complete) parser for card text, basic gamepla
 We _don't_ currently have any mechanism to ensure that cards are reasonably balanced –
 that's still something we're brainstorming.
 `);
+
+const howItWorks = `
+## How Does It Work?
+
+[Glad you asked! There's a whole separate page explaining the magic.](/how-it-works)
+`;
 
 const getInvolved = `
 ## Get Involved!

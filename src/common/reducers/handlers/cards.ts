@@ -102,7 +102,7 @@ const cardsHandlers = {
     };
   },
 
-  exportCards: (state: State, cards: w.CardInStore[]): State => ({...state, exportedJson: cardsToJson(cards)}),
+  exportCards: (state: State, cards: w.CardInStore[]): State => ({ ...state, exportedJson: cardsToJson(cards) }),
 
   importCards: (state: State, json: string): State => {
     cardsFromJson(json, (card) => { saveCard(state, card); });
@@ -131,10 +131,10 @@ const cardsHandlers = {
       health: card.stats ? card.stats.health : undefined,
       speed: card.stats ? card.stats.speed : undefined,
       attack: card.stats ? card.stats.attack : undefined,
-      sentences: splitSentences(card.text || '').map((s) => ({sentence: s, result: {}}))
+      sentences: splitSentences(card.text || '').map((s) => ({ sentence: s, result: {} }))
     };
 
-    return {...state, ...omitBy(newFields, isUndefined)};
+    return { ...state, ...omitBy(newFields, isUndefined) };
   },
 
   openDeckForEditing: (state: State, deckId: string): State => {
@@ -143,9 +143,9 @@ const cardsHandlers = {
   },
 
   openSetForEditing: (state: State, setId: string): State => ({
-      ...state,
-      setBeingEdited: setId && state.sets.find((s) => s.id === setId) || null
-    }),
+    ...state,
+    setBeingEdited: setId && state.sets.find((s) => s.id === setId) || null
+  }),
 
   publishSet: (state: State, setId: string): State => {
     const set: w.Set | undefined = state.sets.find((s) => s.id === setId);
@@ -154,7 +154,7 @@ const cardsHandlers = {
       return state;
     }
 
-    const publishedSet: w.Set = {...set, metadata: {...set.metadata, isPublished: true }};
+    const publishedSet: w.Set = { ...set, metadata: { ...set.metadata, isPublished: true } };
     firebase.saveSet(publishedSet);
 
     return {
@@ -173,7 +173,7 @@ const cardsHandlers = {
     const user = firebase.lookupCurrentUser();
 
     if (user) {
-      const copy: w.CardInStore =  {
+      const copy: w.CardInStore = {
         ...card,
         id: id(),  // generate a new ID so the card gets saved in a new place in Firebase
         metadata: {

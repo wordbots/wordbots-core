@@ -1,4 +1,4 @@
-import { clamp as _clamp, fromPairs, isEqual, isNaN, isString, isUndefined, last, some } from 'lodash';
+import { clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, last, mapValues, some } from 'lodash';
 
 import * as w from '../types';
 
@@ -90,7 +90,12 @@ export function animate(fns: Array<() => void>, delay: number): void {
 
 /** Removes all undefined (but not null) fields recursively from an object. */
 export function withoutEmptyFields<T>(obj: T): T {
-  return Object.fromEntries(Object.entries(obj).filter(([_k, v]) => !isUndefined(v))) as T;
+  return mapValues(
+    Object.fromEntries(
+      Object.entries(obj).filter(([_k, v]) => !isUndefined(v))
+    ),
+    (v) => isObject(v) ? withoutEmptyFields(v) : v
+  ) as T;
 }
 
 /** Given a (potentially null) sentence, return the sentence with a trailing period if it doesn't have one. */

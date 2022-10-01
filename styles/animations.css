@@ -140,11 +140,10 @@
   80% { content: 'FIGHT!'; font-size: 120px; }
 }
 
+.blink {
+  animation: Blink 1.5s linear infinite;
+}
 @keyframes Blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
-}
-
-.blink {
-  animation: Blink 1.5s linear infinite;
 }

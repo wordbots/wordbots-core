@@ -38,10 +38,10 @@ export function handleAction(
   { type, payload }: w.Action = { type: '' }
 ): State {
   // First, clone state and clean up any currently running animation (e.g. objects turning red because they took damage).
-  let state: State = cleanUpAnimations({...oldState});
+  let state: State = cleanUpAnimations({ ...oldState });
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
-    state = {...state, actionId: id()};
+    state = { ...state, actionId: id() };
   }
 
   switch (type) {
@@ -72,7 +72,7 @@ export function handleAction(
       return g.aiResponse(state);
 
     case actions.END_GAME:
-      return {...state, started: false};
+      return { ...state, started: false };
 
     case actions.MOVE_ROBOT:
       return g.moveRobot(state, payload.from, payload.to);
@@ -81,7 +81,7 @@ export function handleAction(
       return g.attack(state, payload.source, payload.target);
 
     case actions.ATTACK_RETRACT:
-      return {...state, attack: state.attack ? {...state.attack, retract: true} : null };
+      return { ...state, attack: state.attack ? { ...state.attack, retract: true } : null };
 
     case actions.ATTACK_COMPLETE:
       return g.attackComplete(state);
@@ -128,7 +128,7 @@ export function handleAction(
       return handleRewriteParseCompleted(state, payload);
 
     case socketActions.CONNECTING:
-      return {...state, started: state.practice ? state.started : false};
+      return { ...state, started: state.practice ? state.started : false };
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
@@ -153,7 +153,7 @@ export function handleAction(
         // If still drafting, there's no notion of 'forfeiting' - the game just gets aborted
         return { ...state, winner: 'aborted' };
       } else {
-        state = {...state, winner: payload.winner};
+        state = { ...state, winner: payload.winner };
         state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
         return state;
       }

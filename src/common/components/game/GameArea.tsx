@@ -61,6 +61,7 @@ export interface GameProps {
   isPractice: boolean
   isSandbox: boolean
   isMyTurn: boolean
+  isMyTurnAndNoActionsLeft: boolean
   isSpectator: boolean
   isAttackHappening: boolean
   isWaitingForParse: boolean

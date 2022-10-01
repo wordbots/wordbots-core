@@ -11,7 +11,7 @@ import { defaultTarget } from '../store/defaultGameState';
 import * as w from '../types';
 import { shuffleCardsInDeck } from '../util/cards';
 import { animate } from '../util/common';
-import { currentTutorialStep } from '../util/game';
+import { currentPlayerHasNoValidActions, currentTutorialStep } from '../util/game';
 
 import { baseGameUrl, urlForGameMode } from './Play';
 
@@ -104,6 +104,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     isTutorial: game.tutorial,
     isSandbox: game.sandbox,
     isMyTurn: game.currentTurn === game.player,
+    isMyTurnAndNoActionsLeft: game.currentTurn === game.player && currentPlayerHasNoValidActions(game),
     isSpectator: game.player === 'neither',
     isAttackHappening: !!game.attack?.from && !!game.attack?.to,
     isWaitingForParse: game.numParsesInFlight > 0,

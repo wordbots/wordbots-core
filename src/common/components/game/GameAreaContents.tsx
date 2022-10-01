@@ -32,7 +32,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
   public render = (): JSX.Element => {
     const {
       attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, isAttackHappening,
-      isMyTurn, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse,
+      isMyTurn, isMyTurnAndNoActionsLeft, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse,
       orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
@@ -103,6 +103,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 compact={compactControls}
                 gameOver={gameOver}
                 isMyTurn={isMyTurn || isSandbox}
+                isMyTurnAndNoActionsLeft={isMyTurnAndNoActionsLeft}
                 isAttackHappening={isAttackHappening}
                 isWaitingForParse={isWaitingForParse}
                 tutorialStep={tutorialStep}
@@ -137,7 +138,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               // border: '5px solid white'  /* (useful for debugging layout) */
             }}
           >
-            <div className={`boardAnimationContainer ${shouldShowCountdownAnimation ? 'enableCountdown' : 'disableCountdown' }`}>
+            <div className={`boardAnimationContainer ${shouldShowCountdownAnimation ? 'enableCountdown' : 'disableCountdown'}`}>
               <div className="boardAnimation">
                 <div className="bubble" />
                 <Board

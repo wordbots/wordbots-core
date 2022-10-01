@@ -21,6 +21,7 @@ import { indexParsedSentence, lookupCurrentUser } from './firebase';
 // 1. Miscellaneous helper functions pertaining to cards.
 //
 
+/** Instantiate a CardInStore into a CardInGame by setting additional fields. */
 export function instantiateCard(card: w.CardInStore): w.CardInGame {
   return {
     ...card,
@@ -29,14 +30,16 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
   };
 }
 
-// Obfuscate all cards in an array, optionally leaving one card unobfuscated (e.g. if that card is about to be played).
+/** Obfuscate all cards in an array, optionally leaving one card unobfuscated (e.g. if that card is about to be played).
+  * NOTE that card obfuscation functionality is currently known to be broken and is thus disabled. */
 export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = null): w.ObfuscatedCard[] {
   return cards.map((card, idx) =>
     idx === revealCardIdx ? card : { id: 'obfuscated' }
   );
 }
 
-// Given a card that may be obfuscated, assert that it is unobfuscated.
+/** Given a card that may be obfuscated, assert that it is unobfuscated.
+  * NOTE that card obfuscation functionality is currently known to be broken and is thus disabled. */
 export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame {
   if (g.isCardObfuscated(card)) {
     throw new Error('Expected a visible card but received an obfuscated card!');
@@ -45,8 +48,9 @@ export function assertCardVisible(card: w.PossiblyObfuscatedCard): w.CardInGame 
   }
 }
 
-// Replace a player's deck, hand, and/or discard pile.
-// Used in handling REVEAL_CARDS actions.
+/** Replace a player's deck, hand, and/or discard pile.
+  * Used in handling REVEAL_CARDS actions.
+  * NOTE that card obfuscation functionality is currently known to be broken and is thus disabled. */
 export function replaceCardsInPlayerState(
   playerState: w.PlayerInGameState,
   newCards: {
@@ -63,6 +67,7 @@ export function replaceCardsInPlayerState(
   };
 }
 
+/** Generate a `CardSource` corresponding to the current user, if any. */
 function cardSourceForCurrentUser(): w.CardSource {
   const user = lookupCurrentUser();
   return {
@@ -76,7 +81,7 @@ function cardSourceForCurrentUser(): w.CardSource {
 // 2. Helper functions for card-related components.
 //
 
-// Converts card from cardCreator store format -> format for collection and game stores.
+/** Converts card from cardCreator store format -> format for collection and game stores. */
 export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   const {
     attack, cost, health, id, isPrivate, name, parserVersion,
@@ -124,6 +129,7 @@ export interface CardValidationResults {
   healthError: string | null
   speedError: string | null
 }
+/** Given `CreatorStateProps`, validate the card being created and produce `CardValidationResults`. */
 export function validateCardInCreator(props: CreatorStateProps): CardValidationResults {
   const { name, cost, type, sentences, attack, health, speed } = props;
 
@@ -164,6 +170,7 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
 // 3. Text parsing.
 //
 
+/** Given a sentence, replace all synonyms (see `SYNONYMS`) in that sentence. */
 export function replaceSynonyms(text: string): string {
   return reduce(SYNONYMS, ((str, synonyms, term) => {
     synonyms = isArray(synonyms) ? synonyms : [synonyms];
@@ -172,10 +179,13 @@ export function replaceSynonyms(text: string): string {
   }), text);
 }
 
-export function splitSentences(str: string | undefined): string[] {
+/** Given a string containing potentially many sentences, return an array of sentences. */
+export function splitSentences(str?: string): string[] {
   return (str || '').split(/[\\.!?]/).filter((s) => /\S/.test(s));
 }
 
+/** Given card text input, return an array of pre-processed
+  * (synonym replacement -> splitting -> keyword replacement) sentences. */
 export function getSentencesFromInput(text: string): string[] {
   let sentences = splitSentences(replaceSynonyms(text));
   sentences = flatMap(sentences, (s) => isKeywordExpression(s) ? s.replace(/,/g, ',|').split('|') : s);
@@ -183,11 +193,11 @@ export function getSentencesFromInput(text: string): string[] {
   return sentences;
 }
 
-// Parse without debounce. Only used by requestParse() and parseCard() below.
+/** Parse without debounce. Only used by requestParse() and parseCard() below. */
 function parse(
   sentences: string[],
   mode: w.ParserMode,
-  callback: (idx: number, sentence: string, json: w.ParseResult) => any,
+  callback: (idx: number, sentence: string, json: w.ParseResult) => void,
   index = true,
   // fast mode does only the bare minimum error analysis (no syntax/semantics suggestions) to speed up parse results
   fastMode = false
@@ -212,10 +222,11 @@ function parse(
   });
 }
 
+/** Parse with debounce. */
 export const requestParse = debounce(parse, PARSE_DEBOUNCE_MS);
 
-// Parse a batch of sentences and return a promise for each [sentence, result] pair.
-// TODO Use parseBatch() for all parsing?
+/** Parse a batch of sentences and return a promise for each [sentence, result] pair.
+  * TODO Use parseBatch() for all parsing? */
 export function parseBatch(
   sentences: string[],
   mode: w.ParserMode
@@ -290,21 +301,25 @@ export function parseCard(
 // 3.5. Keyword abilities.
 //
 
+/** Given a sentence, return an array of comma-separated phrases. */
 function phrases(sentence: string): string[] {
   return sentence.split(',')
     .filter((s) => /\S/.test(s))
     .map((s) => s.trim());
 }
 
+/** Combine `KEYWORDS` and `HINTS`, i.e. for displaying them together in the dictionary dialog. */
 export function allKeywords(): { [keyword: string]: string } {
   return { ...KEYWORDS, ...HINTS };
 }
 
+/** Return whether a sentence is a keyword expression (that is, composed solely of keywords). */
 function isKeywordExpression(sentence: string, hintsToo = false): boolean {
   const keywords = hintsToo ? { ...KEYWORDS, ...HINTS } : KEYWORDS;
   return phrases(sentence).every((p) => has(keywords, p.toLowerCase()));
 }
 
+/** Given a sentence, return a record of any keywords in the sentence, along with corresponding definitions. */
 export function keywordsInSentence(sentence: string, hintsToo = false): { [keyword: string]: string } {
   const keywords = hintsToo ? { ...KEYWORDS, ...HINTS } : KEYWORDS;
   const regexes = hintsToo ? { ...KEYWORD_REGEXES, ...HINT_REGEXES } : KEYWORD_REGEXES;
@@ -320,11 +335,13 @@ export function keywordsInSentence(sentence: string, hintsToo = false): { [keywo
   }
 }
 
+/** Given a sentence, return that sentence with all keyword expressions expanded out, potentially in quotes. */
 export function expandKeywords(sentence: string, quote = false): string {
   const keywords = keywordsInSentence(sentence);
   return reduce(keywords, (str, def, keyword) => str.replace(new RegExp(keyword, 'g'), quote ? `"${def}"` : def), sentence);
 }
 
+/** Given a sentence, contract all keyword definitions into their correponding keyword terms. */
 export function contractKeywords(sentence: string): string {
   const keywords = mapValues(KEYWORDS, (k) => k.split(/(,|\.)/)[0]);
   return reduce(keywords, ((str, def, keyword) =>
@@ -333,7 +350,8 @@ export function contractKeywords(sentence: string): string {
   ), sentence);
 }
 
-// e.g. 'All robots have Jump' => 'All robots have "Jump"';
+/** Given a sentence, return that sentence with all keyword terms in quotes.
+  * e.g. 'All robots have Jump' => 'All robots have "Jump"' */
 export function quoteKeywords(sentence: string): string {
   return contractKeywords(expandKeywords(sentence, true));
 }
@@ -342,6 +360,7 @@ export function quoteKeywords(sentence: string): string {
 // 4. Import/export.
 //
 
+/** Given an array of `CardInStore`, return a JSON-encoded representation. */
 export function cardsToJson(cards: w.CardInStore[]): string {
   const exportedFields = ['name', 'type', 'cost', 'spriteID', 'spriteV', 'text', 'stats', 'metadata'];
   const cardsToExport = cards.map((card) => ({
@@ -351,7 +370,10 @@ export function cardsToJson(cards: w.CardInStore[]): string {
   return JSON.stringify(cardsToExport).replace(/\\"/g, '%27');
 }
 
-export function cardsFromJson(json: string, callback: (card: w.CardInStore) => any): void {
+/** Given a JSON-encoded card representation of an array of CardsInStore,
+  * produce the corresponding cards (using the parser to parse card text),
+  * and trigger the corresponding callback for each card parsed this way. */
+export function cardsFromJson(json: string, callback: (card: w.CardInStore) => void): void {
   // In the future, we may update the card schema, and this function would have to deal
   // with migrating between schema versions.
   JSON.parse(json.replace(/%27/g, '\\"'))
@@ -396,6 +418,7 @@ export function normalizeCard(card: w.CardInStore, explicitSource?: w.CardSource
   return { ...card, metadata };
 }
 
+/** Given CollectionState and raw cards data returned from Firebase, populate state.cards . */
 export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.CollectionState {
   if (data) {
     if (data.cards) {
@@ -409,6 +432,7 @@ export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.C
   return state;
 }
 
+/** Given CollectionState and raw decks data returned from Firebase, populate state.decks . */
 export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
   return {
     ...state,
@@ -416,6 +440,7 @@ export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.Co
   };
 }
 
+/** Given CollectionState and raw decks data returned from Firebase, populate state.sets . */
 export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
   const normalizeCards = (set: w.Set): w.Set => ({
     ...set,
@@ -430,6 +455,7 @@ export function loadSetsFromFirebase(state: w.CollectionState, data: any): w.Col
   };
 }
 
+/** Yield the parser lexicon (i.e. dictionary of term definitions) from the parser. */
 export function loadParserLexicon(): Promise<{ [token: string]: any }> {
   return fetch(`${PARSER_URL}/lexicon?format=json`)
     .then((response) => response.json())

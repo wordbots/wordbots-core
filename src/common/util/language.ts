@@ -6,6 +6,7 @@ const ProfanityFilter: BadWordsFilter = new (require('bad-words'));
 
 const DISALLOWED_PHRASES = ['all a'];
 
+/** Given a test corpus, return a bigram dictionary, normalized so values sum to 1 for each prefix. */
 export function prepareBigramProbs(corpus: string): BigramProbs {
   if (!corpus) {
     return {};
@@ -29,6 +30,7 @@ export function prepareBigramProbs(corpus: string): BigramProbs {
   return bigrams;
 }
 
+/** Returns the negative log-likelihood of a given phrase, given a BigramProbs dictionary. */
 export function bigramNLL(phrase: string, bigramProbs: BigramProbs): number {
   const phraseBigrams = listAllNGrams(buildNGrams(`${phrase} .`, 2)).map((b) => b.split(' '));
 
@@ -40,6 +42,7 @@ export function bigramNLL(phrase: string, bigramProbs: BigramProbs): number {
   return logLikelihood;
 }
 
+/** Given a string, filter out any profanity in it (using `bad-words`). */
 export function filterProfanity(text: string): string {
   try {
     return ProfanityFilter.clean(text);

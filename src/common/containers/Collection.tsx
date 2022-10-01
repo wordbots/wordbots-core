@@ -19,11 +19,11 @@ import LayoutControls from '../components/cards/LayoutControls';
 import SearchControls from '../components/cards/SearchControls';
 import SortControls from '../components/cards/SortControls';
 import { SortCriteria, SortOrder } from '../components/cards/types.enums';
+import { getDisplayedCards, isCardVisible } from '../components/cards/utils';
 import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
-import { getDisplayedCards, isCardVisible } from '../util/cards';
 import { lookupCurrentUser } from '../util/firebase';
 import Background from '../components/Background';
 import ToolbarButton from '../components/ToolbarButton';
@@ -189,12 +189,12 @@ export class Collection extends React.Component<CollectionProps, CollectionState
 
   // this.set(key)(value) = this.setState({key: value})
   private set = (key: keyof CollectionState, callback = noop) => (value: CollectionState[typeof key]) => {
-    this.setState({[key]: value} as Pick<CollectionState, keyof CollectionState>, callback);
+    this.setState({ [key]: value } as Pick<CollectionState, keyof CollectionState>, callback);
   }
 
   private toggleFilter = (filter: 'robots' | 'events' | 'structures') => (_e: React.ChangeEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
-      filters: {...state.filters, [filter]: toggled}
+      filters: { ...state.filters, [filter]: toggled }
     }), this.refreshSelection);
   }
 
@@ -257,7 +257,7 @@ export class Collection extends React.Component<CollectionProps, CollectionState
   }
 
   private renderSidebarControls = () => (
-    <Paper style={{padding: 20, marginBottom: 10}}>
+    <Paper style={{ padding: 20, marginBottom: 10 }}>
       <SearchControls onChange={this.set('searchText')} />
 
       <LayoutControls
@@ -323,47 +323,47 @@ export class Collection extends React.Component<CollectionProps, CollectionState
 
         {onTopBar
           ? <>
+            <ToolbarButton
+              color="primary"
+              icon="videogame_asset"
+              onClick={this.handleClickTest}
+              disabled={selectedCardIds.length !== 1}
+            >
+              Test
+              </ToolbarButton>
+            <CopyToClipboard
+              text={`${location.origin}/card/${selectedCardIds[0]}`}
+              onCopy={this.afterCopyPermalink}
+            >
               <ToolbarButton
                 color="primary"
-                icon="videogame_asset"
-                onClick={this.handleClickTest}
-                disabled={selectedCardIds.length !== 1}
+                icon={isPermalinkCopied ? null : 'link'}
+                onClick={noop}
+                disabled={selectedCardIds.length !== 1 || isPermalinkCopied}
               >
-                Test
+                {isPermalinkCopied ? 'Copied!' : 'permalink'}
               </ToolbarButton>
-              <CopyToClipboard
-                text={`${location.origin}/card/${selectedCardIds[0]}`}
-                onCopy={this.afterCopyPermalink}
-              >
-                <ToolbarButton
-                  color="primary"
-                  icon={isPermalinkCopied ? null : 'link'}
-                  onClick={noop}
-                  disabled={selectedCardIds.length !== 1 || isPermalinkCopied}
-                >
-                  {isPermalinkCopied ? 'Copied!' : 'permalink'}
-                </ToolbarButton>
-              </CopyToClipboard>
-            </>
+            </CopyToClipboard>
+          </>
           : <>
-              <ToolbarButton
-                color="primary"
-                vertical
-                icon="file_download"
-                onClick={this.handleClickExport}
-                disabled={selectedCardIds.length === 0}
-              >
-                Export Selected
+            <ToolbarButton
+              color="primary"
+              vertical
+              icon="file_download"
+              onClick={this.handleClickExport}
+              disabled={selectedCardIds.length === 0}
+            >
+              Export Selected
               </ToolbarButton>
-              <ToolbarButton
-                color="primary"
-                vertical
-                icon="file_upload"
-                onClick={this.handleClickImport}
-              >
-                Import Cards
+            <ToolbarButton
+              color="primary"
+              vertical
+              icon="file_upload"
+              onClick={this.handleClickImport}
+            >
+              Import Cards
               </ToolbarButton>
-            </>
+          </>
         }
       </MustBeLoggedIn>
     );

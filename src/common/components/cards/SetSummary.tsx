@@ -11,13 +11,13 @@ import * as React from 'react';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
-import { sortCards } from '../../util/cards';
 import { SetDraftFormat } from '../../util/formats';
 import { Card } from '../card/Card';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 import ProfileLink from '../users/ProfileLink';
 
+import { sortCards } from './utils';
 import { SortCriteria } from './types.enums';
 
 interface SetSummaryBaseProps {
@@ -171,17 +171,17 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
           </div>
           {isCardListExpanded &&
             <div>
-              <div style={{clear: 'both'}}/>
+              <div style={{ clear: 'both' }} />
               {
                 cards
                   .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
                   .map((card, idx) => (
-                    <div key={idx} style={{float: 'left'}}>
+                    <div key={idx} style={{ float: 'left' }}>
                       {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
                     </div>
                   ))
               }
-              <div style={{clear: 'both'}}/>
+              <div style={{ clear: 'both' }} />
             </div>
           }
           <div className={classes.numDecksCreated}>

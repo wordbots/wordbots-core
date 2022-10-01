@@ -17,8 +17,8 @@ import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebar
 import EnergyCurve from '../components/cards/EnergyCurve';
 import { DeckCreationProperties, FilterKey } from '../components/cards/types';
 import { Layout, SortCriteria, SortOrder } from '../components/cards/types.enums';
+import { getDisplayedCards } from '../components/cards/utils';
 import * as w from '../types';
-import { getDisplayedCards } from '../util/cards';
 import { id as generateId } from '../util/common';
 
 import { Deck } from './Deck';
@@ -140,12 +140,12 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
   }
 
   private setField = (key: keyof NewSetState, callback = noop) => (value: NewSetState[typeof key]) => {
-    this.setState({[key]: value} as Pick<NewSetState, keyof NewSetState>, callback);
+    this.setState({ [key]: value } as Pick<NewSetState, keyof NewSetState>, callback);
   }
 
   private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
-      filters: {...state.filters, [filter]: toggled}
+      filters: { ...state.filters, [filter]: toggled }
     }));
   }
 

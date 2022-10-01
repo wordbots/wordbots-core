@@ -33,7 +33,7 @@ export function convertRange(value: number, r1: Range, r2: Range): number {
 }
 
 /** Return whether two objects are equal, looking only at certain keys. */
-export function compareCertainKeys(obj1: Record<string, unknown>, obj2: Record<string, unknown>, keys: string[]): boolean {
+export function compareCertainKeys(obj1: any, obj2: any, keys: string[]): boolean {
   return !some(keys, (key) => !isEqual(obj1[key], obj2[key]));
 }
 
@@ -45,7 +45,7 @@ export function clamp(func: ((x: number) => number) | w.StringRepresentationOf<(
 
 /** Given an object, a (number => number) function (or stringified representation), and a field name,
   * returns the object with the function applied to the given field. */
-export function applyFuncToField<T extends string>(obj: Record<T, number>, func: ((x: number) => number) | w.StringRepresentationOf<(x?: number) => number>, field: T): Record<T, number> {
+export function applyFuncToField<T extends string, R extends Record<T, number>>(obj: R, func: ((x: number) => number) | w.StringRepresentationOf<(x?: number) => number>, field: T): R {
   return applyFuncToFields(obj, func, [field]);
 }
 
@@ -89,7 +89,7 @@ export function animate(fns: Array<() => void>, delay: number): void {
 }
 
 /** Removes all undefined (but not null) fields recursively from an object. */
-export function withoutEmptyFields<T extends Record<string, unknown>>(obj: T): T {
+export function withoutEmptyFields<T>(obj: T): T {
   return Object.fromEntries(Object.entries(obj).filter(([_k, v]) => !isUndefined(v))) as T;
 }
 

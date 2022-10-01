@@ -2,7 +2,8 @@ import { constant, times } from 'lodash';
 
 import defaultCollectionState from '../../src/common/store/defaultCollectionState';
 import * as w from '../../src/common/types';
-import { instantiateCard, unpackDeck } from '../../src/common/util/cards';
+import { instantiateCard } from '../../src/common/util/cards';
+import { unpackDeck } from '../../src/common/util/decks';
 
 import { attackBotCard, cantripCard, instantKernelKillerAbilityCard } from './cards';
 
@@ -21,7 +22,7 @@ export const defaultDecks: w.DeckInGame[] = (
   defaultCollectionState.decks.map((d: w.DeckInStore) => unpackDeck(d, defaultCollectionState.cards, []))
 );
 
-export const emptyDeck: w.DeckInGame = {id: '', authorId: '', name: '', cardIds: [], cards: [], setId: null};
+export const emptyDeck: w.DeckInGame = { id: '', authorId: '', name: '', cardIds: [], cards: [], setId: null };
 
 export const botsOnlyDeck: w.DeckInGame = constantDeck(attackBotCard);
 export const eventsOnlyDeck: w.DeckInGame = constantDeck(cantripCard);

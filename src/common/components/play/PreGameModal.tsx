@@ -6,8 +6,7 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import { getQueryString } from '../../util/browser';
-import { unpackDeck } from '../../util/cards';
-import { sortDecks } from '../../util/decks';
+import { sortDecks, unpackDeck } from '../../util/decks';
 import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 

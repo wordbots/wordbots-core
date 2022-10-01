@@ -12,8 +12,7 @@ import Title from '../components/Title';
 import ToolbarButton from '../components/ToolbarButton';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
-import { cardsInDeck } from '../util/cards';
-import { sortDecks } from '../util/decks';
+import { cardsInDeck, sortDecks } from '../util/decks';
 
 import { urlForGameMode } from './Play';
 
@@ -82,7 +81,7 @@ class Decks extends React.Component<DecksProps> {
         </div>
 
 
-        <div style={{margin: 20}}>
+        <div style={{ margin: 20 }}>
           <div
             style={{
               display: 'flex',

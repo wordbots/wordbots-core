@@ -9,7 +9,7 @@ import { AI_RESPONSE_TIME_MS, ANIMATION_TIME_MS } from '../constants';
 import { isCardVisible } from '../guards';
 import { defaultTarget } from '../store/defaultGameState';
 import * as w from '../types';
-import { shuffleCardsInDeck } from '../util/cards';
+import { shuffleCardsInDeck } from '../util/decks';
 import { animate } from '../util/common';
 import { currentPlayerHasNoValidActions, currentTutorialStep } from '../util/game';
 

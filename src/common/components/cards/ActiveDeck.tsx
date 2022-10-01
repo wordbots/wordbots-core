@@ -6,10 +6,10 @@ import * as React from 'react';
 
 import { MAX_Z_INDEX, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
-import { groupCards, selectType } from '../../util/cards';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
+import { groupCards, selectType } from './utils';
 import ActiveDeckCard from './ActiveDeckCard';
 import DeckValidationIndicator from './DeckValidationIndicator';
 import { CardWithCount } from './types';
@@ -91,7 +91,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           }}
         >
           {isASet ? 'Set' : 'Deck'} [
-          <span style={{color: this.hasRightCardCount ? 'green' : 'red'}}>
+          <span style={{ color: this.hasRightCardCount ? 'green' : 'red' }}>
             {cards.length}
           </span>
           {' '}/{' '}
@@ -116,7 +116,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           {
             !isASet && (
               <div style={{ float: 'right' }}>
-                <DeckValidationIndicator hideNumCards cards={cards} deck={deck} set={setForDeck}  />
+                <DeckValidationIndicator hideNumCards cards={cards} deck={deck} set={setForDeck} />
               </div>
             )
           }
@@ -138,12 +138,12 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
 
         {
           setForDeck &&
-            <TextField
-              disabled
-              label="For the set:"
-              value={`${setForDeck.name} by ${setForDeck.metadata.authorName}`}
-              style={{ width: '100%', marginBottom: 10 }}
-            />
+          <TextField
+            disabled
+            label="For the set:"
+            value={`${setForDeck.name} by ${setForDeck.metadata.authorName}`}
+            style={{ width: '100%', marginBottom: 10 }}
+          />
         }
 
         <div>
@@ -162,22 +162,22 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         {
           cards.length > 0
             ? <React.Fragment>
-                {this.renderSaveButton()}
-                <div style={{ margin: '20px auto' }}>
-                  {this.renderCardList()}
-                </div>
-                {this.renderSaveButton()}
-              </React.Fragment>
+              {this.renderSaveButton()}
+              <div style={{ margin: '20px auto' }}>
+                {this.renderCardList()}
+              </div>
+              {this.renderSaveButton()}
+            </React.Fragment>
             : this.renderSaveButton()
         }
       </div>
     );
   }
 
-  private handleChangeName = (e: React.SyntheticEvent<any>) => { this.setState({name: e.currentTarget.value}); };
-  private handleChangeDescription = (e: React.SyntheticEvent<any>) => { this.setState({description: e.currentTarget.value}); };
-  private handleGroupByCost = () => { this.setState({grouping: 0}); };
-  private handleGroupByType = () => { this.setState({grouping: 1}); };
+  private handleChangeName = (e: React.SyntheticEvent<any>) => { this.setState({ name: e.currentTarget.value }); };
+  private handleChangeDescription = (e: React.SyntheticEvent<any>) => { this.setState({ description: e.currentTarget.value }); };
+  private handleGroupByCost = () => { this.setState({ grouping: 0 }); };
+  private handleGroupByType = () => { this.setState({ grouping: 1 }); };
 
   private handleSave = () => {
     const { id, cards, isASet, onSave } = this.props;
@@ -211,7 +211,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     const handleClick = [this.handleGroupByCost, this.handleGroupByType][grouping];
 
     return (
-      <div style={{width: '47.5%'}}>
+      <div style={{ width: '47.5%' }}>
         <Tooltip text={tooltip} place="top" style={{ zIndex: MAX_Z_INDEX }}>
           <Icon
             className="material-icons"
@@ -231,7 +231,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
 
   private renderCard(card: CardWithCount, idx: number): JSX.Element {
     return (
-      <div key={idx} style={{position: 'relative'}}>
+      <div key={idx} style={{ position: 'relative' }}>
         <ActiveDeckCard
           card={card}
           showCount={!this.props.isASet}

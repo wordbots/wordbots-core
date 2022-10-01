@@ -16,8 +16,8 @@ import DeckCreationSidebarControls from '../components/cards/DeckCreationSidebar
 import EnergyCurve from '../components/cards/EnergyCurve';
 import { DeckCreationProperties, FilterKey } from '../components/cards/types';
 import { Layout, SortCriteria, SortOrder } from '../components/cards/types.enums';
+import { getDisplayedCards } from '../components/cards/utils';
 import * as w from '../types';
-import { getDisplayedCards } from '../util/cards';
 
 interface DeckStateProps {
   id: string | null
@@ -125,7 +125,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
 
     return (
       <div>
-        <Helmet title="Building Deck"/>
+        <Helmet title="Building Deck" />
         <Background asset="compressed/Conveyor 03.jpg" opacity={0.45} />
 
         <div className={classes.container}>
@@ -201,12 +201,12 @@ export class Deck extends React.Component<DeckProps, DeckState> {
   }
 
   private setField = (key: keyof DeckState, callback = noop) => (value: DeckState[typeof key]) => {
-    this.setState({[key]: value} as Pick<DeckState, keyof DeckState>, callback);
+    this.setState({ [key]: value } as Pick<DeckState, keyof DeckState>, callback);
   }
 
   private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
     this.setState((state) => ({
-      filters: {...state.filters, [filter]: toggled}
+      filters: { ...state.filters, [filter]: toggled }
     }));
   }
 

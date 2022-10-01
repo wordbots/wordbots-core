@@ -1,15 +1,15 @@
 import {
-  capitalize, compact, countBy, debounce, flatMap, fromPairs, has,
-  isArray, mapValues, omit, pick, reduce, shuffle, uniqBy
+  capitalize, compact, debounce, flatMap, fromPairs, has,
+  isArray, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
 import * as w from '../types';
 import * as g from '../guards';
 import {
   CARD_SCHEMA_VERSION,
-  HINT_REGEXES, HINTS, KEEP_DECKS_UNSHUFFLED, KEYWORD_REGEXES,
+  HINT_REGEXES, HINTS, KEYWORD_REGEXES,
   KEYWORDS, PARSE_DEBOUNCE_MS, PARSER_URL, SPRITE_VERSION,
-  SYNONYMS, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE, typeToString, CREATABLE_TYPES
+  SYNONYMS, TYPE_EVENT, TYPE_ROBOT, CREATABLE_TYPES
 } from '../constants';
 import defaultState from '../store/defaultCollectionState';
 import { CreatorStateProps } from '../containers/Creator';
@@ -20,24 +20,6 @@ import { indexParsedSentence, lookupCurrentUser } from './firebase';
 //
 // 1. Miscellaneous helper functions pertaining to cards.
 //
-
-export function cardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInStore[] {
-  const set: w.Set | null = deck.setId && sets.find((s) => s.id === deck.setId) || null;
-  const cardPool = set ? set.cards : userCards;
-  return compact((deck.cardIds || []).map((id) => cardPool.find((c) => c.id === id)));
-}
-
-export function shuffleCardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInGame[] {
-  const unshuffledCards = cardsInDeck(deck, userCards, sets);
-  const potentiallyShuffledCards = KEEP_DECKS_UNSHUFFLED ? unshuffledCards : shuffle(unshuffledCards);
-  return potentiallyShuffledCards.map(instantiateCard);
-}
-
-// "Unpacks" a deck so that it can be used in a game.
-// { cardIds } => { cardIds, cards }
-export function unpackDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.DeckInGame {
-  return { ...deck, cards: shuffleCardsInDeck(deck, userCards, sets) };
-}
 
 export function instantiateCard(card: w.CardInStore): w.CardInGame {
   return {
@@ -50,7 +32,7 @@ export function instantiateCard(card: w.CardInStore): w.CardInGame {
 // Obfuscate all cards in an array, optionally leaving one card unobfuscated (e.g. if that card is about to be played).
 export function obfuscateCards(cards: w.Card[], revealCardIdx: number | null = null): w.ObfuscatedCard[] {
   return cards.map((card, idx) =>
-    idx === revealCardIdx ? card : {id: 'obfuscated'}
+    idx === revealCardIdx ? card : { id: 'obfuscated' }
   );
 }
 
@@ -94,33 +76,6 @@ function cardSourceForCurrentUser(): w.CardSource {
 // 2. Helper functions for card-related components.
 //
 
-export function groupCards(cards: w.CardInStore[]): Array<w.CardInStore & { count: number }> {
-  return uniqBy(cards, 'id').map((card) =>
-    ({...card, count: countBy(cards, 'name')[card.name]})
-  );
-}
-
-export function selectType(cards: w.CardInStore[], type: w.CardType): w.CardInStore[] {
-  return cards.filter((card) => card.type === type);
-}
-
-export function getDisplayedCards(cards: w.CardInStore[], opts: any = {}): w.CardInStore[] {
-  return cards
-    .filter((card) => isCardVisible(card, opts.filters, opts.costRange) && searchCards(card, opts.searchText))
-    .sort((c1, c2) => sortCards(c1, c2, opts.sortCriteria, opts.sortOrder));
-}
-
-export function isCardVisible(card: w.CardInStore, filters: any = {}, costRange = [0, 0]): boolean {
-  if ((!filters.robots && card.type === TYPE_ROBOT) ||
-      (!filters.events && card.type === TYPE_EVENT) ||
-      (!filters.structures && card.type === TYPE_STRUCTURE) ||
-      (card.cost < costRange[0] || card.cost > costRange[1])) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
 // Converts card from cardCreator store format -> format for collection and game stores.
 export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   const {
@@ -128,7 +83,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     sentences: rawSentences, speed, spriteID, type
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
-  const command = sentences.map((s: { result: { js?: string }}) => s.result.js!);
+  const command = sentences.map((s: { result: { js?: string } }) => s.result.js!);
 
   const card: w.CardInStore = {
     id: id || generateId(),
@@ -156,47 +111,6 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   }
 
   return card;
-}
-
-function searchCards(card: w.CardInStore, query = ''): boolean {
-  query = query.toLowerCase();
-  return card.name.toLowerCase().includes(query) || (card.text || '').toLowerCase().includes(query);
-}
-
-export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: 0 | 1 | 2 | 3 | 4 | 5 | 6, order: 0 | 1 = 0): 1 | 0 | -1 {
-  // Individual sort columns that are composed into sort functions below.
-  // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
-  const [timestamp, cost, name, type, attack, health, speed] = [
-    // we want timestamp to be sorted backwards compared to other fields.
-    // also, created cards without a timestamp should still come before builtin cards.
-    (c: w.CardInStore) => (9999999999999 - (c.metadata.updated || (c.metadata.source.type === 'builtin' ? 0 : 1))).toString(36),
-    (c: w.CardInStore) => c.cost.toString(36),
-    (c: w.CardInStore) => c.name.toLowerCase(),
-    (c: w.CardInStore) => typeToString(c.type),
-    (c: w.CardInStore) => (c.stats?.attack || 0).toString(36),
-    (c: w.CardInStore) => (c.stats?.health || 0).toString(36),
-    (c: w.CardInStore) => (c.stats?.speed || 0).toString(36)
-  ];
-
-  // Sorting functions for card collections:
-  // 0 = timestamp, 1 = cost, 2 = name, 3 = type, 4 = attack, 5 = health, 6 = speed.
-  const f = [
-    (c: w.CardInStore) => [timestamp(c), cost(c), name(c)],
-    (c: w.CardInStore) => [cost(c), name(c)],
-    (c: w.CardInStore) => [name(c), cost(c)],
-    (c: w.CardInStore) => [type(c), cost(c), name(c)],
-    (c: w.CardInStore) => [attack(c), cost(c), name(c)],
-    (c: w.CardInStore) => [health(c), cost(c), name(c)],
-    (c: w.CardInStore) => [speed(c), cost(c), name(c)]
-  ][criteria];
-
-  if (f(c1) < f(c2)) {
-    return order ? 1 : -1;
-  } else if (f(c1) > f(c2)) {
-    return order ? -1 : 1;
-  } else {
-    return 0;
-  }
 }
 
 export interface CardValidationResults {
@@ -254,7 +168,7 @@ export function replaceSynonyms(text: string): string {
   return reduce(SYNONYMS, ((str, synonyms, term) => {
     synonyms = isArray(synonyms) ? synonyms : [synonyms];
     return str.replace(new RegExp(`(${synonyms.join('|')})`, 'g'), term)
-              .replace(new RegExp(`(${synonyms.map(capitalize).join('|')})`, 'g'), capitalize(term));
+      .replace(new RegExp(`(${synonyms.map(capitalize).join('|')})`, 'g'), capitalize(term));
   }), text);
 }
 
@@ -378,22 +292,22 @@ export function parseCard(
 
 function phrases(sentence: string): string[] {
   return sentence.split(',')
-                 .filter((s) => /\S/.test(s))
-                 .map((s) => s.trim());
+    .filter((s) => /\S/.test(s))
+    .map((s) => s.trim());
 }
 
 export function allKeywords(): { [keyword: string]: string } {
-  return {...KEYWORDS, ...HINTS};
+  return { ...KEYWORDS, ...HINTS };
 }
 
 function isKeywordExpression(sentence: string, hintsToo = false): boolean {
-  const keywords = hintsToo ? {...KEYWORDS, ...HINTS} : KEYWORDS;
+  const keywords = hintsToo ? { ...KEYWORDS, ...HINTS } : KEYWORDS;
   return phrases(sentence).every((p) => has(keywords, p.toLowerCase()));
 }
 
 export function keywordsInSentence(sentence: string, hintsToo = false): { [keyword: string]: string } {
-  const keywords = hintsToo ? {...KEYWORDS, ...HINTS} : KEYWORDS;
-  const regexes = hintsToo ? {...KEYWORD_REGEXES, ...HINT_REGEXES} : KEYWORD_REGEXES;
+  const keywords = hintsToo ? { ...KEYWORDS, ...HINTS } : KEYWORDS;
+  const regexes = hintsToo ? { ...KEYWORD_REGEXES, ...HINT_REGEXES } : KEYWORD_REGEXES;
 
   if (isKeywordExpression(sentence, hintsToo)) {
     return fromPairs(phrases(sentence).map((p) => [p, keywords[p.toLowerCase()]]));
@@ -415,7 +329,7 @@ export function contractKeywords(sentence: string): string {
   const keywords = mapValues(KEYWORDS, (k) => k.split(/(,|\.)/)[0]);
   return reduce(keywords, ((str, def, keyword) =>
     str.replace(`"${def}"`, capitalize(keyword))
-       .replace(def, capitalize(keyword))
+      .replace(def, capitalize(keyword))
   ), sentence);
 }
 

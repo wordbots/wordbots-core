@@ -4,12 +4,12 @@ import * as React from 'react';
 
 import { TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
-import { groupCards } from '../../util/cards';
 import ButtonInRow from '../ButtonInRow';
 import CardTooltip from '../card/CardTooltip';
 import InlineCardCostBadge from '../card/InlineCardCostBadge';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
 
+import { groupCards } from './utils';
 import DeckValidationIndicator from './DeckValidationIndicator';
 import { CardWithCount } from './types';
 
@@ -62,10 +62,10 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
     return (
       <Paper
         key={deck.name}
-        style={{maxWidth: 490, marginRight: 20, marginBottom: 20, padding: 10}}
+        style={{ maxWidth: 490, marginRight: 20, marginBottom: 20, padding: 10 }}
       >
-        <div style={{display: 'flex', marginBottom: 15}}>
-          <div style={{fontSize: 32, fontWeight: 100}}>
+        <div style={{ display: 'flex', marginBottom: 15 }}>
+          <div style={{ fontSize: 32, fontWeight: 100 }}>
             {deck.name}
           </div>
 
@@ -118,8 +118,8 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
           />
         </MustBeLoggedIn>
 
-        <div style={{padding: '0 10px 10px 10px'}}>
-          <div style={{float: 'left', marginRight: 30}}>
+        <div style={{ padding: '0 10px 10px 10px' }}>
+          <div style={{ float: 'left', marginRight: 30 }}>
             <h4
               style={{
                 margin: '20px 0 20px -10px'
@@ -130,7 +130,7 @@ export default class DeckSummary extends React.Component<DeckSummaryProps> {
             {this.renderCards(robots)}
           </div>
 
-          <div style={{float: 'left'}}>
+          <div style={{ float: 'left' }}>
             <h4
               style={{
                 margin: '20px 0 20px -10px'

@@ -62,7 +62,7 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
       } else if (isSandbox) {
         onForfeit(opponent(player));
       } else {
-        if (confirm(`Are you sure you want to ${text || 'forfeit'}?`)) {
+        if (confirm(`Are you sure you want to ${text ? text.toLocaleLowerCase() : 'forfeit'}?`)) {
           onForfeit(opponent(player));
         }
       }

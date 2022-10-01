@@ -11,29 +11,35 @@ import * as w from '../types';
 
 import { instantiateCard } from './cards';
 
+/** Given an encoded Format, decode it and render its display name. */
 export function renderFormatDisplayName(format: w.Format): string {
   return GameFormat.decode(format).displayName!;
 }
 
+/** Return whether a deck has exactly the given number of cards. */
 function deckHasNCards(deck: w.DeckInGame, num: number): boolean {
   return deck.cards.length === num;
 }
 
+/** Return whether a deck has no more than a given number of copies of any individual card id. */
 function deckHasAtMostNCopiesPerCard(deck: w.DeckInGame, maxNum: number): boolean {
   const cardCounts: number[] = Object.values(groupBy(deck.cards, 'id'))
-                                     .map((cards) => cards.length);
+    .map((cards) => cards.length);
   return cardCounts.every((count) => count <= maxNum);
 }
 
+/** Return whether a deck has only builtin cards. */
 function deckHasOnlyBuiltinCards(deck: w.DeckInGame): boolean {
   return deck.cards.every((card) => card.metadata.source.type === 'builtin');
 }
 
+/** Return whether a deck is registered to the given set id AND all of its cards belong to that set. */
 function deckBelongsToSet(deck: w.DeckInGame, set: w.Set): boolean {
   const cardIdsInSet: w.CardId[] = set.cards.map((c) => c.id);
   return deck.setId === set.id && deck.cardIds.every((id) => cardIdsInSet.includes(id));
 }
 
+/** Given a Set, render a fragment describing its provenance. */
 function renderSetForFormatDescription(set: w.Set): React.ReactFragment {
   return (
     <React.Fragment>
@@ -56,6 +62,7 @@ function renderSetForFormatDescription(set: w.Set): React.ReactFragment {
 }
 
 export class GameFormat {
+  /** Decode an encoded Format into a `GameFormat`. */
   public static decode(encodedFormat: w.Format): GameFormat {
     let format: GameFormat | undefined;
     if (isString(encodedFormat)) {
@@ -76,17 +83,24 @@ export class GameFormat {
   public displayName: string | undefined;
   public description: string | undefined;
 
+  /** Return the encoded representation of this format. (This is overridden by set-related formats.) */
   public serialized = (): w.Format => this.name as w.Format;
 
+  /** Returns a rendered representation of this format. (This is overridden by set-related formats.) */
   public rendered = (): React.ReactNode => this.displayName;
 
+  /** Returns whether a given deck is valid in this format. (Overridden by sub-classes.) */
   public isDeckValid = (_deck: w.DeckInGame): boolean => false;
+  /** Returns whether this format requires a deck. (Can be overridden.) */
   public requiresDeck = true;
 
+  /** Returns whether a given game state is using this format. */
   public isActive(state: w.GameState): boolean {
     return state.gameFormat === this.serialized();
   }
 
+  /** Starts a game in this format.
+    * GameFormat's startGame method performs only basic setup, to be overridden by subclasses. */
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
     _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
@@ -192,8 +206,8 @@ export class SetFormat extends GameFormat {
 
   public isDeckValid = (deck: w.DeckInGame): boolean => (
     deckHasNCards(deck, 30)
-      && deckBelongsToSet(deck, this.set)
-      && deckHasAtMostNCopiesPerCard(deck, 2)
+    && deckBelongsToSet(deck, this.set)
+    && deckHasAtMostNCopiesPerCard(deck, 2)
   )
 
   public startGame(
@@ -248,6 +262,7 @@ export class SetDraftFormat extends GameFormat {
     return state;
   }
 
+  /** Returns the starting DraftState (i.e. no draft picks) given a seed and this format's set. */
   initialDraftState = (seed: number): w.DraftState => ({
     blue: {
       cardsDrafted: [],
@@ -259,6 +274,7 @@ export class SetDraftFormat extends GameFormat {
     }
   })
 
+  /** Given a seed, return 15 groups of 4 random cards from the set. */
   buildCardDraftGroups = (seed: number): w.CardInGame[][] => (
     times(15, (i) =>
       (shuffle(this.set.cards, seed + i * 0.01) as w.CardInStore[])

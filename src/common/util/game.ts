@@ -57,7 +57,7 @@ export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefi
 }
 
 export function allObjectsOnBoard(state: w.GameState): { [hexId: string]: w.Object } {
-  return {...state.players.blue.objectsOnBoard, ...state.players.orange.objectsOnBoard};
+  return { ...state.players.blue.objectsOnBoard, ...state.players.orange.objectsOnBoard };
 }
 
 export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameState | undefined {
@@ -115,19 +115,19 @@ export function hasEffect(object: w.Object, effect: w.EffectType): boolean {
 
 function getEffect(object: w.Object, effect: w.EffectType): any[] {
   return (object.effects || new Array<w.Effect>())
-            .filter((eff: w.Effect) => eff.effect === effect)
-            .map((eff: w.Effect) => eff.props);
+    .filter((eff: w.Effect) => eff.effect === effect)
+    .map((eff: w.Effect) => eff.props);
 }
 
 function allowedToAttack(state: w.GameState, attacker: w.Robot, targetHex: Hex): boolean {
   const defender: w.Object = allObjectsOnBoard(state)[HexUtils.getID(targetHex)];
 
   if (!defender ||
-      ownerOf(state, defender)!.color === ownerOf(state, attacker)!.color ||
-      attacker.card.type !== TYPE_ROBOT ||
-      attacker.cantAttack ||
-      hasEffect(attacker, 'cannotattack') ||
-      (getAttribute(attacker, 'attack') as number) <= 0) {
+    ownerOf(state, defender)!.color === ownerOf(state, attacker)!.color ||
+    attacker.card.type !== TYPE_ROBOT ||
+    attacker.cantAttack ||
+    hasEffect(attacker, 'cannotattack') ||
+    (getAttribute(attacker, 'attack') as number) <= 0) {
     return false;
   } else if (hasEffect(attacker, 'canonlyattack')) {
     const validTargetIds = flatMap(getEffect(attacker, 'canonlyattack'), (e) => e.target.entries.map((t: w.Object) => t.id));
@@ -157,8 +157,8 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
   // Skip check if there's already a winner declared
   if (state.winner) { return state; }
 
-  const blueKernelExists = some(state.players.blue.objectsOnBoard, {card: {type: TYPE_CORE}});
-  const orangeKernelExists = some(state.players.orange.objectsOnBoard, {card: {type: TYPE_CORE}});
+  const blueKernelExists = some(state.players.blue.objectsOnBoard, { card: { type: TYPE_CORE } });
+  const orangeKernelExists = some(state.players.orange.objectsOnBoard, { card: { type: TYPE_CORE } });
 
   if (!blueKernelExists && !orangeKernelExists) {
     state.winner = 'draw';
@@ -189,6 +189,25 @@ function determineTargetCard(state: w.GameState, target: w.Targetable | null): w
     const targetObj = (isString(target) ? allObjectsOnBoard(state)[target] : target);
     return g.isObject(targetObj) ? targetObj.card : targetObj;
   }
+}
+
+/** Given a game state, return true iff the current player has no valid actions
+ * (i.e. playing cards, moving/attacking/activating objects) to perform. */
+export function currentPlayerHasNoValidActions(state: w.GameState): boolean {
+  const player: w.PlayerInGameState = currentPlayer(state);
+
+  // Can the player play any cards?
+  if (player.hand.some((card) => assertCardVisible(card).cost <= player.energy.available)) {
+    return false;
+  }
+
+  // Can the player move, attack, or activate with any objects on the board?
+  const objectHexes: Hex[] = Object.keys(player.objectsOnBoard).map(HexUtils.IDToHex);
+  if (objectHexes.some((hex) => validActionHexes(state, hex).length > 0)) {
+    return false;
+  }
+
+  return true;
 }
 
 //
@@ -246,7 +265,7 @@ export function validMovementHexes(state: w.GameState, startHex: Hex): Hex[] {
   times(movesLeft(object), () => {
     const newHexes = flatMap(potentialMovementHexes, getAdjacentHexes).filter((hex: Hex) =>
       !(impassableHexIds.includes(HexUtils.getID(hex))) &&
-        (hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex)))
+      (hasEffect(object, 'canmoveoverobjects') || !Object.keys(allObjectsOnBoard(state)).includes(HexUtils.getID(hex)))
     );
 
     potentialMovementHexes = uniqBy(potentialMovementHexes.concat(newHexes), HexUtils.getID);
@@ -310,19 +329,19 @@ export function logAction(
   const playerStr = player ?
     (player.color === state.player ?
       'You ' :
-      `${(state.usernames )[player.color]} `) :
+      `${(state.usernames)[player.color]} `) :
     '';
 
   target = determineTargetCard(state, target);
   const targetStr = target ? `, targeting |${target.id}|` : '';
-  const targetCards = target ? {[target.id]: target} : {};
+  const targetCards = target ? { [target.id]: target } : {};
 
   const message = {
     id: state.actionId!,
     user: '[Game]',
     text: `${playerStr}${action}${targetStr}.`,
     timestamp: timestamp || Date.now(),
-    cards: {...cards, ...targetCards}
+    cards: { ...cards, ...targetCards }
   };
 
   // console.log(message.text);
@@ -357,19 +376,19 @@ function startTurn(state: w.GameState): w.GameState {
   player.energy.total = Math.min(player.energy.total + 1, 10);
   player.energy.available = player.energy.total;
   player.objectsOnBoard = mapValues(player.objectsOnBoard, ((obj: w.Object) => ({
-      ...obj,
-      movesMade: 0,
-      cantActivate: false,
-      cantAttack: false,
-      cantMove: false,
-      attackedThisTurn: false,
-      movedThisTurn: false,
-      attackedLastTurn: (obj as w.Robot).attackedThisTurn,
-      movedLastTurn: (obj as w.Robot).movedThisTurn
+    ...obj,
+    movesMade: 0,
+    cantActivate: false,
+    cantAttack: false,
+    cantMove: false,
+    attackedThisTurn: false,
+    movedThisTurn: false,
+    attackedLastTurn: (obj as w.Robot).attackedThisTurn,
+    movedLastTurn: (obj as w.Robot).movedThisTurn
   })));
 
   state = drawCards(state, player, 1);
-  state = triggerEvent(state, 'beginningOfTurn', {player: true});
+  state = triggerEvent(state, 'beginningOfTurn', { player: true });
   if (player.color === state.player) {
     state = triggerSound(state, 'yourmove.wav');
   }
@@ -389,7 +408,7 @@ function endTurn(state: w.GameState): w.GameState {
         }
         return null;
       } else {
-        return {...ability, duration: duration ? duration - 1 : undefined};
+        return { ...ability, duration: duration ? duration - 1 : undefined };
       }
     } else {
       return ability;
@@ -400,7 +419,7 @@ function endTurn(state: w.GameState): w.GameState {
   previousTurnPlayer.selectedCard = null;
   previousTurnPlayer.selectedTile = null;
   previousTurnPlayer.status.message = '';
-  previousTurnPlayer.target = {choosing: false, chosen: null, possibleHexes: [], possibleCardsInHand: [], possibleCardsInDiscardPile: []};
+  previousTurnPlayer.target = { choosing: false, chosen: null, possibleHexes: [], possibleCardsInHand: [], possibleCardsInDiscardPile: [] };
   previousTurnPlayer.objectsOnBoard = mapValues(previousTurnPlayer.objectsOnBoard, ((obj) => ({
     ...obj,
     attackedThisTurn: false,
@@ -421,7 +440,7 @@ function endTurn(state: w.GameState): w.GameState {
     triggers: compact((obj.triggers || new Array<w.Ability>()).map(decrementDuration)) as w.TriggeredAbility[]
   })));
 
-  state = triggerEvent(state, 'endOfTurn', {player: true});
+  state = triggerEvent(state, 'endOfTurn', { player: true });
   state = checkVictoryConditions(state);
   state.currentTurn = opponentName(state);
   state.objectsDestroyedThisTurn = {};
@@ -504,7 +523,7 @@ export function removeCardsFromDiscardPile(state: w.GameState, cards: w.CardInGa
   cards.forEach((targetCard: w.CardInGame) => {
     discardPiles.forEach((discardPile: w.CardInGame[]) => {
       if (discardPile.find((card) => card.id === targetCard.id)) {
-        remove(discardPile, {id: targetCard.id});
+        remove(discardPile, { id: targetCard.id });
         callback(targetCard);
       }
     });
@@ -527,7 +546,7 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
     }, (s) => {
       object.stats.health -= amount;
       object.tookDamageThisTurn = true;
-      return logAction(s, null, `|${object.card.id}| received ${amount} damage`, {[object.card.id]: object.card});
+      return logAction(s, null, `|${object.card.id}| received ${amount} damage`, { [object.card.id]: object.card });
     });
   }
 
@@ -555,8 +574,8 @@ export function updateOrDeleteObjectAtHex(
     object.beingDestroyed = true;
 
     state = triggerSound(state, 'destroyed.wav');
-    state = logAction(state, null, `|${object.card.id}| was destroyed`, {[object.card.id]: object.card});
-    state = triggerEvent(state, 'afterDestroyed', {object, condition: ((t: w.Trigger) => (t.cause === cause || t.cause === 'anyevent'))});
+    state = logAction(state, null, `|${object.card.id}| was destroyed`, { [object.card.id]: object.card });
+    state = triggerEvent(state, 'afterDestroyed', { object, condition: ((t: w.Trigger) => (t.cause === cause || t.cause === 'anyevent')) });
     if (cause === 'combat' && object.mostRecentlyInCombatWith) {
       state = triggerEvent(state, 'afterDestroysOtherObject', {
         object: object.mostRecentlyInCombatWith,
@@ -581,7 +600,7 @@ export function updateOrDeleteObjectAtHex(
 export function deleteAllDyingObjects(state: w.GameState): w.GameState {
   const objects: Array<[w.HexId, w.Object]> = Object.entries(allObjectsOnBoard(state));
 
-  state = objects.reduce<w.GameState>((currentState, [ hex, object ]) => (
+  state = objects.reduce<w.GameState>((currentState, [hex, object]) => (
     updateOrDeleteObjectAtHex(currentState, object, hex, null, false)
   ), state);
   // applyAbilities in one pass rather than for each updateOrDeleteObjectAtHex() call
@@ -637,7 +656,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
   if (tempState.players[player.color].target.choosing) {
     // Still need more targets!
     // So we revert to old state but use new target selection properties.
-    state.players[player.color].target = {...tempState.players[player.color].target, chosen: targets};
+    state.players[player.color].target = { ...tempState.players[player.color].target, chosen: targets };
 
     return state;
   } else {
@@ -710,12 +729,12 @@ export function triggerEvent(
   let condition: ((t: w.Trigger) => boolean) = defaultCondition;
 
   if (target.object) {
-    state = {...state, it: target.object};
+    state = { ...state, it: target.object };
     condition = ((t: w.Trigger) =>
       (t.targets as w.Object[]).map((o: w.Object) => o.id).includes(target.object!.id) && defaultCondition(t)
     );
   } else if (target.player) {
-    state = {...state, itP: currentPlayer(state)};
+    state = { ...state, itP: currentPlayer(state) };
     condition = ((t: w.Trigger) =>
       (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.color).includes(state.currentTurn) && defaultCondition(t)
     );
@@ -723,7 +742,7 @@ export function triggerEvent(
   if (target.undergoer) {
     // Also store the undergoer (as opposed to agent) of the event if present.
     // (see https://en.wikipedia.org/wiki/Patient_(grammar) )
-    state = {...state, that: target.undergoer};
+    state = { ...state, that: target.undergoer };
   }
 
   // Look up any relevant triggers for this condition.
@@ -732,7 +751,7 @@ export function triggerEvent(
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = (executeCmd(state, t.trigger.targetFunc, object) as w.Target).entries;
-        return {...t, object};
+        return { ...t, object };
       })
       .filter((t) => t.trigger.type === triggerType && condition(t.trigger))
   ));
@@ -753,7 +772,7 @@ export function triggerEvent(
     //         state.it = (destroyed robot)
     //         t.object = Arena
     //         "its controller" should = (destroyed robot)
-    const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it ) : null);
+    const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it) : null);
     const currentObject: w.Object = it || t.object;
 
     state.currentCmdText = t.text || undefined;
@@ -765,7 +784,7 @@ export function triggerEvent(
   });
 
   state = applyAbilities(state);
-  return {...state, it: undefined, itP: undefined, that: undefined};
+  return { ...state, it: undefined, itP: undefined, that: undefined };
 }
 
 export function applyAbilities(state: w.GameState): w.GameState {
@@ -802,5 +821,5 @@ export function applyAbilities(state: w.GameState): w.GameState {
 
 export function reversedCmd(cmd: string): string {
   return cmd.replace(/setAbility/g, 'unsetAbility')
-            .replace(/setTrigger/g, 'unsetTrigger');
+    .replace(/setTrigger/g, 'unsetTrigger');
 }

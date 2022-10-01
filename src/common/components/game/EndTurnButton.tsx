@@ -12,6 +12,7 @@ interface EndTurnButtonProps {
   compact?: boolean
   gameOver?: boolean
   isMyTurn?: boolean
+  isMyTurnAndNoActionsLeft?: boolean
   isAttackHappening?: boolean
   tutorialStep?: w.TutorialStep
   isWaitingForParse: boolean
@@ -33,7 +34,7 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
   }
 
   public render(): JSX.Element {
-    const { player, isMyTurn, compact, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
+    const { player, isMyTurn, isMyTurnAndNoActionsLeft, compact, tutorialStep, onNextTutorialStep, onPrevTutorialStep } = this.props;
 
     return (
       <TutorialTooltip
@@ -45,10 +46,10 @@ export default class EndTurnButton extends React.Component<EndTurnButtonProps> {
         onPrevStep={onPrevTutorialStep}
       >
         <Button
-          className={`end-turn-button ${player} ${!isMyTurn && 'waiting'}`}
+          className={`end-turn-button ${player} ${!isMyTurn && 'waiting'} ${isMyTurnAndNoActionsLeft && 'blink'}`}
           variant="contained"
           style={{
-            backgroundColor: player ? {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[player] : undefined,
+            backgroundColor: player ? { orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR }[player] : undefined,
             border: '2px solid #eee',
             borderRadius: 5,
             color: '#FFF',

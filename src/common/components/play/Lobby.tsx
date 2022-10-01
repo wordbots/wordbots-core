@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as m from '../../../server/multiplayer/multiplayer';
 import { CHAT_WIDTH } from '../../constants';
 import * as w from '../../types';
-import { unpackDeck } from '../../util/cards';
+import { unpackDeck } from '../../util/decks';
 import { GameFormat, renderFormatDisplayName } from '../../util/formats';
 import Background from '../Background';
 import RouterDialog from '../RouterDialog';
@@ -117,7 +117,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
         </div>
 
         <Title text="Arena" />
-        <div style={{padding: `20px ${CHAT_WIDTH + 20}px 0 20px`}}>
+        <div style={{ padding: `20px ${CHAT_WIDTH + 20}px 0 20px` }}>
           <LobbyStatus
             connecting={connecting}
             connected={connected}

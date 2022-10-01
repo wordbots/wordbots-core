@@ -10,11 +10,11 @@ import { CardCondition, ObjectCondition } from './conditions';
 //    {type: 'hexes', entries: <array of hex ids>}
 
 export function allTiles(_: w.GameState): w.Returns<w.HexCollection> {
-  return () => ({type: 'hexes', entries: allHexIds()});
+  return () => ({ type: 'hexes', entries: allHexIds() });
 }
 
 export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
-  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => ({
+  return (players: w.PlayerCollection, cardType: w.CardTypeQuery | w.CardTypeQuery[], conditions: CardCondition[] = []) => ({
     type: 'cards',
     entries: players.entries.flatMap((player) => player.hand as w.CardInGame[]).filter((card: w.CardInGame) =>
       matchesType(card, cardType) && !card.justPlayed && conditions.every((cond) => cond(null, card))
@@ -23,7 +23,7 @@ export function cardsInHand(_: w.GameState): w.Returns<w.CardInHandCollection> {
 }
 
 export function cardsInDiscardPile(_: w.GameState): w.Returns<w.CardInDiscardPileCollection> {
-  return (players: w.PlayerCollection, cardType: string, conditions: CardCondition[] = []) => ({
+  return (players: w.PlayerCollection, cardType: w.CardTypeQuery | w.CardTypeQuery[], conditions: CardCondition[] = []) => ({
     type: 'cardsInDiscardPile',
     entries: players.entries.flatMap((player) => player.discardPile).filter((card: w.CardInGame) =>
       matchesType(card, cardType) && conditions.every((cond) => cond(null, card))
@@ -37,21 +37,21 @@ export function objectsInPlay(state: w.GameState): w.Returns<w.ObjectCollection>
 }
 
 export function objectsMatchingConditions(state: w.GameState): w.Returns<w.ObjectCollection> {
-  return (objType: string, conditions: ObjectCondition[]) => {
+  return (objType: w.CardTypeQuery | w.CardTypeQuery[], conditions: ObjectCondition[]) => {
     const objects = Object.values(allObjectsOnBoard(state)).filter((obj: w.Object) =>
       matchesType(obj, objType) && conditions.every((cond) => cond(getHex(state, obj)!, obj))
     );
-    return {type: 'objects', entries: objects};
+    return { type: 'objects', entries: objects };
   };
 }
 
 export function other(_: w.GameState, currentObject: w.Object | null): w.Returns<w.ObjectCollection> {
   return (collection) => ({
-      type: 'objects',
-      entries: collection.entries.filter((obj: w.Object) =>
-        obj.id !== currentObject?.id
-      )
-    });
+    type: 'objects',
+    entries: collection.entries.filter((obj: w.Object) =>
+      obj.id !== currentObject?.id
+    )
+  });
 }
 
 export function tilesMatchingConditions(state: w.GameState): w.Returns<w.Collection> {
@@ -59,6 +59,6 @@ export function tilesMatchingConditions(state: w.GameState): w.Returns<w.Collect
     const hexes = allHexIds().filter((hex) =>
       conditions.every((cond) => cond(hex, allObjectsOnBoard(state)[hex]))
     );
-    return {type: 'hexes', entries: hexes};
+    return { type: 'hexes', entries: hexes };
   };
 }

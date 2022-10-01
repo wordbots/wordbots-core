@@ -5,7 +5,7 @@ import Select from '@material-ui/core/Select';
 import * as React from 'react';
 
 import * as w from '../../types';
-import { cardsInDeck } from '../../util/cards';
+import { cardsInDeck } from '../../util/decks';
 import EnergyCurve from '../cards/EnergyCurve';
 
 interface DeckPickerProps {

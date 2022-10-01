@@ -16,6 +16,7 @@ if (inBrowser()) {
   ReactGA.initialize('UA-345959-18');
 }
 
+/** Return whether currently in-browser (versus in a test, etc). */
 export function inBrowser(): boolean {
   return !(typeof document === 'undefined' ||
     (window.process?.title.includes('node')) ||
@@ -23,15 +24,18 @@ export function inBrowser(): boolean {
     (window.process?.env.JEST_WORKER_ID !== undefined));
 }
 
+/** Return whether currently in-browser and hosted at localhost. */
 export function onLocalhost(): boolean {
   // eslint-disable-next-line compat/compat
   return inBrowser() && window.location.hostname === 'localhost';
 }
 
+/** Returns whether currently in a running test. */
 export function inTest(): boolean {
   return typeof window !== 'undefined' && window.process?.env?.NODE_ENV === 'test' || false;
 }
 
+/** Log a page view of the current page in Google Analytics. */
 export function logAnalytics(): void {
   if (inBrowser() && window.location.pathname !== currentLocation) {
     currentLocation = window.location.pathname;
@@ -40,6 +44,7 @@ export function logAnalytics(): void {
   }
 }
 
+/** Navigate (via History) to func(path), where path is the current path. */
 export function transformHistory(history: History, func: (path: string) => string): void {
   if (history?.location) {
     const currentPath = history.location.pathname;
@@ -48,18 +53,22 @@ export function transformHistory(history: History, func: (path: string) => strin
   }
 }
 
+/** Return the hash part of the current location. */
 export function getHash(history: History): string {
   return history?.location.hash.split('#')[1];
 }
 
+/** Navigate to #{hash}. */
 export function setHash(history: History, hash: string): void {
   transformHistory(history, (path) => `${path}#${hash}`);
 }
 
+/** Return the search value corresponding to the given key (or undefined). */
 export function getQueryString(history: History, key: string): string | undefined {
   return qs.parse(history.location.search.replace('?', ''))[key];
 }
 
+/** Return a value previously saved by `saveToLocalStorage`, or undefined. */
 export function loadFromLocalStorage(key: string): string | undefined {
   if (typeof localStorage !== 'undefined') {
     return localStorage[`wb$${key}`];
@@ -68,12 +77,14 @@ export function loadFromLocalStorage(key: string): string | undefined {
   }
 }
 
+/** Save a value for later retrieval by `loadFromLocalStorage`. */
 export function saveToLocalStorage(key: string, value: string): void {
   if (typeof localStorage !== 'undefined') {
     localStorage[`wb$${key}`] = value;
   }
 }
 
+/** Return whether a given boolean localStorage flag is truthy. */
 export function isFlagSet(flag: string, fallbackIfUndefined = false): boolean {
   const flagValue: string | undefined = loadFromLocalStorage(flag);
   if (flagValue === undefined) {
@@ -83,11 +94,12 @@ export function isFlagSet(flag: string, fallbackIfUndefined = false): boolean {
   }
 }
 
+/** Toggle a boolean flag in localStorage. */
 export function toggleFlag(flag: string, value?: boolean): void {
   saveToLocalStorage(flag, value !== undefined ? value.toString() : isFlagSet(flag) ? 'false' : 'true');
 }
 
-
+/** Return the #gameArea element, falling back to the body element if it can't be found. */
 export function getGameAreaNode(): HTMLElement {
   return document.querySelector('#gameArea') || document.body;
 }
@@ -106,6 +118,7 @@ const SUPPORTED_BROWSER_VERSIONS: Partial<Record<Browser, number>> = {
   samsung: 13,
 };
 
+/** Return whether the detected (browser, version) pair is on the supported browser versions list. */
 export function isSupportedBrowser(): boolean {
   if (isFlagSet('hideUnsupportedBrowserMessage')) {
     return true;
@@ -127,6 +140,7 @@ export function isSupportedBrowser(): boolean {
   return false;
 }
 
+/** Like ReactDOM.createPortal, but no-op if not in browser. */
 export function createSafePortal(children: ReactNode, container: Element): ReactPortal | null {
   if (inBrowser()) {
     return ReactDOM.createPortal(children, container);

@@ -51,19 +51,19 @@ export function triggers(_state: w.GameState): Record<string, w.Returns<w.Trigge
       targetFunc: `(${targetFunc.toString()})`
     }),
 
-    afterCardEntersDiscardPile: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => ({
+    afterCardEntersDiscardPile: (targetFunc: (state: w.GameState) => w.Target[], cardType: w.CardTypeQuery | w.CardTypeQuery[]): w.Trigger => ({
       type: 'afterCardEntersDiscardPile',
       cardType,
       targetFunc: `(${targetFunc.toString()})`
     }),
 
-    afterCardDraw: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => ({
+    afterCardDraw: (targetFunc: (state: w.GameState) => w.Target[], cardType: w.CardTypeQuery | w.CardTypeQuery[]): w.Trigger => ({
       type: 'afterCardDraw',
       cardType,
       targetFunc: `(${targetFunc.toString()})`
     }),
 
-    afterCardPlay: (targetFunc: (state: w.GameState) => w.Target[], cardType: string): w.Trigger => ({
+    afterCardPlay: (targetFunc: (state: w.GameState) => w.Target[], cardType: w.CardTypeQuery | w.CardTypeQuery[]): w.Trigger => ({
       type: 'afterCardPlay',
       cardType,
       targetFunc: `(${targetFunc.toString()})`
@@ -81,7 +81,7 @@ export function triggers(_state: w.GameState): Record<string, w.Returns<w.Trigge
       targetFunc: `(${targetFunc.toString()})`
     }),
 
-    afterDestroysOtherObject: (targetFunc: (state: w.GameState) => w.Target[], objectType: string): w.Trigger => ({
+    afterDestroysOtherObject: (targetFunc: (state: w.GameState) => w.Target[], objectType: w.CardTypeQuery | w.CardTypeQuery[]): w.Trigger => ({
       type: 'afterDestroysOtherObject',
       cardType: objectType,
       targetFunc: `(${targetFunc.toString()})`

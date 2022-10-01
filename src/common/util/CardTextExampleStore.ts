@@ -4,6 +4,8 @@ import * as w from '../types';
 
 import { expandKeywords, parseBatch } from './cards';
 
+/** Loads example sentences (i.e. obtained from firebase using `getCardTextCorpus`)
+  * and runs them through the parser - used to populate valid sentences for the "Generate Card" feature. */
 export default class CardTextExampleStore {
   private examples: { [mode: string]: string[] } = {
     event: [],

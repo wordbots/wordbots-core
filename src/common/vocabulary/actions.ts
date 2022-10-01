@@ -51,7 +51,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       // Permanent attribute adjustment.
       iterateOver<w.Object | w.CardInGame>(objects)((object: w.Object | w.CardInGame) => {
         if (attr === 'allattributes') {
-          Object.assign(object.stats, mapValues(object.stats, clamp(func)) as {attack?: number, health: number, speed?: number});
+          Object.assign(object.stats, mapValues(object.stats, clamp(func)) as { attack?: number, health: number, speed?: number });
         } else if (attr === 'cost' && !g.isObject(object)) {
           object.cost = clamp(func)((object).cost);
         } else {
@@ -92,19 +92,19 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
 
     canAttackAgain: (objects: w.ObjectOrPlayerCollection): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
-        Object.assign(object, {cantAttack: false});
+        Object.assign(object, { cantAttack: false });
       });
     },
 
     canMoveAgain: (objects: w.ObjectOrPlayerCollection): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
-        Object.assign(object, {movesMade: 0, cantMove: false});
+        Object.assign(object, { movesMade: 0, cantMove: false });
       });
     },
 
     canMoveAndAttackAgain: (objects: w.ObjectOrPlayerCollection): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
-        Object.assign(object, {movesMade: 0, cantMove: false, cantAttack: false});
+        Object.assign(object, { movesMade: 0, cantMove: false, cantAttack: false });
       });
     },
 
@@ -203,7 +203,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     removeAllAbilities: (objects: w.ObjectOrPlayerCollection): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         Object.assign(object, {
-          card: {...object.card, text: ''},
+          card: { ...object.card, text: '' },
 
           triggers: [],
           abilities: object.abilities.map((ability: w.PassiveAbility) => ({ ...ability, disabled: true })),
@@ -260,7 +260,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         // Permanent attribute adjustment.
         iterateOver<w.Object>(objects)((object: w.Object) => {
           const value = executeCmd(state, numCmd) as number;
-          const target: w.ObjectCollection = {type: 'objects', entries: [object]};
+          const target: w.ObjectCollection = { type: 'objects', entries: [object] };
           modifyAttribute(target, attr, () => value);
         });
       }

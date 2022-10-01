@@ -1,9 +1,10 @@
-import { forOwn, isString, mapValues } from 'lodash';
+import { compact, forOwn, isString, mapValues } from 'lodash';
 import * as React from 'react';
 
-import { BLUE_PLACEMENT_HEXES, GRID_CONFIG, ORANGE_PLACEMENT_HEXES, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
+import { BLUE_PLACEMENT_HEXES, GRID_CONFIG, KEYWORDS, ORANGE_PLACEMENT_HEXES, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import defaultGameState, { bluePlayerState, orangePlayerState } from '../../store/defaultGameState';
 import * as w from '../../types';
+import { withTrailingPeriod } from '../../util/common';
 import {
   canActivate, getAttribute, intermediateMoveHexId, movesLeft, ownerOf,
   validActionHexes, validAttackHexes, validMovementHexes, validPlacementHexes
@@ -52,8 +53,8 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     return {
       ...defaultGameState,
       players: {
-        blue: {...bluePlayerState([]), objectsOnBoard: this.props.bluePieces},
-        orange: {...orangePlayerState([]), objectsOnBoard: this.props.orangePieces}
+        blue: { ...bluePlayerState([]), objectsOnBoard: this.props.bluePieces },
+        orange: { ...orangePlayerState([]), objectsOnBoard: this.props.orangePieces }
       }
     };
   }
@@ -70,8 +71,8 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     return (this.props.currentTurn === 'blue' ? this.props.bluePieces : this.props.orangePieces);
   }
 
-  get allPieces(): Record<string, w.Object>  {
-    return {...this.props.bluePieces, ...this.props.orangePieces};
+  get allPieces(): Record<string, w.Object> {
+    return { ...this.props.bluePieces, ...this.props.orangePieces };
   }
 
   get piecesOnGrid(): Record<w.HexId, PieceOnBoard> {
@@ -80,7 +81,7 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     return mapValues(this.allPieces, (piece, hex) => ({
       id: piece.id,
       type: piece.card.type,
-      image: piece.card.img ? {img: piece.card.img} : {sprite: piece.card.spriteID || piece.card.name},
+      image: piece.card.img ? { img: piece.card.img } : { sprite: piece.card.spriteID || piece.card.name },
       card: piece.card,
       stats: {
         health: getAttribute(piece, 'health')!,
@@ -92,7 +93,12 @@ export default class Board extends React.Component<BoardProps, BoardState> {
       abilities: piece.abilities,
       triggers: piece.triggers,
       attacking: (attack && attack.from === hex && !attack.retract) ? attack.to : null,
-      isDamaged: !!piece.tookDamageThisTurn
+      isDamaged: !!piece.tookDamageThisTurn,
+      effects: compact([
+        ...(piece.effects || []).map((e) => e.effect),
+        // Note that this still won't work for objects that were given Taunt by another ability or action – alas!
+        piece.abilities.some((a) => withTrailingPeriod(a.text) === 'Taunt.') && 'taunt'
+      ])
     }));
   }
 
@@ -108,9 +114,9 @@ export default class Board extends React.Component<BoardProps, BoardState> {
 
   get selectedActivatedAbilities(): w.ActivatedAbility[] {
     if (this.isMyTurn
-          && this.selectedPiece
-          && canActivate(this.selectedPiece)
-          && !this.props.target.choosing) {  // Don't display activated abilities popup while choosing a target.
+      && this.selectedPiece
+      && canActivate(this.selectedPiece)
+      && !this.props.target.choosing) {  // Don't display activated abilities popup while choosing a target.
       return this.selectedPiece.activatedAbilities!;
     } else {
       return [];

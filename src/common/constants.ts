@@ -103,7 +103,7 @@ export const GRID_CONFIG: GridConfig = {
   layout: { width: 6, height: 6, flat: false, spacing: 0 },
   origin: { x: 0, y: 0 },
   map: 'hexagon',
-  mapProps: [ 3 ]
+  mapProps: [3]
 };
 
 export const BOARD_SIZE_MULTIPLIER = 1.35;

@@ -22,6 +22,10 @@ export function isObjectCollection(collection: w.Collection): collection is w.Ob
   return entries.every(isObject);
 }
 
+export function isCardInHandCollection(collection: w.Collection): collection is w.CardInHandCollection {
+  return collection.type === 'cards';
+}
+
 export function isCardObfuscated(target: w.PossiblyObfuscatedCard): target is w.ObfuscatedCard {
   return (target as w.CardInGame).name === undefined;
 }

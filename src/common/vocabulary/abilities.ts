@@ -123,6 +123,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         targets: `(${targetFunc.toString()})`,
         apply: (target: w.Targetable) => {
           if (isObject(target)) {
+            //console.log(`${aid}: apply ${effect} to '${target.card.name}'`);
             if (!(target.effects || []).find((eff) => eff.aid === aid)) {
               target.effects = (target.effects || []).concat({
                 aid,
@@ -134,6 +135,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         },
         unapply: (target: w.Targetable) => {
           if (isObject(target)) {
+            //console.log(`${aid}: unapply ${effect} to '${target.card.name}'`);
             target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
           }
         }

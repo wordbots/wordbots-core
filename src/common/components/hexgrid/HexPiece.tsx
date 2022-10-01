@@ -1,4 +1,4 @@
-import { isUndefined, times } from 'lodash';
+import { compact, isUndefined, times } from 'lodash';
 import * as React from 'react';
 
 import { ANIMATION_TIME_MS, TYPE_CORE } from '../../constants';
@@ -70,6 +70,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
           className={`hex-piece ${piece.type === TYPE_CORE && 'kernel'} ${piece.isDamaged && 'piece-damage'}`}
         />
         {this.renderPieceStats()}
+        {this.renderPieceEffects()}
       </g>
     );
   }
@@ -93,7 +94,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
     const value = this.props.piece.stats[stat];
     const isLargeNumber = value && value >= 20;
 
-    const xPos = {attack: -3, health: 3}[stat];
+    const xPos = { attack: -3, health: 3 }[stat];
     const textStyle = {
       fontFamily: '"Carter One", "Carter One-fallback"',
       fontSize: isLargeNumber ? '0.14em' : '0.18em',
@@ -101,7 +102,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
       fillOpacity: 1
     };
     const circleStyle = {
-      fill: {attack: '#E57373', health: '#81C784'}[stat],
+      fill: { attack: '#E57373', health: '#81C784' }[stat],
       strokeWidth: 0.2,
       stroke: '#777'
     };
@@ -117,7 +118,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
   }
 
   private renderSpeedStat(): JSX.Element | null {
-    const { movesUsed, movesAvailable }  = this.props.piece.stats;
+    const { movesUsed, movesAvailable } = this.props.piece.stats;
 
     if (movesUsed === undefined || movesAvailable === undefined) {
       return null;
@@ -137,6 +138,66 @@ export default class HexPiece extends React.Component<HexPieceProps> {
     return (
       <g key="speed">
         <text x="0" y="6" textAnchor="middle" style={wrapperStyle}>{movesAvailableDots}{movesUsedDots}</text>
+      </g>
+    );
+  }
+
+
+  private renderPieceEffects(): JSX.Element {
+    const icons = {
+      'canmoveoverobjects': '', // ra-feather-wing
+      'cannotactivate': '', // ra-hand-emblem
+      'cannotattack': '', // ra-shield
+      'cannotfightback': '', // ra-broken-shield
+      'cannotmove': '', // ra-falling
+      'cannotmoveto': '', // ra-player-teleport
+      'canonlyattack': '', // ra-aware
+      'taunt': '', // ra-muscle-fat
+    };
+
+    const tooltips = {
+      'canmoveoverobjects': 'Jump (This robot can move over other objects.)', // ra-feather-wing
+      'cannotactivate': 'This robot can\t activate abilities.', // ra-hand-emblem
+      'cannotattack': 'Defender (This robot can\'t attack.)', // ra-shield
+      'cannotfightback': 'This robot can\'t fight back when attacked.', // ra-broken-shield
+      'cannotmove': 'This robot can\'t move.', // ra-falling
+      'cannotmoveto': 'This robot cannot move to certain hexes.', // ra-player-teleport
+      'canonlyattack': 'This robot can only attack certain objects.', // ra-aware
+      'taunt': 'Taunt (Your opponent\'s adjacent robots can only attack this object.)', // ra-muscle-fat
+    };
+
+    const coords = [
+      [0, -5.5],
+      [2, -4.5],
+      [-2, -4.5],
+      [4, -3.5],
+      [-4, -3.5],
+      [6, -2.5],
+      [-6, -2.5],
+      [8, -1.5],
+      [-8, -1.5],
+    ];
+
+    const { effects } = this.props.piece;
+
+    // Note that we reverse-sort the effects, just so Taunt is always at the top of the hierarchy (if present).
+    return (
+      <g>
+        {
+          compact(effects.sort().reverse().map((effectName, idx) => {
+            const icon = icons[effectName];
+            if (icon) {
+              return (
+                <text key={effectName} x={coords[idx][0]} y={coords[idx][1]} textAnchor="middle" style={{ fontSize: '0.12em' }} className="ra">
+                  {icon}
+                  <title>{tooltips[effectName]}</title>
+                </text>
+              );
+            } else {
+              return null;
+            }
+          }))
+        }
       </g>
     );
   }

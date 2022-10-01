@@ -67,6 +67,11 @@ export function allObjectsOnBoard(state: w.GameState): { [hexId: string]: w.Obje
   return { ...state.players.blue.objectsOnBoard, ...state.players.orange.objectsOnBoard };
 }
 
+/** Return an array of all cards in each player's hand. */
+function allCardsInHands(state: w.GameState): w.PossiblyObfuscatedCard[] {
+  return [...state.players.blue.hand, ...state.players.orange.hand];
+}
+
 /** Return the `PlayerInGameState` of the owner of the given object. */
 export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameState | undefined {
   if (some(state.players.blue.objectsOnBoard, ['id', object.id])) {
@@ -839,6 +844,23 @@ export function triggerEvent(
   return { ...state, it: undefined, itP: undefined, that: undefined };
 }
 
+/** Given a Target, "refresh" its entries so that they point to "current" objects/cards if possible. */
+function retarget(state: w.GameState, target: w.Target): w.Target {
+  if (g.isObjectCollection(target)) {
+    return {
+      ...target,
+      entries: compact(target.entries.map(t => Object.values(allObjectsOnBoard(state)).find((o) => o.id === t.id)))
+    };
+  } else if (g.isCardInHandCollection(target)) {
+    return {
+      ...target,
+      entries: compact(target.entries.map(t => allCardsInHands(state).map(assertCardVisible).find(c => c.id === t.id)))
+    };
+  } else {
+    return target;
+  }
+}
+
 /** Refresh all passive abilities on the game board, by first unapplying and then applying each of them. */
 export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
@@ -847,7 +869,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
     abilities.forEach((ability) => {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {
-        const targets: w.Targetable[] = ability.currentTargets.entries;
+        const targets: w.Targetable[] = retarget(state, ability.currentTargets).entries;
         targets.forEach(ability.unapply);
       }
 

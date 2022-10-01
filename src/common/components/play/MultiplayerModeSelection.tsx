@@ -38,6 +38,7 @@ export default class MultiplayerModeSelection extends React.Component<Multiplaye
         <GameMode
           compact
           name="Matchmaking"
+          tooltipText="<div style='text-align: center'>Note: Matchmaking mode is not fully-fleshed out yet.<br>Joining a matchmaking queue will simply match you<br>with the next player to join the queue.</div>"
           disabled={disabled || isGuest}
           onSelect={this.handleClickMatchmaking}
           modesPerRow={3}

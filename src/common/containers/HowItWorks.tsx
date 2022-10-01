@@ -156,7 +156,7 @@ When this object is played, Give all your robots "This robot can move over other
 
 (_Note that the keyword substitution system is smart enough to know that quotes are needed when a keyword is being used to refer to an ability – as **\`Jump\`** is, in this case._)
 
-We don't need to split sentences, replace any synonyms, or encode literal strings in our example, so we can produce directly to tokenization, which produces this list of tokens:
+We don't need to split sentences, replace any synonyms, or encode literal strings in our example, so we can proceed directly to tokenization, which produces this list of tokens:
 \`\`\`
 when this object is played give all your robots " this robot can move over other objects "
 \`\`\`
@@ -170,8 +170,12 @@ Each sentence gets plugged into the [Wordbots semantic parser](https://github.co
 At the heart of the parser lies the [Lexicon](https://github.com/wordbots/wordbots-parser/blob/main/src/main/scala/wordbots/Lexicon.scala#L45), an enormous collection of terms (words and phrases) that the parser understands, each with a corresponding _syntactic_ category (representing where the term can fit in a sentence) and _semantic_ definition (representing what the term actually _means_).
 
 Some example definitions that are relevant to our Party Dude:
-* \`"this object"\` has syntax \`NP\` (that is, Noun Phrase) and semantics \`ThisObject\` (representing a pointer to whatever the salient object is)
-* \`"give"\` has several different definitions, but the one that is relevant here is syntax \`(S/S)/NP\` (this is CCG shorthand for _"something that, given a Noun Phrase to the right and then another Sentence to the right of that, produces a Sentence"_) and semantics \`λ {t: TargetObject => λ {a: Ability => GiveAbility(t, a)}}\` (this is a [lambda-calculus](https://en.wikipedia.org/wiki/Lambda_calculus) expression meaning _"a function that takes a \`TargetObject\` \`t\` and then an \`Ability\` \`a\` and produces the semantic expression \`GiveAbility(t, a)\`"_\`)
+* \`"this object"\` has:
+  * _**syntax:**_&nbsp;&nbsp;\`NP\` (that is, Noun Phrase)
+  * _**semantics:**_&nbsp;&nbsp;\`ThisObject\` (representing a pointer to whatever the salient object is)
+* \`"give"\` has several different definitions, but the one that is relevant here is:
+  * _**syntax:**_&nbsp;&nbsp;\`(S/S)/NP\` (this is CCG shorthand for _"something that, given a Noun Phrase to the right and then another Sentence to the right of that, produces a Sentence"_)
+  * _**semantics:**_&nbsp;&nbsp;\`λ {t: TargetObject => λ {a: Ability => GiveAbility(t, a)}}\` (this is a [lambda-calculus](https://en.wikipedia.org/wiki/Lambda_calculus) expression meaning _"a function that takes a \`TargetObject\` \`t\` and then an \`Ability\` \`a\` and produces the semantic expression \`GiveAbility(t, a)\`"_\`)
 
 Don't worry too much about the funky CCG and lambda-calculus notation – the core idea is that terms have corresponding definitions that define both how they connect together and what they "mean".
 

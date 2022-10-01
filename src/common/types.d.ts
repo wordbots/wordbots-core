@@ -434,7 +434,7 @@ export interface Trigger {
   targetFunc: ((state: GameState) => Target[]) | StringRepresentationOf<(state: GameState) => Target[]>
   targets?: Targetable[]
 
-  cardType?: CardTypeQuery
+  cardType?: CardTypeQuery | CardTypeQuery[]
   cause?: Cause
   attackerType?: string
   defenderType?: string

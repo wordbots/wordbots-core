@@ -2,14 +2,16 @@ import { noop } from 'lodash';
 import * as React from 'react';
 
 import PaperButton from '../PaperButton';
+import Tooltip from '../Tooltip';
 
 interface GameModeProps {
-  name: string
+  name: string | JSX.Element
   imagePath?: string
   explanation?: string
   modesPerRow?: number
   compact?: boolean
   disabled?: boolean
+  tooltipText?: string
   wrapper?: (inner: JSX.Element) => JSX.Element
   onSelect?: () => void
 }
@@ -36,7 +38,7 @@ export default class GameMode extends React.Component<GameModeProps> {
   }
 
   private renderInner(): JSX.Element {
-    const { name, imagePath, explanation, compact, disabled } = this.props;
+    const { name, imagePath, explanation, compact, disabled, tooltipText } = this.props;
     return (
       <div
         style={{
@@ -77,17 +79,19 @@ export default class GameMode extends React.Component<GameModeProps> {
             padding: compact ? 0 : '20px 0'
           }}
         >
-          <div
-            style={{
-              textAlign: 'center',
-              fontSize: 24,
-              fontFamily: '"Carter One", "Carter One-fallback"',
-              color: disabled ? '#ccc' : '#f44336',
-              WebkitTextStroke: disabled ? '1px #999' : '1px black'
-            }}
-          >
-            {name}
-          </div>
+          <Tooltip html text={tooltipText || ''} disable={!tooltipText}>
+            <div
+              style={{
+                textAlign: 'center',
+                fontSize: 24,
+                fontFamily: '"Carter One", "Carter One-fallback"',
+                color: disabled ? '#ccc' : '#f44336',
+                WebkitTextStroke: disabled ? '1px #999' : '1px black'
+              }}
+            >
+              {name}
+            </div>
+          </Tooltip>
           {explanation &&
             <div
               style={{

@@ -53,6 +53,19 @@ class About extends React.PureComponent<AboutProps> {
             </Paper>
           </div>
         </div>
+
+        <div
+          style={{ margin: '20px auto', width: '84%', textAlign: 'center' }}
+        >
+          <img
+            src="/static/artAssets/dome2.png"
+            style={{
+              width: 800, height: 600,
+              objectFit: 'cover', objectPosition: '0 85%',
+              borderRadius: 10, boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)'
+            }}
+          />
+        </div>
       </div>
     );
   }

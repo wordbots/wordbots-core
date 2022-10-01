@@ -100,6 +100,7 @@ const SUPPORTED_BROWSER_VERSIONS: Partial<Record<Browser, number>> = {
   firefox: 49,
   safari: 10,
   edge: 79, // (only Chromium-based Edge supported)
+  "edge-chromium": 79,
   opera: 40,
   // Other browsers
   samsung: 13,

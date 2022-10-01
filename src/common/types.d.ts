@@ -14,6 +14,7 @@ export type Attribute = 'attack' | 'health' | 'speed';
 export type BuiltInFormat = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type CardId = string;
 export type CardType = 0 | 1 | 2 | 3;
+export type CardTypeQuery = 'robot' | 'action' | 'kernel' | 'structure' | 'allobjects' | 'anycard';
 export type Cause = 'combat' | 'anyevent';
 export type EffectType = 'canmoveoverobjects' | 'cannotactivate' | 'cannotattack' | 'cannotfightback' | 'cannotmove' | 'cannotmoveto' | 'canonlyattack';
 export type DeckId = string;
@@ -171,7 +172,7 @@ export interface TutorialStepInScript {
 
 export interface SavedGame { // Interface for games stored in Firebase.
   id: string
-  players: { [ color: string ]: m.ClientID | null }
+  players: { [color: string]: m.ClientID | null }
   format: Format
   type: string // TODO more precise
   winner: GameWinner
@@ -433,7 +434,7 @@ export interface Trigger {
   targetFunc: ((state: GameState) => Target[]) | StringRepresentationOf<(state: GameState) => Target[]>
   targets?: Targetable[]
 
-  cardType?: string
+  cardType?: CardTypeQuery
   cause?: Cause
   attackerType?: string
   defenderType?: string

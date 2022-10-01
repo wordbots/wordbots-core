@@ -3,6 +3,9 @@ import { clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndef
 import * as w from '../types';
 
 type Range = [number, number];
+interface ErrorWithMessage {
+  message: string
+}
 
 // Utility functions used everywhere.
 
@@ -105,4 +108,14 @@ export function withTrailingPeriod(sentence: string | null): string {
   } else {
     return sentence || '';
   }
+}
+
+/** Given an error of unknown type, check if it is of type { message: string }. */
+export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
+  return (
+    isObject(error) &&
+    error !== null &&
+    'message' in error &&
+    isString((error as Record<string, unknown>).message)
+  );
 }

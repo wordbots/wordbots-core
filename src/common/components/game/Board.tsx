@@ -1,7 +1,7 @@
 import { compact, forOwn, isString, mapValues } from 'lodash';
 import * as React from 'react';
 
-import { BLUE_PLACEMENT_HEXES, GRID_CONFIG, KEYWORDS, ORANGE_PLACEMENT_HEXES, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
+import { BLUE_PLACEMENT_HEXES, GRID_CONFIG, ORANGE_PLACEMENT_HEXES, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import defaultGameState, { bluePlayerState, orangePlayerState } from '../../store/defaultGameState';
 import * as w from '../../types';
 import { withTrailingPeriod } from '../../util/common';

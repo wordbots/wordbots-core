@@ -38,6 +38,7 @@ describe('Board component', () => {
         'type': TYPE_CORE,
         'abilities': [],
         'triggers': [],
+        'effects': [],
         'attacking': null,
         'isDamaged': false
       },
@@ -53,6 +54,7 @@ describe('Board component', () => {
         'type': TYPE_CORE,
         'abilities': [],
         'triggers': [],
+        'effects': [],
         'attacking': null,
         'isDamaged': false
       }

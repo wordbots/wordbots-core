@@ -28,6 +28,7 @@ describe('Built-in cards', () => {
       stats: { attack: 1, health: 1, speed: 1 },
       abilities: new Array<w.PassiveAbility>(),
       triggers: new Array<w.TriggeredAbility>(),
+      effects: [],
       movesMade: 0
     };
 
@@ -39,7 +40,7 @@ describe('Built-in cards', () => {
 
           // Try executing all triggers.
           dummyCurrentObj.triggers.forEach((trigger) => {
-            executeCmd({...state, that: dummyCurrentObj}, trigger.action, dummyCurrentObj);
+            executeCmd({ ...state, that: dummyCurrentObj }, trigger.action, dummyCurrentObj);
           });
 
           // And reset the dummy object.

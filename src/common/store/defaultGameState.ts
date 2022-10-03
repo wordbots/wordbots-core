@@ -42,10 +42,11 @@ function playerState(
         id: `${color}Core`,
         type: TYPE_CORE,
         card: coreCard,
-        stats: {...coreCard.stats} as { health: number },
+        stats: { ...coreCard.stats } as { health: number },
         movesMade: 0,
         triggers: [],
         abilities: [],
+        effects: [],
         tookDamageThisTurn: false
       }
     },

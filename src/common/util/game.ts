@@ -1,6 +1,6 @@
 import {
   compact, filter, findKey, flatMap,
-  intersection, isArray, isString, isUndefined, mapValues, noop, remove, some, times, uniqBy
+  intersection, isArray, isEqual, isString, isUndefined, mapValues, noop, remove, some, times, uniqBy
 } from 'lodash';
 
 import GridGenerator from '../components/hexgrid/GridGenerator';
@@ -65,11 +65,6 @@ export function currentTutorialStep(state: w.GameState): w.TutorialStep | undefi
 /** Return a (hexId -> Object) record of all objects on the board. */
 export function allObjectsOnBoard(state: w.GameState): { [hexId: string]: w.Object } {
   return { ...state.players.blue.objectsOnBoard, ...state.players.orange.objectsOnBoard };
-}
-
-/** Return an array of all cards in each player's hand. */
-function allCardsInHands(state: w.GameState): w.PossiblyObfuscatedCard[] {
-  return [...state.players.blue.hand, ...state.players.orange.hand];
 }
 
 /** Return the `PlayerInGameState` of the owner of the given object. */
@@ -442,8 +437,7 @@ function endTurn(state: w.GameState): w.GameState {
       if (duration === 1) {
         // Time's up: Unapply the ability and remove it.
         if (g.isPassiveAbility(ability)) {
-          const targets: w.Targetable[] = ability.currentTargets!.entries;
-          targets.forEach(ability.unapply);
+          unapplyAbility(state, ability);
         }
         return null;
       } else {
@@ -663,12 +657,7 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
   delete state.players[ownerName].objectsOnBoard[hex];
 
   // Unapply any abilities that this object had.
-  (object.abilities || new Array<w.PassiveAbility>())
-    .filter((ability) => ability.currentTargets)
-    .forEach((ability) => {
-      const targets: w.Targetable[] = ability.currentTargets!.entries;
-      targets.forEach(ability.unapply);
-    });
+  object.abilities.forEach((ability) => unapplyAbility(state, ability));
 
   state.objectsDestroyedThisTurn[object.id] = hex;
 
@@ -844,56 +833,106 @@ export function triggerEvent(
   return { ...state, it: undefined, itP: undefined, that: undefined };
 }
 
-/** Given a Target, "refresh" its entries so that they point to "current" objects/cards if possible. */
-// TODO instead of this, we should actually track target IDs, not targets themselves, in ability.currentTargets
-function retarget(state: w.GameState, target: w.Target): w.Target {
-  if (g.isObjectCollection(target)) {
-    return {
-      ...target,
-      entries: compact(target.entries.map(t => Object.values(allObjectsOnBoard(state)).find((o) => o.id === t.id)))
-    };
-  } else if (g.isCardInHandCollection(target)) {
-    return {
-      ...target,
-      entries: compact(target.entries.map(t => allCardsInHands(state).map(assertCardVisible).find(c => c.id === t.id)))
-    };
+/** Return the Object on the board with the given id, or undefined if said object isn't on the board. */
+function getObjectById(state: w.GameState, objectId: w.ObjectId): w.Object | undefined {
+  return Object.values(allObjectsOnBoard(state)).find((o) => o.id === objectId);
+}
+
+/** Return the card in any player's hand with the given id, or undefined if said card isn't present. */
+function getCardInHandById(state: w.GameState, cardId: w.CardId): w.CardInGame | undefined {
+  return [...state.players.blue.hand, ...state.players.orange.hand,].map(assertCardVisible).find(c => c.id === cardId);
+}
+
+/** Return the card in any player's discard pile with the given id, or undefined if said card isn't present. */
+function getCardInDiscardPileById(state: w.GameState, cardId: w.CardId): w.CardInGame | undefined {
+  return [...state.players.blue.discardPile, ...state.players.orange.discardPile].map(assertCardVisible).find(c => c.id === cardId);
+}
+
+/** TODO docstring, move all of these! */
+function getRefToTarget(target: w.Target): w.TargetReference {
+  //console.log(target);
+  if (g.isCardCollection(target)) {
+    return { type: 'cardIds', entries: target.entries.map(c => c.id) };
+  } else if (g.isObjectCollection(target)) {
+    return { type: 'objectIds', entries: target.entries.map(o => o.id) };
+  } else if (g.isPlayerCollection(target)) {
+    return { type: 'playerIds', entries: target.entries.map(p => p.color) };
   } else {
     return target;
+  }
+}
+
+/** TODO docstring */
+function getTargetFromRef(state: w.GameState, target: w.TargetReference): w.Target {
+  //console.log(target);
+  const { type, entries } = target;
+  if (type === 'cardIds') {
+    const cardsInHand = compact((entries as w.CardId[]).map((id) => getCardInHandById(state, id)));
+    const cardsInDiscardPile = compact((entries as w.CardId[]).map((id) => getCardInDiscardPileById(state, id)));
+    if (cardsInDiscardPile.length > 0) {
+      return { type: 'cardsInDiscardPile', entries: cardsInDiscardPile };
+    } else {
+      return { type: 'cards', entries: cardsInHand };
+    }
+  } else if (type === 'objectIds') {
+    return { type: 'objects', entries: compact((entries as w.ObjectId[]).map((id) => getObjectById(state, id))) };
+  } else if (type === 'playerIds') {
+    return { type: 'players', entries: [] };
+  } else if (type === 'hexes') {
+    return target as w.HexCollection;
+  } else {
+    const exhaustiveMatch: never = type;
+    throw new Error(`Unexpected TargetReference type: ${exhaustiveMatch}`);
   }
 }
 
 /** Refresh all passive abilities on the game board, by first unapplying and then applying each of them. */
 export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
-    const abilities: w.PassiveAbility[] = obj.abilities || new Array<w.PassiveAbility>();
+    obj.abilities.forEach((ability) => {
+      // Determine what entities match this ability's targeting criteria, if any.
+      const newTarget: w.TargetReference | null = ability.disabled ? null : getRefToTarget(executeCmd(state, ability.targets, obj) as w.Target);
 
-    abilities.forEach((ability) => {
-      // Unapply this ability for all previously targeted objects.
-      if (ability.currentTargets) {
-        const targets: w.Targetable[] = retarget(state, ability.currentTargets).entries;
-        retarget(state, ability.currentTargets).entries;
-        targets.forEach(ability.unapply);
-      }
+      // If the ability's targets have changed since last time it applied (or it's disabled, etc):
+      if (!isEqual(newTarget, ability.currentTargets)) {
+        // console.log(`Reapplying abilities of ${obj.id} ${obj.card.name} - new target =`, newTarget);
 
-      if (!ability.disabled) {
-        // Apply this ability to all targeted objects.
-        // console.log(`Applying ability of ${obj.card.name} to ${ability.targets}`);
-        ability.currentTargets = executeCmd(state, ability.targets, obj) as w.Target;
-        const targets: w.Targetable[] = ability.currentTargets.entries;
-        if (targets.length > 0) {
-          targets.forEach(ability.apply);
-          if (ability.onlyExecuteOnce) {
-            ability.disabled = true;
-          }
-        }
+        // Unapply this ability for all previously targeted objects (if any).
+        unapplyAbility(state, ability);
+        // And apply this ability to its new set of targets (if any).
+        applyAbility(state, ability, newTarget);
       }
     });
 
-    obj.abilities = abilities.filter((ability) => !ability.disabled);
+    obj.abilities = obj.abilities.filter((ability) => !ability.disabled);
   });
 
   state = checkVictoryConditions(state);
   return state;
+}
+
+/** Apply an ability to a set of targets. */
+function applyAbility(state: w.GameState, ability: w.PassiveAbility, target: w.TargetReference | null) {
+  if (target) {
+    // console.log(`Applying ability ${ability.aid} "${ability.text}" to`, target);
+    ability.currentTargets = target;
+    const targetedEntries: w.Targetable[] = getTargetFromRef(state, target).entries;
+    if (targetedEntries.length > 0) {
+      targetedEntries.forEach(ability.apply);
+      if (ability.onlyExecuteOnce) {
+        ability.disabled = true;
+      }
+    }
+  }
+}
+
+/** Unapply an ability from its current set of targets. */
+function unapplyAbility(state: w.GameState, ability: w.PassiveAbility): void {
+  if (ability.currentTargets) {
+    // console.log(`Unapplying ability ${ability.aid} "${ability.text}" from`, ability.currentTargets);
+    const targetedEntries: w.Targetable[] = getTargetFromRef(state, ability.currentTargets).entries;
+    targetedEntries.forEach(ability.unapply);
+  }
 }
 
 /** Reverse all `setAbility` or `setTrigger` clauses in given command tetx (used for unapplying abilities). */

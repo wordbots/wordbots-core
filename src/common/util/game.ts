@@ -845,6 +845,7 @@ export function triggerEvent(
 }
 
 /** Given a Target, "refresh" its entries so that they point to "current" objects/cards if possible. */
+// TODO instead of this, we should actually track target IDs, not targets themselves, in ability.currentTargets
 function retarget(state: w.GameState, target: w.Target): w.Target {
   if (g.isObjectCollection(target)) {
     return {
@@ -870,6 +871,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
       // Unapply this ability for all previously targeted objects.
       if (ability.currentTargets) {
         const targets: w.Targetable[] = retarget(state, ability.currentTargets).entries;
+        retarget(state, ability.currentTargets).entries;
         targets.forEach(ability.unapply);
       }
 

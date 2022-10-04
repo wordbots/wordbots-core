@@ -38,13 +38,14 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
     player.status.message = '';
     player.target.choosing = false;
   } else if (isCurrentPlayer) {
+    player.target.choosing = false; // Reset targeting state.
+
     // Try to play the chosen card.
     if (g.isCardVisible(selectedCard) && (getCost(selectedCard) <= energy.available || state.sandbox)) {
       if (selectedCard.type === TYPE_EVENT) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = cardIdx;
-        player.target.choosing = false; // Reset targeting state.
         player.status = { type: 'text', message: 'Select an available tile to play this card.' };
       }
     } else {

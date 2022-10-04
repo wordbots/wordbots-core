@@ -161,7 +161,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
                   width: '100%'
                 }}
               >
-                {this.renderButton('Draft!', this.handleDraftFromSet, undefined, { style: { fontWeight: 'bold' } })}
+                {this.renderButton('Draft!', this.handleDraftFromSet, { disabled: cards.length < 15, reason: "You can't draft this set because it has less than 15 cards." }, { style: { fontWeight: 'bold' } })}
                 {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
                 {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}
                 {canEditSet ? this.renderButton('Edit', onEditSet) : null}

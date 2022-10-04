@@ -7,15 +7,24 @@ import { executeCmd, reversedCmd } from '../util/game';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability: Omit<w.PassiveAbility, 'text'>) => {
-    if (currentObject && (!source || !currentObject.abilities.find((a) => a.source === source))) {
-      const finalizedAbility: w.PassiveAbility = {
-        ...ability,
-        source: source || undefined,
-        duration: (state.memory.duration as number | undefined) || undefined,
-        text: state.currentCmdText || null
-      };
+    if (currentObject) {
+      if (!source || !currentObject.abilities.find((a) => a.source === source)) {
+        // If the object doesn't currently have this ability, grant it the ability.
+        const finalizedAbility: w.PassiveAbility = {
+          ...ability,
+          source: source || undefined,
+          duration: (state.memory.duration as number | undefined) || undefined,
+          text: state.currentCmdText || null
+        };
 
-      currentObject.abilities = currentObject.abilities.concat([finalizedAbility]);
+        currentObject.abilities = currentObject.abilities.concat([finalizedAbility]);
+      } else if (source && currentObject.abilities.find((a) => a.source === source)?.disabled) {
+        // If the object currently has the ability but it is disabled, enable it.
+        currentObject.abilities = currentObject.abilities.map((existingAbility) => ({
+          ...existingAbility,
+          disabled: (existingAbility.source === source) ? false : existingAbility.disabled
+        }));
+      }
     }
   };
 }
@@ -23,9 +32,10 @@ export function setAbility(state: w.GameState, currentObject: w.Object | null, s
 export function unsetAbility(_state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return () => {
     if (currentObject) {
+      // Disable this ability on the currentObject, if present.
       currentObject.abilities = currentObject.abilities.map((ability) => ({
         ...ability,
-        disabled: ability.source === source
+        disabled: (ability.source === source) ? true : ability.disabled
       }));
     }
   };
@@ -123,6 +133,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         targets: `(${targetFunc.toString()})`,
         apply: (target: w.Targetable) => {
           if (isObject(target)) {
+            //console.log(`${aid}: apply ${effect} to '${target.card.name}'`);
             if (!(target.effects || []).find((eff) => eff.aid === aid)) {
               target.effects = (target.effects || []).concat({
                 aid,
@@ -134,6 +145,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         },
         unapply: (target: w.Targetable) => {
           if (isObject(target)) {
+            //console.log(`${aid}: unapply ${effect} to '${target.card.name}'`);
             target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
           }
         }
@@ -157,6 +169,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
       };
     },
 
+    // TODO do we need to rerun applyAbilities() after applying or unapplying giveAbility()? And how do we avoid infinite loop in that case? -AN
     giveAbility: (targetFunc: (s: w.GameState) => w.Target[], cmd) => {
       const aid: w.AbilityId = id();
       return {

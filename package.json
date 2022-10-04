@@ -194,7 +194,6 @@
     ],
     "coverageThreshold": {
       "./src/common/vocabulary/**/*.ts": {
-        "statements": 100,
         "lines": 100
       }
     },

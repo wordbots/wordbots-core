@@ -13,7 +13,8 @@ interface HandProps {
   selectedCard: number
   targetableCards: w.CardId[]
   status: w.PlayerStatus
-  isActivePlayer?: boolean
+  isCurrentPlayer: boolean
+  isActivePlayer: boolean
   curved?: boolean
   opponent?: boolean
   sandbox?: boolean
@@ -67,7 +68,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
     // eslint-disable-next-line react/no-find-dom-node
     const node: HTMLElement | null = ReactDOM.findDOMNode(this) as HTMLElement | null;
     if (node) {
-      this.setState({availableWidth: node.offsetWidth});
+      this.setState({ availableWidth: node.offsetWidth });
     }
   }
 
@@ -75,7 +76,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
 
   private renderCards(): JSX.Element[] {
     const {
-      cards, isActivePlayer, targetableCards, status, curved, opponent, sandbox, selectedCard, tutorialStep,
+      cards, isActivePlayer, isCurrentPlayer, targetableCards, status, curved, opponent, sandbox, selectedCard, tutorialStep,
       onSelectCard, onTutorialStep
     } = this.props;
     const { availableWidth, hoveredCardIdx } = this.state;
@@ -107,7 +108,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
             idx={idx}
             margin={idx < numCards - 1 ? cardMargin : 0}
             rotation={isUpsideDown ? 180 : (curved ? rotationDegs : 0)}
-            selected={selectedCard === idx && (isEmpty(targetableCards) || !isActivePlayer)}
+            selected={selectedCard === idx && (!sandbox || isCurrentPlayer) && (isEmpty(targetableCards) || !isActivePlayer)}
             status={status}
             targetable={isActivePlayer && targetableCards.includes(card.id)}
             tutorialStep={tutorialStep}

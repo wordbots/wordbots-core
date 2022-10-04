@@ -232,7 +232,6 @@ export const infiniteLoopBotCard: w.CardInStore = {
     speed: 1
   }
 };
-
 export const armorerCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Armorer',
@@ -249,6 +248,7 @@ export const armorerCard: w.CardInStore = {
     speed: 1
   }
 };
+
 
 export const countdownClockCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
@@ -294,4 +294,19 @@ export const rageCard: w.CardInStore = {
   stats: {
     health: 3,
   },
+};
+
+export const librarySchoolCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Library School',
+  name: 'Library School',
+  text: 'All robots have "Activate: Draw a card, then discard a random card"',
+  abilities: [
+    "(function () { setAbility(abilities['giveAbility'](function () { return objectsMatchingConditions('robot', []); }, \"(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \\\"(function () { (function () { actions['draw'](targets['self'](), 1); })(); (function () { actions['discard'](targets['random'](1, cardsInHand(targets['self'](), 'anycard', []))); })(); })\\\")); })\")); })"
+  ],
+  cost: 5,
+  type: TYPE_STRUCTURE,
+  stats: {
+    health: 3
+  }
 };

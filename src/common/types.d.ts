@@ -364,7 +364,7 @@ interface _Object { // eslint-disable-line @typescript-eslint/naming-convention
   triggers: TriggeredAbility[]
   abilities: PassiveAbility[]
   activatedAbilities?: ActivatedAbility[]
-  effects?: Effect[]
+  effects: Effect[]
 
   cantActivate?: boolean
   cantAttack?: boolean
@@ -409,7 +409,7 @@ export interface ActivatedAbility {
 export interface PassiveAbility {
   aid: AbilityId
   apply: (target: Targetable) => void
-  currentTargets?: Target
+  currentTargets?: TargetReference
   disabled?: boolean
   duration?: number
   onlyExecuteOnce?: boolean
@@ -487,8 +487,9 @@ export interface ChatMessage {
 
 // Vocabulary types
 
-export type Collection = CardInHandCollection | CardInDiscardPileCollection | ObjectOrPlayerCollection | HexCollection;
+export type Collection = CardCollection | ObjectOrPlayerCollection | HexCollection;
 export type Target = Collection;  // Easier to not have to maintain separate types for Target vs Collection since they're conceptually interchangeable.
+export type CardCollection = CardInHandCollection | CardInDiscardPileCollection
 export type ObjectOrPlayerCollection = ObjectCollection | PlayerCollection;
 export interface CardInHandCollection {
   type: 'cards'
@@ -510,3 +511,19 @@ export interface HexCollection {
   type: 'hexes'
   entries: HexId[]
 }
+
+/** Internal types used to represent a reference that resolves to a `Target`. */
+export type TargetReference = CardsTargetRef | ObjectsTargetRef | PlayersTargetRef | HexesTargetRef;
+interface CardsTargetRef {
+  type: 'cardIds'
+  entries: CardId[]
+}
+interface ObjectsTargetRef {
+  type: 'objectIds'
+  entries: ObjectId[]
+}
+interface PlayersTargetRef {
+  type: 'playerIds'
+  entries: PlayerColor[]
+}
+type HexesTargetRef = HexCollection; // HexIds are just strings, so a HexCollection is its own reference.

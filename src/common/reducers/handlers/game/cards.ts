@@ -27,9 +27,9 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
   player.selectedTile = null;
 
   if (isCurrentPlayer &&
-      player.target.choosing &&
-      player.target.possibleCardsInHand.includes(selectedCard.id) &&
-      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
+    player.target.choosing &&
+    player.target.possibleCardsInHand.includes(selectedCard.id) &&
+    (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, assertCardVisible(selectedCard));
   } else if (player.selectedCard === cardIdx) {
@@ -38,13 +38,14 @@ export function setSelectedCard(state: State, playerName: w.PlayerColor, cardIdx
     player.status.message = '';
     player.target.choosing = false;
   } else if (isCurrentPlayer) {
+    player.target.choosing = false; // Reset targeting state.
+
     // Try to play the chosen card.
     if (g.isCardVisible(selectedCard) && (getCost(selectedCard) <= energy.available || state.sandbox)) {
       if (selectedCard.type === TYPE_EVENT) {
         return playEvent(state, cardIdx);
       } else {
         player.selectedCard = cardIdx;
-        player.target.choosing = false; // Reset targeting state.
         player.status = { type: 'text', message: 'Select an available tile to play this card.' };
       }
     } else {
@@ -64,10 +65,10 @@ export function setSelectedCardInDiscardPile(state: State, playerName: w.PlayerC
   player.selectedTile = null;
 
   if (isCurrentPlayer &&
-      player.target.choosing &&
-      selectedCard &&
-      player.target.possibleCardsInDiscardPile.includes(selectedCard.id) &&
-      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
+    player.target.choosing &&
+    selectedCard &&
+    player.target.possibleCardsInDiscardPile.includes(selectedCard.id) &&
+    (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, selectedCard);
   }
@@ -82,15 +83,16 @@ export function instantiateObject(card: w.CardInGame): w.Object {
     card,
     type: card.type,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    stats: {...card.stats!},
+    stats: { ...card.stats! },
     triggers: [],
     abilities: [],
+    effects: [],
     movesMade: 0,
     cantMove: true,
     cantAttack: true,
     cantActivate: true,
     justPlayed: true  // This flag is needed to, e.g. prevent objects from being able to
-                      // target themselves for afterPlayed triggers.
+    // target themselves for afterPlayed triggers.
   };
 }
 
@@ -113,7 +115,7 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
   const timestamp = Date.now();
 
   state = triggerSound(state, 'spawn.wav');
-  state = logAction(state, player, `played |${card.id}|`, {[card.id]: card}, timestamp, target);
+  state = logAction(state, player, `played |${card.id}|`, { [card.id]: card }, timestamp, target);
   state.memory = {};  // Clear any previously set memory in the state.
 
   if (card.abilities && card.abilities.length > 0) {
@@ -124,7 +126,7 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
     });
   }
 
-  state = triggerEvent(state, 'afterPlayed', {object: playedObject});
+  state = triggerEvent(state, 'afterPlayed', { object: playedObject });
 
   playedObject.justPlayed = false;
 
@@ -140,7 +142,7 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
   const card: w.CardInGame = assertCardVisible(player.hand[cardIdx]);
 
   if ((player.energy.available >= getCost(card) || state.sandbox) &&
-      validPlacementHexes(state, player.color, card.type).map(HexUtils.getID).includes(tile)) {
+    validPlacementHexes(state, player.color, card.type).map(HexUtils.getID).includes(tile)) {
     const playedObject: w.Object = instantiateObject(card);
 
     player.objectsOnBoard[tile] = playedObject;
@@ -197,7 +199,7 @@ function playEvent(state: State, cardIdx: number): State {
     const target = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
-    tempState = logAction(tempState, player, `played |${card.id}|`, {[card.id]: card}, timestamp, player.target.choosing && target || null);
+    tempState = logAction(tempState, player, `played |${card.id}|`, { [card.id]: card }, timestamp, player.target.choosing && target || null);
     tempState.eventExecuting = true;
     tempState.memory = {};  // Clear any previously set memory in the state.
 
@@ -217,21 +219,21 @@ function playEvent(state: State, cardIdx: number): State {
       state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = player.target;
-      currentPlayer(state).status = {message: `Choose a target for ${card.name}.`, type: 'text'};
+      currentPlayer(state).status = { message: `Choose a target for ${card.name}.`, type: 'text' };
     } else if (tempState.invalid) {
       // Temp state is invalid (e.g. no valid target available or player unable to pay an energy cost).
       // So return the old state.
       // This must come after the `choosing` case to allow multiple target selection,
       // but *before* the `!chosen` case to correctly handle the case where no target is available.
       currentPlayer(state).selectedCard = cardIdx;
-      currentPlayer(state).status = {message: `Unable to play ${card.name}!`, type: 'error'};
+      currentPlayer(state).status = { message: `Unable to play ${card.name}!`, type: 'error' };
     } else if (!player.target.chosen) {
       // If there is no target selection, that means that this card is a global effect.
       // In that case, the player needs to "target" the board to confirm that they want to play the event.
       state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = { choosing: true, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: allHexIds() };
-      currentPlayer(state).status = {message: `Click anywhere on the board to play ${card.name}.`, type: 'text'};
+      currentPlayer(state).status = { message: `Click anywhere on the board to play ${card.name}.`, type: 'text' };
     } else {
       // Everything is good (valid state + no more targets to select), so we can return the new state!
       card.justPlayed = false;

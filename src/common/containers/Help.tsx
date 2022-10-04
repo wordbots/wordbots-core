@@ -3,8 +3,9 @@ import Paper from '@material-ui/core/Paper';
 import { Location } from 'history';
 import * as React from 'react';
 import Helmet from 'react-helmet';
+import { sortBy } from 'lodash';
 
-import { HEADER_HEIGHT } from '../constants';
+import { EFFECT_ICONS, HEADER_HEIGHT } from '../constants';
 import AnchorLink, { helpPageScrollerId } from '../components/help/AnchorLink';
 import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
@@ -37,6 +38,8 @@ const Help = (): JSX.Element => (
         <AnchorLink id="formats">Formats</AnchorLink>
         &nbsp;&bull;&nbsp;
         <AnchorLink id="modes">Modes</AnchorLink>
+        &nbsp;&bull;&nbsp;
+        <AnchorLink id="effects">Effect Icons</AnchorLink>
         &nbsp;&bull;&nbsp;
         <AnchorLink id="parser-help">Parser Help</AnchorLink>
       </Paper>
@@ -91,6 +94,17 @@ const Help = (): JSX.Element => (
                 Control both players and play any Wordbots card you&rsquo;d like.
                 Sandbox mode is especially useful for testing out cards you&rsquo;re building in the Workshop.
               </li>
+            </ul>
+          </HelpSection>
+          <HelpSection id="effects" title="Effect Icons">
+            <p><i>Effect icons</i> are little in-game indicators of certain statuses pertaining to objects on the board:</p>
+            <ul>
+              {sortBy(Object.values(EFFECT_ICONS), 'description').map(({ icon, description }) => (
+                <li key={description}>
+                  <span className="ra" style={{ position: 'relative', top: 2, fontSize: 16, lineHeight: 1.2 }}>{icon}</span>:{' '}
+                  {description}
+                </li>
+              ))}
             </ul>
           </HelpSection>
         </div>

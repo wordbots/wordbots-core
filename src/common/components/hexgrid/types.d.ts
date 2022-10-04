@@ -43,4 +43,5 @@ export interface PieceOnBoard {
   triggers: w.TriggeredAbility[]
   attacking: w.HexId | null
   isDamaged: boolean
+  effects: Array<w.EffectType | 'taunt'>
 }

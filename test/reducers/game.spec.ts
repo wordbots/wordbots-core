@@ -11,7 +11,7 @@ import * as cards from '../../src/common/store/cards';
 import defaultState from '../../src/common/store/defaultGameState';
 import * as w from '../../src/common/types';
 import { instantiateCard } from '../../src/common/util/cards';
-import { getCost } from '../../src/common/util/game';
+import { allObjectsOnBoard, getCost, hasEffect } from '../../src/common/util/game';
 import * as testCards from '../data/cards';
 import {
   activate, action, attack, drawCardToHand, getDefaultState, moveRobot,
@@ -22,7 +22,7 @@ import {
 describe('Game reducer', () => {
   it('should return the initial state', () => {
     const gameState = game();
-    const expectedGameState = {...cloneDeep(defaultState), actionId: gameState.actionId};
+    const expectedGameState = { ...cloneDeep(defaultState), actionId: gameState.actionId };
     expect(gameState).toEqual(expectedGameState);
   });
 
@@ -46,36 +46,36 @@ describe('Game reducer', () => {
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Attack Bot'});
+      ).toEqual({ '3,-1,-2': 'Attack Bot' });
 
       // Can't play a robot far from core.
       state = playObject(state, 'orange', testCards.attackBotCard, '1,0,-1');
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Attack Bot'});
+      ).toEqual({ '3,-1,-2': 'Attack Bot' });
 
       // Can't play a robot on an existing location.
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Attack Bot'});
+      ).toEqual({ '3,-1,-2': 'Attack Bot' });
 
       // Can play a structure adjacent to a robot ...
       state = playObject(state, 'orange', cards.fortificationCard, '2,0,-2');
       expect(
         objectsOnBoardOfType(state, TYPE_STRUCTURE)
-      ).toEqual({'2,0,-2': 'Fortification'});
+      ).toEqual({ '2,0,-2': 'Fortification' });
       // ... but not far away from a robot.
       state = playObject(state, 'orange', cards.fortificationCard, '0,0,0');
       expect(
         objectsOnBoardOfType(state, TYPE_STRUCTURE)
-      ).toEqual({'2,0,-2': 'Fortification'});
+      ).toEqual({ '2,0,-2': 'Fortification' });
 
       // Can't play a structure on an existing location.
       state = playObject(state, 'orange', cards.fortificationCard, '2,0,-2');
       expect(
         objectsOnBoardOfType(state, TYPE_STRUCTURE)
-      ).toEqual({'2,0,-2': 'Fortification'});
+      ).toEqual({ '2,0,-2': 'Fortification' });
     });
 
     it('should be able to move robots', () => {
@@ -86,7 +86,7 @@ describe('Game reducer', () => {
       state = moveRobot(state, '3,-1,-2', '1,0,-1');
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Attack Bot'});
+      ).toEqual({ '3,-1,-2': 'Attack Bot' });
 
       state = newTurn(state, 'orange');
 
@@ -94,23 +94,23 @@ describe('Game reducer', () => {
       state = moveRobot(state, '3,-1,-2', ORANGE_CORE_HEX); // There's a kernel there!
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Attack Bot'});
+      ).toEqual({ '3,-1,-2': 'Attack Bot' });
 
       // Robots can move up to their movement range (Attack Bot has range 2).
       state = moveRobot(state, '3,-1,-2', '0,-1,1'); // Try to move 3 spaces.
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Attack Bot'});
+      ).toEqual({ '3,-1,-2': 'Attack Bot' });
       state = moveRobot(state, '3,-1,-2', '1,-1,0'); // Move 2 spaces.
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'1,-1,0': 'Attack Bot'});
+      ).toEqual({ '1,-1,0': 'Attack Bot' });
 
       // Robots cannot move after they've their movesMade reaches their speed.
       state = moveRobot(state, '1,-1,0', '0,0,0'); // Try to move 1 space.
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'1,-1,0': 'Attack Bot'});
+      ).toEqual({ '1,-1,0': 'Attack Bot' });
 
       state = newTurn(state, 'orange');
 
@@ -122,7 +122,7 @@ describe('Game reducer', () => {
 
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'-2,-1,3': 'Attack Bot'});
+      ).toEqual({ '-2,-1,3': 'Attack Bot' });
     });
 
     it('should be able to handle combat between robots', () => {
@@ -274,14 +274,14 @@ describe('Game reducer', () => {
       // "Deal 3 damage to a robot."
       let state = getDefaultState();
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
-      state = playEvent(state, 'blue', cards.shockCard, {hex: '3,-1,-2'});
+      state = playEvent(state, 'blue', cards.shockCard, { hex: '3,-1,-2' });
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
 
       // Test ability to select an empty tile:
       // "Deal 1 damage to everything adjacent to a tile."
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
       state = playObject(state, 'orange', testCards.attackBotCard, '2,1,-3');
-      state = playEvent(state, 'blue', cards.firestormCard, {hex: '2,0,-2'});
+      state = playEvent(state, 'blue', cards.firestormCard, { hex: '2,0,-2' });
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
       expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 1);
 
@@ -289,7 +289,7 @@ describe('Game reducer', () => {
       // "Discard a robot card. Gain life equal to its health."
       // (This also tests the ability to store 'it' in game state for later retrieval.)
       state = drawCardToHand(state, 'blue', cards.twoBotCard);
-      state = playEvent(state, 'blue', cards.consumeCard, {card: cards.twoBotCard});
+      state = playEvent(state, 'blue', cards.consumeCard, { card: cards.twoBotCard });
       expect(
         state.players.blue.hand.length
       ).toEqual(startingHandSize);
@@ -300,10 +300,10 @@ describe('Game reducer', () => {
       let state = getDefaultState();
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
       // "Move a robot up to two spaces."
-      state = playEvent(state, 'orange', cards.gustOfWindCard, [{hex: '3,-1,-2'}, {hex: '1,-1,0'}]);
+      state = playEvent(state, 'orange', cards.gustOfWindCard, [{ hex: '3,-1,-2' }, { hex: '1,-1,0' }]);
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'1,-1,0': 'Attack Bot'});
+      ).toEqual({ '1,-1,0': 'Attack Bot' });
     });
 
     it('should not be able to play an event if there are no valid targets', () => {
@@ -374,6 +374,25 @@ describe('Game reducer', () => {
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('1,-1,0');
     });
 
+    it('should unapply effects when targets no longer meet conditions', () => {
+      let state = setUpBoardState({
+        'orange': { '3,-1,-2': cards.defenderBotCard }, // Defender Bot has Taunt
+        'blue': { '1,0,-1': cards.oneBotCard }
+      });
+      state = newTurn(state, 'blue');
+
+      // Taunt doesn't currently apply to One Bot because it's not adjacent to Defender Bot
+      expect(hasEffect(allObjectsOnBoard(state)['1,0,-1'], 'canonlyattack')).toBe(false);
+
+      // Move One Bot adjacent to Defender Bot – it should have the Taunt effect applied to it.
+      state = moveRobot(state, '1,0,-1', '2,0,-2');
+      expect(hasEffect(allObjectsOnBoard(state)['2,0,-2'], 'canonlyattack')).toBe(true);
+
+      // Move One Bot back away from Defender Bot – it should have the Taunt effect unapplied from it.
+      state = moveRobot(state, '2,0,-2', '1,0,-1');
+      expect(hasEffect(allObjectsOnBoard(state)['1,0,-1'], 'canonlyattack')).toBe(false);
+    });
+
     it('should let objects apply passive abilities to other objects', () => {
       // General Bot: "Your adjacent robots have +1 attack. When this robot is played, all of your robots can move again."
       // Fortification: "Your adjacent robots have +1 health."
@@ -396,8 +415,8 @@ describe('Game reducer', () => {
       expect(queryRobotAttributes(state, '2,-1,-1')).toEqual('2/1/2');
 
       // Destroy General Bot to remove its passive ability.
-      state = playEvent(state, 'orange', cards.shockCard, {hex: '1,-1,0'});
-      state = playEvent(state, 'orange', cards.shockCard, {hex: '1,-1,0'});
+      state = playEvent(state, 'orange', cards.shockCard, { hex: '1,-1,0' });
+      state = playEvent(state, 'orange', cards.shockCard, { hex: '1,-1,0' });
       expect(queryRobotAttributes(state, '2,-1,-1')).toEqual('1/1/2');
 
       // Place a new Attack Bot that is adjacent to Fortification.
@@ -448,14 +467,14 @@ describe('Game reducer', () => {
       expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
 
       // Test interaction with Investor Bot ("When this robot is played, reduce the cost of a card in your hand by 2").
-      state = playObject(state, 'orange', testCards.investorBotCard, '2,1,-3', {card: cards.generalBotCard});
+      state = playObject(state, 'orange', testCards.investorBotCard, '2,1,-3', { card: cards.generalBotCard });
       expect(costOf(state.players.orange, testCards.attackBotCard)).toEqual(0);
       expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1 - 1);
       expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1 - 1 - 2);
       expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
 
       // Now destroy Recruiter Bot.
-      state = playEvent(state, 'orange', cards.shockCard, {hex: '3,-1,-2'});
+      state = playEvent(state, 'orange', cards.shockCard, { hex: '3,-1,-2' });
       expect(costOf(state.players.orange, testCards.attackBotCard)).toEqual(0);
       expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1);
       expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1 - 2);
@@ -509,7 +528,7 @@ describe('Game reducer', () => {
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toHaveProperty('1,0,-1');
 
       // Now, destroy the Anti-Gravity Field.
-      state = playEvent(state, 'orange', cards.smashCard, {hex: '-2,-1,3'});
+      state = playEvent(state, 'orange', cards.smashCard, { hex: '-2,-1,3' });
       expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('-3,0,3');
 
       // Robots can no longer jump.
@@ -548,7 +567,7 @@ describe('Game reducer', () => {
       expect(handSize()).toEqual(currentHandSize + 1);
 
       // Now, destroy the Magpie Machine.
-      state = playEvent(state, 'orange', cards.smashCard, {hex: '2,0,-2'});
+      state = playEvent(state, 'orange', cards.smashCard, { hex: '2,0,-2' });
       expect(objectsOnBoardOfType(state, TYPE_STRUCTURE)).not.toHaveProperty('2,0,-2');
 
       // No card draw.
@@ -576,18 +595,18 @@ describe('Game reducer', () => {
       state = playObject(state, 'orange', cards.recyclerCard, '2,1,-3');
 
       // Can't activate the turn it's played.
-      state = activate(state, '2,1,-3', 0, {card: 0});
+      state = activate(state, '2,1,-3', 0, { card: 0 });
       expect(hand()).toEqual(currentHand);
 
       // Can activate the next turn.
       state = newTurn(state, 'orange');
       currentHand = hand();
-      state = activate(state, '2,1,-3', 0, {card: 0});
+      state = activate(state, '2,1,-3', 0, { card: 0 });
       expect(hand()).not.toEqual(currentHand);
 
       // Can't activate twice in a turn.
       currentHand = hand();
-      state = activate(state, '2,1,-3', 0, {card: 0});
+      state = activate(state, '2,1,-3', 0, { card: 0 });
       expect(hand()).toEqual(currentHand);
 
       // Can't activate then attack on the same turn.
@@ -599,7 +618,7 @@ describe('Game reducer', () => {
       state = attack(state, '2,1,-3', '1,1,-2');
       expect(queryObjectAttribute(state, '1,1,-2', 'health')).toEqual(cards.fortificationCard.stats!.health - 1);
       currentHand = hand();
-      state = activate(state, '2,1,-3', 0, {card: 0});
+      state = activate(state, '2,1,-3', 0, { card: 0 });
       expect(hand()).toEqual(currentHand);
     });
 
@@ -636,6 +655,20 @@ describe('Game reducer', () => {
       state = playEvent(state, 'blue', cards.shockCard, { hex: '1,2,-3' });
       // Since Blue Bot has had Armorer's ability applied twice, it should restore 2 health, thus only losing 1 health.
       expect(queryObjectAttribute(state, '1,2,-3', 'health')).toBe(cards.blueBotCard.stats!.health - 1);
+    });
+
+    it('should allow activated abilities to be granted by passive abilities', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.oneBotCard, '1,2,-3');
+      expect(allObjectsOnBoard(state)['1,2,-3'].activatedAbilities || []).toHaveLength(0);
+
+      // Library School: "All robots have "Activate: Draw a card, then discard a random card" "
+      state = playObject(state, 'orange', testCards.librarySchoolCard, '3,-1,-2');
+      expect(allObjectsOnBoard(state)['1,2,-3'].activatedAbilities || []).toHaveLength(1);
+
+      // Now let's destroy Library School with Smash. One Bot's activated ability should go away.
+      state = playEvent(state, 'blue', cards.smashCard, { hex: '3,-1,-2' });
+      expect(allObjectsOnBoard(state)['1,2,-3'].activatedAbilities || []).toHaveLength(0);
     });
   });
 

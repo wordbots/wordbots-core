@@ -17,9 +17,16 @@ export function isPlayerState(target: w.Targetable): target is w.PlayerInGameSta
   return !isNil(target) && (target as w.PlayerInGameState).objectsOnBoard !== undefined;
 }
 
+export function isCardCollection(collection: w.Collection): collection is w.CardCollection {
+  return collection.type === 'cards' || collection.type === 'cardsInDiscardPile';
+}
+
 export function isObjectCollection(collection: w.Collection): collection is w.ObjectCollection {
-  const entries = collection.entries as w.Object[];
-  return entries.every(isObject);
+  return collection.type === 'objects';
+}
+
+export function isPlayerCollection(collection: w.Collection): collection is w.PlayerCollection {
+  return collection.type === 'players';
 }
 
 export function isCardObfuscated(target: w.PossiblyObfuscatedCard): target is w.ObfuscatedCard {

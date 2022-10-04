@@ -57,14 +57,14 @@ export default class HexGrid extends React.Component<HexShapeProps> {
         xmlns="http://www.w3.org/2000/svg"
       >
         {this.renderHexes()}
-        {this.renderPieces()}
         {this.renderSelectedHex()}
+        {this.renderPieces()}
         <defs>
           <filter id="dropShadow" width="5" x="-1" height="5" y="-1">
-            <feOffset in="SourceAlpha" dx="0.5" dy="0.5" result="offset"/>
-            <feGaussianBlur in="offset" stdDeviation="0.5" result="blur"/>
-            <feFlood floodColor="#3D4574" floodOpacity="0.5" result="offsetColor"/>
-            <feComposite in="offsetColor" in2="blur" operator="in" result="blended"/>
+            <feOffset in="SourceAlpha" dx="0.5" dy="0.5" result="offset" />
+            <feGaussianBlur in="offset" stdDeviation="0.5" result="blur" />
+            <feFlood floodColor="#3D4574" floodOpacity="0.5" result="offsetColor" />
+            <feComposite in="offsetColor" in2="blur" operator="in" result="blended" />
             <feBlend in="SourceGraphic" in2="blended" />
           </filter>
         </defs>

@@ -1,7 +1,7 @@
-import { isUndefined, times } from 'lodash';
+import { isUndefined, times, uniq } from 'lodash';
 import * as React from 'react';
 
-import { ANIMATION_TIME_MS, TYPE_CORE } from '../../constants';
+import { ANIMATION_TIME_MS, EFFECT_ICONS, TYPE_CORE } from '../../constants';
 
 import Hex from './Hex';
 import HexUtils from './HexUtils';
@@ -16,6 +16,19 @@ interface HexPieceProps {
   actions: Actions
   piece: PieceOnBoard
 }
+
+// Coordinates of effect icon "slots", starting from the first (alphabetically last) effect icon.
+const PIECE_EFFECT_SLOT_COORDS = [
+  [0, -5.5],
+  [2, -4.5],
+  [-2, -4.5],
+  [6, -2.5],
+  [4, -3.5],
+  [-4, -3.5],
+  [-6, -2.5],
+  [8, -1.5],
+  [-8, -1.5],
+];
 
 export default class HexPiece extends React.Component<HexPieceProps> {
   // actual hex coords of the piece
@@ -70,6 +83,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
           className={`hex-piece ${piece.type === TYPE_CORE && 'kernel'} ${piece.isDamaged && 'piece-damage'}`}
         />
         {this.renderPieceStats()}
+        {this.renderPieceEffects()}
       </g>
     );
   }
@@ -93,7 +107,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
     const value = this.props.piece.stats[stat];
     const isLargeNumber = value && value >= 20;
 
-    const xPos = {attack: -3, health: 3}[stat];
+    const xPos = { attack: -3, health: 3 }[stat];
     const textStyle = {
       fontFamily: '"Carter One", "Carter One-fallback"',
       fontSize: isLargeNumber ? '0.14em' : '0.18em',
@@ -101,7 +115,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
       fillOpacity: 1
     };
     const circleStyle = {
-      fill: {attack: '#E57373', health: '#81C784'}[stat],
+      fill: { attack: '#E57373', health: '#81C784' }[stat],
       strokeWidth: 0.2,
       stroke: '#777'
     };
@@ -117,7 +131,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
   }
 
   private renderSpeedStat(): JSX.Element | null {
-    const { movesUsed, movesAvailable }  = this.props.piece.stats;
+    const { movesUsed, movesAvailable } = this.props.piece.stats;
 
     if (movesUsed === undefined || movesAvailable === undefined) {
       return null;
@@ -140,4 +154,23 @@ export default class HexPiece extends React.Component<HexPieceProps> {
       </g>
     );
   }
+
+
+  private renderPieceEffects = (): JSX.Element => (
+    <g>
+      {
+        // Note that we reverse-sort the effects, just so Taunt is always at the top of the hierarchy (if present).
+        uniq(this.props.piece.effects).sort().reverse().map((effectName, idx) => {
+          const { icon, description } = EFFECT_ICONS[effectName];
+          const [x, y] = PIECE_EFFECT_SLOT_COORDS[idx];
+          return (
+            <text key={effectName} x={x} y={y} textAnchor="middle" style={{ fontSize: '0.12em' }} className="ra">
+              {icon}
+              <title>{description}</title>
+            </text>
+          );
+        })
+      }
+    </g>
+  );
 }

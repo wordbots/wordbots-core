@@ -8,6 +8,7 @@ import * as w from '../types';
 import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
+import { GameFormat } from '../util/formats';
 import { cleanUpAnimations, triggerSound } from '../util/game';
 import { handleRewriteParseCompleted } from '../util/rewrite';
 
@@ -38,24 +39,24 @@ export function handleAction(
   { type, payload }: w.Action = { type: '' }
 ): State {
   // First, clone state and clean up any currently running animation (e.g. objects turning red because they took damage).
-  let state: State = cleanUpAnimations({...oldState});
+  let state: State = cleanUpAnimations({ ...oldState });
 
   if (!PURELY_VISUAL_ACTIONS.includes(type)) {
-    state = {...state, actionId: id()};
+    state = { ...state, actionId: id() };
   }
 
   switch (type) {
     case socketActions.GAME_START: {
-      state = g.newGame(
-        state,
-        payload.player || 'orange',
-        payload.usernames || {},
-        payload.decks,
-        payload.seed,
-        payload.format || DEFAULT_GAME_FORMAT,
-        payload.options || {}
-      );
-      state = triggerSound(state, 'countdown.wav');
+      const { player, usernames, decks, seed, options } = payload;
+      const format: w.Format = payload.format || DEFAULT_GAME_FORMAT;
+
+      state = g.newGame(state, player || 'orange', usernames || {}, decks, seed, format, options || {});
+
+      // Play the countdown sound unless we still need to build the deck (i.e. draft mode)
+      if (GameFormat.decode(format).requiresDeck) {
+        state = triggerSound(state, 'countdown.wav');
+      }
+
       return state;
     }
 
@@ -72,7 +73,7 @@ export function handleAction(
       return g.aiResponse(state);
 
     case actions.END_GAME:
-      return {...state, started: false};
+      return { ...state, started: false };
 
     case actions.MOVE_ROBOT:
       return g.moveRobot(state, payload.from, payload.to);
@@ -81,7 +82,7 @@ export function handleAction(
       return g.attack(state, payload.source, payload.target);
 
     case actions.ATTACK_RETRACT:
-      return {...state, attack: state.attack ? {...state.attack, retract: true} : null };
+      return { ...state, attack: state.attack ? { ...state.attack, retract: true } : null };
 
     case actions.ATTACK_COMPLETE:
       return g.attackComplete(state);
@@ -116,6 +117,7 @@ export function handleAction(
     }
 
     case actions.DRAFT_CARDS: {
+
       return g.draftCards(state, payload.player, payload.cards);
     }
 
@@ -128,7 +130,7 @@ export function handleAction(
       return handleRewriteParseCompleted(state, payload);
 
     case socketActions.CONNECTING:
-      return {...state, started: state.practice ? state.started : false};
+      return { ...state, started: state.practice ? state.started : false };
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
@@ -153,7 +155,7 @@ export function handleAction(
         // If still drafting, there's no notion of 'forfeiting' - the game just gets aborted
         return { ...state, winner: 'aborted' };
       } else {
-        state = {...state, winner: payload.winner};
+        state = { ...state, winner: payload.winner };
         state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
         return state;
       }

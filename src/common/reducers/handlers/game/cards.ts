@@ -270,13 +270,18 @@ function playEvent(state: State, cardIdx: number): State {
 }
 
 export function draftCards(state: w.GameState, player: w.PlayerColor, cards: w.CardInGame[]): w.GameState {
+  // Play a sound when the active player selects cards to draft.
+  if (state.player === player) {
+    state = triggerSound(state, 'move.wav');
+  }
+
   if (state.draft) {
     state.draft[player] = {
       cardsDrafted: [...state.draft[player].cardsDrafted, ...cards],
       cardGroupsToShow: state.draft[player].cardGroupsToShow.slice(1)
     };
 
-    // Are both players done drafting?
+    // Are both players done drafting? If so, let's assemble the decks and start the game!
     if (state.draft.blue.cardGroupsToShow.length === 0 && state.draft.orange.cardGroupsToShow.length === 0) {
       const seed = state.rng();
       const blueDeck: w.CardInGame[] = shuffle(state.draft.blue.cardsDrafted, seed);
@@ -285,6 +290,10 @@ export function draftCards(state: w.GameState, player: w.PlayerColor, cards: w.C
       state.players.blue = bluePlayerState(blueDeck);
       state.players.orange = orangePlayerState(orangeDeck);
       state.draft = null;
+
+      // Play game countdown only after the draft phrase is over
+      // (note that it's not played on newGame in the SetDraft format)
+      state = triggerSound(state, 'countdown.wav');
     }
   }
 

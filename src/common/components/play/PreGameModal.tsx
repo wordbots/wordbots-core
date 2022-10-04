@@ -52,6 +52,14 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
     return format || formats.find((f) => f.name === selectedFormatName) || formats[0];
   }
 
+  // "Private" (unpublished) set draft format if passed in through URL, otherwise undefined
+  // Note that the only way that players can draft an unpublished set is through this "magic URL" method.
+  get privateSetDraftFormatFromUrl(): GameFormat | undefined {
+    const formatNameFromUrl = getQueryString(this.props.history, 'format');
+    const allPossibleSetDraftFormats = this.props.sets.map((set) => new SetDraftFormat(set));
+    return allPossibleSetDraftFormats.find((f) => f.name === formatNameFromUrl && !f.set.metadata.isPublished);
+  }
+
   // The full list of formats that are available to the player (given the game mode).
   get availableFormats(): GameFormat[] {
     const { mode, sets } = this.props;
@@ -76,7 +84,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
 
       const setDraftFormats = sets.filter((set) => set.metadata.isPublished).map((set) => new SetDraftFormat(set));
 
-      return [...BUILTIN_FORMATS, ...setFormats, ...setDraftFormats];
+      return compact([...BUILTIN_FORMATS, ...setFormats, ...setDraftFormats, this.privateSetDraftFormatFromUrl]);
     }
   }
 
@@ -149,11 +157,14 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       >
         <div>
           {children}
-          {format ? null : <FormatPicker
-            availableFormats={this.availableFormats}
-            selectedFormatName={selectedFormatName}
-            onChooseFormat={this.handleChooseFormat}
-          />}
+          {format
+            ? <div><b>Format:</b> {format.rendered()}</div>
+            : <FormatPicker
+              availableFormats={this.availableFormats}
+              selectedFormatName={selectedFormatName}
+              onChooseFormat={this.handleChooseFormat}
+            />
+          }
           {this.options.passwordToJoin && <TextField
             key="passwordToJoin"
             error={!enteredPassword || isPasswordInvalid}

@@ -4,6 +4,7 @@ import * as w from '../types';
 
 export function setTrigger(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   function areTriggersEqual(t1: w.TriggeredAbility, t2: w.TriggeredAbility): boolean {
+    /* istanbul ignore next: it's no longer clear to me when this check should actually be run or what its purpose is (see longer comment below) -AN */
     return isEqual(omit(t1, ['trigger']), omit(t2, ['trigger'])) &&
       isEqual(omit(t1.trigger, ['targets']), omit(t2.trigger, ['targets']));
   }

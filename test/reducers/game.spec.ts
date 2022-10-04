@@ -656,6 +656,20 @@ describe('Game reducer', () => {
       // Since Blue Bot has had Armorer's ability applied twice, it should restore 2 health, thus only losing 1 health.
       expect(queryObjectAttribute(state, '1,2,-3', 'health')).toBe(cards.blueBotCard.stats!.health - 1);
     });
+
+    it('should allow activated abilities to be granted by passive abilities', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.oneBotCard, '1,2,-3');
+      expect(allObjectsOnBoard(state)['1,2,-3'].activatedAbilities || []).toHaveLength(0);
+
+      // Library School: "All robots have "Activate: Draw a card, then discard a random card" "
+      state = playObject(state, 'orange', testCards.librarySchoolCard, '3,-1,-2');
+      expect(allObjectsOnBoard(state)['1,2,-3'].activatedAbilities || []).toHaveLength(1);
+
+      // Now let's destroy Library School with Smash. One Bot's activated ability should go away.
+      state = playEvent(state, 'blue', cards.smashCard, { hex: '3,-1,-2' });
+      expect(allObjectsOnBoard(state)['1,2,-3'].activatedAbilities || []).toHaveLength(0);
+    });
   });
 
   describe('[Shared deck mode]', () => {

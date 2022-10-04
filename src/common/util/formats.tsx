@@ -229,7 +229,7 @@ export class SetDraftFormat extends GameFormat {
     super();
     this.set = set;
     this.name = `setDraft(${set.id})`;
-    this.displayName = `Set Draft: ${set.name} (by ${set.metadata.authorName})`;
+    this.displayName = `Set Draft: ${set.name} (by ${set.metadata.authorName})${set.metadata.isPublished ? '' : ' (unpublished set)'}`;
   }
 
   public serialized = (): w.SetDraftFormat => ({ _type: 'setDraft', set: this.set });

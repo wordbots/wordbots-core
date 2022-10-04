@@ -77,7 +77,9 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
             onChange={this.handleSelectFormat}
           >
             {this.setDraftFormats.map((format, idx) =>
-              <MenuItem key={idx} value={format.name}>{format.set.name} (by {format.set.metadata.authorName})</MenuItem>
+              <MenuItem key={idx} value={format.name}>
+                {format.set.name} (by {format.set.metadata.authorName}){format.set.metadata.isPublished ? '' : <em>&nbsp;&nbsp;(unpublished set)</em>}
+              </MenuItem>
             )}
           </Select>
         </FormControl>}

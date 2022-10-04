@@ -199,9 +199,9 @@ export class SetFormat extends GameFormat {
   public serialized = (): w.SetFormat => ({ _type: 'set', set: this.set });
 
   public rendered = (): React.ReactNode => (
-    <div>
+    <span>
       {renderSetForFormatDescription(this.set)}
-    </div>
+    </span>
   )
 
   public isDeckValid = (deck: w.DeckInGame): boolean => (
@@ -235,10 +235,10 @@ export class SetDraftFormat extends GameFormat {
   public serialized = (): w.SetDraftFormat => ({ _type: 'setDraft', set: this.set });
 
   public rendered = (): React.ReactNode => (
-    <div>
+    <span>
       <span>draft: </span>
       {renderSetForFormatDescription(this.set)}
-    </div>
+    </span>
   )
 
   public requiresDeck = false;

@@ -102,7 +102,7 @@ export default class MultiplayerServerState {
 
   // Returns all cards currently visible to a given client in a game.
   // If pendingAction is passed in, reveal any cards about to be played with the given client action.
-  public getCardsToReveal = (clientID: m.ClientID, pendingAction?: [m.Action, m.ClientID]): {[playerColor: string]: { hand: m.Card[], discardPile: m.Card[] }}  => {
+  public getCardsToReveal = (clientID: m.ClientID, pendingAction?: [m.Action, m.ClientID]): { [playerColor: string]: { hand: m.Card[], discardPile: m.Card[] } } => {
     const game: m.Game = this.lookupGameByClient(clientID)!;
     const { players } = game.state;
     const playerColor: m.PlayerColor | null = game.playerColors[clientID] || null;
@@ -209,7 +209,7 @@ export default class MultiplayerServerState {
     if (waitingPlayer && (!formatObj!.requiresDeck || formatObj!.isDeckValid(deck))) {
       const { name, format, options } = waitingPlayer;
       const decks = { orange: waitingPlayer.deck.cards.map(instantiateCard), blue: deck.cards.map(instantiateCard) };
-      const usernames =  {orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID)};
+      const usernames = { orange: this.getClientUsername(opponentID), blue: this.getClientUsername(clientID) };
       const seed = Math.random();
 
       const initialGameState: m.GameState = formatObj!.startGame(defaultGameState, 'orange', usernames, decks, options, seed);
@@ -220,13 +220,13 @@ export default class MultiplayerServerState {
         format,
 
         players: [clientID, opponentID],
-        playerColors: {[clientID]: 'blue', [opponentID]: 'orange'},
+        playerColors: { [clientID]: 'blue', [opponentID]: 'orange' },
         spectators: [],
 
         type: 'CASUAL',
         decks: ENABLE_OBFUSCATION_ON_SERVER ? { orange: obfuscateCards(decks.orange), blue: obfuscateCards(decks.blue) } : decks,
         usernames,
-        ids : {
+        ids: {
           blue: clientID,
           orange: opponentID
         },
@@ -266,7 +266,7 @@ export default class MultiplayerServerState {
     // Check if the client is a player (*not a spectator*) in a game
     const game = this.lookupGameByClient(clientID);
     if (game?.players.includes(clientID)) {
-      const forfeitAction = {type: 'ws:FORFEIT', payload: {winner: opponentOf(game.playerColors[clientID])}};
+      const forfeitAction = { type: 'ws:FORFEIT', payload: { winner: opponentOf(game.playerColors[clientID]) } };
       this.appendGameAction(clientID, forfeitAction);  // this will call state.endGame().
     }
 
@@ -328,7 +328,7 @@ export default class MultiplayerServerState {
     const playerPairs = this.findAvailableMatches();
 
     return compact(playerPairs.map(([player1, player2]) => {
-      const [ playerId1, playerId2 ] = [ player1.clientID, player2.clientID ];
+      const [playerId1, playerId2] = [player1.clientID, player2.clientID];
       const gameName = `${this.getClientUsername(playerId1)} vs ${this.getClientUsername(playerId2)}`;
 
       this.hostGame(playerId1, gameName, player1.format, player1.deck);

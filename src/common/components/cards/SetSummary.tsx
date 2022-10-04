@@ -57,7 +57,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
     confirmDeleteControl: {
       fontSize: '13px',
       paddingLeft: 5,
-      paddingRight: 2
+      paddingRight: 2,
+      paddingTop: 8
     },
     confirmDeleteLabel: {
       color: 'red',
@@ -158,7 +159,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  width: '100%'
+                  width: '100%',
+                  gap: 5
                 }}
               >
                 {this.renderButton('Draft!', this.handleDraftFromSet, { disabled: cards.length < 15, reason: "You can't draft this set because it has less than 15 cards." }, { style: { fontWeight: 'bold' } })}
@@ -263,6 +265,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
         classes={{ outlined: this.props.classes.controlsButton }}
         onClick={action}
         disabled={disabled?.disabled}
+        style={{ marginLeft: 0 }}
         {...additionalProps}
       >
         {text}

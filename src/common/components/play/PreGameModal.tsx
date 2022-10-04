@@ -157,11 +157,14 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       >
         <div>
           {children}
-          {format ? null : <FormatPicker
-            availableFormats={this.availableFormats}
-            selectedFormatName={selectedFormatName}
-            onChooseFormat={this.handleChooseFormat}
-          />}
+          {format
+            ? <div><b>Format:</b> {format.rendered()}</div>
+            : <FormatPicker
+              availableFormats={this.availableFormats}
+              selectedFormatName={selectedFormatName}
+              onChooseFormat={this.handleChooseFormat}
+            />
+          }
           {this.options.passwordToJoin && <TextField
             key="passwordToJoin"
             error={!enteredPassword || isPasswordInvalid}

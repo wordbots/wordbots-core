@@ -85,6 +85,21 @@ export function ownerOfCard(state: w.GameState, card: w.CardInGame): w.PlayerInG
   }
 }
 
+/** Return the Object on the board with the given id, or undefined if said object isn't on the board. */
+function getObjectById(state: w.GameState, objectId: w.ObjectId): w.Object | undefined {
+  return Object.values(allObjectsOnBoard(state)).find((o) => o.id === objectId);
+}
+
+/** Return the card in any player's hand with the given id, or undefined if said card isn't present. */
+function getCardInHandById(state: w.GameState, cardId: w.CardId): w.CardInGame | undefined {
+  return [...state.players.blue.hand, ...state.players.orange.hand,].map(assertCardVisible).find(c => c.id === cardId);
+}
+
+/** Return the card in any player's discard pile with the given id, or undefined if said card isn't present. */
+function getCardInDiscardPileById(state: w.GameState, cardId: w.CardId): w.CardInGame | undefined {
+  return [...state.players.blue.discardPile, ...state.players.orange.discardPile].map(assertCardVisible).find(c => c.id === cardId);
+}
+
 /** Given an object or card and attribute name, return the value of that attribute for that object/card. */
 export function getAttribute(objectOrCard: w.Object | w.CardInGame, attr: w.Attribute | 'cost'): number | undefined {
   const { stats, temporaryStatAdjustments } = objectOrCard;
@@ -226,6 +241,42 @@ export function currentPlayerHasNoValidActions(state: w.GameState): boolean {
   }
 
   return true;
+}
+
+/** Produce a `TargetReference` pointing to a `Target`. */
+function getRefToTarget(target: w.Target): w.TargetReference {
+  if (g.isCardCollection(target)) {
+    return { type: 'cardIds', entries: target.entries.map(c => c.id) };
+  } else if (g.isObjectCollection(target)) {
+    return { type: 'objectIds', entries: target.entries.map(o => o.id) };
+  } else if (g.isPlayerCollection(target)) {
+    return { type: 'playerIds', entries: target.entries.map(p => p.color) };
+  } else {
+    return target;
+  }
+}
+
+/** Materialize a `Target` from a `TargetReference`. */
+function getTargetFromRef(state: w.GameState, target: w.TargetReference): w.Target {
+  const { type, entries } = target;
+  if (type === 'cardIds') {
+    const cardsInHand = compact((entries as w.CardId[]).map((id) => getCardInHandById(state, id)));
+    const cardsInDiscardPile = compact((entries as w.CardId[]).map((id) => getCardInDiscardPileById(state, id)));
+    if (cardsInDiscardPile.length > 0) {
+      return { type: 'cardsInDiscardPile', entries: cardsInDiscardPile };
+    } else {
+      return { type: 'cards', entries: cardsInHand };
+    }
+  } else if (type === 'objectIds') {
+    return { type: 'objects', entries: compact((entries as w.ObjectId[]).map((id) => getObjectById(state, id))) };
+  } else if (type === 'playerIds') {
+    return { type: 'players', entries: [] };
+  } else if (type === 'hexes') {
+    return target as w.HexCollection;
+  } else {
+    const exhaustiveMatch: never = type;
+    throw new Error(`Unexpected TargetReference type: ${exhaustiveMatch}`);
+  }
 }
 
 //
@@ -831,59 +882,6 @@ export function triggerEvent(
 
   state = applyAbilities(state);
   return { ...state, it: undefined, itP: undefined, that: undefined };
-}
-
-/** Return the Object on the board with the given id, or undefined if said object isn't on the board. */
-function getObjectById(state: w.GameState, objectId: w.ObjectId): w.Object | undefined {
-  return Object.values(allObjectsOnBoard(state)).find((o) => o.id === objectId);
-}
-
-/** Return the card in any player's hand with the given id, or undefined if said card isn't present. */
-function getCardInHandById(state: w.GameState, cardId: w.CardId): w.CardInGame | undefined {
-  return [...state.players.blue.hand, ...state.players.orange.hand,].map(assertCardVisible).find(c => c.id === cardId);
-}
-
-/** Return the card in any player's discard pile with the given id, or undefined if said card isn't present. */
-function getCardInDiscardPileById(state: w.GameState, cardId: w.CardId): w.CardInGame | undefined {
-  return [...state.players.blue.discardPile, ...state.players.orange.discardPile].map(assertCardVisible).find(c => c.id === cardId);
-}
-
-/** TODO docstring, move all of these! */
-function getRefToTarget(target: w.Target): w.TargetReference {
-  //console.log(target);
-  if (g.isCardCollection(target)) {
-    return { type: 'cardIds', entries: target.entries.map(c => c.id) };
-  } else if (g.isObjectCollection(target)) {
-    return { type: 'objectIds', entries: target.entries.map(o => o.id) };
-  } else if (g.isPlayerCollection(target)) {
-    return { type: 'playerIds', entries: target.entries.map(p => p.color) };
-  } else {
-    return target;
-  }
-}
-
-/** TODO docstring */
-function getTargetFromRef(state: w.GameState, target: w.TargetReference): w.Target {
-  //console.log(target);
-  const { type, entries } = target;
-  if (type === 'cardIds') {
-    const cardsInHand = compact((entries as w.CardId[]).map((id) => getCardInHandById(state, id)));
-    const cardsInDiscardPile = compact((entries as w.CardId[]).map((id) => getCardInDiscardPileById(state, id)));
-    if (cardsInDiscardPile.length > 0) {
-      return { type: 'cardsInDiscardPile', entries: cardsInDiscardPile };
-    } else {
-      return { type: 'cards', entries: cardsInHand };
-    }
-  } else if (type === 'objectIds') {
-    return { type: 'objects', entries: compact((entries as w.ObjectId[]).map((id) => getObjectById(state, id))) };
-  } else if (type === 'playerIds') {
-    return { type: 'players', entries: [] };
-  } else if (type === 'hexes') {
-    return target as w.HexCollection;
-  } else {
-    const exhaustiveMatch: never = type;
-    throw new Error(`Unexpected TargetReference type: ${exhaustiveMatch}`);
-  }
 }
 
 /** Refresh all passive abilities on the game board, by first unapplying and then applying each of them. */

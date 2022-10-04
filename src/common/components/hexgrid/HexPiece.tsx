@@ -1,4 +1,4 @@
-import { compact, isUndefined, times } from 'lodash';
+import { isUndefined, times, uniq } from 'lodash';
 import * as React from 'react';
 
 import { ANIMATION_TIME_MS, EFFECT_ICONS, TYPE_CORE } from '../../constants';
@@ -16,6 +16,19 @@ interface HexPieceProps {
   actions: Actions
   piece: PieceOnBoard
 }
+
+// Coordinates of effect icon "slots", starting from the first (alphabetically last) effect icon.
+const PIECE_EFFECT_SLOT_COORDS = [
+  [0, -5.5],
+  [2, -4.5],
+  [-2, -4.5],
+  [6, -2.5],
+  [4, -3.5],
+  [-4, -3.5],
+  [-6, -2.5],
+  [8, -1.5],
+  [-8, -1.5],
+];
 
 export default class HexPiece extends React.Component<HexPieceProps> {
   // actual hex coords of the piece
@@ -143,41 +156,21 @@ export default class HexPiece extends React.Component<HexPieceProps> {
   }
 
 
-  private renderPieceEffects(): JSX.Element {
-    // Coordinates of effect icon "slots", starting from the first (alphabetically last) effect icon.
-    const coords = [
-      [0, -5.5],
-      [2, -4.5],
-      [-2, -4.5],
-      [4, -3.5],
-      [-4, -3.5],
-      [6, -2.5],
-      [-6, -2.5],
-      [8, -1.5],
-      [-8, -1.5],
-    ];
-
-    const { effects } = this.props.piece;
-
-    // Note that we reverse-sort the effects, just so Taunt is always at the top of the hierarchy (if present).
-    return (
-      <g>
-        {
-          compact(effects.sort().reverse().map((effectName, idx) => {
-            const { icon, description } = EFFECT_ICONS[effectName];
-            if (icon) {
-              return (
-                <text key={effectName} x={coords[idx][0]} y={coords[idx][1]} textAnchor="middle" style={{ fontSize: '0.12em' }} className="ra">
-                  {icon}
-                  <title>{description}</title>
-                </text>
-              );
-            } else {
-              return null;
-            }
-          }))
-        }
-      </g>
-    );
-  }
+  private renderPieceEffects = (): JSX.Element => (
+    <g>
+      {
+        // Note that we reverse-sort the effects, just so Taunt is always at the top of the hierarchy (if present).
+        uniq(this.props.piece.effects).sort().reverse().map((effectName, idx) => {
+          const { icon, description } = EFFECT_ICONS[effectName];
+          const [x, y] = PIECE_EFFECT_SLOT_COORDS[idx];
+          return (
+            <text key={effectName} x={x} y={y} textAnchor="middle" style={{ fontSize: '0.12em' }} className="ra">
+              {icon}
+              <title>{description}</title>
+            </text>
+          );
+        })
+      }
+    </g>
+  );
 }

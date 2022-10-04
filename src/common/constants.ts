@@ -219,3 +219,40 @@ export const ORANGE_PLAYER_COLOR = '#ffb85d';
 export const ORANGE_PLAYER_COLOR_DARKENED = '#d99237';
 export const BLUE_PLAYER_COLOR = '#badbff';
 export const BLUE_PLAYER_COLOR_DARKENED = '#94b5d9';
+
+// Effect icons.
+
+export const EFFECT_ICONS: Record<string, { icon: string, description: string }> = {
+  'canmoveoverobjects': {
+    icon: '', // ra-feather-wing
+    description: 'Jump (This robot can move over other objects.)'
+  },
+  'cannotactivate': {
+    icon: '', // ra-hand-emblem
+    description: 'This object can\t activate abilities.'
+  },
+  'cannotattack': {
+    icon: '', // ra-shield
+    description: 'Defender (This robot can\'t attack.)'
+  },
+  'cannotfightback': {
+    icon: '', // ra-broken-shield
+    description: 'This object can\'t fight back when attacked.'
+  },
+  'cannotmove': {
+    icon: '', // ra-falling
+    description: 'This robot can\'t move.'
+  },
+  'cannotmoveto': {
+    icon: '', // ra-player-teleport
+    description: 'This robot cannot move to certain hexes.'
+  },
+  'canonlyattack': {
+    icon: '', // ra-aware
+    description: 'This robot can only attack certain objects.'
+  },
+  'taunt': {
+    icon: '', // ra-muscle-fat
+    description: 'Taunt (Your opponent\'s adjacent robots can only attack this object.)'
+  },
+};

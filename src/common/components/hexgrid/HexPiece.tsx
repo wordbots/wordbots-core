@@ -1,7 +1,7 @@
 import { compact, isUndefined, times } from 'lodash';
 import * as React from 'react';
 
-import { ANIMATION_TIME_MS, TYPE_CORE } from '../../constants';
+import { ANIMATION_TIME_MS, EFFECT_ICONS, TYPE_CORE } from '../../constants';
 
 import Hex from './Hex';
 import HexUtils from './HexUtils';
@@ -144,28 +144,7 @@ export default class HexPiece extends React.Component<HexPieceProps> {
 
 
   private renderPieceEffects(): JSX.Element {
-    const icons = {
-      'canmoveoverobjects': '', // ra-feather-wing
-      'cannotactivate': '', // ra-hand-emblem
-      'cannotattack': '', // ra-shield
-      'cannotfightback': '', // ra-broken-shield
-      'cannotmove': '', // ra-falling
-      'cannotmoveto': '', // ra-player-teleport
-      'canonlyattack': '', // ra-aware
-      'taunt': '', // ra-muscle-fat
-    };
-
-    const tooltips = {
-      'canmoveoverobjects': 'Jump (This robot can move over other objects.)', // ra-feather-wing
-      'cannotactivate': 'This robot can\t activate abilities.', // ra-hand-emblem
-      'cannotattack': 'Defender (This robot can\'t attack.)', // ra-shield
-      'cannotfightback': 'This robot can\'t fight back when attacked.', // ra-broken-shield
-      'cannotmove': 'This robot can\'t move.', // ra-falling
-      'cannotmoveto': 'This robot cannot move to certain hexes.', // ra-player-teleport
-      'canonlyattack': 'This robot can only attack certain objects.', // ra-aware
-      'taunt': 'Taunt (Your opponent\'s adjacent robots can only attack this object.)', // ra-muscle-fat
-    };
-
+    // Coordinates of effect icon "slots", starting from the first (alphabetically last) effect icon.
     const coords = [
       [0, -5.5],
       [2, -4.5],
@@ -185,12 +164,12 @@ export default class HexPiece extends React.Component<HexPieceProps> {
       <g>
         {
           compact(effects.sort().reverse().map((effectName, idx) => {
-            const icon = icons[effectName];
+            const { icon, description } = EFFECT_ICONS[effectName];
             if (icon) {
               return (
                 <text key={effectName} x={coords[idx][0]} y={coords[idx][1]} textAnchor="middle" style={{ fontSize: '0.12em' }} className="ra">
                   {icon}
-                  <title>{tooltips[effectName]}</title>
+                  <title>{description}</title>
                 </text>
               );
             } else {

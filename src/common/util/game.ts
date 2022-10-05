@@ -669,7 +669,7 @@ export function updateOrDeleteObjectAtHex(
     state = triggerEvent(state, 'afterDestroyed', { object, condition: ((t: w.Trigger) => (t.cause === cause || t.cause === 'anyevent')) });
     if (cause === 'combat' && object.mostRecentlyInCombatWith) {
       state = triggerEvent(state, 'afterDestroysOtherObject', {
-        object: object.mostRecentlyInCombatWith,
+        object: getObjectById(state, object.mostRecentlyInCombatWith),
         condition: ((t: w.Trigger) => matchesType(object.card, t.cardType!))
       });
     }
@@ -828,12 +828,12 @@ export function triggerEvent(
   if (target.object) {
     state = { ...state, it: target.object };
     condition = ((t: w.Trigger) =>
-      (t.targets as w.Object[]).map((o: w.Object) => o.id).includes(target.object!.id) && defaultCondition(t)
+      (t.targets as w.ObjectsTargetRef).entries.includes(target.object!.id) && defaultCondition(t)
     );
   } else if (target.player) {
     state = { ...state, itP: currentPlayer(state) };
     condition = ((t: w.Trigger) =>
-      (t.targets as w.PlayerInGameState[]).map((p: w.PlayerInGameState) => p.color).includes(state.currentTurn) && defaultCondition(t)
+      (t.targets as w.PlayersTargetRef).entries.includes(state.currentTurn) && defaultCondition(t)
     );
   }
   if (target.undergoer) {
@@ -847,7 +847,7 @@ export function triggerEvent(
     (object.triggers || new Array<w.TriggeredAbility>())
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
-        t.trigger.targets = (executeCmd(state, t.trigger.targetFunc, object) as w.Target).entries;
+        t.trigger.targets = getRefToTarget(executeCmd(state, t.trigger.targetFunc, object) as w.Target);
         return { ...t, object };
       })
       .filter((t) => t.trigger.type === triggerType && condition(t.trigger))

@@ -37,9 +37,9 @@ export function setSelectedTile(state: State, playerColor: w.PlayerColor, tile: 
   const isCurrentPlayer = (playerColor === state.currentTurn);
 
   if (isCurrentPlayer &&
-      player.target.choosing &&
-      player.target.possibleHexes.includes(tile) &&
-      (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
+    player.target.choosing &&
+    player.target.possibleHexes.includes(tile) &&
+    (player.selectedCard !== null || state.callbackAfterTargetSelected !== null)) {
     // Target chosen for a queued action.
     return setTargetAndExecuteQueuedAction(state, tile);
   } else {
@@ -69,9 +69,9 @@ export function moveRobot(state: State, fromHex: w.HexId, toHex: w.HexId): State
     movingRobot.movedThisTurn = true;
 
     state = triggerSound(state, 'move.wav');
-    state = logAction(state, player, `moved |${movingRobot.card.id}|`, {[movingRobot.card.id]: movingRobot.card});
+    state = logAction(state, player, `moved |${movingRobot.card.id}|`, { [movingRobot.card.id]: movingRobot.card });
     state = transportObject(state, fromHex, toHex);
-    state = triggerEvent(state, 'afterMove', {object: movingRobot});
+    state = triggerEvent(state, 'afterMove', { object: movingRobot });
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
     state = deselect(state);
@@ -87,7 +87,7 @@ export function moveObjectUsingAbility(state: State, fromHex: w.HexId, toHex: w.
   if (!allObjectsOnBoard(state)[toHex]) {
     const movingRobot: w.Object = allObjectsOnBoard(state)[fromHex];
 
-    state = logAction(state, null, `|${movingRobot.card.id}| was moved`, {[movingRobot.card.id]: movingRobot.card});
+    state = logAction(state, null, `|${movingRobot.card.id}| was moved`, { [movingRobot.card.id]: movingRobot.card });
     state = transportObject(state, fromHex, toHex);
     state = applyAbilities(state);
     state = updateOrDeleteObjectAtHex(state, movingRobot, toHex);
@@ -126,7 +126,7 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
         [defender.card.id]: defender.card,
         [attacker.card.id]: attacker.card
       });
-      state.attack = {from: source, to: target};
+      state.attack = { from: source, to: target };
       state = deselect(state);
     }
   }
@@ -158,12 +158,12 @@ export function attackComplete(state: State): State {
       condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
       undergoer: defender
     }, () => {
-      defender.mostRecentlyInCombatWith = attacker;
+      defender.mostRecentlyInCombatWith = attacker.id;
       return dealDamageToObjectAtHex(state, attackerAttack, target, attacker, 'combat');
     });
 
     if (!hasEffect(defender, 'cannotfightback') && defenderAttack > 0) {
-      attacker.mostRecentlyInCombatWith = defender;
+      attacker.mostRecentlyInCombatWith = defender.id;
       state = dealDamageToObjectAtHex(state, defenderAttack, source, defender, 'combat');
     }
 
@@ -211,7 +211,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
     const target: w.Targetable | null = player.target.chosen ? player.target.chosen[0] : null;
 
     tempState = triggerSound(tempState, 'event.wav');
-    tempState = logAction(tempState, player, logMsg, {[object.card.id]: object.card}, null, target);
+    tempState = logAction(tempState, player, logMsg, { [object.card.id]: object.card }, null, target);
     tempState.memory = {};  // Clear any previously set memory in the state.
 
     executeCmd(tempState, ability.cmd, object);

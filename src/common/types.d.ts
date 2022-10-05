@@ -376,7 +376,7 @@ interface _Object { // eslint-disable-line @typescript-eslint/naming-convention
   tookDamageThisTurn?: boolean
   beingDestroyed?: boolean
   isDestroyed?: boolean
-  mostRecentlyInCombatWith?: _Object
+  mostRecentlyInCombatWith?: ObjectId
   justPlayed?: boolean
 }
 export type Object = _Object;
@@ -432,7 +432,7 @@ export interface TriggeredAbility {
 export interface Trigger {
   type: string
   targetFunc: ((state: GameState) => Target[]) | StringRepresentationOf<(state: GameState) => Target[]>
-  targets?: Targetable[]
+  targets?: TargetReference
 
   cardType?: CardTypeQuery | CardTypeQuery[]
   cause?: Cause

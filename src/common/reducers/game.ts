@@ -38,6 +38,9 @@ export function handleAction(
   oldState: State,
   { type, payload }: w.Action = { type: '' }
 ): State {
+  // Uncomment to log errors when the game state is ever a recursive structure (which could break multiplayer).
+  // JSON.stringify(oldState);
+
   // First, clone state and clean up any currently running animation (e.g. objects turning red because they took damage).
   let state: State = cleanUpAnimations({ ...oldState });
 
@@ -117,7 +120,6 @@ export function handleAction(
     }
 
     case actions.DRAFT_CARDS: {
-
       return g.draftCards(state, payload.player, payload.cards);
     }
 

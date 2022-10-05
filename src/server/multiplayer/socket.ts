@@ -1,6 +1,5 @@
 import { Server } from 'http';
 
-import * as Flatted from 'flatted';
 import { noop } from 'lodash';
 import * as SafeJsonStringify from 'safe-json-stringify';
 import * as WebSocket from 'ws';
@@ -62,7 +61,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onMessage(clientID: m.ClientID, data: string): void {
-    const { type, payload }: m.Action = Flatted.parse(data);
+    const { type, payload }: m.Action = JSON.parse(data);
 
     if (type !== 'ws:KEEPALIVE') {
       console.log(`< ${renderMessage(data)}`);
@@ -86,13 +85,13 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       setUserData(clientID, payload.userData);
     } else if (type === 'ws:CHAT') {
       const inGame = state.getAllOpponents(clientID);
-      const payloadWithSender = {...payload, sender: clientID};
+      const payloadWithSender = { ...payload, sender: clientID };
       (inGame.length > 0 ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
-      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{type, payload}, clientID]);
+      revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{ type, payload }, clientID]);
       sendMessageInGame(clientID, type, payload);
-      const { gameEnded } = state.appendGameAction(clientID, {type, payload});
+      const { gameEnded } = state.appendGameAction(clientID, { type, payload });
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!);
 
       // If the preceding in-game action has caused the game to end, broadcast the new lobby state
@@ -110,7 +109,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function sendMessage(type: string, payload: Record<string, any> = {}, recipientIDs: m.ClientID[] | null = null): void {
-    const message = Flatted.stringify({type, payload});
+    const message = JSON.stringify({ type, payload });
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
@@ -135,11 +134,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function sendChat(msg: string, recipientIDs: m.ClientID[] | null = null): void {
-    sendMessage('ws:CHAT', {msg, sender: '[Server]'}, recipientIDs);
+    sendMessage('ws:CHAT', { msg, sender: '[Server]' }, recipientIDs);
   }
 
   function sendChatToLobby(msg: string): void {
-    sendMessage('ws:CHAT', {msg, sender: '[Server]'}, state.getAllPlayersInLobby());
+    sendMessage('ws:CHAT', { msg, sender: '[Server]' }, state.getAllPlayersInLobby());
   }
 
   function broadcastInfo(): void {
@@ -174,8 +173,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     if (game) {
       const { decks, format, name, startingSeed, usernames, options } = game;
 
-      sendMessage('ws:GAME_START', {player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
-      sendMessage('ws:GAME_START', {player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
+      sendMessage('ws:GAME_START', { player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
+      sendMessage('ws:GAME_START', { player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
       revealVisibleCardsInGame(game);
       sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
       broadcastInfo();
@@ -206,7 +205,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       };
 
       sendMessage('ws:GAME_START', gameStartPayload, [clientID]);
-      sendMessage('ws:CURRENT_STATE', {actions}, [clientID]);
+      sendMessage('ws:CURRENT_STATE', { actions }, [clientID]);
       sendChat(`Entering game ${name} as a spectator ...`, [clientID]);
       sendChat(`${state.getClientUsername(clientID)} has joined as a spectator.`, state.getAllOpponents(clientID));
 
@@ -233,8 +232,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     newGames.forEach((game) => {
       const { decks, name, startingSeed, usernames } = game;
 
-      sendMessage('ws:GAME_START', {player: 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
-      sendMessage('ws:GAME_START', {player: 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
+      sendMessage('ws:GAME_START', { player: 'blue', decks, usernames, seed: startingSeed }, [game.ids.blue]);
+      sendMessage('ws:GAME_START', { player: 'orange', decks, usernames, seed: startingSeed }, [game.ids.orange]);
       sendChat(`Entering game ${name} ...`, game.players);
 
       broadcastInfo();

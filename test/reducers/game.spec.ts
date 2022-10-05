@@ -1,4 +1,3 @@
-import * as Flatted from 'flatted';
 import { cloneDeep, findIndex, size, times } from 'lodash';
 
 import * as actions from '../../src/common/actions/game';
@@ -76,6 +75,8 @@ describe('Game reducer', () => {
       expect(
         objectsOnBoardOfType(state, TYPE_STRUCTURE)
       ).toEqual({ '2,0,-2': 'Fortification' });
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should be able to move robots', () => {
@@ -123,6 +124,8 @@ describe('Game reducer', () => {
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({ '-2,-1,3': 'Attack Bot' });
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should be able to handle combat between robots', () => {
@@ -195,6 +198,8 @@ describe('Game reducer', () => {
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({});
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should be able to enforce victory conditions', () => {
@@ -229,6 +234,8 @@ describe('Game reducer', () => {
         state = attack(state, '2,0,-2', ORANGE_CORE_HEX);
       });
       expect(state.winner).toEqual('blue');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should enforce victory conditions at turn end', () => {
@@ -236,6 +243,8 @@ describe('Game reducer', () => {
       state = playObject(state, 'blue', testCards.instantKernelKillerAbilityCard, '-3,1,2');
       state = newTurn(state, 'blue');
       expect(state.winner).toEqual('blue');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should handle draws', () => {
@@ -267,6 +276,8 @@ describe('Game reducer', () => {
       // "End the turn."
       state = playEvent(state, 'orange', action('End the turn', "(function () { actions['endTurn'](); })"));
       expect(state.currentTurn).toEqual('blue');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should be able to play events that target selected tiles or cards', () => {
@@ -294,6 +305,8 @@ describe('Game reducer', () => {
         state.players.blue.hand.length
       ).toEqual(startingHandSize);
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH + 4);
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should be able to play events with multiple target selection', () => {
@@ -304,12 +317,16 @@ describe('Game reducer', () => {
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
       ).toEqual({ '1,-1,0': 'Attack Bot' });
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should not be able to play an event if there are no valid targets', () => {
       let state = getDefaultState();
       state = playEvent(state, 'orange', cards.smashCard);
       expect(state.players.orange.hand.map((c) => (c as w.CardInGame).name)).toContain(cards.smashCard.name);
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should be able to handle commands with delayed execution for "they"', () => {
@@ -319,6 +336,8 @@ describe('Game reducer', () => {
       state = playEvent(state, 'orange', cards.equalizeCard); // "Set the attack of all robots equal to their health."
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('2/2/2');
       expect(queryRobotAttributes(state, '2,1,-3')).toEqual('4/4/1');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should correctly handle temporary attribute modifications', () => {
@@ -372,6 +391,8 @@ describe('Game reducer', () => {
       state = playObject(state, 'orange', testCards.attackBotCard, '3,-1,-2');
       state = moveRobot(state, '2,-1,-1', '1,-1,0');
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('1,-1,0');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should unapply effects when targets no longer meet conditions', () => {
@@ -391,6 +412,8 @@ describe('Game reducer', () => {
       // Move One Bot back away from Defender Bot – it should have the Taunt effect unapplied from it.
       state = moveRobot(state, '2,0,-2', '1,0,-1');
       expect(hasEffect(allObjectsOnBoard(state)['1,0,-1'], 'canonlyattack')).toBe(false);
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should let objects apply passive abilities to other objects', () => {
@@ -438,6 +461,8 @@ describe('Game reducer', () => {
       state = playObject(state, 'orange', testCards.healthAuraCard, '1,0,-1');
       expect(queryRobotAttributes(state, '3,-1,-2')).toEqual('1/3/2');
       expect(queryRobotAttributes(state, '2,-1,-1')).toEqual('1/1/2');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should let objects apply passive abilities to cards in hand', () => {
@@ -479,6 +504,8 @@ describe('Game reducer', () => {
       expect(costOf(state.players.orange, cards.monkeyBotCard)).toEqual(cards.monkeyBotCard.cost - 1);
       expect(costOf(state.players.orange, cards.generalBotCard)).toEqual(cards.generalBotCard.cost - 1 - 2);
       expect(costOf(state.players.orange, cards.fortificationCard)).toEqual(cards.fortificationCard.cost - 1);
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should facilitate correct interaction between permanent adjustments, temporary adjustments, and conditions', () => {
@@ -497,6 +524,8 @@ describe('Game reducer', () => {
       const energy = state.players.orange.energy.available;
       state = playEvent(state, 'orange', cards.incinerateCard);  // "Gain energy equal to the total power of robots you control. Destroy all robots you control."
       expect(state.players.orange.energy.available).toEqual(energy + (3 + 1 + 2) + (2 + 2));
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should let objects assign keywords to other objects', () => {
@@ -537,6 +566,8 @@ describe('Game reducer', () => {
       state = moveRobot(state, '2,0,-2', '1,1,-2');
       state = moveRobot(state, '1,0,-1', '1,2,-3');
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('1,2,-3');
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should let objects assign triggered abilities to other objects', () => {
@@ -620,6 +651,8 @@ describe('Game reducer', () => {
       currentHand = hand();
       state = activate(state, '2,1,-3', 0, { card: 0 });
       expect(hand()).toEqual(currentHand);
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should handle activated abilities with energy costs', () => {
@@ -641,6 +674,8 @@ describe('Game reducer', () => {
       state = activate(state, '2,1,-3', 0);
       expect(state.players.orange.energy.available).toEqual(0);
       expect(state.players.orange.hand.length).toEqual(currentHandSize);  // Ability did not execute
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should allow triggers bestowed by activated abilities to "stack"', () => {
@@ -655,6 +690,8 @@ describe('Game reducer', () => {
       state = playEvent(state, 'blue', cards.shockCard, { hex: '1,2,-3' });
       // Since Blue Bot has had Armorer's ability applied twice, it should restore 2 health, thus only losing 1 health.
       expect(queryObjectAttribute(state, '1,2,-3', 'health')).toBe(cards.blueBotCard.stats!.health - 1);
+
+      JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
     it('should allow activated abilities to be granted by passive abilities', () => {
@@ -713,7 +750,7 @@ describe('Game reducer', () => {
       ]);
 
       // Reveal and play a Recruiter Bot card, that will affect the cost of the Attack Bot in hand.
-      let revealCardsAction = Flatted.parse(Flatted.stringify({
+      let revealCardsAction = JSON.parse(JSON.stringify({
         type: 'ws:REVEAL_CARDS',
         payload: {
           orange: {
@@ -728,7 +765,7 @@ describe('Game reducer', () => {
       ]);
 
       // Now reveal the Attack Bot ... with the temporaryStatAdjustment from the Recruiter Bot!
-      revealCardsAction = Flatted.parse(Flatted.stringify({
+      revealCardsAction = JSON.parse(JSON.stringify({
         type: 'ws:REVEAL_CARDS',
         payload: {
           orange: {

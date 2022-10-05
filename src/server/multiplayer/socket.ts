@@ -1,7 +1,6 @@
 import { Server } from 'http';
 
 import { noop } from 'lodash';
-import * as SafeJsonStringify from 'safe-json-stringify';
 import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
@@ -9,7 +8,7 @@ import { id as generateID } from '../../common/util/common';
 
 import * as m from './multiplayer';
 import MultiplayerServerState from './MultiplayerServerState';
-import { getPeopleInGame, renderMessage } from './util';
+import { getPeopleInGame, truncateMessage } from './util';
 
 const QUEUE_INTERVAL_MSECS = 500;
 
@@ -64,7 +63,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const { type, payload }: m.Action = JSON.parse(data);
 
     if (type !== 'ws:KEEPALIVE') {
-      console.log(`< ${renderMessage(data)}`);
+      console.log(`< ${truncateMessage(data)}`);
     }
 
     if (type === 'ws:HOST') {
@@ -113,22 +112,22 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
-        console.log(`> ${renderMessage(message)}`);
+        console.log(`> ${truncateMessage(message)}`);
       } catch (error) {
-        console.warn(`Failed to send message ${renderMessage(message)} to ${recipientIDs}: ${error.message}`);
+        console.warn(`Failed to send message ${truncateMessage(message)} to ${recipientIDs}: ${error.message}`);
       }
     });
   }
 
   function sendMessageInLobby(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
-    console.log(`${clientID} broadcast a message to the lobby: ${type} ${SafeJsonStringify(payload)}`);
+    console.log(`${clientID} broadcast a message to the lobby: ${type} ${truncateMessage(JSON.stringify(payload))}`);
     sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
   function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
     const opponentIds = state.getAllOpponents(clientID);
     if (opponentIds.length > 0) {
-      console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${SafeJsonStringify(payload)}`);
+      console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${truncateMessage(JSON.stringify(payload))}`);
       sendMessage(type, payload, opponentIds);
     }
   }

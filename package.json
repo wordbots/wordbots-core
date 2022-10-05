@@ -50,7 +50,6 @@
     "bad-words": "^3.0.4",
     "better-react-spinkit": "^2.0.4",
     "cookie-parser": "^1.4.3",
-    "d3": "^3.5.16",
     "detect-browser": "^5.2.0",
     "discord.js": "^12.5.1",
     "express": "^4.16.1",
@@ -62,7 +61,6 @@
     "qs": "^6.6.0",
     "rc-slider": "^8.6.1",
     "react": "16.7.0",
-    "react-bar-chart": "^0.1.2",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "16.7.0",
     "react-ga": "^2.5.7",
@@ -214,7 +212,6 @@
   "greenkeeper": {
     "ignore": [
       "css-loader",
-      "d3",
       "file-loader",
       "webpack",
       "webpack-dev-middleware"

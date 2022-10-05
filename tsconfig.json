@@ -4,7 +4,10 @@
     "baseUrl": ".",
     "checkJs": false,
     "jsx": "react",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -13,15 +16,20 @@
     "rootDir": ".",
     "sourceMap": true,
     "target": "es5",
-
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
     "paths": {
-      "prop-types": ["types/packages"],
-      "react-bar-chart": ["types/packages"],
-      "react-textfit": ["types/packages"],
-      "word-ngrams": ["types/word-ngrams"]
+      "prop-types": [
+        "types/packages"
+      ],
+      "react-textfit": [
+        "types/packages"
+      ],
+      "word-ngrams": [
+        "types/word-ngrams"
+      ]
     },
-
     "strict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,

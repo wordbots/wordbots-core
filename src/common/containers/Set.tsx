@@ -99,7 +99,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
           <div className={classes.leftSidebar}>
             <Paper className={classes.energyCurvePaper}>
               <div className={classes.energyCurveHeading}>Energy Curve</div>
-              <EnergyCurve cards={this.selectedCards} />
+              <EnergyCurve cards={this.selectedCards} height={130} />
             </Paper>
 
             <DeckCreationSidebarControls

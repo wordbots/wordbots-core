@@ -61,7 +61,8 @@ export interface DeckInStore {
   authorId: UserId
   name: string
   cardIds: string[]
-  timestamp?: timestamp
+  timestamp?: timestamp  // timestamp of creation/modification
+  lastUsedTimestamp?: timestamp  // timestamp of selection in a game
   setId: string | null
 }
 

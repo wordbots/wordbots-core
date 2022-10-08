@@ -27,17 +27,16 @@ export function unpackDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets
   return { ...deck, cards: shuffleCardsInDeck(deck, userCards, sets) };
 }
 
-/** Sorts an array of decks, by timestamp descending for user decks, followed by built-in decks.
-  * Note: this method is parameterized because it needs to support both Deck and DeckInStore. */
-export function sortDecks<T extends w.DeckInStore>(decks: T[]): T[] {
-  const decksWithTimestamps: T[] = decks.map((deck: T) => {
-    if (deck.timestamp) {
-      return deck;  // Deck has a timestamp
-    } else if (deck.id[0] === '[') {
-      return { ...(deck as w.DeckInStore), timestamp: 0 } as T; // Deck is built-in
-    } else {
-      return { ...(deck as w.DeckInStore), timestamp: 1 } as T; // Deck is user-created, but doesn't have a timestamp
-    }
-  });
-  return orderBy(decksWithTimestamps, ['timestamp'], ['desc']);
+/** Returns whether the given DeckInStore is built-in (i.e., not user-created). */
+export function deckIsBuiltin(deck: w.DeckInStore): boolean {
+  return deck.id[0] === '[';
+}
+
+/** Sorts an array of decks, by timestamp descending (last-used timestamp if exists, otherwise
+  * last-modified timestamp) for user decks, followed by built-in decks.
+  * Note: this method is parameterized because it needs to support both DeckInStore and DeckInGame. */
+export function sortDecks<D extends w.DeckInStore>(decks: D[]): D[] {
+  return orderBy(decks, (deck: D) => (
+    deck.lastUsedTimestamp || deck.timestamp || (deckIsBuiltin(deck) ? 0 : 1)
+  ), ['desc']);
 }

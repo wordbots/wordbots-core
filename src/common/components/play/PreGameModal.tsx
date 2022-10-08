@@ -6,7 +6,8 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import { getQueryString } from '../../util/browser';
-import { sortDecks, unpackDeck } from '../../util/decks';
+import { deckIsBuiltin, sortDecks, unpackDeck } from '../../util/decks';
+import { updateDeckLastUsedTimestamp } from '../../util/firebase';
 import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
@@ -202,9 +203,10 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
   }
 
   private handleChooseDeck = (deck: w.DeckInStore) => {
-    this.setState({
-      selectedDeckId: deck.id
-    });
+    this.setState({ selectedDeckId: deck.id });
+    if (!deckIsBuiltin(deck)) {
+      updateDeckLastUsedTimestamp(deck.id);
+    }
   }
 
   private handleSetPassword = (e: React.ChangeEvent<HTMLInputElement>) => {

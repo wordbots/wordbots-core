@@ -318,6 +318,13 @@ export async function removeDeck(deckId: string): Promise<void> {
   }
 }
 
+/** Updates the given deck's lastUsedTimestamp to the current timestamp. */
+export function updateDeckLastUsedTimestamp(deckId: w.DeckId): void {
+  fb.database()
+    .ref(`decks/${deckId}/lastUsedTimestamp`)
+    .set(Date.now());
+}
+
 /** Yield the number of decks created by the given user id. */
 export async function getNumDecksCreatedCountByUserId(userId: w.UserId): Promise<number> {
   const snapshot = await query('decks', 'authorId', userId);

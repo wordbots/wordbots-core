@@ -97,9 +97,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
 
   private handleSelectFormat = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const formatName = event.target.value;
-    console.log(formatName);
     if (formatName === 'setDraft') {
-      console.log(this.setDraftFormats[0].name);
       this.props.onChooseFormat(this.setDraftFormats[0].name);
     } else {
       this.props.onChooseFormat(formatName);

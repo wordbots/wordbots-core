@@ -27,6 +27,7 @@ interface PlayStateProps {
 
 interface PlayDispatchProps {
   onConnect: () => void
+  onDisconnect: () => void
   onHostGame: (name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => void
   onCancelHostGame: () => void
   onJoinGame: (id: m.ClientID, name: string, deck: w.DeckInGame) => void
@@ -55,6 +56,9 @@ export function mapDispatchToProps(dispatch: Dispatch): PlayDispatchProps {
   return {
     onConnect: () => {
       dispatch(socketActions.connect());
+    },
+    onDisconnect: () => {
+      dispatch(socketActions.disconnect());
     },
     onHostGame: (name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions) => {
       dispatch(socketActions.host(name, format, deck, options));
@@ -114,10 +118,14 @@ export class Play extends React.Component<PlayProps> {
     }
   }
 
+  public componentWillUnmount(): void {
+    this.props.onDisconnect();
+  }
+
   public render(): JSX.Element {
     return (
       <div>
-        <Helmet title="Arena"/>
+        <Helmet title="Arena" />
 
         <Switch>
           <Route path={urlForGameMode('tutorial')} component={GameAreaContainer} />

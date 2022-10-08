@@ -7,17 +7,18 @@ import * as w from '../types';
 type State = w.SocketState;
 
 export default function socket(oldState: State = cloneDeep(defaultState), action: w.Action): State {
-  const state: State = {...oldState};
+  const state: State = { ...oldState };
 
   switch (action.type) {
     case socketActions.CONNECTING:
-      return {...state, connected: false, connecting: true};
+      return { ...state, connected: false, connecting: true };
 
     case socketActions.CONNECTED:
-      return {...state, connected: true, connecting: false};
+      return { ...state, connected: true, connecting: false };
 
     case socketActions.DISCONNECTED:
-      return {...state, connected: false, connecting: false};
+      // Clear chatMessages if the user left deliberately
+      return { ...state, connected: false, connecting: false, chatMessages: action.payload.left ? [] : state.chatMessages };
 
     case socketActions.CHAT: {
       const { chatMessages, userDataByClientId: userDataMap } = state;
@@ -25,8 +26,8 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
 
       const message: w.ChatMessage = {
         user: sender ?
-                (userDataMap[sender] ? userDataMap[sender].displayName : sender) :
-                'You',
+          (userDataMap[sender] ? userDataMap[sender].displayName : sender) :
+          'You',
         text: msg,
         timestamp: Date.now()
       };
@@ -38,7 +39,7 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
     }
 
     case socketActions.CLIENT_ID:
-      return {...state, clientId: action.payload.clientID};
+      return { ...state, clientId: action.payload.clientID };
 
     case socketActions.INFO:
       return {
@@ -51,28 +52,28 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
       };
 
     case socketActions.GAME_START:
-      return {...state, hosting: false, queuing: false};
+      return { ...state, hosting: false, queuing: false };
 
     case socketActions.HOST:
-      return {...state, gameName: action.payload.name, hosting: true};
+      return { ...state, gameName: action.payload.name, hosting: true };
 
     case socketActions.CANCEL_HOSTING:
-      return {...state, gameName: null, hosting: false};
+      return { ...state, gameName: null, hosting: false };
 
     case socketActions.JOIN:
-      return {...state, gameName: action.payload.name};
+      return { ...state, gameName: action.payload.name };
 
     case socketActions.JOIN_QUEUE:
-      return {...state, queuing: true};
+      return { ...state, queuing: true };
 
     case socketActions.LEAVE_QUEUE:
-      return {...state, queuing: false};
+      return { ...state, queuing: false };
 
     case socketActions.SPECTATE:
-      return {...state, gameName: action.payload.name};
+      return { ...state, gameName: action.payload.name };
 
     case socketActions.LEAVE:
-      return {...state, gameName: null};
+      return { ...state, gameName: null };
 
     default:
       return state;

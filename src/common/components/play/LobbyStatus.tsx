@@ -43,54 +43,50 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
     />
   );
 
+  renderConnectionIndicator = (): JSX.Element => {
+    const { connecting, connected, onConnect } = this.props;
+    if (connected) {
+      return <span style={{ color: 'green' }}>Connected</span>;
+    } else if (connecting) {
+      return <span>Connecting ...</span>;
+    } else {
+      return <a style={{ color: 'red', cursor: 'pointer' }} onClick={onConnect}>Not connected (click to retry)</a>;
+    }
+  }
+
   public render(): JSX.Element {
-    const { connecting, connected, userDataByClientId, onConnect } = this.props;
-
-    const connectedSpan = (
-      <span style={{ color: 'green' }}>
-        Connected
-      </span>
-    );
-    const notConnectedSpan = (
-      <a style={{ color: 'red', cursor: 'pointer' }} onClick={onConnect}>
-        Not connected
-      </a>
-    );
-    const connectingSpan = (
-      <span>Connecting ...</span>
-    );
-
+    const { connected, userDataByClientId } = this.props;
     return (
       <div style={{ position: 'relative' }}>
         <span style={{ position: 'absolute', top: -50, right: 0, fontSize: '0.85em' }}>
-          {connected ? connectedSpan : (connecting ? connectingSpan : notConnectedSpan)}
+          {this.renderConnectionIndicator()}
         </span>
-
         {
-          connected &&
-          <Paper style={{ padding: 15, marginBottom: 20, maxHeight: '2.4em', overflowY: 'auto' }}>
-            <div style={{ position: 'relative' }}>
-              <span>
-                <b>
-                  {this.uniquePlayersInLobby.length} player{this.uniquePlayersInLobby.length === 1 ? '' : 's'} in lobby
+          connected && (
+            <Paper style={{ padding: 15, marginBottom: 20, maxHeight: '2.4em', overflowY: 'auto' }}>
+              <div style={{ position: 'relative' }}>
+                <span>
+                  <b>
+                    {this.uniquePlayersInLobby.length} player{this.uniquePlayersInLobby.length === 1 ? '' : 's'} in lobby
                   {this.numUniquePlayersOnline !== this.uniquePlayersInLobby.length && <i> ({this.numUniquePlayersOnline} player{this.numUniquePlayersOnline === 1 ? '' : 's'} online)</i>}
                   :{' '}
-                </b>
-                {
-                  this.uniquePlayersInLobby
-                    .map((clientId) =>
-                      <div key={clientId} style={{ display: 'inline-block' }}>
-                        {this.renderPlayerName(userDataByClientId[clientId], clientId)}
-                      </div>
-                    )
-                    // https://stackoverflow.com/a/35840806
-                    .reduce<React.ReactNode[]>((acc, elem) => acc.length === 0 ? [elem] : [...acc, ', ', elem], [])
-                }
-              </span>
-            </div>
-          </Paper>
+                  </b>
+                  {
+                    this.uniquePlayersInLobby
+                      .map((clientId) =>
+                        <div key={clientId} style={{ display: 'inline-block' }}>
+                          {this.renderPlayerName(userDataByClientId[clientId], clientId)}
+                        </div>
+                      )
+                      // https://stackoverflow.com/a/35840806
+                      .reduce<React.ReactNode[]>((acc, elem) => acc.length === 0 ? [elem] : [...acc, ', ', elem], [])
+                  }
+                </span>
+              </div>
+            </Paper>
+          )
         }
-      </div >
+      </div>
     );
   }
 }

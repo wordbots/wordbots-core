@@ -21,28 +21,31 @@ export default class ProfileLink extends React.Component<ProfileLinkProps> {
 
   public render(): React.ReactNode {
     const { uid, username, className, style } = this.props;
-    const href = `/profile/${uid}`;
 
+    // Don't render a link at all for guest accounts.
     if (uid?.startsWith('guest_')) {
-      return username;
-    }
-
-    // If we're already on a profile page, render an internal link.
-    // Otherwise, open the link in a new tab.
-    if (window.location.pathname.startsWith('/profile/')) {
-      return <Link to={href} className={`profile-link ${className || ''}`} style={style}>{username}</Link>;
+      return <span style={style}>{username}</span>;
     } else {
-      return (
-        <a
-          href={href}
-          className={`profile-link ${className || ''}`}
-          style={style}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {username}
-        </a>
-      );
+      const href = `/profile/${uid}`;
+
+      // If we're already on a profile page, render an internal link.
+      // Otherwise, open the link in a new tab.
+      if (window.location.pathname.startsWith('/profile/')) {
+        return <Link to={href} className={`profile-link ${className || ''}`} style={style}>{username}</Link>;
+      } else {
+        return (
+          <a
+            href={href}
+            className={`profile-link ${className || ''}`}
+            style={style}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {username}
+          </a>
+        );
+      }
+
     }
   }
 }

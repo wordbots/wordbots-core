@@ -1,10 +1,11 @@
 import * as fb from 'firebase';
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
+import * as w from '../types';
+import { LOG_SOCKET_IO } from '../constants';
+import { webSocketRoot } from '../util/browser';
 import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
-import { LOG_SOCKET_IO } from '../constants';
-import * as w from '../types';
 
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
@@ -53,7 +54,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
       store.dispatch(sa.connecting());
 
       keepClosed = false;
-      socket = new WebSocket(`${window.location.protocol.includes('https') ? 'wss' : 'ws'}://${window.location.host}/socket`);
+      socket = new WebSocket(`${webSocketRoot()}/socket`);
       socket.addEventListener('open', connected);
       socket.onclose = disconnected;
       socket.addEventListener('message', receive);

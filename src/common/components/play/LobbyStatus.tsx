@@ -33,31 +33,14 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
   }
 
   renderPlayerName = (userData: m.UserData | undefined, clientId: m.ClientID): JSX.Element => (
-    (userData && !userData.uid.startsWith('guest_'))
-      ? this.renderRegisteredPlayer(userData, clientId)
-      : this.renderGuestPlayerName(userData, clientId)
-  );
-
-  renderRegisteredPlayer = (userData: m.UserData, clientId: m.ClientID): JSX.Element => (
     <ProfileLink
-      uid={userData.uid}
-      username={userData.displayName}
+      uid={userData?.uid}
+      username={userData?.displayName || clientId}
       style={{
         fontStyle: this.isCurrentUser(clientId) ? 'italic' : 'normal',
         color: '#666'
       }}
     />
-  );
-
-  renderGuestPlayerName = (userData: m.UserData | undefined, clientId: m.ClientID): JSX.Element => (
-    <span
-      style={{
-        fontStyle: this.isCurrentUser(clientId) ? 'italic' : 'normal',
-        color: '#666'
-      }}
-    >
-      {userData?.displayName || clientId}
-    </span>
   );
 
   public render(): JSX.Element {

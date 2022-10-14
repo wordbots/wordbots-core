@@ -3,14 +3,14 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 interface ProfileLinkProps {
-  uid: string
   username: string
+  uid?: string
   className?: string
   style?: React.CSSProperties
 }
 
 export default class ProfileLink extends React.Component<ProfileLinkProps> {
-  public static fromFirebaseUser = (user: fb.User) => (
+  public static fromFirebaseUser = (user: fb.User): JSX.Element => (
     <ProfileLink uid={user.uid} username={user.displayName || user.uid} />
   )
 
@@ -23,7 +23,7 @@ export default class ProfileLink extends React.Component<ProfileLinkProps> {
     const { uid, username, className, style } = this.props;
     const href = `/profile/${uid}`;
 
-    if (uid.startsWith('guest_')) {
+    if (uid?.startsWith('guest_')) {
       return username;
     }
 

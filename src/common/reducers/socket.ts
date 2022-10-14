@@ -17,8 +17,13 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
       return { ...state, connected: true, connecting: false };
 
     case socketActions.DISCONNECTED:
-      // Clear chatMessages if the user left deliberately
-      return { ...state, connected: false, connecting: false, chatMessages: action.payload.left ? [] : state.chatMessages };
+      return {
+        ...state,
+        connected: false,
+        connecting: false,
+        // Clear chatMessages iff the user left deliberately
+        chatMessages: action.payload.intentionally ? [] : state.chatMessages
+      };
 
     case socketActions.CHAT: {
       const { chatMessages, userDataByClientId: userDataMap } = state;

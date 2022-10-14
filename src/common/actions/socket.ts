@@ -38,11 +38,11 @@ export function connected(): w.Action {
   };
 }
 
-export function disconnected(left = false): w.Action {
+export function disconnected(intentionally = false): w.Action {
   return {
     type: DISCONNECTED,
     payload: {
-      left
+      intentionally
     }
   };
 }

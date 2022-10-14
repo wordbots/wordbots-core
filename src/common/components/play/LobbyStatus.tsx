@@ -21,9 +21,9 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
     return uniqBy(playersInLobby, (clientId: m.ClientID) => userDataByClientId[clientId]?.uid || clientId);
   }
 
-  get uniquePlayersOnline(): m.ClientID[] {
+  get numUniquePlayersOnline(): number {
     const { playersOnline, userDataByClientId } = this.props;
-    return uniqBy(playersOnline, (clientId: m.ClientID) => userDataByClientId[clientId]?.uid || clientId);
+    return uniqBy(playersOnline, (clientId: m.ClientID) => userDataByClientId[clientId]?.uid || clientId).length;
   }
 
   isCurrentUser = (clientId: m.ClientID): boolean => {
@@ -73,17 +73,18 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
               <span>
                 <b>
                   {this.uniquePlayersInLobby.length} player{this.uniquePlayersInLobby.length === 1 ? '' : 's'} in lobby
-                  {this.uniquePlayersOnline.length !== this.uniquePlayersInLobby.length && <i> ({this.uniquePlayersOnline.length} player{this.uniquePlayersOnline.length === 1 ? '' : 's'} online)</i>}
+                  {this.numUniquePlayersOnline !== this.uniquePlayersInLobby.length && <i> ({this.numUniquePlayersOnline} player{this.numUniquePlayersOnline === 1 ? '' : 's'} online)</i>}
                   :{' '}
                 </b>
                 {
-                  this.uniquePlayersInLobby.map((clientId, idx) =>
-                    <div key={clientId} style={{ display: 'inline-block' }}>
-                      {this.renderPlayerName(userDataByClientId[clientId], clientId)}
-
-                      {idx !== this.uniquePlayersInLobby.length - 1 && <span>,&nbsp;</span>}
-                    </div>
-                  )
+                  this.uniquePlayersInLobby
+                    .map((clientId) =>
+                      <div key={clientId} style={{ display: 'inline-block' }}>
+                        {this.renderPlayerName(userDataByClientId[clientId], clientId)}
+                      </div>
+                    )
+                    // https://stackoverflow.com/a/35840806
+                    .reduce<React.ReactNode[]>((acc, elem) => acc.length === 0 ? [elem] : [...acc, ', ', elem], [])
                 }
               </span>
             </div>

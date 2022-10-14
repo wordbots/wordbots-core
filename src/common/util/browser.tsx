@@ -6,7 +6,7 @@ import { ReactNode, ReactPortal } from 'react';
 import * as qs from 'qs';
 
 declare const window: {
-  location: { protocol: string, pathname: string, hostname: string }
+  location: { protocol: string, pathname: string, host: string, hostname: string }
   process?: { title: string, env: { NODE_ENV: string, JEST_WORKER_ID?: string } }
 };
 
@@ -35,10 +35,10 @@ export function inTest(): boolean {
   return typeof window !== 'undefined' && window.process?.env?.NODE_ENV === 'test' || false;
 }
 
-/** Returns 'wss://{hostname}' if the current protocol is https and 'ws://{hostname}' otherwise.  */
+/** Returns 'wss://{host}' if the current protocol is https and 'ws://{host}' otherwise.  */
 export function webSocketRoot(): string {
-  const { protocol, hostname } = window.location;
-  return `${protocol.includes('https') ? 'wss' : 'ws'}://${hostname}`;
+  const { protocol, host } = window.location;
+  return `${protocol.includes('https') ? 'wss' : 'ws'}://${host}`;
 }
 
 /** Log a page view of the current page in Google Analytics. */

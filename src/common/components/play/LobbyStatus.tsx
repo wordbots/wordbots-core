@@ -38,7 +38,7 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
       username={userData?.displayName || clientId}
       style={{
         fontStyle: this.isCurrentUser(clientId) ? 'italic' : 'normal',
-        color: '#444'
+        color: '#555'
       }}
     />
   );

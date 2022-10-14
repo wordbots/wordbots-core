@@ -9,12 +9,18 @@ interface LobbyStatusProps {
   connecting: boolean
   connected: boolean
   playersOnline: string[]
+  playersInLobby: string[]
   myClientId: m.ClientID
   userDataByClientId: Record<m.ClientID, m.UserData>
   onConnect: () => void
 }
 
 export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
+  get uniquePlayersInLobby(): m.ClientID[] {
+    const { playersInLobby, userDataByClientId } = this.props;
+    return uniqBy(playersInLobby, (clientId: m.ClientID) => userDataByClientId[clientId]?.uid || clientId);
+  }
+
   get uniquePlayersOnline(): m.ClientID[] {
     const { playersOnline, userDataByClientId } = this.props;
     return uniqBy(playersOnline, (clientId: m.ClientID) => userDataByClientId[clientId]?.uid || clientId);
@@ -81,13 +87,17 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
           <Paper style={{ padding: 15, marginBottom: 20, maxHeight: '2.4em', overflowY: 'auto' }}>
             <div style={{ position: 'relative' }}>
               <span>
-                <b>{this.uniquePlayersOnline.length} player{this.uniquePlayersOnline.length === 1 ? '' : 's'} online: </b>
+                <b>
+                  {this.uniquePlayersInLobby.length} player{this.uniquePlayersInLobby.length === 1 ? '' : 's'} in lobby
+                  {this.uniquePlayersOnline.length !== this.uniquePlayersInLobby.length && <i> ({this.uniquePlayersOnline.length} player{this.uniquePlayersOnline.length === 1 ? '' : 's'} online)</i>}
+                  :{' '}
+                </b>
                 {
-                  this.uniquePlayersOnline.map((clientId, idx) =>
+                  this.uniquePlayersInLobby.map((clientId, idx) =>
                     <div key={clientId} style={{ display: 'inline-block' }}>
                       {this.renderPlayerName(userDataByClientId[clientId], clientId)}
 
-                      {idx !== this.uniquePlayersOnline.length - 1 && <span>,&nbsp;</span>}
+                      {idx !== this.uniquePlayersInLobby.length - 1 && <span>,&nbsp;</span>}
                     </div>
                   )
                 }

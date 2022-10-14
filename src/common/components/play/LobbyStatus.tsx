@@ -32,15 +32,16 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
     return clientId === myClientId || (userData && userData.uid === userDataByClientId[myClientId]?.uid);
   }
 
-  renderPlayerName = (userData: m.UserData, clientId: m.ClientID): JSX.Element => (
-    (userData && !userData.uid.startsWith('guest_')) ? this.renderRegisteredPlayer(userData, clientId) :
-      this.renderGuestPlayerName(userData, clientId)
+  renderPlayerName = (userData: m.UserData | undefined, clientId: m.ClientID): JSX.Element => (
+    (userData && !userData.uid.startsWith('guest_'))
+      ? this.renderRegisteredPlayer(userData, clientId)
+      : this.renderGuestPlayerName(userData, clientId)
   );
 
   renderRegisteredPlayer = (userData: m.UserData, clientId: m.ClientID): JSX.Element => (
     <ProfileLink
       uid={userData.uid}
-      username={userData ? userData.displayName : clientId}
+      username={userData.displayName}
       style={{
         fontStyle: this.isCurrentUser(clientId) ? 'italic' : 'normal',
         color: '#666'
@@ -48,14 +49,14 @@ export default class LobbyStatus extends React.PureComponent<LobbyStatusProps> {
     />
   );
 
-  renderGuestPlayerName = (userData: m.UserData, clientId: m.ClientID): JSX.Element => (
+  renderGuestPlayerName = (userData: m.UserData | undefined, clientId: m.ClientID): JSX.Element => (
     <span
       style={{
         fontStyle: this.isCurrentUser(clientId) ? 'italic' : 'normal',
         color: '#666'
       }}
     >
-      {userData && userData ? userData.displayName : clientId}
+      {userData?.displayName || clientId}
     </span>
   );
 

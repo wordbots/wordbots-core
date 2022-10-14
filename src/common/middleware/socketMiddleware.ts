@@ -17,7 +17,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
   return (store: MiddlewareAPI<Dispatch<AnyAction>, w.State>) => {
     let socket: WebSocket;
     let keepaliveNeeded = false;
-    let closed = false;
+    let keepClosed = false;
     let user: fb.User | undefined;
     let sendQueue: AnyAction[] = [];
 
@@ -52,7 +52,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     function connect(): void {
       store.dispatch(sa.connecting());
 
-      closed = false;
+      keepClosed = false;
       socket = new WebSocket(`${window.location.protocol.includes('https') ? 'wss' : 'ws'}://${window.location.host}/socket`);
       socket.addEventListener('open', connected);
       socket.onclose = disconnected;
@@ -70,7 +70,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     function disconnect(): void {
       store.dispatch(sa.disconnected(true));
 
-      closed = true;
+      keepClosed = true;
       socket.close();
     }
 
@@ -102,7 +102,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     function keepalive(): void {
       if (socket) {
         // If the socket is open, keepalive if necessary. If the socket is closed, try to re-open it (unless it's meant to be closed).
-        if (socket.readyState === WebSocket.CLOSED && !closed) {
+        if (socket.readyState === WebSocket.CLOSED && !keepClosed) {
           connect();
         } else if (socket.readyState === WebSocket.OPEN && keepaliveNeeded) {
           socket.send(JSON.stringify(sa.keepalive()));

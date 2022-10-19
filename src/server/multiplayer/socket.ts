@@ -52,6 +52,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     socket.on('close', () => {
       try {
         onDisconnect(clientID);
+        broadcastInfo();
       } catch (error) {
         console.error(error);
       }
@@ -63,7 +64,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const { type, payload }: m.Action = JSON.parse(data);
 
     if (type !== 'ws:KEEPALIVE') {
-      console.log(`< ${truncateMessage(data)}`);
+      console.log(`${clientID}> ${truncateMessage(data)}`);
     }
 
     if (type === 'ws:HOST') {
@@ -107,12 +108,12 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     state.disconnectClient(clientID);
   }
 
-  function sendMessage(type: string, payload: Record<string, any> = {}, recipientIDs: m.ClientID[] | null = null): void {
+  function sendMessage(type: string, payload: Record<string, unknown> = {}, recipientIDs: m.ClientID[] | null = null): void {
     const message = JSON.stringify({ type, payload });
+    console.log(`${recipientIDs?.join(',') || '&'}< ${truncateMessage(message)}`);
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
-        console.log(`> ${truncateMessage(message)}`);
       } catch (error) {
         console.warn(`Failed to send message ${truncateMessage(message)} to ${recipientIDs}: ${error.message}`);
       }
@@ -141,19 +142,12 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function broadcastInfo(): void {
-    sendMessage('ws:INFO', state.serialize());
+    sendMessage('ws:INFO', state.serialize() as unknown as Record<string, unknown>);
   }
 
   function setUserData(clientID: m.ClientID, userData: m.UserData | null): void {
-    const oldUserData = state.getClientUserData(clientID);
     state.setClientUserData(clientID, userData);
-    if (!oldUserData && userData) {
-      sendChatToLobby(`${userData.displayName} has entered the lobby.`);
-    } else if (!state.isClientLoggedIn(clientID)) {
-      sendChatToLobby(`${state.getClientUsername(clientID)} has entered the lobby.`);
-    } else if (!userData && oldUserData) {
-      sendChatToLobby(`${oldUserData.displayName} has logged out.`);
-    }
+    sendChatToLobby(`${userData?.displayName || state.getClientUsername(clientID)} has entered the lobby.`);
     broadcastInfo();
   }
 

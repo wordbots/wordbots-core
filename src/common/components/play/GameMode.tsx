@@ -79,7 +79,7 @@ export default class GameMode extends React.Component<GameModeProps> {
             padding: compact ? 0 : '20px 0'
           }}
         >
-          <Tooltip html text={tooltipText || ''} disable={!tooltipText}>
+          <Tooltip html place="bottom" text={tooltipText || ''} disable={!tooltipText}>
             <div
               style={{
                 textAlign: 'center',

@@ -6,10 +6,17 @@ import * as w from '../types';
 // Client => middleware
 
 export const CONNECT = 'ws:CONNECT';
+export const DISCONNECT = 'ws:DISCONNECT';
 
 export function connect(): w.Action {
   return {
     type: CONNECT
+  };
+}
+
+export function disconnect(): w.Action {
+  return {
+    type: DISCONNECT
   };
 }
 
@@ -31,9 +38,12 @@ export function connected(): w.Action {
   };
 }
 
-export function disconnected(): w.Action {
+export function disconnected(intentionally = false): w.Action {
   return {
-    type: DISCONNECTED
+    type: DISCONNECTED,
+    payload: {
+      intentionally
+    }
   };
 }
 

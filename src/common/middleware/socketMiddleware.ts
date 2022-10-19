@@ -1,10 +1,11 @@
 import * as fb from 'firebase';
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
+import * as w from '../types';
+import { LOG_SOCKET_IO } from '../constants';
+import { webSocketRoot } from '../util/browser';
 import * as ga from '../actions/global';
 import * as sa from '../actions/socket';
-import { LOG_SOCKET_IO } from '../constants';
-import * as w from '../types';
 
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
@@ -17,6 +18,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
   return (store: MiddlewareAPI<Dispatch<AnyAction>, w.State>) => {
     let socket: WebSocket;
     let keepaliveNeeded = false;
+    let keepClosed = false;
     let user: fb.User | undefined;
     let sendQueue: AnyAction[] = [];
 
@@ -29,6 +31,8 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     function handleAction(action: AnyAction, next: Dispatch<AnyAction>): AnyAction {
       if (action.type === sa.CONNECT) {
         connect();
+      } else if (action.type === sa.DISCONNECT) {
+        disconnect();
       } else {
         if (action.type === ga.LOGGED_IN) {
           user = action.payload.user;
@@ -49,8 +53,8 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     function connect(): void {
       store.dispatch(sa.connecting());
 
-      const protocol = window.location.protocol.includes('https') ? 'wss' : 'ws';
-      socket = new WebSocket(`${protocol}://${window.location.host}/socket`);
+      keepClosed = false;
+      socket = new WebSocket(`${webSocketRoot()}/socket`);
       socket.addEventListener('open', connected);
       socket.onclose = disconnected;
       socket.addEventListener('message', receive);
@@ -62,6 +66,13 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
 
       sendQueue.forEach(send);
       sendQueue = [];
+    }
+
+    function disconnect(): void {
+      store.dispatch(sa.disconnected(true));
+
+      keepClosed = true;
+      socket.close();
     }
 
     function disconnected(): void {
@@ -91,8 +102,8 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
 
     function keepalive(): void {
       if (socket) {
-        // If the socket is open, keepalive if necessary. If the socket is closed, try to re-open it.
-        if (socket.readyState === WebSocket.CLOSED) {
+        // If the socket is open, keepalive if necessary. If the socket is closed, try to re-open it (unless it's meant to be closed).
+        if (socket.readyState === WebSocket.CLOSED && !keepClosed) {
           connect();
         } else if (socket.readyState === WebSocket.OPEN && keepaliveNeeded) {
           socket.send(JSON.stringify(sa.keepalive()));

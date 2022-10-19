@@ -8,7 +8,7 @@ import * as socket from './socket';
 /** Like isString, but with a more precise type guard in its signature. */
 const isStringTyped = <T>(val: T): val is Extract<T, string> => isString(val);
 
-/** Given an obj of exports containing action types (i.e. strings) and actions, return just the action types. */
+/** Given an actions/* module export T, return just the action type strings, discarding the action implementations. */
 const allActionTypes = <T>(exports: T): Array<ActionTypeWithin<T>> => (
   Object.values(exports).filter<ActionTypeWithin<T>>(isStringTyped)
 );

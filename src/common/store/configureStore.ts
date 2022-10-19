@@ -18,9 +18,7 @@ const DEV_TOOLS_ENABLED = ALWAYS_ENABLE_DEV_TOOLS || !['production', 'test'].inc
 
 const selectStoreEnhancers = (): StoreEnhancer[] => {
   if (process.browser) {
-    const socketMiddleware: Middleware = createSocketMiddleware({
-      actionTypesToPassAlong: SOCKET_ACTION_TYPES
-    });
+    const socketMiddleware: Middleware = createSocketMiddleware({ forwardedActionTypes: SOCKET_ACTION_TYPES });
 
     if (DEV_TOOLS_ENABLED) {
       const createLogger: () => Middleware = require('redux-logger').createLogger;

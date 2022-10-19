@@ -61,13 +61,6 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
     return availableDecks.map((deck) => unpackDeck(deck, cards, sets));
   }
 
-  get playersInLobby(): string[] {
-    // TODO note that we don't currently track players who are in single-player modes (tutorial, practice, or sandbox),
-    // so this will include them as being "in the lobby" -AN
-    const { games, playersOnline } = this.props.socket;
-    return playersOnline.filter((clientId) => !games.some(g => g.players.includes(clientId)));
-  }
-
   public render(): JSX.Element {
     const {
       availableDecks, cards, sets, history, socket, user,
@@ -76,7 +69,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
     const {
       clientId, connected, connecting, games,
       hosting, queuing, queueSize,
-      playersOnline, userDataByClientId, waitingPlayers
+      playersOnline, playersInLobby, userDataByClientId, waitingPlayers
     } = socket;
     const { casualGameBeingJoined, queueFormat } = this.state;
 
@@ -129,7 +122,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
             connecting={connecting}
             connected={connected}
             myClientId={clientId!}
-            playersInLobby={this.playersInLobby}
+            playersInLobby={playersInLobby}
             playersOnline={playersOnline}
             userDataByClientId={userDataByClientId}
             onConnect={onConnect}

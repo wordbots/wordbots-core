@@ -1,10 +1,13 @@
 import * as WebSocket from 'ws';
 
 import * as w from '../../common/types';
+import * as gameActions from '../../common/actions/game';
+import * as socketActions from '../../common/actions/socket';
 
-export type Action = w.Action;
+export type Action = w.Action<ActionType>;
 export type ActionPayload = w.ActionPayload;
-export type ActionType = w.ActionType;
+export type ActionType = w.ActionTypeWithin<typeof gameActions> | w.ActionTypeWithin<typeof socketActions>;
+
 export type Card = w.Card;
 export type CardInGame = w.CardInGame;
 export type CardInStore = w.CardInStore;
@@ -65,6 +68,7 @@ export interface ServerState {
   waitingPlayers: GameWaitingForPlayers[]
   matchmakingQueue: PlayerInQueue[]
   playersOnline: ClientID[]
+  playersInSinglePlayerGames: ClientID[]
   userData: { [clientID: string]: UserData | null }
 }
 
@@ -72,6 +76,7 @@ export interface SerializedServerState {
   games: Game[]
   waitingPlayers: GameWaitingForPlayers[]
   playersOnline: ClientID[]
+  playersInLobby: ClientID[]
   userData: { [clientID: string]: UserData | null }
   queueSize: number
 }

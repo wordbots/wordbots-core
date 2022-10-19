@@ -10,11 +10,11 @@ import * as sa from '../actions/socket';
 const KEEPALIVE_INTERVAL_SECS = 5;  // (Heroku kills connection after 55 idle sec.)
 
 interface SocketMiddlewareOpts {
-  excludedActions: w.ActionType[]
+  actionTypesToPassAlong: w.ActionType[]
 }
 
 // Middleware creator that builds socketMiddleware given SocketMiddlewareOpts.
-function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware {
+function socketMiddleware({ actionTypesToPassAlong }: SocketMiddlewareOpts): Middleware {
   return (store: MiddlewareAPI<Dispatch<AnyAction>, w.State>) => {
     let socket: WebSocket;
     let keepaliveNeeded = false;
@@ -42,7 +42,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
             user = undefined;
             send(sa.sendUserData(undefined));
           }
-        } else {
+        } else if (actionTypesToPassAlong.includes(action.type) && !action.fromServer) {
           send(action);
         }
       }
@@ -80,7 +80,7 @@ function socketMiddleware({ excludedActions }: SocketMiddlewareOpts): Middleware
     }
 
     function send(action: AnyAction): void {
-      if (socket && !action.fromServer && !excludedActions.includes(action.type)) {
+      if (socket) {
         // Either send the action or queue it to send later.
         if (socket.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify(action));

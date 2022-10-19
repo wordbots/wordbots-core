@@ -13,6 +13,7 @@ const initialState: m.SerializedServerState = {
   games: [],
   waitingPlayers: [],
   playersOnline: [],
+  playersInLobby: [],
   userData: {},
   queueSize: 0
 };
@@ -29,7 +30,7 @@ function expectStateFn(fn: (state: MSS) => void, expectedSerializedStateFn: (sta
 }
 
 describe('MultiplayerServerState', () => {
-  const oldConsole = {log: console.log, warn: console.warn};
+  const oldConsole = { log: console.log, warn: console.warn };
   let dummyWebSocket: WebSocket;
   let warning = '';
 
@@ -52,12 +53,13 @@ describe('MultiplayerServerState', () => {
     it('should be able to connect a logged-in player', () => {
       expectState((state: MSS) => {
         state.connectClient('loggedInClient', dummyWebSocket);
-        state.setClientUserData('loggedInClient', {uid: 'loggedInClientUid', displayName: 'loggedInClientUsername'});
+        state.setClientUserData('loggedInClient', { uid: 'loggedInClientUid', displayName: 'loggedInClientUsername' });
       }, {
         ...initialState,
         playersOnline: ['loggedInClient'],
+        playersInLobby: ['loggedInClient'],
         userData: {
-          loggedInClient: {uid: 'loggedInClientUid', displayName: 'loggedInClientUsername'}
+          loggedInClient: { uid: 'loggedInClientUid', displayName: 'loggedInClientUsername' }
         }
       });
     });
@@ -67,8 +69,10 @@ describe('MultiplayerServerState', () => {
         state.connectClient('guestClient', dummyWebSocket);
       }, {
         ...initialState,
-        playersOnline: ['guestClient']
-      });
+        playersOnline: ['guestClient'],
+        playersInLobby: ['guestClient']
+      }
+      );
     });
 
     it('should be able to disconnect a player', () => {
@@ -83,12 +87,13 @@ describe('MultiplayerServerState', () => {
     it('should be able to host a game', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
-        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
         playersOnline: ['host'],
-        userData: { host: {uid: 'hostId', displayName: 'hostName'} },
+        playersInLobby: ['host'],
+        userData: { host: { uid: 'hostId', displayName: 'hostName' } },
         waitingPlayers: [
           {
             deck: defaultDecks[0],
@@ -109,6 +114,7 @@ describe('MultiplayerServerState', () => {
       }, {
         ...initialState,
         playersOnline: ['host'],
+        playersInLobby: ['host'],
         waitingPlayers: [
           {
             deck: defaultDecks[0],
@@ -125,12 +131,13 @@ describe('MultiplayerServerState', () => {
     it('should NOT be able to host a game with an invalid deck', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
-        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('host', 'My Game', 'normal', emptyDeck);
       }, {
         ...initialState,
         playersOnline: ['host'],
-        userData: { host: {uid: 'hostId', displayName: 'hostName'} }
+        playersInLobby: ['host'],
+        userData: { host: { uid: 'hostId', displayName: 'hostName' } }
       });
       expect(warning).toEqual('hostName tried to start game My Game but their deck was invalid for the normal format.');
     });
@@ -138,13 +145,14 @@ describe('MultiplayerServerState', () => {
     it('should be able to cancel hosting a game', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
-        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.cancelHostingGame('host');
       }, {
         ...initialState,
         playersOnline: ['host'],
-        userData: { host: {uid: 'hostId', displayName: 'hostName'} }
+        playersInLobby: ['host'],
+        userData: { host: { uid: 'hostId', displayName: 'hostName' } }
       });
     });
 
@@ -152,7 +160,7 @@ describe('MultiplayerServerState', () => {
       expectStateFn((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);
-        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('guest', 'host', defaultDecks[1]);
       }, (state: MSS) => ({
@@ -164,7 +172,7 @@ describe('MultiplayerServerState', () => {
           }
         ],
         playersOnline: ['host', 'guest'],
-        userData: { host: {uid: 'hostId', displayName: 'hostName'} }
+        userData: { host: { uid: 'hostId', displayName: 'hostName' } }
       }));
     });
 
@@ -172,13 +180,14 @@ describe('MultiplayerServerState', () => {
       expectState((state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);
-        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('guest', 'host', emptyDeck);
       }, {
         ...initialState,
         playersOnline: ['host', 'guest'],
-        userData: { host: {uid: 'hostId', displayName: 'hostName'} },
+        playersInLobby: ['host', 'guest'],
+        userData: { host: { uid: 'hostId', displayName: 'hostName' } },
         waitingPlayers: [
           {
             deck: defaultDecks[0],
@@ -198,7 +207,7 @@ describe('MultiplayerServerState', () => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);
         state.connectClient('spectator', dummyWebSocket);
-        state.setClientUserData('host', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('guest', 'host', defaultDecks[1]);
         state.spectateGame('spectator', (state.lookupGameByClient('guest') as m.Game).id);
@@ -211,7 +220,8 @@ describe('MultiplayerServerState', () => {
           }
         ],
         playersOnline: ['host', 'guest', 'spectator'],
-        userData: { host: {uid: 'hostId', displayName: 'hostName'} }
+        playersInLobby: [],
+        userData: { host: { uid: 'hostId', displayName: 'hostName' } }
       }));
     });
   });
@@ -220,13 +230,14 @@ describe('MultiplayerServerState', () => {
     it('should be able to join the unranked queue', () => {
       expectState((state: MSS) => {
         state.connectClient('player', dummyWebSocket);
-        state.setClientUserData('player', {uid: 'playerId', displayName: 'playerName'});
+        state.setClientUserData('player', { uid: 'playerId', displayName: 'playerName' });
         state.joinQueue('player', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
         playersOnline: ['player'],
+        playersInLobby: ['player'],
         queueSize: 1,
-        userData: { player: {uid: 'playerId', displayName: 'playerName'} }
+        userData: { player: { uid: 'playerId', displayName: 'playerName' } }
       });
     });
 
@@ -236,7 +247,8 @@ describe('MultiplayerServerState', () => {
         state.joinQueue('player', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
-        playersOnline: ['player']
+        playersOnline: ['player'],
+        playersInLobby: ['player']
       });
     });
 
@@ -246,69 +258,73 @@ describe('MultiplayerServerState', () => {
         state.joinQueue('player', 'normal', emptyDeck);
       }, {
         ...initialState,
-        playersOnline: ['player']
-      });
-    });
-
-    it('should be able to leave the unranked queue', () => {
-      expectState((state: MSS) => {
-        state.connectClient('player', dummyWebSocket);
-        state.setClientUserData('player', {uid: 'playerId', displayName: 'playerName'});
-        state.joinQueue('player', 'normal', defaultDecks[0]);
-        state.leaveQueue('player');
-      }, {
-        ...initialState,
         playersOnline: ['player'],
-        queueSize: 0,
-        userData: { player: {uid: 'playerId', displayName: 'playerName'} }
+        playersInLobby: ['player']
       });
     });
+  });
 
-    it('should be matched as soon as there is more than one player in the unranked queue for a given format', () => {
-      // TODO this behavior will change once there is "real" matchmaking.
-      expectStateFn((state: MSS) => {
-        state.connectClient('player1', dummyWebSocket);
-        state.setClientUserData('player1', {uid: 'playerId1', displayName: 'playerName1'});
-        state.joinQueue('player1', 'normal', defaultDecks[0]);
-        state.connectClient('player2', dummyWebSocket);
-        state.setClientUserData('player2', {uid: 'playerId2', displayName: 'playerName2'});
-        state.joinQueue('player2', 'normal', defaultDecks[1]);
-        state.matchPlayersIfPossible();
-      }, (state: MSS) => ({
-        ...initialState,
-        games: [
-          {
-            ...state.lookupGameByClient('player1') as m.Game,
-            players: ['player2', 'player1']
-          }
-        ],
-        playersOnline: ['player1', 'player2'],
-        queueSize: 0,
-        userData: {
-          player1: {uid: 'playerId1', displayName: 'playerName1'},
-          player2: {uid: 'playerId2', displayName: 'playerName2'}
-        }
-      }));
+  it('should be able to leave the unranked queue', () => {
+    expectState((state: MSS) => {
+      state.connectClient('player', dummyWebSocket);
+      state.setClientUserData('player', { uid: 'playerId', displayName: 'playerName' });
+      state.joinQueue('player', 'normal', defaultDecks[0]);
+      state.leaveQueue('player');
+    }, {
+      ...initialState,
+      playersOnline: ['player'],
+      playersInLobby: ['player'],
+      queueSize: 0,
+      userData: { player: { uid: 'playerId', displayName: 'playerName' } }
     });
+  });
 
-    it('should NOT be matched against a player in a different format', () => {
-      expectState((state: MSS) => {
-        state.connectClient('player1', dummyWebSocket);
-        state.setClientUserData('player1', {uid: 'playerId1', displayName: 'playerName1'});
-        state.joinQueue('player1', 'normal', defaultDecks[0]);
-        state.connectClient('player2', dummyWebSocket);
-        state.setClientUserData('player2', {uid: 'playerId2', displayName: 'playerName2'});
-        state.joinQueue('player2', 'sharedDeck', defaultDecks[1]);
-        state.matchPlayersIfPossible();
-      }, {
-        ...initialState,
-        playersOnline: ['player1', 'player2'],
-        queueSize: 2,
-        userData: {
-          player1: {uid: 'playerId1', displayName: 'playerName1'},
-          player2: {uid: 'playerId2', displayName: 'playerName2'}
+  it('should be matched as soon as there is more than one player in the unranked queue for a given format', () => {
+    // TODO this behavior will change once there is "real" matchmaking.
+    expectStateFn((state: MSS) => {
+      state.connectClient('player1', dummyWebSocket);
+      state.setClientUserData('player1', { uid: 'playerId1', displayName: 'playerName1' });
+      state.joinQueue('player1', 'normal', defaultDecks[0]);
+      state.connectClient('player2', dummyWebSocket);
+      state.setClientUserData('player2', { uid: 'playerId2', displayName: 'playerName2' });
+      state.joinQueue('player2', 'normal', defaultDecks[1]);
+      state.matchPlayersIfPossible();
+    }, (state: MSS) => ({
+      ...initialState,
+      games: [
+        {
+          ...state.lookupGameByClient('player1') as m.Game,
+          players: ['player2', 'player1']
         }
-      });
+      ],
+      playersOnline: ['player1', 'player2'],
+      playersInLobby: [],
+      queueSize: 0,
+      userData: {
+        player1: { uid: 'playerId1', displayName: 'playerName1' },
+        player2: { uid: 'playerId2', displayName: 'playerName2' }
+      }
+    }));
+  });
+
+  it('should NOT be matched against a player in a different format', () => {
+    expectState((state: MSS) => {
+      state.connectClient('player1', dummyWebSocket);
+      state.setClientUserData('player1', { uid: 'playerId1', displayName: 'playerName1' });
+      state.joinQueue('player1', 'normal', defaultDecks[0]);
+      state.connectClient('player2', dummyWebSocket);
+      state.setClientUserData('player2', { uid: 'playerId2', displayName: 'playerName2' });
+      state.joinQueue('player2', 'sharedDeck', defaultDecks[1]);
+      state.matchPlayersIfPossible();
+    }, {
+      ...initialState,
+      playersOnline: ['player1', 'player2'],
+      playersInLobby: ['player1', 'player2'],
+      queueSize: 2,
+      userData: {
+        player1: { uid: 'playerId1', displayName: 'playerName1' },
+        player2: { uid: 'playerId2', displayName: 'playerName2' }
+      }
     });
   });
 
@@ -317,7 +333,7 @@ describe('MultiplayerServerState', () => {
       const state = new MultiplayerServerState();
       state.connectClient('player1', dummyWebSocket);
       state.connectClient('player2', dummyWebSocket);
-      state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+      state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
       state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
       state.joinGame('player2', 'player1', defaultDecks[1]);
 
@@ -325,13 +341,13 @@ describe('MultiplayerServerState', () => {
       expect(game.actions).toEqual([]);
       expect([game.state.players.orange.hand.length, game.state.players.blue.hand.length]).toEqual([2, 2]);
 
-      state.appendGameAction('player1', gameActions.passTurn('orange'));
-      state.appendGameAction('player2', gameActions.passTurn('blue'));
+      state.appendGameAction('player1', gameActions.passTurn('orange') as m.Action);
+      state.appendGameAction('player2', gameActions.passTurn('blue') as m.Action);
 
       game = state.lookupGameByClient('player1')!;
       expect(game.actions).toEqual([
-        {type: gameActions.PASS_TURN, payload: {player: 'orange'}},
-        {type: gameActions.PASS_TURN, payload: {player: 'blue'}}
+        { type: gameActions.PASS_TURN, payload: { player: 'orange' } },
+        { type: gameActions.PASS_TURN, payload: { player: 'blue' } }
       ]);
       expect([game.state.players.orange.hand.length, game.state.players.blue.hand.length]).toEqual([3, 3]);
     });
@@ -343,12 +359,12 @@ describe('MultiplayerServerState', () => {
 
       state.connectClient('player1', dummyWebSocket);
       state.connectClient('player2', dummyWebSocket);
-      state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+      state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
       state.hostGame('player1', 'My Game', 'normal', kernelKillerDeck);
       state.joinGame('player2', 'player1', defaultDecks[1]);
-      state.appendGameAction('player1', gameActions.placeCard('3,-1,-2', 0));
+      state.appendGameAction('player1', gameActions.placeCard('3,-1,-2', 0) as m.Action);
       expect(storeGameResultFn.mock.calls.length).toBe(0);
-      state.appendGameAction('player1', gameActions.passTurn('orange')); // Orange wins on this turn.
+      state.appendGameAction('player1', gameActions.passTurn('orange') as m.Action); // Orange wins on this turn.
       expect(storeGameResultFn.mock.calls.length).toBe(1);
     });
 
@@ -359,7 +375,7 @@ describe('MultiplayerServerState', () => {
 
         state.connectClient('player1', dummyWebSocket);
         state.connectClient('player2', dummyWebSocket);
-        state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('player2', 'player1', defaultDecks[1]);
         expect(storeGameResultFn.mock.calls.length).toBe(0);
@@ -368,7 +384,8 @@ describe('MultiplayerServerState', () => {
       }, {
         ...initialState,
         playersOnline: ['player1', 'player2'],
-        userData: { player1: {uid: 'hostId', displayName: 'hostName'} }
+        playersInLobby: ['player1', 'player2'],
+        userData: { player1: { uid: 'hostId', displayName: 'hostName' } }
       });
     });
 
@@ -379,7 +396,7 @@ describe('MultiplayerServerState', () => {
 
         state.connectClient('player1', dummyWebSocket);
         state.connectClient('player2', dummyWebSocket);
-        state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+        state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
         state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('player2', 'player1', defaultDecks[1]);
         expect(storeGameResultFn.mock.calls.length).toBe(0);
@@ -388,7 +405,8 @@ describe('MultiplayerServerState', () => {
       }, {
         ...initialState,
         playersOnline: ['player1'],
-        userData: { player1: {uid: 'hostId', displayName: 'hostName'} }
+        playersInLobby: ['player1'],
+        userData: { player1: { uid: 'hostId', displayName: 'hostName' } }
       });
     });
   });
@@ -400,7 +418,7 @@ describe('MultiplayerServerState', () => {
       state.connectClient('player1', dummyWebSocket);
       state.connectClient('player2', dummyWebSocket);
       state.connectClient('spectator', dummyWebSocket);
-      state.setClientUserData('player1', {uid: 'hostId', displayName: 'hostName'});
+      state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
 
       state.hostGame('player1', 'My Game', 'normal', player1Deck);
       state.joinGame('player2', 'player1', player2Deck);
@@ -427,7 +445,7 @@ describe('MultiplayerServerState', () => {
 
     it('should reveal robot cards when they are about to be played', () => {
       const state = startGame(botsOnlyDeck, botsOnlyDeck);
-      const action: [m.Action, m.ClientID] = [gameActions.placeCard('3,-1,-2', 0), 'player1'];
+      const action: [m.Action, m.ClientID] = [gameActions.placeCard('3,-1,-2', 0) as m.Action, 'player1'];
 
       // player1 is orange.
       expect(state.getCardsToReveal('player1', action).blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
@@ -440,8 +458,8 @@ describe('MultiplayerServerState', () => {
 
     it('should reveal event cards when they are about to be played', () => {
       const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
-      state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange'));
-      const action: [m.Action, m.ClientID] = [gameActions.setSelectedTile('3,-1,-2', 'orange'), 'player1'];
+      state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange') as m.Action);
+      const action: [m.Action, m.ClientID] = [gameActions.setSelectedTile('3,-1,-2', 'orange') as m.Action, 'player1'];
 
       // player1 is orange.
       expect(state.getCardsToReveal('player1', action).blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
@@ -454,8 +472,8 @@ describe('MultiplayerServerState', () => {
 
     it('should reveal cards in the discard pile to all clients', () => {
       const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
-      state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange'));
-      state.appendGameAction('player1', gameActions.setSelectedTile('3,-1,-2', 'orange'));
+      state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange') as m.Action);
+      state.appendGameAction('player1', gameActions.setSelectedTile('3,-1,-2', 'orange') as m.Action);
 
       ['player1', 'player2', 'spectator'].forEach((clientID: m.ClientID) => {
         expect(state.getCardsToReveal(clientID).orange.discardPile.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(1);

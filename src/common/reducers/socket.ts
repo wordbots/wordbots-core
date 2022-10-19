@@ -53,6 +53,7 @@ export default function socket(oldState: State = cloneDeep(defaultState), action
         waitingPlayers: action.payload.waitingPlayers,
         userDataByClientId: action.payload.userData,
         playersOnline: action.payload.playersOnline,
+        playersInLobby: action.payload.playersInLobby,
         queueSize: action.payload.queueSize
       };
 

@@ -39,7 +39,19 @@ export function buildCardDraftGroups(
 }
 
 /** Produces an order of 15 rarity ({ 'common', 'uncommon', 'rare' }) groups given a seed,
-  * achieving the desired distribution of rarities (see comments below). */
+  * achieving the desired distribution of rarities (see comments below).
+  *
+  * The possible distributions of card rarities in drafted 30 card decks, with probabilities, are as below:
+  *    30.25% -> 2 R,  6 U, 22 C
+  *    22.00% -> 4 R,  6 U, 20 C
+  *    22.00% -> 2 R,  8 U, 20 C
+  *    16.00% -> 4 R,  8 U, 18 C
+  *     2.75% -> 6 R,  6 U, 18 C
+  *     2.75% -> 2 R, 10 U, 18 C
+  *     2.00% -> 6 R,  8 U, 16 C
+  *     2.00% -> 4 R, 10 U, 16 C
+  *     0.25% -> 6 R, 10 U, 14 C
+  * */
 export function generateRarityDraftOrder(seed: number): w.CardInSetRarity[] {
   const seed1 = nextSeed(seed);
   const seed2 = nextSeed(seed1);

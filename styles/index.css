@@ -160,6 +160,11 @@ a.topLink:hover {
   max-width: 330px;
 }
 
+.__react_component_tooltip.rarity-tooltip {
+  font-size: 9px;
+  padding: 4px 8px;
+}
+
 /* moz Sprite Fix */
 
 .wb-sprite {

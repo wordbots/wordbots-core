@@ -5,7 +5,7 @@ import * as w from '../../types';
 import { Card } from '../card/Card';
 
 interface DraftCardPickerProps {
-  cardGroup: w.CardInGame[]
+  cardGroup: Array<w.CardInGame & { rarity?: w.CardInSetRarity }>
   player: w.PlayerColor
   onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
 }
@@ -51,6 +51,7 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
             >
               {Card.fromObj(card, {
                 selected: selectedCardIds.includes(card.id),
+                rarityInSet: card.rarity,
                 onCardClick: () => this.handleSelectCard(card)
               })}
             </div>

@@ -23,6 +23,7 @@ import CardCostBadge from './CardCostBadge';
 import CardImage from './CardImage';
 import CardStat from './CardStat';
 import Sentence from './Sentence';
+import RaritySymbol from './RaritySymbol';
 
 export interface CardProps {
   children?: string | JSX.Element[]
@@ -44,6 +45,7 @@ export interface CardProps {
   baseCost?: number
   source: w.CardSource
   collection?: boolean
+  rarityInSet?: w.CardInSetRarity
 
   visible: boolean
   status?: {
@@ -75,32 +77,32 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
       lineHeight: 'normal'
     },
     headerSubtitle: {
-      lineHeight: 'normal'
+      lineHeight: 1
     }
   }
 
   public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}): JSX.Element => (
     isCardVisible(card)
       ? (
-      <CardWithStyles
-        visible
-        id={card.id}
-        name={card.name}
-        spriteID={card.spriteID}
-        spriteV={card.spriteV}
-        img={card.img}
-        type={card.type}
-        text={Sentence.fromText(card.text)}
-        rawText={card.text || ''}
-        highlightedTextBlocks={card.highlightedTextBlocks}
-        flavorText={card.flavorText}
-        stats={card.stats || {}}
-        cardStats={card.stats || {}}
-        cost={card.cost}
-        baseCost={card.cost}
-        source={card.metadata.source}
-        {...props}
-      />
+        <CardWithStyles
+          visible
+          id={card.id}
+          name={card.name}
+          spriteID={card.spriteID}
+          spriteV={card.spriteV}
+          img={card.img}
+          type={card.type}
+          text={Sentence.fromText(card.text)}
+          rawText={card.text || ''}
+          highlightedTextBlocks={card.highlightedTextBlocks}
+          flavorText={card.flavorText}
+          stats={card.stats || {}}
+          cardStats={card.stats || {}}
+          cost={card.cost}
+          baseCost={card.cost}
+          source={card.metadata.source}
+          {...props}
+        />
       ) : <CardBack />
   )
 
@@ -139,7 +141,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     };
 
     if (type === TYPE_EVENT && this.numChars < 30) {
-      return {...baseStyle, ...compactStyle};
+      return { ...baseStyle, ...compactStyle };
     } else {
       return baseStyle;
     }
@@ -162,7 +164,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     };
 
     if (type === TYPE_EVENT && this.numChars < 30) {
-      return {...baseStyle, ...compactStyle};
+      return { ...baseStyle, ...compactStyle };
     } else {
       return baseStyle;
     }
@@ -171,7 +173,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   public render(): JSX.Element {
     const {
       name, spriteID, spriteV, type, img, cost, baseCost, source, collection, flavorText,
-      showSpinner, status, visible, selected, targetable,
+      showSpinner, status, visible, selected, targetable, rarityInSet,
       scale, margin, rotation, yTranslation, overrideContainerStyles,
       onSpriteClick, classes
     } = this.props;
@@ -231,10 +233,10 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
               >
                 <CardHeader
                   key={`${name}_${type}_${flavorText}`}
-                  style={{padding: 8 * (scale || 1), height: 'auto'}}
+                  style={{ padding: 8 * (scale || 1), height: 'auto' }}
                   title={this.renderTitle()}
                   subheader={
-                    <span style={{fontSize: 14 * (scale || 1)}}>
+                    <span style={{ fontSize: 14 * (scale || 1) }}>
                       {typeToString(type)}
                       {flavorText && <Tooltip inline text={flavorText}>
                         <Icon className="material-icons" style={{
@@ -252,6 +254,11 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                     subheader: classes.headerSubtitle
                   }}
                 />
+                {rarityInSet && (
+                  <div style={{ position: 'absolute', top: 24 * (scale || 1), right: 5 * (scale || 1) }}>
+                    <RaritySymbol rarity={rarityInSet} scale={(scale || 1) * 1.2} />
+                  </div>
+                )}
 
                 <Divider style={{ margin: '-1px 0px 0px' }} />
 
@@ -356,12 +363,12 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
         {
           highlightedTextBlocks
             ? <Highlighter
-                autoEscape
-                textToHighlight={rawText}
-                searchWords={highlightedTextBlocks}
-                highlightStyle={{ color: 'green', fontWeight: 'bold', backgroundColor: 'inherit' }}
-                unhighlightStyle={{ color: 'black' }}
-              />
+              autoEscape
+              textToHighlight={rawText}
+              searchWords={highlightedTextBlocks}
+              highlightStyle={{ color: 'green', fontWeight: 'bold', backgroundColor: 'inherit' }}
+              unhighlightStyle={{ color: 'black' }}
+            />
             : text
         }
       </Textfit>
@@ -394,7 +401,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
       );
     } else if (type === TYPE_CORE || type === TYPE_STRUCTURE) {
       return (
-        <CardContent style={{...style, marginLeft: '31%'}}>
+        <CardContent style={{ ...style, marginLeft: '31%' }}>
           {this.renderStat('health')}
         </CardContent>
       );

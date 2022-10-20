@@ -1,8 +1,10 @@
-import { sortBy } from 'lodash';
+import { identity, sortBy } from 'lodash';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 import Icon from '@material-ui/core/Icon';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
+import { FormControlLabel } from '@material-ui/core';
 
 import { MAX_Z_INDEX, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
@@ -25,10 +27,12 @@ interface ActiveDeckProps {
   setForDeck?: w.Set
   // Only for sets:
   description?: string
+  cardRarities?: Record<w.CardId, w.CardInSetRarity | undefined>
 
   loggedIn: boolean
-  onIncreaseCardCount?: (cardId: w.CardId) => void
-  onDecreaseCardCount?: (cardId: w.CardId) => void
+  onIncreaseCardCount?: (cardId: w.CardId) => void  // for decks only
+  onDecreaseCardCount?: (cardId: w.CardId) => void  // for decks only
+  onUpdateCardRarities?: (cardRarities: Record<w.CardId, w.CardInSetRarity | undefined>) => void  // for sets only
   onRemoveCard: (cardId: w.CardId) => void
   onSave: (id: w.DeckId | null, name: string, cardIds: w.CardId[], description?: string) => void
 }
@@ -78,6 +82,21 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
     }
   }
 
+  get hasRaritiesEnabled(): boolean {
+    const { cardRarities, isASet } = this.props;
+    return !!isASet && Object.values(cardRarities || {}).some(identity);
+  }
+
+  public UNSAFE_componentWillReceiveProps(nextProps: ActiveDeckProps): void {
+    if (nextProps.name !== this.state.name) {
+      this.setState({ name: nextProps.name });
+    }
+
+    if (nextProps.description !== this.state.description) {
+      this.setState({ description: nextProps.description || '' });
+    }
+  }
+
   public render(): JSX.Element {
     const { cards, isASet, deck, setForDeck } = this.props;
     const { description, name } = this.state;
@@ -90,7 +109,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
             fontSize: 26
           }}
         >
-          {isASet ? 'Set' : 'Deck'} [
+          {isASet ? 'Set' : 'Deck'} [{' '}
           <span style={{ color: this.hasRightCardCount ? 'green' : 'red' }}>
             {cards.length}
           </span>
@@ -98,7 +117,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           {
             isASet ?
               <span>
-                ≥15
+                ≥15 ]
                 <Tooltip
                   inline
                   className="help-tooltip"
@@ -110,9 +129,8 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
                   </sup>
                 </Tooltip>
               </span> :
-              '30'
+              '30 ]'
           }
-          ]
           {
             !isASet && (
               <div style={{ float: 'right' }}>
@@ -134,6 +152,13 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           label="Description"
           style={{ width: '100%', marginBottom: 10 }}
           onChange={this.handleChangeDescription}
+        />}
+
+        {isASet && <FormControlLabel
+          control={
+            <Checkbox checked={this.hasRaritiesEnabled} onChange={this.handleToggleRaritiesEnabled} color="secondary" />
+          }
+          label="Enable rarities?"
         />}
 
         {
@@ -178,6 +203,17 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   private handleChangeDescription = (e: React.SyntheticEvent<any>) => { this.setState({ description: e.currentTarget.value }); };
   private handleGroupByCost = () => { this.setState({ grouping: 0 }); };
   private handleGroupByType = () => { this.setState({ grouping: 1 }); };
+
+  private handleToggleRaritiesEnabled = () => {
+    const { cards, onUpdateCardRarities } = this.props;
+    if (this.hasRaritiesEnabled) {
+      // If rarities are currently enabled, disable them by setting all card rarities to undefined.
+      onUpdateCardRarities!(Object.fromEntries(cards.map((card) => [card.id, undefined])));
+    } else {
+      // Otherwise, enable rarities by setting all card rarities to "common".
+      onUpdateCardRarities!(Object.fromEntries(cards.map((card) => [card.id, 'common'])));
+    }
+  }
 
   private handleSave = () => {
     const { id, cards, isASet, onSave } = this.props;
@@ -230,14 +266,20 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   }
 
   private renderCard(card: CardWithCount, idx: number): JSX.Element {
+    const {
+      isASet, cardRarities,
+      onIncreaseCardCount, onDecreaseCardCount, onRemoveCard, onUpdateCardRarities
+    } = this.props;
     return (
       <div key={idx} style={{ position: 'relative' }}>
         <ActiveDeckCard
           card={card}
-          showCount={!this.props.isASet}
-          onIncreaseCardCount={this.props.onIncreaseCardCount}
-          onDecreaseCardCount={this.props.onDecreaseCardCount}
-          onRemoveCard={this.props.onRemoveCard}
+          showCount={!isASet}
+          rarity={cardRarities?.[card.id]}
+          onIncreaseCardCount={onIncreaseCardCount}
+          onDecreaseCardCount={onDecreaseCardCount}
+          onRemoveCard={onRemoveCard}
+          onUpdateCardRarities={onUpdateCardRarities}
         />
       </div>
     );

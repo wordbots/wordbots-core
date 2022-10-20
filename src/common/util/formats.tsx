@@ -1,4 +1,4 @@
-import { cloneDeep, groupBy, isString, times } from 'lodash';
+import { cloneDeep, groupBy, isString } from 'lodash';
 import * as React from 'react';
 import * as seededRNG from 'seed-random';
 import { shuffle } from 'seed-shuffle';
@@ -8,7 +8,8 @@ import { DECK_SIZE } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
 import * as w from '../types';
 
-import { instantiateCard } from './cards';
+import { nextSeed } from './common';
+import { buildCardDraftGroups } from './sets';
 
 /** Given an encoded Format, decode it and render its display name. */
 export function renderFormatDisplayName(format: w.Format): string {
@@ -265,22 +266,13 @@ export class SetDraftFormat extends GameFormat {
   initialDraftState = (seed: number): w.DraftState => ({
     blue: {
       cardsDrafted: [],
-      cardGroupsToShow: this.buildCardDraftGroups(seed)
+      cardGroupsToShow: buildCardDraftGroups(this.set.cards, seed, seed)
     },
     orange: {
       cardsDrafted: [],
-      cardGroupsToShow: this.buildCardDraftGroups(seed * 2)
+      cardGroupsToShow: buildCardDraftGroups(this.set.cards, seed, nextSeed(seed))
     }
   })
-
-  /** Given a seed, return 15 groups of 4 random cards from the set. */
-  buildCardDraftGroups = (seed: number): w.CardInGame[][] => (
-    times(15, (i) =>
-      (shuffle(this.set.cards, seed + i * 0.01) as w.CardInStore[])
-        .slice(0, 4)
-        .map(instantiateCard)
-    )
-  )
 }
 
 export const BUILTIN_FORMATS = [

@@ -184,7 +184,11 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
                     .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
                     .map((card, idx) => (
                       <div key={idx} style={{ float: 'left' }}>
-                        {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
+                        {Card.fromObj(card, {
+                          scale: 0.7,
+                          rarityInSet: card.rarity,
+                          onCardClick: () => { this.handleClickCard(card); }
+                        })}
                       </div>
                     ))
                 }

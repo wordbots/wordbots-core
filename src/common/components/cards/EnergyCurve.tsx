@@ -61,7 +61,7 @@ export default class EnergyCurve extends React.Component<EnergyCurveProps, Energ
   }
 
   private valueToHeight(value: number): number {
-    return (value / this.maxValue) * (this.props.height - AXIS_HEIGHT);
+    return this.maxValue > 0 ? (value / this.maxValue) * (this.props.height - AXIS_HEIGHT) : 0;
   }
 
   public render(): JSX.Element {

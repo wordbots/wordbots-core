@@ -3,19 +3,23 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import CardTooltip from '../card/CardTooltip';
+import RaritySymbol from '../card/RaritySymbol';
 
 import { CardWithCount } from './types';
 
 interface ActiveDeckCardProps {
   card: CardWithCount
   showCount: boolean
+  rarity?: w.CardInSetRarity
+
   onIncreaseCardCount?: (cardId: w.CardId) => void
   onDecreaseCardCount?: (cardId: w.CardId) => void
   onRemoveCard: (cardId: w.CardId) => void
+  onUpdateCardRarities?: (cardRarities: Record<w.CardId, w.CardInSetRarity | undefined>) => void
 }
 
 export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps> {
-  private styles: Record<string, React.CSSProperties> = {
+  static styles: Record<string, React.CSSProperties> = {
     outerCard: {
       display: 'flex',
       alignItems: 'stretch',
@@ -54,35 +58,51 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
       fontSize: '0.9em'
     },
     xButton: {
-      position: 'absolute',
       cursor: 'pointer',
-      left: -12,
-      top: 8
+      marginTop: 8,
+      marginRight: 5
+    },
+    raritySymbol: {
+      width: 20,
+      marginLeft: 3,
+      position: 'relative',
+      left: 5,
+      cursor: 'pointer'
     }
   };
 
   public render(): JSX.Element {
-    const { card, showCount } = this.props;
+    const { card, showCount, rarity } = this.props;
     return (
-      <div>
-        <span style={this.styles.xButton} onClick={this.handleRemoveCard}>
+      <div style={{ display: 'flex', justifyContent: 'spaceBetween' }}>
+        <span style={ActiveDeckCard.styles.xButton} onClick={this.handleRemoveCard}>
           x
         </span>
-        <CardTooltip card={card}>
-          <div style={this.styles.outerCard}>
-            <div style={this.styles.cardCost}>{card.cost}</div>
-            <div style={this.styles.cardName}>{truncate(card.name, { length: 20 })}</div>
-            {showCount && <div style={this.styles.cardCount}>
-              <span onClick={this.handleDecreaseCardCount}>
-                &ndash;
+        <span style={{ flexGrow: 5 }}>
+          <CardTooltip card={card}>
+            <div style={ActiveDeckCard.styles.outerCard}>
+              <div style={ActiveDeckCard.styles.cardCost}>{card.cost}</div>
+              <div style={ActiveDeckCard.styles.cardName}>{truncate(card.name, { length: 20 })}</div>
+              {showCount && <div style={ActiveDeckCard.styles.cardCount}>
+                <span onClick={this.handleDecreaseCardCount}>
+                  &ndash;
               </span>
-              <b>{card.count}</b>
-              <span onClick={this.handleIncreaseCardCount}>
-                +
+                <b>{card.count}</b>
+                <span onClick={this.handleIncreaseCardCount}>
+                  +
               </span>
-            </div>}
-          </div>
-        </CardTooltip>
+              </div>}
+            </div>
+          </CardTooltip>
+        </span>
+        {rarity &&
+          <span
+            style={ActiveDeckCard.styles.raritySymbol}
+            onClick={this.handleToggleRarity}
+          >
+            <RaritySymbol rarity={rarity} />
+          </span>
+        }
       </div>
     );
   }
@@ -90,4 +110,12 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
   private handleDecreaseCardCount = () => { (this.props.onDecreaseCardCount || noop)(this.props.card.id); };
   private handleIncreaseCardCount = () => { (this.props.onIncreaseCardCount || noop)(this.props.card.id); };
   private handleRemoveCard = () => { this.props.onRemoveCard(this.props.card.id); };
+
+  private handleToggleRarity = () => {
+    const { card, rarity, onUpdateCardRarities } = this.props;
+    if (rarity && onUpdateCardRarities) {
+      const newRarity = ({ 'common': 'uncommon', 'uncommon': 'rare', 'rare': 'common' })[rarity] as w.CardInSetRarity;
+      onUpdateCardRarities({ [card.id]: newRarity });
+    }
+  };
 }

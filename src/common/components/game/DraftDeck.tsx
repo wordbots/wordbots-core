@@ -6,7 +6,7 @@ import { Card } from '../card/Card';
 import CardBack from '../card/CardBack';
 
 interface DraftDeckProps {
-  cards: w.CardInGame[]
+  cards: Array<w.CardInGame & { rarity?: w.CardInSetRarity }>
 }
 
 export default class DraftDeck extends React.PureComponent<DraftDeckProps> {
@@ -21,7 +21,7 @@ export default class DraftDeck extends React.PureComponent<DraftDeckProps> {
               key={idx}
               style={{ float: 'left' }}
             >
-              {Card.fromObj(card, { scale: 0.6 })}
+              {Card.fromObj(card, { scale: 0.6, rarityInSet: card.rarity })}
             </div>
           )
         }

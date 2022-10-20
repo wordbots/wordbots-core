@@ -13,6 +13,7 @@ export type AbilityId = string;
 export type Attribute = 'attack' | 'health' | 'speed';
 export type BuiltInFormat = 'normal' | 'builtinOnly' | 'sharedDeck';
 export type CardId = string;
+export type CardInSetRarity = 'common' | 'uncommon' | 'rare';
 export type CardType = 0 | 1 | 2 | 3;
 export type CardTypeQuery = 'robot' | 'action' | 'kernel' | 'structure' | 'allobjects' | 'anycard';
 export type Cause = 'combat' | 'anyevent';
@@ -23,6 +24,7 @@ export type HexId = string;
 export type ObjectId = string;
 export type ParserMode = 'event' | 'object';
 export type PlayerColor = 'blue' | 'orange';
+export type SetId = string;
 export type TextSource = 'load' | 'input' | 'didYouMean' | 'randomize';
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
@@ -124,10 +126,10 @@ export interface CardSource {
 }
 
 export interface Set {
-  id: string
+  id: SetId
   name: string
   description?: string
-  cards: CardInStore[]
+  cards: Array<CardInStore & { rarity?: CardInSetRarity }>
   metadata: {
     authorId: UserId
     authorName: string
@@ -457,8 +459,8 @@ export interface LoggedAction extends ChatMessage {
 }
 
 export type DraftState = PerPlayer<{
-  cardsDrafted: CardInGame[]
-  cardGroupsToShow: CardInGame[][]
+  cardsDrafted: Array<CardInGame & { rarity?: CardInSetRarity }>
+  cardGroupsToShow: Array<Array<CardInGame & { rarity?: CardInSetRarity }>>
 }>;
 
 // Creator state subcomponents

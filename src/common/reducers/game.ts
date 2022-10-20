@@ -9,7 +9,7 @@ import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
 import { GameFormat } from '../util/formats';
-import { cleanUpAnimations, triggerSound } from '../util/game';
+import { cleanUpAnimations, logAction, triggerSound } from '../util/game';
 import { handleRewriteParseCompleted } from '../util/rewrite';
 
 import g from './handlers/game';
@@ -155,9 +155,11 @@ export function handleAction(
     case socketActions.FORFEIT: {
       if (state.draft) {
         // If still drafting, there's no notion of 'forfeiting' - the game just gets aborted
+        state = logAction(state, null, 'The draft has been aborted (a player has left)');
         return { ...state, winner: 'aborted' };
       } else {
         state = { ...state, winner: payload.winner };
+        state = logAction(state, state.players[payload.winner as w.PlayerColor], 'won the game due to forfeit');
         state = triggerSound(state, state.winner === state.player ? 'win.wav' : 'game-over.wav');
         return state;
       }

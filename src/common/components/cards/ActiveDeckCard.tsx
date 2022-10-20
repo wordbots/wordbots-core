@@ -100,7 +100,7 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
             style={ActiveDeckCard.styles.raritySymbol}
             onClick={this.handleToggleRarity}
           >
-            <RaritySymbol rarity={rarity} />
+            <RaritySymbol isEditing rarity={rarity} />
           </span>
         }
       </div>

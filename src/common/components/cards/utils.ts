@@ -49,7 +49,7 @@ function searchCards(card: w.CardInStore, query = ''): boolean {
 export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: SortCriteria, order: SortOrder = 0): 1 | 0 | -1 {
   // Individual sort columns that are composed into sort functions below.
   // (Note: We convert numbers to base-36 to preserve sorting. eg. "10" < "9" but "a" > "9".)
-  const [timestamp, cost, name, type, attack, health, speed] = [
+  const [timestamp, cost, name, type, attack, health, speed, rarity] = [
     // we want timestamp to be sorted backwards compared to other fields.
     // also, created cards without a timestamp should still come before builtin cards.
     (c: w.CardInStore) => (9999999999999 - (c.metadata.updated || (c.metadata.source.type === 'builtin' ? 0 : 1))).toString(36),
@@ -58,11 +58,13 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: SortCr
     (c: w.CardInStore) => typeToString(c.type),
     (c: w.CardInStore) => (c.stats?.attack || 0).toString(36),
     (c: w.CardInStore) => (c.stats?.health || 0).toString(36),
-    (c: w.CardInStore) => (c.stats?.speed || 0).toString(36)
+    (c: w.CardInStore) => (c.stats?.speed || 0).toString(36),
+    // we want to sort rarity backwards (so 10-x rather than x)
+    (c: w.CardInStore) => 10 - ({ rare: 3, uncommon: 2, common: 1, none: 0 })[(c as w.CardInStore & { rarity?: w.CardInSetRarity }).rarity || 'none']
   ];
 
   // Sorting functions for card collections:
-  // 0 = timestamp, 1 = cost, 2 = name, 3 = type, 4 = attack, 5 = health, 6 = speed.
+  // 0 = timestamp, 1 = cost, 2 = name, 3 = type, 4 = attack, 5 = health, 6 = speed, 7 = rarity then cost
   const f = [
     (c: w.CardInStore) => [timestamp(c), cost(c), name(c)],
     (c: w.CardInStore) => [cost(c), name(c)],
@@ -70,7 +72,8 @@ export function sortCards(c1: w.CardInStore, c2: w.CardInStore, criteria: SortCr
     (c: w.CardInStore) => [type(c), cost(c), name(c)],
     (c: w.CardInStore) => [attack(c), cost(c), name(c)],
     (c: w.CardInStore) => [health(c), cost(c), name(c)],
-    (c: w.CardInStore) => [speed(c), cost(c), name(c)]
+    (c: w.CardInStore) => [speed(c), cost(c), name(c)],
+    (c: w.CardInStore) => [rarity(c), cost(c), timestamp(c), name(c)]
   ][criteria];
 
   if (f(c1) < f(c2)) {

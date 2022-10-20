@@ -10,6 +10,7 @@ import { MAX_Z_INDEX, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../const
 import * as w from '../../types';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
+import RaritySymbol from '../card/RaritySymbol';
 
 import { groupCards, selectType } from './utils';
 import ActiveDeckCard from './ActiveDeckCard';
@@ -76,7 +77,7 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   get hasRightCardCount(): boolean {
     const { cards, isASet } = this.props;
     if (isASet) {
-      return cards.length >= 15;
+      return cards.length >= 20;
     } else {
       return cards.length === 30;
     }
@@ -106,7 +107,8 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         <div
           style={{
             fontWeight: 100,
-            fontSize: 26
+            fontSize: 26,
+            marginBottom: 5,
           }}
         >
           {isASet ? 'Set' : 'Deck'} [{' '}
@@ -117,15 +119,15 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           {
             isASet ?
               <span>
-                ≥15 ]
+                20 ]
                 <Tooltip
                   inline
                   className="help-tooltip"
                   place="left"
-                  text="15 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
+                  text="20 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
                 >
                   <sup>
-                    <Icon className="material-icons" style={this.styles.helpIcon}>help</Icon>
+                    <Icon className="material-icons">help</Icon>
                   </sup>
                 </Tooltip>
               </span> :
@@ -139,6 +141,28 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
             )
           }
         </div>
+
+        {this.hasRaritiesEnabled && (
+          <div style={{ marginBottom: 5 }}>
+            <RaritySymbol rarity="rare" />
+            <span style={{ color: this.getNumCardsWithRarity('rare') < 4 ? 'red' : undefined }}>{this.getNumCardsWithRarity('rare')}</span>
+            &nbsp;&nbsp;&nbsp;
+            <RaritySymbol rarity="uncommon" />
+            <span style={{ color: this.getNumCardsWithRarity('uncommon') < 4 ? 'red' : undefined }}>{this.getNumCardsWithRarity('uncommon')}</span>
+            &nbsp;&nbsp;&nbsp;
+            <RaritySymbol rarity="common" />
+            <span style={{ color: this.getNumCardsWithRarity('common') < 4 ? 'red' : undefined }}>{this.getNumCardsWithRarity('common')}</span>
+
+            <Tooltip
+              inline
+              className="help-tooltip"
+              place="left"
+              text="Sets with card rarities enabled must have at least 4 cards of each rarity (rare, uncommon, common)."
+            >
+              <Icon className="material-icons" style={{ fontSize: 20, position: 'relative', top: 3, left: 10 }}>help</Icon>
+            </Tooltip>
+          </div>
+        )}
 
         <TextField
           value={name}
@@ -158,7 +182,20 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           control={
             <Checkbox checked={this.hasRaritiesEnabled} onChange={this.handleToggleRaritiesEnabled} color="secondary" />
           }
-          label="Enable rarities?"
+          label={
+            <span>
+              Enable card rarities
+              <Tooltip
+                inline
+                html
+                className="help-tooltip"
+                place="left"
+                text="By default, all cards come up with equal probability when drafting a set.<br><br>Enabling the *card rarities* feature for a set makes some cards appear more rarely than others. On average, each drafted deck will get:<br>• 2–4 rare (★) cards<br>• 6–8 uncommon (◆) cards<br>• 18–22 common (●) cards"
+              >
+                <Icon className="material-icons" style={{ fontSize: 20, position: 'relative', top: 3, left: 8 }}>help</Icon>
+              </Tooltip>
+            </span>
+          }
         />}
 
         {
@@ -326,5 +363,9 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         </div>
       );
     }
+  }
+
+  private getNumCardsWithRarity(rarity: w.CardInSetRarity): number {
+    return Object.values(this.props.cardRarities || {}).filter((r) => r === rarity).length;
   }
 }

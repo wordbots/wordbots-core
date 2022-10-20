@@ -51,7 +51,6 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
             >
               {Card.fromObj(card, {
                 selected: selectedCardIds.includes(card.id),
-                rarityInSet: card.rarity,
                 onCardClick: () => this.handleSelectCard(card)
               })}
             </div>

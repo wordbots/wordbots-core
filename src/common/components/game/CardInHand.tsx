@@ -53,6 +53,7 @@ export default class CardInHand extends React.Component<CardInHandProps> {
               stats={stats || {}}
               cardStats={stats || {}}
               source={metadata.source}
+              rarityInSet={(card as { rarity?: w.CardInSetRarity }).rarity}
 
               {...{ status, selected, targetable, visible, margin, rotation, yTranslation, zIndex }}
 
@@ -68,7 +69,7 @@ export default class CardInHand extends React.Component<CardInHandProps> {
   }
 
   private handleClickCard = () => { this.props.onSelectCard(this.props.idx); };
-  private handleHoverCard = (isMouseOver: boolean ) => { this.props.onHoverCard(isMouseOver ? this.props.idx : null); };
+  private handleHoverCard = (isMouseOver: boolean) => { this.props.onHoverCard(isMouseOver ? this.props.idx : null); };
   private handleClickNextStep = () => { this.props.onTutorialStep(); };
   private handleClickPrevStep = () => { this.props.onTutorialStep(true); };
 }

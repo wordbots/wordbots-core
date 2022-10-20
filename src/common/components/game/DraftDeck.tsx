@@ -21,7 +21,7 @@ export default class DraftDeck extends React.PureComponent<DraftDeckProps> {
               key={idx}
               style={{ float: 'left' }}
             >
-              {Card.fromObj(card, { scale: 0.6, rarityInSet: card.rarity })}
+              {Card.fromObj(card, { scale: 0.6 })}
             </div>
           )
         }

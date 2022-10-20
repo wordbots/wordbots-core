@@ -84,7 +84,7 @@ function cardSourceForCurrentUser(): w.CardSource {
 /** Converts card from cardCreator store format -> format for collection and game stores. */
 export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   const {
-    attack, cost, health, id, isPrivate, name, parserVersion,
+    attack, cost, health, flavorText, id, isPrivate, name, parserVersion,
     sentences: rawSentences, speed, spriteID, type
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
@@ -98,6 +98,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     spriteV: SPRITE_VERSION,
     parserV: parserVersion,
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
+    flavorText,
     cost,
     metadata: {
       ownerId: cardSourceForCurrentUser().uid!,

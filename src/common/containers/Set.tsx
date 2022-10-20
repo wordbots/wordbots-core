@@ -166,7 +166,10 @@ class Set extends React.Component<SetProps, SetState> {
         const set: w.Set | undefined = find(sets, { id: setId });
         if (set) {
           editSet(setId);
-          this.setState({ selectedCardIds: set.cards.map((c) => c.id) });
+          this.setState({
+            selectedCardIds: set.cards.map((c) => c.id),
+            cardRarities: Object.fromEntries(set.cards.map((c) => [c.id, c.rarity]))
+          });
         } else {
           // If set not found, redirect to the new set URL.
           history.replace('/set/new');

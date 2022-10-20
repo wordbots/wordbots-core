@@ -151,18 +151,19 @@ a.topLink:hover {
   fill: white;
 }
 
-.help-tooltip {
+.__react_component_tooltip.help-tooltip {
   font-weight: normal;
   max-width: 180px;
 }
 
-.formats-tooltip {
+.__react_component_tooltip.formats-tooltip {
   max-width: 330px;
 }
 
-.__react_component_tooltip.rarity-tooltip {
-  font-size: 9px;
-  padding: 4px 8px;
+.__react_component_tooltip.card-part-tooltip {
+  font-family: 'Roboto', 'Arial';
+  font-size: 10px;
+  padding: 6px 8px;
 }
 
 /* moz Sprite Fix */

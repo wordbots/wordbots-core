@@ -67,7 +67,7 @@ export default class CardStat extends React.Component<CardStatProps> {
 
     if (current && current !== base) {
       return (
-        <span style={{position: 'relative'}}>
+        <span style={{ position: 'relative' }}>
           <span style={baseStatStyle}>
             &nbsp;{base}&nbsp;
           </span>
@@ -101,8 +101,8 @@ export default class CardStat extends React.Component<CardStatProps> {
       );
     } else {
       return (
-        <Tooltip text={capitalize(this.props.type)}>
-          <div style={{...style, cursor: 'pointer'}}>
+        <Tooltip text={capitalize(this.props.type)} className="card-part-tooltip">
+          <div style={{ ...style, cursor: 'pointer' }}>
             {this.icon}
             {this.statText}
           </div>

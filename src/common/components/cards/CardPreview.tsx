@@ -61,7 +61,7 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
               <div
                 style={{
                   fontFamily: '"Space Age", "Space Age-fallback"',
-                  backgroundColor: 'rgb(0, 188, 212)',
+                  backgroundColor: 'rgb(0 144 162)',
                   display: 'inline',
                   padding: '2px 12px',
                   fontSize: '1.5em',

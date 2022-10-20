@@ -7,7 +7,7 @@ import * as g from '../../../guards';
 import { bluePlayerState, orangePlayerState } from '../../../store/defaultGameState';
 import * as w from '../../../types';
 import { assertCardVisible, quoteKeywords, splitSentences } from '../../../util/cards';
-import { id } from '../../../util/common';
+import { id, nextSeed } from '../../../util/common';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
   deleteAllDyingObjects, discardCardsFromHand, executeCmd, getCost, logAction,
@@ -285,7 +285,7 @@ export function draftCards(state: w.GameState, player: w.PlayerColor, cards: w.C
     if (state.draft.blue.cardGroupsToShow.length === 0 && state.draft.orange.cardGroupsToShow.length === 0) {
       const seed = state.rng();
       const blueDeck: w.CardInGame[] = shuffle(state.draft.blue.cardsDrafted, seed);
-      const orangeDeck: w.CardInGame[] = shuffle(state.draft.orange.cardsDrafted, seed);
+      const orangeDeck: w.CardInGame[] = shuffle(state.draft.orange.cardsDrafted, nextSeed(seed));
 
       state.players.blue = bluePlayerState(blueDeck);
       state.players.orange = orangePlayerState(orangeDeck);

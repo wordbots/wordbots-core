@@ -1,10 +1,24 @@
-import { filter } from 'lodash';
+import { countBy, filter } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import * as w from '../types';
 
 import { instantiateCard } from './cards';
 import { nextSeed } from './common';
+
+/** TODO docstring */
+export function isSetValid(set: w.Set): { valid: boolean, reason?: string } {
+  const { common, uncommon, rare } = countBy(set.cards, 'rarity');
+  const setHasRarities = common || uncommon || rare;
+
+  if (set.cards.length < 20) {
+    return { valid: false, reason: 'the set has less than 20 cards' };
+  } else if (setHasRarities && (common < 4 || uncommon < 4 || rare < 4)) {
+    return { valid: false, reason: 'the set doesn\'t have at least 4 cards of each rarity' };
+  } else {
+    return { valid: true };
+  }
+}
 
 /** Given a set of cards (optionally with rarities) and random seeds, return 15 groups of 4 random cards from the set,
   * respecting certain rules for distribution of rarities if present (see `generateRarityDraftOrder`).
@@ -62,13 +76,4 @@ export function generateRarityDraftOrder(seed: number): w.CardInSetRarity[] {
     ...new Array(numUncommonGroups).fill('uncommon'),
     ...new Array(numCommonGroups).fill('common')
   ], seed);
-}
-
-/** TODO docstring */
-export function symbolForRarity(rarity: w.CardInSetRarity): string {
-  return ({
-    'common': '●',
-    'uncommon': '◆',
-    'rare': '★'
-  })[rarity];
 }

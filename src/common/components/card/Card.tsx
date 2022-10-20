@@ -45,7 +45,7 @@ export interface CardProps {
   baseCost?: number
   source: w.CardSource
   collection?: boolean
-  rarityInSet?: w.CardInSetRarity
+  rarityInSet?: w.CardInSetRarity  // (rarity exists only for cards in sets, and only if enabled by the set owner)
 
   visible: boolean
   status?: {
@@ -69,6 +69,7 @@ export interface CardProps {
 
 interface CardState {
   shadow: number
+  showingFlavorText: boolean
 }
 
 export class Card extends React.Component<CardProps & WithStyles, CardState> {
@@ -81,7 +82,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     }
   }
 
-  public static fromObj = (card: w.PossiblyObfuscatedCard, props: Partial<CardProps> = {}): JSX.Element => (
+  public static fromObj = (card: w.PossiblyObfuscatedCard & { rarity?: w.CardInSetRarity }, props: Partial<CardProps> = {}): JSX.Element => (
     isCardVisible(card)
       ? (
         <CardWithStyles
@@ -101,13 +102,15 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
           cost={card.cost}
           baseCost={card.cost}
           source={card.metadata.source}
+          rarityInSet={card.rarity}
           {...props}
         />
       ) : <CardBack />
   )
 
   public state = {
-    shadow: 2
+    shadow: 2,
+    showingFlavorText: false
   };
 
   public shouldComponentUpdate(nextProps: CardProps, nextState: CardState): boolean {
@@ -236,10 +239,21 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   style={{ padding: 8 * (scale || 1), height: 'auto' }}
                   title={this.renderTitle()}
                   subheader={
-                    <span style={{ fontSize: 14 * (scale || 1) }}>
+                    <span style={{ fontSize: 14 * (scale || 1) }} onClick={this.handleToggleFlavorText}>
                       {typeToString(type)}
-                      {flavorText && <Tooltip inline text={flavorText}>
+                      {rarityInSet && (
+                        <div style={{
+                          float: 'right',
+                          marginTop: -4 * (scale || 1),
+                          marginLeft: 5 * (scale || 1),
+                          marginBottom: -3 * (scale || 1)
+                        }}>
+                          <RaritySymbol rarity={rarityInSet} scale={(scale || 1) * 1.2} />
+                        </div>
+                      )}
+                      {flavorText && <Tooltip inline text="Show/hide flavor text" place="left" className="card-part-tooltip">
                         <Icon className="material-icons" style={{
+                          marginTop: 4 * (scale || 1),
                           fontSize: 16 * (scale || 1),
                           color: '#999',
                           float: 'right'
@@ -254,11 +268,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                     subheader: classes.headerSubtitle
                   }}
                 />
-                {rarityInSet && (
-                  <div style={{ position: 'absolute', top: 24 * (scale || 1), right: 5 * (scale || 1) }}>
-                    <RaritySymbol rarity={rarityInSet} scale={(scale || 1) * 1.2} />
-                  </div>
-                )}
+
 
                 <Divider style={{ margin: '-1px 0px 0px' }} />
 
@@ -308,6 +318,17 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     }
   }
 
+  private handleToggleFlavorText = (evt: React.MouseEvent<Element>) => {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    // Toggle flavor text; make sure that it's back to real text in 10 sec.
+    this.setState((state) => ({ showingFlavorText: !state.showingFlavorText }));
+    setTimeout(() => {
+      this.setState({ showingFlavorText: false });
+    }, 10000);
+  }
+
   private handleMouseEnter = () => {
     const { onCardHover } = this.props;
     this.setState({ shadow: 3 });
@@ -347,32 +368,44 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   }
 
   private renderText(): React.ReactNode {
-    const { highlightedTextBlocks, rawText, text, scale } = this.props;
+    const { highlightedTextBlocks, flavorText, rawText, text, scale } = this.props;
+    const { showingFlavorText } = this.state;
 
     if (!inBrowser()) {
       return text;
+    } else if (showingFlavorText) {
+      return (
+        <Textfit
+          autoResize={false}
+          mode="multi"
+          max={14 * (scale || 1)}
+          style={this.textFitStyle}
+        >
+          <span style={{ fontFamily: 'Carter One, Carter One-fallback' }}>{flavorText}</span>
+        </Textfit>
+      );
+    } else {
+      return (
+        <Textfit
+          autoResize={false}
+          mode="multi"
+          max={14 * (scale || 1)}
+          style={this.textFitStyle}
+        >
+          {
+            highlightedTextBlocks
+              ? <Highlighter
+                autoEscape
+                textToHighlight={rawText}
+                searchWords={highlightedTextBlocks}
+                highlightStyle={{ color: 'green', fontWeight: 'bold', backgroundColor: 'inherit' }}
+                unhighlightStyle={{ color: 'black' }}
+              />
+              : text
+          }
+        </Textfit>
+      );
     }
-
-    return (
-      <Textfit
-        autoResize={false}
-        mode="multi"
-        max={14 * (scale || 1)}
-        style={this.textFitStyle}
-      >
-        {
-          highlightedTextBlocks
-            ? <Highlighter
-              autoEscape
-              textToHighlight={rawText}
-              searchWords={highlightedTextBlocks}
-              highlightStyle={{ color: 'green', fontWeight: 'bold', backgroundColor: 'inherit' }}
-              unhighlightStyle={{ color: 'black' }}
-            />
-            : text
-        }
-      </Textfit>
-    );
   }
 
   private renderStat(type: w.Attribute): JSX.Element {

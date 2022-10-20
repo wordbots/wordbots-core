@@ -6,7 +6,8 @@ import * as w from '../types';
 import { instantiateCard } from './cards';
 import { nextSeed } from './common';
 
-/** TODO docstring */
+/** Returns { valid: true } if a given Set is valid (for publishing, making decks, drafting, etc),
+  * or { valid: false, reason: string } if the Set is invalid. */
 export function isSetValid(set: w.Set): { valid: boolean, reason?: string } {
   const { common, uncommon, rare } = countBy(set.cards, 'rarity');
   const setHasRarities = common || uncommon || rare;
@@ -37,7 +38,8 @@ export function buildCardDraftGroups(
   );
 }
 
-/** TODO docstring */
+/** Produces an order of 15 rarity ({ 'common', 'uncommon', 'rare' }) groups given a seed,
+  * achieving the desired distribution of rarities (see comments below). */
 export function generateRarityDraftOrder(seed: number): w.CardInSetRarity[] {
   const seed1 = nextSeed(seed);
   const seed2 = nextSeed(seed1);

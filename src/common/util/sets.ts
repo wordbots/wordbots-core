@@ -51,7 +51,7 @@ export function buildCardDraftGroups(
   *     2.00% -> 6 R,  8 U, 16 C
   *     2.00% -> 4 R, 10 U, 16 C
   *     0.25% -> 6 R, 10 U, 14 C
-  * */
+  */
 export function generateRarityDraftOrder(seed: number): w.CardInSetRarity[] {
   const seed1 = nextSeed(seed);
   const seed2 = nextSeed(seed1);

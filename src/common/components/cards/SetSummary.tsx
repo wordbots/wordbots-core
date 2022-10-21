@@ -28,6 +28,7 @@ interface SetSummaryBaseProps {
   inPublishedSetsList?: boolean
   isSingleSet?: boolean
   numDecksCreated?: number
+  numDraftsPlayed?: number
   onCreateDeckFromSet: () => void
   onDeleteSet: () => void
   onDuplicateSet: () => void
@@ -127,6 +128,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       classes,
       set,
       numDecksCreated,
+      numDraftsPlayed,
       inPublishedSetsList,
       onCreateDeckFromSet,
       onDuplicateSet,
@@ -198,7 +200,8 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
             }
           </div>
           <div className={classes.numDecksCreated}>
-            {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created
+            {!isUndefined(numDecksCreated) ? numDecksCreated : '?'} decks created,{' '}
+            {!isUndefined(numDraftsPlayed) ? numDraftsPlayed : '?'} drafts played
           </div>
           {this.renderConfirmPublishDialog()}
         </Paper>

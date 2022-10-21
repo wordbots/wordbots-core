@@ -187,6 +187,11 @@ export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
   )([...blueGames, ...orangeGames]) as w.SavedGame[];
 }
 
+export async function getNumGamesBySetFormat(formatType: 'set' | 'setDraft', setId: w.SetId): Promise<number> {
+  const games = await queryObjects<w.SavedGame>('games', 'format/set/id', setId);
+  return games.filter((g) => (g.format as w.SetFormat | w.SetDraftFormat)._type === formatType).length;
+}
+
 // CARDS
 
 /** Yield either all cards for a given user or the most recent cards belonging to any user. */

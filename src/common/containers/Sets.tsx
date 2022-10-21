@@ -15,7 +15,7 @@ import SetSummary from '../components/cards/SetSummary';
 import Title from '../components/Title';
 import MustBeLoggedIn from '../components/users/MustBeLoggedIn';
 import * as w from '../types';
-import { getNumDecksCreatedCountBySetId } from '../util/firebase';
+import { getNumDecksCreatedCountBySetId, getNumGamesBySetFormat } from '../util/firebase';
 import PageHelp from '../components/PageHelp';
 import { getQueryString } from '../util/browser';
 
@@ -36,6 +36,7 @@ type SetsProps = SetsStateProps & SetsDispatchProps & { history: History };
 
 interface SetsState {
   numDecksBySet?: Record<string, number>
+  numDraftsPlayedBySet?: Record<string, number>
 }
 
 function mapStateToProps(state: w.State): SetsStateProps {
@@ -83,14 +84,15 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
   get publishedSets(): w.Set[] {
     const { sets } = this.props;
-    const { numDecksBySet } = this.state;
+    const { numDecksBySet, numDraftsPlayedBySet } = this.state;
     const unorderedPublishedSets = sets.filter((set) => set.metadata.isPublished);
 
-    if (numDecksBySet) {
-      return orderBy(unorderedPublishedSets, (set) => numDecksBySet[set.id] || 0, 'desc');
-    } else {
-      return unorderedPublishedSets;
-    }
+    // Order descending by "set popularity" = (# decks created * 10) + (# drafts played)
+    return orderBy(
+      unorderedPublishedSets,
+      (set) => (numDecksBySet?.[set.id] || 0) * 10 + (numDraftsPlayedBySet?.[set.id] || 0),
+      'desc'
+    );
   }
 
   get userSets(): w.Set[] {
@@ -159,29 +161,29 @@ class Sets extends React.Component<SetsProps, SetsState> {
         <div>
           {
             this.publishedSets.length > 0 &&
-              <div style={{ textAlign: 'center' }}>
-                <h2>
-                  <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Published sets </span>
-                  <i>({this.publishedSets.length})</i>
-                </h2>
-                <div style={{ marginTop: -15, marginBottom: 15 }}>
-                  These are sets that have been made public by their creators.
+            <div style={{ textAlign: 'center' }}>
+              <h2>
+                <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Published sets </span>
+                <i>({this.publishedSets.length})</i>
+              </h2>
+              <div style={{ marginTop: -15, marginBottom: 15 }}>
+                These are sets that have been made public by their creators.
                 </div>
-                {this.publishedSets.map((set) => this.renderSetSummary(set, { inPublishedSetsList: true }))}
-              </div>
+              {this.publishedSets.map((set) => this.renderSetSummary(set, { inPublishedSetsList: true }))}
+            </div>
           }
           {
             this.userSets.length > 0 &&
-              <div style={{ textAlign: 'center' }}>
-                <h2>
-                  <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Your sets </span>
-                  <i>({this.userSets.length})</i>
-                </h2>
-                <div style={{ marginTop: -15, marginBottom: 15 }}>
-                  These are sets that you created! You can share them with your friends or publish them to the wider world.
+            <div style={{ textAlign: 'center' }}>
+              <h2>
+                <span style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}>Your sets </span>
+                <i>({this.userSets.length})</i>
+              </h2>
+              <div style={{ marginTop: -15, marginBottom: 15 }}>
+                These are sets that you created! You can share them with your friends or publish them to the wider world.
                 </div>
-                {this.userSets.map((set) => this.renderSetSummary(set))}
-              </div>
+              {this.userSets.map((set) => this.renderSetSummary(set))}
+            </div>
           }
         </div>
       );
@@ -190,13 +192,14 @@ class Sets extends React.Component<SetsProps, SetsState> {
 
   private renderSetSummary = (set: w.Set, extraProps: Record<string, unknown> = {}): JSX.Element => {
     const { user, history } = this.props;
-    const { numDecksBySet } = this.state;
+    const { numDecksBySet, numDraftsPlayedBySet } = this.state;
     return (
       <SetSummary
         key={set.id}
         set={set}
         user={user}
         numDecksCreated={numDecksBySet ? numDecksBySet[set.id] || 0 : undefined}
+        numDraftsPlayed={numDraftsPlayedBySet ? numDraftsPlayedBySet[set.id] || 0 : undefined}
         isSingleSet={!!this.singleSet}
         history={history}
         onCreateDeckFromSet={this.handleCreateDeckFromSet(set.id)}
@@ -210,12 +213,17 @@ class Sets extends React.Component<SetsProps, SetsState> {
   }
 
   private lookupAsyncInfoForSet = async (set: w.Set): Promise<void> => {
-    const numDecks = await getNumDecksCreatedCountBySetId(set.id);
+    const numDecksCreated = await getNumDecksCreatedCountBySetId(set.id);
+    const numDraftsPlayed = await getNumGamesBySetFormat('setDraft', set.id);
 
     this.setState((state) => ({
       numDecksBySet: {
         ...(state.numDecksBySet || {}),
-        [set.id]: numDecks
+        [set.id]: numDecksCreated
+      },
+      numDraftsPlayedBySet: {
+        ...(state.numDraftsPlayedBySet || {}),
+        [set.id]: numDraftsPlayed
       }
     }));
   }

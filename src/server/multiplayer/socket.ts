@@ -87,6 +87,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       const inGame = state.getAllOpponents(clientID);
       const payloadWithSender = { ...payload, sender: clientID };
       (inGame.length > 0 ? sendMessageInGame : sendMessageInLobby)(clientID, 'ws:CHAT', payloadWithSender);
+    } else if (['START_PRACTICE', 'START_TUTORIAL', 'START_SANDBOX'].includes(type)) {
+      enterSingleplayerGame(clientID);
+    } else if (type === 'END_GAME') {
+      // We only track client-side END_GAME actions for singleplayer games - multiplayer games track their own end state.
+      exitSingleplayerGame(clientID);
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{ type, payload }, clientID]);
@@ -116,7 +121,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
   function sendMessage(type: string, payload: Record<string, unknown> = {}, recipientIDs: m.ClientID[] | null = null): void {
     const message = JSON.stringify({ type, payload });
-    console.log(`${recipientIDs?.join(',') || '&'}< ${truncateMessage(message)}`);
+    console.log(`${(recipientIDs?.length || 0) > 2 ? `(${recipientIDs!.length})` : recipientIDs?.join(',') || '&'}< ${truncateMessage(message)}`);
     state.getClientSockets(recipientIDs).forEach((socket) => {
       try {
         socket.send(message);
@@ -188,6 +193,20 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   function leaveQueue(clientID: m.ClientID): void {
     state.leaveQueue(clientID);
     broadcastInfo();
+  }
+
+  function enterSingleplayerGame(clientID: m.ClientID): void {
+    state.enterSingleplayerGame(clientID);
+    sendChatToLobby(`${state.getClientUsername(clientID)} has left the lobby to play a singleplayer game mode.`);
+    broadcastInfo();
+  }
+
+  function exitSingleplayerGame(clientID: m.ClientID): void {
+    if (state.isPlayerInSingleplayerGame(clientID)) {
+      state.exitSingleplayerGame(clientID);
+      sendChatToLobby(`${state.getClientUsername(clientID)} has rejoined the lobby.`);
+      broadcastInfo();
+    }
   }
 
   function spectateGame(clientID: m.ClientID, gameID: m.ClientID): void {

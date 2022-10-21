@@ -2,6 +2,8 @@ import * as fb from 'firebase';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { isGuest } from '../../util/multiplayer';
+
 interface ProfileLinkProps {
   username: string
   uid?: string
@@ -23,7 +25,7 @@ export default class ProfileLink extends React.Component<ProfileLinkProps> {
     const { uid, username, className, style } = this.props;
 
     // Don't render a link at all for guest accounts.
-    if (uid?.startsWith('guest_')) {
+    if (!uid || isGuest(uid)) {
       return <span style={style}>{username}</span>;
     } else {
       const href = `/profile/${uid}`;

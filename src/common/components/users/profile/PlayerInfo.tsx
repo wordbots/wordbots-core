@@ -21,7 +21,8 @@ export const styles: Record<string, CSSProperties> = {
   root: {
     width: '100%',
     height: '100%',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
+    margin: '0 12px'
   },
   progressContainer: {
     height: 'calc(100% - 35px)',
@@ -35,12 +36,21 @@ export const styles: Record<string, CSSProperties> = {
     flexDirection: 'column',
     justifyContent: 'space-around',
     padding: '30px 0',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    fontSize: 24,
+  },
+  favoriteFormats: {
+    height: 'calc(100% - 35px)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    padding: '30px 0',
+    boxSizing: 'border-box',
+    fontSize: 18
   },
   playerInfoItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: 24,
     [theme.breakpoints.down('md')]: {
       display: 'block'
     },
@@ -117,11 +127,13 @@ class PlayerInfo extends React.Component<PlayerInfoProps & WithStyles> {
     return Object.entries(playerInfo)
       .filter(([, v]) => v !== undefined)
       .map(([playerInfoKey, playerInfoValue]) => (
-      <div key={playerInfoKey} className={classes.playerInfoItem}>
-        <div className={classes.playerInfoKey}>{upperCase(playerInfoKey)}</div>
-        <div className={classes.playerInfoValue}>{playerInfoValue}</div>
-      </div>
-    ));
+        <div key={playerInfoKey} className={classes.playerInfoItem}>
+          <div className={classes.playerInfoKey}>
+            {playerInfoKey === 'favoriteOpponent' ? '#1 Opponent' : upperCase(playerInfoKey)}
+          </div>
+          <div className={classes.playerInfoValue}>{playerInfoValue}</div>
+        </div>
+      ));
   }
 }
 

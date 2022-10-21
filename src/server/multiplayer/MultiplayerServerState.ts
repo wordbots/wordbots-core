@@ -1,4 +1,4 @@
-import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove } from 'lodash';
+import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove, without } from 'lodash';
 import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
@@ -17,13 +17,14 @@ import { getPeopleInGame, withoutClient } from './util';
 /* eslint-disable no-console */
 export default class MultiplayerServerState {
   private state: m.ServerState = {
-    connections: {},  // map of { clientID: websocket }
-    gameObjects: {}, // map of { gameID: game }
-    games: [],  // array of { id, name, format, players, playerColors, spectators, actions, decks, usernames, startingSeed }
-    matchmakingQueue: [], // array of { clientID, deck }
-    playersOnline: [],  // array of clientIDs
-    userData: {}, // map of { clientID: { uid, displayName, ... } }
-    waitingPlayers: [],  // array of { id, name, format, deck, players }
+    connections: {},
+    gameObjects: {},
+    games: [],
+    matchmakingQueue: [],
+    playersOnline: [],
+    playersInSinglePlayerGames: [],
+    userData: {},
+    waitingPlayers: [],
   };
 
   /*
@@ -37,6 +38,7 @@ export default class MultiplayerServerState {
       games,
       waitingPlayers,
       playersOnline,
+      playersInLobby: this.getAllPlayersInLobby(),
       userData: fromPairs(Object.keys(userData).map((id) =>
         [id, pick(this.getClientUserData(id), ['uid', 'displayName'])]
       )),
@@ -87,12 +89,16 @@ export default class MultiplayerServerState {
     return game ? getPeopleInGame(game).filter((id) => id !== clientID) : [];
   }
 
+  /** Returns whether the given player is currently known to be in a singleplayer game mode. */
+  public isPlayerInSingleplayerGame = (clientID: m.ClientID): boolean => (
+    this.state.playersInSinglePlayerGames.includes(clientID)
+  )
+
   // Returns all players currently in the lobby.
   public getAllPlayersInLobby = (): m.ClientID[] => {
-    const inGamePlayerIds = this.state.games.reduce((acc: m.ClientID[], game: m.Game) => (
-      acc.concat(game.players)
-    ), []);
-    return this.state.playersOnline.filter((id) => !inGamePlayerIds.includes(id));
+    const { games, playersOnline, playersInSinglePlayerGames } = this.state;
+    const playersInMultiplayerGames: m.ClientID[] = games.flatMap(g => [...g.players, ...g.spectators]);
+    return without(playersOnline, ...playersInMultiplayerGames, ...playersInSinglePlayerGames);
   }
 
   // Returns all *other* players currently in the lobby.
@@ -156,6 +162,16 @@ export default class MultiplayerServerState {
   // Set a player's username.
   public setClientUserData = (clientID: m.ClientID, userData: m.UserData | null): void => {
     this.state.userData[clientID] = userData;
+  }
+
+  /** Mark a given player as having entered a singleplayer game (thus leaving the lobby). */
+  public enterSingleplayerGame = (clientID: m.ClientID): void => {
+    this.state.playersInSinglePlayerGames = compact([...this.state.playersInSinglePlayerGames, clientID]);
+  }
+
+  /** Mark a given player as having exited a singleplayer game (thus entering the lobby). */
+  public exitSingleplayerGame = (clientID: m.ClientID): void => {
+    pull(this.state.playersInSinglePlayerGames, clientID);
   }
 
   // Add an player action to the game that player is in.

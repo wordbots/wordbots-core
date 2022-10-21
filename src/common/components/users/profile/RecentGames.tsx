@@ -1,21 +1,15 @@
-import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Icon from '@material-ui/core/Icon';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/core/styles/withStyles';
-import { isNil, isString, startCase, toLower, toUpper } from 'lodash';
+import { isNil } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../../types';
-import { renderFormatDisplayName } from '../../../util/formats';
 import Title from '../../Title';
-import ProfileLink from '../ProfileLink';
 
 import { styles } from './PlayerInfo';
+import RecentGame from './RecentGame';
 
 interface RecentGamesProps {
   games?: w.SavedGame[]
@@ -23,9 +17,9 @@ interface RecentGamesProps {
   userId: string
 }
 
-class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
+class RecentGames extends React.PureComponent<RecentGamesProps & WithStyles> {
   public render(): JSX.Element {
-    const { games, classes } = this.props;
+    const { userId, games, playerNames, classes } = this.props;
 
     return (
       <div className={classes.root}>
@@ -34,56 +28,17 @@ class RecentGames extends React.Component<RecentGamesProps & WithStyles> {
           <div className={classes.progressContainer}>
             <CircularProgress />
           </div> :
-            (
-              games.length > 0 ?
-                <List>
-                  {games.map(this.renderRecentGame)}
-                </List> :
-                <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
-            )
+          (
+            (games.length > 0 && playerNames) ?
+              <List>
+                {games.map((game, i) =>
+                  <RecentGame key={i} game={game} userId={userId} playerNames={playerNames} classes={classes} />
+                )}
+              </List> :
+              <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
+          )
         }
       </div>
-    );
-  }
-
-  private renderRecentGame = (game: w.SavedGame, index: number) => {
-    const { userId, playerNames, classes } = this.props;
-    const { winner } = game;
-
-    if (!playerNames) {
-      return;
-    }
-
-    const opponentId = Object.values(game.players).find((player) => player !== userId)!;
-    const isGuest = isNil(opponentId) || opponentId.startsWith('guest');
-    const opponent = isGuest ? 'Guest' : playerNames[opponentId] || playerNames[userId];
-    const outcome = winner ? (winner === 'draw' ? 'draw' : (game.players[winner] === userId ? 'victory' : 'defeat')) : '';
-    const timestamp = new Date(game.timestamp).toLocaleDateString();
-    const gameDetails = `${startCase(toLower(game.type))} - ${renderFormatDisplayName(game.format)} - ${timestamp}`;
-
-    const formatIcons = {
-      'normal': 'player',
-      'sharedDeck': 'double-team',
-      'builtinOnly': 'player-teleport'
-    };
-
-    return (
-      <ListItem key={index} className={classes.game}>
-        <ListItemAvatar>
-          <Avatar>
-            <Icon className={`ra ra-${isString(game.format) && formatIcons[game.format]}`}/>
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={<ProfileLink uid={opponentId} username={opponent} />}
-          secondary={gameDetails}
-        />
-        <ListItemText
-          primaryTypographyProps={{ className: classes[outcome] }}
-          primary={toUpper(outcome)}
-          style={{ minWidth: 58 }}
-        />
-      </ListItem>
     );
   }
 }

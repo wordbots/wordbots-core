@@ -49,13 +49,13 @@ class FavoriteFormats extends React.PureComponent<FavoriteFormatsProps & WithSty
           <div className={classes.progressContainer}>
             <CircularProgress />
           </div> :
-            (
-              games.length > 0 ?
-                <div className={classes.playerInfo} style={{ justifyContent: 'flex-start' }}>
-                  {this.renderResults()}
-                </div> :
-                <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
-            )
+          (
+            games.length > 0 ?
+              <div className={classes.favoriteFormats} style={{ justifyContent: 'flex-start' }}>
+                {this.renderResults()}
+              </div> :
+              <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
+          )
         }
       </div>
     );
@@ -64,11 +64,15 @@ class FavoriteFormats extends React.PureComponent<FavoriteFormatsProps & WithSty
   private renderResults = () => {
     const { classes } = this.props;
     return this.resultsByFormat.map(({ format, numWins, numLosses }) => (
-        <div key={format.name} className={classes.playerInfoItem} style={{ margin: '8px 0' }}>
-          <div className={classes.playerInfoKey}>{format.rendered()}</div>
-          <div className={classes.playerInfoValue}>{numWins} W • {numLosses} L • {(numWins / (numWins + numLosses) * 100).toFixed(1)}%</div>
+      <div key={format.name} className={classes.playerInfoItem} style={{ margin: '8px 0' }}>
+        <div className={classes.playerInfoKey}>{format.rendered()}</div>
+        <div className={classes.playerInfoValue} style={{ fontWeight: 'normal' }}>
+          <b>{(numWins / (numWins + numLosses) * 100).toFixed(1)}%</b> win rate
+          <br />
+          <i>(<b>{numWins}</b> wins, <b>{numLosses}</b> losses)</i>
         </div>
-      ));
+      </div>
+    ));
   }
 }
 

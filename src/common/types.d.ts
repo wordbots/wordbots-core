@@ -42,8 +42,8 @@ export type StringRepresentationOf<_T> = string;  // Not actually typechecked bu
 export type ActionType = string;
 export type ActionPayload = any;
 
-export interface Action {
-  type: ActionType
+export interface Action<AT extends ActionType = ActionType> {
+  type: AT
   payload?: ActionPayload
 }
 
@@ -51,6 +51,9 @@ export interface Action {
 export interface MultiDispatch {
   <T extends AnyAction | AnyAction[]>(action: T): T
 }
+
+/** Given actions/* module export T, produces the union type of action type strings (but not action implementations) exported by T. */
+export type ActionTypeWithin<T> = Extract<T[keyof T], string>;
 
 // General types
 
@@ -302,6 +305,7 @@ export interface SocketState {
   games: m.Game[]
   hosting: boolean
   playersOnline: m.ClientID[]
+  playersInLobby: m.ClientID[]
   queuing: boolean
   queueSize: number
   userDataByClientId: Record<m.ClientID, m.UserData>

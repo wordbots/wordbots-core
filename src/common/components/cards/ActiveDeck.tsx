@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import { FormControlLabel } from '@material-ui/core';
 
-import { MAX_Z_INDEX, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
+import { DECK_SIZE, MAX_Z_INDEX, MIN_CARDS_IN_SET, MIN_CARDS_OF_EACH_RARITY_IN_SET, TYPE_EVENT, TYPE_ROBOT, TYPE_STRUCTURE } from '../../constants';
 import * as w from '../../types';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
@@ -77,9 +77,9 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
   get hasRightCardCount(): boolean {
     const { cards, isASet } = this.props;
     if (isASet) {
-      return cards.length >= 20;
+      return cards.length >= MIN_CARDS_IN_SET;
     } else {
-      return cards.length === 30;
+      return cards.length === DECK_SIZE;
     }
   }
 
@@ -117,21 +117,21 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
           </span>
           {' '}/{' '}
           {
-            isASet ?
-              <span>
-                20 ]
+            isASet
+              ? <span>
+                {MIN_CARDS_IN_SET} ]
                 <Tooltip
                   inline
                   className="help-tooltip"
                   place="left"
-                  text="20 cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks."
+                  text={`${MIN_CARDS_IN_SET} cards is the bare minimum for a set, but we recommend including at least 30 cards in a set to give players enough variety to build decks.`}
                 >
                   <sup>
                     <Icon className="material-icons">help</Icon>
                   </sup>
                 </Tooltip>
-              </span> :
-              '30 ]'
+              </span>
+              : <span>{DECK_SIZE} ]</span>
           }
           {
             !isASet && (
@@ -145,19 +145,25 @@ export default class ActiveDeck extends React.Component<ActiveDeckProps, ActiveD
         {this.hasRaritiesEnabled && (
           <div style={{ marginBottom: 5 }}>
             <RaritySymbol rarity="rare" />
-            <span style={{ color: this.getNumCardsWithRarity('rare') < 4 ? 'red' : undefined }}>{this.getNumCardsWithRarity('rare')}</span>
+            <span style={{ color: this.getNumCardsWithRarity('rare') < MIN_CARDS_OF_EACH_RARITY_IN_SET ? 'red' : undefined }}>
+              {this.getNumCardsWithRarity('rare')}
+            </span>
             &nbsp;&nbsp;&nbsp;
             <RaritySymbol rarity="uncommon" />
-            <span style={{ color: this.getNumCardsWithRarity('uncommon') < 4 ? 'red' : undefined }}>{this.getNumCardsWithRarity('uncommon')}</span>
+            <span style={{ color: this.getNumCardsWithRarity('uncommon') < MIN_CARDS_OF_EACH_RARITY_IN_SET ? 'red' : undefined }}>
+              {this.getNumCardsWithRarity('uncommon')}
+            </span>
             &nbsp;&nbsp;&nbsp;
             <RaritySymbol rarity="common" />
-            <span style={{ color: this.getNumCardsWithRarity('common') < 4 ? 'red' : undefined }}>{this.getNumCardsWithRarity('common')}</span>
+            <span style={{ color: this.getNumCardsWithRarity('common') < MIN_CARDS_OF_EACH_RARITY_IN_SET ? 'red' : undefined }}>
+              {this.getNumCardsWithRarity('common')}
+            </span>
 
             <Tooltip
               inline
               className="help-tooltip"
               place="left"
-              text="Sets with card rarities enabled must have at least 4 cards of each rarity (rare, uncommon, common)."
+              text={`Sets with card rarities enabled must have at least ${MIN_CARDS_OF_EACH_RARITY_IN_SET} cards of each rarity (rare, uncommon, common).`}
             >
               <Icon className="material-icons" style={{ fontSize: 20, position: 'relative', top: 3, left: 10 }}>help</Icon>
             </Tooltip>

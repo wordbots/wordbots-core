@@ -18,7 +18,7 @@ export default function RaritySymbol({ rarity, scale, isEditing }: RaritySymbolP
       fontSize: ({ rare: 17, uncommon: 27, common: 26 })[rarity] * (scale || 1),
       marginTop: ({ rare: 5, uncommon: -3, common: 0 })[rarity] * (scale || 1),
       marginLeft: ({ rare: -1, uncommon: -2, common: 0 })[rarity] * (scale || 1),
-      color: ({ rare: '#D4AF37', uncommon: '#aaa9ad', common: undefined })[rarity]
+      color: ({ rare: '#d4af37', uncommon: '#aaa9ad', common: undefined })[rarity]
     }}>
       <Tooltip
         key={rarity}

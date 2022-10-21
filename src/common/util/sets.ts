@@ -2,6 +2,7 @@ import { countBy, filter } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import * as w from '../types';
+import { MIN_CARDS_IN_SET, MIN_CARDS_OF_EACH_RARITY_IN_SET } from '../constants';
 
 import { instantiateCard } from './cards';
 import { nextSeed } from './common';
@@ -12,10 +13,10 @@ export function isSetValid(set: w.Set): { valid: boolean, reason?: string } {
   const { common, uncommon, rare } = countBy(set.cards, 'rarity');
   const setHasRarities = common || uncommon || rare;
 
-  if (set.cards.length < 20) {
-    return { valid: false, reason: 'the set has less than 20 cards' };
-  } else if (setHasRarities && (common < 4 || uncommon < 4 || rare < 4)) {
-    return { valid: false, reason: 'the set doesn\'t have at least 4 cards of each rarity' };
+  if (set.cards.length < MIN_CARDS_IN_SET) {
+    return { valid: false, reason: `the set has less than ${MIN_CARDS_IN_SET} cards` };
+  } else if (setHasRarities && (common < MIN_CARDS_OF_EACH_RARITY_IN_SET || uncommon < MIN_CARDS_OF_EACH_RARITY_IN_SET || rare < MIN_CARDS_OF_EACH_RARITY_IN_SET)) {
+    return { valid: false, reason: `the set doesn't have at least ${MIN_CARDS_OF_EACH_RARITY_IN_SET} cards of each rarity` };
   } else {
     return { valid: true };
   }

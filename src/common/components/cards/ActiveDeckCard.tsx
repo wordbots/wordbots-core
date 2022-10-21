@@ -20,6 +20,10 @@ interface ActiveDeckCardProps {
 
 export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps> {
   static styles: Record<string, React.CSSProperties> = {
+    container: {
+      display: 'flex',
+      justifyContent: 'spaceBetween'
+    },
     outerCard: {
       display: 'flex',
       alignItems: 'stretch',
@@ -74,7 +78,7 @@ export default class ActiveDeckCard extends React.Component<ActiveDeckCardProps>
   public render(): JSX.Element {
     const { card, showCount, rarity } = this.props;
     return (
-      <div style={{ display: 'flex', justifyContent: 'spaceBetween' }}>
+      <div style={ActiveDeckCard.styles.container}>
         <span style={ActiveDeckCard.styles.xButton} onClick={this.handleRemoveCard}>
           x
         </span>

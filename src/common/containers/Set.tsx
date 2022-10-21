@@ -1,12 +1,11 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import * as fb from 'firebase';
-import { History } from 'history';
-import { compact, find, noop } from 'lodash';
+import { compact, find, identity, noop, pickBy } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { AnyAction, compose, Dispatch } from 'redux';
 
 import * as collectionActions from '../actions/collection';
@@ -23,31 +22,37 @@ import { id as generateId } from '../util/common';
 
 import { Deck } from './Deck';
 
-interface NewSetStateProps {
+interface SetStateProps {
   id: string | null
   setBeingEdited: w.Set | null
+  sets: w.Set[]
   allCards: w.CardInStore[]
   user: fb.User | null
 }
 
-interface NewSetDispatchProps {
+interface SetDispatchProps {
+  editSet: (setId: w.SetId) => void
   onSaveSet: (set: w.Set) => void
 }
 
-type NewSetProps = NewSetStateProps & NewSetDispatchProps & { history: History } & WithStyles;
-type NewSetState = DeckCreationProperties;
+type SetProps = SetStateProps & SetDispatchProps & RouteComponentProps & WithStyles;
+type SetState = DeckCreationProperties & { cardRarities: Record<w.CardId, w.CardInSetRarity | undefined> };
 
-function mapStateToProps(state: w.State): NewSetStateProps {
+function mapStateToProps(state: w.State): SetStateProps {
   return {
     id: state.collection.setBeingEdited ? state.collection.setBeingEdited.id : null,
     setBeingEdited: state.collection.setBeingEdited,
+    sets: state.collection.sets,
     allCards: state.collection.cards,
     user: state.global.user
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<AnyAction>): NewSetDispatchProps {
+function mapDispatchToProps(dispatch: Dispatch<AnyAction>): SetDispatchProps {
   return {
+    editSet: (setId: w.SetId) => {
+      dispatch(collectionActions.editSet(setId));
+    },
     onSaveSet: (set: w.Set) => {
       dispatch(collectionActions.saveSet(set));
     }
@@ -56,10 +61,10 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): NewSetDispatchProps 
 
 /**
  * Container encapsulating display and logic for creating and editing Sets.
- * @TODO Reduce duplication between NewSet and Deck containers.
+ * @TODO Reduce duplication between Set and Deck containers.
  */
-class NewSet extends React.Component<NewSetProps, NewSetState> {
-  constructor(props: NewSetProps) {
+class Set extends React.Component<SetProps, SetState> {
+  constructor(props: SetProps) {
     super(props);
 
     this.state = {
@@ -73,6 +78,7 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
       sortOrder: SortOrder.Ascending,
       searchText: '',
       selectedCardIds: props.setBeingEdited ? props.setBeingEdited.cards.map((c) => c.id) : [],
+      cardRarities: props.setBeingEdited ? Object.fromEntries(props.setBeingEdited.cards.map((c) => [c.id, c.rarity])) : {},
       layout: Layout.Grid
     };
   }
@@ -86,9 +92,17 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     return getDisplayedCards(this.props.allCards, { searchText, filters, costRange, sortCriteria, sortOrder });
   }
 
+  get hasRaritiesEnabled(): boolean {
+    return Object.values(this.state.cardRarities).some(identity);
+  }
+
+  public componentDidMount(): void {
+    this.maybeLoadSet();
+  }
+
   public render(): JSX.Element {
     const { setBeingEdited, user, classes } = this.props;
-    const { layout, selectedCardIds, sortCriteria, sortOrder } = this.state;
+    const { layout, selectedCardIds, cardRarities, sortCriteria, sortOrder } = this.state;
 
     return (
       <div>
@@ -128,8 +142,10 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
                 name={setBeingEdited ? setBeingEdited.name : ''}
                 description={setBeingEdited ? setBeingEdited.description : ''}
                 cards={this.selectedCards}
+                cardRarities={cardRarities}
                 loggedIn={!!user}
                 onRemoveCard={this.handleRemoveCard}
+                onUpdateCardRarities={this.handleUpdateCardRarities}
                 onSave={this.handleClickSaveSet}
               />
             </Paper>
@@ -139,8 +155,31 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
     );
   }
 
-  private setField = (key: keyof NewSetState, callback = noop) => (value: NewSetState[typeof key]) => {
-    this.setState({ [key]: value } as Pick<NewSetState, keyof NewSetState>, callback);
+  /** If there is a setId in the URL, try to load the desired set. */
+  private maybeLoadSet = async () => {
+    const { sets, editSet, history, match } = this.props;
+
+    if (match) {
+      // check for /set/[setId] URL
+      const { setId } = (match ? match.params : {}) as Record<string, string | undefined>;
+      if (setId && setId !== 'new') {
+        const set: w.Set | undefined = find(sets, { id: setId });
+        if (set) {
+          editSet(setId);
+          this.setState({
+            selectedCardIds: set.cards.map((c) => c.id),
+            cardRarities: Object.fromEntries(set.cards.map((c) => [c.id, c.rarity]))
+          });
+        } else {
+          // If set not found, redirect to the new set URL.
+          history.replace('/set/new');
+        }
+      }
+    }
+  }
+
+  private setField = (key: keyof SetState, callback = noop) => (value: SetState[typeof key]) => {
+    this.setState({ [key]: value } as Pick<SetState, keyof SetState>, callback);
   }
 
   private toggleFilter = (filter: FilterKey) => (_e: React.SyntheticEvent<HTMLInputElement>, toggled: boolean) => {
@@ -150,17 +189,37 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
   }
 
   private handleSelectCards = (selectedCardIds: string[]) => {
-    this.setState({ selectedCardIds });
+    this.setState((state) => ({
+      selectedCardIds,
+      cardRarities: {
+        // concatenate existing card rarities (only for those cards in selectedCardIds) ...
+        ...pickBy(state.cardRarities, (_, cardId) => selectedCardIds.includes(cardId)),
+        // ... with new default rarities (either 'common' or undefined) for newly selected cards
+        ...Object.fromEntries(
+          selectedCardIds
+            .filter((cardId) => !Object.keys(state.cardRarities).includes(cardId))
+            .map((cardId) => [cardId, this.hasRaritiesEnabled ? 'common' : undefined])
+        )
+      }
+    }));
+  }
+
+  private handleUpdateCardRarities = (updatedCardRarities: Record<w.CardId, w.CardInSetRarity | undefined>) => {
+    this.setState((state) => ({
+      cardRarities: { ...state.cardRarities, ...updatedCardRarities }
+    }));
   }
 
   private handleRemoveCard = (id: string) => {
     this.setState((state) => ({
-      selectedCardIds: state.selectedCardIds.filter((cardId) => cardId !== id)
+      selectedCardIds: state.selectedCardIds.filter((cardId) => cardId !== id),
+      cardRarities: pickBy(state.cardRarities, (_, cardId) => cardId !== id)
     }));
   }
 
   private handleClickSaveSet = (id: string | null, name: string, cardIds: string[], description?: string) => {
     const { allCards, user, onSaveSet, history } = this.props;
+    const { cardRarities } = this.state;
 
     if (!user) {
       return;
@@ -170,7 +229,11 @@ class NewSet extends React.Component<NewSetProps, NewSetState> {
       id: id || generateId(),
       name,
       description,
-      cards: allCards.filter((card) => cardIds.includes(card.id)),
+      cards: (
+        allCards
+          .filter((card) => cardIds.includes(card.id))
+          .map((card) => ({ ...card, rarity: cardRarities[card.id] }))
+      ),
       metadata: {
         authorId: user.uid,
         authorName: user.displayName || user.uid,
@@ -188,4 +251,4 @@ export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
   withStyles(Deck.styles)
-)(NewSet);
+)(Set);

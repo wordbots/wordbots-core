@@ -49,6 +49,7 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
         type={card.type}
         text={Sentence.fromText(card.text)}
         rawText={card.text || ''}
+        flavorText={card.flavorText}
         stats={card.stats || {}}
         cardStats={card.stats || {}}
         cost={card.cost}

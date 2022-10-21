@@ -11,8 +11,9 @@ import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import { helpText as parserHelpText } from '../components/help/CreatorHelpDialog';
-import { BUILTIN_FORMATS, GameFormat, SetFormat, SetDraftFormat } from '../util/formats';
+import { BUILTIN_FORMATS, GameFormat, SetFormat, SetDraftFormat, SharedDeckGameFormat } from '../util/formats';
 import HelpSection from '../components/help/HelpSection';
+import RaritySymbol from '../components/card/RaritySymbol';
 
 const Help = (): JSX.Element => (
   <div className="helpPage">
@@ -62,13 +63,28 @@ const Help = (): JSX.Element => (
             />
           </HelpSection>
           <HelpSection id="formats" title="Game Formats">
-            <p>Wordbots offers {BUILTIN_FORMATS.length + 2} different game formats for different gameplay styles, with each format determining the cards that you can bring to a game. The formats are:</p>
+            <p>
+              Wordbots offers {BUILTIN_FORMATS.length + 2} different game formats for different gameplay styles, with each format determining the cards that you can bring to a game.
+              We recommend the <b>{SharedDeckGameFormat.displayName}</b> and <b>Set Draft</b> formats for most players.<br />
+              The formats are:
+            </p>
             <ul>
               {BUILTIN_FORMATS.map((format: GameFormat) => (
                 <li key={format.displayName}><b>{format.displayName}:</b> {format.description}</li>
               ))}
               <li><b>Set formats:</b> {SetFormat.description}</li>
-              <li><b>Set Draft formats:</b> {SetDraftFormat.description}</li>
+              <li>
+                <b>Set Draft formats:</b> {SetDraftFormat.description}
+                <br /><br />
+                When a Set Draft starts, each player drafts a deck of 30 cards by choosing 2 cards (among a set of 4) at a time.
+                Sets can optionally specify a <i>card rarity</i> for each card in the set, which affects how often cards will show up in the draft.
+                On average, each drafted deck will have the following distribution of cards:
+                <ul style={{ marginTop: '0.8em' }}>
+                  <li>2–4 <i>rare</i> cards (indicated with a <RaritySymbol rarity="rare" /> symbol)</li>
+                  <li>6–8 <i>uncommon</i> cards (indicated with a <RaritySymbol rarity="uncommon" /> symbol)</li>
+                  <li>18–22 <i>common</i> cards (indicated with a <RaritySymbol rarity="common" /> symbol)</li>
+                </ul>
+              </li>
             </ul>
           </HelpSection>
           <HelpSection id="modes" title="Game Modes">

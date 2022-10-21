@@ -40,12 +40,12 @@ type DeckState = DeckCreationProperties & {
 };
 
 function mapStateToProps(state: w.State): DeckStateProps {
-  const { collection: { deckBeingEdited: deck, cards, decks, sets }, global: { user } } = state;
+  const { collection: { deckBeingEdited, cards, decks, sets }, global: { user } } = state;
 
   return {
-    id: deck ? deck.id : null,
+    id: deckBeingEdited?.id || null,
     cards,
-    deck,
+    deck: deckBeingEdited,
     decks,
     sets,
     loggedIn: user !== null
@@ -158,7 +158,7 @@ export class Deck extends React.Component<DeckProps, DeckState> {
             <Paper className={classes.deckPropsPaper}>
               <ActiveDeck
                 id={id}
-                name={deck ? deck.name : ''}
+                name={deck?.name || ''}
                 cards={this.selectedCards}
                 deck={deck || undefined}
                 setForDeck={this.set}

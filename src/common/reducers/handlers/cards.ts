@@ -127,7 +127,7 @@ const cardsHandlers = {
 
   openCardForEditing: (state: w.CreatorState, card: w.CardInStore): w.CreatorState => {
     const newFields: Partial<w.CreatorState> = {
-      ...pick(card, ['id', 'name', 'type', 'text', 'cost', 'spriteID']),
+      ...pick(card, ['id', 'name', 'type', 'text', 'cost', 'spriteID', 'flavorText']),
       health: card.stats ? card.stats.health : undefined,
       speed: card.stats ? card.stats.speed : undefined,
       attack: card.stats ? card.stats.attack : undefined,

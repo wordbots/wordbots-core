@@ -1,4 +1,5 @@
 import { clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, last, mapValues, some } from 'lodash';
+import * as seededRNG from 'seed-random';
 
 import * as w from '../types';
 
@@ -12,6 +13,11 @@ interface ErrorWithMessage {
 /** Return a random id of 15 base-36 characters. */
 export function id(): string {
   return Math.random().toString(36).slice(2, 16);
+}
+
+/** Given a random seed (a number from 0 to 1), deterministically produce the next seed from 0 to 1. */
+export function nextSeed(seed: number): number {
+  return seededRNG(seed.toString())();
 }
 
 /** Returns a numeric hashcode of a given string.

@@ -277,16 +277,29 @@ export default class MultiplayerServerState {
     }
   }
 
-  // Remove a player from any game that they are currently in.
-  public leaveGame = (clientID: m.ClientID): void => {
+  /** Remove a player from any game that they are currently in.
+    * Returns a message to send and a list of client ids to send it to, if any. */
+  public leaveGame = (clientID: m.ClientID): m.MessageToSend | null => {
+    let messageToSend: m.MessageToSend | null = null;
+
     // Check if the client is a player (*not a spectator*) in a game
     const game = this.lookupGameByClient(clientID);
     if (game?.players.includes(clientID)) {
-      const forfeitAction = { type: 'ws:FORFEIT' as const, payload: { winner: opponentOf(game.playerColors[clientID]) } };
+      const forfeitAction = {
+        type: 'ws:FORFEIT' as const,
+        payload: {
+          // If still drafting, there's no notion of 'forfeiting' - the game just gets aborted
+          winner: game.state.draft ? 'aborted' : opponentOf(game.playerColors[clientID])
+        }
+      };
       this.appendGameAction(clientID, forfeitAction);  // this will call state.endGame().
+
+      messageToSend = { ...forfeitAction, recipientIds: getPeopleInGame(game).filter((id) => id !== clientID) };
     }
 
     this.state.games = compact(this.state.games.map((g) => withoutClient(g, clientID)));
+
+    return messageToSend;
   }
 
   // Handle end-of-game actions.

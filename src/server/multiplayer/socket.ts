@@ -108,8 +108,14 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onDisconnect(clientID: m.ClientID): void {
-    state.leaveGame(clientID);
     sendChatToLobby(`${state.getClientUsername(clientID)} has left.`);
+
+    const forfeitMsgIfAny: m.MessageToSend | null = state.leaveGame(clientID);
+    if (forfeitMsgIfAny) {
+      const { type, payload, recipientIds } = forfeitMsgIfAny;
+      sendMessage(type, payload, recipientIds);
+    }
+
     state.disconnectClient(clientID);
   }
 

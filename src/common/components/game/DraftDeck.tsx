@@ -6,7 +6,7 @@ import { Card } from '../card/Card';
 import CardBack from '../card/CardBack';
 
 interface DraftDeckProps {
-  cards: w.CardInGame[]
+  cards: Array<w.CardInGame & { rarity?: w.CardInSetRarity }>
 }
 
 export default class DraftDeck extends React.PureComponent<DraftDeckProps> {

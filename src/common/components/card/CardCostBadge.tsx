@@ -1,6 +1,8 @@
 import Badge from '@material-ui/core/Badge';
 import * as React from 'react';
 
+import Tooltip from '../Tooltip';
+
 interface CardCostBadgeProps {
   children: JSX.Element
   cost: number
@@ -12,9 +14,11 @@ export default class CardCostBadge extends React.Component<CardCostBadgeProps> {
   get badgeContent(): JSX.Element {
     return (
       <div style={this.badgeStyle}>
-        <div style={{ lineHeight: 2.4 }}>
-          {this.props.cost}
-        </div>
+        <Tooltip text="Cost" place="left" className="card-part-tooltip">
+          <div style={{ lineHeight: 2.4, userSelect: 'none' }}>
+            {this.props.cost}
+          </div>
+        </Tooltip>
       </div>
     );
   }

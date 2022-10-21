@@ -5,7 +5,7 @@ import * as w from '../../types';
 import { Card } from '../card/Card';
 
 interface DraftCardPickerProps {
-  cardGroup: w.CardInGame[]
+  cardGroup: Array<w.CardInGame & { rarity?: w.CardInSetRarity }>
   player: w.PlayerColor
   onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
 }

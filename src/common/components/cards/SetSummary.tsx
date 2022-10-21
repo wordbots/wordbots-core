@@ -12,6 +12,7 @@ import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 import * as w from '../../types';
 import { SetDraftFormat } from '../../util/formats';
+import { isSetValid } from '../../util/sets';
 import { Card } from '../card/Card';
 import Tooltip from '../Tooltip';
 import MustBeLoggedIn from '../users/MustBeLoggedIn';
@@ -124,7 +125,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
   public render(): JSX.Element {
     const {
       classes,
-      set: { cards, description, metadata, name },
+      set,
       numDecksCreated,
       inPublishedSetsList,
       onCreateDeckFromSet,
@@ -133,6 +134,7 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
       user
     } = this.props;
     const { isCardListExpanded, isPermalinkCopied } = this.state;
+    const { cards, description, metadata, name } = set;
     const canEditSet = this.doesSetBelongToUser && !metadata.isPublished;
 
     return (
@@ -163,9 +165,9 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
                   gap: 5
                 }}
               >
-                {this.renderButton('Draft!', this.handleDraftFromSet, { disabled: cards.length < 15, reason: "You can't draft this set because it has less than 15 cards." }, { style: { fontWeight: 'bold' } })}
-                {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: cards.length < 15, reason: "You can't create a deck from this set because it has less than 15 cards." })}
-                {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: cards.length < 15, reason: "You can't publish this set because it has less than 15 cards." }) : null}
+                {this.renderButton('Draft!', this.handleDraftFromSet, { disabled: !isSetValid(set).valid, reason: `You can't draft this set because ${isSetValid(set).reason}.` }, { style: { fontWeight: 'bold' } })}
+                {this.renderButton('Create Deck', onCreateDeckFromSet, { disabled: !isSetValid(set).valid, reason: `You can't create a deck from this set because ${isSetValid(set).reason}.` })}
+                {canEditSet ? this.renderButton('Publish', this.handleOpenPublishConfirmation, { disabled: !isSetValid(set).valid, reason: `You can't publish this set because ${isSetValid(set).reason}.` }) : null}
                 {canEditSet ? this.renderButton('Edit', onEditSet) : null}
                 {this.doesSetBelongToUser ? this.renderButton('Duplicate', onDuplicateSet) : null}
                 {this.renderDeleteControl()}
@@ -181,10 +183,13 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
                 <div style={{ clear: 'both' }} />
                 {
                   cards
-                    .sort((c1, c2) => sortCards(c1, c2, SortCriteria.Cost))
+                    .sort((c1, c2) => sortCards(c1, c2, SortCriteria.RarityThenCost))
                     .map((card, idx) => (
                       <div key={idx} style={{ float: 'left' }}>
-                        {Card.fromObj(card, { scale: 0.7, onCardClick: () => { this.handleClickCard(card); } })}
+                        {Card.fromObj(card, {
+                          scale: 0.7,
+                          onCardClick: () => { this.handleClickCard(card); }
+                        })}
                       </div>
                     ))
                 }

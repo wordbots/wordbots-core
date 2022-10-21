@@ -9,7 +9,8 @@ export enum SortCriteria {
   Type,
   Attack,
   Health,
-  Speed
+  Speed,
+  RarityThenCost  // only used for SetSummary
 }
 
 export enum SortOrder {

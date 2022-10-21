@@ -80,3 +80,9 @@ export interface SerializedServerState {
   userData: { [clientID: string]: UserData | null }
   queueSize: number
 }
+
+export interface MessageToSend {
+  type: string
+  payload: Record<string, unknown>
+  recipientIds: m.ClientID[]
+}

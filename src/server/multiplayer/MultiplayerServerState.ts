@@ -286,7 +286,7 @@ export default class MultiplayerServerState {
     const game = this.lookupGameByClient(clientID);
     if (game?.players.includes(clientID)) {
       const forfeitAction = {
-        type: 'ws:FORFEIT',
+        type: 'ws:FORFEIT' as const,
         payload: {
           // If still drafting, there's no notion of 'forfeiting' - the game just gets aborted
           winner: game.state.draft ? 'aborted' : opponentOf(game.playerColors[clientID])

@@ -26,7 +26,7 @@ const webpackConfig = {
             loader: 'babel-loader',
             options: {
               babelrc: false,
-              plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import', 'babel-plugin-lodash']
+              plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import']
             }
           },
           {
@@ -44,8 +44,8 @@ const webpackConfig = {
         loader: 'source-map-loader',
         enforce: 'pre'
       },
-      { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192'},
-      { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
+      { test: /\.(png|jpg|gif|jpeg)$/, loader: 'url-loader?limit=8192' },
+      { test: /\.css$/, loader: ['style-loader', 'css-loader'] },
       { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=public/fonts/[name].[ext]' }
     ]
   },
@@ -57,12 +57,16 @@ const webpackConfig = {
   plugins: compact([
     !isProduction && new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin({ NODE_ENV: 'development', PARSER: null, FIREBASE_DB: null }),
-    new CopyWebpackPlugin([{from: 'static'}]),
+    new CopyWebpackPlugin([{ from: 'static' }]),
     new webpack.IgnorePlugin(/^canvas$/),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),  // Ignore all locale files of moment.js
   ]),
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    alias: {
+      // https://github.com/lodash/lodash/issues/3079
+      './lodash.min': 'lodash/lodash.js',
+    }
   },
   stats: isProduction ? 'minimal' : 'normal',
   target: 'web'

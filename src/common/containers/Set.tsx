@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import * as fb from 'firebase';
-import { compact, find, identity, noop, pickBy } from 'lodash';
+import { compact, find, identity, noop, pickBy, uniqBy } from 'lodash';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -43,7 +43,7 @@ function mapStateToProps(state: w.State): SetStateProps {
     id: state.collection.setBeingEdited ? state.collection.setBeingEdited.id : null,
     setBeingEdited: state.collection.setBeingEdited,
     sets: state.collection.sets,
-    allCards: state.collection.cards,
+    allCards: uniqBy([...state.collection.cards, ...(state.collection.setBeingEdited?.cards || [])], 'id'),
     user: state.global.user
   };
 }

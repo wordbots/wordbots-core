@@ -1,5 +1,5 @@
-import { compact, flatMap, fromPairs, isArray, isEmpty, isUndefined } from 'lodash';
-import { pick } from 'shuffle-array';
+import { compact, flatMap, fromPairs, isEmpty } from 'lodash';
+import { shuffle } from 'seed-shuffle';
 
 import { stringToType } from '../constants';
 import * as g from '../guards';
@@ -48,7 +48,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
   return {
     all: <T extends w.Collection>(collection: T): T => collection,
 
-    allPlayers: (): w.PlayerCollection => ({type: 'players', entries: [currentPlayer(state), opponentPlayer(state)]}),
+    allPlayers: (): w.PlayerCollection => ({ type: 'players', entries: [currentPlayer(state), opponentPlayer(state)] }),
 
     // Note: Unlike other target functions, choose() can also return a HexCollection
     //       (if the chosen hex does not contain an object.)
@@ -59,15 +59,15 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         // Return and clear chosen target.
 
         // If there's multiple targets, take the first (we treat target.chosen as a queue).
-        const [ target, ...otherTargets ] = player.target.chosen;
+        const [target, ...otherTargets] = player.target.chosen;
         player.target.chosen = otherTargets;
 
         if (g.isCardInGame(target)) {
           state.it = target;  // "it" stores most recently chosen salient object for lookup.
           if (player.hand.map((card) => card.id).includes(target.id)) {
-            return {type: 'cards', entries: [target]} as w.CardInHandCollection as T;
+            return { type: 'cards', entries: [target] } as w.CardInHandCollection as T;
           } else if (player.discardPile.map((card) => card.id).includes(target.id)) {
-            return {type: 'cardsInDiscardPile', entries: [target]} as w.CardInDiscardPileCollection as T;
+            return { type: 'cardsInDiscardPile', entries: [target] } as w.CardInDiscardPileCollection as T;
           } else {
             /* istanbul ignore next: this case should never be hit */
             throw new Error(`Card chosen does not exist in player's hand or discard pile!: ${target}`);
@@ -76,9 +76,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           // Return objects if possible or hexes if not.
           if (allObjectsOnBoard(state)[target]) {
             state.it = allObjectsOnBoard(state)[target];  // "it" stores most recently chosen salient object for lookup.
-            return {type: 'objects', entries: [allObjectsOnBoard(state)[target]]} as w.ObjectCollection as T;
+            return { type: 'objects', entries: [allObjectsOnBoard(state)[target]] } as w.ObjectCollection as T;
           } else {
-            return {type: 'hexes', entries: [target]} as w.HexCollection as T;
+            return { type: 'hexes', entries: [target] } as w.HexCollection as T;
           }
         }
       } else {
@@ -113,7 +113,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           state.players[player.color] = player;
         }
 
-        return {type: collection.type, entries: []} as w.Collection as T;
+        return { type: collection.type, entries: [] } as w.Collection as T;
       }
     },
 
@@ -127,7 +127,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     controllerOf: (objects: w.ObjectCollection): w.PlayerCollection =>
       // Assume that only one object is ever passed in here.
-       ({
+      ({
         type: 'players',
         entries: (objects.entries.length === 1) ? compact([ownerOf(state, objects.entries[0])!]) : []
       })
@@ -136,7 +136,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     copyOf: (collection: w.ObjectCollection): w.CardInHandCollection =>
       // Assume that exactly one object is ever passed in here.
       // TODO Also support copyOf on CardInHandCollection.
-       ({
+      ({
         type: 'cards',
         entries: (
           (g.isObjectCollection(collection) && collection.entries.length === 1)
@@ -146,7 +146,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       })
     ,
 
-    generateCard: (objectType: string, attributes: {attack?: number, health: number, speed?: number}, name?: string): w.CardInHandCollection => {
+    generateCard: (objectType: string, attributes: { attack?: number, health: number, speed?: number }, name?: string): w.CardInHandCollection => {
       const card: w.CardInGame = {
         abilities: [],
         baseCost: 0,
@@ -159,7 +159,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         stats: attributes,
         type: stringToType(objectType)
       };
-      return {type: 'cards', entries: [card]};
+      return { type: 'cards', entries: [card] };
     },
 
     // Currently salient object.
@@ -168,7 +168,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null
       }); */
-       it()
+      it()
     ,
 
     // Currently salient player.
@@ -176,15 +176,14 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     opponent: (): w.PlayerCollection => {
       if (currentObject) {
-        return {type: 'players', entries: [state.players[opponent(ownerOf(state, currentObject)!.color)]]};
+        return { type: 'players', entries: [state.players[opponent(ownerOf(state, currentObject)!.color)]] };
       } else {
-        return {type: 'players', entries: [opponentPlayer(state)]};
+        return { type: 'players', entries: [opponentPlayer(state)] };
       }
     },
 
     random: <T extends w.Collection>(num: number, collection: T): T => {
-      let chosen = pick(collection.entries as w.Targetable[], {picks: num, rng: state.rng});
-      chosen = isUndefined(chosen) ? [] : (isArray(chosen) ? chosen : [chosen]);
+      const chosen: w.Targetable[] = shuffle(collection.entries, state.rng()).slice(0, num);
 
       // Log the random selection.
       if (chosen.length > 0 && ['cards', 'objects'].includes(collection.type)) {
@@ -196,13 +195,13 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         logAction(state, null, explanationStr, cards);
       }
 
-      return {type: collection.type, entries: chosen} as w.Collection as T;
+      return { type: collection.type, entries: chosen } as w.Collection as T;
     },
 
     self: (): w.PlayerCollection => {
       // Note that currentObject may exist without having an owner, i.e. if the current object just returned itself to its owner's hand.
       const player: w.PlayerInGameState = currentObject && ownerOf(state, currentObject) || currentPlayer(state);
-      return {type: 'players', entries: [player]};
+      return { type: 'players', entries: [player] };
     },
 
     // Currently salient object (prioritizing object ("undergoer") over subject ("agent")).

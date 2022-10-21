@@ -68,7 +68,7 @@ export interface ServerState {
   waitingPlayers: GameWaitingForPlayers[]
   matchmakingQueue: PlayerInQueue[]
   playersOnline: ClientID[]
-  playersInLobby: ClientID[]
+  playersInSinglePlayerGames: ClientID[]
   userData: { [clientID: string]: UserData | null }
 }
 

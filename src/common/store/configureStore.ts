@@ -4,8 +4,7 @@ import {
   createStore, DeepPartial, Middleware, Store, StoreEnhancer
 } from 'redux';
 
-import * as gameActions from '../actions/game';
-import * as socketActions from '../actions/socket';
+import { SOCKET_ACTION_TYPES } from '../actions';
 import { ALWAYS_ENABLE_DEV_TOOLS, ENABLE_REDUX_TIME_TRAVEL } from '../constants';
 import multipleDispatchMiddleware from '../middleware/multipleDispatchMiddleware';
 import createSocketMiddleware from '../middleware/socketMiddleware';
@@ -19,15 +18,7 @@ const DEV_TOOLS_ENABLED = ALWAYS_ENABLE_DEV_TOOLS || !['production', 'test'].inc
 
 const selectStoreEnhancers = (): StoreEnhancer[] => {
   if (process.browser) {
-    const socketMiddleware: Middleware = createSocketMiddleware({
-      excludedActions: [
-        gameActions.END_GAME,
-        gameActions.SET_VOLUME,
-        socketActions.CONNECTING,
-        socketActions.CONNECTED,
-        socketActions.DISCONNECTED
-      ]
-    });
+    const socketMiddleware: Middleware = createSocketMiddleware({ forwardedActionTypes: SOCKET_ACTION_TYPES });
 
     if (DEV_TOOLS_ENABLED) {
       const createLogger: () => Middleware = require('redux-logger').createLogger;

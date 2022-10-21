@@ -12,6 +12,7 @@ const defaultSocketState: w.SocketState = {
 
   games: [],
   playersOnline: [],
+  playersInLobby: [],
   waitingPlayers: [],
   userDataByClientId: {},
 

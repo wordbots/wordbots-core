@@ -26,6 +26,7 @@ import {
   setStatistic,
   mostRecentCards
 } from '../util/firebase';
+import { isGuest } from '../util/multiplayer';
 
 type ProfileProps = RouteComponentProps<{ userId: string }> & WithStyles;
 
@@ -94,7 +95,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
     return (
       <div>
         <Background asset="compressed/IMG_3006.jpg" opacity={0.15} />
-        <Helmet title="Profile"/>
+        <Helmet title="Profile" />
         <Title text={title} />
 
         <div className={classes.container}>
@@ -128,7 +129,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
                   textAlign: 'center'
                 }}
               >
-                { cardsDisplayMode === 'recent' ? 'Most recently created cards ' : 'All created cards ' }
+                {cardsDisplayMode === 'recent' ? 'Most recently created cards ' : 'All created cards '}
                 <a
                   className="underline"
                   onClick={this.toggleCardsDisplayMode}
@@ -137,20 +138,20 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
                     textTransform: 'none'
                   }}
                 >
-                  { cardsDisplayMode === 'recent' ? '[show all cards]' : '[show most recent cards]' }
+                  {cardsDisplayMode === 'recent' ? '[show all cards]' : '[show most recent cards]'}
                 </a>
               </div>
               {
                 cardsDisplayMode === 'recent'
-                ? <RecentCardsCarousel cardsToShow={cards.slice(0, 15)} history={history} />
-                : (
-                  <CardGrid
-                    cards={cards || []}
-                    selectedCardIds={[]}
-                    selectable={false}
-                    onCardClick={this.handleClickCard}
-                  />
-                )
+                  ? <RecentCardsCarousel cardsToShow={cards.slice(0, 15)} history={history} />
+                  : (
+                    <CardGrid
+                      cards={cards || []}
+                      selectedCardIds={[]}
+                      selectable={false}
+                      onCardClick={this.handleClickCard}
+                    />
+                  )
               }
             </div>
           )}
@@ -194,7 +195,7 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
   }
 
   private async loadGamesData(games: w.SavedGame[]): Promise<void> {
-    const playerIds = compact(uniq(flatten(games.map((g) => Object.values(g.players)))).filter((pid) => pid && !pid.startsWith('guest')));
+    const playerIds = compact(uniq(flatten(games.map((g) => Object.values(g.players)))).filter((pid) => pid && !isGuest(pid)));
     const playerNamesList = await getUserNamesByIds(playerIds);
     const playerNames = zipObject(playerIds, playerNamesList);
 
@@ -217,10 +218,14 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       toPairs,
       sortBy(([_playerId, count]) => -count),
       map(([playerId, _count]) => playerId),
-      filter((playerId: string) => playerId !== userId && !playerId.startsWith('guest'))
+      filter((playerId: string) => playerId !== userId && !isGuest(playerId))
     )(games);
     const [favoriteOpponentName] = await getUserNamesByIds(favoriteOpponentIds.slice(0, 1));
-    const favoriteOpponent = favoriteOpponentName && <ProfileLink className="underline" uid={favoriteOpponentIds[0]} username={favoriteOpponentName} />;
+    const favoriteOpponent = (
+      favoriteOpponentName
+        ? <ProfileLink className="underline" uid={favoriteOpponentIds[0]} username={favoriteOpponentName} />
+        : <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>(none yet)</span>
+    );
 
     this.setState({
       playerInfo: {

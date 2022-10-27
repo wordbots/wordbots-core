@@ -122,7 +122,15 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
     card.abilities.forEach((cmd, idx) => {
       const cmdText = quoteKeywords(splitSentences(card.text || '')[idx]);
       state.currentCmdText = getCommandTextForDisplay(cmdText);
-      executeCmd(state, cmd, playedObject);
+
+      try {
+        executeCmd(state, cmd, playedObject);
+      } catch (error) {
+        // TODO better error handling: throw a custom Error object that we handle in the game reducer?
+        console.error(error);
+        alert(`Oops!\n\n${error}`);
+        throw error;
+      }
     });
   }
 
@@ -208,7 +216,15 @@ function playEvent(state: State, cardIdx: number): State {
       const cmdText = splitSentences(card.text || '')[idx];
       if (!player.target.choosing) {
         tempState.currentCmdText = getCommandTextForDisplay(cmdText);
-        executeCmd(tempState, cmd);
+
+        try {
+          executeCmd(tempState, cmd);
+        } catch (error) {
+          // TODO better error handling: throw a custom Error object that we handle in the game reducer?
+          console.error(error);
+          alert(`Oops!\n\n${error}`);
+          throw error;
+        }
       }
     });
 

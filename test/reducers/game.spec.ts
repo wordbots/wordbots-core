@@ -1,4 +1,4 @@
-import { cloneDeep, findIndex, size, times } from 'lodash';
+import { cloneDeep, findIndex, last, size, times } from 'lodash';
 
 import * as actions from '../../src/common/actions/game';
 import {
@@ -736,6 +736,33 @@ describe('Game reducer', () => {
         state = newTurn(state, 'blue');
         expect(state.winner).toEqual('draw');
       });
+    });
+
+    it('should gracefully handle situations where a triggered ability throws an exception', () => {
+      let state = setUpBoardState({
+        blue: {
+          '1,1,-2': testCards.badTriggerBot  // Has an onEndOfTurn trigger that throws an exception!
+        }
+      });
+      state = newTurn(state, 'blue');
+      expect(last(state.actionLog)?.text).toEqual(
+        'Runtime exception while handling an ability (report this to the developers):\n'
+        + 'card name: Bad Trigger Bot\n'
+        + 'command: Note: This trigger is hand-coded to throw an exception.'
+      );
+    });
+
+    it('should gracefully handle situations where a passive ability throws an exception', () => {
+      const state = setUpBoardState({
+        blue: {
+          '1,1,-2': testCards.badAbilityTargetingBot  // Has an ability that throws an exception while searching for targets!
+        }
+      });
+      expect(last(state.actionLog)?.text).toEqual(
+        'Runtime exception while handling an ability (report this to the developers):\n'
+        + 'card name: Bad Ability Targeting Bot\n'
+        + 'command: Note: This ability is hand-coded to throw an exception while searching for a target.'
+      );
     });
   });
 

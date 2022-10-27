@@ -63,6 +63,10 @@ th {
   -webkit-text-stroke: 0.5px #666;
 }
 
+.wordbotsAppBarLink:hover img {
+  opacity: 0.8;
+}
+
 .markdownBlock img {
   display: block;
   width: 300px;

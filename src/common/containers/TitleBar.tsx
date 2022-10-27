@@ -50,7 +50,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
 
     if (this.props.user) {
       return (
-        <div style={{marginTop: 4}}>
+        <div style={{ marginTop: 4 }}>
           <Button
             style={{ color: 'white' }}
             onClick={this.toggleUserMenu}
@@ -142,7 +142,7 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
       return this.renderStaticTitleBar();
     } else {
       return (
-        <div style={{height: 64}}>
+        <div style={{ height: 64 }}>
           <AppBar
             position="fixed"
             style={{
@@ -158,9 +158,14 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
                 justifyContent: 'space-between'
               }}
             >
-              <Typography style={{ fontFamily: '"Carter One", "Carter One-fallback"', fontSize: 32 }}>
-                <Link className="wordbotsAppBarLink" to="/">WORDBOTS</Link>
-              </Typography>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <Link className="wordbotsAppBarLink" to="/">
+                  <img src="/static/onebot-light.png" style={{ width: 40, height: 40, marginTop: 3, marginRight: 8 }} />
+                </Link>
+                <Typography style={{ fontFamily: '"Carter One", "Carter One-fallback"', fontSize: 32 }}>
+                  <Link className="wordbotsAppBarLink" to="/">WORDBOTS</Link>
+                </Typography>
+              </span>
               {this.userMenu}
             </Toolbar>
           </AppBar>

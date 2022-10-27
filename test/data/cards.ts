@@ -232,6 +232,41 @@ export const infiniteLoopBotCard: w.CardInStore = {
     speed: 1
   }
 };
+
+export const badTriggerBot: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Bad Trigger Bot',
+  name: 'Bad Trigger Bot',
+  text: 'Note: This trigger is hand-coded to throw an exception.',
+  abilities: [
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { throw 'oops!'; })); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
+export const badAbilityTargetingBot: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Bad Ability Targeting Bot',
+  name: 'Bad Ability Targeting Bot',
+  text: 'Note: This ability is hand-coded to throw an exception while searching for a target.',
+  abilities: [
+    "(function () { setAbility(abilities['applyEffect'](function () { throw 'oops'; }, 'cannotattack')); })",
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
 export const armorerCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Armorer',

@@ -805,10 +805,33 @@ export function executeCmd(
         return state;
       }
     } else {
-      // TODO better error handling: throw a custom Error object that we handle in the game reducer?
-      console.error(error);
-      alert(`Oops!\n\n${error}`);
+      // Note that errors may be handled further up the stack (i.e. see executeCmdAndLogErrors)
       throw error;
+    }
+  }
+}
+
+/**
+ * Wraps `executeCmd` in an exception handler that
+ * just logs any errors to the game log and suppresses them otherwise.
+ * The idea is that this is what we call instead of executeCmd() when
+ * execution is happening *not* as the result of a player action and cannot be avoided
+ * (i.e. a triggered or passive ability). */
+export function executeCmdAndLogErrors<T = void>(
+  state: w.GameState,
+  cmd: ((s: w.GameState) => void) | w.StringRepresentationOf<(s: w.GameState) => void>,
+  currentObject: w.Object | null = null,
+  source: w.AbilityId | null = null,
+  fallbackReturn?: T
+): T {
+  try {
+    return executeCmd(state, cmd, currentObject, source) as unknown as T;
+  } catch (error) {
+    if (isErrorWithMessage(error) && error.message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
+      throw error;
+    } else {
+      logAction(state, null, `Runtime exception while handling an ability (report this to the developers):\ncard name: ${currentObject?.card.name || 'null'}\ncommand: ${state.currentCmdText || 'null'}`);
+      return fallbackReturn || (undefined as unknown as T);
     }
   }
 }
@@ -847,7 +870,9 @@ export function triggerEvent(
     (object.triggers || new Array<w.TriggeredAbility>())
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
-        t.trigger.targets = getRefToTarget(executeCmd(state, t.trigger.targetFunc, object) as w.Target);
+        t.trigger.targets = getRefToTarget(
+          executeCmdAndLogErrors<w.Target>(state, t.trigger.targetFunc, object, null, { type: 'objects', entries: [] })
+        );
         return { ...t, object };
       })
       .filter((t) => t.trigger.type === triggerType && condition(t.trigger))
@@ -873,7 +898,7 @@ export function triggerEvent(
     const currentObject: w.Object = it || t.object;
 
     state.currentCmdText = t.text || undefined;
-    executeCmd(state, t.action, currentObject);
+    executeCmdAndLogErrors(state, t.action, currentObject);
 
     if (state.callbackAfterExecution) {
       state = state.callbackAfterExecution(state);
@@ -889,7 +914,13 @@ export function applyAbilities(state: w.GameState): w.GameState {
   Object.values(allObjectsOnBoard(state)).forEach((obj) => {
     obj.abilities.forEach((ability) => {
       // Determine what entities match this ability's targeting criteria, if any.
-      const newTarget: w.TargetReference | null = ability.disabled ? null : getRefToTarget(executeCmd(state, ability.targets, obj) as w.Target);
+      const newTarget: w.TargetReference | null = (
+        ability.disabled
+          ? null
+          : getRefToTarget(
+            executeCmdAndLogErrors<w.Target>(state, ability.targets, obj, null, { type: 'objects', entries: [] })
+          )
+      );
 
       // If the ability's targets have changed since last time it applied (or it's disabled, etc):
       if (!isEqual(newTarget, ability.currentTargets)) {

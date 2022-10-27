@@ -214,7 +214,14 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
     tempState = logAction(tempState, player, logMsg, { [object.card.id]: object.card }, null, target);
     tempState.memory = {};  // Clear any previously set memory in the state.
 
-    executeCmd(tempState, ability.cmd, object);
+    try {
+      executeCmd(tempState, ability.cmd, object);
+    } catch (error) {
+      // TODO better error handling: throw a custom Error object that we handle in the game reducer?
+      console.error(error);
+      alert(`Oops!\n\n${error}`);
+      throw error;
+    }
 
     if (player.target.choosing) {
       // Target still needs to be selected, so roll back playing the card (and return old state).

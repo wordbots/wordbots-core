@@ -3,7 +3,7 @@ import { noop } from 'lodash';
 import { isCardInGame, isObject } from '../guards';
 import * as w from '../types';
 import { id } from '../util/common';
-import { executeCmd, reversedCmd } from '../util/game';
+import { executeCmdAndLogErrors, reversedCmd } from '../util/game';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability: Omit<w.PassiveAbility, 'text'>) => {
@@ -161,7 +161,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         targets: targetFuncStr,
         apply: (target: w.Targetable) => {
           if (isObject(target)) {
-            executeCmd(state, cmd, target, aid);
+            executeCmdAndLogErrors(state, cmd, target, aid);
           }
         },
         unapply: noop,  // Can't "unapply" a one-time action
@@ -177,12 +177,12 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         targets: `(${targetFunc.toString()})`,
         apply: (target: w.Targetable) => {
           if (isObject(target)) {
-            executeCmd(state, cmd, target, aid);
+            executeCmdAndLogErrors(state, cmd, target, aid);
           }
         },
         unapply: (target: w.Targetable) => {
           if (isObject(target)) {
-            executeCmd(state, reversedCmd(cmd), target, aid);
+            executeCmdAndLogErrors(state, reversedCmd(cmd), target, aid);
           }
         }
       };

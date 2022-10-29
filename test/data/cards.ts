@@ -216,57 +216,6 @@ export const thresholderCard: w.CardInStore = {
   },
 };
 
-export const infiniteLoopBotCard: w.CardInStore = {
-  metadata: { source: { type: 'user' } as w.CardSource },
-  id: 'Infinite Loop Bot',
-  name: 'Infinite Loop Bot',
-  text: 'Whenever you draw a card, shuffle a random card from your discard pile to your deck and discard a random card and draw a card.',
-  abilities: [
-    "(function () { setTrigger(triggers['afterCardDraw'](function () { return targets['self'](); }, 'anycard'), (function () { (function () { actions['shuffleCardsIntoDeck'](targets['random'](1, cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })(); (function () { (function () { actions['discard'](targets['random'](1, cardsInHand(targets['self'](), 'anycard', []))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })(); })); })"
-  ],
-  cost: 1,
-  type: TYPE_ROBOT,
-  stats: {
-    attack: 1,
-    health: 1,
-    speed: 1
-  }
-};
-
-export const badTriggerBot: w.CardInStore = {
-  metadata: { source: { type: 'user' } as w.CardSource },
-  id: 'Bad Trigger Bot',
-  name: 'Bad Trigger Bot',
-  text: 'Note: This trigger is hand-coded to throw an exception.',
-  abilities: [
-    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { throw 'oops!'; })); })"
-  ],
-  cost: 1,
-  type: TYPE_ROBOT,
-  stats: {
-    attack: 1,
-    health: 1,
-    speed: 1
-  }
-};
-
-export const badAbilityTargetingBot: w.CardInStore = {
-  metadata: { source: { type: 'user' } as w.CardSource },
-  id: 'Bad Ability Targeting Bot',
-  name: 'Bad Ability Targeting Bot',
-  text: 'Note: This ability is hand-coded to throw an exception while searching for a target.',
-  abilities: [
-    "(function () { setAbility(abilities['applyEffect'](function () { throw 'oops'; }, 'cannotattack')); })",
-  ],
-  cost: 1,
-  type: TYPE_ROBOT,
-  stats: {
-    attack: 1,
-    health: 1,
-    speed: 1
-  }
-};
-
 export const armorerCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Armorer',
@@ -343,5 +292,94 @@ export const librarySchoolCard: w.CardInStore = {
   type: TYPE_STRUCTURE,
   stats: {
     health: 3
+  }
+};
+
+// Cards with various errors, for testing error handling:
+
+
+
+export const infiniteLoopBotCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Infinite Loop Bot',
+  name: 'Infinite Loop Bot',
+  text: 'Whenever you draw a card, shuffle a random card from your discard pile to your deck and discard a random card and draw a card.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterCardDraw'](function () { return targets['self'](); }, 'anycard'), (function () { (function () { actions['shuffleCardsIntoDeck'](targets['random'](1, cardsInDiscardPile(targets['self'](), 'anycard', [])), targets['self']()); })(); (function () { (function () { actions['discard'](targets['random'](1, cardsInHand(targets['self'](), 'anycard', []))); })(); (function () { actions['draw'](targets['self'](), 1); })(); })(); })); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
+export const badTriggerBot: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Bad Trigger Bot',
+  name: 'Bad Trigger Bot',
+  text: 'Note: This trigger is hand-coded to throw an exception during trigger execution.',
+  abilities: [
+    "(function () { setTrigger(triggers['endOfTurn'](function () { return targets['allPlayers'](); }), (function () { throw 'oops!'; })); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
+export const badTriggerTargetingBot: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Bad Trigger Targeting Bot',
+  name: 'Bad Trigger Targeting Bot',
+  text: 'Note: This trigger is hand-coded to throw an exception during trigger targeting.',
+  abilities: [
+    "(function () { setTrigger(triggers['endOfTurn'](function () { throw 'oops!' }), (function () { })); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
+export const badAbilityTargetingBot: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Bad Ability Targeting Bot',
+  name: 'Bad Ability Targeting Bot',
+  text: 'Note: This ability is hand-coded to throw an exception while searching for a target.',
+  abilities: [
+    "(function () { setAbility(abilities['applyEffect'](function () { throw 'oops'; }, 'cannotattack')); })",
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  }
+};
+
+export const badAbilityGrantingBot: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Bad Ability Granting Bot',
+  name: 'Bad Ability Granting Bot',
+  text: 'Note: This ability grant all robots an ability is hand-coded to throw an exception.',
+  abilities: [
+    "(function () { setAbility(abilities['giveAbility'](function () { return objectsMatchingConditions('robot', []); }, \"(function () { throw 'oops')); })\")); })"
+  ],
+  cost: 1,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
   }
 };

@@ -738,21 +738,35 @@ describe('Game reducer', () => {
       });
     });
 
-    it('should gracefully handle situations where a triggered ability throws an exception', () => {
+    it('should gracefully handle situations where a triggered ability throws an exception during target selection', () => {
       let state = setUpBoardState({
         blue: {
-          '1,1,-2': testCards.badTriggerBot  // Has an onEndOfTurn trigger that throws an exception!
+          '1,1,-2': testCards.badTriggerTargetingBot  // Has an onEndOfTurn trigger that throws an exception during targeting!
+        }
+      });
+      state = newTurn(state, 'blue');
+      expect(last(state.actionLog)?.text).toEqual(
+        'Runtime exception while handling an ability (report this to the developers):\n'
+        + 'card name: Bad Trigger Targeting Bot\n'
+        + 'command: Note: This trigger is hand-coded to throw an exception during trigger targeting.'
+      );
+    });
+
+    it('should gracefully handle situations where a triggered ability throws an exception during execution', () => {
+      let state = setUpBoardState({
+        blue: {
+          '1,1,-2': testCards.badTriggerBot  // Has an onEndOfTurn trigger that throws an exception during execution!
         }
       });
       state = newTurn(state, 'blue');
       expect(last(state.actionLog)?.text).toEqual(
         'Runtime exception while handling an ability (report this to the developers):\n'
         + 'card name: Bad Trigger Bot\n'
-        + 'command: Note: This trigger is hand-coded to throw an exception.'
+        + 'command: Note: This trigger is hand-coded to throw an exception during trigger execution.'
       );
     });
 
-    it('should gracefully handle situations where a passive ability throws an exception', () => {
+    it('should gracefully handle situations where a passive ability throws an exception during target selection', () => {
       const state = setUpBoardState({
         blue: {
           '1,1,-2': testCards.badAbilityTargetingBot  // Has an ability that throws an exception while searching for targets!
@@ -762,6 +776,19 @@ describe('Game reducer', () => {
         'Runtime exception while handling an ability (report this to the developers):\n'
         + 'card name: Bad Ability Targeting Bot\n'
         + 'command: Note: This ability is hand-coded to throw an exception while searching for a target.'
+      );
+    });
+
+    it('should gracefully handle situations where a passive ability throws an exception during execution', () => {
+      const state = setUpBoardState({
+        blue: {
+          '1,1,-2': testCards.badAbilityGrantingBot  // Has an ability that grants an ablity that throws an exception!
+        }
+      });
+      expect(last(state.actionLog)?.text).toEqual(
+        'Runtime exception while handling an ability (report this to the developers):\n'
+        + 'card name: Bad Ability Granting Bot\n'
+        + 'command: Note: This ability grant all robots an ability is hand-coded to throw an exception.'
       );
     });
   });

@@ -6,16 +6,16 @@ interface GameNotificationProps {
   text: string
 }
 
-export default class GameNotification extends React.PureComponent<GameNotificationProps> {
+export default class GameNotification extends React.Component<GameNotificationProps> {
   public render(): JSX.Element | null {
     const { enabled, text } = this.props;
     const options = {
-      tag: 'wordbots',
-      icon: '/static/icons-old/android-icon-144x144.png',
-      lang: 'en',
-      dir: 'ltr',
-      timestamp: Math.floor(Date.now())
-    };
+        tag: 'wordbots',
+        icon: '/static/icons/android-icon-144x144.png',
+        lang: 'en',
+        dir: 'ltr',
+        timestamp: Math.floor(Date.now())
+      };
 
     if (enabled) {
       return (

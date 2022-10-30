@@ -1,4 +1,4 @@
-import { cloneDeep, findIndex, last, size, times } from 'lodash';
+import { cloneDeep, findIndex, last, noop, size, times } from 'lodash';
 
 import * as actions from '../../src/common/actions/game';
 import {
@@ -724,6 +724,25 @@ describe('Game reducer', () => {
   });
 
   describe('[Exceptions]', () => {
+    it('should handle execution errors that occur as a result of a player action (e.g. playing a card or activating an ability)', () => {
+      jest.spyOn(window, 'alert').mockImplementation(noop);
+
+      const state = getDefaultState();  // note that active player is 'orange' by default
+
+      // Throw and display an alert if the active player causes an exception
+      withConsoleErrorsSuppressed(() => {
+        expect(() => { playEvent(state, 'orange', testCards.errorCard); }).toThrow();
+        expect(window.alert).toHaveBeenCalledTimes(1);
+      });
+
+      jest.spyOn(window, 'alert').mockReset();
+      // Throw but do not display an alert if current player !== active player (i.e. your opponent causes an exception)
+      withConsoleErrorsSuppressed(() => {
+        expect(() => { playEvent(state, 'blue', testCards.errorCard); }).toThrow();
+        expect(window.alert).toHaveBeenCalledTimes(0);
+      });
+    });
+
     it('should be able to detect when an infinite loop will occur and end the game in a draw', () => {
       let state = setUpBoardState({
         blue: {

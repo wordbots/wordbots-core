@@ -776,7 +776,7 @@ export function executeCmd(
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  console.log(cmd);
+  // console.log(cmd);
   state.callbackAfterExecution = undefined;
 
   state.executionStackDepth += 1;

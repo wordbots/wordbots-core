@@ -66,7 +66,7 @@ export function combineState(gameState: w.GameState = defaultGameState): w.State
 }
 
 export function objectsOnBoardOfType(state: w.GameState, objectType: w.CardType): Record<w.HexId, string> {
-  const objects = pickBy(allObjectsOnBoard(state), {card: {type: objectType}});
+  const objects = pickBy(allObjectsOnBoard(state), { card: { type: objectType } });
   return mapValues(objects, 'card.name');
 }
 
@@ -85,7 +85,7 @@ export function queryRobotAttributes(state: w.GameState, hex: w.HexId): string |
 }
 
 export function queryPlayerHealth(state: w.GameState, playerName: w.PlayerColor): number {
-  return queryObjectAttribute(state, {blue: BLUE_CORE_HEX, orange: ORANGE_CORE_HEX}[playerName], 'health')!;
+  return queryObjectAttribute(state, { blue: BLUE_CORE_HEX, orange: ORANGE_CORE_HEX }[playerName], 'health')!;
 }
 
 export function drawCardToHand(state: w.GameState, playerName: w.PlayerColor, card: w.CardInStore): w.GameState {
@@ -119,7 +119,6 @@ export function playObject(
   //    3. The player has enough energy to play the card.
   card = instantiateCard(card);
   state.currentTurn = playerName;
-  state.player = playerName;
   player.hand = [card].concat(player.hand as w.CardInStore[]);
   player.energy.available += card.cost;
 
@@ -148,7 +147,7 @@ export function playEvent(
   state: w.GameState,
   playerName: w.PlayerColor,
   card: w.CardInStore,
-  targets: Target | Target[] = [{hex: '0,0,0'}]
+  targets: Target | Target[] = [{ hex: '0,0,0' }]
 ): w.GameState {
   // (Target the center hex by default for global events.)
 
@@ -164,7 +163,6 @@ export function playEvent(
   //    3. The player has enough energy to play the card.
   card = instantiateCard(card);
   state.currentTurn = playerName;
-  state.player = playerName;
   player.hand = [card].concat(player.hand as w.CardInStore[]);
   player.energy.available += card.cost;
 

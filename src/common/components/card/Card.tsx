@@ -22,8 +22,8 @@ import CardBack from './CardBack';
 import CardCostBadge from './CardCostBadge';
 import CardImage from './CardImage';
 import CardStat from './CardStat';
-import Sentence from './Sentence';
 import RaritySymbol from './RaritySymbol';
+import Sentence from './Sentence';
 
 export interface CardProps {
   children?: string | JSX.Element[]
@@ -152,6 +152,8 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
 
   get textFitStyle(): React.CSSProperties {
     const { type, scale } = this.props;
+    const { showingFlavorText } = this.state;
+
     const baseStyle: React.CSSProperties = {
       padding: Math.floor(6 * (scale || 1)),
       paddingBottom: 0,
@@ -166,7 +168,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
       textAlign: 'center'
     };
 
-    if (type === TYPE_EVENT && this.numChars < 30) {
+    if (type === TYPE_EVENT && this.numChars < 30 && !showingFlavorText) {
       return { ...baseStyle, ...compactStyle };
     } else {
       return baseStyle;
@@ -239,25 +241,29 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   style={{ padding: 8 * (scale || 1), height: 'auto' }}
                   title={this.renderTitle()}
                   subheader={
-                    <span style={{ fontSize: 14 * (scale || 1) }} onClick={this.handleToggleFlavorText}>
+                    <span style={{ fontSize: 14 * (scale || 1) }}>
                       {typeToString(type)}
                       {rarityInSet && (
                         <div style={{
-                          float: 'right',
-                          marginTop: -4 * (scale || 1),
-                          marginLeft: 5 * (scale || 1),
-                          marginBottom: -3 * (scale || 1)
+                          position: 'absolute',
+                          right: 6 * (scale || 1),
+                          top: 28 * (scale || 1)
                         }}>
                           <RaritySymbol rarity={rarityInSet} scale={(scale || 1) * 1.2} />
                         </div>
                       )}
                       {flavorText && <Tooltip inline text="Show/hide flavor text" place="left" className="card-part-tooltip">
-                        <Icon className="material-icons" style={{
-                          marginTop: 4 * (scale || 1),
-                          fontSize: 16 * (scale || 1),
-                          color: '#999',
-                          float: 'right'
-                        }}>
+                        <Icon
+                          className="material-icons"
+                          onClick={this.handleToggleFlavorText}
+                          style={{
+                            marginTop: 4 * (scale || 1),
+                            marginRight: rarityInSet ? 22 * (scale || 1) : undefined,
+                            fontSize: 16 * (scale || 1),
+                            color: '#999',
+                            float: 'right'
+                          }}
+                        >
                           menu_book
                         </Icon>
                       </Tooltip>}
@@ -322,11 +328,11 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     evt.stopPropagation();
     evt.preventDefault();
 
-    // Toggle flavor text; make sure that it's back to real text in 10 sec.
+    // Toggle flavor text; make sure that it's back to real text in 20 sec.
     this.setState((state) => ({ showingFlavorText: !state.showingFlavorText }));
     setTimeout(() => {
       this.setState({ showingFlavorText: false });
-    }, 10000);
+    }, 20 * 1000);
   }
 
   private handleMouseEnter = () => {
@@ -379,7 +385,10 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
           autoResize={false}
           mode="multi"
           max={14 * (scale || 1)}
-          style={this.textFitStyle}
+          // Reduce height of this Textfit slightly to be on the safe side,
+          // because the Carter One font behaves a little badly
+          style={{ ...this.textFitStyle, height: (this.textFitStyle.height as number) - 5 }}
+          onReady={console.log}
         >
           <span style={{ fontFamily: 'Carter One, Carter One-fallback' }}>{flavorText}</span>
         </Textfit>

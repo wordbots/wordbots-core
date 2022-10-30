@@ -388,7 +388,6 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
           // Reduce height of this Textfit slightly to be on the safe side,
           // because the Carter One font behaves a little badly
           style={{ ...this.textFitStyle, height: (this.textFitStyle.height as number) - 5 }}
-          onReady={console.log}
         >
           <span style={{ fontFamily: 'Carter One, Carter One-fallback' }}>{flavorText}</span>
         </Textfit>

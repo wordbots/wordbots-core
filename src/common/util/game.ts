@@ -651,8 +651,9 @@ export function updateOrDeleteObjectAtHex(
   cause: w.Cause | null = null,
   shouldApplyAbilities = true
 ): w.GameState {
-  if (!allObjectsOnBoard(state)[hex]) {
-    // Object no longer exists - perhaps it has already been deleted by a previous effect in a chain of triggers?
+  if (!(allObjectsOnBoard(state)[hex]?.id === object.id)) {
+    // Object no longer exists at this hex
+    // perhaps it has already been deleted (or moved) by a previous effect in a chain of triggers?
     return state;
   }
 
@@ -676,7 +677,7 @@ export function updateOrDeleteObjectAtHex(
 
     // Check if the object is still there, because the afterDestroyed trigger may have,
     // e.g., returned it to its owner's hand.
-    if (allObjectsOnBoard(state)[hex]) {
+    if (allObjectsOnBoard(state)[hex]?.id === object.id) {
       const card = state.players[ownerName].objectsOnBoard[hex].card;
       state = removeObjectFromBoard(state, object, hex);
       state = discardCardsFromHand(state, state.players[ownerName].color, [card]);
@@ -775,7 +776,7 @@ export function executeCmd(
   currentObject: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  // console.log(cmd);
+  console.log(cmd);
   state.callbackAfterExecution = undefined;
 
   state.executionStackDepth += 1;

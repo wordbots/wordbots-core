@@ -128,7 +128,10 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
       } catch (error) {
         // TODO better error handling: throw a custom Error object that we handle in the game reducer?
         console.error(error);
-        alert(`Oops!\n\n${error}`);
+        if (state.player === state.currentTurn) {
+          // Show an alert only if it's the active player's turn (i.e. it's you and not your opponent who caused the error)
+          alert(`Oops!\n\n${error}`);
+        }
         throw error;
       }
     });
@@ -161,6 +164,8 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
     player.status.message = '';
     player.selectedTile = tile;
 
+
+    tempState = applyAbilities(tempState);
     tempState = afterObjectPlayed(tempState, playedObject);
 
     if (player.target.choosing) {
@@ -222,7 +227,10 @@ function playEvent(state: State, cardIdx: number): State {
         } catch (error) {
           // TODO better error handling: throw a custom Error object that we handle in the game reducer?
           console.error(error);
-          alert(`Oops!\n\n${error}`);
+          if (state.player === state.currentTurn) {
+            // Show an alert only if it's the active player's turn (i.e. it's you and not your opponent who caused the error)
+            alert(`Oops!\n\n${error}`);
+          }
           throw error;
         }
       }

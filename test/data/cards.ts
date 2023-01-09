@@ -297,6 +297,15 @@ export const librarySchoolCard: w.CardInStore = {
 
 // Cards with various errors, for testing error handling:
 
+export const errorCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Error',
+  name: 'Error',
+  text: 'Note: This command is hard-coded to throw an error.',
+  command: "(function () { throw 'oops!'; })",
+  cost: 1,
+  type: TYPE_EVENT
+};
 
 
 export const infiniteLoopBotCard: w.CardInStore = {

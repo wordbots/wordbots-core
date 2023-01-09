@@ -72,7 +72,9 @@ function socketMiddleware({ forwardedActionTypes }: SocketMiddlewareOpts): Middl
       store.dispatch(sa.disconnected(true));
 
       keepClosed = true;
-      socket.close();
+      if (socket) {
+        socket.close();
+      }
     }
 
     function disconnected(): void {

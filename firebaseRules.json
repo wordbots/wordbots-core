@@ -4,7 +4,12 @@
       ".read": "true",
       "$uid": {
         ".write": "auth != null && auth.uid === $uid",
-        ".indexOn": ["statistics/numCardsCreated", "statistics/numDecksCreated", "statistics/numSetsCreated", "statistics/numGamesPlayed"],
+        ".indexOn": [
+          "statistics/numCardsCreated",
+          "statistics/numDecksCreated",
+          "statistics/numSetsCreated",
+          "statistics/numGamesPlayed"
+        ],
         "statistics": {
           ".write": "true"
         }
@@ -15,28 +20,44 @@
       "$key": {
         ".write": "!data.exists()"
       },
-      ".indexOn": ["timestamp", "players/blue", "players/orange"]
+      ".indexOn": [
+        "timestamp",
+        "players/blue",
+        "players/orange",
+        "format/set/id"
+      ]
     },
     "sets": {
       ".read": "true",
       "$key": {
         ".write": "auth != null && (!newData.exists() || newData.child('metadata/authorId').val() == auth.uid) && (!data.exists() || (data.child('metadata/authorId').val() == auth.uid && (!newData.exists() || data.child('metadata/isPublished').val() != true)))"
       },
-      ".indexOn": ["timestamp", "metadata/authorId", "metadata/numDecksCreated"]
+      ".indexOn": [
+        "timestamp",
+        "metadata/authorId",
+        "metadata/numDecksCreated"
+      ]
     },
     "cards": {
       ".read": "true",
       "$key": {
         ".write": "auth != null && (!data.exists() || data.child('metadata/ownerId').val() == auth.uid) && (!newData.exists() || newData.child('metadata/ownerId').val() == auth.uid)"
       },
-      ".indexOn": ["metadata/ownerId", "metadata/updated", "metadata/source/uid"]
+      ".indexOn": [
+        "metadata/ownerId",
+        "metadata/updated",
+        "metadata/source/uid"
+      ]
     },
     "decks": {
       ".read": "true",
       "$key": {
         ".write": "auth != null && (!newData.exists() || newData.child('authorId').val() == auth.uid) && (!data.exists() || (data.child('authorId').val() == auth.uid))"
       },
-      ".indexOn": ["authorId", "setId"]
+      ".indexOn": [
+        "authorId",
+        "setId"
+      ]
     },
     "reportedParseIssues": {
       "$key": {
@@ -48,7 +69,7 @@
       ".read": "true",
       "all": {
         "$key": {
-      		".write": "!data.exists()"
+          ".write": "!data.exists()"
         }
       },
       "byNode": {
@@ -61,7 +82,7 @@
         }
       },
       "byToken": {
-      	"$token": {
+        "$token": {
           "$key": {
             ".write": "!data.exists()"
           }

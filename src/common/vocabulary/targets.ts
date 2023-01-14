@@ -17,13 +17,19 @@ import {
 //    {type: 'players', entries: <array of players>}
 // An empty array of entries means either that there are no valid targets
 // or that a player still needs to choose a target.
-export default function targets(state: w.GameState, currentObject: w.Object | null): Record<string, w.Returns<w.Collection>> {
+// Note on determining salient object:
+//    for targets['it']: itOverride > currentObject > state.it
+//    for targets['thisRobot']: currentObject > state.it
+export default function targets(state: w.GameState, currentObject: w.Object | null, itOverride: w.Object | null): Record<string, w.Returns<w.Collection>> {
   // Currently salient object
   // Note: currentObject has higher salience than state.it .
   //       (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
+  // But in turn itOverride has the highest salience (it is set only for triggered abilities).
   /* eslint-disable jest/no-disabled-tests */  // eslint gets confused because of the it() function
   function it(): w.ObjectCollection | w.CardInHandCollection {
-    if (currentObject) {
+    if (itOverride) {
+      return { type: 'objects', entries: [itOverride] } as w.ObjectCollection;
+    } else if (currentObject) {
       return { type: 'objects', entries: [currentObject] } as w.ObjectCollection;
     } else if (state.it) {
       if (g.isObject(state.it)) {
@@ -247,11 +253,15 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     // Prioritize currentObject,
     // but also allow falling back to the currently salient object, if any.
     thisRobot: (): w.ObjectCollection => {
+      // console.log(currentObject);
       if (currentObject) {
+        //console.log(currentObject);
         return { type: 'objects', entries: [currentObject] };
       } else if (state.it && g.isObject(state.it)) {
+        //console.log(state.it);
         return { type: 'objects', entries: [state.it] };
       } else {
+        //console.log([]);
         return { type: 'objects', entries: [] };
       }
     },

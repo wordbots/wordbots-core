@@ -236,7 +236,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   cursor: 'pointer',
                   border: rarityBorderColor ? `3px solid ${rarityBorderColor}` : (source?.type === 'builtin' ? '3px solid #aaa' : '3px solid #007887'),
                   position: 'relative',
-                  boxShadow: rarityBorderColor ? `${rarityBorderColor} 0px 0px 10px 0px` : undefined
+                  boxShadow: rarityBorderColor ? `${rarityBorderColor} 0px 0px 10px 0px` : undefined,
                   ...(selected || targetable ? selectedStyle : {})
                 } as React.CSSProperties}
               >

@@ -50,6 +50,7 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
               }}
             >
               {Card.fromObj(card, {
+                drafting: true,
                 selected: selectedCardIds.includes(card.id),
                 onCardClick: () => this.handleSelectCard(card)
               })}

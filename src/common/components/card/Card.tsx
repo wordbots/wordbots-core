@@ -54,6 +54,7 @@ export interface CardProps {
   }
   selected?: boolean
   targetable?: boolean
+  drafting?: boolean
 
   scale?: number
   margin?: number
@@ -178,7 +179,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   public render(): JSX.Element {
     const {
       name, spriteID, spriteV, type, img, cost, baseCost, source, collection, flavorText,
-      showSpinner, status, visible, selected, targetable, rarityInSet,
+      showSpinner, status, visible, selected, targetable, rarityInSet, drafting,
       scale, margin, rotation, yTranslation, overrideContainerStyles,
       onSpriteClick, classes
     } = this.props;
@@ -188,6 +189,8 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
     const selectedStyle = {
       boxShadow: `${collection ? blueShadow : ((status?.type === 'error') ? redShadow : greenShadow)} 0px 0px 5px 5px`
     };
+    // In drafting mode, draw a border and shadow around the card if rarity > common
+    const rarityBorderColor: string | undefined = drafting && ((rarityInSet === 'rare' && '#d4af37') || (rarityInSet === 'uncommon' && '#aaa9ad')) || undefined;
     const transform = `rotate(${rotation || 0}deg) translate(0px, ${yTranslation || 0}px)`;
 
     if (!visible) {
@@ -231,8 +234,9 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
                   borderRadius: 5 * (scale || 1),
                   userSelect: 'none',
                   cursor: 'pointer',
-                  border: source?.type === 'builtin' ? '3px solid #aaa' : '3px solid #007887',
+                  border: rarityBorderColor ? `3px solid ${rarityBorderColor}` : (source?.type === 'builtin' ? '3px solid #aaa' : '3px solid #007887'),
                   position: 'relative',
+                  boxShadow: rarityBorderColor ? `${rarityBorderColor} 0px 0px 10px 0px` : undefined
                   ...(selected || targetable ? selectedStyle : {})
                 } as React.CSSProperties}
               >

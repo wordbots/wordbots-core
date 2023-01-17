@@ -187,6 +187,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
       // Log the random selection.
       if (chosen.length > 0) {
+        /* istanbul ignore else */
         if (['cards', 'cardsInDiscardPile', 'objects'].includes(collection.type)) {
           const cards: Record<string, w.CardInGame> = fromPairs((chosen as Array<w.CardInGame | w.Object>).map((c: w.CardInGame | w.Object) =>
             g.isObject(c) ? [c.card.name, c.card] : [c.name, c])

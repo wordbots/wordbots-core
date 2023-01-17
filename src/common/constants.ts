@@ -49,10 +49,21 @@ export const FIREBASE_CONFIG = (() => {
     } else if (window.location.hostname === 'localhost') {
       // On localhost, default to staging DB unless otherwise specified
       return process.env.FIREBASE_DB === 'production' ? FIREBASE_PROD_CONFIG : FIREBASE_STAGING_CONFIG;
+    } else {
+      // Otherwise, default to staging DB
+      return FIREBASE_STAGING_CONFIG;
+    }
+  } else {
+    // If not in browser (i.e. wordbots server), check the HEROKU_APP_ID env var (provided by the runtime-dyno-metadata addon)
+    // to see if we are in the production app, and if so, connect to the production DB
+    if (process.env.HEROKU_APP_ID === 'a0939e51-43c3-473c-a948-deb50512cc66') {
+      return FIREBASE_PROD_CONFIG;
+    } else {
+      // Otherwise, default to staging DB unless otherwise specified
+      return FIREBASE_STAGING_CONFIG;
     }
   }
 
-  return FIREBASE_STAGING_CONFIG; // otherwise, default to staging DB
 })();
 
 // Game rules.

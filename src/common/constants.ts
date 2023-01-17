@@ -154,7 +154,7 @@ const LOCAL_PARSER_URL = 'http://localhost:8080';
 
 export const PARSER_URL: string = (() => {
   if (inBrowser()) {
-    if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+    if (window.location.hostname === 'wordbots.io' || ['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
       // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
       return LIVE_PARSER_URL;
     } else if (window.location.hostname === 'localhost') {

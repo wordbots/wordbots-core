@@ -35,6 +35,8 @@ interface ChatState {
   showServerMsgs: boolean
   showGameMsgs: boolean
   showChatMsgs: boolean
+  /** Debug mode has 3 effects: [Debug] messages shown, timestamps displayed for all messages, merging of messages is disabled */
+  enableDebugMode: boolean
 }
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
@@ -43,7 +45,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     optionsVisible: false,
     showServerMsgs: true,
     showGameMsgs: true,
-    showChatMsgs: true
+    showChatMsgs: true,
+    enableDebugMode: false
   };
 
   private chatRef: HTMLDivElement | null = null;
@@ -102,6 +105,11 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private mergeMessagesById(messages: w.ChatMessage[]): w.ChatMessage[] {
+    // In debug mode, we disable merging messages so the chronology of events is clearer.
+    if (this.state.enableDebugMode) {
+      return flow(sortBy('timestamp'))(messages);
+    }
+
     const join = (msgs: w.ChatMessage[]): w.ChatMessage => ({
       ...msgs[0],
       text: msgs.map((m) => m.text).join(' '),
@@ -120,6 +128,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
       return this.state.showServerMsgs;
     } else if (message.user === '[Game]') {
       return this.state.showGameMsgs;
+    } else if (message.user === '[Debug]') {
+      return this.state.enableDebugMode;
     } else {
       return this.state.showChatMsgs;
     }
@@ -149,6 +159,9 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
   private togglePlayerChat = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ showChatMsgs: checked });
+  }
+  private toggleDebugMode = (_e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ enableDebugMode: checked });
   }
 
   private renderClosedChat(): JSX.Element {
@@ -197,11 +210,11 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
   private renderOpenChat(): JSX.Element {
     const { compact, header, inGame, messages, roomName, toggleChat } = this.props;
-    const { optionsVisible } = this.state;
+    const { optionsVisible, enableDebugMode } = this.state;
     const chatTitle = inGame ? 'Chat' : (roomName || 'Lobby');
 
     return (
-      <div style={{height: '100%'}}>
+      <div style={{ height: '100%' }}>
         {header}
         <Toolbar
           disableGutters
@@ -232,7 +245,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             display: this.state.optionsVisible ? 'block' : 'none'
           }}
         >
-          <div style={{padding: 10, fontSize: compact ? '0.8em' : '1em' }}>
+          <div style={{ padding: 10, fontSize: compact ? '0.8em' : '1em' }}>
             <FormControlLabel
               control={<Switch defaultChecked color="primary" onChange={this.toggleServerMessages} />}
               label="Show server messages"
@@ -251,12 +264,18 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
               labelPlacement="start"
               style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}
             />
+            <FormControlLabel
+              control={<Switch color="primary" onChange={this.toggleDebugMode} />}
+              label="Enable debug mode ⚠"
+              labelPlacement="start"
+              style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}
+            />
           </div>
           <Divider />
         </div>
 
         <div
-          ref={(el) => {this.chatRef = el; }}
+          ref={(el) => { this.chatRef = el; }}
           style={{
             padding: 10,
             height: `calc(100% - 144px ${optionsVisible ? '- 92px' : ''} ${header ? '- 36px' : ''})`,
@@ -266,17 +285,17 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
           {
             this.mergeMessagesById(messages)
               .filter(this.filterMessage)
-              .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} />)
+              .map((message, idx) => <ChatMessage key={idx} message={message} idx={idx} debugMode={enableDebugMode} />)
           }
         </div>
 
-        <div style={{backgroundColor: '#fff'}}>
+        <div style={{ backgroundColor: '#fff' }}>
           <Divider />
           <TextField
             id="chat"
             placeholder="Chat"
             autoComplete="off"
-            style={{margin: 10, width: 236}}
+            style={{ margin: 10, width: 236 }}
             value={this.state.chatFieldValue}
             onChange={this.handleChatChange}
             onKeyPress={this.handleChatKeypress}

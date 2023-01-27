@@ -4,6 +4,7 @@ import * as React from 'react';
 import { BACKGROUND_Z_INDEX, BLUE_PLAYER_COLOR, MAX_Z_INDEX, ORANGE_PLAYER_COLOR } from '../../constants';
 import * as w from '../../types';
 import { opponent } from '../../util/game';
+import EnergyCurve from '../cards/EnergyCurve';
 
 import DraftCardPicker from './DraftCardPicker';
 import DraftDeck from './DraftDeck';
@@ -132,12 +133,12 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
     if (player === 'neither') {
       return (
         <div style={{
-            fontFamily: '"Carter One", "Carter One-fallback"',
-            color: 'white',
-            textAlign: 'center',
-            fontSize: '2em'
-          }}>
-            Waiting for players<br />to draft cards ...
+          fontFamily: '"Carter One", "Carter One-fallback"',
+          color: 'white',
+          textAlign: 'center',
+          fontSize: '2em'
+        }}>
+          Waiting for players<br />to draft cards ...
         </div>
       );
     } else if (this.currentCardGroup) {
@@ -158,8 +159,10 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
 
   private renderPlayerArea(color: w.PlayerColor, isOpponent: boolean): React.ReactNode {
     const { draft, usernames } = this.props;
+    const { cardsDrafted } = draft[color];
 
-    const numCardsDrafted = draft[color].cardsDrafted.length;
+    const numCardsDrafted = cardsDrafted.length;
+    const playerColor = ({ orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR })[color];
 
     return (
       <React.Fragment>
@@ -170,7 +173,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
         />
 
         <div style={{
-          color: ({orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR})[color],
+          color: playerColor,
           margin: 10,
           paddingLeft: 40,
           fontSize: '1.5em',
@@ -179,11 +182,13 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
           {
             !isOpponent && numCardsDrafted > 0
               ? <a className="underline" onClick={this.handleToggleShowDeck}>
-                  {numCardsDrafted}/30 cards
+                {numCardsDrafted}/30 cards
                 </a>
               : <span>{numCardsDrafted}/30 cards</span>
           }
         </div>
+
+        {!isOpponent && <EnergyCurve cards={cardsDrafted} height={100} textColor="white" chartColor={playerColor} />}
       </React.Fragment>
     );
   }

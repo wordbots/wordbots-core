@@ -6,6 +6,8 @@ import * as w from '../../types';
 interface EnergyCurveProps {
   cards: w.CardInStore[]
   height: number
+  chartColor?: string
+  textColor?: string
 }
 
 interface EnergyCurveState {
@@ -65,7 +67,7 @@ export default class EnergyCurve extends React.Component<EnergyCurveProps, Energ
   }
 
   public render(): JSX.Element {
-    const { height } = this.props;
+    const { height, chartColor, textColor } = this.props;
     const { width } = this.state;
     const elemWidth = Math.ceil(width / this.data.length) - 2;
 
@@ -74,7 +76,7 @@ export default class EnergyCurve extends React.Component<EnergyCurveProps, Energ
       <div ref={(node) => { (this as any).node = node; }}>
         <svg width={width} height={height}>
           <g className="graph" transform="translate(10, 15)">
-            <g className="x axis" transform={`translate(0, ${height - AXIS_HEIGHT})`}>
+            <g className="x axis" style={{ fill: textColor }} transform={`translate(0, ${height - AXIS_HEIGHT})`}>
               {this.data.map(({ text }, i) => (
                 <g key={i} className="tick" transform={`translate(${(i + 0.5) * elemWidth - 1},0)`}>
                   <line y2="6" x2="0" />
@@ -90,7 +92,7 @@ export default class EnergyCurve extends React.Component<EnergyCurveProps, Energ
                 width={Math.floor(elemWidth * .9)}
                 y={height - AXIS_HEIGHT - this.valueToHeight(value)}
                 height={this.valueToHeight(value)}
-                style={{ fill: '#64B5F6' }}
+                style={{ fill: chartColor || '#64B5F6' }}
               />
             ))}
           </g>

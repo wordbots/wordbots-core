@@ -281,6 +281,7 @@ export interface GameState {
   callbackAfterTargetSelected?: (state: GameState) => GameState
   currentCmdText?: string
   currentEntryInCollection?: Targetable
+  disableDebugVerboseLogging?: boolean
   eventExecuting?: boolean
   invalid?: boolean
   it?: _Object | CardInGame

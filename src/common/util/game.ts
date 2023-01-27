@@ -7,7 +7,7 @@ import GridGenerator from '../components/hexgrid/GridGenerator';
 import Hex from '../components/hexgrid/Hex';
 import HexUtils from '../components/hexgrid/HexUtils';
 import {
-  BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, MAX_EXECUTION_STACK_SIZE, MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES,
+  BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG, MAX_EXECUTION_STACK_SIZE, MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES,
   stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE
 } from '../constants';
 import * as g from '../guards';
@@ -16,7 +16,7 @@ import * as w from '../types';
 import buildVocabulary from '../vocabulary/vocabulary';
 
 import { assertCardVisible } from './cards';
-import { clamp, isErrorWithMessage } from './common';
+import { clamp, id as generateId, isErrorWithMessage } from './common';
 import { markAchievement } from './firebase';
 import { GameFormat, SharedDeckGameFormat } from './formats';
 
@@ -430,6 +430,50 @@ export function logAction(
   return state;
 }
 
+/** Given a Targetable, return a string representing that Targetable that can be logged in a debug message. */
+function targetToDebugStr(t: w.Targetable) {
+  return g.isObject(t) ? t.card.name : (g.isCardInGame(t) ? t.name : (g.isPlayerState(t) ? t.color : t));
+}
+
+/**
+ * Like logAction() but logging a debug message (visible only if debug mode is turned on by the player).
+ * If targets are provided, they will be rendered using targetToDebugStr() and appended to the message.
+ *
+ * If verbose=true, the message will be logged only if it is the direct result of a player action,
+ * versus due to a passive or triggered ability executing.
+ * (This is a compromise between always displaying or never displaying verbose messages,
+ * since they can completely overwhelm the chat sometimes.)
+ * Note that if the ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG constant is set to true,
+ * verbose messages will *always* be logged, regardless of circumstance.
+ */
+export function logDebugMessage(state: w.GameState, text: string, targets?: w.Targetable[], verbose?: boolean): w.GameState {
+  if (verbose && state.disableDebugVerboseLogging && !ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG) {
+    return state;
+  }
+
+  const message: w.LoggedAction = {
+    id: generateId(), // state.actionId!,
+    user: '[Debug]',
+    text: `${text} ${targets ? `[${targets.map(targetToDebugStr).join(', ')}]` : ''}`,
+    timestamp: Date.now(),
+    cards: {}
+  };
+
+  state.actionLog.push(message);
+  return state;
+}
+
+/**
+ * Return a target and log it as a (verbose) debug message to the game log.
+ * Note that these messages will not be logged for targets within triggered/passive abilities,
+ * unless ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG=true.
+ */
+export function logAndReturnTarget<T extends w.Target>(state: w.GameState, targetType: string, targetFn: () => T): T {
+  const target = targetFn();
+  state = logDebugMessage(state, `${targetType} = `, target.entries, true);
+  return target;
+}
+
 /** Start a new game by resetting the game state, per the given game format. */
 export function newGame(
   state: w.GameState,
@@ -447,6 +491,7 @@ export function newGame(
 /** Pass the current player's turn, ending their turn and starting their opponent's turn. */
 export function passTurn(state: w.GameState, player: w.PlayerColor): w.GameState {
   if (state.currentTurn === player) {
+    state = logDebugMessage(state, `${player} passes, it is now ${opponent(player)}'s turn`);
     return startTurn(endTurn(state));
   } else {
     return state;
@@ -778,6 +823,13 @@ export function executeCmd(
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
   // console.log(cmd);
+  state = logDebugMessage(
+    state,
+    `Executing command ${source ? ` (for ability #${source})` : ''} "${state.currentCmdText}" (currentObject: ${currentObject?.card.name || '(null)'}):\n ${cmd}`,
+    [],
+    true
+  );
+
   state.callbackAfterExecution = undefined;
 
   state.executionStackDepth += 1;
@@ -828,6 +880,10 @@ export function executeCmdAndLogErrors<T = void>(
   fallbackReturn?: T
 ): T {
   try {
+    // Note that we don't want to log debug messages for execution happening for triggered/passive abilities because it can get VERY wordy.
+    // Note also that the ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG constant can be set to true to log these things regardless.
+    state.disableDebugVerboseLogging = true;
+
     return executeCmd(state, cmd, currentObject, itOverride, source) as unknown as T;
   } catch (error) {
     if (isErrorWithMessage(error) && error.message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
@@ -836,6 +892,8 @@ export function executeCmdAndLogErrors<T = void>(
       logAction(state, null, `Runtime exception while handling an ability (report this to the developers):\ncard name: ${currentObject?.card.name || 'null'}\ncommand: ${state.currentCmdText || 'null'}`);
       return fallbackReturn || (undefined as unknown as T);
     }
+  } finally {
+    state.disableDebugVerboseLogging = false;
   }
 }
 
@@ -900,7 +958,7 @@ export function triggerEvent(
     const itOverride: w.Object | null = (state.it && g.isObject(state.it) ? (state.it) : null);
 
     state.currentCmdText = t.text || undefined;
-    executeCmdAndLogErrors(state, t.action, t.object, itOverride);
+    state = logDebugMessage(state, `Activating ${triggerType} trigger for ${t.object.card.name} ...`);
 
     if (state.callbackAfterExecution) {
       state = state.callbackAfterExecution(state);
@@ -928,6 +986,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
       if (!isEqual(newTarget, ability.currentTargets)) {
         // console.log(`Reapplying abilities of ${obj.id} ${obj.card.name} - new target =`, newTarget);
 
+        state = logDebugMessage(state, `(Re)applying abilities for ${obj.card.name} ...`);
         // Unapply this ability for all previously targeted objects (if any).
         unapplyAbility(state, ability);
         // And apply this ability to its new set of targets (if any).
@@ -946,8 +1005,11 @@ export function applyAbilities(state: w.GameState): w.GameState {
 function applyAbility(state: w.GameState, ability: w.PassiveAbility, target: w.TargetReference | null) {
   if (target) {
     // console.log(`Applying ability ${ability.aid} "${ability.text}" to`, target);
+
     ability.currentTargets = target;
     const targetedEntries: w.Targetable[] = getTargetFromRef(state, target).entries;
+    state = logDebugMessage(state, `Applying ability "${ability.text}" (#${ability.aid}) to:`, targetedEntries);
+
     if (targetedEntries.length > 0) {
       targetedEntries.forEach(ability.apply);
       if (ability.onlyExecuteOnce) {

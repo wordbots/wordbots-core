@@ -6,7 +6,7 @@ import * as g from '../guards';
 import * as w from '../types';
 import { arrayToSentence, id } from '../util/common';
 import {
-  allObjectsOnBoard, currentPlayer, getHex, logAction, opponent, opponentPlayer,
+  allObjectsOnBoard, currentPlayer, getHex, logAction, logAndReturnTarget, opponent, opponentPlayer,
   ownerOf
 } from '../util/game';
 
@@ -169,16 +169,16 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     },
 
     // Currently salient object.
-    it: (): w.ObjectCollection | w.CardInHandCollection =>
+    it: (): w.ObjectCollection | w.CardInHandCollection => logAndReturnTarget(state, 'it', () => (
       /* console.log({
         it: state.it ? state.it.name || state.it.card.name : null,
         currentObject: currentObject ? currentObject.name || currentObject.card.name : null
       }); */
       it()
-    ,
+    )),
 
     // Currently salient player.
-    itP: (): w.PlayerCollection => itP(),
+    itP: (): w.PlayerCollection => logAndReturnTarget(state, 'itP', itP),
 
     opponent: (): w.PlayerCollection => {
       if (currentObject) {
@@ -192,13 +192,22 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       const chosen: w.Targetable[] = shuffle(collection.entries, state.rng()).slice(0, num);
 
       // Log the random selection.
-      if (chosen.length > 0 && ['cards', 'objects'].includes(collection.type)) {
-        const cards: Record<string, w.CardInGame> = fromPairs((chosen as Array<w.CardInGame | w.Object>).map((c: w.CardInGame | w.Object) =>
-          g.isObject(c) ? [c.card.name, c.card] : [c.name, c])
-        );
-        const names = Object.keys(cards).map((name) => `|${name}|`);
-        const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1 ? 'was' : 'were'} selected`;
-        logAction(state, null, explanationStr, cards);
+      if (chosen.length > 0) {
+        /* istanbul ignore else */
+        if (['cards', 'cardsInDiscardPile', 'objects'].includes(collection.type)) {
+          const cards: Record<string, w.CardInGame> = fromPairs((chosen as Array<w.CardInGame | w.Object>).map((c: w.CardInGame | w.Object) =>
+            g.isObject(c) ? [c.card.name, c.card] : [c.name, c])
+          );
+          const names = Object.keys(cards).map((name) => `|${name}|`);
+          const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+          logAction(state, null, explanationStr, cards);
+        } else if (collection.type === 'players') {
+          const explanationStr = `${arrayToSentence((chosen as w.PlayerInGameState[]).map((p) => p.color))} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+          logAction(state, null, explanationStr);
+        } else if (collection.type === 'hexes') {
+          const explanationStr = `${arrayToSentence(chosen as w.HexId[])} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+          logAction(state, null, explanationStr);
+        }
       }
 
       return { type: collection.type, entries: chosen } as w.Collection as T;
@@ -217,7 +226,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
     // with:
     //     Whenever this robot attacks a robot, destroy that robot.
     //     ("that robot" clearly refers to the object)
-    that: (): w.ObjectCollection | w.CardInHandCollection => {
+    that: (): w.ObjectCollection | w.CardInHandCollection => logAndReturnTarget(state, 'that', () => {
       if (state.memory['target']) {
         return state.memory['target'] as w.ObjectCollection | w.CardInHandCollection;
       } if (state.that) {
@@ -225,11 +234,11 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       } else {
         return it();
       }
-    },
+    }),
 
     // Prioritize current iteratee in a collection of objects.
     // e.g. "Set the attack of all robots to *their* health."
-    they: (): w.ObjectCollection | w.CardInHandCollection => {
+    they: (): w.ObjectCollection | w.CardInHandCollection => logAndReturnTarget(state, 'they', () => {
       const they = state.currentEntryInCollection;
       if (they && g.isObject(they)) {
         return ({ type: 'objects', entries: [they] });
@@ -237,23 +246,22 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         /* istanbul ignore next: this is a last-resort fallback that should be hit rarely */
         return it();
       }
-    },
+    }),
 
     // Prioritize current iteratee in a collection of players.
     // e.g. "Each player shuffles all cards from *their* hand into *their* deck."
-    theyP: (): w.PlayerCollection => {
+    theyP: (): w.PlayerCollection => logAndReturnTarget(state, 'theyP', () => {
       const they = state.currentEntryInCollection;
       if (they && g.isPlayerState(they)) {
         return ({ type: 'players', entries: [they] });
       } else {
         return itP();
       }
-    },
+    }),
 
     // Prioritize currentObject,
     // but also allow falling back to the currently salient object, if any.
-    thisRobot: (): w.ObjectCollection => {
-      // console.log(currentObject);
+    thisRobot: (): w.ObjectCollection => logAndReturnTarget(state, 'this', () => {
       if (currentObject) {
         //console.log(currentObject);
         return { type: 'objects', entries: [currentObject] };
@@ -264,7 +272,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         //console.log([]);
         return { type: 'objects', entries: [] };
       }
-    },
+    }),
 
     union: (collections: w.ObjectCollection[]): w.ObjectCollection => (
       { type: 'objects', entries: flatMap(collections, 'entries') }

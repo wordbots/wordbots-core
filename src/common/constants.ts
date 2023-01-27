@@ -15,45 +15,11 @@ export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
 export const DISPLAY_HEX_IDS = false;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
+export const ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG = false;  // logs ALL debug messages in game log, even ones not corresponding to player actions (this can get VERY verbose)
 
 // Server settings.
 
 export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to true until all the bugs are worked out!
-
-// DB.
-
-const FIREBASE_PROD_CONFIG = {
-  apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
-  authDomain: 'wordbots.firebaseapp.com',
-  databaseURL: 'https://wordbots.firebaseio.com',
-  projectId: 'wordbots',
-  storageBucket: 'wordbots.appspot.com',
-  messagingSenderId: '913868073872'
-};
-
-const FIREBASE_STAGING_CONFIG = {
-  apiKey: "AIzaSyCNa7SYKFX91T_UPSXK5SBHfLTL2QSAH5A",  // Note that this is the client API key, with very limited permissions
-  authDomain: "wordbots-staging.firebaseapp.com",
-  databaseURL: "https://wordbots-staging.firebaseio.com",
-  projectId: "wordbots-staging",
-  storageBucket: "wordbots-staging.appspot.com",
-  messagingSenderId: "755003910639",
-  appId: "1:755003910639:web:777afce7e570ea691c6e1a"
-};
-
-export const FIREBASE_CONFIG = (() => {
-  if (inBrowser()) {
-    if (['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
-      // On a production host (wordbots.io, app.wordbots.io, wordbots-game.herokuapp.com are all equivalent), use production DB
-      return FIREBASE_PROD_CONFIG;
-    } else if (window.location.hostname === 'localhost') {
-      // On localhost, default to staging DB unless otherwise specified
-      return process.env.FIREBASE_DB === 'production' ? FIREBASE_PROD_CONFIG : FIREBASE_STAGING_CONFIG;
-    }
-  }
-
-  return FIREBASE_STAGING_CONFIG; // otherwise, default to staging DB
-})();
 
 // Game rules.
 
@@ -146,6 +112,52 @@ export function stringToType(str: string): CardType {
   return parseInt(invert(typeToStringMapping)[str.toLowerCase()], 10) as CardType;
 }
 
+// DB.
+
+const FIREBASE_PROD_CONFIG = {
+  apiKey: 'AIzaSyD6XsL6ViMw8_vBy6aU7Dj9F7mZJ8sxcUA',  // Note that this is the client API key, with very limited permissions
+  authDomain: 'wordbots.firebaseapp.com',
+  databaseURL: 'https://wordbots.firebaseio.com',
+  projectId: 'wordbots',
+  storageBucket: 'wordbots.appspot.com',
+  messagingSenderId: '913868073872'
+};
+
+const FIREBASE_STAGING_CONFIG = {
+  apiKey: "AIzaSyCNa7SYKFX91T_UPSXK5SBHfLTL2QSAH5A",  // Note that this is the client API key, with very limited permissions
+  authDomain: "wordbots-staging.firebaseapp.com",
+  databaseURL: "https://wordbots-staging.firebaseio.com",
+  projectId: "wordbots-staging",
+  storageBucket: "wordbots-staging.appspot.com",
+  messagingSenderId: "755003910639",
+  appId: "1:755003910639:web:777afce7e570ea691c6e1a"
+};
+
+export const FIREBASE_CONFIG = (() => {
+  if (inBrowser()) {
+    if (['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+      // On a production host (wordbots.io, app.wordbots.io, wordbots-game.herokuapp.com are all equivalent), use production DB
+      return FIREBASE_PROD_CONFIG;
+    } else if (window.location.hostname === 'localhost') {
+      // On localhost, default to staging DB unless otherwise specified
+      return process.env.FIREBASE_DB === 'production' ? FIREBASE_PROD_CONFIG : FIREBASE_STAGING_CONFIG;
+    } else {
+      // Otherwise, default to staging DB
+      return FIREBASE_STAGING_CONFIG;
+    }
+  } else {
+    // If not in browser (i.e. wordbots server), check the HEROKU_APP_ID env var (provided by the runtime-dyno-metadata addon)
+    // to see if we are in the production app, and if so, connect to the production DB
+    if (process.env.HEROKU_APP_ID === 'a0939e51-43c3-473c-a948-deb50512cc66') {
+      return FIREBASE_PROD_CONFIG;
+    } else {
+      // Otherwise, default to staging DB unless otherwise specified
+      return FIREBASE_STAGING_CONFIG;
+    }
+  }
+
+})();
+
 // Parsing.
 
 const LIVE_PARSER_URL = '//parser.wordbots.io';
@@ -154,8 +166,8 @@ const LOCAL_PARSER_URL = 'http://localhost:8080';
 
 export const PARSER_URL: string = (() => {
   if (inBrowser()) {
-    if (['app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
-      // On app.wordbots.io or wordbots-game-staging.herokuapp.com, use production DB
+    if (['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+      // On a production host (wordbots.io, app.wordbots.io, wordbots-game.herokuapp.com are all equivalent), use production parser
       return LIVE_PARSER_URL;
     } else if (window.location.hostname === 'localhost') {
       // On localhost, default to staging parser unless otherwise specified

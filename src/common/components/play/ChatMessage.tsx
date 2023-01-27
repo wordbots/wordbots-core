@@ -7,11 +7,13 @@ import CardTooltip from '../card/CardTooltip';
 interface ChatMessageProps {
   message: w.ChatMessage
   idx: number
+  debugMode?: boolean
 }
 
 export default class ChatMessage extends React.Component<ChatMessageProps> {
   public render(): JSX.Element {
-    const { message, idx } = this.props;
+    const { message, idx, debugMode } = this.props;
+    const { text, timestamp, user } = message;
 
     return (
       <TransitionGroup key={idx}>
@@ -24,13 +26,18 @@ export default class ChatMessage extends React.Component<ChatMessageProps> {
             key={idx}
             className="chat-message"
             style={{
-              color: ['[Game]', '[Server]'].includes(message.user) ? '#888' : '#000',
+              color: ['[Game]', '[Server]'].includes(user) ? '#888' : (user === '[Debug]' ? '#aaa' : '#000'),
+              fontSize: user === '[Debug]' ? '0.7em' : undefined,
+              whiteSpace: user === '[Debug]' ? 'pre-line' : undefined,
               marginBottom: 5,
               wordBreak: 'break-word'
             }}
           >
-            <b>{message.user}</b>:&nbsp;
-            {message.text.split('|').map((phrase, phraseIdx) => this.renderPhrase(phrase, message, idx, phraseIdx))}
+            {debugMode && <div style={{ fontSize: '0.6em', textAlign: 'end' }}>
+              {new Date(timestamp).toLocaleString()}
+            </div>}
+            <b>{user}</b>:&nbsp;
+            {text.split('|').map((phrase, phraseIdx) => this.renderPhrase(phrase, message, idx, phraseIdx))}
           </div>
         </CSSTransition>
       </TransitionGroup>
@@ -43,7 +50,7 @@ export default class ChatMessage extends React.Component<ChatMessageProps> {
     if (card) {
       return (
         <CardTooltip key={key} card={card}>
-          <span style={{fontWeight: 'bold', cursor: 'pointer'}}>
+          <span style={{ fontWeight: 'bold', cursor: 'pointer' }}>
             {card.name}
           </span>
         </CardTooltip>

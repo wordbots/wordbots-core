@@ -959,6 +959,7 @@ export function triggerEvent(
 
     state.currentCmdText = t.text || undefined;
     state = logDebugMessage(state, `Activating ${triggerType} trigger for ${t.object.card.name} ...`);
+    executeCmdAndLogErrors(state, t.action, t.object, itOverride);
 
     if (state.callbackAfterExecution) {
       state = state.callbackAfterExecution(state);

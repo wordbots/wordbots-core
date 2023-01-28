@@ -14,11 +14,12 @@ import { setTrigger, triggers, unsetTrigger } from './triggers';
 export default function vocabulary(
   state: w.GameState,
   currentObject: w.Object | null = null,
+  itOverride: w.Object | null = null,
   source: w.AbilityId | null = null
 ): Record<string, w.Returns<void> | Record<string, w.Returns<void>>> {
   return {
     actions: actions(state, currentObject),
-    targets: targets(state, currentObject),
+    targets: targets(state, currentObject, itOverride),
     conditions: objectConditions(state),
     globalConditions: globalConditions(state),
     triggers: triggers(state),

@@ -161,7 +161,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         targets: targetFuncStr,
         apply: (target: w.Targetable) => {
           if (isObject(target)) {
-            executeCmdAndLogErrors(state, cmd, target, aid);
+            executeCmdAndLogErrors(state, cmd, target, target, aid);
           }
         },
         unapply: noop,  // Can't "unapply" a one-time action
@@ -177,12 +177,12 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
         targets: `(${targetFunc.toString()})`,
         apply: (target: w.Targetable) => {
           if (isObject(target)) {
-            executeCmdAndLogErrors(state, cmd, target, aid);
+            executeCmdAndLogErrors(state, cmd, target, target, aid);
           }
         },
         unapply: (target: w.Targetable) => {
           if (isObject(target)) {
-            executeCmdAndLogErrors(state, reversedCmd(cmd), target, aid);
+            executeCmdAndLogErrors(state, reversedCmd(cmd), target, target, aid);
           }
         }
       };

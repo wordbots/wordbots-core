@@ -819,6 +819,7 @@ export function executeCmd(
   state: w.GameState,
   cmd: ((s: w.GameState) => void) | w.StringRepresentationOf<(s: w.GameState) => void>,
   currentObject: w.Object | null = null,
+  itOverride: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
   // console.log(cmd);
@@ -836,7 +837,7 @@ export function executeCmd(
     throw new Error('EXECUTION_STACK_DEPTH_EXCEEDED');
   }
 
-  const vocabulary = buildVocabulary(state, currentObject, source);
+  const vocabulary = buildVocabulary(state, currentObject, itOverride, source);
   const [terms, definitions] = [Object.keys(vocabulary), Object.values(vocabulary)];
   const wrappedCmd = `(function (${terms.join(',')}) { return (${cmd})(); })`;
 
@@ -874,6 +875,7 @@ export function executeCmdAndLogErrors<T = void>(
   state: w.GameState,
   cmd: ((s: w.GameState) => void) | w.StringRepresentationOf<(s: w.GameState) => void>,
   currentObject: w.Object | null = null,
+  itOverride: w.Object | null = null,
   source: w.AbilityId | null = null,
   fallbackReturn?: T
 ): T {
@@ -882,7 +884,7 @@ export function executeCmdAndLogErrors<T = void>(
     // Note also that the ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG constant can be set to true to log these things regardless.
     state.disableDebugVerboseLogging = true;
 
-    return executeCmd(state, cmd, currentObject, source) as unknown as T;
+    return executeCmd(state, cmd, currentObject, itOverride, source) as unknown as T;
   } catch (error) {
     if (isErrorWithMessage(error) && error.message === 'EXECUTION_STACK_DEPTH_EXCEEDED') {
       throw error;
@@ -930,7 +932,7 @@ export function triggerEvent(
       .map((t: w.TriggeredAbility) => {
         // Assign t.trigger.targets (used in testing the condition) and t.object (used in executing the action).
         t.trigger.targets = getRefToTarget(
-          executeCmdAndLogErrors<w.Target>(state, t.trigger.targetFunc, object, null, { type: 'objects', entries: [] })
+          executeCmdAndLogErrors<w.Target>(state, t.trigger.targetFunc, object, null, null, { type: 'objects', entries: [] })
         );
         return { ...t, object };
       })
@@ -945,7 +947,7 @@ export function triggerEvent(
 
   // Now execute each trigger.
   triggers.forEach((t: w.TriggeredAbility & { object: w.Object }) => {
-    // Ordinarily, currentObject has higher salience than state.it
+    // Ordinarily, currentObject has higher salience than state.it for determining it()
     //     (see it() in vocabulary/targets.js)
     // but we actually want the opposite behavior when processing a trigger!
     // For example, when the trigger is:
@@ -953,12 +955,11 @@ export function triggerEvent(
     //         state.it = (destroyed robot)
     //         t.object = Arena
     //         "its controller" should = (destroyed robot)
-    const it: w.Object | null = (state.it && g.isObject(state.it) ? (state.it) : null);
-    const currentObject: w.Object = it || t.object;
+    const itOverride: w.Object | null = (state.it && g.isObject(state.it) ? (state.it) : null);
 
     state.currentCmdText = t.text || undefined;
     state = logDebugMessage(state, `Activating ${triggerType} trigger for ${t.object.card.name} ...`);
-    executeCmdAndLogErrors(state, t.action, currentObject);
+    executeCmdAndLogErrors(state, t.action, t.object, itOverride);
 
     if (state.callbackAfterExecution) {
       state = state.callbackAfterExecution(state);
@@ -978,7 +979,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
         ability.disabled
           ? null
           : getRefToTarget(
-            executeCmdAndLogErrors<w.Target>(state, ability.targets, obj, null, { type: 'objects', entries: [] })
+            executeCmdAndLogErrors<w.Target>(state, ability.targets, obj, null, null, { type: 'objects', entries: [] })
           )
       );
 

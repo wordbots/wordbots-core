@@ -233,6 +233,23 @@ export const armorerCard: w.CardInStore = {
   }
 };
 
+export const glassHammerCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Glass Hammer',
+  name: 'Glass Hammer',
+  text: 'Whenever your kernel takes damage, destroy this robot.',
+  abilities: [
+    "(function () { setTrigger(triggers['afterDamageReceived'](function () { return objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]); }, 'anycard'), (function () { actions['destroy'](targets['thisRobot']()); })); })"
+  ],
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 8,
+    health: 4,
+    speed: 2
+  },
+};
+
 
 export const countdownClockCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },

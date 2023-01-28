@@ -1,8 +1,9 @@
 import * as actions from '../../src/common/actions/game';
-import { DECK_SIZE, TYPE_ROBOT } from '../../src/common/constants';
+import { DECK_SIZE, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, TYPE_ROBOT } from '../../src/common/constants';
 import game from '../../src/common/reducers/game';
 import * as cards from '../../src/common/store/cards';
 import { action, getDefaultState, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, setUpBoardState } from '../testHelpers';
+import * as testCards from '../data/cards';
 
 describe('[vocabulary.targets]', () => {
   describe('choose', () => {
@@ -98,6 +99,25 @@ describe('[vocabulary.targets]', () => {
       );
       state = playEvent(state, 'blue', fragGrenadeAltCard, [{ hex: '3,-1,-2' }]);
       expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+    });
+
+    it('preserves currentObject having the highest salience even for triggered abilities', () => {
+      // RATIONALE:
+      // Triggered abilities should set `it` to higher salience than `currentObject` for targets['it'] but NOT for targets['this'].
+      // So for:
+      //      Arena: Whenever a robot is destroyed in combat, deal 1 damage to its controller.
+      //      it = destroyed robot  (it > currentObject for 'it')
+      // but for:
+      //      Glass Hammer: Whenever your kernel takes damage, destroy this robot.
+      //      this = this robot     (currentObject > it for 'this')
+
+      let state = getDefaultState();
+      state = playObject(state, 'orange', testCards.glassHammerCard, '3,-1,-2');  // "Whenever your kernel takes damage, destroy this robot."
+      state = playEvent(state, 'blue', cards.missileStrikeCard);  // "Deal 4 damage to your opponent."
+
+      // Glass Hammer should be destroyed, NOT the orange kernel!
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toEqual({});
+      expect(queryObjectAttribute(state, ORANGE_CORE_HEX, 'health')).toEqual(STARTING_PLAYER_HEALTH - 4);
     });
   });
 });

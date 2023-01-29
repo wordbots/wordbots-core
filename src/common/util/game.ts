@@ -667,7 +667,7 @@ export function removeCardsFromDiscardPile(state: w.GameState, cards: w.CardInGa
 
 /** Deal X damage to the object at the given hex, from the specified source (if any). */
 export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex: w.HexId, damageSourceObj: w.Object | null = null, cause: w.Cause | null = null): w.GameState {
-  const object = allObjectsOnBoard(state)[hex];
+  const object: w.Object | undefined = allObjectsOnBoard(state)[hex];
 
   if (object && !object.beingDestroyed) {
     state.memory['amount'] = amount;
@@ -691,12 +691,12 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
   * Otherwise, just make sure that it's properly tracked in `objectsOnBoard` within the game state. */
 export function updateOrDeleteObjectAtHex(
   state: w.GameState,
-  object: w.Object,
+  object: w.Object | undefined,
   hex: w.HexId,
   cause: w.Cause | null = null,
   shouldApplyAbilities = true
 ): w.GameState {
-  if (!(allObjectsOnBoard(state)[hex]?.id === object.id)) {
+  if (!object || !(allObjectsOnBoard(state)[hex]?.id === object.id)) {
     // Object no longer exists at this hex
     // perhaps it has already been deleted (or moved) by a previous effect in a chain of triggers?
     return state;

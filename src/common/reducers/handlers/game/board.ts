@@ -136,51 +136,53 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
 
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
 export function attackComplete(state: State): State {
-  if (state.attack?.from && state.attack?.to) {
-    const [source, target]: w.HexId[] = [state.attack.from, state.attack.to];
+  try {
+    if (state.attack?.from && state.attack?.to) {
+      const [source, target]: w.HexId[] = [state.attack.from, state.attack.to];
 
-    const attacker: w.Object = currentPlayer(state).objectsOnBoard[source];
-    const defender: w.Object = opponentPlayer(state).objectsOnBoard[target];
+      const attacker: w.Object = currentPlayer(state).objectsOnBoard[source];
+      const defender: w.Object = opponentPlayer(state).objectsOnBoard[target];
 
-    // Get attacker and defender's Attack stats now in case they change over the course of combat.
-    // (Conceptually, the two objects damage each other simultaneously.)
-    const attackerAttack: number = getAttribute(attacker, 'attack') || 0;
-    const defenderAttack: number = getAttribute(defender, 'attack') || 0;
+      // Get attacker and defender's Attack stats now in case they change over the course of combat.
+      // (Conceptually, the two objects damage each other simultaneously.)
+      const attackerAttack: number = getAttribute(attacker, 'attack') || 0;
+      const defenderAttack: number = getAttribute(defender, 'attack') || 0;
 
-    state = triggerEvent(state, 'afterAttackedBy', {
-      object: defender,
-      condition: ((t) => !t.attackerType || stringToType(t.attackerType) === attacker.card.type || t.attackerType === 'allobjects'),
-      undergoer: attacker
-    });
+      state = triggerEvent(state, 'afterAttackedBy', {
+        object: defender,
+        condition: ((t) => !t.attackerType || stringToType(t.attackerType) === attacker.card.type || t.attackerType === 'allobjects'),
+        undergoer: attacker
+      });
 
-    state = triggerEvent(state, 'afterAttack', {
-      object: attacker,
-      condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
-      undergoer: defender
-    }, () => {
-      defender.mostRecentlyInCombatWith = attacker.id;
-      return dealDamageToObjectAtHex(state, attackerAttack, target, attacker, 'combat');
-    });
+      state = triggerEvent(state, 'afterAttack', {
+        object: attacker,
+        condition: ((t) => !t.defenderType || stringToType(t.defenderType) === defender.card.type || t.defenderType === 'allobjects'),
+        undergoer: defender
+      }, () => {
+        defender.mostRecentlyInCombatWith = attacker.id;
+        return dealDamageToObjectAtHex(state, attackerAttack, target, attacker, 'combat');
+      });
 
-    if (!hasEffect(defender, 'cannotfightback') && defenderAttack > 0) {
-      attacker.mostRecentlyInCombatWith = defender.id;
-      state = dealDamageToObjectAtHex(state, defenderAttack, source, defender, 'combat');
-    }
+      if (!hasEffect(defender, 'cannotfightback') && defenderAttack > 0) {
+        attacker.mostRecentlyInCombatWith = defender.id;
+        state = dealDamageToObjectAtHex(state, defenderAttack, source, defender, 'combat');
+      }
 
-    // Move attacker to defender's space (if possible).
-    if (getAttribute(defender, 'health')! <= 0 && getAttribute(attacker, 'health')! > 0) {
-      state = transportObject(state, source, target);
+      // Move attacker to defender's space (if possible).
+      if (getAttribute(defender, 'health')! <= 0 && getAttribute(attacker, 'health')! > 0) {
+        state = transportObject(state, source, target);
 
-      // (This is mostly to make sure that the attacker doesn't die as a result of this move.)
+        // (This is mostly to make sure that the attacker doesn't die as a result of this move.)
+        state = applyAbilities(state);
+        state = updateOrDeleteObjectAtHex(state, attacker, target);
+      }
+
       state = applyAbilities(state);
-      state = updateOrDeleteObjectAtHex(state, attacker, target);
+      state = selectTile(state, null);
     }
-
-    state = applyAbilities(state);
-    state = selectTile(state, null);
+  } finally {
+    state.attack = null;
   }
-
-  state.attack = null;
 
   return state;
 }

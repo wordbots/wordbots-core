@@ -78,7 +78,7 @@ export default class EnergyCurve extends React.Component<EnergyCurveProps, Energ
           <g className="graph" transform="translate(10, 15)">
             <g className="x axis" style={{ fill: textColor }} transform={`translate(0, ${height - AXIS_HEIGHT})`}>
               {this.data.map(({ text }, i) => (
-                <g key={i} className="tick" transform={`translate(${(i + 0.5) * elemWidth - 1},0)`}>
+                <g key={i} className="tick" transform={`translate(${(i + 0.5) * elemWidth + 1},0)`}>
                   <line y2="6" x2="0" />
                   <text dy=".71em" y="9" x="0" style={{ textAnchor: 'middle', font: '10px sans-serif' }}>{text}</text>
                 </g>

@@ -696,7 +696,7 @@ export function updateOrDeleteObjectAtHex(
   cause: w.Cause | null = null,
   shouldApplyAbilities = true
 ): w.GameState {
-  if (!object || !(allObjectsOnBoard(state)[hex]?.id === object.id)) {
+  if (!object || allObjectsOnBoard(state)[hex]?.id !== object.id) {
     // Object no longer exists at this hex
     // perhaps it has already been deleted (or moved) by a previous effect in a chain of triggers?
     return state;

@@ -430,7 +430,7 @@ export const friendlyRiotShieldCard: w.CardInStore = {
   metadata: { source: { type: 'builtin' } as w.CardSource },
   id: 'Friendly Riot Shield',
   name: 'Friendly Riot Shield',
-  cost: 4,
+  cost: 2,
   type: TYPE_ROBOT,
   stats: {
     attack: 2,

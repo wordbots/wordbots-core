@@ -680,8 +680,6 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
     }, (s) => {
       object.stats.health -= amount;
       object.tookDamageThisTurn = true;
-
-
       return logAction(s, null, `|${object.card.id}| received ${amount} damage`, { [object.card.id]: object.card });
     });
 

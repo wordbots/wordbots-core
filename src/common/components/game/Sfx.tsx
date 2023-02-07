@@ -12,7 +12,6 @@ interface SfxProps {
 
 interface SfxState {
   idx: number
-  currentQueueLength: number
 }
 
 // hacky workaround to the fact that sfxQueue is actually mutable for card execution reasons

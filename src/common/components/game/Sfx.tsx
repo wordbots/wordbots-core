@@ -12,7 +12,11 @@ interface SfxProps {
 
 interface SfxState {
   idx: number
+  currentQueueLength: number
 }
+
+// hacky workaround to the fact that sfxQueue is actually mutable for card execution reasons
+let CURRENT_SFX_QUEUE_LENGTH = 0;
 
 export default class Sfx extends React.Component<SfxProps, SfxState> {
   public state = {
@@ -28,15 +32,17 @@ export default class Sfx extends React.Component<SfxProps, SfxState> {
   }
 
   public shouldComponentUpdate(nextProps: SfxProps, nextState: SfxState): boolean {
-    return nextProps.queue.length > this.props.queue.length || nextState.idx > this.state.idx;
+    return nextProps.queue.length > CURRENT_SFX_QUEUE_LENGTH || nextState.idx > this.state.idx;
   }
 
   public render(): JSX.Element | null {
-    const { volume } = this.props;
+    const { queue, volume } = this.props;
 
     if (!inBrowser()) { return null; }
 
     this.disableDebugMode();
+
+    CURRENT_SFX_QUEUE_LENGTH = queue.length;
 
     if (this.currentSound) {
       return (

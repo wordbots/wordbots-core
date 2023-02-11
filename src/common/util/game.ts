@@ -394,7 +394,7 @@ export function intermediateMoveHexId(state: w.GameState, startHex: Hex, attackH
 
 /** Trigger a sound effect by appending it to the sfx queue. */
 export function triggerSound(state: w.GameState, filename: string): w.GameState {
-  state.sfxQueue = [...state.sfxQueue, filename];
+  state.sfxQueue.push(filename);
   return state;
 }
 
@@ -682,6 +682,11 @@ export function dealDamageToObjectAtHex(state: w.GameState, amount: number, hex:
       object.tookDamageThisTurn = true;
       return logAction(s, null, `|${object.card.id}| received ${amount} damage`, { [object.card.id]: object.card });
     });
+
+    // if damage happened outside of combat (so 'attack' sfx hasn't triggered), trigger the 'damage' sfx
+    if (cause !== 'combat') {
+      state = triggerSound(state, 'damage.wav');
+    }
   }
 
   return updateOrDeleteObjectAtHex(state, object, hex, cause);

@@ -21,6 +21,7 @@ type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
   boardSize: number
   boardMargin: { left: number, top: number }
   compactControls: boolean
+  chatOpen: boolean
   startAnimationComplete: boolean
   onToggleFullscreen: () => void
   history: History

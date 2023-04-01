@@ -98,31 +98,33 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
           />
         </div>
 
-        <Dialog
-          open={isDeckOpen && !isGameOver}
-          PaperProps={{
-            style: {
-              width: 1010,
-              maxWidth: 1010,
-              overflow: 'none'
-            }
-          }}
-          style={{ zIndex: MAX_Z_INDEX }}
-          onClose={this.handleToggleShowDeck}
-        >
-          <DialogContent>
-            <DraftDeck cards={draft[player as 'blue' | 'orange'].cardsDrafted} />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              key="Close"
-              color="primary"
-              onClick={this.handleToggleShowDeck}
-            >
-              Close
+        {player !== 'neither' && (
+          <Dialog
+            open={isDeckOpen && !isGameOver}
+            PaperProps={{
+              style: {
+                width: 1010,
+                maxWidth: 1010,
+                overflow: 'none'
+              }
+            }}
+            style={{ zIndex: MAX_Z_INDEX }}
+            onClose={this.handleToggleShowDeck}
+          >
+            <DialogContent>
+              <DraftDeck cards={draft[player].cardsDrafted} />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                key="Close"
+                color="primary"
+                onClick={this.handleToggleShowDeck}
+              >
+                Close
             </Button>
-          </DialogActions>
-        </Dialog>
+            </DialogActions>
+          </Dialog>
+        )}
       </div>
     );
   }
@@ -158,7 +160,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
   }
 
   private renderPlayerArea(color: w.PlayerColor, isOpponent: boolean): React.ReactNode {
-    const { draft, usernames } = this.props;
+    const { draft, player, usernames } = this.props;
     const { cardsDrafted } = draft[color];
 
     const numCardsDrafted = cardsDrafted.length;
@@ -188,7 +190,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
           }
         </div>
 
-        {!isOpponent && <EnergyCurve cards={cardsDrafted} height={100} textColor="white" chartColor={playerColor} />}
+        {(!isOpponent || player === 'neither') && <EnergyCurve cards={cardsDrafted} height={100} textColor="white" chartColor={playerColor} />}
       </React.Fragment>
     );
   }

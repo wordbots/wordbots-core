@@ -15,6 +15,7 @@ import PlayerName from './PlayerName';
 
 interface PlayerAreaProps {
   gameProps: GameProps & {
+    chatOpen: boolean
     onSelectCard: (index: number, player: w.PlayerColor) => void
     onSelectCardInDiscardPile: (cardId: w.CardId, player: w.PlayerColor) => void
     onTutorialStep: (back?: boolean) => void
@@ -132,6 +133,7 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
         />
         <Hand
           // curved
+          key={`hand-${gameProps.chatOpen}` /** toggling chat should redraw Hand, recalculating dimensions */}
           opponent={opponent}
           selectedCard={gameProps.selectedCard!}
           targetableCards={gameProps.target.possibleCardsInHand}

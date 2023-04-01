@@ -179,6 +179,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
             actualPlayer={this.actualPlayer}
             boardSize={boardSize}
             boardMargin={boardMargin}
+            chatOpen={chatOpen}
             compactControls={compactControls}
             startAnimationComplete={startAnimationComplete}
             onToggleFullscreen={this.handleToggleFullScreen}

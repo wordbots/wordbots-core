@@ -40,6 +40,8 @@ export default class Hand extends React.Component<HandProps, HandState> {
 
   public UNSAFE_componentWillReceiveProps(): void {
     this.calculateAvailableWidth();
+    // Re-run after 100ms timeout to handle the transition duration of opening/closing Chat drawer
+    setTimeout(() => { this.calculateAvailableWidth(); }, 100);
   }
 
   public render(): JSX.Element {
@@ -50,7 +52,7 @@ export default class Hand extends React.Component<HandProps, HandState> {
         style={{
           display: 'flex',
           justifyContent: 'center',
-          width: 'calc(100% - 400px)',
+          width: 'calc(100% - 450px)',
           position: 'absolute',
           left: 0,
           right: 0,

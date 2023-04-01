@@ -434,10 +434,18 @@ export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.C
 }
 
 /** Given CollectionState and raw decks data returned from Firebase, populate state.decks . */
-export function loadDecksFromFirebase(state: w.CollectionState, data: any): w.CollectionState {
+export function loadDecksFromFirebase(state: w.CollectionState, data?: { decks?: w.DeckInStore[] }): w.CollectionState {
+  // Load deck data from Firebase as possible, but keep defaultState as source of truth for [built-in] decks!
+  const decks: w.DeckInStore[] =
+    data
+      ? data.decks
+        ? [...data.decks.filter((d) => d.authorId !== '[built-in]'), ...defaultState.decks]
+        : state.decks
+      : defaultState.decks;
+
   return {
     ...state,
-    decks: data ? ((data.decks as w.DeckInStore[]) || state.decks) : defaultState.decks
+    decks
   };
 }
 

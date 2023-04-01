@@ -74,7 +74,6 @@ export function onLogin(callback: (user: firebase.User) => void): firebase.Unsub
   return fb.auth().onAuthStateChanged((user: firebase.User) => {
     if (user) {
       callback(user);
-      console.log(user);
     }
   });
 }
@@ -386,7 +385,6 @@ export async function saveCardInSet(card: w.Card, setId: w.SetId, cardIdx: numbe
     .ref(`sets/${setId}/cards/${cardIdx}`)
     .update(withoutEmptyFields(card));
 }
-
 
 /** Yield the number of sets created by the given user id. */
 export async function getNumSetsCreatedCountByUserId(userId: w.UserId): Promise<number> {

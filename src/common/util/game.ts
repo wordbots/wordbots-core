@@ -181,7 +181,8 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
   } else if (['anycard', 'allobjects'].includes(cardTypeQuery)) {
     return true;
   } else {
-    return stringToType(cardTypeQuery) === cardType;
+    // note that 'event' is the old name for 'action'
+    return stringToType(cardTypeQuery.replace('event', 'action')) === cardType;
   }
 }
 

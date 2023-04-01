@@ -30,7 +30,12 @@
     "sets": {
       ".read": "true",
       "$key": {
-        ".write": "auth != null && (!newData.exists() || newData.child('metadata/authorId').val() == auth.uid) && (!data.exists() || (data.child('metadata/authorId').val() == auth.uid && (!newData.exists() || data.child('metadata/isPublished').val() != true)))"
+        ".write": "auth != null && (!newData.exists() || newData.child('metadata/authorId').val() == auth.uid) && (!data.exists() || (data.child('metadata/authorId').val() == auth.uid && (!newData.exists() || data.child('metadata/isPublished').val() != true)))",
+        "cards": {
+          "$key": {
+            ".write": "((auth.uid === 'ZOozOkbOlCOxrIjyJcHAVflnNh13' || auth.uid === 'XbnODr6FdwdTQPwvjM2uF1ErRTn1') && newData.child('originalParserV').exists())"
+          }
+        }
       },
       ".indexOn": [
         "timestamp",
@@ -41,7 +46,7 @@
     "cards": {
       ".read": "true",
       "$key": {
-        ".write": "auth != null && (!data.exists() || data.child('metadata/ownerId').val() == auth.uid) && (!newData.exists() || newData.child('metadata/ownerId').val() == auth.uid)"
+        ".write": "auth != null && ((!data.exists() || data.child('metadata/ownerId').val() == auth.uid) && (!newData.exists() || newData.child('metadata/ownerId').val() == auth.uid)) || ((auth.uid === 'ZOozOkbOlCOxrIjyJcHAVflnNh13' || auth.uid === 'XbnODr6FdwdTQPwvjM2uF1ErRTn1') && newData.child('originalParserV').exists())"
       },
       ".indexOn": [
         "metadata/ownerId",

@@ -7,6 +7,13 @@ import { Route } from 'react-router';
 import { DIALOG_Z_INDEX } from '../constants';
 import { transformHistory } from '../util/browser';
 
+export const DIALOG_PAPER_BASE_STYLE = {
+  zIndex: DIALOG_Z_INDEX,
+  width: 'auto',
+  maxWidth: 'none',
+  maxHeight: 'calc(100% - 120px)'
+};
+
 interface RouterDialogProps {
   path: string
   title?: string
@@ -46,10 +53,7 @@ export default class RouterDialog extends React.Component<RouterDialogProps> {
         open
         PaperProps={{
           style: {
-            zIndex: DIALOG_Z_INDEX,
-            width: 'auto',
-            maxWidth: 'none',
-            maxHeight: 'calc(100% - 120px)',
+            ...DIALOG_PAPER_BASE_STYLE,
             ...style
           }
         }}

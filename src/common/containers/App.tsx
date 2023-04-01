@@ -23,6 +23,7 @@ import { isSupportedBrowser, logAnalytics, toggleFlag } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
 
 import About from './About';
+import Admin from './Admin';
 import Collection from './Collection';
 import Community from './Community';
 import Creator from './Creator';
@@ -169,6 +170,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/how-it-works" component={HowItWorks} />
             <Route path="/help" component={Help} />
             <Route path="/profile/:userId" component={Profile} />
+            <Route path="/admin" component={Admin} />
             <Route render={this.redirectToRoot} />
           </Switch>
         </ErrorBoundary>

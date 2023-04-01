@@ -41,7 +41,7 @@ export interface CreatorStateProps {
   health: number
   cost: number
   loggedIn: boolean
-  parserVersion: number | null
+  parserVersion: string | null
   willCreateAnother: boolean
   isPrivate?: boolean
   cards: w.CardInStore[]
@@ -205,7 +205,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     }
 
     return (
-      <div style={{position: 'relative'}}>
+      <div style={{ position: 'relative' }}>
         <Background asset="compressed/IMG_3005.jpg" opacity={0.1} style={{ backgroundSize: 'contain' }} />
         <Helmet title="Workshop" />
         <Title text="Workshop" />
@@ -300,13 +300,13 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               {
                 cardOpenedForEditing
                   ? (
-                  <div style={{ fontSize: '0.85em', color: '#666' }}>
-                    <CardProvenanceDescription card={cardOpenedForEditing} style={{ display: 'inline' }} />{' '}
-                    <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
-                      <a className="underline">{isPermalinkCopied ? 'Copied!' : '[Copy permalink]'}</a>
-                    </CopyToClipboard>
-                  </div>
-                ) : this.renderCardCreationOptionsControls()
+                    <div style={{ fontSize: '0.85em', color: '#666' }}>
+                      <CardProvenanceDescription card={cardOpenedForEditing} style={{ display: 'inline' }} />{' '}
+                      <CopyToClipboard text={this.permalinkUrl} onCopy={this.afterCopyPermalink}>
+                        <a className="underline">{isPermalinkCopied ? 'Copied!' : '[Copy permalink]'}</a>
+                      </CopyToClipboard>
+                    </div>
+                  ) : this.renderCardCreationOptionsControls()
               }
             </Paper>
           </div>

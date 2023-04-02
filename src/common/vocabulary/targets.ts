@@ -37,6 +37,9 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       } else {
         return { type: 'cards', entries: [state.it] } as w.CardInHandCollection;
       }
+    } else if (state.currentEntryInCollection && g.isObject(state.currentEntryInCollection)) {
+      // behave properly when iterating over objects
+      return { type: 'objects', entries: [state.currentEntryInCollection] } as w.ObjectCollection;
     } else {
       /* istanbul ignore next: this is a fallback that should be rarely hit */
       return { type: 'objects', entries: [] } as w.ObjectCollection;

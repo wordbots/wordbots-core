@@ -113,7 +113,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 onPrevTutorialStep={onPrevTutorialStep}
               />
               <ForfeitButton
-                text={isSandbox ? "Exit Sandbox" : "Forfeit"}
+                text={isSandbox ? "Exit Sandbox" : (isSpectator ? "Stop Spectating" : "Forfeit")}
                 player={actualPlayer}
                 compact={compactControls}
                 history={history}

@@ -21,7 +21,7 @@ interface ForfeitButtonProps {
 
 export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   public render(): JSX.Element {
-    const { compact, gameOver, isSpectator, text, width } = this.props;
+    const { compact, gameOver, text, width } = this.props;
 
     return (
       <Button
@@ -39,7 +39,7 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
           fontFamily: '"Carter One", "Carter One-fallback"'
         }}
         onClick={this.handleClick}
-        disabled={isSpectator || gameOver}
+        disabled={gameOver}
       >
         <Icon
           className="material-icons"
@@ -55,7 +55,9 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   private handleClick = () => {
     const { player, isSpectator, isSandbox, isTutorial, text, history, onForfeit } = this.props;
 
-    if (player && !isSpectator) {
+    if (isSpectator) {
+      history!.push('/play');
+    } else if (player) {
       if (isTutorial) {
         onForfeit(opponent(player));
         history!.push('/play');

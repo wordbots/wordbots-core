@@ -12,6 +12,7 @@ import * as w from '../types';
 import { shuffleCardsInDeck } from '../util/decks';
 import { animate } from '../util/common';
 import { currentPlayerHasNoValidActions, currentTutorialStep } from '../util/game';
+import { inTest } from '../util/browser';
 
 import { baseGameUrl, urlForGameMode } from './Play';
 
@@ -238,10 +239,10 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   public render(): JSX.Element {
     return (
       <>
-        <Prompt
+        {!inTest && <Prompt
           when={this.shouldWarnBeforeLeavingPage}
           message="Are you sure you want to leave the game?"
-        />
+        />}
         <GameArea
           {...this.props}
           message={this.state.message}

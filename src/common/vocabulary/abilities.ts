@@ -86,7 +86,7 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
           target.temporaryStatAdjustments = { attack: [], health: [], speed: [], cost: [] };
         }
 
-        target.temporaryStatAdjustments[att] = target.temporaryStatAdjustments[att]!.concat({
+        target.temporaryStatAdjustments[att] = (target.temporaryStatAdjustments[att] || []).concat({
           aid,
           // Convert func to string so that we can serialize this temporaryStatAdjustment if necessary
           // (e.g. to reveal a card from the server).

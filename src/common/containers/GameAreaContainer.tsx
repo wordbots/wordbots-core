@@ -257,8 +257,8 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   private get shouldWarnBeforeLeavingPage(): boolean {
-    const { gameOver, isSpectator } = this.props;
-    return !gameOver && !isSpectator;
+    const { gameOver, isPractice, isSandbox, isSpectator, isTutorial } = this.props;
+    return !gameOver && !isSpectator && !isPractice && !isTutorial && !isSandbox;
   }
 
   private urlMatchesGameMode = (mode: string) => this.props.location.pathname.startsWith(urlForGameMode(mode));

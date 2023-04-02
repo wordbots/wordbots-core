@@ -273,6 +273,7 @@ export default class GameArea extends React.Component<GameAreaProps, GameAreaSta
       return (
         <Chat
           inGame
+          inSandbox={isSandbox}
           fullscreen={screenfull.isFullscreen}
           open={chatOpen}
           compact={compactControls}

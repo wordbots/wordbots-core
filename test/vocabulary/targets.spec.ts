@@ -23,6 +23,24 @@ describe('[vocabulary.targets]', () => {
     });
   });
 
+  describe('it', () => {
+    it('can fall back to the current iteratee when there are no other candidates', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', cards.friendlyRiotShieldCard, '3,-1,-2');  // 2/6/3
+
+      const loadBalancerCard = action(
+        "Set each robot's attack equal to its health. Set each robot's speed equal to its health",
+        [
+          "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'attack', \"(function () { return attributeValue(targets['it'](), 'health'); })\"); })",
+          "(function () { actions['setAttribute'](objectsMatchingConditions('robot', []), 'speed', \"(function () { return attributeValue(targets['it'](), 'health'); })\"); })"
+        ]
+      );
+      state = playEvent(state, 'orange', loadBalancerCard);
+      expect(queryObjectAttribute(state, '3,-1,-2', 'attack')).toEqual(6);
+      expect(queryObjectAttribute(state, '3,-1,-2', 'speed')).toEqual(6);
+    });
+  });
+
   describe('that', () => {
     // TODO: "Whenever this robot attacks a robot, destroy that robot."
 

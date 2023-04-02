@@ -73,6 +73,9 @@ export function ownerOf(state: w.GameState, object: w.Object): w.PlayerInGameSta
     return state.players.blue;
   } else if (some(state.players.orange.objectsOnBoard, ['id', object.id])) {
     return state.players.orange;
+  } else if (state.objectsDestroyedThisTurn[object.id]) {
+    const [, ownerColor] = state.objectsDestroyedThisTurn[object.id];
+    return state.players[ownerColor];
   }
 }
 
@@ -291,7 +294,7 @@ export function allHexIds(): w.HexId[] {
 
 /** Get the hex id corresponding to the given object, if any. */
 export function getHex(state: w.GameState, object: w.Object): w.HexId | undefined {
-  return findKey(allObjectsOnBoard(state), ['id', object.id]) || state.objectsDestroyedThisTurn[object.id];
+  return findKey(allObjectsOnBoard(state), ['id', object.id]) || state.objectsDestroyedThisTurn[object.id]?.[0];
 }
 
 /** Given a Hex, return all adjacent Hexes on the board. */
@@ -762,7 +765,7 @@ export function removeObjectFromBoard(state: w.GameState, object: w.Object, hex:
   // Unapply any abilities that this object had.
   object.abilities.forEach((ability) => unapplyAbility(state, ability));
 
-  state.objectsDestroyedThisTurn[object.id] = hex;
+  state.objectsDestroyedThisTurn[object.id] = [hex, ownerName];
 
   state = applyAbilities(state);
   state = checkVictoryConditions(state);

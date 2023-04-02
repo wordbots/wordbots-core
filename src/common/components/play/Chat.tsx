@@ -21,6 +21,7 @@ interface ChatProps {
   roomName: string | null
   messages: w.ChatMessage[]
   inGame?: boolean
+  inSandbox?: boolean
   open?: boolean
   compact?: boolean
   fullscreen?: boolean
@@ -40,14 +41,17 @@ interface ChatState {
 }
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
-  public state = {
-    chatFieldValue: '',
-    optionsVisible: false,
-    showServerMsgs: true,
-    showGameMsgs: true,
-    showChatMsgs: true,
-    enableDebugMode: false
-  };
+  constructor(props: ChatProps) {
+    super(props);
+    this.state = {
+      chatFieldValue: '',
+      optionsVisible: !!props.inSandbox,
+      showServerMsgs: true,
+      showGameMsgs: true,
+      showChatMsgs: true,
+      enableDebugMode: !!props.inSandbox
+    };
+  }
 
   private chatRef: HTMLDivElement | null = null;
 
@@ -209,7 +213,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   private renderOpenChat(): JSX.Element {
-    const { compact, header, inGame, messages, roomName, toggleChat } = this.props;
+    const { compact, header, inGame, inSandbox, messages, roomName, toggleChat } = this.props;
     const { optionsVisible, enableDebugMode } = this.state;
     const chatTitle = inGame ? 'Chat' : (roomName || 'Lobby');
 
@@ -265,7 +269,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
               style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}
             />
             <FormControlLabel
-              control={<Switch color="primary" onChange={this.toggleDebugMode} />}
+              control={<Switch defaultChecked={inSandbox} color="primary" onChange={this.toggleDebugMode} />}
               label="Enable debug mode ⚠"
               labelPlacement="start"
               style={{ justifyContent: 'space-between', margin: '-12px 0', width: '100%' }}

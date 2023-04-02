@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { inBrowser, isFlagSet } from '../../util/browser';
+import { inBrowser, isFlagSet, setFlagIfUnset } from '../../util/browser';
 
 const Sound = inBrowser() ? require('react-sound').default : null;
 const soundManager = inBrowser() ? require('soundmanager2/script/soundmanager2-nodebug').soundManager : null;
@@ -16,6 +16,9 @@ interface SfxState {
 
 // hacky workaround to the fact that sfxQueue is actually mutable for card execution reasons
 let CURRENT_SFX_QUEUE_LENGTH = 0;
+
+// Default sound to true
+setFlagIfUnset('sound', true);
 
 export default class Sfx extends React.Component<SfxProps, SfxState> {
   public state = {

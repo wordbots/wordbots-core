@@ -105,6 +105,12 @@ export function toggleFlag(flag: string, value?: boolean): void {
   saveToLocalStorage(flag, value !== undefined ? value.toString() : isFlagSet(flag) ? 'false' : 'true');
 }
 
+export function setFlagIfUnset(flag: string, value: boolean): void {
+  if (!isFlagSet(flag)) {
+    toggleFlag(flag, value);
+  }
+}
+
 /** Return the #gameArea element, falling back to the body element if it can't be found. */
 export function getGameAreaNode(): HTMLElement {
   return document.querySelector('#gameArea') || document.body;

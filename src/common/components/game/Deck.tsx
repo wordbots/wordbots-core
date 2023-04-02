@@ -15,8 +15,8 @@ export default class Deck extends React.Component<DeckProps> {
     if (deck.length > 0) {
       return (
         <Tooltip
-          text={`${deck.length} Cards`}
-          style={{fontFamily: '"Carter One", "Carter One-fallback"'}}
+          text={`${deck.length} ${deck.length === 1 ? 'card' : 'cards'}`}
+          style={{ fontFamily: '"Carter One", "Carter One-fallback"' }}
         >
           <CardBack deckLength={deck.length} />
         </Tooltip>

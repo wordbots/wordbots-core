@@ -100,8 +100,11 @@ export interface CardInStore {
   abilities?: string[]
   command?: StringRepresentationOf<(state: GameState) => unknown> | Array<StringRepresentationOf<(state: GameState) => unknown>>
   spriteV?: number
-  parserV?: number | null
+  parserV?: string | null
   metadata: CardMetadata
+  // TODO what to do with the below properties when a card is edited? wipe them?
+  originalParserV?: string  // the original parserV under which this card was created, if this card was migrated
+  migrationBackup?: Array<{ parserV: string, abilities: string[] }>  // parsed JS for previous parser versions, if this card was migrated
 }
 
 export interface ObfuscatedCard {
@@ -240,7 +243,7 @@ export interface CreatorState {
   id: string | null
   isPrivate?: boolean
   name: string
-  parserVersion: number | null
+  parserVersion: string | null
   sentences: Sentence[]
   speed: number
   spriteID: string

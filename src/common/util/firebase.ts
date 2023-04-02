@@ -379,6 +379,13 @@ export async function removeSet(setId: string): Promise<void> {
   }
 }
 
+/** Save the given card under `/sets/:setId/cards`. (This should only be used for parser migration.) */
+export async function saveCardInSet(card: w.Card, setId: w.SetId, cardIdx: number): Promise<void> {
+  fb.database()
+    .ref(`sets/${setId}/cards/${cardIdx}`)
+    .update(withoutEmptyFields(card));
+}
+
 /** Yield the number of sets created by the given user id. */
 export async function getNumSetsCreatedCountByUserId(userId: w.UserId): Promise<number> {
   const snapshot = await query('sets', 'metadata/authorId', userId);

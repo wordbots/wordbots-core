@@ -65,7 +65,7 @@ export default class CardStat extends React.Component<CardStatProps> {
       textDecoration: 'line-through'
     };
 
-    if (current && current !== base) {
+    if (isNumber(current) && current !== base) {
       return (
         <span style={{ position: 'relative' }}>
           <span style={baseStatStyle}>

@@ -51,7 +51,7 @@ describe('GameArea container', () => {
               onTutorialStep={board.props.onTutorialStep}
               onEndGame={board.props.onEndGame}
               tutorialStep={tutorialStep}
-              />
+            />
           </div>
         </div>
       </div>,
@@ -72,7 +72,7 @@ describe('GameArea container', () => {
     const game = createGameArea(state, null);
 
     // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
-    const gameInner = renderElement(game);
+    const gameInner = renderElement(game).props.children[1];
     const dom = renderElement(gameInner);
 
     const gameContents = renderElement(dom.props.children[1].props.children);
@@ -90,7 +90,7 @@ describe('GameArea container', () => {
     const game = createGameArea(state, undefined, { isTutorial: true, tutorialStep: testTutorialStep });
 
     // Shallow render two levels deep: GameAreaContainer => GameArea => [rendered content]
-    const gameInner = renderElement(game);
+    const gameInner = renderElement(game).props.children[1];
     const dom = renderElement(gameInner);
 
     const gameContents = renderElement(dom.props.children[1].props.children);
@@ -163,13 +163,13 @@ describe('GameArea container', () => {
 
   it('should start tutorial mode on page load if the URL is /play/tutorial', () => {
     const dispatchedActions = [];
-    const state = combineState({...getDefaultState(), started: false});
+    const state = combineState({ ...getDefaultState(), started: false });
 
     function dispatch(action) {
       dispatchedActions.push(action);
     }
 
-    const game = createGameArea(state, dispatch, { location: { pathname: '/play/tutorial' }});
+    const game = createGameArea(state, dispatch, { location: { pathname: '/play/tutorial' } });
     renderElement(game, true);
 
     expect(dispatchedActions.pop()).toEqual(
@@ -179,7 +179,7 @@ describe('GameArea container', () => {
 
   describe('should start practice mode on page load if the URL is /play/practice/[deckId]', () => {
     const dispatchedActions = [];
-    const state = combineState({...getDefaultState(), started: false});
+    const state = combineState({ ...getDefaultState(), started: false });
     const historyParams = {
       location: { pathname: '/play/practice/deckId' },
       match: { params: { deck: 'deckId', format: 'normal' } },
@@ -191,9 +191,11 @@ describe('GameArea container', () => {
     }
 
     it('should redirect to /play if the deck doesn\'t exist', () => {
-      const game = createGameArea(state, dispatch, {...historyParams, collection: {
-        decks: []
-      }});
+      const game = createGameArea(state, dispatch, {
+        ...historyParams, collection: {
+          decks: []
+        }
+      });
       renderElement(game, true);
 
       expect(dispatchedActions.pop()).toEqual(
@@ -202,10 +204,12 @@ describe('GameArea container', () => {
     });
 
     it('should start a practice game if the deck exists', () => {
-      const game = createGameArea(state, dispatch, {...historyParams, collection: {
-        cards: state.collection.cards,
-        decks: [{ id: 'deckId', cardIds: ['builtin/One Bot', 'builtin/Two Bot'] }]
-      }});
+      const game = createGameArea(state, dispatch, {
+        ...historyParams, collection: {
+          cards: state.collection.cards,
+          decks: [{ id: 'deckId', cardIds: ['builtin/One Bot', 'builtin/Two Bot'] }]
+        }
+      });
       renderElement(game, true);
 
       const action = dispatchedActions.pop();

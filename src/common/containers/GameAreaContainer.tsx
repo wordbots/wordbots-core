@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { Prompt, RouteComponentProps, withRouter } from 'react-router';
 
 import * as gameActions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -12,6 +12,7 @@ import * as w from '../types';
 import { shuffleCardsInDeck } from '../util/decks';
 import { animate } from '../util/common';
 import { currentPlayerHasNoValidActions, currentTutorialStep } from '../util/game';
+import { inTest } from '../util/browser';
 
 import { baseGameUrl, urlForGameMode } from './Play';
 
@@ -215,11 +216,15 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentDidMount(): void {
+    window.addEventListener('beforeunload', this.handleWindowBeforeUnload);
+
     this.tryToStartGame();
   }
 
   public componentWillUnmount(): void {
     const { interval } = this.state;
+
+    window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
 
     if (interval) {
       clearInterval(interval);
@@ -233,19 +238,42 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
 
   public render(): JSX.Element {
     return (
-      <GameArea
-        {...this.props}
-        message={this.state.message}
-        onClickGameArea={this.handleClickGameArea}
-        onClickEndGame={this.handleClickEndGame}
-        onNextTutorialStep={this.handleNextTutorialStep}
-        onPrevTutorialStep={this.handlePrevTutorialStep}
-        onSelectTile={this.onSelectTile}
-      />
+      <>
+        {!inTest && <Prompt
+          when={this.shouldWarnBeforeLeavingPage}
+          message="Are you sure you want to leave the game?"
+        />}
+        <GameArea
+          {...this.props}
+          message={this.state.message}
+          onClickGameArea={this.handleClickGameArea}
+          onClickEndGame={this.handleClickEndGame}
+          onNextTutorialStep={this.handleNextTutorialStep}
+          onPrevTutorialStep={this.handlePrevTutorialStep}
+          onSelectTile={this.onSelectTile}
+        />
+      </>
     );
   }
 
+  private get shouldWarnBeforeLeavingPage(): boolean {
+    const { gameOver, isSpectator } = this.props;
+    return !gameOver && !isSpectator;
+  }
+
   private urlMatchesGameMode = (mode: string) => this.props.location.pathname.startsWith(urlForGameMode(mode));
+
+  private handleWindowBeforeUnload = (event: Event) => {
+    if (this.shouldWarnBeforeLeavingPage) {
+      // https://stackoverflow.com/a/25763325
+      event = event || window.event;
+      // Cancel the event as stated by the standard.
+      event.preventDefault();
+      // Chrome requires returnValue to be set.
+      (event as { returnValue: unknown }).returnValue = '';
+      return '';
+    }
+  }
 
   // Try to start a game (based on the URL) if it hasn't started yet.
   private tryToStartGame = () => {

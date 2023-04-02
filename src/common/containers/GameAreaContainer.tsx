@@ -215,7 +215,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentDidMount(): void {
-    console.log('add event listener');
     window.addEventListener('beforeunload', this.handleWindowBeforeUnload);
 
     this.tryToStartGame();
@@ -224,7 +223,6 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   public componentWillUnmount(): void {
     const { interval } = this.state;
 
-    console.log('remove event listener');
     window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
 
     if (interval) {

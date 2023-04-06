@@ -27,6 +27,12 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
   // But in turn itOverride has the highest salience (it is set only for triggered abilities).
   /* eslint-disable jest/no-disabled-tests */  // eslint gets confused because of the it() function
   function it(): w.ObjectCollection | w.CardInHandCollection {
+    console.log({
+      itOverride,
+      currentObject,
+      stateIt: state.it,
+      stateCurrentEntry: state.currentEntryInCollection
+    });
     if (itOverride) {
       return { type: 'objects', entries: [itOverride] } as w.ObjectCollection;
     } else if (currentObject) {
@@ -212,6 +218,11 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           logAction(state, null, explanationStr);
         }
       }
+
+      console.log({
+        collection,
+        chosen
+      });
 
       return { type: collection.type, entries: chosen } as w.Collection as T;
     },

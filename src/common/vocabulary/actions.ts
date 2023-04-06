@@ -1,4 +1,4 @@
-import { cloneDeep, identity, isArray, mapValues } from 'lodash';
+import { cloneDeep, identity, isArray, isFunction, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
@@ -179,15 +179,17 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       });
     },
 
-    moveObject: (objects: w.ObjectCollection, hexes: w.HexCollection): void => {
+    // TODO hexes: w.HexCollection is only supported for backwards-compatibility pre-v0.19 – can remove once all cards are merged to 0.19+
+    moveObject: (objects: w.ObjectCollection, hexes: w.HexCollection | (() => w.HexCollection)): void => {
       // Unpack.
-      const object: w.Object | undefined = objects.entries[0] as w.Object | undefined;
-      const destHex: w.HexId | undefined = hexes.entries[0];
+      iterateOver<w.Object>(objects)((object: w.Object) => {
+        const destHex: w.HexId | undefined = (isFunction(hexes) ? hexes() : hexes).entries[0];
 
-      if (object && destHex) {
-        const startHex = getHex(state, object)!;
-        moveObjectUsingAbility(state, startHex, destHex);
-      }
+        if (object && destHex) {
+          const startHex = getHex(state, object)!;
+          moveObjectUsingAbility(state, startHex, destHex);
+        }
+      });
     },
 
     payEnergy: (players: w.PlayerCollection, amount: number): void => {

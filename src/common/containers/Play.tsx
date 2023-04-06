@@ -20,6 +20,7 @@ interface PlayStateProps {
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
   sets: w.Set[]
+  allCards: w.CardInStore[]
   socket: w.SocketState
   started: boolean
   user: fb.User | null
@@ -46,6 +47,7 @@ export function mapStateToProps(state: w.State): PlayStateProps {
 
     socket: state.socket,
     cards: state.collection.cards,
+    allCards: state.collection.allCards,
     availableDecks: state.collection.decks,
     sets: state.collection.sets,
     user: state.global.user
@@ -150,6 +152,7 @@ export class Play extends React.Component<PlayProps> {
           socket={this.props.socket}
           cards={this.props.cards}
           sets={this.props.sets}
+          allCards={this.props.allCards}
           availableDecks={this.props.availableDecks}
           history={this.props.history}
           user={this.props.user}

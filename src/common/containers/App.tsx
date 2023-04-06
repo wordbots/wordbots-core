@@ -106,6 +106,7 @@ class App extends React.Component<AppProps, AppState> {
     const { onLoggedIn, onLoggedOut } = this.props;
 
     this.loadSets();
+    this.loadAllCards();
 
     onLogin((user) => {
       onLoggedIn(user);
@@ -238,6 +239,13 @@ class App extends React.Component<AppProps, AppState> {
     const sets = await getSets();
     onReceiveFirebaseData({ sets });
     this.setState({ loadedSets: true });
+  }
+
+  private loadAllCards = async (): Promise<void> => {
+    const { onReceiveFirebaseData } = this.props;
+
+    const allCards = await getCards(null);
+    onReceiveFirebaseData({ allCards });
   }
 
   private handleHideUnsupportedBrowserMessage = () => {

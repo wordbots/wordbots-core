@@ -220,11 +220,6 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         }
       }
 
-      console.log({
-        collection,
-        chosen
-      });
-
       return { type: collection.type, entries: chosen } as w.Collection as T;
     },
 

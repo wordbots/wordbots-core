@@ -197,7 +197,7 @@ export async function getNumGamesBySetFormat(formatType: 'set' | 'setDraft', set
 /** Yield either all cards for a given user or the most recent cards belonging to any user. */
 export async function getCards(uid: w.UserId | null): Promise<w.CardInStore[]> {
   const cardsRef = fb.database().ref('cards');
-  const ref = uid ? cardsRef.orderByChild('metadata/ownerId').equalTo(uid) : cardsRef.orderByChild('metadata/updated').limitToLast(50);
+  const ref = uid ? cardsRef.orderByChild('metadata/ownerId').equalTo(uid) : cardsRef.orderByChild('metadata/updated');
   const snapshot = await ref.once('value');
 
   if (snapshot) {

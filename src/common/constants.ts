@@ -205,7 +205,9 @@ export const SYNONYMS = {
   'action': ['event'],
   'robot': ['creature', 'minion'],
   'startup': ['start up', 'start-up'],
-  'shutdown': ['shut down', 'shut-down']
+  'shutdown': ['shut down', 'shut-down'],
+  'tiles': ['spaces', 'hexes'],  // plural entry has to come before singular so "hexes" -> "tiles" instead of "[hex]es" -> "[tile]es"
+  'tile': ['space', 'hex'],
 };
 
 export const KEYWORDS: Record<string, string> = {

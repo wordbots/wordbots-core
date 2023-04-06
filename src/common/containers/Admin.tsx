@@ -7,9 +7,10 @@ import { connect } from 'react-redux';
 import { Redirect, withRouter } from 'react-router';
 
 import * as w from '../types';
+import { FIREBASE_CONFIG, PARSER_URL, TYPE_EVENT } from '../constants';
 import { expandKeywords, getSentencesFromInput, normalizeCard, parseBatch } from '../util/cards';
 import * as firebase from '../util/firebase';
-import { FIREBASE_CONFIG, PARSER_URL, TYPE_EVENT } from '../constants';
+import { collection as coreSet } from '../store/cards';
 import CardGrid from '../components/cards/CardGrid';
 import { Card } from '../components/card/Card';
 import { DIALOG_PAPER_BASE_STYLE } from '../components/RouterDialog';
@@ -65,7 +66,7 @@ class Admin extends React.PureComponent<AdminProps> {
     void this.lookupParserVersion();
   }
 
-  private renderPanelForCards(cards: w.CardInStore[], setId: w.SetId | null) {
+  private renderPanelForCards(cards: w.CardInStore[], setId: w.SetId | null, builtIn?: boolean) {
     const { parserVersion, isPreviewingMigration } = this.state;
     const outOfDateCards = parserVersion ? cards.filter(c => c.metadata.source.type !== 'builtin' && c.parserV !== parserVersion) : undefined;
     const onClickPreview = () => { this.previewMigration(cards, setId); };
@@ -80,7 +81,7 @@ class Admin extends React.PureComponent<AdminProps> {
         {parserVersion && (
           <div>
             <h3>
-              Out-of-date Cards ({outOfDateCards!.length}){' '}
+              Out-of-date Cards ({builtIn ? '??' : outOfDateCards!.length}){' '}
               <Button variant="outlined" onClick={onClickPreview} disabled={isPreviewingMigration}>
                 Preview Migration
               </Button>
@@ -99,7 +100,7 @@ class Admin extends React.PureComponent<AdminProps> {
 
   public render(): JSX.Element {
     const { user } = this.props;
-    const { allCards, allSets, parserVersion, migrationPreviewReport } = this.state;
+    const { allCards, allSets, cardsBeingMigrated, migrationPreviewReport, parserVersion, setBeingMigrated } = this.state;
     const [version] = this.props.version.split('+');
 
     // Redirect away unless admin user and on localhost (only admin user has actual firebase privileges for migrations anyway!)
@@ -117,8 +118,12 @@ class Admin extends React.PureComponent<AdminProps> {
           <div><b>Parser Version:</b> {parserVersion}</div>
         </Paper>
         <Paper style={{ margin: 20, padding: 10 }}>
-          <h2>All cards</h2>
+          <h2>All player-made cards</h2>
           {this.renderPanelForCards(allCards, null)}
+        </Paper>
+        <Paper style={{ margin: 20, padding: 10 }}>
+          <h2>Built-in cards</h2>
+          {this.renderPanelForCards(coreSet, null, true)}
         </Paper>
         {allSets.map((set) => (
           <Paper key={set.id} style={{ margin: 20, padding: 10 }}>
@@ -158,7 +163,7 @@ class Admin extends React.PureComponent<AdminProps> {
                 key="Migrate"
                 color="secondary"
                 variant="contained"
-                disabled={migrationPreviewReport.statistics.numErrors > 0}
+                disabled={migrationPreviewReport.statistics.numErrors > 0 || (cardsBeingMigrated.every((c) => c.id.startsWith('builtin') && !setBeingMigrated))}
                 onClick={this.migrateCardsFromPreview}
               >
                 Migrate

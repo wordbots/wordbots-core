@@ -52,7 +52,7 @@ export const gustOfWindCard: w.CardInStore = {
   id: 'Gust of Wind',
   name: 'Gust of Wind',
   text: 'Move a robot up to 2 spaces.',
-  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['moveObject'](load('target'), targets['choose'](tilesMatchingConditions([conditions['withinDistanceOf'](2, load('target')), conditions['unoccupied']()]))); })(); })",
+  command: "(function () { (function () { save('target', targets['choose'](objectsMatchingConditions('robot', []))); })(); (function () { actions['moveObject'](load('target'), function () { return targets['choose'](tilesMatchingConditions([conditions['withinDistanceOf'](2, load('target')), conditions['unoccupied']()])); }); })(); })",
   cost: 2,
   type: TYPE_EVENT
 };

@@ -31,7 +31,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       itOverride,
       currentObject,
       stateIt: state.it,
-      stateCurrentEntry: state.currentEntryInCollection
+      stateCurrentEntryInCollection: state.currentEntryInCollection
     }); */
 
     if (itOverride) {

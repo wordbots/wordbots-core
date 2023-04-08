@@ -3,6 +3,7 @@ import Icon from '@material-ui/core/Icon';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { compact } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../types';
@@ -55,12 +56,12 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
     return this.props.availableFormats.filter((f) => f.name?.startsWith('setDraft(')) as SetDraftFormat[];
   }
 
-  get everythingDraftFormat(): EverythingDraftFormat {
+  get everythingDraftFormat(): EverythingDraftFormat | undefined {
     return this.props.availableFormats.find((f) => f.name === 'everythingDraft') as EverythingDraftFormat;
   }
 
   get singletonFormats(): GameFormat[] {
-    return this.props.availableFormats.filter((f) => f.name && ![...this.setFormats, ...this.setDraftFormats, this.everythingDraftFormat].map((fo) => fo.name).includes(f.name));
+    return this.props.availableFormats.filter((f) => f.name && !compact([...this.setFormats, ...this.setDraftFormats, this.everythingDraftFormat]).map((fo) => fo.name).includes(f.name));
   }
 
   public render(): JSX.Element {
@@ -80,7 +81,7 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
             )}
             {this.setFormats.length > 0 && <MenuItem key="set" value="set">Set</MenuItem>}
             {this.setDraftFormats.length > 0 && <MenuItem key="setDraft" value="setDraft">Set Draft</MenuItem>}
-            <MenuItem value={this.everythingDraftFormat.name}>{this.everythingDraftFormat.displayName}</MenuItem>
+            {this.everythingDraftFormat && <MenuItem value={this.everythingDraftFormat.name}>{this.everythingDraftFormat.displayName}</MenuItem>}
           </Select>
         </FormControl>
         {(this.isSetFormatSelected || this.isSetDraftFormatSelected) && <FormControl style={{ width: '100%', marginBottom: 15 }}>

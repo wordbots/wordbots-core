@@ -189,6 +189,15 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
   }
 }
 
+/** Returns true if the game cannot possibly end in a win anymore – no players have any cards left or any objects that can move, attack, or activate. */
+// TODO unit-test this functionality!
+export function isDrawByExhaustion(state: w.GameState): boolean {
+  const { blue, orange } = state.players;
+  const objectsOnBoard: w.Object[] = Object.values(allObjectsOnBoard(state));
+  const numCardsLeft: number = blue.hand.length + blue.deck.length + orange.hand.length + orange.deck.length;
+  return numCardsLeft === 0 && objectsOnBoard.every((obj) => obj.stats.attack === 0 && obj.stats.speed === 0 && !obj.activatedAbilities?.length);
+}
+
 /** Check if the game is over (by win or draw), and, if so, announce this. */
 export function checkVictoryConditions(state: w.GameState): w.GameState {
   // Skip check if there's already a winner declared
@@ -203,6 +212,8 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
     state.winner = 'orange';
   } else if (!orangeKernelExists) {
     state.winner = 'blue';
+  } else if (isDrawByExhaustion(state)) {
+    state.winner = 'draw';
   }
 
   if (state.winner) {

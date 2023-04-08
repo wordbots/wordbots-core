@@ -75,7 +75,6 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
             value={selectedFormatName.split('(')[0]}
             onChange={this.handleSelectFormat}
           >
-            {/* Render formats as follows: first "singleton" formats, then Set format, then Set Draft format, then Everything Draft format */}
             {this.singletonFormats.map((format, idx) =>
               <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
             )}

@@ -66,7 +66,7 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
                     fontSize: '0.5em'
                   }}
                 />
-              }
+              )}
             </div>
           ))}
         </div>

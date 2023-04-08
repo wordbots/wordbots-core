@@ -777,7 +777,7 @@ export function cleanUpAnimations(state: w.GameState): w.GameState {
   const cleanup = (obj: w.Object): w.Object => ({ ...obj, tookDamageThisTurn: false });
 
   state.players['blue'].objectsOnBoard = mapValues(state.players['blue'].objectsOnBoard, cleanup);
-  state.players['blue'].objectsOnBoard = mapValues(state.players['blue'].objectsOnBoard, cleanup);
+  state.players['orange'].objectsOnBoard = mapValues(state.players['orange'].objectsOnBoard, cleanup);
   return state;
 }
 

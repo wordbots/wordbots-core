@@ -237,7 +237,7 @@ export class SetFormat extends GameFormat {
 
   public name: string;
   public displayName: string;
-  private set: w.Set;
+  public set: w.Set;
 
   constructor(set: w.Set) {
     super();

@@ -425,6 +425,9 @@ export function loadCardsFromFirebase(state: w.CollectionState, data?: any): w.C
     if (data.cards) {
       const cardsFromFirebase = data.cards.map((card: any) => normalizeCard(card)) || [];
       state.cards = uniqBy(state.cards.concat(cardsFromFirebase), 'id');
+    } else if (data.allCards) {
+      const cardsFromFirebase = data.allCards.map((card: any) => normalizeCard(card)) || [];
+      state.allCards = [...uniqBy(state.cards.concat(cardsFromFirebase), 'id'), ...defaultState.allCards];
     }
   } else {
     state.cards = defaultState.cards;

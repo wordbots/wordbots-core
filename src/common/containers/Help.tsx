@@ -11,7 +11,7 @@ import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import { helpText as parserHelpText } from '../components/help/CreatorHelpDialog';
-import { BUILTIN_FORMATS, GameFormat, SetFormat, SetDraftFormat, SharedDeckGameFormat } from '../util/formats';
+import { SINGLETON_FORMATS, GameFormat, SetFormat, SetDraftFormat, SharedDeckGameFormat, EverythingDraftFormat } from '../util/formats';
 import HelpSection from '../components/help/HelpSection';
 import RaritySymbol from '../components/card/RaritySymbol';
 
@@ -64,12 +64,12 @@ const Help = (): JSX.Element => (
           </HelpSection>
           <HelpSection id="formats" title="Game Formats">
             <p>
-              Wordbots offers {BUILTIN_FORMATS.length + 2} different game formats for different gameplay styles, with each format determining the cards that you can bring to a game.
+              Wordbots offers {SINGLETON_FORMATS.length + 3} different game formats for different gameplay styles, with each format determining the cards that you can bring to a game.
               We recommend the <b>{SharedDeckGameFormat.displayName}</b> and <b>Set Draft</b> formats for most players.<br />
               The formats are:
             </p>
             <ul>
-              {BUILTIN_FORMATS.map((format: GameFormat) => (
+              {SINGLETON_FORMATS.map((format: GameFormat) => (
                 <li key={format.displayName}><b>{format.displayName}:</b> {format.description}</li>
               ))}
               <li><b>Set formats:</b> {SetFormat.description}</li>
@@ -85,6 +85,7 @@ const Help = (): JSX.Element => (
                   <li>18–22 <i>common</i> cards (indicated with a <RaritySymbol rarity="common" /> symbol)</li>
                 </ul>
               </li>
+              <li><b>Everything Draft format:</b> {EverythingDraftFormat.description}</li>
             </ul>
           </HelpSection>
           <HelpSection id="modes" title="Game Modes">

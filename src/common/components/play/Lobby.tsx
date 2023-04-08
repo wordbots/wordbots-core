@@ -24,6 +24,7 @@ interface LobbyProps {
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
   sets: w.Set[]
+  allCards: w.CardInStore[]
   user: fb.User | null
   history: History
 
@@ -63,7 +64,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
 
   public render(): JSX.Element {
     const {
-      availableDecks, cards, sets, history, socket, user,
+      availableDecks, cards, sets, allCards, history, socket, user,
       onConnect, onCancelHostGame, onNavigateToGameMode, onSpectateGame
     } = this.props;
     const {
@@ -105,6 +106,7 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
             availableDecks={availableDecks}
             cards={cards}
             sets={sets}
+            allCards={allCards}
             history={history}
             onCreateGame={this.handleHostGame}
           />

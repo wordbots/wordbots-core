@@ -22,6 +22,7 @@ const defaultCollectionState: w.CollectionState = {
     }
   ],
   sets: [],
+  allCards: collection,
   deckBeingEdited: null,
   setBeingEdited: null,
   exportedJson: null

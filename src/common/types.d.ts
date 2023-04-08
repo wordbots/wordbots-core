@@ -29,7 +29,7 @@ export type TextSource = 'load' | 'input' | 'didYouMean' | 'randomize';
 
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type Card = CardInGame | CardInStore | ObfuscatedCard;
-export type Format = BuiltInFormat | SetFormat | SetDraftFormat;
+export type Format = BuiltInFormat | SetFormat | SetDraftFormat | EverythingDraftFormat;
 export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
@@ -154,6 +154,11 @@ export interface SetDraftFormat {
   set: Set
 }
 
+export interface EverythingDraftFormat {
+  _type: 'everythingDraft'
+  cards: CardInStore[]
+}
+
 export interface Dictionary {
   definitions?: { [token: string]: Array<{ syntax: string, semantics: string }> }
   examplesByToken?: { [token: string]: string[] }
@@ -230,6 +235,7 @@ export interface CollectionState {
   cards: CardInStore[]
   decks: DeckInStore[]
   sets: Set[]
+  allCards: CardInStore[]  // all cards, including ones the player doesn't have in their collection (only used for Everything Draft format)
   deckBeingEdited: DeckInStore | null
   setBeingEdited: Set | null
   exportedJson: string | null

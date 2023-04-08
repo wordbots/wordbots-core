@@ -5,7 +5,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import * as React from 'react';
 
-import { BUILTIN_FORMATS, GameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
+import * as w from '../../types';
+import { SINGLETON_FORMATS, GameFormat, SetDraftFormat, SetFormat, EverythingDraftFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
 interface FormatPickerProps {
@@ -34,20 +35,32 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
 
   get formatsTooltip(): string {
     const headerMsg = 'Wordbots offers your choice of different game formats based on the kind of game you want to play:';
-    const builtinFormatRows = BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
-    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}`;
+    const builtinFormatRows = SINGLETON_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
+    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}<br><br><b>Everything Draft:</b> ${EverythingDraftFormat.description}`;
+  }
+
+  get isSetFormatSelected(): boolean {
+    return this.setFormats.map((f) => f.name).includes(this.props.selectedFormatName);
   }
 
   get isSetDraftFormatSelected(): boolean {
     return this.setDraftFormats.map((f) => f.name).includes(this.props.selectedFormatName);
   }
 
+  get setFormats(): SetFormat[] {
+    return this.props.availableFormats.filter((f) => f.name?.startsWith('set(')) as SetFormat[];
+  }
+
   get setDraftFormats(): SetDraftFormat[] {
     return this.props.availableFormats.filter((f) => f.name?.startsWith('setDraft(')) as SetDraftFormat[];
   }
 
-  get nonSetDraftFormats(): GameFormat[] {
-    return this.props.availableFormats.filter((f) => !f.name?.startsWith('setDraft('));
+  get everythingDraftFormat(): EverythingDraftFormat {
+    return this.props.availableFormats.find((f) => f.name === 'everythingDraft') as EverythingDraftFormat;
+  }
+
+  get singletonFormats(): GameFormat[] {
+    return this.props.availableFormats.filter((f) => f.name && ![...this.setFormats, ...this.setDraftFormats, this.everythingDraftFormat].map((fo) => fo.name).includes(f.name));
   }
 
   public render(): JSX.Element {
@@ -59,24 +72,26 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
           <Select
             style={this.styles.select}
             name="formats"
-            value={this.isSetDraftFormatSelected ? 'setDraft' : selectedFormatName}
+            value={selectedFormatName.split('(')[0]}
             onChange={this.handleSelectFormat}
           >
-            {this.nonSetDraftFormats.map((format, idx) =>
+            {this.singletonFormats.map((format, idx) =>
               <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
             )}
+            {this.setFormats.length > 0 && <MenuItem key="set" value="set">Set</MenuItem>}
             {this.setDraftFormats.length > 0 && <MenuItem key="setDraft" value="setDraft">Set Draft</MenuItem>}
+            <MenuItem value={this.everythingDraftFormat.name}>{this.everythingDraftFormat.displayName}</MenuItem>
           </Select>
         </FormControl>
-        {this.isSetDraftFormatSelected && <FormControl style={{ width: '100%', marginBottom: 15 }}>
-          <InputLabel>Choose a set to draft</InputLabel>
+        {(this.isSetFormatSelected || this.isSetDraftFormatSelected) && <FormControl style={{ width: '100%', marginBottom: 15 }}>
+          <InputLabel>Choose a set for this format</InputLabel>
           <Select
             style={this.styles.select}
-            name="formats"
-            value={this.isSetDraftFormatSelected ? selectedFormatName : this.setDraftFormats[0].name}
+            name="setFormats"
+            value={(this.isSetFormatSelected || this.isSetDraftFormatSelected) ? selectedFormatName : this.setFormats[0].name}
             onChange={this.handleSelectFormat}
           >
-            {this.setDraftFormats.map((format, idx) =>
+            {((this.isSetFormatSelected ? this.setFormats : this.setDraftFormats) as Array<GameFormat & { set: w.Set }>).map((format, idx) =>
               <MenuItem key={idx} value={format.name}>
                 {format.set.name} (by {format.set.metadata.authorName}){format.set.metadata.isPublished ? '' : <em>&nbsp;&nbsp;(unpublished set)</em>}
               </MenuItem>
@@ -97,7 +112,9 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
 
   private handleSelectFormat = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const formatName = event.target.value;
-    if (formatName === 'setDraft') {
+    if (formatName === 'set') {
+      this.props.onChooseFormat(this.setFormats[0].name);
+    } else if (formatName === 'setDraft') {
       this.props.onChooseFormat(this.setDraftFormats[0].name);
     } else {
       this.props.onChooseFormat(formatName);

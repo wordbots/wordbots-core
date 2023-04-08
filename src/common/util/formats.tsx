@@ -66,11 +66,13 @@ export class GameFormat {
   public static decode(encodedFormat: w.Format): GameFormat {
     let format: GameFormat | undefined;
     if (isString(encodedFormat)) {
-      format = BUILTIN_FORMATS.find((m) => m.name === encodedFormat);
+      format = SINGLETON_FORMATS.find((m) => m.name === encodedFormat);
     } else if (encodedFormat && encodedFormat._type === 'set') {
       format = new SetFormat((encodedFormat).set);
     } else if (encodedFormat && encodedFormat._type === 'setDraft') {
       format = new SetDraftFormat((encodedFormat).set);
+    } else if (encodedFormat && encodedFormat._type === 'everythingDraft') {
+      format = new EverythingDraftFormat((encodedFormat).cards);
     }
 
     if (!format) {
@@ -182,12 +184,60 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
   }
 });
 
+export class EverythingDraftFormat extends GameFormat {
+  public static description = 'The truly absurd draft format where each player builds their deck at the start of the game, drafting from among all cards ever created. With such a diverse range of cards available, anything can happen.';
+
+  public name = 'everythingDraft';
+  public displayName = 'Everything Draft';
+  private cards: w.CardInStore[];
+
+  constructor(cards: w.CardInStore[]) {
+    super();
+    this.cards = cards;
+  }
+
+  public requiresDeck = false;
+
+  public serialized = (): w.EverythingDraftFormat => ({ _type: 'everythingDraft', cards: this.cards });
+
+  public startGame(
+    state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
+    _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
+  ): w.GameState {
+    state = {
+      ...state,
+      ...cloneDeep(defaultState),
+      gameFormat: this.serialized(),
+      player,
+      rng: seededRNG(seed.toString()),
+      started: true,
+      usernames,
+      options,
+      draft: this.initialDraftState(seed)
+    };
+
+    return state;
+  }
+
+  /** Returns the starting DraftState (i.e. no draft picks) given a seed and the pool of cards in question. */
+  initialDraftState = (seed: number): w.DraftState => ({
+    blue: {
+      cardsDrafted: [],
+      cardGroupsToShow: buildCardDraftGroups(this.cards, seed, seed)
+    },
+    orange: {
+      cardsDrafted: [],
+      cardGroupsToShow: buildCardDraftGroups(this.cards, seed, nextSeed(seed))
+    }
+  })
+}
+
 export class SetFormat extends GameFormat {
   public static description = 'Only cards from a given set are allowed, with no more than two copies of each card per deck.';
 
   public name: string;
   public displayName: string;
-  private set: w.Set;
+  public set: w.Set;
 
   constructor(set: w.Set) {
     super();
@@ -275,7 +325,8 @@ export class SetDraftFormat extends GameFormat {
   })
 }
 
-export const BUILTIN_FORMATS = [
+/** Singleton formats that don't need to be constructed. */
+export const SINGLETON_FORMATS = [
   SharedDeckGameFormat,
   BuiltinOnlyGameFormat,
   NormalGameFormat,

@@ -12,6 +12,7 @@ interface GameCreationModalProps {
   availableDecks: w.DeckInStore[]
   cards: w.CardInStore[]
   sets: w.Set[]
+  allCards: w.CardInStore[]
   title: string
   onCreateGame: (gameName: string, formatName: w.Format, deck: w.DeckInGame, options: w.GameOptions) => void
   history: History
@@ -32,7 +33,7 @@ export default class GameCreationModal extends React.Component<GameCreationModal
   };
 
   public render(): JSX.Element {
-    const { availableDecks, cards, sets, history, title } = this.props;
+    const { availableDecks, cards, sets, allCards, history, title } = this.props;
     const { gameName } = this.state;
 
     return (
@@ -42,6 +43,7 @@ export default class GameCreationModal extends React.Component<GameCreationModal
         availableDecks={availableDecks}
         cards={cards}
         sets={sets}
+        allCards={allCards}
         history={history}
         onStartGame={this.handleCreateGame}
         gameName={gameName}

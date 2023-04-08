@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { BACKGROUND_Z_INDEX, BLUE_PLAYER_COLOR, MAX_Z_INDEX, ORANGE_PLAYER_COLOR } from '../../constants';
 import * as w from '../../types';
+import { GameFormat } from '../../util/formats';
 import { opponent } from '../../util/game';
 import EnergyCurve from '../cards/EnergyCurve';
 
@@ -16,6 +17,7 @@ interface DraftAreaProps {
   player: w.PlayerColor | 'neither'
   usernames: w.PerPlayer<string>
   draft: w.DraftState
+  format: GameFormat
   isGameOver: boolean
   volume: number
   onForfeit: (winner: w.PlayerColor) => void
@@ -130,7 +132,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
   }
 
   private renderDraftArea(): JSX.Element {
-    const { player, onDraftCards } = this.props;
+    const { player, format, onDraftCards } = this.props;
 
     if (player === 'neither') {
       return (
@@ -144,7 +146,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
         </div>
       );
     } else if (this.currentCardGroup) {
-      return <DraftCardPicker cardGroup={this.currentCardGroup} player={player} onDraftCards={onDraftCards} />;
+      return <DraftCardPicker cardGroup={this.currentCardGroup} player={player} format={format} onDraftCards={onDraftCards} />;
     } else {
       return (
         <div style={{

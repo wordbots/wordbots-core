@@ -106,6 +106,7 @@ class App extends React.Component<AppProps, AppState> {
     const { onLoggedIn, onLoggedOut } = this.props;
 
     this.loadSets();
+    this.loadAllCards();
 
     onLogin((user) => {
       onLoggedIn(user);
@@ -238,6 +239,22 @@ class App extends React.Component<AppProps, AppState> {
     const sets = await getSets();
     onReceiveFirebaseData({ sets });
     this.setState({ loadedSets: true });
+  }
+
+  private loadAllCards = async (): Promise<void> => {
+    const { onReceiveFirebaseData } = this.props;
+
+    const allCards = await getCards(null);
+    // Filter out cards that are private or were not created by their owner (duplicated / imported / etc)
+    // TODO reduce duplication between this and mostRecentCards() in util/firebase
+    const allCreatedCards = allCards.filter((c: w.CardInStore) => (
+      !c.metadata.isPrivate  // private cards
+      && !c.metadata.duplicatedFromCard  // duplicated cards
+      && !c.metadata.importedFromJson  // cards imported from JSON
+      && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
+    ));
+
+    onReceiveFirebaseData({ allCards: allCreatedCards });
   }
 
   private handleHideUnsupportedBrowserMessage = () => {

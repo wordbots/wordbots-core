@@ -32,7 +32,7 @@ type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
 export default class GameAreaContents extends React.PureComponent<GameAreaContentsProps> {
   public render = (): JSX.Element => {
     const {
-      attack, bluePieces, currentTurn, draft, eventQueue, gameOptions, gameOver, isAttackHappening,
+      attack, bluePieces, currentTurn, draft, eventQueue, format, gameOptions, gameOver, isAttackHappening,
       isMyTurn, isMyTurnAndNoActionsLeft, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse,
       orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
@@ -49,6 +49,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             player={player}
             usernames={usernames}
             draft={draft}
+            format={format}
             isGameOver={gameOver}
             volume={volume}
             onDraftCards={onDraftCards}

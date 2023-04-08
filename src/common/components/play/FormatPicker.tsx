@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import * as React from 'react';
 
-import { BUILTIN_FORMATS, GameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
+import { SINGLETON_FORMATS, GameFormat, SetDraftFormat, SetFormat, EverythingDraftFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
 interface FormatPickerProps {
@@ -34,8 +34,8 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
 
   get formatsTooltip(): string {
     const headerMsg = 'Wordbots offers your choice of different game formats based on the kind of game you want to play:';
-    const builtinFormatRows = BUILTIN_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
-    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}`;
+    const builtinFormatRows = SINGLETON_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
+    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}<br><br><b>Everything Draft format:</b> ${EverythingDraftFormat.description}`;
   }
 
   get isSetDraftFormatSelected(): boolean {
@@ -62,10 +62,15 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
             value={this.isSetDraftFormatSelected ? 'setDraft' : selectedFormatName}
             onChange={this.handleSelectFormat}
           >
-            {this.nonSetDraftFormats.map((format, idx) =>
+            {/* Render formats as follows: first all other formats, then Set Draft format, then Everything Draft format */}
+            {/* TODO split out Set formats into a two stage selection process like the way Set Draft works */}
+            {this.nonSetDraftFormats.filter((f) => f.name !== 'everythingDraft').map((format, idx) =>
               <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
             )}
             {this.setDraftFormats.length > 0 && <MenuItem key="setDraft" value="setDraft">Set Draft</MenuItem>}
+            {this.nonSetDraftFormats.filter((f) => f.name === 'everythingDraft').map((format, idx) =>
+              <MenuItem key={idx} value={format.name}>{format.displayName}</MenuItem>
+            )}
           </Select>
         </FormControl>
         {this.isSetDraftFormatSelected && <FormControl style={{ width: '100%', marginBottom: 15 }}>

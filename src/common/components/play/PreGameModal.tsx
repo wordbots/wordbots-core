@@ -8,7 +8,7 @@ import * as w from '../../types';
 import { getQueryString } from '../../util/browser';
 import { deckIsBuiltin, sortDecks, unpackDeck } from '../../util/decks';
 import { updateDeckLastUsedTimestamp } from '../../util/firebase';
-import { BuiltinOnlyGameFormat, BUILTIN_FORMATS, EverythingDraftFormat, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
+import { BuiltinOnlyGameFormat, SINGLETON_FORMATS, EverythingDraftFormat, GameFormat, NormalGameFormat, SetDraftFormat, SetFormat } from '../../util/formats';
 import RouterDialog from '../RouterDialog';
 
 import DeckPicker from './DeckPicker';
@@ -72,7 +72,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       return [NormalGameFormat, BuiltinOnlyGameFormat];
     } else if (mode === 'matchmaking') {
       // Disallow set formats in matchmaking mode, because it's unlikely that those players would get matched.
-      return BUILTIN_FORMATS;
+      return SINGLETON_FORMATS;
     } else {
       const setFormats = uniqBy(compact(this.decks.map((deck) => {
         const set = sets.find((s) => s.id === deck.setId);
@@ -87,7 +87,7 @@ export default class PreGameModal extends React.Component<PreGameModalProps, Pre
       const setDraftFormats = sets.filter((set) => set.metadata.isPublished).map((set) => new SetDraftFormat(set));
 
       return compact([
-        ...BUILTIN_FORMATS,
+        ...SINGLETON_FORMATS,
         ...setFormats,
         ...setDraftFormats,
         this.privateSetDraftFormatFromUrl,

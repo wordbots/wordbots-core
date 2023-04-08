@@ -2,12 +2,15 @@ import { without } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../types';
+import { GameFormat } from '../../util/formats';
 import { Card } from '../card/Card';
+import CardProvenanceDescription from '../cards/CardProvenanceDescription';
 
 interface DraftCardPickerProps {
   cardGroup: Array<w.CardInGame & { rarity?: w.CardInSetRarity }>
   player: w.PlayerColor
   onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
+  format: GameFormat
 }
 
 interface DraftCardPickerState {
@@ -20,7 +23,7 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
   };
 
   public render(): JSX.Element {
-    const { cardGroup } = this.props;
+    const { cardGroup, format } = this.props;
     const { selectedCardIds } = this.state;
 
     return (
@@ -54,6 +57,16 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
                 selected: selectedCardIds.includes(card.id),
                 onCardClick: () => this.handleSelectCard(card)
               })}
+              {format.name === 'everythingDraft' && (
+                <CardProvenanceDescription
+                  disableLinks
+                  card={card}
+                  style={{
+                    color: '#bbb',
+                    fontSize: '0.5em'
+                  }}
+                />
+              }
             </div>
           ))}
         </div>

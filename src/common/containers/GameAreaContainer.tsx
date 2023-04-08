@@ -13,6 +13,7 @@ import { shuffleCardsInDeck } from '../util/decks';
 import { animate } from '../util/common';
 import { currentPlayerHasNoValidActions, currentTutorialStep } from '../util/game';
 import { inTest } from '../util/browser';
+import { GameFormat } from '../util/formats';
 
 import { baseGameUrl, urlForGameMode } from './Play';
 
@@ -71,6 +72,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     winner: game.winner,
     gameOptions: game.options,
     draft: game.draft,
+    format: GameFormat.decode(game.gameFormat),
 
     selectedTile: activePlayer?.selectedTile || null,
     selectedCard: activePlayer ? activePlayer.selectedCard : null,

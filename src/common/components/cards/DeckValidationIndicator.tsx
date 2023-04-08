@@ -2,7 +2,7 @@ import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import * as w from '../../types';
-import { BUILTIN_FORMATS, SetFormat } from '../../util/formats';
+import { SINGLETON_FORMATS, SetFormat } from '../../util/formats';
 import Tooltip from '../Tooltip';
 
 interface DeckValidationIndicatorProps {
@@ -16,7 +16,7 @@ export default class DeckValidationIndicator extends React.Component<DeckValidat
   get deck(): w.DeckInGame {
     const { cards, deck, set } = this.props;
     const dummyDeck = { id: '', authorId: '', name: '', cardIds: [] };
-    return  {...(deck || dummyDeck), cards, setId: set ? set.id : null };
+    return { ...(deck || dummyDeck), cards, setId: set ? set.id : null };
   }
 
   get isValidInSetFormat(): boolean {
@@ -24,7 +24,7 @@ export default class DeckValidationIndicator extends React.Component<DeckValidat
   }
 
   get numValidFormats(): number {
-    const numValidBuiltinFormats = BUILTIN_FORMATS.filter((format) => format.isDeckValid(this.deck)).length;
+    const numValidBuiltinFormats = SINGLETON_FORMATS.filter((format) => format.isDeckValid(this.deck)).length;
     return numValidBuiltinFormats + (this.isValidInSetFormat ? 1 : 0);
   }
 
@@ -40,10 +40,10 @@ export default class DeckValidationIndicator extends React.Component<DeckValidat
       ? `${greenCheck} valid in the '${set.name}' set (by ${set.metadata.authorName}) format`
       : `${redX} not valid in any Set formats`;
 
-    return BUILTIN_FORMATS.map((format) =>
+    return SINGLETON_FORMATS.map((format) =>
       `${format.isDeckValid(this.deck) ? `${greenCheck} valid` : `${redX} not valid`} in ${format.displayName} format`
     ).concat(setFormatHTML)
-     .join('<br>');
+      .join('<br>');
   }
 
   public render(): JSX.Element {
@@ -61,10 +61,10 @@ export default class DeckValidationIndicator extends React.Component<DeckValidat
           color: (this.isValid ? 'green' : 'red')
         }}
       >
-        <Tooltip inline html text={this.validFormatsHTML} style={{textAlign: 'left'}} additionalStyles={{cursor: 'help'}}>
+        <Tooltip inline html text={this.validFormatsHTML} style={{ textAlign: 'left' }} additionalStyles={{ cursor: 'help' }}>
           <Icon
             className="material-icons"
-            style={{paddingRight: 5, color: (this.isValid ? 'green' : 'red') }}
+            style={{ paddingRight: 5, color: (this.isValid ? 'green' : 'red') }}
           >
             {this.isValid ? 'done' : 'warning'}
           </Icon>

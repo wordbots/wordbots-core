@@ -4,12 +4,13 @@ import Helmet from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import * as screenfull from 'screenfull';
 
+import * as w from '../../types';
 import {
   CHAT_COLLAPSED_WIDTH, CHAT_NARROW_WIDTH,
   CHAT_WIDTH, HEADER_HEIGHT, MAX_BOARD_SIZE, SIDEBAR_COLLAPSED_WIDTH
 } from '../../constants';
+import { GameFormat } from '../../util/formats';
 import { urlForGameMode } from '../../containers/Play';
-import * as w from '../../types';
 import Chat from '../play/Chat';
 
 import CardSelector from './CardSelector';
@@ -27,6 +28,7 @@ export interface GameProps {
   winner: w.GameWinner
   gameOptions: w.GameOptions
   draft: w.DraftState | null
+  format: GameFormat
 
   selectedTile: w.HexId | null
   selectedCard: number | null

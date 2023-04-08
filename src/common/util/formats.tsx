@@ -66,7 +66,7 @@ export class GameFormat {
   public static decode(encodedFormat: w.Format): GameFormat {
     let format: GameFormat | undefined;
     if (isString(encodedFormat)) {
-      format = BUILTIN_FORMATS.find((m) => m.name === encodedFormat);
+      format = SINGLETON_FORMATS.find((m) => m.name === encodedFormat);
     } else if (encodedFormat && encodedFormat._type === 'set') {
       format = new SetFormat((encodedFormat).set);
     } else if (encodedFormat && encodedFormat._type === 'setDraft') {
@@ -185,7 +185,7 @@ export const SharedDeckGameFormat = new (class extends GameFormat {
 });
 
 export class EverythingDraftFormat extends GameFormat {
-  public static description = 'The truly absurd draft format where each player builds their deck at the start of the game, drafting from among all cards ever created. Don\'t expect fairness or sanity here.';
+  public static description = 'The truly absurd draft format where each player builds their deck at the start of the game, drafting from among all cards ever created. With such a diverse range of cards available, anything can happen.';
 
   public name = 'everythingDraft';
   public displayName = 'Everything Draft';
@@ -325,7 +325,8 @@ export class SetDraftFormat extends GameFormat {
   })
 }
 
-export const BUILTIN_FORMATS = [
+/** Singleton formats that don't need to be constructed. */
+export const SINGLETON_FORMATS = [
   SharedDeckGameFormat,
   BuiltinOnlyGameFormat,
   NormalGameFormat,

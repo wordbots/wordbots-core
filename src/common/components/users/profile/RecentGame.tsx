@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { WithStyles } from '@material-ui/core/styles/withStyles';
 import LayersIcon from '@material-ui/icons/Layers';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import AcUnitIcon from '@material-ui/icons/AcUnit';
 import { isNil, isString, toUpper } from 'lodash';
 import * as React from 'react';
 
@@ -29,10 +30,16 @@ export default function RecentGame(props: RecentGameProps & WithStyles): JSX.Ele
   const outcome = winner ? (winner === 'draw' ? 'draw' : (game.players[winner] === userId ? 'victory' : 'defeat')) : '';
   const timestamp = new Date(game.timestamp).toLocaleDateString();
 
-  const formatIcons = {
+  const singletonFormatIcons: Record<Extract<w.Format, string>, string> = {
     'normal': 'player',
     'sharedDeck': 'double-team',
     'builtinOnly': 'player-teleport'
+  };
+
+  const complexFormatIcons: Record<Exclude<w.Format, string>['_type'], React.ReactNode> = {
+    'set': <LayersIcon />,
+    'setDraft': <DashboardIcon />,
+    'everythingDraft': <AcUnitIcon />
   };
 
   return (
@@ -41,10 +48,8 @@ export default function RecentGame(props: RecentGameProps & WithStyles): JSX.Ele
         <Avatar>
           {
             isString(game.format)
-              ? <Icon className={`ra ra-${isString(game.format) && formatIcons[game.format]}`} />
-              : game.format._type === 'set'
-                ? <LayersIcon />
-                : <DashboardIcon />
+              ? <Icon className={`ra ra-${isString(game.format) && singletonFormatIcons[game.format]}`} />
+              : complexFormatIcons[game.format._type]
           }
         </Avatar>
       </ListItemAvatar>

@@ -36,8 +36,9 @@ export default class FormatPicker extends React.Component<FormatPickerProps> {
 
   get formatsTooltip(): string {
     const headerMsg = 'Wordbots offers your choice of different game formats based on the kind of game you want to play:';
-    const builtinFormatRows = SINGLETON_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
-    return `${headerMsg}<br><br>${builtinFormatRows}<br><br><b>Set formats:</b> ${SetFormat.description}<br><br><b>Set Draft formats:</b> ${SetDraftFormat.description}<br><br><b>Everything Draft:</b> ${EverythingDraftFormat.description}`;
+    const singletonFormatRows = SINGLETON_FORMATS.map((format: GameFormat) => `<b>${format.displayName}:</b> ${format.description}`).join('<br><br>');
+    const complexFormatRows = `<b>Set:</b> ${SetFormat.description}<br><br><b>Set Draft:</b> ${SetDraftFormat.description}<br><br><b>Everything Draft:</b> ${EverythingDraftFormat.description}`;
+    return `${headerMsg}<br><br>${singletonFormatRows}<br><br>${complexFormatRows}`;
   }
 
   get isSetFormatSelected(): boolean {

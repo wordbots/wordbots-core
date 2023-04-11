@@ -234,6 +234,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
 
     // Leaving the page ends the game ... unless you are a spectator!
     if (!this.props.isSpectator) {
+      console.log('Ending game because GameAreaContainer unmounted');  // remove logging when #1746 is known to be resolved
       this.handleEndGame();
     }
   }
@@ -404,6 +405,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
 
   private handleClickEndGame = () => {
     const { history } = this.props;
+    console.log('Ending game because Forfeit button clicked');  // remove logging when #1746 is known to be resolved
     this.handleEndGame();
     // We can't just do history.goBack() because we may have gotten here
     // from outside of Wordbots and we don't want to leave the site.

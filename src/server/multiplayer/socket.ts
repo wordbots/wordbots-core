@@ -1,9 +1,9 @@
-import { Server } from 'http';
+import { IncomingMessage, Server } from 'http';
 
 import { noop } from 'lodash';
 import * as WebSocket from 'ws';
 
-import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
+import { DISCONNECT_FORFEIT_TIME_SECS, ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
 
 import * as m from './multiplayer';
@@ -36,11 +36,20 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
-  function onConnect(socket: WebSocket): void {
-    const clientID = generateID();
+  function onConnect(socket: WebSocket, req: IncomingMessage): void {
+    const requestIp: string | undefined = (req.headers['x-forwarded-for'] as string | undefined) || req.connection.remoteAddress;
+    const clientFingerprint = `${requestIp}::${Buffer.from(req.headers['user-agent'] || '').toString('base64')}`;
+    const clientID = generateID(clientFingerprint);
+    console.log(`Client connected: ${clientFingerprint} => ${clientID}`);
+
     state.connectClient(clientID, socket);
     sendMessage('ws:CLIENT_ID', { clientID }, [clientID]);
     broadcastInfo();
+
+    const game = state.lookupGameByClient(clientID);
+    if (game) {
+      sendChatToGame(game, `${state.getClientUsername(clientID)} has rejoined the game.`);
+    }
 
     socket.on('message', (msg: string) => {
       try {
@@ -108,15 +117,32 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onDisconnect(clientID: m.ClientID): void {
-    sendChatToLobby(`${state.getClientUsername(clientID)} has left.`);
+    const username = state.getClientUsername(clientID);
+    const game = state.lookupGameByClient(clientID);
+    if (game) {
+      // TODO put this message behind a 1-2 sec timeout as well in case a player reconnects immediately?
+      sendChatToGame(game, `${username} has disconnected and will forfeit in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless they rejoin the game.`);
+      setTimeout(() => {
+        forfeitGameDueToDisconnection(clientID);
+      }, DISCONNECT_FORFEIT_TIME_SECS * 1000);
+    } else {
+      sendChatToLobby(`${username} has left.`);
+    }
+
+    state.disconnectClient(clientID);
+  }
+
+  function forfeitGameDueToDisconnection(clientID: m.ClientID) {
+    if (state.getClientSocket(clientID)) {
+      // Client has rejoined the game - no need to forfeit
+      return;
+    }
 
     const forfeitMsgIfAny: m.MessageToSend | null = state.leaveGame(clientID);
     if (forfeitMsgIfAny) {
       const { type, payload, recipientIds } = forfeitMsgIfAny;
       sendMessage(type, payload, recipientIds);
     }
-
-    state.disconnectClient(clientID);
   }
 
   function sendMessage(type: string, payload: Record<string, unknown> = {}, recipientIDs: m.ClientID[] | null = null): void {
@@ -152,14 +178,22 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     sendMessage('ws:CHAT', { msg, sender: '[Server]' }, state.getAllPlayersInLobby());
   }
 
+  function sendChatToGame(game: m.Game, msg: string): void {
+    sendMessage('ws:CHAT', { msg, sender: '[Server]' }, getPeopleInGame(game));
+  }
+
   function broadcastInfo(): void {
     sendMessage('ws:INFO', state.serialize() as unknown as Record<string, unknown>);
   }
 
   function setUserData(clientID: m.ClientID, userData: m.UserData | null): void {
     state.setClientUserData(clientID, userData);
-    sendChatToLobby(`${userData?.displayName || state.getClientUsername(clientID)} has entered the lobby.`);
     broadcastInfo();
+
+    // The client has either entered the lobby or has rejoined their existing game (after temporarily disconnecting).
+    if (!state.lookupGameByClient(clientID)) {
+      sendChatToLobby(`${userData?.displayName || state.getClientUsername(clientID)} has entered the lobby.`);
+    }
   }
 
   function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions): void {

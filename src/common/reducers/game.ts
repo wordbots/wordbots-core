@@ -2,7 +2,7 @@ import { cloneDeep, isArray, reduce } from 'lodash';
 
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
-import { DEFAULT_GAME_FORMAT } from '../constants';
+import { DEFAULT_GAME_FORMAT, DISCONNECT_FORFEIT_TIME_SECS } from '../constants';
 import defaultState from '../store/defaultGameState';
 import * as w from '../types';
 import { saveToLocalStorage } from '../util/browser';
@@ -131,8 +131,12 @@ export function handleAction(
     case actions.IN_GAME_PARSE_COMPLETED:
       return handleRewriteParseCompleted(state, payload);
 
-    case socketActions.CONNECTING:
-      return { ...state, started: state.practice ? state.started : false };
+    case socketActions.DISCONNECTED: {
+      if (state.started && !state.winner) {
+        state = logAction(state, null, `You have disconnected and will forfeit in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless you rejoin the game`);
+      }
+      return state;
+    }
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.

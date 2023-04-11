@@ -147,12 +147,12 @@ export default class MultiplayerServerState {
   public connectClient = (clientID: m.ClientID, socket: WebSocket): void => {
     this.state.connections[clientID] = socket;
     this.state.playersOnline.push(clientID);
+
     console.log(`${this.getClientUsername(clientID)} joined the room.`);
   }
 
   // Disconnect a player from the server.
   public disconnectClient = (clientID: m.ClientID): void => {
-    this.leaveGame(clientID);
     pull(this.state.playersOnline, clientID);
     this.state.waitingPlayers = reject(this.state.waitingPlayers, { id: clientID });
     delete this.state.connections[clientID];

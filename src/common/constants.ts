@@ -19,6 +19,7 @@ export const ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG = false;  // logs ALL debug mes
 
 // Server settings.
 
+export const DISCONNECT_FORFEIT_TIME_SECS = 30; // How long the server will wait after a player disconnects before forfeiting that player's game
 export const ENABLE_OBFUSCATION_ON_SERVER = false; // Don't set to true until all the bugs are worked out!
 
 // Game rules.

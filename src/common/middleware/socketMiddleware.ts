@@ -58,6 +58,7 @@ function socketMiddleware({ forwardedActionTypes }: SocketMiddlewareOpts): Middl
       socket.addEventListener('open', connected);
       socket.onclose = disconnected;
       socket.addEventListener('message', receive);
+      (window as any).closeSocket = () => { socket.close(); };  // REMOVE THIS AFTER #1746 AND #1748 ARE FIXED
     }
 
     function connected(): void {

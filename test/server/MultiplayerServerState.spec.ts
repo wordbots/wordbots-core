@@ -2,6 +2,7 @@ import { noop } from 'lodash';
 import { WebSocket as MockSocket } from 'mock-socket';
 import * as WebSocket from 'ws';
 
+import * as constants from '../../src/common/constants';
 import * as gameActions from '../../src/common/actions/game';
 import * as m from '../../src/server/multiplayer/multiplayer';
 import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
@@ -390,6 +391,10 @@ describe('MultiplayerServerState', () => {
     });
 
     it('should end the game if a player disconnects', () => {
+      // @ts-ignore
+      // eslint-disable-next-line import/namespace
+      constants.DISCONNECT_FORFEIT_TIME_SECS = 0;
+
       expectState((state: MSS) => {
         const storeGameResultFn: jest.Mock = jest.fn();
         state.storeGameResult = storeGameResultFn;

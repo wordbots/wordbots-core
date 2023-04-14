@@ -48,6 +48,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
     const game = state.lookupGameByClient(clientID);
     if (game) {
+      sendMessageInGame(clientID, 'ws:PLAYER_RECONNECTED', { player: game.playerColors[clientID] }, true);
       sendChatToGame(game, `${state.getClientUsername(clientID)} has rejoined the game.`);
     }
 
@@ -101,6 +102,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'END_GAME') {
       // We only track client-side END_GAME actions for singleplayer games - multiplayer games track their own end state.
       exitSingleplayerGame(clientID);
+    } else if (type === 'ws:REJOIN_GAME') {
+      const game = state.lookupGameByClient(clientID);
+      if (game) {
+        rejoinGame(clientID, game);
+      }
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{ type, payload }, clientID]);
@@ -120,8 +126,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     const username = state.getClientUsername(clientID);
     const game = state.lookupGameByClient(clientID);
     if (game) {
-      // TODO put this message behind a 1-2 sec timeout as well in case a player reconnects immediately?
-      sendChatToGame(game, `${username} has disconnected and will forfeit in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless they rejoin the game.`);
+      sendMessageInGame(clientID, 'ws:PLAYER_DISCONNECTED', { player: game.playerColors[clientID] });
       setTimeout(() => {
         forfeitGameDueToDisconnection(clientID);
       }, DISCONNECT_FORFEIT_TIME_SECS * 1000);
@@ -162,11 +167,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
-  function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
-    const opponentIds = state.getAllOpponents(clientID);
-    if (opponentIds.length > 0) {
-      console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${truncateMessage(JSON.stringify(payload))}`);
-      sendMessage(type, payload, opponentIds);
+  function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}, allPeopleInGame = false): void {
+    const recipientIds = allPeopleInGame ? getPeopleInGame(state.lookupGameByClient(clientID)!) : state.getAllOpponents(clientID);
+    if (recipientIds.length > 0) {
+      console.log(`${clientID} sent action to ${recipientIds}: ${type}, ${truncateMessage(JSON.stringify(payload))}`);
+      sendMessage(type, payload, recipientIds);
     }
   }
 
@@ -263,6 +268,24 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       broadcastInfo();
     }
+  }
+
+  function rejoinGame(clientID: m.ClientID, game: m.Game): void {
+    const { actions, decks, format, name, playerColors, startingSeed, usernames } = game;
+
+    const gameStartPayload = {
+      player: playerColors[clientID],
+      decks,
+      usernames,
+      format,
+      seed: startingSeed
+    };
+
+    sendMessage('ws:GAME_START', gameStartPayload, [clientID]);
+    sendMessage('ws:CURRENT_STATE', { actions }, [clientID]);
+    sendChat(`Rejoining game ${name} ...`, [clientID]);
+
+    broadcastInfo();
   }
 
   function revealVisibleCardsInGame(game: m.Game, pendingAction?: [m.Action, m.ClientID]): void {

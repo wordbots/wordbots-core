@@ -11,7 +11,7 @@ interface TimerProps {
   enabled?: boolean
   isMyTurn?: boolean
   isAttackHappening?: boolean
-  isWaitingForParse?: boolean
+  isPaused?: boolean
   onPassTurn: (player: w.PlayerColor) => void
 }
 
@@ -46,7 +46,7 @@ export default class Timer extends React.Component<TimerProps, TimerState> {
   }
 
   public componentDidUpdate(prevProps: TimerProps): void {
-    (this as any).isPaused = this.props.isWaitingForParse;
+    (this as any).isPaused = this.props.isPaused;
 
     if (prevProps.currentTurn !== this.props.currentTurn) {
       this.resetTimer();

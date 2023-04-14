@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, reduce } from 'lodash';
+import { cloneDeep, isArray, reduce, uniq, without } from 'lodash';
 
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
@@ -133,16 +133,26 @@ export function handleAction(
 
     case socketActions.DISCONNECTED: {
       if (state.started && !state.winner) {
-        state = logAction(state, null, `You have disconnected and will forfeit in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless you rejoin the game`);
+        state = logAction(state, null, `You have disconnected and will ${state.draft ? 'abort' : 'forfeit'} in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless you rejoin the game`);
       }
-      return state;
+      return {
+        ...state,
+        disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? uniq([...state.disconnectedPlayers, state.player as w.PlayerColor]) : state.disconnectedPlayers
+      };
     }
+
+    case socketActions.PLAYER_RECONNECTED:
+      return {
+        ...state,
+        disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? without(state.disconnectedPlayers, payload.player as w.PlayerColor) : state.disconnectedPlayers
+      };
 
     case socketActions.CURRENT_STATE:
       // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
       // But empty the queues so as not to overwhelm the spectator with animations and sounds immediately.
       return {
         ...reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state),
+        joinedInProgressGame: true,
         eventQueue: [],
         sfxQueue: []
       };
@@ -168,6 +178,22 @@ export function handleAction(
         return state;
       }
     }
+
+    case socketActions.PLAYER_DISCONNECTED: {
+      // TODO put this message behind a 1-2 sec timeout as well in case a player reconnects immediately?
+      state = logAction(state, null, `${state.usernames[payload.player as w.PlayerColor]} has disconnected and will ${state.draft ? 'abort' : 'forfeit'} in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless they rejoin the game`);
+      return {
+        ...state,
+        disconnectedPlayers: uniq([...state.disconnectedPlayers, payload.player])
+      };
+    }
+
+    case socketActions.PLAYER_RECONNECTED:
+      return {
+        ...state,
+        disconnectedPlayers: without(state.disconnectedPlayers, payload.player)
+      };
+
 
     default:
       return oldState;

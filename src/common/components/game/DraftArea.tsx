@@ -16,6 +16,7 @@ import PlayerName from './PlayerName';
 interface DraftAreaProps {
   player: w.PlayerColor | 'neither'
   usernames: w.PerPlayer<string>
+  disconnectedPlayers: w.PlayerColor[]
   draft: w.DraftState
   format: GameFormat
   isGameOver: boolean
@@ -132,7 +133,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
   }
 
   private renderDraftArea(): JSX.Element {
-    const { player, format, onDraftCards } = this.props;
+    const { player, format } = this.props;
 
     if (player === 'neither') {
       return (
@@ -146,7 +147,14 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
         </div>
       );
     } else if (this.currentCardGroup) {
-      return <DraftCardPicker cardGroup={this.currentCardGroup} player={player} format={format} onDraftCards={onDraftCards} />;
+      return (
+        <DraftCardPicker
+          cardGroup={this.currentCardGroup}
+          player={player}
+          format={format}
+          onDraftCards={this.handleDraftCards}
+        />
+      );
     } else {
       return (
         <div style={{
@@ -162,7 +170,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
   }
 
   private renderPlayerArea(color: w.PlayerColor, isOpponent: boolean): React.ReactNode {
-    const { draft, player, usernames } = this.props;
+    const { draft, player, usernames, disconnectedPlayers } = this.props;
     const { cardsDrafted } = draft[color];
 
     const numCardsDrafted = cardsDrafted.length;
@@ -174,6 +182,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
           opponent={isOpponent}
           color={color}
           playerName={usernames[color]}
+          isDisconnected={disconnectedPlayers.includes(color)}
         />
 
         <div style={{
@@ -195,6 +204,13 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
         {(!isOpponent || player === 'neither') && <EnergyCurve cards={cardsDrafted} height={100} textColor="white" chartColor={playerColor} />}
       </React.Fragment>
     );
+  }
+
+  private handleDraftCards = (player: w.PlayerColor, cards: w.CardInGame[]) => {
+    const { disconnectedPlayers, onDraftCards } = this.props;
+    if (disconnectedPlayers.length === 0) {
+      onDraftCards(player, cards);
+    }
   }
 
   private handleToggleShowDeck = () => {

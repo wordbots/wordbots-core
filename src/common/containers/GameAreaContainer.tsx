@@ -69,10 +69,12 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     player: game.player,
     currentTurn: game.currentTurn,
     usernames: game.usernames,
+    disconnectedPlayers: game.disconnectedPlayers,
     winner: game.winner,
     gameOptions: game.options,
     draft: game.draft,
     format: GameFormat.decode(game.gameFormat),
+    joinedInProgressGame: game.joinedInProgressGame,
 
     selectedTile: activePlayer?.selectedTile || null,
     selectedCard: activePlayer ? activePlayer.selectedCard : null,
@@ -104,6 +106,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     volume: game.volume,
 
     gameOver: game.winner !== null,
+    isPaused: game.disconnectedPlayers.length > 0,
     isTutorial: game.tutorial,
     isSandbox: game.sandbox,
     isMyTurn: game.currentTurn === game.player,

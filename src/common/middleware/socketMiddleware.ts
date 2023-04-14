@@ -58,12 +58,24 @@ function socketMiddleware({ forwardedActionTypes }: SocketMiddlewareOpts): Middl
       socket.addEventListener('open', connected);
       socket.onclose = disconnected;
       socket.addEventListener('message', receive);
-      (window as any).closeSocket = () => { socket.close(); };  // REMOVE THIS AFTER #1746 AND #1748 ARE FIXED
+
+      // REMOVE THIS AFTER #1746 AND #1748 ARE FIXED
+      (window as any).closeSocket = (reconnect = true) => {
+        socket.close();
+        if (!reconnect) {
+          keepClosed = true;
+        }
+      };
     }
 
     function connected(): void {
+      const alreadyInGame = store.getState().game.started;
+
       store.dispatch(sa.connected());
       send(sa.sendUserData(user));
+      if (!alreadyInGame) {
+        send(sa.rejoinGame());
+      }
 
       sendQueue.forEach(send);
       sendQueue = [];

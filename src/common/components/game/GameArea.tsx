@@ -25,10 +25,12 @@ export interface GameProps {
   player: w.PlayerColor | 'neither'
   currentTurn: w.PlayerColor
   usernames: w.PerPlayer<string>
+  disconnectedPlayers: w.PlayerColor[]
   winner: w.GameWinner
   gameOptions: w.GameOptions
   draft: w.DraftState | null
   format: GameFormat
+  joinedInProgressGame: boolean
 
   selectedTile: w.HexId | null
   selectedCard: number | null
@@ -59,6 +61,7 @@ export interface GameProps {
   volume: number
 
   gameOver: boolean
+  isPaused: boolean
   isTutorial: boolean
   isPractice: boolean
   isSandbox: boolean

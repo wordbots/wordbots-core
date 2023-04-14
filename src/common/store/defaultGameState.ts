@@ -66,6 +66,8 @@ const defaultGameState: w.GameState = {
     blue: bluePlayerState([]),
     orange: orangePlayerState([])
   },
+  disconnectedPlayers: [],
+  joinedInProgressGame: false,
   gameFormat: 'normal',
   started: false,
   tutorial: false,

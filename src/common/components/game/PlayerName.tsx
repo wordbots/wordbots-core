@@ -8,16 +8,18 @@ interface PlayerNameProps {
   playerName: string
   opponent?: boolean
   isSandbox?: boolean
+  isDisconnected?: boolean
 }
 
 export default class PlayerName extends React.PureComponent<PlayerNameProps> {
   public render(): JSX.Element {
-    const { color, playerName, opponent, isSandbox } = this.props;
+    const { color, playerName, opponent, isSandbox, isDisconnected } = this.props;
     return (
       <div
+        className={isDisconnected ? 'blink' : ''}
         style={{
           position: 'absolute',
-          backgroundColor: {orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR}[color],
+          backgroundColor: { orange: ORANGE_PLAYER_COLOR, blue: BLUE_PLAYER_COLOR }[color],
           color: 'white',
           fontFamily: '"Carter One", "Carter One-fallback"',
           fontSize: 32,

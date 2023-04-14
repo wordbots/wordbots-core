@@ -59,7 +59,8 @@ function socketMiddleware({ forwardedActionTypes }: SocketMiddlewareOpts): Middl
       socket.onclose = disconnected;
       socket.addEventListener('message', receive);
 
-      // REMOVE THIS AFTER #1746 AND #1748 ARE FIXED
+      // Helper function to test behavior when the socket connection closes.
+      // TODO comment this out when we are confident that game re-connection behavior is solid!
       (window as any).closeSocket = (reconnect = true) => {
         socket.close();
         if (!reconnect) {

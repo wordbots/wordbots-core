@@ -141,15 +141,16 @@ export function handleAction(
       };
     }
 
-    case socketActions.PLAYER_RECONNECTED:
+    case socketActions.CONNECTED:
       return {
         ...state,
         disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? without(state.disconnectedPlayers, payload.player as w.PlayerColor) : state.disconnectedPlayers
       };
 
     case socketActions.CURRENT_STATE:
-      // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
+      // This is used for spectating an in-progress game OR re-joining a game you got disconnected from - the server sends back a log of all actions so far.
       // But empty the queues so as not to overwhelm the spectator with animations and sounds immediately.
+      // TODO for players rejoining, it would be good to also pass the current turn timer value (perhaps asking their opponent for it?)
       return {
         ...reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state),
         joinedInProgressGame: true,

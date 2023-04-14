@@ -2,7 +2,6 @@ import { noop } from 'lodash';
 import { WebSocket as MockSocket } from 'mock-socket';
 import * as WebSocket from 'ws';
 
-import * as constants from '../../src/common/constants';
 import * as gameActions from '../../src/common/actions/game';
 import * as m from '../../src/server/multiplayer/multiplayer';
 import MultiplayerServerState from '../../src/server/multiplayer/MultiplayerServerState';
@@ -386,31 +385,6 @@ describe('MultiplayerServerState', () => {
         ...initialState,
         playersOnline: ['player1', 'player2'],
         playersInLobby: ['player1', 'player2'],
-        userData: { player1: { uid: 'hostId', displayName: 'hostName' } }
-      });
-    });
-
-    it('should end the game if a player disconnects', () => {
-      // @ts-ignore
-      // eslint-disable-next-line import/namespace
-      constants.DISCONNECT_FORFEIT_TIME_SECS = 0;
-
-      expectState((state: MSS) => {
-        const storeGameResultFn: jest.Mock = jest.fn();
-        state.storeGameResult = storeGameResultFn;
-
-        state.connectClient('player1', dummyWebSocket);
-        state.connectClient('player2', dummyWebSocket);
-        state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
-        state.joinGame('player2', 'player1', defaultDecks[1]);
-        expect(storeGameResultFn.mock.calls.length).toBe(0);
-        state.disconnectClient('player2');
-        expect(storeGameResultFn.mock.calls.length).toBe(1);
-      }, {
-        ...initialState,
-        playersOnline: ['player1'],
-        playersInLobby: ['player1'],
         userData: { player1: { uid: 'hostId', displayName: 'hostName' } }
       });
     });

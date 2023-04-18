@@ -227,6 +227,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentWillUnmount(): void {
+    const { isTutorial, isPractice, isSandbox } = this.props;
     const { interval } = this.state;
 
     window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
@@ -235,8 +236,8 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
       clearInterval(interval);
     }
 
-    // Leaving the page ends the game ... unless you are a spectator!
-    if (!this.props.isSpectator) {
+    // Leaving the page ends the game in single-player modes
+    if (isTutorial || isPractice || isSandbox) {
       this.handleEndGame();
     }
   }

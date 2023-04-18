@@ -137,6 +137,7 @@ export function handleAction(
       }
       return {
         ...state,
+        started: false,
         disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? uniq([...state.disconnectedPlayers, state.player as w.PlayerColor]) : state.disconnectedPlayers
       };
     }
@@ -144,7 +145,7 @@ export function handleAction(
     case socketActions.CONNECTED:
       return {
         ...state,
-        disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? without(state.disconnectedPlayers, payload.player as w.PlayerColor) : state.disconnectedPlayers
+        disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? without(state.disconnectedPlayers, state.player as w.PlayerColor) : state.disconnectedPlayers
       };
 
     case socketActions.CURRENT_STATE:
@@ -194,7 +195,6 @@ export function handleAction(
         ...state,
         disconnectedPlayers: without(state.disconnectedPlayers, payload.player)
       };
-
 
     default:
       return oldState;

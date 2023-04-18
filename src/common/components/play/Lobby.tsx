@@ -3,12 +3,13 @@ import { History } from 'history';
 import * as React from 'react';
 
 import * as m from '../../../server/multiplayer/multiplayer';
-import { CHAT_WIDTH } from '../../constants';
+import { CHAT_WIDTH, MAX_Z_INDEX } from '../../constants';
 import * as w from '../../types';
 import { unpackDeck } from '../../util/decks';
 import { GameFormat, renderFormatDisplayName } from '../../util/formats';
 import Background from '../Background';
 import RouterDialog from '../RouterDialog';
+import SpinningGears from '../SpinningGears';
 import Title from '../Title';
 
 import GameBrowser from './GameBrowser';
@@ -119,7 +120,14 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
         </div>
 
         <Title text="Arena" />
-        <div style={{ padding: `20px ${CHAT_WIDTH + 20}px 0 20px` }}>
+
+        {(!connected) && <div style={{ position: 'fixed', top: 200, width: '100%', zIndex: MAX_Z_INDEX }}>
+          <div style={{ margin: '0 auto' }}>
+            <SpinningGears />
+          </div>
+        </div>}
+
+        <div style={{ padding: `20px ${CHAT_WIDTH + 20}px 0 20px`, opacity: connected ? 1 : 0.2 }}>
           <LobbyStatus
             connecting={connecting}
             connected={connected}

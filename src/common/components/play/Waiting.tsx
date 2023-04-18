@@ -17,6 +17,8 @@ interface WaitingState {
 }
 
 export default class Waiting extends React.Component<WaitingProps, WaitingState> {
+  private timeout: NodeJS.Timeout | undefined = undefined;
+
   public state = {
     waitingSecs: 0
   };
@@ -26,7 +28,13 @@ export default class Waiting extends React.Component<WaitingProps, WaitingState>
     moment.relativeTimeThreshold('s', 60);
     moment.relativeTimeThreshold('ss', 3);
 
-    setTimeout(this.tick, 1000);
+    this.timeout = setTimeout(this.tick, 1000);
+  }
+
+  public componentWillUnmount(): void {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
   }
 
   public render(): JSX.Element {
@@ -59,7 +67,7 @@ export default class Waiting extends React.Component<WaitingProps, WaitingState>
               ...
             </div>
           </div>
-          { inQueue &&
+          {inQueue &&
             <div>
               {queueSize} player(s) in queue.{' '}
               <Button
@@ -78,6 +86,6 @@ export default class Waiting extends React.Component<WaitingProps, WaitingState>
 
   private tick = () => {
     this.setState((state) => ({ waitingSecs: state.waitingSecs + 1 }));
-    setTimeout(this.tick, 1000);
+    this.timeout = setTimeout(this.tick, 1000);
   }
 }

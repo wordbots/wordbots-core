@@ -246,8 +246,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     if (state.isPlayerInSingleplayerGame(clientID)) {
       state.exitSingleplayerGame(clientID);
       sendChatToLobby(`${state.getClientUsername(clientID)} has rejoined the lobby.`);
-      broadcastInfo();
     }
+    broadcastInfo();
   }
 
   function spectateGame(clientID: m.ClientID, gameID: m.ClientID): void {

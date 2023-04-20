@@ -104,7 +104,7 @@ export default function launchWebsocketServer(server: Server, path: string): voi
       exitSingleplayerGame(clientID);
     } else if (type === 'ws:REJOIN_GAME') {
       const game = state.lookupGameByClient(clientID);
-      if (game) {
+      if (game?.players.includes(clientID)) {
         rejoinGame(clientID, game);
       }
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
@@ -125,7 +125,9 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   function onDisconnect(clientID: m.ClientID): void {
     const username = state.getClientUsername(clientID);
     const game = state.lookupGameByClient(clientID);
-    if (game) {
+
+    // check if the disconnecting client is a player (*not a spectator*) in  game
+    if (game?.players.includes(clientID)) {
       sendMessageInGame(clientID, 'ws:PLAYER_DISCONNECTED', { player: game.playerColors[clientID] });
       setTimeout(() => {
         forfeitGameDueToDisconnection(clientID);

@@ -121,13 +121,13 @@ export default class Lobby extends React.Component<LobbyProps, LobbyState> {
 
         <Title text="Arena" />
 
-        {(!connected) && <div style={{ position: 'fixed', top: 200, width: '100%', zIndex: MAX_Z_INDEX }}>
-          <div style={{ margin: '0 auto' }}>
-            <SpinningGears />
-          </div>
-        </div>}
-
         <div style={{ padding: `20px ${CHAT_WIDTH + 20}px 0 20px`, opacity: connected ? 1 : 0.2 }}>
+          {(!connected) && <div style={{ position: 'fixed', top: 200, width: '100%', zIndex: MAX_Z_INDEX }}>
+            <div style={{ margin: '0 auto' }}>
+              <SpinningGears />
+            </div>
+          </div>}
+
           <LobbyStatus
             connecting={connecting}
             connected={connected}

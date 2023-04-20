@@ -227,7 +227,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentWillUnmount(): void {
-    const { isTutorial, isPractice, isSandbox } = this.props;
+    const { isTutorial, isPractice, isSandbox, isSpectator } = this.props;
     const { interval } = this.state;
 
     window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
@@ -236,9 +236,9 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
       clearInterval(interval);
     }
 
-    // Leaving the page ends the game in single-player modes
-    if (isTutorial || isPractice || isSandbox) {
-      this.handleEndGame();
+    // Leaving the page leaves the game in single-player modes or as a spectator
+    if (isTutorial || isPractice || isSandbox || isSpectator) {
+      this.handleLeaveGame();
     }
   }
 
@@ -327,7 +327,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     }
   }
 
-  private handleEndGame = () => {
+  private handleLeaveGame = () => {
     const { isSandbox, isTutorial, onEndGame, onLeave, winner } = this.props;
 
     onEndGame();
@@ -408,7 +408,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
 
   private handleClickEndGame = () => {
     const { history } = this.props;
-    this.handleEndGame();
+    this.handleLeaveGame();
     // We can't just do history.goBack() because we may have gotten here
     // from outside of Wordbots and we don't want to leave the site.
     if (history.location.state?.previous) {

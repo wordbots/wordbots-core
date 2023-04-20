@@ -130,8 +130,8 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   get inGame(): boolean {
-    const { inGame, location } = this.props;
-    return inGame || isInGameUrl(location.pathname);
+    const { location, inGame } = this.props;
+    return (inGame || isInGameUrl(location.pathname));
   }
 
   get inSandbox(): boolean {

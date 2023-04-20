@@ -28,7 +28,7 @@ interface BoardProps {
   tutorialStep?: w.TutorialStep
   attack: w.Attack | null
   isGameOver: boolean
-  isWaitingForParse: boolean
+  isPaused: boolean
 
   onSelectTile: (hexId: w.HexId, action?: 'move' | 'attack' | 'place' | null, intermediateMoveHex?: w.HexId | null) => void
   onActivateAbility: (abilityIdx: number) => void
@@ -60,7 +60,7 @@ export default class Board extends React.Component<BoardProps, BoardState> {
   }
 
   get isMyTurn(): boolean {
-    return this.props.currentTurn === this.props.player && !this.props.isWaitingForParse;
+    return this.props.currentTurn === this.props.player && !this.props.isPaused;
   }
 
   get playingAnObject(): boolean {

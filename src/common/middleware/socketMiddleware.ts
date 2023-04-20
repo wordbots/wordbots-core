@@ -58,11 +58,25 @@ function socketMiddleware({ forwardedActionTypes }: SocketMiddlewareOpts): Middl
       socket.addEventListener('open', connected);
       socket.onclose = disconnected;
       socket.addEventListener('message', receive);
+
+      // Helper function to test behavior when the socket connection closes.
+      // TODO comment this out when we are confident that game re-connection behavior is solid!
+      (window as any).closeSocket = (reconnect = true) => {
+        socket.close();
+        if (!reconnect) {
+          keepClosed = true;
+        }
+      };
     }
 
     function connected(): void {
+      const alreadyInGame = store.getState().game.started;
+
       store.dispatch(sa.connected());
       send(sa.sendUserData(user));
+      if (!alreadyInGame) {
+        send(sa.rejoinGame());
+      }
 
       sendQueue.forEach(send);
       sendQueue = [];

@@ -1,9 +1,9 @@
-import { Server } from 'http';
+import { IncomingMessage, Server } from 'http';
 
 import { noop } from 'lodash';
 import * as WebSocket from 'ws';
 
-import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
+import { DISCONNECT_FORFEIT_TIME_SECS, ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
 
 import * as m from './multiplayer';
@@ -36,11 +36,21 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
-  function onConnect(socket: WebSocket): void {
-    const clientID = generateID();
+  function onConnect(socket: WebSocket, req: IncomingMessage): void {
+    const requestIp: string | undefined = (req.headers['x-forwarded-for'] as string | undefined) || req.connection.remoteAddress;
+    const clientFingerprint = `${requestIp}::${Buffer.from(req.headers['user-agent'] || '').toString('base64')}`;
+    const clientID = generateID(clientFingerprint);
+    console.log(`Client connected: ${clientFingerprint} => ${clientID}`);
+
     state.connectClient(clientID, socket);
     sendMessage('ws:CLIENT_ID', { clientID }, [clientID]);
     broadcastInfo();
+
+    const game = state.lookupGameByClient(clientID);
+    if (game) {
+      sendMessageInGame(clientID, 'ws:PLAYER_RECONNECTED', { player: game.playerColors[clientID] }, true);
+      sendChatToGame(game, `${state.getClientUsername(clientID)} has rejoined the game.`);
+    }
 
     socket.on('message', (msg: string) => {
       try {
@@ -92,6 +102,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     } else if (type === 'END_GAME') {
       // We only track client-side END_GAME actions for singleplayer games - multiplayer games track their own end state.
       exitSingleplayerGame(clientID);
+    } else if (type === 'ws:REJOIN_GAME') {
+      const game = state.lookupGameByClient(clientID);
+      if (game?.players.includes(clientID)) {
+        rejoinGame(clientID, game);
+      }
     } else if (type !== 'ws:KEEPALIVE' && state.lookupGameByClient(clientID)) {
       // Broadcast in-game actions if the client is a player in a game.
       revealVisibleCardsInGame(state.lookupGameByClient(clientID)!, [{ type, payload }, clientID]);
@@ -108,15 +123,33 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function onDisconnect(clientID: m.ClientID): void {
-    sendChatToLobby(`${state.getClientUsername(clientID)} has left.`);
+    const username = state.getClientUsername(clientID);
+    const game = state.lookupGameByClient(clientID);
+
+    // check if the disconnecting client is a player (*not a spectator*) in  game
+    if (game?.players.includes(clientID)) {
+      sendMessageInGame(clientID, 'ws:PLAYER_DISCONNECTED', { player: game.playerColors[clientID] });
+      setTimeout(() => {
+        forfeitGameDueToDisconnection(clientID);
+      }, DISCONNECT_FORFEIT_TIME_SECS * 1000);
+    } else {
+      sendChatToLobby(`${username} has left.`);
+    }
+
+    state.disconnectClient(clientID);
+  }
+
+  function forfeitGameDueToDisconnection(clientID: m.ClientID) {
+    if (state.getClientSocket(clientID)) {
+      // Client has rejoined the game - no need to forfeit
+      return;
+    }
 
     const forfeitMsgIfAny: m.MessageToSend | null = state.leaveGame(clientID);
     if (forfeitMsgIfAny) {
       const { type, payload, recipientIds } = forfeitMsgIfAny;
       sendMessage(type, payload, recipientIds);
     }
-
-    state.disconnectClient(clientID);
   }
 
   function sendMessage(type: string, payload: Record<string, unknown> = {}, recipientIDs: m.ClientID[] | null = null): void {
@@ -136,11 +169,11 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     sendMessage(type, payload, state.getAllOtherPlayersInLobby(clientID));
   }
 
-  function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}): void {
-    const opponentIds = state.getAllOpponents(clientID);
-    if (opponentIds.length > 0) {
-      console.log(`${clientID} sent action to ${opponentIds}: ${type}, ${truncateMessage(JSON.stringify(payload))}`);
-      sendMessage(type, payload, opponentIds);
+  function sendMessageInGame(clientID: m.ClientID, type: string, payload: Record<string, unknown> = {}, allPeopleInGame = false): void {
+    const recipientIds = allPeopleInGame ? getPeopleInGame(state.lookupGameByClient(clientID)!) : state.getAllOpponents(clientID);
+    if (recipientIds.length > 0) {
+      console.log(`${clientID} sent action to ${recipientIds}: ${type}, ${truncateMessage(JSON.stringify(payload))}`);
+      sendMessage(type, payload, recipientIds);
     }
   }
 
@@ -152,14 +185,22 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     sendMessage('ws:CHAT', { msg, sender: '[Server]' }, state.getAllPlayersInLobby());
   }
 
+  function sendChatToGame(game: m.Game, msg: string): void {
+    sendMessage('ws:CHAT', { msg, sender: '[Server]' }, getPeopleInGame(game));
+  }
+
   function broadcastInfo(): void {
     sendMessage('ws:INFO', state.serialize() as unknown as Record<string, unknown>);
   }
 
   function setUserData(clientID: m.ClientID, userData: m.UserData | null): void {
     state.setClientUserData(clientID, userData);
-    sendChatToLobby(`${userData?.displayName || state.getClientUsername(clientID)} has entered the lobby.`);
     broadcastInfo();
+
+    // The client has either entered the lobby or has rejoined their existing game (after temporarily disconnecting).
+    if (!state.lookupGameByClient(clientID)) {
+      sendChatToLobby(`${userData?.displayName || state.getClientUsername(clientID)} has entered the lobby.`);
+    }
   }
 
   function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions): void {
@@ -205,8 +246,8 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     if (state.isPlayerInSingleplayerGame(clientID)) {
       state.exitSingleplayerGame(clientID);
       sendChatToLobby(`${state.getClientUsername(clientID)} has rejoined the lobby.`);
-      broadcastInfo();
     }
+    broadcastInfo();
   }
 
   function spectateGame(clientID: m.ClientID, gameID: m.ClientID): void {
@@ -229,6 +270,24 @@ export default function launchWebsocketServer(server: Server, path: string): voi
 
       broadcastInfo();
     }
+  }
+
+  function rejoinGame(clientID: m.ClientID, game: m.Game): void {
+    const { actions, decks, format, name, playerColors, startingSeed, usernames } = game;
+
+    const gameStartPayload = {
+      player: playerColors[clientID],
+      decks,
+      usernames,
+      format,
+      seed: startingSeed
+    };
+
+    sendMessage('ws:GAME_START', gameStartPayload, [clientID]);
+    sendMessage('ws:CURRENT_STATE', { actions }, [clientID]);
+    sendChat(`Rejoining game ${name} ...`, [clientID]);
+
+    broadcastInfo();
   }
 
   function revealVisibleCardsInGame(game: m.Game, pendingAction?: [m.Action, m.ClientID]): void {

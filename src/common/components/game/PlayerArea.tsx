@@ -126,6 +126,7 @@ export default class PlayerArea extends React.Component<PlayerAreaProps, PlayerA
           color={color}
           playerName={gameProps.usernames[color]}
           isSandbox={gameProps.isSandbox}
+          isDisconnected={gameProps.disconnectedPlayers.includes(color) && !gameProps.winner}
         />
         <EnergyCount
           color={color}

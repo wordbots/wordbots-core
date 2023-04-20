@@ -32,15 +32,15 @@ type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
 export default class GameAreaContents extends React.PureComponent<GameAreaContentsProps> {
   public render = (): JSX.Element => {
     const {
-      attack, bluePieces, currentTurn, draft, eventQueue, format, gameOptions, gameOver, isAttackHappening,
-      isMyTurn, isMyTurnAndNoActionsLeft, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse,
+      attack, bluePieces, currentTurn, disconnectedPlayers, draft, eventQueue, format, gameOptions, gameOver, isAttackHappening,
+      isMyTurn, isMyTurnAndNoActionsLeft, isPaused, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse, joinedInProgressGame,
       orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
       onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
       actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
     } = this.props;
 
-    const shouldShowCountdownAnimation = !isTutorial && !isSandbox && !isSpectator;
+    const shouldShowCountdownAnimation = !isTutorial && !isSandbox && !joinedInProgressGame;
 
     if (draft) {
       return (
@@ -48,6 +48,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
           <DraftArea
             player={player}
             usernames={usernames}
+            disconnectedPlayers={disconnectedPlayers}
             draft={draft}
             format={format}
             isGameOver={gameOver}
@@ -83,8 +84,8 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
               draft={draft}
               isTimerEnabled={!gameOver && !isTutorial && !isPractice && !isSandbox && !gameOptions.disableTurnTimer && startAnimationComplete}
               isMyTurn={isMyTurn}
+              isPaused={isPaused || isWaitingForParse}
               isAttackHappening={isAttackHappening}
-              isWaitingForParse={isWaitingForParse}
               volume={volume}
               onPassTurn={onPassTurn}
               onSetVolume={onSetVolume}
@@ -104,7 +105,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 player={actualPlayer}
                 compact={compactControls}
                 gameOver={gameOver}
-                isMyTurn={isMyTurn || isSandbox}
+                isMyTurn={(isMyTurn && !isPaused) || isSandbox}
                 isMyTurnAndNoActionsLeft={isMyTurnAndNoActionsLeft}
                 isAttackHappening={isAttackHappening}
                 isWaitingForParse={isWaitingForParse}
@@ -155,7 +156,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                   tutorialStep={tutorialStep}
                   attack={attack}
                   isGameOver={!!winner}
-                  isWaitingForParse={isWaitingForParse}
+                  isPaused={isPaused || isWaitingForParse}
                   onSelectTile={onSelectTile}
                   onActivateAbility={onActivateObject}
                   onTutorialStep={onTutorialStep}

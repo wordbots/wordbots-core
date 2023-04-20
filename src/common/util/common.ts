@@ -11,8 +11,8 @@ interface ErrorWithMessage {
 // Utility functions used everywhere.
 
 /** Return a random id of 15 base-36 characters. */
-export function id(): string {
-  return Math.random().toString(36).slice(2, 16);
+export function id(seed?: string): string {
+  return (seed ? seededRNG(seed)() : Math.random()).toString(36).slice(2, 16);
 }
 
 /** Given a random seed (a number from 0 to 1), deterministically produce the next seed from 0 to 1. */

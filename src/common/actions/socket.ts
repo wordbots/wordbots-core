@@ -57,6 +57,7 @@ export const LEAVE_QUEUE = 'ws:LEAVE_QUEUE';
 export const SPECTATE = 'ws:SPECTATE';
 export const LEAVE = 'ws:LEAVE';
 export const SEND_USER_DATA = 'ws:SEND_USER_DATA';
+export const REJOIN_GAME = 'ws:REJOIN_GAME';
 export const KEEPALIVE = 'ws:KEEPALIVE';
 
 export function host(name: string, format: w.Format, deck: w.DeckInGame, options: w.GameOptions): w.Action {
@@ -112,6 +113,12 @@ export function sendUserData(userData?: fb.User): w.Action {
   };
 }
 
+export function rejoinGame(): w.Action {
+  return {
+    type: REJOIN_GAME
+  };
+}
+
 export function keepalive(): w.Action {
   return {
     type: KEEPALIVE
@@ -143,4 +150,6 @@ export const CLIENT_ID = 'ws:CLIENT_ID';
 export const INFO = 'ws:INFO';
 export const GAME_START = 'ws:GAME_START';
 export const CURRENT_STATE = 'ws:CURRENT_STATE';
+export const PLAYER_DISCONNECTED = 'ws:PLAYER_DISCONNECTED';
+export const PLAYER_RECONNECTED = 'ws:PLAYER_RECONNECTED';
 export const REVEAL_CARDS = 'ws:REVEAL_CARDS';

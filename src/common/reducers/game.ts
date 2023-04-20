@@ -1,8 +1,8 @@
-import { cloneDeep, isArray, reduce } from 'lodash';
+import { cloneDeep, isArray, reduce, uniq, without } from 'lodash';
 
 import * as actions from '../actions/game';
 import * as socketActions from '../actions/socket';
-import { DEFAULT_GAME_FORMAT } from '../constants';
+import { DEFAULT_GAME_FORMAT, DISCONNECT_FORFEIT_TIME_SECS } from '../constants';
 import defaultState from '../store/defaultGameState';
 import * as w from '../types';
 import { saveToLocalStorage } from '../util/browser';
@@ -131,14 +131,30 @@ export function handleAction(
     case actions.IN_GAME_PARSE_COMPLETED:
       return handleRewriteParseCompleted(state, payload);
 
-    case socketActions.CONNECTING:
-      return { ...state, started: state.practice ? state.started : false };
+    case socketActions.DISCONNECTED: {
+      if (state.started && !state.winner) {
+        state = logAction(state, null, `You have disconnected and will ${state.draft ? 'abort' : 'forfeit'} in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless you rejoin the game`);
+      }
+      return {
+        ...state,
+        started: false,
+        disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? uniq([...state.disconnectedPlayers, state.player as w.PlayerColor]) : state.disconnectedPlayers
+      };
+    }
+
+    case socketActions.CONNECTED:
+      return {
+        ...state,
+        disconnectedPlayers: ['blue', 'orange'].includes(state.player) ? without(state.disconnectedPlayers, state.player as w.PlayerColor) : state.disconnectedPlayers
+      };
 
     case socketActions.CURRENT_STATE:
-      // This is used for spectating an in-progress game - the server sends back a log of all actions so far.
+      // This is used for spectating an in-progress game OR re-joining a game you got disconnected from - the server sends back a log of all actions so far.
       // But empty the queues so as not to overwhelm the spectator with animations and sounds immediately.
+      // TODO for players rejoining, it would be good to also pass the current turn timer value (perhaps asking their opponent for it?)
       return {
         ...reduce(payload.actions, (s: State, a: w.Action) => game(s, a), state),
+        joinedInProgressGame: true,
         eventQueue: [],
         sfxQueue: []
       };
@@ -164,6 +180,21 @@ export function handleAction(
         return state;
       }
     }
+
+    case socketActions.PLAYER_DISCONNECTED: {
+      // TODO put this message behind a 1-2 sec timeout as well in case a player reconnects immediately?
+      state = logAction(state, null, `${state.usernames[payload.player as w.PlayerColor]} has disconnected and will ${state.draft ? 'abort' : 'forfeit'} in ${DISCONNECT_FORFEIT_TIME_SECS} seconds unless they rejoin the game`);
+      return {
+        ...state,
+        disconnectedPlayers: uniq([...state.disconnectedPlayers, payload.player])
+      };
+    }
+
+    case socketActions.PLAYER_RECONNECTED:
+      return {
+        ...state,
+        disconnectedPlayers: without(state.disconnectedPlayers, payload.player)
+      };
 
     default:
       return oldState;

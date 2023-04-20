@@ -69,10 +69,12 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     player: game.player,
     currentTurn: game.currentTurn,
     usernames: game.usernames,
+    disconnectedPlayers: game.disconnectedPlayers,
     winner: game.winner,
     gameOptions: game.options,
     draft: game.draft,
     format: GameFormat.decode(game.gameFormat),
+    joinedInProgressGame: game.joinedInProgressGame,
 
     selectedTile: activePlayer?.selectedTile || null,
     selectedCard: activePlayer ? activePlayer.selectedCard : null,
@@ -104,6 +106,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     volume: game.volume,
 
     gameOver: game.winner !== null,
+    isPaused: game.disconnectedPlayers.length > 0,
     isTutorial: game.tutorial,
     isSandbox: game.sandbox,
     isMyTurn: game.currentTurn === game.player,
@@ -224,6 +227,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
   }
 
   public componentWillUnmount(): void {
+    const { isTutorial, isPractice, isSandbox, isSpectator } = this.props;
     const { interval } = this.state;
 
     window.removeEventListener('beforeunload', this.handleWindowBeforeUnload);
@@ -232,10 +236,9 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
       clearInterval(interval);
     }
 
-    // Leaving the page ends the game ... unless you are a spectator!
-    if (!this.props.isSpectator) {
-      console.log('Ending game because GameAreaContainer unmounted');  // remove logging when #1746 is known to be resolved
-      this.handleEndGame();
+    // Leaving the page leaves the game in single-player modes or as a spectator
+    if (isTutorial || isPractice || isSandbox || isSpectator) {
+      this.handleLeaveGame();
     }
   }
 
@@ -324,7 +327,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
     }
   }
 
-  private handleEndGame = () => {
+  private handleLeaveGame = () => {
     const { isSandbox, isTutorial, onEndGame, onLeave, winner } = this.props;
 
     onEndGame();
@@ -405,8 +408,7 @@ export class GameAreaContainer extends React.Component<GameAreaContainerProps, G
 
   private handleClickEndGame = () => {
     const { history } = this.props;
-    console.log('Ending game because Forfeit button clicked');  // remove logging when #1746 is known to be resolved
-    this.handleEndGame();
+    this.handleLeaveGame();
     // We can't just do history.goBack() because we may have gotten here
     // from outside of Wordbots and we don't want to leave the site.
     if (history.location.state?.previous) {

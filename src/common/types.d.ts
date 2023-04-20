@@ -265,9 +265,11 @@ export interface GameState {
   attack: Attack | null
   currentTurn: PlayerColor
   draft: DraftState | null
+  disconnectedPlayers: PlayerColor[]
   eventQueue: CardInGame[]
   executionStackDepth: number
   gameFormat: Format
+  joinedInProgressGame: boolean
   memory: Record<string, unknown>
   objectsDestroyedThisTurn: Record<string, [HexId, PlayerColor]>  // object id -> (last hex id, player color)
   options: GameOptions

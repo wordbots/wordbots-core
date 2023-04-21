@@ -152,7 +152,10 @@ export function isSupportedBrowser(): boolean {
   return false;
 }
 
-/** Returns whether the detect browser supports animation of the content of CSS pseudo-elements (see https://css-tricks.com/animating-the-content-property/) */
+/**
+ * Returns whether the detected browser supports animation of the content of CSS pseudo-elements, defaulting to true if browser detection failed.
+ * See https://css-tricks.com/animating-the-content-property/ (not completely up to date, had to do some manual testing)
+ */
 export function doesBrowserSupportContentAnimation(): boolean {
   const browserInfo = detect();
   if (browserInfo) {

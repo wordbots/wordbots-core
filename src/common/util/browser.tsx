@@ -152,6 +152,20 @@ export function isSupportedBrowser(): boolean {
   return false;
 }
 
+/** Returns whether the detect browser supports animation of the content of CSS pseudo-elements (see https://css-tricks.com/animating-the-content-property/) */
+export function doesBrowserSupportContentAnimation(): boolean {
+  const browserInfo = detect();
+  if (browserInfo) {
+    const { name, version } = browserInfo;
+    const majorVersion = parseInt((version || '').split('.')[0]);
+    if ((name === 'safari' && (!majorVersion || majorVersion < 16)) || (name.includes('ios'))) {
+      return false;
+    }
+  }
+
+  return true;  // if we can't detect the browser, just assume yes
+}
+
 /** Like ReactDOM.createPortal, but no-op if not in browser. */
 export function createSafePortal(children: ReactNode, container: Element): ReactPortal | null {
   if (inBrowser()) {

@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import * as w from '../../types';
 import { BACKGROUND_Z_INDEX, BOARD_Z_INDEX, SIDEBAR_COLLAPSED_WIDTH } from '../../constants';
+import { doesBrowserSupportContentAnimation } from '../../util/browser';
 
 import Board from './Board';
 import DraftArea from './DraftArea';
@@ -40,7 +41,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
       actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
     } = this.props;
 
-    const shouldShowCountdownAnimation = !isTutorial && !isSandbox && !joinedInProgressGame;
+    const shouldShowCountdownAnimation = !isTutorial && !isSandbox && !joinedInProgressGame && doesBrowserSupportContentAnimation();
 
     if (draft) {
       return (

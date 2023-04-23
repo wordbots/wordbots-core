@@ -125,11 +125,11 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     discard: (cards: w.CardInHandCollection): void => {
       Object.entries(
         groupBy(cards.entries, (card) => ownerOfCard(state, card)?.color)
-      )
-        .filter(([owner]) => owner)
-        .forEach(([owner, ownedCards]) => {
+      ).forEach(([owner, ownedCards]) => {
+        if (owner && owner !== 'undefined') {  // ugh, groupBy can stringify undefined
           discardCardsFromHand(state, owner as w.PlayerColor, ownedCards);
-        });
+        }
+      });
     },
 
     draw: (players: w.PlayerCollection, count: number): void => {

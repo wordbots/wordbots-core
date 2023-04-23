@@ -247,9 +247,16 @@ describe('Game reducer', () => {
       JSON.stringify(state); // Throws if the state is a recursive structure. (We want to avoid this at all times for consistency on the server.)
     });
 
-    it('should handle draws', () => {
+    it('should handle draws by mutual destruction', () => {
       let state = getDefaultState();
       state = playEvent(state, 'orange', action('Destroy each kernel', "(function () { actions['destroy'](objectsMatchingConditions('kernel', [])); })"));
+      expect(state.winner).toEqual('draw');
+    });
+
+    it('should handle draws by exhaustion', () => {
+      let state = getDefaultState();
+      state = playEvent(state, 'orange', action('Each player draws 30 cards', "(function () { actions['draw'](targets['allPlayers'](), 30); })"));
+      state = playEvent(state, 'orange', action('Discard all cards in each player\'s hand', "(function () { actions['discard'](targets['all'](cardsInHand(targets['allPlayers'](), 'anycard', []))); })"));
       expect(state.winner).toEqual('draw');
     });
   });

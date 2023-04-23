@@ -27,7 +27,7 @@ export default function RecentGame(props: RecentGameProps & WithStyles): JSX.Ele
 
   const opponentId = Object.values(game.players).find((player) => player !== userId)!;
   const opponent = (isNil(opponentId) || isGuest(opponentId)) ? 'Guest' : (playerNames[opponentId] || playerNames[userId]);
-  const outcome = winner ? (winner === 'draw' ? 'draw' : (game.players[winner] === userId ? 'victory' : 'defeat')) : '';
+  const outcome = winner ? (['draw', 'aborted'].includes(winner) ? winner : (game.players[winner] === userId ? 'victory' : 'defeat')) : '';
   const timestamp = new Date(game.timestamp).toLocaleDateString();
 
   const singletonFormatIcons: Record<Extract<w.Format, string>, string> = {

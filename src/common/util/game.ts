@@ -190,7 +190,6 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
 }
 
 /** Returns true if the game cannot possibly end in a win anymore – no players have any cards left or any objects that can move, attack, or activate. */
-// TODO unit-test this functionality!
 export function isDrawByExhaustion(state: w.GameState): boolean {
   const { blue, orange } = state.players;
   const objectsOnBoard: w.Object[] = Object.values(allObjectsOnBoard(state));

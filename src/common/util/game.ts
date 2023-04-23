@@ -195,7 +195,7 @@ export function isDrawByExhaustion(state: w.GameState): boolean {
   const { blue, orange } = state.players;
   const objectsOnBoard: w.Object[] = Object.values(allObjectsOnBoard(state));
   const numCardsLeft: number = blue.hand.length + blue.deck.length + orange.hand.length + orange.deck.length;
-  return numCardsLeft === 0 && objectsOnBoard.every((obj) => obj.stats.attack === 0 && obj.stats.speed === 0 && !obj.activatedAbilities?.length);
+  return numCardsLeft === 0 && objectsOnBoard.every((obj) => !obj.stats.attack && !obj.stats.speed && !obj.activatedAbilities?.length);
 }
 
 /** Check if the game is over (by win or draw), and, if so, announce this. */
@@ -213,6 +213,7 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
   } else if (!orangeKernelExists) {
     state.winner = 'blue';
   } else if (isDrawByExhaustion(state)) {
+    state = logAction(state, null, 'Neither player is able to win in this position, so the game will end as a draw.');
     state.winner = 'draw';
   }
 

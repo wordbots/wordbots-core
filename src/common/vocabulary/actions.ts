@@ -1,4 +1,4 @@
-import { cloneDeep, identity, isArray, isFunction, mapValues } from 'lodash';
+import { cloneDeep, groupBy, identity, isArray, isFunction, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';
@@ -123,12 +123,13 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     },
 
     discard: (cards: w.CardInHandCollection): void => {
-      if (cards.entries.length > 0) {
-        const owner = ownerOfCard(state, cards.entries[0]);
-        if (owner) {
-          discardCardsFromHand(state, owner.color, cards.entries);
-        }
-      }
+      Object.entries(
+        groupBy(cards.entries, (card) => ownerOfCard(state, card)?.color)
+      )
+        .filter(([owner]) => owner)
+        .forEach(([owner, ownedCards]) => {
+          discardCardsFromHand(state, owner as w.PlayerColor, ownedCards);
+        });
     },
 
     draw: (players: w.PlayerCollection, count: number): void => {

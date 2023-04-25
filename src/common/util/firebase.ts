@@ -177,8 +177,13 @@ export async function incrementStatistic(statisticName: string, userId?: string)
 // GAME RESULTS
 
 export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {
-  incrementStatistic('gamesPlayed', game.players.blue);
-  incrementStatistic('gamesPlayed', game.players.orange);
+  if (!game.players.blue.startsWith('guest_')) {
+    incrementStatistic('gamesPlayed', game.players.blue);
+  }
+  if (!game.players.orange.startsWith('guest_')) {
+    incrementStatistic('gamesPlayed', game.players.orange);
+  }
+
   return fb.database().ref('games').push(game);
 }
 

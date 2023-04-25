@@ -122,7 +122,7 @@ const howItWorks = `
 const getInvolved = `
 ## Get involved!
 
-* Join us on [our Discord channel](http://discord.wordbots.io) to discuss Wordbots. This is the place to go with any general questions or comments about Wordbots – we'd love to your your feedback!
+* Join us on [our Discord channel](http://discord.wordbots.io) to discuss Wordbots. This is the place to go with any general questions or comments about Wordbots – we'd love to hear your feedback!
 
 * Technical folks, follow the development of the game on [GitHub](http://git.wordbots.io).
 Feel free to add issues or even make a pull request if you're feeling brave.

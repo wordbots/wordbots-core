@@ -9,7 +9,7 @@ import { saveToLocalStorage } from '../util/browser';
 import { replaceCardsInPlayerState } from '../util/cards';
 import { id } from '../util/common';
 import { GameFormat } from '../util/formats';
-import { cleanUpAnimations, logAction, triggerSound } from '../util/game';
+import { checkVictoryConditions, cleanUpAnimations, logAction, opponent, triggerSound } from '../util/game';
 import { handleRewriteParseCompleted } from '../util/rewrite';
 
 import g from './handlers/game';
@@ -130,6 +130,24 @@ export function handleAction(
 
     case actions.IN_GAME_PARSE_COMPLETED:
       return handleRewriteParseCompleted(state, payload);
+
+    case actions.OFFER_DRAW: {
+      state = logAction(state, state.players[payload.player as w.PlayerColor], state.drawOffers.includes(opponent(payload.player)) ? 'accepted the draw offer' : 'offered a draw');
+      state = {
+        ...state,
+        drawOffers: uniq([...state.drawOffers, payload.player])
+      };
+      state = checkVictoryConditions(state);
+      return state;
+    }
+
+    case actions.RETRACT_DRAW_OFFER: {
+      state = logAction(state, state.players[payload.player as w.PlayerColor], `retracted the draw offer`);
+      return {
+        ...state,
+        drawOffers: without(state.drawOffers, payload.player)
+      };
+    }
 
     case socketActions.DISCONNECTED: {
       if (state.started && !state.winner) {

@@ -153,7 +153,7 @@ export const FIREBASE_CONFIG = (() => {
       return FIREBASE_PROD_CONFIG;
     } else {
       // Otherwise, default to staging DB unless otherwise specified
-      return FIREBASE_STAGING_CONFIG;
+      return process.env.FIREBASE_DB === 'production' ? FIREBASE_PROD_CONFIG : FIREBASE_STAGING_CONFIG;
     }
   }
 

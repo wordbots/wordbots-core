@@ -186,7 +186,7 @@ export interface TutorialStepInScript {
 
 export interface SavedGame { // Interface for games stored in Firebase.
   id: string
-  players: { [color: string]: m.ClientID | null }
+  players: { blue: UserId, orange: UserId }
   format: Format
   type: string // TODO more precise
   winner: GameWinner
@@ -266,6 +266,7 @@ export interface GameState {
   currentTurn: PlayerColor
   draft: DraftState | null
   disconnectedPlayers: PlayerColor[]
+  drawOffers: PlayerColor[]
   eventQueue: CardInGame[]
   executionStackDepth: number
   gameFormat: Format

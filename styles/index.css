@@ -251,7 +251,7 @@ a.topLink:hover {
   opacity: 0.7;
 }
 
-.forfeit-button:enabled:hover {
+.forfeit-button:enabled:hover, .draw-button:enabled:hover {
   background-color: #333 !important;
 }
 

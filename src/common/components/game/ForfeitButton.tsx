@@ -19,6 +19,19 @@ interface ForfeitButtonProps {
   onForfeit: (player: w.PlayerColor) => void
 }
 
+/** TODO really we should factor out SmallRightButton as a separate component instead? */
+export const smallRightButtonStyle = (compact?: boolean, width?: number): React.CSSProperties => ({
+  backgroundColor: 'black',
+  border: '1px solid white',
+  borderRadius: 5,
+  width: width || (compact ? 150 : 220),
+  height: compact ? 26 : 36,
+  marginTop: 5,
+  padding: compact ? 5 : 10,
+  color: '#FFF',
+  fontFamily: '"Carter One", "Carter One-fallback"'
+});
+
 export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
   public render(): JSX.Element {
     const { compact, gameOver, text, width } = this.props;
@@ -27,17 +40,7 @@ export default class ForfeitButton extends React.Component<ForfeitButtonProps> {
       <Button
         className="forfeit-button"
         variant="contained"
-        style={{
-          backgroundColor: 'black',
-          border: '1px solid white',
-          borderRadius: 5,
-          width: width || (compact ? 150 : 220),
-          height: compact ? 26 : 36,
-          marginTop: 5,
-          padding: compact ? 5 : 10,
-          color: '#FFF',
-          fontFamily: '"Carter One", "Carter One-fallback"'
-        }}
+        style={smallRightButtonStyle(compact, width)}
         onClick={this.handleClick}
         disabled={gameOver}
       >

@@ -211,8 +211,10 @@ export function checkVictoryConditions(state: w.GameState): w.GameState {
     state.winner = 'orange';
   } else if (!orangeKernelExists) {
     state.winner = 'blue';
+  } else if (state.drawOffers.includes('blue') && state.drawOffers.includes('orange')) {
+    state.winner = 'draw';
   } else if (isDrawByExhaustion(state)) {
-    state = logAction(state, null, 'Neither player is able to win in this position, so the game will end as a draw.');
+    state = logAction(state, null, 'Neither player is able to win in this position, so the game will end as a draw');
     state.winner = 'draw';
   }
 

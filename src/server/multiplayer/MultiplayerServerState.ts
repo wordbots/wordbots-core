@@ -317,11 +317,18 @@ export default class MultiplayerServerState {
   // Store the result of a game in Firebase.
   public storeGameResult = (game: m.Game): void => {
     const { id, ids, format, type, state: { winner } } = game;
+    console.log('storeGameResult');
+    console.log({
+      id,
+      players: mapValues(ids, (clientID) => this.getClientUserData(clientID).uid),
+      format,
+      type,
+      winner,
+      timestamp: Date.now()
+    });
     saveGame({
       id,
-      players: mapValues(ids, (clientID) =>
-        this.getClientUserData(clientID) ? (this.getClientUserData(clientID) as m.UserData).uid : null
-      ),
+      players: mapValues(ids, (clientID) => this.getClientUserData(clientID).uid),
       format,
       type,
       winner,

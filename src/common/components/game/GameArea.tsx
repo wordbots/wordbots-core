@@ -70,6 +70,7 @@ export interface GameProps {
   isSpectator: boolean
   isAttackHappening: boolean
   isWaitingForParse: boolean
+  drawOffers: w.PlayerColor[]
 
   actionLog: w.LoggedAction[]
   collection: w.CollectionState
@@ -92,6 +93,8 @@ export interface GameAreaHandlerProps {
   onAddCardToHand: (player: w.PlayerColor, card: w.Card) => void
   onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
   onSetVolume: (volume: number) => void
+  onOfferDraw: (player: w.PlayerColor) => void
+  onRetractDrawOffer: (player: w.PlayerColor) => void
 }
 
 type GameAreaProps = GameProps & GameAreaHandlerProps & RouteComponentProps & {

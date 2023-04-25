@@ -162,11 +162,14 @@ export async function setStatistic(uid: string, statisticName: string, value: nu
 }
 
 /** Increment the given statistic by 1 for the currently logged-in user (if any). */
-export async function incrementStatistic(statisticName: string): Promise<void> {
-  const user = lookupCurrentUser();
-  if (user) {
-    const statisticRef = fb.database().ref(`users/${user.uid}/statistics/${statisticName}`);
-    const currentVal = (await getStatistics(user.uid))[statisticName];
+export async function incrementStatistic(statisticName: string, userId?: string): Promise<void> {
+  if (!userId) {
+    userId = lookupCurrentUser()?.uid;
+  }
+
+  if (userId) {
+    const statisticRef = fb.database().ref(`users/${userId}/statistics/${statisticName}`);
+    const currentVal = (await getStatistics(userId))[statisticName];
     statisticRef.set((currentVal || 0) + 1);
   }
 }
@@ -174,7 +177,8 @@ export async function incrementStatistic(statisticName: string): Promise<void> {
 // GAME RESULTS
 
 export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {
-  incrementStatistic('gamesPlayed');
+  incrementStatistic('gamesPlayed', game.players.blue);
+  incrementStatistic('gamesPlayed', game.players.orange);
   return fb.database().ref('games').push(game);
 }
 

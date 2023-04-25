@@ -16,6 +16,7 @@ import PlayerArea from './PlayerArea';
 import TutorialIntroScreen from './TutorialIntroScreen';
 import VictoryScreen from './VictoryScreen';
 import ParsingIndicator from './ParsingIndicator';
+import OfferDrawButton from './OfferDrawButton';
 
 type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
   actualPlayer: w.PlayerColor | null
@@ -33,11 +34,11 @@ type GameAreaContentsProps = GameProps & GameAreaHandlerProps & {
 export default class GameAreaContents extends React.PureComponent<GameAreaContentsProps> {
   public render = (): JSX.Element => {
     const {
-      attack, bluePieces, currentTurn, disconnectedPlayers, draft, eventQueue, format, gameOptions, gameOver, isAttackHappening,
+      attack, bluePieces, currentTurn, disconnectedPlayers, draft, drawOffers, eventQueue, format, gameOptions, gameOver, isAttackHappening,
       isMyTurn, isMyTurnAndNoActionsLeft, isPaused, isPractice, isSandbox, isSpectator, isTutorial, isWaitingForParse, joinedInProgressGame,
       orangePieces, player, playingCardType, selectedTile, target, tutorialStep, usernames, winner, volume,
       onActivateObject, onClickEndGame, onForfeit, onNextTutorialStep,
-      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume,
+      onPassTurn, onPrevTutorialStep, onSelectTile, onTutorialStep, onDraftCards, onSetVolume, onOfferDraw, onRetractDrawOffer,
       actualPlayer, boardSize, boardMargin, compactControls, startAnimationComplete, onToggleFullscreen, history
     } = this.props;
 
@@ -115,6 +116,15 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
                 onNextTutorialStep={onNextTutorialStep}
                 onPrevTutorialStep={onPrevTutorialStep}
               />
+              {(actualPlayer && !isSpectator && !isTutorial && !isPractice && !isSandbox) && <OfferDrawButton
+                player={actualPlayer}
+                compact={compactControls}
+                history={history}
+                gameOver={gameOver}
+                drawOffers={drawOffers}
+                onOfferDraw={onOfferDraw}
+                onRetractDrawOffer={onRetractDrawOffer}
+              />}
               <ForfeitButton
                 text={isSandbox ? "Exit Sandbox" : (isSpectator ? "Stop Spectating" : "Forfeit")}
                 player={actualPlayer}

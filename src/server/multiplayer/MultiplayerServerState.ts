@@ -319,9 +319,7 @@ export default class MultiplayerServerState {
     const { id, ids, format, type, state: { winner } } = game;
     saveGame({
       id,
-      players: mapValues(ids, (clientID) =>
-        this.getClientUserData(clientID) ? (this.getClientUserData(clientID) as m.UserData).uid : null
-      ),
+      players: mapValues(ids, (clientID) => this.getClientUserData(clientID).uid),
       format,
       type,
       winner,

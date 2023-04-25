@@ -21,6 +21,8 @@ export const ADD_CARD_TO_HAND = 'ADD_CARD_TO_HAND';
 export const DRAFT_CARDS = 'DRAFT_CARDS';
 export const SET_VOLUME = 'SET_VOLUME';
 export const IN_GAME_PARSE_COMPLETED = 'IN_GAME_PARSE_COMPLETED';
+export const OFFER_DRAW = 'OFFER_DRAW';
+export const RETRACT_DRAW_OFFER = 'RETRACT_DRAW_OFFER';
 
 export function startPractice(format: w.BuiltInFormat, deck: w.CardInStore[]): w.Action {
   return {
@@ -163,5 +165,19 @@ export function inGameParseCompleted(payload: w.InGameParseBundle): w.Action {
   return {
     type: IN_GAME_PARSE_COMPLETED,
     payload
+  };
+}
+
+export function offerDraw(player: w.PlayerColor): w.Action {
+  return {
+    type: OFFER_DRAW,
+    payload: { player }
+  };
+}
+
+export function retractDrawOffer(player: w.PlayerColor): w.Action {
+  return {
+    type: RETRACT_DRAW_OFFER,
+    payload: { player }
   };
 }

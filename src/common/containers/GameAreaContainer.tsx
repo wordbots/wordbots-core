@@ -46,6 +46,8 @@ interface GameAreaDispatchProps {
   onAddCardToHand: (player: w.PlayerColor, card: w.Card) => void
   onDraftCards: (player: w.PlayerColor, cards: w.CardInGame[]) => void
   onSetVolume: (volume: number) => void
+  onOfferDraw: (player: w.PlayerColor) => void
+  onRetractDrawOffer: (player: w.PlayerColor) => void
 }
 
 export type GameAreaContainerProps = GameAreaStateProps & GameAreaDispatchProps & RouteComponentProps;
@@ -114,6 +116,7 @@ export function mapStateToProps(state: w.State): GameAreaStateProps {
     isSpectator: game.player === 'neither',
     isAttackHappening: !!game.attack?.from && !!game.attack?.to,
     isWaitingForParse: game.numParsesInFlight > 0,
+    drawOffers: game.drawOffers,
 
     actionLog: game.actionLog,
     collection: state.collection,
@@ -206,6 +209,12 @@ export function mapDispatchToProps(dispatch: w.MultiDispatch): GameAreaDispatchP
     },
     onSetVolume: (volume: number) => {
       dispatch(gameActions.setVolume(volume));
+    },
+    onOfferDraw: (player: w.PlayerColor) => {
+      dispatch(gameActions.offerDraw(player));
+    },
+    onRetractDrawOffer: (player: w.PlayerColor) => {
+      dispatch(gameActions.retractDrawOffer(player));
     }
   };
 }

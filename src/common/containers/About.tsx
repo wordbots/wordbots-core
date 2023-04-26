@@ -9,9 +9,14 @@ import Background from '../components/Background';
 import MarkdownBlock from '../components/MarkdownBlock';
 import Title from '../components/Title';
 import * as w from '../types';
+import { lookupParserVersion } from '../util/cards';
 
 interface AboutProps {
   version: string
+}
+
+interface AboutState {
+  parserVersion: string
 }
 
 export function mapStateToProps(state: w.State): AboutProps {
@@ -20,30 +25,30 @@ export function mapStateToProps(state: w.State): AboutProps {
   };
 }
 
-class About extends React.PureComponent<AboutProps> {
+class About extends React.PureComponent<AboutProps, AboutState> {
+  public state = {
+    parserVersion: '(loading)'
+  };
+
+  public componentWillMount() {
+    void this.lookupParserVersion();
+  }
+
   public render(): JSX.Element {
     const [version, sha] = this.props.version.split('+');
+    const { parserVersion } = this.state;
     const shaTruncated = truncate(sha, { length: 8, omission: '' });
 
     return (
       <div className="helpPage">
-        <Helmet title="About" />
+        <Helmet title="About / FAQ" />
         <Background asset="compressed/image1-1.jpg" opacity={1} style={{ backgroundSize: 'contain' }} />
 
-        <Title text="About" />
+        <Title text="About / FAQ" />
 
         <div style={{ display: 'flex', justifyContent: 'stretch', margin: '20px auto', width: '84%' }}>
           <div style={{ width: '50%', marginRight: 20 }}>
             <Paper style={{ padding: '5px 20px' }}>
-              <h2>Wordbots v<a href="https://github.com/wordbots/wordbots-core/releases/tag/v${version}">{version}</a>+{shaTruncated}</h2>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <div>
-                  <img src="/static/splash-workshop.png" style={{ maxWidth: '100%' }} />
-                </div>
-                <div>
-                  <img src="/static/splash-play.png" style={{ maxWidth: '100%' }} />
-                </div>
-              </div>
               <MarkdownBlock source={whatIsWordbots} />
             </Paper>
 
@@ -54,6 +59,10 @@ class About extends React.PureComponent<AboutProps> {
             <Paper style={{ padding: '5px 20px', marginTop: 20 }}>
               <MarkdownBlock source={howItWorks} />
             </Paper>
+
+            <Paper style={{ padding: '5px 20px', marginTop: 20 }}>
+              <MarkdownBlock source={getInvolved} />
+            </Paper>
           </div>
 
           <div style={{ width: '50%' }}>
@@ -62,7 +71,11 @@ class About extends React.PureComponent<AboutProps> {
             </Paper>
 
             <Paper style={{ padding: '5px 20px', marginTop: 20 }}>
-              <MarkdownBlock source={getInvolved} />
+              <pre>
+                Game version: v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a><br />
+                Build SHA: {shaTruncated === 'local' ? '(local)' : <a href={`https://github.com/wordbots/wordbots-core/commit/${sha}`}>{shaTruncated}</a>}<br />
+                Parser version: {parserVersion.startsWith('(') ? parserVersion : <a href={`https://github.com/wordbots/wordbots-parser/releases/tag/v${parserVersion}`}>{parserVersion}</a>}
+              </pre>
             </Paper>
           </div>
         </div>
@@ -82,15 +95,29 @@ class About extends React.PureComponent<AboutProps> {
       </div>
     );
   }
+
+  private async lookupParserVersion(): Promise<void> {
+    try {
+      this.setState({
+        parserVersion: await lookupParserVersion()
+      });
+    } catch (error) {
+      this.setState({
+        parserVersion: '(failed to connect to parser)'
+      });
+    }
+  }
 }
 
 export default withRouter(connect(mapStateToProps)(About));
 
 const whatIsWordbots = `
-**Wordbots** is a customizable hex-based card game with a twist – _you_, the player,
-get to create the cards!
+## What is Wordbots?
 
-The basic gameplay of Wordbots is that of a positional card game (think Hearthstone, Faeria, or Duelyst).
+**_Wordbots_ is a card game with a twist – _you_, the player,
+get to create the cards!**
+
+The basic gameplay of Wordbots is that of a positional card game _(think Hearthstone, Faeria, or Duelyst)_.
 The fact that players make their own cards makes Wordbots games rather wild and unpredictable, and also
 introduces behaviors that are not possible in other games, such as cards being able to _rewrite_ other cards mid-game.
 
@@ -102,14 +129,14 @@ I guess making a multiplayer game is kind of complicated!
 const statusReport = `
 ## What's the status of Wordbots? Is it "done"? Will it ever be?
 
-Wordbots is currently in **late alpha / early beta** (but it will probably forever retain the "beta" designation).
+Wordbots is in **early beta** (but it will probably forever retain the "beta" designation).
 
 It's more or less "feature-complete", in the sense that:
 * the parser works decently well at what it does; and
 * there are a variety of fully-fledged gameplay formats, some more balanced than others
 
-Is it a "game"? It's certainly playable! Of course, it's not going to be the next Hearthstone (how could it, given its premise?).
-The goal is perhaps for it to land somewhere in the middle between "cool tech demo" and "successful multiplayer game".
+Is it a "game"? It's certainly playable! Of course, it's not going to be the next Hearthstone.
+Our goal is to get somewhere in the middle between "cool tech demo" and "successful multiplayer game".
 
 You can check out [Wordbots's version history on GitHub](https://github.com/wordbots/wordbots-core/releases).
 `;
@@ -120,7 +147,7 @@ const howItWorks = `
 [Glad you asked! There's a whole separate page explaining the magic.](/how-it-works)
 `;
 const getInvolved = `
-## Get involved!
+## How cool! Any way I can get involved?
 
 * Join us on [our Discord channel](http://discord.wordbots.io) to discuss Wordbots. This is the place to go with any general questions or comments about Wordbots – we'd love to hear your feedback!
 

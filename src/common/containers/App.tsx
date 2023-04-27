@@ -21,6 +21,7 @@ import theme from '../themes/theme';
 import * as w from '../types';
 import { isSupportedBrowser, logAnalytics, toggleFlag } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
+import loadImages from '../components/hexgrid/HexGridImages';
 
 import About from './About';
 import Admin from './Admin';
@@ -100,6 +101,7 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     logAnalytics();
+    this.preloadGameImagesAndSounds();
   }
 
   public componentDidMount(): void {
@@ -260,6 +262,26 @@ class App extends React.Component<AppProps, AppState> {
   private handleHideUnsupportedBrowserMessage = () => {
     this.setState({ isUnsupportedBrowser: false });
     toggleFlag('hideUnsupportedBrowserMessage');
+  }
+
+  private preloadGameImagesAndSounds = (): void => {
+    const imagePaths: string[] = [...Object.values(loadImages()), '/static/black_bg_lodyas.png'];
+    const sfxPaths: string[] = [
+      'static/sound/attack.wav',
+      'static/sound/damage.wav',
+      'static/sound/event.wav',
+      'static/sound/lose.wav',
+      'static/sound/spawn.wav',
+      'static/sound/yourmove.wav',
+      'static/sound/countdown.wav',
+      'static/sound/destroyed.wav',
+      'static/sound/game-over.wav',
+      'static/sound/move.wav',
+      'static/sound/win.wav',
+    ];
+    [...imagePaths, ...sfxPaths].forEach((path) => {
+      fetch(path);
+    });
   }
 }
 

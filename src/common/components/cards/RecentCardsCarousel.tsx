@@ -94,7 +94,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
               slidesToScroll={1}
               responsive={[
                 ...this.carouselBreakpoints,
-                {breakpoint: 100000, settings: {slidesToShow: RecentCardsCarousel.MAX_CARDS_TO_SHOW}}
+                { breakpoint: 100000, settings: { slidesToShow: RecentCardsCarousel.MAX_CARDS_TO_SHOW } }
               ]}
             >
               {
@@ -106,7 +106,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
                       justifyContent: 'center'
                     }}
                   >
-                    {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); }})}
+                    {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); } })}
                     <CardProvenanceDescription
                       card={card}
                       style={{
@@ -139,7 +139,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private initializeCarousel = async (userId?: string) => {
-    const recentCards = await mostRecentCards(userId || null, 15);
+    const recentCards = (await mostRecentCards(userId || null, 15)).filter((c) => !!c.text); // filter out cards without text (uninteresting)
 
     this.setState({
       recentCards: duplicateCardsUntilCarouselFull(recentCards)

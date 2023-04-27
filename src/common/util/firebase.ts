@@ -230,15 +230,13 @@ export async function mostRecentCards(uid: w.UserId | null, limit = 9999): Promi
   return flow(
     _.uniqBy((c: w.CardInStore) => c.name),
     _.filter((c: w.CardInStore) =>  // Filter out all of the following from carousels:
-      !!c.text  // cards without text (uninteresting)
-      && !!c.metadata.updated  // cards without timestamp (can't order them)
-      && c.metadata.source.type === 'user'  // built-in cards
+      c.metadata.source.type === 'user'  // built-in cards
       && !c.metadata.isPrivate  // private cards
       && !c.metadata.duplicatedFromCard  // duplicated cards
       && !c.metadata.importedFromJson  // cards imported from JSON
       && (c.metadata.source.uid === c.metadata.ownerId)  // cards imported from other players' collections
     ),
-    _.orderBy((c: w.CardInStore) => c.metadata.updated, ['desc']),
+    _.orderBy((c: w.CardInStore) => (c.metadata.updated || 0), ['desc']),
     _.slice(0, limit)
   )(cards) as w.CardInStore[];
 }

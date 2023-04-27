@@ -31,9 +31,11 @@ class RecentGames extends React.PureComponent<RecentGamesProps & WithStyles> {
           (
             (games.length > 0 && playerNames) ?
               <List>
-                {games.map((game, i) =>
-                  <RecentGame key={i} game={game} userId={userId} playerNames={playerNames} classes={classes} />
-                )}
+                {games
+                  .filter((game) => game.timestamp)
+                  .map((game, i) =>
+                    <RecentGame key={i} game={game} userId={userId} playerNames={playerNames} classes={classes} />
+                  )}
               </List> :
               <div className={classes.noGames}>NO GAMES PLAYED<br />(YET)</div>
           )

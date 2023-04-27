@@ -4,6 +4,7 @@ import * as ReactGA from 'react-ga';
 import * as ReactDOM from 'react-dom';
 import { ReactNode, ReactPortal } from 'react';
 import * as qs from 'qs';
+import { isUndefined } from 'lodash';
 
 declare const window: {
   location: { protocol: string, pathname: string, host: string, hostname: string }
@@ -106,7 +107,7 @@ export function toggleFlag(flag: string, value?: boolean): void {
 }
 
 export function setFlagIfUnset(flag: string, value: boolean): void {
-  if (!isFlagSet(flag)) {
+  if (isUndefined(loadFromLocalStorage(flag))) {
     toggleFlag(flag, value);
   }
 }

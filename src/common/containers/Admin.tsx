@@ -195,9 +195,9 @@ class Admin extends React.PureComponent<AdminProps> {
   }
 
   private async lookupParserVersion(): Promise<void> {
-    const parserResponse = await fetch(`${PARSER_URL}/parse?format=js&input=Draw%20a%20card`);
-    const parserResponseJson = await parserResponse.json();
-    this.setState({ parserVersion: parserResponseJson.version });
+    this.setState({
+      parserVersion: await this.lookupParserVersion()
+    });
   }
 
   private async previewMigration(cards: w.CardInStore[], setId: w.SetId | null): Promise<void> {

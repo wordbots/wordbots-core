@@ -614,6 +614,23 @@ describe('Game reducer', () => {
       state = attack(state, '-3,1,2', '-3,0,3');
       expect(handSize()).toEqual(currentHandSize);
     });
+
+    it('should appropriately destroy objects who reach ≤0 health due to a passive ability unapplying', () => {
+      let state = setUpBoardState({
+        orange: {
+          '0,0,0': cards.pacifistCard,  //  2/3/1
+          '1,0,-1': cards.fortificationCard  // "Adjacent robots have +1 health"
+        }
+      });
+
+      // Deal 3 damage to Pacifist – it should still be on the board, because Fortification is keeping it at 1 health
+      state = playEvent(state, 'blue', cards.shockCard, { hex: '0,0,0' });
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).toHaveProperty('0,0,0');
+
+      // Destroy Fortification – Pacifist is now at 0 health and should be destroyed
+      state = playEvent(state, 'blue', cards.smashCard, { hex: '1,0,-1' });
+      expect(objectsOnBoardOfType(state, TYPE_ROBOT)).not.toHaveProperty('0,0,0');
+    });
   });
 
   describe('[Activated abilities]', () => {

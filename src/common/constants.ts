@@ -231,6 +231,10 @@ function objToRegexes(obj: Record<string, string>): Record<string, RegExp> {
 export const KEYWORD_REGEXES = objToRegexes(KEYWORDS);
 export const HINT_REGEXES = objToRegexes(HINTS);
 
+// Other services.
+
+export const DISCORD_PARSE_ISSUES_WEBHOOK_URL = 'https://discord.com/api/webhooks/1101686217772388392/bjgj-GHNUKxc697p7VngcH1c1I_KdxNcEd4yVq8E8D1obcPRgKTu6sx24nPNeyM7ybgE';
+
 // Player colors.
 
 export const ORANGE_PLAYER_COLOR = '#ffb85d';

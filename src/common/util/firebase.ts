@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, flatMap, fromPairs, identity, mapValues, uniq } from 'lodash';
+import { capitalize, concat, countBy, flatMap, fromPairs, mapValues, uniq } from 'lodash';
 import * as _ from 'lodash/fp';
 import { flow } from 'lodash/fp';
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
@@ -288,21 +288,28 @@ async function getAllDecks_SLOW(): Promise<w.DeckInStore[]> {
   return Object.values(snapshot.val() || {});
 }
 
-/** Yield the N cards that are in the most decks. */
+/** Yield the N cards that are in the most decks and sets. */
 export async function getMostUsedCards(n: number): Promise<w.CardInStore[]> {
   const decks: w.DeckInStore[] = await getAllDecks_SLOW();
+  const sets: w.Set[] = await getSets();
+
+  const cardIdCount: Record<w.CardId, number> = countBy(
+    [
+      ...decks.flatMap((d: w.DeckInStore) => uniq(d.cardIds)),
+      ...sets.flatMap((s: w.Set) => s.cards.map(c => c.id))
+    ].filter((id) => !id.startsWith('builtin/'))
+  );
   const mostPopularCardIds: string[] = flow(
-    _.flatMap((d: w.DeckInStore) => uniq(d.cardIds)),
-    _.filter((id) => !id.startsWith('builtin/')),
-    _.countBy(identity),
     _.toPairs,
     _.orderBy(([_id, count]) => count, 'desc'),
     _.fromPairs,
     _.keys,
-    _.slice(0, n),
-  )(decks);
+    _.slice(0, Math.floor(n * 1.5)),  // go a little higher than N because some cards may be filtered out below
+  )(cardIdCount);
 
-  return await Promise.all(mostPopularCardIds.map(getCardById));
+  // Lookup cards, filtering out ones that are so old that their metadata isn't complete (i.e. no timestamps)
+  const cards = await Promise.all(mostPopularCardIds.map(getCardById));
+  return cards.filter((c) => c.metadata.updated).slice(0, n);
 }
 
 /** Save the given deck under `/decks`. */

@@ -1,5 +1,5 @@
 import { Icon, MenuItem, Paper, Select, Snackbar } from '@material-ui/core';
-import { find } from 'lodash';
+import { find, pick } from 'lodash';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -8,7 +8,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { BigramProbs } from 'word-ngrams';
 
 import * as w from '../types';
-import { TYPE_EVENT } from '../constants';
+import { TYPE_EVENT, DISCORD_PARSE_ISSUES_WEBHOOK_URL } from '../constants';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
@@ -436,6 +436,17 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   private handleClickReportParseIssue = () => {
     if (this.validationResults.textError) {
       saveReportedParseIssue(this.props.text);
+
+      fetch(DISCORD_PARSE_ISSUES_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: `### Parse issue reported!\n**Text:** ${this.props.text}\n**User:** \`${JSON.stringify(pick(lookupCurrentUser() || {}, ['uid', 'displayName', 'email']))}\``,
+        }),
+      });
+
       this.setState({
         submittedParseIssue: this.props.text,
         submittedParseIssueConfirmationOpen: true

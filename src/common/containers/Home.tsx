@@ -34,10 +34,10 @@ class Home extends React.Component<HomeProps> {
 
     return (
       <div>
-        <Helmet title="Home"/>
+        <Helmet title="Home" />
         <Background asset="compressed/arena_draft.jpg" opacity={0.1} style={{ top: HEADER_HEIGHT, backgroundPositionY: '20%' }} />
 
-        <div style={{margin: '24px 72px 36px'}}>
+        <div style={{ margin: '24px 72px 36px' }}>
           <div
             style={{
               margin: '20px auto',
@@ -108,10 +108,10 @@ class Home extends React.Component<HomeProps> {
 
           {
             !isFlagSet('skipNewHere') &&
-              <div className="new-here-robot" onClick={this.handleClickNewHere}>
-                <div className="speech-bubble" style={{ fontFamily: '"Carter One", "Carter One-fallback"', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
-                <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
-              </div>
+            <div className="new-here-robot" onClick={this.handleClickNewHere}>
+              <div className="speech-bubble" style={{ fontFamily: '"Carter One", "Carter One-fallback"', fontSize: 20, color: '#f44336', WebkitTextStroke: '0.5px black' }}>New here?</div>
+              <img src={require('../components/img/one_bot.png')} alt="New here?" style={{ transform: 'rotate(-45deg)' }} />
+            </div>
           }
 
           <div
@@ -126,7 +126,7 @@ class Home extends React.Component<HomeProps> {
               fontSize: '0.7em',
             }}
           >
-            v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a>+{shaTruncated}
+            <a href="/about">v{version}+{shaTruncated}</a>
             {onLocalhost() && <span> [ <em>parser:</em> {PARSER_URL}, <em>db:</em> {FIREBASE_CONFIG.databaseURL} ]</span>}
           </div>
         </div>

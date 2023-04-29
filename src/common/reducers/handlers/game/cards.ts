@@ -272,6 +272,7 @@ function playEvent(state: State, cardIdx: number): State {
         condition: (t: w.Trigger) => matchesType(card, t.cardType!)
       });
       tempState = applyAbilities(tempState);
+      tempState = deleteAllDyingObjects(tempState);
       tempState = checkVictoryConditions(tempState);
 
       player.status.message = '';

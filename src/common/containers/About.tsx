@@ -74,7 +74,7 @@ class About extends React.PureComponent<AboutProps, AboutState> {
               <pre>
                 Game version: v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a><br />
                 Build SHA: {shaTruncated === 'local' ? '(local)' : <a href={`https://github.com/wordbots/wordbots-core/commit/${sha}`}>{shaTruncated}</a>}<br />
-                Parser version: {parserVersion.startsWith('(') ? parserVersion : <a href={`https://github.com/wordbots/wordbots-parser/releases/tag/v${parserVersion}`}>{parserVersion}</a>}
+                Parser version: {parserVersion.startsWith('(') ? parserVersion : <a href={`https://github.com/wordbots/wordbots-parser/releases/tag/${parserVersion}`}>{parserVersion}</a>}
               </pre>
             </Paper>
           </div>

@@ -20,7 +20,7 @@ describe('[vocabulary.conditions]', () => {
       state = attack(state, '0,0,0', '0,-1,1', true);
       state = newTurn(state, 'blue');
       state = playEvent(state, 'blue', action('Deal 1 damage to each robot that attacked last turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('attackedlastturn')]), 1); })"));
-       // The robot at 0,0,0 should be destroyed now.
+      // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
 
@@ -28,7 +28,7 @@ describe('[vocabulary.conditions]', () => {
       let state = setUpBoardState(initialStateSetup);
       state = attack(state, '0,0,0', '0,-1,1', true);
       state = playEvent(state, 'orange', action('Deal 1 damage to each robot that attacked this turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('attackedthisturn')]), 1); })"));
-       // The robot at 0,0,0 should be destroyed now.
+      // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
 
@@ -48,7 +48,7 @@ describe('[vocabulary.conditions]', () => {
       state = moveRobot(state, '0,0,0', '0,1,-1', true);
       state = newTurn(state, 'blue');
       state = playEvent(state, 'blue', action('Deal 2 damage to each robot that attacked last turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('movedlastturn')]), 2); })"));
-       // The robot at 0,0,0 should be destroyed now.
+      // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
 
@@ -56,7 +56,7 @@ describe('[vocabulary.conditions]', () => {
       let state = setUpBoardState(initialStateSetup);
       state = moveRobot(state, '0,0,0', '0,1,-1', true);
       state = playEvent(state, 'orange', action('Deal 2 damage to each robot that attacked this turn', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('movedthisturn')]), 2); })"));
-       // The robot at 0,0,0 should be destroyed now.
+      // The robot at 0,0,0 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2', '0,-1,1'].sort());
     });
 
@@ -65,7 +65,7 @@ describe('[vocabulary.conditions]', () => {
       state = attack(state, '0,0,0', '0,-1,1', true);
       state = newTurn(state, 'blue');
       state = playEvent(state, 'blue', action('Deal 1 damage to each damaged robot', "(function () { actions['dealDamage'](objectsMatchingConditions('robot', [conditions['hasProperty']('isdamaged')]), 1); })"));
-       // The robots at 0,0,0 and 0,-1,1 should be destroyed now.
+      // The robots at 0,0,0 and 0,-1,1 should be destroyed now.
       expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).sort()).toEqual(['0,-2,2'].sort());
     });
   });
@@ -76,6 +76,12 @@ describe('[vocabulary.conditions]', () => {
     state = playObject(state, 'orange', cards.blueBotCard, '2,1,-3');  // 1 speed
     state = playEvent(state, 'orange', cards.earthquakeCard);  // "Destroy all robots that have less than 2 speed."
     expect(Object.values(objectsOnBoardOfType(state, TYPE_ROBOT))).toEqual(['One Bot']);
+  });
+
+  it('conditions.not', () => {
+    let state = getDefaultState();
+    state = playEvent(state, 'orange', action('Spawn a 1/1/1 robot named "Zombie" on every empty tile not adjacent to your kernel', "(function () { actions['spawnObject'](targets['generateCard']('robot', {'attack': 1, 'health': 1, 'speed': 1}, 'Zombie'), tilesMatchingConditions([conditions['not'](conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))), conditions['unoccupied']()]), targets['self']()); })"));
+    expect(Object.keys(objectsOnBoardOfType(state, TYPE_ROBOT)).length).toEqual(35 - 3);  // 35 open spaces - 3 next to a kernel
   });
 
   it('globalConditions.collectionCountComparison', () => {

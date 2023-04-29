@@ -59,6 +59,8 @@ export function objectConditions(state: w.GameState): Record<string, w.Returns<O
 
     hasProperty: (property: string): ObjectCondition => ((_hexId, obj) => objectHasProperty(obj, property)),
 
+    not: (cond: ObjectCondition): ObjectCondition => ((hexId, obj) => !cond(hexId, obj)),
+
     unoccupied: (): ObjectCondition => ((_hexId, obj) => !obj),
 
     withinDistanceOf: (distance: number, targets: w.ObjectCollection | w.HexCollection): ObjectCondition => {

@@ -19,7 +19,7 @@ import LoginDialog from '../components/users/LoginDialog';
 import { SIDEBAR_COLLAPSED_WIDTH, UNSUPPORTED_BROWSER_MESSAGE_HEIGHT } from '../constants';
 import theme from '../themes/theme';
 import * as w from '../types';
-import { isSupportedBrowser, logAnalytics, toggleFlag } from '../util/browser';
+import { inBrowser, isSupportedBrowser, logAnalytics, toggleFlag } from '../util/browser';
 import { getCards, getDecks, getSets, onLogin, onLogout } from '../util/firebase';
 import loadImages from '../components/hexgrid/HexGridImages';
 
@@ -265,23 +265,25 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   private preloadGameImagesAndSounds = (): void => {
-    const imagePaths: string[] = [...Object.values(loadImages()), '/static/black_bg_lodyas.png'];
-    const sfxPaths: string[] = [
-      'static/sound/attack.wav',
-      'static/sound/damage.wav',
-      'static/sound/event.wav',
-      'static/sound/lose.wav',
-      'static/sound/spawn.wav',
-      'static/sound/yourmove.wav',
-      'static/sound/countdown.wav',
-      'static/sound/destroyed.wav',
-      'static/sound/game-over.wav',
-      'static/sound/move.wav',
-      'static/sound/win.wav',
-    ];
-    [...imagePaths, ...sfxPaths].forEach((path) => {
-      fetch(path);
-    });
+    if (inBrowser()) {
+      const imagePaths: string[] = [...Object.values(loadImages()), '/static/black_bg_lodyas.png'];
+      const sfxPaths: string[] = [
+        'static/sound/attack.wav',
+        'static/sound/damage.wav',
+        'static/sound/event.wav',
+        'static/sound/lose.wav',
+        'static/sound/spawn.wav',
+        'static/sound/yourmove.wav',
+        'static/sound/countdown.wav',
+        'static/sound/destroyed.wav',
+        'static/sound/game-over.wav',
+        'static/sound/move.wav',
+        'static/sound/win.wav',
+      ];
+      [...imagePaths, ...sfxPaths].forEach((path) => {
+        fetch(path);
+      });
+    }
   }
 }
 

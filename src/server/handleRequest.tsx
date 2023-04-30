@@ -59,7 +59,7 @@ function renderFullPage(html: string, head: HelmetData): string {
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Wordbots" />
         <meta property="og:description" content="Wordbots is a customizable hex-based card game with a twist – you, the player, get to create the cards!" />
-        <meta property="og:image" content="/static/static/artAssets/dome2.png" />
+        <meta property="og:image" content="/static/artAssets/dome2.png" />
 
         <link rel="icon" href="/static/favicon.ico" />
         <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-icon-57x57.png" />

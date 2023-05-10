@@ -37,7 +37,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   public static MAX_CARDS_TO_SHOW = 8;
 
   public state: RecentCardsCarouselState = {
-    recentCards: this.props.cardsToShow ? duplicateCardsUntilCarouselFull(this.props.cardsToShow) : [],
+    recentCards: [],
     paused: false
   };
 
@@ -47,7 +47,6 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
       this.initializeCarousel(props.userId);
     }
   }
-
 
   get carouselBreakpoints(): ResponsiveObject[] {
     const BASE_WIDTH_BREAKPOINT = 950;
@@ -73,9 +72,12 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private renderInner(): JSX.Element | null {
+    const { cardsToShow } = this.props;
     const { recentCards, paused, width } = this.state;
 
-    if (recentCards.length > 0) {
+    const cards = cardsToShow || recentCards;
+
+    if (cards.length > 0) {
       return (
         <div>
           <div
@@ -99,7 +101,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
               ]}
             >
               {
-                recentCards.map((card, idx) =>
+                duplicateCardsUntilCarouselFull(cards).map((card, idx) =>
                   <div
                     key={idx}
                     style={{
@@ -142,10 +144,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   private initializeCarousel = async (userId?: string) => {
     const { numCards } = this.props;
     const recentCards = (await mostRecentCards(userId || null, numCards || 15)).filter((c) => !!c.text); // filter out cards without text (uninteresting)
-
-    this.setState({
-      recentCards: duplicateCardsUntilCarouselFull(recentCards)
-    });
+    this.setState({ recentCards });
   }
 
   private handleClickCard = (card: w.CardInStore) => {

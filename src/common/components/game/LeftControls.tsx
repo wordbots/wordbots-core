@@ -43,7 +43,7 @@ export default class LeftControls extends React.PureComponent<LeftControlsProps>
         }}
       >
         <Timer
-          minutes={draft ? 5 : 1}
+          minutes={draft ? 8 : 1}
           seconds={draft ? 0 : 30}
           player={player}
           currentTurn={currentTurn}

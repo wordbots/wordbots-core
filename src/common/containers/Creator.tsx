@@ -443,7 +443,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          content: `### Parse issue reported!\n**Text:** ${this.props.text}\n**User:** \`${JSON.stringify(pick(lookupCurrentUser() || {}, ['uid', 'displayName', 'email']))}\``,
+          content: `Parse issue reported!\n**Text:** ${this.props.text}\n**User:** \`${JSON.stringify(pick(lookupCurrentUser() || {}, ['uid', 'displayName', 'email']))}\``,
         }),
       });
 

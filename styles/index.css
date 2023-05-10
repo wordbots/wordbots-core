@@ -44,6 +44,10 @@ a.underline:hover {
   text-decoration: none !important;
 }
 
+a:hover img {
+  opacity: 1 !important;
+}
+
 thead {
   background-color: #f44336 !important;
 }

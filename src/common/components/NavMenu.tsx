@@ -47,7 +47,15 @@ class NavMenu extends React.PureComponent<NavMenuProps & RouteComponentProps> {
         <NavMenuLink location={location} path="/sets" text="Sets" icon={<LayersIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/community" text="Community" icon={<PeopleIcon style={iconStyle} />} />
         <NavMenuLink location={location} path="/help" text="Help" icon={<HelpOutlineIcon style={iconStyle} />} />
-        <NavMenuLink location={location} path="/about" text= "About" icon={<InfoOutlineIcon style={iconStyle} />} />
+        <NavMenuLink location={location} path="/about" text="About" icon={<InfoOutlineIcon style={iconStyle} />} />
+        <div style={{ width: 18, padding: 20, marginTop: 10 }}>
+          <a href="http://discord.wordbots.io" target="_blank" rel="noopener noreferrer">
+            <img style={{ width: '100%', opacity: 0.6 }} src="/static/discord-mark-black.svg" />
+          </a>
+          <a href="https://github.com/wordbots" target="_blank" rel="noopener noreferrer">
+            <img style={{ width: '100%', opacity: 0.8, marginTop: 15 }} src="/static/github-mark.svg" />
+          </a>
+        </div>
       </div>
     );
   }

@@ -81,7 +81,8 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
         userName: undefined,
         games: undefined,
         playerNames: undefined,
-        playerInfo: undefined
+        playerInfo: undefined,
+        cards: undefined
       }), this.loadProfileData);
     }
   }
@@ -184,9 +185,8 @@ class Profile extends React.Component<ProfileProps, ProfileState> {
       this.loadGamesData(games);
       this.loadPlayerInfoData(userId, games);
 
-      this.setState({
-        cards: await mostRecentCards(userId)
-      });
+      const cards = await mostRecentCards(userId);
+      this.setState({ cards });
     } catch (error) {
       // Most likely reason is that userId is undefined or that user doesn't exist.
       console.error(error); // eslint-disable-line  no-console

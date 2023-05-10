@@ -103,7 +103,7 @@ class Home extends React.Component<HomeProps> {
             >
               Most recently created cards
             </div>
-            <RecentCardsCarousel history={history} />
+            <RecentCardsCarousel numCards={30} history={history} />
           </div>
 
           {

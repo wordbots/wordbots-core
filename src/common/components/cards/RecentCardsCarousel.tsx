@@ -14,6 +14,7 @@ import CardProvenanceDescription from './CardProvenanceDescription';
 interface RecentCardsCarouselProps {
   history: History
   userId?: string
+  numCards?: number  // defaults to 15
   cardsToShow?: w.CardInStore[]  // if set, override the carousel's lookup behavior
 }
 
@@ -139,7 +140,8 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
   }
 
   private initializeCarousel = async (userId?: string) => {
-    const recentCards = (await mostRecentCards(userId || null, 15)).filter((c) => !!c.text); // filter out cards without text (uninteresting)
+    const { numCards } = this.props;
+    const recentCards = (await mostRecentCards(userId || null, numCards || 15)).filter((c) => !!c.text); // filter out cards without text (uninteresting)
 
     this.setState({
       recentCards: duplicateCardsUntilCarouselFull(recentCards)

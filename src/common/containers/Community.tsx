@@ -95,7 +95,7 @@ class Community extends React.Component<RouteComponentProps, CommunityState> {
     const users: w.User[] = flow(
       filter((u: w.User) => !!u.info && !!u.statistics && u.statistics['cardsCreated'] > 0),
       orderBy((u: w.User) => sum(Object.values(u.statistics!)), 'desc'),
-      slice(0, 10)
+      slice(0, 20)
     )(allUsers);
 
     // Look up the 15 cards that are in the most decks and sets

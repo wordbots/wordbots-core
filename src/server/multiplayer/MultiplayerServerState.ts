@@ -1,4 +1,4 @@
-import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, mapValues, pick, pull, reject, remove, without } from 'lodash';
+import { chunk, compact, find, flatMap, fromPairs, groupBy, isNil, isString, mapValues, pick, pull, reject, remove, without } from 'lodash';
 import * as WebSocket from 'ws';
 
 import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
@@ -317,10 +317,16 @@ export default class MultiplayerServerState {
   // Store the result of a game in Firebase.
   public storeGameResult = (game: m.Game): void => {
     const { id, ids, format, type, state: { winner } } = game;
-    saveGame({
+    void saveGame({
       id,
       players: mapValues(ids, (clientID) => this.getClientUserData(clientID).uid),
-      format,
+      format: (
+        isString(format)
+          ? format
+          : format._type === 'everythingDraft'
+            ? { _type: 'everythingDraft' }
+            : { _type: format._type, set: pick(format.set, ['id', 'name', 'description', 'metadata']) }
+      ),
       type,
       winner,
       timestamp: Date.now()

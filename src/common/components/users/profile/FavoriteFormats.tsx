@@ -27,10 +27,10 @@ class FavoriteFormats extends React.PureComponent<FavoriteFormatsProps & WithSty
     const { games, userId } = this.props;
 
     return flow(
-      groupBy((g: w.SavedGame) => GameFormat.decode(g.format).name),
+      groupBy((g: w.SavedGame) => GameFormat.decodeCompact(g.format).name),
       Object.values,
       map((gamesInFormat: w.SavedGame[]) => ({
-        format: GameFormat.decode(gamesInFormat[0].format),
+        format: GameFormat.decodeCompact(gamesInFormat[0].format),
         numGames: gamesInFormat.length,
         numWins: gamesInFormat.filter((g) => g.winner && ['blue', 'orange'].includes(g.winner) && g.players[g.winner as 'blue' | 'orange'] === userId).length,
         numLosses: gamesInFormat.filter((g) => g.winner && ['blue', 'orange'].includes(g.winner) && g.players[g.winner as 'blue' | 'orange'] !== userId).length

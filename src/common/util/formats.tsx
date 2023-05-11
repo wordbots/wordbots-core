@@ -81,6 +81,25 @@ export class GameFormat {
     return format;
   }
 
+  /** Like decode(), but decoding a compact format from Firebase that is only useful for rendering the format name and basic details. */
+  public static decodeCompact(encodedFormat: w.CompactFormat): GameFormat {
+    let format: GameFormat | undefined;
+    if (isString(encodedFormat)) {
+      format = SINGLETON_FORMATS.find((m) => m.name === encodedFormat);
+    } else if (encodedFormat && encodedFormat._type === 'set') {
+      format = new SetFormat({ ...(encodedFormat).set, cards: [] });
+    } else if (encodedFormat && encodedFormat._type === 'setDraft') {
+      format = new SetDraftFormat({ ...(encodedFormat).set, cards: [] });
+    } else if (encodedFormat && encodedFormat._type === 'everythingDraft') {
+      format = new EverythingDraftFormat([]);
+    }
+
+    if (!format) {
+      throw new Error(`Unknown game format: ${isString(encodedFormat) ? encodedFormat : JSON.stringify(encodedFormat)}`);
+    }
+    return format;
+  }
+
   public name: string | undefined;
   public displayName: string | undefined;
   public description: string | undefined;

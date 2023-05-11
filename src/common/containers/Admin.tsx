@@ -1,5 +1,5 @@
 import * as fb from 'firebase';
-import { compact, countBy, noop, omit } from 'lodash';
+import { compact, countBy, noop, omit, uniqBy } from 'lodash';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper } from '@material-ui/core';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -8,7 +8,7 @@ import { Redirect, withRouter } from 'react-router';
 
 import * as w from '../types';
 import { FIREBASE_CONFIG, PARSER_URL, TYPE_EVENT } from '../constants';
-import { expandKeywords, getSentencesFromInput, normalizeCard, parseBatch } from '../util/cards';
+import { expandKeywords, getSentencesFromInput, lookupParserVersion, normalizeCard, parseBatch } from '../util/cards';
 import * as firebase from '../util/firebase';
 import { collection as coreSet } from '../store/cards';
 import CardGrid from '../components/cards/CardGrid';
@@ -64,6 +64,7 @@ class Admin extends React.PureComponent<AdminProps> {
     void this.fetchCards();
     void this.fetchSets();
     void this.lookupParserVersion();
+    void this.cleanupGames();
   }
 
   private renderPanelForCards(cards: w.CardInStore[], setId: w.SetId | null, builtIn?: boolean) {
@@ -196,8 +197,28 @@ class Admin extends React.PureComponent<AdminProps> {
 
   private async lookupParserVersion(): Promise<void> {
     this.setState({
-      parserVersion: await this.lookupParserVersion()
+      parserVersion: await lookupParserVersion()
     });
+  }
+
+  private async cleanupGames(): Promise<void> {
+    const games = await firebase.getAllGames_SLOW();
+    console.log(`Games found: ${Object.keys(games).length}`);
+    console.log(`Unique games found: ${uniqBy(Object.values(games), 'id').length}`);
+
+    const gameIdsSeen: string[] = [];
+    const duplicateGameFbIds: string[] = [];
+    Object.entries(games).forEach(([fbId, game]) => {
+      if (gameIdsSeen.includes(game.id)) {
+        duplicateGameFbIds.push(fbId);
+      } else {
+        gameIdsSeen.push(game.id);
+      }
+    });
+    console.log(`Will delete ${duplicateGameFbIds.length} entries from Firebase, with the following IDs:`);
+    console.log(duplicateGameFbIds);
+
+    firebase.removeGames(duplicateGameFbIds);
   }
 
   private async previewMigration(cards: w.CardInStore[], setId: w.SetId | null): Promise<void> {

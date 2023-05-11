@@ -2,7 +2,7 @@ import { clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndef
 import nodeFetch from 'node-fetch';
 import * as seededRNG from 'seed-random';
 
-import { DISCORD_PROD_LOG_WEBHOOK_URL } from '../constants';
+import { DISCORD_PROD_LOG_WEBHOOK_URL, IS_PRODUCTION_ENV } from '../constants';
 import * as w from '../types';
 
 import { inBrowser } from './browser';
@@ -132,20 +132,20 @@ export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
 
 /** Logs a given message to the #log channel of the Wordbots discord (on production only). */
 export function logToDiscord(msg: string): void {
-  //if (IS_PRODUCTION_ENV) {
-  const fetch = inBrowser() ? window.fetch : nodeFetch;
-  try {
-    fetch(DISCORD_PROD_LOG_WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: msg,
-      }),
-    });
-  } catch (error) {
-    console.error(error);
+  if (IS_PRODUCTION_ENV) {
+    const fetch = inBrowser() ? window.fetch : nodeFetch;
+    try {
+      fetch(DISCORD_PROD_LOG_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: msg,
+        }),
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
-  //}
 }

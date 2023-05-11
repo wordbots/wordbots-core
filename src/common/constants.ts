@@ -134,9 +134,12 @@ const FIREBASE_STAGING_CONFIG = {
   appId: "1:755003910639:web:777afce7e570ea691c6e1a"
 };
 
+// eslint-disable-next-line compat/compat
+export const IS_PRODUCTION_ENV = inBrowser() && ['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname);
+
 export const FIREBASE_CONFIG = (() => {
   if (inBrowser()) {
-    if (['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+    if (IS_PRODUCTION_ENV) {
       // On a production host (wordbots.io, app.wordbots.io, wordbots-game.herokuapp.com are all equivalent), use production DB
       return FIREBASE_PROD_CONFIG;
     } else if (window.location.hostname === 'localhost') {
@@ -167,7 +170,7 @@ const LOCAL_PARSER_URL = 'http://localhost:8080';
 
 export const PARSER_URL: string = (() => {
   if (inBrowser()) {
-    if (['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)) {
+    if (IS_PRODUCTION_ENV) {
       // On a production host (wordbots.io, app.wordbots.io, wordbots-game.herokuapp.com are all equivalent), use production parser
       return LIVE_PARSER_URL;
     } else if (window.location.hostname === 'localhost') {
@@ -233,6 +236,7 @@ export const HINT_REGEXES = objToRegexes(HINTS);
 
 // Other services.
 
+export const DISCORD_PROD_LOG_WEBHOOK_URL = 'https://discord.com/api/webhooks/1106148299808964670/XM7pUFrliZEVTRR84l6Oouz8_Zo4F49Q0yxVkKoRUAeYGkgPmLwnVI5ht0kmtW3cUgBy';
 export const DISCORD_PARSE_ISSUES_WEBHOOK_URL = 'https://discord.com/api/webhooks/1101686217772388392/bjgj-GHNUKxc697p7VngcH1c1I_KdxNcEd4yVq8E8D1obcPRgKTu6sx24nPNeyM7ybgE';
 
 // Player colors.

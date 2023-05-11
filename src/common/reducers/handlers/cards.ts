@@ -5,7 +5,7 @@ import {
   cardsFromJson, cardsToJson, createCardFromProps, loadCardsFromFirebase,
   loadDecksFromFirebase, loadSetsFromFirebase, splitSentences
 } from '../../util/cards';
-import { id } from '../../util/common';
+import { id, logToDiscord } from '../../util/common';
 import * as firebase from '../../util/firebase';
 
 type State = w.CollectionState;
@@ -265,6 +265,9 @@ function saveCard(state: State, card: w.CardInStore): State {
   } else {
     // Creating a new card.
     state.cards.push(card);
+
+    const user = firebase.lookupCurrentUser();
+    logToDiscord(`:flower_playing_cards: New card created: **${card.name}** by ${user?.displayName} (${window.location.hostname}/card/${card.id})`);
   }
 
   firebase.saveCard(card);

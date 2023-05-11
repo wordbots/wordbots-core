@@ -1,6 +1,7 @@
 import { clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, last, mapValues, some } from 'lodash';
 import * as seededRNG from 'seed-random';
 
+import { DISCORD_PROD_LOG_WEBHOOK_URL, IS_PRODUCTION_ENV } from '../constants';
 import * as w from '../types';
 
 type Range = [number, number];
@@ -124,4 +125,19 @@ export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
     'message' in error &&
     isString((error as Record<string, unknown>).message)
   );
+}
+
+/** Logs a given message to the #log channel of the Wordbots discord (on production only). */
+export function logToDiscord(msg: string): void {
+  if (IS_PRODUCTION_ENV) {
+    fetch(DISCORD_PROD_LOG_WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: msg,
+      }),
+    });
+  }
 }

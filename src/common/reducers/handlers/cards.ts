@@ -212,6 +212,8 @@ const cardsHandlers = {
 
         state.decks.push(deck);
         firebase.saveDeck(deck);
+
+        logToDiscord(`:scroll: New deck created: **${deck.name}** by ${user.displayName} (https://${window.location.hostname}/deck/${deck.id})`);
       }
     }
 
@@ -220,6 +222,12 @@ const cardsHandlers = {
 
   saveSet: (state: State, set: w.Set) => {
     firebase.saveSet(set);
+
+    if (!state.sets.find((s) => s.id === set.id)) {
+      const user = firebase.lookupCurrentUser();
+      logToDiscord(`:large_blue_diamond: New set created: **${set.name}** by ${user?.displayName} (https://${window.location.hostname}/sets/?set=${set.id})`);
+    }
+
     return {
       ...state,
       sets: [...state.sets.filter((s) => s.id !== set.id), set]

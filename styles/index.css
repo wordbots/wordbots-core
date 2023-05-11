@@ -143,6 +143,10 @@ a.topLink:hover {
   height: 300px;
 }
 
+.recentCardsCarousel .slick-dots {
+  bottom: default;
+}
+
 .profile-link {
   color: inherit;
   transition: color 300ms ease-in-out;

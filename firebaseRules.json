@@ -21,6 +21,7 @@
         ".write": "!data.exists() || (auth.uid === 'ZOozOkbOlCOxrIjyJcHAVflnNh13' || auth.uid === 'XbnODr6FdwdTQPwvjM2uF1ErRTn1')"
       },
       ".indexOn": [
+        "id",
         "timestamp",
         "players/blue",
         "players/orange",

@@ -316,7 +316,7 @@ export default class MultiplayerServerState {
 
   // Store the result of a game in Firebase.
   public storeGameResult = (game: m.Game): void => {
-    const { id, ids, format, type, state: { winner } } = game;
+    const { id, ids, format, name, type, state: { winner } } = game;
     void saveGame({
       id,
       players: mapValues(ids, (clientID) => this.getClientUserData(clientID).uid),
@@ -331,7 +331,7 @@ export default class MultiplayerServerState {
       winner,
       timestamp: Date.now()
     });
-    logToDiscord(`:crossed_swords: Game played between ${this.getClientUserData(ids.orange).displayName} and ${this.getClientUserData(ids.blue).displayName} (format: ${GameFormat.decode(format).rendered})`);
+    logToDiscord(`:crossed_swords: Game '${name}' played between ${this.getClientUserData(ids.orange).displayName} and ${this.getClientUserData(ids.blue).displayName} (format: ${GameFormat.decode(format).rendered()})`);
   }
 
   // Add a player to the matchmaking queue.

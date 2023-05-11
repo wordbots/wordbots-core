@@ -5,7 +5,7 @@ import { ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import gameReducer from '../../common/reducers/game';
 import defaultGameState from '../../common/store/defaultGameState';
 import { instantiateCard, obfuscateCards } from '../../common/util/cards';
-import { id as generateID } from '../../common/util/common';
+import { id as generateID, logToDiscord } from '../../common/util/common';
 import { saveGame } from '../../common/util/firebase';
 import { GameFormat } from '../../common/util/formats';
 import { opponent as opponentOf } from '../../common/util/game';
@@ -325,6 +325,7 @@ export default class MultiplayerServerState {
       winner,
       timestamp: Date.now()
     });
+    logToDiscord(`:crossed_swords: Game played between ${this.getClientUserData(ids.orange).displayName} and ${this.getClientUserData(ids.blue).displayName} (format: ${GameFormat.decode(format).rendered})`);
   }
 
   // Add a player to the matchmaking queue.

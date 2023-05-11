@@ -134,8 +134,11 @@ const FIREBASE_STAGING_CONFIG = {
   appId: "1:755003910639:web:777afce7e570ea691c6e1a"
 };
 
-// eslint-disable-next-line compat/compat
-export const IS_PRODUCTION_ENV = inBrowser() && ['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname);
+export const IS_PRODUCTION_ENV = (
+  inBrowser()
+    ? ['wordbots.io', 'app.wordbots.io', 'wordbots-game.herokuapp.com'].includes(window.location.hostname)  // eslint-disable-line compat/compat
+    : process.env.HEROKU_APP_ID === 'a0939e51-43c3-473c-a948-deb50512cc66'
+);
 
 export const FIREBASE_CONFIG = (() => {
   if (inBrowser()) {

@@ -96,7 +96,7 @@ export async function register(email: string, username: string, password: string
     await user.updateProfile({ displayName: username, photoURL: null });
     await saveUser(user);
     await fb.auth().currentUser.getIdToken(true); // Refresh current user's ID token so displayName gets displayed
-    logToDiscord(`:wave: New user registered: **${user.displayName}** (${window.location.hostname}/profile/${user.uid})`);
+    logToDiscord(`:wave: New user registered: **${user.displayName}** (https://${window.location.hostname}/profile/${user.uid})`);
   }
 }
 

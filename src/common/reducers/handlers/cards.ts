@@ -267,7 +267,7 @@ function saveCard(state: State, card: w.CardInStore): State {
     state.cards.push(card);
 
     const user = firebase.lookupCurrentUser();
-    logToDiscord(`:flower_playing_cards: New card created: **${card.name}** by ${user?.displayName} (${window.location.hostname}/card/${card.id})`);
+    logToDiscord(`:flower_playing_cards: New card created: **${card.name}** by ${user?.displayName} (https://${window.location.hostname}/card/${card.id})`);
   }
 
   firebase.saveCard(card);

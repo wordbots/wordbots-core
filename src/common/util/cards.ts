@@ -15,6 +15,7 @@ import defaultState from '../store/defaultCollectionState';
 import { CreatorStateProps } from '../containers/Creator';
 
 import { ensureInRange, id as generateId } from './common';
+import { fetchUniversal } from './browser';
 import { indexParsedSentence, lookupCurrentUser } from './firebase';
 
 //
@@ -206,8 +207,7 @@ function parse(
   sentences.forEach((sentence, idx) => {
     const parserInput = encodeURIComponent(expandKeywords(sentence));
     const parseUrl = `${PARSER_URL}/parse?input=${parserInput}&format=js&mode=${mode}${fastMode ? '&fast=true' : ''}`;
-
-    fetch(parseUrl)
+    fetchUniversal(parseUrl)
       .then((response) => response.json())
       .then((json) => {
         callback(idx, sentence, json);

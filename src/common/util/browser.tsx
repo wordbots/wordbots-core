@@ -1,5 +1,6 @@
 import { detect, Browser } from 'detect-browser';
 import { History } from 'history';
+import nodeFetch from 'node-fetch';
 import * as ReactGA from 'react-ga';
 import * as ReactDOM from 'react-dom';
 import { ReactNode, ReactPortal } from 'react';
@@ -178,3 +179,6 @@ export function createSafePortal(children: ReactNode, container: Element): React
     return null;
   }
 }
+
+/** Like fetch() but can also be called from the server. */
+export const fetchUniversal: typeof fetch = inBrowser() ? fetch : (nodeFetch as unknown as typeof fetch);

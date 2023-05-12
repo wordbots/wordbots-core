@@ -167,8 +167,8 @@ export const FIREBASE_CONFIG = (() => {
 
 // Parsing.
 
-const LIVE_PARSER_URL = '//parser.wordbots.io';
-const STAGING_PARSER_URL = '//parser-staging.wordbots.io';
+const LIVE_PARSER_URL = 'https://parser.wordbots.io';
+const STAGING_PARSER_URL = 'https://parser-staging.wordbots.io';
 const LOCAL_PARSER_URL = 'http://localhost:8080';
 
 export const PARSER_URL: string = (() => {

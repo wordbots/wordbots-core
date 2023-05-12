@@ -101,8 +101,8 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         if (isEmpty(collection.entries)) {
           // No valid target!
           state.invalid = true;
-        } else {
-          // Prepare target selection.
+        } else if (!player.target.choosing) {
+          // Prepare target selection (unless the player is already in the process of choosing a target).
           player.target = {
             ...player.target,
             choosing: true,
@@ -125,6 +125,8 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           } else if (collection.type === 'cardsInDiscardPile') {
             player.target.possibleCardsInDiscardPile = (collection as w.CardInDiscardPileCollection).entries.map((card) => card.id);
           }
+
+          console.log(player.target);
 
           state.players[player.color] = player;
         }

@@ -1,4 +1,4 @@
-import { cloneDeep, groupBy, identity, isArray, isFunction, mapValues } from 'lodash';
+import { cloneDeep, groupBy, identity, isArray, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { TYPE_CORE } from '../constants';

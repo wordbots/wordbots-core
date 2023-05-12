@@ -306,8 +306,8 @@ export function allHexIds(): w.HexId[] {
 }
 
 /** Get the hex id corresponding to the given object, if any. */
-export function getHex(state: w.GameState, object: w.Object): w.HexId | undefined {
-  return findKey(allObjectsOnBoard(state), ['id', object.id]) || state.objectsDestroyedThisTurn[object.id]?.[0];
+export function getHex(state: w.GameState, object?: w.Object): w.HexId | undefined {
+  return object?.id ? findKey(allObjectsOnBoard(state), ['id', object.id]) || state.objectsDestroyedThisTurn[object.id]?.[0] : undefined;
 }
 
 /** Given a Hex, return all adjacent Hexes on the board. */
@@ -912,6 +912,7 @@ export function executeCmdAndLogErrors<T = void>(
       throw error;
     } else {
       logAction(state, null, `Runtime exception while handling an ability (report this to the developers):\ncard name: ${currentObject?.card.name || 'null'}\ncommand: ${state.currentCmdText || 'null'}`);
+      logDebugMessage(state, `${error.toString()}\n Stacktrace:\n${error.stack}`);
       return fallbackReturn || (undefined as unknown as T);
     }
   } finally {

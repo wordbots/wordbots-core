@@ -185,11 +185,10 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
-    // TODO hexes: w.HexCollection is only supported for backwards-compatibility pre-v0.19 – can remove once all cards are merged to 0.19+
-    moveObject: (objects: w.ObjectCollection, hexes: w.HexCollection | (() => w.HexCollection)): void => {
-      // Unpack.
+    moveObject: (objects: w.ObjectCollection, hexes: (() => w.HexCollection)): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
-        const destHex: w.HexId | undefined = (isFunction(hexes) ? hexes() : hexes).entries[0];
+        // Unpack.
+        const destHex: w.HexId | undefined = hexes().entries[0];
 
         if (object && destHex) {
           const startHex = getHex(state, object)!;

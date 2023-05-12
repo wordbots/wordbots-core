@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, countBy, flatMap, fromPairs, mapValues, uniq } from 'lodash';
+import { capitalize, concat, countBy, flatMap, fromPairs, mapValues, uniq, uniqBy } from 'lodash';
 import * as _ from 'lodash/fp';
 import { flow } from 'lodash/fp';
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
@@ -209,7 +209,7 @@ export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
 
 export async function getNumGamesBySetFormat(formatType: 'set' | 'setDraft', setId: w.SetId): Promise<number> {
   const games = await queryObjects<w.SavedGame>('games', 'format/set/id', setId);
-  return games.filter((g) => (g.format as w.SetFormat | w.SetDraftFormat)._type === formatType).length;
+  return uniqBy(games, 'id').filter((g) => (g.format as w.SetFormat | w.SetDraftFormat)._type === formatType).length;
 }
 
 /** Remove the games under `/games` with the corresponding ids. */

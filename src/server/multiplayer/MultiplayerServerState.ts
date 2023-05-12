@@ -331,7 +331,7 @@ export default class MultiplayerServerState {
       winner,
       timestamp: Date.now()
     });
-    logToDiscord(`:crossed_swords: Game '${name}' played between ${this.getClientUserData(ids.orange).displayName} and ${this.getClientUserData(ids.blue).displayName} (format: ${GameFormat.decode(format).rendered()})`);
+    logToDiscord(`:crossed_swords: Game '${name}' played between ${this.getClientUserData(ids.orange).displayName} and ${this.getClientUserData(ids.blue).displayName} (format: ${GameFormat.decode(format).displayName})`);
   }
 
   // Add a player to the matchmaking queue.

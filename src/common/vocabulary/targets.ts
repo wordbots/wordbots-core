@@ -98,8 +98,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
       if (player.target.chosen && player.target.chosen.length >= numChoices) {
         // Return and clear chosen target.
 
-        // If there's multiple targets, take the first (we treat target.chosen as a queue).
-        //const [target, ...otherTargets] = player.target.chosen;
+        // If there's multiple targets, take the first `numChoices` of them (we treat target.chosen as a queue).
         const chosenTargets = player.target.chosen.slice(0, numChoices);
         player.target.chosen = player.target.chosen.slice(numChoices);
         const target = chosenTargets[0];  // select the first target for type detection
@@ -107,7 +106,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         logSelection(chosenTargets, collection.type);
 
         // enforce that targets are distinct (if numChoices > 1)
-        /** istanbul ignore next */
+        /** istanbul ignore next: this would be hard to unit-test */
         if (uniqBy(chosenTargets, (t) => isString(t) ? t : t.id).length < chosenTargets.length) {
           alert(`You must choose ${numChoices} unique targets!`);
           state.invalid = true;

@@ -374,7 +374,9 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
         // 3. redux state (if the card is in the player's collection)
         // 4. firebase (async lookup)
         if (tempSavedVersion && tempSavedVersion.id === cardId) {
-          onOpenCard(tempSavedVersion);
+          this.setState({ cardOpenedForEditing: tempSavedVersion }, () => {
+            onOpenCard(tempSavedVersion);
+          });
           onClearTempVersion();
         } else {
           const cardFromRouter = location.state?.card?.id === cardId ? location.state.card as w.CardInStore : undefined;
@@ -459,8 +461,10 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   }
 
   private testCard = () => {
+    const { cardOpenedForEditing } = this.state;
     const card = createCardFromProps(this.props);
-    this.props.onStartSandbox(card);
+    const metadata = cardOpenedForEditing?.metadata || card.metadata;
+    this.props.onStartSandbox({ ...card, metadata });
     this.props.history.push('/play/sandbox', { previous: this.props.history.location });
   }
 

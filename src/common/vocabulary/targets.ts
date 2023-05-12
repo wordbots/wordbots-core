@@ -126,8 +126,6 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
             player.target.possibleCardsInDiscardPile = (collection as w.CardInDiscardPileCollection).entries.map((card) => card.id);
           }
 
-          console.log(player.target);
-
           state.players[player.color] = player;
         }
 

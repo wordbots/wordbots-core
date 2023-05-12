@@ -55,7 +55,7 @@ export default function RecentGame(props: RecentGameProps & WithStyles): JSX.Ele
       </ListItemAvatar>
       <ListItemText
         primary={<ProfileLink uid={opponentId} username={opponent} />}
-        secondary={<span>{GameFormat.decode(game.format).rendered()} - {timestamp}</span>}
+        secondary={<span>{GameFormat.decodeCompact(game.format).rendered()} - {timestamp}</span>}
       />
       <ListItemText
         primaryTypographyProps={{ className: classes[outcome] }}

@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, countBy, flatMap, fromPairs, mapValues, uniq } from 'lodash';
+import { capitalize, concat, countBy, flatMap, fromPairs, mapValues, uniq, uniqBy } from 'lodash';
 import * as _ from 'lodash/fp';
 import { flow } from 'lodash/fp';
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
@@ -177,7 +177,12 @@ export async function incrementStatistic(statisticName: string, userId?: string)
 
 // GAME RESULTS
 
-export function saveGame(game: w.SavedGame): firebase.database.ThenableReference {
+export async function saveGame(game: w.SavedGame): Promise<firebase.database.ThenableReference | undefined> {
+  const existingGameIfAny = await queryObjects<w.SavedGame>('games', 'id', game.id);
+  if (existingGameIfAny.length > 0) {
+    return;
+  }
+
   if (!game.players.blue.startsWith('guest_')) {
     incrementStatistic('gamesPlayed', game.players.blue);
   }
@@ -186,6 +191,11 @@ export function saveGame(game: w.SavedGame): firebase.database.ThenableReference
   }
 
   return fb.database().ref('games').push(game);
+}
+
+export async function getAllGames_SLOW(): Promise<Record<string, w.SavedGame>> {
+  const snapshot = await fb.database().ref('games').once('value');
+  return snapshot.val();
 }
 
 export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
@@ -199,7 +209,14 @@ export async function getGamesByUser(userId: w.UserId): Promise<w.SavedGame[]> {
 
 export async function getNumGamesBySetFormat(formatType: 'set' | 'setDraft', setId: w.SetId): Promise<number> {
   const games = await queryObjects<w.SavedGame>('games', 'format/set/id', setId);
-  return games.filter((g) => (g.format as w.SetFormat | w.SetDraftFormat)._type === formatType).length;
+  return uniqBy(games, 'id').filter((g) => (g.format as w.SetFormat | w.SetDraftFormat)._type === formatType).length;
+}
+
+/** Remove the games under `/games` with the corresponding ids. */
+export async function removeGames(gameIds: string[]): Promise<void> {
+  // Set all game/:gameId to null
+  fb.database().ref('games')
+    .update(Object.assign({}, ...gameIds.map((id) => ({ [id]: null }))));
 }
 
 // CARDS

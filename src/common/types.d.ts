@@ -30,6 +30,7 @@ export type TextSource = 'load' | 'input' | 'didYouMean' | 'randomize';
 export type Ability = PassiveAbility | TriggeredAbility | ActivatedAbility;
 export type Card = CardInGame | CardInStore | ObfuscatedCard;
 export type Format = BuiltInFormat | SetFormat | SetDraftFormat | EverythingDraftFormat;
+export type CompactFormat = BuiltInFormat | { _type: 'set' | 'setDraft', set: Pick<Set, 'id', 'name', 'description', 'metadata'> } | { _type: 'everythingDraft' };
 export type PossiblyObfuscatedCard = CardInGame | ObfuscatedCard;
 export type Targetable = CardInGame | _Object | HexId | PlayerInGameState;
 
@@ -187,7 +188,7 @@ export interface TutorialStepInScript {
 export interface SavedGame { // Interface for games stored in Firebase.
   id: string
   players: { blue: UserId, orange: UserId }
-  format: Format
+  format: CompactFormat
   type: string // TODO more precise
   winner: GameWinner
   timestamp: timestamp

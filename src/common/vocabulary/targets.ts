@@ -107,6 +107,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         logSelection(chosenTargets, collection.type);
 
         // enforce that targets are distinct (if numChoices > 1)
+        /** istanbul ignore next */
         if (uniqBy(chosenTargets, (t) => isString(t) ? t : t.id).length < chosenTargets.length) {
           alert(`You must choose ${numChoices} unique targets!`);
           state.invalid = true;

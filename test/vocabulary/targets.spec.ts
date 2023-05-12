@@ -1,8 +1,9 @@
+import { assertCardVisible } from '../../src/common/util/cards';
 import * as actions from '../../src/common/actions/game';
 import { DECK_SIZE, ORANGE_CORE_HEX, STARTING_PLAYER_HEALTH, TYPE_ROBOT } from '../../src/common/constants';
 import game from '../../src/common/reducers/game';
 import * as cards from '../../src/common/store/cards';
-import { action, getDefaultState, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, setUpBoardState } from '../testHelpers';
+import { action, activate, getDefaultState, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, setUpBoardState } from '../testHelpers';
 import * as testCards from '../data/cards';
 
 describe('[vocabulary.targets]', () => {
@@ -20,6 +21,16 @@ describe('[vocabulary.targets]', () => {
       state = game(state, actions.setSelectedCardInDiscardPile(superchargeCardId, 'orange'));
       expect(state.players.orange.discardPile.map((card) => card.name)).toEqual([returnCardToHandCard.name]);
       expect(state.players.orange.hand.map((card) => card.id)).toContain(superchargeCardId);
+    });
+  });
+
+  describe('copy', () => {
+    it('can copy an object and "return" that copy to hand', () => {
+      let state = getDefaultState();
+      state = playObject(state, 'orange', testCards.clonerCard, '3,-1,-2');  // Activate: return a copy of this robot to your hand
+      expect(state.players.orange.hand.map(c => assertCardVisible(c).name).includes(testCards.clonerCard.name)).toBeFalsy();
+      state = activate(state, '3,-1,-2', 0, null, true);
+      expect(state.players.orange.hand.map(c => assertCardVisible(c).name).includes(testCards.clonerCard.name)).toBeTruthy();
     });
   });
 

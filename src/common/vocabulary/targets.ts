@@ -156,7 +156,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         type: 'cards',
         entries: (
           (g.isObjectCollection(collection) && collection.entries.length === 1)
-            ? [collection.entries[0].card]
+            ? [{ ...collection.entries[0].card, id: id() }]
             : []
         )
       })

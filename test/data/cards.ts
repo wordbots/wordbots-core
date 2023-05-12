@@ -68,6 +68,23 @@ export const hasteBotCard: w.CardInStore = {
   ]
 };
 
+export const clonerCard: w.CardInStore = {
+  metadata: { source: { type: 'user' } as w.CardSource },
+  id: 'Cloner',
+  name: 'Cloner',
+  cost: 2,
+  type: TYPE_ROBOT,
+  stats: {
+    attack: 1,
+    health: 1,
+    speed: 1
+  },
+  text: 'Activate: return a copy of this robot to your hand',
+  abilities: [
+    "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['moveCardsToHand'](targets['copyOf'](targets['thisRobot']()), targets['self']()); })\")); })"
+  ]
+};
+
 export const investorBotCard: w.CardInStore = {
   metadata: { source: { type: 'user' } as w.CardSource },
   id: 'Investor Bot',

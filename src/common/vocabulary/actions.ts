@@ -171,13 +171,18 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       });
     },
 
-    moveCardsToHand: (cards: w.CardInDiscardPileCollection, players: w.PlayerCollection): void => {
+    moveCardsToHand: (cards: w.CardCollection, players: w.PlayerCollection): void => {
       // Unpack.
       const recipient: w.PlayerInGameState = players.entries[0];
 
-      removeCardsFromDiscardPile(state, cards.entries, (card) => {
-        recipient.hand.push(card);
-      });
+      if (cards.type === 'cardsInDiscardPile') {
+        removeCardsFromDiscardPile(state, cards.entries, (card) => {
+          recipient.hand.push(card);
+        });
+      } else if (cards.type === 'cards' && cards.entries.length === 1) {
+        // the intended use case of this clause is for moveCardsToHand(copyOf(...))
+        recipient.hand.push(cards.entries[0]);
+      }
     },
 
     // TODO hexes: w.HexCollection is only supported for backwards-compatibility pre-v0.19 – can remove once all cards are merged to 0.19+

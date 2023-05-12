@@ -21,7 +21,7 @@ function selectTile(state: State, tile: w.HexId | null): State {
 
 function resetTargetAndStatus(player: PlayerState): void {
   player.status = { message: '', type: '' };
-  player.target = { choosing: false, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: [] };
+  player.target = { choosing: false, chosen: null, numChoosing: 0, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: [] };
 }
 
 export function deselect(state: State, playerColor: w.PlayerColor = state.currentTurn): State {
@@ -232,7 +232,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
       // Target still needs to be selected, so roll back playing the card (and return old state).
       currentPlayer(state).target = player.target;
       currentPlayer(state).status = {
-        message: `Choose a target for ${object.card.name}'s ${ability.text} ability.`,
+        message: `Choose ${player.target.numChoosing > 1 ? `${player.target.numChoosing} targets` : 'a target'} for ${object.card.name}'s ${ability.text} ability.`,
         type: 'text'
       };
 

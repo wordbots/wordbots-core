@@ -173,7 +173,7 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
 
       currentPlayer(state).target = player.target;
       currentPlayer(state).status = {
-        message: `Choose a target for ${card.name}'s ability.`,
+        message: `Choose ${player.target.numChoosing > 1 ? `${player.target.numChoosing} targets` : 'a target'} for ${card.name}'s ability.`,
         type: 'text'
       };
 
@@ -243,7 +243,7 @@ function playEvent(state: State, cardIdx: number): State {
       state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
       currentPlayer(state).target = player.target;
-      currentPlayer(state).status = { message: `Choose a target for ${card.name}.`, type: 'text' };
+      currentPlayer(state).status = { message: `Choose ${player.target.numChoosing > 1 ? `${player.target.numChoosing} targets` : 'a target'} for ${card.name}.`, type: 'text' };
     } else if (tempState.invalid) {
       // Temp state is invalid (e.g. no valid target available or player unable to pay an energy cost).
       // So return the old state.
@@ -256,7 +256,7 @@ function playEvent(state: State, cardIdx: number): State {
       // In that case, the player needs to "target" the board to confirm that they want to play the event.
       state.callbackAfterTargetSelected = ((newState: State) => playEvent(newState, cardIdx));
       currentPlayer(state).selectedCard = cardIdx;
-      currentPlayer(state).target = { choosing: true, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: allHexIds() };
+      currentPlayer(state).target = { choosing: true, chosen: null, numChoosing: 0, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: allHexIds() };
       currentPlayer(state).status = { message: `Click anywhere on the board to play ${card.name}.`, type: 'text' };
     } else {
       // Everything is good (valid state + no more targets to select), so we can return the new state!

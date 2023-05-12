@@ -16,6 +16,7 @@ export function defaultTarget(): w.CurrentTarget {
   return {
     choosing: false,
     chosen: null,
+    numChoosing: 0,
     possibleCardsInHand: [],
     possibleCardsInDiscardPile: [],
     possibleHexes: []

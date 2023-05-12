@@ -15,7 +15,7 @@ import defaultState from '../store/defaultCollectionState';
 import { CreatorStateProps } from '../containers/Creator';
 
 import { ensureInRange, id as generateId } from './common';
-import { fetchUniversal } from './browser';
+import { fetchUniversal, onLocalhost } from './browser';
 import { indexParsedSentence, lookupCurrentUser } from './firebase';
 
 //
@@ -214,7 +214,7 @@ function parse(
       .then((response) => response.json())
       .then((json) => {
         callback(idx, sentence, json);
-        if (index && json.tokens && json.js) {
+        if (index && json.tokens && json.js && !onLocalhost()) {
           indexParsedSentence(sentence, json.tokens, json.js);
         }
       })

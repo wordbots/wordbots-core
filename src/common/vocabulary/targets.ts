@@ -1,4 +1,4 @@
-import { compact, flatMap, fromPairs, isEmpty } from 'lodash';
+import { compact, flatMap, fromPairs, isEmpty, isString, uniqBy } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
 import { stringToType } from '../constants';
@@ -21,6 +21,30 @@ import {
 //    for targets['it']: itOverride > currentObject > state.it
 //    for targets['thisRobot']: currentObject > state.it
 export default function targets(state: w.GameState, currentObject: w.Object | null, itOverride: w.Object | null): Record<string, w.Returns<w.Collection>> {
+  function logSelection(chosen: w.Targetable[], type: w.Collection['type']) {
+    if (chosen.length > 0) {
+      /* istanbul ignore else */
+      if (['cards', 'cardsInDiscardPile', 'objects'].includes(type)) {
+        const cards: Record<string, w.CardInGame> = fromPairs((chosen as Array<w.CardInGame | w.Object>).map((c: w.CardInGame | w.Object) =>
+          isString(c)
+            ? [allObjectsOnBoard(state)[c]?.card?.name, allObjectsOnBoard(state)[c]?.card]
+            : g.isObject(c)
+              ? [c.card.name, c.card]
+              : [c.name, c])
+        );
+        const names = Object.keys(cards).map((name) => `|${name}|`);
+        const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+        logAction(state, null, explanationStr, cards);
+      } else if (type === 'players') {
+        const explanationStr = `${arrayToSentence((chosen as w.PlayerInGameState[]).map((p) => p.color))} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+        logAction(state, null, explanationStr);
+      } else if (type === 'hexes') {
+        const explanationStr = `${arrayToSentence(chosen as w.HexId[])} ${chosen.length === 1 ? 'was' : 'were'} selected`;
+        logAction(state, null, explanationStr);
+      }
+    }
+  }
+
   // Currently salient object
   // Note: currentObject has higher salience than state.it .
   //       (This resolves the bug where robots' Haste ability would be triggered by other robots being played.)
@@ -68,22 +92,33 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     // Note: Unlike other target functions, choose() can also return a HexCollection
     //       (if the chosen hex does not contain an object.)
-    choose: <T extends w.Collection>(collection: T): T => {
+    choose: <T extends w.Collection>(collection: T, numChoices = 1): T => {
       const player = currentPlayer(state);
 
-      if (player.target.chosen && player.target.chosen.length > 0) {
+      if (player.target.chosen && player.target.chosen.length >= numChoices) {
         // Return and clear chosen target.
 
         // If there's multiple targets, take the first (we treat target.chosen as a queue).
-        const [target, ...otherTargets] = player.target.chosen;
-        player.target.chosen = otherTargets;
+        //const [target, ...otherTargets] = player.target.chosen;
+        const chosenTargets = player.target.chosen.slice(0, numChoices);
+        player.target.chosen = player.target.chosen.slice(numChoices);
+        const target = chosenTargets[0];  // select the first target for type detection
+
+        logSelection(chosenTargets, collection.type);
+
+        // enforce that targets are distinct (if numChoices > 1)
+        if (uniqBy(chosenTargets, (t) => isString(t) ? t : t.id).length < chosenTargets.length) {
+          alert(`You must choose ${numChoices} unique targets!`);
+          state.invalid = true;
+          return { type: collection.type, entries: [] } as w.Collection as T;
+        }
 
         if (g.isCardInGame(target)) {
-          state.it = target;  // "it" stores most recently chosen salient object for lookup.
+          state.it = target;  // "it" stores most recently chosen salient object for lookup (arbitrarily choosing the first one if there's a group of >1 target)
           if (player.hand.map((card) => card.id).includes(target.id)) {
-            return { type: 'cards', entries: [target] } as w.CardInHandCollection as T;
+            return { type: 'cards', entries: chosenTargets } as w.CardInHandCollection as T;
           } else if (player.discardPile.map((card) => card.id).includes(target.id)) {
-            return { type: 'cardsInDiscardPile', entries: [target] } as w.CardInDiscardPileCollection as T;
+            return { type: 'cardsInDiscardPile', entries: chosenTargets } as w.CardInDiscardPileCollection as T;
           } else {
             /* istanbul ignore next: this case should never be hit */
             throw new Error(`Card chosen does not exist in player's hand or discard pile!: ${target}`);
@@ -91,10 +126,10 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         } else {
           // Return objects if possible or hexes if not.
           if (collection.type === 'objects' && allObjectsOnBoard(state)[target]) {
-            state.it = allObjectsOnBoard(state)[target];  // "it" stores most recently chosen salient object for lookup.
-            return { type: 'objects', entries: [allObjectsOnBoard(state)[target]] } as w.ObjectCollection as T;
+            state.it = allObjectsOnBoard(state)[target];  // "it" stores most recently chosen salient object for lookup (arbitrarily choosing the first one if there's a group of >1 target)
+            return { type: 'objects', entries: chosenTargets.map((t) => allObjectsOnBoard(state)[t as w.HexId]) } as w.ObjectCollection as T;
           } else {
-            return { type: 'hexes', entries: [target] } as w.HexCollection as T;
+            return { type: 'hexes', entries: chosenTargets } as w.HexCollection as T;
           }
         }
       } else {
@@ -106,6 +141,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           player.target = {
             ...player.target,
             choosing: true,
+            numChoosing: numChoices,
             possibleCardsInHand: [],
             possibleCardsInDiscardPile: [],
             possibleHexes: []
@@ -200,26 +236,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
 
     random: <T extends w.Collection>(num: number, collection: T): T => {
       const chosen: w.Targetable[] = shuffle(collection.entries, state.rng()).slice(0, num);
-
-      // Log the random selection.
-      if (chosen.length > 0) {
-        /* istanbul ignore else */
-        if (['cards', 'cardsInDiscardPile', 'objects'].includes(collection.type)) {
-          const cards: Record<string, w.CardInGame> = fromPairs((chosen as Array<w.CardInGame | w.Object>).map((c: w.CardInGame | w.Object) =>
-            g.isObject(c) ? [c.card.name, c.card] : [c.name, c])
-          );
-          const names = Object.keys(cards).map((name) => `|${name}|`);
-          const explanationStr = `${arrayToSentence(names)} ${chosen.length === 1 ? 'was' : 'were'} selected`;
-          logAction(state, null, explanationStr, cards);
-        } else if (collection.type === 'players') {
-          const explanationStr = `${arrayToSentence((chosen as w.PlayerInGameState[]).map((p) => p.color))} ${chosen.length === 1 ? 'was' : 'were'} selected`;
-          logAction(state, null, explanationStr);
-        } else if (collection.type === 'hexes') {
-          const explanationStr = `${arrayToSentence(chosen as w.HexId[])} ${chosen.length === 1 ? 'was' : 'were'} selected`;
-          logAction(state, null, explanationStr);
-        }
-      }
-
+      logSelection(chosen, collection.type);
       return { type: collection.type, entries: chosen } as w.Collection as T;
     },
 

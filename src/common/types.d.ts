@@ -359,6 +359,7 @@ export interface PlayerStatus {
 export interface CurrentTarget {
   choosing: boolean
   chosen: Array<CardInGame | HexId> | null
+  numChoosing: number
   possibleCardsInDiscardPile: CardId[]
   possibleCardsInHand: CardId[]
   possibleHexes: HexId[]

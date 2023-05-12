@@ -158,6 +158,9 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
       return parseErrors.join(' ');
     } else if (nonEmptySentences.find((s) => !s.result.js)) {
       return 'Sentences are still being parsed ...';
+    } else if (nonEmptySentences.filter((s) => s.sentence.toLowerCase().includes('replace ')).length > 1) {
+      // https://github.com/wordbots/wordbots-core/issues/1811
+      return 'Only one replace action is allowed per card (but it can have up to 4 replacement clauses – i.e. "Replace "A" with "B" and "C" with "D", etc")';
     } else {
       return null;
     }
@@ -354,7 +357,7 @@ export function contractKeywords(sentence: string): string {
   return reduce(keywords, ((str, def, keyword) =>
     str.replace(`"${def}"`, capitalize(keyword))
       .replace(def, capitalize(keyword))
-      .replaceAll(':, ', ': ')
+      .replace(':, ', ': ')
   ), sentence);
 }
 

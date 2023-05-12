@@ -19,6 +19,7 @@ interface DraftAreaProps {
   disconnectedPlayers: w.PlayerColor[]
   draft: w.DraftState
   format: GameFormat
+  gameOptions: w.GameOptions
   isGameOver: boolean
   volume: number
   onForfeit: (winner: w.PlayerColor) => void
@@ -47,7 +48,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
 
   public render(): JSX.Element {
     const {
-      player, draft, isGameOver, volume,
+      player, draft, gameOptions, isGameOver, volume,
       onForfeit, onSetVolume, onToggleFullscreen
     } = this.props;
     const { isDeckOpen } = this.state;
@@ -68,7 +69,7 @@ export default class DraftArea extends React.Component<DraftAreaProps, DraftArea
             player={player}
             currentTurn="draft"
             draft={draft}
-            isTimerEnabled={!isGameOver}
+            isTimerEnabled={!gameOptions.disableTurnTimer && !isGameOver}
             volume={volume}
             style={{ marginLeft: 200 }}
             onPassTurn={onForfeit}

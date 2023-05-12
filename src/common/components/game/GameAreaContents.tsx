@@ -53,6 +53,7 @@ export default class GameAreaContents extends React.PureComponent<GameAreaConten
             disconnectedPlayers={disconnectedPlayers}
             draft={draft}
             format={format}
+            gameOptions={gameOptions}
             isGameOver={gameOver}
             volume={volume}
             onDraftCards={onDraftCards}

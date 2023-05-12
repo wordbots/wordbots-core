@@ -494,6 +494,7 @@ export interface ParseResult {
   unrecognizedTokens?: string[]
   suggestions?: string[]
   parsed?: boolean  // used by DictionaryDialog
+  version?: string
 }
 
 // Socket state subcomponents

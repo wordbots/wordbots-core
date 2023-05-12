@@ -354,6 +354,7 @@ export function contractKeywords(sentence: string): string {
   return reduce(keywords, ((str, def, keyword) =>
     str.replace(`"${def}"`, capitalize(keyword))
       .replace(def, capitalize(keyword))
+      .replaceAll(':, ', ': ')
   ), sentence);
 }
 

@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 import { stringToType } from '../../../constants';
 import * as w from '../../../types';
+import { inBrowser, inTest } from '../../../util/browser';
 import {
   allObjectsOnBoard, applyAbilities, canActivate, checkVictoryConditions, currentPlayer,
   dealDamageToObjectAtHex, executeCmd, getAttribute, hasEffect, logAction,
@@ -221,7 +222,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
     } catch (error) {
       // TODO better error handling: throw a custom Error object that we handle in the game reducer?
       console.error(error);
-      if (state.player === state.currentTurn) {
+      if (state.player === state.currentTurn && (inBrowser() || inTest())) {
         // Show an alert only if it's the active player's turn (i.e. it's you and not your opponent who caused the error)
         alert(`Oops!\n\n${error}`);
       }

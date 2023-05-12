@@ -8,6 +8,7 @@ import { bluePlayerState, orangePlayerState } from '../../../store/defaultGameSt
 import * as w from '../../../types';
 import { assertCardVisible, quoteKeywords, splitSentences } from '../../../util/cards';
 import { id, nextSeed } from '../../../util/common';
+import { inBrowser, inTest } from '../../../util/browser';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
   deleteAllDyingObjects, discardCardsFromHand, executeCmd, getCost, logAction,
@@ -128,7 +129,7 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
       } catch (error) {
         // TODO better error handling: throw a custom Error object that we handle in the game reducer?
         console.error(error);
-        if (state.player === state.currentTurn) {
+        if (state.player === state.currentTurn && (inBrowser() || inTest())) {
           // Show an alert only if it's the active player's turn (i.e. it's you and not your opponent who caused the error)
           alert(`Oops!\n\n${error}`);
         }
@@ -227,7 +228,7 @@ function playEvent(state: State, cardIdx: number): State {
         } catch (error) {
           // TODO better error handling: throw a custom Error object that we handle in the game reducer?
           console.error(error);
-          if (state.player === state.currentTurn) {
+          if (state.player === state.currentTurn && (inBrowser() || inTest())) {
             // Show an alert only if it's the active player's turn (i.e. it's you and not your opponent who caused the error)
             alert(`Oops!\n\n${error}`);
           }

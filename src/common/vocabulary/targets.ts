@@ -5,6 +5,7 @@ import { stringToType } from '../constants';
 import * as g from '../guards';
 import * as w from '../types';
 import { arrayToSentence, id } from '../util/common';
+import { inBrowser } from '../util/browser';
 import {
   allObjectsOnBoard, currentPlayer, getHex, logAction, logAndReturnTarget, opponent, opponentPlayer,
   ownerOf
@@ -106,9 +107,13 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         logSelection(chosenTargets, collection.type);
 
         // enforce that targets are distinct (if numChoices > 1)
-        /** istanbul ignore next: this would be hard to unit-test */
+        /* istanbul ignore if: this would be hard to unit-test */
         if (uniqBy(chosenTargets, (t) => isString(t) ? t : t.id).length < chosenTargets.length) {
-          alert(`You must choose ${numChoices} unique targets!`);
+          if (state.player === state.currentTurn && inBrowser()) {
+            // Show an alert only if it's the active player's turn
+            alert(`You must choose ${numChoices} unique targets!`);
+          }
+
           state.invalid = true;
           return { type: collection.type, entries: [] } as w.Collection as T;
         }

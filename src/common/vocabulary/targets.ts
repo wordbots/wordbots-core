@@ -90,7 +90,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
           }
         } else {
           // Return objects if possible or hexes if not.
-          if (allObjectsOnBoard(state)[target]) {
+          if (collection.type === 'objects' && allObjectsOnBoard(state)[target]) {
             state.it = allObjectsOnBoard(state)[target];  // "it" stores most recently chosen salient object for lookup.
             return { type: 'objects', entries: [allObjectsOnBoard(state)[target]] } as w.ObjectCollection as T;
           } else {

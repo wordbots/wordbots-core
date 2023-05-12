@@ -19,7 +19,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
   public render(): React.ReactNode {
     if (this.state.error) {
       return (
-        <div style={{margin: 20}}>
+        <div style={{ margin: '20px 100px' }}>
           <h1>Something went wrong.</h1>
           <details style={{ whiteSpace: 'pre-wrap' }}>
             {this.state.error?.toString()}

@@ -1,5 +1,5 @@
 import {
-  compact, filter, findKey, flatMap,
+  compact, filter, findKey, flatMap, flatten,
   intersection, isArray, isEqual, isString, isUndefined, mapValues, noop, remove, some, times, uniqBy
 } from 'lodash';
 
@@ -180,7 +180,7 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
   const card: w.CardInGame = ('card' in objectOrCard) ? objectOrCard.card : objectOrCard;
   const cardType = card.type;
   if (isArray(cardTypeQuery)) {
-    return cardTypeQuery.map(stringToType).includes(cardType);
+    return flatten(cardTypeQuery).map(stringToType).includes(cardType);
   } else if (['anycard', 'allobjects'].includes(cardTypeQuery)) {
     return true;
   } else {

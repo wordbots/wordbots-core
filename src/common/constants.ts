@@ -13,7 +13,7 @@ export const LOG_SOCKET_IO = false;
 export const KEEP_DECKS_UNSHUFFLED = false;
 export const DISABLE_TURN_TIMER = false;
 export const DISABLE_AI = false;
-export const DISPLAY_HEX_IDS = false;
+export const DISPLAY_HEX_IDS = true;
 export const ENABLE_REDUX_TIME_TRAVEL = false;
 export const ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG = false;  // logs ALL debug messages in game log, even ones not corresponding to player actions (this can get VERY verbose)
 

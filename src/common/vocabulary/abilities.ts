@@ -1,9 +1,9 @@
-import { noop } from 'lodash';
+import { isString, mapValues, noop } from 'lodash';
 
 import { isCardInGame, isObject } from '../guards';
 import * as w from '../types';
 import { id } from '../util/common';
-import { executeCmdAndLogErrors, reversedCmd } from '../util/game';
+import { executeCmd, executeCmdAndLogErrors, reversedCmd } from '../util/game';
 
 export function setAbility(state: w.GameState, currentObject: w.Object | null, source: w.AbilityId | null): w.Returns<void> {
   return (ability: Omit<w.PassiveAbility, 'text'>) => {
@@ -47,6 +47,7 @@ export function unsetAbility(_state: w.GameState, currentObject: w.Object | null
 //   apply => function that applies the ability to a valid target
 //   unapply => function that "un-applies" the ability from a target that is no longer valid
 //   onlyExecuteOnce => if true, the given ability will be disabled after executing once
+//   alwaysReapply => if true, the given ability will always be reapplied in applyAbilities(), even if the list of targets hasn't changed
 
 export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.PassiveAbility, 'text'>>> {
   return {
@@ -126,14 +127,15 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
       };
     },
 
-    applyEffect: (targetFunc: (s: w.GameState) => w.Target[], effect: w.EffectType, props = {}) => {
+    applyEffect: (targetFunc: (s: w.GameState) => w.Target[], effect: w.EffectType, propsCmds: Record<string, unknown | w.StringRepresentationOf<(s: w.GameState) => unknown>> = {}) => {
       const aid: w.AbilityId = id();
       return {
         aid,
         targets: `(${targetFunc.toString()})`,
-        apply: (target: w.Targetable) => {
+        apply: (target: w.Targetable, currentState: w.GameState, abilityGrantingObject?: w.Object | null) => {
           if (isObject(target)) {
             //console.log(`${aid}: apply ${effect} to '${target.card.name}'`);
+            const props = mapValues(propsCmds, maybeCmd => isString(maybeCmd) ? executeCmd(currentState, maybeCmd, abilityGrantingObject) : maybeCmd);
             if (!(target.effects || []).find((eff) => eff.aid === aid)) {
               target.effects = (target.effects || []).concat({
                 aid,
@@ -148,7 +150,8 @@ export function abilities(state: w.GameState): Record<string, w.Returns<Omit<w.P
             //console.log(`${aid}: unapply ${effect} to '${target.card.name}'`);
             target.effects = (target.effects || []).filter((eff) => eff.aid !== aid);
           }
-        }
+        },
+        alwaysReapply: true  // need to always reapply because some effects must be recalculated when the ability grantor moves (e.g. "Enemy robots can't move adjacent to this robot")
       };
     },
 

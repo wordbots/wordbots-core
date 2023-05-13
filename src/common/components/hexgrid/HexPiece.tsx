@@ -94,8 +94,10 @@ export default class HexPiece extends React.Component<HexPieceProps> {
 
   private renderPieceStats(): React.ReactNode {
     const stats = this.props.piece.stats;
-    if (stats && !isUndefined(stats.attack)) {
+    if (stats && !isUndefined(stats.speed) && !isUndefined(stats.attack)) {
       return [this.renderStat('attack'), this.renderSpeedStat(), this.renderStat('health')];
+    } else if (stats && !isUndefined(stats.speed)) {
+      return [this.renderSpeedStat(), this.renderStat('health')];
     } else if (stats && !isUndefined(stats.health)) {
       return this.renderStat('health');
     } else {

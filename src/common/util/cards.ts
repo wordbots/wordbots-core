@@ -303,10 +303,9 @@ export function parseCard(
   );
 }
 
-export async function lookupParserVersion(): Promise<string> {
-  const parserResponse = await fetch(`${PARSER_URL}/parse?format=js&input=Draw%20a%20card`);
-  const parserResponseJson = await parserResponse.json();
-  return parserResponseJson.version;
+export async function lookupParserVersion(): Promise<{ version: string, sha: string }> {
+  const parserResponse = await fetch(`${PARSER_URL}/version`);
+  return await parserResponse.json();
 }
 
 //

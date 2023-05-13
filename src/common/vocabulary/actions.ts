@@ -90,6 +90,12 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       }
     },
 
+    canActivateAgain: (objects: w.ObjectOrPlayerCollection): void => {
+      iterateOver<w.Object>(objects)((object: w.Object) => {
+        Object.assign(object, { cantActivate: false });
+      });
+    },
+
     canAttackAgain: (objects: w.ObjectOrPlayerCollection): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         Object.assign(object, { cantAttack: false });

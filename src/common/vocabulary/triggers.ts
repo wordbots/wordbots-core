@@ -76,6 +76,12 @@ export function triggers(_state: w.GameState): Record<string, w.Returns<w.Trigge
       targetFunc: `(${targetFunc.toString()})`
     }),
 
+    afterDealsDamage: (targetFunc: (state: w.GameState) => w.Target[], objectType: w.CardTypeQuery | w.CardTypeQuery[]): w.Trigger => ({
+      type: 'afterDealsDamage',
+      cardType: objectType,
+      targetFunc: `(${targetFunc.toString()})`
+    }),
+
     afterDestroyed: (targetFunc: (state: w.GameState) => w.Target[], cause: w.Cause): w.Trigger => ({
       type: 'afterDestroyed',
       cause,

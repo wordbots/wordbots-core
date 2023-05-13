@@ -6,10 +6,22 @@ import { allObjectsOnBoard } from '../../src/common/util/game';
 import * as testCards from '../data/cards';
 import {
   attack, action, getDefaultState, objectsOnBoardOfType,
-  playEvent, playObject, queryPlayerHealth, queryRobotAttributes, setUpBoardState, startingHandSize
+  playEvent, playObject, queryPlayerHealth, queryRobotAttributes, setUpBoardState, startingHandSize, activate
 } from '../testHelpers';
 
 describe('[vocabulary.actions]', () => {
+  it('canActivateAgain', () => {
+    let state = setUpBoardState({
+      orange: { '0,0,0': cards.governmentResearcherCard },  // Activate: Pay 1 energy and each player draws a card.
+    });
+
+    state = activate(state, '0,0,0', 0);
+    expect(state.players.orange.hand.length).toEqual(2);
+    state = playEvent(state, 'orange', action("All robots can activate.", "(function () { actions['canActivateAgain'](objectsMatchingConditions('robot', [])); })"));
+    state = activate(state, '0,0,0', 0);
+    expect(state.players.orange.hand.length).toEqual(3);
+  });
+
   it('canAttackAgain', () => {
     let state = setUpBoardState({
       orange: { '0,0,0': cards.twoBotCard },

@@ -35,7 +35,7 @@ interface AdminState {
   migrationPreviewReport: PreviewReport | null
   cardsBeingMigrated: w.CardInStore[]
   setBeingMigrated: w.SetId | null
-  parserVersion?: string
+  parserVersion?: { version: string, sha: string }
   isPreviewingMigration?: boolean
 }
 
@@ -69,7 +69,7 @@ class Admin extends React.PureComponent<AdminProps> {
 
   private renderPanelForCards(cards: w.CardInStore[], setId: w.SetId | null, builtIn?: boolean) {
     const { parserVersion, isPreviewingMigration } = this.state;
-    const outOfDateCards = parserVersion ? cards.filter(c => c.metadata.source.type !== 'builtin' && c.parserV !== parserVersion) : undefined;
+    const outOfDateCards = parserVersion ? cards.filter(c => c.metadata.source.type !== 'builtin' && c.parserV !== parserVersion!.version) : undefined;
     const onClickPreview = () => { this.previewMigration(cards, setId); };
 
     return (
@@ -116,7 +116,8 @@ class Admin extends React.PureComponent<AdminProps> {
           <div><b>Parser URL:</b> {PARSER_URL}</div>
           <div><b>Firebase URL:</b> {FIREBASE_CONFIG.databaseURL}</div>
           <div><b>Game Version:</b> {version}</div>
-          <div><b>Parser Version:</b> {parserVersion}</div>
+          <div><b>Parser Version:</b> {parserVersion?.version}</div>
+          <div><b>Parser SHA:</b> {parserVersion?.sha}</div>
         </Paper>
         <Paper style={{ margin: 20, padding: 10 }}>
           <h2>All player-made cards</h2>
@@ -294,7 +295,7 @@ class Admin extends React.PureComponent<AdminProps> {
       const migratedCard: w.CardInStore = {
         ...omit(card, ['parseErrors', 'oldAbilities', 'newAbilities']),
         ...(card.type === TYPE_EVENT ? { command: card.newAbilities } : { abilities: card.newAbilities }),
-        parserV: parserVersion!,
+        parserV: parserVersion!.version,
         originalParserV,
         migrationBackup: [
           ...(card.migrationBackup || []),
@@ -321,7 +322,7 @@ class Admin extends React.PureComponent<AdminProps> {
 
     const migratedCard: w.CardInStore = {
       ...card,
-      parserV: parserVersion!,
+      parserV: parserVersion!.version,
       originalParserV: card.parserV || 'unknown'
     };
 

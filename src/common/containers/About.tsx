@@ -16,7 +16,7 @@ interface AboutProps {
 }
 
 interface AboutState {
-  parserVersion: string
+  parserVersion?: { version: string, sha: string }
 }
 
 export function mapStateToProps(state: w.State): AboutProps {
@@ -26,8 +26,8 @@ export function mapStateToProps(state: w.State): AboutProps {
 }
 
 class About extends React.PureComponent<AboutProps, AboutState> {
-  public state = {
-    parserVersion: '(loading)'
+  public state: AboutState = {
+    parserVersion: undefined
   };
 
   public componentWillMount() {
@@ -74,7 +74,8 @@ class About extends React.PureComponent<AboutProps, AboutState> {
               <pre>
                 Game version: v<a href={`https://github.com/wordbots/wordbots-core/releases/tag/v${version}`}>{version}</a><br />
                 Build SHA: {shaTruncated === 'local' ? '(local)' : <a href={`https://github.com/wordbots/wordbots-core/commit/${sha}`}>{shaTruncated}</a>}<br />
-                Parser version: {parserVersion.startsWith('(') ? parserVersion : <a href={`https://github.com/wordbots/wordbots-parser/releases/tag/${parserVersion}`}>{parserVersion}</a>}
+                Parser version: {parserVersion ? <a href={`https://github.com/wordbots/wordbots-parser/releases/tag/${parserVersion.version}`}>{parserVersion.version}</a> : '(loading)'}<br />
+                Parser SHA: {parserVersion ? parserVersion.sha === 'local' ? '(local)' : <a href={`https://github.com/wordbots/wordbots-parser/commit/${parserVersion.sha}`}>{truncate(parserVersion.sha, { length: 8, omission: '' })}</a> : '(loading)'}
               </pre>
             </Paper>
           </div>
@@ -102,9 +103,7 @@ class About extends React.PureComponent<AboutProps, AboutState> {
         parserVersion: await lookupParserVersion()
       });
     } catch (error) {
-      this.setState({
-        parserVersion: '(failed to connect to parser)'
-      });
+      console.error(error);
     }
   }
 }

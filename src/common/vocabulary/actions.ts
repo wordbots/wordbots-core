@@ -238,9 +238,10 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
       iterateOver<w.Object>(objects)((object: w.Object) => {
         const ownerName = ownerOf(state, object)!.color;
         const player = players ? players.entries[0] : state.players[ownerName];  // Default to card owner by default
-
-        player.hand = player.hand.concat([object.card]);
-        removeObjectFromBoard(state, object, getHex(state, object)!);
+        if (player) {
+          player.hand = player.hand.concat([object.card]);
+          removeObjectFromBoard(state, object, getHex(state, object)!);
+        }
       });
     },
 

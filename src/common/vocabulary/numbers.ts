@@ -28,11 +28,11 @@ export function count(_: w.GameState): w.Returns<number> {
 }
 
 export function energyAmount(_: w.GameState): w.Returns<number> {
-  return (players: w.PlayerCollection) => players.entries[0].energy.available;
+  return (players: w.PlayerCollection) => players.entries[0]?.energy?.available || 0;
 }
 
 export function maximumEnergyAmount(_: w.GameState): w.Returns<number> {
-  return (players: w.PlayerCollection) => players.entries[0].energy.total;
+  return (players: w.PlayerCollection) => players.entries[0]?.energy?.total || 0;
 }
 
 export function thatMuch(state: w.GameState): w.Returns<number> {
@@ -42,7 +42,8 @@ export function thatMuch(state: w.GameState): w.Returns<number> {
       return amount;
     } else {
       /* istanbul ignore next: this is a fallback that should be rarely hit */
-      throw new Error("Can't resolve thatMuch() because there is no salient amount");
+      console.error("Warning: Can't resolve thatMuch() because there is no salient amount");
+      return 0;  // should still return something rather than throwing an exception
     }
   };
 }

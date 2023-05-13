@@ -49,7 +49,7 @@ interface AppStateProps {
 }
 
 interface AppDispatchProps {
-  onLoggedIn: (user: fb.User) => void
+  onLoggedIn: (user: Pick<fb.User, 'uid' | 'displayName'>) => void
   onLoggedOut: () => void
   onReceiveFirebaseData: (data: Record<string, unknown> | null) => void
 }
@@ -78,7 +78,7 @@ function mapStateToProps(state: w.State): AppStateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
   return {
-    onLoggedIn: (user: fb.User) => {
+    onLoggedIn: (user: Pick<fb.User, 'uid' | 'displayName'>) => {
       dispatch(actions.loggedIn(user));
     },
     onLoggedOut: () => {
@@ -185,10 +185,10 @@ class App extends React.Component<AppProps, AppState> {
     if (this.isLoading) {
       return null;
     } else {
-      const { collection, uid, history, location } = this.props;
+      const { collection, uid, onLoggedIn, history, location } = this.props;
       return (
         <div>
-          <LoginDialog history={history} />
+          <LoginDialog onRegister={onLoggedIn} history={history} />
           <DictionaryDialog history={history} />
           <CreatorHelpDialog history={history} location={location} />
           <NewHereDialog collection={collection} history={history} uid={uid} />

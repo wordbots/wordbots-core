@@ -13,7 +13,7 @@ export function firebaseData(data: any): w.Action {
   };
 }
 
-export function loggedIn(user: fb.User): w.Action {
+export function loggedIn(user: Pick<fb.User, 'uid' | 'displayName'>): w.Action {
   return {
     type: LOGGED_IN,
     payload: { user }

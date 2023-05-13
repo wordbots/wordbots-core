@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import TextField from '@material-ui/core/TextField';
+import * as fb from 'firebase';
 import { History } from 'history';
 import * as React from 'react';
 
@@ -9,6 +10,7 @@ import { filterProfanity } from '../../util/language';
 import RouterDialog from '../RouterDialog';
 
 interface LoginDialogProps {
+  onRegister: (user: Pick<fb.User, 'uid' | 'displayName'>) => void
   history: History
 }
 
@@ -98,7 +100,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
           title={this.state.register ? 'Register' : 'Login'}
           history={history}
           actions={actions}
-          style={{width: 400, position: 'relative'}}
+          style={{ width: 400, position: 'relative' }}
         >
           {this.renderLoginForm()}
 
@@ -118,16 +120,20 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
 
   private register = (email: string, username: string, password: string) => {
     register(email, username, password)
-      .then(() => {
-        this.setState({
-          error: null,
-          snackbarOpen: true,
-          snackbarText: `You have successfully registered as ${email}`
-        });
+      .then((uid) => {
+        if (uid) {
+          this.setState({
+            error: null,
+            snackbarOpen: true,
+            snackbarText: `You have successfully registered as ${email}`
+          });
+          this.props.onRegister({ uid, displayName: username });
+        }
+
         this.handleClose();
       })
       .catch((error) => {
-        this.setState({error: `Error: ${(error as any).message}`});
+        this.setState({ error: `Error: ${(error as any).message}` });
       });
   }
 
@@ -142,14 +148,14 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
         this.handleClose();
       })
       .catch(() => {
-        this.setState({error: 'Error: Invalid username/password.'});
+        this.setState({ error: 'Error: Invalid username/password.' });
       });
   }
 
   private resetPassword = (email: string) => {
     resetPassword(email)
-      .then(() => { this.setState({error: `Password reset email sent to ${email}.`}); })
-      .catch(() => { this.setState({error: 'Error: Email address not found.'}); });
+      .then(() => { this.setState({ error: `Password reset email sent to ${email}.` }); })
+      .catch(() => { this.setState({ error: 'Error: Email address not found.' }); });
   }
 
   private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -159,7 +165,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
   }
 
   private handleClickSwitchMode = () => {
-    this.setState((state) => ({register: !state.register}));
+    this.setState((state) => ({ register: !state.register }));
   }
 
   private handleClickForgotPassword = () => {
@@ -167,19 +173,19 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
   }
 
   private handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({email: e.currentTarget.value});
+    this.setState({ email: e.currentTarget.value });
   }
 
   private handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({username: filterProfanity(e.currentTarget.value) });
+    this.setState({ username: filterProfanity(e.currentTarget.value) });
   }
 
   private handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({password: e.currentTarget.value});
+    this.setState({ password: e.currentTarget.value });
   }
 
   private handleChangeConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({confirmPassword: e.currentTarget.value});
+    this.setState({ confirmPassword: e.currentTarget.value });
   }
 
   private handleSubmit = () => {
@@ -187,7 +193,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
       if (this.state.password === this.state.confirmPassword) {
         this.register(this.state.email, this.state.username, this.state.password);
       } else {
-        this.setState({error: 'Error: Your passwords must match.'});
+        this.setState({ error: 'Error: Your passwords must match.' });
       }
     } else {
       this.login(this.state.email, this.state.password);
@@ -200,11 +206,11 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
 
   private renderLoginForm(): JSX.Element {
     return (
-      <div style={{position: 'relative'}}>
+      <div style={{ position: 'relative' }}>
         <div>
           <TextField
             value={this.state.email}
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             label="Email address"
             onKeyPress={this.handleKeyPress}
             onChange={this.handleChangeEmail}
@@ -216,7 +222,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
           <div>
             <TextField
               value={this.state.username}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               label="Username"
               onKeyPress={this.handleKeyPress}
               onChange={this.handleChangeUsername}
@@ -248,7 +254,7 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
 
         {
           this.state.error &&
-          <div style={{color: 'red', marginTop: 10, fontSize: 12}}>
+          <div style={{ color: 'red', marginTop: 10, fontSize: 12 }}>
             {this.state.error}
           </div>
         }
@@ -258,11 +264,11 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
 
   private renderFormSwitcher(): JSX.Element {
     return (
-      <div style={{position: 'absolute', top: 30, right: 24, fontSize: 12}}>
+      <div style={{ position: 'absolute', top: 30, right: 24, fontSize: 12 }}>
         <span>
           {this.state.register ? 'Have an account?' : 'Don\'t have an account?'} &nbsp;
           <span
-            style={{fontWeight: 'bold', cursor: 'pointer'}}
+            style={{ fontWeight: 'bold', cursor: 'pointer' }}
             onClick={this.handleClickSwitchMode}
           >
             {this.state.register ? 'Login' : 'Register'}

@@ -154,7 +154,15 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         executeCmd(state, abilityCmd, object);
 
         // Add the ability text to the object's card display (if we are able to parse the ability text correctly from the original command text).
-        const abilityText = state.currentCmdText;
+        let abilityText = state.currentCmdText;
+
+        // Convert 'Give X "Y"' -> 'Y'
+        /* istanbul ignore if */
+        if (abilityText?.toLowerCase().includes('give') && abilityText.split(/[gG]ive/)[1].split('"').length === 3) {
+          abilityText = abilityText.split(/[gG]ive/)[1].split('"')[1];
+        }
+
+        // If the abilityText still contains any quotation marks, then something weird is going on and we'd better just not rewrite the card text
         if (abilityText && !abilityText.includes('"')) {
           const objCurrentText = object.card.text;
           object.card.text = objCurrentText ? `${withTrailingPeriod(objCurrentText)} ${withTrailingPeriod(abilityText)}` : withTrailingPeriod(abilityText);

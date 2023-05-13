@@ -122,6 +122,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
 
 export interface CardValidationResults {
   isValid: boolean
+  isValidForTesting: boolean
   parseErrors: string[]
   nameError: string | null
   costError: string | null
@@ -167,8 +168,9 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
   })();
 
   const isValid = !nameError && !typeError && !costError && !attackError && !healthError && !speedError && !textError;
+  const isValidForTesting = !typeError && !costError && !attackError && !healthError && !speedError && !textError;
 
-  return { isValid, parseErrors, nameError, typeError, costError, attackError, healthError, speedError, textError };
+  return { isValid, isValidForTesting, parseErrors, nameError, typeError, costError, attackError, healthError, speedError, textError };
 }
 
 //

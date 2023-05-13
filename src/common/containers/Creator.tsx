@@ -244,7 +244,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
             icon="videogame_asset"
             tooltip="Test out this card in sandbox mode."
             onClick={this.testCard}
-            disabled={!this.validationResults.isValid}
+            disabled={!this.validationResults.isValidForTesting}
           >
             Test
           </ToolbarButton>
@@ -291,7 +291,6 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
               onSetAttribute={this.props.onSetAttribute}
               onSpriteClick={this.props.onSpriteClick}
               onOpenDialog={this.openDialog}
-              onTestCard={this.testCard}
               onAddToCollection={this.addToCollection}
               onToggleWillCreateAnother={this.props.onToggleWillCreateAnother}
               onSubmitParseIssue={this.handleClickReportParseIssue}
@@ -462,7 +461,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   private testCard = () => {
     const { cardOpenedForEditing } = this.state;
-    const card = createCardFromProps(this.props);
+    const card = createCardFromProps({ ...this.props, name: this.props.name || '[Unnamed]' });
     const metadata = cardOpenedForEditing?.metadata || card.metadata;
     this.props.onStartSandbox({ ...card, metadata });
     this.props.history.push('/play/sandbox', { previous: this.props.history.location });

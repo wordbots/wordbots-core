@@ -41,7 +41,6 @@ interface CardCreationFormProps {
   onSpriteClick: () => void
   onAddToCollection: (redirectToCollection: boolean) => void
   onOpenDialog: (dialog: string) => void
-  onTestCard: () => void
   onToggleWillCreateAnother: () => void
   onSubmitParseIssue: () => void
 }
@@ -65,7 +64,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
     section: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 },
 
-    leftCol: {width: 'calc(100% - 65px)', marginRight: 25},
+    leftCol: { width: 'calc(100% - 65px)', marginRight: 25 },
     rightColContainer: { display: 'flex', alignItems: 'center' },
     energyCost: {
       marginTop: -20,
@@ -76,7 +75,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       backgroundColor: 'rgb(0 188 212 / 30%)',
       padding: 5
     },
-    fullWidth: {width: '100%', background: 'white'},
+    fullWidth: { width: '100%', background: 'white' },
 
     attributeContainer: { width: '100%', marginRight: 25, marginTop: 8, textAlign: 'center' },
     attribute: { width: 60 },
@@ -90,10 +89,10 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
       paddingRight: 16,
       color: 'white'
     },
-    saveButton: {marginTop: 20},
+    saveButton: { marginTop: 20 },
     createAnotherCheckbox: { margin: '15px 5px 0' },
 
-    icon: {verticalAlign: 'middle', color: 'white'}
+    icon: { verticalAlign: 'middle', color: 'white' }
   };
 
   state = {
@@ -156,7 +155,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           </div>
 
           <div style={CardCreationForm.styles.section}>
-            <FormControl style={{width: 'calc(100% - 60px)'}}>
+            <FormControl style={{ width: 'calc(100% - 60px)' }}>
               <InputLabel>Card Type</InputLabel>
               <Select
                 disabled={isReadonly}
@@ -176,7 +175,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                   variant="contained"
                   color="secondary"
                   disabled={isReadonly}
-                  style={{width: 40, minWidth: 40}}
+                  style={{ width: 40, minWidth: 40 }}
                   onClick={this.props.onSpriteClick}
                 >
                   <Icon className="material-icons" style={CardCreationForm.styles.icon}>refresh</Icon>
@@ -186,7 +185,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
           </div>
 
           <div style={CardCreationForm.styles.section}>
-            <div style={{flex: 1, marginRight: 20, background: 'white'}}>
+            <div style={{ flex: 1, marginRight: 20, background: 'white' }}>
               <CardTextField
                 readonly={isReadonly}
                 text={this.props.text}
@@ -203,7 +202,7 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
                 <Button
                   variant="contained"
                   color="secondary"
-                  style={{width: 40, minWidth: 40}}
+                  style={{ width: 40, minWidth: 40 }}
                   disabled={!this.hasTextError || !isEmpty(this.props.submittedParseIssue)}
                   onClick={this.props.onSubmitParseIssue}
                 >
@@ -229,8 +228,8 @@ export default class CardCreationForm extends React.Component<CardCreationFormPr
 
           <div style={CardCreationForm.styles.section}>
             {this.renderAttributeField('attack', this.robot && !isReadonly)}
-            {this.renderAttributeField('health', !this.event && !isReadonly, {min: 1})}
-            {this.renderAttributeField('speed', this.robot && !isReadonly, {max: 3})}
+            {this.renderAttributeField('health', !this.event && !isReadonly, { min: 1 })}
+            {this.renderAttributeField('speed', this.robot && !isReadonly, { max: 3 })}
           </div>
 
           <div style={CardCreationForm.styles.section}>

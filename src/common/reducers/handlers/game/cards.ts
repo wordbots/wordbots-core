@@ -218,7 +218,7 @@ function playEvent(state: State, cardIdx: number): State {
 
     const commands: string[] = compact(isArray(card.command) ? card.command : [card.command]);
     commands.forEach((cmd, idx) => {
-      const cmdText = splitSentences(card.text || '')[idx];
+      const cmdText = quoteKeywords(splitSentences(card.text || '')[idx]);
       if (!player.target.choosing) {
         tempState.currentCmdText = getCommandTextForDisplay(cmdText);
 

@@ -112,7 +112,7 @@ export function withoutEmptyFields<T>(obj: T): T {
 
 /** Given a (potentially null) sentence, return the sentence with a trailing period if it doesn't have one. */
 export function withTrailingPeriod(sentence: string | null): string {
-  if (sentence && sentence.length > 0 && last(sentence) !== '.') {
+  if (sentence && sentence.length > 0 && last(sentence.trim()) !== '.') {
     return `${sentence}.`;
   } else {
     return sentence || '';

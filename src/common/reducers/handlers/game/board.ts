@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash';
 import HexUtils from '../../../components/hexgrid/HexUtils';
 import { stringToType } from '../../../constants';
 import * as w from '../../../types';
+import { inBrowser, inTest } from '../../../util/browser';
 import {
   allObjectsOnBoard, applyAbilities, canActivate, checkVictoryConditions, currentPlayer,
   dealDamageToObjectAtHex, executeCmd, getAttribute, hasEffect, logAction,
@@ -21,7 +22,7 @@ function selectTile(state: State, tile: w.HexId | null): State {
 
 function resetTargetAndStatus(player: PlayerState): void {
   player.status = { message: '', type: '' };
-  player.target = { choosing: false, chosen: null, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: [] };
+  player.target = { choosing: false, chosen: null, numChoosing: 0, possibleCardsInHand: [], possibleCardsInDiscardPile: [], possibleHexes: [] };
 }
 
 export function deselect(state: State, playerColor: w.PlayerColor = state.currentTurn): State {
@@ -229,7 +230,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
     } catch (error) {
       // TODO better error handling: throw a custom Error object that we handle in the game reducer?
       console.error(error);
-      if (state.player === state.currentTurn) {
+      if (state.player === state.currentTurn && (inBrowser() || inTest())) {
         // Show an alert only if it's the active player's turn (i.e. it's you and not your opponent who caused the error)
         alert(`Oops!\n\n${error}`);
       }
@@ -240,7 +241,7 @@ export function activateObject(state: State, abilityIdx: number, selectedHexId: 
       // Target still needs to be selected, so roll back playing the card (and return old state).
       currentPlayer(state).target = player.target;
       currentPlayer(state).status = {
-        message: `Choose a target for ${object.card.name}'s ${ability.text} ability.`,
+        message: `Choose ${player.target.numChoosing > 1 ? `${player.target.numChoosing} targets` : 'a target'} for ${object.card.name}'s ${ability.text} ability.`,
         type: 'text'
       };
 

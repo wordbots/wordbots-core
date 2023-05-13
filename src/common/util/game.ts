@@ -566,7 +566,7 @@ function endTurn(state: w.GameState): w.GameState {
   previousTurnPlayer.selectedCard = null;
   previousTurnPlayer.selectedTile = null;
   previousTurnPlayer.status.message = '';
-  previousTurnPlayer.target = { choosing: false, chosen: null, possibleHexes: [], possibleCardsInHand: [], possibleCardsInDiscardPile: [] };
+  previousTurnPlayer.target = { choosing: false, chosen: null, numChoosing: 0, possibleHexes: [], possibleCardsInHand: [], possibleCardsInDiscardPile: [] };
   previousTurnPlayer.objectsOnBoard = mapValues(previousTurnPlayer.objectsOnBoard, ((obj) => ({
     ...obj,
     attackedThisTurn: false,
@@ -805,6 +805,7 @@ export function setTargetAndExecuteQueuedAction(state: w.GameState, target: w.Ca
   player.target = {
     chosen: targets,
     choosing: false,
+    numChoosing: player.target.numChoosing,
     possibleHexes: [],
     possibleCardsInHand: [],
     possibleCardsInDiscardPile: []

@@ -98,11 +98,19 @@ class TitleBar extends React.Component<TitleBarProps & { history: History }, Tit
         <div style={{
           paddingLeft: 15,
           paddingTop: 7,
+          paddingBottom: 7,
           fontFamily: '"Carter One", "Carter One-fallback"',
           fontSize: 32,
           color: 'white',
         }}>
-          WORDBOTS
+          <span style={{ display: 'flex', alignItems: 'center' }}>
+            <a href="/">
+              <img src="/static/onebot-light.png" style={{ width: 40, height: 40, marginTop: 5, marginRight: 8 }} />
+            </a>
+            <div style={{ marginTop: -9 }}>
+              <a href="/" style={{ color: 'white', fontWeight: 'normal', textDecoration: 'none' }}>WORDBOTS</a>
+            </div>
+          </span>
         </div>
       </header>
     );

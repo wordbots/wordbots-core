@@ -38,10 +38,10 @@ export function maximumEnergyAmount(_: w.GameState): w.Returns<number> {
 export function thatMuch(state: w.GameState): w.Returns<number> {
   return () => {
     const amount = state.memory['amount'];
+    /* istanbul ignore else: this is a fallback that should be rarely hit */
     if (amount && isNumber(amount)) {
       return amount;
     } else {
-      /* istanbul ignore next: this is a fallback that should be rarely hit */
       console.error("Warning: Can't resolve thatMuch() because there is no salient amount");
       return 0;  // should still return something rather than throwing an exception
     }

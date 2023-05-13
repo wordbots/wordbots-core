@@ -5,6 +5,7 @@ import * as cards from '../../src/common/store/cards';
 import * as w from '../../src/common/types';
 import * as testCards from '../data/cards';
 import {
+  action,
   attack, drawCardToHand, getDefaultState, moveRobot,
   newTurn, objectsOnBoardOfType, playEvent, playObject, queryObjectAttribute, queryPlayerHealth,
   setUpBoardState, startingHandSize
@@ -74,7 +75,26 @@ describe('[vocabulary.triggers]', () => {
       expect(
         state.players.orange.hand.length
       ).toEqual(startingHandSize + 3);
+    });
 
+    it('should be able to activate afterDealsDamage triggered abilities', () => {
+      let state = setUpBoardState({
+        orange: {
+          '0,0,0': cards.crawlingWallCard  // 0/3
+        },
+        blue: {
+          '0,-1,1': cards.oneBotCard  // 1/2
+        }
+      });
+      state = playEvent(state, 'orange', action('Give a robot "Whenever this robot deals damage, draw a card"', "(function () { actions['giveAbility'](targets['choose'](objectsMatchingConditions('robot', [])), \"(function () { setTrigger(triggers['afterDealsDamage'](function () { return targets['thisRobot'](); }, 'allobjects'), (function () { actions['draw'](targets['self'](), 1); })); })\"); })"));
+      const orangeCardsInHand = state.players.orange.hand.length;
+      state = newTurn(state, 'blue');
+      state = attack(state, '0,-1,1', '0,0,0');
+      expect(state.players.orange.hand.length).toEqual(orangeCardsInHand);  // didn't draw any cards because Crawling Wall didn't deal any damage (0 attack)
+      state = playEvent(state, 'orange', cards.rampageCard);  // Give all robots you control +2 attack
+      state = newTurn(state, 'blue');
+      state = attack(state, '0,-1,1', '0,0,0');
+      expect(state.players.orange.hand.length).toEqual(orangeCardsInHand + 1);
     });
 
     it('should be able to activate afterDestroyed triggered abilities', () => {
@@ -92,7 +112,7 @@ describe('[vocabulary.triggers]', () => {
       });
       state = newTurn(state, 'orange');
       state = attack(state, '0,0,0', '-1,0,1');  // The orange player should take one damage from each Arena.
-      state = playEvent(state, 'orange', cards.shockCard, {hex: '0,-1,1'});  // No damage from Arena since this isn't combat.
+      state = playEvent(state, 'orange', cards.shockCard, { hex: '0,-1,1' });  // No damage from Arena since this isn't combat.
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH);
       expect(queryPlayerHealth(state, 'orange')).toEqual(STARTING_PLAYER_HEALTH - 2);
 
@@ -126,7 +146,7 @@ describe('[vocabulary.triggers]', () => {
       state = moveRobot(state, '3,-1,-2', '1,-1,0');  // General Bot allows Attack Bot to move.
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'1,-1,0': 'Attack Bot', '2,1,-3': 'General Bot'});
+      ).toEqual({ '1,-1,0': 'Attack Bot', '2,1,-3': 'General Bot' });
     });
 
     it('should be able to choose targets for afterPlayed triggered abilities', () => {
@@ -134,14 +154,14 @@ describe('[vocabulary.triggers]', () => {
       // "When this robot is played, reduce the cost of a card in your hand by 2."
       let state = getDefaultState();
       state = drawCardToHand(state, 'orange', cards.flametongueBotCard);
-      state = playObject(state, 'orange', testCards.investorBotCard, '2,1,-3', {card: cards.flametongueBotCard});
+      state = playObject(state, 'orange', testCards.investorBotCard, '2,1,-3', { card: cards.flametongueBotCard });
       expect(
-        (find(state.players.orange.hand, {name: 'Flametongue Bot'})! as w.CardInGame).cost
+        (find(state.players.orange.hand, { name: 'Flametongue Bot' })! as w.CardInGame).cost
       ).toEqual(cards.flametongueBotCard.cost - 2);
 
       // Test ability to select an object on the board.
       // "When this robot is played, deal 4 damage."
-      state = playObject(state, 'orange', cards.flametongueBotCard, '3,-1,-2', {hex: BLUE_CORE_HEX});
+      state = playObject(state, 'orange', cards.flametongueBotCard, '3,-1,-2', { hex: BLUE_CORE_HEX });
       expect(queryPlayerHealth(state, 'blue')).toEqual(STARTING_PLAYER_HEALTH - 4);
     });
 
@@ -160,7 +180,7 @@ describe('[vocabulary.triggers]', () => {
       state = playObject(state, 'orange', cards.speedyBotCard, '2,1,-3');
       expect(
         objectsOnBoardOfType(state, TYPE_ROBOT)
-      ).toEqual({'3,-1,-2': 'Speedy Bot', '2,1,-3': 'Speedy Bot'});
+      ).toEqual({ '3,-1,-2': 'Speedy Bot', '2,1,-3': 'Speedy Bot' });
     });
 
     it('should be able to activate beginningOfTurn triggered abilities', () => {

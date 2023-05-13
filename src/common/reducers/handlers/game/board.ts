@@ -7,6 +7,7 @@ import { inBrowser, inTest } from '../../../util/browser';
 import {
   allObjectsOnBoard, applyAbilities, canActivate, checkVictoryConditions, currentPlayer,
   dealDamageToObjectAtHex, executeCmd, getAttribute, hasEffect, logAction,
+  matchesType,
   opponentPlayer, ownerOf, playerAction, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
   updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
 } from '../../../util/game';
@@ -167,12 +168,26 @@ export function attackComplete(state: State): State {
         undergoer: defender
       }, () => {
         defender.mostRecentlyInCombatWith = attacker.id;
-        return dealDamageToObjectAtHex(state, attackerAttack, target, attacker, 'combat');
+        state = dealDamageToObjectAtHex(state, attackerAttack, target, attacker, 'combat');
+        if (attackerAttack > 0) {
+          state = triggerEvent(state, 'afterDealsDamage', {
+            object: attacker,
+            condition: ((t) => matchesType(defender, t.cardType || 'allobjects')),
+            undergoer: defender
+          });
+        }
+        return state;
       });
+
 
       if (!hasEffect(defender, 'cannotfightback') && defenderAttack > 0) {
         attacker.mostRecentlyInCombatWith = defender.id;
         state = dealDamageToObjectAtHex(state, defenderAttack, source, defender, 'combat');
+        state = triggerEvent(state, 'afterDealsDamage', {
+          object: defender,
+          condition: ((t) => matchesType(attacker, t.cardType || 'allobjects')),
+          undergoer: attacker
+        });
       }
 
       // Move attacker to defender's space (if possible).

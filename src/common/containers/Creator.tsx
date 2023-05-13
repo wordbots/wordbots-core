@@ -195,6 +195,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   }
 
   public render(): JSX.Element | null {
+    const { name } = this.props;
     const {
       bigramProbs, cardOpenedForEditing, examplesLoaded, isPermalinkCopied,
       loaded, refreshId, submittedParseIssue, submittedParseIssueConfirmationOpen
@@ -207,7 +208,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     return (
       <div style={{ position: 'relative' }}>
         <Background asset="compressed/IMG_3005.jpg" opacity={0.1} style={{ backgroundSize: 'contain' }} />
-        <Helmet title="Workshop" />
+        <Helmet title={`Workshop${name ? `: ${name}` : ''}`} />
         <Title text="Workshop" />
 
         <div style={{ display: 'inline', paddingLeft: 10 }}>

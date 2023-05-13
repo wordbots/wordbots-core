@@ -7,8 +7,8 @@ import GridGenerator from '../components/hexgrid/GridGenerator';
 import Hex from '../components/hexgrid/Hex';
 import HexUtils from '../components/hexgrid/HexUtils';
 import {
-  BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG, MAX_EXECUTION_STACK_SIZE, MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES,
-  stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE
+  BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG, MAX_EXECUTION_STACK_SIZE, MAX_TRIGGERS_BETWEEN_PLAYER_ACTIONS,
+  MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES, stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE
 } from '../constants';
 import * as g from '../guards';
 import { defaultTarget } from '../store/defaultGameState';
@@ -561,6 +561,7 @@ function endTurn(state: w.GameState): w.GameState {
     }
   }
 
+  playerAction();
   const previousTurnPlayer = currentPlayer(state);
   previousTurnPlayer.selectedCard = null;
   previousTurnPlayer.selectedTile = null;
@@ -920,6 +921,14 @@ export function executeCmdAndLogErrors<T = void>(
   }
 }
 
+/** Track # of triggers triggered in a row to prevent infinite loops. TODO is there a better way to do this than a global variable? */
+let NUM_TRIGGERS_SINCE_LAST_PLAYER_ACTION = 0;
+
+/** Register that a player action has been performed, resetting the NUM_TRIGGERS_SINCE_LAST_PLAYER_ACTION count. */
+export function playerAction(): void {
+  NUM_TRIGGERS_SINCE_LAST_PLAYER_ACTION = 0;
+}
+
 /** Trigger an event of a given trigger type, executing all matching triggers on the board,
   * and potentially overriding default behavior of the event (i.e. if there is an Instead clause) */
 export function triggerEvent(
@@ -928,6 +937,15 @@ export function triggerEvent(
   target: w.EventTarget,
   defaultBehavior: null | ((s: w.GameState) => w.GameState) = null
 ): w.GameState {
+  NUM_TRIGGERS_SINCE_LAST_PLAYER_ACTION++;
+  if (NUM_TRIGGERS_SINCE_LAST_PLAYER_ACTION >= MAX_TRIGGERS_BETWEEN_PLAYER_ACTIONS) {
+    // Right when we hit the limit (so only once), log the trigger exception message (but in practice, it might end up buried behind other messages anyway).
+    if (NUM_TRIGGERS_SINCE_LAST_PLAYER_ACTION === MAX_TRIGGERS_BETWEEN_PLAYER_ACTIONS) {
+      state = logAction(state, null, `Stopping executing triggers after hitting the limit of ${MAX_TRIGGERS_BETWEEN_PLAYER_ACTIONS} triggers in a row`);
+    }
+    return state;
+  }
+
   // Formulate the trigger condition.
   const defaultCondition = ((t: w.Trigger) => (target.condition ? target.condition(t) : true));
   let condition: ((t: w.Trigger) => boolean) = defaultCondition;

@@ -6,7 +6,7 @@ import * as w from '../../../types';
 import {
   allObjectsOnBoard, applyAbilities, canActivate, checkVictoryConditions, currentPlayer,
   dealDamageToObjectAtHex, executeCmd, getAttribute, hasEffect, logAction,
-  opponentPlayer, ownerOf, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
+  opponentPlayer, ownerOf, playerAction, setTargetAndExecuteQueuedAction, triggerEvent, triggerSound,
   updateOrDeleteObjectAtHex, validAttackHexes, validMovementHexes
 } from '../../../util/game';
 
@@ -33,6 +33,8 @@ export function deselect(state: State, playerColor: w.PlayerColor = state.curren
 }
 
 export function setSelectedTile(state: State, playerColor: w.PlayerColor, tile: w.HexId): State {
+  playerAction();
+
   const player = state.players[playerColor];
   const isCurrentPlayer = (playerColor === state.currentTurn);
 
@@ -52,6 +54,8 @@ export function setSelectedTile(state: State, playerColor: w.PlayerColor, tile: 
 }
 
 export function moveRobot(state: State, fromHex: w.HexId, toHex: w.HexId): State {
+  playerAction();
+
   const player: PlayerState = state.players[state.currentTurn];
   const movingRobot: w.Object = player.objectsOnBoard[fromHex];
 
@@ -136,6 +140,8 @@ export function attack(state: State, source: w.HexId, target: w.HexId): State {
 
 // For animation purposes, the effects of an attack happen in attackComplete(), triggered 400ms after attack().
 export function attackComplete(state: State): State {
+  playerAction();
+
   try {
     if (state.attack?.from && state.attack?.to) {
       const [source, target]: w.HexId[] = [state.attack.from, state.attack.to];
@@ -188,6 +194,8 @@ export function attackComplete(state: State): State {
 }
 
 export function activateObject(state: State, abilityIdx: number, selectedHexId: w.HexId | null = null): State {
+  playerAction();
+
   if (currentPlayer(state).target.choosing) {
     // If the player is in target-selection mode, just get out of that mode instead.
     resetTargetAndStatus(currentPlayer(state));

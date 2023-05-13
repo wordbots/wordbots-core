@@ -11,7 +11,7 @@ import { id, nextSeed } from '../../../util/common';
 import {
   allHexIds, applyAbilities, checkVictoryConditions, currentPlayer,
   deleteAllDyingObjects, discardCardsFromHand, executeCmd, getCost, logAction,
-  matchesType, removeCardsFromHand, setTargetAndExecuteQueuedAction,
+  matchesType, playerAction, removeCardsFromHand, setTargetAndExecuteQueuedAction,
   triggerEvent, triggerSound, validPlacementHexes
 } from '../../../util/game';
 
@@ -145,6 +145,8 @@ export function afterObjectPlayed(state: State, playedObject: w.Object): State {
 }
 
 export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
+  playerAction();
+
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState: State = cloneDeep(state);
@@ -197,6 +199,8 @@ export function placeCard(state: State, cardIdx: number, tile: w.HexId): State {
 }
 
 function playEvent(state: State, cardIdx: number): State {
+  playerAction();
+
   // Work on a copy of the state in case we have to rollback
   // (if a target needs to be selected for an afterPlayed trigger).
   let tempState: State = cloneDeep(state);

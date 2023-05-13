@@ -30,6 +30,7 @@ export const STARTING_PLAYER_HEALTH = 20;
 export const DECK_SIZE = 30;
 export const MAX_HAND_SIZE = 7;
 export const MAX_EXECUTION_STACK_SIZE = 50; // in practice, stack overflow gets triggered around ~450 - we want to be well below that level
+export const MAX_TRIGGERS_BETWEEN_PLAYER_ACTIONS = 100;
 
 export const MIN_CARDS_IN_SET = 20;
 export const MIN_CARDS_OF_EACH_RARITY_IN_SET = 4;

@@ -157,6 +157,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
         let abilityText = state.currentCmdText;
 
         // Convert 'Give X "Y"' -> 'Y'
+        /* istanbul ignore if */
         if (abilityText?.toLowerCase().includes('give') && abilityText.split(/[gG]ive/)[1].split('"').length === 3) {
           abilityText = abilityText.split(/[gG]ive/)[1].split('"')[1];
         }

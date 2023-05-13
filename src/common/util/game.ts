@@ -844,7 +844,7 @@ export function executeCmd(
   itOverride: w.Object | null = null,
   source: w.AbilityId | null = null
 ): w.GameState | w.Target | number {
-  // console.log(cmd);
+  //console.log(cmd);
   state = logDebugMessage(
     state,
     `Executing command ${source ? ` (for ability #${source})` : ''} "${state.currentCmdText}" (currentObject: ${currentObject?.card.name || '(null)'}):\n ${cmd}`,
@@ -1007,14 +1007,14 @@ export function applyAbilities(state: w.GameState): w.GameState {
       );
 
       // If the ability's targets have changed since last time it applied (or it's disabled, etc):
-      if (!isEqual(newTarget, ability.currentTargets)) {
+      if (!isEqual(newTarget, ability.currentTargets) || ability.alwaysReapply) {
         // console.log(`Reapplying abilities of ${obj.id} ${obj.card.name} - new target =`, newTarget);
 
         state = logDebugMessage(state, `(Re)applying abilities for ${obj.card.name} ...`);
         // Unapply this ability for all previously targeted objects (if any).
         unapplyAbility(state, ability);
         // And apply this ability to its new set of targets (if any).
-        applyAbility(state, ability, newTarget);
+        applyAbility(state, ability, newTarget, obj);
       }
     });
 
@@ -1026,7 +1026,7 @@ export function applyAbilities(state: w.GameState): w.GameState {
 }
 
 /** Apply an ability to a set of targets. */
-function applyAbility(state: w.GameState, ability: w.PassiveAbility, target: w.TargetReference | null) {
+function applyAbility(state: w.GameState, ability: w.PassiveAbility, target: w.TargetReference | null, abilityGrantingObject: w.Object) {
   if (target) {
     // console.log(`Applying ability ${ability.aid} "${ability.text}" to`, target);
 
@@ -1035,7 +1035,7 @@ function applyAbility(state: w.GameState, ability: w.PassiveAbility, target: w.T
     state = logDebugMessage(state, `Applying ability "${ability.text}" (#${ability.aid}) to:`, targetedEntries);
 
     if (targetedEntries.length > 0) {
-      targetedEntries.forEach(ability.apply);
+      targetedEntries.forEach((t: w.Targetable) => ability.apply(t, state, abilityGrantingObject));
       if (ability.onlyExecuteOnce) {
         ability.disabled = true;
       }

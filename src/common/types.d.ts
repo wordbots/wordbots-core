@@ -429,7 +429,8 @@ export interface ActivatedAbility {
 
 export interface PassiveAbility {
   aid: AbilityId
-  apply: (target: Targetable) => void
+  apply: (target: Targetable, state: GameState, abilityGrantingObject: _Object | null) => void
+  alwaysReapply?: boolean
   currentTargets?: TargetReference
   disabled?: boolean
   duration?: number

@@ -329,7 +329,12 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
         <Snackbar
           open={submittedParseIssueConfirmationOpen}
-          message={`Reported issue parsing '${submittedParseIssue}'. Thanks for the feedback!`}
+          message={<span>
+            Reported issue parsing <code>{submittedParseIssue}</code>.
+            Thanks for the feedback!<br />
+            (By the way, you can join <a href="https://discord.gg/BrhnPFcpSe" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'underline' }}>our Discord</a>{' '}
+            to discuss parse issues directly with the devs!)
+          </span>}
           autoHideDuration={4000}
           onClose={this.handleCloseReportParseIssueSnackbar}
         />

@@ -1,5 +1,5 @@
 import { Icon, MenuItem, Paper, Select, Snackbar } from '@material-ui/core';
-import { find, pick } from 'lodash';
+import { capitalize, find, pick, shuffle } from 'lodash';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 import * as React from 'react';
 import Helmet from 'react-helmet';
@@ -22,7 +22,6 @@ import RouterDialog from '../components/RouterDialog';
 import Title from '../components/Title';
 import Tooltip from '../components/Tooltip';
 import { CardValidationResults, createCardFromProps, getSentencesFromInput, requestParse, validateCardInCreator } from '../util/cards';
-import CardTextExampleStore from '../util/CardTextExampleStore';
 import { getCardById, getCardTextCorpus, lookupCurrentUser, saveReportedParseIssue } from '../util/firebase';
 import { prepareBigramProbs } from '../util/language';
 import { id } from '../util/common';
@@ -71,15 +70,13 @@ type CreatorProps = CreatorStateProps & CreatorDispatchProps & RouteComponentPro
 interface CreatorState {
   bigramProbs?: BigramProbs
   cardOpenedForEditing?: w.CardInStore
-  examplesLoaded: boolean
+  exampleSentences: string[]
   isPermalinkCopied: boolean
   loaded: boolean
   refreshId?: string
   submittedParseIssue: string | null
   submittedParseIssueConfirmationOpen: boolean
 }
-
-const exampleStore = new CardTextExampleStore();
 
 export function mapStateToProps(state: w.State): CreatorStateProps {
   return {
@@ -159,7 +156,7 @@ export function mapDispatchToProps(dispatch: w.MultiDispatch): CreatorDispatchPr
 
 export class Creator extends React.Component<CreatorProps, CreatorState> {
   public state: CreatorState = {
-    examplesLoaded: false,
+    exampleSentences: [],
     isPermalinkCopied: false,
     loaded: false,
     submittedParseIssue: null,
@@ -197,7 +194,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
   public render(): JSX.Element | null {
     const { name } = this.props;
     const {
-      bigramProbs, cardOpenedForEditing, examplesLoaded, isPermalinkCopied,
+      bigramProbs, cardOpenedForEditing, exampleSentences, isPermalinkCopied,
       loaded, refreshId, submittedParseIssue, submittedParseIssueConfirmationOpen
     } = this.state;
 
@@ -235,9 +232,9 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
           </ToolbarButton>
           <ToolbarButton
             icon="refresh"
-            tooltip={`Generate random text for the card. ${examplesLoaded ? '' : '(Loading examples ...)'}`}
+            tooltip={`Generate random text for the card. ${exampleSentences.length > 0 ? '' : '(Loading examples ...)'}`}
             onClick={this.handleClickRandomize}
-            disabled={!examplesLoaded || !this.isCardEditable}
+            disabled={exampleSentences.length === 0 || !this.isCardEditable}
           >
             Randomize
           </ToolbarButton>
@@ -434,7 +431,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   private handleClickRandomize = () => {
     if (!this.isCardEditable) { return; }
-    const example: string | null = exampleStore.getExample(this.parserMode);
+    const example: string | undefined = this.state.exampleSentences.pop();
     if (example) {
       this.onUpdateText(example, 'randomize', this.props.type, true);
     }
@@ -496,13 +493,10 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
 
   private loadExampleCards = async () => {
     const { corpus, examples } = await getCardTextCorpus();
-
-    const bigramProbs = prepareBigramProbs(corpus);
-    this.setState({ bigramProbs });
-
-    exampleStore.loadExamples(examples, 100).then(() => {
-      this.setState({ examplesLoaded: true });
-    }).catch(console.error);
+    this.setState({
+      bigramProbs: prepareBigramProbs(corpus),
+      exampleSentences: shuffle(examples).map(capitalize)
+    });
   }
 }
 

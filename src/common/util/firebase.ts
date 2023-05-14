@@ -54,7 +54,8 @@ function saveUser(user: firebase.User): Promise<firebase.User> {
     .set({
       uid: user.uid,
       email: user.email,
-      displayName: user.displayName
+      displayName: user.displayName,
+      joined: user.metadata.creationTime ? Date.parse(user.metadata.creationTime) : 0
     })
     .then(() => user);
 }
@@ -103,8 +104,13 @@ export async function register(email: string, username: string, password: string
 }
 
 /** Log in with the given credentials. */
-export function login(email: string, password: string): Promise<firebase.User> {
-  return fb.auth().signInWithEmailAndPassword(email, password);
+export async function login(email: string, password: string): Promise<firebase.User> {
+  const { user } = await fb.auth().signInWithEmailAndPassword(email, password);
+
+  // (populate user creation date in Firebase DB if it's not already set)
+  await saveUser(user);
+
+  return user;
 }
 
 /** Log out. */
@@ -303,7 +309,7 @@ export async function getDecks(uid: w.UserId): Promise<w.DeckInStore[]> {
 
 /** Yield ALL decks.
   * TODO: This is potentially slow and its uses should be deprecated at some point. */
-async function getAllDecks_SLOW(): Promise<w.DeckInStore[]> {
+export async function getAllDecks_SLOW(): Promise<w.DeckInStore[]> {
   const snapshot = await fb.database().ref('decks').once('value');
   return Object.values(snapshot.val() || {});
 }

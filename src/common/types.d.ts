@@ -202,7 +202,7 @@ export interface EventTarget {
 }
 
 export interface User {
-  info?: fb.UserInfo
+  info?: fb.UserInfo & { joined?: number }
   achievements?: Record<string, boolean>
   statistics?: Record<string, number>
 }

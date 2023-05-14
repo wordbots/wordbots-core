@@ -224,7 +224,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     removeAllAbilities: (objects: w.ObjectOrPlayerCollection): void => {
       iterateOver<w.Object>(objects)((object: w.Object) => {
         Object.assign(object, {
-          card: { ...object.card, text: '' },
+          card: { ...object.card, abilities: [], text: '' },
 
           triggers: [],
           abilities: object.abilities.map((ability: w.PassiveAbility) => ({ ...ability, disabled: true })),

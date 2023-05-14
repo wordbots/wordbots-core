@@ -1,7 +1,7 @@
 import { cloneDeep, groupBy, identity, isArray, mapValues } from 'lodash';
 import { shuffle } from 'seed-shuffle';
 
-import { TYPE_CORE } from '../constants';
+import { TYPE_CORE, TYPE_EVENT } from '../constants';
 import * as g from '../guards';
 import { moveObjectUsingAbility, swapObjectPositions } from '../reducers/handlers/game/board';
 import { afterObjectPlayed, instantiateObject } from '../reducers/handlers/game/cards';
@@ -308,7 +308,7 @@ export default function actions(state: w.GameState, currentObject: w.Object | nu
     // For (temporary) backwards compatibility with old cards, `owners` can be undefined (in which case, a sensible default owner is chosen).
     spawnObject: (cards: w.CardInHandCollection | w.CardInDiscardPileCollection, hexes: w.HexCollection, owners?: w.PlayerCollection): void => {
       const card: w.CardInGame = cards.entries[0];
-      if (card) {
+      if (card && card.type !== TYPE_EVENT) {
         const defaultOwner = (currentObject && ownerOf(state, currentObject)) || currentPlayer(state);
         const owner: w.PlayerInGameState = owners ? owners.entries[0] : defaultOwner;
 

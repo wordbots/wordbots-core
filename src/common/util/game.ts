@@ -8,7 +8,7 @@ import Hex from '../components/hexgrid/Hex';
 import HexUtils from '../components/hexgrid/HexUtils';
 import {
   BLUE_PLACEMENT_HEXES, DEFAULT_GAME_FORMAT, ENABLE_ULTRA_VERBOSE_DEBUG_GAME_LOG, MAX_EXECUTION_STACK_SIZE, MAX_TRIGGERS_BETWEEN_PLAYER_ACTIONS,
-  MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES, stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE
+  MAX_HAND_SIZE, ORANGE_PLACEMENT_HEXES, stringToType, TYPE_CORE, TYPE_ROBOT, TYPE_STRUCTURE, TYPE_EVENT
 } from '../constants';
 import * as g from '../guards';
 import { defaultTarget } from '../store/defaultGameState';
@@ -181,8 +181,10 @@ export function matchesType(objectOrCard: w.Object | w.CardInGame, cardTypeQuery
   const cardType = card.type;
   if (isArray(cardTypeQuery)) {
     return flatten(cardTypeQuery).map(stringToType).includes(cardType);
-  } else if (['anycard', 'allobjects'].includes(cardTypeQuery)) {
+  } else if (cardTypeQuery === 'anycard') {
     return true;
+  } else if (cardTypeQuery === 'allobjects') {
+    return cardType !== TYPE_EVENT;
   } else {
     // note that 'event' is the old name for 'action'
     return stringToType(cardTypeQuery.replace('event', 'action')) === cardType;

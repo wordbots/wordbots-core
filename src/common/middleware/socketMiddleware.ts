@@ -35,8 +35,11 @@ function socketMiddleware({ forwardedActionTypes }: SocketMiddlewareOpts): Middl
         disconnect();
       } else {
         if (action.type === ga.LOGGED_IN) {
+          // If the user has logged in or *fully* registered (i.e. has a displayName set), propagate user info to the server
           user = action.payload.user;
-          send(sa.sendUserData(action.payload.user));
+          if (user?.displayName) {
+            send(sa.sendUserData(action.payload.user));
+          }
         } else if (action.type === ga.LOGGED_OUT) {
           if (user) {
             user = undefined;

@@ -194,11 +194,12 @@ export default function launchWebsocketServer(server: Server, path: string): voi
   }
 
   function setUserData(clientID: m.ClientID, userData: m.UserData | null): void {
+    const oldUserData = state.getClientUserData(clientID);
     state.setClientUserData(clientID, userData);
     broadcastInfo();
 
     // The client has either entered the lobby or has rejoined their existing game (after temporarily disconnecting).
-    if (!state.lookupGameByClient(clientID)) {
+    if (userData && !(oldUserData?.uid === userData.uid && oldUserData?.displayName === userData.displayName) && !state.lookupGameByClient(clientID)) {
       sendChatToLobby(`${userData?.displayName || state.getClientUsername(clientID)} has entered the lobby.`);
     }
   }

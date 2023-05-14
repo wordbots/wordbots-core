@@ -88,7 +88,7 @@ export function onLogout(callback: () => void): firebase.Unsubscribe {
 }
 
 /** Register a new User given account information. */
-export async function register(email: string, username: string, password: string): Promise<void> {
+export async function register(email: string, username: string, password: string): Promise<w.UserId | undefined> {
   const credential: UserCredential = await fb.auth().createUserWithEmailAndPassword(email, password);
 
   if (credential.user) {
@@ -98,6 +98,8 @@ export async function register(email: string, username: string, password: string
     await fb.auth().currentUser.getIdToken(true); // Refresh current user's ID token so displayName gets displayed
     logToDiscord(`:wave: New user registered: **${user.displayName}** (https://${window.location.hostname}/profile/${user.uid})`);
   }
+
+  return credential.user?.uid;
 }
 
 /** Log in with the given credentials. */

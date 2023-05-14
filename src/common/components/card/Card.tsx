@@ -428,7 +428,7 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
   }
 
   private renderStatsArea(): JSX.Element | undefined {
-    const { scale, type } = this.props;
+    const { scale, stats, type } = this.props;
     const style: React.CSSProperties = {
       position: 'absolute',
       bottom: 4 * (scale || 1),
@@ -436,7 +436,9 @@ export class Card extends React.Component<CardProps & WithStyles, CardState> {
       padding: 0
     };
 
-    if (type === TYPE_ROBOT) {
+    // Render all stats for robots or for other objects that have attack and/or speed set
+    // Render just health for other objects
+    if (type === TYPE_ROBOT || (stats.attack || stats.speed)) {
       return (
         <CardContent style={style}>
           {this.renderStat('attack')}

@@ -31,12 +31,12 @@ export default class CardStat extends React.Component<CardStatProps> {
 
   get textColor(): string {
     const { base, current } = this.props;
-    if (isNumber(current) && isNumber(base) && current > base) {
-      return '#81C784';
+    if (current && (!isNumber(base) || current > base)) {
+      return '#81C784';  // 'green' means current > base or current is set and base isn't (i.e. structure has been given attack/health stat)
     } else if (isNumber(current) && isNumber(base) && current < base) {
-      return '#E57373';
+      return '#E57373';  // 'red' means current < base
     } else {
-      return '#444';
+      return '#444';  // 'gray' means current == base or base isn't set and current == 0 (or neither is set)
     }
   }
 
@@ -68,14 +68,16 @@ export default class CardStat extends React.Component<CardStatProps> {
     if (isNumber(current) && current !== base) {
       return (
         <span style={{ position: 'relative' }}>
-          <span style={baseStatStyle}>
-            &nbsp;{base}&nbsp;
-          </span>
+          {isNumber(base) && (
+            <span style={baseStatStyle}>
+              &nbsp;{base}&nbsp;
+            </span>
+          )}
           {current}
         </span>
       );
     } else {
-      return <span>{this.props.base}</span>;
+      return <span>{base}</span>;
     }
   }
 

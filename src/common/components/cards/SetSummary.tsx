@@ -20,6 +20,7 @@ import ProfileLink from '../users/ProfileLink';
 
 import { sortCards } from './utils';
 import { SortCriteria } from './types.enums';
+import CardProvenanceDescription from './CardProvenanceDescription';
 
 interface SetSummaryBaseProps {
   set: w.Set
@@ -192,6 +193,15 @@ class SetSummary extends React.Component<SetSummaryProps, SetSummaryState> {
                           scale: 0.7,
                           onCardClick: () => { this.handleClickCard(card); }
                         })}
+                        <CardProvenanceDescription
+                          card={card}
+                          style={{
+                            fontSize: 7.5,
+                            color: '#888',
+                            maxWidth: 100,
+                            height: 27
+                          }}
+                        />
                       </div>
                     ))
                 }

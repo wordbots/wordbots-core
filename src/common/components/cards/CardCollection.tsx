@@ -48,7 +48,7 @@ export default class CardCollection extends React.Component<CardCollectionProps,
   public render(): JSX.Element {
     const GridOrTable = this.props.layout === 0 ? CardGrid : CardTable;
     return (
-      <div style={{width: '100%'}}>
+      <div style={{ width: '100%' }}>
         {this.renderPageControls()}
         <GridOrTable
           selectable
@@ -66,18 +66,19 @@ export default class CardCollection extends React.Component<CardCollectionProps,
   }
 
   private onCardClick = (id: w.CardId) => {
+    const { selectedCardIds, allowMultipleSelection, onSelection } = this.props;
     const card = this.cards.find((c) => c.id === id);
     if (card && this.isSelectable(card)) {
-      if (this.props.selectedCardIds.includes(id) && !this.props.allowMultipleSelection) {
-        this.props.onSelection(without(this.props.selectedCardIds, id));
+      if (selectedCardIds.includes(id) && !allowMultipleSelection) {
+        onSelection(without(selectedCardIds, id));
       } else {
-        this.props.onSelection([...this.props.selectedCardIds, id]);
+        onSelection([...selectedCardIds, id]);
       }
     }
   }
 
-  private handleClickPrevPage = () => this.setState({page: this.currentPage - 1});
-  private handleClickNextPage = () => this.setState({page: this.currentPage + 1});
+  private handleClickPrevPage = () => this.setState({ page: this.currentPage - 1 });
+  private handleClickNextPage = () => this.setState({ page: this.currentPage + 1 });
 
   private renderPageControls = () => (
     <PageSwitcher

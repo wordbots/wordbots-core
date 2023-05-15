@@ -147,7 +147,8 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
         });
         this.handleClose();
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         this.setState({ error: 'Error: Invalid username/password.' });
       });
   }

@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import * as moment from 'moment';
 import * as React from 'react';
 
 import { typeToString } from '../../constants';
@@ -14,7 +15,7 @@ import { CardGridOrTableProps } from './CardCollection';
 class CardTable extends React.Component<CardGridOrTableProps & WithStyles> {
   public static styles: Record<string, CSSProperties> = {
     tableRoot: {
-      width: 'auto',
+      width: 'calc(100% - 40px)',
       margin: '20px',
       backgroundColor: 'white',
       boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px',
@@ -31,6 +32,9 @@ class CardTable extends React.Component<CardGridOrTableProps & WithStyles> {
       '& .selectableRow:hover': {
         backgroundColor: '#eee'
       },
+      '& .selectedRow': {
+        border: '1px solid red'
+      },
       '& .ra': {
         display: 'inline'
       }
@@ -43,18 +47,18 @@ class CardTable extends React.Component<CardGridOrTableProps & WithStyles> {
       <Table classes={{ root: classes.tableRoot }}>
         <TableHead>
           <TableRow>
-            <TableCell style={{ width: 130}}>Name</TableCell>
-            <TableCell style={{ width: 50}}>Type</TableCell>
-            <TableCell style={{ width: 50}}>Creator</TableCell>
+            <TableCell style={{ width: 130 }}>Name</TableCell>
+            <TableCell style={{ width: 50 }}>Type</TableCell>
+            <TableCell style={{ width: 50 }}>Creator</TableCell>
             <TableCell>Text</TableCell>
-            <TableCell style={{ width: 25}}>Attack</TableCell>
-            <TableCell style={{ width: 25}}>Health</TableCell>
-            <TableCell style={{ width: 25}}>Speed</TableCell>
-            <TableCell style={{ width: 25}}>Cost</TableCell>
+            <TableCell style={{ width: 25 }}>Attack</TableCell>
+            <TableCell style={{ width: 25 }}>Health</TableCell>
+            <TableCell style={{ width: 25 }}>Speed</TableCell>
+            <TableCell style={{ width: 25 }}>Cost</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-            {cards.map(this.renderCardRow)}
+          {cards.map(this.renderCardRow)}
         </TableBody>
       </Table>
     );
@@ -88,6 +92,7 @@ class CardTable extends React.Component<CardGridOrTableProps & WithStyles> {
   private renderCardRow = (card: w.CardInStore) => {
     const { selectable, selectedCardIds, onCardClick } = this.props;
     const isSelectable = selectable && card.metadata.source.type !== 'builtin';
+    const humanizedTimestamp = card.metadata.updated ? (moment as { unix: (timestamp: number) => moment.Moment }).unix(card.metadata.updated / 1000).format('lll') : undefined;
 
     function handleSelect(_e: React.MouseEvent<HTMLTableRowElement>) {
       if (isSelectable) {
@@ -98,18 +103,18 @@ class CardTable extends React.Component<CardGridOrTableProps & WithStyles> {
     return (
       <TableRow
         key={card.id || id()}
-        className={isSelectable ? 'selectableRow' : ''}
-        selected={this.props.selectable && selectedCardIds.includes(card.id)}
+        className={`${isSelectable ? 'selectableRow' : ''} ${isSelectable && selectedCardIds.includes(card.id) ? 'selectedRow' : ''}`}
+        selected={isSelectable && selectedCardIds.includes(card.id)}
         onClick={handleSelect}
       >
-        <TableCell style={{width: 130}}>{card.name}</TableCell>
-        <TableCell style={{width: 50}}>{typeToString(card.type)}</TableCell>
-        <TableCell style={{width: 50}}>{this.sourceToString(card.metadata.source)}</TableCell>
+        <TableCell style={{ width: 130 }}>{card.name}</TableCell>
+        <TableCell style={{ width: 50 }}>{typeToString(card.type)}</TableCell>
+        <TableCell style={{ width: 50 }} title={humanizedTimestamp}>{this.sourceToString(card.metadata.source)}</TableCell>
         <TableCell>{card.text}</TableCell>
-        <TableCell style={{width: 25}}>{this.renderCardRowStat('attack', card.stats)}</TableCell>
-        <TableCell style={{width: 25}}>{this.renderCardRowStat('health', card.stats)}</TableCell>
-        <TableCell style={{width: 25}}>{this.renderCardRowStat('speed', card.stats)}</TableCell>
-        <TableCell style={{width: 25}}><InlineCardCostBadge cost={card.cost} /></TableCell>
+        <TableCell style={{ width: 25 }}>{this.renderCardRowStat('attack', card.stats)}</TableCell>
+        <TableCell style={{ width: 25 }}>{this.renderCardRowStat('health', card.stats)}</TableCell>
+        <TableCell style={{ width: 25 }}>{this.renderCardRowStat('speed', card.stats)}</TableCell>
+        <TableCell style={{ width: 25 }}><InlineCardCostBadge cost={card.cost} /></TableCell>
       </TableRow>
     );
   }

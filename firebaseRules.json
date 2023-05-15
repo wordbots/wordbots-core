@@ -47,7 +47,12 @@
     "cards": {
       ".read": "true",
       "$key": {
-        ".write": "auth != null && ((!data.exists() || data.child('metadata/ownerId').val() == auth.uid) && (!newData.exists() || newData.child('metadata/ownerId').val() == auth.uid)) || ((auth.uid === 'ZOozOkbOlCOxrIjyJcHAVflnNh13' || auth.uid === 'XbnODr6FdwdTQPwvjM2uF1ErRTn1') && newData.child('originalParserV').exists())"
+        ".write": "auth != null && ((!data.exists() || data.child('metadata/ownerId').val() == auth.uid) && (!newData.exists() || newData.child('metadata/ownerId').val() == auth.uid)) || ((auth.uid === 'ZOozOkbOlCOxrIjyJcHAVflnNh13' || auth.uid === 'XbnODr6FdwdTQPwvjM2uF1ErRTn1') && newData.child('originalParserV').exists())",
+        "metadata": {
+          "disallowInEverythingDraft": {
+            ".write": "auth.uid === 'ZOozOkbOlCOxrIjyJcHAVflnNh13' || auth.uid === 'XbnODr6FdwdTQPwvjM2uF1ErRTn1'"
+          }
+        }
       },
       ".indexOn": [
         "metadata/ownerId",

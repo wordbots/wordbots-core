@@ -16,11 +16,11 @@ export default class PiecePattern extends React.Component<PiecePatternProps> {
   }
 
   get imageElt(): JSX.Element | undefined {
-    const { image, type } = this.props.piece;
+    const { image } = this.props.piece;
 
     if (image) {
       if (isSpriteImage(image)) {
-        return <Sprite id={image.sprite} size={24} spacing={6} output="svg" palette={type === TYPE_STRUCTURE ? 'greys' : 'nes'} />;
+        return <Sprite id={image.sprite} size={24} spacing={6} output="svg" palette="nes" />;
       } else if (image.img && this.images[image.img]) {
         // (only kernels have static images)
         return <image xlinkHref={this.images[image.img]} width="0.6" height="0.6" x="0.2" y="0.25" style={{ imageRendering: 'pixelated' }} />;

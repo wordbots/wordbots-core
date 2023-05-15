@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { TYPE_CORE, TYPE_EVENT, TYPE_ROBOT } from '../../constants';
+import { TYPE_CORE, TYPE_EVENT } from '../../constants';
 import * as w from '../../types';
 import loadImages from '../hexgrid/HexGridImages';
 import Sprite from '../Sprite';

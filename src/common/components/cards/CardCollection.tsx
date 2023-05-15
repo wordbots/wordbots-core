@@ -46,16 +46,24 @@ export default class CardCollection extends React.Component<CardCollectionProps,
   }
 
   public render(): JSX.Element {
-    const GridOrTable = this.props.layout === 0 ? CardGrid : CardTable;
     return (
       <div style={{ width: '100%' }}>
         {this.renderPageControls()}
-        <GridOrTable
-          selectable
-          cards={this.cards}
-          selectedCardIds={this.props.selectedCardIds}
-          onCardClick={this.onCardClick}
-        />
+        {this.props.layout === Layout.Grid
+          ? <CardGrid
+            selectable
+            cards={this.cards}
+            selectedCardIds={this.props.selectedCardIds}
+            onCardClick={this.onCardClick}
+            scale={1.25}
+          />
+          : <CardTable
+            selectable
+            cards={this.cards}
+            selectedCardIds={this.props.selectedCardIds}
+            onCardClick={this.onCardClick}
+          />
+        }
         {this.renderPageControls()}
       </div>
     );

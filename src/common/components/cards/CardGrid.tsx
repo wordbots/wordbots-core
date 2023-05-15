@@ -9,7 +9,7 @@ import Sentence from '../card/Sentence';
 import { CardGridOrTableProps } from './CardCollection';
 import CardProvenanceDescription from './CardProvenanceDescription';
 
-export default class CardGrid extends React.Component<CardGridOrTableProps> {
+export default class CardGrid extends React.Component<CardGridOrTableProps & { scale?: number }> {
   public render(): JSX.Element {
     return (
       <div
@@ -57,13 +57,14 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
         source={card.metadata.source}
         selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
         onCardClick={this.props.onCardClick}
+        scale={this.props.scale || 1}
       />
       <CardProvenanceDescription
         card={card}
         style={{
-          fontSize: 11,
+          fontSize: 11 * (this.props.scale || 1),
           color: '#888',
-          maxWidth: 140,
+          maxWidth: 140 * (this.props.scale || 1),
           padding: '1px 3px',
           background: `rgba(255, 255, 255, 0.8)`,
           borderRadius: 5

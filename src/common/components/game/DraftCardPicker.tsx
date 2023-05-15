@@ -23,7 +23,7 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
   };
 
   public render(): JSX.Element {
-    const { cardGroup, format } = this.props;
+    const { cardGroup } = this.props;
     const { selectedCardIds } = this.state;
 
     return (
@@ -57,16 +57,14 @@ export default class DraftCardPicker extends React.Component<DraftCardPickerProp
                 selected: selectedCardIds.includes(card.id),
                 onCardClick: () => this.handleSelectCard(card)
               })}
-              {format.name === 'everythingDraft' && (
-                <CardProvenanceDescription
-                  disableLinks
-                  card={card}
-                  style={{
-                    color: '#bbb',
-                    fontSize: '0.5em'
-                  }}
-                />
-              )}
+              <CardProvenanceDescription
+                disableLinks
+                card={card}
+                style={{
+                  color: '#bbb',
+                  fontSize: '0.5em'
+                }}
+              />
             </div>
           ))}
         </div>

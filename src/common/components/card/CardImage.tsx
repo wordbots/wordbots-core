@@ -107,7 +107,7 @@ export default class CardImage extends React.Component<CardImageProps, CardImage
         >
           <Sprite
             id={spriteID}
-            palette={type === TYPE_ROBOT ? 'nes' : 'greys'}
+            palette="nes"
             size={24}
             scale={scale}
             output="html"

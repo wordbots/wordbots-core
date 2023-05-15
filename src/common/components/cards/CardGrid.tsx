@@ -9,8 +9,6 @@ import Sentence from '../card/Sentence';
 import { CardGridOrTableProps } from './CardCollection';
 import CardProvenanceDescription from './CardProvenanceDescription';
 
-const CARD_SCALE = 1.25;
-
 export default class CardGrid extends React.Component<CardGridOrTableProps> {
   public render(): JSX.Element {
     return (
@@ -59,14 +57,13 @@ export default class CardGrid extends React.Component<CardGridOrTableProps> {
         source={card.metadata.source}
         selected={this.props.selectable && this.props.selectedCardIds.includes(card.id)}
         onCardClick={this.props.onCardClick}
-        scale={CARD_SCALE}
       />
       <CardProvenanceDescription
         card={card}
         style={{
-          fontSize: 11 * CARD_SCALE,
+          fontSize: 11,
           color: '#888',
-          maxWidth: 140 * CARD_SCALE,
+          maxWidth: 140,
           padding: '1px 3px',
           background: `rgba(255, 255, 255, 0.8)`,
           borderRadius: 5

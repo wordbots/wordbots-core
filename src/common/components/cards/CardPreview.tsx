@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SPRITE_VERSION } from '../../constants';
+import { SPRITE_VERSION, TYPE_ROBOT } from '../../constants';
 import * as w from '../../types';
 import { inBrowser } from '../../util/browser';
 import Card from '../card/Card';
@@ -21,10 +21,10 @@ interface CardPreviewProps {
 }
 
 export default class CardPreview extends React.Component<CardPreviewProps> {
-  get stats(): Record<w.Attribute, number> {
+  get stats(): Record<w.Attribute, number | undefined> {
     return {
-      attack: this.props.attack,
-      speed: this.props.speed,
+      attack: this.props.type === TYPE_ROBOT ? this.props.attack : undefined,
+      speed: this.props.type === TYPE_ROBOT ? this.props.speed : undefined,
       health: this.props.health
     };
   }

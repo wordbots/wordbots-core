@@ -124,6 +124,7 @@ export interface CardMetadata {
     name: string
     metadata: CardMetadata
   }
+  disallowInEverythingDraft?: boolean
 }
 
 export interface CardSource {

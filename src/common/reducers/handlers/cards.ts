@@ -49,7 +49,8 @@ const cardsHandlers = {
             name: originalCard.name,
             metadata: originalCard.metadata
           },
-          isPrivate: false
+          isPrivate: false,
+          disallowInEverythingDraft: originalCard.metadata.disallowInEverythingDraft
         }
       };
 

@@ -1,6 +1,6 @@
 import { UserCredential } from '@firebase/auth-types';
 import * as firebase from 'firebase/app';
-import { capitalize, concat, countBy, flatMap, fromPairs, mapValues, uniq, uniqBy } from 'lodash';
+import { capitalize, concat, countBy, flatMap, fromPairs, isUndefined, mapValues, uniq, uniqBy } from 'lodash';
 import * as _ from 'lodash/fp';
 import { flow } from 'lodash/fp';
 import 'firebase/auth';  // eslint-disable-line import/no-unassigned-import
@@ -298,6 +298,13 @@ export async function removeCards(cardIds: string[]): Promise<void> {
 export async function getNumCardsCreatedCountByUserId(userId: w.UserId): Promise<number> {
   const snapshot = await query('cards', 'metadata/source/uid', userId);
   return snapshot.numChildren();
+}
+
+/** Set a given flag in the given card's metadata. */
+export async function setCardMetadataFlag<K extends keyof w.CardMetadata>(cardId: w.CardId, flagKey: K, flagValue: w.CardMetadata[K]): Promise<void> {
+  fb.database()
+    .ref(`cards/${cardId}/metadata/${flagKey}`)
+    .set(isUndefined(flagValue) ? null : flagValue);
 }
 
 // DECKS

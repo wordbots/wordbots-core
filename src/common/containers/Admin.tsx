@@ -1,28 +1,21 @@
 import * as fb from 'firebase';
-import { compact, countBy, noop, omit, uniqBy } from 'lodash';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper } from '@material-ui/core';
+import { Paper, Tab, Tabs } from '@material-ui/core';
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, withRouter } from 'react-router';
+import { TabIndicatorProps } from '@material-ui/core/Tabs/TabIndicator';
 
 import * as w from '../types';
-import { FIREBASE_CONFIG, PARSER_URL, TYPE_EVENT } from '../constants';
-import { expandKeywords, getSentencesFromInput, lookupParserVersion, normalizeCard, parseBatch } from '../util/cards';
+import { FIREBASE_CONFIG, PARSER_URL } from '../constants';
+import { lookupParserVersion, normalizeCard } from '../util/cards';
 import * as firebase from '../util/firebase';
-import { collection as coreSet } from '../store/cards';
-import CardGrid from '../components/cards/CardGrid';
-import { Card } from '../components/card/Card';
-import { DIALOG_PAPER_BASE_STYLE } from '../components/RouterDialog';
-
-interface PreviewReport {
-  statistics: {
-    numErrors: number
-    numChanged: number
-    numUnchanged: number
-  }
-  changedCards: Array<w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[] }>
-}
+import CardMigrationPanel from '../components/admin/CardMigrationPanel';
+import StatisticsPanel from '../components/admin/StatisticsPanel';
+import MiscUtilitiesPanel from '../components/admin/MiscUtilitiesPanel';
+import UndraftableCardsPanel from '../components/admin/UndraftableCardsPanel';
+import { loadFromLocalStorage, saveToLocalStorage } from '../util/browser';
+import SpinningGears from '../components/SpinningGears';
 
 interface AdminProps {
   user: fb.User | null
@@ -30,13 +23,13 @@ interface AdminProps {
 }
 
 interface AdminState {
-  allCards: w.CardInStore[]
-  allSets: w.Set[]
-  migrationPreviewReport: PreviewReport | null
-  cardsBeingMigrated: w.CardInStore[]
-  setBeingMigrated: w.SetId | null
+  cards: w.CardInStore[]
+  decks: w.DeckInStore[]
+  games: Record<string, w.SavedGame>
+  sets: w.Set[]
+  users: w.User[]
   parserVersion?: { version: string, sha: string }
-  isPreviewingMigration?: boolean
+  tab: 'statistics' | 'cardMigration' | 'undraftableCards' | 'miscUtilities'
 }
 
 export function mapStateToProps(state: w.State): AdminProps {
@@ -46,66 +39,45 @@ export function mapStateToProps(state: w.State): AdminProps {
   };
 }
 
-// TODO some of this functionality should probably move into util methods ...
 class Admin extends React.PureComponent<AdminProps> {
   state: AdminState = {
-    allCards: [],
-    allSets: [],
-    cardsBeingMigrated: [],
-    setBeingMigrated: null,
-    migrationPreviewReport: null
+    cards: [],
+    decks: [],
+    games: {},
+    sets: [],
+    users: [],
+    tab: (loadFromLocalStorage('adminTab') as AdminState['tab'] | undefined) || 'statistics'
   };
 
   public componentWillMount() {
     this.loadData();
   }
 
-  private loadData() {
+  private loadData = () => {
+    this.setState({
+      cards: [],
+      decks: [],
+      games: {},
+      sets: [],
+      users: [],
+      parserVersion: undefined
+    });
+
     void this.fetchCards();
+    void this.fetchDecks();
+    void this.fetchGames();
     void this.fetchSets();
+    void this.fetchUsers();
     void this.lookupParserVersion();
-    void this.cleanupGames();
-  }
-
-  private renderPanelForCards(cards: w.CardInStore[], setId: w.SetId | null, builtIn?: boolean) {
-    const { parserVersion, isPreviewingMigration } = this.state;
-    const outOfDateCards = parserVersion ? cards.filter(c => c.metadata.source.type !== 'builtin' && c.parserV !== parserVersion!.version) : undefined;
-    const onClickPreview = () => { this.previewMigration(cards, setId); };
-
-    return (
-      <div>
-        <ul>
-          {Object.entries(countBy(cards, (c) => c.metadata.source.type === 'builtin' ? 'builtin' : c.parserV)).map(([parserV, count]) =>
-            <li key={parserV}>parser {parserV} – {count} cards</li>
-          )}
-        </ul>
-        {parserVersion && (
-          <div>
-            <h3>
-              Out-of-date Cards ({builtIn ? '??' : outOfDateCards!.length}){' '}
-              <Button variant="outlined" onClick={onClickPreview} disabled={isPreviewingMigration}>
-                Preview Migration
-              </Button>
-            </h3>
-            <CardGrid
-              cards={outOfDateCards!}
-              selectedCardIds={[]}
-              selectable={false}
-              onCardClick={noop}
-            />
-          </div>
-        )}
-      </div>
-    );
   }
 
   public render(): JSX.Element {
     const { user } = this.props;
-    const { allCards, allSets, cardsBeingMigrated, migrationPreviewReport, parserVersion, setBeingMigrated } = this.state;
+    const { cards, decks, games, sets, users, parserVersion, tab } = this.state;
     const [version] = this.props.version.split('+');
 
     // Redirect away unless admin user and on localhost (only admin user has actual firebase privileges for migrations anyway!)
-    if (window.location.hostname !== 'localhost' || user?.email !== 'alex.nisnevich@gmail.com') {
+    if (!(window.location.hostname === 'localhost' && user?.email && ['alex.nisnevich@gmail.com', 'jacob.nisnevich@gmail.com'].includes(user.email))) {
       return <Redirect to="/" />;
     }
 
@@ -120,226 +92,72 @@ class Admin extends React.PureComponent<AdminProps> {
           <div><b>Parser SHA:</b> {parserVersion?.sha}</div>
         </Paper>
         <Paper style={{ margin: 20, padding: 10 }}>
-          <h2>All player-made cards</h2>
-          {this.renderPanelForCards(allCards, null)}
-        </Paper>
-        <Paper style={{ margin: 20, padding: 10 }}>
-          <h2>Built-in cards</h2>
-          {this.renderPanelForCards(coreSet, null, true)}
-        </Paper>
-        {allSets.map((set) => (
-          <Paper key={set.id} style={{ margin: 20, padding: 10 }}>
-            <h2>Cards in set <i>{set.name}</i> by {set.metadata.authorName}</h2>
-            {this.renderPanelForCards(set.cards, set.id)}
-          </Paper>
-        ))}
-        {migrationPreviewReport && (
-          <Dialog
-            open={!!migrationPreviewReport}
-            PaperProps={{ style: { ...DIALOG_PAPER_BASE_STYLE, width: '80%' } }}
-            onClose={this.handleDismissMigrationPreview}
+          <Tabs
+            variant="fullWidth"
+            value={this.state.tab}
+            onChange={this.handleChangeTab}
+            style={{ width: '100%' }}
+            TabIndicatorProps={{
+              color: 'primary',
+              style: { height: 5 } as unknown as TabIndicatorProps['style']
+            }}
           >
-            <DialogTitle>Migration Preview</DialogTitle>
-            <DialogContent>
-              <pre>
-                {JSON.stringify(migrationPreviewReport.statistics, null, 2)}
-              </pre>
-              {migrationPreviewReport.changedCards.map((card) => (
-                <div key={card.id} style={{ display: 'flex' }}>
-                  <div>
-                    {Card.fromObj(card)}
-                  </div>
-                  <div style={{ padding: 15 }}>
-                    <div>Old JS ({card.parserV}): <pre style={{ whiteSpace: 'pre-wrap', width: '100%' }}>{card.oldAbilities.join('\n')}</pre></div>
-                    <div>New JS ({parserVersion}):{' '}
-                      <pre style={{ whiteSpace: 'pre-wrap', width: '100%' }}>
-                        {card.parseErrors.length > 0 ? <span style={{ fontWeight: 'bold', color: 'red' }}>{card.parseErrors.join('\n')}</span> : card.newAbilities.join('\n')}
-                      </pre>
-                    </div>
-                  </div>
+            <Tab value="statistics" label="Statistics" />
+            <Tab value="cardMigration" label="Card Migration" />
+            <Tab value="undraftableCards" label="Undraftable Cards" />
+            <Tab value="miscUtilities" label="Misc Utilities" />
+          </Tabs>
+          {
+            (cards.length > 0 && decks.length > 0 && Object.keys(games).length > 0 && sets.length > 0 && users.length > 0) ?
+              (
+                <div style={{ padding: '10px 20px' }}>
+                  {tab === 'statistics' && <StatisticsPanel cards={cards} decks={decks} games={Object.values(games)} sets={sets} users={users} />}
+                  {tab === 'cardMigration' && <CardMigrationPanel cards={cards} sets={sets} parserVersion={parserVersion} reloadData={this.loadData} />}
+                  {tab === 'undraftableCards' && <UndraftableCardsPanel cards={cards} reloadData={this.loadData} />}
+                  {tab === 'miscUtilities' && <MiscUtilitiesPanel games={games} />}
                 </div>
-              ))}
-            </DialogContent>
-            <DialogActions>
-              <Button
-                key="Migrate"
-                color="secondary"
-                variant="contained"
-                disabled={migrationPreviewReport.statistics.numErrors > 0 || (cardsBeingMigrated.every((c) => c.id.startsWith('builtin') && !setBeingMigrated))}
-                onClick={this.migrateCardsFromPreview}
-              >
-                Migrate
-              </Button>
-              <Button
-                key="Close"
-                color="primary"
-                variant="contained"
-                onClick={this.handleDismissMigrationPreview}
-              >
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
-        )}
+              ) : <SpinningGears />
+          }
+        </Paper>
       </div>
     );
   }
 
-  private async fetchCards(): Promise<void> {
-    const allCards = await firebase.getCards(null);
-    this.setState({ allCards });
+  private fetchCards = async (): Promise<void> => {
+    const cards = await firebase.getCards(null);
+    this.setState({ cards });
   }
 
-  private async fetchSets(): Promise<void> {
-    const allSetsUnnormalized = await firebase.getSets();
-    const allSets = allSetsUnnormalized.map((set) => ({ ...set, cards: set.cards.map((c) => normalizeCard(c)) }));
-    this.setState({ allSets });
+  private fetchDecks = async (): Promise<void> => {
+    const decks = await firebase.getAllDecks_SLOW();
+    this.setState({ decks });
   }
 
-  private async lookupParserVersion(): Promise<void> {
+  private fetchGames = async (): Promise<void> => {
+    const games: Record<string, w.SavedGame> = await firebase.getAllGames_SLOW();
+    this.setState({ games });
+  }
+
+  private fetchSets = async (): Promise<void> => {
+    const setsUnnormalized = await firebase.getSets();
+    const sets = setsUnnormalized.map((set) => ({ ...set, cards: set.cards.map((c) => normalizeCard(c)) }));
+    this.setState({ sets });
+  }
+
+  private fetchUsers = async (): Promise<void> => {
+    const users = await firebase.getUsers();
+    this.setState({ users });
+  }
+
+  private lookupParserVersion = async (): Promise<void> => {
     this.setState({
       parserVersion: await lookupParserVersion()
     });
   }
 
-  private async cleanupGames(): Promise<void> {
-    const games = await firebase.getAllGames_SLOW();
-    console.log(`Games found: ${Object.keys(games).length}`);
-    console.log(`Unique games found: ${uniqBy(Object.values(games), 'id').length}`);
-
-    const gameIdsSeen: string[] = [];
-    const duplicateGameFbIds: string[] = [];
-    Object.entries(games).forEach(([fbId, game]) => {
-      if (gameIdsSeen.includes(game.id)) {
-        duplicateGameFbIds.push(fbId);
-      } else {
-        gameIdsSeen.push(game.id);
-      }
-    });
-    console.log(`Will delete ${duplicateGameFbIds.length} entries from Firebase, with the following IDs:`);
-    console.log(duplicateGameFbIds);
-
-    firebase.removeGames(duplicateGameFbIds);
-  }
-
-  private async previewMigration(cards: w.CardInStore[], setId: w.SetId | null): Promise<void> {
-    this.setState({
-      cardsBeingMigrated: cards,
-      setBeingMigrated: setId,
-      isPreviewingMigration: true
-    });
-
-    const objectCards = cards.filter((c) => c.type !== TYPE_EVENT);
-    const eventCards = cards.filter((c) => c.type === TYPE_EVENT);
-
-    const objectCardSentences = compact(objectCards.flatMap(c => c.text ? getSentencesFromInput(c.text) : []).map((s) => expandKeywords(s)));
-    const eventCardSentences = compact(eventCards.flatMap(c => c.text ? getSentencesFromInput(c.text) : []).map((s) => expandKeywords(s)));
-
-    const objectCardParseResults = await parseBatch(objectCardSentences, 'object');
-    const eventCardParseResults = await parseBatch(eventCardSentences, 'event');
-    const parseResults = [...objectCardParseResults, ...eventCardParseResults];
-
-    const errors = compact(parseResults.map((r) => r.result.error));
-    const parseResultForSentence = Object.fromEntries(parseResults.map((({ sentence, result }) => [sentence, result])));
-
-    const changedCards = (
-      cards
-        .map((c) => ({
-          ...c,
-          parseErrors: compact(getSentencesFromInput(c.text || '').map((s) => expandKeywords(s)).map((s) => parseResultForSentence[s]?.error)),
-          oldAbilities: (c.command ? [c.command].flat() : c.abilities || []),
-          newAbilities: compact(getSentencesFromInput(c.text || '').map((s) => expandKeywords(s)).map((s) => parseResultForSentence[s]?.js))
-        }))
-        .filter((c) => c.oldAbilities.join('\n') !== c.newAbilities.join('\n') || c.parseErrors.length > 0)
-    );
-
-    this.setState({
-      isPreviewingMigration: false,
-      migrationPreviewReport: {
-        statistics: {
-          numErrors: errors.length,
-          numChanged: changedCards.length,
-          numUnchanged: cards.length - changedCards.length
-        },
-        changedCards
-      }
-    });
-  }
-
-  private migrateCardsFromPreview = () => {
-    const { cardsBeingMigrated, setBeingMigrated, migrationPreviewReport } = this.state;
-    if (migrationPreviewReport) {
-      const { statistics: { numErrors }, changedCards } = migrationPreviewReport;
-      if (numErrors === 0) {
-        cardsBeingMigrated.forEach((card) => {
-          const changedCard: (w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[] }) | undefined = changedCards.find((c) => c.id === card.id);
-          if (changedCard) {
-            this.migrateCard(changedCard, setBeingMigrated);
-          } else {
-            this.fastForwardCard(card, setBeingMigrated);
-          }
-        });
-      }
-    }
-
-    this.handleDismissMigrationPreview();
-    this.loadData();
-  }
-
-  // TODO move to util/cards ?
-  private migrateCard(card: w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[] }, setId: w.SetId | null) {
-    const { allSets, parserVersion } = this.state;
-
-    if (card.parseErrors.length === 0) {
-      const originalParserV = card.parserV || 'unknown';
-      const migratedCard: w.CardInStore = {
-        ...omit(card, ['parseErrors', 'oldAbilities', 'newAbilities']),
-        ...(card.type === TYPE_EVENT ? { command: card.newAbilities } : { abilities: card.newAbilities }),
-        parserV: parserVersion!.version,
-        originalParserV,
-        migrationBackup: [
-          ...(card.migrationBackup || []),
-          { parserV: originalParserV, abilities: card.oldAbilities }  // TODO record migration time?
-        ]
-      };
-
-      if (setId) {
-        const cardIdx = allSets.find((s) => s.id === setId)?.cards.findIndex((c) => c.id === card.id);
-        console.log(`Migrated sets/${setId}/cards/${cardIdx}`);
-        if (cardIdx !== undefined && cardIdx > -1) {
-          firebase.saveCardInSet(migratedCard, setId, cardIdx);
-        }
-      } else {
-        console.log(`Migrated cards/${migratedCard.id}`);
-        firebase.saveCard(migratedCard);
-      }
-    }
-  }
-
-  // TODO move to util/cards ?
-  private fastForwardCard(card: w.CardInStore, setId: w.SetId | null) {
-    const { allSets, parserVersion } = this.state;
-
-    const migratedCard: w.CardInStore = {
-      ...card,
-      parserV: parserVersion!.version,
-      originalParserV: card.parserV || 'unknown'
-    };
-
-    if (setId) {
-      const cardIdx = allSets.find((s) => s.id === setId)?.cards.findIndex((c) => c.id === card.id);
-      if (cardIdx !== undefined && cardIdx > -1) {
-        firebase.saveCardInSet(migratedCard, setId, cardIdx);
-      }
-    } else {
-      firebase.saveCard(migratedCard);
-    }
-  }
-
-  private handleDismissMigrationPreview = (): void => {
-    this.setState({
-      migrationPreviewReport: null
-    });
+  private handleChangeTab = (_evt: React.ChangeEvent<unknown>, value: string) => {
+    saveToLocalStorage('adminTab', value);
+    this.setState({ tab: value as AdminState['tab'] });
   }
 }
 

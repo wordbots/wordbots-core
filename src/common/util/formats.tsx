@@ -212,7 +212,7 @@ export class EverythingDraftFormat extends GameFormat {
 
   constructor(cards: w.CardInStore[]) {
     super();
-    this.cards = cards;
+    this.cards = cards.filter((c) => !c.metadata?.isPrivate && !c.metadata?.disallowInEverythingDraft);
   }
 
   public requiresDeck = false;

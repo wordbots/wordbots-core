@@ -1,6 +1,6 @@
 import {
   capitalize, compact, debounce, flatMap, fromPairs, has,
-  isArray, mapValues, omit, pick, reduce, uniqBy
+  isArray, isEqual, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
 import * as w from '../types';
@@ -375,15 +375,15 @@ export function quoteKeywords(sentence: string): string {
 //
 
 export function getCardAbilities(card: w.CardInStore): string[] {
-  return compact(isArray(card.command) ? card.command : card.command ? [card.command] : card.abilities);
+  return card.type === TYPE_EVENT ? compact(isArray(card.command) ? card.command : card.command) : (card.abilities || []);
 }
 
 export function validateIntegrityHashesAreComplete(card: w.CardInStore): boolean {
   const sentenceHashes: string[] = (card.text ? getSentencesFromInput(card.text) : []).map((s) => md5(expandKeywords(s)));
   const abilityHashes: string[] = getCardAbilities(card).map(md5);
 
-  const isValid: boolean = sentenceHashes.every((h) => (card.integrity || []).map((i) => i.input).includes(h))
-    && abilityHashes.every((h) => (card.integrity || []).map((i) => i.output).includes(h));
+  const isValid: boolean = isEqual(new Set(sentenceHashes), new Set((card.integrity || []).map((i) => i.input)))
+    && isEqual(new Set(abilityHashes), new Set((card.integrity || []).map((i) => i.output)));
 
   if (!isValid) {
     console.log({

@@ -3,6 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper } from
 import * as React from 'react';
 
 import * as w from '../../types';
+import * as g from '../../guards';
 import { TYPE_EVENT } from '../../constants';
 import { md5 } from '../../util/common';
 import { expandKeywords, getCardAbilities, getSentencesFromInput, parseBatch } from '../../util/cards';
@@ -170,16 +171,16 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
     const parseResults = [...objectCardParseResults, ...eventCardParseResults];
 
     const errors = compact(parseResults.map((r) => (r.result as w.FailedParseResult).error));
-    const integrityHashes: w.Hashes[] = compact(parseResults.flatMap((r) => (r.result as w.SuccessfulParseResult).hashes));
+    const integrityHashes: w.Hashes[] = compact(parseResults.flatMap((r) => g.isSuccessfulParseResult(r.result) ? r.result.hashes : []));
     const parseResultForSentence = Object.fromEntries(parseResults.map((({ sentence, result }) => [sentence, result])));
 
     const changedCards = (
       cards
         .map((c) => ({
           ...c,
-          parseErrors: compact(sentencesForCard(c).map((s) => (parseResultForSentence[s] as w.FailedParseResult | undefined)?.error)),
+          parseErrors: compact(sentencesForCard(c).map((s) => g.isFailedParseResult(parseResultForSentence[s]) ? parseResultForSentence.error : undefined)),
           oldAbilities: getCardAbilities(c),
-          newAbilities: compact(sentencesForCard(c).map((s) => (parseResultForSentence[s] as w.SuccessfulParseResult | undefined)?.js)),
+          newAbilities: compact(sentencesForCard(c).map((s) => g.isSuccessfulParseResult(parseResultForSentence[s]) ? parseResultForSentence.js : undefined)),
           integrity: integrityHashes.filter((hash) => sentencesForCard(c).map(md5).includes(hash.input)),
           oldIntegrity: c.integrity
         }))

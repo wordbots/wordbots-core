@@ -40,3 +40,11 @@ export function isCardVisible(target: w.PossiblyObfuscatedCard): target is w.Car
 export function isPassiveAbility(ability: w.Ability): ability is w.PassiveAbility {
   return (ability as w.PassiveAbility).unapply !== undefined;
 }
+
+export function isSuccessfulParseResult(parseResult: w.ParseResult): parseResult is w.SuccessfulParseResult {
+  return (parseResult as w.SuccessfulParseResult).js !== undefined;
+}
+
+export function isFailedParseResult(parseResult: w.ParseResult): parseResult is w.FailedParseResult {
+  return (parseResult as w.FailedParseResult).error !== undefined;
+}

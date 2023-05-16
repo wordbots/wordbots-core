@@ -1,11 +1,12 @@
 import { fromPairs } from 'lodash';
 
+import * as w from '../types';
+import * as g from '../guards';
+import { expandKeywords, getSentencesFromInput, replaceSynonyms } from '../util/cards';
+import { id, md5 } from '../util/common';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import defaultState from '../store/defaultCreatorState';
-import * as w from '../types';
-import { expandKeywords, getSentencesFromInput, replaceSynonyms } from '../util/cards';
-import { id, md5 } from '../util/common';
 
 import c from './handlers/cards';
 
@@ -22,7 +23,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
     case creatorActions.SET_TYPE:
       state.type = payload.type;
       // Clear parsed state because we're triggering a re-parse.
-      state.sentences = state.sentences.map((s: w.Sentence) => ({ ...s, result: {} }));
+      state.sentences = state.sentences.map((s: w.Sentence) => ({ ...s, result: null }));
       state.integrity = [];
       return state;
 
@@ -34,8 +35,8 @@ export default function creator(oldState: State = defaultState, { type, payload 
       const sentences: string[] = getSentencesFromInput(payload.text);
       const validCurrentParses: Record<string, w.SuccessfulParseResult> = fromPairs(
         state.sentences
-          .map((s: w.Sentence) => [s.sentence, s.result])
-          .filter(([_, r]) => (r as w.SuccessfulParseResult).js)
+          .map((s: w.Sentence) => [s.sentence, s.result] as [string, w.ParseResult])
+          .filter(([_, r]) => r && g.isSuccessfulParseResult(r)) as Array<[string, w.SuccessfulParseResult]>
       );
 
       state.text = replaceSynonyms(payload.text);

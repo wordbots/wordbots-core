@@ -490,7 +490,7 @@ export type DraftState = PerPlayer<{
 
 export interface Sentence {
   sentence: string
-  result: ParseResult | Record<string, never> // TODO: | null ?
+  result: ParseResult | null
 }
 
 export type ParseResult = SuccessfulParseResult | FailedParseResult

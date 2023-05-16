@@ -14,7 +14,7 @@ import {
 import defaultState from '../store/defaultCollectionState';
 import { CreatorStateProps } from '../containers/Creator';
 
-import { ensureInRange, id as generateId } from './common';
+import { ensureInRange, id as generateId, md5 } from './common';
 import { fetchUniversal, onLocalhost } from './browser';
 import { indexParsedSentence, lookupCurrentUser } from './firebase';
 
@@ -85,11 +85,11 @@ function cardSourceForCurrentUser(): w.CardSource {
 /** Converts card from cardCreator store format -> format for collection and game stores. */
 export function createCardFromProps(props: w.CreatorState): w.CardInStore {
   const {
-    attack, cost, health, flavorText, id, isPrivate, name, parserVersion,
+    attack, cost, health, flavorText, id, integrity, isPrivate, name, parserVersion,
     sentences: rawSentences, speed, spriteID, type
   } = props;
   const sentences = rawSentences.filter((s: { sentence: string }) => /\S/.test(s.sentence));
-  const command = sentences.map((s: { result: { js?: string } }) => s.result.js!);
+  const command = sentences.map((s) => (s.result as w.SuccessfulParseResult).js);
 
   const card: w.CardInStore = {
     id: id || generateId(),
@@ -99,6 +99,7 @@ export function createCardFromProps(props: w.CreatorState): w.CardInStore {
     spriteV: SPRITE_VERSION,
     parserV: parserVersion,
     text: sentences.map((s: { sentence: string }) => `${s.sentence}. `).join(''),
+    integrity,
     flavorText,
     cost,
     metadata: {
@@ -139,7 +140,7 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
   const nonEmptySentences: w.Sentence[] = sentences.filter((s) => /\S/.test(s.sentence));
   const hasCardText: boolean = nonEmptySentences.length > 0;
 
-  const parseErrors: string[] = compact(nonEmptySentences.map((s) => s.result.error)).map((error) =>
+  const parseErrors: string[] = compact(nonEmptySentences.map((s) => (s.result as w.FailedParseResult).error)).map((error) =>
     (`${error}.`)
       .replace('..', '.')
       .replace('Parser did not produce a valid expression', 'Parser error')
@@ -157,7 +158,7 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
       return 'Action cards must have card text.';
     } else if (parseErrors.length > 0) {
       return parseErrors.join(' ');
-    } else if (nonEmptySentences.find((s) => !s.result.js)) {
+    } else if (nonEmptySentences.find((s) => !(s.result as w.SuccessfulParseResult).js)) {
       return 'Sentences are still being parsed ...';
     } else if (nonEmptySentences.filter((s) => s.sentence.toLowerCase().includes('replace ')).length > 1) {
       // https://github.com/wordbots/wordbots-core/issues/1811
@@ -281,21 +282,22 @@ export function parseCard(
     sentences,
     isEvent ? 'event' : 'object',
     (idx, _, response) => {
-      if (response.error) {
+      if ('error' in response) {
         const errorMsg = `Received '${response.error}' while parsing '${sentences[idx]}'`;
         if (errorCallback) {
           errorCallback(errorMsg);
         } else {
           throw new Error(errorMsg);
         }
-      }
+      } else {
+        parseResults[idx] = response.js!;
+        card.integrity = [...(card.integrity || []), response.hashes];
 
-      parseResults[idx] = response.js!;
-
-      // Are we done parsing?
-      if (compact(parseResults).length === sentences.length) {
-        card[isEvent ? 'command' : 'abilities'] = parseResults;
-        callback(card, parseResults);
+        // Are we done parsing?
+        if (compact(parseResults).length === sentences.length) {
+          card[isEvent ? 'command' : 'abilities'] = parseResults;
+          callback(card, parseResults);
+        }
       }
     },
     !opts?.disableIndexing,
@@ -309,7 +311,7 @@ export async function lookupParserVersion(): Promise<{ version: string, sha: str
 }
 
 //
-// 3.5. Keyword abilities.
+// 3.1. Keyword abilities.
 //
 
 /** Given a sentence, return an array of comma-separated phrases. */
@@ -366,6 +368,56 @@ export function contractKeywords(sentence: string): string {
   * e.g. 'All robots have Jump' => 'All robots have "Jump"' */
 export function quoteKeywords(sentence: string): string {
   return contractKeywords(expandKeywords(sentence, true));
+}
+
+//
+// 3.2. Card integrity.
+//
+
+export function getCardAbilities(card: w.CardInStore): string[] {
+  return compact(isArray(card.command) ? card.command : card.command ? [card.command] : card.abilities);
+}
+
+export function validateIntegrityHashesAreComplete(card: w.CardInStore): boolean {
+  const sentenceHashes: string[] = (card.text ? getSentencesFromInput(card.text) : []).map((s) => md5(expandKeywords(s)));
+  const abilityHashes: string[] = getCardAbilities(card).map(md5);
+
+  const isValid: boolean = sentenceHashes.every((h) => (card.integrity || []).map((i) => i.input).includes(h))
+    && abilityHashes.every((h) => (card.integrity || []).map((i) => i.output).includes(h));
+
+  if (!isValid) {
+    console.log({
+      cardId: card.id,
+      integrity: card.integrity,
+      sentenceHashes,
+      abilityHashes,
+    });
+  }
+
+  return isValid;
+}
+
+export async function checkValidityOfIntegrityHashes(cards: w.CardInStore[]): Promise<{
+  validCards: w.CardInStore[]
+  invalidCards: w.CardInStore[]
+  statistics: { numValidHashes: number, numInvalidHashes: number }
+}> {
+  const hashesToVerify: w.Hashes[] = cards.flatMap((c) => c.integrity || []);
+  const verifyHashesResponse = await fetchUniversal(`${PARSER_URL}/verify-hashes`, {
+    method: 'POST',
+    body: JSON.stringify(hashesToVerify),
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const verifyHashesResults: Array<{ input: string, valid: boolean }> = await verifyHashesResponse.json();
+  const invalidHashInputs: string[] = verifyHashesResults.filter((r) => !r.valid).map((r) => r.input);
+  const cardsWithInvalidHashes: w.CardInStore[] = cards.filter((c) => (c.integrity || []).map(i => i.input).some((i) => invalidHashInputs.includes(i)));
+
+  return {
+    validCards: cards.filter((card) => !cardsWithInvalidHashes.map((c) => c.id).includes(card.id)),
+    invalidCards: cardsWithInvalidHashes,
+    statistics: { numValidHashes: verifyHashesResults.filter((r) => r.valid).length, numInvalidHashes: verifyHashesResults.filter((r) => !r.valid).length }
+  };
+
 }
 
 //

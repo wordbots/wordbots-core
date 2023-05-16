@@ -84,10 +84,10 @@ export default class CardPreview extends React.Component<CardPreviewProps> {
               stats={this.stats}
               cardStats={this.stats}
               flavorText={this.props.flavorText}
-              text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result} />)}
+              text={this.props.sentences.map((s, i) => <Sentence key={i} text={s.sentence} result={s.result as w.ParseResult | null} />)}
               rawText={this.props.sentences.map((s) => s.sentence).join('. ')}
               source={{ type: 'user' }}
-              showSpinner={sentences.some((s) => !s.result.js && !s.result.error)}
+              showSpinner={sentences.some((s) => !s.result.version)}
               scale={2.5}
               onSpriteClick={onSpriteClick}
               overrideContainerStyles={{ padding: 0 }}

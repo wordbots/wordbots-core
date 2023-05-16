@@ -103,6 +103,7 @@ export interface CardInStore {
   spriteV?: number
   parserV?: string | null
   metadata: CardMetadata
+  integrity?: Hashes[]
   // TODO what to do with the below properties when a card is edited? wipe them?
   originalParserV?: string  // the original parserV under which this card was created, if this card was migrated
   migrationBackup?: Array<{ parserV: string, abilities: string[] }>  // parsed JS for previous parser versions, if this card was migrated
@@ -249,6 +250,7 @@ export interface CreatorState {
   flavorText: string
   health: number
   id: string | null
+  integrity: Hashes[]
   isPrivate?: boolean
   name: string
   parserVersion: string | null
@@ -488,16 +490,29 @@ export type DraftState = PerPlayer<{
 
 export interface Sentence {
   sentence: string
-  result: ParseResult
+  result: ParseResult | Record<string, never> // TODO: | null ?
 }
 
-export interface ParseResult {
-  error?: string
-  js?: StringRepresentationOf<() => void>
-  unrecognizedTokens?: string[]
-  suggestions?: string[]
-  parsed?: boolean  // used by DictionaryDialog
-  version?: string
+export type ParseResult = SuccessfulParseResult | FailedParseResult
+
+export interface Hashes {
+  input: string  // md5(input)
+  output: string  // md5(output)
+  hmac: string  // hmac-sha512(md5(input).md5(output))
+}
+
+export interface SuccessfulParseResult {
+  input: string
+  js: StringRepresentationOf<() => void>
+  hashes: Hashes
+  version: string
+}
+
+export interface FailedParseResult {
+  error: string
+  unrecognizedTokens: string[]
+  suggestions: string[]
+  version: string
 }
 
 // Socket state subcomponents

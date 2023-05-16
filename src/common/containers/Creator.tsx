@@ -34,6 +34,7 @@ export interface CreatorStateProps {
   textSource: w.TextSource
   flavorText: string
   sentences: w.Sentence[]
+  integrity: w.Hashes[]
   spriteID: string
   attack: number
   speed: number
@@ -89,6 +90,7 @@ export function mapStateToProps(state: w.State): CreatorStateProps {
     cost: state.creator.cost,
     spriteID: state.creator.spriteID,
     sentences: state.creator.sentences,
+    integrity: state.creator.integrity,
     text: state.creator.text,
     textSource: state.creator.textSource,
     flavorText: state.creator.flavorText,

@@ -62,15 +62,15 @@ export default class DictionaryDialog extends React.Component<{ history: History
     const dictionary: w.Dictionary = await getDictionaryData();
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState((state) => ({
-      dictionary: {...state.dictionary, ...dictionary}
+      dictionary: { ...state.dictionary, ...dictionary }
     }));
   }
 
   public shouldComponentUpdate(nextProps: { history: History }, nextState: DictionaryState): boolean {
     return (
       !isEqual(nextState, this.state) ||
-        // can't do `!== this.props.history.location.pathname` because History gets mutated by react-router -AN
-        (nextProps.history.location.pathname !== this.state.currentPath)
+      // can't do `!== this.props.history.location.pathname` because History gets mutated by react-router -AN
+      (nextProps.history.location.pathname !== this.state.currentPath)
     );
   }
 
@@ -107,8 +107,8 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
   get dictionaryTerms(): string[] {
     return Object.keys(this.dictionaryDefinitions)
-                 .filter((t) => t.includes(this.state.searchText) && t !== '"' && t !== '\'')
-                 .sort();
+      .filter((t) => t.includes(this.state.searchText) && t !== '"' && t !== '\'')
+      .sort();
   }
   get dictionaryDefinitions(): Record<string, Array<{ syntax: string, semantics: string }>> {
     const { dictionary } = this.state;
@@ -121,8 +121,8 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
   get thesaurusTerms(): string[] {
     return Object.keys(this.thesaurusExamples)
-                 .filter((t) => t.includes(this.state.searchText))
-                 .sort();
+      .filter((t) => t.includes(this.state.searchText))
+      .sort();
   }
   get thesaurusExamples(): Record<string, string[]> {
     return this.state.dictionary.examplesByNode || {};
@@ -130,9 +130,9 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
   get keywordsTerms(): string[] {
     return Object.keys(allKeywords())
-                 .filter((t) => t.includes(this.state.searchText))
-                 .sort()
-                 .map(capitalize);
+      .filter((t) => t.includes(this.state.searchText))
+      .sort()
+      .map(capitalize);
   }
 
   public render(): JSX.Element {
@@ -163,7 +163,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
 
   private selectTerm = (term: string, callback: () => void = noop) => {
     this.setState(
-      {[`${this.currentTab}Term`]: term} as Pick<DictionaryState, TabTerm>,
+      { [`${this.currentTab}Term`]: term } as Pick<DictionaryState, TabTerm>,
       callback
     );
   }
@@ -171,7 +171,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
   private checkHash = () => {
     const hash = getHash(this.props.history);
     if (hash && hash !== this.hash) {
-      const [ type, term ] = hash.split(/:(.+)/); // https://stackoverflow.com/a/4607799
+      const [type, term] = hash.split(/:(.+)/); // https://stackoverflow.com/a/4607799
       const tabIdx = 'dtk'.indexOf(type);
 
       this.setState({ tabIdx }, () => {
@@ -227,19 +227,19 @@ export default class DictionaryDialog extends React.Component<{ history: History
     const tabStyle = { color: 'white', fontSize: '0.85em' };
 
     return (
-      <div style={{display: 'flex', backgroundColor: tabColor}}>
+      <div style={{ display: 'flex', backgroundColor: tabColor }}>
         <Tabs
           variant="fullWidth"
           value={this.state.tabIdx}
           onChange={this.handleChangeTab}
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
           TabIndicatorProps={{
             color: 'primary',
             style: { height: 5 } as unknown as TabIndicatorProps['style']
           }}
         >
           <Tab value={0} label={`Dictionary (${this.dictionaryTerms.length})`} style={tabStyle} />
-          <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle}/>
+          <Tab value={1} label={`Thesaurus (${this.thesaurusTerms.length})`} style={tabStyle} />
           <Tab value={2} label={`Keywords (${this.keywordsTerms.length})`} style={tabStyle} />
         </Tabs>
 
@@ -266,11 +266,11 @@ export default class DictionaryDialog extends React.Component<{ history: History
       const examples = uniq(examplesByTerm[term].map(this.cleanupExample));
       return (
         <div key="examples">
-          <span style={{fontSize: 24, fontWeight: 100}}>Examples</span>
+          <span style={{ fontSize: 24, fontWeight: 100 }}>Examples</span>
           <ul>
             {examples.map((example) =>
               <li key={example}>
-                {example}.&nbsp;<StatusIcon text={example} result={{parsed: true}} />
+                {example}.&nbsp;<StatusIcon text={example} result={{ parsed: true }} />
               </li>
             )}
           </ul>
@@ -284,7 +284,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
     if (this.state.showDefinitions) {
       return (
         <div key="definitions">
-          <span style={{fontSize: 24, fontWeight: 100}}>Definitions</span>
+          <span style={{ fontSize: 24, fontWeight: 100 }}>Definitions</span>
           <ol>
             {definitions.map((d) =>
               <li key={`${d.syntax}${d.semantics}`}>
@@ -296,7 +296,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
       );
     } else if (definitions) {
       return (
-        <div key="definitions" style={{marginBottom: 20, textDecoration: 'underline', cursor: 'pointer'}}>
+        <div key="definitions" style={{ marginBottom: 20, textDecoration: 'underline', cursor: 'pointer' }}>
           <a onClick={this.handleShowDefinitions}>
             [Show {definitions.length} definition(s) <i>(Advanced feature)</i>]
           </a>
@@ -311,7 +311,7 @@ export default class DictionaryDialog extends React.Component<{ history: History
       const definition = allKeywords()[term];
       return (
         <div key="definition">
-          <span style={{fontSize: 24, fontWeight: 100}}>Definition</span>
+          <span style={{ fontSize: 24, fontWeight: 100 }}>Definition</span>
           <p>
             {definition.endsWith(',') ? `${definition} [...] .` : definition}
           </p>
@@ -325,8 +325,8 @@ export default class DictionaryDialog extends React.Component<{ history: History
       <div>
         {this.renderTabs()}
 
-        <div style={{display: 'flex', justifyContent: 'stretch'}}>
-          <div style={{width: '20%'}}>
+        <div style={{ display: 'flex', justifyContent: 'stretch' }}>
+          <div style={{ width: '20%' }}>
             <DictionarySearchBar onChange={this.handleSetSearchTerm} text={this.state.searchText} />
             <DictionarySidebar
               terms={this.currentTabTerms}
@@ -335,16 +335,16 @@ export default class DictionaryDialog extends React.Component<{ history: History
             />
           </div>
 
-          <div style={{width: '80%'}}>
-            <Paper style={{height: '100%'}}>
+          <div style={{ width: '80%' }}>
+            <Paper style={{ height: '100%' }}>
               {this.renderTitle()}
 
-              <div style={{padding: 20, height: '65vh', overflowY: 'auto', boxSizing: 'border-box'}}>
+              <div style={{ padding: 20, height: '65vh', overflowY: 'auto', boxSizing: 'border-box' }}>
                 {this.renderPage()}
               </div>
             </Paper>
           </div>
-          </div>
+        </div>
       </div>
     );
   }

@@ -2,13 +2,12 @@ import Icon from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import { PARSER_URL } from '../../constants';
-import * as w from '../../types';
 import { expandKeywords } from '../../util/cards';
 import Tooltip from '../Tooltip';
 
 interface StatusIconProps {
   text: string
-  result: w.ParseResult | null
+  result: { js?: string, parsed?: boolean, error?: string } | null
 }
 
 export default class StatusIcon extends React.Component<StatusIconProps> {
@@ -27,7 +26,8 @@ export default class StatusIcon extends React.Component<StatusIconProps> {
             style={{
               fontSize: '0.7em',
               verticalAlign: 'top',
-              color: isParsed ? 'green' : (result.error ? 'red' : 'black')}
+              color: isParsed ? 'green' : (result.error ? 'red' : 'black')
+            }
             }
           >
             {isParsed ? 'code' : (result.error ? 'error_outline' : 'more_horiz')}

@@ -37,7 +37,7 @@ export default class Sentence extends React.Component<SentenceProps> {
         <span
           key={id()}
           style={{
-            color: color || (result?.js ? 'green' : (result?.error ? 'red' : 'black'))
+            color: color || ((result as w.SuccessfulParseResult | undefined)?.js ? 'green' : ((result as w.FailedParseResult | undefined)?.error ? 'red' : 'black'))
           }}
         >
           {times(numInitialNewlines, (i) => <br key={i} />)}

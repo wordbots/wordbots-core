@@ -8,6 +8,7 @@ const defaultCreatorState: w.CreatorState = {
   type: 0,
   text: '',
   sentences: [],
+  integrity: [],
   flavorText: '',
   attack: 1,
   speed: 1,

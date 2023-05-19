@@ -105,7 +105,7 @@ class MiscUtilitiesPanel extends React.Component<MiscUtilitiesPanelProps, MiscUt
     const numCardsWithNoAbilities = cards.filter((c) => !c.integrity?.length && getCardAbilities(c).length === 0).length;
     this.log(`Cards without integrity hashes at all: ${numCardsWithNoIntegrity} (of which ${numCardsWithNoAbilities} have no abilities)`);
 
-    const cardsWithIncompleteIntegrityHashes: w.CardInStore[] = cards.filter((c) => !validateIntegrityHashesAreComplete(c));
+    const cardsWithIncompleteIntegrityHashes: w.CardInStore[] = cards.filter((c) => !validateIntegrityHashesAreComplete(c, this.log));
     this.log(`Cards with missing/incomplete integrity hashes: ${cardsWithIncompleteIntegrityHashes.length}: ${cardsWithIncompleteIntegrityHashes.map((c) => c.id).join(', ')}`);
 
     const cardsWithHashesToVerify: w.CardInStore[] = cards.filter((card) => !cardsWithIncompleteIntegrityHashes.map((c) => c.id).includes(card.id));

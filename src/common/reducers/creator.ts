@@ -1,4 +1,4 @@
-import { fromPairs } from 'lodash';
+import { fromPairs, uniqBy } from 'lodash';
 
 import * as w from '../types';
 import * as g from '../guards';
@@ -47,7 +47,7 @@ export default function creator(oldState: State = defaultState, { type, payload 
       }));
 
       const sentenceHashes: string[] = sentences.map((s) => md5(expandKeywords(s)));
-      state.integrity = state.integrity.filter(({ input }) => sentenceHashes.includes(input));
+      state.integrity = uniqBy(state.integrity.filter(({ input }) => sentenceHashes.includes(input)), 'input');
 
       return state;
     }

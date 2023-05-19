@@ -381,12 +381,12 @@ export function getCardAbilities(card: w.CardInStore): string[] {
 }
 
 export function getCardSentences(card: w.CardInStore): string[] {
-  return getSentencesFromInput(card.text || '').map((s) => expandKeywords(s.replace('\n', '').trim()));
+  return compact(getSentencesFromInput(card.text || '').map((s) => expandKeywords(s.replace('\n', '').trim())));
 }
 
-export function validateIntegrityHashesAreComplete(card: w.CardInStore): boolean {
-  // TODO dedupe integrity by input (both here and when creating!)
-  const integrity: w.Hashes[] = uniqBy(card.integrity || [], 'hmac');
+// eslint-disable-next-line no-console
+export function validateIntegrityHashesAreComplete(card: w.CardInStore, logger: (str: string) => void = console.log): boolean {
+  const integrity: w.Hashes[] = uniqBy(card.integrity || [], 'input');
 
   const sentenceHashes: string[] = getCardSentences(card).map(md5);
   const abilityHashes: string[] = getCardAbilities(card).map(md5);
@@ -397,14 +397,14 @@ export function validateIntegrityHashesAreComplete(card: w.CardInStore): boolean
   );
 
   if (!isValid) {
-    console.log('Found a card with missing or incomplete integrity hashes:');
-    console.log({
+    logger('Found a card with missing or incomplete integrity hashes:');
+    logger(JSON.stringify({
       cardId: card.id,
       integrity,
       sentenceHashes,
       abilityHashes,
       sentences: getCardSentences(card)
-    });
+    }, null, 2));
   }
 
   return isValid;

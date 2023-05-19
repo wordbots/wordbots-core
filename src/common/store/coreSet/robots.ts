@@ -542,7 +542,7 @@ export const defenderBotCard: w.CardInStore = {
     health: 4,
     speed: 2
   },
-  text: 'Defender, taunt',
+  text: 'Defender,. taunt',
   abilities: [
     "(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'cannotattack')); })",
     "(function () { setAbility(abilities['applyEffect'](function () { return objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['opponent']())]); }, 'canonlyattack', {target: targets['thisRobot']()})); })"
@@ -597,7 +597,7 @@ export const friendlyRiotShieldCard: w.CardInStore = {
     health: 6,
     speed: 3
   },
-  text: 'Defender, haste',
+  text: 'Defender,. haste',
   abilities: [
     "(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'cannotattack')); })",
     "(function () { setTrigger(triggers['afterPlayed'](function () { return targets['it'](); }), (function () { actions['canMoveAndAttackAgain'](targets['thisRobot']()); })); })"
@@ -723,7 +723,7 @@ export const royalGuardCard: w.CardInStore = {
     health: 10,
     speed: 1
   },
-  text: 'Defender, taunt',
+  text: 'Defender,. taunt',
   abilities: [
     "(function () { setAbility(abilities['applyEffect'](function () { return targets['thisRobot'](); }, 'cannotattack')); })",
     "(function () { setAbility(abilities['applyEffect'](function () { return objectsMatchingConditions('robot', [conditions['adjacentTo'](targets['thisRobot']()), conditions['controlledBy'](targets['opponent']())]); }, 'canonlyattack', {target: targets['thisRobot']()})); })"

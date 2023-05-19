@@ -433,7 +433,7 @@ export async function checkValidityOfIntegrityHashes(cards: w.CardInStore[]): Pr
 }
 
 export async function verifyIntegrityOfCards(cards: w.CardInStore[]): Promise<{ invalidCards: w.CardInStore[] }> {
-  const cardsWithCompleteIntegrityHashes = cards.filter(validateIntegrityHashesAreComplete);
+  const cardsWithCompleteIntegrityHashes = cards.filter((c) => validateIntegrityHashesAreComplete(c));
   const cardsWithCompleteIntegrityHashesIds = cardsWithCompleteIntegrityHashes.map((c) => c.id);
   const cardsWithIncompleteIntegrityHashes = cards.filter((c) => !cardsWithCompleteIntegrityHashesIds.includes(c.id));
 

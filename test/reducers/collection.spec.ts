@@ -101,6 +101,7 @@ describe('Collection reducer', () => {
       name: 'Test Bot',
       parserVersion: null,
       sentences: [],
+      integrity: [],
       speed: 1,
       spriteID: '',
       text: '',

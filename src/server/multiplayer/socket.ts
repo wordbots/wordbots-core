@@ -1,10 +1,11 @@
 import { IncomingMessage, Server } from 'http';
 
-import { noop } from 'lodash';
+import { isString, noop } from 'lodash';
 import * as WebSocket from 'ws';
 
 import { DISCONNECT_FORFEIT_TIME_SECS, ENABLE_OBFUSCATION_ON_SERVER } from '../../common/constants';
 import { id as generateID } from '../../common/util/common';
+import { verifyIntegrityOfCards } from '../../common/util/cards';
 
 import * as m from './multiplayer';
 import MultiplayerServerState from './MultiplayerServerState';
@@ -204,9 +205,28 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     }
   }
 
-  function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions): void {
-    state.hostGame(clientID, name, format, deck, options);
-    broadcastInfo();
+  async function testDeckValidity(clientID: m.ClientID, deck: m.Deck): Promise<boolean> {
+    const { invalidCards } = await verifyIntegrityOfCards(deck.cards);
+    if (invalidCards.length > 0) {
+      sendChat(
+        `You can't use this deck in a multiplayer game because some cards don't pass the integrity check: ${invalidCards.map(c => `"${c.name}"`).join(', ')}. `
+        + 'Please open these cards in the Workshop and save them again, or contact the developers if this error message persists.',
+        [clientID]
+      );
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  async function hostGame(clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions): Promise<void> {
+    // check deck integrity before letting the player use it in a multiplayer game
+    if (await testDeckValidity(clientID, deck)) {
+      await state.hostGame(clientID, name, format, deck, options);
+      broadcastInfo();
+    } else {
+      sendMessage('ws:CANCEL_HOSTING', undefined, [clientID]);
+    }
   }
 
   function cancelHostingGame(clientID: m.ClientID): void {
@@ -214,22 +234,32 @@ export default function launchWebsocketServer(server: Server, path: string): voi
     broadcastInfo();
   }
 
-  function joinGame(clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck): void {
-    const game = state.joinGame(clientID, opponentID, deck);
-    if (game) {
-      const { decks, format, name, startingSeed, usernames, options } = game;
+  async function joinGame(clientID: m.ClientID, opponentID: m.ClientID, deck: m.Deck): Promise<void> {
+    // check deck integrity before letting the player use it in a multiplayer game
+    if (await testDeckValidity(clientID, deck)) {
+      const game = state.joinGame(clientID, opponentID, deck);
+      if (game) {
+        const { decks, format, name, startingSeed, usernames, options } = game;
 
-      sendMessage('ws:GAME_START', { player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
-      sendMessage('ws:GAME_START', { player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
-      revealVisibleCardsInGame(game);
-      sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
-      broadcastInfo();
+        sendMessage('ws:GAME_START', { player: 'blue', format, decks, usernames, options, seed: startingSeed }, [clientID]);
+        sendMessage('ws:GAME_START', { player: 'orange', format, decks, usernames, options, seed: startingSeed }, [opponentID]);
+        revealVisibleCardsInGame(game);
+        sendChat(`Entering game ${name} ...`, [clientID, opponentID]);
+        broadcastInfo();
+      }
     }
   }
 
-  function joinQueue(clientID: m.ClientID, format: m.Format, deck: m.Deck): void {
-    state.joinQueue(clientID, format, deck);
-    broadcastInfo();
+  async function joinQueue(clientID: m.ClientID, format: m.Format, deck: m.Deck): Promise<void> {
+    if (!isString(format)) {
+      sendChat('This format is invalid for the matchmaking queue.', [clientID]);
+      sendMessage('ws:LEAVE_QUEUE', undefined, [clientID]);
+    } if (await testDeckValidity(clientID, deck)) {
+      state.joinQueue(clientID, format as m.BuiltInFormat, deck);
+      broadcastInfo();
+    } else {
+      sendMessage('ws:LEAVE_QUEUE', undefined, [clientID]);
+    }
   }
 
   function leaveQueue(clientID: m.ClientID): void {

@@ -8,6 +8,7 @@ import { DECK_SIZE } from '../constants';
 import defaultState, { bluePlayerState, orangePlayerState } from '../store/defaultGameState';
 import * as w from '../types';
 
+import { verifyIntegrityOfCards } from './cards';
 import { nextSeed } from './common';
 import { buildCardDraftGroups } from './sets';
 
@@ -120,6 +121,18 @@ export class GameFormat {
     return state.gameFormat === this.serialized();
   }
 
+  /**
+   * For draft formats, returns a copy of this format filtering out any cards in the format that don't pass integrity checks.
+   * For non-draft formats, this is just the identify func.
+   */
+  public async checkIntegrity(): Promise<GameFormat> {
+    if (this.requiresDeck) {
+      return this;
+    } else {
+      throw new Error(`Override checkIntegrity() for the ${name} format!`);
+    }
+  }
+
   /** Starts a game in this format.
     * GameFormat's startGame method performs only basic setup, to be overridden by subclasses. */
   public startGame(
@@ -219,6 +232,12 @@ export class EverythingDraftFormat extends GameFormat {
 
   public serialized = (): w.EverythingDraftFormat => ({ _type: 'everythingDraft', cards: this.cards });
 
+  public async checkIntegrity(): Promise<GameFormat> {
+    const { invalidCards } = await verifyIntegrityOfCards(this.cards);
+    const invalidCardIds = invalidCards.map((c) => c.id);
+    return new EverythingDraftFormat(this.cards.filter((c) => !invalidCardIds.includes(c.id)));
+  }
+
   public startGame(
     state: w.GameState, player: w.PlayerColor, usernames: w.PerPlayer<string>,
     _decks: w.PerPlayer<w.PossiblyObfuscatedCard[]>, options: w.GameOptions, seed: number
@@ -299,6 +318,15 @@ export class SetDraftFormat extends GameFormat {
     this.set = set;
     this.name = `setDraft(${set.id})`;
     this.displayName = `Set Draft: ${set.name} (by ${set.metadata.authorName})${set.metadata.isPublished ? '' : ' (unpublished set)'}`;
+  }
+
+  public async checkIntegrity(): Promise<GameFormat> {
+    const { invalidCards } = await verifyIntegrityOfCards(this.set.cards);
+    const invalidCardIds = invalidCards.map((c) => c.id);
+    return new SetDraftFormat({
+      ...this.set,
+      cards: this.set.cards.filter((c) => !invalidCardIds.includes(c.id))
+    });
   }
 
   public serialized = (): w.SetDraftFormat => ({ _type: 'setDraft', set: this.set });

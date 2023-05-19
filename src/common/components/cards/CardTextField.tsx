@@ -41,7 +41,7 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
 
     return flow(
       flatMap((s: w.Sentence) =>
-        (s.result.suggestions || []).map((suggestion) =>
+        ((s.result as w.FailedParseResult).suggestions || []).map((suggestion) =>
           ({
             original: s.sentence.trim(),
             suggestion: contractKeywords(suggestion)
@@ -65,8 +65,8 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
 
     return (
       <div>
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <div style={{width: '100%'}}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ width: '100%' }}>
             <TextField
               multiline
               variant="outlined"
@@ -74,7 +74,7 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
               disabled={this.props.readonly}
               value={this.state.currentText}
               label="Card Text"
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               rows={2}
               onChange={this.handleUpdateText}
             />
@@ -101,15 +101,15 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
   private renderDidYouMean = () => {
     if (this.textSuggestions.length > 0) {
       return (
-        <div style={{marginTop: 5}}>
+        <div style={{ marginTop: 5 }}>
           Did you mean: {this.textSuggestions.map(({ original, suggestion }) => (
-            <CardTextSuggestion
-              key={original}
-              original={original}
-              suggestion={suggestion}
-              onChooseSuggestion={this.handleChooseSuggestion}
-            />
-          ))} ?
+          <CardTextSuggestion
+            key={original}
+            original={original}
+            suggestion={suggestion}
+            onChooseSuggestion={this.handleChooseSuggestion}
+          />
+        ))} ?
         </div>
       );
     }

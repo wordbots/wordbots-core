@@ -129,10 +129,10 @@ const cardsHandlers = {
   openCardForEditing: (state: w.CreatorState, card: w.CardInStore): w.CreatorState => {
     const newFields: Partial<w.CreatorState> = {
       ...pick(card, ['id', 'name', 'type', 'text', 'cost', 'spriteID', 'flavorText']),
-      health: card.stats ? card.stats.health : undefined,
-      speed: card.stats ? card.stats.speed : undefined,
-      attack: card.stats ? card.stats.attack : undefined,
-      sentences: splitSentences(card.text || '').map((s) => ({ sentence: s, result: {} }))
+      health: card.stats?.health,
+      speed: card.stats?.speed,
+      attack: card.stats?.attack,
+      sentences: splitSentences(card.text || '').map((s) => ({ sentence: s, result: null }))
     };
 
     return { ...state, ...omitBy(newFields, isUndefined) };
@@ -221,7 +221,7 @@ const cardsHandlers = {
     return state;
   },
 
-  saveSet: (state: State, set: w.Set) => {
+  saveSet: (state: State, set: w.Set): State => {
     firebase.saveSet(set);
 
     if (!state.sets.find((s) => s.id === set.id)) {

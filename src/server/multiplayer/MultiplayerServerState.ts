@@ -192,9 +192,9 @@ export default class MultiplayerServerState {
   }
 
   // Make a player host a game with the given name and using the given deck.
-  public hostGame = (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions = {}): void => {
+  public hostGame = async (clientID: m.ClientID, name: string, format: m.Format, deck: m.Deck, options: m.GameOptions = {}): Promise<void> => {
     const username = this.getClientUsername(clientID);
-    const decodedFormat: GameFormat = GameFormat.decode(format);
+    const decodedFormat: GameFormat = await GameFormat.decode(format).checkIntegrity();
 
     if (decodedFormat.requiresDeck && !decodedFormat.isDeckValid(deck)) {
       console.warn(`${username} tried to start game ${name} but their deck was invalid for the ${decodedFormat.name} format.`);
@@ -209,6 +209,21 @@ export default class MultiplayerServerState {
       });
       console.log(`${username} started game ${name}.`);
     }
+  }
+
+  // Like hostGame() but synchronous – only possible for formats that don't require integrity checks – i.e. built-in formats.
+  public hostGameSync = async (clientID: m.ClientID, name: string, format: m.BuiltInFormat, deck: m.Deck, options: m.GameOptions = {}): Promise<void> => {
+    const username = this.getClientUsername(clientID);
+    // TODO reduce duplication with hostGame()?
+    this.state.waitingPlayers.push({
+      id: clientID,
+      players: [clientID],
+      name,
+      format,
+      deck,
+      options
+    });
+    console.log(`${username} started game ${name}.`);
   }
 
   // Cancel a game that is being hosted.
@@ -335,7 +350,7 @@ export default class MultiplayerServerState {
   }
 
   // Add a player to the matchmaking queue.
-  public joinQueue = (clientID: m.ClientID, format: m.Format, deck: m.Deck): void => {
+  public joinQueue = (clientID: m.ClientID, format: m.BuiltInFormat, deck: m.Deck): void => {
     if (this.isClientLoggedIn(clientID) && GameFormat.decode(format).isDeckValid(deck)) {
       this.state.matchmakingQueue.push({ clientID, format, deck });
     }
@@ -365,7 +380,7 @@ export default class MultiplayerServerState {
       const [playerId1, playerId2] = [player1.clientID, player2.clientID];
       const gameName = `${this.getClientUsername(playerId1)} vs ${this.getClientUsername(playerId2)}`;
 
-      this.hostGame(playerId1, gameName, player1.format, player1.deck);
+      this.hostGameSync(playerId1, gameName, player1.format, player1.deck);
       const game = this.joinGame(playerId2, playerId1, player2.deck, { type: 'RANKED' });
 
       if (game) {

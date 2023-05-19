@@ -14,6 +14,7 @@ export type CardInStore = w.CardInStore;
 export type ObfuscatedCard = w.ObfuscatedCard;
 export type Deck = w.DeckInGame;
 export type Format = w.Format;
+export type BuiltInFormat = w.BuiltInFormat;
 export type GameState = w.GameState;
 export type GameOptions = w.GameOptions;
 export type PerPlayer<T> = w.PerPlayer<T>;
@@ -58,7 +59,7 @@ export interface GameWaitingForPlayers {
 export interface PlayerInQueue {
   clientID: ClientID
   deck: Deck
-  format: Format
+  format: BuiltInFormat
 }
 
 export interface ServerState {

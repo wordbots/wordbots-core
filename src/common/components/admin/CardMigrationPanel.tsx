@@ -1,15 +1,17 @@
-import { compact, countBy, noop, omit } from 'lodash';
+import { compact, countBy, isEqual, noop, omit } from 'lodash';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper } from '@material-ui/core';
 import * as React from 'react';
 
 import * as w from '../../types';
+import * as g from '../../guards';
 import { TYPE_EVENT } from '../../constants';
-import { expandKeywords, getSentencesFromInput, parseBatch } from '../../util/cards';
+import { md5 } from '../../util/common';
+import { getCardAbilities, getCardSentences, parseBatch } from '../../util/cards';
 import * as firebase from '../../util/firebase';
 import { collection as coreSet } from '../../store/cards';
-import CardGrid from '../cards/CardGrid';
 import { Card } from '../card/Card';
 import { DIALOG_PAPER_BASE_STYLE } from '../RouterDialog';
+import CardGrid from '../cards/CardGrid';
 
 interface PreviewReport {
   statistics: {
@@ -17,7 +19,7 @@ interface PreviewReport {
     numChanged: number
     numUnchanged: number
   }
-  changedCards: Array<w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[] }>
+  changedCards: Array<w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[], oldIntegrity: w.Hashes[] }>
 }
 
 interface CardMigrationPanelProps {
@@ -113,11 +115,17 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
                   </div>
                   <div style={{ padding: 15 }}>
                     <div>Old JS ({card.parserV}): <pre style={{ whiteSpace: 'pre-wrap', width: '100%' }}>{card.oldAbilities.join('\n')}</pre></div>
-                    <div>New JS ({parserVersion}):{' '}
+                    <div>New JS ({parserVersion?.version}):{' '}
                       <pre style={{ whiteSpace: 'pre-wrap', width: '100%' }}>
                         {card.parseErrors.length > 0 ? <span style={{ fontWeight: 'bold', color: 'red' }}>{card.parseErrors.join('\n')}</span> : card.newAbilities.join('\n')}
                       </pre>
                     </div>
+                    {!isEqual(new Set(card.integrity.map(i => i.hmac)), new Set((card.oldIntegrity || []).map(i => i.hmac))) && (
+                      <div>
+                        <div>Old Integrity: <pre>{JSON.stringify(card.oldIntegrity, null, 2)}</pre></div>
+                        <div>New Integrity: <pre>{JSON.stringify(card.integrity, null, 2)}</pre></div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -157,25 +165,33 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
     const objectCards = cards.filter((c) => c.type !== TYPE_EVENT);
     const eventCards = cards.filter((c) => c.type === TYPE_EVENT);
 
-    const objectCardSentences = compact(objectCards.flatMap(c => c.text ? getSentencesFromInput(c.text) : []).map((s) => expandKeywords(s)));
-    const eventCardSentences = compact(eventCards.flatMap(c => c.text ? getSentencesFromInput(c.text) : []).map((s) => expandKeywords(s)));
+    const objectCardSentences = compact(objectCards.flatMap(getCardSentences));
+    const eventCardSentences = compact(eventCards.flatMap(getCardSentences));
 
     const objectCardParseResults = await parseBatch(objectCardSentences, 'object');
     const eventCardParseResults = await parseBatch(eventCardSentences, 'event');
     const parseResults = [...objectCardParseResults, ...eventCardParseResults];
 
-    const errors = compact(parseResults.map((r) => r.result.error));
+    const errors = compact(parseResults.map((r) => (r.result as w.FailedParseResult).error));
+    const integrityHashes: w.Hashes[] = compact(parseResults.flatMap((r) => g.isSuccessfulParseResult(r.result) ? r.result.hashes : []));
     const parseResultForSentence = Object.fromEntries(parseResults.map((({ sentence, result }) => [sentence, result])));
 
     const changedCards = (
       cards
+        .filter((c) => !c.id.startsWith('builtin/'))
         .map((c) => ({
           ...c,
-          parseErrors: compact(getSentencesFromInput(c.text || '').map((s) => expandKeywords(s)).map((s) => parseResultForSentence[s]?.error)),
-          oldAbilities: (c.command ? [c.command].flat() : c.abilities || []),
-          newAbilities: compact(getSentencesFromInput(c.text || '').map((s) => expandKeywords(s)).map((s) => parseResultForSentence[s]?.js))
+          parseErrors: compact(getCardSentences(c).map(s => parseResultForSentence[s]).map(r => g.isFailedParseResult(r) ? r.error : undefined)),
+          oldAbilities: getCardAbilities(c),
+          newAbilities: compact(getCardSentences(c).map(s => parseResultForSentence[s]).map(r => g.isSuccessfulParseResult(r) ? r.js : undefined)),
+          integrity: integrityHashes.filter((hash) => getCardSentences(c).map(md5).includes(hash.input)),
+          oldIntegrity: c.integrity
         }))
-        .filter((c) => c.oldAbilities.join('\n') !== c.newAbilities.join('\n') || c.parseErrors.length > 0)
+        .filter((c) =>
+          c.oldAbilities.join('\n') !== c.newAbilities.join('\n')
+          || !isEqual(new Set(c.integrity.map(i => i.hmac)), new Set((c.oldIntegrity || []).map(i => i.hmac)))
+          || c.parseErrors.length > 0
+        )
     );
 
     this.setState({
@@ -218,7 +234,7 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
     if (card.parseErrors.length === 0) {
       const originalParserV = card.parserV || 'unknown';
       const migratedCard: w.CardInStore = {
-        ...omit(card, ['parseErrors', 'oldAbilities', 'newAbilities']),
+        ...omit(card, ['parseErrors', 'oldAbilities', 'newAbilities', 'oldIntegrity']) as w.CardInStore,
         ...(card.type === TYPE_EVENT ? { command: card.newAbilities } : { abilities: card.newAbilities }),
         parserV: parserVersion!.version,
         originalParserV,

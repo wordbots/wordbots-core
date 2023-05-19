@@ -114,7 +114,7 @@ class Admin extends React.PureComponent<AdminProps> {
                   {tab === 'statistics' && <StatisticsPanel cards={cards} decks={decks} games={Object.values(games)} sets={sets} users={users} />}
                   {tab === 'cardMigration' && <CardMigrationPanel cards={cards} sets={sets} parserVersion={parserVersion} reloadData={this.loadData} />}
                   {tab === 'undraftableCards' && <UndraftableCardsPanel cards={cards} reloadData={this.loadData} />}
-                  {tab === 'miscUtilities' && <MiscUtilitiesPanel games={games} />}
+                  {tab === 'miscUtilities' && <MiscUtilitiesPanel cards={cards} games={games} sets={sets} reloadData={this.loadData} />}
                 </div>
               ) : <SpinningGears />
           }

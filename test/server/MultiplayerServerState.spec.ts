@@ -18,21 +18,25 @@ const initialState: m.SerializedServerState = {
   queueSize: 0
 };
 
-function expectState(fn: (state: MSS) => void, expectedSerializedState: m.SerializedServerState): void {
-  const state = new MultiplayerServerState();
-  fn(state);
-  expect(state.serialize()).toEqual(expectedSerializedState);
-}
-function expectStateFn(fn: (state: MSS) => void, expectedSerializedStateFn: (state: MSS) => m.SerializedServerState): void {
-  const state = new MultiplayerServerState();
-  fn(state);
-  expect(state.serialize()).toEqual(expectedSerializedStateFn(state));
-}
-
 describe('MultiplayerServerState', () => {
   const oldConsole = { log: console.log, warn: console.warn };
   let dummyWebSocket: WebSocket;
   let warning = '';
+
+  async function expectState(fn: (state: MSS) => Promise<void>, expectedSerializedState: m.SerializedServerState, expectedWarning?: string): Promise<void> {
+    const state = new MultiplayerServerState();
+    await fn(state);
+    expect(state.serialize()).toEqual(expectedSerializedState);
+    if (expectedWarning) {
+      expect(warning).toEqual(expectedWarning);
+    }
+  }
+
+  async function expectStateFn(fn: (state: MSS) => Promise<void>, expectedSerializedStateFn: (state: MSS) => m.SerializedServerState): Promise<void> {
+    const state = new MultiplayerServerState();
+    await fn(state);
+    expect(state.serialize()).toEqual(expectedSerializedStateFn(state));
+  }
 
   beforeAll(() => {
     dummyWebSocket = new MockSocket('ws://null') as any as WebSocket;
@@ -45,13 +49,14 @@ describe('MultiplayerServerState', () => {
     console.warn = oldConsole.warn;
   });
 
-  it('should return the initial state', () => {
-    expectState(noop, initialState);
+  it('should return the initial state', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    await await expectState(async () => { }, initialState);
   });
 
   describe('[Connect/disconnect]', () => {
-    it('should be able to connect a logged-in player', () => {
-      expectState((state: MSS) => {
+    it('should be able to connect a logged-in player', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('loggedInClient', dummyWebSocket);
         state.setClientUserData('loggedInClient', { uid: 'loggedInClientUid', displayName: 'loggedInClientUsername' });
       }, {
@@ -64,19 +69,18 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should be able to connect a guest player', () => {
-      expectState((state: MSS) => {
+    it('should be able to connect a guest player', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('guestClient', dummyWebSocket);
       }, {
         ...initialState,
         playersOnline: ['guestClient'],
         playersInLobby: ['guestClient']
-      }
-      );
+      });
     });
 
-    it('should be able to disconnect a player', () => {
-      expectState((state: MSS) => {
+    it('should be able to disconnect a player', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('guestClient', dummyWebSocket);
         state.disconnectClient('guestClient');
       }, initialState);
@@ -84,11 +88,11 @@ describe('MultiplayerServerState', () => {
   });
 
   describe('[Hosting/joining games]', () => {
-    it('should be able to host a game', () => {
-      expectState((state: MSS) => {
+    it('should be able to host a game', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
         playersOnline: ['host'],
@@ -107,10 +111,10 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should be able to host a game as a guest', () => {
-      expectState((state: MSS) => {
+    it('should be able to host a game as a guest', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
-        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
       }, {
         ...initialState,
         playersOnline: ['host'],
@@ -128,25 +132,24 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should NOT be able to host a game with an invalid deck', () => {
-      expectState((state: MSS) => {
+    it('should NOT be able to host a game with an invalid deck', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('host', 'My Game', 'normal', emptyDeck);
+        await state.hostGame('host', 'My Game', 'normal', emptyDeck);
       }, {
         ...initialState,
         playersOnline: ['host'],
         playersInLobby: ['host'],
         userData: { host: { uid: 'hostId', displayName: 'hostName' } }
-      });
-      expect(warning).toEqual('hostName tried to start game My Game but their deck was invalid for the normal format.');
+      }, 'hostName tried to start game My Game but their deck was invalid for the normal format.');
     });
 
-    it('should be able to cancel hosting a game', () => {
-      expectState((state: MSS) => {
+    it('should be able to cancel hosting a game', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.cancelHostingGame('host');
       }, {
         ...initialState,
@@ -156,12 +159,12 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should be able to join a hosted game (even as a guest)', () => {
-      expectStateFn((state: MSS) => {
+    it('should be able to join a hosted game (even as a guest)', async () => {
+      await expectStateFn(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);
         state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('guest', 'host', defaultDecks[1]);
       }, (state: MSS) => ({
         ...initialState,
@@ -176,12 +179,12 @@ describe('MultiplayerServerState', () => {
       }));
     });
 
-    it('should NOT be able to join a game with an invalid deck', () => {
-      expectState((state: MSS) => {
+    it('should NOT be able to join a game with an invalid deck', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);
         state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('guest', 'host', emptyDeck);
       }, {
         ...initialState,
@@ -198,17 +201,16 @@ describe('MultiplayerServerState', () => {
             players: ['host']
           }
         ]
-      });
-      expect(warning).toEqual('Guest_guest was unable to join hostName\'s game.');
+      }, 'Guest_guest was unable to join hostName\'s game.');
     });
 
-    it('should be able to join an active game as a spectator', () => {
-      expectStateFn((state: MSS) => {
+    it('should be able to join an active game as a spectator', async () => {
+      await expectStateFn(async (state: MSS) => {
         state.connectClient('host', dummyWebSocket);
         state.connectClient('guest', dummyWebSocket);
         state.connectClient('spectator', dummyWebSocket);
         state.setClientUserData('host', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('host', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('guest', 'host', defaultDecks[1]);
         state.spectateGame('spectator', (state.lookupGameByClient('guest') as m.Game).id);
       }, (state: MSS) => ({
@@ -227,8 +229,8 @@ describe('MultiplayerServerState', () => {
   });
 
   describe('[Queuing]', () => {
-    it('should be able to join the unranked queue', () => {
-      expectState((state: MSS) => {
+    it('should be able to join the unranked queue', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('player', dummyWebSocket);
         state.setClientUserData('player', { uid: 'playerId', displayName: 'playerName' });
         state.joinQueue('player', 'normal', defaultDecks[0]);
@@ -241,8 +243,8 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should NOT be able to join the unranked queue as a guest', () => {
-      expectState((state: MSS) => {
+    it('should NOT be able to join the unranked queue as a guest', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('player', dummyWebSocket);
         state.joinQueue('player', 'normal', defaultDecks[0]);
       }, {
@@ -252,8 +254,8 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should NOT be able to join the unranked queue with an invalid deck', () => {
-      expectState((state: MSS) => {
+    it('should NOT be able to join the unranked queue with an invalid deck', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('player', dummyWebSocket);
         state.joinQueue('player', 'normal', emptyDeck);
       }, {
@@ -263,8 +265,8 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should be able to leave the unranked queue', () => {
-      expectState((state: MSS) => {
+    it('should be able to leave the unranked queue', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('player', dummyWebSocket);
         state.setClientUserData('player', { uid: 'playerId', displayName: 'playerName' });
         state.joinQueue('player', 'normal', defaultDecks[0]);
@@ -278,9 +280,9 @@ describe('MultiplayerServerState', () => {
       });
     });
 
-    it('should be matched as soon as there is more than one player in the unranked queue for a given format', () => {
+    it('should be matched as soon as there is more than one player in the unranked queue for a given format', async () => {
       // TODO this behavior will change once there is "real" matchmaking.
-      expectStateFn((state: MSS) => {
+      await expectStateFn(async (state: MSS) => {
         state.connectClient('player1', dummyWebSocket);
         state.setClientUserData('player1', { uid: 'playerId1', displayName: 'playerName1' });
         state.joinQueue('player1', 'normal', defaultDecks[0]);
@@ -306,8 +308,8 @@ describe('MultiplayerServerState', () => {
       }));
     });
 
-    it('should NOT be matched against a player in a different format', () => {
-      expectState((state: MSS) => {
+    it('should NOT be matched against a player in a different format', async () => {
+      await expectState(async (state: MSS) => {
         state.connectClient('player1', dummyWebSocket);
         state.setClientUserData('player1', { uid: 'playerId1', displayName: 'playerName1' });
         state.joinQueue('player1', 'normal', defaultDecks[0]);
@@ -329,12 +331,12 @@ describe('MultiplayerServerState', () => {
   });
 
   describe('[Gameplay and game end]', () => {
-    it('should store game actions and maintain a copy of game state', () => {
+    it('should store game actions and maintain a copy of game state', async () => {
       const state = new MultiplayerServerState();
       state.connectClient('player1', dummyWebSocket);
       state.connectClient('player2', dummyWebSocket);
       state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
-      state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
+      await state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
       state.joinGame('player2', 'player1', defaultDecks[1]);
 
       let game: m.Game = state.lookupGameByClient('player1')!;
@@ -352,7 +354,7 @@ describe('MultiplayerServerState', () => {
       expect([game.state.players.orange.hand.length, game.state.players.blue.hand.length]).toEqual([3, 3]);
     });
 
-    it('should detect endgame conditions', () => {
+    it('should detect endgame conditions', async () => {
       const state = new MultiplayerServerState();
       const storeGameResultFn: jest.Mock = jest.fn();
       state.storeGameResult = storeGameResultFn;
@@ -360,7 +362,7 @@ describe('MultiplayerServerState', () => {
       state.connectClient('player1', dummyWebSocket);
       state.connectClient('player2', dummyWebSocket);
       state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
-      state.hostGame('player1', 'My Game', 'normal', kernelKillerDeck);
+      await state.hostGame('player1', 'My Game', 'normal', kernelKillerDeck);
       state.joinGame('player2', 'player1', defaultDecks[1]);
       state.appendGameAction('player1', gameActions.placeCard('3,-1,-2', 0) as m.Action);
       expect(storeGameResultFn.mock.calls.length).toBe(0);
@@ -368,15 +370,15 @@ describe('MultiplayerServerState', () => {
       expect(storeGameResultFn.mock.calls.length).toBe(1);
     });
 
-    it('should end the game if a player leaves the game', () => {
-      expectState((state: MSS) => {
+    it('should end the game if a player leaves the game', async () => {
+      await expectState(async (state: MSS) => {
         const storeGameResultFn: jest.Mock = jest.fn();
         state.storeGameResult = storeGameResultFn;
 
         state.connectClient('player1', dummyWebSocket);
         state.connectClient('player2', dummyWebSocket);
         state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
-        state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
+        await state.hostGame('player1', 'My Game', 'normal', defaultDecks[0]);
         state.joinGame('player2', 'player1', defaultDecks[1]);
         expect(storeGameResultFn.mock.calls.length).toBe(0);
         state.leaveGame('player2');
@@ -391,7 +393,7 @@ describe('MultiplayerServerState', () => {
   });
 
   describe('getCardsToReveal()', () => {
-    function startGame(player1Deck: m.Deck = defaultDecks[0], player2Deck: m.Deck = defaultDecks[0]): MSS {
+    async function startGame(player1Deck: m.Deck = defaultDecks[0], player2Deck: m.Deck = defaultDecks[0]): Promise<MSS> {
       const state = new MultiplayerServerState();
 
       state.connectClient('player1', dummyWebSocket);
@@ -399,15 +401,15 @@ describe('MultiplayerServerState', () => {
       state.connectClient('spectator', dummyWebSocket);
       state.setClientUserData('player1', { uid: 'hostId', displayName: 'hostName' });
 
-      state.hostGame('player1', 'My Game', 'normal', player1Deck);
+      await state.hostGame('player1', 'My Game', 'normal', player1Deck);
       state.joinGame('player2', 'player1', player2Deck);
       state.spectateGame('spectator', (state.lookupGameByClient('player1') as m.Game).id);
 
       return state;
     }
 
-    it('should only reveal cards in a player\'s hand to that player', () => {
-      const state = startGame();
+    it('should only reveal cards in a player\'s hand to that player', async () => {
+      const state = await startGame();
       // player1 is orange.
       expect(state.getCardsToReveal('player1').blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
       expect(state.getCardsToReveal('player1').orange.hand.filter((c: m.Card) => c.id !== 'obfuscated').length).toEqual(2);
@@ -416,14 +418,14 @@ describe('MultiplayerServerState', () => {
       expect(state.getCardsToReveal('player2').orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
     });
 
-    it('should not reveal any cards in hand to spectators', () => {
-      const state = startGame();
+    it('should not reveal any cards in hand to spectators', async () => {
+      const state = await startGame();
       expect(state.getCardsToReveal('spectator').blue.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
       expect(state.getCardsToReveal('spectator').orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(2);
     });
 
-    it('should reveal robot cards when they are about to be played', () => {
-      const state = startGame(botsOnlyDeck, botsOnlyDeck);
+    it('should reveal robot cards when they are about to be played', async () => {
+      const state = await startGame(botsOnlyDeck, botsOnlyDeck);
       const action: [m.Action, m.ClientID] = [gameActions.placeCard('3,-1,-2', 0) as m.Action, 'player1'];
 
       // player1 is orange.
@@ -435,8 +437,8 @@ describe('MultiplayerServerState', () => {
       expect(state.getCardsToReveal('player2', action).orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(1);
     });
 
-    it('should reveal event cards when they are about to be played', () => {
-      const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
+    it('should reveal event cards when they are about to be played', async () => {
+      const state = await startGame(eventsOnlyDeck, eventsOnlyDeck);
       state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange') as m.Action);
       const action: [m.Action, m.ClientID] = [gameActions.setSelectedTile('3,-1,-2', 'orange') as m.Action, 'player1'];
 
@@ -449,8 +451,8 @@ describe('MultiplayerServerState', () => {
       expect(state.getCardsToReveal('player2', action).orange.hand.filter((c: m.Card) => c.id === 'obfuscated').length).toEqual(1);
     });
 
-    it('should reveal cards in the discard pile to all clients', () => {
-      const state = startGame(eventsOnlyDeck, eventsOnlyDeck);
+    it('should reveal cards in the discard pile to all clients', async () => {
+      const state = await startGame(eventsOnlyDeck, eventsOnlyDeck);
       state.appendGameAction('player1', gameActions.setSelectedCard(0, 'orange') as m.Action);
       state.appendGameAction('player1', gameActions.setSelectedTile('3,-1,-2', 'orange') as m.Action);
 
@@ -459,4 +461,6 @@ describe('MultiplayerServerState', () => {
       });
     });
   });
+
+  // TODO tests for card integrity verification?
 });

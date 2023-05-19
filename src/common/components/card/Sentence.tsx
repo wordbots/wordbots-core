@@ -2,6 +2,7 @@ import { flatMap, times } from 'lodash';
 import * as React from 'react';
 
 import * as w from '../../types';
+import * as g from '../../guards';
 import { keywordsInSentence, splitSentences } from '../../util/cards';
 import { id } from '../../util/common';
 
@@ -37,7 +38,7 @@ export default class Sentence extends React.Component<SentenceProps> {
         <span
           key={id()}
           style={{
-            color: color || (result?.js ? 'green' : (result?.error ? 'red' : 'black'))
+            color: color || ((result && g.isSuccessfulParseResult(result)) ? 'green' : (result && g.isFailedParseResult(result)) ? 'red' : 'black')
           }}
         >
           {times(numInitialNewlines, (i) => <br key={i} />)}

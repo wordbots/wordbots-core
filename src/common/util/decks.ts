@@ -10,7 +10,9 @@ import { instantiateCard } from './cards';
 export function cardsInDeck(deck: w.DeckInStore, userCards: w.CardInStore[], sets: w.Set[]): w.CardInStore[] {
   const set: w.Set | null = deck.setId && sets.find((s) => s.id === deck.setId) || null;
   const cardPool = set ? set.cards : userCards;
-  return compact((deck.cardIds || []).map((id) => cardPool.find((c) => c.id === id)));
+  return compact((deck.cardIds || []).map((id) =>
+    (id.startsWith('builtin/') ? userCards : cardPool).find((c) => c.id === id))
+  );
 }
 
 /** Given a DeckInStore, a user's pool of cards, and a list of sets,

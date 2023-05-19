@@ -140,7 +140,9 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
   const nonEmptySentences: w.Sentence[] = sentences.filter((s) => /\S/.test(s.sentence));
   const hasCardText: boolean = nonEmptySentences.length > 0;
 
-  const parseErrors: string[] = compact(nonEmptySentences.map((s) => (s.result as w.FailedParseResult).error)).map((error) =>
+  const parseErrors: string[] = compact(
+    nonEmptySentences.map((s) => s.result && g.isFailedParseResult(s.result) ? s.result.error : null)
+  ).map((error) =>
     (`${error}.`)
       .replace('..', '.')
       .replace('Parser did not produce a valid expression', 'Parser error')
@@ -375,22 +377,33 @@ export function quoteKeywords(sentence: string): string {
 //
 
 export function getCardAbilities(card: w.CardInStore): string[] {
-  return card.type === TYPE_EVENT ? compact(isArray(card.command) ? card.command : card.command) : (card.abilities || []);
+  return card.type === TYPE_EVENT ? compact(isArray(card.command) ? card.command : [card.command]) : (card.abilities || []);
+}
+
+export function getCardSentences(card: w.CardInStore): string[] {
+  return getSentencesFromInput(card.text || '').map((s) => expandKeywords(s.replace('\n', '').trim()));
 }
 
 export function validateIntegrityHashesAreComplete(card: w.CardInStore): boolean {
-  const sentenceHashes: string[] = (card.text ? getSentencesFromInput(card.text) : []).map((s) => md5(expandKeywords(s)));
+  // TODO dedupe integrity by input (both here and when creating!)
+  const integrity: w.Hashes[] = uniqBy(card.integrity || [], 'hmac');
+
+  const sentenceHashes: string[] = getCardSentences(card).map(md5);
   const abilityHashes: string[] = getCardAbilities(card).map(md5);
 
-  const isValid: boolean = isEqual(new Set(sentenceHashes), new Set((card.integrity || []).map((i) => i.input)))
-    && isEqual(new Set(abilityHashes), new Set((card.integrity || []).map((i) => i.output)));
+  const isValid: boolean = (
+    isEqual(new Set(sentenceHashes), new Set(integrity.map((i) => i.input)))
+    && isEqual(new Set(abilityHashes), new Set(integrity.map((i) => i.output)))
+  );
 
   if (!isValid) {
+    console.log('Found a card with missing or incomplete integrity hashes:');
     console.log({
       cardId: card.id,
-      integrity: card.integrity,
+      integrity,
       sentenceHashes,
       abilityHashes,
+      sentences: getCardSentences(card)
     });
   }
 
@@ -402,7 +415,7 @@ export async function checkValidityOfIntegrityHashes(cards: w.CardInStore[]): Pr
   invalidCards: w.CardInStore[]
   statistics: { numValidHashes: number, numInvalidHashes: number }
 }> {
-  const hashesToVerify: w.Hashes[] = cards.flatMap((c) => c.integrity || []);
+  const hashesToVerify: w.Hashes[] = uniqBy(cards.flatMap((c) => c.integrity || []), 'hmac');
   const verifyHashesResponse = await fetchUniversal(`${PARSER_URL}/verify-hashes`, {
     method: 'POST',
     body: JSON.stringify(hashesToVerify),
@@ -417,7 +430,15 @@ export async function checkValidityOfIntegrityHashes(cards: w.CardInStore[]): Pr
     invalidCards: cardsWithInvalidHashes,
     statistics: { numValidHashes: verifyHashesResults.filter((r) => r.valid).length, numInvalidHashes: verifyHashesResults.filter((r) => !r.valid).length }
   };
+}
 
+export async function verifyIntegrityOfCards(cards: w.CardInStore[]): Promise<{ invalidCards: w.CardInStore[] }> {
+  const cardsWithCompleteIntegrityHashes = cards.filter(validateIntegrityHashesAreComplete);
+  const cardsWithCompleteIntegrityHashesIds = cardsWithCompleteIntegrityHashes.map((c) => c.id);
+  const cardsWithIncompleteIntegrityHashes = cards.filter((c) => !cardsWithCompleteIntegrityHashesIds.includes(c.id));
+
+  const { invalidCards } = await checkValidityOfIntegrityHashes(cardsWithCompleteIntegrityHashes);
+  return { invalidCards: [...cardsWithIncompleteIntegrityHashes, ...invalidCards] };
 }
 
 //

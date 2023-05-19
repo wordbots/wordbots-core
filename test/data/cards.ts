@@ -17,7 +17,8 @@ export const cantripCard: w.CardInStore = {
   text: 'Draw a card.',
   command: '(function () { actions["draw"](targets["self"](), 1); })',
   cost: 0,
-  type: TYPE_EVENT
+  type: TYPE_EVENT,
+  integrity: []
 };
 
 export const attackBotCard: w.CardInStore = {
@@ -31,7 +32,8 @@ export const attackBotCard: w.CardInStore = {
     health: 1,
     speed: 2
   },
-  abilities: []
+  abilities: [],
+  integrity: []
 };
 
 export const wisdomBotCard: w.CardInStore = {
@@ -48,7 +50,8 @@ export const wisdomBotCard: w.CardInStore = {
   text: 'Whenever this robot takes damage, draw a card.',
   abilities: [
     '(function () { setTrigger(triggers["afterDamageReceived"](function () { return targets["thisRobot"](); }), (function () { actions["draw"](targets["self"](), 1); })); })'
-  ]
+  ],
+  integrity: []
 };
 
 export const hasteBotCard: w.CardInStore = {
@@ -65,7 +68,8 @@ export const hasteBotCard: w.CardInStore = {
   text: 'Haste',
   abilities: [
     '(function () { setTrigger(triggers["afterPlayed"](function () { return targets["it"](); }), (function () { actions["canMoveAndAttackAgain"](targets["thisRobot"]()); })); })'
-  ]
+  ],
+  integrity: []
 };
 
 export const clonerCard: w.CardInStore = {
@@ -82,7 +86,8 @@ export const clonerCard: w.CardInStore = {
   text: 'Activate: return a copy of this robot to your hand',
   abilities: [
     "(function () { setAbility(abilities['activated'](function () { return targets['thisRobot'](); }, \"(function () { actions['moveCardsToHand'](targets['copyOf'](targets['thisRobot']()), targets['self']()); })\")); })"
-  ]
+  ],
+  integrity: []
 };
 
 export const investorBotCard: w.CardInStore = {
@@ -99,7 +104,8 @@ export const investorBotCard: w.CardInStore = {
   text: 'When this robot is played, reduce the cost of a card in your hand by 2.',
   abilities: [
     '(function () { setTrigger(triggers["afterPlayed"](function () { return targets["thisRobot"](); }), (function () { actions["modifyAttribute"](targets["choose"](cardsInHand(targets["self"](), "anycard")), "cost", function (x) { return x - 2; }); })); })'
-  ]
+  ],
+  integrity: []
 };
 
 export const wrathOfRobotGodCard: w.CardInStore = {
@@ -109,7 +115,8 @@ export const wrathOfRobotGodCard: w.CardInStore = {
   text: 'Destroy all robots.',
   command: '(function () { actions["destroy"](objectsInPlay("robot")); })',
   cost: 10,
-  type: TYPE_EVENT
+  type: TYPE_EVENT,
+  integrity: []
 };
 
 export const healthAuraCard: w.CardInStore = {
@@ -124,7 +131,8 @@ export const healthAuraCard: w.CardInStore = {
   text: 'All robots 2 spaces away have +2 health.',
   abilities: [
     '(function () { setAbility(abilities["attributeAdjustment"](function () { return objectsMatchingConditions("robot", [conditions["exactDistanceFrom"](2, targets["thisRobot"]())]); }, "health", function (x) { return x + 2; })); })'
-  ]
+  ],
+  integrity: []
 };
 
 export const instantKernelKillerAbilityCard: w.CardInStore = {
@@ -137,7 +145,8 @@ export const instantKernelKillerAbilityCard: w.CardInStore = {
   stats: getBasicStats(),
   abilities: [
     '(function () { setTrigger(triggers["endOfTurn"](function () { return targets["self"](); }), (function () { actions["dealDamage"](objectsMatchingConditions("kernel", [conditions["controlledBy"](targets["opponent"]())]), 21); })); })'
-  ]
+  ],
+  integrity: []
 };
 
 export const reinforcementsCard: w.CardInStore = {
@@ -147,7 +156,8 @@ export const reinforcementsCard: w.CardInStore = {
   text: 'Spawn a 1/2/1 robot named "Reinforcements" on each tile adjacent to your kernel.',
   command: "(function () { actions['spawnObject'](targets['generateCard']('robot', {'attack': 1, 'health': 2, 'speed': 1}, 'Reinforcements'), tilesMatchingConditions([conditions['adjacentTo'](objectsMatchingConditions('kernel', [conditions['controlledBy'](targets['self']())]))])); })",
   cost: 4,
-  type: TYPE_EVENT
+  type: TYPE_EVENT,
+  integrity: []
 };
 
 export const discardMuncherCard: w.CardInStore = {
@@ -165,6 +175,7 @@ export const discardMuncherCard: w.CardInStore = {
     health: 1,
     speed: 1
   },
+  integrity: []
 };
 
 export const fairnessField: w.CardInStore = {
@@ -180,6 +191,7 @@ export const fairnessField: w.CardInStore = {
   stats: {
     health: 5
   },
+  integrity: []
 };
 
 export const looterBotCard: w.CardInStore = {
@@ -197,6 +209,7 @@ export const looterBotCard: w.CardInStore = {
     health: 2,
     speed: 1
   },
+  integrity: []
 };
 
 export const walkingMonkCard: w.CardInStore = {
@@ -214,6 +227,7 @@ export const walkingMonkCard: w.CardInStore = {
     health: 1,
     speed: 1
   },
+  integrity: []
 };
 
 export const thresholderCard: w.CardInStore = {
@@ -231,6 +245,7 @@ export const thresholderCard: w.CardInStore = {
     health: 1,
     speed: 1
   },
+  integrity: []
 };
 
 export const armorerCard: w.CardInStore = {
@@ -247,7 +262,8 @@ export const armorerCard: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
+  integrity: []
 };
 
 export const glassHammerCard: w.CardInStore = {
@@ -265,6 +281,7 @@ export const glassHammerCard: w.CardInStore = {
     health: 4,
     speed: 2
   },
+  integrity: []
 };
 
 
@@ -282,6 +299,7 @@ export const countdownClockCard: w.CardInStore = {
   stats: {
     health: 1,
   },
+  integrity: []
 };
 
 export const drawerCard: w.CardInStore = {
@@ -297,6 +315,7 @@ export const drawerCard: w.CardInStore = {
   stats: {
     health: 5,
   },
+  integrity: []
 };
 
 export const rageCard: w.CardInStore = {
@@ -312,6 +331,7 @@ export const rageCard: w.CardInStore = {
   stats: {
     health: 3,
   },
+  integrity: []
 };
 
 export const librarySchoolCard: w.CardInStore = {
@@ -326,7 +346,8 @@ export const librarySchoolCard: w.CardInStore = {
   type: TYPE_STRUCTURE,
   stats: {
     health: 3
-  }
+  },
+  integrity: []
 };
 
 // Cards with various errors, for testing error handling:
@@ -338,7 +359,8 @@ export const errorCard: w.CardInStore = {
   text: 'Note: This command is hard-coded to throw an error.',
   command: "(function () { throw 'oops!'; })",
   cost: 1,
-  type: TYPE_EVENT
+  type: TYPE_EVENT,
+  integrity: []
 };
 
 
@@ -356,7 +378,8 @@ export const infiniteLoopBotCard: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
+  integrity: []
 };
 
 export const badTriggerBot: w.CardInStore = {
@@ -373,7 +396,8 @@ export const badTriggerBot: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
+  integrity: []
 };
 
 export const badTriggerTargetingBot: w.CardInStore = {
@@ -390,7 +414,8 @@ export const badTriggerTargetingBot: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
+  integrity: []
 };
 
 export const badAbilityTargetingBot: w.CardInStore = {
@@ -407,7 +432,8 @@ export const badAbilityTargetingBot: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
+  integrity: []
 };
 
 export const badAbilityGrantingBot: w.CardInStore = {
@@ -424,5 +450,6 @@ export const badAbilityGrantingBot: w.CardInStore = {
     attack: 1,
     health: 1,
     speed: 1
-  }
+  },
+  integrity: []
 };

@@ -103,7 +103,7 @@ export interface CardInStore {
   spriteV?: number
   parserV?: string | null
   metadata: CardMetadata
-  integrity?: Hashes[]
+  integrity: Hashes[]
   // TODO what to do with the below properties when a card is edited? wipe them?
   originalParserV?: string  // the original parserV under which this card was created, if this card was migrated
   migrationBackup?: Array<{ parserV: string, abilities: string[] }>  // parsed JS for previous parser versions, if this card was migrated

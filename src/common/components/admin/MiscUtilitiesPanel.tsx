@@ -5,6 +5,7 @@ import * as React from 'react';
 import * as w from '../../types';
 import { checkValidityOfIntegrityHashes, getCardAbilities, validateIntegrityHashesAreComplete } from '../../util/cards';
 import * as firebase from '../../util/firebase';
+import { collection as coreSet } from '../../store/cards';
 
 interface MiscUtilitiesPanelProps {
   cards: w.CardInStore[]
@@ -87,6 +88,10 @@ class MiscUtilitiesPanel extends React.Component<MiscUtilitiesPanelProps, MiscUt
     this.log('ALL CARDS');
     await this.detectIntegrityProblemsForCards(cards);
 
+    this.log('~~~');
+    this.log('BUILT-IN CARDS');
+    await this.detectIntegrityProblemsForCards(coreSet);
+
     for (const set of sets) {
       this.log('~~~');
       this.log(`SET: ${set.name} (${set.id}) by ${set.metadata.authorName} (excluding ${set.cards.filter((c) => c.id.startsWith('builtin/')).length} builtins)`);
@@ -107,7 +112,7 @@ class MiscUtilitiesPanel extends React.Component<MiscUtilitiesPanelProps, MiscUt
     const { validCards, invalidCards, statistics: { numValidHashes, numInvalidHashes } } = await checkValidityOfIntegrityHashes(cardsWithHashesToVerify);
     this.log(`${numValidHashes}/${numValidHashes + numInvalidHashes} hashes are valid`);
     this.log(`Cards with invalid hashes: ${invalidCards.length}`);
-    this.log(`Valid cards: ${validCards.length}`);
+    this.log(`${validCards.length !== cards.length ? '* ' : ''}Valid cards: ${validCards.length}`);
   }
 }
 

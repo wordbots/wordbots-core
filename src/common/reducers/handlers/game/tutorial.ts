@@ -60,7 +60,7 @@ function prevStep(state: State): State {
 }
 
 function deck(cardList: w.CardInGame[]): w.CardInGame[] {
-  const filler: w.CardInGame[] = new Array(4).fill(cards.oneBotCard).map((card) => instantiateCard({...card, id: id()}));
+  const filler: w.CardInGame[] = new Array(4).fill(cards.oneBotCard).map((card) => instantiateCard({ ...card, id: id() }));
   return cardList.concat(filler);
 }
 
@@ -69,7 +69,7 @@ export function startTutorial(state: State): State {
   state = {
     ...state, ...cloneDeep(defaultState),
     started: true,
-    usernames: {orange: lookupUsername(), blue: 'Computer'},
+    usernames: { orange: lookupUsername(), blue: 'Computer' },
     tutorial: true,
     tutorialActionsPerformed: [],
     tutorialCurrentStepIdx: 0,
@@ -81,10 +81,10 @@ export function startTutorial(state: State): State {
     cards.oneBotCard,
     tutorialExclusiveCards.upgradeCard,
     tutorialExclusiveCards.rechargeCard
-  ].map((card) => instantiateCard({...card, id: id()})));
+  ].map((card) => instantiateCard({ ...card, id: id() })));
   state.players.blue.deck = deck([
     cards.redBotCard
-  ].map((card) => instantiateCard({...card, id: id()})));
+  ].map((card) => instantiateCard({ ...card, id: id() })));
   state.players.orange.objectsOnBoard['3,0,-3'].stats.health = 5;
   state.players.blue.objectsOnBoard['-3,0,3'].stats.health = 3;
   state = passTurn(state, 'orange');
@@ -128,6 +128,7 @@ const tutorialExclusiveCards: Record<string, w.CardInStore> = {
     name: 'Upgrade',
     text: 'Give a robot +2 attack and +2 health.',
     command: '(function () { (function () { save("target", targets["choose"](objectsMatchingConditions("robot", []))); })(); (function () { actions["modifyAttribute"](load("target"), "attack", function (x) { return x + 2; }); })(); (function () { actions["modifyAttribute"](load("target"), "health", function (x) { return x + 2; }); })(); })',
+    integrity: [],
     cost: 2,
     type: TYPE_EVENT
   },
@@ -137,6 +138,7 @@ const tutorialExclusiveCards: Record<string, w.CardInStore> = {
     name: 'Recharge',
     text: 'All of your robots can move and attack again.',
     command: '(function () { actions["canMoveAndAttackAgain"](objectsMatchingConditions("robot", [conditions["controlledBy"](targets["self"]())])); })',
+    integrity: [],
     cost: 2,
     type: TYPE_EVENT
   }

@@ -19,6 +19,7 @@ describe('Built-in cards', () => {
       type: TYPE_ROBOT,
       card: {
         metadata: { source: { type: 'builtin' } as w.CardSource },
+        integrity: [],
         id: 'Test',
         name: 'Test',
         type: TYPE_ROBOT,

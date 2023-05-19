@@ -213,6 +213,7 @@ export default function targets(state: w.GameState, currentObject: w.Object | nu
         metadata: {
           source: { type: 'generated' }
         },
+        integrity: [],
         stats: attributes,
         type: stringToType(objectType)
       };

@@ -19,7 +19,8 @@ const coreCard = {
   abilities: [],
   metadata: {
     source: { type: 'builtin' } as w.CardSource
-  }
+  },
+  integrity: []
 };
 
 export const blueCoreCard: w.CardInGame = {

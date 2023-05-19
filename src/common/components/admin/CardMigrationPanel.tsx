@@ -1,4 +1,4 @@
-import { compact, countBy, noop, omit } from 'lodash';
+import { compact, countBy, isEqual, noop, omit } from 'lodash';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper } from '@material-ui/core';
 import * as React from 'react';
 
@@ -6,7 +6,7 @@ import * as w from '../../types';
 import * as g from '../../guards';
 import { TYPE_EVENT } from '../../constants';
 import { md5 } from '../../util/common';
-import { expandKeywords, getCardAbilities, getSentencesFromInput, parseBatch } from '../../util/cards';
+import { getCardAbilities, getCardSentences, parseBatch } from '../../util/cards';
 import * as firebase from '../../util/firebase';
 import { collection as coreSet } from '../../store/cards';
 import { Card } from '../card/Card';
@@ -19,7 +19,7 @@ interface PreviewReport {
     numChanged: number
     numUnchanged: number
   }
-  changedCards: Array<w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[] }>
+  changedCards: Array<w.CardInStore & { parseErrors: string[], oldAbilities: string[], newAbilities: string[], oldIntegrity: w.Hashes[] }>
 }
 
 interface CardMigrationPanelProps {
@@ -120,6 +120,12 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
                         {card.parseErrors.length > 0 ? <span style={{ fontWeight: 'bold', color: 'red' }}>{card.parseErrors.join('\n')}</span> : card.newAbilities.join('\n')}
                       </pre>
                     </div>
+                    {!isEqual(new Set(card.integrity.map(i => i.hmac)), new Set((card.oldIntegrity || []).map(i => i.hmac))) && (
+                      <div>
+                        <div>Old Integrity: <pre>{JSON.stringify(card.oldIntegrity, null, 2)}</pre></div>
+                        <div>New Integrity: <pre>{JSON.stringify(card.integrity, null, 2)}</pre></div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -150,10 +156,6 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
   }
 
   private async previewMigration(cards: w.CardInStore[], setId: w.SetId | null): Promise<void> {
-    function sentencesForCard(c: w.CardInStore): string[] {
-      return (c.text ? getSentencesFromInput(c.text) : []).map((s) => expandKeywords(s));
-    }
-
     this.setState({
       cardsBeingMigrated: cards,
       setBeingMigrated: setId,
@@ -163,8 +165,8 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
     const objectCards = cards.filter((c) => c.type !== TYPE_EVENT);
     const eventCards = cards.filter((c) => c.type === TYPE_EVENT);
 
-    const objectCardSentences = compact(objectCards.flatMap(sentencesForCard));
-    const eventCardSentences = compact(eventCards.flatMap(sentencesForCard));
+    const objectCardSentences = compact(objectCards.flatMap(getCardSentences));
+    const eventCardSentences = compact(eventCards.flatMap(getCardSentences));
 
     const objectCardParseResults = await parseBatch(objectCardSentences, 'object');
     const eventCardParseResults = await parseBatch(eventCardSentences, 'event');
@@ -176,15 +178,20 @@ class CardMigrationPanel extends React.PureComponent<CardMigrationPanelProps> {
 
     const changedCards = (
       cards
+        .filter((c) => !c.id.startsWith('builtin/'))
         .map((c) => ({
           ...c,
-          parseErrors: compact(sentencesForCard(c).map((s) => g.isFailedParseResult(parseResultForSentence[s]) ? parseResultForSentence.error : undefined)),
+          parseErrors: compact(getCardSentences(c).map(s => parseResultForSentence[s]).map(r => g.isFailedParseResult(r) ? r.error : undefined)),
           oldAbilities: getCardAbilities(c),
-          newAbilities: compact(sentencesForCard(c).map((s) => g.isSuccessfulParseResult(parseResultForSentence[s]) ? parseResultForSentence.js : undefined)),
-          integrity: integrityHashes.filter((hash) => sentencesForCard(c).map(md5).includes(hash.input)),
+          newAbilities: compact(getCardSentences(c).map(s => parseResultForSentence[s]).map(r => g.isSuccessfulParseResult(r) ? r.js : undefined)),
+          integrity: integrityHashes.filter((hash) => getCardSentences(c).map(md5).includes(hash.input)),
           oldIntegrity: c.integrity
         }))
-        .filter((c) => c.oldAbilities.join('\n') !== c.newAbilities.join('\n') || (c.integrity.length > 0 && !c.oldIntegrity?.length) || c.parseErrors.length > 0)
+        .filter((c) =>
+          c.oldAbilities.join('\n') !== c.newAbilities.join('\n')
+          || !isEqual(new Set(c.integrity.map(i => i.hmac)), new Set((c.oldIntegrity || []).map(i => i.hmac)))
+          || c.parseErrors.length > 0
+        )
     );
 
     this.setState({

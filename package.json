@@ -1,6 +1,6 @@
 {
   "name": "wordbots",
-  "version": "0.20.1-beta",
+  "version": "0.20.2-beta",
   "description": "A card-and-board game that showcases card game semantic parsing",
   "license": "MIT",
   "engines": {

@@ -6,6 +6,7 @@ node_modules
 
 *.sublime-workspace
 .DS_Store
+._*
 npm-debug.log
 package-lock.json
 yarn-error.log

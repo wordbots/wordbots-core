@@ -8,7 +8,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { BigramProbs } from 'word-ngrams';
 
 import * as w from '../types';
-import { TYPE_EVENT, DISCORD_PARSE_ISSUES_WEBHOOK_URL } from '../constants';
+import { TYPE_EVENT } from '../constants';
 import * as collectionActions from '../actions/collection';
 import * as creatorActions from '../actions/creator';
 import * as gameActions from '../actions/game';
@@ -443,7 +443,7 @@ export class Creator extends React.Component<CreatorProps, CreatorState> {
     if (this.validationResults.textError) {
       saveReportedParseIssue(this.props.text);
 
-      fetch(DISCORD_PARSE_ISSUES_WEBHOOK_URL, {
+      fetch('/proxy/DISCORD_PARSE_ISSUES', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,6 @@
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import sslRedirect from 'heroku-ssl-redirect';
 import * as webpack from 'webpack';
 
@@ -10,7 +11,7 @@ import handleRequest from './handleRequest';
 import launchWebsocketServer from './multiplayer/socket';
 
 const app = express();
-const { NODE_ENV, PORT } = process.env;
+const { NODE_ENV, PORT, DISCORD_PROD_LOG_WEBHOOK_URL, DISCORD_PARSE_ISSUES_WEBHOOK_URL } = process.env;
 
 interface Global {
   navigator: any
@@ -49,6 +50,17 @@ if (NODE_ENV !== 'production') {
 app.use(sslRedirect());
 app.use(cookieParser());
 app.use(userAgentMiddleware);
+
+// endpoint to proxy Discord webhook POSTs (to keep webhook urls hidden from the user)
+app.use('/proxy', createProxyMiddleware({
+  router: {
+    '/DISCORD_PROD_LOG': DISCORD_PROD_LOG_WEBHOOK_URL,
+    '/DISCORD_PARSE_ISSUES': DISCORD_PARSE_ISSUES_WEBHOOK_URL
+  },
+  changeOrigin: true,
+  pathRewrite: { '^/proxy/.*': '' },
+  logLevel: 'debug',
+}));
 
 app.get('/*', handleRequest);
 

@@ -1,7 +1,7 @@
 import { clamp as _clamp, fromPairs, isEqual, isNaN, isObject, isString, isUndefined, last, mapValues, some } from 'lodash';
 import * as seededRNG from 'seed-random';
 
-import { DISCORD_PROD_LOG_WEBHOOK_URL, IS_PRODUCTION_ENV } from '../constants';
+import { IS_PRODUCTION_ENV } from '../constants';
 import * as w from '../types';
 
 import { fetchUniversal } from './browser';
@@ -104,7 +104,7 @@ export function animate(fns: Array<() => void>, delay: number): void {
 export function withoutEmptyFields<T>(obj: T): T {
   return mapValues(
     Object.fromEntries(
-      Object.entries(obj).filter(([_k, v]) => !isUndefined(v))
+      Object.entries(obj as Record<string, unknown>).filter(([_k, v]) => !isUndefined(v))
     ),
     (v) => isObject(v) ? withoutEmptyFields(v) : v
   ) as T;
@@ -133,7 +133,7 @@ export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
 export function logToDiscord(msg: string): void {
   if (IS_PRODUCTION_ENV) {
     try {
-      fetchUniversal(DISCORD_PROD_LOG_WEBHOOK_URL, {
+      fetchUniversal('/proxy/DISCORD_PROD_LOG', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

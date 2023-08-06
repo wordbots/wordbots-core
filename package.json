@@ -55,6 +55,7 @@
     "express": "^4.16.1",
     "firebase": "^7.24.0",
     "heroku-ssl-redirect": "^0.1.1",
+    "http-proxy-middleware": "^2.0.6",
     "lodash": "^4.17.21",
     "moment": "2.29.4",
     "node-fetch": "2.6.1",

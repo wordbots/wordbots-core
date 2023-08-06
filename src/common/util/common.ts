@@ -101,10 +101,10 @@ export function animate(fns: Array<() => void>, delay: number): void {
 }
 
 /** Removes all undefined (but not null) fields recursively from an object. */
-export function withoutEmptyFields<T extends {}>(obj: T): T {
+export function withoutEmptyFields<T>(obj: T): T {
   return mapValues(
     Object.fromEntries(
-      Object.entries(obj).filter(([_k, v]) => !isUndefined(v))
+      Object.entries(obj as Record<string, unknown>).filter(([_k, v]) => !isUndefined(v))
     ),
     (v) => isObject(v) ? withoutEmptyFields(v) : v
   ) as T;

@@ -18,14 +18,14 @@ export default function RaritySymbol({ rarity, scale, isEditing }: RaritySymbolP
   // Because some Linux distros don't have Arial by default, we use DejaVu Sans in the font stack and try to ensure that it actually gets used (but ONLY on Linux).
   // So, below, isLinux is really a proxy for isFontDejaVuSans (unfortunately it's not metrically compatible with Arial/Helvetica, so we have to special-case it ...)
   // TODO make the whole thing more robust with something like https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/check ?
-  const fontFamily = isLinux ? '"DejaVu Sans", sans-serif' : 'Arial, Helvetica, sans-serif';
+  const fontFamily = isLinux ? '"DejaVu Sans", sans-serif' : '"Arial Unicode MS", sans-serif';
 
   return (
     <span style={{
       display: 'inline-block',
       userSelect: 'none',
       fontFamily,
-      fontSize: (isLinux ? 17 : ({ rare: 17, uncommon: 21, common: 26 })[rarity]) * (scale || 1),
+      fontSize: (isLinux ? 17 : ({ rare: 18, uncommon: 26, common: 26 })[rarity]) * (scale || 1),
       marginTop: (isLinux ? 5 : ({ rare: 5, uncommon: 3, common: -1 })[rarity]) * (scale || 1),
       marginLeft: (isLinux ? -1 : ({ rare: -1, uncommon: -2, common: 0 })[rarity]) * (scale || 1),
       color: ({ rare: '#d4af37', uncommon: '#aaa9ad', common: undefined })[rarity]

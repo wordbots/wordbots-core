@@ -132,6 +132,8 @@ const SUPPORTED_BROWSER_VERSIONS: Partial<Record<Browser, number>> = {
   samsung: 13,
 };
 
+export const BROWSER_INFO = detect();
+
 /** Return whether the detected (browser, version) pair is on the supported browser versions list. */
 export function isSupportedBrowser(): boolean {
   if (isFlagSet('hideUnsupportedBrowserMessage')) {
@@ -141,9 +143,8 @@ export function isSupportedBrowser(): boolean {
   // To debug this message, uncomment the following line:
   // return false;
 
-  const browserInfo = detect();
-  if (browserInfo?.type === 'browser') {
-    const { name, version } = browserInfo;
+  if (BROWSER_INFO?.type === 'browser') {
+    const { name, version } = BROWSER_INFO;
     const requiredVersion = SUPPORTED_BROWSER_VERSIONS[name];
     const majorVersion = parseInt(version.split('.')[0]);
     if (requiredVersion && majorVersion && majorVersion >= requiredVersion) {

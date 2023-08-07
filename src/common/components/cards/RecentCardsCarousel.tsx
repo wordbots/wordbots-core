@@ -109,7 +109,7 @@ export default class RecentCardsCarousel extends React.Component<RecentCardsCaro
                       justifyContent: 'center'
                     }}
                   >
-                    {Card.fromObj(card, { onCardClick: () => { this.handleClickCard(card); } })}
+                    {Card.fromObj(card, { rarityInSet: undefined, onCardClick: () => { this.handleClickCard(card); } })}
                     <CardProvenanceDescription
                       card={card}
                       style={{

@@ -16,7 +16,7 @@ export default function RaritySymbol({ rarity, scale, isEditing }: RaritySymbolP
       display: 'inline-block',
       userSelect: 'none',
       fontFamily: '"DejaVu Sans", sans-serif',
-      fontSize: 17 * (scale || 1),
+      fontSize: (rarity === 'rare' ? 19 : 17) * (scale || 1),
       marginTop: 5 * (scale || 1),
       marginLeft: -1 * (scale || 1),
       color: ({ rare: '#d4af37', uncommon: '#aaa9ad', common: undefined })[rarity]

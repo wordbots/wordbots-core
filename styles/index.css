@@ -1,7 +1,14 @@
 @font-face {
   font-family: 'Space Age';
   src: url("../fonts/space-age.woff2") format("woff2"), url("../fonts/space age.ttf") format("truetype");
-  font-display: block; /** https://iainbean.com/posts/2021/5-steps-to-faster-web-fonts/ */
+  font-display: block;
+  /** https://iainbean.com/posts/2021/5-steps-to-faster-web-fonts/ */
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  src: url("../fonts/DejaVuSans.ttf") format("truetype");
+  font-display: block;
 }
 
 /* Make a custom fallback font based on the local Arial (https://www.industrialempathy.com/perfect-ish-font-fallback/?font=Carter%20One) */
@@ -87,12 +94,14 @@ th {
   margin-bottom: 0;
 }
 
-.markdownBlock h2, .helpPage h2 {
+.markdownBlock h2,
+.helpPage h2 {
   font-size: 24px;
   font-weight: 100;
 }
 
-.helpPage h1, .helpPage h2 {
+.helpPage h1,
+.helpPage h2 {
   font-family: '"Carter One", "Carter One-fallback"', 'Carter One-fallback';
 }
 
@@ -118,7 +127,7 @@ th {
   margin-left: -5px;
 }
 
-.helpPage li + li {
+.helpPage li+li {
   margin-top: 7px;
 }
 
@@ -243,8 +252,9 @@ a.topLink:hover {
 
 /* Misc */
 
-.end-turn-button:enabled:hover, .forfeit-button:enabled:hover {
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+.end-turn-button:enabled:hover,
+.forfeit-button:enabled:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
 .end-turn-button.orange:enabled:hover {
@@ -259,7 +269,8 @@ a.topLink:hover {
   opacity: 0.7;
 }
 
-.forfeit-button:enabled:hover, .draw-button:enabled:hover {
+.forfeit-button:enabled:hover,
+.draw-button:enabled:hover {
   background-color: #333 !important;
 }
 
@@ -278,9 +289,11 @@ a.topLink:hover {
   border: 1px solid rgb(244, 67, 54);
   filter: drop-shadow(-0.5px 2px 1.5px rgba(244, 67, 54, 0.2));
 }
+
 .speech-bubble:hover {
   filter: drop-shadow(-0.5px 2px 1.5px rgba(244, 67, 54, 0.8))
 }
+
 .speech-bubble:after {
   content: '';
   position: absolute;
@@ -344,12 +357,12 @@ a.topLink:hover {
 }
 
 @media only screen and (min-width: 1200px) {
-  #homePageSplash > :first-child {
+  #homePageSplash> :first-child {
     position: relative;
     left: -200px;
   }
 
-  #homePageSplash > :last-child {
+  #homePageSplash> :last-child {
     position: relative;
     left: 200px;
   }

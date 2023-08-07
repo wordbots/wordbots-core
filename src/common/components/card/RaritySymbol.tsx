@@ -15,9 +15,13 @@ export default function RaritySymbol({ rarity, scale, isEditing }: RaritySymbolP
     <span style={{
       display: 'inline-block',
       userSelect: 'none',
-      fontSize: ({ rare: 17, uncommon: 27, common: 26 })[rarity] * (scale || 1),
-      marginTop: ({ rare: 5, uncommon: -3, common: 0 })[rarity] * (scale || 1),
-      marginLeft: ({ rare: -1, uncommon: -2, common: 0 })[rarity] * (scale || 1),
+      // DejaVu Sans is one of few fonts that includes all 3 characters we need and scales them fairly similarly.
+      // Having all three characters within one font solves most of our previous issues with having to scale different characters differently.
+      // It's packaged by default with most Linux distros, and we serve DejaVuSans.ttf for other OSs.
+      fontFamily: '"DejaVu Sans", sans-serif',
+      fontSize: (rarity === 'rare' ? 19 : 17) * (scale || 1),
+      marginTop: 5 * (scale || 1),
+      marginLeft: -1 * (scale || 1),
       color: ({ rare: '#d4af37', uncommon: '#aaa9ad', common: undefined })[rarity]
     }}>
       <Tooltip

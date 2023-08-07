@@ -15,7 +15,7 @@ export default function RaritySymbol({ rarity, scale, isEditing }: RaritySymbolP
     <span style={{
       display: 'inline-block',
       userSelect: 'none',
-      fontFamily: 'Arial, sans-serif',
+      fontFamily: 'Arial, Helvetica, sans-serif',
       fontSize: (({ rare: 17, uncommon: 17, common: 26 })[rarity]) * (scale || 1),
       marginTop: (({ rare: 5, uncommon: 3, common: -1 })[rarity]) * (scale || 1),
       marginLeft: (({ rare: -1, uncommon: -2, common: 0 })[rarity]) * (scale || 1),

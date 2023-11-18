@@ -92,7 +92,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyAction>): AppDispatchProps {
 
 class App extends React.Component<AppProps, AppState> {
   public state = {
-    isUnsupportedBrowser: !isSupportedBrowser(),
+    isUnsupportedBrowser: inBrowser() && !isSupportedBrowser(),
     loadedCards: false,
     loadedDecks: false,
     loadedSets: false

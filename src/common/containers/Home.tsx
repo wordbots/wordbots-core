@@ -13,6 +13,7 @@ import Tooltip from '../components/Tooltip';
 import { FIREBASE_CONFIG, HEADER_HEIGHT, PARSER_URL } from '../constants';
 import * as w from '../types';
 import { isFlagSet, onLocalhost } from '../util/browser';
+import TermsOfUseDialog from '../components/help/TermsOfUseDialog';
 
 interface HomeStateProps {
   version: string
@@ -106,6 +107,11 @@ class Home extends React.Component<HomeProps> {
             <RecentCardsCarousel numCards={30} history={history} />
           </div>
 
+          <div style={{ width: '100%', textAlign: 'center', marginTop: '1em', paddingBottom: '2em', fontSize: '0.85em', color: '#666' }}>
+            © 2015–2023 Wordbots team.{' '}
+            <a className="underline" onClick={this.handleClickTermsOfUse}>Terms of use.</a>
+          </div>
+
           {
             !isFlagSet('skipNewHere') &&
             <div className="new-here-robot" onClick={this.handleClickNewHere}>
@@ -129,6 +135,8 @@ class Home extends React.Component<HomeProps> {
             <a href="/about">v{version}+{shaTruncated}</a>
             {onLocalhost() && <span> [ <em>parser:</em> {PARSER_URL}, <em>db:</em> {FIREBASE_CONFIG.databaseURL} ]</span>}
           </div>
+
+          <TermsOfUseDialog history={history} />
         </div>
       </div>
     );
@@ -136,6 +144,10 @@ class Home extends React.Component<HomeProps> {
 
   private handleClickNewHere = () => {
     RouterDialog.openDialog(this.props.history, 'new-here');
+  }
+
+  private handleClickTermsOfUse = () => {
+    RouterDialog.openDialog(this.props.history, 'terms-of-use');
   }
 
   private handleClickWorkshop = () => {

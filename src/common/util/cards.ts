@@ -1,6 +1,6 @@
 import {
   capitalize, compact, debounce, flatMap, fromPairs, has,
-  isArray, isEqual, mapValues, omit, pick, reduce, uniqBy
+  isArray, isEqual, mapKeys, mapValues, omit, pick, reduce, uniqBy
 } from 'lodash';
 
 import * as w from '../types';
@@ -182,11 +182,18 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
 
 /** Given a sentence, replace all synonyms (see `SYNONYMS`) in that sentence. */
 export function replaceSynonyms(text: string): string {
-  return reduce(SYNONYMS, ((str, synonyms, term) => {
-    synonyms = isArray(synonyms) ? synonyms : [synonyms];
-    return str.replace(new RegExp(`(${synonyms.join('|')})`, 'g'), term)
-      .replace(new RegExp(`(${synonyms.map(capitalize).join('|')})`, 'g'), capitalize(term));
-  }), text);
+  const synonyms: Record<string, string[]> = mapValues(SYNONYMS, (v) => isArray(v) ? v : [v]);
+  const allSynonyms: Record<string, string[]> = {
+    ...synonyms,
+    ...mapKeys(mapValues(synonyms, v => v.map(capitalize)), (_, k) => capitalize(k))
+  };
+
+  // To avoid replacing synonyms inside ' named "..." ' expressions, we base64-encode and then -decode them.
+  const textWithNamesEscaped = text.replace(new RegExp("named \"(.*?)\""), (_, name) => `named "${btoa(name)}"`);
+  const textWithNamesEscapedAndSynonymsReplaced = reduce(allSynonyms, (str, syns, term) => (
+    str.replace(new RegExp(`(${syns.join('|')})`, 'g'), term)
+  ), textWithNamesEscaped);
+  return textWithNamesEscapedAndSynonymsReplaced.replace(new RegExp("named \"(.*?)\""), (_, name) => `named "${atob(name)}"`);
 }
 
 /** Given a string containing potentially many sentences, return an array of sentences. */

@@ -130,10 +130,10 @@ export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
 }
 
 /** Logs a given message to the #log channel of the Wordbots discord (on production only). */
-export function logToDiscord(msg: string): void {
+export async function logToDiscord(msg: string): Promise<void> {
   if (IS_PRODUCTION_ENV) {
     try {
-      fetchUniversal('/proxy/DISCORD_PROD_LOG', {
+      await fetchUniversal('/proxy/DISCORD_PROD_LOG', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

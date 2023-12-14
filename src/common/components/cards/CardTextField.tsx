@@ -41,12 +41,10 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
 
     return flow(
       flatMap((s: w.Sentence) =>
-        ((s.result as w.FailedParseResult).suggestions || []).map((suggestion) =>
-          ({
-            original: s.sentence.trim(),
-            suggestion: contractKeywords(suggestion)
-          })
-        )
+        ((s.result as w.FailedParseResult)?.suggestions || []).map((suggestion) => ({
+          original: s.sentence.trim(),
+          suggestion: contractKeywords(suggestion)
+        }))
       ),
       sortBy(({ suggestion }) => bigramNLL(suggestion, bigramProbs)),
       slice(0, 5)
@@ -103,13 +101,13 @@ export default class CardTextField extends React.Component<CardTextFieldProps, C
       return (
         <div style={{ marginTop: 5 }}>
           Did you mean: {this.textSuggestions.map(({ original, suggestion }) => (
-          <CardTextSuggestion
-            key={original}
-            original={original}
-            suggestion={suggestion}
-            onChooseSuggestion={this.handleChooseSuggestion}
-          />
-        ))} ?
+            <CardTextSuggestion
+              key={original}
+              original={original}
+              suggestion={suggestion}
+              onChooseSuggestion={this.handleChooseSuggestion}
+            />
+          ))} ?
         </div>
       );
     }

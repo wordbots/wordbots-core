@@ -322,6 +322,11 @@ a.topLink:hover {
   border-color: rgb(244, 67, 54) !important;
 }
 
+.card-creator-text-field textarea {
+  resize: vertical !important;
+  min-height: 35px;
+}
+
 /** cribbed from https://codepen.io/Mark_Bowley/pen/PozwyP */
 .bubble {
   position: absolute;

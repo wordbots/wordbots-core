@@ -336,7 +336,7 @@ export function validPlacementHexes(state: w.GameState, playerName: w.PlayerColo
     } else {
       hexes = ORANGE_PLACEMENT_HEXES.map(HexUtils.IDToHex);
     }
-  } else if (type === TYPE_STRUCTURE) {
+  } else if (type === TYPE_STRUCTURE || type === TYPE_CORE) {  // (placing kernels is not a common occurrence, but when it happens, it should probably work like placing structures)
     const occupiedHexes: Hex[] = Object.keys(state.players[playerName].objectsOnBoard).map(HexUtils.IDToHex);
     hexes = flatMap(occupiedHexes, getAdjacentHexes);
   }

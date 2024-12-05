@@ -52,7 +52,7 @@
     "cookie-parser": "^1.4.3",
     "detect-browser": "^5.2.0",
     "discord.js": "^12.5.1",
-    "express": "^4.16.1",
+    "express": "^4.17.3",
     "firebase": "^7.24.0",
     "heroku-ssl-redirect": "^0.1.1",
     "http-proxy-middleware": "^2.0.6",

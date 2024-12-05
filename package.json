@@ -60,7 +60,7 @@
     "moment": "2.29.4",
     "node-fetch": "2.6.1",
     "object.values": "^1.1.0",
-    "qs": "^6.6.0",
+    "qs": "^6.6.1",
     "rc-slider": "^8.6.1",
     "react": "16.7.0",
     "react-copy-to-clipboard": "^5.0.1",

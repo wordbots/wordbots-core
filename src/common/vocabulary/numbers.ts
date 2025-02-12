@@ -47,3 +47,7 @@ export function thatMuch(state: w.GameState): w.Returns<number> {
     }
   };
 }
+
+export function numberOfObjectsDestroyedThisTurn(state: w.GameState): w.Returns<number> {
+  return () => size(state.objectsDestroyedThisTurn);
+}

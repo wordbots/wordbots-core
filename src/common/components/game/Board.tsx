@@ -216,7 +216,9 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     const hexId = HexUtils.getID(hex);
 
     if (this.isMyTurn) {
-      if (this.playingAnObject && this.placementHexes.map(HexUtils.getID).includes(hexId)) {
+      if (this.props.target.choosing) {
+        this.props.onSelectTile(hexId);
+      } else if (this.playingAnObject && this.placementHexes.map(HexUtils.getID).includes(hexId)) {
         this.props.onSelectTile(hexId, 'place');
       } else if (this.selectedPiece) {
         this.onMoveOrAttack(hex);

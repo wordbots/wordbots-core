@@ -160,7 +160,7 @@ export function validateCardInCreator(props: CreatorStateProps): CardValidationR
       return 'Action cards must have card text.';
     } else if (parseErrors.length > 0) {
       return parseErrors.join(' ');
-    } else if (nonEmptySentences.find((s) => s.result === null)) {
+    } else if (nonEmptySentences.find((s) => !s.result?.version)) {
       return 'Sentences are still being parsed ...';
     } else if (nonEmptySentences.filter((s) => s.sentence.toLowerCase().includes('replace ')).length > 1) {
       // https://github.com/wordbots/wordbots-core/issues/1811
